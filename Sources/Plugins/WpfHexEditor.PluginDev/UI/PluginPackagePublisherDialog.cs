@@ -21,8 +21,8 @@ using System.Windows;
 using Microsoft.Win32;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Microsoft.Win32;
 using WpfHexEditor.PluginDev.Packaging;
+using WpfHexEditor.PluginDev.Properties;
 
 namespace WpfHexEditor.PluginDev.UI;
 
@@ -57,7 +57,7 @@ public sealed class PluginPackagePublisherDialog : Window
         _buildOutputDir = buildOutputDir ?? throw new ArgumentNullException(nameof(buildOutputDir));
         _projectDir     = projectDir     ?? throw new ArgumentNullException(nameof(projectDir));
 
-        Title                 = "Publish Extension Package";
+        Title                 = PluginDevResources.PluginDev_PublishExtensionPackage;
         Width                 = 540;
         Height                = 440;
         ResizeMode            = ResizeMode.NoResize;
@@ -79,7 +79,7 @@ public sealed class PluginPackagePublisherDialog : Window
         // Title
         root.Children.Add(new TextBlock
         {
-            Text       = "Publish Extension Package",
+            Text       = PluginDevResources.PluginDev_PublishExtensionPackage,
             FontSize   = 15,
             FontWeight = FontWeights.SemiBold,
             Foreground = new SolidColorBrush(Color.FromRgb(0x56, 0x9C, 0xD6)),
@@ -107,7 +107,7 @@ public sealed class PluginPackagePublisherDialog : Window
         // Sign checkbox
         _cbSign = new CheckBox
         {
-            Content   = "Sign package before publishing",
+            Content   = PluginDevResources.PluginDev_SignBeforePublish,
             IsChecked = false,
             Foreground = Brushes.WhiteSmoke,
             Margin    = new Thickness(0, 0, 0, 8),
@@ -127,7 +127,7 @@ public sealed class PluginPackagePublisherDialog : Window
 
         var btnBrowse = new Button
         {
-            Content = "Browse…",
+            Content = PluginDevResources.PluginDev_Browse,
             Width   = 80,
             Height  = 26,
             Margin  = new Thickness(4, 0, 0, 0),
@@ -150,7 +150,7 @@ public sealed class PluginPackagePublisherDialog : Window
         // Open folder link (hidden until success)
         _lnkOpenFolder = new Button
         {
-            Content    = "Open output folder in Explorer",
+            Content    = PluginDevResources.PluginDev_OpenOutputFolder,
             Background = Brushes.Transparent,
             BorderBrush = Brushes.Transparent,
             Foreground = new SolidColorBrush(Color.FromRgb(0x56, 0x9C, 0xD6)),
@@ -166,7 +166,7 @@ public sealed class PluginPackagePublisherDialog : Window
         var btnRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
         _btnPackage = new Button
         {
-            Content = "Package",
+            Content = PluginDevResources.PluginDev_Package,
             Width   = 100,
             Height  = 28,
             Padding = new Thickness(10, 4, 10, 4),
@@ -177,7 +177,7 @@ public sealed class PluginPackagePublisherDialog : Window
 
         var btnClose = new Button
         {
-            Content = "Close",
+            Content = PluginDevResources.PluginDev_Close,
             Width   = 80,
             Height  = 28,
             Padding = new Thickness(10, 4, 10, 4),
@@ -197,7 +197,7 @@ public sealed class PluginPackagePublisherDialog : Window
     {
         var dlg = new OpenFolderDialog
         {
-            Title      = "Select output directory",
+            Title      = PluginDevResources.PluginDev_SelectOutputDirPackage,
             Multiselect = false,
         };
 

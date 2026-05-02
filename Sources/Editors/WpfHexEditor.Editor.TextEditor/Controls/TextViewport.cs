@@ -55,8 +55,9 @@ internal sealed class TextViewport : FrameworkElement
     private double _lineHeight;
     private double _charWidth;
     private double _lineNumberWidth;
-    private int _firstVisibleLine;
-    private int _visibleLineCount;
+    private int    _firstVisibleLine;
+    private int    _visibleLineCount;
+    private double _scrollViewportHeight; // set from ScrollViewer.ViewportHeight — NOT from Viewport.Height (which equals TotalHeight)
     private double _horizontalOffset;
     private Typeface? _typeface;
     private double _emSize;
@@ -120,6 +121,9 @@ internal sealed class TextViewport : FrameworkElement
     private bool _fullRenderPending;
     private bool _backgroundRenderPending;
 
+    // Zoom transform — same LayoutTransform strategy as HexEditor
+    private readonly ScaleTransform _zoomScaler = new ScaleTransform(1.0, 1.0);
+
     // -----------------------------------------------------------------------
     // DrawingVisual layers
     // -----------------------------------------------------------------------
@@ -181,6 +185,8 @@ internal sealed class TextViewport : FrameworkElement
         ClipToBounds = true;
         SnapsToDevicePixels = true;
 
+        LayoutTransform = _zoomScaler;
+
         // Watch TE_Background via DynamicResource so that any theme swap
         // (Application.Resources.MergedDictionaries replacement) triggers
         // OnThemeWatcherChanged → brush/text cache flush + re-render.
@@ -219,6 +225,30 @@ internal sealed class TextViewport : FrameworkElement
         InvalidateVisual();
     }
 
+    /// <summary>
+    /// The physical viewport height of the parent ScrollViewer (pixels).
+    /// Must be kept in sync via ScrollViewer.ScrollChanged so that ScrollIntoView()
+    /// and _visibleLineCount use the true visible area — not Viewport.Height which
+    /// equals TotalHeight (set for scrollbar extent purposes).
+    /// </summary>
+    public double ScrollViewportHeight
+    {
+        get => _scrollViewportHeight;
+        set
+        {
+            if (Math.Abs(_scrollViewportHeight - value) > 0.5)
+            {
+                _scrollViewportHeight = value;
+                // Recompute _visibleLineCount immediately so ScrollIntoView() is accurate.
+                if (_lineHeight > 0)
+                    _visibleLineCount = (int)Math.Ceiling(_scrollViewportHeight / _lineHeight) + 1;
+            }
+        }
+    }
+
+    /// <summary>Raised when FirstVisibleLine changes so the parent can sync the standalone VScrollBar.</summary>
+    public event EventHandler? FirstVisibleLineChanged;
+
     public int FirstVisibleLine
     {
         get => _firstVisibleLine;
@@ -228,6 +258,7 @@ internal sealed class TextViewport : FrameworkElement
             {
                 _firstVisibleLine = Math.Max(0, value);
                 QueueFullRender();
+                FirstVisibleLineChanged?.Invoke(this, EventArgs.Empty);
             }
         }
     }
@@ -301,14 +332,14 @@ internal sealed class TextViewport : FrameworkElement
             int visLast  = visFirst + _wrapHeights[lineIndex] - 1;
             if (visFirst < _firstVisibleLine)
                 FirstVisibleLine = visFirst;
-            else if (visLast >= _firstVisibleLine + _visibleLineCount)
-                FirstVisibleLine = Math.Max(0, visLast - _visibleLineCount + 1);
+            else if (visLast >= _firstVisibleLine + _visibleLineCount - 1)
+                FirstVisibleLine = Math.Max(0, visLast - _visibleLineCount + 2);
             return;
         }
         if (lineIndex < _firstVisibleLine)
             FirstVisibleLine = lineIndex;
-        else if (lineIndex >= _firstVisibleLine + _visibleLineCount)
-            FirstVisibleLine = lineIndex - _visibleLineCount + 1;
+        else if (lineIndex >= _firstVisibleLine + _visibleLineCount - 1)
+            FirstVisibleLine = lineIndex - _visibleLineCount + 2;
     }
 
     public void StartCursorBlink()
@@ -355,7 +386,11 @@ internal sealed class TextViewport : FrameworkElement
             _lastArrangedWidth = finalSize.Width;
             RebuildWrapMap();
         }
-        _visibleLineCount = _lineHeight > 0 ? (int)Math.Ceiling(finalSize.Height / _lineHeight) + 1 : 0;
+        // Use _scrollViewportHeight (the ScrollViewer's actual visible area) when available.
+        // finalSize.Height == TotalHeight (set by TextEditor for scrollbar extent) — using it
+        // would make _visibleLineCount equal the whole document, breaking ScrollIntoView().
+        double visH = _scrollViewportHeight > 0 ? _scrollViewportHeight : finalSize.Height;
+        _visibleLineCount = _lineHeight > 0 ? (int)Math.Ceiling(visH / _lineHeight) + 1 : 0;
         return finalSize;
     }
 
@@ -1852,20 +1887,19 @@ internal sealed class TextViewport : FrameworkElement
         var font = TryFindResource("TE_FontFamily") as FontFamily
                    ?? new FontFamily("Cascadia Code, Consolas, Courier New");
         var baseSize = TryFindResource("TE_FontSize") is double fs ? fs : DefaultFontSize;
-        var zoom     = ZoomLevel; // P2-01
 
-        // Apply zoom to the effective em-size.
-        var size = baseSize * zoom;
+        // Zoom is applied via LayoutTransform (_zoomScaler) — font size stays at base value.
+        var size = baseSize;
 
         if (_typeface is not null && _emSize == size
-            && _cachedFontSize == baseSize && _cachedZoom == zoom
+            && _cachedFontSize == baseSize
             && Equals(_cachedTypeface, _typeface))
             return;
 
         _typeface       = new Typeface(font, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
         _emSize         = size;
         _cachedFontSize = baseSize;
-        _cachedZoom     = zoom;     // P2-01
+        _cachedZoom     = 1.0; // zoom handled by LayoutTransform, not font size
         _cachedTypeface = _typeface;
         _brushCache.Clear();
         _lineRenderCache.Clear(); // font/zoom changed — all cached FormattedText is stale
@@ -2132,6 +2166,8 @@ internal sealed class TextViewport : FrameworkElement
                 (d, _) =>
                 {
                     var vp = (TextViewport)d;
+                    vp._zoomScaler.ScaleX = vp.ZoomLevel;
+                    vp._zoomScaler.ScaleY = vp.ZoomLevel;
                     vp._lineRenderCache.Clear(); // zoom changes emSize → cached FormattedText is stale
                     vp.QueueFullRender();
                     vp.ZoomLevelChanged?.Invoke(vp, vp.ZoomLevel);

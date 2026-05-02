@@ -1,9 +1,17 @@
 <UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentTextPane"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
              xmlns:local="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Controls"
              Background="{DynamicResource DE_PageCanvasBackground}"
              Foreground="{DynamicResource DE_TextPaneForeground}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <docSvc:DocumentEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <!-- Forensic gutter (16px, hidden unless forensic mode) -->

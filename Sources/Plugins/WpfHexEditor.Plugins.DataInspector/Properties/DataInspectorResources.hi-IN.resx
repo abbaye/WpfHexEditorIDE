@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>डेटा इंस्पेक्टर</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>डेटा विश्लेषण</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>डेटा इंस्पेक्टर</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>_डेटा इंस्पेक्टर</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>प्रदर्शित करने के लिए कोई डेटा नहीं</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>कुल</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>अधिकतम</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>एन्ट्रापी</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>बिट्स/बाइट</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>बाइट</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>कोई बाइट नहीं चुनी — हेक्स संपादक में बाइट चुनें।</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>सक्रिय दृश्य</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>पूरी फ़ाइल</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>चयन</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>आवृत्ति</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>एन्ट्रापी</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>कोई डेटा नहीं</value>
+  </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>श्रेणी:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>सभी</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>पूर्णांक</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>फ्लोट</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>दिनांक/समय</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>नेटवर्क</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>रंग</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>बुनियादी</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>बिट्स</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>सभी प्रारूप</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>अधिक विकल्प</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>अक्ष लेबल दिखाएं</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>ग्रिड लाइनें दिखाएं</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>आंकड़े दिखाएं</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>आवृत्ति वितरण</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>एंट्रॉपी (स्लाइडिंग विंडो)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>ज़ूम इन</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>ज़ूम आउट</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>ज़ूम रीसेट</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>चार्ट रीफ्रेश</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>चार्ट छवि कॉपी करें</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>लेआउट</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>बाएं</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>दाएं</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>ऊपर</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>नीचे</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>दायरा:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>सक्रिय दृश्य</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>चयन</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>पूरी फ़ाइल</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>आवृत्ति</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>लेआउट:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>व्याख्या सूची के सापेक्ष चार्ट स्थिति</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>फ़ाइल का विश्लेषण...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>व्याख्याएं: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>कोई डेटा नहीं</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>चयन परिवर्तन पर स्वत: रीफ्रेश</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>डिफ़ॉल्ट बाइट ऑर्डर: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>बाइट चार्ट पैनल दिखाएं</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>चार्ट स्थिति:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>अधिकतम स्ट्रिंग पूर्वावलोकन बाइट्स:</value></data>
+</root>

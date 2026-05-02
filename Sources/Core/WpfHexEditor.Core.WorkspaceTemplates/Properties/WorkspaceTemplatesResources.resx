@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true" />
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+  <data name="NewProject_Title" xml:space="preserve">
+    <value>New Project</value>
+  </data>
+  <data name="NewProject_Step1" xml:space="preserve">
+    <value>1  Template</value>
+  </data>
+  <data name="NewProject_Step2" xml:space="preserve">
+    <value>2  Configure</value>
+  </data>
+  <data name="NewProject_Step3" xml:space="preserve">
+    <value>3  Plugins</value>
+  </data>
+  <data name="NewProject_SelectTemplate" xml:space="preserve">
+    <value>Select a template</value>
+  </data>
+  <data name="NewProject_SearchPlaceholder" xml:space="preserve">
+    <value>Search templates...</value>
+  </data>
+  <data name="NewProject_FilterTooltip" xml:space="preserve">
+    <value>Filter templates</value>
+  </data>
+  <data name="NewProject_DefaultLanguage" xml:space="preserve">
+    <value>Default language: </value>
+  </data>
+  <data name="NewProject_NameLabel" xml:space="preserve">
+    <value>Project name:</value>
+  </data>
+  <data name="NewProject_BrowseButton" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="NewProject_LocationLabel" xml:space="preserve">
+    <value>Location:</value>
+  </data>
+  <data name="NewProject_LanguageLabel" xml:space="preserve">
+    <value>Language:</value>
+  </data>
+  <data name="NewProject_PathLabel" xml:space="preserve">
+    <value>Project path:</value>
+  </data>
+  <data name="NewProject_PluginsHint" xml:space="preserve">
+    <value>Select optional plugins to include with this project:</value>
+  </data>
+  <data name="NewProject_Back" xml:space="preserve">
+    <value>← Back</value>
+  </data>
+  <data name="NewProject_Next" xml:space="preserve">
+    <value>Next →</value>
+  </data>
+  <data name="NewProject_Finish" xml:space="preserve">
+    <value>Finish</value>
+  </data>
+  <data name="NewProject_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+</root>

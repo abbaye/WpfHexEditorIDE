@@ -4790,5 +4790,226 @@ namespace WpfHexEditor.Core.Properties {
                 return ResourceManager.GetString("ZoomString", resourceCulture);
             }
         }
+
+        public static string ByteTooltip_NoData {
+            get { return ResourceManager.GetString("ByteTooltip_NoData", resourceCulture); }
+        }
+        public static string ByteTooltip_Signed {
+            get { return ResourceManager.GetString("ByteTooltip_Signed", resourceCulture); }
+        }
+        public static string ByteTooltip_Binary {
+            get { return ResourceManager.GetString("ByteTooltip_Binary", resourceCulture); }
+        }
+        public static string ByteTooltip_ASCII {
+            get { return ResourceManager.GetString("ByteTooltip_ASCII", resourceCulture); }
+        }
+        public static string ByteTooltip_NonPrintable {
+            get { return ResourceManager.GetString("ByteTooltip_NonPrintable", resourceCulture); }
+        }
+        public static string ByteTooltip_Octal {
+            get { return ResourceManager.GetString("ByteTooltip_Octal", resourceCulture); }
+        }
+        public static string StatusText_OperationCancelled {
+            get { return ResourceManager.GetString("StatusText_OperationCancelled", resourceCulture); }
+        }
+        public static string StatusText_FileAlreadyExists {
+            get { return ResourceManager.GetString("StatusText_FileAlreadyExists", resourceCulture); }
+        }
+        public static string StatusText_Ready {
+            get { return ResourceManager.GetString("StatusText_Ready", resourceCulture); }
+        }
+        public static string StatusText_FileSaved {
+            get { return ResourceManager.GetString("StatusText_FileSaved", resourceCulture); }
+        }
+        public static string StatusText_SearchMarkersCleared {
+            get { return ResourceManager.GetString("StatusText_SearchMarkersCleared", resourceCulture); }
+        }
+        public static string StatusText_AllChangesCleared {
+            get { return ResourceManager.GetString("StatusText_AllChangesCleared", resourceCulture); }
+        }
+        public static string StatusText_TblClosedAscii {
+            get { return ResourceManager.GetString("StatusText_TblClosedAscii", resourceCulture); }
+        }
+        public static string StatusText_NoSelectionToReverse {
+            get { return ResourceManager.GetString("StatusText_NoSelectionToReverse", resourceCulture); }
+        }
+        public static string StatusText_SelectionIsEmpty {
+            get { return ResourceManager.GetString("StatusText_SelectionIsEmpty", resourceCulture); }
+        }
+        public static string StatusText_NoSelectionToInvert {
+            get { return ResourceManager.GetString("StatusText_NoSelectionToInvert", resourceCulture); }
+        }
+        public static string StatusText_NoSelectionToFind {
+            get { return ResourceManager.GetString("StatusText_NoSelectionToFind", resourceCulture); }
+        }
+        public static string StatusText_NoMatchesFound {
+            get { return ResourceManager.GetString("StatusText_NoMatchesFound", resourceCulture); }
+        }
+        public static string StatusBar_SizeEmpty {
+            get { return ResourceManager.GetString("StatusBar_SizeEmpty", resourceCulture); }
+        }
+        public static string StatusBar_NoSelection {
+            get { return ResourceManager.GetString("StatusBar_NoSelection", resourceCulture); }
+        }
+        public static string StatusBar_PositionZero {
+            get { return ResourceManager.GetString("StatusBar_PositionZero", resourceCulture); }
+        }
+        public static string StatusBar_ModeOverwrite {
+            get { return ResourceManager.GetString("StatusBar_ModeOverwrite", resourceCulture); }
+        }
+        public static string StatusBar_BytesPerLine {
+            get { return ResourceManager.GetString("StatusBar_BytesPerLine", resourceCulture); }
+        }
+
+        // Search Module
+        public static string Search_NoMatches {
+            get { return ResourceManager.GetString("Search_NoMatches", resourceCulture); }
+        }
+        public static string Search_Error_Title {
+            get { return ResourceManager.GetString("Search_Error_Title", resourceCulture); }
+        }
+        public static string Search_Error_Label {
+            get { return ResourceManager.GetString("Search_Error_Label", resourceCulture); }
+        }
+        public static string Search_Error_NoTBLLoaded {
+            get { return ResourceManager.GetString("Search_Error_NoTBLLoaded", resourceCulture); }
+        }
+        public static string Search_Error_TBLRequired {
+            get { return ResourceManager.GetString("Search_Error_TBLRequired", resourceCulture); }
+        }
+        public static string Search_Error_NoTBLForReplacement {
+            get { return ResourceManager.GetString("Search_Error_NoTBLForReplacement", resourceCulture); }
+        }
+        public static string Search_Replace_Title {
+            get { return ResourceManager.GetString("Search_Replace_Title", resourceCulture); }
+        }
+        public static string Search_ReplaceAll_Title {
+            get { return ResourceManager.GetString("Search_ReplaceAll_Title", resourceCulture); }
+        }
+        public static string Search_ExportDialog_Filter {
+            get { return ResourceManager.GetString("Search_ExportDialog_Filter", resourceCulture); }
+        }
+        public static string Search_ExportTBL_Title {
+            get { return ResourceManager.GetString("Search_ExportTBL_Title", resourceCulture); }
+        }
+        public static string Search_TBLFileDialog_Filter {
+            get { return ResourceManager.GetString("Search_TBLFileDialog_Filter", resourceCulture); }
+        }
+        public static string Search_ExportTBL_Success {
+            get { return ResourceManager.GetString("Search_ExportTBL_Success", resourceCulture); }
+        }
+        public static string Search_ExportTBL_Error {
+            get { return ResourceManager.GetString("Search_ExportTBL_Error", resourceCulture); }
+        }
+        public static string Search_EncodingApplied_Title {
+            get { return ResourceManager.GetString("Search_EncodingApplied_Title", resourceCulture); }
+        }
+        public static string Search_EncodingApplied_Message {
+            get { return ResourceManager.GetString("Search_EncodingApplied_Message", resourceCulture); }
+        }
+        public static string Search_LoadTBL_Title {
+            get { return ResourceManager.GetString("Search_LoadTBL_Title", resourceCulture); }
+        }
+        public static string Search_TBLLoaded_Title {
+            get { return ResourceManager.GetString("Search_TBLLoaded_Title", resourceCulture); }
+        }
+        public static string Search_ErrorLoadingTBL_Title {
+            get { return ResourceManager.GetString("Search_ErrorLoadingTBL_Title", resourceCulture); }
+        }
+        public static string Search_CloseTBL_Title {
+            get { return ResourceManager.GetString("Search_CloseTBL_Title", resourceCulture); }
+        }
+
+        // IPS Patcher
+        public static string IPS_Error_NoFileOpen {
+            get { return ResourceManager.GetString("IPS_Error_NoFileOpen", resourceCulture); }
+        }
+        public static string IPS_Error_NoFileOpen_Title {
+            get { return ResourceManager.GetString("IPS_Error_NoFileOpen_Title", resourceCulture); }
+        }
+        public static string IPS_ApplyPatch_Title {
+            get { return ResourceManager.GetString("IPS_ApplyPatch_Title", resourceCulture); }
+        }
+        public static string IPS_FileDialog_Filter {
+            get { return ResourceManager.GetString("IPS_FileDialog_Filter", resourceCulture); }
+        }
+        public static string IPS_Error_InvalidFile {
+            get { return ResourceManager.GetString("IPS_Error_InvalidFile", resourceCulture); }
+        }
+        public static string IPS_Error_InvalidFile_Title {
+            get { return ResourceManager.GetString("IPS_Error_InvalidFile_Title", resourceCulture); }
+        }
+        public static string IPS_ApplyPatch_Confirm_Title {
+            get { return ResourceManager.GetString("IPS_ApplyPatch_Confirm_Title", resourceCulture); }
+        }
+        public static string IPS_ApplyPatch_SaveReminder {
+            get { return ResourceManager.GetString("IPS_ApplyPatch_SaveReminder", resourceCulture); }
+        }
+        public static string IPS_ApplyPatch_Success_Title {
+            get { return ResourceManager.GetString("IPS_ApplyPatch_Success_Title", resourceCulture); }
+        }
+        public static string IPS_ApplyPatch_Error_Title {
+            get { return ResourceManager.GetString("IPS_ApplyPatch_Error_Title", resourceCulture); }
+        }
+        public static string IPS_CreatePatch_NoFileOpen {
+            get { return ResourceManager.GetString("IPS_CreatePatch_NoFileOpen", resourceCulture); }
+        }
+        public static string IPS_CreatePatch_SelectOriginal_Title {
+            get { return ResourceManager.GetString("IPS_CreatePatch_SelectOriginal_Title", resourceCulture); }
+        }
+        public static string IPS_ROMFileDialog_Filter {
+            get { return ResourceManager.GetString("IPS_ROMFileDialog_Filter", resourceCulture); }
+        }
+        public static string IPS_CreatePatch_SaveDialog_Title {
+            get { return ResourceManager.GetString("IPS_CreatePatch_SaveDialog_Title", resourceCulture); }
+        }
+        public static string IPS_CreatePatch_Success_Title {
+            get { return ResourceManager.GetString("IPS_CreatePatch_Success_Title", resourceCulture); }
+        }
+        public static string UndoHistory_Undo {
+            get { return ResourceManager.GetString("UndoHistory_Undo", resourceCulture); }
+        }
+        public static string UndoHistory_Redo {
+            get { return ResourceManager.GetString("UndoHistory_Redo", resourceCulture); }
+        }
+        public static string UndoHistory_Action {
+            get { return ResourceManager.GetString("UndoHistory_Action", resourceCulture); }
+        }
+        public static string UndoHistory_Actions {
+            get { return ResourceManager.GetString("UndoHistory_Actions", resourceCulture); }
+        }
+        public static string DynSettings_Title {
+            get { return ResourceManager.GetString("DynSettings_Title", resourceCulture); }
+        }
+        public static string DynSettings_SaveState {
+            get { return ResourceManager.GetString("DynSettings_SaveState", resourceCulture); }
+        }
+        public static string DynSettings_LoadState {
+            get { return ResourceManager.GetString("DynSettings_LoadState", resourceCulture); }
+        }
+        public static string DynSettings_ResetDefaults {
+            get { return ResourceManager.GetString("DynSettings_ResetDefaults", resourceCulture); }
+        }
+        public static string UndoRedo_NothingToUndo {
+            get { return ResourceManager.GetString("UndoRedo_NothingToUndo", resourceCulture); }
+        }
+        public static string UndoRedo_NothingToRedo {
+            get { return ResourceManager.GetString("UndoRedo_NothingToRedo", resourceCulture); }
+        }
+        public static string HE_Toolbar_DetectedFormat {
+            get { return ResourceManager.GetString("HE_Toolbar_DetectedFormat", resourceCulture); }
+        }
+        public static string HE_Toolbar_ConfidenceScore {
+            get { return ResourceManager.GetString("HE_Toolbar_ConfidenceScore", resourceCulture); }
+        }
+        public static string HE_Toolbar_ConfidenceFormat {
+            get { return ResourceManager.GetString("HE_Toolbar_ConfidenceFormat", resourceCulture); }
+        }
+        public static string HE_Toolbar_ChangeFormat {
+            get { return ResourceManager.GetString("HE_Toolbar_ChangeFormat", resourceCulture); }
+        }
+        public static string HE_Toolbar_ChangeFormatTooltip {
+            get { return ResourceManager.GetString("HE_Toolbar_ChangeFormatTooltip", resourceCulture); }
+        }
     }
 }

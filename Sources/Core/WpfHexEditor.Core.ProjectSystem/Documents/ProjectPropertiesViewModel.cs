@@ -27,6 +27,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.ProjectSystem.Properties;
 using WpfHexEditor.Core.ProjectSystem.Services;
 using WpfHexEditor.Core.ViewModels;
 
@@ -366,7 +367,7 @@ public sealed class ProjectPropertiesViewModel : ViewModelBase
     // -----------------------------------------------------------------------
 
     public string? ProjectNameError =>
-        string.IsNullOrWhiteSpace(ProjectName) ? "Le nom du projet ne peut pas Ãªtre vide." : null;
+        string.IsNullOrWhiteSpace(ProjectName) ? ProjectSystemResources.Validation_ProjectNameEmpty : null;
 
     public string? AssemblyNameError =>
         string.IsNullOrWhiteSpace(AssemblyName) ? "Le nom d'assembly ne peut pas Ãªtre vide." : null;
@@ -409,8 +410,8 @@ public sealed class ProjectPropertiesViewModel : ViewModelBase
     {
         var ofd = new OpenFileDialog
         {
-            Title  = "SÃ©lectionner un projet Ã  rÃ©fÃ©rencer",
-            Filter = "Projets C# (*.csproj)|*.csproj|Tous les projets (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj"
+            Title  = ProjectSystemResources.Dialog_SelectProjectToReference,
+            Filter = ProjectSystemResources.Filter_CsharpProjects
         };
         if (ofd.ShowDialog() == true)
         {

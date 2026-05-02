@@ -19,6 +19,7 @@ using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.Plugins.ParsedFields.Dialogs;
+using WpfHexEditor.Plugins.ParsedFields.Properties;
 using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Plugins.ParsedFields.Views
@@ -560,7 +561,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         {
             _pinnedFilePath = null;
             SourceMenuIcon.Text  = "\uE72C"; // sync icon
-            SourceMenuLabel.Text = "Auto \u25BE";
+            SourceMenuLabel.Text = ParsedFieldsResources.ParsedFields_Label_AutoMode + " \u25BE";
         }
 
         private void SetSourcePinned(string filePath, string title)
@@ -729,7 +730,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
 
             if (!field.IsEditable)
             {
-                System.Windows.MessageBox.Show("This field cannot be edited.", "Edit Field",
+                System.Windows.MessageBox.Show(ParsedFieldsResources.ParsedFields_Error_FieldNotEditable, "Edit Field",
                     System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 return;
             }
@@ -743,7 +744,8 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
 
                 if (bytes == null)
                 {
-                    System.Windows.MessageBox.Show($"Invalid value for type '{field.ValueType}'.\n\nPlease enter a valid value.",
+                    System.Windows.MessageBox.Show(
+                        ParsedFieldsResources.ParsedFields_Error_InvalidValue + $"\n\nType: {field.ValueType}",
                         "Invalid Value", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                     return;
                 }
@@ -1094,14 +1096,15 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                     System.IO.File.WriteAllText(saveDialog.FileName, content);
                     System.Windows.MessageBox.Show(
                         $"Fields exported successfully to:\n{saveDialog.FileName}",
-                        "Export Complete",
+                        ParsedFieldsResources.ParsedFields_Dialog_ExportComplete,
                         System.Windows.MessageBoxButton.OK,
                         System.Windows.MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Error saving file: {ex.Message}", "Export Error",
+                System.Windows.MessageBox.Show($"Error saving file: {ex.Message}",
+                    ParsedFieldsResources.ParsedFields_Dialog_ExportError,
                     System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
@@ -1111,12 +1114,14 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
             try
             {
                 System.Windows.Clipboard.SetText(content);
-                System.Windows.MessageBox.Show($"All fields exported as {formatName} to clipboard!", "Export Complete",
+                System.Windows.MessageBox.Show($"All fields exported as {formatName} to clipboard!",
+                    ParsedFieldsResources.ParsedFields_Dialog_ExportComplete,
                     System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Error exporting fields: {ex.Message}", "Export Error",
+                System.Windows.MessageBox.Show($"Error exporting fields: {ex.Message}",
+                    ParsedFieldsResources.ParsedFields_Dialog_ExportError,
                     System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
@@ -1136,7 +1141,8 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 try
                 {
                     System.Windows.Clipboard.SetText(field.OffsetHex);
-                    System.Windows.MessageBox.Show($"Offset {field.OffsetHex} copied to clipboard!", "Copied",
+                    System.Windows.MessageBox.Show($"Offset {field.OffsetHex} copied to clipboard!",
+                        ParsedFieldsResources.ParsedFields_Dialog_Copied,
                         System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 }
                 catch (Exception ex)
@@ -1162,7 +1168,8 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 }
                 else
                 {
-                    System.Windows.MessageBox.Show($"No field found at offset {offset:X8}.", "Field Not Found",
+                    System.Windows.MessageBox.Show($"No field found at offset {offset:X8}.",
+                        ParsedFieldsResources.ParsedFields_Dialog_FieldNotFound,
                         System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 }
             }
@@ -1176,7 +1183,8 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 {
                     var hexValue = field.GetValueAsHex();
                     System.Windows.Clipboard.SetText(hexValue);
-                    System.Windows.MessageBox.Show($"Hex value copied to clipboard:\n{hexValue}", "Copied",
+                    System.Windows.MessageBox.Show($"Hex value copied to clipboard:\n{hexValue}",
+                        ParsedFieldsResources.ParsedFields_Dialog_Copied,
                         System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 }
                 catch (Exception ex)
@@ -1194,7 +1202,8 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 {
                     var decValue = field.GetValueAsDecimal();
                     System.Windows.Clipboard.SetText(decValue);
-                    System.Windows.MessageBox.Show($"Decimal value copied to clipboard:\n{decValue}", "Copied",
+                    System.Windows.MessageBox.Show($"Decimal value copied to clipboard:\n{decValue}",
+                        ParsedFieldsResources.ParsedFields_Dialog_Copied,
                         System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 }
                 catch (Exception ex)
@@ -1212,7 +1221,8 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 {
                     var binValue = field.GetValueAsBinary();
                     System.Windows.Clipboard.SetText(binValue);
-                    System.Windows.MessageBox.Show($"Binary value copied to clipboard:\n{binValue}", "Copied",
+                    System.Windows.MessageBox.Show($"Binary value copied to clipboard:\n{binValue}",
+                        ParsedFieldsResources.ParsedFields_Dialog_Copied,
                         System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 }
                 catch (Exception ex)
@@ -1233,7 +1243,8 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                     SearchTextBox.Text = searchValue;
                     ApplyFilter();
 
-                    System.Windows.MessageBox.Show($"Searching for fields with value: {searchValue}", "Find Similar",
+                    System.Windows.MessageBox.Show($"Searching for fields with value: {searchValue}",
+                        ParsedFieldsResources.ParsedFields_Dialog_FindSimilar,
                         System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 }
                 catch (Exception ex)
@@ -1263,7 +1274,8 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"Error showing in data inspector: {ex.Message}");
-                    System.Windows.MessageBox.Show("Data Inspector feature not yet connected to this panel.", "Feature Unavailable",
+                    System.Windows.MessageBox.Show(ParsedFieldsResources.ParsedFields_DataInspectorNotConnected,
+                        ParsedFieldsResources.ParsedFields_Dialog_FeatureUnavailable,
                         System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 }
             }

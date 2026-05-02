@@ -13,6 +13,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using WpfHexEditor.Core.Options.Properties;
 
 namespace WpfHexEditor.Core.Options.Pages;
 
@@ -80,10 +81,10 @@ public sealed class StructureEditorOptionsPage : UserControl, IOptionsPage
 
         var dockRow = MakeLabelRow("Default dock position");
         _codePreviewDock = new ComboBox { Width = 120, FontSize = 11 };
-        _codePreviewDock.Items.Add("Right");
-        _codePreviewDock.Items.Add("Left");
-        _codePreviewDock.Items.Add("Bottom");
-        _codePreviewDock.Items.Add("Top");
+        _codePreviewDock.Items.Add(OptionsResources.Opt_Position_Right);
+        _codePreviewDock.Items.Add(OptionsResources.Opt_Position_Left);
+        _codePreviewDock.Items.Add(OptionsResources.Opt_Position_Bottom);
+        _codePreviewDock.Items.Add(OptionsResources.Opt_Position_Top);
         _codePreviewDock.SelectedIndex = 0;
         _codePreviewDock.SetResourceReference(ComboBox.BackgroundProperty, "DockMenuBackgroundBrush");
         _codePreviewDock.SetResourceReference(ComboBox.ForegroundProperty, "DockMenuForegroundBrush");
@@ -134,8 +135,8 @@ public sealed class StructureEditorOptionsPage : UserControl, IOptionsPage
 
         var endiRow = MakeLabelRow("Default byte order for new blocks");
         _defaultEndianness = new ComboBox { Width = 100, FontSize = 11 };
-        _defaultEndianness.Items.Add("little");
-        _defaultEndianness.Items.Add("big");
+        _defaultEndianness.Items.Add(OptionsResources.Opt_Endian_Little);
+        _defaultEndianness.Items.Add(OptionsResources.Opt_Endian_Big);
         _defaultEndianness.SelectedIndex = 0;
         _defaultEndianness.SetResourceReference(ComboBox.BackgroundProperty, "DockMenuBackgroundBrush");
         _defaultEndianness.SetResourceReference(ComboBox.ForegroundProperty, "DockMenuForegroundBrush");

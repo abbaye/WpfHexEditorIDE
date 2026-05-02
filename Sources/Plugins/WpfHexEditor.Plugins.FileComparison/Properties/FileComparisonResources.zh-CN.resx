@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="FileComparison_PanelTitle" xml:space="preserve">
+    <value>差异中心</value>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>选择要比较的文件 1</value>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>选择要比较的文件 2</value>
+  </data>
+  <data name="FileComparison_SelectFilesHint" xml:space="preserve">
+    <value>选择要比较的文件</value>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>选择要比较的两个文件</value>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>选择要比较的文件</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>正在比较…</value>
+  </data>
+  <data name="FileComparison_Cancelled" xml:space="preserve">
+    <value>已取消</value>
+  </data>
+  <data name="FileComparison_SelectTwoFiles" xml:space="preserve">
+    <value>选择两个文件并单击比较</value>
+  </data>
+  <data name="FileComparison_MultipleFormats" xml:space="preserve">
+    <value>检测到多种格式</value>
+  </data>
+  <data name="FileComparison_SelectFile" xml:space="preserve">
+    <value>选择要比较的文件</value>
+  </data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>文件</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>差异摘要</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>已修改</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>已插入</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>已删除</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>字节频率（半字节）</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>香农熵（每256字节块）</value></data>
+</root>

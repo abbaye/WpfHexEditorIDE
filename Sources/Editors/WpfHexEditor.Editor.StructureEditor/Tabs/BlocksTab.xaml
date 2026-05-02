@@ -7,6 +7,7 @@
 <UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Tabs.BlocksTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services"
              xmlns:local="clr-namespace:WpfHexEditor.Editor.StructureEditor.Tabs"
              xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls"
              Background="{DynamicResource TE_Background}">
@@ -14,6 +15,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <structSvc:StructureEditorLocalizedDictionary/>
                 <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorShared.xaml"/>
                 <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorTemplates.Simple.xaml"/>
                 <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorTemplates.Control.xaml"/>
@@ -46,7 +48,7 @@
                      Foreground="{DynamicResource TE_Foreground}"
                      BorderBrush="{DynamicResource DockBorderBrush}"
                      BorderThickness="0,0,0,1"
-                     ToolTip="Filter blocks by name"/>
+                     ToolTip="{DynamicResource StructureEditor_BlocksFilterToolTip}"/>
 
             <!-- Block Tree -->
             <TreeView Grid.Row="1"
@@ -68,16 +70,16 @@
                     <ContextMenu Background="{DynamicResource TE_LineNumberBackground}"
                                  Foreground="{DynamicResource TE_Foreground}"
                                  BorderBrush="{DynamicResource DockBorderBrush}">
-                        <MenuItem Header="Add Block..." Click="OnAddBlock" InputGestureText="Ctrl+N"/>
+                        <MenuItem Header="{DynamicResource StructureEditor_BlocksAddMenuItem}" Click="OnAddBlock" InputGestureText="Ctrl+N"/>
                         <Separator/>
-                        <MenuItem Header="Duplicate" Command="{Binding DuplicateCommand}" InputGestureText="Ctrl+D"/>
-                        <MenuItem Header="Remove" Command="{Binding RemoveCommand}" InputGestureText="Del"/>
+                        <MenuItem Header="{DynamicResource StructureEditor_BlocksDuplicateMenuItem}" Command="{Binding DuplicateCommand}" InputGestureText="Ctrl+D"/>
+                        <MenuItem Header="{DynamicResource StructureEditor_BlocksRemoveMenuItem}" Command="{Binding RemoveCommand}" InputGestureText="Del"/>
                         <Separator/>
-                        <MenuItem Header="Move Up" Command="{Binding MoveUpCommand}" InputGestureText="Ctrl+Up"/>
-                        <MenuItem Header="Move Down" Command="{Binding MoveDownCommand}" InputGestureText="Ctrl+Down"/>
+                        <MenuItem Header="{DynamicResource StructureEditor_BlocksMoveUpMenuItem}" Command="{Binding MoveUpCommand}" InputGestureText="Ctrl+Up"/>
+                        <MenuItem Header="{DynamicResource StructureEditor_BlocksMoveDownMenuItem}" Command="{Binding MoveDownCommand}" InputGestureText="Ctrl+Down"/>
                         <Separator/>
-                        <MenuItem Header="Copy as JSON" Command="{Binding CopyBlockCommand}" InputGestureText="Ctrl+C"/>
-                        <MenuItem Header="Paste Block" Command="{Binding PasteBlockCommand}" InputGestureText="Ctrl+V"/>
+                        <MenuItem Header="{DynamicResource StructureEditor_BlocksCopyJsonMenuItem}" Command="{Binding CopyBlockCommand}" InputGestureText="Ctrl+C"/>
+                        <MenuItem Header="{DynamicResource StructureEditor_BlocksPasteMenuItem}" Command="{Binding PasteBlockCommand}" InputGestureText="Ctrl+V"/>
                     </ContextMenu>
                 </TreeView.ContextMenu>
                 <TreeView.ItemContainerStyle>
@@ -129,10 +131,10 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Visibility="Visible">
-            <TextBlock Text="Select a block to edit its properties,"
+            <TextBlock Text="{DynamicResource StructureEditor_BlocksEmptyLine1}"
                        FontSize="12" TextAlignment="Center"
                        Foreground="{DynamicResource TE_LineNumberForeground}"/>
-            <TextBlock Text="or press Ctrl+N / right-click to add a new block."
+            <TextBlock Text="{DynamicResource StructureEditor_BlocksEmptyLine2}"
                        FontSize="11" TextAlignment="Center" Margin="0,4,0,0"
                        Foreground="{DynamicResource TE_LineNumberForeground}"/>
         </StackPanel>

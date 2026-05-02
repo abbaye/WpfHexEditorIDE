@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="MdSb_ViewLabel" xml:space="preserve">
+    <value>表示</value>
+  </data>
+  <data name="MdSb_ViewTooltip" xml:space="preserve">
+    <value>現在の表示モード</value>
+  </data>
+  <data name="MdSb_WordsLabel" xml:space="preserve">
+    <value>単語</value>
+  </data>
+  <data name="MdSb_WordsTooltip" xml:space="preserve">
+    <value>おおよその単語数</value>
+  </data>
+  <data name="MdSb_LinesLabel" xml:space="preserve">
+    <value>行</value>
+  </data>
+  <data name="MdSb_LinesTooltip" xml:space="preserve">
+    <value>総行数</value>
+  </data>
+  <data name="MdSb_ReadLabel" xml:space="preserve">
+    <value>読む</value>
+  </data>
+  <data name="MdSb_ReadTooltip" xml:space="preserve">
+    <value>推定読書時間 (200 語/分)</value>
+  </data>
+  <data name="MdSb_ZoomLabel" xml:space="preserve">
+    <value>ズーム</value>
+  </data>
+  <data name="MdSb_ZoomTooltip" xml:space="preserve">
+    <value>プレビューのズーム (プレビューで Ctrl+スクロール)</value>
+  </data>
+  <data name="MdTb_ViewLabel" xml:space="preserve">
+    <value>表示</value>
+  </data>
+  <data name="MdTb_ViewTooltip" xml:space="preserve">
+    <value>表示モード (Ctrl+1/2/3)</value>
+  </data>
+  <data name="MdTb_LayoutLabel" xml:space="preserve">
+    <value>レイアウト</value>
+  </data>
+  <data name="MdTb_LayoutTooltip" xml:space="preserve">
+    <value>分割レイアウト (Ctrl+Shift+L)</value>
+  </data>
+  <data name="MdTb_WrapLabel" xml:space="preserve">
+    <value>折り返し</value>
+  </data>
+  <data name="MdTb_WrapTooltip" xml:space="preserve">
+    <value>文字の折り返し (Alt+Z)</value>
+  </data>
+  <data name="MdTb_RefreshLabel" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="MdTb_RefreshTooltip" xml:space="preserve">
+    <value>プレビューを更新 (F9)</value>
+  </data>
+  <data name="MdTb_InsertLabel" xml:space="preserve">
+    <value>挿入</value>
+  </data>
+  <data name="MdTb_InsertTooltip" xml:space="preserve">
+    <value>Markdown 要素を挿入</value>
+  </data>
+  <data name="MdTb_FormatLabel" xml:space="preserve">
+    <value>書式設定</value>
+  </data>
+  <data name="MdTb_FormatTooltip" xml:space="preserve">
+    <value>選択したテキストの書式設定</value>
+  </data>
+  <data name="MdTb_FullscreenLabel" xml:space="preserve">
+    <value>全画面</value>
+  </data>
+  <data name="MdTb_FullscreenTooltip" xml:space="preserve">
+    <value>全画面プレビューの切り替え</value>
+  </data>
+  <data name="MdView_SourceOnly" xml:space="preserve">
+    <value>ソースのみ</value>
+  </data>
+  <data name="MdView_Split" xml:space="preserve">
+    <value>分割</value>
+  </data>
+  <data name="MdView_PreviewOnly" xml:space="preserve">
+    <value>プレビューのみ</value>
+  </data>
+  <data name="MdLayout_PreviewRight" xml:space="preserve">
+    <value>右にプレビュー</value>
+  </data>
+  <data name="MdLayout_PreviewLeft" xml:space="preserve">
+    <value>左にプレビュー</value>
+  </data>
+  <data name="MdLayout_PreviewBottom" xml:space="preserve">
+    <value>下にプレビュー</value>
+  </data>
+  <data name="MdLayout_PreviewTop" xml:space="preserve">
+    <value>上にプレビュー</value>
+  </data>
+  <data name="MdInsert_Table" xml:space="preserve">
+    <value>テーブル</value>
+  </data>
+  <data name="MdInsert_CodeBlock" xml:space="preserve">
+    <value>コードブロック</value>
+  </data>
+  <data name="MdInsert_Image" xml:space="preserve">
+    <value>画像</value>
+  </data>
+  <data name="MdInsert_HorizontalRule" xml:space="preserve">
+    <value>水平線</value>
+  </data>
+  <data name="MdInsert_TableOfContents" xml:space="preserve">
+    <value>目次</value>
+  </data>
+  <data name="MdFmt_Bold" xml:space="preserve">
+    <value>太字</value>
+  </data>
+  <data name="MdFmt_Italic" xml:space="preserve">
+    <value>斜体</value>
+  </data>
+  <data name="MdFmt_Strikethrough" xml:space="preserve">
+    <value>取り消し線</value>
+  </data>
+  <data name="MdFmt_InlineCode" xml:space="preserve">
+    <value>インラインコード</value>
+  </data>
+  <data name="MdCtx_GroupFormat" xml:space="preserve">
+    <value>書式</value>
+  </data>
+  <data name="MdCtx_GroupInsert" xml:space="preserve">
+    <value>挿入</value>
+  </data>
+  <data name="MdCtx_GroupExport" xml:space="preserve">
+    <value>エクスポート</value>
+  </data>
+  <data name="MdCtx_GroupView" xml:space="preserve">
+    <value>表示</value>
+  </data>
+  <data name="MdCtx_Bold" xml:space="preserve">
+    <value>太字</value>
+  </data>
+  <data name="MdCtx_Italic" xml:space="preserve">
+    <value>斜体</value>
+  </data>
+  <data name="MdCtx_Strikethrough" xml:space="preserve">
+    <value>取り消し線</value>
+  </data>
+  <data name="MdCtx_InlineCode" xml:space="preserve">
+    <value>インラインコード</value>
+  </data>
+  <data name="MdCtx_Table" xml:space="preserve">
+    <value>テーブル</value>
+  </data>
+  <data name="MdCtx_CodeBlock" xml:space="preserve">
+    <value>コードブロック</value>
+  </data>
+  <data name="MdCtx_Link" xml:space="preserve">
+    <value>リンク</value>
+  </data>
+  <data name="MdCtx_Image" xml:space="preserve">
+    <value>画像</value>
+  </data>
+  <data name="MdCtx_HorizontalRule" xml:space="preserve">
+    <value>水平線</value>
+  </data>
+  <data name="MdCtx_WordWrap" xml:space="preserve">
+    <value>文字の折り返し	Alt+Z</value>
+  </data>
+  <data name="MdCtx_ExportHtml" xml:space="preserve">
+    <value>HTML としてエクスポート...</value>
+  </data>
+  <data name="MdCtx_ExportPdf" xml:space="preserve">
+    <value>PDF としてエクスポート...</value>
+  </data>
+  <data name="MdPrev_SourceOnly" xml:space="preserve">
+    <value>ソースのみ</value>
+  </data>
+  <data name="MdPrev_SplitView" xml:space="preserve">
+    <value>分割表示</value>
+  </data>
+  <data name="MdPrev_PreviewOnly" xml:space="preserve">
+    <value>プレビューのみ</value>
+  </data>
+  <data name="MdPrev_Fullscreen" xml:space="preserve">
+    <value>全画面</value>
+  </data>
+  <data name="MdPrev_ExitFullscreen" xml:space="preserve">
+    <value>全画面を終了</value>
+  </data>
+  <data name="MdPrev_RefreshPreview" xml:space="preserve">
+    <value>プレビューを更新</value>
+  </data>
+  <data name="MdPrev_CycleLayout" xml:space="preserve">
+    <value>レイアウトを切り替え</value>
+  </data>
+  <data name="MdPrev_ZoomIn" xml:space="preserve">
+    <value>ズームイン</value>
+  </data>
+  <data name="MdPrev_ZoomOut" xml:space="preserve">
+    <value>ズームアウト</value>
+  </data>
+  <data name="MdPrev_ResetZoom" xml:space="preserve">
+    <value>ズームをリセット</value>
+  </data>
+  <data name="MdPrev_Copy" xml:space="preserve">
+    <value>コピー</value>
+  </data>
+  <data name="MdDlg_ExportHtmlTitle" xml:space="preserve">
+    <value>HTML としてエクスポート</value>
+  </data>
+  <data name="MdDlg_ExportPdfTitle" xml:space="preserve">
+    <value>PDF としてエクスポート</value>
+  </data>
+  <data name="Md_NoHeadingsFound" xml:space="preserve">
+    <value>見出しが見つかりませんでした。</value>
+  </data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>プレビューを初期化中…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>WebView2 ランタイムが見つかりません</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Markdown プレビューには Microsoft Edge WebView2 Runtime が必要です。microsoft.com/edge/webview2 からダウンロードしてください。</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>アウトラインを更新 (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>アクティブな Markdown ファイルがありません。</value></data>
+</root>

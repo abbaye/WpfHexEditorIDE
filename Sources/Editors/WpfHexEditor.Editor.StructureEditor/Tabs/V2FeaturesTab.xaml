@@ -9,7 +9,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls"
              xmlns:cp="clr-namespace:WpfHexEditor.ColorPicker.Controls;assembly=WpfHexEditor.ColorPicker"
-             Background="{DynamicResource TE_Background}">
+             Background="{DynamicResource TE_Background}"
+             xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services">
+
 
     <UserControl.Resources>
         <Style x:Key="Sec" TargetType="Expander">
@@ -51,7 +53,7 @@
         <StackPanel Margin="8" x:Name="Root">
 
             <!-- ── Assertions ──────────────────────────────────────── -->
-            <Expander Header="Assertions" Style="{StaticResource Sec}">
+            <Expander Header="{DynamicResource StructureEditor_V2AssertionsHeader}" Style="{StaticResource Sec}">
                 <StackPanel Margin="8,4">
                     <ItemsControl x:Name="AssertionsList">
                         <ItemsControl.ItemTemplate>
@@ -67,11 +69,11 @@
                                             <ColumnDefinition Width="24"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox Grid.Column="0" Style="{StaticResource Fld}" Margin="0,0,4,0"
-                                                 Text="{Binding AssertionName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Name"/>
+                                                 Text="{Binding AssertionName, UpdateSourceTrigger=PropertyChanged}" ToolTip="{DynamicResource SE_PropName}"/>
                                         <ctrl:ExpressionTextBox Grid.Column="1" Margin="0,2,4,2"
                                                  Text="{Binding Expression, UpdateSourceTrigger=PropertyChanged}"
-                                                 Placeholder="var:name equals 0 or calc:expr"
-                                                 ToolTip="Boolean expression — Ctrl+Space for functions and variables"/>
+                                                 Placeholder="{DynamicResource StructureEditor_V2AssertionPlaceholder}"
+                                                 ToolTip="{DynamicResource StructureEditor_V2AssertionToolTip}"/>
                                         <ComboBox Grid.Column="2" Style="{StaticResource Combo}"
                                                   ItemsSource="{Binding SeverityOptions}"
                                                   SelectedItem="{Binding Severity}"/>
@@ -82,13 +84,13 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <Button Style="{StaticResource AddBtn}" Content="＋ Add Assertion"
+                    <Button Style="{StaticResource AddBtn}" Content="{DynamicResource SE_AddAssertion}"
                             x:Name="AddAssertionBtn" Click="OnAddAssertion"/>
                 </StackPanel>
             </Expander>
 
             <!-- ── Checksums ────────────────────────────────────────── -->
-            <Expander Header="Checksums" Style="{StaticResource Sec}">
+            <Expander Header="{DynamicResource StructureEditor_V2ChecksumsHeader}" Style="{StaticResource Sec}">
                 <StackPanel Margin="8,4">
                     <ItemsControl x:Name="ChecksumsList">
                         <ItemsControl.ItemTemplate>
@@ -104,7 +106,7 @@
                                             <ColumnDefinition Width="24"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox Grid.Column="0" Style="{StaticResource Fld}" Margin="0,0,4,0"
-                                                 Text="{Binding ChecksumName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Name"/>
+                                                 Text="{Binding ChecksumName, UpdateSourceTrigger=PropertyChanged}" ToolTip="{DynamicResource SE_PropName}"/>
                                         <ComboBox Grid.Column="1" Style="{StaticResource Combo}"
                                                   ItemsSource="{Binding AlgorithmOptions}"
                                                   SelectedItem="{Binding Algorithm}"/>
@@ -118,22 +120,22 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <Button Style="{StaticResource AddBtn}" Content="＋ Add Checksum"
+                    <Button Style="{StaticResource AddBtn}" Content="{DynamicResource SE_AddChecksum}"
                             x:Name="AddChecksumBtn" Click="OnAddChecksum"/>
                 </StackPanel>
             </Expander>
 
             <!-- ── Versioning ───────────────────────────────────────── -->
-            <Expander Header="Versioning (VersionDetection / VersionedBlocks)" Style="{StaticResource Sec}">
+            <Expander Header="{DynamicResource StructureEditor_V2VersioningHeader}" Style="{StaticResource Sec}">
                 <StackPanel Margin="8,4" x:Name="VersioningPanel">
                     <!-- Field binding done in code-behind via x:Name=VersioningPanel -->
                 </StackPanel>
             </Expander>
 
             <!-- ── Imports ($ref) ───────────────────────────────────── -->
-            <Expander Header="Imports ($ref Composition)" Style="{StaticResource Sec}">
+            <Expander Header="{DynamicResource StructureEditor_V2ImportsHeader}" Style="{StaticResource Sec}">
                 <StackPanel Margin="8,4">
-                    <TextBlock Text="ref = format name (or structs/Name), as = alias used in structRef blocks."
+                    <TextBlock Text="{DynamicResource StructureEditor_V2ImportsDescription}"
                                FontSize="10" Opacity="0.6" TextWrapping="Wrap" Margin="0,0,0,4"/>
                     <ItemsControl x:Name="ImportsList">
                         <ItemsControl.ItemTemplate>
@@ -146,39 +148,39 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBox Grid.Column="0" Style="{StaticResource Fld}" Margin="0,0,4,0"
                                              Text="{Binding Ref, UpdateSourceTrigger=PropertyChanged}"
-                                             ToolTip="Format ref e.g. structs/PE_OptionalHeader"/>
+                                             ToolTip="{DynamicResource StructureEditor_V2ImportRefToolTip}"/>
                                     <TextBox Grid.Column="1" Style="{StaticResource Fld}" Margin="0,0,4,0"
                                              Text="{Binding As, UpdateSourceTrigger=PropertyChanged}"
-                                             ToolTip="Alias used in structRef e.g. PEOpt"/>
+                                             ToolTip="{DynamicResource StructureEditor_V2ImportAliasToolTip}"/>
                                     <Button Grid.Column="2" Style="{StaticResource RemBtn}"
                                             Command="{Binding RemoveCommand}"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <Button Style="{StaticResource AddBtn}" Content="+ Add Import"
+                    <Button Style="{StaticResource AddBtn}" Content="{DynamicResource StructureEditor_V2AddImportButton}"
                             x:Name="AddImportBtn" Click="OnAddImport"/>
                 </StackPanel>
             </Expander>
 
             <!-- ── Forensic ─────────────────────────────────────────── -->
-            <Expander Header="Forensic" Style="{StaticResource Sec}" x:Name="ForensicExpander">
+            <Expander Header="{DynamicResource StructureEditor_V2ForensicHeader}" Style="{StaticResource Sec}" x:Name="ForensicExpander">
                 <StackPanel Margin="8,4" x:Name="ForensicPanel"/>
             </Expander>
 
             <!-- ── Navigation ───────────────────────────────────────── -->
-            <Expander Header="Navigation Bookmarks" Style="{StaticResource Sec}">
+            <Expander Header="{DynamicResource StructureEditor_V2NavBookmarksHeader}" Style="{StaticResource Sec}">
                 <StackPanel Margin="8,4">
                     <ItemsControl x:Name="BookmarksList">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Margin="0,2">
                                     <TextBox Style="{StaticResource Fld}" Width="120" Margin="0,0,4,0"
-                                             Text="{Binding BookmarkName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Name"/>
+                                             Text="{Binding BookmarkName, UpdateSourceTrigger=PropertyChanged}" ToolTip="{DynamicResource SE_PropName}"/>
                                     <ctrl:ExpressionTextBox Width="120" Margin="0,2,4,2"
                                              Text="{Binding OffsetVar, UpdateSourceTrigger=PropertyChanged}"
-                                             Placeholder="variableName"
-                                             ToolTip="Variable holding the byte offset — Ctrl+Space for suggestions"/>
+                                             Placeholder="{DynamicResource StructureEditor_V2BookmarkPlaceholder}"
+                                             ToolTip="{DynamicResource StructureEditor_V2BookmarkToolTip}"/>
                                     <cp:ColorPicker ShowAlphaChannel="False" Margin="0,0,4,0"
                                                     SelectedColor="{Binding BookmarkColor, Converter={x:Static ctrl:HexStringToColorConverter.Instance}, UpdateSourceTrigger=PropertyChanged}"/>
                                     <Button Style="{StaticResource RemBtn}" Command="{Binding RemoveCommand}"/>
@@ -186,18 +188,18 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <Button Style="{StaticResource AddBtn}" Content="＋ Add Bookmark"
+                    <Button Style="{StaticResource AddBtn}" Content="{DynamicResource StructureEditor_V2AddBookmarkButton}"
                             x:Name="AddBookmarkBtn" Click="OnAddBookmark"/>
                 </StackPanel>
             </Expander>
 
             <!-- ── Inspector ────────────────────────────────────────── -->
-            <Expander Header="Inspector Layout" Style="{StaticResource Sec}" x:Name="InspectorExpander">
+            <Expander Header="{DynamicResource StructureEditor_V2InspectorLayoutHeader}" Style="{StaticResource Sec}" x:Name="InspectorExpander">
                 <StackPanel Margin="8,4" x:Name="InspectorPanel"/>
             </Expander>
 
             <!-- ── Export Templates ─────────────────────────────────── -->
-            <Expander Header="Export Templates" Style="{StaticResource Sec}">
+            <Expander Header="{DynamicResource StructureEditor_V2ExportTemplatesHeader}" Style="{StaticResource Sec}">
                 <StackPanel Margin="8,4">
                     <ItemsControl x:Name="ExportsList">
                         <ItemsControl.ItemTemplate>
@@ -208,12 +210,12 @@
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBox Style="{StaticResource Fld}" Width="120" Margin="0,0,4,0"
-                                                     Text="{Binding TemplateName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Template Name"/>
+                                                     Text="{Binding TemplateName, UpdateSourceTrigger=PropertyChanged}" ToolTip="{DynamicResource SE_TipTemplateName}"/>
                                             <ComboBox Style="{StaticResource Combo}" Width="100"
                                                       ItemsSource="{Binding FormatOptions}"
                                                       SelectedItem="{Binding Format}"/>
                                             <TextBox Style="{StaticResource Fld}" Width="100" Margin="0,0,4,0"
-                                                     Text="{Binding StructName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Struct name (C struct)"/>
+                                                     Text="{Binding StructName, UpdateSourceTrigger=PropertyChanged}" ToolTip="{DynamicResource SE_TipStructName}"/>
                                             <Button Style="{StaticResource RemBtn}" Command="{Binding RemoveCommand}"/>
                                         </StackPanel>
                                     </StackPanel>
@@ -221,13 +223,13 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <Button Style="{StaticResource AddBtn}" Content="＋ Add Template"
+                    <Button Style="{StaticResource AddBtn}" Content="{DynamicResource StructureEditor_V2AddTemplateButton}"
                             x:Name="AddExportBtn" Click="OnAddExport"/>
                 </StackPanel>
             </Expander>
 
             <!-- ── AI Hints ──────────────────────────────────────────── -->
-            <Expander Header="AI Hints" Style="{StaticResource Sec}" x:Name="AiExpander">
+            <Expander Header="{DynamicResource StructureEditor_V2AIHintsHeader}" Style="{StaticResource Sec}" x:Name="AiExpander">
                 <StackPanel Margin="8,4" x:Name="AiPanel"/>
             </Expander>
 

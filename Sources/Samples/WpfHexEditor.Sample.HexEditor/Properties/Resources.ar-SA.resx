@@ -121,10 +121,6 @@
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
     <value>بحث عن السابق</value>
   </data>
-  <data name="RelativeSearchMenuString" xml:space="preserve">
-    <value>البحث النسبي</value>
-    <comment>Search menu - Relative Search command</comment>
-  </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>أدوات</value>
   </data>

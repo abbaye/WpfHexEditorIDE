@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfDocking
+    File        : DockingResources.resx
+    Description : WpfDocking-specific UI strings.
+                  Common strings (Close, etc.) come from WpfHexEditor.Core.Localization.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- TabSettingsDialog strings -->
+  <data name="Docking_TabSettings_Title" xml:space="preserve">
+    <value>Document Tab Options</value>
+    <comment>TabSettingsDialog window title</comment>
+  </data>
+  <data name="Docking_TabSettings_TabStripPlacement" xml:space="preserve">
+    <value>Tab strip placement</value>
+    <comment>GroupBox header for tab strip placement options</comment>
+  </data>
+  <data name="Docking_TabSettings_Top" xml:space="preserve">
+    <value>Top (default)</value>
+    <comment>RadioButton for top tab placement</comment>
+  </data>
+  <data name="Docking_TabSettings_Left" xml:space="preserve">
+    <value>Left</value>
+    <comment>RadioButton for left tab placement</comment>
+  </data>
+  <data name="Docking_TabSettings_Right" xml:space="preserve">
+    <value>Right</value>
+    <comment>RadioButton for right tab placement</comment>
+  </data>
+  <data name="Docking_TabSettings_ColorBy" xml:space="preserve">
+    <value>Color document tabs by</value>
+    <comment>GroupBox header for tab colorization mode</comment>
+  </data>
+  <data name="Docking_TabSettings_NoColorization" xml:space="preserve">
+    <value>No colorization</value>
+    <comment>RadioButton for no tab colorization</comment>
+  </data>
+  <data name="Docking_TabSettings_FileExtension" xml:space="preserve">
+    <value>File extension</value>
+    <comment>RadioButton for colorization by file extension</comment>
+  </data>
+  <data name="Docking_TabSettings_Project" xml:space="preserve">
+    <value>Project</value>
+    <comment>RadioButton for colorization by project</comment>
+  </data>
+  <data name="Docking_TabSettings_RegexRules" xml:space="preserve">
+    <value>Regex rules</value>
+    <comment>RadioButton for colorization by regex rules</comment>
+  </data>
+  <data name="Docking_TabSettings_RegexFirstMatch" xml:space="preserve">
+    <value>Regex rules — first match wins:</value>
+    <comment>TextBlock label above the regex DataGrid</comment>
+  </data>
+  <data name="Docking_TabSettings_PatternColumn" xml:space="preserve">
+    <value>Pattern (regex)</value>
+    <comment>DataGrid column header for regex pattern</comment>
+  </data>
+  <data name="Docking_TabSettings_ColorColumn" xml:space="preserve">
+    <value>Color</value>
+    <comment>DataGrid column header for color</comment>
+  </data>
+  <data name="Docking_TabSettings_HexColorTooltip" xml:space="preserve">
+    <value>Enter a hex color: #RRGGBB or #AARRGGBB</value>
+    <comment>TextBox tooltip for hex color input in regex grid</comment>
+  </data>
+  <data name="Docking_TabSettings_PressDelete" xml:space="preserve">
+    <value>Press Delete to remove a selected row.</value>
+    <comment>Hint text below the regex DataGrid</comment>
+  </data>
+  <data name="Docking_TabSettings_TabRows" xml:space="preserve">
+    <value>Tab rows</value>
+    <comment>GroupBox header for multi-row tab options</comment>
+  </data>
+  <data name="Docking_TabSettings_ShowMultipleRows" xml:space="preserve">
+    <value>Show tabs in multiple rows</value>
+    <comment>CheckBox for enabling multi-row tabs</comment>
+  </data>
+  <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve">
+    <value>Toggle rows with mouse wheel</value>
+    <comment>CheckBox for toggling rows with mouse wheel</comment>
+  </data>
+
+  <!-- FloatingWindow maximize/restore button tooltips -->
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve">
+    <value>Maximize</value>
+    <comment>Tooltip on the maximize button of a floating window</comment>
+  </data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve">
+    <value>Restore</value>
+    <comment>Tooltip on the restore button of a floating window</comment>
+  </data>
+
+  <!-- DockTabControl LSP indicator tooltips -->
+  <data name="Dock_LSP_Connecting" xml:space="preserve">
+    <value>Language Server: connecting…</value>
+    <comment>LSP dot tooltip when connecting</comment>
+  </data>
+  <data name="Dock_LSP_Ready" xml:space="preserve">
+    <value>Language Server: ready</value>
+    <comment>LSP dot tooltip when ready</comment>
+  </data>
+  <data name="Dock_LSP_Error" xml:space="preserve">
+    <value>Language Server: error</value>
+    <comment>LSP dot tooltip when in error state</comment>
+  </data>
+
+  <!-- AutoHideBar context menu items -->
+  <data name="Dock_AutoHide_Show" xml:space="preserve">
+    <value>Show</value>
+    <comment>Context menu item to show an auto-hidden panel</comment>
+  </data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve">
+    <value>Float</value>
+    <comment>Context menu item to float an auto-hidden panel</comment>
+  </data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve">
+    <value>Close</value>
+    <comment>Context menu item to close an auto-hidden panel</comment>
+  </data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve">
+    <value>Dock</value>
+    <comment>Context menu / button tooltip to dock (pin) a floating/auto-hidden panel</comment>
+  </data>
+
+  <!-- TabConfigButton menu items -->
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve">
+    <value>Color document tabs by</value>
+    <comment>Submenu header for document tab colorization options</comment>
+  </data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve">
+    <value>Options…</value>
+    <comment>Menu item that opens the document tab options dialog</comment>
+  </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>Show tabs in multiple rows</value>
+    <comment>MenuItem for toggling multi-row tabs in TabConfigButton</comment>
+  </data>
+
+  <!-- DockTabControl context menu items -->
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>New Vertical Tab Group</value>
+    <comment>Context menu item to create a new vertical tab group</comment>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>New Horizontal Tab Group</value>
+    <comment>Context menu item to create a new horizontal tab group</comment>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>Close Tab Group</value>
+    <comment>Context menu item to close the current tab group</comment>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>Float</value>
+    <comment>Context menu item to float the current tab</comment>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>Dock as Tabbed Document</value>
+    <comment>Context menu item to dock as tabbed document</comment>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>Dock as Tool Window</value>
+    <comment>Context menu item to dock as tool window</comment>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>Hide</value>
+    <comment>Context menu item to hide the current panel</comment>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>Close All</value>
+    <comment>Context menu item to close all tabs</comment>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>Close All But This</value>
+    <comment>Context menu item to close all tabs except the current one</comment>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>Close All But Pinned</value>
+    <comment>Context menu item to close all tabs except pinned ones</comment>
+  </data>
+
+  <!-- DocumentTabHost placeholder -->
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>Open a document to begin</value>
+    <comment>Placeholder text shown when no documents are open</comment>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>Start</value>
+    <comment>Header of the placeholder start tab shown when no documents are open</comment>
+  </data>
+
+</root>

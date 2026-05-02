@@ -2,9 +2,14 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.DocumentStructure.ViewModels"
-             xmlns:conv="clr-namespace:WpfHexEditor.Plugins.DocumentStructure.Converters">
+             xmlns:conv="clr-namespace:WpfHexEditor.Plugins.DocumentStructure.Converters"
+             xmlns:dsSvc="clr-namespace:WpfHexEditor.Plugins.DocumentStructure.Services">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <dsSvc:DocumentStructureLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <conv:KindToBrushConverter x:Key="KindToBrush"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis"/>
@@ -12,34 +17,35 @@
 
         <!-- Context menu for tree nodes -->
         <ContextMenu x:Key="TreeNodeContextMenu">
-            <MenuItem Header="Navigate To"         Tag="navigate"       Click="OnContextMenuClick">
+            <MenuItem Header="{DynamicResource DS_NavigateToMenu}"         Tag="navigate"       Click="OnContextMenuClick">
                 <MenuItem.Icon><TextBlock Text="&#xE7B0;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuItem.Icon>
             </MenuItem>
             <Separator/>
-            <MenuItem Header="Copy Name"           Tag="copy-name"      Click="OnContextMenuClick">
+            <MenuItem Header="{DynamicResource DS_CopyNameMenu}"           Tag="copy-name"      Click="OnContextMenuClick">
                 <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Copy Qualified Name" Tag="copy-qualified" Click="OnContextMenuClick">
+            <MenuItem Header="{DynamicResource DS_CopyQualifiedMenu}" Tag="copy-qualified" Click="OnContextMenuClick">
                 <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuItem.Icon>
             </MenuItem>
             <Separator/>
-            <MenuItem Header="Expand All"          Tag="expand-all"     Click="OnContextMenuClick"/>
-            <MenuItem Header="Collapse All"        Tag="collapse-all"   Click="OnContextMenuClick"/>
+            <MenuItem Header="{DynamicResource DS_ExpandAllMenu}"          Tag="expand-all"     Click="OnContextMenuClick"/>
+            <MenuItem Header="{DynamicResource DS_CollapseAllMenu}"        Tag="collapse-all"   Click="OnContextMenuClick"/>
         </ContextMenu>
 
         <!-- Context menu for flat list nodes -->
         <ContextMenu x:Key="FlatNodeContextMenu">
-            <MenuItem Header="Navigate To"         Tag="navigate"       Click="OnContextMenuClick">
+            <MenuItem Header="{DynamicResource DS_NavigateToMenu}"         Tag="navigate"       Click="OnContextMenuClick">
                 <MenuItem.Icon><TextBlock Text="&#xE7B0;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuItem.Icon>
             </MenuItem>
             <Separator/>
-            <MenuItem Header="Copy Name"           Tag="copy-name"      Click="OnContextMenuClick">
+            <MenuItem Header="{DynamicResource DS_CopyNameMenu}"           Tag="copy-name"      Click="OnContextMenuClick">
                 <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Copy Qualified Name" Tag="copy-qualified" Click="OnContextMenuClick">
+            <MenuItem Header="{DynamicResource DS_CopyQualifiedMenu}" Tag="copy-qualified" Click="OnContextMenuClick">
                 <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuItem.Icon>
             </MenuItem>
         </ContextMenu>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <DockPanel Background="{DynamicResource DockBackgroundBrush}">
@@ -56,27 +62,27 @@
                     <Button x:Name="RefreshButton"
                             Style="{DynamicResource PanelIconButtonStyle}"
                             Content="&#xE72C;"
-                            ToolTip="Refresh"
+                            ToolTip="{DynamicResource DS_RefreshTooltip}"
                             Click="OnRefreshClicked"/>
                     <ToggleButton x:Name="TreeModeToggle"
                                   Style="{DynamicResource PanelIconToggleStyle}"
                                   Content="&#xE8B7;"
-                                  ToolTip="Tree view"
+                                  ToolTip="{DynamicResource DS_TreeViewTooltip}"
                                   IsChecked="{Binding IsTreeMode}"/>
                     <Button x:Name="CollapseAllButton"
                             Style="{DynamicResource PanelIconButtonStyle}"
                             Content="&#xE8B6;"
-                            ToolTip="Collapse All"
+                            ToolTip="{DynamicResource DS_CollapseAllTooltip}"
                             Click="OnCollapseAllClicked"/>
                     <ToggleButton x:Name="PinButton"
                                   Style="{DynamicResource PanelIconToggleStyle}"
                                   Content="&#xE840;"
-                                  ToolTip="Pin document (keep structure while navigating)"
+                                  ToolTip="{DynamicResource DS_PinDocumentTooltip}"
                                   IsChecked="{Binding IsPinned}"/>
                     <ToggleButton x:Name="ScrollSyncButton"
                                   Style="{DynamicResource PanelIconToggleStyle}"
                                   Content="&#xE8B1;"
-                                  ToolTip="Sync with editor cursor"
+                                  ToolTip="{DynamicResource DS_SyncCursorTooltip}"
                                   IsChecked="{Binding ScrollSyncEnabled}"/>
                 </StackPanel>
 
@@ -88,10 +94,10 @@
                               Width="110" Height="20" FontSize="11"
                               VerticalContentAlignment="Center"
                               SelectedIndex="{Binding SortModeIndex}"
-                              ToolTip="Sort order">
-                        <ComboBoxItem Content="Source Order"/>
-                        <ComboBoxItem Content="Alphabetical"/>
-                        <ComboBoxItem Content="By Kind"/>
+                              ToolTip="{DynamicResource DS_SortOrderTooltip}">
+                        <ComboBoxItem Content="{DynamicResource DS_SourceOrderOption}"/>
+                        <ComboBoxItem Content="{DynamicResource DS_AlphabeticalOption}"/>
+                        <ComboBoxItem Content="{DynamicResource DS_ByKindOption}"/>
                     </ComboBox>
                 </StackPanel>
 
@@ -103,12 +109,12 @@
                               Width="72" Height="20" FontSize="11"
                               VerticalContentAlignment="Center"
                               SelectedIndex="{Binding MaxDepthIndex}"
-                              ToolTip="Max tree depth">
-                        <ComboBoxItem Content="&#x221E; Depth"/>
-                        <ComboBoxItem Content="2 Levels"/>
-                        <ComboBoxItem Content="3 Levels"/>
-                        <ComboBoxItem Content="5 Levels"/>
-                        <ComboBoxItem Content="10 Levels"/>
+                              ToolTip="{DynamicResource DS_MaxDepthTooltip}">
+                        <ComboBoxItem Content="{DynamicResource DS_InfiniteDepth}"/>
+                        <ComboBoxItem Content="{DynamicResource DS_Depth2}"/>
+                        <ComboBoxItem Content="{DynamicResource DS_Depth3}"/>
+                        <ComboBoxItem Content="{DynamicResource DS_Depth5}"/>
+                        <ComboBoxItem Content="{DynamicResource DS_Depth10}"/>
                     </ComboBox>
                 </StackPanel>
 
@@ -117,21 +123,21 @@
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
                         Style="{DynamicResource PanelIconButtonStyle}"
-                        ToolTip="More options"
+                        ToolTip="{DynamicResource DS_MoreOptionsTooltip}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
-                            <MenuItem Header="Source Order" Tag="s0" Click="OnOverflowSortClicked"/>
-                            <MenuItem Header="Alphabetical" Tag="s1" Click="OnOverflowSortClicked"/>
-                            <MenuItem Header="By Kind"      Tag="s2" Click="OnOverflowSortClicked"/>
+                            <MenuItem Header="{DynamicResource DS_SourceOrderOption}" Tag="s0" Click="OnOverflowSortClicked"/>
+                            <MenuItem Header="{DynamicResource DS_AlphabeticalOption}" Tag="s1" Click="OnOverflowSortClicked"/>
+                            <MenuItem Header="{DynamicResource DS_ByKindOption}"      Tag="s2" Click="OnOverflowSortClicked"/>
                             <Separator/>
-                            <MenuItem Header="&#x221E; Depth" Tag="d0" Click="OnOverflowDepthClicked"/>
-                            <MenuItem Header="2 Levels"       Tag="d1" Click="OnOverflowDepthClicked"/>
-                            <MenuItem Header="3 Levels"       Tag="d2" Click="OnOverflowDepthClicked"/>
-                            <MenuItem Header="5 Levels"       Tag="d3" Click="OnOverflowDepthClicked"/>
-                            <MenuItem Header="10 Levels"      Tag="d4" Click="OnOverflowDepthClicked"/>
+                            <MenuItem Header="{DynamicResource DS_InfiniteDepth}" Tag="d0" Click="OnOverflowDepthClicked"/>
+                            <MenuItem Header="{DynamicResource DS_Depth2}"       Tag="d1" Click="OnOverflowDepthClicked"/>
+                            <MenuItem Header="{DynamicResource DS_Depth3}"       Tag="d2" Click="OnOverflowDepthClicked"/>
+                            <MenuItem Header="{DynamicResource DS_Depth5}"       Tag="d3" Click="OnOverflowDepthClicked"/>
+                            <MenuItem Header="{DynamicResource DS_Depth10}"      Tag="d4" Click="OnOverflowDepthClicked"/>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
@@ -361,7 +367,7 @@
                 <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="32"
                            HorizontalAlignment="Center"
                            Foreground="{DynamicResource DS_NodeForeground}"/>
-                <TextBlock Text="Open a document to see its structure"
+                <TextBlock Text="{DynamicResource DS_NoDocumentText}"
                            FontSize="11" HorizontalAlignment="Center"
                            Foreground="{DynamicResource DS_DetailForeground}"
                            Margin="0,8,0,0" TextWrapping="Wrap"

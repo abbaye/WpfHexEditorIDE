@@ -447,7 +447,7 @@
     <Style x:Key="OptionsSectionHeaderStyle" TargetType="TextBlock">
         <Setter Property="FontSize"   Value="12"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="{DynamicResource Opt_SectionForegroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource Opt_SectionForegroundBrush}"/>
         <Setter Property="Margin"     Value="0,16,0,6"/>
     </Style>
 

@@ -20,6 +20,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.PluginDev.Panels;
+using WpfHexEditor.PluginDev.Properties;
 
 namespace WpfHexEditor.PluginDev.UI;
 
@@ -78,7 +79,7 @@ public sealed class PluginDevToolbar : UserControl
         // ── Plugin selector label ──
         toolbar.Items.Add(new TextBlock
         {
-            Text              = "Extension:",
+            Text              = PluginDevResources.PluginDev_ExtensionLabel,
             VerticalAlignment = VerticalAlignment.Center,
             Foreground        = Brushes.WhiteSmoke,
             Margin            = new Thickness(4, 0, 4, 0),
@@ -100,7 +101,7 @@ public sealed class PluginDevToolbar : UserControl
         // ── Config label ──
         toolbar.Items.Add(new TextBlock
         {
-            Text              = "Config:",
+            Text              = PluginDevResources.PluginDev_ConfigLabel,
             VerticalAlignment = VerticalAlignment.Center,
             Foreground        = Brushes.WhiteSmoke,
             Margin            = new Thickness(4, 0, 4, 0),

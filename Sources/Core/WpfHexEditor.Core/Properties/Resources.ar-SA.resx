@@ -837,42 +837,6 @@
     <comment>TBL Editor - Modified</comment>
   </data>
 
-<data name="ColorPicker_Tab_Custom" xml:space="preserve">
-    <value>مخصص</value>
-    <comment>ColorPicker - Tab Custom</comment>
-  </data>
-<data name="ColorPicker_Tab_Palette" xml:space="preserve">
-    <value>لوحة الألوان</value>
-    <comment>ColorPicker - Tab Palette</comment>
-  </data>
-<data name="ColorPicker_Preview_Original" xml:space="preserve">
-    <value>الأصلي</value>
-    <comment>ColorPicker - Preview Original</comment>
-  </data>
-<data name="ColorPicker_Preview_New" xml:space="preserve">
-    <value>جديد</value>
-    <comment>ColorPicker - Preview New</comment>
-  </data>
-<data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
-    <value>منتقي الألوان</value>
-    <comment>ColorPicker - Section ColorSelector</comment>
-  </data>
-<data name="ColorPicker_Section_RGBValues" xml:space="preserve">
-    <value>قيم RGB</value>
-    <comment>ColorPicker - Section RGBValues</comment>
-  </data>
-<data name="ColorPicker_Section_HexColor" xml:space="preserve">
-    <value>لون سداسي عشري</value>
-    <comment>ColorPicker - Section HexColor</comment>
-  </data>
-<data name="ColorPicker_Section_StandardColors" xml:space="preserve">
-    <value>الألوان القياسية</value>
-    <comment>ColorPicker - Section StandardColors</comment>
-  </data>
-<data name="ColorPicker_Section_RecentColors" xml:space="preserve">
-    <value>الألوان الحديثة</value>
-    <comment>ColorPicker - Section RecentColors</comment>
-  </data>
 <data name="HexSettings_Title" xml:space="preserve">
     <value>إعدادات محرر HEX</value>
   </data>
@@ -1144,5 +1108,864 @@
   <data name="HexSettings_BarChart_ShowStatistics" xml:space="preserve">
     <value>Show Statistics</value>
     <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
+  </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>البحث النسبي...</value>
+  </data>
+  <data name="RelativeSearchString" xml:space="preserve">
+    <value>البحث النسبي - اكتشاف الترميز</value>
+  </data>
+  <data name="RelativeSearchKnownTextString" xml:space="preserve">
+    <value>النص المعروف:</value>
+  </data>
+  <data name="RelativeSearchSearchButtonString" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+  <data name="RelativeSearchUseParallelString" xml:space="preserve">
+    <value>استخدام البحث المتوازي</value>
+  </data>
+  <data name="RelativeSearchMinMatchesString" xml:space="preserve">
+    <value>الحد الأدنى للمطابقات:</value>
+  </data>
+  <data name="RelativeSearchMaxProposalsString" xml:space="preserve">
+    <value>الحد الأقصى للاقتراحات:</value>
+  </data>
+  <data name="RelativeSearchTblLoadedString" xml:space="preserve">
+    <value>تم تحميل TBL: {0} مدخل (سيُستخدم للتحقق)</value>
+  </data>
+  <data name="RelativeSearchNoTblString" xml:space="preserve">
+    <value>لم يتم تحميل TBL (يتم تسجيل الاقتراحات بشكل مستقل)</value>
+  </data>
+  <data name="RelativeSearchProposalsHeaderString" xml:space="preserve">
+    <value>اقتراحات الترميز</value>
+  </data>
+  <data name="RelativeSearchOffsetColumnString" xml:space="preserve">
+    <value>إزاحة</value>
+  </data>
+  <data name="RelativeSearchScoreColumnString" xml:space="preserve">
+    <value>النقاط</value>
+  </data>
+  <data name="RelativeSearchMatchesColumnString" xml:space="preserve">
+    <value>المطابقات</value>
+  </data>
+  <data name="RelativeSearchSampleColumnString" xml:space="preserve">
+    <value>نص نموذجي</value>
+  </data>
+  <data name="RelativeSearchPreviewHeaderString" xml:space="preserve">
+    <value>معاينة (النص المفكوك)</value>
+  </data>
+  <data name="RelativeSearchMatchPositionsString" xml:space="preserve">
+    <value>المطابقات في:</value>
+  </data>
+  <data name="RelativeSearchExportTblString" xml:space="preserve">
+    <value>تصدير إلى TBL</value>
+  </data>
+  <data name="RelativeSearchNavigateString" xml:space="preserve">
+    <value>الانتقال إلى المطابقة</value>
+  </data>
+  <data name="RelativeSearchSearchingString" xml:space="preserve">
+    <value>البحث في 256 إزاحة ترميز...</value>
+  </data>
+  <data name="RelativeSearchFoundProposalsString" xml:space="preserve">
+    <value>تم العثور على {0} اقتراح في {1} مللي ثانية</value>
+  </data>
+  <data name="RelativeSearchFoundWithValidationString" xml:space="preserve">
+    <value>تم العثور على {0} اقتراح في {1} مللي ثانية (أفضل مطابقة تم التحقق منها بواسطة TBL المحمّل!)</value>
+  </data>
+  <data name="RelativeSearchSearchingWithTblString" xml:space="preserve">
+    <value>البحث في 256 إزاحة (التحقق من {0} مدخل TBL)...</value>
+  </data>
+  <data name="RelativeSearchCancelledString" xml:space="preserve">
+    <value>تم إلغاء البحث</value>
+  </data>
+  <data name="RelativeSearchNoProposalsString" xml:space="preserve">
+    <value>لم يتم العثور على اقتراحات ترميز. جرب نصًا مختلفًا للبحث.</value>
+  </data>
+  <data name="RelativeSearchNoFileOpenString" xml:space="preserve">
+    <value>لم يتم فتح أي ملف</value>
+  </data>
+  <data name="RelativeSearchKnownTextTooltipString" xml:space="preserve">
+    <value>أدخل نصًا تعرف أنه يظهر في ROM (مثل "World" أو "Start" أو "Hero")</value>
+  </data>
+  <data name="RelativeSearchExportTooltipString" xml:space="preserve">
+    <value>حفظ اقتراح الترميز المحدد كملف TBL</value>
+  </data>
+  <data name="TblConflict_Title" xml:space="preserve">
+    <value>تقرير تحليل تعارضات TBL</value>
+  </data>
+  <data name="TblConflict_TotalConflicts" xml:space="preserve">
+    <value>إجمالي التعارضات:</value>
+  </data>
+  <data name="TblConflict_Errors" xml:space="preserve">
+    <value>الأخطاء:</value>
+  </data>
+  <data name="TblConflict_Warnings" xml:space="preserve">
+    <value>التحذيرات:</value>
+  </data>
+  <data name="TblConflict_Info" xml:space="preserve">
+    <value>معلومات:</value>
+  </data>
+  <data name="TblConflict_Description" xml:space="preserve">
+    <value>الوصف:</value>
+  </data>
+  <data name="TblConflict_Suggestion" xml:space="preserve">
+    <value>الحل المقترح:</value>
+  </data>
+  <data name="TblConflict_ConflictingEntries" xml:space="preserve">
+    <value>الإدخالات المتعارضة:</value>
+  </data>
+  <data name="TblTemplate_Title" xml:space="preserve">
+    <value>قوالب TBL</value>
+  </data>
+  <data name="TblTemplate_Categories" xml:space="preserve">
+    <value>الفئات</value>
+  </data>
+  <data name="TblTemplate_AvailableTemplates" xml:space="preserve">
+    <value>القوالب المتاحة</value>
+  </data>
+  <data name="TblTemplate_Preview" xml:space="preserve">
+    <value>معاينة</value>
+  </data>
+  <data name="TblTemplate_LoadTemplate" xml:space="preserve">
+    <value>تحميل القالب</value>
+  </data>
+  <data name="TblTemplate_MergeWithCurrent" xml:space="preserve">
+    <value>دمج مع الحالي</value>
+  </data>
+  <data name="TblTemplate_BuiltIn" xml:space="preserve">
+    <value>مدمج</value>
+  </data>
+  <data name="PatternAnalysis_Title" xml:space="preserve">
+    <value>تحليل الأنماط</value>
+  </data>
+  <data name="PatternAnalysis_Entropy" xml:space="preserve">
+    <value>الإنتروبيا</value>
+  </data>
+  <data name="PatternAnalysis_ByteDistribution" xml:space="preserve">
+    <value>توزيع البايت</value>
+  </data>
+  <data name="PatternAnalysis_DetectedPatterns" xml:space="preserve">
+    <value>الأنماط المكتشفة</value>
+  </data>
+  <data name="PatternAnalysis_NoPatternsDetected" xml:space="preserve">
+    <value>لم يتم اكتشاف أي أنماط</value>
+  </data>
+  <data name="PatternAnalysis_Anomalies" xml:space="preserve">
+    <value>الشذوذات</value>
+  </data>
+  <data name="PatternAnalysis_NoAnomalies" xml:space="preserve">
+    <value>لم يتم اكتشاف أي شذوذات</value>
+  </data>
+  <data name="PatternAnalysis_BitsPerByte" xml:space="preserve">
+    <value>بت/بايت</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropy" xml:space="preserve">
+    <value>تم اكتشاف إنتروبيا عالية</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropyDesc" xml:space="preserve">
+    <value>يبدو أن البيانات مضغوطة أو مشفرة</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropy" xml:space="preserve">
+    <value>تم اكتشاف إنتروبيا منخفضة جداً</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropyDesc" xml:space="preserve">
+    <value>البيانات تحتوي على بايتات متكررة أو متشابهة</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDistribution" xml:space="preserve">
+    <value>توزيع بايت منحرف</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDesc" xml:space="preserve">
+    <value>قيمة بايت واحدة تظهر أكثر من 20% من الوقت</value>
+  </data>
+  <data name="PatternAnalysis_NullBytes" xml:space="preserve">
+    <value>بايتات NULL (0x00)</value>
+  </data>
+  <data name="PatternAnalysis_RepeatedSequence" xml:space="preserve">
+    <value>تسلسل متكرر</value>
+  </data>
+  <data name="PatternAnalysis_AsciiText" xml:space="preserve">
+    <value>تم اكتشاف نص ASCII</value>
+  </data>
+  <data name="FileStats_Title" xml:space="preserve">
+    <value>إحصائيات الملف</value>
+  </data>
+  <data name="FileStats_OverallHealth" xml:space="preserve">
+    <value>الصحة العامة</value>
+  </data>
+  <data name="FileStats_HealthyStructure" xml:space="preserve">
+    <value>هيكل الملف صالح وسليم</value>
+  </data>
+  <data name="FileStats_Structure" xml:space="preserve">
+    <value>البنية</value>
+  </data>
+  <data name="FileStats_Valid" xml:space="preserve">
+    <value>صالح</value>
+  </data>
+  <data name="FileStats_Invalid" xml:space="preserve">
+    <value>غير صالح</value>
+  </data>
+  <data name="FileStats_Checksums" xml:space="preserve">
+    <value>المجاميع الاختبارية</value>
+  </data>
+  <data name="FileStats_AllPass" xml:space="preserve">
+    <value>جميعها ناجحة</value>
+  </data>
+  <data name="FileStats_SomeFailed" xml:space="preserve">
+    <value>فشلت بعض المجاميع الاختبارية</value>
+  </data>
+  <data name="FileStats_Compression" xml:space="preserve">
+    <value>الضغط</value>
+  </data>
+  <data name="FileStats_Ratio" xml:space="preserve">
+    <value>النسبة:</value>
+  </data>
+  <data name="FileStats_SubOptimalCompression" xml:space="preserve">
+    <value>ضغط دون المستوى الأمثل</value>
+  </data>
+  <data name="FileStats_EntropyAnalysis" xml:space="preserve">
+    <value>تحليل الإنتروبيا</value>
+  </data>
+  <data name="FileStats_Level" xml:space="preserve">
+    <value>المستوى:</value>
+  </data>
+  <data name="FileStats_CompressedOrEncrypted" xml:space="preserve">
+    <value>يُرجَّح أنها بيانات مضغوطة أو مشفرة</value>
+  </data>
+  <data name="FileStats_DetectedIssues" xml:space="preserve">
+    <value>المشكلات المكتشفة</value>
+  </data>
+  <data name="FileStats_NoIssues" xml:space="preserve">
+    <value>لا توجد مشكلات مكتشفة</value>
+  </data>
+  <data name="FileStats_FileInformation" xml:space="preserve">
+    <value>معلومات الملف</value>
+  </data>
+  <data name="FileStats_Size" xml:space="preserve">
+    <value>الحجم:</value>
+  </data>
+  <data name="FileStats_Fields" xml:space="preserve">
+    <value>الحقول:</value>
+  </data>
+  <data name="FileStats_Format" xml:space="preserve">
+    <value>التنسيق:</value>
+  </data>
+  <data name="FileStats_Unknown" xml:space="preserve">
+    <value>غير معروف</value>
+  </data>
+  <data name="ArchiveStructure_Title" xml:space="preserve">
+    <value>بنية الأرشيف</value>
+  </data>
+  <data name="ArchiveStructure_NoArchive" xml:space="preserve">
+    <value>لم يتم تحميل أي أرشيف</value>
+  </data>
+  <data name="ArchiveStructure_Extract" xml:space="preserve">
+    <value>استخراج...</value>
+  </data>
+  <data name="ArchiveStructure_ViewDetails" xml:space="preserve">
+    <value>عرض التفاصيل</value>
+  </data>
+  <data name="ArchiveStructure_ExpandAll" xml:space="preserve">
+    <value>توسيع الكل</value>
+  </data>
+  <data name="ArchiveStructure_CollapseAll" xml:space="preserve">
+    <value>طي الكل</value>
+  </data>
+  <data name="ArchiveStructure_Files" xml:space="preserve">
+    <value>ملفات</value>
+  </data>
+  <data name="ArchiveStructure_Folders" xml:space="preserve">
+    <value>مجلدات</value>
+  </data>
+  <data name="ArchiveStructure_TotalSize" xml:space="preserve">
+    <value>الحجم الإجمالي:</value>
+  </data>
+  <data name="ArchiveStructure_CompressionRatio" xml:space="preserve">
+    <value>النسبة:</value>
+  </data>
+  <data name="ArchiveStructure_ExtractFunctionality" xml:space="preserve">
+    <value>وظيفة الاستخراج - سيتم تنفيذها مع مكتبة الأرشيف</value>
+  </data>
+  <data name="ArchiveStructure_ExtractTitle" xml:space="preserve">
+    <value>استخراج</value>
+  </data>
+  <data name="ArchiveStructure_DetailsTitle" xml:space="preserve">
+    <value>التفاصيل</value>
+  </data>
+  <data name="ArchiveStructure_DetailName" xml:space="preserve">
+    <value>الاسم:</value>
+  </data>
+  <data name="ArchiveStructure_DetailType" xml:space="preserve">
+    <value>النوع:</value>
+  </data>
+  <data name="ArchiveStructure_DetailFolder" xml:space="preserve">
+    <value>مجلد</value>
+  </data>
+  <data name="ArchiveStructure_DetailFile" xml:space="preserve">
+    <value>ملف</value>
+  </data>
+  <data name="ArchiveStructure_DetailCompressed" xml:space="preserve">
+    <value>مضغوط:</value>
+  </data>
+  <data name="ArchiveStructure_DetailCRC" xml:space="preserve">
+    <value>CRC:</value>
+  </data>
+  <data name="ArchiveStructure_DetailMethod" xml:space="preserve">
+    <value>الطريقة:</value>
+  </data>
+  <data name="FileComparison_Title" xml:space="preserve">
+    <value>مقارنة الملفات</value>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>تحديد الملفات للمقارنة</value>
+  </data>
+  <data name="FileComparison_LoadFile1" xml:space="preserve">
+    <value>تحميل الملف 1...</value>
+  </data>
+  <data name="FileComparison_LoadFile2" xml:space="preserve">
+    <value>تحميل الملف 2...</value>
+  </data>
+  <data name="FileComparison_File1" xml:space="preserve">
+    <value>الملف 1</value>
+  </data>
+  <data name="FileComparison_File2" xml:space="preserve">
+    <value>الملف 2</value>
+  </data>
+  <data name="FileComparison_Matching" xml:space="preserve">
+    <value>مطابق:</value>
+  </data>
+  <data name="FileComparison_Added" xml:space="preserve">
+    <value>مضاف:</value>
+  </data>
+  <data name="FileComparison_Modified" xml:space="preserve">
+    <value>معدّل:</value>
+  </data>
+  <data name="FileComparison_Removed" xml:space="preserve">
+    <value>محذوف:</value>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>تحديد الملف 1 للمقارنة</value>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>تحديد الملف 2 للمقارنة</value>
+  </data>
+  <data name="FileComparison_AllFiles" xml:space="preserve">
+    <value>جميع الملفات (*.*)|*.*</value>
+  </data>
+  <data name="FileComparison_ErrorLoading" xml:space="preserve">
+    <value>خطأ في تحميل الملف: {0}</value>
+  </data>
+  <data name="FileComparison_Error" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>تحديد كلا الملفين للمقارنة</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>مقارنة {0} مع {1}</value>
+  </data>
+  <data name="CustomTemplate_Title" xml:space="preserve">
+    <value>القوالب</value>
+  </data>
+  <data name="CustomTemplate_NewTemplate" xml:space="preserve">
+    <value>قالب جديد</value>
+  </data>
+  <data name="CustomTemplate_DeleteTemplate" xml:space="preserve">
+    <value>حذف القالب</value>
+  </data>
+  <data name="CustomTemplate_EditorTitle" xml:space="preserve">
+    <value>محرر القوالب</value>
+  </data>
+  <data name="CustomTemplate_Name" xml:space="preserve">
+    <value>الاسم:</value>
+  </data>
+  <data name="CustomTemplate_Description" xml:space="preserve">
+    <value>الوصف:</value>
+  </data>
+  <data name="CustomTemplate_Extensions" xml:space="preserve">
+    <value>الامتدادات:</value>
+  </data>
+  <data name="CustomTemplate_ExtensionsTooltip" xml:space="preserve">
+    <value>مفصولة بفاصلة، مثلاً: .bin، .dat</value>
+  </data>
+  <data name="CustomTemplate_SaveTemplate" xml:space="preserve">
+    <value>حفظ القالب</value>
+  </data>
+  <data name="CustomTemplate_FormatBlocks" xml:space="preserve">
+    <value>كتل التنسيق</value>
+  </data>
+  <data name="CustomTemplate_AddBlock" xml:space="preserve">
+    <value>إضافة كتلة</value>
+  </data>
+  <data name="CustomTemplate_RemoveBlock" xml:space="preserve">
+    <value>إزالة الكتلة</value>
+  </data>
+  <data name="CustomTemplate_ApplyToFile" xml:space="preserve">
+    <value>تطبيق على الملف الحالي</value>
+  </data>
+  <data name="CustomTemplate_ApplyDescription" xml:space="preserve">
+    <value>تطبيق هذا القالب لتحليل الملف المحمّل حاليًا في محرر Hex.</value>
+  </data>
+  <data name="CustomTemplate_ApplyButton" xml:space="preserve">
+    <value>تطبيق القالب على الملف</value>
+  </data>
+  <data name="CustomTemplate_ExportImport" xml:space="preserve">
+    <value>تصدير/استيراد</value>
+  </data>
+  <data name="CustomTemplate_ExportJSON" xml:space="preserve">
+    <value>تصدير إلى JSON</value>
+  </data>
+  <data name="CustomTemplate_ImportJSON" xml:space="preserve">
+    <value>استيراد من JSON</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateSelected" xml:space="preserve">
+    <value>لم يتم تحديد قالب للحفظ.</value>
+  </data>
+  <data name="CustomTemplate_SavedSuccessfully" xml:space="preserve">
+    <value>تم حفظ القالب '{0}' بنجاح!</value>
+  </data>
+  <data name="CustomTemplate_ErrorSaving" xml:space="preserve">
+    <value>خطأ في حفظ القالب: {0}</value>
+  </data>
+  <data name="CustomTemplate_SelectOrCreate" xml:space="preserve">
+    <value>حدد أو أنشئ قالبًا أولاً.</value>
+  </data>
+  <data name="CustomTemplate_AddBlockTitle" xml:space="preserve">
+    <value>إضافة كتلة</value>
+  </data>
+  <data name="CustomTemplate_DeleteConfirm" xml:space="preserve">
+    <value>حذف القالب '{0}'؟</value>
+  </data>
+  <data name="CustomTemplate_ConfirmDelete" xml:space="preserve">
+    <value>تأكيد الحذف</value>
+  </data>
+  <data name="CustomTemplate_ErrorDeleting" xml:space="preserve">
+    <value>خطأ في حذف الملف: {0}</value>
+  </data>
+  <data name="CustomTemplate_DeleteError" xml:space="preserve">
+    <value>خطأ في الحذف</value>
+  </data>
+  <data name="CustomTemplate_ApplyingTemplate" xml:space="preserve">
+    <value>تطبيق القالب '{0}' على الملف الحالي.
+
+سيتم تحليل {1} كتلة وفقًا لتعريف القالب.
+
+ملاحظة: يتطلب التكامل الكامل مع HexEditor الاتصال بنموذج العرض الرئيسي.</value>
+  </data>
+  <data name="CustomTemplate_ApplyTitle" xml:space="preserve">
+    <value>تطبيق القالب</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateToApply" xml:space="preserve">
+    <value>لم يتم تحديد قالب للتطبيق.</value>
+  </data>
+  <data name="CustomTemplate_ExportTitle" xml:space="preserve">
+    <value>تصدير القالب كـ JSON</value>
+  </data>
+  <data name="CustomTemplate_JSONFiles" xml:space="preserve">
+    <value>ملفات JSON (*.json)|*.json</value>
+  </data>
+  <data name="CustomTemplate_ExportedTo" xml:space="preserve">
+    <value>تم تصدير القالب إلى:
+{0}</value>
+  </data>
+  <data name="CustomTemplate_ExportSuccess" xml:space="preserve">
+    <value>نجاح التصدير</value>
+  </data>
+  <data name="CustomTemplate_ErrorExporting" xml:space="preserve">
+    <value>خطأ في تصدير القالب: {0}</value>
+  </data>
+  <data name="CustomTemplate_ExportError" xml:space="preserve">
+    <value>خطأ في التصدير</value>
+  </data>
+  <data name="CustomTemplate_ImportTitle" xml:space="preserve">
+    <value>استيراد قالب من JSON</value>
+  </data>
+  <data name="CustomTemplate_ImportedSuccessfully" xml:space="preserve">
+    <value>تم استيراد القالب '{0}' بنجاح!</value>
+  </data>
+  <data name="CustomTemplate_ImportSuccess" xml:space="preserve">
+    <value>نجاح الاستيراد</value>
+  </data>
+  <data name="CustomTemplate_ErrorImporting" xml:space="preserve">
+    <value>خطأ في استيراد القالب: {0}</value>
+  </data>
+  <data name="CustomTemplate_ImportError" xml:space="preserve">
+    <value>خطأ في الاستيراد</value>
+  </data>
+  <data name="CustomTemplate_ColumnName" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="CustomTemplate_ColumnOffset" xml:space="preserve">
+    <value>إزاحة</value>
+  </data>
+  <data name="CustomTemplate_ColumnLength" xml:space="preserve">
+    <value>الطول</value>
+  </data>
+  <data name="CustomTemplate_ColumnType" xml:space="preserve">
+    <value>النوع</value>
+  </data>
+  <data name="CustomTemplate_ColumnColor" xml:space="preserve">
+    <value>اللون</value>
+  </data>
+  <data name="CustomTemplate_ColumnDescription" xml:space="preserve">
+    <value>الوصف</value>
+  </data>
+  <data name="ByteTooltip_NoData" xml:space="preserve">
+    <value>لا توجد بيانات</value>
+  </data>
+  <data name="ByteTooltip_Signed" xml:space="preserve">
+    <value>موقّع</value>
+  </data>
+  <data name="ByteTooltip_Binary" xml:space="preserve">
+    <value>ثنائي</value>
+  </data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve">
+    <value>ASCII</value>
+  </data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve">
+    <value>(غير قابل للطباعة)</value>
+  </data>
+  <data name="ByteTooltip_Octal" xml:space="preserve">
+    <value>ثماني</value>
+  </data>
+  <data name="StatusText_OperationCancelled" xml:space="preserve">
+    <value>تم إلغاء العملية</value>
+  </data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve">
+    <value>الملف موجود بالفعل</value>
+  </data>
+  <data name="StatusText_Ready" xml:space="preserve">
+    <value>جاهز</value>
+  </data>
+  <data name="StatusText_FileSaved" xml:space="preserve">
+    <value>تم حفظ الملف</value>
+  </data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve">
+    <value>تم مسح علامات البحث.</value>
+  </data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve">
+    <value>تم مسح جميع التغييرات</value>
+  </data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve">
+    <value>تم إغلاق TBL، يستخدم ASCII</value>
+  </data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve">
+    <value>لا يوجد تحديد للعكس</value>
+  </data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve">
+    <value>التحديد فارغ</value>
+  </data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve">
+    <value>لا يوجد تحديد للقلب</value>
+  </data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve">
+    <value>لا يوجد تحديد للبحث</value>
+  </data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve">
+    <value>لم يتم العثور على مطابقات.</value>
+  </data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve">
+    <value>الحجم: -</value>
+  </data>
+  <data name="StatusBar_NoSelection" xml:space="preserve">
+    <value>لا يوجد تحديد</value>
+  </data>
+  <data name="StatusBar_PositionZero" xml:space="preserve">
+    <value>الموضع: 0</value>
+  </data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve">
+    <value>الوضع: الكتابة فوق</value>
+  </data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve">
+    <value>بايت/سطر: 16</value>
+  </data>
+  <data name="Search_NoMatches" xml:space="preserve">
+    <value>لا مطابقات</value>
+  </data>
+  <data name="Search_Error_Title" xml:space="preserve">
+    <value>خطأ في البحث</value>
+  </data>
+  <data name="Search_Error_Label" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="Search_Error_NoTBLLoaded" xml:space="preserve">
+    <value>لم يتم تحميل TBL. لا يمكن البحث في نص TBL.</value>
+  </data>
+  <data name="Search_Error_TBLRequired" xml:space="preserve">
+    <value>TBL مطلوب</value>
+  </data>
+  <data name="Search_Error_NoTBLForReplacement" xml:space="preserve">
+    <value>لم يتم تحميل TBL. لا يمكن ترميز بايتات الاستبدال في وضع نص TBL.</value>
+  </data>
+  <data name="Search_Replace_Title" xml:space="preserve">
+    <value>خطأ في الاستبدال</value>
+  </data>
+  <data name="Search_ReplaceAll_Title" xml:space="preserve">
+    <value>استبدال الكل</value>
+  </data>
+  <data name="Search_ExportDialog_Filter" xml:space="preserve">
+    <value>ملفات CSV (*.csv)|*.csv|ملفات نصية (*.txt)|*.txt|ملفات JSON (*.json)|*.json</value>
+  </data>
+  <data name="Search_ExportTBL_Title" xml:space="preserve">
+    <value>تصدير ملف TBL</value>
+  </data>
+  <data name="Search_TBLFileDialog_Filter" xml:space="preserve">
+    <value>ملفات TBL (*.tbl)|*.tbl|جميع الملفات (*.*)|*.*</value>
+  </data>
+  <data name="Search_ExportTBL_Success" xml:space="preserve">
+    <value>نجاح التصدير</value>
+  </data>
+  <data name="Search_ExportTBL_Error" xml:space="preserve">
+    <value>خطأ في التصدير</value>
+  </data>
+  <data name="Search_EncodingApplied_Title" xml:space="preserve">
+    <value>تم تطبيق الترميز</value>
+  </data>
+  <data name="Search_EncodingApplied_Message" xml:space="preserve">
+    <value>تم تطبيق الترميز! يمكنك الآن استخدام وضع نص TBL.</value>
+  </data>
+  <data name="Search_LoadTBL_Title" xml:space="preserve">
+    <value>تحديد ملف TBL (جدول الأحرف)</value>
+  </data>
+  <data name="Search_TBLLoaded_Title" xml:space="preserve">
+    <value>تم تحميل TBL</value>
+  </data>
+  <data name="Search_ErrorLoadingTBL_Title" xml:space="preserve">
+    <value>خطأ في تحميل TBL</value>
+  </data>
+  <data name="Search_CloseTBL_Title" xml:space="preserve">
+    <value>إغلاق TBL</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen" xml:space="preserve">
+    <value>يرجى فتح ملف ROM أولاً قبل تطبيق التصحيح.</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen_Title" xml:space="preserve">
+    <value>لم يتم فتح أي ملف</value>
+  </data>
+  <data name="IPS_ApplyPatch_Title" xml:space="preserve">
+    <value>تحديد ملف تصحيح IPS</value>
+  </data>
+  <data name="IPS_FileDialog_Filter" xml:space="preserve">
+    <value>ملفات IPS (*.ips)|*.ips|جميع الملفات (*.*)|*.*</value>
+  </data>
+  <data name="IPS_Error_InvalidFile" xml:space="preserve">
+    <value>الملف المحدد ليس تصحيح IPS صالحاً.</value>
+  </data>
+  <data name="IPS_Error_InvalidFile_Title" xml:space="preserve">
+    <value>ملف IPS غير صالح</value>
+  </data>
+  <data name="IPS_ApplyPatch_Confirm_Title" xml:space="preserve">
+    <value>تطبيق تصحيح IPS</value>
+  </data>
+  <data name="IPS_ApplyPatch_SaveReminder" xml:space="preserve">
+    <value>لا تنسَ حفظ الملف!</value>
+  </data>
+  <data name="IPS_ApplyPatch_Success_Title" xml:space="preserve">
+    <value>تم تطبيق التصحيح</value>
+  </data>
+  <data name="IPS_ApplyPatch_Error_Title" xml:space="preserve">
+    <value>فشل التصحيح</value>
+  </data>
+  <data name="IPS_CreatePatch_NoFileOpen" xml:space="preserve">
+    <value>يرجى فتح ملف ROM معدّل أولاً.</value>
+  </data>
+  <data name="IPS_CreatePatch_SelectOriginal_Title" xml:space="preserve">
+    <value>تحديد ملف ROM الأصلي (غير المعدّل)</value>
+  </data>
+  <data name="IPS_ROMFileDialog_Filter" xml:space="preserve">
+    <value>ملفات ROM|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|جميع الملفات (*.*)|*.*</value>
+  </data>
+  <data name="IPS_CreatePatch_SaveDialog_Title" xml:space="preserve">
+    <value>حفظ تصحيح IPS باسم</value>
+  </data>
+  <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
+    <value>تم إنشاء التصحيح</value>
+  </data>
+  <data name="UndoHistory_Undo" xml:space="preserve">
+    <value>تراجع</value>
+  </data>
+  <data name="UndoHistory_Redo" xml:space="preserve">
+    <value>إعادة</value>
+  </data>
+  <data name="UndoHistory_Action" xml:space="preserve">
+    <value>إجراء</value>
+  </data>
+  <data name="UndoHistory_Actions" xml:space="preserve">
+    <value>إجراءات</value>
+  </data>
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>إعدادات محرر Hex</value>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>حفظ الحالة</value>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>تحميل الحالة</value>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>إعادة تعيين إلى الإعدادات الافتراضية</value>
+  </data>
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>لا توجد عمليات للتراجع عنها</value>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>لا توجد عمليات لإعادتها</value>
+  </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>التفاف</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>الترميز:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>سداسي عشري</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>عشري</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>الانتقال إلى الموضع</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>الموضع</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 أو عشري</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>حرف بدل (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>اقتطاع الاستبدال ليطابق طول البحث</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>البحث عن التالي</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>البحث عن السابق</value></data>
+  <data name="HE_SearchDialogTitle" xml:space="preserve">
+    <value>Find / Replace</value>
+  </data>
+  <data name="HE_SearchModeTooltip" xml:space="preserve">
+    <value>Search mode</value>
+  </data>
+  <data name="HE_CaseSensitiveTooltip" xml:space="preserve">
+    <value>Match case (Alt+C)</value>
+  </data>
+  <data name="HE_WildcardTooltip" xml:space="preserve">
+    <value>Use wildcards ?? (Alt+E)</value>
+  </data>
+  <data name="HE_LoopSearch" xml:space="preserve">
+    <value>Loop</value>
+  </data>
+  <data name="HE_FindLabel" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="HE_ReplaceLabel" xml:space="preserve">
+    <value>Replace:</value>
+  </data>
+  <data name="HE_EncodingLabel" xml:space="preserve">
+    <value>Encoding:</value>
+  </data>
+  <data name="HE_MaxLabel" xml:space="preserve">
+    <value>Max:</value>
+  </data>
+  <data name="HE_StopButton" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="HE_PrevButton" xml:space="preserve">
+    <value>Prev.</value>
+  </data>
+  <data name="HE_NextButton" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="HE_FindAllButton" xml:space="preserve">
+    <value>Find All</value>
+  </data>
+  <data name="HE_ReplaceButton" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="HE_ReplaceAllButton" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="HE_ResultsLabel" xml:space="preserve">
+    <value>Results (</value>
+  </data>
+  <data name="HE_ExportButton" xml:space="preserve">
+    <value>Export ▾</value>
+  </data>
+  <data name="HE_OffsetHexColumn" xml:space="preserve">
+    <value>Offset (Hex)</value>
+  </data>
+  <data name="HE_OffsetDecColumn" xml:space="preserve">
+    <value>Offset (Dec)</value>
+  </data>
+  <data name="HE_PreviewColumn" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="HE_LengthColumn" xml:space="preserve">
+    <value>Len.</value>
+  </data>
+  <data name="HE_OccColumn" xml:space="preserve">
+    <value>Occ.</value>
+  </data>
+  <data name="HE_PrintPctColumn" xml:space="preserve">
+    <value>% Print.</value>
+  </data>
+  <data name="HE_ActionsColumn" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="HE_ExportTblButton" xml:space="preserve">
+    <value>Export TBL</value>
+  </data>
+  <data name="HE_ApplyButton" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="HE_SizeLabel" xml:space="preserve">
+    <value>Size: </value>
+  </data>
+  <data name="HE_BytesLabel" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="HE_LoadTblButton" xml:space="preserve">
+    <value>Load TBL...</value>
+  </data>
+  <data name="HE_LoadTblTooltip" xml:space="preserve">
+    <value>Load a TBL file (ROM character table)</value>
+  </data>
+  <data name="HE_TblLabel" xml:space="preserve">
+    <value>TBL: </value>
+  </data>
+  <data name="HE_CloseTblTooltip" xml:space="preserve">
+    <value>Close TBL file</value>
+  </data>
+  <data name="HE_ShowReplaceTooltip" xml:space="preserve">
+    <value>Show / hide replace (Ctrl+H)</value>
+  </data>
+  <data name="HE_SearchPlaceholder" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="HE_PrevResultTooltip" xml:space="preserve">
+    <value>Previous result (Shift+Enter)</value>
+  </data>
+  <data name="HE_NextResultTooltip" xml:space="preserve">
+    <value>Next result (Enter)</value>
+  </data>
+  <data name="HE_AdvancedSearchTooltip" xml:space="preserve">
+    <value>Advanced search (Ctrl+Shift+F)</value>
+  </data>
+  <data name="HE_CloseSearchTooltip" xml:space="preserve">
+    <value>Close (Esc)</value>
+  </data>
+  <data name="HE_ReplacePlaceholder" xml:space="preserve">
+    <value>Replace...</value>
+  </data>
+  <data name="HE_ReplaceOneTooltip" xml:space="preserve">
+    <value>Replace (Alt+R)</value>
+  </data>
+  <data name="HE_ReplaceAllTooltip" xml:space="preserve">
+    <value>Replace All (Alt+A)</value>
+  </data>
+  <data name="HE_HexModeTooltip" xml:space="preserve">
+    <value>Hexadecimal mode (Alt+H)</value>
+  </data>
+  <data name="HE_MoveBarTooltip" xml:space="preserve">
+    <value>Move search bar</value>
+  </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>مقارنة الملف مع…</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>مقارنة التحديد كجزء أيسر…</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>لا يوجد ملف TBL محمَّل</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>نص</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>هكس</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>حرف بدل</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>نص TBL</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>نسبي</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>تنسيق الملف المكتشف</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>درجة موثوقية الكشف</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>موثوقية الكشف: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>التنسيق</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>تغيير التنسيق المكتشف</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>بحث عن جميع التكرارات مع تراكب التقدم</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>إزاحة</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>النتائج</value>
   </data>
 </root>

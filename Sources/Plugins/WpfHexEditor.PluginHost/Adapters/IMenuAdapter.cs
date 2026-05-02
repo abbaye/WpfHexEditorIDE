@@ -59,4 +59,18 @@ public interface IMenuAdapter
     /// </summary>
     IReadOnlyDictionary<string, MenuItemDescriptor> GetAllDebugMenuItems()
         => new Dictionary<string, MenuItemDescriptor>();
+
+    /// <summary>
+    /// Raised when a Tools-parented menu item is added or removed.
+    /// MainWindow subscribes to trigger a rebuild of the plugin section of the Tools menu.
+    /// Default implementation is a no-op for backward compatibility.
+    /// </summary>
+    event Action? ToolsItemsChanged { add { } remove { } }
+
+    /// <summary>
+    /// Returns only the Tools-parented menu item descriptors (intercepted for dynamic organization).
+    /// Default implementation returns an empty dictionary for backward compatibility.
+    /// </summary>
+    IReadOnlyDictionary<string, MenuItemDescriptor> GetAllToolsMenuItems()
+        => new Dictionary<string, MenuItemDescriptor>();
 }

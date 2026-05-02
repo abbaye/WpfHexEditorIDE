@@ -23,9 +23,14 @@
              AllowDrop="True"
              Drop="OnPanelDrop"
              DragOver="OnPanelDragOver"
-             DragLeave="OnPanelDragLeave">
+             DragLeave="OnPanelDragLeave"
+             xmlns:phSvc="clr-namespace:WpfHexEditor.PluginHost.Services">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <phSvc:PluginHostLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <local:NullToVisibilityConverter    x:Key="NullToVis"    Invert="False"/>
         <local:NullToVisibilityConverter    x:Key="NotNullToVis" Invert="True"/>
@@ -53,17 +58,17 @@
                       Background="{DynamicResource PM_CategoryHeaderBrush}"
                       Foreground="{DynamicResource PM_CategoryHeaderForegroundBrush}"
                       FontSize="10" FontWeight="SemiBold" Padding="10,3"
-                      Header="PLUGIN ACTIONS"/>
-            <MenuItem Header="Enable"  Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextEnable">
+                      Header="{DynamicResource PH_ActionsSectionHeader}"/>
+            <MenuItem Header="{DynamicResource PH_EnableContextMenu}"  Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextEnable">
                 <MenuItem.Icon><TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Disable" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextDisable">
+            <MenuItem Header="{DynamicResource PH_DisableContextMenu}" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextDisable">
                 <MenuItem.Icon><TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Reload"  Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextReload">
+            <MenuItem Header="{DynamicResource PH_ContextReloadMenu}"  Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextReload">
                 <MenuItem.Icon><TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Toggle Watch Mode" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextToggleWatchMode">
+            <MenuItem Header="{DynamicResource PH_WatchModeContextMenu}" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextToggleWatchMode">
                 <MenuItem.Icon><TextBlock Text="&#xE7B3;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
             </MenuItem>
 
@@ -73,34 +78,35 @@
                       Background="{DynamicResource PM_CategoryHeaderBrush}"
                       Foreground="{DynamicResource PM_CategoryHeaderForegroundBrush}"
                       FontSize="10" FontWeight="SemiBold" Padding="10,3"
-                      Header="DIAGNOSTIC"/>
-            <MenuItem Header="Open Monitor Panel" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextOpenMonitor">
+                      Header="{DynamicResource PH_DiagnosticSectionHeader}"/>
+            <MenuItem Header="{DynamicResource PH_OpenMonitorContextMenu}" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextOpenMonitor">
                 <MenuItem.Icon><TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Export Diagnostics" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextExportDiagnostics">
+            <MenuItem Header="{DynamicResource PH_ExportDiagnosticsContextMenu}" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextExportDiagnostics">
                 <MenuItem.Icon><TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Export Crash Report" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextExportCrashReport"
+            <MenuItem Header="{DynamicResource PH_ExportCrashContextMenu}" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextExportCrashReport"
                       Visibility="{Binding SelectedPlugin.FaultMessage, Converter={StaticResource NotNullToVis}}">
                 <MenuItem.Icon><TextBlock Text="&#xEA39;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Copy Plugin ID"    Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextCopyId">
+            <MenuItem Header="{DynamicResource PH_CopyIdContextMenu}"    Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextCopyId">
                 <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Copy Fault Message" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextCopyFault"
+            <MenuItem Header="{DynamicResource PH_CopyFaultContextMenu}" Foreground="{DynamicResource DockMenuForegroundBrush}" Click="OnContextCopyFault"
                       Visibility="{Binding SelectedPlugin.FaultMessage, Converter={StaticResource NotNullToVis}}">
                 <MenuItem.Icon><TextBlock Text="&#xEA39;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
             </MenuItem>
 
             <Separator Background="{DynamicResource DockMenuBorderBrush}" Margin="4,2"/>
 
-            <MenuItem Header="Uninstall..." Foreground="{DynamicResource DangerBrush}" Click="OnContextUninstall">
+            <MenuItem Header="{DynamicResource PH_UninstallContextMenu}" Foreground="{DynamicResource DangerBrush}" Click="OnContextUninstall">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                Foreground="{DynamicResource DangerBrush}"/>
                 </MenuItem.Icon>
             </MenuItem>
         </ContextMenu>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Background="{DynamicResource DockBackgroundBrush}">
@@ -125,7 +131,7 @@
                     SizeChanged="OnToolbarSizeChanged">
                 <DockPanel Margin="4,0">
                     <!-- Left: title — always visible -->
-                    <TextBlock Text="PLUGINS" FontSize="10" FontWeight="SemiBold"
+                    <TextBlock Text="{DynamicResource PH_PluginsTitle}" FontSize="10" FontWeight="SemiBold"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                DockPanel.Dock="Left"/>
@@ -136,7 +142,7 @@
                                 DockPanel.Dock="Right"
                                 VerticalAlignment="Center">
                         <Button Style="{DynamicResource PanelIconButtonStyle}"
-                                Content="&#xE72C;" ToolTip="Refresh Plugin List"
+                                Content="&#xE72C;" ToolTip="{DynamicResource PH_RefreshButton}"
                                 Command="{Binding RefreshCommand}"/>
                     </StackPanel>
 
@@ -145,14 +151,14 @@
                             DockPanel.Dock="Right"
                             Visibility="Collapsed"
                             Style="{DynamicResource PanelIconButtonStyle}"
-                            ToolTip="More options"
+                            ToolTip="{DynamicResource PH_MoreOptionsTooltip}"
                             Click="OnOverflowButtonClick">
                         <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                         <Button.ContextMenu>
                             <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
                                 <!-- TbgPluginDiag items -->
-                                <MenuItem Header="Export Diagnostics"
+                                <MenuItem Header="{DynamicResource PH_ExportDiagnosticsContextMenu}"
                                           Tag="TbgPluginDiag"
                                           Click="OvfExportDiag_Click">
                                     <MenuItem.Icon>
@@ -161,7 +167,7 @@
                                 </MenuItem>
                                 <Separator Tag="TbgPluginDiag"/>
                                 <!-- TbgPluginInstall items -->
-                                <MenuItem Header="Install Plugin…"
+                                <MenuItem Header="{DynamicResource PH_InstallButton}"
                                           Tag="TbgPluginInstall"
                                           Click="OvfInstall_Click">
                                     <MenuItem.Icon>
@@ -178,7 +184,7 @@
                                 DockPanel.Dock="Right"
                                 VerticalAlignment="Center">
                         <Button Style="{DynamicResource PanelIconButtonStyle}"
-                                Content="&#xE710;" ToolTip="Install Plugin from .whxplugin"
+                                Content="&#xE710;" ToolTip="{DynamicResource PH_InstallButton}"
                                 Command="{Binding InstallFromFileCommand}"/>
                     </StackPanel>
 
@@ -188,7 +194,7 @@
                                 DockPanel.Dock="Right"
                                 VerticalAlignment="Center">
                         <Button Style="{DynamicResource PanelIconButtonStyle}"
-                                Content="&#xE74E;" ToolTip="Export all diagnostics (CSV / JSON)"
+                                Content="&#xE74E;" ToolTip="{DynamicResource PH_ExportDiagnosticsButton}"
                                 Command="{Binding ExportDiagnosticsCommand}"/>
                     </StackPanel>
                 </DockPanel>
@@ -203,19 +209,19 @@
                 </Grid.ColumnDefinitions>
                 <TextBox Grid.Column="0"
                          Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="Filter by name, ID or author…"
+                         ToolTip="{DynamicResource PH_FilterPlaceholder}"
                          Style="{StaticResource PM_FilterTextBoxStyle}"
                          Margin="0,0,2,0"/>
                 <Button Grid.Column="1"
                         Style="{DynamicResource PanelIconButtonStyle}"
-                        Content="&#xE711;" ToolTip="Clear Filter"
+                        Content="&#xE711;" ToolTip="{DynamicResource PH_ClearFilterButton}"
                         Command="{Binding ClearFilterCommand}"
                         Margin="0,0,2,0"/>
                 <ComboBox Grid.Column="2"
                           ItemsSource="{Binding SortOptions}"
                           SelectedItem="{Binding SortBy}"
                           Style="{DynamicResource DockComboBoxStyle}"
-                          ToolTip="Sort by"/>
+                          ToolTip="{DynamicResource PH_SortTooltip}"/>
             </Grid>
 
             <!-- Plugin list -->
@@ -227,10 +233,10 @@
                     <TextBlock Text="&#xE737;" FontFamily="Segoe MDL2 Assets" FontSize="28"
                                HorizontalAlignment="Center" Opacity="0.3"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    <TextBlock Text="No plugins loaded" FontSize="11" Margin="0,6,0,2"
+                    <TextBlock Text="{DynamicResource PH_NoPluginsTitle}" FontSize="11" Margin="0,6,0,2"
                                HorizontalAlignment="Center" Opacity="0.5"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    <TextBlock Text="Build the solution to copy plugins&#x0A;or use Install to add a .whxplugin"
+                    <TextBlock Text="{DynamicResource PH_NoPluginsBody}"
                                FontSize="10" HorizontalAlignment="Center" Opacity="0.4"
                                TextAlignment="Center" TextWrapping="Wrap"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
@@ -278,7 +284,7 @@
                                                    TextTrimming="CharacterEllipsis"
                                                    Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}">
                                             <Run Text="{Binding Publisher, Mode=OneWay}"/>
-                                            <Run Text=" · "/>
+                                            <Run Text="{DynamicResource PH_SeparatorLabel}"/>
                                             <Run Text="{Binding VersionLabel, Mode=OneWay}"/>
                                         </TextBlock>
                                         <!-- Mini CPU sparkline (40×14 px, green) -->
@@ -300,12 +306,12 @@
                                     <Border Background="#A855F7"
                                             CornerRadius="6" Padding="4,1" Margin="0,0,0,2"
                                             Visibility="{Binding IsDormant, Converter={StaticResource BoolToVis}}">
-                                        <TextBlock Text="STANDBY" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                                        <TextBlock Text="{DynamicResource PH_StandbyBadge}" FontSize="8" FontWeight="Bold" Foreground="White"/>
                                     </Border>
                                     <Border Background="{DynamicResource PM_BadgeSlowBrush}"
                                             CornerRadius="6" Padding="4,1" Margin="0,0,0,2"
                                             Visibility="{Binding IsSlow, Converter={StaticResource BoolToVis}}">
-                                        <TextBlock Text="SLOW" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                                        <TextBlock Text="{DynamicResource PH_SlowBadge}" FontSize="8" FontWeight="Bold" Foreground="White"/>
                                     </Border>
                                     <!-- Memory Alert Badge -->
                                     <TextBlock Text="{Binding MemoryAlertIcon}" FontSize="11"
@@ -333,7 +339,7 @@
                                                Foreground="{DynamicResource PM_BadgeTrustedBrush}"
                                                HorizontalAlignment="Center"
                                                Visibility="{Binding IsTrustedPublisher, Converter={StaticResource BoolToVis}}"
-                                               ToolTip="Trusted Publisher"/>
+                                               ToolTip="{DynamicResource PH_TrustedPublisherTooltip}"/>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>
@@ -354,7 +360,7 @@
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="28"
                                    Foreground="#60A5FA" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Drop .whxplugin to install" FontSize="11"
+                        <TextBlock Text="{DynamicResource PH_DropHintText}" FontSize="11"
                                    Foreground="White" HorizontalAlignment="Center" Margin="0,4,0,0"/>
                     </StackPanel>
                 </Border>
@@ -369,7 +375,7 @@
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="28"
                                    Foreground="#60A5FA" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Installing…" FontSize="12" FontWeight="SemiBold"
+                        <TextBlock Text="{DynamicResource PH_InstallingMessage}" FontSize="12" FontWeight="SemiBold"
                                    Foreground="White" HorizontalAlignment="Center" Margin="0,6,0,6"/>
                         <pb:LinearProgressBar IsIndeterminate="True" Width="140" Height="4" BarHeight="4"/>
                     </StackPanel>
@@ -385,7 +391,7 @@
         <Grid Grid.Column="2">
 
             <!-- No selection placeholder -->
-            <TextBlock Text="Select a plugin to view details"
+            <TextBlock Text="{DynamicResource PH_NoSelectionPlaceholder}"
                        HorizontalAlignment="Center" VerticalAlignment="Center"
                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Opacity="0.5"
                        Visibility="{Binding SelectedPlugin, Converter={StaticResource NullToVis}}"/>
@@ -430,16 +436,16 @@
                                         CornerRadius="8" Padding="5,1" Margin="6,2,0,0"
                                         VerticalAlignment="Center"
                                         Visibility="{Binding IsTrustedPublisher, Converter={StaticResource BoolToVis}}">
-                                    <TextBlock Text="OFFICIAL" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource PH_OfficialBadge}" FontSize="8" FontWeight="Bold" Foreground="White"/>
                                 </Border>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <TextBlock FontSize="11" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                            Opacity="0.8" VerticalAlignment="Center">
                                     <Run Text="{Binding Publisher, Mode=OneWay}"/>
-                                    <Run Text=" · "/>
+                                    <Run Text="{DynamicResource PH_SeparatorLabel}"/>
                                     <Run Text="{Binding VersionLabel, Mode=OneWay}"/>
-                                    <Run Text=" · "/>
+                                    <Run Text="{DynamicResource PH_SeparatorLabel}"/>
                                 </TextBlock>
                                 <ComboBox ItemsSource="{Binding IsolationModes}"
                                           SelectedItem="{Binding SelectedIsolationMode}"
@@ -454,13 +460,13 @@
                                            Foreground="{DynamicResource DockAccentBrush}"
                                            Visibility="{Binding IsReloading, Converter={StaticResource BoolToVis}}"
                                            VerticalAlignment="Center"
-                                           ToolTip="Reloading plugin with new isolation mode…"/>
+                                           ToolTip="{DynamicResource PH_ReloadingTooltip}"/>
                                 <TextBlock Text="{Binding ResolvedIsolationModeLabel}"
                                            FontSize="10" Margin="4,0,0,0"
                                            Foreground="{Binding ResolvedIsolationModeColor}"
                                            Opacity="0.85"
                                            VerticalAlignment="Center"
-                                           ToolTip="Effective mode chosen by Auto decision engine">
+                                           ToolTip="{DynamicResource PH_AutoModeTooltip}">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -483,29 +489,29 @@
                                            FontWeight="SemiBold" Foreground="White"/>
                             </Border>
                             <!-- Load Now: visible only for Dormant/Standby plugins -->
-                            <Button Content="&#xE768; Load Now"
+                            <Button Content="{DynamicResource PH_LoadNow}"
                                     Command="{Binding LoadNowCommand}"
                                     Visibility="{Binding IsDormant, Converter={StaticResource BoolToVis}}"
                                     Style="{DynamicResource PM_ActionButtonStyle}"
                                     HorizontalAlignment="Right"
                                     Margin="0,0,0,4" Padding="8,3" FontSize="11"
-                                    ToolTip="Activate this plugin immediately (overrides lazy-load trigger)"/>
+                                    ToolTip="{DynamicResource PH_ActivateNowTooltip}"/>
                             <!-- Suspend: visible for Loaded lazy-load plugins (onStartup=false) -->
-                            <Button Content="&#xE769; Suspend"
+                            <Button Content="{DynamicResource PH_Suspend}"
                                     Command="{Binding SuspendCommand}"
                                     Style="{DynamicResource PM_ActionButtonStyle}"
                                     HorizontalAlignment="Right"
                                     Margin="0,0,0,4" Padding="8,3" FontSize="11"
-                                    ToolTip="Unload plugin and return to Standby — re-activates on next trigger"/>
+                                    ToolTip="{DynamicResource PH_DeactivateTooltip}"/>
                             <!-- Move to Sandbox: visible only for InProcess + Loaded plugins -->
-                            <Button Content="&#xE72A; Sandbox"
+                            <Button Content="{DynamicResource PH_Sandbox}"
                                     Command="{Binding MigrateToSandboxCommand}"
                                     Visibility="{Binding CanMigrateToSandbox, Converter={StaticResource BoolToVis}}"
                                     Style="{DynamicResource PM_ActionButtonStyle}"
                                     HorizontalAlignment="Right"
                                     Margin="0,0,0,0" Padding="8,3" FontSize="11"
                                     FontFamily="Segoe MDL2 Assets"
-                                    ToolTip="Reload this plugin in an isolated out-of-process Sandbox"/>
+                                    ToolTip="{DynamicResource PH_SandboxTooltip}"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -520,7 +526,7 @@
                             <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                        Foreground="#A855F7" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <StackPanel>
-                                <TextBlock Text="Standby — activates automatically when triggered" FontSize="11"
+                                <TextBlock Text="{DynamicResource PH_StandbyNote}" FontSize="11"
                                            Foreground="#A855F7" FontWeight="SemiBold"/>
                                 <TextBlock Text="{Binding ActivationTriggerLabel}"
                                            FontSize="10" Opacity="0.8"
@@ -536,7 +542,7 @@
                     <StackPanel Margin="12,12,12,20">
 
                         <!-- ── Section: Info ────────────────────────────────── -->
-                        <TextBlock Text="Info"
+                        <TextBlock Text="{DynamicResource PH_InfoSection}"
                                    FontWeight="SemiBold" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    Margin="0,0,0,10"/>
@@ -568,9 +574,9 @@
                                         Background="Transparent" BorderThickness="0"
                                         Foreground="{DynamicResource WarningForegroundBrush}"
                                         Padding="4,2" Margin="4,0,0,0"
-                                        ToolTip="Dismiss suggestion"/>
+                                        ToolTip="{DynamicResource PH_DismissTooltip}"/>
                                 <Button DockPanel.Dock="Right"
-                                        Content="Move to Sandbox"
+                                        Content="{DynamicResource PH_MigrateToSandboxButton}"
                                         Command="{Binding MigrateToSandboxCommand}"
                                         Style="{DynamicResource PM_ActionButtonStyle}"
                                         Padding="8,2" FontSize="11"
@@ -593,7 +599,7 @@
                                    Opacity="0.85" Margin="0,0,0,12"/>
 
                         <!-- METRICS label -->
-                        <TextBlock Text="METRICS" FontSize="10" FontWeight="SemiBold"
+                        <TextBlock Text="{DynamicResource PH_MetricsSection}" FontSize="10" FontWeight="SemiBold"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                    Margin="0,0,0,4"/>
 
@@ -609,11 +615,11 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" HorizontalAlignment="Center"
-                                            ToolTip="Process-level CPU — per-plugin isolation is not available in InProcess mode">
+                                            ToolTip="{DynamicResource PH_ProcessCpuTooltip}">
                                     <TextBlock Text="{Binding CpuPercent, StringFormat={}{0:F1}%}"
                                                FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
                                                Foreground="#22C55E"/>
-                                    <TextBlock Text="Proc. CPU" FontSize="10" HorizontalAlignment="Center"
+                                    <TextBlock Text="{DynamicResource PH_ProcessCpu}" FontSize="10" HorizontalAlignment="Center"
                                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                                     <TextBlock Text="{Binding PeakCpuPercent, StringFormat='peak {0:F1}%'}"
                                                FontSize="9" HorizontalAlignment="Center" Opacity="0.6"
@@ -624,9 +630,9 @@
                                     <TextBlock Text="{Binding MemoryMb, StringFormat={}{0} MB}"
                                                FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
                                                Foreground="#60A5FA"/>
-                                    <TextBlock Text="Proc. Heap" FontSize="10" HorizontalAlignment="Center"
+                                    <TextBlock Text="{DynamicResource PH_ProcessHeap}" FontSize="10" HorizontalAlignment="Center"
                                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                                               ToolTip="Total managed heap (process-wide, not per-plugin)"/>
+                                               ToolTip="{DynamicResource PH_ProcessHeapTooltip}"/>
                                     <TextBlock Text="{Binding PeakMemoryMb, StringFormat='peak {0} MB'}"
                                                FontSize="9" HorizontalAlignment="Center" Opacity="0.6"
                                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
@@ -636,7 +642,7 @@
                                     <TextBlock Text="{Binding InitTimeMs, StringFormat={}{0:F0} ms}"
                                                FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                                    <TextBlock Text="Init" FontSize="10" HorizontalAlignment="Center"
+                                    <TextBlock Text="{DynamicResource PH_InitLabel}" FontSize="10" HorizontalAlignment="Center"
                                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                                 </StackPanel>
 
@@ -644,7 +650,7 @@
                                     <TextBlock Text="{Binding AvgExecMs, StringFormat={}{0:F1} ms}"
                                                FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                                    <TextBlock Text="Avg Call" FontSize="10" HorizontalAlignment="Center"
+                                    <TextBlock Text="{DynamicResource PH_AvgCallLabel}" FontSize="10" HorizontalAlignment="Center"
                                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                                 </StackPanel>
 
@@ -652,7 +658,7 @@
                                     <TextBlock Text="{Binding UptimeLabel}"
                                                FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                                    <TextBlock Text="Uptime" FontSize="10" HorizontalAlignment="Center"
+                                    <TextBlock Text="{DynamicResource PH_UptimeLabel}" FontSize="10" HorizontalAlignment="Center"
                                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                                 </StackPanel>
                             </Grid>
@@ -661,11 +667,11 @@
                         <!-- Loaded since -->
                         <TextBlock Margin="0,0,0,12" FontSize="11"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
-                            <Run Text="Loaded since: "/><Run Text="{Binding LoadedSince, Mode=OneWay}"/>
+                            <Run Text="{DynamicResource PH_LoadedSinceLabel}"/><Run Text="{Binding LoadedSince, Mode=OneWay}"/>
                         </TextBlock>
 
                         <!-- CPU % Chart -->
-                        <TextBlock Text="CPU % — History" FontSize="10" FontWeight="SemiBold"
+                        <TextBlock Text="{DynamicResource PH_CpuHistoryTitle}" FontSize="10" FontWeight="SemiBold"
                                    Foreground="#22C55E" Margin="0,0,0,4"/>
                         <Border Height="70" Margin="0,0,0,10"
                                 Background="{DynamicResource DockBackgroundBrush}"
@@ -680,7 +686,7 @@
                         </Border>
 
                         <!-- Memory MB Chart -->
-                        <TextBlock Text="Memory MB — History" FontSize="10" FontWeight="SemiBold"
+                        <TextBlock Text="{DynamicResource PH_MemoryHistoryTitle}" FontSize="10" FontWeight="SemiBold"
                                    Foreground="#60A5FA" Margin="0,0,0,4"/>
                         <Border Height="70" Margin="0,0,0,10"
                                 Background="{DynamicResource DockBackgroundBrush}"
@@ -697,11 +703,11 @@
                         <Separator Margin="0,4,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
                         <!-- ── Section: Permissions ──────────────────────────── -->
-                        <TextBlock Text="Permissions"
+                        <TextBlock Text="{DynamicResource PH_PermissionsTitle}"
                                    FontWeight="SemiBold" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    Margin="0,0,0,6"/>
-                        <TextBlock Text="Toggle individual permissions for this plugin. Changes take effect immediately."
+                        <TextBlock Text="{DynamicResource PH_PermissionsDesc}"
                                    FontSize="11" TextWrapping="Wrap" Margin="0,0,0,10"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Opacity="0.7"/>
                         <ItemsControl ItemsSource="{Binding Permissions}">
@@ -736,14 +742,14 @@
                         <!-- ── Section: Dormant Info (Lazy Loaded) ──────────── -->
                         <StackPanel Visibility="{Binding IsDormant, Converter={StaticResource BoolToVis}}">
                             <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
-                            <TextBlock Text="Lazy Loading"
+                            <TextBlock Text="{DynamicResource PH_LazyLoadingSection}"
                                        FontWeight="SemiBold" FontSize="13"
                                        Foreground="#A855F7" Margin="0,0,0,6"/>
                             <Border Padding="10,8" Margin="0,0,0,8"
                                     Background="{DynamicResource Panel_ToolbarBrush}"
                                     BorderBrush="#A855F7" BorderThickness="1" CornerRadius="4">
                                 <StackPanel>
-                                    <TextBlock Text="This plugin is dormant — it activates when a trigger is matched."
+                                    <TextBlock Text="{DynamicResource PH_DormantDesc}"
                                                FontSize="11" TextWrapping="Wrap"
                                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                                Margin="0,0,0,6"/>
@@ -751,7 +757,7 @@
                                                FontSize="11" FontStyle="Italic"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                Margin="0,0,0,8"/>
-                                    <Button Content="Load Now"
+                                    <Button Content="{DynamicResource PH_LoadNowButton}"
                                             Command="{Binding LoadNowCommand}"
                                             HorizontalAlignment="Left"
                                             Style="{DynamicResource PM_PrimaryButtonStyle}"/>
@@ -762,7 +768,7 @@
                         <!-- ── Section: ALC Diagnostics (InProcess only) ─────── -->
                         <StackPanel Visibility="{Binding IsInProcess, Converter={StaticResource BoolToVis}}">
                             <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
-                            <TextBlock Text="ALC Diagnostics"
+                            <TextBlock Text="{DynamicResource PH_AlcDiagnosticsSection}"
                                        FontWeight="SemiBold" FontSize="13"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        Margin="0,0,0,6"/>
@@ -780,7 +786,7 @@
                                                    FontSize="18" FontWeight="Bold"
                                                    HorizontalAlignment="Center"
                                                    Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                                        <TextBlock Text="Assemblies" FontSize="10"
+                                        <TextBlock Text="{DynamicResource PH_AlcAssembliesLabel}" FontSize="10"
                                                    HorizontalAlignment="Center"
                                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                                     </StackPanel>
@@ -799,7 +805,7 @@
                                                 </Style>
                                             </TextBlock.Style>
                                         </TextBlock>
-                                        <TextBlock Text="Conflicts" FontSize="10"
+                                        <TextBlock Text="{DynamicResource PH_AlcConflictsLabel}" FontSize="10"
                                                    HorizontalAlignment="Center"
                                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                                     </StackPanel>
@@ -820,7 +826,7 @@
                         <!-- ── Section: Capability Features ─────────────────── -->
                         <StackPanel Visibility="{Binding HasFeatures, Converter={StaticResource BoolToVis}}">
                             <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
-                            <TextBlock Text="Capabilities"
+                            <TextBlock Text="{DynamicResource PH_CapabilitiesSection}"
                                        FontWeight="SemiBold" FontSize="13"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        Margin="0,0,0,6"/>
@@ -846,7 +852,7 @@
                         <!-- ── Section: Extension Points ─────────────────────── -->
                         <StackPanel Visibility="{Binding HasExtensions, Converter={StaticResource BoolToVis}}">
                             <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
-                            <TextBlock Text="Extension Points"
+                            <TextBlock Text="{DynamicResource PH_ExtensionPointsSection}"
                                        FontWeight="SemiBold" FontSize="13"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        Margin="0,0,0,6"/>
@@ -864,7 +870,7 @@
                         <!-- ── Section: Dependency Warnings ─────────────────── -->
                         <StackPanel Visibility="{Binding HasUnresolvedDeps, Converter={StaticResource BoolToVis}}">
                             <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
-                            <TextBlock Text="Dependency Errors"
+                            <TextBlock Text="{DynamicResource PH_DependencyErrorsSection}"
                                        FontWeight="SemiBold" FontSize="13"
                                        Foreground="#EF4444" Margin="0,0,0,6"/>
                             <ItemsControl ItemsSource="{Binding UnresolvedDepLabels}">
@@ -882,7 +888,7 @@
                         <!-- ── Section: Watch Mode (Dev Hot-Reload) ─────────── -->
                         <StackPanel>
                             <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
-                            <TextBlock Text="Watch Mode"
+                            <TextBlock Text="{DynamicResource PH_WatchModeSection}"
                                        FontWeight="SemiBold" FontSize="13"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        Margin="0,0,0,6"/>
@@ -890,7 +896,7 @@
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        Opacity="0.7"
                                        Margin="0,0,0,8"
-                                       Text="Hot-reload this plugin automatically when its DLL is rebuilt. Select the plugin's build output directory."/>
+                                       Text="{DynamicResource PH_WatchModeDesc}"/>
                             <DockPanel LastChildFill="False">
                                 <Button DockPanel.Dock="Left"
                                         Command="{Binding ToggleWatchModeCommand}"
@@ -910,7 +916,7 @@
                                         VerticalAlignment="Center">
                                     <TextBlock FontSize="10" FontWeight="Bold"
                                                Foreground="{Binding WatchModeBadgeColor}"
-                                               Text="● WATCHING"/>
+                                               Text="{DynamicResource PH_WatchingBadge}"/>
                                 </Border>
                             </DockPanel>
                             <TextBlock FontSize="10" Opacity="0.6" Margin="0,4,0,0"
@@ -922,7 +928,7 @@
                         <!-- ── Section: Settings (conditional) ──────────────── -->
                         <StackPanel Visibility="{Binding HasOptions, Converter={StaticResource BoolToVis}}">
                             <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
-                            <TextBlock Text="Settings"
+                            <TextBlock Text="{DynamicResource PH_SettingsSection}"
                                        FontWeight="SemiBold" FontSize="13"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        Margin="0,0,0,10"/>

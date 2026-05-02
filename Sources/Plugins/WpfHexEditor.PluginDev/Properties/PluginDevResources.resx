@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.PluginDev
+    File        : Properties/PluginDevResources.resx
+    Description : PluginDev-specific UI strings (neutral/English).
+                  Common strings (OK, Cancel…) come from WpfHexEditor.Core.Localization.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- NewPluginWizardWindow -->
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>New Extension Project</value>
+    <comment>Window title and header for the new plugin wizard</comment>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Select output directory for the plugin project</value>
+    <comment>OpenFolderDialog title on page 1 of the wizard</comment>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>Permissions</value>
+    <comment>GroupBox header on wizard page 3</comment>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>Isolation Mode</value>
+    <comment>GroupBox header on wizard page 3</comment>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>Load Priority (10–90):</value>
+    <comment>Label for the load priority slider on wizard page 3</comment>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>Next &gt;</value>
+    <comment>Navigation button label for advancing wizard pages</comment>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>Create &amp; Open</value>
+    <comment>Final wizard step button — creates and opens the plugin project</comment>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>Plugin Created</value>
+    <comment>MessageBox title shown after successful plugin project creation</comment>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>Error</value>
+    <comment>MessageBox title shown on plugin creation failure</comment>
+  </data>
+
+  <!-- PluginPackagePublisherDialog -->
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>Publish Extension Package</value>
+    <comment>Window title and heading for the publisher dialog</comment>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>Sign package before publishing</value>
+    <comment>CheckBox label for optional signing step in the publisher dialog</comment>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Browse…</value>
+    <comment>Button label for opening a folder browser dialog</comment>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>Open output folder in Explorer</value>
+    <comment>Link button shown after successful packaging</comment>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>Package</value>
+    <comment>Button label that triggers the packaging action</comment>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>Close</value>
+    <comment>Button label to close the publisher dialog</comment>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>Select output directory</value>
+    <comment>OpenFolderDialog title in the publisher dialog</comment>
+  </data>
+
+  <!-- PluginDevLogPanel -->
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>Export Extension Dev Log</value>
+    <comment>SaveFileDialog title when exporting the plugin dev log</comment>
+  </data>
+
+  <!-- PluginMarketplacePanel -->
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>Search</value>
+    <comment>Button label in the Browse tab of the marketplace panel</comment>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>Browse</value>
+    <comment>Tab header for the Browse tab in the marketplace panel</comment>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>Installed</value>
+    <comment>Tab header for the Installed tab in the marketplace panel</comment>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>Update All</value>
+    <comment>Toolbar button in the Updates tab of the marketplace panel</comment>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>Updates</value>
+    <comment>Tab header for the Updates tab in the marketplace panel</comment>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>Extension Marketplace</value>
+    <comment>MessageBox caption used in install/uninstall confirmations</comment>
+  </data>
+
+  <!-- PluginDevToolbar -->
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>Extension:</value>
+    <comment>Label preceding the plugin selector ComboBox in the toolbar</comment>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>Config:</value>
+    <comment>Label preceding the configuration selector ComboBox in the toolbar</comment>
+  </data>
+
+  <!-- PanelPluginTemplate (generated ViewModel status) -->
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>Ready</value>
+    <comment>Initial StatusText value in generated PanelPluginTemplate ViewModel</comment>
+  </data>
+
+  <!-- PluginMarketplacePanel toolbar and column headers -->
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+    <comment>Toolbar refresh button label in the Installed tab of the marketplace panel</comment>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>Name</value>
+    <comment>GridViewColumn header for package name</comment>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>Author</value>
+    <comment>GridViewColumn header for package author</comment>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>Version</value>
+    <comment>GridViewColumn header for package version</comment>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>Rating</value>
+    <comment>GridViewColumn header for package rating</comment>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>Downloads</value>
+    <comment>GridViewColumn header for package download count</comment>
+  </data>
+
+  <data name="PluginDev_ClearLog" xml:space="preserve">
+    <value>Clear log</value>
+  </data>
+  <data name="PluginDev_FilterBySource" xml:space="preserve">
+    <value>Filter by source</value>
+  </data>
+  <data name="PluginDev_ExportLog" xml:space="preserve">
+    <value>Export log to file</value>
+  </data>
+  <data name="PluginDev_AutoScroll" xml:space="preserve">
+    <value>Auto-scroll to latest entry</value>
+  </data>
+  <data name="PluginDev_ColTime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="PluginDev_ColLevel" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="PluginDev_ColSource" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="PluginDev_ColMessage" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="PluginDev_AutoRebuild" xml:space="preserve">
+    <value>Rebuild plugin automatically on file save</value>
+  </data>
+  <data name="PluginDev_CopyOutput" xml:space="preserve">
+    <value>Copy output to plugin directory after successful build</value>
+  </data>
+  <data name="PluginDev_LogLevelLabel" xml:space="preserve">
+    <value>Log level:</value>
+  </data>
+  <data name="PluginDev_LogDebug" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="PluginDev_LogInfo" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="PluginDev_LogWarning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="PluginDev_LogError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="PluginDev_SandboxModeLabel" xml:space="preserve">
+    <value>Sandbox mode:</value>
+  </data>
+  <data name="PluginDev_SandboxLight" xml:space="preserve">
+    <value>Light (in-process, catch exceptions)</value>
+  </data>
+  <data name="PluginDev_SandboxFull" xml:space="preserve">
+    <value>Full (out-of-process Named Pipe)</value>
+  </data>
+  <data name="PluginDev_InitTimeout" xml:space="preserve">
+    <value>Init timeout (ms):</value>
+  </data>
+  <data name="PluginDev_ShowDevMode" xml:space="preserve">
+    <value>Show 'Plugin Dev Mode' indicator in status bar</value>
+  </data>
+</root>

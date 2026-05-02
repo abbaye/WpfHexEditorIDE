@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>खोजें और बदलें</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>खोजें:</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>बदलें:</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>केस मिलाएं</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>पूरा शब्द</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>सभी खोजें</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>अगला खोजें</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>पिछला खोजें</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>बदलें</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>सभी बदलें</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>बंद करें</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>पृष्ठ</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>प्रारूप:</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>कस्टम</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>अभिविन्यास:</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>पोर्ट्रेट</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>लैंडस्केप</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>कॉलम</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>समान कॉलम चौड़ाई</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>कॉलम के बीच विभाजक रेखा दिखाएं</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>शीर्षलेख/पादलेख</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>शीर्षलेख</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>शीर्षलेख सक्षम करें</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>पहले पृष्ठ पर अलग सामग्री</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>बाएं/दाएं पृष्ठों पर समान शीर्षलेख</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>पादलेख</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>पादलेख सक्षम करें</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>बॉर्डर</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>कोई नहीं</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>बॉक्स</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>छाया</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>रद्द करें</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>लागू करें</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>अंदर:</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>बाहर:</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>बाएं:</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>दाएं:</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>टेक्स्ट दृश्य</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>विभाजित दृश्य (टेक्स्ट + Hex)</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>Hex दृश्य</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>संरचना ट्री दृश्य</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>पूर्ण दृश्य (टेक्स्ट + संरचना + Hex)</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>फोकस मोड — ज़ेन लेखन (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>टेक्स्ट</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>विभाजित</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>संरचना</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>पूर्ण</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>फोकस</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>पृष्ठ दृश्य — पृष्ठांकित A4/Letter कार्ड</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>ड्राफ्ट दृश्य — सतत स्क्रॉल, संक्षिप्त मार्जिन</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>रूपरेखा दृश्य — संरचना ट्री केंद्रित</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>फोरेंसिक विश्लेषण मोड</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>फोरेंसिक</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>बोल्ड (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>इटैलिक (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>रेखांकित (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>स्ट्राइकथ्रू</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>बाएं संरेखित करें</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>केंद्र संरेखित करें</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>दाएं संरेखित करें</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>अनुच्छेद शैली</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>सामान्य</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>उद्धरण</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Code</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>अनुच्छेद शैलियां (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>पृष्ठ सेटअप (कागज का आकार, मार्जिन, कॉलम…)</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>ज़ूम आउट</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>ज़ूम इन</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>केवल पढ़ने योग्य</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>दस्तावेज़ मेटाडेटा</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>दस्तावेज़ निर्यात करें</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>सहेजें</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>शीर्षक</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>लेखक</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>प्रारूप</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>बनाया गया</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>संशोधित</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>मैक्रो</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>बोल्ड (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>इटैलिक (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>रेखांकित (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>चयनित टेक्स्ट कॉपी करें</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>Hex बाइट्स के रूप में कॉपी करें</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>संरचना पैनल में ब्लॉक जांचें</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>Hex पैनल में ऑफसेट पर जाएं</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>पृष्ठ संख्या</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>शब्द संख्या</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>ज़ूम स्तर</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>फोरेंसिक पैनल खोलने के लिए क्लिक करें</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>संरचना</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>सभी संकुचित करें</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>सभी विस्तृत करें</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>ब्लॉक फ़िल्टर करें…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>फ़िल्टर साफ़ करें</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>टेक्स्ट पर नेविगेट करें</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>Hex ऑफसेट पर जाएं</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>ब्लॉक टेक्स्ट कॉपी करें</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>ऑफसेट कॉपी करें</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>दस्तावेज़</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>सहेजा गया — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>सहेजना विफल: {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>इस फ़ाइल प्रकार के लिए कोई सेवर पंजीकृत नहीं है।</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>दस्तावेज़ लोड हो रहा है…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>IDE आरंभीकरण की प्रतीक्षा…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>दस्तावेज़ खोलने में विफल: {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>दस्तावेज़ निर्यात करें</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>निर्यात विफल: {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>निर्यात किया — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>'{0}' के लिए कोई सेवर पंजीकृत नहीं।</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>हां</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>नहीं</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>टेक्स्ट</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>विभाजित</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>संरचना</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>पूर्ण</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>फोकस</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | केवल पढ़ने योग्य</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>पृष्ठ 1</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 शब्द</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>विभाजित</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>प्रारूप: {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} शब्द</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>पृष्ठ 1 / {0}</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>सामान्य</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>शीर्षक 1</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>शीर्षक 2</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>शीर्षक 3</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>शीर्षक 4</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>शीर्षक 5</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>शीर्षक 6</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>उद्धरण</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>कैप्शन</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>सूची अनुच्छेद</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>तीव्र उद्धरण</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>अलर्ट</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>ब्लॉक</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>स्वरूप</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>चयन</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>संस्करण</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>दृश्य</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>फॉरेंसिक मोड</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>हेक्स दृश्य</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>सहेजें</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>विभाजित दृश्य</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>संरचना दृश्य</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>पाठ दृश्य</value>
+  </data>
+</root>

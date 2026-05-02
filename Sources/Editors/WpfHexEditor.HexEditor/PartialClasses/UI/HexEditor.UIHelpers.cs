@@ -459,7 +459,7 @@ namespace WpfHexEditor.HexEditor
                 }
                 else
                 {
-                    StatusText.Text = "No matches found.";
+                    StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_NoMatchesFound;
                 }
             }
         }
@@ -517,7 +517,7 @@ namespace WpfHexEditor.HexEditor
                     }
                     else
                     {
-                        StatusText.Text = "No matches found.";
+                        StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_NoMatchesFound;
                     }
                 }
                 catch (Exception ex)

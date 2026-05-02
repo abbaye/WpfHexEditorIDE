@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>Inspetor de dados</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>Análise de dados</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>Inspetor de dados</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>_Inspetor de dados</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>Sem dados para exibir</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Máx</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Entropia</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>bits/byte</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>Sem bytes selecionados — selecione bytes no editor hex.</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>Exibição ativa</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>Arquivo inteiro</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>Seleção</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>Frequência</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>Entropia</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>Sem dados</value>
+  </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Categoria:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>Todos</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Inteiro</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>Ponto flutuante</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Data/Hora</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Rede</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Cor</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>Básico</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>Bits</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>Todos os formatos</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>Mais opções</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Mostrar rótulos de eixo</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Mostrar linhas de grade</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Mostrar estatísticas</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Distribuição de frequência</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Entropia (janela deslizante)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Ampliar</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Reduzir</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Redefinir zoom</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Atualizar gráfico</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Copiar imagem do gráfico</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Layout</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Esquerda</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Direita</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Acima</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Abaixo</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Escopo:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Visão ativa</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Seleção</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>Arquivo inteiro</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Frequência</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Layout:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Posição do gráfico em relação à lista de interpretação</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Analisando arquivo...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Interpretações: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>Sem dados</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Atualização automática ao mudar seleção</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Ordem de bytes padrão: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Mostrar painel de gráfico de bytes</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Posição do gráfico:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Máx. bytes de visualização de string:</value></data>
+</root>

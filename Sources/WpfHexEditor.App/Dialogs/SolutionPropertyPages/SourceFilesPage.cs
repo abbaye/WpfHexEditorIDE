@@ -15,6 +15,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Microsoft.Win32;
+using WpfHexEditor.App.Properties;
 
 namespace WpfHexEditor.App.Dialogs.SolutionPropertyPages;
 
@@ -108,7 +109,7 @@ internal sealed class SourceFilesPage : UserControl
 
         bar.Children.Add(MakeToolbarButton("\uED25", "Parcourir…", () =>
         {
-            var dlg = new OpenFolderDialog { Title = "Sélectionner un dossier source" };
+            var dlg = new OpenFolderDialog { Title = AppResources.App_SourceFiles_SelectFolder };
             if (dlg.ShowDialog() == true && !collection.Contains(dlg.FolderName))
                 collection.Add(dlg.FolderName);
         }));

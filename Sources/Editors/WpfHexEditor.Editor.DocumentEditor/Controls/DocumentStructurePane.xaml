@@ -1,10 +1,16 @@
 <UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentStructurePane"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
              xmlns:local="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Controls"
              Background="{DynamicResource DockBackgroundBrush}"
              Foreground="{DynamicResource DockMenuForegroundBrush}">
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <docSvc:DocumentEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <local:ResourceKeyToBrushConverter x:Key="ResourceKeyToBrushConverter"/>
 
@@ -35,6 +41,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
@@ -54,7 +61,7 @@
                 <!-- Title + block count -->
                 <TextBlock x:Name="PART_Header"
                            DockPanel.Dock="Left"
-                           Text="Structure"
+                           Text="{DynamicResource DocStructure_Header}"
                            FontWeight="SemiBold"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DE_StructureNodeFg}"/>
@@ -71,7 +78,7 @@
                 <Button x:Name="PART_CollapseAllBtn"
                         Style="{StaticResource StructToolBtnStyle}"
                         DockPanel.Dock="Right"
-                        ToolTip="Collapse all"
+                        ToolTip="{DynamicResource DocStructure_TooltipCollapseAll}"
                         Click="OnCollapseAllClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70D;" FontSize="11"/>
                 </Button>
@@ -79,7 +86,7 @@
                 <Button x:Name="PART_ExpandAllBtn"
                         Style="{StaticResource StructToolBtnStyle}"
                         DockPanel.Dock="Right"
-                        ToolTip="Expand all"
+                        ToolTip="{DynamicResource DocStructure_TooltipExpandAll}"
                         Click="OnExpandAllClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70E;" FontSize="11"/>
                 </Button>
@@ -113,7 +120,7 @@
                             <Style.Resources>
                                 <VisualBrush x:Key="HintBrush" Stretch="None" AlignmentX="Left">
                                     <VisualBrush.Visual>
-                                        <TextBlock Text="Filter blocks…"
+                                        <TextBlock Text="{DynamicResource DocStructure_FilterHint}"
                                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                    Opacity="0.4"
                                                    FontSize="12"
@@ -138,7 +145,7 @@
                         Style="{StaticResource StructToolBtnStyle}"
                         Width="20" Height="20"
                         Margin="2,0,0,0"
-                        ToolTip="Clear filter"
+                        ToolTip="{DynamicResource DocStructure_TooltipClearFilter}"
                         Click="OnClearSearchClicked"
                         Visibility="{Binding Text.Length, ElementName=PART_SearchBox,
                                      Converter={StaticResource BoolToVis}}">
@@ -209,14 +216,14 @@
             <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="PART_MenuNavigate"
-                              Header="Navigate to text"
+                              Header="{DynamicResource DocStructure_MenuNavigate}"
                               Click="OnMenuNavigateClicked">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A5;" FontSize="12"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="PART_MenuJumpHex"
-                              Header="Jump to hex offset"
+                              Header="{DynamicResource DocStructure_MenuJumpHex}"
                               Click="OnMenuJumpHexClicked">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C4;" FontSize="12"/>
@@ -224,14 +231,14 @@
                     </MenuItem>
                     <Separator/>
                     <MenuItem x:Name="PART_MenuCopyText"
-                              Header="Copy block text"
+                              Header="{DynamicResource DocStructure_MenuCopyText}"
                               Click="OnMenuCopyTextClicked">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C8;" FontSize="12"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="PART_MenuCopyOffset"
-                              Header="Copy offset"
+                              Header="{DynamicResource DocStructure_MenuCopyOffset}"
                               Click="OnMenuCopyOffsetClicked">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F4;" FontSize="12"/>

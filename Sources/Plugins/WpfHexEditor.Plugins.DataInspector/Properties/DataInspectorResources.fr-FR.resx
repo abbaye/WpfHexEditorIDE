@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>Inspecteur de données</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>Analyse des données</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>Inspecteur de données</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>_Inspecteur de données</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>Aucune donnée à afficher</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Max</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Entropie</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>bits/octet</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>octets</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>Aucun octet sélectionné — sélectionnez des octets dans l'éditeur hex.</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>Vue active</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>Fichier entier</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>Sélection</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>Fréquence</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>Entropie</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>Aucune donnée</value>
+  </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Catégorie :</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>Tout</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Entier</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>Flottant</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Date/Heure</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Réseau</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Couleur</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>Basique</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>Bits</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>Tous les formats</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>Plus d'options</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Afficher les étiquettes d'axe</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Afficher les lignes de grille</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Afficher les statistiques</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Distribution de fréquence</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Entropie (fenêtre glissante)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Zoom avant</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Zoom arrière</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Réinitialiser le zoom</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Actualiser le graphique</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Copier l'image du graphique</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Disposition</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Gauche</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Droite</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Haut</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Bas</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Portée :</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Vue active</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Sélection</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>Fichier entier</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Fréquence</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Disposition :</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Position du graphique par rapport à la liste d'interprétation</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Analyse du fichier...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Interprétations : </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>Aucune donnée</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Actualisation auto sur changement de sélection</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Ordre des octets par défaut : Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Afficher le panneau de graphique d'octets</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Position du graphique :</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Octets max pour l'aperçu de chaîne :</value></data>
+</root>

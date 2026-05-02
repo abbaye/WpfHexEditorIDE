@@ -6,6 +6,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.App.Controls;
@@ -60,7 +61,7 @@ public partial class DocumentInfoBar : UserControl
 
         // Only offer "Hex Editor" when the current editor is not already the hex editor
         if (currentEditorId != "hex-editor")
-            ActionButtons.Children.Add(MakeButton("Hex Editor", null));
+            ActionButtons.Children.Add(MakeButton(AppResources.App_InfoBar_HexEditor, null));
 
         // Add alternatives from registry
         foreach (var factory in alternatives)

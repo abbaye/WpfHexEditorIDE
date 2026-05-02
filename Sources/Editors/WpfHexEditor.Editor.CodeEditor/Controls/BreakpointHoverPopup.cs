@@ -22,6 +22,7 @@ using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 using WpfHexEditor.Editor.CodeEditor.Rendering;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
@@ -134,17 +135,17 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
         Brush  circleBrush;
         if (!info.IsEnabled)
         {
-            typeLabel   = "Disabled";
+            typeLabel   = CodeEditorResources.CodeEditor_BreakpointTypeDisabled;
             circleBrush = Brushes.DimGray;
         }
         else if (!string.IsNullOrEmpty(info.Condition))
         {
-            typeLabel   = "Conditional";
+            typeLabel   = CodeEditorResources.CodeEditor_BreakpointTypeConditional;
             circleBrush = new SolidColorBrush(Color.FromRgb(0xE0, 0x8A, 0x1E));
         }
         else
         {
-            typeLabel   = "Breakpoint";
+            typeLabel   = CodeEditorResources.CodeEditor_BreakpointTypeBreakpoint;
             circleBrush = new SolidColorBrush(Color.FromRgb(0xE5, 0x14, 0x00));
         }
 
@@ -272,7 +273,7 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
         // ── Context-menu action list ─────────────────────────────────────────
         var menuPanel = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(0, 2, 0, 4) };
 
-        menuPanel.Children.Add(MakeMenuItem("\uE8AC", "Edit Condition", (_, _) =>
+        menuPanel.Children.Add(MakeMenuItem("\uE8AC", CodeEditorResources.CodeEditor_BreakpointEditCondition, (_, _) =>
         {
             IsOpen = false;
             EditConditionRequested?.Invoke(_filePath, _line1);
@@ -280,7 +281,7 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
 
         menuPanel.Children.Add(MakeMenuSeparator());
 
-        string toggleLabel = info.IsEnabled ? "Disable" : "Enable";
+        string toggleLabel = info.IsEnabled ? CodeEditorResources.CodeEditor_BreakpointDisable : CodeEditorResources.CodeEditor_BreakpointEnable;
         string toggleGlyph = info.IsEnabled ? "\uE73E" : "\uE73F";
         menuPanel.Children.Add(MakeMenuItem(toggleGlyph, toggleLabel, (_, _) =>
         {
@@ -291,7 +292,7 @@ internal sealed class BreakpointHoverPopup : Popup, IDisposable
 
         menuPanel.Children.Add(MakeMenuSeparator());
 
-        menuPanel.Children.Add(MakeMenuItem("\uE74D", "Delete Breakpoint", (_, _) =>
+        menuPanel.Children.Add(MakeMenuItem("\uE74D", CodeEditorResources.CodeEditor_BreakpointDeleteBreakpoint, (_, _) =>
         {
             _source?.Delete(_filePath, _line1);
             DeleteRequested?.Invoke(_filePath, _line1);

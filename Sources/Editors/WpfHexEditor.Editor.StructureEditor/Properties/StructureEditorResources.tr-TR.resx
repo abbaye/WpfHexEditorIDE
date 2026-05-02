@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.tr-TR.resx
+    Description : Localized UI strings for the Structure Editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Konum</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>Güç</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>Gerekli</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Blok Ekle</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Ekle</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Meta Veri</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Algılama</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Bloklar</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Değişkenler</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Gelişmiş</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Kalite</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Test</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Kaydet (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Doğrula (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Geri Al (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Yeniden Yap (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Canlı Kod Görünümünü Aç/Kapat</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Blok ekle (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Bloğu çoğalt (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Kaydedilmemiş değişiklikler</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Blokları ada göre filtrele</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Blok Ekle...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Çoğalt</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Yukarı Taşı</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Aşağı Taşı</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>JSON Olarak Kopyala</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Bloğu Yapıştır</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Özelliklerini düzenlemek için bir blok seçin,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>veya yeni bir blok eklemek için Ctrl+N / sağ tıklayın.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Hex İmzası</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Boşluksuz hex baytları, örn. PNG için 89504E47</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>İmza</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>v2.0 İmzaları</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Eşleşme Modu</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Hex değeri</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Ofset</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Etiket</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ İmza Ekle</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Entropi İpucu</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Min Entropi</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Maks Entropi</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Minimum Puan</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Puan Eşiği</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>İçerik Kalıpları (metin biçimleri)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Regex kalıbı</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Kalıp Ekle</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>Temel</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Biçim Adı</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Okunabilir biçim adı (örn. 'ZIP Arşivi', 'PNG Resmi')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Sürüm</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Bu tanımın sürümü (örn. '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Yazar</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Bu tanım dosyasının yazarı</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Kategori</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Kategori (klasör yapısından otomatik: Arşivler, Resimler, Ses, Video vb.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Diff Modu</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>DiffViewer için tercih edilen diff algoritması</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Tercih Edilen Düzenleyici</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>Bu biçimle eşleşen dosyalar için tercih edilen düzenleyici fabrika kimliği</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Açıklama</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Metin biçimi (varsayılan olarak Kod Düzenleyici'de açılır)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Dosya Uzantıları</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Uzantı Ekle</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME Türleri</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ MIME Türü Ekle</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Yazılım</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Yazılım Ekle</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Hesaplanan Ölçümler</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Blok Kapsamı</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Tamlık Puanı</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Tür Dağılımı</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Bloklar</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Derinlik</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Değişkenler</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Kurallar</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Meta Veri</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Belgeleme Düzeyi</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Son Güncelleme</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Biçim: YYYY-MM-DD (kaydedildiğinde otomatik doldurulur)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Öncelikli Biçim (ilk 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Otomatik iyileştirildi (betikle zenginleştirildi — salt okunur)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Biçimi Dosyaya Karşı Test Et</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Test edilecek ikili dosyanın yolu</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Gözat…</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Testi Çalıştır</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Sonuçları panoya kopyala (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Geçerli biçim tanımını test etmek için bir dosya seçin ve ▶ Testi Çalıştır'a tıklayın.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Durum</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Blok Adı</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Tür</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Ofset</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Uzn.</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Ham (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Ayrıştırılmış Değer</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Not</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Uyarı</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Hata</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Atlandı</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Blok yorumlayıcısının kullanabileceği başlangıç değişkenleri (örn. döngü sayaçları, hesaplanan ofsetler).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Değişkenleri ada göre filtrele</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Değişken Adı</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Tür</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Başlangıç Değeri</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Açıklama</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Değişken Ekle</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Savlar</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:name equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Boole ifadesi — Ctrl+Space ile işlev ve değişkenlere erişin</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Sağlama Toplamları</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Sürüm Yönetimi (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>İçe Aktarmalar ($ref Bileşimi)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = biçim adı (veya structs/Ad), as = structRef bloklarında kullanılan takma ad.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Biçim referansı örn. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>structRef'teki takma ad örn. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ İçe Aktarma Ekle</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Adli</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Gezinti Yer İmleri</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>değişkenAdı</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Bayt ofsetini tutan değişken — Ctrl+Space ile öneriler</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Yer İmi Ekle</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Denetçi Düzeni</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Dışa Aktarma Şablonları</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Şablon Ekle</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>Yapay Zeka İpuçları</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Sabit veya değişken ofset ve uzunluğa sahip ikili alan.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Biçimi belirli bir ofset konumunda tanımlayan sihirli baytlar.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Değişken uzunluklu veya sembolik bir değeri adlandırılmış bir değişkene okur.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Bir alan değerine veya değişkene göre blokları koşullu olarak ayrıştırır.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Bir koşul doğru olduğu sürece blok gövdesini tekrarlar.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Bir değişkeni değiştirir (artır, azalt, değişkenAyarla).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Matematiksel bir ifadeyi değerlendirir ve sonucu depolar.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Sabit sayıda yapılandırılmış girişten oluşan diziyi ayrıştırır.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Bir ayrıştırıcı değişkene göre varyant blok kümesi seçer.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Referans yoluyla harici bir yapı tanımını gömer.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>İşaret edilen bir ofset için gezinti ek açıklaması oluşturur.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} hata</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} uyarı</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>Ham JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Uygula</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Yapı Düzenleyici</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>.whfmt yapı tanım dosyaları için görsel düzenleyici. DataGrid'de blokları, türleri, ofsetleri, uzunlukları ve renkleri düzenleyin.</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Doğrula (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Blok ekle (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Canlı kod görünümünü aç/kapat</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Düzen</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Kod görünümü düzeni</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Kod sağda</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Kod solda</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Kod altta</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Kod üstte</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Biçim</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Sekme</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Bloklar</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Doğrulama</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Uzunluk:</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Test icin ikili dosya secin</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Ad</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Tür</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Renk</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Opaklık</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Açıklama</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Gizli</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Bayt Sırası</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Blok Türü</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Eylem</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Değişken</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Değer</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Hesaplama</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>İfade</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Şu olarak kaydet</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Konum</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Ofset</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Ofset kaynağı</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Ofset ekle</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Uzunluk</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Değer Türü</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Dizi</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Sayı</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Giriş boyutu</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>İndeks değişkeni</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Renk döngüsü</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Giriş alanları ağaçta alt öğeler olarak gösterilir.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Birleşim</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Ayrıştırıcı</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Varyantlar</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>İç içe yapı</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Yapı başvurusu</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>İşaretçi konumu</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Hedef ve depolama</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Hedef değişken</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Etiket</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Konum ve boyut</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Depolama</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Eşlenmiş kaydet</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Değer eşlemesi</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Bit alanları</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Ad</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Bitler</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Şuna kadar</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Maks. uzunluk</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Min. değer</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Maks. değer</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Desen (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Hata mesajı</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Değişken adı</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Grup</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Bir grup, alt alan kümesini renkli bir kaplama ile görsel olarak etiketler. Bayt tüketmez.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Alt öğeler blok ağacında gösterilir — alt blok eklemek/yeniden sıralamak için ağacı kullanın.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Alt alanlar blok ağacında gösterilir.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Ham veri bölgesi</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Ham bayt bölgesini renkli bir kaplama ile işaretler. Hiçbir değer çıkarılmaz.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Koşul</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Dal etiketleri</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>True etiketi</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>False etiketi</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Then / Else blokları ağaçta alt öğeler olarak gösterilir.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Döngü koşulu</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Sınırlar</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Maks. yineleme</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Gövde blokları ağaçta alt öğeler olarak gösterilir.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Üzerinde işlem yapılacak değişkenin adı — önerileri görmek için yazın (Ctrl+Boşluk)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Atanacak değer / eklenecek veya çıkarılacak miktar — var:ad destekler</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Değişkenler ve işlevlerle matematiksel ifade — otomatik tamamlama için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Hesaplanan sonucu saklayacak değişken adı — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Dizinin başladığı dosya ofseti — otomatik tamamlama için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Bu dizi için temel ofset olarak kullanılan değişken</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Giriş sayısı — değişken önerileri için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Her bir girişin bayt cinsinden boyutu — değişken önerileri için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Döngü indeks değişkeninin adı (örn. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Renk ekle</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Varyant seçimini yöneten değişken — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Format adı veya .whfmt dosyasına göreli yol</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Gözat…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>İşaretçi değerinin okunduğu dosya ofseti — otomatik tamamlama için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Temel ofset olarak kullanılan değişken adı</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>İşaretçi değerinin bayt boyutu (örn. uint32 için 4) — veya var:ad</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Çözülen işaretçi adresini alacak değişken</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Ham işaretçi değerini saklayacak değişken</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Hex görünümünde gösterilen ek açıklama etiketi</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Otomatik tamamlama için Ctrl+Boşluk — tamsayı, var:ad, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Değeri temel ofset olan değişken adı — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>OffsetFrom'a eklenen ek baytlar</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Otomatik tamamlama için Ctrl+Boşluk — tamsayı, var:ad, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Ayrıştırılan değeri saklayacak değişken adı — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>ValueMap çevirisi yapılan değer için değişken adı — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>ham=Görüntü (örn. 0=Gri tonlama)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ ValueMap girdisi ekle</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Bit aralığı örn. 7-6 veya tek bit örn. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Bit alanı ekle</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Sentinel (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Okumanın duracağı hex deseni veya var:ad. Ayarlandığında Length yerine geçer.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Until deseni hiç bulunmazsa güvenlik sınırı (bayt). 0 = yorumlayıcı varsayılanı (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until dahil (desen baytlarını alan uzunluğuna dahil et)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Doğrulama kuralları</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Bu meta veri bloğunun okuduğu değişkenin adı</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Sabit tamsayı veya var:ad — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Güvenlik sınırı — tamsayı</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Mevcut yineleme indeksini alan değişken (0-tabanlı)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Döngü tamamlandıktan sonra yineleme sayısını saklayacak değişken — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Bu bloğu ham JSON olarak düzenle</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Doğrulama ekle</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Sağlama toplamı ekle</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Şablon adı</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Yapı adı (C struct)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Yalnızca hex rakamları (örn. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Göster:</value></data>
+</root>

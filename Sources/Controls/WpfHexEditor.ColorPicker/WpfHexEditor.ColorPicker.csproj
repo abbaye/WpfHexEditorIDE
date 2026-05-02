@@ -5,6 +5,7 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>WpfHexEditor.ColorPicker</RootNamespace>
     <AssemblyName>WpfHexEditor.ColorPicker</AssemblyName>
+    <NeutralLanguage>en-US</NeutralLanguage>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
 
@@ -46,6 +47,23 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.*" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Localization\WpfHexEditor.Core.Localization.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\ColorPickerResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ColorPickerResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Update="Properties\ColorPickerResources.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>ColorPickerResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

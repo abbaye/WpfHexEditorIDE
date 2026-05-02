@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Shell.Automation;
+using WpfHexEditor.Shell.Properties;
 
 namespace WpfHexEditor.Shell;
 
@@ -453,13 +454,16 @@ public class DockTabControl : TabControl
         border.SetResourceReference(Border.BackgroundProperty,   "DockTabActiveBrush");
         border.SetResourceReference(Border.BorderBrushProperty,  "DockBorderBrush");
 
+        // screenPos is in physical pixels; PlacementMode.Absolute uses DIPs — convert to avoid
+        // ghost rendering at wrong position on HiDPI monitors.
+        var dip = DpiHelper.ScreenToDipForPoint(screenPos);
         _reorderGhost = new Popup
         {
             Child              = border,
             AllowsTransparency = true,
             Placement          = PlacementMode.Absolute,
-            HorizontalOffset   = screenPos.X + 8,
-            VerticalOffset     = screenPos.Y - 24,
+            HorizontalOffset   = dip.X + 8,
+            VerticalOffset     = dip.Y - 24,
             IsOpen             = true
         };
     }
@@ -467,8 +471,9 @@ public class DockTabControl : TabControl
     private void MoveReorderGhost(Point screenPos)
     {
         if (_reorderGhost is null) return;
-        _reorderGhost.HorizontalOffset = screenPos.X + 8;
-        _reorderGhost.VerticalOffset   = screenPos.Y - 24;
+        var dip = DpiHelper.ScreenToDipForPoint(screenPos);
+        _reorderGhost.HorizontalOffset = dip.X + 8;
+        _reorderGhost.VerticalOffset   = dip.Y - 24;
     }
 
     private void HideReorderGhost()
@@ -632,8 +637,23 @@ public class DockTabControl : TabControl
         protected override void OnRender(DrawingContext dc)
         {
             if (_x < 0) return;
-            double h = Math.Min(((FrameworkElement)AdornedElement).ActualHeight, 34);
-            dc.DrawLine(s_pen, new Point(_x, 0), new Point(_x, h));
+
+            // Locate the actual tab strip so the caret tracks tabs whether they are at
+            // the top (documents) or bottom (tool panels). Falls back to a top-anchored
+            // 34px caret if the template part is not yet available.
+            var tabControl = (DockTabControl)AdornedElement;
+            double y1 = 0;
+            double y2 = Math.Min(tabControl.ActualHeight, 34);
+
+            if (tabControl.Template?.FindName("PART_TabStrip", tabControl) is FrameworkElement strip
+                && strip.IsArrangeValid)
+            {
+                var topLeft = strip.TranslatePoint(new Point(0, 0), tabControl);
+                y1 = topLeft.Y;
+                y2 = topLeft.Y + strip.ActualHeight;
+            }
+
+            dc.DrawLine(s_pen, new Point(_x, y1), new Point(_x, y2));
         }
     }
 
@@ -680,7 +700,6 @@ public class DockTabHeader : StackPanel
     private bool _isReordering;
     // Increased from 20 to 40 px to reduce accidental undock on small mouse jitter (VS-like feel).
     private const double FloatThresholdY    = 40.0;
-    private const double FloatThresholdTool = 40.0;
 
     public event Action? CloseClicked;
     public event Action? DragStarted;
@@ -701,21 +720,21 @@ public class DockTabHeader : StackPanel
                 _lspDot.Text       = "◌";
                 _lspDot.Foreground = Application.Current?.TryFindResource("LSP_ConnectingDot") as System.Windows.Media.Brush
                                      ?? System.Windows.Media.Brushes.Gray;
-                _lspDot.ToolTip    = "Language Server: connecting…";
+                _lspDot.ToolTip    = DockingResources.Dock_LSP_Connecting;
                 _lspDot.Visibility = Visibility.Visible;
                 break;
             case DockTabLspState.Ready:
                 _lspDot.Text       = "●";
                 _lspDot.Foreground = Application.Current?.TryFindResource("LSP_ReadyDot") as System.Windows.Media.Brush
                                      ?? System.Windows.Media.Brushes.Green;
-                _lspDot.ToolTip    = "Language Server: ready";
+                _lspDot.ToolTip    = DockingResources.Dock_LSP_Ready;
                 _lspDot.Visibility = Visibility.Visible;
                 break;
             case DockTabLspState.Error:
                 _lspDot.Text       = "✕";
                 _lspDot.Foreground = Application.Current?.TryFindResource("LSP_ErrorDot") as System.Windows.Media.Brush
                                      ?? System.Windows.Media.Brushes.Red;
-                _lspDot.ToolTip    = "Language Server: error";
+                _lspDot.ToolTip    = DockingResources.Dock_LSP_Error;
                 _lspDot.Visibility = Visibility.Visible;
                 break;
         }
@@ -1010,7 +1029,7 @@ public class DockTabHeader : StackPanel
         {
             var newVertGroup = new MenuItem
             {
-                Header = "New Vertical Tab Group",
+                Header = DockingResources.Dock_Menu_NewVerticalTabGroup,
                 Icon   = MakeMenuIcon("\uE746") // SplitVertical
             };
             newVertGroup.Click += (_, _) => NewVerticalGroupRequested?.Invoke();
@@ -1018,7 +1037,7 @@ public class DockTabHeader : StackPanel
 
             var newHorizGroup = new MenuItem
             {
-                Header = "New Horizontal Tab Group",
+                Header = DockingResources.Dock_Menu_NewHorizontalTabGroup,
                 Icon   = MakeMenuIcon("\uE748") // SplitHorizontal
             };
             newHorizGroup.Click += (_, _) => NewHorizontalGroupRequested?.Invoke();
@@ -1048,7 +1067,7 @@ public class DockTabHeader : StackPanel
             {
                 var closeGroupItem = new MenuItem
                 {
-                    Header = "Close Tab Group",
+                    Header = DockingResources.Dock_Menu_CloseTabGroup,
                     Icon   = MakeMenuIcon("\uE8BB") // ChromeClose
                 };
                 closeGroupItem.Click += (_, _) => CloseGroupRequested?.Invoke();
@@ -1062,7 +1081,7 @@ public class DockTabHeader : StackPanel
         {
             var floatItem = new MenuItem
             {
-                Header = "Float",
+                Header = DockingResources.Dock_Menu_Float,
                 Icon   = MakeMenuIcon("\uE8A7")  // OpenInNewWindow
             };
             floatItem.Click += (_, _) => FloatRequested?.Invoke();
@@ -1081,7 +1100,7 @@ public class DockTabHeader : StackPanel
         {
             var dockAsDocItem = new MenuItem
             {
-                Header = "Dock as Tabbed Document",
+                Header = DockingResources.Dock_Menu_DockAsTabbed,
                 Icon   = MakeMenuIcon("\uE737")  // TabletMode / dock-to-doc
             };
             dockAsDocItem.Click += (_, _) => DockAsDocumentRequested?.Invoke();
@@ -1091,7 +1110,7 @@ public class DockTabHeader : StackPanel
         {
             var restoreItem = new MenuItem
             {
-                Header = "Dock as Tool Window",
+                Header = DockingResources.Dock_Menu_DockAsToolWindow,
                 Icon   = MakeMenuIcon("\uE8A0")  // DockLeft
             };
             restoreItem.Click += (_, _) => RestoreToToolPanelRequested?.Invoke();
@@ -1100,7 +1119,7 @@ public class DockTabHeader : StackPanel
 
         var hideItem = new MenuItem
         {
-            Header = "Hide",
+            Header = DockingResources.Dock_Menu_Hide,
             Icon   = MakeMenuIcon("\uED1A")  // Hide
         };
         hideItem.Click += (_, _) => HideRequested?.Invoke();
@@ -1119,7 +1138,7 @@ public class DockTabHeader : StackPanel
 
         var closeAllItem = new MenuItem
         {
-            Header = "Close All",
+            Header = DockingResources.Dock_Menu_CloseAll,
             Icon   = MakeMenuIcon("\uE74D")  // Delete (close all)
         };
         closeAllItem.Click += (_, _) => CloseAllRequested?.Invoke();
@@ -1127,7 +1146,7 @@ public class DockTabHeader : StackPanel
 
         var closeAllButItem = new MenuItem
         {
-            Header = "Close All But This",
+            Header = DockingResources.Dock_Menu_CloseAllButThis,
             Icon   = MakeMenuIcon("\uE8C6")  // RemoveFrom
         };
         closeAllButItem.Click += (_, _) => CloseAllButThisRequested?.Invoke();
@@ -1137,7 +1156,7 @@ public class DockTabHeader : StackPanel
         {
             var closeAllButPinnedItem = new MenuItem
             {
-                Header = "Close All But Pinned",
+                Header = DockingResources.Dock_Menu_CloseAllButPinned,
                 Icon   = MakeMenuIcon("\uE8F4")  // FilterError / pin-protected close
             };
             closeAllButPinnedItem.Click += (_, _) => CloseAllButPinnedRequested?.Invoke();
@@ -1170,6 +1189,8 @@ public class DockTabHeader : StackPanel
         _dragStartPoint = e.GetPosition(this);
         _isDragging = false;
         _isReordering = false;
+        // Safety net: ensure any orphaned ghost from a previous interrupted drag is cleaned up.
+        ReorderCancelled?.Invoke();
         CaptureMouse();
     }
 
@@ -1181,52 +1202,38 @@ public class DockTabHeader : StackPanel
         // from its PresentationSource (HWND) during a drag/float transition.
         if (PresentationSource.FromVisual(this) is null) return;
 
-        if (_item.Owner is DocumentHostNode)
+        if (_isDragging) return;
+
+        var diff = e.GetPosition(this) - _dragStartPoint;
+
+        // Float takes priority: a large vertical move cancels any pending reorder and floats the tab.
+        // Checking this BEFORE _isReordering prevents the reorder state from permanently blocking float.
+        // Applies uniformly to document tabs and docked (tool-panel) tabs — see ADR-008.
+        if (Math.Abs(diff.Y) > FloatThresholdY)
         {
-            if (_isDragging) return;
-
-            var diff = e.GetPosition(this) - _dragStartPoint;
-
-            // Float takes priority: a large vertical move cancels any pending reorder and floats the tab.
-            // Checking this BEFORE _isReordering prevents the reorder state from permanently blocking float.
-            if (Math.Abs(diff.Y) > FloatThresholdY)
-            {
-                var wasReordering = _isReordering;
-                _isReordering = false;
-                _isDragging   = true;
-                ReleaseMouseCapture();
-                // Clean up the reorder ghost/adorner before starting the float.
-                // Without this, the Popup stays IsOpen=true and gets orphaned by RebuildVisualTree().
-                if (wasReordering)
-                    ReorderCancelled?.Invoke();
-                DragStarted?.Invoke();
-                return;
-            }
-
-            // Reorder: horizontal drag within the document tab strip.
-            if (_isReordering)
-            {
-                // Pass true screen coordinates for consistent hit-testing in DockTabControl
-                ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
-                return;
-            }
-            if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance)
-            {
-                _isReordering = true;
-                ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
-            }
+            var wasReordering = _isReordering;
+            _isReordering = false;
+            _isDragging   = true;
+            ReleaseMouseCapture();
+            // Clean up the reorder ghost/adorner before starting the float.
+            // Without this, the Popup stays IsOpen=true and gets orphaned by RebuildVisualTree().
+            if (wasReordering)
+                ReorderCancelled?.Invoke();
+            DragStarted?.Invoke();
+            return;
         }
-        else
+
+        // Reorder: horizontal drag within the same tab strip (document or docked).
+        if (_isReordering)
         {
-            if (_isDragging) return;
-            var diff = e.GetPosition(this) - _dragStartPoint;
-            if (Math.Abs(diff.X) > FloatThresholdTool ||
-                Math.Abs(diff.Y) > FloatThresholdTool)
-            {
-                _isDragging = true;
-                ReleaseMouseCapture();
-                DragStarted?.Invoke();
-            }
+            // Pass true screen coordinates for consistent hit-testing in DockTabControl
+            ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
+            return;
+        }
+        if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance)
+        {
+            _isReordering = true;
+            ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
         }
     }
 

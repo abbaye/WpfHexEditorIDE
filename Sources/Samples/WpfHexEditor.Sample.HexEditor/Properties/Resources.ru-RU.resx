@@ -742,10 +742,6 @@
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
     <value>Найти предыдущее</value>
   </data>
-  <data name="RelativeSearchMenuString" xml:space="preserve">
-    <value>Относительный поиск</value>
-    <comment>Search menu - Relative Search command</comment>
-  </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>Инструменты</value>
   </data>

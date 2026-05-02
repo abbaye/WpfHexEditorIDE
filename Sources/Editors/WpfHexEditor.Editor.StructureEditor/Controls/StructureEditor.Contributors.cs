@@ -15,6 +15,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Validation;
+using WpfHexEditor.Editor.StructureEditor.Properties;
 
 namespace WpfHexEditor.Editor.StructureEditor.Controls;
 
@@ -39,35 +40,35 @@ public sealed partial class StructureEditor : IEditorToolbarContributor, IStatus
         var tbValidate = new EditorToolbarItem
         {
             Icon    = "\uE73E",
-            Tooltip = "Validate (Ctrl+Shift+V)",
+            Tooltip = StructureEditorResources.StrTb_Validate,
             Command = new ViewModels.RelayCommand(() => _vm.TriggerValidationNow()),
         };
         _tbAddBlock = new EditorToolbarItem
         {
             Icon      = "\uE710",
-            Tooltip   = "Add Block (Ctrl+N)",
+            Tooltip   = StructureEditorResources.StrTb_AddBlock,
             Command   = new ViewModels.RelayCommand(() => BlocksTabCtrl.RequestAddBlock()),
             IsEnabled = false,
         };
         _tbCodeView = new EditorToolbarItem
         {
             Icon    = "\uE943",
-            Tooltip = "Toggle Live Code View",
+            Tooltip = StructureEditorResources.StrTb_ToggleLiveCode,
             Command = new ViewModels.RelayCommand(ToggleCodeView),
         };
 
         var layoutItems = new ObservableCollection<EditorToolbarItem>
         {
-            new() { Label = "Code Right",   Icon = "\uE8A0", Command = new ViewModels.RelayCommand(() => ApplyCodeViewDock("Right"))  },
-            new() { Label = "Code Left",    Icon = "\uE8A0", Command = new ViewModels.RelayCommand(() => ApplyCodeViewDock("Left"))   },
-            new() { Label = "Code Bottom",  Icon = "\uE8A0", Command = new ViewModels.RelayCommand(() => ApplyCodeViewDock("Bottom")) },
-            new() { Label = "Code Top",     Icon = "\uE8A0", Command = new ViewModels.RelayCommand(() => ApplyCodeViewDock("Top"))    },
+            new() { Label = StructureEditorResources.StrLayout_CodeRight,  Icon = "\uE8A0", Command = new ViewModels.RelayCommand(() => ApplyCodeViewDock("Right"))  },
+            new() { Label = StructureEditorResources.StrLayout_CodeLeft,   Icon = "\uE8A0", Command = new ViewModels.RelayCommand(() => ApplyCodeViewDock("Left"))   },
+            new() { Label = StructureEditorResources.StrLayout_CodeBottom, Icon = "\uE8A0", Command = new ViewModels.RelayCommand(() => ApplyCodeViewDock("Bottom")) },
+            new() { Label = StructureEditorResources.StrLayout_CodeTop,    Icon = "\uE8A0", Command = new ViewModels.RelayCommand(() => ApplyCodeViewDock("Top"))    },
         };
         _tbLayout = new EditorToolbarItem
         {
             Icon          = "\uF57E",
-            Label         = "Layout",
-            Tooltip       = "Code view layout",
+            Label         = StructureEditorResources.StrTb_LayoutLabel,
+            Tooltip       = StructureEditorResources.StrTb_LayoutTooltip,
             IsEnabled     = false,   // enabled only when code view is visible
             DropdownItems = layoutItems,
         };
@@ -260,10 +261,10 @@ public sealed partial class StructureEditor : IEditorToolbarContributor, IStatus
 
     private void InitStatusBarItems()
     {
-        _sbFormat = new StatusBarItem { Label = "Format", Value = "WHFMT" };
-        _sbTab = new StatusBarItem { Label = "Tab", Value = "Metadata" };
-        _sbBlocks = new StatusBarItem { Label = "Blocks", Value = "0" };
-        _sbValidation = new StatusBarItem { Label = "Validation", Value = "—" };
+        _sbFormat     = new StatusBarItem { Label = StructureEditorResources.StrSb_FormatLabel,     Value = "WHFMT" };
+        _sbTab        = new StatusBarItem { Label = StructureEditorResources.StrSb_TabLabel,        Value = "Metadata" };
+        _sbBlocks     = new StatusBarItem { Label = StructureEditorResources.StrSb_BlocksLabel,     Value = "0" };
+        _sbValidation = new StatusBarItem { Label = StructureEditorResources.StrSb_ValidationLabel, Value = "—" };
         _sbDirty = new StatusBarItem { Label = "", Value = "", IsVisible = false };
 
         StatusBarItems.Add(_sbFormat);

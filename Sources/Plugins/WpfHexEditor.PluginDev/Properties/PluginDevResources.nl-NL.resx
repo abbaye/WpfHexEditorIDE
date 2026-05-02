@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>Nieuw extensieproject</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Uitvoermap voor het plug-inproject selecteren</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>Machtigingen</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>Isolatiemodus</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>Laadprioriteit (10–90):</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>Volgende &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>Maken en openen</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>Plug-in aangemaakt</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>Fout</value>
+  </data>
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>Uitbreidingspakket publiceren</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>Pakket ondertekenen voor publicatie</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Bladeren…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>Uitvoermap openen in Explorer</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>Pakket</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>Sluiten</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>Uitvoermap selecteren</value>
+  </data>
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>Ontwikkellogboek voor extensie exporteren</value>
+  </data>
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>Zoeken</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>Bladeren</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>Geïnstalleerd</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>Alles bijwerken</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>Extensiemarktplaats</value>
+  </data>
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>Extensie:</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>Configuratie:</value>
+  </data>
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>Gereed</value>
+  </data>
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>Vernieuwen</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>Auteur</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>Versie</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>Beoordeling</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+</root>

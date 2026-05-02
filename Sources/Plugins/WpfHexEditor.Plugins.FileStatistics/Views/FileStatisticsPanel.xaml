@@ -12,9 +12,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="clr-namespace:WpfHexEditor.SDK.UI;assembly=WpfHexEditor.SDK"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="300"
+             xmlns:fsSvc="clr-namespace:WpfHexEditor.Plugins.FileStatistics.Services">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <fsSvc:FileStatisticsLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <!-- Semantic status brushes (constant across themes) -->
         <SolidColorBrush x:Key="GoodBrush"    Color="#7ED321"/>
         <SolidColorBrush x:Key="WarningBrush" Color="#F5A623"/>
@@ -54,6 +59,7 @@
         <Style x:Key="MetricRowStyle" TargetType="Grid">
             <Setter Property="Margin" Value="0,0,0,4"/>
         </Style>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Background="{DynamicResource PFP_PanelBackgroundBrush}">
@@ -79,13 +85,13 @@
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
                         Style="{StaticResource PanelIconButtonStyle}"
-                        ToolTip="More options"
+                        ToolTip="{DynamicResource FS_TipMoreOptions}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
-                            <MenuItem Header="Re-analyze"
+                            <MenuItem Header="{DynamicResource FS_ReanalyzeButton}"
                                       Tag="TbgStatsRefresh"
                                       Click="RefreshButton_Click"/>
                         </ContextMenu>
@@ -100,11 +106,11 @@
                     <Button x:Name="RefreshButton"
                             Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE72C;"
-                            ToolTip="Re-analyze"
+                            ToolTip="{DynamicResource FS_ReanalyzeButton}"
                             Click="RefreshButton_Click"/>
                 </StackPanel>
 
-                <TextBlock Text="File Statistics"
+                <TextBlock Text="{DynamicResource FS_Title}"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0"
                            FontWeight="SemiBold"
@@ -120,10 +126,10 @@
                 <!-- File Info card -->
                 <Border Style="{StaticResource CardStyle}">
                     <StackPanel>
-                        <TextBlock Text="File Information" Style="{StaticResource CardTitleStyle}"/>
+                        <TextBlock Text="{DynamicResource FS_FileInfoSection}" Style="{StaticResource CardTitleStyle}"/>
 
                         <TextBlock x:Name="FileNameText"
-                                   Text="No file loaded"
+                                   Text="{DynamicResource FS_NoFileLoaded}"
                                    FontWeight="Bold" FontSize="11"
                                    Foreground="{DynamicResource PFP_TextBrush}"
                                    TextTrimming="CharacterEllipsis"
@@ -141,7 +147,7 @@
                                 <ColumnDefinition Width="70"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Size:" Style="{StaticResource MetricLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FS_SizeLabel}" Style="{StaticResource MetricLabelStyle}"/>
                             <TextBlock Grid.Column="1" x:Name="FileSizeText" Text="0 bytes" Style="{StaticResource MetricValueStyle}"/>
                         </Grid>
 
@@ -150,8 +156,8 @@
                                 <ColumnDefinition Width="70"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Format:" Style="{StaticResource MetricLabelStyle}"/>
-                            <TextBlock Grid.Column="1" x:Name="FormatNameText" Text="Unknown" Style="{StaticResource MetricValueStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FS_FormatLabel}" Style="{StaticResource MetricLabelStyle}"/>
+                            <TextBlock Grid.Column="1" x:Name="FormatNameText" Text="{DynamicResource FS_UnknownFormat}" Style="{StaticResource MetricValueStyle}"/>
                         </Grid>
 
                         <Grid>
@@ -159,7 +165,7 @@
                                 <ColumnDefinition Width="70"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Analyzed:" Style="{StaticResource MetricLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FS_AnalyzedLabel}" Style="{StaticResource MetricLabelStyle}"/>
                             <TextBlock Grid.Column="1" x:Name="AnalysisDateText" Text="&#x2014;" Style="{StaticResource MetricValueStyle}"/>
                         </Grid>
                     </StackPanel>
@@ -168,7 +174,7 @@
                 <!-- Data Type card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="DataTypeCard">
                     <StackPanel>
-                        <TextBlock Text="Detected Data Type" Style="{StaticResource CardTitleStyle}"/>
+                        <TextBlock Text="{DynamicResource FS_DetectedTypeSection}" Style="{StaticResource CardTitleStyle}"/>
 
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
                             <Border x:Name="DataTypeBadge"
@@ -177,7 +183,7 @@
                                     BorderThickness="1"
                                     CornerRadius="10" Padding="10,4">
                                 <TextBlock x:Name="DataTypeText"
-                                           Text="Unknown"
+                                           Text="{DynamicResource FS_UnknownFormat}"
                                            FontSize="11" FontWeight="Bold"
                                            Foreground="{DynamicResource PFP_TextBrush}"/>
                             </Border>
@@ -194,7 +200,7 @@
                 <!-- Byte Composition card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="CompositionCard">
                     <StackPanel>
-                        <TextBlock Text="Byte Composition" Style="{StaticResource CardTitleStyle}"/>
+                        <TextBlock Text="{DynamicResource FS_ByteCompositionSection}" Style="{StaticResource CardTitleStyle}"/>
 
                         <Grid Style="{StaticResource MetricRowStyle}">
                             <Grid.ColumnDefinitions>
@@ -202,7 +208,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="40"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Null bytes:" Style="{StaticResource MetricLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FS_NullBytesLabel}" Style="{StaticResource MetricLabelStyle}"/>
                             <pb:LinearProgressBar Grid.Column="1" x:Name="NullBar" Height="6" BarHeight="6" Margin="0,0,6,0"
                                                   ProgressBrush="{StaticResource ErrorBrush}"/>
                             <TextBlock Grid.Column="2" x:Name="NullPctText" Text="0.0%" Style="{StaticResource MetricValueStyle}"/>
@@ -214,7 +220,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="40"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Printable ASCII:" Style="{StaticResource MetricLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FS_PrintableAsciiLabel}" Style="{StaticResource MetricLabelStyle}"/>
                             <pb:LinearProgressBar Grid.Column="1" x:Name="AsciiBar" Height="6" BarHeight="6" Margin="0,0,6,0"
                                                   ProgressBrush="{StaticResource GoodBrush}"/>
                             <TextBlock Grid.Column="2" x:Name="AsciiPctText" Text="0.0%" Style="{StaticResource MetricValueStyle}"/>
@@ -226,7 +232,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="40"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Other bytes:" Style="{StaticResource MetricLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FS_OtherBytesLabel}" Style="{StaticResource MetricLabelStyle}"/>
                             <pb:LinearProgressBar Grid.Column="1" x:Name="BinaryBar" Height="6" BarHeight="6" Margin="0,0,6,0"
                                                   ProgressBrush="{StaticResource AccentBrush}"/>
                             <TextBlock Grid.Column="2" x:Name="BinaryPctText" Text="0.0%" Style="{StaticResource MetricValueStyle}"/>
@@ -237,7 +243,7 @@
                                 <ColumnDefinition Width="90"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Most common:" Style="{StaticResource MetricLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FS_MostCommonLabel}" Style="{StaticResource MetricLabelStyle}"/>
                             <TextBlock Grid.Column="1" x:Name="MostCommonByteText"
                                        Text="0x00 (0.0%)" FontFamily="Consolas" FontSize="10"
                                        Foreground="{DynamicResource PFP_ValueBrush}"/>
@@ -248,7 +254,7 @@
                                 <ColumnDefinition Width="90"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Unique bytes:" Style="{StaticResource MetricLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FS_UniqueBytesLabel}" Style="{StaticResource MetricLabelStyle}"/>
                             <TextBlock Grid.Column="1" x:Name="UniqueCountText"
                                        Text="0 / 256" FontSize="10"
                                        Foreground="{DynamicResource PFP_TextBrush}"/>
@@ -259,7 +265,7 @@
                 <!-- Health Score card -->
                 <Border Style="{StaticResource CardStyle}">
                     <StackPanel>
-                        <TextBlock Text="Overall Health" Style="{StaticResource CardTitleStyle}"/>
+                        <TextBlock Text="{DynamicResource FS_HealthSection}" Style="{StaticResource CardTitleStyle}"/>
 
                         <Grid Margin="0,0,0,6">
                             <Grid.ColumnDefinitions>
@@ -276,7 +282,7 @@
                         </Grid>
 
                         <TextBlock x:Name="HealthStatusText"
-                                   Text="File structure is valid and healthy"
+                                   Text="{DynamicResource FS_HealthStatusDefault}"
                                    FontSize="9" FontStyle="Italic"
                                    Foreground="{StaticResource GoodBrush}"/>
                     </StackPanel>
@@ -285,7 +291,7 @@
                 <!-- Entropy card -->
                 <Border Style="{StaticResource CardStyle}">
                     <StackPanel>
-                        <TextBlock Text="Entropy Analysis" Style="{StaticResource CardTitleStyle}"/>
+                        <TextBlock Text="{DynamicResource FS_EntropySection}" Style="{StaticResource CardTitleStyle}"/>
 
                         <Grid Margin="0,0,0,4">
                             <Grid.ColumnDefinitions>
@@ -293,7 +299,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Level:" Style="{StaticResource MetricLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FS_EntropyLevel}" Style="{StaticResource MetricLabelStyle}"/>
                             <pb:LinearProgressBar Grid.Column="1" x:Name="EntropyBar"
                                                   Height="8" BarHeight="8" Progress="0.72"
                                                   Margin="0,0,8,0" ProgressBrush="{StaticResource AccentBrush}"/>
@@ -303,7 +309,7 @@
                         </Grid>
 
                         <TextBlock x:Name="EntropyDescText"
-                                   Text="Likely compressed or encrypted data"
+                                   Text="{DynamicResource FS_EntropyDescDefault}"
                                    FontSize="9" FontStyle="Italic"
                                    Foreground="{DynamicResource PFP_SubTextBrush}"/>
                     </StackPanel>
@@ -312,7 +318,7 @@
                 <!-- Validation card -->
                 <Border Style="{StaticResource CardStyle}">
                     <StackPanel>
-                        <TextBlock Text="Validation" Style="{StaticResource CardTitleStyle}"/>
+                        <TextBlock Text="{DynamicResource FS_ValidationSection}" Style="{StaticResource CardTitleStyle}"/>
 
                         <Grid Style="{StaticResource MetricRowStyle}">
                             <Grid.ColumnDefinitions>
@@ -321,9 +327,9 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" x:Name="StructureIcon" Text="&#x2705;" FontSize="14" Margin="0,0,8,0"/>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="Structure" FontWeight="SemiBold" FontSize="10"
+                                <TextBlock Text="{DynamicResource FS_StructureLabel}" FontWeight="SemiBold" FontSize="10"
                                            Foreground="{DynamicResource PFP_TextBrush}"/>
-                                <TextBlock x:Name="StructureStatus" Text="Valid" FontSize="9"
+                                <TextBlock x:Name="StructureStatus" Text="{DynamicResource FS_ValidLabel}" FontSize="9"
                                            Foreground="{DynamicResource PFP_SubTextBrush}"/>
                             </StackPanel>
                         </Grid>
@@ -335,9 +341,9 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" x:Name="ChecksumIcon" Text="&#x2705;" FontSize="14" Margin="0,0,8,0"/>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="Checksums" FontWeight="SemiBold" FontSize="10"
+                                <TextBlock Text="{DynamicResource FS_ChecksumsLabel}" FontWeight="SemiBold" FontSize="10"
                                            Foreground="{DynamicResource PFP_TextBrush}"/>
-                                <TextBlock x:Name="ChecksumStatus" Text="All pass" FontSize="9"
+                                <TextBlock x:Name="ChecksumStatus" Text="{DynamicResource FS_AllPassLabel}" FontSize="9"
                                            Foreground="{DynamicResource PFP_SubTextBrush}"/>
                             </StackPanel>
                         </Grid>
@@ -347,7 +353,7 @@
                 <!-- Detected Issues card -->
                 <Border Style="{StaticResource CardStyle}">
                     <StackPanel>
-                        <TextBlock Text="Detected Issues" Style="{StaticResource CardTitleStyle}"/>
+                        <TextBlock Text="{DynamicResource FS_IssuesSection}" Style="{StaticResource CardTitleStyle}"/>
 
                         <ItemsControl x:Name="AnomaliesList">
                             <ItemsControl.ItemTemplate>
@@ -369,7 +375,7 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                        <TextBlock x:Name="NoAnomaliesText" Text="&#x2705; No issues detected"
+                        <TextBlock x:Name="NoAnomaliesText" Text="{DynamicResource FS_NoIssuesDetected}"
                                    FontSize="10" Foreground="{StaticResource GoodBrush}"/>
                     </StackPanel>
                 </Border>
@@ -379,6 +385,6 @@
         <!-- Loading overlay — covers the ScrollViewer while IsLoading=true -->
         <ui:LoadingOverlay Grid.Row="1"
                            IsActive="{Binding IsLoading}"
-                           Label="Analyzing file..."/>
+                           Label="{DynamicResource FS_AnalyzingLabel}"/>
     </Grid>
 </UserControl>

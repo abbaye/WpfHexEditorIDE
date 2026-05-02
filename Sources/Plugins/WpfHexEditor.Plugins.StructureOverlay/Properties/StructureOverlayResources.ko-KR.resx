@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StructureOverlay_PluginName" xml:space="preserve">
+    <value>구조 오버레이</value>
+  </data>
+  <data name="StructureOverlay_NoStructures" xml:space="preserve">
+    <value>로드된 구조 없음</value>
+  </data>
+  <data name="StructureOverlay_LoadFormat" xml:space="preserve">
+    <value>형식 정의 로드</value>
+  </data>
+  <data name="StructureOverlay_Error_LoadFailed" xml:space="preserve">
+    <value>형식 정의 로드 실패</value>
+  </data>
+  <data name="StructureOverlay_Confirm_RemoveAll" xml:space="preserve">
+    <value>모든 구조 오버레이를 제거하시겠습니까?</value>
+  </data>
+  <data name="SO_OffsetLabel" xml:space="preserve"><value>오프셋:</value></data>
+  <data name="SO_LengthLabel" xml:space="preserve"><value>길이:</value></data>
+</root>

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Core.Localization
+    File        : CommonResources.it-IT.resx
+    Description : it-IT translations for common UI strings.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="OkString" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="CancelString" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="CloseString" xml:space="preserve">
+    <value>Chiudi</value>
+  </data>
+  <data name="DeleteString" xml:space="preserve">
+    <value>Elimina</value>
+  </data>
+  <data name="ClearString" xml:space="preserve">
+    <value>Cancella</value>
+  </data>
+  <data name="CopyString" xml:space="preserve">
+    <value>Copia</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Incolla</value>
+  </data>
+  <data name="UndoString" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="SelectAllString" xml:space="preserve">
+    <value>Seleziona tutto</value>
+  </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="FindString" xml:space="preserve">
+    <value>Trova</value>
+  </data>
+  <data name="ReplaceString" xml:space="preserve">
+    <value>Sostituisci</value>
+  </data>
+  <data name="FindNextString" xml:space="preserve">
+    <value>Trova successivo</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Precedente</value>
+  </data>
+  <data name="FindAllString" xml:space="preserve">
+    <value>Trova tutto</value>
+  </data>
+  <data name="ReplaceAllString" xml:space="preserve">
+    <value>Sostituisci tutto</value>
+  </data>
+  <data name="ReplaceNextString" xml:space="preserve">
+    <value>Sostituisci successivo</value>
+  </data>
+  <data name="CopyAsHexadecimalString" xml:space="preserve">
+    <value>Copia come esadecimale</value>
+  </data>
+  <data name="CopyAsDecimalString" xml:space="preserve">
+    <value>Copia come decimale</value>
+  </data>
+  <data name="CopyAsASCIIString" xml:space="preserve">
+    <value>Copia come ASCII</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Taglia selezione</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Copia selezione</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Elimina byte</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Inserisci byte...</value>
+  </data>
+  <data name="InvertSelectionString" xml:space="preserve">
+    <value>Inverti selezione</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Vai a offset...</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Modalità modifica</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Modalità: Sovrascrivi</value>
+  </data>
+  <data name="ValueString" xml:space="preserve">
+    <value>Valore</value>
+  </data>
+  <data name="DescriptionString" xml:space="preserve">
+    <value>Descrizione</value>
+  </data>
+  <data name="LengthString" xml:space="preserve">
+    <value>Lunghezza</value>
+  </data>
+  <data name="PositionString" xml:space="preserve">
+    <value>Posizione</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="CountOfString" xml:space="preserve">
+    <value>Conteggio di</value>
+  </data>
+  <data name="HexString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Dimensione file</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Pronto</value>
+  </data>
+  <data name="PreviewString" xml:space="preserve">
+    <value>Anteprima:</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Proprietà</value>
+  </data>
+  <data name="ZoomString" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="ZoomResetString" xml:space="preserve">
+    <value>Ripristina zoom al 100%</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Messaggio di stato</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>Tavolozza dei comandi</value>
+  </data>
+  <data name="ShowConfirmationString" xml:space="preserve">
+    <value>Mostra finestra di conferma</value>
+  </data>
+  <data name="ByteString" xml:space="preserve">
+    <value>Byte</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>Byte</value>
+  </data>
+  <data name="KBTagString" xml:space="preserve">
+    <value>Kb</value>
+  </data>
+  <data name="MBTagString" xml:space="preserve">
+    <value>Mb</value>
+  </data>
+  <data name="LongString" xml:space="preserve">
+    <value>Long</value>
+  </data>
+  <data name="EndTagString" xml:space="preserve">
+    <value>&lt;fine&gt;</value>
+  </data>
+  <data name="LineTagString" xml:space="preserve">
+    <value>&lt;rg&gt;</value>
+  </data>
+  <data name="LineStatusBarTagString" xml:space="preserve">
+    <value>Rg</value>
+  </data>
+  <data name="FirstByteString" xml:space="preserve">
+    <value>Primo byte</value>
+  </data>
+  <data name="ValidationInvalidHexString" xml:space="preserve">
+    <value>Valore esadecimale non valido</value>
+  </data>
+  <data name="ValidationRequiredString" xml:space="preserve">
+    <value>Valore richiesto</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Errore: {0}</value>
+  </data>
+  <data name="WritingErrorExeptionString" xml:space="preserve">
+    <value>Si è verificato un errore durante la scrittura.</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>Impossibile convertire questa stringa in long</value>
+  </data>
+  <data name="FileDroppingConfirmationString" xml:space="preserve">
+    <value>Vuoi chiudere il file corrente e aprire: </value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>Il file è bloccato. Vuoi aprirlo in modalità di sola lettura?</value>
+  </data>
+
+</root>

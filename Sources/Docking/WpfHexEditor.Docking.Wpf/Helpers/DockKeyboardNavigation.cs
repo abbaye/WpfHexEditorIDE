@@ -21,7 +21,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Docking.Core.Nodes;
-using Core = WpfHexEditor.Docking.Core;
+using DCore = WpfHexEditor.Docking.Core;
 
 namespace WpfHexEditor.Shell;
 
@@ -115,7 +115,7 @@ internal sealed class DockKeyboardNavigation
         // Start with MRU order
         foreach (var item in _dockControl.ActivationHistory)
         {
-            if (item.State is not (Core.DockItemState.Docked or Core.DockItemState.Float))
+            if (item.State is not (DCore.DockItemState.Docked or DCore.DockItemState.Float))
                 continue;
 
             if (item.Owner is DocumentHostNode)

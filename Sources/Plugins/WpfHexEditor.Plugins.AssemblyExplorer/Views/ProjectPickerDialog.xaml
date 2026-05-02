@@ -13,7 +13,7 @@
                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:local="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Views"
-                        Title="Extract to Project"
+                        Title="{DynamicResource AsmExplorer_ExtractToProject}"
                         Width="360"
                         Height="260"
                         ResizeMode="NoResize"
@@ -28,7 +28,7 @@
 
         <!-- Instruction -->
         <TextBlock Grid.Row="0"
-                   Text="Select the project to add the decompiled file to:"
+                   Text="{DynamicResource AsmExplorer_SelectProject}"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    FontSize="11"
                    Margin="12,10,12,4"
@@ -78,7 +78,7 @@
                     Foreground="{DynamicResource DockMenuForegroundBrush}"
                     BorderBrush="{DynamicResource DockBorderBrush}"
                     FontSize="11"/>
-            <Button Content="Cancel"
+            <Button Content="{DynamicResource AsmExplorer_Cancel}"
                     Width="72" Height="24"
                     IsCancel="True"
                     Click="OnCancelClick"

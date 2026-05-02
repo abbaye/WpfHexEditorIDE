@@ -23,6 +23,7 @@
              KeyDown="UserControl_KeyDown">
 
     <UserControl.Resources>
+        <ResourceDictionary>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
         <!-- DataGrid column header style -->
@@ -156,7 +157,7 @@
             ImageTemplate="{StaticResource ImageCellTemplate}"
             BinaryTemplate="{StaticResource BinaryCellTemplate}"
             FileRefTemplate="{StaticResource FileRefCellTemplate}"/>
-
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
@@ -193,13 +194,13 @@
             <DataGrid.Columns>
 
                 <!-- Key (Name) column -->
-                <DataGridTextColumn Header="Name"
+                <DataGridTextColumn Header="{DynamicResource ResxEditor_ColName}"
                                     Binding="{Binding Name, UpdateSourceTrigger=LostFocus}"
                                     Width="200"
                                     MinWidth="80"/>
 
                 <!-- Type badge column (read-only) -->
-                <DataGridTemplateColumn Header="Type" Width="80" MinWidth="60" IsReadOnly="True">
+                <DataGridTemplateColumn Header="{DynamicResource ResxEditor_ColType}" Width="80" MinWidth="60" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border Style="{StaticResource TypeBadgeStyle}"
@@ -214,13 +215,13 @@
                 </DataGridTemplateColumn>
 
                 <!-- Value column — type-aware template -->
-                <DataGridTemplateColumn Header="Value"
+                <DataGridTemplateColumn Header="{DynamicResource ResxEditor_ColValue}"
                                         Width="2*" MinWidth="120"
                                         CellTemplateSelector="{StaticResource CellSelector}">
                 </DataGridTemplateColumn>
 
                 <!-- Comment column — inline editable -->
-                <DataGridTemplateColumn Header="Comment"
+                <DataGridTemplateColumn Header="{DynamicResource ResxEditor_ColComment}"
                                         Width="*" MinWidth="80">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

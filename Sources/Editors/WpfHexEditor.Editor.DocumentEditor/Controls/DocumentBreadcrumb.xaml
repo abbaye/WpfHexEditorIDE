@@ -1,10 +1,17 @@
 <UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentBreadcrumb"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
              xmlns:local="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Controls"
              Background="{DynamicResource DE_BreadcrumbBackground}">
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <docSvc:DocumentEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <!-- Hidden when no path segments -->

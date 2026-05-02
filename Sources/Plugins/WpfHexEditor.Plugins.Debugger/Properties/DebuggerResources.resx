@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata"><xsd:complexType><xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" /><xsd:attribute name="type" /></xsd:complexType></xsd:element>
+          <xsd:element name="value"><xsd:complexType><xsd:any minOccurs="0" maxOccurs="unbounded" /></xsd:complexType></xsd:element>
+          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /><xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Debugger panel titles -->
+  <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve">
+    <value>Breakpoints</value>
+  </data>
+  <data name="Debugger_CallStackPanelTitle" xml:space="preserve">
+    <value>Call Stack</value>
+  </data>
+  <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
+    <value>Locals</value>
+  </data>
+  <data name="Debugger_WatchPanelTitle" xml:space="preserve">
+    <value>Watch</value>
+  </data>
+  <data name="Debugger_ConsolePanelTitle" xml:space="preserve">
+    <value>Debug Console</value>
+  </data>
+  <data name="Debugger_NoValidBreakpoints" xml:space="preserve">
+    <value>No valid breakpoints found in the file.</value>
+  </data>
+  <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Launch Config (.whdbg)</value></data>
+  <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>No file loaded. Click Open first.</value></data>
+  <data name="Debugger_ServiceNotAvailable" xml:space="preserve"><value>IDebuggerService not available.</value></data>
+  <data name="Debugger_NoConfigLoaded" xml:space="preserve"><value>No configuration loaded.</value></data>
+  <data name="Debugger_NoConfigsArray" xml:space="preserve"><value>No 'configurations' array found in .whdbg file.</value></data>
+  <data name="Debugger_NoMatchingConfig" xml:space="preserve"><value>No matching configuration found.</value></data>
+  <data name="Debugger_ImportBreakpoints" xml:space="preserve"><value>Import Breakpoints from VS XML</value></data>
+  <data name="Debugger_ExportBreakpoints" xml:space="preserve"><value>Export Breakpoints to VS XML</value></data>
+
+  <!-- Debugger menu items -->
+  <data name="Debugger_Menu_Continue" xml:space="preserve"><value>_Continue</value></data>
+  <data name="Debugger_Menu_StepOver" xml:space="preserve"><value>Step _Over</value></data>
+  <data name="Debugger_Menu_StepInto" xml:space="preserve"><value>Step _Into</value></data>
+  <data name="DBG_EnableAll" xml:space="preserve">
+    <value>Enable All</value>
+  </data>
+  <data name="DBG_DisableAll" xml:space="preserve">
+    <value>Disable All</value>
+  </data>
+  <data name="DBG_DeleteAll" xml:space="preserve">
+    <value>Delete All</value>
+  </data>
+  <data name="DBG_EditCondition" xml:space="preserve">
+    <value>Edit Condition…</value>
+  </data>
+  <data name="DBG_ImportBreakpoints" xml:space="preserve">
+    <value>Import from VS XML…</value>
+  </data>
+  <data name="DBG_ExportBreakpoints" xml:space="preserve">
+    <value>Export All to VS XML…</value>
+  </data>
+  <data name="DBG_GroupNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="DBG_GroupFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="DBG_GroupType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_GroupEnabled" xml:space="preserve">
+    <value>Enabled/Disabled</value>
+  </data>
+  <data name="DBG_GroupProject" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="DBG_DetailRight" xml:space="preserve">
+    <value>Detail: Right</value>
+  </data>
+  <data name="DBG_DetailBottom" xml:space="preserve">
+    <value>Detail: Bottom</value>
+  </data>
+  <data name="DBG_DetailHidden" xml:space="preserve">
+    <value>Detail: Hidden</value>
+  </data>
+  <data name="DBG_SearchPlaceholder" xml:space="preserve">
+    <value>Search breakpoints...</value>
+  </data>
+  <data name="DBG_EnableAllTooltip" xml:space="preserve">
+    <value>Enable all breakpoints</value>
+  </data>
+  <data name="DBG_DisableAllTooltip" xml:space="preserve">
+    <value>Disable all breakpoints</value>
+  </data>
+  <data name="DBG_DeleteAllTooltip" xml:space="preserve">
+    <value>Delete all breakpoints</value>
+  </data>
+  <data name="DBG_EditConditionTooltip" xml:space="preserve">
+    <value>Edit condition of selected breakpoint</value>
+  </data>
+  <data name="DBG_ImportTooltip" xml:space="preserve">
+    <value>Import breakpoints from Visual Studio XML file</value>
+  </data>
+  <data name="DBG_ExportTooltip" xml:space="preserve">
+    <value>Export all breakpoints to Visual Studio XML file</value>
+  </data>
+  <data name="DBG_GroupLabel" xml:space="preserve">
+    <value>Group:</value>
+  </data>
+  <data name="DBG_LayoutTooltip" xml:space="preserve">
+    <value>Detail panel layout</value>
+  </data>
+  <data name="DBG_LocationColumn" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="DBG_ConditionColumn" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="DBG_HitsColumn" xml:space="preserve">
+    <value>Hits</value>
+  </data>
+  <data name="DBG_GoToSourceMenu" xml:space="preserve">
+    <value>Go to Source</value>
+  </data>
+  <data name="DBG_EditConditionMenu" xml:space="preserve">
+    <value>Edit Condition…</value>
+  </data>
+  <data name="DBG_ToggleEnabledMenu" xml:space="preserve">
+    <value>Toggle Enabled</value>
+  </data>
+  <data name="DBG_CopyLocationMenu" xml:space="preserve">
+    <value>Copy Location</value>
+  </data>
+  <data name="DBG_DeleteMenu" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DBG_EnableGroupMenu" xml:space="preserve">
+    <value>Enable Group</value>
+  </data>
+  <data name="DBG_DisableGroupMenu" xml:space="preserve">
+    <value>Disable Group</value>
+  </data>
+  <data name="DBG_DeleteGroupMenu" xml:space="preserve">
+    <value>Delete Group</value>
+  </data>
+  <data name="DBG_UnverifiedBadge" xml:space="preserve">
+    <value>Unverified</value>
+  </data>
+  <data name="DBG_UnverifiedTooltip" xml:space="preserve">
+    <value>This breakpoint could not be verified at the current location.</value>
+  </data>
+  <data name="DBG_EnabledField" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="DBG_TypeField" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_VerifiedField" xml:space="preserve">
+    <value>Verified</value>
+  </data>
+  <data name="DBG_ConditionField" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="DBG_GoToSourceText" xml:space="preserve">
+    <value>Go To Source</value>
+  </data>
+  <data name="DBG_EditText" xml:space="preserve">
+    <value>Edit…</value>
+  </data>
+  <data name="DBG_DeleteText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DBG_HitsLabel" xml:space="preserve">
+    <value>Hits: </value>
+  </data>
+  <data name="DBG_MoreOptionsTooltip" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="DBG_LaunchConfigTitle" xml:space="preserve">
+    <value>Debug Launch Configurations</value>
+  </data>
+  <data name="DBG_OpenWhdbgTooltip" xml:space="preserve">
+    <value>Open .whdbg file</value>
+  </data>
+  <data name="DBG_OpenButton" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="DBG_SaveTooltip" xml:space="preserve">
+    <value>Save launch configuration</value>
+  </data>
+  <data name="DBG_SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="DBG_EditInIdeTooltip" xml:space="preserve">
+    <value>Open this .whdbg file in the main CodeEditor for full JSON editing</value>
+  </data>
+  <data name="DBG_EditInIde" xml:space="preserve">
+    <value>Edit in IDE</value>
+  </data>
+  <data name="DBG_LaunchTooltip" xml:space="preserve">
+    <value>Launch selected configuration (F5)</value>
+  </data>
+  <data name="DBG_LaunchButton" xml:space="preserve">
+    <value>Launch</value>
+  </data>
+  <data name="DBG_ConfigLabel" xml:space="preserve">
+    <value>Configuration:</value>
+  </data>
+  <data name="DBG_LaunchHint" xml:space="preserve">
+    <value>Click Open to load a .whdbg file, select a configuration, then click Launch. Use Edit in IDE to edit the JSON with full syntax highlighting and schema validation.</value>
+  </data>
+  <data name="DBG_NoFileOpen" xml:space="preserve">
+    <value>No file open — click Open to load a .whdbg configuration.</value>
+  </data>
+  <data name="DBG_BreakpointSettings" xml:space="preserve">
+    <value>Breakpoint Settings</value>
+  </data>
+  <data name="DBG_ConditionsLabel" xml:space="preserve">
+    <value>Conditions</value>
+  </data>
+  <data name="DBG_AddCondition" xml:space="preserve">
+    <value>+ Add a condition</value>
+  </data>
+  <data name="DBG_ActionsLabel" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="DBG_LogMessage" xml:space="preserve">
+    <value>Log a message to Output window:</value>
+  </data>
+  <data name="DBG_LogHint" xml:space="preserve">
+    <value>Use $FUNCTION for method name, {expression} for values, $ADDRESS, $CALLER</value>
+  </data>
+  <data name="DBG_ContinueExecution" xml:space="preserve">
+    <value>Continue code execution</value>
+  </data>
+  <data name="DBG_DisableOnHit" xml:space="preserve">
+    <value>Disable breakpoint once hit</value>
+  </data>
+  <data name="DBG_OnlyWhen" xml:space="preserve">
+    <value>Only enable when following breakpoint is hit:</value>
+  </data>
+  <data name="DBG_ResetButton" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="DBG_CloseButton" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <!-- Wave 20 -->
+  <data name="DBG_AddWatch" xml:space="preserve">
+    <value>Add Watch</value>
+  </data>
+  <data name="DBG_ColValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="DBG_ColType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_ColName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DBG_ColFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+</root>

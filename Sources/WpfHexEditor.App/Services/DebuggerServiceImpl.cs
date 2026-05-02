@@ -13,6 +13,7 @@
 
 using System.IO;
 using System.Windows;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Debugger.Adapters;
 using WpfHexEditor.Core.Debugger.Models;
 using WpfHexEditor.Core.Debugger.Protocol;
@@ -496,9 +497,8 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             if (adapterPath is null)
             {
                 MessageBox.Show(
-                    "Debug adapter (netcoredbg) not found.\n" +
-                    "Install it or set the path in Options → Debugger.",
-                    "Debugger", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    string.Format(AppResources.App_Debugger_AdapterNotFound, Environment.NewLine),
+                    AppResources.App_Debugger_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return null;
             }
             return await NetCoreDapAdapter.CreateAsync(adapterPath);
@@ -516,9 +516,9 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             return registeredClient;
 
         MessageBox.Show(
-            $"No debug adapter registered for language '{config.LanguageId}'.\n" +
-            "Install the appropriate adapter plugin or configure a custom adapter.",
-            "Debugger", MessageBoxButton.OK, MessageBoxImage.Warning);
+            $"No debug adapter registered for language '{config.LanguageId}'.{Environment.NewLine}" +
+            AppResources.App_Debugger_AdapterMissing,
+            AppResources.App_Debugger_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
         return null;
     }
 

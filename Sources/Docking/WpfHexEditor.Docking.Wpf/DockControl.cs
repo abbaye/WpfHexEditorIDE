@@ -29,7 +29,7 @@ using WpfHexEditor.Docking.Core.Commands;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Shell.Commands;
 using WpfHexEditor.Shell.Controls;
-using Core = WpfHexEditor.Docking.Core;
+using DCore = WpfHexEditor.Docking.Core;
 
 namespace WpfHexEditor.Shell;
 
@@ -55,6 +55,9 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     // M2.1 — incremental visual tree: tab controls cached by group node.
     private readonly Dictionary<DockGroupNode, DockTabControl> _tabControlCache = new();
     private bool _pendingIncrementalHandled;
+
+    // Tab-switch dedup: prevents triple-fire from SelectionChanged + GotKeyboardFocus + GotFocus.
+    private DockItem? _lastActivatedItem;
 
     // M2.4 — WeakEvent fields: stored so DetachEngine can unsubscribe.
     private Action? _weLayoutChanged;
@@ -533,10 +536,10 @@ public class DockControl : ContentControl, IDockHost, IDisposable
                 if (GetCommandItem(e) is not { } item || _engine is null || Layout is null) return;
                 var dir = item.LastDockSide switch
                 {
-                    Core.DockSide.Left   => DockDirection.Left,
-                    Core.DockSide.Right  => DockDirection.Right,
-                    Core.DockSide.Top    => DockDirection.Top,
-                    Core.DockSide.Bottom => DockDirection.Bottom,
+                    DCore.DockSide.Left   => DockDirection.Left,
+                    DCore.DockSide.Right  => DockDirection.Right,
+                    DCore.DockSide.Top    => DockDirection.Top,
+                    DCore.DockSide.Bottom => DockDirection.Bottom,
                     _                    => DockDirection.Center
                 };
                 _engine.Dock(item, Layout.MainDocumentHost, dir);
@@ -957,12 +960,12 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     {
         switch (item.LastDockSide)
         {
-            case Core.DockSide.Left:
-            case Core.DockSide.Right:
+            case DCore.DockSide.Left:
+            case DCore.DockSide.Right:
                 if (size.Width  > 0) item.FloatWidth  = size.Width;
                 break;
-            case Core.DockSide.Top:
-            case Core.DockSide.Bottom:
+            case DCore.DockSide.Top:
+            case DCore.DockSide.Bottom:
                 if (size.Height > 0) item.FloatHeight = size.Height;
                 break;
             default:
@@ -1163,7 +1166,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     {
         if (_suppressRebuild) { _rebuildPending = true; return; }
 
-
+        _lastActivatedItem = null;  // reset dedup after layout change
 
         // Dispose previous tab wirers to prevent event leaks
         DisposeWirers();
@@ -1955,6 +1958,9 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     /// </summary>
     internal void TrackActivation(DockItem item)
     {
+        if (item == _lastActivatedItem) return;
+        _lastActivatedItem = item;
+
         ActivationHistory.Remove(item);
         ActivationHistory.Insert(0, item);
         // Sync model so layout serialization captures the last selected tab,
@@ -2021,10 +2027,10 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     {
         if (Layout is null) return;
 
-        _autoHideLeft.UpdateItems(Layout.AutoHideItems.Where(i => i.LastDockSide == Core.DockSide.Left));
-        _autoHideRight.UpdateItems(Layout.AutoHideItems.Where(i => i.LastDockSide == Core.DockSide.Right));
-        _autoHideTop.UpdateItems(Layout.AutoHideItems.Where(i => i.LastDockSide == Core.DockSide.Top));
-        _autoHideBottom.UpdateItems(Layout.AutoHideItems.Where(i => i.LastDockSide == Core.DockSide.Bottom));
+        _autoHideLeft.UpdateItems(Layout.AutoHideItems.Where(i => i.LastDockSide == DCore.DockSide.Left));
+        _autoHideRight.UpdateItems(Layout.AutoHideItems.Where(i => i.LastDockSide == DCore.DockSide.Right));
+        _autoHideTop.UpdateItems(Layout.AutoHideItems.Where(i => i.LastDockSide == DCore.DockSide.Top));
+        _autoHideBottom.UpdateItems(Layout.AutoHideItems.Where(i => i.LastDockSide == DCore.DockSide.Bottom));
     }
 
     private void ClearAllAutoHideBarHighlights()
@@ -2061,9 +2067,9 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         // Highlight the active bar button and show the flyout.
         var activeBar = representative.LastDockSide switch
         {
-            Core.DockSide.Left   => _autoHideLeft,
-            Core.DockSide.Right  => _autoHideRight,
-            Core.DockSide.Top    => _autoHideTop,
+            DCore.DockSide.Left   => _autoHideLeft,
+            DCore.DockSide.Right  => _autoHideRight,
+            DCore.DockSide.Top    => _autoHideTop,
             _                    => _autoHideBottom
         };
         activeBar.SetActiveGroup(items);
@@ -2086,10 +2092,10 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         {
             var direction = item.LastDockSide switch
             {
-                Core.DockSide.Left   => DockDirection.Left,
-                Core.DockSide.Right  => DockDirection.Right,
-                Core.DockSide.Top    => DockDirection.Top,
-                Core.DockSide.Bottom => DockDirection.Bottom,
+                DCore.DockSide.Left   => DockDirection.Left,
+                DCore.DockSide.Right  => DockDirection.Right,
+                DCore.DockSide.Top    => DockDirection.Top,
+                DCore.DockSide.Bottom => DockDirection.Bottom,
                 _                    => DockDirection.Bottom
             };
             _engine.RestoreFromAutoHide(item, Layout.MainDocumentHost, direction);

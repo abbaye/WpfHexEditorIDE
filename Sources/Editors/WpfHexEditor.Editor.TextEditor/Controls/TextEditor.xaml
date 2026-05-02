@@ -11,7 +11,16 @@
              xmlns:coreViews="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
              Background="{DynamicResource TE_Background}"
              Focusable="False"
-             KeyDown="OnKeyDown">
+             KeyDown="OnKeyDown"
+             xmlns:textSvc="clr-namespace:WpfHexEditor.Editor.TextEditor.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <textSvc:TextEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
     <Grid>
         <Grid.RowDefinitions>
@@ -19,26 +28,44 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Scrollable text area -->
-        <ScrollViewer x:Name="ScrollView"
-                      Grid.Row="0"
-                      HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Auto"
-                      Focusable="False"
-                      Background="{DynamicResource TE_Background}"
-                      ScrollChanged="ScrollView_ScrollChanged">
-            <Grid x:Name="ViewportGrid">
-                <!-- Auto column for no-wrap (content drives horizontal extent).
-                     Switched to * in code-behind when word wrap is on so MeasureOverride
-                     receives a finite available width instead of infinity. -->
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition x:Name="ViewportGridColumn" Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <local:TextViewport x:Name="Viewport"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Top"/>
-            </Grid>
-        </ScrollViewer>
+        <!-- Editor area: TextViewport + standalone scrollbars.
+             The ScrollViewer handles horizontal scrolling only.
+             Vertical scrolling is handled by VScrollBar (standalone) wired to FirstVisibleLine,
+             so the viewport always renders at y=0 and is never translated by the ScrollViewer. -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer x:Name="ScrollView"
+                          Grid.Column="0"
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Hidden"
+                          Focusable="False"
+                          Background="{DynamicResource TE_Background}"
+                          ScrollChanged="ScrollView_ScrollChanged">
+                <Grid x:Name="ViewportGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Name="ViewportGridColumn" Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <local:TextViewport x:Name="Viewport"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"/>
+                </Grid>
+            </ScrollViewer>
+
+            <!-- Standalone vertical scrollbar — wired to FirstVisibleLine in code-behind.
+                 Decoupled from ScrollViewer so the viewport is never translated vertically. -->
+            <ScrollBar x:Name="VScrollBar"
+                       Grid.Column="1"
+                       Orientation="Vertical"
+                       Minimum="0"
+                       Value="0"
+                       SmallChange="1"
+                       LargeChange="10"
+                       Scroll="VScrollBar_Scroll"/>
+        </Grid>
 
         <!-- QuickSearchBar overlay — floats above content, transparent to click-through -->
         <Canvas x:Name="SearchBarCanvas"
@@ -56,19 +83,19 @@
                    Height="22">
             <StatusBarItem>
                 <TextBlock x:Name="LanguageText"
-                           Text="Plain Text"
+                           Text="{DynamicResource TextEditor_LanguageLabelPlainText}"
                            Padding="4,0"/>
             </StatusBarItem>
             <Separator/>
             <StatusBarItem HorizontalAlignment="Right">
                 <TextBlock x:Name="CaretText"
-                           Text="Ln 1, Col 1"
+                           Text="{DynamicResource TextEditor_StatusBarCaretPosition}"
                            Padding="4,0"/>
             </StatusBarItem>
             <Separator/>
             <StatusBarItem>
                 <TextBlock x:Name="EncodingText"
-                           Text="UTF-8"
+                           Text="{DynamicResource TextEditor_StatusBarEncoding}"
                            Padding="4,0"/>
             </StatusBarItem>
         </StatusBar>

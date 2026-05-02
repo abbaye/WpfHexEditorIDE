@@ -19,6 +19,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using WpfHexEditor.Core.Definitions;
 using System.Windows;
+using WpfHexEditor.Plugins.FileComparison.Properties;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -500,7 +501,7 @@ internal sealed class CompareFilePickerPopup : Window
     {
         var dlg = new Microsoft.Win32.OpenFileDialog
         {
-            Title  = "Select file to compare",
+            Title  = FileComparisonResources.FileComparison_SelectFile,
             Filter = "All files (*.*)|*.*"
         };
         if (dlg.ShowDialog(Owner) == true)

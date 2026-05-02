@@ -32,6 +32,13 @@ public sealed class AppSettings
     /// </summary>
     public string ActiveThemeName { get; set; } = "DarkTheme";
 
+    /// <summary>
+    /// BCP-47 culture name for the UI language (e.g. "fr-CA", "en-US").
+    /// Empty string means "use system default".
+    /// Applied via LocalizedResourceDictionary.ChangeCulture() at startup.
+    /// </summary>
+    public string PreferredLanguage { get; set; } = string.Empty;
+
     // -- Environment > Save ----------------------------------------------
 
     /// <summary>
@@ -80,6 +87,14 @@ public sealed class AppSettings
     /// Serialised as "textEditor": { … } in settings.json.
     /// </summary>
     public TextEditorDefaultSettings TextEditorDefaults { get; set; } = new();
+
+    // -- Markdown Editor -------------------------------------------------
+
+    /// <summary>
+    /// MarkdownEditor appearance and behaviour defaults.
+    /// Serialised as "markdownEditor": { … } in settings.json.
+    /// </summary>
+    public MarkdownEditorDefaultSettings MarkdownEditorDefaults { get; set; } = new();
 
     // -- Standalone File Save ----------------------------------------------------
 
@@ -950,6 +965,57 @@ public sealed class TextEditorDefaultSettings
 }
 
 // --------------------------------------------------------------------------------
+// Markdown Editor Default Settings
+// --------------------------------------------------------------------------------
+
+/// <summary>
+/// Appearance and behaviour defaults for the built-in Markdown editor.
+/// </summary>
+public sealed class MarkdownEditorDefaultSettings
+{
+    // -- Preview sync --------------------------------------------------------
+
+    /// <summary>
+    /// When true, scrolling the source editor automatically scrolls the preview pane
+    /// to the matching position (bidirectional).
+    /// </summary>
+    public bool SyncScroll { get; set; } = true;
+
+    // -- Editing helpers -----------------------------------------------------
+
+    /// <summary>
+    /// When true, typing a paired character (* ` [ () ) auto-inserts the closing
+    /// counterpart and positions the caret between them.
+    /// </summary>
+    public bool EnableAutoPair { get; set; } = true;
+
+    /// <summary>
+    /// When true, pressing Enter inside a list item continues the list on the next line.
+    /// Pressing Enter on an empty list item ends the list.
+    /// </summary>
+    public bool EnableListContinuation { get; set; } = true;
+
+    // -- Content display -----------------------------------------------------
+
+    /// <summary>
+    /// When true, a YAML front-matter block (--- … ---) at the top of the file
+    /// is rendered as a styled block in the preview instead of as raw Markdown.
+    /// </summary>
+    public bool ShowYamlFrontmatter { get; set; } = true;
+
+    // -- Layout & zoom -------------------------------------------------------
+
+    /// <summary>Default zoom factor applied to the preview pane (1.0 = 100 %).</summary>
+    public double DefaultZoom { get; set; } = 1.0;
+
+    /// <summary>
+    /// Initial layout mode for the editor.
+    /// Valid values: "PreviewRight", "PreviewBottom", "EditorOnly", "PreviewOnly".
+    /// </summary>
+    public string DefaultLayout { get; set; } = "PreviewRight";
+}
+
+// --------------------------------------------------------------------------------
 // Standalone File Save Settings
 // --------------------------------------------------------------------------------
 
@@ -1421,6 +1487,8 @@ public sealed class StructureEditorSettings
     public long TestPanelMaxBytes { get; set; } = 10 * 1024 * 1024;
 }
 
+public enum WhfmtDetailPanelPosition { Right, Left, Bottom, Top }
+
 public sealed class WhfmtExplorerSettings
 {
     /// <summary>Show built-in (embedded) format definitions in the browser. Default: true.</summary>
@@ -1449,4 +1517,7 @@ public sealed class WhfmtExplorerSettings
 
     /// <summary>File names (without path) to exclude from the catalog even if found on disk.</summary>
     public List<string> ExcludedFileNames { get; set; } = [];
+
+    /// <summary>Position of the detail panel in the Format Catalog tab. Default: Right.</summary>
+    public WhfmtDetailPanelPosition CatalogDetailPosition { get; set; } = WhfmtDetailPanelPosition.Right;
 }

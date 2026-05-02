@@ -4,15 +4,22 @@
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.FileComparison.ViewModels"
              xmlns:views="clr-namespace:WpfHexEditor.Plugins.FileComparison.Views"
              xmlns:ctrl="clr-namespace:WpfHexEditor.Plugins.FileComparison.Views.Controls"
-             xmlns:conv="clr-namespace:WpfHexEditor.Plugins.FileComparison.Converters">
+             xmlns:conv="clr-namespace:WpfHexEditor.Plugins.FileComparison.Converters"
+             xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services">
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <fcSvc:FileComparisonLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <conv:BoolToVisibilityConverter    x:Key="BoolToVis"/>
         <conv:NotBoolToVisibilityConverter x:Key="NotBoolToVis"/>
         <conv:KindToBrushConverter         x:Key="KindToBrush"/>
         <conv:BinaryByteKindToBrushConverter  x:Key="ByteKindToBrush"/>
         <conv:AsciiPrintableToColorConverter  x:Key="AsciiColorConv"/>
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid x:Name="OuterGrid">
         <Grid.ColumnDefinitions>
@@ -38,14 +45,12 @@
                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Style="{DynamicResource XD_ToolbarIconButtonStyle}"
                             Width="Auto" Padding="6,2" Margin="0,0,2,0"
-                            Command="{Binding PrevDiffCommand}"
-                            ToolTip="Previous difference (Alt+Up)">
+                            Command="{Binding PrevDiffCommand}" ToolTip="{DynamicResource FileComparison_PrevDiff}">
                         <TextBlock Text="&#xE76B;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                     </Button>
                     <Button Style="{DynamicResource XD_ToolbarIconButtonStyle}"
                             Width="Auto" Padding="6,2" Margin="0,0,6,0"
-                            Command="{Binding NextDiffCommand}"
-                            ToolTip="Next difference (Alt+Down)">
+                            Command="{Binding NextDiffCommand}" ToolTip="{DynamicResource FileComparison_NextDiff}">
                         <TextBlock Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                     </Button>
                     <TextBlock Text="{Binding DiffBlockCount, StringFormat='{}0/{0}'}"
@@ -56,45 +61,42 @@
                     <ToggleButton Style="{DynamicResource XD_ToolbarToggleButtonStyle}"
                                   Width="Auto" Padding="6,2"
                                   IsChecked="{Binding IsSideBySide}"
-                                  Visibility="{Binding IsBinaryMode, Converter={StaticResource NotBoolToVis}}"
-                                  ToolTip="Side by side / Unified">
+                                  Visibility="{Binding IsBinaryMode, Converter={StaticResource NotBoolToVis}}" ToolTip="{DynamicResource FileComparison_SideBySideUnified}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets"
                                        FontSize="11" Margin="0,0,4,0"/>
-                            <TextBlock Text="Side by side" FontSize="11" FontFamily="Segoe UI"/>
+                            <TextBlock Text="{DynamicResource FileComparison_SideBySide}" FontSize="11" FontFamily="Segoe UI"/>
                         </StackPanel>
                     </ToggleButton>
                     <!-- Text mode: Ignore whitespace toggle -->
                     <ToggleButton Style="{DynamicResource XD_ToolbarToggleButtonStyle}"
                                   Width="Auto" Padding="6,2" Margin="4,0,0,0"
                                   IsChecked="{Binding IgnoreWhitespace}"
-                                  Visibility="{Binding IsBinaryMode, Converter={StaticResource NotBoolToVis}}"
-                                  ToolTip="Ignore leading/trailing whitespace when comparing lines">
+                                  Visibility="{Binding IsBinaryMode, Converter={StaticResource NotBoolToVis}}" ToolTip="{DynamicResource FileComparison_IgnoreWS}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8AB;" FontFamily="Segoe MDL2 Assets"
                                        FontSize="11" Margin="0,0,4,0"/>
-                            <TextBlock Text="Ignore WS" FontSize="11" FontFamily="Segoe UI"/>
+                            <TextBlock Text="{DynamicResource FileComparison_IgnoreWSLabel}" FontSize="11" FontFamily="Segoe UI"/>
                         </StackPanel>
                     </ToggleButton>
                     <!-- Binary mode: Context lines selector -->
                     <StackPanel Orientation="Horizontal"
                                 Visibility="{Binding IsBinaryMode, Converter={StaticResource BoolToVis}}"
                                 VerticalAlignment="Center">
-                        <TextBlock Text="Context:" FontSize="11" Opacity="0.7"
+                        <TextBlock Text="{DynamicResource FileComparison_ContextLabel}" FontSize="11" Opacity="0.7"
                                    VerticalAlignment="Center" Margin="0,0,4,0"/>
                         <ComboBox x:Name="ContextLinesCombo"
                                   FontSize="11" Width="56"
                                   SelectionChanged="OnContextLinesChanged">
-                            <ComboBoxItem Tag="0"  Content="0 lines"/>
-                            <ComboBoxItem Tag="3"  Content="3 lines" IsSelected="True"/>
-                            <ComboBoxItem Tag="8"  Content="8 lines"/>
-                            <ComboBoxItem Tag="-1" Content="All"/>
+                            <ComboBoxItem Tag="0"  Content="{DynamicResource FileComparison_Context0Lines}"/>
+                            <ComboBoxItem Tag="3"  Content="{DynamicResource FileComparison_Context3Lines}" IsSelected="True"/>
+                            <ComboBoxItem Tag="8"  Content="{DynamicResource FileComparison_Context8Lines}"/>
+                            <ComboBoxItem Tag="-1" Content="{DynamicResource FileComparison_ContextAll}"/>
                         </ComboBox>
                         <Button Style="{DynamicResource XD_ToolbarIconButtonStyle}"
                                 Width="Auto" Padding="6,2" Margin="4,0,0,0"
                                 x:Name="CopyHexButton"
-                                Click="OnCopyHexClicked"
-                                ToolTip="Copy hex dump to clipboard">
+                                Click="OnCopyHexClicked" ToolTip="{DynamicResource FileComparison_CopyHexDump}">
                             <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                         </Button>
                         <Separator Width="1" Height="16"
@@ -102,12 +104,11 @@
                         <!-- Block-aligned algorithm toggle -->
                         <ToggleButton Style="{DynamicResource XD_ToolbarToggleButtonStyle}"
                                       Width="Auto" Padding="6,2"
-                                      IsChecked="{Binding UseBlockAlignment}"
-                                      ToolTip="Block-aligned diff: detects true byte insertions/deletions (slower)">
+                                      IsChecked="{Binding UseBlockAlignment}" ToolTip="{DynamicResource FileComparison_BlockAlignedTooltip}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE9D5;" FontFamily="Segoe MDL2 Assets"
                                            FontSize="11" Margin="0,0,4,0"/>
-                                <TextBlock Text="Block-aligned" FontSize="11" FontFamily="Segoe UI"/>
+                                <TextBlock Text="{DynamicResource FileComparison_BlockAligned}" FontSize="11" FontFamily="Segoe UI"/>
                             </StackPanel>
                         </ToggleButton>
                     </StackPanel>
@@ -147,8 +148,7 @@
                 <!-- Stats panel toggle -->
                 <Button Style="{DynamicResource XD_ToolbarIconButtonStyle}"
                         Width="Auto" Padding="6,2"
-                        Command="{Binding ToggleStatsCommand}"
-                        ToolTip="Show/hide entropy and frequency stats"
+                        Command="{Binding ToggleStatsCommand}" ToolTip="{DynamicResource FileComparison_ToggleStats}"
                         Visibility="{Binding IsBinaryMode, Converter={StaticResource BoolToVis}}">
                     <TextBlock Text="&#xE9D2;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                 </Button>
@@ -157,7 +157,7 @@
                 <ToggleButton Style="{DynamicResource XD_ToolbarToggleButtonStyle}"
                               Width="Auto" Padding="6,2"
                               IsChecked="{Binding ShowFormatOverlay, Mode=TwoWay}"
-                              ToolTip="Toggle whfmt format-field color overlay"
+                              ToolTip="{DynamicResource FileComparison_ToggleFormatOverlay}"
                               Visibility="{Binding IsBinaryMode, Converter={StaticResource BoolToVis}}">
                     <TextBlock Text="&#xE7C1;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                 </ToggleButton>
@@ -167,12 +167,12 @@
                               Width="Auto" Padding="6,2"
                               IsChecked="{Binding IsStructureDiffMode, Mode=TwoWay}"
                               Command="{Binding ToggleStructureDiffCommand}"
-                              ToolTip="Show field-level structure diff (requires same format on both sides)"
+                              ToolTip="{DynamicResource FileComparison_StructureDiff}"
                               Visibility="{Binding HasStructureDiff, Converter={StaticResource BoolToVis}}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE8FD;" FontFamily="Segoe MDL2 Assets"
                                    FontSize="11" Margin="0,0,4,0"/>
-                        <TextBlock Text="Structure" FontSize="11" FontFamily="Segoe UI"/>
+                        <TextBlock Text="{DynamicResource FileComparison_Structure}" FontSize="11" FontFamily="Segoe UI"/>
                     </StackPanel>
                 </ToggleButton>
 
@@ -294,7 +294,7 @@
                     IsHitTestVisible="False"
                     Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="Building hex rows…" FontSize="13"
+                    <TextBlock Text="{DynamicResource FileComparison_BuildingRows}" FontSize="13"
                                FontFamily="Segoe UI"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                HorizontalAlignment="Center"/>

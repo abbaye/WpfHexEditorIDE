@@ -17,6 +17,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Options;
@@ -171,7 +172,7 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
 
         var modeRow = MakeLabeledRow("Default mode on open");
         _defaultMode = new ComboBox { Width = 160, Margin = new Thickness(0, 3, 0, 3) };
-        _defaultMode.Items.Add(new ComboBoxItem { Content = "Commands (default)", Tag = "" });
+        _defaultMode.Items.Add(new ComboBoxItem { Content = AppResources.App_Options_CommandsDefault, Tag = "" });
         _defaultMode.Items.Add(new ComboBoxItem { Content = "> Commands",          Tag = ">" });
         _defaultMode.Items.Add(new ComboBoxItem { Content = "@ Symbols (LSP)",    Tag = "@" });
         _defaultMode.Items.Add(new ComboBoxItem { Content = ": Go to line",        Tag = ":" });
@@ -228,7 +229,7 @@ public sealed class CommandPaletteOptionsPage : UserControl, IOptionsPage
 
         var resetBtn = new Button
         {
-            Content = "Reset to defaults",
+            Content = AppResources.App_Options_ResetToDefaults,
             HorizontalAlignment = HorizontalAlignment.Left,
             Padding = new Thickness(12, 4, 12, 4),
         };

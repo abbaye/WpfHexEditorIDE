@@ -24,6 +24,7 @@ using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.ProjectSystem.Properties;
 using WpfHexEditor.Core.ProjectSystem.Services.References;
 using WpfHexEditor.Core.ViewModels;
 
@@ -145,14 +146,14 @@ public sealed class ReferenceManagerViewModel : ViewModelBase
 
         if (_project is not IProjectWithReferences refs)
         {
-            StatusText = "This project type does not support reference management.";
+            StatusText = ProjectSystemResources.ProjectSystem_Ref_NoReferenceSupport;
             return;
         }
 
         // Project References
         if (refs.ProjectReferences.Count > 0)
         {
-            var g = new ReferenceGroupVm { Header = "Project References", Icon = "\uEA3C" };
+            var g = new ReferenceGroupVm { Header = ProjectSystemResources.ProjectSystem_Ref_ProjectReferences, Icon = "\uEA3C" };
             foreach (var path in refs.ProjectReferences)
                 g.Items.Add(new ReferenceEntryVm
                 {
@@ -170,7 +171,7 @@ public sealed class ReferenceManagerViewModel : ViewModelBase
         var asmRefs = refs.AssemblyReferences.Where(a => !a.IsFrameworkRef).ToList();
         if (asmRefs.Count > 0)
         {
-            var g = new ReferenceGroupVm { Header = "Assemblies", Icon = "\uE7EE" };
+            var g = new ReferenceGroupVm { Header = ProjectSystemResources.ProjectSystem_Ref_Assemblies, Icon = "\uE7EE" };
             foreach (var asm in asmRefs)
                 g.Items.Add(new ReferenceEntryVm
                 {
@@ -205,7 +206,7 @@ public sealed class ReferenceManagerViewModel : ViewModelBase
         // Analyzers (read-only)
         if (refs.AnalyzerReferences.Count > 0)
         {
-            var g = new ReferenceGroupVm { Header = "Analyzers", Icon = "\uE9D9", IsExpanded = false };
+            var g = new ReferenceGroupVm { Header = ProjectSystemResources.ProjectSystem_Ref_Analyzers, Icon = "\uE9D9", IsExpanded = false };
             foreach (var az in refs.AnalyzerReferences)
                 g.Items.Add(new ReferenceEntryVm
                 {
@@ -231,8 +232,8 @@ public sealed class ReferenceManagerViewModel : ViewModelBase
 
         var dlg = new OpenFileDialog
         {
-            Title            = "Add Project Reference",
-            Filter           = "Project files (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|All files (*.*)|*.*",
+            Title            = ProjectSystemResources.Dialog_AddProjectReference,
+            Filter           = ProjectSystemResources.Filter_ProjectFiles,
             Multiselect      = true,
             InitialDirectory = Path.GetDirectoryName(_project.ProjectFilePath),
         };
@@ -252,8 +253,8 @@ public sealed class ReferenceManagerViewModel : ViewModelBase
 
         var dlg = new OpenFileDialog
         {
-            Title            = "Add Assembly Reference",
-            Filter           = "Assembly files (*.dll;*.exe)|*.dll;*.exe|All files (*.*)|*.*",
+            Title            = ProjectSystemResources.Dialog_AddAssemblyReference,
+            Filter           = ProjectSystemResources.Filter_AssemblyFiles,
             Multiselect      = true,
         };
 
@@ -302,7 +303,7 @@ public sealed class ReferenceManagerViewModel : ViewModelBase
             ? $"Remove reference '{toRemove[0].Name}'?"
             : $"Remove {toRemove.Count} selected references?";
 
-        if (MessageBox.Show(msg, "Remove Reference", MessageBoxButton.OKCancel,
+        if (MessageBox.Show(msg, ProjectSystemResources.Dialog_RemoveReferenceTitle, MessageBoxButton.OKCancel,
                 MessageBoxImage.Question) != MessageBoxResult.OK) return;
 
         foreach (var entry in toRemove)
@@ -347,14 +348,14 @@ public sealed class ReferenceManagerViewModel : ViewModelBase
 
         if (unused.Count == 0)
         {
-            MessageBox.Show("No unused assembly references found.", "Remove Unused References",
+            MessageBox.Show(ProjectSystemResources.Message_NoUnusedReferences, ProjectSystemResources.Dialog_RemoveUnusedReferencesTitle,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
         var names = string.Join("\n  â€¢ ", unused.Select(a => a.Name));
-        if (MessageBox.Show($"Remove the following unused assembly references?\n\n  â€¢ {names}",
-                "Remove Unused References", MessageBoxButton.OKCancel,
+        if (MessageBox.Show($"{ProjectSystemResources.Confirm_RemoveUnusedReferences}\n\n  \u2022 {names}",
+                ProjectSystemResources.Dialog_RemoveUnusedReferencesTitle, MessageBoxButton.OKCancel,
                 MessageBoxImage.Question) != MessageBoxResult.OK) return;
 
         foreach (var asm in unused)

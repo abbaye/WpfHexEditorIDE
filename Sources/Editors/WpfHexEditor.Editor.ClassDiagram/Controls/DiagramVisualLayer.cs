@@ -124,7 +124,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
     internal double CurrentZoom { get; set; } = 1.0;
 
     /// <summary>
-    /// Highlights the relationship with the given source-id in the arrow layer (accent pen).
+    /// Highlights the relationship with the given "sourceId:targetId" key in the arrow layer (accent pen).
     /// Pass null to clear the highlight.
     /// </summary>
     public void HighlightRelationship(string? relId)
@@ -652,7 +652,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
         if (_doc is null) return null;
         foreach (var node in _doc.Classes)
         {
-            if (new Rect(node.X, node.Y, node.Width, node.Height).Contains(pt))
+            if (new Rect(node.X, node.Y, ComputeNodeWidth(node), ComputeNodeHeight(node)).Contains(pt))
                 return node;
         }
         return null;
@@ -663,8 +663,29 @@ public sealed class DiagramVisualLayer : FrameworkElement
     {
         double relY = pt.Y - node.Y - ComputeHeaderHeight(node) - MemberPadding;
         if (relY < 0) return null;
-        int idx = (int)(relY / MemberHeight);
-        return idx >= 0 && idx < node.Members.Count ? node.Members[idx] : null;
+
+        // Walk the same render loop so section headers (14px) and collapsed sections are respected.
+        double memberY  = 0;
+        MemberKind? lastKind = null;
+        foreach (var member in node.Members)
+        {
+            if (lastKind.HasValue && member.Kind != lastKind)
+            {
+                string sec = GetSectionName(member.Kind);
+                memberY += 14.0; // section header strip
+                if (IsSectionCollapsed(node.Id, sec))
+                {
+                    lastKind = member.Kind;
+                    continue;
+                }
+            }
+            lastKind = member.Kind;
+            if (IsSectionCollapsed(node.Id, GetSectionName(member.Kind))) continue;
+
+            if (relY >= memberY && relY < memberY + MemberHeight) return member;
+            memberY += MemberHeight;
+        }
+        return null;
     }
 
     /// <summary>Returns the relationship whose line is within 6px of <paramref name="pt"/>, or null.</summary>
@@ -1093,7 +1114,8 @@ public sealed class DiagramVisualLayer : FrameworkElement
             Point p1 = NearestEdgePoint(srcRect, tgtRect);
             Point p2 = NearestEdgePoint(tgtRect, srcRect);
 
-            bool isHighlighted = _highlightedRelId is not null && rel.SourceId == _highlightedRelId;
+            bool isHighlighted = _highlightedRelId is not null
+                && $"{rel.SourceId}:{rel.TargetId}" == _highlightedRelId;
             // Highlighted arrows are drawn on the separate _arrowHighlightLayer (not here)
             if (isHighlighted) continue;
             Brush lineBrush = GetArrowBrush(rel.Kind);
@@ -1161,9 +1183,8 @@ public sealed class DiagramVisualLayer : FrameworkElement
             }
 
             // B8 — Connection port dots at arrow endpoints
-            var portBrush = new SolidColorBrush(Color.FromArgb(180, lineBrush is SolidColorBrush sb ? sb.Color.R : (byte)140,
-                lineBrush is SolidColorBrush sb2 ? sb2.Color.G : (byte)140,
-                lineBrush is SolidColorBrush sb3 ? sb3.Color.B : (byte)180));
+            var lineColor  = (lineBrush as SolidColorBrush)?.Color ?? Color.FromRgb(140, 140, 180);
+            var portBrush  = new SolidColorBrush(Color.FromArgb(180, lineColor.R, lineColor.G, lineColor.B));
             dc.DrawEllipse(portBrush, null, p1, 2.5, 2.5);
             dc.DrawEllipse(portBrush, null, p2, 2.5, 2.5);
         }
@@ -1181,7 +1202,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
         using var hdc = _arrowHighlightLayer.RenderOpen();
         if (_doc is null || _highlightedRelId is null) return;
 
-        var rel = _doc.Relationships.FirstOrDefault(r => r.SourceId == _highlightedRelId);
+        var rel = _doc.Relationships.FirstOrDefault(r => $"{r.SourceId}:{r.TargetId}" == _highlightedRelId);
         if (rel is null) return;
         var src = _doc.FindById(rel.SourceId);
         var tgt = _doc.FindById(rel.TargetId);
@@ -1558,13 +1579,15 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     private static string BuildMemberLabel(ClassMember m)
     {
-        var sb = new System.Text.StringBuilder();
-        if (m.IsStatic)   sb.Append("static ");
-        if (m.IsAsync)    sb.Append("async ");
-        if (m.IsAbstract) sb.Append("abstract ");
-        if (m.IsOverride) sb.Append("↑");
-        sb.Append(m.DisplayLabel);
-        return sb.ToString();
+        // Fast path: most members have no modifiers
+        if (!m.IsStatic && !m.IsAsync && !m.IsAbstract && !m.IsOverride)
+            return m.DisplayLabel;
+
+        string prefix = (m.IsStatic   ? "static "   : string.Empty)
+                      + (m.IsAsync    ? "async "    : string.Empty)
+                      + (m.IsAbstract ? "abstract " : string.Empty)
+                      + (m.IsOverride ? "↑"         : string.Empty);
+        return prefix + m.DisplayLabel;
     }
 
     private static string GetStereotype(ClassNode node)

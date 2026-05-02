@@ -25,6 +25,7 @@ using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 using WpfHexEditor.Editor.DocumentEditor.ViewModels;
 using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.Editor.DocumentEditor.Properties;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -160,7 +161,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     public bool IsBusy     { get; private set; }
 
     public string Title => _vm is null
-        ? "Document"
+        ? DocumentEditorResources.DocEditorHost_DocumentTitle
         : Path.GetFileName(_vm.Model.FilePath) + (IsDirty ? " *" : string.Empty);
 
     public int    UndoCount       => _vm?.Model.UndoEngine.UndoCount ?? 0;
@@ -210,7 +211,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         var saver = savers.FirstOrDefault(s => s.CanSave(_vm.Model.FilePath));
         if (saver is null)
         {
-            StatusMessage?.Invoke(this, "No saver registered for this file type.");
+            StatusMessage?.Invoke(this, DocumentEditorResources.DocEditorHost_NoSaverStatus);
             return;
         }
 
@@ -227,12 +228,12 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             _hexHighlightMgr?.Clear();
 
             var fileName = System.IO.Path.GetFileName(_vm.Model.FilePath);
-            StatusMessage?.Invoke(this, $"Saved — {fileName}");
+            StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_SavedStatus, fileName));
             TitleChanged?.Invoke(this, Title);
         }
         catch (Exception ex)
         {
-            StatusMessage?.Invoke(this, $"Save failed: {ex.Message}");
+            StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_SaveFailedStatus, ex.Message));
             if (File.Exists(tmp)) File.Delete(tmp);
         }
         finally
@@ -263,7 +264,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         await Dispatcher.InvokeAsync(() => PART_TextPane.ShowLoading());
 
         IsBusy = true;
-        OperationStarted?.Invoke(this, new DocumentOperationEventArgs { Title = "Loading document…" });
+        OperationStarted?.Invoke(this, new DocumentOperationEventArgs { Title = DocumentEditorResources.DocEditorHost_LoadingMessage });
 
         var fileName = System.IO.Path.GetFileName(filePath);
         var ctxState = _ideContext is null ? "NULL" : "OK";
@@ -283,7 +284,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
                 _pendingFilePath = filePath;
                 OutputMessage?.Invoke(this, $"[DocEditor] DEFERRED — waiting for IDE context. file='{fileName}'");
                 await Dispatcher.InvokeAsync(() =>
-                    PART_TextPane.ShowLoading("Waiting for IDE to initialize…"));
+                    PART_TextPane.ShowLoading(DocumentEditorResources.DocEditorHost_WaitingForIDE));
                 return;
             }
 
@@ -308,7 +309,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         catch (Exception ex)
         {
             OutputMessage?.Invoke(this, $"[DocEditor] ERROR — {ex.GetType().Name}: {ex.Message}");
-            StatusMessage?.Invoke(this, $"Failed to open document: {ex.Message}");
+            StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_LoadErrorMessage, ex.Message));
             _ideContext?.Output.Error($"[DocumentEditor] Failed to open '{fileName}': {ex}");
             await Dispatcher.InvokeAsync(() =>
             {
@@ -367,16 +368,16 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         if (PART_FullModeBtn   is not null) PART_FullModeBtn.IsChecked   = mode == DocumentViewMode.Full;
         if (PART_FocusModeBtn  is not null) PART_FocusModeBtn.IsChecked  = mode == DocumentViewMode.Focus;
 
-        var readOnlySuffix = IsReadOnly ? " | Read Only" : string.Empty;
+        var readOnlySuffix = IsReadOnly ? DocumentEditorResources.DocEditorHost_ReadOnlySuffix : string.Empty;
         PART_StatusBar.ViewModeText = mode switch
         {
-            DocumentViewMode.TextOnly  => "Text" + readOnlySuffix,
-            DocumentViewMode.Split     => "Split" + readOnlySuffix,
-            DocumentViewMode.HexOnly   => "Hex" + readOnlySuffix,
-            DocumentViewMode.Structure => "Structure" + readOnlySuffix,
-            DocumentViewMode.Full      => "Full" + readOnlySuffix,
-            DocumentViewMode.Focus     => "Focus" + readOnlySuffix,
-            _                          => "Split" + readOnlySuffix
+            DocumentViewMode.TextOnly  => DocumentEditorResources.DocEditorHost_ViewModeText      + readOnlySuffix,
+            DocumentViewMode.Split     => DocumentEditorResources.DocEditorHost_ViewModeSplit      + readOnlySuffix,
+            DocumentViewMode.HexOnly   => DocumentEditorResources.DocEditorHost_ViewModeHex       + readOnlySuffix,
+            DocumentViewMode.Structure => DocumentEditorResources.DocEditorHost_ViewModeStructure + readOnlySuffix,
+            DocumentViewMode.Full      => DocumentEditorResources.DocEditorHost_ViewModeFull      + readOnlySuffix,
+            DocumentViewMode.Focus     => DocumentEditorResources.DocEditorHost_ViewModeFocus     + readOnlySuffix,
+            _                          => DocumentEditorResources.DocEditorHost_ViewModeSplit     + readOnlySuffix
         };
     }
 
@@ -435,23 +436,34 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void ApplyRenderMode(DocumentRenderMode mode)
     {
         var renderer = PART_TextPane.PART_Renderer;
+
+        // Always push the mode to the renderer first (triggers RebuildLayout)
+        renderer.SetRenderMode(mode);
+
         switch (mode)
         {
             case DocumentRenderMode.Page:
                 renderer.ShowPageShadows = true;
                 renderer.PageMargin      = new Thickness(40);
+                // Restore text pane if coming from Outline
+                SetPaneVisibility(text: true, structure: false, hex: ViewMode == DocumentViewMode.Split);
                 break;
+
             case DocumentRenderMode.Draft:
                 renderer.ShowPageShadows = false;
                 renderer.PageMargin      = new Thickness(8, 4, 8, 4);
+                // Restore text pane if coming from Outline
+                SetPaneVisibility(text: true, structure: false, hex: ViewMode == DocumentViewMode.Split);
                 break;
+
             case DocumentRenderMode.Outline:
-                SetPaneVisibility(text: false, structure: true, hex: false);
+                // Show text pane (renderer draws outline mode inline, structure pane is optional)
+                SetPaneVisibility(text: true, structure: false, hex: false);
                 break;
         }
 
-        if (PART_PageModeBtn   is not null) PART_PageModeBtn.IsChecked   = mode == DocumentRenderMode.Page;
-        if (PART_DraftModeBtn  is not null) PART_DraftModeBtn.IsChecked  = mode == DocumentRenderMode.Draft;
+        if (PART_PageModeBtn    is not null) PART_PageModeBtn.IsChecked    = mode == DocumentRenderMode.Page;
+        if (PART_DraftModeBtn   is not null) PART_DraftModeBtn.IsChecked   = mode == DocumentRenderMode.Draft;
         if (PART_OutlineModeBtn is not null) PART_OutlineModeBtn.IsChecked = mode == DocumentRenderMode.Outline;
     }
 
@@ -461,6 +473,106 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void OnItalicClicked(object sender, RoutedEventArgs e)        => ApplyFormat("italic");
     private void OnUnderlineClicked(object sender, RoutedEventArgs e)     => ApplyFormat("underline");
     private void OnStrikethroughClicked(object sender, RoutedEventArgs e) => ApplyFormat("strikethrough");
+
+    // ── Wave F: Font family ───────────────────────────────────────────────────
+
+    private bool _suppressFontDropdown; // guard against re-entrancy when we set selection from code
+
+    private void OnFontFamilyChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_suppressFontDropdown) return;
+        if (PART_FontFamilyDropdown?.SelectedItem is not ComboBoxItem item) return;
+        var family = item.Tag?.ToString();
+        if (!string.IsNullOrEmpty(family))
+            ApplyRunFormat("fontFamily", family);
+    }
+
+    // ── Wave F: Font size ─────────────────────────────────────────────────────
+
+    private void OnFontSizeChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (PART_FontSizeDropdown?.SelectedItem is not ComboBoxItem item) return;
+        if (double.TryParse(item.Tag?.ToString(), out double sz) && sz > 0)
+            ApplyRunFormat("fontSize", sz);
+    }
+
+    private void OnFontSizeCommit(object sender, RoutedEventArgs e)
+    {
+        // User typed a custom size in the editable ComboBox
+        if (PART_FontSizeDropdown is null) return;
+        var text = PART_FontSizeDropdown.Text;
+        if (double.TryParse(text, out double sz) && sz is >= 4 and <= 400)
+            ApplyRunFormat("fontSize", sz);
+    }
+
+    // ── Wave F: Text color picker ─────────────────────────────────────────────
+
+    private static readonly string[] ColorSwatchHex =
+    [
+        "#000000", "#FFFFFF", "#FF0000", "#00B050",
+        "#0070C0", "#FFC000", "#7030A0", "#FF6600",
+        "#808080", "#C0C0C0", "#FF9999", "#99CC99",
+        "#99BBDD", "#FFE066", "#C4A0DC", "#FFCC99"
+    ];
+
+    private bool _colorSwatchesBuilt;
+
+    private void OnTextColorBtnClicked(object sender, RoutedEventArgs e)
+    {
+        EnsureColorSwatches();
+        PART_ColorPickerPopup.IsOpen = true;
+    }
+
+    private void EnsureColorSwatches()
+    {
+        if (_colorSwatchesBuilt) return;
+        _colorSwatchesBuilt = true;
+
+        foreach (var hex in ColorSwatchHex)
+        {
+            var btn = new System.Windows.Controls.Button
+            {
+                Width           = 14,
+                Height          = 14,
+                Margin          = new Thickness(1),
+                Background      = new System.Windows.Media.SolidColorBrush(
+                                      (System.Windows.Media.Color)
+                                      System.Windows.Media.ColorConverter.ConvertFromString(hex)),
+                BorderThickness = new Thickness(1),
+                BorderBrush     = System.Windows.Media.Brushes.Gray,
+                Tag             = hex,
+                ToolTip         = hex,
+                Cursor          = Cursors.Hand,
+            };
+            btn.Click += OnSwatchClicked;
+            PART_ColorSwatches.Children.Add(btn);
+        }
+    }
+
+    private void OnSwatchClicked(object sender, RoutedEventArgs e)
+    {
+        if (sender is not System.Windows.Controls.Button btn) return;
+        var hex = btn.Tag?.ToString();
+        if (string.IsNullOrEmpty(hex)) return;
+
+        PART_ColorPickerPopup.IsOpen = false;
+
+        // Update the color stripe under the "A"
+        if (PART_ColorStripe is not null)
+            PART_ColorStripe.Fill = new System.Windows.Media.SolidColorBrush(
+                (System.Windows.Media.Color)
+                System.Windows.Media.ColorConverter.ConvertFromString(hex));
+
+        ApplyRunFormat("color", hex);
+    }
+
+    // ── Shared run format helper ──────────────────────────────────────────────
+
+    private void ApplyRunFormat(string attribute, object value)
+    {
+        if (IsReadOnly || _mutator is null) return;
+        PART_TextPane.PART_Renderer.ApplyFormatToSelection(attribute, value);
+    }
 
     private void OnAlignLeftClicked(object sender, RoutedEventArgs e)     => ApplyBlockAttribute("align", "left");
     private void OnAlignCenterClicked(object sender, RoutedEventArgs e)   => ApplyBlockAttribute("align", "center");
@@ -613,7 +725,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title            = "Export Document",
+            Title            = DocumentEditorResources.DocEditorHost_ExportDialogTitle,
             Filter           = string.Join("|", filterParts),
             FileName         = System.IO.Path.GetFileName(_vm.Model.FilePath),
             InitialDirectory = System.IO.Path.GetDirectoryName(_vm.Model.FilePath) ?? string.Empty,
@@ -625,7 +737,8 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         var saver      = savers.FirstOrDefault(s => s.CanSave(targetPath));
         if (saver is null)
         {
-            StatusMessage?.Invoke(this, $"No saver registered for '{System.IO.Path.GetExtension(targetPath)}'.");
+            var ext = System.IO.Path.GetExtension(targetPath);
+            StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_NoSaverForExport, ext));
             return;
         }
 
@@ -643,11 +756,12 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
                 await saver.SaveAsync(_vm.Model, fs);
             if (File.Exists(targetPath)) File.Delete(targetPath);
             File.Move(tmp, targetPath);
-            StatusMessage?.Invoke(this, $"Exported — {System.IO.Path.GetFileName(targetPath)}");
+            var path = System.IO.Path.GetFileName(targetPath);
+            StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_ExportedStatus, path));
         }
         catch (Exception ex)
         {
-            StatusMessage?.Invoke(this, $"Export failed: {ex.Message}");
+            StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_ExportFailedStatus, ex.Message));
             OutputMessage?.Invoke(this, $"[DocEditor] Export error: {ex}");
         }
         finally
@@ -661,17 +775,17 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         var meta = _vm?.Model?.Metadata;
         if (meta is null) return;
 
-        PART_Meta_Title.Text    = string.IsNullOrEmpty(meta.Title)         ? "—" : meta.Title;
-        PART_Meta_Author.Text   = string.IsNullOrEmpty(meta.Author)        ? "—" : meta.Author;
-        PART_Meta_Format.Text   = string.IsNullOrEmpty(meta.FormatVersion) ? "—" : meta.FormatVersion;
-        PART_Meta_Mime.Text     = string.IsNullOrEmpty(meta.MimeType)      ? "—" : meta.MimeType;
+        PART_Meta_Title.Text    = string.IsNullOrEmpty(meta.Title)         ? DocumentEditorResources.DocEditorHost_MetaEmptyValue : meta.Title;
+        PART_Meta_Author.Text   = string.IsNullOrEmpty(meta.Author)        ? DocumentEditorResources.DocEditorHost_MetaEmptyValue : meta.Author;
+        PART_Meta_Format.Text   = string.IsNullOrEmpty(meta.FormatVersion) ? DocumentEditorResources.DocEditorHost_MetaEmptyValue : meta.FormatVersion;
+        PART_Meta_Mime.Text     = string.IsNullOrEmpty(meta.MimeType)      ? DocumentEditorResources.DocEditorHost_MetaEmptyValue : meta.MimeType;
         PART_Meta_Created.Text  = meta.CreatedUtc.HasValue
             ? meta.CreatedUtc.Value.ToLocalTime().ToString("g")
-            : "—";
+            : DocumentEditorResources.DocEditorHost_MetaEmptyValue;
         PART_Meta_Modified.Text = meta.ModifiedUtc.HasValue
             ? meta.ModifiedUtc.Value.ToLocalTime().ToString("g")
-            : "—";
-        PART_Meta_Macros.Text   = meta.HasMacros ? "Yes" : "No";
+            : DocumentEditorResources.DocEditorHost_MetaEmptyValue;
+        PART_Meta_Macros.Text   = meta.HasMacros ? DocumentEditorResources.DocEditorHost_MetaYesValue : DocumentEditorResources.DocEditorHost_MetaNoValue;
 
         PART_MetadataPopup.IsOpen = true;
     }

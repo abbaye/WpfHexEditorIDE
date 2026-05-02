@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>Neues Erweiterungsprojekt</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Ausgabeverzeichnis für das Plugin-Projekt auswählen</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>Berechtigungen</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>Isolationsmodus</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>Ladepriorität (10–90):</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>Weiter &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>Erstellen und öffnen</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>Plugin erstellt</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>Erweiterungspaket veröffentlichen</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>Paket vor Veröffentlichung signieren</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Durchsuchen…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>Ausgabeordner im Explorer öffnen</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>Paket</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>Ausgabeverzeichnis auswählen</value>
+  </data>
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>Entwicklungsprotokoll der Erweiterung exportieren</value>
+  </data>
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>Durchsuchen</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>Installiert</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>Alle aktualisieren</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>Erweiterungsmarktplatz</value>
+  </data>
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>Erweiterung:</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>Konfiguration:</value>
+  </data>
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>Bereit</value>
+  </data>
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>Autor</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>Bewertung</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+</root>

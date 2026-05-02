@@ -31,6 +31,7 @@ using System.Windows.Media.Imaging;
 using WpfHexEditor.Editor.Core;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using WpfHexEditor.Editor.ImageViewer.Dialogs;
+using WpfHexEditor.Editor.ImageViewer.Properties;
 using WpfHexEditor.Editor.ImageViewer.Transforms;
 
 namespace WpfHexEditor.Editor.ImageViewer.Controls;
@@ -406,7 +407,7 @@ public sealed partial class ImageViewer : UserControl,
     public async Task OpenAsync(string filePath, CancellationToken ct = default)
     {
         IsBusy = true;
-        OperationStarted?.Invoke(this, new DocumentOperationEventArgs { Title = "Loading image…", IsIndeterminate = true });
+        OperationStarted?.Invoke(this, new DocumentOperationEventArgs { Title = ImageViewerResources.ImageViewer_LoadingImage, IsIndeterminate = true });
 
         try
         {
@@ -832,7 +833,7 @@ public sealed partial class ImageViewer : UserControl,
 
         var dlg = new SaveFileDialog
         {
-            Title  = "Save Image As",
+            Title  = ImageViewerResources.ImageViewer_SaveImageAs,
             Filter = "PNG Image (*.png)|*.png|JPEG Image (*.jpg;*.jpeg)|*.jpg;*.jpeg|BMP Image (*.bmp)|*.bmp|TIFF Image (*.tiff;*.tif)|*.tiff;*.tif",
             FilterIndex = 1,
             FileName = suggestedPath is not null

@@ -33,7 +33,7 @@
                            VerticalAlignment="Center"
                            FontSize="11"
                            Foreground="{DynamicResource TE_LineNumberForeground}"
-                           Text="Press F5 to run · Ctrl+F5 to validate" />
+                           Text="{DynamicResource SCR_F5Help}" />
             </StackPanel>
         </Border>
 
@@ -76,7 +76,7 @@
                        Margin="8,0"
                        FontSize="11"
                        Foreground="{DynamicResource TE_LineNumberForeground}"
-                       Text="Ready" />
+                       Text="{DynamicResource SCR_StatusReady}" />
         </Border>
     </Grid>
 </UserControl>

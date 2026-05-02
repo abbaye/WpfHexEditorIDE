@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>Bul ve değiştir</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>Bul:</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>Değiştir:</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>Büyük/küçük harf duyarlı</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>Tüm kelime</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>Tümünü bul</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>Sonrakini bul</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>Öncekini bul</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>Değiştir</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>Tümünü değiştir</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>Kapat</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>Sayfa</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>Biçim:</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>Özel</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>Yönlendirme:</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>Dikey</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>Yatay</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>Sütunlar</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>Eşit sütun genişlikleri</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>Sütunlar arasında ayırıcı çizgi göster</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>Üst bilgi/alt bilgi</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>Üst bilgi</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>Üst bilgiyi etkinleştir</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>İlk sayfada farklı içerik</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>Sol/sağ sayfalarda aynı üst bilgi</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>Alt bilgi</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>Alt bilgiyi etkinleştir</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>Kenarlık</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>Yok</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>Kutu</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>Gölge</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>İptal</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>Uygula</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>İç:</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>Dış:</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>Sol:</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>Sağ:</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>Metin görünümü</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>Bölünmüş görünüm (metin + Hex)</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>Hex görünümü</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>Yapı ağacı görünümü</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>Tam görünüm (metin + yapı + Hex)</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>Odak modu — zen yazımı (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>Metin</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>Bölünmüş</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>Yapı</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>Tam</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>Odak</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>Sayfa görünümü — sayfalandırılmış A4/Letter kartları</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>Taslak görünümü — sürekli kaydırma, dar kenar boşlukları</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>Ana hat görünümü — yapı ağacı ortalanmış</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>Adli analiz modu</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>Adli</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>Kalın (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>İtalik (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>Altı çizili (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>Üstü çizili</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>Sola hizala</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>Ortala</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>Sağa hizala</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>Paragraf stili</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>Alıntı</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Code</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>Paragraf stilleri (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>Sayfa yapısı (kağıt boyutu, kenar boşlukları, sütunlar…)</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>Uzaklaştır</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>Yakınlaştır</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>Salt okunur</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Belge meta verileri</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Belgeyi dışa aktar</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Kaydet</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Başlık</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Yazar</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Biçim</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>Oluşturulma</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>Değiştirilme</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>Makrolar</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>Kalın (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>İtalik (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>Altı çizili (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>Seçili metni kopyala</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>Hex bayt olarak kopyala</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>Yapı bölmesinde bloğu incele</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>Hex bölmesinde ofsete git</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>Sayfa sayısı</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>Kelime sayısı</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>Yakınlaştırma düzeyi</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>Adli paneli açmak için tıklayın</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>Yapı</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>Tümünü daralt</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>Tümünü genişlet</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>Blokları filtrele…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>Filtreyi temizle</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>Metne git</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>Hex ofsetine git</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>Blok metnini kopyala</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>Ofseti kopyala</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>Belge</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>Kaydedildi — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>Kaydetme başarısız: {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>Bu dosya türü için kayıtlı kaydedici yok.</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>Belge yükleniyor…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>IDE başlatılması bekleniyor…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>Belge açılamadı: {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>Belgeyi dışa aktar</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>Dışa aktarma başarısız: {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>Dışa aktarıldı — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>'{0}' için kayıtlı kaydedici yok.</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>Evet</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>Hayır</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>Metin</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>Bölünmüş</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>Yapı</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>Tam</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>Odak</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | Salt okunur</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>Sayfa 1</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 kelime</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>Bölünmüş</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>Biçim: {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} kelime</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>Sayfa 1 / {0}</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>Başlık 1</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>Başlık 2</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>Başlık 3</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>Başlık 4</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>Başlık 5</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>Başlık 6</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>Alıntı</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>Açıklama yazısı</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>Liste paragrafı</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>Yoğun alıntı</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>Uyarılar</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>Bloklar</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>Biçim</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>Seçim</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>Sürüm</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>Görünüm</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>Adli tıp modu</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>Onaltılık görünüm</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>Bölünmüş görünüm</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>Yapı görünümü</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>Metin görünümü</value>
+  </data>
+</root>

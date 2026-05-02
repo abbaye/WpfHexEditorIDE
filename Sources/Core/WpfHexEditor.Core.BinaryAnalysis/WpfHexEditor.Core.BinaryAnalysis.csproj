@@ -42,8 +42,7 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
 
     <!-- Packaging -->
-    <PackageOutputPath>$(MSBuildThisFileDirectory)..\..\..\artifacts\nuget</PackageOutputPath>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageIcon>icon.png</PackageIcon>

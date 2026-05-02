@@ -35,6 +35,7 @@ using WpfHexEditor.Plugins.AssemblyExplorer.Languages;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 using WpfHexEditor.Plugins.AssemblyExplorer.Views;
+using WpfHexEditor.Plugins.AssemblyExplorer.Properties;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
@@ -53,7 +54,7 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
     // ── Identity ──────────────────────────────────────────────────────────────
 
     public string  Id      => "WpfHexEditor.Plugins.AssemblyExplorer";
-    public string  Name    => "Assembly Explorer";
+    public string  Name    => AssemblyExplorerResources.AsmExplorer_PluginName;
     public Version Version => new(0, 2, 1);
 
     public PluginCapabilities Capabilities => new()
@@ -122,7 +123,7 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
             Id,
             new PanelDescriptor
             {
-                Title           = "Assembly Explorer",
+                Title           = AssemblyExplorerResources.AsmExplorer_PanelTitle,
                 DefaultDockSide = "Left",
                 DefaultAutoHide = false,
                 CanClose        = true,
@@ -138,7 +139,7 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
             Id,
             new PanelDescriptor
             {
-                Title           = "Assembly Search",
+                Title           = AssemblyExplorerResources.AsmExplorer_SearchPanelTitle,
                 DefaultDockSide = "Bottom",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -154,7 +155,7 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
             Id,
             new PanelDescriptor
             {
-                Title           = "Assembly Diff",
+                Title           = AssemblyExplorerResources.AsmExplorer_DiffPanelTitle,
                 DefaultDockSide = "Bottom",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -447,7 +448,7 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
                 Command    = new RelayCommand(
                     _ => MessageBox.Show(
                         "Go to Metadata Token — Coming in a future release.",
-                        "Assembly Explorer",
+                        AssemblyExplorerResources.AsmExplorer_PluginName,
                         MessageBoxButton.OK,
                         MessageBoxImage.Information))
             });

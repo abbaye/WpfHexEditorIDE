@@ -8,7 +8,7 @@ using System;
 using System.Globalization;
 using System.Threading;
 using System.Windows;
-using WpfHexEditor.Core.Services;
+using WpfHexEditor.Core.Localization.Services;
 
 namespace WpfHexEditor.Sample.HexEditor.Services
 {
@@ -60,8 +60,8 @@ namespace WpfHexEditor.Sample.HexEditor.Services
                 Properties.Settings.Default.Save();
             }
 
-            // Synchronize with HexEditor control's LocalizedResourceDictionary
-            WpfHexEditor.Core.Services.LocalizedResourceDictionary.ChangeCulture(newCulture);
+            // Propagate to LocalizedResourceDictionary so all DynamicResource bindings update live
+            LocalizedResourceDictionary.ChangeCulture(newCulture);
 
             // Notify all subscribers that culture has changed
             CultureChanged?.Invoke(null, new CultureChangedEventArgs(oldCulture, newCulture));

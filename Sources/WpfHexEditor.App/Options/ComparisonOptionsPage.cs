@@ -8,6 +8,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Options;
@@ -45,7 +46,7 @@ public sealed class ComparisonOptionsPage : UserControl, IOptionsPage
         _charLevelCheck.IsChecked        = s.ShowCharLevelDiff;
         _foldCheck.IsChecked             = s.FoldIdenticalRegions;
         _foldThresholdSlider.Value       = s.FoldThreshold;
-        _historyCountLabel.Text          = $"{s.RecentComparisons.Count} saved comparisons";
+        _historyCountLabel.Text          = $"{s.RecentComparisons.Count} {AppResources.App_Options_SavedComparisons}";
     }
 
     public void Flush(AppSettings settings)
@@ -71,16 +72,16 @@ public sealed class ComparisonOptionsPage : UserControl, IOptionsPage
         // Default view mode
         root.Children.Add(MakeLabel("Default View Mode"));
         _viewModeCombo = new ComboBox { Margin = new Thickness(0, 2, 0, 8) };
-        _viewModeCombo.Items.Add("SideBySide");
-        _viewModeCombo.Items.Add("Inline");
-        _viewModeCombo.Items.Add("HexText");
+        _viewModeCombo.Items.Add(AppResources.App_Comparison_ModeSideBySide);
+        _viewModeCombo.Items.Add(AppResources.App_Comparison_ModeInline);
+        _viewModeCombo.Items.Add(AppResources.App_Comparison_ModeHexText);
         _viewModeCombo.SelectedItem = _settings.DefaultViewMode;
         root.Children.Add(_viewModeCombo);
 
         // Minimap
         _minimapCheck = new CheckBox
         {
-            Content    = "Show minimap",
+            Content    = AppResources.App_Options_ShowMinimap,
             IsChecked  = _settings.ShowMinimap,
             Margin     = new Thickness(0, 0, 0, 6)
         };
@@ -89,7 +90,7 @@ public sealed class ComparisonOptionsPage : UserControl, IOptionsPage
         // Char-level diff
         _charLevelCheck = new CheckBox
         {
-            Content   = "Highlight character-level differences within modified lines (≤ 500 chars)",
+            Content   = AppResources.App_Options_HighlightCharDiff,
             IsChecked = _settings.ShowCharLevelDiff,
             Margin    = new Thickness(0, 0, 0, 6)
         };
@@ -100,7 +101,7 @@ public sealed class ComparisonOptionsPage : UserControl, IOptionsPage
 
         _foldCheck = new CheckBox
         {
-            Content   = "Collapse identical regions",
+            Content   = AppResources.App_Options_CollapseIdentical,
             IsChecked = _settings.FoldIdenticalRegions,
             Margin    = new Thickness(0, 0, 0, 6)
         };
@@ -140,13 +141,13 @@ public sealed class ComparisonOptionsPage : UserControl, IOptionsPage
         var histRow = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 4) };
         _historyCountLabel = new TextBlock
         {
-            Text              = $"{_settings.RecentComparisons.Count} saved comparisons",
+            Text              = $"{_settings.RecentComparisons.Count} {AppResources.App_Options_SavedComparisons}",
             VerticalAlignment = VerticalAlignment.Center,
             Margin            = new Thickness(0, 0, 12, 0)
         };
         _clearHistoryBtn = new Button
         {
-            Content = "Clear History",
+            Content = AppResources.App_Options_ClearHistory,
             Padding = new Thickness(8, 3, 8, 3)
         };
         _clearHistoryBtn.Click += OnClearHistory;
@@ -158,7 +159,7 @@ public sealed class ComparisonOptionsPage : UserControl, IOptionsPage
         // ── Save button ───────────────────────────────────────────────────────
         var saveBtn = new Button
         {
-            Content             = "Save",
+            Content             = AppResources.App_Options_Save,
             Padding             = new Thickness(16, 4, 16, 4),
             Margin              = new Thickness(0, 16, 0, 0),
             HorizontalAlignment = HorizontalAlignment.Left
@@ -175,7 +176,7 @@ public sealed class ComparisonOptionsPage : UserControl, IOptionsPage
     {
         _settings.RecentComparisons.Clear();
         _settingsService.Save();
-        _historyCountLabel.Text = "0 saved comparisons";
+        _historyCountLabel.Text = $"0 {AppResources.App_Options_SavedComparisons}";
     }
 
     private void OnSave(object sender, RoutedEventArgs e)

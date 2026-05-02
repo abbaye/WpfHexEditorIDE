@@ -1,17 +1,26 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Contributors: Claude Sonnet 4.6
 -->
 <UserControl x:Class="WpfHexEditor.Core.Options.Pages.EnvironmentGeneralPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="Transparent">
+             Background="Transparent"
+             xmlns:optSvc="clr-namespace:WpfHexEditor.Core.Options.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <optSvc:OptionsLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Apparence ──────────────────────────────────────────────────── -->
-        <TextBlock Text="APPEARANCE"
+        <TextBlock Text="{DynamicResource EnvGeneral_AppearanceSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -21,14 +30,38 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Color theme:"
+            <TextBlock Text="{DynamicResource EnvGeneral_ColorThemeLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="ThemeCombo" Grid.Column="1"
                       SelectionChanged="OnThemeSelectionChanged"/>
         </Grid>
 
-        <TextBlock Text="Preview is applied immediately."
+        <TextBlock Text="{DynamicResource EnvGeneral_ThemePreviewNote}"
+                   FontStyle="Italic" FontSize="11"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Opacity="0.65"
+                   Margin="0,4,0,0"/>
+
+        <!-- ── Language ──────────────────────────────────────────────────── -->
+        <TextBlock Text="{DynamicResource EnvGeneral_LanguageSection}"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
+
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{DynamicResource EnvGeneral_IdeLanguageLabel}"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <ComboBox x:Name="LanguageCombo" Grid.Column="1"
+                      SelectionChanged="OnLanguageSelectionChanged"/>
+        </Grid>
+
+        <TextBlock Text="{DynamicResource EnvGeneral_LanguageRestartNote}"
                    FontStyle="Italic" FontSize="11"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Opacity="0.65"

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PatternAnalysis_PluginName" xml:space="preserve">
+    <value>تحليل الأنماط</value>
+  </data>
+  <data name="PatternAnalysis_PanelTitle" xml:space="preserve">
+    <value>تحليل الأنماط</value>
+  </data>
+  <data name="PatternAnalysis_MenuItem" xml:space="preserve">
+    <value>_تحليل الأنماط</value>
+  </data>
+  <data name="PatternAnalysis_NoDataLoaded" xml:space="preserve">
+    <value>لم يتم تحميل بيانات</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh" xml:space="preserve">
+    <value>تم الكشف عن إنتروبيا مرتفعة جداً</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh_Desc" xml:space="preserve">
+    <value>قد تكون البيانات مشفرة أو مضغوطة (إنتروبيا &gt; 7.5 بت/بايت)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow" xml:space="preserve">
+    <value>تم الكشف عن إنتروبيا منخفضة جداً</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow_Desc" xml:space="preserve">
+    <value>تحتوي البيانات معظمها على بايتات صفرية أو متكررة (إنتروبيا &lt; 2.0 بت/بايت)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Low" xml:space="preserve">
+    <value>عشوائية منخفضة — البيانات متكررة أو منظمة</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Medium" xml:space="preserve">
+    <value>عشوائية متوسطة — نموذجية للبيانات المختلطة أو المضغوطة</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_High" xml:space="preserve">
+    <value>عشوائية عالية — قد تكون البيانات مشفرة أو مضغوطة للغاية</value>
+  </data>
+  <data name="PatternAnalysis_ExtremelySkewed" xml:space="preserve">
+    <value>توزيع منحرف للغاية</value>
+  </data>
+  <data name="PatternAnalysis_NoData" xml:space="preserve">
+    <value>لا توجد بيانات للتحليل. حدد نطاقاً في محرر hex.</value>
+  </data>
+  <data name="PA_Anomalies" xml:space="preserve"><value>&#x26A0;&#xFE0F; شذوذ</value></data>
+  <data name="PA_NoAnomalies" xml:space="preserve"><value>&#x2705; لم يتم اكتشاف أي شذوذ</value></data>
+</root>

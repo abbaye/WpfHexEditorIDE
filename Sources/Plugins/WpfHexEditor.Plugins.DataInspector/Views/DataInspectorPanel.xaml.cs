@@ -45,6 +45,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.Plugins.DataInspector.Options;
+using WpfHexEditor.Plugins.DataInspector.Properties;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.UI;
 
@@ -342,7 +343,7 @@ public partial class DataInspectorPanel : UserControl
                 var selBytes = _context.HexEditor.GetSelectedBytes();
                 if (selBytes.Length == 0)
                 {
-                    ShowEmptyState("No bytes selected — select bytes in the hex editor.");
+                    ShowEmptyState(DataInspectorResources.DataInspector_EmptyState);
                     return;
                 }
                 // Large selection (> 1 MB): async path with overlay.
@@ -516,9 +517,9 @@ public partial class DataInspectorPanel : UserControl
 
         _scope = label switch
         {
-            "Active view" => DataScope.ActiveView,
-            "Whole file"  => DataScope.WholeFile,
-            _             => DataScope.Selection
+            _ when label == DataInspectorResources.DataInspector_Scope_ActiveView => DataScope.ActiveView,
+            _ when label == DataInspectorResources.DataInspector_Scope_WholeFile  => DataScope.WholeFile,
+            _                                                                      => DataScope.Selection
         };
 
         // Switching to WholeFile forces a chart reload (new file context or explicit scope switch).
@@ -546,7 +547,7 @@ public partial class DataInspectorPanel : UserControl
         _mode = ChartMode.Frequency;
         ChartScrollViewer.Visibility  = Visibility.Visible;
         EntropyCanvas.Visibility      = Visibility.Collapsed;
-        ModeLabel.Text                = "Frequency";
+        ModeLabel.Text                = DataInspectorResources.DataInspector_Mode_Frequency;
         ModeFrequencyItem.IsChecked   = true;
         ModeEntropyItem.IsChecked     = false;
 
@@ -562,7 +563,7 @@ public partial class DataInspectorPanel : UserControl
         _mode = ChartMode.Entropy;
         ChartScrollViewer.Visibility  = Visibility.Collapsed;
         EntropyCanvas.Visibility      = Visibility.Visible;
-        ModeLabel.Text                = "Entropy";
+        ModeLabel.Text                = DataInspectorResources.DataInspector_Mode_Entropy;
         ModeFrequencyItem.IsChecked   = false;
         ModeEntropyItem.IsChecked     = true;
 
@@ -871,7 +872,7 @@ public partial class DataInspectorPanel : UserControl
         MostCommonText.Text = string.Empty;
         NullPctText.Text    = string.Empty;
         AsciiPctText.Text   = string.Empty;
-        TotalBytesText.Text = "No data";
+        TotalBytesText.Text = DataInspectorResources.DataInspector_Footer_NoData;
         SetSeparatorsVisibility(Visibility.Collapsed);
     }
 

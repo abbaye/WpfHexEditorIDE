@@ -36,6 +36,7 @@ using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.PluginHost.Properties;
 
 namespace WpfHexEditor.PluginHost.UI;
 
@@ -1523,7 +1524,7 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     {
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title      = "Export Extension Diagnostics",
+            Title      = PluginHostResources.PluginHost_ExportDiagnostics,
             Filter     = format == "csv"
                          ? "CSV files (*.csv)|*.csv|All files (*.*)|*.*"
                          : "JSON files (*.json)|*.json|All files (*.*)|*.*",
@@ -1574,7 +1575,7 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     {
         var dlg = new Microsoft.Win32.OpenFileDialog
         {
-            Title      = "Install Extension Package",
+            Title      = PluginHostResources.PluginHost_InstallPackage,
             Filter     = "Extension packages (*.whxplugin)|*.whxplugin|All files (*.*)|*.*",
             DefaultExt = "whxplugin"
         };
@@ -1770,7 +1771,7 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     {
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title      = "Export Event Log",
+            Title      = PluginHostResources.PluginHost_ExportEventLog,
             Filter     = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
             DefaultExt = "txt",
             FileName   = $"plugin-events-{DateTime.Now:yyyyMMdd-HHmmss}.txt"

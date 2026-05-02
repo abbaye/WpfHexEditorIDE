@@ -5,9 +5,9 @@
 1. [Architecture](#architecture)
 2. [API Reference](#api-reference)
 3. [Integration Guide — Level 1: Basic Setup](#level-1-basic-setup)
-4. [Integration Guide — Level 2: Byte Operations & Editing](#level-2-byte-operations--editing)
-5. [Integration Guide — Level 3: Format Detection & Structure Overlay](#level-3-format-detection--structure-overlay)
-6. [Integration Guide — Level 4: Advanced Integration](#level-4-advanced-integration)
+4. [Integration Guide — Level 2: Editing & Undo](#level-2-editing--undo)
+5. [Integration Guide — Level 3: Format Detection & Overlay](#level-3-format-detection--overlay)
+6. [Integration Guide — Level 4: Search & Export](#level-4-search--export)
 7. [Settings Reference](#settings-reference)
 
 ---
@@ -19,12 +19,13 @@
 ```
 WPFHexaEditor.nupkg
 └── lib/net8.0-windows/
-    ├── WpfHexEditor.HexEditor.dll        — HexEditor UserControl — main entry point
+    ├── WpfHexEditor.HexEditor.dll        — HexEditor UserControl, main entry point
     ├── WpfHexEditor.Core.dll             — byte providers, format detection, search, undo/redo
-    ├── WpfHexEditor.Core.BinaryAnalysis.dll — cross-platform binary analysis (no WPF dependency)
-    ├── WpfHexEditor.Core.Definitions.dll — 790+ embedded format definitions (.whfmt)
-    ├── WpfHexEditor.Editor.Core.dll      — shared editor abstractions
-    ├── WpfHexEditor.ColorPicker.dll      — color picker control (settings panel)
+    ├── WpfHexEditor.Core.BinaryAnalysis.dll — cross-platform binary analysis (no WPF)
+    ├── WpfHexEditor.Core.Definitions.dll — 790+ embedded .whfmt format definitions
+    ├── WpfHexEditor.Core.Localization.dll — localized strings (17 languages)
+    ├── WpfHexEditor.Editor.Core.dll      — shared editor abstractions and undo engine
+    ├── WpfHexEditor.ColorPicker.dll      — color picker (settings panel)
     ├── WpfHexEditor.HexBox.dll           — hex display rendering control
     └── WpfHexEditor.ProgressBar.dll      — progress bar control
 ```
@@ -35,199 +36,137 @@ Zero external NuGet dependencies. All assemblies are bundled inside the package.
 
 | Type | Assembly | Purpose |
 |---|---|---|
-| `HexEditor` | HexEditor | Main UserControl — hex + ASCII panels, all editing, format overlay |
-| `ByteProvider` | Core | Byte stream abstraction — file, stream, memory |
-| `UndoStack` | Core | Per-document undo/redo with transaction grouping |
-| `FormatDetectionEngine` | Core | TIER 1/2 format matcher — reads `.whfmt` definitions |
-| `EmbeddedFormatCatalog` | Core.Definitions | FrozenSet-backed catalog of 790+ embedded definitions |
-| `IParsedFieldsPanel` | Editor.Core | Contract for structured field overlay panels |
-| `IUndoAwareEditor` | Editor.Core | Contract for shared undo across co-editors |
+| `HexEditor` | HexEditor | Main `UserControl` — all rendering, editing, search, format overlay |
+| `HexBreadcrumbBar` | HexEditor | Visual structure navigator over detected format fields |
+| `HexScrollMarkerPanel` | HexEditor | Overview panel — bookmarks, search hits, changes |
+| `ByteProvider` | Core | Pluggable data source (file, stream, memory) |
+| `UndoEngine` | Editor.Core | Undo/redo engine — `UndoGroup` transactions and coalescence |
+| `EmbeddedFormatCatalog` | Core.Definitions | Lazy-loaded 790+ format definitions, thread-safe singleton |
+| `DataInspectorService` | Core.BinaryAnalysis | Multi-format byte interpretation (int/float/date/GUID/network) |
+| `DataStatisticsService` | Core.BinaryAnalysis | Shannon entropy, byte distribution, anomaly detection |
 
-### Byte provider model
-
-```
-FileName / Stream
-       │
-       ▼
-  ByteProvider  ←── in-memory change layer (byte-level diff)
-       │
-       ▼
-  HexBox         — hex column rendering (one HexBox per column group)
-  AsciiPanel     — ASCII column rendering
-       │
-       ▼
-  HexEditor      — scroll, selection, editing, format overlay
-```
-
-The `ByteProvider` records all modifications as lightweight change objects. The original stream is never mutated until `SubmitChanges()` is called.
-
-### Format detection pipeline
+### Scroll and virtualization model
 
 ```
-OpenFile / OpenStream
-       │
-       ▼
-  TIER 1 — strong signature scan (magic bytes, offset 0 / fixed offsets)
-       │  match found → apply blocks + fire FormatDetected
-       │  no match ↓
-       ▼
-  TIER 2 — text heuristics + entropy analysis (only when TIER 1 has no match)
-       │
-       ▼
-  FormatDetected event  →  custom background blocks applied to HexBox
-                         →  ParsedFields panel refreshed (if connected)
+VerticalScrollBar.Value  (line index)
+        │
+        ▼
+HexViewport.ComputeVisibleLines()
+   → firstLine = (long)ScrollValue
+   → lastLine  = firstLine + ViewportLineCount
+        │
+        ▼  render only visible byte rows
+OnRender — hex glyph runs + ASCII glyph runs per line
+        │
+        ▼
+HexScrollMarkerPanel — normalized tick marks across all lines
 ```
 
-TIER 1 short-circuits TIER 2 on any `Strong` or `Unique` signature match. Entropy is skipped for those strength levels. All format definitions are `.whfmt` JSON files embedded in `WpfHexEditor.Core.Definitions`.
+Only visible rows are rendered. Line height is fixed (`FontSize * LineHeightFactor`) for O(1) scroll math.
 
 ### Thread safety
 
-- All UI rendering and input handling run on the WPF UI thread.
-- Format detection runs on a background thread; results are marshalled back via `Dispatcher.BeginInvoke`.
-- `ByteProvider` is not thread-safe — call only from the UI thread or under a lock.
+- All rendering and input runs on the WPF UI thread.
+- Format detection runs on a `Task` background thread; results posted back via `Dispatcher.BeginInvoke`.
+- `UndoEngine` is not thread-safe — all mutations must occur on the UI thread.
+- `EmbeddedFormatCatalog.GetAll()` is fully thread-safe (frozen set after first load).
 
 ---
 
 ## API Reference
 
-### HexEditor — File operations
+### HexEditor — Content
 
 ```csharp
-// Open
-HexEdit.FileName = @"C:\path\to\file.bin";   // property setter triggers load
-await HexEdit.OpenFileAsync(filePath);
+// Open by path (closes previous, resets undo stack)
+string FileName { get; set; }
 
-// Open stream
-HexEdit.Stream = File.OpenRead("data.bin");   // property setter
-HexEdit.OpenStream(stream, readOnly: true);   // method variant
+// Open by stream
+Stream Stream { get; set; }
+
+// Close and release resources
+void CloseFile();
+
+// Raw byte access
+byte  GetByte(long offset);
+void  SetByte(long offset, byte value);            // recorded in UndoEngine
+byte[] GetBytes(long offset, int count);
+void  SetBytes(long offset, byte[] values);
+
+// Cursor / selection
+long SelectionStart  { get; set; }
+long SelectionLength { get; set; }
+long SelectionStop   { get; }
+```
+
+### HexEditor — Undo / Persistence
+
+```csharp
+void Undo();
+void Redo();
+bool CanUndo { get; }
+bool CanRedo { get; }
 
 // Save
-HexEdit.SubmitChanges();                      // save to original file
-HexEdit.SubmitChanges("out.bin");             // save to new file
-HexEdit.SubmitChanges("out.bin", overwrite: true);
-
-HexEdit.Close();
-HexEdit.ReloadFromDisk();
+void SubmitChanges();                  // overwrite original
+void SubmitChanges(string fileName);   // save to new path
+bool IsModified { get; }
 ```
 
-### HexEditor — Byte operations
+### HexEditor — Navigation
 
 ```csharp
-// Read
-byte b = HexEdit.GetByte(offset);
+// Go to offset
+void SetPosition(long offset);
+void SetPosition(long offset, HexScrollStrategy strategy);   // Top | Center | Bottom
 
-// Write (adds to undo stack)
-HexEdit.SetByte(offset, 0xFF);
-HexEdit.ModifyByte(0xFF, offset);
+// Go to position dialog (Ctrl+G)
+void ShowGotoDialog();
 
-// Insert / delete
-HexEdit.InsertByte(0x00, offset);
-HexEdit.InsertByteMany(0x00, offset, count: 16);
-HexEdit.DeleteByte(offset);
-HexEdit.DeleteBytes(offset, length);
-
-// Fill selection
-HexEdit.FillWithByte(0xFF, startOffset, length);
-
-// Read selection
-byte[] selection = HexEdit.GetSelectionByteArray();
-```
-
-### HexEditor — Undo / redo
-
-```csharp
-HexEdit.Undo();
-HexEdit.Redo();
-
-bool canUndo = HexEdit.CanUndo;
-bool canRedo = HexEdit.CanRedo;
-
-// Descriptions for UI dropdowns
-IReadOnlyList<string> undoList = HexEdit.GetUndoDescriptions(maxCount: 20);
-IReadOnlyList<string> redoList = HexEdit.GetRedoDescriptions(maxCount: 20);
-```
-
-### HexEditor — Selection and navigation
-
-```csharp
-HexEdit.SelectionStart  = 0;
-HexEdit.SelectionStop   = 255;
-long length = HexEdit.SelectionLength;
-
-HexEdit.SetPosition(offset);
-HexEdit.SelectAll();
-HexEdit.ClearSelection();
-HexEdit.DeleteSelection();
-
-// Jump to offset dialog (Ctrl+G)
-// — triggered by keyboard shortcut in the control
+long FirstVisibleBytePosition { get; }
+long LastVisibleBytePosition  { get; }
 ```
 
 ### HexEditor — Search
 
 ```csharp
-byte[] pattern = new byte[] { 0xFF, 0xD8 };   // JPEG magic
+void FindNext(string pattern,   SearchMode mode);   // Hex | Text | Regex
+void FindAll (string pattern,   SearchMode mode);
+void ClearHighlights();
 
-long first  = HexEdit.FindFirst(pattern);
-long next   = HexEdit.FindNext(pattern, currentPosition);
-long last   = HexEdit.FindLast(pattern);
-IEnumerable<long> all = HexEdit.FindAll(pattern);
-int count = HexEdit.CountOccurrences(pattern);
+event EventHandler<FindAllResultEventArgs>? FindAllCompleted;
 ```
 
-### HexEditor — Bookmarks
+### HexEditor — Format Detection
 
 ```csharp
-HexEdit.SetBookmark(offset);
-HexEdit.RemoveBookmark(offset);
-HexEdit.GoToNextBookmark();
-HexEdit.GoToPreviousBookmark();
-IReadOnlyList<long> marks = HexEdit.GetBookmarks();
-HexEdit.ClearBookmarks();
+// Trigger format detection (called automatically on file open)
+Task DetectFormatAsync();
+
+// Detected format
+FileFormatInfo? DetectedFormat { get; }
+
+// Field overlay
+bool ShowFormatFieldOverlay { get; set; }
+
+event EventHandler<FileFormatInfo?>? FormatDetected;
 ```
 
-### HexEditor — Custom background blocks
+### HexEditor — Events
 
 ```csharp
-// Add a colored overlay region (format overlay, annotation, diff highlight, etc.)
-HexEdit.AddCustomBackgroundBlock(startOffset, length, Colors.LightBlue, "Header");
-HexEdit.RemoveCustomBackgroundBlock(startOffset, length);
-HexEdit.ClearCustomBackgroundBlock();
-
-IEnumerable<(long start, long length, Color color, string label)> blocks
-    = HexEdit.GetCustomBackgroundBlocks();
-```
-
-### HexEditor — Key events
-
-```csharp
-// Byte changes
-HexEdit.ByteModified     += (s, e) => { /* e.BytePositionInFile, e.Byte */ };
-HexEdit.BytesDeleted     += (s, e) => { };
-
-// Selection
-HexEdit.SelectionChanged += (s, e) => { /* e.Start, e.Stop, e.Length */ };
-HexEdit.PositionChanged  += (s, e) => { /* e.NewPosition */ };
-
-// File lifecycle
-HexEdit.FileOpened       += (s, e) => { };
-HexEdit.FileClosed       += (s, e) => { };
-HexEdit.ChangesSubmited  += (s, e) => { };
-HexEdit.FileExternallyChanged += (s, e) => { /* e.FilePath */ };
-
-// Undo / redo
-HexEdit.Undone           += (s, e) => { };
-HexEdit.Redone           += (s, e) => { };
-
-// Format detection
-HexEdit.FormatDetected   += (s, e) => { /* e.FormatName, e.Confidence */ };
+event EventHandler?                         SelectionChanged;
+event EventHandler?                         ByteModified;
+event EventHandler<FileFormatInfo?>?        FormatDetected;
+event EventHandler?                         FileOpened;
+event EventHandler?                         FileClosed;
+event EventHandler<ByteEventArgs>?          ByteDeleted;
+event EventHandler<ByteEventArgs>?          ByteAdded;
 ```
 
 ---
 
 ## Level 1: Basic Setup
-
-Minimum working integration — hex editor in a WPF window.
 
 ### 1 — Install
 
@@ -236,8 +175,6 @@ dotnet add package WPFHexaEditor
 ```
 
 ### 2 — Merge the resource dictionary
-
-Required so themes, brushes, and context menus resolve correctly.
 
 ```xml
 <!-- App.xaml -->
@@ -250,7 +187,7 @@ Required so themes, brushes, and context menus resolve correctly.
 </Application.Resources>
 ```
 
-Context menus use opaque backgrounds by default. No extra theming is needed.
+Context menus use opaque backgrounds by default after this merge. No extra theming required.
 
 ### 3 — Add namespace and control
 
@@ -258,7 +195,7 @@ Context menus use opaque backgrounds by default. No extra theming is needed.
 <Window
     xmlns:hexe="clr-namespace:WpfHexEditor.HexEditor;assembly=WpfHexEditor.HexEditor">
 
-    <hexe:HexEditor x:Name="HexEdit" />
+    <hexe:HexEditor x:Name="HexEdit" BytePerLine="16" />
 ```
 
 ### 4 — Open a file
@@ -273,248 +210,185 @@ HexEdit.FileName = @"C:\path\to\file.bin";
 HexEdit.Stream = File.OpenRead("data.bin");
 ```
 
-### 6 — Save
+### 6 — Read back
 
 ```csharp
-HexEdit.SubmitChanges();          // overwrite original
-HexEdit.SubmitChanges("out.bin"); // save copy
+byte value = HexEdit.GetByte(offset);
+bool modified = HexEdit.IsModified;
 ```
 
 ---
 
-## Level 2: Byte Operations & Editing
+## Level 2: Editing & Undo
 
-### Read and modify bytes
+### In-place byte editing
 
-```csharp
-byte b = HexEdit.GetByte(offset);
-HexEdit.SetByte(offset, 0xFF);
-```
+The user edits directly in the hex or ASCII panel. Each keystroke is recorded as a discrete `UndoEntry` in `UndoEngine`. Consecutive same-offset edits are coalesced into a single undo step.
 
-### Insert and delete
+### Programmatic edits
 
 ```csharp
-// Insert mode
-HexEdit.EditMode = EditMode.Insert;
-HexEdit.InsertByte(0x00, offset);
-HexEdit.InsertByteMany(0x90, offset, count: 16);  // NOP sled
+// Single byte — added to undo stack
+HexEdit.SetByte(0x1000, 0xFF);
 
-// Delete
-HexEdit.DeleteByte(offset);
-HexEdit.DeleteBytes(offset, length);
-```
+// Multi-byte block — recorded as UndoGroup
+HexEdit.SetBytes(0x1000, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
 
-### Fill selection
-
-```csharp
-HexEdit.FillWithByte(0x00, SelectionStart, SelectionLength);
+// Fill selection with a value
+HexEdit.FillSelection(0x00);
 ```
 
 ### Undo / redo
 
 ```csharp
-HexEdit.Undo();
-HexEdit.Redo();
-
-// Bind to toolbar buttons
-saveButton.IsEnabled    = HexEdit.CanUndo;
-redoButton.IsEnabled    = HexEdit.CanRedo;
+if (HexEdit.CanUndo) HexEdit.Undo();
+if (HexEdit.CanRedo) HexEdit.Redo();
 ```
 
-### Undo history dropdown
+The undo history dropdown is built into the toolbar.
+
+### Cut / copy / paste
 
 ```csharp
-var descriptions = HexEdit.GetUndoDescriptions(maxCount: 20);
-foreach (var desc in descriptions)
-    undoMenu.Items.Add(new MenuItem { Header = desc });
+HexEdit.CopyToClipboard(CopyPasteMode.HexString);   // "DE AD BE EF"
+HexEdit.CopyToClipboard(CopyPasteMode.AsciiString);
+HexEdit.CopyToClipboard(CopyPasteMode.CSharpCode);  // "new byte[] { 0xDE, 0xAD }"
+HexEdit.PasteFromClipboard();
 ```
 
-### Clipboard
+### Save
 
 ```csharp
-HexEdit.Copy();
-HexEdit.Cut();
-HexEdit.Paste();
-```
+// Overwrite original file
+HexEdit.SubmitChanges();
 
-### Display options
-
-```csharp
-HexEdit.BytePerLine          = 16;                         // columns
-HexEdit.DataStringVisual     = DataVisualType.Hexadecimal; // Hex / Decimal / Binary
-HexEdit.OffSetStringVisual   = DataVisualType.Hexadecimal; // offset bar format
-HexEdit.ReadOnlyMode         = true;                       // block edits; selection still works
-HexEdit.EditMode             = EditMode.Overwrite;         // or Insert
-HexEdit.ByteSize             = ByteSizeType.Bit8;          // 8 / 16 / 32-bit cell width
-HexEdit.ByteOrder            = ByteOrderType.LoHi;         // or HiLo
-```
-
-### Zoom
-
-```csharp
-HexEdit.AllowZoom = true;
-HexEdit.ZoomScale = 1.5;    // 0.5 – 2.0
-HexEdit.ZoomScaleChanged += (s, e) => { };
+// Save to new path
+HexEdit.SubmitChanges(@"C:\out\patched.bin");
 ```
 
 ---
 
-## Level 3: Format Detection & Structure Overlay
+## Level 3: Format Detection & Overlay
 
-### Auto-detection (default)
+### Automatic detection
 
-Format detection fires automatically when a file is opened if `EnableAutoFormatDetection` is `true` (default). The engine matches against 790+ embedded `.whfmt` definitions and overlays colored background blocks on matched structures.
+Format detection runs automatically on every `FileName` or `Stream` assignment. The result is surfaced via `FormatDetected`.
 
 ```csharp
-HexEdit.EnableAutoFormatDetection = true;
-HexEdit.AutoApplyDetectedBlocks   = true;
-
-HexEdit.FormatDetected += (s, e) =>
+HexEdit.FormatDetected += (_, info) =>
 {
-    StatusBar.Text = $"Detected: {e.FormatName}";
+    if (info is not null)
+        StatusBar.Text = $"Detected: {info.Name} ({info.Category})";
 };
 ```
 
 ### Manual trigger
 
 ```csharp
-// Load external definitions from a directory
-int loaded = HexEdit.LoadFormatDefinitions(@"C:\MyFormats");
+await HexEdit.DetectFormatAsync();
+FileFormatInfo? fmt = HexEdit.DetectedFormat;
 ```
 
-### Custom background blocks
+### Field overlay
 
-Use `AddCustomBackgroundBlock` to annotate arbitrary byte ranges — useful for diff views, search results, or parsed structure overlays built outside the format engine.
+When a format is detected, colored semi-transparent blocks are drawn over the known field regions:
 
 ```csharp
-HexEdit.ClearCustomBackgroundBlock();
-HexEdit.AddCustomBackgroundBlock(0x00, 4,   Colors.Orange,    "Magic");
-HexEdit.AddCustomBackgroundBlock(0x04, 2,   Colors.LightBlue, "Version");
-HexEdit.AddCustomBackgroundBlock(0x06, 128, Colors.LightGreen,"Header");
+HexEdit.ShowFormatFieldOverlay = true;   // default: true after detection
 ```
 
-### ParsedFields panel
+### BreadcrumbBar
 
-`IParsedFieldsPanel` is the contract between the hex editor and a side panel that shows a structured tree of parsed fields (sections, fields, values).
+The `HexBreadcrumbBar` provides a clickable structure navigator above the hex panel. It shows the field hierarchy at the current cursor position.
+
+```xml
+<hexe:HexBreadcrumbBar HexEditor="{Binding ElementName=HexEdit}" />
+```
+
+Navigation chips are built from `ParsedFields` populated during format detection. Clicking a chip scrolls to that field and selects its byte range.
+
+### Entropy and statistics
 
 ```csharp
-// Connect your IParsedFieldsPanel implementation
-HexEdit.ConnectParsedFieldsPanel(myParsedFieldsPanel);
-HexEdit.AutoRefreshParsedFields = true;  // reparse when bytes change
+using WpfHexEditor.Core.BinaryAnalysis;
 
-// Disconnect
-HexEdit.DisconnectParsedFieldsPanel();
+var stats = new DataStatisticsService();
+var result = await stats.ComputeAsync(stream);
 
-// React to field navigation requests
-HexEdit.ParsedFieldNavigationRequested += (s, e) =>
-{
-    // e.StartOffset, e.Length, e.FieldName
-    HexEdit.SetPosition(e.StartOffset);
-    HexEdit.SelectionStart = e.StartOffset;
-    HexEdit.SelectionStop  = e.StartOffset + e.Length - 1;
-};
+double entropy     = result.ShannonEntropy;   // 0.0 (uniform) – 8.0 (random)
+double compression = result.CompressionRatio;
+var   distribution = result.ByteDistribution; // byte[] → count[]
 ```
-
-### Scroll marker panel
-
-The `HexScrollMarkerPanel` is an overview sidebar (similar to VS Code's scroll bar markers). It visualizes bookmarks, search hits, custom blocks, and unsaved changes at a glance.
-
-```xml
-<!-- Place beside the HexEditor -->
-<hexe:HexScrollMarkerPanel x:Name="ScrollPanel"
-                           HexEditor="{Binding ElementName=HexEdit}" />
-```
-
-### Breadcrumb bar
-
-```xml
-<hexe:HexBreadcrumbBar x:Name="BreadcrumbBar"
-                       HexEditor="{Binding ElementName=HexEdit}" />
-```
-
-The breadcrumb bar shows the current format structure path (e.g. `ZIP > LocalFileHeader > FileName`) and updates on scroll and click navigation.
 
 ---
 
-## Level 4: Advanced Integration
+## Level 4: Search & Export
 
-### Session persistence — save and restore state
+### Find
 
 ```csharp
-// On close: capture caret and bookmarks
-long savedPosition  = HexEdit.SelectionStart;
-var  savedBookmarks = HexEdit.GetBookmarks();
+// Find next hex sequence
+HexEdit.FindNext("FF D8 FF", SearchMode.Hex);
 
-// On reopen
-HexEdit.SetPosition(savedPosition);
-foreach (var mark in savedBookmarks)
-    HexEdit.SetBookmark(mark);
+// Find next ASCII text
+HexEdit.FindNext("MThd", SearchMode.Text);
+
+// Find next regex pattern
+HexEdit.FindNext(@"\x50\x4B\x03\x04", SearchMode.Regex);
 ```
 
-### Shared undo across co-editors (IDE integration)
+Search results are highlighted in the viewport and marked with ticks in `HexScrollMarkerPanel`.
 
-When a hex editor and a code editor are co-editing the same document, attach them to a shared undo engine via `IUndoAwareEditor`:
-
-```csharp
-// Both editors implement IUndoAwareEditor
-((IUndoAwareEditor)HexEdit).AttachSharedUndo(sharedUndoEngine);
-((IUndoAwareEditor)codeEditor).AttachSharedUndo(sharedUndoEngine);
-
-// Undo/Redo now routes through the shared engine
-HexEdit.Undo();   // pops from shared stack
-```
-
-### Read-only mode with full selection
+### Find all
 
 ```csharp
-HexEdit.ReadOnlyMode = true;
-// Selection, copy, and scroll all remain active.
-// Only byte modification, insert, delete, and paste are blocked.
-```
-
-### Watch for external file changes
-
-```csharp
-HexEdit.FileExternallyChanged += (s, e) =>
+HexEdit.FindAllCompleted += (_, e) =>
 {
-    var result = MessageBox.Show(
-        $"{e.FilePath} changed on disk. Reload?",
-        "File changed",
-        MessageBoxButton.YesNo);
-    if (result == MessageBoxResult.Yes)
-        HexEdit.ReloadFromDisk();
+    foreach (long offset in e.Offsets)
+        Console.WriteLine($"Match at 0x{offset:X8}");
 };
+
+HexEdit.FindAll("FF D8 FF", SearchMode.Hex);
 ```
 
-### Custom encoding (TBL files)
+### Intel HEX export
 
 ```csharp
-// Set a custom character encoding for the ASCII panel
-HexEdit.CustomEncoding = Encoding.GetEncoding("shift_jis");
+using WpfHexEditor.Core.BinaryAnalysis;
 
-// TBL character table support (ROM hacking)
-HexEdit.ShowTblAscii    = true;
-HexEdit.ShowTblDte      = true;
-HexEdit.TblAsciiColor   = Colors.LightGreen;
+var svc = new IntelHexService();
+await svc.ExportAsync(stream, "output.hex");
 ```
 
-### Settings persistence (JSON)
+### Motorola S-Record export
 
 ```csharp
-// Export all DependencyProperty settings
-string json = HexEditor.ExportSettingsToJson();
-File.WriteAllText("hex-settings.json", json);
-
-// Import on next launch
-HexEditor.ImportSettingsFromJson(File.ReadAllText("hex-settings.json"));
+var svc = new SRecordService();
+await svc.ExportAsync(stream, "output.s19", SRecordFormat.S19);
 ```
 
-### Progress events (large files)
+### Binary template
 
 ```csharp
-HexEdit.LongProcessProgressStarted   += (s, e) => progressBar.Visibility = Visibility.Visible;
-HexEdit.LongProcessProgressChanged   += (s, e) => progressBar.Value = e.Progress;
-HexEdit.LongProcessProgressCompleted += (s, e) => progressBar.Visibility = Visibility.Collapsed;
+var compiler = new BinaryTemplateCompiler();
+var template = compiler.Compile(File.ReadAllText("struct.bt"));
+var fields   = template.Parse(stream);
+```
+
+### Data inspector
+
+```csharp
+using WpfHexEditor.Core.BinaryAnalysis;
+
+var inspector = new DataInspectorService();
+var result    = inspector.Interpret(bytes, offset: 0);
+
+int    int32val  = result.Int32;
+float  float32   = result.Float;
+double float64   = result.Double;
+string utfStr    = result.Utf8String;
+string guidStr   = result.Guid;
+string ipAddr    = result.IPv4Address;
 ```
 
 ---
@@ -523,66 +397,47 @@ HexEdit.LongProcessProgressCompleted += (s, e) => progressBar.Visibility = Visib
 
 All settings are `DependencyProperty` on `HexEditor` — bindable in XAML or set from code.
 
-### Display
-
 | Property | Type | Default | Description |
 |---|---|---|---|
-| `BytePerLine` | `int` | `16` | Number of byte columns |
-| `DataStringVisual` | `DataVisualType` | `Hexadecimal` | Cell display: Hex / Decimal / Binary |
-| `OffSetStringVisual` | `DataVisualType` | `Hexadecimal` | Offset bar: Hex / Decimal |
-| `ByteSize` | `ByteSizeType` | `Bit8` | Cell width: 8 / 16 / 32-bit |
-| `ByteOrder` | `ByteOrderType` | `LoHi` | Multi-byte cell byte order |
+| `BytePerLine` | `int` | `16` | Number of bytes displayed per row |
+| `ByteOrderMark` | `ByteOrderType` | `LittleEndian` | Byte order for multi-byte interpretations |
+| `ReadOnly` | `bool` | `false` | Block all edits; selection and copy still work |
+| `ShowAsciiPanel` | `bool` | `true` | Show ASCII column beside hex |
+| `ShowColumnHighlight` | `bool` | `false` | Highlight the column under the cursor |
+| `ShowRowHighlight` | `bool` | `true` | Highlight the row under the cursor |
+| `ShowLineNumber` | `bool` | `true` | Show offset/line numbers on the left |
+| `OffsetBase` | `OffsetBaseType` | `Hexadecimal` | Display offsets in hex or decimal |
+| `ShowFormatFieldOverlay` | `bool` | `true` | Colored field blocks after format detection |
 | `FontSize` | `double` | `13` | Editor font size |
-| `AllowZoom` | `bool` | `false` | Enable Ctrl+scroll zoom |
-| `ZoomScale` | `double` | `1.0` | Current zoom factor (0.5–2.0) |
+| `FontFamily` | `FontFamily` | Consolas | Editor font |
+| `ByteToolTipDisplayMode` | `ByteToolTipDisplayMode` | `Always` | When to show byte tooltip on hover |
+| `ByteToolTipDetailLevel` | `ByteToolTipDetailLevel` | `Standard` | How much info the tooltip shows |
+| `MouseWheelSpeed` | `int` | `3` | Lines scrolled per wheel notch |
+| `AllowExtend` | `bool` | `false` | Allow appending bytes at end of file |
+| `StatusBarVisible` | `bool` | `true` | Show built-in status bar |
+| `HighlightSelectionStart` | `bool` | `true` | Pin highlight on selection start offset |
 
-### Editing
+### Persist settings to JSON
 
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `ReadOnlyMode` | `bool` | `false` | Block edits; selection and copy still work |
-| `EditMode` | `EditMode` | `Overwrite` | `Overwrite` or `Insert` |
-| `AllowDeleteByte` | `bool` | `true` | Allow byte deletion |
-| `AllowExtend` | `bool` | `true` | Allow inserting bytes beyond EOF |
+```csharp
+// Export
+string json = HexEditorDefaultSettings.ExportToJson();
+File.WriteAllText("hexeditor-settings.json", json);
 
-### Selection
+// Import
+HexEditorDefaultSettings.ImportFromJson(File.ReadAllText("hexeditor-settings.json"));
+```
 
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `SelectionStart` | `long` | `0` | Selection start offset |
-| `SelectionStop` | `long` | `0` | Selection end offset (inclusive) |
-| `SelectionLength` | `long` | computed | Read-only selection size |
-| `HasSelection` | `bool` | computed | `true` when any bytes are selected |
-| `AutoHighLiteSelectionByteBrush` | `Color` | — | Highlight color for matching bytes |
-| `AllowAutoHighLightSelectionByte` | `bool` | `false` | Highlight all occurrences of selected byte |
+### Theme brushes (DynamicResource keys)
 
-### Mouse & UX
+Override in your `ResourceDictionary` to apply a custom theme:
 
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `MouseWheelSpeed` | `MouseWheelSpeedMode` | `System` | `System` / `Line` / `Page` |
-| `AllowFileDrop` | `bool` | `true` | Accept drag-drop of files |
-| `AllowTextDrop` | `bool` | `false` | Accept drag-drop of text |
-| `AllowContextMenu` | `bool` | `true` | Show right-click context menu |
-| `AllowMarkerClickNavigation` | `bool` | `true` | Clicking scroll markers jumps to offset |
-
-### Format detection
-
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `EnableAutoFormatDetection` | `bool` | `true` | Run detection pipeline on open |
-| `AutoApplyDetectedBlocks` | `bool` | `true` | Overlay colored blocks from `.whfmt` |
-| `ShowFormatDetectionStatus` | `bool` | `true` | Show detection result in status bar |
-
-### Parsed fields
-
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `AutoRefreshParsedFields` | `bool` | `true` | Reparse when bytes change |
-
-### Progress
-
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `ShowProgressOverlay` | `bool` | `true` | Semi-transparent progress overlay |
-| `ProgressRefreshRate` | `ProgressRefreshRate` | `Balanced` | `Fast` / `Balanced` / `Slow` |
+```xml
+<SolidColorBrush x:Key="HE_Background"        Color="#1E1E1E" />
+<SolidColorBrush x:Key="HE_ForegroundHex"     Color="#D4D4D4" />
+<SolidColorBrush x:Key="HE_ForegroundAscii"   Color="#9CDCFE" />
+<SolidColorBrush x:Key="HE_SelectionBrush"    Color="#264F78" />
+<SolidColorBrush x:Key="HE_RowHighlight"      Color="#2A2D2E" />
+<SolidColorBrush x:Key="HE_ColumnHighlight"   Color="#2A2D2E" />
+<SolidColorBrush x:Key="HE_ModifiedByte"      Color="#CE9178" />
+```

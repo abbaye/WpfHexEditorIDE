@@ -942,42 +942,6 @@
   <data name="TblTemplate_BuiltIn" xml:space="preserve">
     <value>Built-in</value>
   </data>
-<data name="ColorPicker_Tab_Custom" xml:space="preserve">
-    <value>Custom</value>
-    <comment>ColorPicker - Tab Custom</comment>
-  </data>
-<data name="ColorPicker_Tab_Palette" xml:space="preserve">
-    <value>Palette</value>
-    <comment>ColorPicker - Tab Palette</comment>
-  </data>
-<data name="ColorPicker_Preview_Original" xml:space="preserve">
-    <value>Original</value>
-    <comment>ColorPicker - Preview Original</comment>
-  </data>
-<data name="ColorPicker_Preview_New" xml:space="preserve">
-    <value>New</value>
-    <comment>ColorPicker - Preview New</comment>
-  </data>
-<data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
-    <value>Color Selector</value>
-    <comment>ColorPicker - Section ColorSelector</comment>
-  </data>
-<data name="ColorPicker_Section_RGBValues" xml:space="preserve">
-    <value>RGB Values</value>
-    <comment>ColorPicker - Section RGBValues</comment>
-  </data>
-<data name="ColorPicker_Section_HexColor" xml:space="preserve">
-    <value>Hex Color</value>
-    <comment>ColorPicker - Section HexColor</comment>
-  </data>
-<data name="ColorPicker_Section_StandardColors" xml:space="preserve">
-    <value>Standard Colors</value>
-    <comment>ColorPicker - Section StandardColors</comment>
-  </data>
-<data name="ColorPicker_Section_RecentColors" xml:space="preserve">
-    <value>Recent Colors</value>
-    <comment>ColorPicker - Section RecentColors</comment>
-  </data>
 <data name="HexSettings_Title" xml:space="preserve">
     <value>HEX EDITOR SETTINGS</value>
     <comment>Hex editor settings - Main header</comment>
@@ -1820,5 +1784,340 @@
   <data name="CustomTemplate_ColumnDescription" xml:space="preserve">
     <value>Description</value>
     <comment>Custom Template - Description column header</comment>
+  </data>
+
+  <!-- ── ByteValueTooltip labels ─────────────────────────────────────── -->
+  <data name="ByteTooltip_NoData" xml:space="preserve"><value>No data</value></data>
+  <data name="ByteTooltip_Signed" xml:space="preserve"><value>Signed</value></data>
+  <data name="ByteTooltip_Binary" xml:space="preserve"><value>Binary</value></data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve"><value>(non-printable)</value></data>
+  <data name="ByteTooltip_Octal" xml:space="preserve"><value>Octal</value></data>
+
+  <!-- ── HexEditor status messages ──────────────────────────────────── -->
+  <data name="StatusText_OperationCancelled" xml:space="preserve"><value>Operation cancelled</value></data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve"><value>File already exists</value></data>
+  <data name="StatusText_Ready" xml:space="preserve"><value>Ready</value></data>
+  <data name="StatusText_FileSaved" xml:space="preserve"><value>File saved</value></data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve"><value>Search markers cleared.</value></data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve"><value>All changes cleared</value></data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve"><value>TBL closed, using ASCII</value></data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve"><value>No selection to reverse</value></data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve"><value>Selection is empty</value></data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve"><value>No selection to invert</value></data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve"><value>No selection to find</value></data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve"><value>No matches found.</value></data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve"><value>Size: -</value></data>
+  <data name="StatusBar_NoSelection" xml:space="preserve"><value>No selection</value></data>
+  <data name="StatusBar_PositionZero" xml:space="preserve"><value>Position: 0</value></data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve"><value>Mode: Overwrite</value></data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve"><value>Bytes/Line: 16</value></data>
+
+  <!-- Search Module -->
+  <data name="Search_NoMatches" xml:space="preserve">
+    <value>No matches</value>
+  </data>
+  <data name="Search_Error_Title" xml:space="preserve">
+    <value>Search error</value>
+  </data>
+  <data name="Search_Error_Label" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Search_Error_NoTBLLoaded" xml:space="preserve">
+    <value>No TBL loaded. Cannot search TBL text.</value>
+  </data>
+  <data name="Search_Error_TBLRequired" xml:space="preserve">
+    <value>TBL Required</value>
+  </data>
+  <data name="Search_Error_NoTBLForReplacement" xml:space="preserve">
+    <value>No TBL loaded. Cannot encode replacement bytes in TBL TEXT mode.</value>
+  </data>
+  <data name="Search_Replace_Title" xml:space="preserve">
+    <value>Replace Error</value>
+  </data>
+  <data name="Search_ReplaceAll_Title" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="Search_ExportDialog_Filter" xml:space="preserve">
+    <value>CSV Files (*.csv)|*.csv|Text Files (*.txt)|*.txt|JSON Files (*.json)|*.json</value>
+  </data>
+  <data name="Search_ExportTBL_Title" xml:space="preserve">
+    <value>Export TBL File</value>
+  </data>
+  <data name="Search_TBLFileDialog_Filter" xml:space="preserve">
+    <value>TBL Files (*.tbl)|*.tbl|All Files (*.*)|*.*</value>
+  </data>
+  <data name="Search_ExportTBL_Success" xml:space="preserve">
+    <value>Export Successful</value>
+  </data>
+  <data name="Search_ExportTBL_Error" xml:space="preserve">
+    <value>Export Error</value>
+  </data>
+  <data name="Search_EncodingApplied_Title" xml:space="preserve">
+    <value>Encoding Applied</value>
+  </data>
+  <data name="Search_EncodingApplied_Message" xml:space="preserve">
+    <value>Encoding applied! You can now use TBL TEXT mode.</value>
+  </data>
+  <data name="Search_LoadTBL_Title" xml:space="preserve">
+    <value>Select a TBL (Character Table) file</value>
+  </data>
+  <data name="Search_TBLLoaded_Title" xml:space="preserve">
+    <value>TBL Loaded</value>
+  </data>
+  <data name="Search_ErrorLoadingTBL_Title" xml:space="preserve">
+    <value>Error Loading TBL</value>
+  </data>
+  <data name="Search_CloseTBL_Title" xml:space="preserve">
+    <value>Close TBL</value>
+  </data>
+  <!-- IPS Patcher -->
+  <data name="IPS_Error_NoFileOpen" xml:space="preserve">
+    <value>Please open a ROM file first before applying a patch.</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen_Title" xml:space="preserve">
+    <value>No File Open</value>
+  </data>
+  <data name="IPS_ApplyPatch_Title" xml:space="preserve">
+    <value>Select IPS Patch File</value>
+  </data>
+  <data name="IPS_FileDialog_Filter" xml:space="preserve">
+    <value>IPS Patch Files (*.ips)|*.ips|All Files (*.*)|*.*</value>
+  </data>
+  <data name="IPS_Error_InvalidFile" xml:space="preserve">
+    <value>The selected file is not a valid IPS patch.</value>
+  </data>
+  <data name="IPS_Error_InvalidFile_Title" xml:space="preserve">
+    <value>Invalid IPS File</value>
+  </data>
+  <data name="IPS_ApplyPatch_Confirm_Title" xml:space="preserve">
+    <value>Apply IPS Patch</value>
+  </data>
+  <data name="IPS_ApplyPatch_SaveReminder" xml:space="preserve">
+    <value>Don't forget to save the file!</value>
+  </data>
+  <data name="IPS_ApplyPatch_Success_Title" xml:space="preserve">
+    <value>Patch Applied</value>
+  </data>
+  <data name="IPS_ApplyPatch_Error_Title" xml:space="preserve">
+    <value>Patch Failed</value>
+  </data>
+  <data name="IPS_CreatePatch_NoFileOpen" xml:space="preserve">
+    <value>Please open a modified ROM file first.</value>
+  </data>
+  <data name="IPS_CreatePatch_SelectOriginal_Title" xml:space="preserve">
+    <value>Select Original (Unmodified) ROM File</value>
+  </data>
+  <data name="IPS_ROMFileDialog_Filter" xml:space="preserve">
+    <value>ROM Files|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|All Files (*.*)|*.*</value>
+  </data>
+  <data name="IPS_CreatePatch_SaveDialog_Title" xml:space="preserve">
+    <value>Save IPS Patch As</value>
+  </data>
+  <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
+    <value>Patch Created</value>
+  </data>
+  <!-- Undo/Redo history popup -->
+  <data name="UndoHistory_Undo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="UndoHistory_Redo" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="UndoHistory_Action" xml:space="preserve">
+    <value>action</value>
+  </data>
+  <data name="UndoHistory_Actions" xml:space="preserve">
+    <value>actions</value>
+  </data>
+
+  <!-- DynamicSettingsGenerator fallback strings -->
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>Hex Editor Settings</value>
+    <comment>Fallback title for the dynamic settings panel</comment>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>Save State</value>
+    <comment>Fallback label for the save state button</comment>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>Load State</value>
+    <comment>Fallback label for the load state button</comment>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>Reset to Defaults</value>
+    <comment>Fallback label for the reset to defaults button</comment>
+  </data>
+
+  <!-- UndoRedoManager exception messages -->
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>No operations to undo</value>
+    <comment>Exception message when the undo stack is empty</comment>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>No operations to redo</value>
+    <comment>Exception message when the redo stack is empty</comment>
+  </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>Wrap around</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Encoding:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Hexadecimal</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Decimal</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>Go To Position</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>Position</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 or decimal</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Wildcard (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Truncate replacement to match find length</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Find Next</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Find Previous</value></data>
+  <data name="HE_SearchDialogTitle" xml:space="preserve">
+    <value>Find / Replace</value>
+  </data>
+  <data name="HE_SearchModeTooltip" xml:space="preserve">
+    <value>Search mode</value>
+  </data>
+  <data name="HE_CaseSensitiveTooltip" xml:space="preserve">
+    <value>Match case (Alt+C)</value>
+  </data>
+  <data name="HE_WildcardTooltip" xml:space="preserve">
+    <value>Use wildcards ?? (Alt+E)</value>
+  </data>
+  <data name="HE_LoopSearch" xml:space="preserve">
+    <value>Loop</value>
+  </data>
+  <data name="HE_FindLabel" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="HE_ReplaceLabel" xml:space="preserve">
+    <value>Replace:</value>
+  </data>
+  <data name="HE_EncodingLabel" xml:space="preserve">
+    <value>Encoding:</value>
+  </data>
+  <data name="HE_MaxLabel" xml:space="preserve">
+    <value>Max:</value>
+  </data>
+  <data name="HE_StopButton" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="HE_PrevButton" xml:space="preserve">
+    <value>Prev.</value>
+  </data>
+  <data name="HE_NextButton" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="HE_FindAllButton" xml:space="preserve">
+    <value>Find All</value>
+  </data>
+  <data name="HE_ReplaceButton" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="HE_ReplaceAllButton" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="HE_ResultsLabel" xml:space="preserve">
+    <value>Results (</value>
+  </data>
+  <data name="HE_ExportButton" xml:space="preserve">
+    <value>Export ▾</value>
+  </data>
+  <data name="HE_OffsetHexColumn" xml:space="preserve">
+    <value>Offset (Hex)</value>
+  </data>
+  <data name="HE_OffsetDecColumn" xml:space="preserve">
+    <value>Offset (Dec)</value>
+  </data>
+  <data name="HE_PreviewColumn" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="HE_LengthColumn" xml:space="preserve">
+    <value>Len.</value>
+  </data>
+  <data name="HE_OccColumn" xml:space="preserve">
+    <value>Occ.</value>
+  </data>
+  <data name="HE_PrintPctColumn" xml:space="preserve">
+    <value>% Print.</value>
+  </data>
+  <data name="HE_ActionsColumn" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="HE_ExportTblButton" xml:space="preserve">
+    <value>Export TBL</value>
+  </data>
+  <data name="HE_ApplyButton" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="HE_SizeLabel" xml:space="preserve">
+    <value>Size: </value>
+  </data>
+  <data name="HE_BytesLabel" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="HE_LoadTblButton" xml:space="preserve">
+    <value>Load TBL...</value>
+  </data>
+  <data name="HE_LoadTblTooltip" xml:space="preserve">
+    <value>Load a TBL file (ROM character table)</value>
+  </data>
+  <data name="HE_TblLabel" xml:space="preserve">
+    <value>TBL: </value>
+  </data>
+  <data name="HE_CloseTblTooltip" xml:space="preserve">
+    <value>Close TBL file</value>
+  </data>
+  <data name="HE_ShowReplaceTooltip" xml:space="preserve">
+    <value>Show / hide replace (Ctrl+H)</value>
+  </data>
+  <data name="HE_SearchPlaceholder" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="HE_PrevResultTooltip" xml:space="preserve">
+    <value>Previous result (Shift+Enter)</value>
+  </data>
+  <data name="HE_NextResultTooltip" xml:space="preserve">
+    <value>Next result (Enter)</value>
+  </data>
+  <data name="HE_AdvancedSearchTooltip" xml:space="preserve">
+    <value>Advanced search (Ctrl+Shift+F)</value>
+  </data>
+  <data name="HE_CloseSearchTooltip" xml:space="preserve">
+    <value>Close (Esc)</value>
+  </data>
+  <data name="HE_ReplacePlaceholder" xml:space="preserve">
+    <value>Replace...</value>
+  </data>
+  <data name="HE_ReplaceOneTooltip" xml:space="preserve">
+    <value>Replace (Alt+R)</value>
+  </data>
+  <data name="HE_ReplaceAllTooltip" xml:space="preserve">
+    <value>Replace All (Alt+A)</value>
+  </data>
+  <data name="HE_HexModeTooltip" xml:space="preserve">
+    <value>Hexadecimal mode (Alt+H)</value>
+  </data>
+  <data name="HE_MoveBarTooltip" xml:space="preserve">
+    <value>Move search bar</value>
+  </data>
+  <!-- HexEditor context menu — Compare -->
+  <data name="HE_CompareFileWith"       xml:space="preserve"><value>Compare File with…</value></data>
+  <data name="HE_CompareSelectionLeft"  xml:space="preserve"><value>Compare Selection as Left…</value></data>
+  <data name="HE_NoTblLoaded"           xml:space="preserve"><value>No TBL loaded</value></data>
+  <!-- Advanced search dialog — search type combo -->
+  <data name="HE_SearchTypeText"     xml:space="preserve"><value>TEXT</value></data>
+  <data name="HE_SearchTypeHex"      xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>WILDCARD</value></data>
+  <data name="HE_SearchTypeTbl"      xml:space="preserve"><value>TBL TEXT</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIVE</value></data>
+  <!-- HexEditor toolbar contributor (format chip / confidence badge / change-format dropdown) -->
+  <data name="HE_Toolbar_DetectedFormat"      xml:space="preserve"><value>Detected file format</value></data>
+  <data name="HE_Toolbar_ConfidenceScore"     xml:space="preserve"><value>Detection confidence score</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat"    xml:space="preserve"><value>Detection confidence: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat"        xml:space="preserve"><value>Format</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Change detected format</value></data>
+  <!-- Wave 20 — find-all overlay tooltip + shared offset column header -->
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Search for all occurrences with progress overlay</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>Offset</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>Results</value>
   </data>
 </root>

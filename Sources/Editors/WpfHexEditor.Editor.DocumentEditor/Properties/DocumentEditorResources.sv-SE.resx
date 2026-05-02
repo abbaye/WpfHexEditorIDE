@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>Sök och ersätt</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>Sök:</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>Ersätt:</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>Skiftlägeskänslig</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>Hela ord</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>Sök alla</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>Sök nästa</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>Sök föregående</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>Ersätt</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>Ersätt alla</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>Stäng</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>Sida</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>Format:</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>Anpassad</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>Orientering:</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>Stående</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>Liggande</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>Kolumner</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>Lika kolumnbredder</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>Visa avskiljarlinje mellan kolumner</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>Sidhuvud/sidfot</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>Sidhuvud</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>Aktivera sidhuvud</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>Annat innehåll på första sidan</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>Samma sidhuvud på vänster/höger sidor</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>Sidfot</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>Aktivera sidfot</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>Ram</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>Ingen</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>Ram</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>Skugga</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>Verkställ</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>Insida:</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>Utsida:</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>Vänster:</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>Höger:</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>Textvy</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>Delad vy (text + Hex)</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>Hex-vy</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>Strukturträdvy</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>Fullständig vy (text + struktur + Hex)</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>Fokusläge — zen-skrivning (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>Text</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>Delad</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>Struktur</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>Fullständig</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>Fokus</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>Sidvy — sidnumrerade A4/Letter-kort</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>Utkastvy — kontinuerlig rullning, kompakta marginaler</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>Dispositionsvy — strukturträd centrerat</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>Forensiskt analysläge</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>Forensisk</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>Fet (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>Kursiv (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>Understruken (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>Genomstruken</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>Vänsterjustera</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>Centrera</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>Högerjustera</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>Styckeformat</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>Citat</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Code</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>Styckeformat (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>Sidinställning (pappersstorlek, marginaler, kolumner…)</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>Zooma ut</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>Zooma in</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>Skrivskyddad</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Dokumentmetadata</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Exportera dokument</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Spara</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Titel</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Författare</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Format</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>Skapad</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>Ändrad</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>Makron</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>Fet (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>Kursiv (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>Understruken (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>Kopiera markerad text</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>Kopiera som Hex-byte</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>Inspektera block i strukturpanelen</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>Hoppa till offset i Hex-panelen</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>Antal sidor</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>Antal ord</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>Zoomnivå</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>Klicka för att öppna forensikpanelen</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>Struktur</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>Minimera alla</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>Expandera alla</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>Filtrera block…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>Rensa filter</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>Navigera till text</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>Hoppa till Hex-offset</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>Kopiera blocktext</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>Kopiera offset</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>Dokument</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>Sparat — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>Spara misslyckades: {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>Ingen sparare registrerad för den här filtypen.</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>Läser in dokument…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>Väntar på IDE-initiering…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>Det gick inte att öppna dokumentet: {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>Exportera dokument</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>Exporten misslyckades: {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>Exporterat — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>Ingen sparare registrerad för '{0}'.</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>Ja</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>Nej</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>Text</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>Delad</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>Struktur</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>Fullständig</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>Fokus</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | Skrivskyddad</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>Sida 1</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 ord</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>Delad</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>Format: {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} ord</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>Sida 1 / {0}</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>Rubrik 1</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>Rubrik 2</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>Rubrik 3</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>Rubrik 4</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>Rubrik 5</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>Rubrik 6</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>Citat</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>Bildtext</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>Listparagraf</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>Intensivt citat</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>Varningar</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>Block</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>Markering</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>Vy</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>Kriminaltekniskt läge</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>Hex-vy</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>Spara</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>Delad vy</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>Strukturvy</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>Textvy</value>
+  </data>
+</root>

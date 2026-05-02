@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>بحث واستبدال</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>بحث:</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>استبدال:</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>مطابقة حالة الأحرف</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>كلمة كاملة</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>بحث عن الكل</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>التالي</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>السابق</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>استبدال</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>استبدال الكل</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>إغلاق</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>الصفحة</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>التنسيق:</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>مخصص</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>الاتجاه:</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>عمودي</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>أفقي</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>أعمدة</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>عرض أعمدة متساوٍ</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>إظهار فاصل بين الأعمدة</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>رأس/تذييل</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>رأس</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>تفعيل الرأس</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>محتوى مختلف في الصفحة الأولى</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>نفس الرأس في الصفحات اليسارية/اليمينية</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>تذييل</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>تفعيل التذييل</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>حدود</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>بدون</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>مربع</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>ظل</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>تطبيق</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>داخلي:</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>خارجي:</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>يسار:</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>يمين:</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>عرض نصي</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>عرض مقسم (نص + Hex)</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>عرض Hex</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>عرض شجرة البنية</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>عرض كامل (نص + بنية + Hex)</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>وضع التركيز — كتابة هادئة (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>نص</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>مقسم</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>بنية</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>كامل</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>تركيز</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>عرض الصفحة — بطاقات A4/Letter مرقّمة</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>عرض المسودة — تمرير مستمر، هوامش مضغوطة</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>عرض المخطط — شجرة البنية في المركز</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>وضع التحليل الجنائي</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>جنائي</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>غامق (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>مائل (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>تسطير (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>يتوسطه خط</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>محاذاة يسار</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>محاذاة وسط</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>محاذاة يمين</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>نمط الفقرة</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>عادي</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>اقتباس</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Code</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>أنماط الفقرة (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>إعداد الصفحة (حجم الورق، الهوامش، الأعمدة…)</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>تصغير</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>تكبير</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>للقراءة فقط</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>بيانات تعريف المستند</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>تصدير المستند</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>حفظ</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>العنوان</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>المؤلف</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>التنسيق</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>تاريخ الإنشاء</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>تاريخ التعديل</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>وحدات الماكرو</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>غامق (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>مائل (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>تسطير (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>نسخ النص المحدد</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>نسخ كبايتات Hex</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>فحص الكتلة في جزء البنية</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>الانتقال إلى الإزاحة في جزء Hex</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>عدد الصفحات</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>عدد الكلمات</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>مستوى التكبير</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>انقر لفتح لوحة الجنائي</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>البنية</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>طي الكل</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>توسيع الكل</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>تصفية الكتل…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>مسح التصفية</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>انتقال إلى النص</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>القفز إلى إزاحة Hex</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>نسخ نص الكتلة</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>نسخ الإزاحة</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>مستند</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>تم الحفظ — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>فشل الحفظ: {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>لا يوجد حافظ مسجل لهذا النوع من الملفات.</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>جاري تحميل المستند…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>انتظار تهيئة IDE…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>فشل فتح المستند: {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>تصدير المستند</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>فشل التصدير: {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>تم التصدير — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>لا يوجد حافظ مسجل لـ '{0}'.</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>نعم</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>لا</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>نص</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>مقسم</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>بنية</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>كامل</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>تركيز</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | للقراءة فقط</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>صفحة 1</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 كلمات</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>مقسم</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>التنسيق: {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} كلمات</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>صفحة 1 / {0}</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>عادي</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>عنوان 1</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>عنوان 2</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>عنوان 3</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>عنوان 4</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>عنوان 5</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>عنوان 6</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>اقتباس</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>تعليق</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>فقرة قائمة</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>اقتباس مكثف</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>تنبيهات</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>كتل</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>تنسيق</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>تحديد</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>الإصدار</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>عرض</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>وضع الطب الشرعي</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>عرض سداسي</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>عرض منقسم</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>عرض الهيكل</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>عرض النص</value>
+  </data>
+</root>

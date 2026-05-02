@@ -3,7 +3,8 @@
 > Cross-platform byte provider for gigabyte-scale binary files — zero WPF dependency.
 
 [![.NET](https://img.shields.io/badge/.NET-net8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
-[![NuGet](https://img.shields.io/nuget/v/WpfHexEditor.Core.ByteProvider?logo=nuget)](https://www.nuget.org/packages/WpfHexEditor.Core.ByteProvider)
+[![NuGet](https://img.shields.io/nuget/v/WpfHexEditor.Core.ByteProvider?logo=nuget)](https://www.nuget.org/packages/WpfHexEditor.Core.ByteProvider)  
+[![Version](https://img.shields.io/badge/version-1.1.0-blue)](https://www.nuget.org/packages/WpfHexEditor.Core.ByteProvider)
 [![License](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://github.com/abbaye/WpfHexEditorControl/blob/master/LICENSE)
 
 ---
@@ -150,6 +151,15 @@ WpfHexEditor.Core.ByteProvider/
 └── Changesets/
     └── ChangesetSnapshot.cs         ← ModifiedRange, InsertedBlock, DeletedRange
 ```
+
+---
+
+## What's New in 1.1.0
+
+- **New**: `IUndoAwareEditor` interface — editors (HexEditor, CodeEditor) register with the `ByteProvider` undo stack via a common contract.
+- **New**: `HexByteUndoEntry` — typed undo entry for individual byte modifications; participates in the shared `UndoEngine` across editor types.
+- **New**: `DocumentBuffer` undo wiring — `ByteProvider` undo/redo events now propagate to `IUndoAwareEditor` subscribers.
+- **Test**: Regression test suite added — `ByteProviderTests`, `UndoRedoManagerTests`, `SearchEngineTests`, `EditsManagerTests`, `ChangesetSnapshotTests`.
 
 ---
 

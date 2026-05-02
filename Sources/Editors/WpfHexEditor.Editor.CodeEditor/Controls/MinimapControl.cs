@@ -20,6 +20,7 @@ using System.Windows.Media;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Folding;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
 
@@ -534,7 +535,7 @@ public sealed class MinimapControl : FrameworkElement
         var menu = new ContextMenu();
 
         // Minimap toggle
-        _minimapToggleItem = new MenuItem { Header = "_Minimap", IsCheckable = true, IsChecked = true };
+        _minimapToggleItem = new MenuItem { Header = CodeEditorResources.CodeEd_Minimap_MenuTitle, IsCheckable = true, IsChecked = true };
         _minimapToggleItem.Click += (_, _) =>
         {
             MinimapToggled?.Invoke(false);
@@ -544,7 +545,7 @@ public sealed class MinimapControl : FrameworkElement
         menu.Items.Add(new Separator());
 
         // Render Characters toggle
-        _renderCharsItem = new MenuItem { Header = "Render _Characters", IsCheckable = true, IsChecked = _renderCharacters };
+        _renderCharsItem = new MenuItem { Header = CodeEditorResources.CodeEd_Minimap_RenderChars, IsCheckable = true, IsChecked = _renderCharacters };
         _renderCharsItem.Click += (_, _) =>
         {
             RenderCharacters = _renderCharsItem.IsChecked;
@@ -552,10 +553,10 @@ public sealed class MinimapControl : FrameworkElement
         menu.Items.Add(_renderCharsItem);
 
         // Vertical size submenu
-        var vSizeMenu = new MenuItem { Header = "_Vertical size" };
-        _vProp = new MenuItem { Header = "Proportional" };
-        _vFill = new MenuItem { Header = "Fill" };
-        _vFit = new MenuItem { Header = "Fit" };
+        var vSizeMenu = new MenuItem { Header = CodeEditorResources.CodeEd_Minimap_VerticalSize };
+        _vProp = new MenuItem { Header = CodeEditorResources.CodeEd_Minimap_SizeProportional };
+        _vFill = new MenuItem { Header = CodeEditorResources.CodeEd_Minimap_SizeFill };
+        _vFit = new MenuItem { Header = CodeEditorResources.CodeEd_Minimap_SizeFit };
         _vProp.Click += (_, _) => VerticalSize = MinimapVerticalSize.Proportional;
         _vFill.Click += (_, _) => VerticalSize = MinimapVerticalSize.Fill;
         _vFit.Click += (_, _) => VerticalSize = MinimapVerticalSize.Fit;
@@ -565,9 +566,9 @@ public sealed class MinimapControl : FrameworkElement
         menu.Items.Add(vSizeMenu);
 
         // Slider submenu
-        var sliderMenu = new MenuItem { Header = "S_lider" };
-        _sAlways = new MenuItem { Header = "Always" };
-        _sMouseOver = new MenuItem { Header = "Mouse Over" };
+        var sliderMenu = new MenuItem { Header = CodeEditorResources.CodeEd_Minimap_Slider };
+        _sAlways = new MenuItem { Header = CodeEditorResources.CodeEd_Minimap_SliderAlways };
+        _sMouseOver = new MenuItem { Header = CodeEditorResources.CodeEd_Minimap_SliderMouseOver };
         _sAlways.Click += (_, _) => SliderMode = MinimapSliderMode.Always;
         _sMouseOver.Click += (_, _) => SliderMode = MinimapSliderMode.MouseOver;
         sliderMenu.Items.Add(_sAlways);
@@ -575,9 +576,9 @@ public sealed class MinimapControl : FrameworkElement
         menu.Items.Add(sliderMenu);
 
         // Side submenu
-        var sideMenu = new MenuItem { Header = "Si_de" };
-        _sideLeft = new MenuItem { Header = "Left" };
-        _sideRight = new MenuItem { Header = "Right" };
+        var sideMenu = new MenuItem { Header = CodeEditorResources.CodeEd_Minimap_Side };
+        _sideLeft = new MenuItem { Header = CodeEditorResources.CodeEd_Minimap_SideLeft };
+        _sideRight = new MenuItem { Header = CodeEditorResources.CodeEd_Minimap_SideRight };
         _sideLeft.Click += (_, _) => { Side = MinimapSide.Left; SideChangeRequested?.Invoke(MinimapSide.Left); };
         _sideRight.Click += (_, _) => { Side = MinimapSide.Right; SideChangeRequested?.Invoke(MinimapSide.Right); };
         sideMenu.Items.Add(_sideLeft);

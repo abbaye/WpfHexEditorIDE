@@ -10,6 +10,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.ProjectSystem.Properties;
 using WpfHexEditor.Core.ProjectSystem.Templates;
 
 namespace WpfHexEditor.Core.ProjectSystem.Dialogs;
@@ -312,7 +313,7 @@ public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
     {
         var dlg = new Microsoft.Win32.OpenFolderDialog
         {
-            Title            = "Select folder for the new file",
+            Title            = ProjectSystemResources.Dialog_SelectFileFolder,
             InitialDirectory = LocationBox.Text,
         };
         if (dlg.ShowDialog() == true)

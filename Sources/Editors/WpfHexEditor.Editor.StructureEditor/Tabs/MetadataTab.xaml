@@ -7,7 +7,16 @@
 <UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Tabs.MetadataTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="{DynamicResource TE_Background}">
+             Background="{DynamicResource TE_Background}"
+             xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <structSvc:StructureEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,4,0">
         <StackPanel Margin="12,8" x:Name="Root">
@@ -47,7 +56,7 @@
             </StackPanel.Resources>
 
             <!-- ── Core fields ──────────────────────────────────────── -->
-            <TextBlock Text="Core" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource StructureEditor_MetaCoreSection}" Style="{StaticResource SectionHeader}"/>
 
             <Grid Margin="0,0,0,2">
                 <Grid.ColumnDefinitions>
@@ -63,56 +72,56 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Format Name"    Style="{StaticResource Label}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource StructureEditor_MetaNameLabel}"    Style="{StaticResource Label}"/>
                 <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource Field}"
-                           ToolTip="Human-readable format name (e.g., 'ZIP Archive', 'PNG Image')"
+                           ToolTip="{DynamicResource StructureEditor_MetaNameToolTip}"
                            Text="{Binding FormatName, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Version"        Style="{StaticResource Label}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource StructureEditor_MetaVersionLabel}"        Style="{StaticResource Label}"/>
                 <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource Field}"
-                           ToolTip="Version of this definition (e.g., '1.0', '2.0')"
+                           ToolTip="{DynamicResource StructureEditor_MetaVersionToolTip}"
                            Text="{Binding Version, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Author"         Style="{StaticResource Label}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource StructureEditor_MetaAuthorLabel}"         Style="{StaticResource Label}"/>
                 <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource Field}"
-                           ToolTip="Author of this definition file"
+                           ToolTip="{DynamicResource StructureEditor_MetaAuthorToolTip}"
                            Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Category"       Style="{StaticResource Label}"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource StructureEditor_MetaCategoryLabel}"       Style="{StaticResource Label}"/>
                 <ComboBox  Grid.Row="3" Grid.Column="1" Style="{StaticResource Combo}"
                            IsEditable="True"
-                           ToolTip="Category (auto-set from folder structure: Archives, Images, Audio, Video, etc.)"
+                           ToolTip="{DynamicResource StructureEditor_MetaCategoryToolTip}"
                            Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}"
                            ItemsSource="{Binding CategoryOptions}"/>
 
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Diff Mode"      Style="{StaticResource Label}"/>
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="{DynamicResource StructureEditor_MetaDiffModeLabel}"      Style="{StaticResource Label}"/>
                 <ComboBox  Grid.Row="4" Grid.Column="1" Style="{StaticResource Combo}"
-                           ToolTip="Preferred diff algorithm for DiffViewer"
+                           ToolTip="{DynamicResource StructureEditor_MetaDiffModeToolTip}"
                            ItemsSource="{Binding DiffModeOptions}"
                            SelectedItem="{Binding DiffMode}"/>
 
-                <TextBlock Grid.Row="5" Grid.Column="0" Text="Preferred Editor" Style="{StaticResource Label}"/>
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="{DynamicResource StructureEditor_MetaPreferredEditorLabel}" Style="{StaticResource Label}"/>
                 <ComboBox  Grid.Row="5" Grid.Column="1" Style="{StaticResource Combo}"
-                           ToolTip="Preferred editor factory ID for files matching this format"
+                           ToolTip="{DynamicResource StructureEditor_MetaPreferredEditorToolTip}"
                            ItemsSource="{Binding PreferredEditorOptions}"
                            SelectedItem="{Binding PreferredEditor}"/>
             </Grid>
 
             <!-- Description -->
-            <TextBlock Text="Description" Style="{StaticResource Label}" Margin="0,4,0,2"/>
+            <TextBlock Text="{DynamicResource StructureEditor_MetaDescriptionLabel}" Style="{StaticResource Label}" Margin="0,4,0,2"/>
             <TextBox Style="{StaticResource Field}"
                      Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
                      AcceptsReturn="True" TextWrapping="Wrap" Height="60"
                      VerticalScrollBarVisibility="Auto"/>
 
             <!-- IsTextFormat -->
-            <CheckBox Content="Is text format (opens in Code Editor by default)"
+            <CheckBox Content="{DynamicResource StructureEditor_MetaIsTextFormat}"
                       IsChecked="{Binding IsTextFormat}"
                       Foreground="{DynamicResource TE_Foreground}"
                       FontSize="11" Margin="0,6,0,0"/>
 
             <!-- ── Extensions ──────────────────────────────────────── -->
-            <TextBlock Text="File Extensions" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource StructureEditor_MetaExtensionsLabel}" Style="{StaticResource SectionHeader}"/>
             <ItemsControl ItemsSource="{Binding Extensions}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -125,13 +134,13 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Button Content="＋ Add Extension" FontSize="11" Padding="6,2" Margin="0,4,0,0"
+            <Button Content="{DynamicResource StructureEditor_MetaAddExtensionButton}" FontSize="11" Padding="6,2" Margin="0,4,0,0"
                     HorizontalAlignment="Left"
                     x:Name="AddExtBtn" Click="OnAddExtension"
                     Style="{DynamicResource PM_LinkButtonStyle}"/>
 
             <!-- ── MIME Types ───────────────────────────────────────── -->
-            <TextBlock Text="MIME Types" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource StructureEditor_MetaMimeTypesLabel}" Style="{StaticResource SectionHeader}"/>
             <ItemsControl ItemsSource="{Binding MimeTypes}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -144,13 +153,13 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Button Content="＋ Add MIME Type" FontSize="11" Padding="6,2" Margin="0,4,0,0"
+            <Button Content="{DynamicResource StructureEditor_MetaAddMimeButton}" FontSize="11" Padding="6,2" Margin="0,4,0,0"
                     HorizontalAlignment="Left"
                     x:Name="AddMimeBtn" Click="OnAddMimeType"
                     Style="{DynamicResource PM_LinkButtonStyle}"/>
 
             <!-- ── Software ─────────────────────────────────────────── -->
-            <TextBlock Text="Software" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource StructureEditor_MetaSoftwareLabel}" Style="{StaticResource SectionHeader}"/>
             <ItemsControl ItemsSource="{Binding Software}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -163,7 +172,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Button Content="＋ Add Software" FontSize="11" Padding="6,2" Margin="0,4,0,12"
+            <Button Content="{DynamicResource StructureEditor_MetaAddSoftwareButton}" FontSize="11" Padding="6,2" Margin="0,4,0,12"
                     HorizontalAlignment="Left"
                     x:Name="AddSoftwareBtn" Click="OnAddSoftware"
                     Style="{DynamicResource PM_LinkButtonStyle}"/>

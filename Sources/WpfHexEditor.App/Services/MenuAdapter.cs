@@ -33,11 +33,15 @@ public sealed class MenuAdapter : IMenuAdapter
     // uiId → original descriptor (Debug-parented items only, for DebugMenuOrganizer)
     private readonly Dictionary<string, MenuItemDescriptor> _debugDescriptors = new(StringComparer.OrdinalIgnoreCase);
 
+    // uiId → original descriptor (Tools-parented items only, for ToolsMenuOrganizer)
+    private readonly Dictionary<string, MenuItemDescriptor> _toolsDescriptors = new(StringComparer.OrdinalIgnoreCase);
+
     // (normalised parentPath + group) → Separator element that heads that group block
     private readonly Dictionary<string, Separator> _groupSeparators = new(StringComparer.OrdinalIgnoreCase);
 
     // uiIds in each group block — used to clean up separators when a group is emptied
     private readonly Dictionary<string, List<string>> _groupMembers = new(StringComparer.OrdinalIgnoreCase);
+
 
     public MenuAdapter(Menu mainMenu)
     {
@@ -49,6 +53,9 @@ public sealed class MenuAdapter : IMenuAdapter
 
     /// <inheritdoc />
     public event Action? DebugItemsChanged;
+
+    /// <inheritdoc />
+    public event Action? ToolsItemsChanged;
 
     /// <inheritdoc />
     public void AddMenuItem(string uiId, MenuItemDescriptor descriptor)
@@ -72,6 +79,15 @@ public sealed class MenuAdapter : IMenuAdapter
         {
             _debugDescriptors[uiId] = descriptor;
             DebugItemsChanged?.Invoke();
+            return;
+        }
+
+        // Tools-parented items are intercepted — store but do not create WPF MenuItems.
+        // MainWindow wires ToolsItemsChanged → RebuildToolsPluginItems.
+        if (IsToolsParent(descriptor.ParentPath))
+        {
+            _toolsDescriptors[uiId] = descriptor;
+            ToolsItemsChanged?.Invoke();
             return;
         }
 
@@ -146,6 +162,13 @@ public sealed class MenuAdapter : IMenuAdapter
             return;
         }
 
+        // Tools-parented item?
+        if (_toolsDescriptors.Remove(uiId))
+        {
+            ToolsItemsChanged?.Invoke();
+            return;
+        }
+
         // Non-View item: remove WPF MenuItem
         if (!_addedItems.TryGetValue(uiId, out var item)) return;
 
@@ -179,26 +202,33 @@ public sealed class MenuAdapter : IMenuAdapter
     /// <inheritdoc />
     public IReadOnlyDictionary<string, MenuItemDescriptor> GetAllDebugMenuItems() => _debugDescriptors;
 
+    /// <inheritdoc />
+    public IReadOnlyDictionary<string, MenuItemDescriptor> GetAllToolsMenuItems() => _toolsDescriptors;
+
     private static bool IsViewParent(string parentPath)
         => string.Equals(parentPath?.TrimStart('_'), "View", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsDebugParent(string parentPath)
         => string.Equals(parentPath?.TrimStart('_'), "Debug", StringComparison.OrdinalIgnoreCase);
 
+    private static bool IsToolsParent(string parentPath)
+        => string.Equals(parentPath?.TrimStart('_'), "Tools", StringComparison.OrdinalIgnoreCase);
+
     private ItemsControl FindOrCreateParent(string parentPath)
     {
         if (string.IsNullOrWhiteSpace(parentPath)) return _mainMenu;
 
+        var canonical = parentPath.TrimStart('_');
+
         foreach (var topItem in _mainMenu.Items.OfType<MenuItem>())
         {
-            // Strip leading underscore (WPF access key prefix, e.g. "_View" → "View").
             var headerText = topItem.Header?.ToString()?.TrimStart('_') ?? string.Empty;
-            if (string.Equals(headerText, parentPath.TrimStart('_'), StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(headerText, canonical, StringComparison.OrdinalIgnoreCase))
                 return topItem;
         }
 
-        // Parent not found — create a new top-level menu group.
-        var newParent = new MenuItem { Header = parentPath };
+        // Not found — create a new top-level group.
+        var newParent = new MenuItem { Header = canonical };
         _mainMenu.Items.Add(newParent);
         return newParent;
     }

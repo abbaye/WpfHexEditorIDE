@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using WpfHexEditor.Core.ProjectSystem.Languages;
+using WpfHexEditor.Core.Options.Properties;
 namespace WpfHexEditor.Core.Options.Preview;
 /// <summary>
 /// Preview panel: live colorised code snippet that reflects current formatting options.
@@ -44,7 +45,7 @@ public sealed class FormattingPreviewPanel : UserControl
         toolbar.SetResourceReference(Border.BackgroundProperty,  "DockPanelBackgroundBrush");
         toolbar.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
         DockPanel.SetDock(toolbar, Dock.Top);
-        var lbl = new TextBlock { Text = "Preview", FontWeight = FontWeights.SemiBold, FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
+        var lbl = new TextBlock { Text = OptionsResources.Opt_Preview_Label, FontWeight = FontWeights.SemiBold, FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
         lbl.SetResourceReference(TextBlock.ForegroundProperty, "DockMenuForegroundBrush");
         toolbar.Child = lbl;
         outerStack.Children.Add(toolbar);

@@ -3,10 +3,18 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Git.ViewModels"
+    xmlns:gitSvc="clr-namespace:WpfHexEditor.Plugins.Git.Services"
     StaysOpen="False"
     AllowsTransparency="True"
     Placement="Bottom"
     Width="280">
+    <Popup.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <gitSvc:GitPluginLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Popup.Resources>
     <Border Background="{DynamicResource DockBackgroundBrush}"
             BorderBrush="{DynamicResource DockBorderBrush}"
             BorderThickness="1"
@@ -23,7 +31,7 @@
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      Style="{DynamicResource DockDarkTextBoxStyle}"
                      Margin="0,0,0,4"
-                     ToolTip="Filter branches"/>
+                     ToolTip="{DynamicResource Git_FilterBranches}"/>
 
             <!-- Branch list -->
             <ListBox Grid.Row="1"
@@ -91,7 +99,7 @@
             <!-- New branch row -->
             <Grid Grid.Row="2" Margin="0,4,0,0">
                 <!-- Create new branch button -->
-                <Button Content="+ New Branch…"
+                <Button Content="{DynamicResource Git_NewBranch}"
                         Command="{Binding BeginCreateCommand}"
                         HorizontalAlignment="Left" Padding="6,4">
                     <Button.Style>
@@ -126,13 +134,13 @@
                     <TextBox Grid.Column="0"
                              Text="{Binding NewBranchName, UpdateSourceTrigger=PropertyChanged}"
                              Style="{DynamicResource DockDarkTextBoxStyle}"
-                             ToolTip="New branch name">
+                             ToolTip="{DynamicResource Git_NewBranchTooltip}">
                         <TextBox.InputBindings>
                             <KeyBinding Key="Return" Command="{Binding CreateCommand}"/>
                             <KeyBinding Key="Escape" Command="{Binding CancelCreateCommand}"/>
                         </TextBox.InputBindings>
                     </TextBox>
-                    <Button Grid.Column="1" Content="Create"
+                    <Button Grid.Column="1" Content="{DynamicResource Git_CreateBranch}"
                             Command="{Binding CreateCommand}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             Padding="8,4" Margin="4,0,0,0"/>

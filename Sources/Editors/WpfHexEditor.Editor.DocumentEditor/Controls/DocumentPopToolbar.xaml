@@ -1,9 +1,15 @@
 <UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentPopToolbar"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
              xmlns:local="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Controls"
              Opacity="0.95">
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <docSvc:DocumentEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+
         <Style x:Key="PopBtnStyle" TargetType="Button">
             <Setter Property="Background"      Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -39,6 +45,7 @@
             <Setter Property="Margin"     Value="2,4"/>
             <Setter Property="Background" Value="{DynamicResource DE_PopToolbarBorderBrush}"/>
         </Style>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <!-- Floating semi-transparent popup card -->
@@ -55,21 +62,21 @@
             <!-- Group 1: Formatting -->
             <Button x:Name="PART_BoldBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Bold (Ctrl+B)"
+                    ToolTip="{DynamicResource DocPopToolbar_TooltipBold}"
                     Click="OnBoldClicked">
                 <TextBlock Text="B" FontWeight="Bold" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_ItalicBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Italic (Ctrl+I)"
+                    ToolTip="{DynamicResource DocPopToolbar_TooltipItalic}"
                     Click="OnItalicClicked">
                 <TextBlock Text="I" FontStyle="Italic" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_UnderlineBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Underline (Ctrl+U)"
+                    ToolTip="{DynamicResource DocPopToolbar_TooltipUnderline}"
                     Click="OnUnderlineClicked">
                 <TextBlock Text="U" FontSize="13">
                     <TextBlock.TextDecorations>
@@ -83,14 +90,14 @@
             <!-- Group 2: Copy -->
             <Button x:Name="PART_CopyTextBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Copy selected text"
+                    ToolTip="{DynamicResource DocPopToolbar_TooltipCopyText}"
                     Click="OnCopyTextClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C8;" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_CopyHexBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Copy as hex bytes"
+                    ToolTip="{DynamicResource DocPopToolbar_TooltipCopyHex}"
                     Click="OnCopyHexClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F4;" FontSize="13"/>
             </Button>
@@ -100,14 +107,14 @@
             <!-- Group 3: Navigation -->
             <Button x:Name="PART_InspectBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Inspect block in Structure pane"
+                    ToolTip="{DynamicResource DocPopToolbar_TooltipInspect}"
                     Click="OnInspectClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C9;" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_JumpHexBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Jump to offset in Hex pane"
+                    ToolTip="{DynamicResource DocPopToolbar_TooltipJumpHex}"
                     Click="OnJumpHexClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C4;" FontSize="13"/>
             </Button>

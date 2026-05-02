@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.MarkdownEditor
+    File        : MarkdownEditorResources.resx
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
+          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
+          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /><xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Status bar labels / tooltips -->
+  <data name="MdSb_ViewLabel"     xml:space="preserve"><value>View</value></data>
+  <data name="MdSb_ViewTooltip"   xml:space="preserve"><value>Current view mode</value></data>
+  <data name="MdSb_WordsLabel"    xml:space="preserve"><value>Words</value></data>
+  <data name="MdSb_WordsTooltip"  xml:space="preserve"><value>Approximate word count</value></data>
+  <data name="MdSb_LinesLabel"    xml:space="preserve"><value>Lines</value></data>
+  <data name="MdSb_LinesTooltip"  xml:space="preserve"><value>Total line count</value></data>
+  <data name="MdSb_ReadLabel"     xml:space="preserve"><value>Read</value></data>
+  <data name="MdSb_ReadTooltip"   xml:space="preserve"><value>Estimated reading time (200 wpm)</value></data>
+  <data name="MdSb_ZoomLabel"     xml:space="preserve"><value>Zoom</value></data>
+  <data name="MdSb_ZoomTooltip"   xml:space="preserve"><value>Preview zoom (Ctrl+scroll in preview)</value></data>
+
+  <!-- Toolbar labels / tooltips -->
+  <data name="MdTb_ViewLabel"        xml:space="preserve"><value>View</value></data>
+  <data name="MdTb_ViewTooltip"      xml:space="preserve"><value>View mode (Ctrl+1/2/3)</value></data>
+  <data name="MdTb_LayoutLabel"      xml:space="preserve"><value>Layout</value></data>
+  <data name="MdTb_LayoutTooltip"    xml:space="preserve"><value>Split layout (Ctrl+Shift+L)</value></data>
+  <data name="MdTb_WrapLabel"        xml:space="preserve"><value>Wrap</value></data>
+  <data name="MdTb_WrapTooltip"      xml:space="preserve"><value>Word wrap (Alt+Z)</value></data>
+  <data name="MdTb_RefreshLabel"     xml:space="preserve"><value>Refresh</value></data>
+  <data name="MdTb_RefreshTooltip"   xml:space="preserve"><value>Refresh preview (F9)</value></data>
+  <data name="MdTb_InsertLabel"      xml:space="preserve"><value>Insert</value></data>
+  <data name="MdTb_InsertTooltip"    xml:space="preserve"><value>Insert Markdown element</value></data>
+  <data name="MdTb_FormatLabel"      xml:space="preserve"><value>Format</value></data>
+  <data name="MdTb_FormatTooltip"    xml:space="preserve"><value>Format selected text</value></data>
+  <data name="MdTb_FullscreenLabel"  xml:space="preserve"><value>Fullscreen</value></data>
+  <data name="MdTb_FullscreenTooltip" xml:space="preserve"><value>Toggle fullscreen preview</value></data>
+
+  <!-- Toolbar dropdown items – view modes -->
+  <data name="MdView_SourceOnly"  xml:space="preserve"><value>Source Only</value></data>
+  <data name="MdView_Split"       xml:space="preserve"><value>Split</value></data>
+  <data name="MdView_PreviewOnly" xml:space="preserve"><value>Preview Only</value></data>
+
+  <!-- Toolbar dropdown items – layout -->
+  <data name="MdLayout_PreviewRight"  xml:space="preserve"><value>Preview Right</value></data>
+  <data name="MdLayout_PreviewLeft"   xml:space="preserve"><value>Preview Left</value></data>
+  <data name="MdLayout_PreviewBottom" xml:space="preserve"><value>Preview Bottom</value></data>
+  <data name="MdLayout_PreviewTop"    xml:space="preserve"><value>Preview Top</value></data>
+
+  <!-- Toolbar dropdown items – insert -->
+  <data name="MdInsert_Table"          xml:space="preserve"><value>Table</value></data>
+  <data name="MdInsert_CodeBlock"      xml:space="preserve"><value>Code Block</value></data>
+  <data name="MdInsert_Image"          xml:space="preserve"><value>Image</value></data>
+  <data name="MdInsert_HorizontalRule" xml:space="preserve"><value>Horizontal Rule</value></data>
+  <data name="MdInsert_TableOfContents" xml:space="preserve"><value>Table of Contents</value></data>
+
+  <!-- Toolbar dropdown items – format -->
+  <data name="MdFmt_Bold"          xml:space="preserve"><value>Bold</value></data>
+  <data name="MdFmt_Italic"        xml:space="preserve"><value>Italic</value></data>
+  <data name="MdFmt_Strikethrough" xml:space="preserve"><value>Strikethrough</value></data>
+  <data name="MdFmt_InlineCode"    xml:space="preserve"><value>Inline Code</value></data>
+
+  <!-- Context menu – source editor (MarkdownEditorHost) -->
+  <data name="MdCtx_GroupFormat"    xml:space="preserve"><value>FORMAT</value></data>
+  <data name="MdCtx_GroupInsert"    xml:space="preserve"><value>INSERT</value></data>
+  <data name="MdCtx_GroupExport"    xml:space="preserve"><value>EXPORT</value></data>
+  <data name="MdCtx_GroupView"      xml:space="preserve"><value>VIEW</value></data>
+  <data name="MdCtx_Bold"           xml:space="preserve"><value>Bold</value></data>
+  <data name="MdCtx_Italic"         xml:space="preserve"><value>Italic</value></data>
+  <data name="MdCtx_Strikethrough"  xml:space="preserve"><value>Strikethrough</value></data>
+  <data name="MdCtx_InlineCode"     xml:space="preserve"><value>Inline Code</value></data>
+  <data name="MdCtx_Table"          xml:space="preserve"><value>Table</value></data>
+  <data name="MdCtx_CodeBlock"      xml:space="preserve"><value>Code Block</value></data>
+  <data name="MdCtx_Link"           xml:space="preserve"><value>Link</value></data>
+  <data name="MdCtx_Image"          xml:space="preserve"><value>Image</value></data>
+  <data name="MdCtx_HorizontalRule" xml:space="preserve"><value>Horizontal Rule</value></data>
+  <data name="MdCtx_WordWrap"       xml:space="preserve"><value>Word Wrap&#9;Alt+Z</value></data>
+  <data name="MdCtx_ExportHtml"     xml:space="preserve"><value>Export as HTML...</value></data>
+  <data name="MdCtx_ExportPdf"      xml:space="preserve"><value>Export as PDF...</value></data>
+
+  <!-- Context menu – preview pane (MarkdownPreviewPane) -->
+  <data name="MdPrev_SourceOnly"     xml:space="preserve"><value>Source Only</value></data>
+  <data name="MdPrev_SplitView"      xml:space="preserve"><value>Split View</value></data>
+  <data name="MdPrev_PreviewOnly"    xml:space="preserve"><value>Preview Only</value></data>
+  <data name="MdPrev_Fullscreen"     xml:space="preserve"><value>Fullscreen</value></data>
+  <data name="MdPrev_ExitFullscreen" xml:space="preserve"><value>Exit Fullscreen</value></data>
+  <data name="MdPrev_RefreshPreview" xml:space="preserve"><value>Refresh Preview</value></data>
+  <data name="MdPrev_CycleLayout"    xml:space="preserve"><value>Cycle Layout</value></data>
+  <data name="MdPrev_ZoomIn"         xml:space="preserve"><value>Zoom In</value></data>
+  <data name="MdPrev_ZoomOut"        xml:space="preserve"><value>Zoom Out</value></data>
+  <data name="MdPrev_ResetZoom"      xml:space="preserve"><value>Reset Zoom</value></data>
+  <data name="MdPrev_Copy"           xml:space="preserve"><value>Copy</value></data>
+
+  <!-- Export dialog titles -->
+  <data name="MdDlg_ExportHtmlTitle" xml:space="preserve"><value>Export as HTML</value></data>
+  <data name="MdDlg_ExportPdfTitle"  xml:space="preserve"><value>Export as PDF</value></data>
+
+  <!-- Outline panel -->
+  <data name="Md_NoHeadingsFound" xml:space="preserve"><value>No headings found.</value></data>
+
+  <data name="Md_OutlineTitle" xml:space="preserve"><value>Markdown Outline</value></data>
+
+  <!-- Preview pane -->
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Initializing preview…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>WebView2 Runtime Not Found</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg"   xml:space="preserve"><value>The Markdown preview requires Microsoft Edge WebView2 Runtime. Download it from microsoft.com/edge/webview2.</value></data>
+
+  <!-- Outline panel -->
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Refresh outline (F5)</value></data>
+  <data name="MdOut_NoActiveFile"   xml:space="preserve"><value>No Markdown file active.</value></data>
+</root>

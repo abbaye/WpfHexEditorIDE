@@ -3,7 +3,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.Panels"
-    MinHeight="80">
+    MinHeight="80"
+             xmlns:xdSvc="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.Services">
 
     <!-- ==========================================================
          Project: WpfHexEditor.Plugins.XamlDesigner
@@ -20,6 +21,11 @@
          ========================================================== -->
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <xdSvc:XamlDesignerLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
 
         <Style x:Key="DdToolButtonStyle" TargetType="Button">
             <Setter Property="Height"          Value="22"/>
@@ -54,7 +60,8 @@
             <Setter Property="TextWrapping"             Value="NoWrap"/>
         </Style>
 
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -76,8 +83,7 @@
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Opacity="0.6"
-                           Margin="8,0,4,0"
-                           Text="(no design data)"
+                           Margin="8,0,4,0" Text="{DynamicResource XamlDesigner_NoDesignData}"
                            TextTrimming="CharacterEllipsis"
                            MaxWidth="140"/>
 
@@ -86,23 +92,20 @@
                     <!-- Refresh -->
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             Width="22"
-                            Content="&#xE72C;"
-                            ToolTip="Refresh design data"
+                            Content="&#xE72C;" ToolTip="{DynamicResource XamlDesigner_RefreshDesignData}"
                             Click="OnRefreshClick"/>
 
                     <!-- Generate Mock Data -->
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             Width="22"
-                            Content="&#xE8D5;"
-                            ToolTip="Generate mock data"
+                            Content="&#xE8D5;" ToolTip="{DynamicResource XamlDesigner_GenerateMockData}"
                             Click="OnGenerateMockDataClick"/>
 
                     <!-- Pick Type -->
                     <Button x:Name="BtnPickType"
                             Style="{StaticResource DdToolButtonStyle}"
                             Width="22"
-                            Content="&#xE8A0;"
-                            ToolTip="Pick design data type…"
+                            Content="&#xE8A0;" ToolTip="{DynamicResource XamlDesigner_PickDesignDataType}"
                             Click="OnPickTypeClick"/>
                     <Popup x:Name="TypePickerPopup"
                            StaysOpen="False"
@@ -117,8 +120,7 @@
                                 <TextBox x:Name="TypeSearchBox"
                                          DockPanel.Dock="Top"
                                          Margin="4"
-                                         TextChanged="OnTypeSearchChanged"
-                                         Tag="Search types…"/>
+                                         TextChanged="OnTypeSearchChanged" ToolTip="{DynamicResource XamlDesigner_SearchTypes}"/>
                                 <ListBox x:Name="TypePickerList"
                                          MaxHeight="200"
                                          MouseDoubleClick="OnTypePickerDoubleClick"
@@ -140,24 +142,21 @@
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             x:Name="BtnCopyJson"
                             Width="22"
-                            Content="&#xE8C8;"
-                            ToolTip="Copy instance JSON to clipboard"
+                            Content="&#xE8C8;" ToolTip="{DynamicResource XamlDesigner_CopyInstanceJson}"
                             Click="OnCopyJsonClick"/>
 
                     <!-- Clear Data -->
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             x:Name="BtnClearData"
                             Width="22"
-                            Content="&#xE74D;"
-                            ToolTip="Clear current design instance"
+                            Content="&#xE74D;" ToolTip="{DynamicResource XamlDesigner_ClearDesignInstance}"
                             Click="OnClearDataClick"/>
 
                     <!-- Paste JSON -->
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             x:Name="BtnPasteJson"
                             Width="22"
-                            Content="&#xE77F;"
-                            ToolTip="Paste JSON from clipboard"
+                            Content="&#xE77F;" ToolTip="{DynamicResource XamlDesigner_PasteJson}"
                             Click="OnPasteJsonClick"/>
 
                 </StackPanel>
@@ -183,11 +182,10 @@
             </TabControl.ItemContainerStyle>
 
             <!-- ── Tab: Properties ───────────────────────────────── -->
-            <TabItem Header="Properties">
+            <TabItem Header="{DynamicResource XamlDesigner_PropertiesTab}">
                 <Grid>
                     <!-- Placeholder -->
-                    <TextBlock x:Name="PropertiesPlaceholder"
-                               Text="No d:DesignInstance detected in current XAML."
+                    <TextBlock x:Name="PropertiesPlaceholder" Text="{DynamicResource XamlDesigner_NoDesignInstance}"
                                FontSize="11" FontStyle="Italic"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Opacity="0.5"
@@ -225,10 +223,9 @@
             </TabItem>
 
             <!-- ── Tab: JSON ─────────────────────────────────────── -->
-            <TabItem Header="JSON">
+            <TabItem Header="{DynamicResource XamlDesigner_JsonTab}">
                 <Grid>
-                    <TextBlock x:Name="JsonPlaceholder"
-                               Text="No data available."
+                    <TextBlock x:Name="JsonPlaceholder" Text="{DynamicResource XamlDesigner_NoDataAvailable}"
                                FontSize="11" FontStyle="Italic"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Opacity="0.5"
@@ -242,10 +239,9 @@
             </TabItem>
 
             <!-- ── Tab: XAML ─────────────────────────────────────── -->
-            <TabItem Header="XAML">
+            <TabItem Header="{DynamicResource XamlDesigner_XamlTab}">
                 <Grid>
-                    <TextBlock x:Name="XamlPlaceholder"
-                               Text="No d:DesignInstance detected."
+                    <TextBlock x:Name="XamlPlaceholder" Text="{DynamicResource XamlDesigner_NoDesignInstanceShort}"
                                FontSize="11" FontStyle="Italic"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Opacity="0.5"

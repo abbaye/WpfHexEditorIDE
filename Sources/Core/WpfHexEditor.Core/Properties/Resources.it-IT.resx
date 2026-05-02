@@ -837,42 +837,6 @@
     <comment>TBL Editor - Modified</comment>
   </data>
 
-<data name="ColorPicker_Tab_Custom" xml:space="preserve">
-    <value>Personalizzato</value>
-    <comment>ColorPicker - Tab Custom</comment>
-  </data>
-<data name="ColorPicker_Tab_Palette" xml:space="preserve">
-    <value>Tavolozza</value>
-    <comment>ColorPicker - Tab Palette</comment>
-  </data>
-<data name="ColorPicker_Preview_Original" xml:space="preserve">
-    <value>Originale</value>
-    <comment>ColorPicker - Preview Original</comment>
-  </data>
-<data name="ColorPicker_Preview_New" xml:space="preserve">
-    <value>Nuovo</value>
-    <comment>ColorPicker - Preview New</comment>
-  </data>
-<data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
-    <value>Selettore colore</value>
-    <comment>ColorPicker - Section ColorSelector</comment>
-  </data>
-<data name="ColorPicker_Section_RGBValues" xml:space="preserve">
-    <value>Valori RGB</value>
-    <comment>ColorPicker - Section RGBValues</comment>
-  </data>
-<data name="ColorPicker_Section_HexColor" xml:space="preserve">
-    <value>Colore esadecimale</value>
-    <comment>ColorPicker - Section HexColor</comment>
-  </data>
-<data name="ColorPicker_Section_StandardColors" xml:space="preserve">
-    <value>Colori standard</value>
-    <comment>ColorPicker - Section StandardColors</comment>
-  </data>
-<data name="ColorPicker_Section_RecentColors" xml:space="preserve">
-    <value>Colori recenti</value>
-    <comment>ColorPicker - Section RecentColors</comment>
-  </data>
 <data name="HexSettings_Title" xml:space="preserve">
     <value>IMPOSTAZIONI EDITOR HEX</value>
   </data>
@@ -1144,5 +1108,864 @@
   <data name="HexSettings_BarChart_ShowStatistics" xml:space="preserve">
     <value>Show Statistics</value>
     <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
+  </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Ricerca relativa...</value>
+  </data>
+  <data name="RelativeSearchString" xml:space="preserve">
+    <value>Ricerca relativa - Rilevamento codifica</value>
+  </data>
+  <data name="RelativeSearchKnownTextString" xml:space="preserve">
+    <value>Testo noto:</value>
+  </data>
+  <data name="RelativeSearchSearchButtonString" xml:space="preserve">
+    <value>Cerca</value>
+  </data>
+  <data name="RelativeSearchUseParallelString" xml:space="preserve">
+    <value>Usa ricerca parallela</value>
+  </data>
+  <data name="RelativeSearchMinMatchesString" xml:space="preserve">
+    <value>Corrispondenze min.:</value>
+  </data>
+  <data name="RelativeSearchMaxProposalsString" xml:space="preserve">
+    <value>Proposte max.:</value>
+  </data>
+  <data name="RelativeSearchTblLoadedString" xml:space="preserve">
+    <value>TBL caricato: {0} voci (verrà usato per la validazione)</value>
+  </data>
+  <data name="RelativeSearchNoTblString" xml:space="preserve">
+    <value>Nessun TBL caricato (proposte valutate indipendentemente)</value>
+  </data>
+  <data name="RelativeSearchProposalsHeaderString" xml:space="preserve">
+    <value>Proposte di codifica</value>
+  </data>
+  <data name="RelativeSearchOffsetColumnString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="RelativeSearchScoreColumnString" xml:space="preserve">
+    <value>Punteggio</value>
+  </data>
+  <data name="RelativeSearchMatchesColumnString" xml:space="preserve">
+    <value>Corrispondenze</value>
+  </data>
+  <data name="RelativeSearchSampleColumnString" xml:space="preserve">
+    <value>Testo di esempio</value>
+  </data>
+  <data name="RelativeSearchPreviewHeaderString" xml:space="preserve">
+    <value>Anteprima (testo decodificato)</value>
+  </data>
+  <data name="RelativeSearchMatchPositionsString" xml:space="preserve">
+    <value>Corrispondenze a:</value>
+  </data>
+  <data name="RelativeSearchExportTblString" xml:space="preserve">
+    <value>Esporta in TBL</value>
+  </data>
+  <data name="RelativeSearchNavigateString" xml:space="preserve">
+    <value>Vai alla corrispondenza</value>
+  </data>
+  <data name="RelativeSearchSearchingString" xml:space="preserve">
+    <value>Ricerca di 256 offset di codifica...</value>
+  </data>
+  <data name="RelativeSearchFoundProposalsString" xml:space="preserve">
+    <value>Trovate {0} proposte in {1} ms</value>
+  </data>
+  <data name="RelativeSearchFoundWithValidationString" xml:space="preserve">
+    <value>Trovate {0} proposte in {1} ms (corrispondenza principale validata dal TBL caricato!)</value>
+  </data>
+  <data name="RelativeSearchSearchingWithTblString" xml:space="preserve">
+    <value>Ricerca di 256 offset (validazione contro {0} voci TBL)...</value>
+  </data>
+  <data name="RelativeSearchCancelledString" xml:space="preserve">
+    <value>Ricerca annullata</value>
+  </data>
+  <data name="RelativeSearchNoProposalsString" xml:space="preserve">
+    <value>Nessuna proposta di codifica trovata. Prova un testo di ricerca diverso.</value>
+  </data>
+  <data name="RelativeSearchNoFileOpenString" xml:space="preserve">
+    <value>Nessun file aperto</value>
+  </data>
+  <data name="RelativeSearchKnownTextTooltipString" xml:space="preserve">
+    <value>Inserisci testo che sai apparire nella ROM (es. "World", "Start", "Hero")</value>
+  </data>
+  <data name="RelativeSearchExportTooltipString" xml:space="preserve">
+    <value>Salva la proposta di codifica selezionata come file TBL</value>
+  </data>
+  <data name="TblConflict_Title" xml:space="preserve">
+    <value>Rapporto analisi conflitti TBL</value>
+  </data>
+  <data name="TblConflict_TotalConflicts" xml:space="preserve">
+    <value>Conflitti totali:</value>
+  </data>
+  <data name="TblConflict_Errors" xml:space="preserve">
+    <value>Errori:</value>
+  </data>
+  <data name="TblConflict_Warnings" xml:space="preserve">
+    <value>Avvisi:</value>
+  </data>
+  <data name="TblConflict_Info" xml:space="preserve">
+    <value>Info:</value>
+  </data>
+  <data name="TblConflict_Description" xml:space="preserve">
+    <value>Descrizione:</value>
+  </data>
+  <data name="TblConflict_Suggestion" xml:space="preserve">
+    <value>Risoluzione suggerita:</value>
+  </data>
+  <data name="TblConflict_ConflictingEntries" xml:space="preserve">
+    <value>Voci in conflitto:</value>
+  </data>
+  <data name="TblTemplate_Title" xml:space="preserve">
+    <value>Modelli TBL</value>
+  </data>
+  <data name="TblTemplate_Categories" xml:space="preserve">
+    <value>Categorie</value>
+  </data>
+  <data name="TblTemplate_AvailableTemplates" xml:space="preserve">
+    <value>Modelli disponibili</value>
+  </data>
+  <data name="TblTemplate_Preview" xml:space="preserve">
+    <value>Anteprima</value>
+  </data>
+  <data name="TblTemplate_LoadTemplate" xml:space="preserve">
+    <value>Carica modello</value>
+  </data>
+  <data name="TblTemplate_MergeWithCurrent" xml:space="preserve">
+    <value>Unisci con corrente</value>
+  </data>
+  <data name="TblTemplate_BuiltIn" xml:space="preserve">
+    <value>Incorporato</value>
+  </data>
+  <data name="PatternAnalysis_Title" xml:space="preserve">
+    <value>Analisi dei pattern</value>
+  </data>
+  <data name="PatternAnalysis_Entropy" xml:space="preserve">
+    <value>Entropia</value>
+  </data>
+  <data name="PatternAnalysis_ByteDistribution" xml:space="preserve">
+    <value>Distribuzione byte</value>
+  </data>
+  <data name="PatternAnalysis_DetectedPatterns" xml:space="preserve">
+    <value>Pattern rilevati</value>
+  </data>
+  <data name="PatternAnalysis_NoPatternsDetected" xml:space="preserve">
+    <value>Nessun pattern rilevato</value>
+  </data>
+  <data name="PatternAnalysis_Anomalies" xml:space="preserve">
+    <value>Anomalie</value>
+  </data>
+  <data name="PatternAnalysis_NoAnomalies" xml:space="preserve">
+    <value>Nessuna anomalia rilevata</value>
+  </data>
+  <data name="PatternAnalysis_BitsPerByte" xml:space="preserve">
+    <value>bit/byte</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropy" xml:space="preserve">
+    <value>Entropia elevata rilevata</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropyDesc" xml:space="preserve">
+    <value>I dati sembrano essere compressi o crittografati</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropy" xml:space="preserve">
+    <value>Entropia molto bassa rilevata</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropyDesc" xml:space="preserve">
+    <value>I dati contengono molti byte ripetuti o simili</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDistribution" xml:space="preserve">
+    <value>Distribuzione byte distorta</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDesc" xml:space="preserve">
+    <value>Un valore byte appare più del 20% delle volte</value>
+  </data>
+  <data name="PatternAnalysis_NullBytes" xml:space="preserve">
+    <value>Byte NULL (0x00)</value>
+  </data>
+  <data name="PatternAnalysis_RepeatedSequence" xml:space="preserve">
+    <value>Sequenza ripetuta</value>
+  </data>
+  <data name="PatternAnalysis_AsciiText" xml:space="preserve">
+    <value>Testo ASCII rilevato</value>
+  </data>
+  <data name="FileStats_Title" xml:space="preserve">
+    <value>Statistiche file</value>
+  </data>
+  <data name="FileStats_OverallHealth" xml:space="preserve">
+    <value>Salute generale</value>
+  </data>
+  <data name="FileStats_HealthyStructure" xml:space="preserve">
+    <value>La struttura del file è valida e integra</value>
+  </data>
+  <data name="FileStats_Structure" xml:space="preserve">
+    <value>Struttura</value>
+  </data>
+  <data name="FileStats_Valid" xml:space="preserve">
+    <value>Valido</value>
+  </data>
+  <data name="FileStats_Invalid" xml:space="preserve">
+    <value>Non valido</value>
+  </data>
+  <data name="FileStats_Checksums" xml:space="preserve">
+    <value>Checksum</value>
+  </data>
+  <data name="FileStats_AllPass" xml:space="preserve">
+    <value>Tutte superate</value>
+  </data>
+  <data name="FileStats_SomeFailed" xml:space="preserve">
+    <value>Alcuni checksum non riusciti</value>
+  </data>
+  <data name="FileStats_Compression" xml:space="preserve">
+    <value>Compressione</value>
+  </data>
+  <data name="FileStats_Ratio" xml:space="preserve">
+    <value>Rapporto:</value>
+  </data>
+  <data name="FileStats_SubOptimalCompression" xml:space="preserve">
+    <value>Compressione non ottimale</value>
+  </data>
+  <data name="FileStats_EntropyAnalysis" xml:space="preserve">
+    <value>Analisi dell'entropia</value>
+  </data>
+  <data name="FileStats_Level" xml:space="preserve">
+    <value>Livello:</value>
+  </data>
+  <data name="FileStats_CompressedOrEncrypted" xml:space="preserve">
+    <value>Dati probabilmente compressi o crittografati</value>
+  </data>
+  <data name="FileStats_DetectedIssues" xml:space="preserve">
+    <value>Problemi rilevati</value>
+  </data>
+  <data name="FileStats_NoIssues" xml:space="preserve">
+    <value>Nessun problema rilevato</value>
+  </data>
+  <data name="FileStats_FileInformation" xml:space="preserve">
+    <value>Informazioni sul file</value>
+  </data>
+  <data name="FileStats_Size" xml:space="preserve">
+    <value>Dimensione:</value>
+  </data>
+  <data name="FileStats_Fields" xml:space="preserve">
+    <value>Campi:</value>
+  </data>
+  <data name="FileStats_Format" xml:space="preserve">
+    <value>Formato:</value>
+  </data>
+  <data name="FileStats_Unknown" xml:space="preserve">
+    <value>Sconosciuto</value>
+  </data>
+  <data name="ArchiveStructure_Title" xml:space="preserve">
+    <value>Struttura archivio</value>
+  </data>
+  <data name="ArchiveStructure_NoArchive" xml:space="preserve">
+    <value>Nessun archivio caricato</value>
+  </data>
+  <data name="ArchiveStructure_Extract" xml:space="preserve">
+    <value>Estrai...</value>
+  </data>
+  <data name="ArchiveStructure_ViewDetails" xml:space="preserve">
+    <value>Visualizza dettagli</value>
+  </data>
+  <data name="ArchiveStructure_ExpandAll" xml:space="preserve">
+    <value>Espandi tutto</value>
+  </data>
+  <data name="ArchiveStructure_CollapseAll" xml:space="preserve">
+    <value>Comprimi tutto</value>
+  </data>
+  <data name="ArchiveStructure_Files" xml:space="preserve">
+    <value>file</value>
+  </data>
+  <data name="ArchiveStructure_Folders" xml:space="preserve">
+    <value>cartelle</value>
+  </data>
+  <data name="ArchiveStructure_TotalSize" xml:space="preserve">
+    <value>Dimensione totale:</value>
+  </data>
+  <data name="ArchiveStructure_CompressionRatio" xml:space="preserve">
+    <value>Rapporto:</value>
+  </data>
+  <data name="ArchiveStructure_ExtractFunctionality" xml:space="preserve">
+    <value>Funzionalità di estrazione - da implementare con la libreria archivio</value>
+  </data>
+  <data name="ArchiveStructure_ExtractTitle" xml:space="preserve">
+    <value>Estrai</value>
+  </data>
+  <data name="ArchiveStructure_DetailsTitle" xml:space="preserve">
+    <value>Dettagli</value>
+  </data>
+  <data name="ArchiveStructure_DetailName" xml:space="preserve">
+    <value>Nome:</value>
+  </data>
+  <data name="ArchiveStructure_DetailType" xml:space="preserve">
+    <value>Tipo:</value>
+  </data>
+  <data name="ArchiveStructure_DetailFolder" xml:space="preserve">
+    <value>Cartella</value>
+  </data>
+  <data name="ArchiveStructure_DetailFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="ArchiveStructure_DetailCompressed" xml:space="preserve">
+    <value>Compresso:</value>
+  </data>
+  <data name="ArchiveStructure_DetailCRC" xml:space="preserve">
+    <value>CRC:</value>
+  </data>
+  <data name="ArchiveStructure_DetailMethod" xml:space="preserve">
+    <value>Metodo:</value>
+  </data>
+  <data name="FileComparison_Title" xml:space="preserve">
+    <value>Confronto file</value>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>Seleziona file da confrontare</value>
+  </data>
+  <data name="FileComparison_LoadFile1" xml:space="preserve">
+    <value>Carica file 1...</value>
+  </data>
+  <data name="FileComparison_LoadFile2" xml:space="preserve">
+    <value>Carica file 2...</value>
+  </data>
+  <data name="FileComparison_File1" xml:space="preserve">
+    <value>File 1</value>
+  </data>
+  <data name="FileComparison_File2" xml:space="preserve">
+    <value>File 2</value>
+  </data>
+  <data name="FileComparison_Matching" xml:space="preserve">
+    <value>Corrispondenti:</value>
+  </data>
+  <data name="FileComparison_Added" xml:space="preserve">
+    <value>Aggiunti:</value>
+  </data>
+  <data name="FileComparison_Modified" xml:space="preserve">
+    <value>Modificati:</value>
+  </data>
+  <data name="FileComparison_Removed" xml:space="preserve">
+    <value>Rimossi:</value>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>Seleziona file 1 da confrontare</value>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>Seleziona file 2 da confrontare</value>
+  </data>
+  <data name="FileComparison_AllFiles" xml:space="preserve">
+    <value>Tutti i file (*.*)|*.*</value>
+  </data>
+  <data name="FileComparison_ErrorLoading" xml:space="preserve">
+    <value>Errore nel caricamento del file: {0}</value>
+  </data>
+  <data name="FileComparison_Error" xml:space="preserve">
+    <value>Errore</value>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>Seleziona entrambi i file da confrontare</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>Confronto {0} ↔ {1}</value>
+  </data>
+  <data name="CustomTemplate_Title" xml:space="preserve">
+    <value>Modelli</value>
+  </data>
+  <data name="CustomTemplate_NewTemplate" xml:space="preserve">
+    <value>Nuovo modello</value>
+  </data>
+  <data name="CustomTemplate_DeleteTemplate" xml:space="preserve">
+    <value>Elimina modello</value>
+  </data>
+  <data name="CustomTemplate_EditorTitle" xml:space="preserve">
+    <value>Editor modelli</value>
+  </data>
+  <data name="CustomTemplate_Name" xml:space="preserve">
+    <value>Nome:</value>
+  </data>
+  <data name="CustomTemplate_Description" xml:space="preserve">
+    <value>Descrizione:</value>
+  </data>
+  <data name="CustomTemplate_Extensions" xml:space="preserve">
+    <value>Estensioni:</value>
+  </data>
+  <data name="CustomTemplate_ExtensionsTooltip" xml:space="preserve">
+    <value>Separati da virgola, es. .bin,.dat</value>
+  </data>
+  <data name="CustomTemplate_SaveTemplate" xml:space="preserve">
+    <value>Salva modello</value>
+  </data>
+  <data name="CustomTemplate_FormatBlocks" xml:space="preserve">
+    <value>Blocchi di formato</value>
+  </data>
+  <data name="CustomTemplate_AddBlock" xml:space="preserve">
+    <value>Aggiungi blocco</value>
+  </data>
+  <data name="CustomTemplate_RemoveBlock" xml:space="preserve">
+    <value>Rimuovi blocco</value>
+  </data>
+  <data name="CustomTemplate_ApplyToFile" xml:space="preserve">
+    <value>Applica al file corrente</value>
+  </data>
+  <data name="CustomTemplate_ApplyDescription" xml:space="preserve">
+    <value>Applica questo modello per analizzare il file attualmente caricato nell'editor esadecimale.</value>
+  </data>
+  <data name="CustomTemplate_ApplyButton" xml:space="preserve">
+    <value>Applica modello al file</value>
+  </data>
+  <data name="CustomTemplate_ExportImport" xml:space="preserve">
+    <value>Esporta/Importa</value>
+  </data>
+  <data name="CustomTemplate_ExportJSON" xml:space="preserve">
+    <value>Esporta in JSON</value>
+  </data>
+  <data name="CustomTemplate_ImportJSON" xml:space="preserve">
+    <value>Importa da JSON</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateSelected" xml:space="preserve">
+    <value>Nessun modello selezionato da salvare.</value>
+  </data>
+  <data name="CustomTemplate_SavedSuccessfully" xml:space="preserve">
+    <value>Modello '{0}' salvato con successo!</value>
+  </data>
+  <data name="CustomTemplate_ErrorSaving" xml:space="preserve">
+    <value>Errore nel salvataggio del modello: {0}</value>
+  </data>
+  <data name="CustomTemplate_SelectOrCreate" xml:space="preserve">
+    <value>Selezionare o creare prima un modello.</value>
+  </data>
+  <data name="CustomTemplate_AddBlockTitle" xml:space="preserve">
+    <value>Aggiungi blocco</value>
+  </data>
+  <data name="CustomTemplate_DeleteConfirm" xml:space="preserve">
+    <value>Eliminare il modello '{0}'?</value>
+  </data>
+  <data name="CustomTemplate_ConfirmDelete" xml:space="preserve">
+    <value>Conferma eliminazione</value>
+  </data>
+  <data name="CustomTemplate_ErrorDeleting" xml:space="preserve">
+    <value>Errore nell'eliminazione del file: {0}</value>
+  </data>
+  <data name="CustomTemplate_DeleteError" xml:space="preserve">
+    <value>Errore di eliminazione</value>
+  </data>
+  <data name="CustomTemplate_ApplyingTemplate" xml:space="preserve">
+    <value>Applicazione del modello '{0}' al file corrente.
+
+Verranno analizzati {1} blocchi secondo la definizione del modello.
+
+Nota: L'integrazione completa con HexEditor richiede la connessione al modello di visualizzazione principale.</value>
+  </data>
+  <data name="CustomTemplate_ApplyTitle" xml:space="preserve">
+    <value>Applica modello</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateToApply" xml:space="preserve">
+    <value>Nessun modello selezionato da applicare.</value>
+  </data>
+  <data name="CustomTemplate_ExportTitle" xml:space="preserve">
+    <value>Esporta modello come JSON</value>
+  </data>
+  <data name="CustomTemplate_JSONFiles" xml:space="preserve">
+    <value>File JSON (*.json)|*.json</value>
+  </data>
+  <data name="CustomTemplate_ExportedTo" xml:space="preserve">
+    <value>Modello esportato in:
+{0}</value>
+  </data>
+  <data name="CustomTemplate_ExportSuccess" xml:space="preserve">
+    <value>Esportazione riuscita</value>
+  </data>
+  <data name="CustomTemplate_ErrorExporting" xml:space="preserve">
+    <value>Errore nell'esportazione del modello: {0}</value>
+  </data>
+  <data name="CustomTemplate_ExportError" xml:space="preserve">
+    <value>Errore di esportazione</value>
+  </data>
+  <data name="CustomTemplate_ImportTitle" xml:space="preserve">
+    <value>Importa modello da JSON</value>
+  </data>
+  <data name="CustomTemplate_ImportedSuccessfully" xml:space="preserve">
+    <value>Modello '{0}' importato con successo!</value>
+  </data>
+  <data name="CustomTemplate_ImportSuccess" xml:space="preserve">
+    <value>Importazione riuscita</value>
+  </data>
+  <data name="CustomTemplate_ErrorImporting" xml:space="preserve">
+    <value>Errore nell'importazione del modello: {0}</value>
+  </data>
+  <data name="CustomTemplate_ImportError" xml:space="preserve">
+    <value>Errore di importazione</value>
+  </data>
+  <data name="CustomTemplate_ColumnName" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="CustomTemplate_ColumnOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="CustomTemplate_ColumnLength" xml:space="preserve">
+    <value>Lunghezza</value>
+  </data>
+  <data name="CustomTemplate_ColumnType" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="CustomTemplate_ColumnColor" xml:space="preserve">
+    <value>Colore</value>
+  </data>
+  <data name="CustomTemplate_ColumnDescription" xml:space="preserve">
+    <value>Descrizione</value>
+  </data>
+  <data name="ByteTooltip_NoData" xml:space="preserve">
+    <value>Nessun dato</value>
+  </data>
+  <data name="ByteTooltip_Signed" xml:space="preserve">
+    <value>Con segno</value>
+  </data>
+  <data name="ByteTooltip_Binary" xml:space="preserve">
+    <value>Binario</value>
+  </data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve">
+    <value>ASCII</value>
+  </data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve">
+    <value>(non stampabile)</value>
+  </data>
+  <data name="ByteTooltip_Octal" xml:space="preserve">
+    <value>Ottale</value>
+  </data>
+  <data name="StatusText_OperationCancelled" xml:space="preserve">
+    <value>Operazione annullata</value>
+  </data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve">
+    <value>Il file esiste già</value>
+  </data>
+  <data name="StatusText_Ready" xml:space="preserve">
+    <value>Pronto</value>
+  </data>
+  <data name="StatusText_FileSaved" xml:space="preserve">
+    <value>File salvato</value>
+  </data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve">
+    <value>Marcatori di ricerca cancellati.</value>
+  </data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve">
+    <value>Tutte le modifiche cancellate</value>
+  </data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve">
+    <value>TBL chiuso, uso ASCII</value>
+  </data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve">
+    <value>Nessuna selezione da invertire</value>
+  </data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve">
+    <value>La selezione è vuota</value>
+  </data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve">
+    <value>Nessuna selezione da invertire</value>
+  </data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve">
+    <value>Nessuna selezione da cercare</value>
+  </data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve">
+    <value>Nessuna corrispondenza trovata.</value>
+  </data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve">
+    <value>Dimensione: -</value>
+  </data>
+  <data name="StatusBar_NoSelection" xml:space="preserve">
+    <value>Nessuna selezione</value>
+  </data>
+  <data name="StatusBar_PositionZero" xml:space="preserve">
+    <value>Posizione: 0</value>
+  </data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve">
+    <value>Modalità: Sovrascrivi</value>
+  </data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve">
+    <value>Byte/Riga: 16</value>
+  </data>
+  <data name="Search_NoMatches" xml:space="preserve">
+    <value>Nessuna corrispondenza</value>
+  </data>
+  <data name="Search_Error_Title" xml:space="preserve">
+    <value>Errore di ricerca</value>
+  </data>
+  <data name="Search_Error_Label" xml:space="preserve">
+    <value>Errore</value>
+  </data>
+  <data name="Search_Error_NoTBLLoaded" xml:space="preserve">
+    <value>Nessun TBL caricato. Impossibile cercare testo TBL.</value>
+  </data>
+  <data name="Search_Error_TBLRequired" xml:space="preserve">
+    <value>TBL richiesto</value>
+  </data>
+  <data name="Search_Error_NoTBLForReplacement" xml:space="preserve">
+    <value>Nessun TBL caricato. Impossibile codificare byte di sostituzione in modalità TESTO TBL.</value>
+  </data>
+  <data name="Search_Replace_Title" xml:space="preserve">
+    <value>Errore di sostituzione</value>
+  </data>
+  <data name="Search_ReplaceAll_Title" xml:space="preserve">
+    <value>Sostituisci tutto</value>
+  </data>
+  <data name="Search_ExportDialog_Filter" xml:space="preserve">
+    <value>File CSV (*.csv)|*.csv|File di testo (*.txt)|*.txt|File JSON (*.json)|*.json</value>
+  </data>
+  <data name="Search_ExportTBL_Title" xml:space="preserve">
+    <value>Esporta file TBL</value>
+  </data>
+  <data name="Search_TBLFileDialog_Filter" xml:space="preserve">
+    <value>File TBL (*.tbl)|*.tbl|Tutti i file (*.*)|*.*</value>
+  </data>
+  <data name="Search_ExportTBL_Success" xml:space="preserve">
+    <value>Esportazione riuscita</value>
+  </data>
+  <data name="Search_ExportTBL_Error" xml:space="preserve">
+    <value>Errore di esportazione</value>
+  </data>
+  <data name="Search_EncodingApplied_Title" xml:space="preserve">
+    <value>Codifica applicata</value>
+  </data>
+  <data name="Search_EncodingApplied_Message" xml:space="preserve">
+    <value>Codifica applicata! Ora puoi usare la modalità TESTO TBL.</value>
+  </data>
+  <data name="Search_LoadTBL_Title" xml:space="preserve">
+    <value>Seleziona un file TBL (tabella caratteri)</value>
+  </data>
+  <data name="Search_TBLLoaded_Title" xml:space="preserve">
+    <value>TBL caricato</value>
+  </data>
+  <data name="Search_ErrorLoadingTBL_Title" xml:space="preserve">
+    <value>Errore nel caricamento del TBL</value>
+  </data>
+  <data name="Search_CloseTBL_Title" xml:space="preserve">
+    <value>Chiudi TBL</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen" xml:space="preserve">
+    <value>Aprire prima un file ROM prima di applicare una patch.</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen_Title" xml:space="preserve">
+    <value>Nessun file aperto</value>
+  </data>
+  <data name="IPS_ApplyPatch_Title" xml:space="preserve">
+    <value>Seleziona file patch IPS</value>
+  </data>
+  <data name="IPS_FileDialog_Filter" xml:space="preserve">
+    <value>File patch IPS (*.ips)|*.ips|Tutti i file (*.*)|*.*</value>
+  </data>
+  <data name="IPS_Error_InvalidFile" xml:space="preserve">
+    <value>Il file selezionato non è una patch IPS valida.</value>
+  </data>
+  <data name="IPS_Error_InvalidFile_Title" xml:space="preserve">
+    <value>File IPS non valido</value>
+  </data>
+  <data name="IPS_ApplyPatch_Confirm_Title" xml:space="preserve">
+    <value>Applica patch IPS</value>
+  </data>
+  <data name="IPS_ApplyPatch_SaveReminder" xml:space="preserve">
+    <value>Non dimenticare di salvare il file!</value>
+  </data>
+  <data name="IPS_ApplyPatch_Success_Title" xml:space="preserve">
+    <value>Patch applicata</value>
+  </data>
+  <data name="IPS_ApplyPatch_Error_Title" xml:space="preserve">
+    <value>Patch non riuscita</value>
+  </data>
+  <data name="IPS_CreatePatch_NoFileOpen" xml:space="preserve">
+    <value>Aprire prima un file ROM modificato.</value>
+  </data>
+  <data name="IPS_CreatePatch_SelectOriginal_Title" xml:space="preserve">
+    <value>Seleziona il file ROM originale (non modificato)</value>
+  </data>
+  <data name="IPS_ROMFileDialog_Filter" xml:space="preserve">
+    <value>File ROM|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|Tutti i file (*.*)|*.*</value>
+  </data>
+  <data name="IPS_CreatePatch_SaveDialog_Title" xml:space="preserve">
+    <value>Salva patch IPS come</value>
+  </data>
+  <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
+    <value>Patch creata</value>
+  </data>
+  <data name="UndoHistory_Undo" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="UndoHistory_Redo" xml:space="preserve">
+    <value>Ripeti</value>
+  </data>
+  <data name="UndoHistory_Action" xml:space="preserve">
+    <value>azione</value>
+  </data>
+  <data name="UndoHistory_Actions" xml:space="preserve">
+    <value>azioni</value>
+  </data>
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>Impostazioni editor esadecimale</value>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>Salva stato</value>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>Carica stato</value>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>Ripristina valori predefiniti</value>
+  </data>
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>Nessuna operazione da annullare</value>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>Nessuna operazione da ripetere</value>
+  </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>Ricerca circolare</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Codifica:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Esadecimale</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Decimale</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>Vai alla posizione</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>Posizione</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 o decimale</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Carattere jolly (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Tronca sostituzione alla lunghezza della ricerca</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Trova successivo</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Trova precedente</value></data>
+  <data name="HE_SearchDialogTitle" xml:space="preserve">
+    <value>Find / Replace</value>
+  </data>
+  <data name="HE_SearchModeTooltip" xml:space="preserve">
+    <value>Search mode</value>
+  </data>
+  <data name="HE_CaseSensitiveTooltip" xml:space="preserve">
+    <value>Match case (Alt+C)</value>
+  </data>
+  <data name="HE_WildcardTooltip" xml:space="preserve">
+    <value>Use wildcards ?? (Alt+E)</value>
+  </data>
+  <data name="HE_LoopSearch" xml:space="preserve">
+    <value>Loop</value>
+  </data>
+  <data name="HE_FindLabel" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="HE_ReplaceLabel" xml:space="preserve">
+    <value>Replace:</value>
+  </data>
+  <data name="HE_EncodingLabel" xml:space="preserve">
+    <value>Encoding:</value>
+  </data>
+  <data name="HE_MaxLabel" xml:space="preserve">
+    <value>Max:</value>
+  </data>
+  <data name="HE_StopButton" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="HE_PrevButton" xml:space="preserve">
+    <value>Prev.</value>
+  </data>
+  <data name="HE_NextButton" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="HE_FindAllButton" xml:space="preserve">
+    <value>Find All</value>
+  </data>
+  <data name="HE_ReplaceButton" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="HE_ReplaceAllButton" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="HE_ResultsLabel" xml:space="preserve">
+    <value>Results (</value>
+  </data>
+  <data name="HE_ExportButton" xml:space="preserve">
+    <value>Export ▾</value>
+  </data>
+  <data name="HE_OffsetHexColumn" xml:space="preserve">
+    <value>Offset (Hex)</value>
+  </data>
+  <data name="HE_OffsetDecColumn" xml:space="preserve">
+    <value>Offset (Dec)</value>
+  </data>
+  <data name="HE_PreviewColumn" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="HE_LengthColumn" xml:space="preserve">
+    <value>Len.</value>
+  </data>
+  <data name="HE_OccColumn" xml:space="preserve">
+    <value>Occ.</value>
+  </data>
+  <data name="HE_PrintPctColumn" xml:space="preserve">
+    <value>% Print.</value>
+  </data>
+  <data name="HE_ActionsColumn" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="HE_ExportTblButton" xml:space="preserve">
+    <value>Export TBL</value>
+  </data>
+  <data name="HE_ApplyButton" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="HE_SizeLabel" xml:space="preserve">
+    <value>Size: </value>
+  </data>
+  <data name="HE_BytesLabel" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="HE_LoadTblButton" xml:space="preserve">
+    <value>Load TBL...</value>
+  </data>
+  <data name="HE_LoadTblTooltip" xml:space="preserve">
+    <value>Load a TBL file (ROM character table)</value>
+  </data>
+  <data name="HE_TblLabel" xml:space="preserve">
+    <value>TBL: </value>
+  </data>
+  <data name="HE_CloseTblTooltip" xml:space="preserve">
+    <value>Close TBL file</value>
+  </data>
+  <data name="HE_ShowReplaceTooltip" xml:space="preserve">
+    <value>Show / hide replace (Ctrl+H)</value>
+  </data>
+  <data name="HE_SearchPlaceholder" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="HE_PrevResultTooltip" xml:space="preserve">
+    <value>Previous result (Shift+Enter)</value>
+  </data>
+  <data name="HE_NextResultTooltip" xml:space="preserve">
+    <value>Next result (Enter)</value>
+  </data>
+  <data name="HE_AdvancedSearchTooltip" xml:space="preserve">
+    <value>Advanced search (Ctrl+Shift+F)</value>
+  </data>
+  <data name="HE_CloseSearchTooltip" xml:space="preserve">
+    <value>Close (Esc)</value>
+  </data>
+  <data name="HE_ReplacePlaceholder" xml:space="preserve">
+    <value>Replace...</value>
+  </data>
+  <data name="HE_ReplaceOneTooltip" xml:space="preserve">
+    <value>Replace (Alt+R)</value>
+  </data>
+  <data name="HE_ReplaceAllTooltip" xml:space="preserve">
+    <value>Replace All (Alt+A)</value>
+  </data>
+  <data name="HE_HexModeTooltip" xml:space="preserve">
+    <value>Hexadecimal mode (Alt+H)</value>
+  </data>
+  <data name="HE_MoveBarTooltip" xml:space="preserve">
+    <value>Move search bar</value>
+  </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>Confronta file con…</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>Confronta selezione come sinistra…</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>Nessun TBL caricato</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>TESTO</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>JOLLY</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TESTO TBL</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIVO</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Formato file rilevato</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Punteggio di affidabilità del rilevamento</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Affidabilità del rilevamento: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Formato</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Cambia formato rilevato</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Cerca tutte le occorrenze con sovrapposizione di avanzamento</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>Offset</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>Risultati</value>
   </data>
 </root>

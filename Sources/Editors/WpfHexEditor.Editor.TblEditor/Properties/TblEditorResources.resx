@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true" />
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+  <data name="TblEditor_AddEntry" xml:space="preserve">
+    <value>Add Entry</value>
+  </data>
+  <data name="TblEditor_DuplicateEntry" xml:space="preserve">
+    <value>Duplicate Entry</value>
+  </data>
+  <data name="TblEditor_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="TblEditor_Cut" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="TblEditor_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="TblEditor_Paste" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="TblEditor_Find" xml:space="preserve">
+    <value>Find…</value>
+  </data>
+  <data name="TblEditor_SelectAll" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="TblEditor_ForceValidation" xml:space="preserve">
+    <value>Force TBL Validation</value>
+  </data>
+  <data name="TblEditor_ShowConflictsOnly" xml:space="preserve">
+    <value>Show Conflicts Only</value>
+  </data>
+  <data name="TblEditor_GoToNextConflict" xml:space="preserve">
+    <value>Go to Next Conflict</value>
+  </data>
+  <data name="TblEditor_Undo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="TblEditor_Redo" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="TblEditor_ColHex" xml:space="preserve">
+    <value>Hex Entry</value>
+  </data>
+  <data name="TblEditor_ColCharacter" xml:space="preserve">
+    <value>Character</value>
+  </data>
+  <data name="TblEditor_ColType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="TblEditor_ColBytes" xml:space="preserve">
+    <value>Bytes</value>
+  </data>
+  <data name="TblEditor_ColComment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="TblEditor_PrefixConflict" xml:space="preserve">
+    <value>Prefix conflict detected</value>
+  </data>
+</root>

@@ -209,6 +209,19 @@ public sealed class GlyphRunRenderer
 
     #region Private helpers
 
+    /// <summary>
+    /// Rounds <paramref name="value"/> to the nearest physical pixel boundary.
+    /// Prevents sub-pixel glyph positioning that causes blurry ClearType rendering.
+    /// </summary>
+    private double SnapToPixel(double value)
+        => Math.Round(value * _pixelsPerDip) / _pixelsPerDip;
+
+    /// <summary>
+    /// Public entry point for callers outside this class (e.g. CodeEditor.Rendering)
+    /// that need to snap a pre-computed X position to the nearest physical pixel.
+    /// </summary>
+    internal double SnapToPixelPublic(double value) => SnapToPixel(value);
+
     /// <summary>Builds and draws a GlyphRun for the given text string.</summary>
     private void RenderWithGlyphRun(DrawingContext dc, string text,
                                     double x, double baselineY,
@@ -225,7 +238,7 @@ public sealed class GlyphRunRenderer
                 // Tab has no glyph in most monospace fonts — use space glyph with TabSize advance.
                 charMap.TryGetValue(' ', out ushort spaceGi);
                 glyphIndices.Add(spaceGi);
-                advanceWidths.Add(gt.AdvanceWidths[spaceGi] * _fontSize * TabSize);
+                advanceWidths.Add(SnapToPixel(gt.AdvanceWidths[spaceGi] * _fontSize * TabSize));
                 continue;
             }
 
@@ -236,10 +249,10 @@ public sealed class GlyphRunRenderer
             }
 
             glyphIndices.Add(gi);
-            advanceWidths.Add(gt.AdvanceWidths[gi] * _fontSize);
+            advanceWidths.Add(SnapToPixel(gt.AdvanceWidths[gi] * _fontSize));
         }
 
-        var origin   = new Point(x, baselineY);
+        var origin   = new Point(SnapToPixel(x), SnapToPixel(baselineY));
         var glyphRun = new GlyphRun(
             gt,
             bidiLevel:     0,

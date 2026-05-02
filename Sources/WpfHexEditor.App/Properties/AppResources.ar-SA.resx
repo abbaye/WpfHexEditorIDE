@@ -1,0 +1,896 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="App_MinimizeToolTip" xml:space="preserve"><value>تصغير</value></data>
+  <data name="App_MaximizeToolTip" xml:space="preserve"><value>تكبير</value></data>
+  <data name="App_CloseToolTip" xml:space="preserve"><value>إغلاق</value></data>
+  <data name="App_NotificationsToolTip" xml:space="preserve"><value>الإشعارات</value></data>
+  <data name="App_CustomizeLayoutToolTip" xml:space="preserve"><value>تخصيص التخطيط (Ctrl+Shift+L)</value></data>
+  <data name="App_CommandPaletteToolTip" xml:space="preserve"><value>لوحة الأوامر (Ctrl+Shift+P)</value></data>
+  <data name="App_WelcomePageToolTip" xml:space="preserve"><value>صفحة الترحيب</value></data>
+
+  <data name="App_Menu_File" xml:space="preserve"><value>ملف</value></data>
+  <data name="App_Menu_New" xml:space="preserve"><value>جديد</value></data>
+  <data name="App_Menu_NewSolution" xml:space="preserve"><value>حل...</value></data>
+  <data name="App_Menu_NewProject" xml:space="preserve"><value>مشروع...</value></data>
+  <data name="App_Menu_NewFile" xml:space="preserve"><value>ملف...</value></data>
+  <data name="App_Menu_Open" xml:space="preserve"><value>فتح</value></data>
+  <data name="App_Menu_OpenSolutionProject" xml:space="preserve"><value>حل/مشروع...</value></data>
+  <data name="App_Menu_OpenFolder" xml:space="preserve"><value>مجلد...</value></data>
+  <data name="App_Menu_OpenFile" xml:space="preserve"><value>ملف...</value></data>
+  <data name="App_Menu_Close" xml:space="preserve"><value>إغلاق</value></data>
+  <data name="App_Menu_CloseAllDocuments" xml:space="preserve"><value>إغلاق كافة المستندات</value></data>
+  <data name="App_Menu_CloseSolution" xml:space="preserve"><value>إغلاق الحل</value></data>
+  <data name="App_Menu_Save" xml:space="preserve"><value>حفظ</value></data>
+  <data name="App_Menu_SaveAll" xml:space="preserve"><value>حفظ الكل</value></data>
+  <data name="App_Menu_WriteToDisk" xml:space="preserve"><value>كتابة على القرص</value></data>
+  <data name="App_Menu_Workspace" xml:space="preserve"><value>مساحة العمل</value></data>
+  <data name="App_Menu_NewWorkspace" xml:space="preserve"><value>مساحة عمل جديدة…</value></data>
+  <data name="App_Menu_OpenWorkspace" xml:space="preserve"><value>فتح مساحة عمل…</value></data>
+  <data name="App_Menu_SaveWorkspace" xml:space="preserve"><value>حفظ مساحة العمل</value></data>
+  <data name="App_Menu_SaveWorkspaceAs" xml:space="preserve"><value>حفظ مساحة العمل باسم…</value></data>
+  <data name="App_Menu_CloseWorkspace" xml:space="preserve"><value>إغلاق مساحة العمل</value></data>
+  <data name="App_Menu_RecentSolutions" xml:space="preserve"><value>الحلول الأخيرة</value></data>
+  <data name="App_Menu_RecentFiles" xml:space="preserve"><value>الملفات الأخيرة</value></data>
+  <data name="App_Menu_Exit" xml:space="preserve"><value>خروج</value></data>
+
+  <data name="App_Menu_Edit" xml:space="preserve"><value>تحرير</value></data>
+  <data name="App_Menu_Cut" xml:space="preserve"><value>قص</value></data>
+  <data name="App_Menu_Copy" xml:space="preserve"><value>نسخ</value></data>
+  <data name="App_Menu_Paste" xml:space="preserve"><value>لصق</value></data>
+  <data name="App_Menu_Delete" xml:space="preserve"><value>حذف</value></data>
+  <data name="App_Menu_SelectAll" xml:space="preserve"><value>تحديد الكل</value></data>
+  <data name="App_Menu_Find" xml:space="preserve"><value>بحث...</value></data>
+  <data name="App_Menu_AdvancedFindReplace" xml:space="preserve"><value>بحث/استبدال متقدم...</value></data>
+  <data name="App_Menu_FindNext" xml:space="preserve"><value>البحث عن التالي</value></data>
+  <data name="App_Menu_FindPrevious" xml:space="preserve"><value>البحث عن السابق</value></data>
+  <data name="App_Menu_GoToOffset" xml:space="preserve"><value>انتقال إلى الإزاحة…</value></data>
+  <data name="App_Menu_FormatDocument" xml:space="preserve"><value>تنسيق المستند</value></data>
+  <data name="App_Menu_FormatSelection" xml:space="preserve"><value>تنسيق التحديد</value></data>
+
+  <data name="App_Menu_View" xml:space="preserve"><value>عرض</value></data>
+  <data name="App_Menu_Project" xml:space="preserve"><value>مشروع</value></data>
+  <data name="App_Menu_AddNewItem" xml:space="preserve"><value>إضافة عنصر جديد...</value></data>
+  <data name="App_Menu_AddExistingItem" xml:space="preserve"><value>إضافة عنصر موجود...</value></data>
+  <data name="App_Menu_AddNewProject" xml:space="preserve"><value>إضافة مشروع جديد...</value></data>
+  <data name="App_Menu_Properties" xml:space="preserve"><value>خصائص...</value></data>
+  <data name="App_Menu_Build" xml:space="preserve"><value>بناء</value></data>
+  <data name="App_Menu_BuildSolution" xml:space="preserve"><value>بناء الحل</value></data>
+  <data name="App_Menu_BuildProject" xml:space="preserve"><value>بناء المشروع</value></data>
+  <data name="App_Menu_RebuildSolution" xml:space="preserve"><value>إعادة بناء الحل</value></data>
+  <data name="App_Menu_RebuildProject" xml:space="preserve"><value>إعادة بناء المشروع</value></data>
+  <data name="App_Menu_CleanSolution" xml:space="preserve"><value>تنظيف الحل</value></data>
+  <data name="App_Menu_CleanProject" xml:space="preserve"><value>تنظيف المشروع</value></data>
+  <data name="App_Menu_CancelBuild" xml:space="preserve"><value>إلغاء البناء</value></data>
+  <data name="App_Menu_ConfigurationManager" xml:space="preserve"><value>مدير التكوين...</value></data>
+  <data name="App_Menu_Debug" xml:space="preserve"><value>تصحيح أخطاء</value></data>
+
+  <data name="App_Menu_Window" xml:space="preserve"><value>نافذة</value></data>
+  <data name="App_Menu_CloseDocument" xml:space="preserve"><value>إغلاق المستند</value></data>
+  <data name="App_Menu_CloseAllButThis" xml:space="preserve"><value>إغلاق الكل ما عدا هذا</value></data>
+  <data name="App_Menu_CloseAllDocuments2" xml:space="preserve"><value>إغلاق كافة المستندات</value></data>
+  <data name="App_Menu_NextDocument" xml:space="preserve"><value>المستند التالي</value></data>
+  <data name="App_Menu_PreviousDocument" xml:space="preserve"><value>المستند السابق</value></data>
+  <data name="App_Menu_FullScreen" xml:space="preserve"><value>ملء الشاشة</value></data>
+  <data name="App_Menu_TabGroups" xml:space="preserve"><value>مجموعات علامات التبويب</value></data>
+  <data name="App_Menu_NewVerticalTabGroup" xml:space="preserve"><value>مجموعة علامات تبويب رأسية جديدة</value></data>
+  <data name="App_Menu_NewHorizontalTabGroup" xml:space="preserve"><value>مجموعة علامات تبويب أفقية جديدة</value></data>
+  <data name="App_Menu_MoveToNextTabGroup" xml:space="preserve"><value>نقل إلى مجموعة علامات التبويب التالية</value></data>
+  <data name="App_Menu_MoveToPreviousTabGroup" xml:space="preserve"><value>نقل إلى مجموعة علامات التبويب السابقة</value></data>
+  <data name="App_Menu_CloseTabGroup" xml:space="preserve"><value>إغلاق مجموعة علامات التبويب</value></data>
+  <data name="App_Menu_CloseAllTabGroups" xml:space="preserve"><value>إغلاق كافة مجموعات علامات التبويب</value></data>
+  <data name="App_Menu_Layout" xml:space="preserve"><value>تخطيط</value></data>
+  <data name="App_Menu_SaveLayout" xml:space="preserve"><value>حفظ التخطيط</value></data>
+  <data name="App_Menu_LoadLayout" xml:space="preserve"><value>تحميل التخطيط</value></data>
+  <data name="App_Menu_ResetLayout" xml:space="preserve"><value>إعادة تعيين التخطيط</value></data>
+  <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>تبديل التخطيط المقفل</value></data>
+
+  <data name="App_Menu_Tools" xml:space="preserve"><value>أدوات</value></data>
+  <data name="App_Menu_Terminal" xml:space="preserve"><value>الطرفية</value></data>
+  <data name="App_Menu_Options" xml:space="preserve"><value>خيارات...</value></data>
+  <data name="App_Menu_Extensions" xml:space="preserve"><value>ملحقات</value></data>
+  <data name="App_Menu_ExtensionManager" xml:space="preserve"><value>مدير الملحقات</value></data>
+  <data name="App_Menu_ExtensionsMonitor" xml:space="preserve"><value>مراقب الملحقات</value></data>
+  <data name="App_Menu_ExtensionMarketplace" xml:space="preserve"><value>Marketplace الملحقات</value></data>
+  <data name="App_Menu_InstallFromFile" xml:space="preserve"><value>التثبيت من ملف...</value></data>
+  <data name="App_Menu_RefreshAllExtensions" xml:space="preserve"><value>تحديث كافة الملحقات</value></data>
+  <data name="App_Menu_ExtensionDevWatch" xml:space="preserve"><value>Dev Watch للملحقات...</value></data>
+  <data name="App_Menu_ExtensionSystemSettings" xml:space="preserve"><value>إعدادات نظام الملحقات...</value></data>
+  <data name="App_Menu_Theme" xml:space="preserve"><value>سمة</value></data>
+  <data name="App_Menu_ThemeDark" xml:space="preserve"><value>داكن</value></data>
+  <data name="App_Menu_ThemeVS2022Dark" xml:space="preserve"><value>VS2022 داكن</value></data>
+  <data name="App_Menu_ThemeVisualStudio" xml:space="preserve"><value>Visual Studio</value></data>
+  <data name="App_Menu_ThemeDarkGlass" xml:space="preserve"><value>الزجاج الداكن</value></data>
+  <data name="App_Menu_ThemeCyberpunk" xml:space="preserve"><value>Cyberpunk</value></data>
+  <data name="App_Menu_ThemeSynthwave" xml:space="preserve"><value>Synthwave '84</value></data>
+  <data name="App_Menu_ThemeMatrix" xml:space="preserve"><value>Matrix / Terminal</value></data>
+  <data name="App_Menu_ThemeNord" xml:space="preserve"><value>Nord</value></data>
+  <data name="App_Menu_ThemeDracula" xml:space="preserve"><value>Dracula</value></data>
+  <data name="App_Menu_ThemeGruvbox" xml:space="preserve"><value>Gruvbox Dark</value></data>
+  <data name="App_Menu_ThemeCatppuccinMocha" xml:space="preserve"><value>Catppuccin Mocha</value></data>
+  <data name="App_Menu_ThemeTokyoNight" xml:space="preserve"><value>Tokyo Night</value></data>
+  <data name="App_Menu_ThemeLight" xml:space="preserve"><value>فاتح</value></data>
+  <data name="App_Menu_ThemeOffice" xml:space="preserve"><value>Office</value></data>
+  <data name="App_Menu_ThemeCatppuccinLatte" xml:space="preserve"><value>Catppuccin Latte</value></data>
+  <data name="App_Menu_ThemeMinimal" xml:space="preserve"><value>بسيط</value></data>
+  <data name="App_Menu_ThemeForest" xml:space="preserve"><value>غابة</value></data>
+  <data name="App_Menu_ThemeHighContrast" xml:space="preserve"><value>تباين عالٍ</value></data>
+
+  <data name="App_Menu_Image" xml:space="preserve"><value>صورة</value></data>
+  <data name="App_Menu_RotateRight" xml:space="preserve"><value>تدوير لليمين</value></data>
+  <data name="App_Menu_RotateLeft" xml:space="preserve"><value>تدوير لليسار</value></data>
+  <data name="App_Menu_FlipHorizontal" xml:space="preserve"><value>قلب أفقي</value></data>
+  <data name="App_Menu_FlipVertical" xml:space="preserve"><value>قلب رأسي</value></data>
+  <data name="App_Menu_CropMode" xml:space="preserve"><value>وضع القص</value></data>
+  <data name="App_Menu_Resize" xml:space="preserve"><value>تغيير الحجم...</value></data>
+  <data name="App_Menu_Export" xml:space="preserve"><value>تصدير...</value></data>
+  <data name="App_Menu_ResetImage" xml:space="preserve"><value>إعادة تعيين الصورة الأصلية</value></data>
+
+  <data name="App_OptionsEditJsonToolTip" xml:space="preserve"><value>تحرير إعدادات المستخدم كـ JSON</value></data>
+  <data name="App_OptionsAppliesToLabel" xml:space="preserve"><value>ينطبق على:</value></data>
+  <data name="App_OptionsUserInstallation" xml:space="preserve"><value>المستخدم (التثبيت)</value></data>
+  <data name="App_OptionsFilterLabel" xml:space="preserve"><value>تصفية:</value></data>
+  <data name="App_OptionsSearchPlaceholder" xml:space="preserve"><value>البحث في الإعدادات (Ctrl+F)…</value></data>
+  <data name="App_OptionsClearToolTip" xml:space="preserve"><value>مسح (Escape)</value></data>
+  <data name="App_OptionsNoResults" xml:space="preserve"><value>لم يتم العثور على إعدادات.</value></data>
+
+  <data name="App_PasteConflict_Title" xml:space="preserve"><value>الملف موجود بالفعل</value></data>
+  <data name="App_PasteConflict_Rename" xml:space="preserve"><value>إعادة التسمية</value></data>
+  <data name="App_PasteConflict_Skip" xml:space="preserve"><value>تخطي</value></data>
+  <data name="App_PasteConflict_CancelAll" xml:space="preserve"><value>إلغاء الكل</value></data>
+  <data name="App_PasteConflict_AlreadyExists1" xml:space="preserve"><value>ملف باسم</value></data>
+  <data name="App_PasteConflict_AlreadyExists2" xml:space="preserve"><value>موجود بالفعل في مجلد الوجهة.</value></data>
+  <data name="App_PasteConflict_Instructions" xml:space="preserve"><value>أدخل اسماً جديداً لإعادة تسمية الملف الملصق، أو اختر إجراءً أدناه.</value></data>
+  <data name="App_PasteConflict_NewNameLabel" xml:space="preserve"><value>الاسم الجديد:</value></data>
+
+  <data name="App_SaveChanges_Title" xml:space="preserve"><value>حفظ التغييرات</value></data>
+  <data name="App_SaveChanges_SelectAll" xml:space="preserve"><value>تحديد الكل</value></data>
+  <data name="App_SaveChanges_Save" xml:space="preserve"><value>حفظ</value></data>
+  <data name="App_SaveChanges_DontSave" xml:space="preserve"><value>عدم الحفظ</value></data>
+  <data name="App_SaveChanges_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+
+  <data name="App_GoToOffset_Title" xml:space="preserve"><value>انتقال إلى الإزاحة</value></data>
+  <data name="App_GoToOffset_EnterOffset" xml:space="preserve"><value>أدخل الإزاحة:</value></data>
+  <data name="App_GoToOffset_Hexadecimal" xml:space="preserve"><value>ست عشري (0x…)</value></data>
+  <data name="App_GoToOffset_Decimal" xml:space="preserve"><value>عشري</value></data>
+  <data name="App_GoToOffset_Go" xml:space="preserve"><value>انتقال</value></data>
+  <data name="App_GoToOffset_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+
+  <data name="App_ImportFormat_Title" xml:space="preserve"><value>استيراد تعريف تنسيق مضمّن</value></data>
+  <data name="App_ImportFormat_VersionLabel" xml:space="preserve"><value>الإصدار:</value></data>
+  <data name="App_ImportFormat_AuthorLabel" xml:space="preserve"><value>المؤلف:</value></data>
+  <data name="App_ImportFormat_ExtensionsLabel" xml:space="preserve"><value>الامتدادات</value></data>
+  <data name="App_ImportFormat_QualityLabel" xml:space="preserve"><value>الجودة</value></data>
+  <data name="App_ImportFormat_PreviewLabel" xml:space="preserve"><value>معاينة</value></data>
+  <data name="App_ImportFormat_DestinationFolder" xml:space="preserve"><value>مجلد الوجهة:</value></data>
+  <data name="App_ImportFormat_Import" xml:space="preserve"><value>استيراد</value></data>
+  <data name="App_ImportFormat_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+
+  <data name="App_ImportSyntax_Title" xml:space="preserve"><value>استيراد تعريف بنية جملة مضمّن</value></data>
+  <data name="App_ImportSyntax_ShowPreview" xml:space="preserve"><value>إظهار المعاينة</value></data>
+  <data name="App_ImportSyntax_ExtensionsLabel" xml:space="preserve"><value>الامتدادات</value></data>
+  <data name="App_ImportSyntax_DestinationFolder" xml:space="preserve"><value>مجلد الوجهة:</value></data>
+  <data name="App_ImportSyntax_Import" xml:space="preserve"><value>استيراد</value></data>
+  <data name="App_ImportSyntax_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+
+  <data name="App_PanelWelcome" xml:space="preserve"><value>مرحباً</value></data>
+  <data name="App_PanelSolutionExplorer" xml:space="preserve"><value>مستكشف الحلول</value></data>
+  <data name="App_PanelErrorList" xml:space="preserve"><value>قائمة الأخطاء</value></data>
+  <data name="App_PanelExtensionsMonitor" xml:space="preserve"><value>مراقب الملحقات</value></data>
+  <data name="App_PanelOutput" xml:space="preserve"><value>الإخراج</value></data>
+  <data name="App_ExportFormatDefinitionTitle" xml:space="preserve"><value>تصدير تعريف التنسيق</value></data>
+  <data name="App_FormatUpgradeRequired" xml:space="preserve"><value>مطلوب ترقية التنسيق</value></data>
+  <data name="App_FormatUpgrade" xml:space="preserve"><value>ترقية التنسيق</value></data>
+  <data name="App_ConvertTbl" xml:space="preserve"><value>تحويل TBL</value></data>
+  <data name="App_RemoveFromProject" xml:space="preserve"><value>إزالة من المشروع</value></data>
+  <data name="App_RemoveFromProjectMessage" xml:space="preserve"><value>إزالة '{0}' من المشروع؟\n(لن يتم حذف الملف الموجود على القرص.)</value></data>
+  <data name="App_DeleteFile" xml:space="preserve"><value>حذف الملف</value></data>
+  <data name="App_DeleteFileMessage" xml:space="preserve"><value>حذف '{0}' وإرساله إلى سلة المحذوفات؟</value></data>
+  <data name="App_RemoveFolder" xml:space="preserve"><value>إزالة المجلد</value></data>
+  <data name="App_RemoveSolutionFolder" xml:space="preserve"><value>إزالة مجلد الحل</value></data>
+  <data name="App_SelectImportFolder" xml:space="preserve"><value>تحديد المجلد المراد استيراده</value></data>
+  <data name="App_OpenSolutionProject" xml:space="preserve"><value>فتح حل أو مشروع</value></data>
+  <data name="App_OpenFolder" xml:space="preserve"><value>فتح مجلد</value></data>
+  <data name="App_FailedCreateSolution" xml:space="preserve"><value>فشل إنشاء الحل:\n{0}</value></data>
+  <data name="App_FailedOpenSolution" xml:space="preserve"><value>فشل فتح الحل:\n{0}</value></data>
+  <data name="App_RenameTitle" xml:space="preserve"><value>إعادة التسمية</value></data>
+  <data name="App_Toolbar_New" xml:space="preserve"><value>جديد…</value></data>
+  <data name="App_Toolbar_Open" xml:space="preserve"><value>فتح…</value></data>
+  <data name="App_Toolbar_Save" xml:space="preserve"><value>حفظ (Ctrl+S)</value></data>
+  <data name="App_Toolbar_SaveAll" xml:space="preserve"><value>حفظ الكل (Ctrl+Shift+S)</value></data>
+  <data name="App_Toolbar_Cut" xml:space="preserve"><value>قص (Ctrl+X)</value></data>
+  <data name="App_Toolbar_Copy" xml:space="preserve"><value>نسخ (Ctrl+C)</value></data>
+  <data name="App_Toolbar_Paste" xml:space="preserve"><value>لصق (Ctrl+V)</value></data>
+  <data name="App_Toolbar_Find" xml:space="preserve"><value>بحث… (Ctrl+F)</value></data>
+  <data name="App_Toolbar_FindNext" xml:space="preserve"><value>البحث التالي (F3)</value></data>
+  <data name="App_Toolbar_FindPrevious" xml:space="preserve"><value>البحث السابق (Shift+F3)</value></data>
+  <data name="App_Toolbar_SolutionExplorer" xml:space="preserve"><value>مستكشف الحل (Ctrl+Alt+L)</value></data>
+  <data name="App_Toolbar_ParsedFields" xml:space="preserve"><value>الحقول المحللة</value></data>
+  <data name="App_Toolbar_Properties" xml:space="preserve"><value>الخصائص (F4)</value></data>
+  <data name="App_Toolbar_Output" xml:space="preserve"><value>الإخراج</value></data>
+  <data name="App_Toolbar_CharacterTable" xml:space="preserve"><value>جدول الأحرف</value></data>
+  <data name="App_Toolbar_ActiveCharTable" xml:space="preserve"><value>جدول الأحرف النشط</value></data>
+  <data name="App_Toolbar_BuildConfig" xml:space="preserve"><value>تكوين البناء</value></data>
+  <data name="App_Toolbar_TargetPlatform" xml:space="preserve"><value>المنصة المستهدفة</value></data>
+  <data name="App_Toolbar_StartupProject" xml:space="preserve"><value>مشروع البدء — يشغل بواسطة Démarrer (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_StartNoDebug" xml:space="preserve"><value>البدء بدون تصحيح أخطاء (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_BuildSolution" xml:space="preserve"><value>بناء الحل (Ctrl+Shift+B)</value></data>
+  <data name="App_Toolbar_RebuildSolution" xml:space="preserve"><value>إعادة بناء الحل</value></data>
+  <data name="App_Toolbar_CleanSolution" xml:space="preserve"><value>تنظيف الحل</value></data>
+  <data name="App_Toolbar_CancelBuild" xml:space="preserve"><value>إلغاء البناء</value></data>
+  <data name="App_Toolbar_Continue" xml:space="preserve"><value>متابعة (F5)</value></data>
+  <data name="App_Toolbar_Pause" xml:space="preserve"><value>إيقاف مؤقت</value></data>
+  <data name="App_Toolbar_StopDebugging" xml:space="preserve"><value>إيقاف التصحيح (Shift+F5)</value></data>
+  <data name="App_Toolbar_StepOver" xml:space="preserve"><value>تخطي (F10)</value></data>
+  <data name="App_Toolbar_StepInto" xml:space="preserve"><value>الدخول إلى (F11)</value></data>
+  <data name="App_Toolbar_StepOut" xml:space="preserve"><value>الخروج من (Shift+F11)</value></data>
+  <data name="App_Toolbar_Dismiss" xml:space="preserve"><value>رفض</value></data>
+  <data name="App_Toolbar_CancelOperation" xml:space="preserve"><value>إلغاء العملية</value></data>
+  <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>انقر لتغيير الفرع</value></data>
+  <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>تغييرات غير ملتزمة</value></data>
+  <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>تحديثات الإضافات متاحة — انقر لفتح السوق</value></data>
+  <data name="App_AddExistingItem" xml:space="preserve">
+    <value>إضافة عنصر موجود</value>
+  </data>
+  <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve">
+    <value>المشروع غير موجود.</value>
+  </data>
+  <data name="App_Breadcrumb_SolutionNotLoaded" xml:space="preserve">
+    <value>الحل غير محمّل.</value>
+  </data>
+  <data name="App_CodeEditor_MinimapFill" xml:space="preserve">
+    <value>ملء</value>
+  </data>
+  <data name="App_CodeEditor_MinimapFit" xml:space="preserve">
+    <value>ملاءمة</value>
+  </data>
+  <data name="App_CodeEditor_MinimapLeft" xml:space="preserve">
+    <value>يسار</value>
+  </data>
+  <data name="App_CodeEditor_MinimapProportional" xml:space="preserve">
+    <value>متناسب</value>
+  </data>
+  <data name="App_CodeEditor_MinimapRight" xml:space="preserve">
+    <value>يمين</value>
+  </data>
+  <data name="App_CompareWithHead" xml:space="preserve">
+    <value>مقارنة مع HEAD</value>
+  </data>
+  <data name="App_CompareWithHeadNoRepo" xml:space="preserve">
+    <value>لم يتم العثور على مستودع git لهذا الملف.</value>
+  </data>
+  <data name="App_CompareWithHeadNoVersion" xml:space="preserve">
+    <value>تعذّر استخراج نسخة HEAD من git.</value>
+  </data>
+  <data name="App_Compare_SelectFile" xml:space="preserve">
+    <value>حدد ملفاً للمقارنة</value>
+  </data>
+  <data name="App_Comparison_ModeHexText" xml:space="preserve">
+    <value>HexText</value>
+  </data>
+  <data name="App_Comparison_ModeInline" xml:space="preserve">
+    <value>مدمج</value>
+  </data>
+  <data name="App_Comparison_ModeSideBySide" xml:space="preserve">
+    <value>جانباً إلى جانب</value>
+  </data>
+  <data name="App_ConfigPage_BuildAll" xml:space="preserve">
+    <value>بناء الكل</value>
+  </data>
+  <data name="App_ConfigPage_DeployAll" xml:space="preserve">
+    <value>نشر الكل</value>
+  </data>
+  <data name="App_ContextMenu_CompareWithActive" xml:space="preserve">
+    <value>مقارنة مع المحرر النشط</value>
+  </data>
+  <data name="App_ContextMenu_CompareWithAnother" xml:space="preserve">
+    <value>مقارنة مع ملف آخر…</value>
+  </data>
+  <data name="App_ContextMenu_None" xml:space="preserve">
+    <value>(لا شيء)</value>
+  </data>
+  <data name="App_Convert_AlreadyWhsln" xml:space="preserve">
+    <value>الحل الحالي هو بالفعل ملف .whsln.</value>
+  </data>
+  <data name="App_Convert_Confirm" xml:space="preserve">
+    <value>تحويل "{0}" إلى "{1}"؟{2}{2}سيتم الاحتفاظ بالملف الأصلي.</value>
+  </data>
+  <data name="App_Convert_Failed" xml:space="preserve">
+    <value>فشل التحويل:{0}{1}</value>
+  </data>
+  <data name="App_Convert_NoLoader" xml:space="preserve">
+    <value>لا يوجد محمِّل مسجّل لتنسيق {0}. تأكد من أن مكوِّن VS Solution Loader الإضافي نشط.</value>
+  </data>
+  <data name="App_Convert_NoLoaderSimple" xml:space="preserve">
+    <value>لا يوجد محمِّل مسجَّل لتنسيق {0}.</value>
+  </data>
+  <data name="App_Convert_NoSolution" xml:space="preserve">
+    <value>لا يوجد حل مفتوح حالياً.</value>
+  </data>
+  <data name="App_Convert_NotSln" xml:space="preserve">
+    <value>الحل الحالي ليس ملف .sln.</value>
+  </data>
+  <data name="App_Convert_NotSlnx" xml:space="preserve">
+    <value>الحل الحالي ليس ملف .slnx.</value>
+  </data>
+  <data name="App_Convert_Success" xml:space="preserve">
+    <value>تم التحويل إلى "{0}".{1}{1}هل تريد فتح الحل المحوّل الآن؟</value>
+  </data>
+  <data name="App_Convert_Title" xml:space="preserve">
+    <value>تحويل تنسيق الحل</value>
+  </data>
+  <data name="App_Debug_AttachNotAvailable" xml:space="preserve">
+    <value>خدمة المُنقِّح غير متاحة.</value>
+  </data>
+  <data name="App_Debug_AttachPidPrompt" xml:space="preserve">
+    <value>أدخل معرّف العملية (PID) للإرفاق بها:</value>
+  </data>
+  <data name="App_Debug_AttachTitle" xml:space="preserve">
+    <value>الإرفاق بعملية</value>
+  </data>
+  <data name="App_Debug_BuildFailed" xml:space="preserve">
+    <value>فشل البناء. أصلح الأخطاء قبل التنقيح.</value>
+  </data>
+  <data name="App_Debug_ExeNotFound" xml:space="preserve">
+    <value>تعذّر العثور على البرنامج للتنقيح:{0}{1}{0}{0}تم بناء المشروع لكن لم يُعثر على الملف التنفيذي.</value>
+  </data>
+  <data name="App_Debug_NoStartupProject" xml:space="preserve">
+    <value>لم يتم تعيين مشروع بدء تشغيل. يُرجى تعيين مشروع بدء تشغيل قبل التنقيح.</value>
+  </data>
+  <data name="App_Debug_StartTitle" xml:space="preserve">
+    <value>بدء التنقيح</value>
+  </data>
+  <data name="App_Debugger_AdapterMissing" xml:space="preserve">
+    <value>قم بتثبيت ملحق المحوّل المناسب أو قم بتكوين محوّل مخصص.</value>
+  </data>
+  <data name="App_Debugger_AdapterNotFound" xml:space="preserve">
+    <value>محوّل التنقيح (netcoredbg) غير موجود.{0}قم بتثبيته أو حدد المسار في الخيارات ← المُنقِّح.</value>
+  </data>
+  <data name="App_Debugger_Title" xml:space="preserve">
+    <value>المُنقِّح</value>
+  </data>
+  <data name="App_DockTitle_ExtensionManager" xml:space="preserve">
+    <value>مدير الإضافات</value>
+  </data>
+  <data name="App_DockTitle_ExtensionMarketplace" xml:space="preserve">
+    <value>سوق الإضافات</value>
+  </data>
+  <data name="App_DockTitle_ExtensionsMonitor" xml:space="preserve">
+    <value>مراقب الإضافات</value>
+  </data>
+  <data name="App_DockTitle_NuGet" xml:space="preserve">
+    <value>NuGet — {0}</value>
+  </data>
+  <data name="App_DockTitle_NuGetSolution" xml:space="preserve">
+    <value>NuGet — {0} (الحل)</value>
+  </data>
+  <data name="App_DockTitle_Properties" xml:space="preserve">
+    <value>{0} — خصائص</value>
+  </data>
+  <data name="App_DockTitle_ReadOnly" xml:space="preserve">
+    <value>WpfHexEditor — {0} [تنسيق للقراءة فقط v{1}]</value>
+  </data>
+  <data name="App_DockTitle_References" xml:space="preserve">
+    <value>المراجع — {0}</value>
+  </data>
+  <data name="App_DockTitle_SettingsJson" xml:space="preserve">
+    <value>settings.json</value>
+  </data>
+  <data name="App_DockTitle_Terminal" xml:space="preserve">
+    <value>محطة طرفية</value>
+  </data>
+  <data name="App_Docking_CornerNormal" xml:space="preserve">
+    <value>عادي (زوايا حادة)</value>
+  </data>
+  <data name="App_Docking_CornerRoundedContent" xml:space="preserve">
+    <value>مستدير — منطقة المحتوى فقط</value>
+  </data>
+  <data name="App_Docking_CornerRoundedFull" xml:space="preserve">
+    <value>مستدير — إطار اللوحة الكامل</value>
+  </data>
+  <data name="App_Docking_ShadowFullBorder" xml:space="preserve">
+    <value>حد كامل</value>
+  </data>
+  <data name="App_Docking_ShadowGlow" xml:space="preserve">
+    <value>توهج</value>
+  </data>
+  <data name="App_Docking_ShadowNone" xml:space="preserve">
+    <value>بلا</value>
+  </data>
+  <data name="App_Docking_ShadowTopBar" xml:space="preserve">
+    <value>الشريط العلوي</value>
+  </data>
+  <data name="App_Editor_Encodings" xml:space="preserve">
+    <value>الترميزات</value>
+  </data>
+  <data name="App_Editor_FileNotFound" xml:space="preserve">
+    <value>الملف غير موجود:{0}{1}</value>
+  </data>
+  <data name="App_Editor_HexEditor" xml:space="preserve">
+    <value>محرر سداسي</value>
+  </data>
+  <data name="App_Editor_NewDocumentText" xml:space="preserve">
+    <value>هذا المستند: {0}{1}{1}قم بتحرير هذا النص...</value>
+  </data>
+  <data name="App_Editor_ProjectTables" xml:space="preserve">
+    <value>جداول المشروع</value>
+  </data>
+  <data name="App_Editor_RefreshPrefix" xml:space="preserve">
+    <value>تحديث:</value>
+  </data>
+  <data name="App_Error" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="App_Extensions_SelectOutputDir" xml:space="preserve">
+    <value>حدد دليل إخراج بناء الإضافة</value>
+  </data>
+  <data name="App_FailedCreateFile" xml:space="preserve">
+    <value>فشل إنشاء الملف:{0}{1}</value>
+  </data>
+  <data name="App_FailedCreateProject" xml:space="preserve">
+    <value>فشل إنشاء المشروع:{0}{1}</value>
+  </data>
+  <data name="App_FailedLoadLayout" xml:space="preserve">
+    <value>فشل تحميل التخطيط:{0}{1}</value>
+  </data>
+  <data name="App_FailedWriteTblx" xml:space="preserve">
+    <value>فشل كتابة ملف TBLX:{0}{1}</value>
+  </data>
+  <data name="App_GoTo_EnterOffset" xml:space="preserve">
+    <value>الرجاء إدخال إزاحة.</value>
+  </data>
+  <data name="App_GoTo_InvalidDecimal" xml:space="preserve">
+    <value>قيمة عشرية غير صالحة.</value>
+  </data>
+  <data name="App_GoTo_InvalidHex" xml:space="preserve">
+    <value>قيمة سداسية عشرية غير صالحة.</value>
+  </data>
+  <data name="App_GoTo_OffsetNonNegative" xml:space="preserve">
+    <value>يجب أن يكون الإزاحة غير سالبة.</value>
+  </data>
+  <data name="App_ImportIntoProject" xml:space="preserve">
+    <value>استيراد إلى المشروع</value>
+  </data>
+  <data name="App_ImportIntoProjectMessage" xml:space="preserve">
+    <value>نسخ "{0}" إلى دليل المشروع؟{1}{2}{1}لن يتم حذف الملف الأصلي.</value>
+  </data>
+  <data name="App_InfoBar_Disable" xml:space="preserve">
+    <value>تعطيل</value>
+  </data>
+  <data name="App_InfoBar_HexEditor" xml:space="preserve">
+    <value>محرر سداسي</value>
+  </data>
+  <data name="App_InfoBar_Ignore" xml:space="preserve">
+    <value>تجاهل</value>
+  </data>
+  <data name="App_InfoBar_KeepEdits" xml:space="preserve">
+    <value>الاحتفاظ بتعديلاتي</value>
+  </data>
+  <data name="App_InfoBar_Reload" xml:space="preserve">
+    <value>إعادة تحميل</value>
+  </data>
+  <data name="App_InfoBar_Restart" xml:space="preserve">
+    <value>إعادة التشغيل</value>
+  </data>
+  <data name="App_JumpList_RecentFiles" xml:space="preserve">
+    <value>الملفات الأخيرة</value>
+  </data>
+  <data name="App_JumpList_RecentProjects" xml:space="preserve">
+    <value>المشاريع الأخيرة</value>
+  </data>
+  <data name="App_LSP_LoadAssembly" xml:space="preserve">
+    <value>قم بتحميل التجميع في مستكشف التجميع للانتقال إلى مصدره المفكَّك.</value>
+  </data>
+  <data name="App_LSP_TryOpenFile" xml:space="preserve">
+    <value>حاول فتح ملف الإعلان مباشرةً، أو تأكد من أن خادم LSP يعمل.</value>
+  </data>
+  <data name="App_Lsp_ClangdFailed" xml:space="preserve">
+    <value>فشل تنزيل clangd</value>
+  </data>
+  <data name="App_Lsp_ClangdReady" xml:space="preserve">
+    <value>clangd جاهز</value>
+  </data>
+  <data name="App_Lsp_CppNotInstalled" xml:space="preserve">
+    <value>خادم C/C++ LSP غير مثبَّت</value>
+  </data>
+  <data name="App_Lsp_ErrorTitle" xml:space="preserve">
+    <value>خطأ LSP</value>
+  </data>
+  <data name="App_Notifications_ClearAll" xml:space="preserve">
+    <value>مسح الكل</value>
+  </data>
+  <data name="App_Notifications_Empty" xml:space="preserve">
+    <value>لا توجد إشعارات</value>
+  </data>
+  <data name="App_Notifications_Title" xml:space="preserve">
+    <value>الإشعارات</value>
+  </data>
+  <data name="App_Options_AllSettings" xml:space="preserve">
+    <value>كل الإعدادات</value>
+  </data>
+  <data name="App_Options_AutoExportBreakpoints" xml:space="preserve">
+    <value>تصدير نقاط التوقف تلقائياً إلى VS XML عند الحفظ</value>
+  </data>
+  <data name="App_Options_AutoImportBreakpoints" xml:space="preserve">
+    <value>استيراد نقاط توقف VS تلقائياً عند أول فتح للحل</value>
+  </data>
+  <data name="App_Options_AutoReload" xml:space="preserve">
+    <value>إعادة تحميل الملفات المتغيرة تلقائياً دون مطالبة</value>
+  </data>
+  <data name="App_Options_Browse" xml:space="preserve">
+    <value>استعراض…</value>
+  </data>
+  <data name="App_Options_ClearAll" xml:space="preserve">
+    <value>مسح الكل</value>
+  </data>
+  <data name="App_Options_ClearHistory" xml:space="preserve">
+    <value>مسح السجل</value>
+  </data>
+  <data name="App_Options_CollapseIdentical" xml:space="preserve">
+    <value>طي المناطق المتطابقة</value>
+  </data>
+  <data name="App_Options_CommandsDefault" xml:space="preserve">
+    <value>الأوامر (الافتراضي)</value>
+  </data>
+  <data name="App_Options_DetectExternalChanges" xml:space="preserve">
+    <value>اكتشاف تغيير الملفات خارج البيئة</value>
+  </data>
+  <data name="App_Options_DockedPanel" xml:space="preserve">
+    <value>لوحة مرسَاة (افتراضي)</value>
+  </data>
+  <data name="App_Options_EnableDockAnimations" xml:space="preserve">
+    <value>تمكين رسوم الإرساء المتحركة</value>
+  </data>
+  <data name="App_Options_EnableTabPreview" xml:space="preserve">
+    <value>تمكين معاينة التمرير فوق علامة التبويب</value>
+  </data>
+  <data name="App_Options_EnableTabPreviewHover" xml:space="preserve">
+    <value>تمكين معاينة علامة التبويب عند التمرير</value>
+  </data>
+  <data name="App_Options_HighlightBreakpoints" xml:space="preserve">
+    <value>تمييز أسطر نقاط التوقف في المحرر (تلوين أحمر/برتقالي/رمادي)</value>
+  </data>
+  <data name="App_Options_HighlightCharDiff" xml:space="preserve">
+    <value>تمييز الاختلافات على مستوى الأحرف داخل الأسطر المعدَّلة (≤ 500 حرف)</value>
+  </data>
+  <data name="App_Options_InlinePopup" xml:space="preserve">
+    <value>نافذة منبثقة مضمّنة</value>
+  </data>
+  <data name="App_Options_KbCategory" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+  <data name="App_Options_KbCommand" xml:space="preserve">
+    <value>الأمر</value>
+  </data>
+  <data name="App_Options_KbDefault" xml:space="preserve">
+    <value>الافتراضي</value>
+  </data>
+  <data name="App_Options_KbShortcut" xml:space="preserve">
+    <value>اختصار</value>
+  </data>
+  <data name="App_Options_LspArguments" xml:space="preserve">
+    <value>الوسيطات</value>
+  </data>
+  <data name="App_Options_LspEnabled" xml:space="preserve">
+    <value>ممكَّن</value>
+  </data>
+  <data name="App_Options_LspExecutable" xml:space="preserve">
+    <value>الملف التنفيذي</value>
+  </data>
+  <data name="App_Options_LspExtensions" xml:space="preserve">
+    <value>الامتدادات</value>
+  </data>
+  <data name="App_Options_LspLanguageId" xml:space="preserve">
+    <value>معرّف اللغة</value>
+  </data>
+  <data name="App_Options_LspNotActive" xml:space="preserve">
+    <value>LSP غير نشط</value>
+  </data>
+  <data name="App_Options_LspSearching" xml:space="preserve">
+    <value>جارٍ البحث…</value>
+  </data>
+  <data name="App_Options_LspSource" xml:space="preserve">
+    <value>المصدر</value>
+  </data>
+  <data name="App_Options_LspTypeToSearch" xml:space="preserve">
+    <value>اكتب للبحث في رموز مساحة العمل</value>
+  </data>
+  <data name="App_Options_PromptSaveWorkspace" xml:space="preserve">
+    <value>المطالبة بحفظ مساحة العمل قبل الإغلاق</value>
+  </data>
+  <data name="App_Options_ResetAllOverrides" xml:space="preserve">
+    <value>إعادة تعيين كل التجاوزات</value>
+  </data>
+  <data name="App_Options_ResetOverrides" xml:space="preserve">
+    <value>إعادة تعيين التجاوزات</value>
+  </data>
+  <data name="App_Options_ResetToDefaults" xml:space="preserve">
+    <value>إعادة التعيين إلى الافتراضيات</value>
+  </data>
+  <data name="App_Options_RestoreSolution" xml:space="preserve">
+    <value>استعادة الحل</value>
+  </data>
+  <data name="App_Options_RestoreTabs" xml:space="preserve">
+    <value>استعادة علامات تبويب المحرر المفتوحة</value>
+  </data>
+  <data name="App_Options_RestoreTheme" xml:space="preserve">
+    <value>استعادة السمة</value>
+  </data>
+  <data name="App_Options_Save" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="App_Options_SavedComparisons" xml:space="preserve">
+    <value>مقارنات محفوظة</value>
+  </data>
+  <data name="App_Options_ScrollTabRows" xml:space="preserve">
+    <value>تمرير صفوف علامات التبويب باستخدام عجلة الماوس</value>
+  </data>
+  <data name="App_Options_SelectDebugAdapter" xml:space="preserve">
+    <value>تحديد ملف تنفيذي لمحول التصحيح</value>
+  </data>
+  <data name="App_Options_SelectLspExecutable" xml:space="preserve">
+    <value>تحديد ملف تنفيذي لخادم LSP</value>
+  </data>
+  <data name="App_Options_ShowFileNameBelowPreview" xml:space="preserve">
+    <value>عرض اسم الملف أسفل المعاينة</value>
+  </data>
+  <data name="App_Options_ShowFilenameFooter" xml:space="preserve">
+    <value>عرض اسم الملف في التذييل</value>
+  </data>
+  <data name="App_Options_ShowMinimap" xml:space="preserve">
+    <value>عرض الخريطة المصغرة</value>
+  </data>
+  <data name="App_Options_ShowReturnValues" xml:space="preserve">
+    <value>عرض قيم الإرجاع في المتغيرات المحلية بعد كل خطوة</value>
+  </data>
+  <data name="App_Options_StopAtEntry" xml:space="preserve">
+    <value>التوقف عند نقطة دخول البرنامج (Main)</value>
+  </data>
+  <data name="App_Options_WrapTabs" xml:space="preserve">
+    <value>التفاف التبويبات إلى صفوف إضافية (متعدد الصفوف)</value>
+  </data>
+  <data name="App_PanelFormatCatalog" xml:space="preserve">
+    <value>كتالوج التنسيقات</value>
+  </data>
+  <data name="App_PanelOptions" xml:space="preserve">
+    <value>الخيارات</value>
+  </data>
+  <data name="App_PasteConflict_EnterFileName" xml:space="preserve">
+    <value>يرجى إدخال اسم ملف.</value>
+  </data>
+  <data name="App_PasteConflict_InvalidChars" xml:space="preserve">
+    <value>الاسم يحتوي على أحرف غير صالحة.</value>
+  </data>
+  <data name="App_RemoveFolderMessage" xml:space="preserve">
+    <value>إزالة المجلد '{0}' من المشروع؟{1}ستبقى العناصر الداخلية في جذر المشروع. لن يتم حذف الدليل الفعلي.</value>
+  </data>
+  <data name="App_RemoveSolutionFolderMessage" xml:space="preserve">
+    <value>إزالة مجلد الحل '{0}'؟{1}المشاريع الداخلية ستبقى في جذر الحل.</value>
+  </data>
+  <data name="App_SaveAs" xml:space="preserve">
+    <value>حفظ باسم</value>
+  </data>
+  <data name="App_SelectEntropyFile" xml:space="preserve">
+    <value>تحديد ملف لتحليل الإنتروبيا</value>
+  </data>
+  <data name="App_SourceFiles_SelectFolder" xml:space="preserve">
+    <value>تحديد مجلد المصدر</value>
+  </data>
+  <data name="App_StartupProjects_CurrentSelection" xml:space="preserve">
+    <value>التحديد الحالي</value>
+  </data>
+  <data name="App_StartupProjects_LaunchProfiles" xml:space="preserve">
+    <value>ملفات تعريف الإطلاق</value>
+  </data>
+  <data name="App_StartupProjects_MultipleProjects" xml:space="preserve">
+    <value>مشاريع بدء تشغيل متعددة:</value>
+  </data>
+  <data name="App_StartupProjects_SingleProject" xml:space="preserve">
+    <value>مشروع بدء تشغيل واحد:</value>
+  </data>
+  <data name="App_Tabs_GroupByExtension" xml:space="preserve">
+    <value>حسب امتداد الملف</value>
+  </data>
+  <data name="App_Tabs_GroupByProject" xml:space="preserve">
+    <value>حسب المشروع</value>
+  </data>
+  <data name="App_Tabs_GroupByRegex" xml:space="preserve">
+    <value>بقاعدة Regex</value>
+  </data>
+  <data name="App_Tabs_PositionLeft" xml:space="preserve">
+    <value>يسار</value>
+  </data>
+  <data name="App_Tabs_PositionNone" xml:space="preserve">
+    <value>لا شيء</value>
+  </data>
+  <data name="App_Tabs_PositionRight" xml:space="preserve">
+    <value>يمين</value>
+  </data>
+  <data name="App_Tabs_PositionTop" xml:space="preserve">
+    <value>أعلى</value>
+  </data>
+  <data name="App_TblImport_Failed" xml:space="preserve">
+    <value>فشل تحميل ملف TBL:{0}{1}</value>
+  </data>
+  <data name="App_UpgradeFailedMessage" xml:space="preserve">
+    <value>فشل الترقية: {0}</value>
+  </data>
+  <data name="App_UpgradeMessagePattern" xml:space="preserve">
+    <value>الملفات التالية تستخدم تنسيقًا قديمًا (v{0}) وسيتم ترقيتها إلى v{1}:{2}{2}  • {3}{2}{2}سيتم إنشاء نسخة احتياطية (.v{0}.bak) لكل ملف.{2}{2}ترقية الآن؟</value>
+  </data>
+  <data name="App_ViewMenu_ByDockSide" xml:space="preserve">
+    <value>حسب جانب الإرساء</value>
+  </data>
+  <data name="App_ViewMenu_Categorized" xml:space="preserve">
+    <value>مصنف</value>
+  </data>
+  <data name="App_ViewMenu_Flat" xml:space="preserve">
+    <value>مسطح (كلاسيكي)</value>
+  </data>
+  <data name="App_ViewMenu_OrganizeBy" xml:space="preserve">
+    <value>تنظيم حسب...</value>
+  </data>
+  <data name="App_ViewMenu_PinToViewMenu" xml:space="preserve">
+    <value>تثبيت في قائمة العرض</value>
+  </data>
+  <data name="App_ViewMenu_SortAlphabetical" xml:space="preserve">
+    <value>أبجدي</value>
+  </data>
+  <data name="App_ViewMenu_SortByFrequency" xml:space="preserve">
+    <value>حسب التكرار</value>
+  </data>
+  <data name="App_ViewMenu_SortCustom" xml:space="preserve">
+    <value>مخصص</value>
+  </data>
+  <data name="App_ViewMenu_UnpinFromViewMenu" xml:space="preserve">
+    <value>إلغاء التثبيت من قائمة العرض</value>
+  </data>
+  <data name="App_Welcome_ChangelogUnavailable" xml:space="preserve">
+    <value>سجل التغييرات غير متاح — تحقق من اتصالك.</value>
+  </data>
+  <data name="App_Welcome_VersionDev" xml:space="preserve">
+    <value>إصدار تطوير</value>
+  </data>
+  <data name="App_Workspace_CloseSavePrompt" xml:space="preserve">
+    <value>حفظ مساحة العمل '{0}' قبل الإغلاق؟</value>
+  </data>
+  <data name="App_Workspace_CloseTitle" xml:space="preserve">
+    <value>إغلاق مساحة العمل</value>
+  </data>
+  <data name="App_Workspace_NewFailed" xml:space="preserve">
+    <value>فشل إنشاء مساحة العمل:{0}{1}</value>
+  </data>
+  <data name="App_Workspace_NewTitle" xml:space="preserve">
+    <value>مساحة عمل جديدة</value>
+  </data>
+  <data name="App_Workspace_OpenFailed" xml:space="preserve">
+    <value>فشل فتح مساحة العمل:{0}{1}</value>
+  </data>
+  <data name="App_Workspace_OpenTitle" xml:space="preserve">
+    <value>فتح مساحة العمل</value>
+  </data>
+  <data name="App_Workspace_SaveAsTitle" xml:space="preserve">
+    <value>حفظ مساحة العمل باسم</value>
+  </data>
+  <data name="App_Workspace_SaveFailed" xml:space="preserve">
+    <value>فشل حفظ مساحة العمل:{0}{1}</value>
+  </data>
+  <data name="APP_QuickActionsSection" xml:space="preserve">
+    <value>QUICK ACTIONS</value>
+  </data>
+  <data name="APP_NewFileButton" xml:space="preserve">
+    <value>New File</value>
+  </data>
+  <data name="APP_OpenFileButton" xml:space="preserve">
+    <value>Open File…</value>
+  </data>
+  <data name="APP_OpenProjectButton" xml:space="preserve">
+    <value>Open Project / Solution…</value>
+  </data>
+  <data name="APP_OptionsButton" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="APP_RecentSection" xml:space="preserve">
+    <value>RECENT</value>
+  </data>
+  <data name="APP_NoRecentFiles" xml:space="preserve">
+    <value>No recent files</value>
+  </data>
+  <data name="APP_RecentProjectsSection" xml:space="preserve">
+    <value>RECENT PROJECTS</value>
+  </data>
+  <data name="APP_NoRecentProjects" xml:space="preserve">
+    <value>No recent projects</value>
+  </data>
+  <data name="APP_ResourcesSection" xml:space="preserve">
+    <value>RESOURCES</value>
+  </data>
+  <data name="APP_GitHubLink" xml:space="preserve">
+    <value>GitHub Repository ↗</value>
+  </data>
+  <data name="APP_WikiLink" xml:space="preserve">
+    <value>Wiki ↗</value>
+  </data>
+  <data name="APP_ReportIssueLink" xml:space="preserve">
+    <value>Report an Issue ↗</value>
+  </data>
+  <data name="APP_WhatsNewSection" xml:space="preserve">
+    <value>WHAT'S NEW</value>
+  </data>
+  <data name="APP_LoadingChangelog" xml:space="preserve">
+    <value>Loading changelog…</value>
+  </data>
+  <data name="APP_ChangelogNotAvailable" xml:space="preserve">
+    <value>Changelog not available.</value>
+  </data>
+  <data name="APP_GitHubButton" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="APP_WikiButton" xml:space="preserve">
+    <value>Wiki</value>
+  </data>
+  <data name="APP_ReportIssueButton" xml:space="preserve">
+    <value>Report Issue</value>
+  </data>
+  <data name="APP_FullChangelogButton" xml:space="preserve">
+    <value>Full Changelog</value>
+  </data>
+  <data name="APP_Dismiss" xml:space="preserve"><value>رفض</value></data>
+  <data name="APP_ViewIn" xml:space="preserve"><value>عرض في:</value></data>
+  <data name="APP_UnsavedChanges" xml:space="preserve"><value>تغييرات غير محفوظة</value></data>
+  <data name="APP_ReadOnly" xml:space="preserve"><value>للقراءة فقط</value></data>
+  <data name="APP_ExtensionSystem" xml:space="preserve"><value>نظام الإضافات</value></data>
+  <data name="APP_SlowBadge" xml:space="preserve"><value>بطيء</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>نسخ</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>تحديد الكل</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>حفظ المخرجات باسم...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>نسخ الكل</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>مسح الكل</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>تبديل التفاف النص</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>تبديل التمرير التلقائي</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>بحث</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>المستكشف</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>بدء</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>إنشاء</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>إعادة إنشاء</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>تنظيف</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>الجداول المضمنة</value></data>
+  <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>افتراضي (ASCII)</value></data>
+  <data name="APP_InstallEllipsis" xml:space="preserve"><value>تثبيت...</value></data>
+  <data name="APP_DBG_StartDebugging" xml:space="preserve"><value>Start _Debugging</value></data>
+  <data name="APP_DBG_StartWithoutDebugging" xml:space="preserve"><value>Start _Without Debugging</value></data>
+  <data name="APP_DBG_StopDebugging" xml:space="preserve"><value>S_top Debugging</value></data>
+  <data name="APP_DBG_Restart" xml:space="preserve"><value>_Restart</value></data>
+  <data name="APP_DBG_Continue" xml:space="preserve"><value>_Continue</value></data>
+  <data name="APP_DBG_Pause" xml:space="preserve"><value>_Pause</value></data>
+  <data name="APP_DBG_AttachToProcess" xml:space="preserve"><value>_Attach to Process…</value></data>
+  <data name="APP_DBG_StepOver" xml:space="preserve"><value>Step _Over</value></data>
+  <data name="APP_DBG_StepInto" xml:space="preserve"><value>Step _Into</value></data>
+  <data name="APP_DBG_StepOut" xml:space="preserve"><value>Step O_ut</value></data>
+  <data name="APP_DBG_ToggleBreakpoint" xml:space="preserve"><value>Toggle _Breakpoint</value></data>
+  <data name="APP_DBG_DeleteAllBreakpoints" xml:space="preserve"><value>_Delete All Breakpoints</value></data>
+  <data name="APP_DBG_ShowBreakpoints" xml:space="preserve"><value>Show _Breakpoints</value></data>
+  <data name="APP_DBG_ShowCallStack" xml:space="preserve"><value>Show _Call Stack</value></data>
+  <data name="APP_DBG_ShowLocals" xml:space="preserve"><value>Show _Locals</value></data>
+  <data name="APP_DBG_ShowWatch" xml:space="preserve"><value>Show _Watch</value></data>
+  <data name="APP_VM_CommandPalette" xml:space="preserve"><value>_Command Palette</value></data>
+  <data name="APP_VM_SolutionExplorer" xml:space="preserve"><value>_Solution Explorer</value></data>
+  <data name="APP_VM_Properties" xml:space="preserve"><value>_Properties</value></data>
+  <data name="APP_VM_Output" xml:space="preserve"><value>_Output</value></data>
+  <data name="APP_VM_ErrorList" xml:space="preserve"><value>_Error List</value></data>
+  <data name="APP_VM_Terminal" xml:space="preserve"><value>_Terminal</value></data>
+  <data name="APP_VM_MarkdownOutline" xml:space="preserve"><value>_Markdown Outline</value></data>
+  <data name="APP_VM_CompareFiles" xml:space="preserve"><value>_Compare Files…</value></data>
+  <data name="APP_VM_FormatBrowser" xml:space="preserve"><value>_Format Browser</value></data>
+  <data name="APP_VM_FormatCatalog" xml:space="preserve"><value>_Format Catalog</value></data>
+  <data name="APP_VM_EntropyAnalysis" xml:space="preserve"><value>_Entropy Analysis…</value></data>
+  <data name="APP_VM_TipMarkdown" xml:space="preserve"><value>Show Markdown Outline panel (heading navigator)</value></data>
+  <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Browse and manage built-in and user .whfmt format definitions</value></data>
+  <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Open the Format Catalog document tab (all formats in a sortable grid)</value></data>
+  <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyse entropy and byte distribution of the active file</value></data>
+</root>

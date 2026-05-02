@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.ScriptEditor.Properties;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
 
@@ -197,7 +198,7 @@ public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenab
     {
         if (_scripting is null)
         {
-            OutputBox.Text = "Scripting engine not available. Ensure WpfHexEditor.Core.Scripting is loaded.";
+            OutputBox.Text = ScriptEditorResources.Script_EngineNotAvailable;
             return;
         }
 
@@ -241,14 +242,14 @@ public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenab
         }
         catch (OperationCanceledException)
         {
-            await Dispatcher.InvokeAsync(() => StatusBar.Text = "Cancelled.");
+            await Dispatcher.InvokeAsync(() => StatusBar.Text = ScriptEditorResources.Script_StatusCancelled);
         }
         catch (Exception ex)
         {
             await Dispatcher.InvokeAsync(() =>
             {
                 OutputBox.Text = $"✗ Unexpected error: {ex.Message}";
-                StatusBar.Text = "Error.";
+                StatusBar.Text = ScriptEditorResources.Script_StatusError;
             });
         }
         finally
@@ -266,7 +267,7 @@ public sealed partial class ScriptEditor : UserControl, IDocumentEditor, IOpenab
         try
         {
             File.WriteAllText(_filePath, CodeBox.PrimaryEditor.GetText(), Encoding.UTF8);
-            StatusBar.Text = "Saved.";
+            StatusBar.Text = ScriptEditorResources.Script_StatusSaved;
         }
         catch (Exception ex)
         {

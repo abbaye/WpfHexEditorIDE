@@ -19,6 +19,8 @@
     </ProjectReference>
     <!-- Core.Definitions: CatalogQuery fluent API (WHFMTDetectionAdapter) -->
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
+    <!-- Core.Localization: LocalizedResourceDictionary base class for EditorCoreLocalizedDictionary -->
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Localization\WpfHexEditor.Core.Localization.csproj" />
   </ItemGroup>
 
 </Project>

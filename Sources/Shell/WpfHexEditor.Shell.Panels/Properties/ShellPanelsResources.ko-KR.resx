@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="BookmarksPanel_RefreshToolTip" xml:space="preserve">
+    <value>책갈피 새로 고침</value>
+  </data>
+  <data name="BookmarksPanel_ClearAllToolTip" xml:space="preserve">
+    <value>모든 책갈피 지우기</value>
+  </data>
+  <data name="BookmarksPanel_EmptyCount" xml:space="preserve">
+    <value>0 책갈피</value>
+  </data>
+  <data name="BookmarksPanel_OffsetHeader" xml:space="preserve">
+    <value>오프셋</value>
+  </data>
+  <data name="BookmarksPanel_DescriptionHeader" xml:space="preserve">
+    <value>설명</value>
+  </data>
+  <data name="BookmarksPanel_CategoryHeader" xml:space="preserve">
+    <value>범주</value>
+  </data>
+  <data name="BookmarksPanel_EmptyMessage" xml:space="preserve">
+    <value>책갈피가 없습니다. 활성 편집기에서 책갈피를 전환하려면 Ctrl+F2를 누르세요.</value>
+  </data>
+  <data name="ErrorPanel_ScopeEntireSolution" xml:space="preserve">
+    <value>전체 솔루션</value>
+  </data>
+  <data name="ErrorPanel_ScopeCurrentProject" xml:space="preserve">
+    <value>현재 프로젝트</value>
+  </data>
+  <data name="ErrorPanel_ScopeCurrentDocument" xml:space="preserve">
+    <value>현재 문서</value>
+  </data>
+  <data name="ErrorPanel_ScopeOpenDocuments" xml:space="preserve">
+    <value>열린 문서</value>
+  </data>
+  <data name="ErrorPanel_ScopeChangedDocuments" xml:space="preserve">
+    <value>변경된 문서</value>
+  </data>
+  <data name="ErrorPanel_OverflowButtonToolTip" xml:space="preserve">
+    <value>추가 옵션</value>
+  </data>
+  <data name="ErrorPanel_ShowErrorsMenu" xml:space="preserve">
+    <value>오류 표시</value>
+  </data>
+  <data name="ErrorPanel_ShowWarningsMenu" xml:space="preserve">
+    <value>경고 표시</value>
+  </data>
+  <data name="ErrorPanel_ShowMessagesMenu" xml:space="preserve">
+    <value>메시지 표시</value>
+  </data>
+  <data name="ErrorPanel_SearchPlaceholder" xml:space="preserve">
+    <value>검색...</value>
+  </data>
+  <data name="ErrorPanel_ErrorToggleToolTip" xml:space="preserve">
+    <value>오류 표시/숨기기</value>
+  </data>
+  <data name="ErrorPanel_ErrorCountText" xml:space="preserve">
+    <value>오류 0</value>
+  </data>
+  <data name="ErrorPanel_WarningToggleToolTip" xml:space="preserve">
+    <value>경고 표시/숨기기</value>
+  </data>
+  <data name="ErrorPanel_WarningCountText" xml:space="preserve">
+    <value>경고 0</value>
+  </data>
+  <data name="ErrorPanel_MessageToggleToolTip" xml:space="preserve">
+    <value>메시지 표시/숨기기</value>
+  </data>
+  <data name="ErrorPanel_MessageCountText" xml:space="preserve">
+    <value>메시지 0</value>
+  </data>
+  <data name="ErrorPanel_CodeHeader" xml:space="preserve">
+    <value>코드</value>
+  </data>
+  <data name="ErrorPanel_DescriptionHeader" xml:space="preserve">
+    <value>설명</value>
+  </data>
+  <data name="ErrorPanel_ProjectHeader" xml:space="preserve">
+    <value>프로젝트</value>
+  </data>
+  <data name="ErrorPanel_FileHeader" xml:space="preserve">
+    <value>파일</value>
+  </data>
+  <data name="ErrorPanel_OffsetHeader" xml:space="preserve">
+    <value>오프셋</value>
+  </data>
+  <data name="ErrorPanel_LineColHeader" xml:space="preserve">
+    <value>줄:열</value>
+  </data>
+  <data name="PropertiesPanel_ContextLabel" xml:space="preserve">
+    <value>속성</value>
+  </data>
+  <data name="PropertiesPanel_RefreshToolTip" xml:space="preserve">
+    <value>속성 새로 고침</value>
+  </data>
+  <data name="PropertiesPanel_OverflowToolTip" xml:space="preserve">
+    <value>추가 옵션</value>
+  </data>
+  <data name="PropertiesPanel_SortAlphabetically" xml:space="preserve">
+    <value>알파벳순으로 정렬</value>
+  </data>
+  <data name="PropertiesPanel_CopyValue" xml:space="preserve">
+    <value>값 복사</value>
+  </data>
+  <data name="PropertiesPanel_SortToggleToolTip" xml:space="preserve">
+    <value>속성을 알파벳순으로 정렬</value>
+  </data>
+  <data name="PropertiesPanel_CopyButtonToolTip" xml:space="preserve">
+    <value>선택한 속성 값 복사</value>
+  </data>
+  <data name="PropertiesPanel_SearchPlaceholder" xml:space="preserve">
+    <value>속성 필터…</value>
+  </data>
+  <data name="PropertiesPanel_OpenFolderToolTip" xml:space="preserve">
+    <value>탐색기에서 포함된 폴더 열기</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessLeft" xml:space="preserve">
+    <value>왼쪽</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessTop" xml:space="preserve">
+    <value>위</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessRight" xml:space="preserve">
+    <value>오른쪽</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessBottom" xml:space="preserve">
+    <value>아래</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessLLabel" xml:space="preserve">
+    <value>좌</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessTLabel" xml:space="preserve">
+    <value>상</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessRLabel" xml:space="preserve">
+    <value>우</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessBLabel" xml:space="preserve">
+    <value>하</value>
+  </data>
+  <data name="PropertiesPanel_ContextMenu_CopyValue" xml:space="preserve">
+    <value>값 복사</value>
+  </data>
+  <data name="PropertiesPanel_ContextMenu_CopyName" xml:space="preserve">
+    <value>이름 복사</value>
+  </data>
+  <data name="PropertiesPanel_ResetToDefaultToolTip" xml:space="preserve">
+    <value>기본값으로 재설정</value>
+  </data>
+  <data name="SolutionExplorer_ShowAllFilesToolTip" xml:space="preserve">
+    <value>모든 파일 표시</value>
+  </data>
+  <data name="SolutionExplorer_CollapseAllToolTip" xml:space="preserve">
+    <value>모두 축소</value>
+  </data>
+  <data name="SolutionExplorer_SyncWithActiveDocToolTip" xml:space="preserve">
+    <value>활성 문서와 동기화</value>
+  </data>
+  <data name="SolutionExplorer_RefreshToolTip" xml:space="preserve">
+    <value>새로 고침</value>
+  </data>
+  <data name="SolutionExplorer_SortToolTip" xml:space="preserve">
+    <value>정렬</value>
+  </data>
+  <data name="SolutionExplorer_SortNone" xml:space="preserve">
+    <value>없음</value>
+  </data>
+  <data name="SolutionExplorer_SortName" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="SolutionExplorer_SortType" xml:space="preserve">
+    <value>형식</value>
+  </data>
+  <data name="SolutionExplorer_SortDateModified" xml:space="preserve">
+    <value>수정한 날짜</value>
+  </data>
+  <data name="SolutionExplorer_SortSize" xml:space="preserve">
+    <value>크기</value>
+  </data>
+  <data name="SolutionExplorer_FilterToolTip" xml:space="preserve">
+    <value>필터</value>
+  </data>
+  <data name="SolutionExplorer_FilterAll" xml:space="preserve">
+    <value>모두</value>
+  </data>
+  <data name="SolutionExplorer_FilterBinary" xml:space="preserve">
+    <value>이진</value>
+  </data>
+  <data name="SolutionExplorer_FilterText" xml:space="preserve">
+    <value>텍스트</value>
+  </data>
+  <data name="SolutionExplorer_FilterImages" xml:space="preserve">
+    <value>이미지</value>
+  </data>
+  <data name="SolutionExplorer_FilterLanguage" xml:space="preserve">
+    <value>언어</value>
+  </data>
+  <data name="SolutionExplorer_SearchPlaceholder" xml:space="preserve">
+    <value>솔루션 탐색기 검색 (Ctrl+;)</value>
+  </data>
+  <data name="SolutionExplorer_SearchModeFileName" xml:space="preserve">
+    <value>파일 이름</value>
+  </data>
+  <data name="SolutionExplorer_SearchModeNameContent" xml:space="preserve">
+    <value>이름 + 내용</value>
+  </data>
+  <data name="SolutionExplorer_SearchModeContentOnly" xml:space="preserve">
+    <value>내용만</value>
+  </data>
+  <data name="SolutionExplorer_SearchModeRegex" xml:space="preserve">
+    <value>Regex (파일 이름)</value>
+  </data>
+  <data name="SolutionExplorer_SolutionFolderTooltip" xml:space="preserve">
+    <value>솔루션 폴더 (논리적)</value>
+  </data>
+  <data name="SolutionExplorer_PhysicalFolderTooltip" xml:space="preserve">
+    <value>실제 폴더</value>
+  </data>
+  <data name="SolutionExplorer_PropertiesFolderTooltip" xml:space="preserve">
+    <value>속성 폴더</value>
+  </data>
+  <data name="SolutionExplorer_BuildDirtyIndicator" xml:space="preserve">
+    <value>마지막 빌드 이후 프로젝트에 변경 사항이 있습니다 (Ctrl+Alt+F7로 빌드)</value>
+  </data>
+  <data name="SolutionExplorer_UnsavedModifications" xml:space="preserve">
+    <value>저장되지 않은 수정 사항</value>
+  </data>
+  <data name="SolutionExplorer_ExternalFileIndicator" xml:space="preserve">
+    <value>파일이 프로젝트 디렉터리 외부에 있습니다</value>
+  </data>
+  <data name="SolutionExplorer_ExternalModIndicator" xml:space="preserve">
+    <value>외부에서 수정됨 — 다시 로드 고려</value>
+  </data>
+  <data name="SolutionExplorer_LoadingIndicator" xml:space="preserve">
+    <value>로드 중…</value>
+  </data>
+  <data name="SolutionExplorer_GoToDefinition" xml:space="preserve">
+    <value>정의로 이동</value>
+  </data>
+  <data name="SolutionExplorer_Open" xml:space="preserve">
+    <value>열기</value>
+  </data>
+  <data name="SolutionExplorer_OpenWith" xml:space="preserve">
+    <value>연결 프로그램으로 열기</value>
+  </data>
+  <data name="SolutionExplorer_OpenWithHexEditor" xml:space="preserve">
+    <value>Hex 편집기</value>
+  </data>
+  <data name="SolutionExplorer_Add" xml:space="preserve">
+    <value>추가</value>
+  </data>
+  <data name="SolutionExplorer_AddNewItem" xml:space="preserve">
+    <value>새 항목 추가...</value>
+  </data>
+  <data name="SolutionExplorer_AddExistingItem" xml:space="preserve">
+    <value>기존 항목 추가...</value>
+  </data>
+  <data name="SolutionExplorer_ImportFormat" xml:space="preserve">
+    <value>기본 제공 형식 가져오기...</value>
+  </data>
+  <data name="SolutionExplorer_ImportSyntax" xml:space="preserve">
+    <value>기본 제공 구문 가져오기...</value>
+  </data>
+  <data name="SolutionExplorer_NewFolder" xml:space="preserve">
+    <value>새 폴더</value>
+  </data>
+  <data name="SolutionExplorer_NewSolutionFolder" xml:space="preserve">
+    <value>새 솔루션 폴더</value>
+  </data>
+  <data name="SolutionExplorer_AddExistingFolder" xml:space="preserve">
+    <value>기존 폴더 추가...</value>
+  </data>
+  <data name="SolutionExplorer_IncludeInProject" xml:space="preserve">
+    <value>프로젝트에 포함</value>
+  </data>
+  <data name="SolutionExplorer_SetDefaultTbl" xml:space="preserve">
+    <value>기본 TBL로 설정</value>
+  </data>
+  <data name="SolutionExplorer_ClearDefaultTbl" xml:space="preserve">
+    <value>기본 TBL 지우기</value>
+  </data>
+  <data name="SolutionExplorer_ConvertToTblx" xml:space="preserve">
+    <value>TBLX로 변환...</value>
+  </data>
+  <data name="SolutionExplorer_ApplyTblToActive" xml:space="preserve">
+    <value>활성 문서에 적용</value>
+  </data>
+  <data name="SolutionExplorer_ApplyTblToAll" xml:space="preserve">
+    <value>모든 문서에 적용</value>
+  </data>
+  <data name="SolutionExplorer_OpenInExplorer" xml:space="preserve">
+    <value>파일 탐색기에서 열기</value>
+  </data>
+  <data name="SolutionExplorer_CopyPath" xml:space="preserve">
+    <value>경로 복사</value>
+  </data>
+  <data name="SolutionExplorer_Copy" xml:space="preserve">
+    <value>복사</value>
+  </data>
+  <data name="SolutionExplorer_Cut" xml:space="preserve">
+    <value>잘라내기</value>
+  </data>
+  <data name="SolutionExplorer_Paste" xml:space="preserve">
+    <value>붙여넣기</value>
+  </data>
+  <data name="SolutionExplorer_Rename" xml:space="preserve">
+    <value>이름 바꾸기</value>
+  </data>
+  <data name="SolutionExplorer_RemoveFromProject" xml:space="preserve">
+    <value>프로젝트에서 제거</value>
+  </data>
+  <data name="SolutionExplorer_Delete" xml:space="preserve">
+    <value>삭제</value>
+  </data>
+  <data name="SolutionExplorer_ExcludeFromProject" xml:space="preserve">
+    <value>프로젝트에서 제외</value>
+  </data>
+  <data name="SolutionExplorer_ImportIntoProject" xml:space="preserve">
+    <value>프로젝트로 가져오기...</value>
+  </data>
+  <data name="SolutionExplorer_ApplyToDisk" xml:space="preserve">
+    <value>디스크에 적용</value>
+  </data>
+  <data name="SolutionExplorer_DiscardChanges" xml:space="preserve">
+    <value>변경 내용 취소</value>
+  </data>
+  <data name="SolutionExplorer_Build" xml:space="preserve">
+    <value>빌드</value>
+  </data>
+  <data name="SolutionExplorer_Rebuild" xml:space="preserve">
+    <value>다시 빌드</value>
+  </data>
+  <data name="SolutionExplorer_Clean" xml:space="preserve">
+    <value>정리</value>
+  </data>
+  <data name="SolutionExplorer_SetAsStartup" xml:space="preserve">
+    <value>시작 프로젝트로 설정</value>
+  </data>
+  <data name="SolutionExplorer_AddReference" xml:space="preserve">
+    <value>참조 추가…</value>
+  </data>
+  <data name="SolutionExplorer_RemoveUnusedReferences" xml:space="preserve">
+    <value>사용되지 않는 참조 제거…</value>
+  </data>
+  <data name="SolutionExplorer_ManageNugetPackages" xml:space="preserve">
+    <value>NuGet 패키지 관리…</value>
+  </data>
+  <data name="SolutionExplorer_ManageNugetPackagesSolution" xml:space="preserve">
+    <value>솔루션의 NuGet 패키지 관리…</value>
+  </data>
+  <data name="SolutionExplorer_Properties" xml:space="preserve">
+    <value>속성</value>
+  </data>
+  <data name="SolutionExplorer_SaveAll" xml:space="preserve">
+    <value>모두 저장</value>
+  </data>
+  <data name="SolutionExplorer_CloseSolution" xml:space="preserve">
+    <value>솔루션 닫기</value>
+  </data>
+  <data name="WhfmtBrowser_LoadFailureIndicator" xml:space="preserve">
+    <value>하나 이상의 형식을 로드하지 못했습니다</value>
+  </data>
+  <data name="WhfmtBrowser_OpenInEditorToolTip" xml:space="preserve">
+    <value>구조 편집기에서 열기</value>
+  </data>
+  <data name="WhfmtBrowser_ExportToFileToolTip" xml:space="preserve">
+    <value>파일로 내보내기…</value>
+  </data>
+  <data name="WhfmtBrowser_ViewJsonToolTip" xml:space="preserve">
+    <value>JSON 보기</value>
+  </data>
+  <data name="WhfmtBrowser_Open" xml:space="preserve">
+    <value>열기</value>
+  </data>
+  <data name="WhfmtBrowser_OpenReadOnly" xml:space="preserve">
+    <value>읽기 전용으로 열기</value>
+  </data>
+  <data name="WhfmtBrowser_ExportToFile" xml:space="preserve">
+    <value>파일로 내보내기…</value>
+  </data>
+  <data name="WhfmtBrowser_ViewJson" xml:space="preserve">
+    <value>JSON 보기</value>
+  </data>
+  <data name="WhfmtBrowser_CopyPath" xml:space="preserve">
+    <value>경로 복사</value>
+  </data>
+  <data name="WhfmtBrowser_Delete" xml:space="preserve">
+    <value>삭제</value>
+  </data>
+  <data name="WhfmtBrowser_RevealInExplorer" xml:space="preserve">
+    <value>탐색기에 표시</value>
+  </data>
+  <data name="WhfmtBrowser_DuplicateFormat" xml:space="preserve">
+    <value>형식 복제…</value>
+  </data>
+  <data name="WhfmtBrowser_EditInCodeEditor" xml:space="preserve">
+    <value>코드 편집기에서 편집</value>
+  </data>
+  <data name="WhfmtCatalog_NameHeader" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="WhfmtCatalog_CategoryHeader" xml:space="preserve">
+    <value>범주</value>
+  </data>
+  <data name="WhfmtCatalog_ExtensionsHeader" xml:space="preserve">
+    <value>확장명</value>
+  </data>
+  <data name="WhfmtCatalog_VersionHeader" xml:space="preserve">
+    <value>버전</value>
+  </data>
+  <data name="WhfmtCatalog_QualityHeader" xml:space="preserve">
+    <value>품질</value>
+  </data>
+  <data name="WhfmtCatalog_AuthorHeader" xml:space="preserve">
+    <value>작성자</value>
+  </data>
+  <data name="WhfmtCatalog_SourceHeader" xml:space="preserve">
+    <value>소스</value>
+  </data>
+  <data name="WhfmtCatalog_Open" xml:space="preserve">
+    <value>열기</value>
+  </data>
+  <data name="WhfmtCatalog_OpenReadOnly" xml:space="preserve">
+    <value>읽기 전용으로 열기</value>
+  </data>
+  <data name="WhfmtCatalog_ExportToFile" xml:space="preserve">
+    <value>파일로 내보내기…</value>
+  </data>
+  <data name="WhfmtCatalog_ViewJson" xml:space="preserve">
+    <value>JSON 보기</value>
+  </data>
+  <data name="WhfmtCatalog_RevealInExplorer" xml:space="preserve">
+    <value>탐색기에 표시</value>
+  </data>
+  <data name="WhfmtCatalog_ErrorText" xml:space="preserve">
+    <value>오류</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutLeft" xml:space="preserve">
+    <value>왼쪽 세부 정보</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutRight" xml:space="preserve">
+    <value>오른쪽 세부 정보</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutTop" xml:space="preserve">
+    <value>위 세부 정보</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutBottom" xml:space="preserve">
+    <value>아래 세부 정보</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutTooltip" xml:space="preserve">
+    <value>세부 정보 패널 위치</value>
+  </data>
+  <data name="WhfmtDetail_EmptyPlaceholder" xml:space="preserve">
+    <value>세부 정보를 보려면 형식을 선택하세요.</value>
+  </data>
+  <data name="WhfmtDetail_OpenInEditorToolTip" xml:space="preserve">
+    <value>구조 편집기에서 열기</value>
+  </data>
+  <data name="WhfmtDetail_ExportToFileToolTip" xml:space="preserve">
+    <value>파일로 내보내기…</value>
+  </data>
+  <data name="WhfmtDetail_ViewRawJsonToolTip" xml:space="preserve">
+    <value>원시 JSON 보기</value>
+  </data>
+  <data name="WhfmtDetail_RetryLoadToolTip" xml:space="preserve">
+    <value>이 형식 로드 다시 시도</value>
+  </data>
+  <data name="WhfmtDetail_ExcludeFromCatalogToolTip" xml:space="preserve">
+    <value>이 형식을 카탈로그에서 제외</value>
+  </data>
+  <data name="WhfmtDetail_FormatLoadedSuccessfully" xml:space="preserve">
+    <value>형식이 성공적으로 로드됨</value>
+  </data>
+  <data name="WhfmtDetail_FormatLoadFailed" xml:space="preserve">
+    <value>형식 로드 실패</value>
+  </data>
+  <data name="WhfmtDetail_OverviewTab" xml:space="preserve">
+    <value>개요</value>
+  </data>
+  <data name="WhfmtDetail_VersionLabel" xml:space="preserve">
+    <value>버전</value>
+  </data>
+  <data name="WhfmtDetail_AuthorLabel" xml:space="preserve">
+    <value>작성자</value>
+  </data>
+  <data name="WhfmtDetail_CategoryLabel" xml:space="preserve">
+    <value>범주</value>
+  </data>
+  <data name="WhfmtDetail_PlatformLabel" xml:space="preserve">
+    <value>플랫폼</value>
+  </data>
+  <data name="WhfmtDetail_EditorLabel" xml:space="preserve">
+    <value>편집기</value>
+  </data>
+  <data name="WhfmtDetail_DiffLabel" xml:space="preserve">
+    <value>Diff</value>
+  </data>
+  <data name="WhfmtDetail_StatusLabel" xml:space="preserve">
+    <value>상태</value>
+  </data>
+  <data name="WhfmtDetail_ExtensionsLabel" xml:space="preserve">
+    <value>확장명</value>
+  </data>
+  <data name="WhfmtDetail_QualityScoreLabel" xml:space="preserve">
+    <value>품질 점수</value>
+  </data>
+  <data name="WhfmtDetail_DetectionLabel" xml:space="preserve">
+    <value>검색</value>
+  </data>
+  <data name="WhfmtDetail_BlocksLabel" xml:space="preserve">
+    <value>블록</value>
+  </data>
+  <data name="WhfmtDetail_LoadErrorTitle" xml:space="preserve">
+    <value>로드 오류</value>
+  </data>
+  <data name="WhfmtDetail_ReferencesTab" xml:space="preserve">
+    <value>참조</value>
+  </data>
+  <data name="WhfmtDetail_SpecificationsLabel" xml:space="preserve">
+    <value>사양</value>
+  </data>
+  <data name="WhfmtDetail_WebLinksLabel" xml:space="preserve">
+    <value>웹 링크</value>
+  </data>
+  <data name="WhfmtDetail_AssertionsTab" xml:space="preserve">
+    <value>어설션</value>
+  </data>
+  <data name="WhfmtDetail_AIHintsTab" xml:space="preserve">
+    <value>AI 힌트</value>
+  </data>
+  <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve">
+    <value>분석 컨텍스트</value>
+  </data>
+  <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve">
+    <value>알려진 취약성</value>
+  </data>
+  <data name="WhfmtDetail_JsonTab" xml:space="preserve">
+    <value>JSON</value>
+  </data>
+  <data name="Whfmt_AddFormatTitle" xml:space="preserve">
+    <value>형식 정의 추가</value>
+  </data>
+  <data name="Whfmt_AddFormatFilter" xml:space="preserve">
+    <value>whfmt 정의 (*.whfmt)|*.whfmt</value>
+  </data>
+  <data name="Whfmt_AddFormatError" xml:space="preserve">
+    <value>형식 추가</value>
+  </data>
+  <data name="Whfmt_DeleteFormatTitle" xml:space="preserve">
+    <value>형식 삭제</value>
+  </data>
+  <data name="WhfmtCatalog_Tooltip_OpenSelected" xml:space="preserve"><value>선택 항목 열기</value></data>
+  <data name="WhfmtCatalog_Tooltip_ExportSelected" xml:space="preserve"><value>선택 항목을 파일로 내보내기…</value></data>
+  <data name="WhfmtCatalog_Tooltip_AddFormat" xml:space="preserve"><value>형식 파일 추가…</value></data>
+  <data name="WhfmtCatalog_Tooltip_Refresh" xml:space="preserve"><value>카탈로그 새로 고침 (F5)</value></data>
+</root>

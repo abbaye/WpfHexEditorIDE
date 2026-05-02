@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ArchiveExplorer_PluginName" xml:space="preserve">
+    <value>存档资源管理器</value>
+  </data>
+  <data name="ArchiveExplorer_OpenArchive" xml:space="preserve">
+    <value>打开存档</value>
+  </data>
+  <data name="ArchiveExplorer_SelectExtractFolder" xml:space="preserve">
+    <value>选择默认解压文件夹</value>
+  </data>
+  <data name="AE_ExtractAll" xml:space="preserve"><value>全部提取…</value></data>
+  <data name="AE_ExtractSelected" xml:space="preserve"><value>提取选中项…</value></data>
+  <data name="AE_Preview" xml:space="preserve"><value>预览</value></data>
+  <data name="AE_OpenRawInHex" xml:space="preserve"><value>在Hex中打开原始数据</value></data>
+  <data name="AE_OpenArchive" xml:space="preserve"><value>打开存档…</value></data>
+  <data name="AE_RefreshArchive" xml:space="preserve"><value>刷新存档</value></data>
+  <data name="AE_NavigateUp" xml:space="preserve"><value>向上导航（退出嵌套存档）</value></data>
+  <data name="AE_MoreOptions" xml:space="preserve"><value>更多选项</value></data>
+  <data name="AE_ExtractAllTooltip" xml:space="preserve"><value>全部提取…</value></data>
+  <data name="AE_ExtractSelectedTooltip" xml:space="preserve"><value>提取选中项…</value></data>
+  <data name="AE_PreviewTooltip" xml:space="preserve"><value>预览条目</value></data>
+  <data name="AE_OpenRawInHexTooltip" xml:space="preserve"><value>在Hex编辑器中打开原始字节</value></data>
+  <data name="AE_FilterEntries" xml:space="preserve"><value>过滤条目…</value></data>
+  <data name="AE_ClearFilter" xml:space="preserve"><value>清除过滤器</value></data>
+  <data name="AE_Loading" xml:space="preserve"><value>加载中…</value></data>
+  <data name="AE_DrillIntoArchive" xml:space="preserve"><value>深入存档</value></data>
+  <data name="AE_CopyPath" xml:space="preserve"><value>复制路径</value></data>
+  <data name="AE_Properties" xml:space="preserve"><value>属性…</value></data>
+  <data name="AE_DropArchiveHere" xml:space="preserve"><value>在此处拖放存档</value></data>
+  <data name="AE_ClickOpenToolbar" xml:space="preserve"><value>或点击上方工具栏中的打开</value></data>
+  <data name="AE_BehaviourSection" xml:space="preserve"><value>行为</value></data>
+  <data name="AE_AutoShowPanel" xml:space="preserve"><value>打开存档文件时自动显示面板</value></data>
+  <data name="AE_ShowCompressionBadge" xml:space="preserve"><value>在树中显示压缩率徽章</value></data>
+  <data name="AE_ShowFormatBadge" xml:space="preserve"><value>显示格式检测徽章 (whfmt)</value></data>
+  <data name="AE_PreviewSection" xml:space="preserve"><value>预览</value></data>
+  <data name="AE_MaxPreviewSize" xml:space="preserve"><value>最大预览大小 (KB):</value></data>
+  <data name="AE_ExtractionSection" xml:space="preserve"><value>提取</value></data>
+  <data name="AE_MaxFormatDetectionSize" xml:space="preserve"><value>最大格式检测大小 (KB):</value></data>
+  <data name="AE_DefaultExtractFolder" xml:space="preserve"><value>默认提取文件夹:</value></data>
+  <data name="AE_Browse" xml:space="preserve"><value>浏览…</value></data>
+  <data name="AE_EntryPropertiesTitle" xml:space="preserve"><value>条目属性</value></data>
+  <data name="AE_FullPath" xml:space="preserve"><value>完整路径:</value></data>
+  <data name="AE_Size" xml:space="preserve"><value>大小:</value></data>
+  <data name="AE_Compressed" xml:space="preserve"><value>压缩:</value></data>
+  <data name="AE_Ratio" xml:space="preserve"><value>比率:</value></data>
+  <data name="AE_Method" xml:space="preserve"><value>方法:</value></data>
+  <data name="AE_LastModified" xml:space="preserve"><value>最后修改:</value></data>
+  <data name="AE_Crc32" xml:space="preserve"><value>CRC32:</value></data>
+  <data name="AE_Close" xml:space="preserve"><value>关闭</value></data>
+</root>

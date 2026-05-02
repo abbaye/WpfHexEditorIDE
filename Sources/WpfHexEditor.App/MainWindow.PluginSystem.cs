@@ -24,6 +24,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.SDK.Events;
 using WpfHexEditor.Core.Terminal;
@@ -138,10 +139,11 @@ public partial class MainWindow
             var menuAdapter      = _menuAdapter;
             var statusBarAdapter = (StatusBarAdapter) _serviceProvider.GetRequiredService<WpfHexEditor.PluginHost.Adapters.IStatusBarAdapter>();
 
-            // Initialize the dynamic View & Debug menu systems BEFORE plugins load,
-            // so plugin-contributed items trigger ViewItemsChanged/DebugItemsChanged → RebuildMenu().
+            // Initialize the dynamic View, Debug & Tools menu systems BEFORE plugins load,
+            // so plugin-contributed items trigger the respective *Changed → Rebuild*() handlers.
             InitViewMenuOrganizer();
             InitDebugMenuOrganizer();
+            InitToolsMenuOrganizer();
 
             // 2. Build PluginHost singletons
             var permissionService = new PermissionService();
@@ -542,6 +544,27 @@ public partial class MainWindow
                     AppSettingsService.Instance.Current.LazyPluginsToRestore = failedToRestore;
                     AppSettingsService.Instance.Save();
                 }
+
+                // Layout-driven activation: activate dormant plugins whose panel ContentIds appear
+                // in the saved dock layout but were NOT captured in LazyPluginsToRestore (e.g. the
+                // panel was hidden or in auto-hide at shutdown so HasVisiblePanelForPlugin returned false).
+                if (_layout is not null && _layoutWasRestoredFromFile)
+                {
+                    var layoutContentIds = _layout.GetAllItems().Select(i => i.ContentId).ToList();
+                    var dormantInLayout  = _pluginHost.GetDormantPluginsInLayout(layoutContentIds);
+                    if (dormantInLayout.Count > 0)
+                    {
+                        OutputLogger.PluginInfo($"[PluginSystem] Layout-scan found {dormantInLayout.Count} dormant plugin(s) with panels in layout — activating.");
+                        foreach (var id in dormantInLayout)
+                        {
+                            try { await _pluginHost.ActivateDormantPluginAsync(id, CancellationToken.None).ConfigureAwait(false); }
+                            catch (Exception ex)
+                            {
+                                OutputLogger.PluginError($"[PluginSystem] Layout-scan activation failed for '{id}': {ex.Message}");
+                            }
+                        }
+                    }
+                }
             }
             finally
             {
@@ -918,7 +941,7 @@ public partial class MainWindow
 
         var vm      = new PluginManagerViewModel(_pluginHost, Dispatcher, outputService: _outputService);
         var control = new PluginManagerControl(vm);
-        var item    = new DockItem { ContentId = PluginManagerContentId, Title = "Extension Manager", CanClose = true };
+        var item    = new DockItem { ContentId = PluginManagerContentId, Title = AppResources.App_DockTitle_ExtensionManager, CanClose = true };
 
         DockPanelToCenter(PluginManagerContentId, item, control);
     }
@@ -951,7 +974,7 @@ public partial class MainWindow
 
         var vm      = new WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
         var control = new WpfHexEditor.PluginHost.UI.PluginMonitoringPanel { DataContext = vm };
-        var item    = new DockItem { ContentId = PluginMonitorContentId, Title = "Extensions Monitor", CanClose = true };
+        var item    = new DockItem { ContentId = PluginMonitorContentId, Title = AppResources.App_DockTitle_ExtensionsMonitor, CanClose = true };
 
         DockPanelToBottom(PluginMonitorContentId, item, control);
     }
@@ -969,7 +992,7 @@ public partial class MainWindow
         var vm    = new MarketplacePanelViewModel(svc, _pluginHost!, msg => OutputLogger.PluginInfo(msg));
         var panel = new MarketplacePanel();
         panel.Initialize(vm);
-        var item  = new DockItem { ContentId = MarketplaceContentId, Title = "Extension Marketplace", CanClose = true };
+        var item  = new DockItem { ContentId = MarketplaceContentId, Title = AppResources.App_DockTitle_ExtensionMarketplace, CanClose = true };
 
         DockPanelToBottom(MarketplaceContentId, item, panel);
     }
@@ -986,7 +1009,7 @@ public partial class MainWindow
 
         var dialog = new Microsoft.Win32.OpenFolderDialog
         {
-            Title = "Select Extension Build Output Directory",
+            Title = AppResources.App_Extensions_SelectOutputDir,
             Multiselect = false
         };
 
@@ -1060,7 +1083,7 @@ public partial class MainWindow
             case LspServerState.Error:
                 LspStatusDot.Text        = "✕";
                 LspStatusDot.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "LSP_ErrorDot");
-                LspStatusText.Text       = "LSP Error";
+                LspStatusText.Text       = AppResources.App_Lsp_ErrorTitle;
                 LspStatusItem.ToolTip    = e.ErrorMessage ?? "Language server failed to start.";
                 LspStatusItem.Visibility = Visibility.Visible;
                 break;
@@ -1171,7 +1194,7 @@ public partial class MainWindow
         _terminalService?.SetSessionManager(vm.SessionManager);
         _terminalService?.SetRegistry(vm.CommandRegistry);
         var control = new TerminalPanel { DataContext = vm };
-        var item    = new DockItem { ContentId = TerminalPanelContentId, Title = "Terminal", CanClose = true };
+        var item    = new DockItem { ContentId = TerminalPanelContentId, Title = AppResources.App_DockTitle_Terminal, CanClose = true };
 
         DockPanelToBottom(TerminalPanelContentId, item, control);
     }

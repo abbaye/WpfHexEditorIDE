@@ -30,9 +30,11 @@ public sealed class WhfmtCatalogViewModel : ViewModelBase, IDisposable
 {
     private IEmbeddedFormatCatalog?  _embCatalog;
     private IFormatCatalogService?   _catalogSvc;
+    private WhfmtExplorerSettings?   _settings;
 
     private string  _searchText   = string.Empty;
     private string  _statusText   = "Loading…";
+    private WhfmtDetailPanelPosition _detailPosition = WhfmtDetailPanelPosition.Right;
 
     private readonly ObservableCollection<WhfmtFormatItemVm> _allItems = [];
     private readonly List<WhfmtFormatItemVm>                  _selectedItems = [];
@@ -66,6 +68,16 @@ public sealed class WhfmtCatalogViewModel : ViewModelBase, IDisposable
 
     public int SelectedCount => _selectedItems.Count;
     public int TotalCount    => _allItems.Count;
+
+    public WhfmtDetailPanelPosition DetailPosition
+    {
+        get => _detailPosition;
+        set
+        {
+            if (!SetField(ref _detailPosition, value)) return;
+            if (_settings is not null) _settings.CatalogDetailPosition = value;
+        }
+    }
 
     // ------------------------------------------------------------------
     // Commands
@@ -116,6 +128,8 @@ public sealed class WhfmtCatalogViewModel : ViewModelBase, IDisposable
     {
         _embCatalog = embCatalog;
         _catalogSvc = catalogSvc;
+        _settings   = settings;
+        _detailPosition = settings.CatalogDetailPosition;
 
         adHocSvc.CatalogChanged += (_, _) => RebuildItems();
         catalogSvc.FormatReloaded += (_, _) => RebuildItems();

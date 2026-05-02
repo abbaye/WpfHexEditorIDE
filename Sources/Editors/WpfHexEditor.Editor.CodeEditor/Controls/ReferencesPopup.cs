@@ -30,6 +30,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -303,7 +304,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // "Collapse all" — TextBlock link
             _collapseLink = new TextBlock
             {
-                Text              = "Collapse all",
+                Text              = CodeEditorResources.CodeEd_Refs_CollapseAll,
                 FontSize          = 11,
                 Background        = Brushes.Transparent,
                 Cursor            = Cursors.Hand,
@@ -319,7 +320,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // "Refresh" — TextBlock link
             var refreshLink = new TextBlock
             {
-                Text              = "Refresh",
+                Text              = CodeEditorResources.CodeEd_Refs_Refresh,
                 FontSize          = 11,
                 Background        = Brushes.Transparent,
                 Cursor            = Cursors.Hand,
@@ -371,7 +372,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void PopulateContent(IReadOnlyList<ReferenceGroup> groups)
         {
             _allCollapsed         = false;
-            _collapseLink.Text    = "Collapse all";
+            _collapseLink.Text    = CodeEditorResources.CodeEd_FindRef_CollapseAll;
 
             var panel = ReferencesTreeBuilder.BuildGroupsPanel(
                 groups,
@@ -396,7 +397,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 panel.Visibility = _allCollapsed ? Visibility.Collapsed : Visibility.Visible;
                 chevron.Text     = _allCollapsed ? "\uE76B" : "\uE70D";
             }
-            _collapseLink.Text = _allCollapsed ? "Expand all" : "Collapse all";
+            _collapseLink.Text = _allCollapsed ? CodeEditorResources.CodeEd_Refs_ExpandAll : CodeEditorResources.CodeEd_Refs_CollapseAll;
         }
 
         #endregion

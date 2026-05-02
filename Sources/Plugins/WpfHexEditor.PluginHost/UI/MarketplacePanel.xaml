@@ -25,10 +25,16 @@
              mc:Ignorable="d"
              d:DesignWidth="900" d:DesignHeight="600"
              Background="{DynamicResource DockPanelBackgroundBrush}"
-             AllowDrop="True">
+             AllowDrop="True"
+             xmlns:phSvc="clr-namespace:WpfHexEditor.PluginHost.Services">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <phSvc:PluginHostLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <DockPanel>
@@ -44,42 +50,42 @@
                 </Style>
             </ToolBar.Resources>
 
-            <Button ToolTip="Refresh"
+            <Button ToolTip="{DynamicResource MKT_RefreshTooltip}"
                     Style="{DynamicResource ToolbarButtonStyle}"
                     Command="{Binding RefreshCommand}"
                     Padding="6,3">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
-                    <TextBlock Text=" Refresh" Margin="3,0,0,0"
+                    <TextBlock Text="{DynamicResource MKT_RefreshButton}" Margin="3,0,0,0"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 
             <Separator/>
 
-            <ToggleButton ToolTip="Show verified only"
+            <ToggleButton ToolTip="{DynamicResource MKT_ShowVerifiedTooltip}"
                           Style="{DynamicResource ToolbarToggleButtonStyle}"
                           IsChecked="{Binding ShowVerifiedOnly}"
                           Padding="6,3">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
-                    <TextBlock Text=" Verified" Margin="3,0,0,0"
+                    <TextBlock Text="{DynamicResource MKT_VerifiedLabel}" Margin="3,0,0,0"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 </StackPanel>
             </ToggleButton>
 
             <Separator/>
 
-            <Button ToolTip="Install plugin from local .whxplugin file"
+            <Button ToolTip="{DynamicResource MKT_InstallFileTooltip}"
                     Style="{DynamicResource ToolbarButtonStyle}"
                     Command="{Binding InstallFromFileCommand}"
                     Padding="6,3">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xE8F4;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
-                    <TextBlock Text=" Install File…" Margin="3,0,0,0"
+                    <TextBlock Text="{DynamicResource PH_InstallFile}" Margin="3,0,0,0"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
@@ -111,7 +117,7 @@
             <!-- ════════════════════════════════════════════════════════════════
                  Tab 0 — Browse
                  ════════════════════════════════════════════════════════════════ -->
-            <TabItem Header="Browse">
+            <TabItem Header="{DynamicResource MKT_BrowseTab}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="320" MinWidth="180"/>
@@ -131,7 +137,7 @@
                                      BorderBrush="{DynamicResource DockBorderBrush}"
                                      CaretBrush="{DynamicResource DockMenuForegroundBrush}"
                                      Padding="4,0"/>
-                            <TextBlock Text="&#xE721;  Search marketplace…"
+                            <TextBlock Text="{DynamicResource PH_SearchMarketplaceWithIcon}"
                                        FontFamily="Segoe MDL2 Assets"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        Opacity="0.45" Margin="8,0,0,0"
@@ -204,7 +210,7 @@
                                                    FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                    Foreground="{DynamicResource DockAccentBrush}"
                                                    VerticalAlignment="Center" Margin="4,0,0,0"
-                                                   ToolTip="Verified publisher">
+                                                   ToolTip="{DynamicResource MKT_VerifiedPublisherTooltip}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -235,7 +241,7 @@
                                     DataContext="{Binding SelectedBrowseListing}">
 
                             <!-- Empty state -->
-                            <TextBlock Text="Select a plugin to see details."
+                            <TextBlock Text="{DynamicResource MKT_SelectPluginHint}"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        Opacity="0.5" HorizontalAlignment="Center" Margin="0,40,0,0">
                                 <TextBlock.Style>
@@ -316,7 +322,7 @@
                                 </ItemsControl>
 
                                 <!-- Release notes -->
-                                <TextBlock Text="Release Notes" FontWeight="SemiBold" FontSize="12"
+                                <TextBlock Text="{DynamicResource MKT_ReleaseNotesLabel}" FontWeight="SemiBold" FontSize="12"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,0,4">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
@@ -346,7 +352,7 @@
                                 </TextBlock>
 
                                 <!-- Install button -->
-                                <Button Content="Install"
+                                <Button Content="{DynamicResource MKT_InstallButton}"
                                         Style="{DynamicResource PrimaryActionButtonStyle}"
                                         Command="{Binding DataContext.InstallSelectedCommand,
                                             RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -363,7 +369,7 @@
             <!-- ════════════════════════════════════════════════════════════════
                  Tab 1 — Installed
                  ════════════════════════════════════════════════════════════════ -->
-            <TabItem Header="Installed">
+            <TabItem Header="{DynamicResource MKT_InstalledTab}">
                 <DockPanel Background="{DynamicResource DockPanelBackgroundBrush}">
 
                     <!-- Toolbar row -->
@@ -422,7 +428,7 @@
                                                FontFamily="Segoe MDL2 Assets" FontSize="12"
                                                Foreground="{DynamicResource DockAccentBrush}"
                                                VerticalAlignment="Center" Margin="6,0,4,0"
-                                               ToolTip="Integrity verified">
+                                               ToolTip="{DynamicResource MKT_IntegrityTooltip}">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -437,7 +443,7 @@
 
                                     <!-- Rollback + Uninstall buttons -->
                                     <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                        <Button Content="Rollback"
+                                        <Button Content="{DynamicResource MKT_RollbackButton}"
                                                 Style="{DynamicResource ToolbarButtonStyle}"
                                                 Command="{Binding DataContext.RollbackCommand,
                                                     RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -445,8 +451,8 @@
                                                 Padding="8,3" FontSize="11"
                                                 Margin="0,0,4,0"
                                                 VerticalAlignment="Center"
-                                                ToolTip="Restore the previously installed version from backup"/>
-                                        <Button Content="Uninstall"
+                                                ToolTip="{DynamicResource MKT_RollbackTooltip}"/>
+                                        <Button Content="{DynamicResource MKT_UninstallButton}"
                                                 Style="{DynamicResource ToolbarButtonStyle}"
                                                 Command="{Binding DataContext.UninstallCommand,
                                                     RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -464,7 +470,7 @@
             <!-- ════════════════════════════════════════════════════════════════
                  Tab 2 — Updates
                  ════════════════════════════════════════════════════════════════ -->
-            <TabItem Header="Updates">
+            <TabItem Header="{DynamicResource MKT_UpdatesTab}">
                 <DockPanel Background="{DynamicResource DockPanelBackgroundBrush}">
 
                     <!-- Toolbar: Update All -->
@@ -473,20 +479,20 @@
                             BorderBrush="{DynamicResource DockBorderBrush}"
                             BorderThickness="0,0,0,1" Height="32" Padding="6,0">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Button Content="Update All"
+                            <Button Content="{DynamicResource MKT_UpdateAllButton}"
                                     Style="{DynamicResource ToolbarButtonStyle}"
                                     Command="{Binding UpdateAllCommand}"
                                     Padding="10,3"/>
                             <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" FontSize="11"
                                        Opacity="0.65" Foreground="{DynamicResource DockMenuForegroundBrush}">
                                 <Run Text="{Binding UpdateListings.Count, Mode=OneWay}"/>
-                                <Run Text=" update(s) available"/>
+                                <Run Text="{DynamicResource PH_UpdatesAvailable}"/>
                             </TextBlock>
                         </StackPanel>
                     </Border>
 
                     <!-- Empty state -->
-                    <TextBlock Text="All plugins are up to date."
+                    <TextBlock Text="{DynamicResource MKT_AllUpToDate}"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Opacity="0.5" HorizontalAlignment="Center"
                                VerticalAlignment="Center" Margin="0,40,0,0">
@@ -538,7 +544,7 @@
                                     </StackPanel>
 
                                     <Button Grid.Column="1"
-                                            Content="Update"
+                                            Content="{DynamicResource MKT_UpdateButton}"
                                             Style="{DynamicResource PrimaryActionButtonStyle}"
                                             Command="{Binding DataContext.UpdateSelectedCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"

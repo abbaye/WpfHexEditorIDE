@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Script_EngineNotAvailable" xml:space="preserve">
+    <value>Mecanismo de scripting não disponível. Verifique se WpfHexEditor.Core.Scripting está carregado.</value>
+  </data>
+  <data name="Script_StatusCancelled" xml:space="preserve">
+    <value>Cancelado.</value>
+  </data>
+  <data name="Script_StatusError" xml:space="preserve">
+    <value>Erro.</value>
+  </data>
+  <data name="Script_StatusSaved" xml:space="preserve">
+    <value>Salvo.</value>
+  </data>
+  <data name="SCR_F5Help" xml:space="preserve"><value>Pressione F5 para executar · Ctrl+F5 para validar</value></data>
+  <data name="SCR_StatusReady" xml:space="preserve"><value>Pronto</value></data>
+</root>

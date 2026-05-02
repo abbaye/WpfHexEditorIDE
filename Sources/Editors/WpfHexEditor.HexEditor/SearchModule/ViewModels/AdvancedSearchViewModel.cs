@@ -32,6 +32,7 @@ using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Core.Search.Models;
 using WpfHexEditor.Core.Search.Services;
+using WpfHexEditor.Core.Properties;
 using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.HexEditor.Search.ViewModels
@@ -571,7 +572,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             get
             {
                 if (TotalResultCount == 0)
-                    return "No matches";
+                    return Resources.Search_NoMatches;
 
                 if (SearchDurationMs > 0)
                     return $"{TotalResultCount:N0} matches in {SearchDurationMs:F0}ms at {SearchSpeedMBps:F2} MB/s";
@@ -802,7 +803,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             catch (Exception ex)
             {
                 // Error handling
-                System.Windows.MessageBox.Show($"Search error: {ex.Message}", "Error",
+                System.Windows.MessageBox.Show($"{Resources.Search_Error_Title}: {ex.Message}", Resources.Search_Error_Label,
                     System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
             finally
@@ -823,7 +824,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 // TBL TEXT mode
                 if (!IsTblLoaded)
                 {
-                    System.Windows.MessageBox.Show("No TBL loaded. Cannot search TBL text.", "TBL Required",
+                    System.Windows.MessageBox.Show(Resources.Search_Error_NoTBLLoaded, Resources.Search_Error_TBLRequired,
                         System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
                     return;
                 }
@@ -1022,8 +1023,8 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                         if (!IsTblLoaded || _tblStream == null)
                         {
                             System.Windows.MessageBox.Show(
-                                "No TBL loaded. Cannot encode replacement bytes in TBL TEXT mode.",
-                                "TBL Required",
+                                Resources.Search_Error_NoTBLForReplacement,
+                                Resources.Search_Error_TBLRequired,
                                 System.Windows.MessageBoxButton.OK,
                                 System.Windows.MessageBoxImage.Warning);
                             return null;
@@ -1038,7 +1039,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             {
                 System.Windows.MessageBox.Show(
                     $"Invalid replacement value: {ex.Message}",
-                    "Replace Error",
+                    Resources.Search_Replace_Title,
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Error);
                 return null;
@@ -1071,7 +1072,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show(
-                    $"Replace error: {ex.Message}", "Error",
+                    $"Replace error: {ex.Message}", Resources.Search_Error_Label,
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Error);
             }
@@ -1088,7 +1089,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             var count = StandardResults.Count;
             var confirm = System.Windows.MessageBox.Show(
                 $"Replace all {count:N0} occurrence(s)?",
-                "Replace All",
+                Resources.Search_ReplaceAll_Title,
                 System.Windows.MessageBoxButton.YesNo,
                 System.Windows.MessageBoxImage.Question);
 
@@ -1118,7 +1119,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show(
-                    $"Replace All error: {ex.Message}", "Error",
+                    $"Replace All error: {ex.Message}", Resources.Search_Error_Label,
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Error);
             }
@@ -1154,7 +1155,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
         {
             var saveDialog = new SaveFileDialog
             {
-                Filter = "CSV Files (*.csv)|*.csv|Text Files (*.txt)|*.txt|JSON Files (*.json)|*.json",
+                Filter = Resources.Search_ExportDialog_Filter,
                 DefaultExt = "csv",
                 FileName = $"search_results_{DateTime.Now:yyyyMMdd_HHmmss}"
             };
@@ -1196,8 +1197,8 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
 
             var saveDialog = new SaveFileDialog
             {
-                Title   = "Export TBL File",
-                Filter  = "TBL Files (*.tbl)|*.tbl|All Files (*.*)|*.*",
+                Title   = Resources.Search_ExportTBL_Title,
+                Filter  = Resources.Search_TBLFileDialog_Filter,
                 DefaultExt = "tbl",
                 FileName = $"encoding_offset{proposal.Offset}.tbl"
             };
@@ -1209,7 +1210,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 newTbl.SaveAs(saveDialog.FileName);
                 System.Windows.MessageBox.Show(
                     $"TBL exported successfully!\n{saveDialog.FileName}\nEntries: {newTbl.Length}",
-                    "Export Successful",
+                    Resources.Search_ExportTBL_Success,
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Information);
             }
@@ -1217,7 +1218,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             {
                 System.Windows.MessageBox.Show(
                     $"Failed to export TBL:\n{ex.Message}",
-                    "Export Error",
+                    Resources.Search_ExportTBL_Error,
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Error);
             }
@@ -1230,16 +1231,16 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             var newTbl = _relativeEngine.ExportToTbl(proposal);
             TblLoadRequested?.Invoke(this, newTbl);
 
-            System.Windows.MessageBox.Show($"Encoding applied!\nOffset: {proposal.Offset}\nYou can now use TBL TEXT mode.",
-                "Encoding Applied", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+            System.Windows.MessageBox.Show($"Encoding applied!\nOffset: {proposal.Offset}\n{Resources.Search_EncodingApplied_Message}",
+                Resources.Search_EncodingApplied_Title, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
         }
 
         private void LoadTbl()
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog
             {
-                Title = "Select a TBL (Character Table) file",
-                Filter = "TBL Files (*.tbl)|*.tbl|All Files (*.*)|*.*",
+                Title = Resources.Search_LoadTBL_Title,
+                Filter = Resources.Search_TBLFileDialog_Filter,
                 CheckFileExists = true,
                 Multiselect = false
             };
@@ -1258,7 +1259,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
 
                     System.Windows.MessageBox.Show(
                         $"TBL loaded successfully!\n\n{tbl.FileName}\nEntries: {tbl.Length}\n\nYou can now use TBL TEXT mode.",
-                        "TBL Loaded",
+                        Resources.Search_TBLLoaded_Title,
                         System.Windows.MessageBoxButton.OK,
                         System.Windows.MessageBoxImage.Information);
                 }
@@ -1266,7 +1267,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 {
                     System.Windows.MessageBox.Show(
                         $"Failed to load TBL file:\n{ex.Message}",
-                        "Error Loading TBL",
+                        Resources.Search_ErrorLoadingTBL_Title,
                         System.Windows.MessageBoxButton.OK,
                         System.Windows.MessageBoxImage.Error);
                 }
@@ -1279,7 +1280,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
 
             var result = System.Windows.MessageBox.Show(
                 "Close the current TBL file?\n\nTBL TEXT mode will be disabled.",
-                "Close TBL",
+                Resources.Search_CloseTBL_Title,
                 System.Windows.MessageBoxButton.YesNo,
                 System.Windows.MessageBoxImage.Question);
 

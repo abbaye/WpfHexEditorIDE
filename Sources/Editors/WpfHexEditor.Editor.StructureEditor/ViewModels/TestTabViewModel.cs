@@ -13,6 +13,7 @@ using System.IO;
 using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Editor.StructureEditor.Properties;
 using WpfHexEditor.Editor.StructureEditor.Services;
 
 namespace WpfHexEditor.Editor.StructureEditor.ViewModels;
@@ -113,7 +114,7 @@ internal sealed class TestTabViewModel : ViewModelBase
     {
         var dlg = new OpenFileDialog
         {
-            Title       = "Select a binary file to test against",
+            Title       = StructureEditorResources.StructureEditor_TestBrowseDialogTitle,
             Filter      = "All files (*.*)|*.*",
             Multiselect = false,
         };

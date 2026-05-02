@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Core.ProjectSystem.Properties;
 using WpfHexEditor.Core.ProjectSystem.Templates;
 
 namespace WpfHexEditor.Core.ProjectSystem.Dialogs;
@@ -124,7 +125,7 @@ public partial class NewProjectDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
     {
         var dlg = new Microsoft.Win32.OpenFolderDialog
         {
-            Title            = "Select parent folder for the new project",
+            Title            = ProjectSystemResources.Dialog_SelectProjectFolder,
             InitialDirectory = LocationBox.Text,
         };
         if (dlg.ShowDialog() == true)

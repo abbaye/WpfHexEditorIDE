@@ -6,6 +6,12 @@ A standalone WPF terminal emulator UserControl for .NET 8.
 dotnet add package WpfTerminal
 ```
 
+## What's New in 0.9.7.0
+
+- **Fix**: LSP host startup stability — burst-init dispatcher calls downgraded to `Background` priority so shell startup does not block WPF frame rendering.
+- **Fix**: Scroll-bar theming consistent across all docked terminal panels.
+- **Fix**: Plugin error routing — terminal plugin errors forwarded to output panel rather than silently dropped.
+
 ## What's New in 0.9.6.2
 
 - **Standalone**: WpfTerminal is now a fully self-contained NuGet package. Core, Core.Events, and SDK assemblies are bundled — no dependency on the WpfHexEditorIDE host is required.
@@ -68,4 +74,10 @@ All bundled inside the package — zero external NuGet dependencies:
 
 ## License
 
-GNU AGPL v3.0 — [GitHub Repository](https://github.com/abbaye/WpfHexEditorIDE)
+GNU AGPL v3.0
+
+## Links
+
+- **Full documentation**: [WpfTerminal-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Controls/WpfHexEditor.Terminal/WpfTerminal-guide.md) — Architecture, API reference, integration guides (Level 1–4), macros, HxScript, plugins, and settings reference.
+- [GitHub Repository](https://github.com/abbaye/WpfHexEditorIDE)
+- [Report Issues](https://github.com/abbaye/WpfHexEditorIDE/issues)

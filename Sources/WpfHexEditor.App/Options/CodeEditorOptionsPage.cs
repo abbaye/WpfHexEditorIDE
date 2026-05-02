@@ -9,6 +9,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Options;
@@ -114,8 +115,8 @@ public sealed class CodeEditorOptionsPage : UserControl, IOptionsPage
         var sidePanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
         sidePanel.Children.Add(new TextBlock { Text = "Side:", VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 8, 0) });
         _minimapSideCombo = new ComboBox { Width = 80 };
-        _minimapSideCombo.Items.Add("Right");
-        _minimapSideCombo.Items.Add("Left");
+        _minimapSideCombo.Items.Add(AppResources.App_CodeEditor_MinimapRight);
+        _minimapSideCombo.Items.Add(AppResources.App_CodeEditor_MinimapLeft);
         _minimapSideCombo.SelectionChanged += (_, _) => OnChanged();
         sidePanel.Children.Add(_minimapSideCombo);
         root.Children.Add(sidePanel);
@@ -123,9 +124,9 @@ public sealed class CodeEditorOptionsPage : UserControl, IOptionsPage
         var vsPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
         vsPanel.Children.Add(new TextBlock { Text = "Vertical size:", VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 8, 0) });
         _minimapVerticalSizeCombo = new ComboBox { Width = 120 };
-        _minimapVerticalSizeCombo.Items.Add("Proportional");
-        _minimapVerticalSizeCombo.Items.Add("Fill");
-        _minimapVerticalSizeCombo.Items.Add("Fit");
+        _minimapVerticalSizeCombo.Items.Add(AppResources.App_CodeEditor_MinimapProportional);
+        _minimapVerticalSizeCombo.Items.Add(AppResources.App_CodeEditor_MinimapFill);
+        _minimapVerticalSizeCombo.Items.Add(AppResources.App_CodeEditor_MinimapFit);
         _minimapVerticalSizeCombo.SelectionChanged += (_, _) => OnChanged();
         vsPanel.Children.Add(_minimapVerticalSizeCombo);
         root.Children.Add(vsPanel);

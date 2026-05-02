@@ -21,6 +21,7 @@ using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.Plugins.FileStatistics.Commands;
+using WpfHexEditor.Plugins.FileStatistics.Properties;
 using WpfHexEditor.Plugins.FileStatistics.Views;
 
 namespace WpfHexEditor.Plugins.FileStatistics;
@@ -62,7 +63,7 @@ public sealed class FileStatisticsPlugin : IWpfHexEditorPlugin
             Id,
             new PanelDescriptor
             {
-                Title           = "File Statistics",
+                Title           = FileStatisticsResources.FileStats_PluginName,
                 DefaultDockSide = "Bottom",
                 DefaultAutoHide = false,
                 CanClose        = true,
@@ -200,9 +201,9 @@ public sealed class FileStatisticsPlugin : IWpfHexEditorPlugin
         // Anomalies
         var anomalies = new List<AnomalyInfo>();
         if (nullPct > 40)
-            anomalies.Add(new AnomalyInfo { Title = "High null byte ratio", Description = $"{nullPct:F1}% null bytes" });
+            anomalies.Add(new AnomalyInfo { Title = FileStatisticsResources.FileStats_HighNullRatio, Description = $"{nullPct:F1}% null bytes" });
         if (entropy > 7.5)
-            anomalies.Add(new AnomalyInfo { Title = "Very high entropy", Description = "Data may be encrypted or compressed" });
+            anomalies.Add(new AnomalyInfo { Title = FileStatisticsResources.FileStats_VeryHighEntropy, Description = FileStatisticsResources.FileStats_MayBeEncrypted });
 
         stats.MostCommonByte         = maxByte;
         stats.MostCommonBytePct      = maxBytePct;

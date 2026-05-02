@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.PatternAnalysis
+    File        : PatternAnalysisResources.resx
+    Description : Localized UI strings for the Pattern Analysis plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PatternAnalysis_PluginName" xml:space="preserve">
+    <value>Pattern Analysis</value>
+  </data>
+  <data name="PatternAnalysis_PanelTitle" xml:space="preserve">
+    <value>Pattern Analysis</value>
+  </data>
+  <data name="PatternAnalysis_MenuItem" xml:space="preserve">
+    <value>_Pattern Analysis</value>
+  </data>
+  <data name="PatternAnalysis_NoDataLoaded" xml:space="preserve">
+    <value>No data loaded</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh" xml:space="preserve">
+    <value>Very high entropy detected</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh_Desc" xml:space="preserve">
+    <value>Data may be encrypted or compressed (entropy &gt; 7.5 bits/byte)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow" xml:space="preserve">
+    <value>Very low entropy detected</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow_Desc" xml:space="preserve">
+    <value>Data contains mostly repetitive or zero bytes (entropy &lt; 2.0 bits/byte)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Low" xml:space="preserve">
+    <value>Low randomness &#x2014; data is repetitive or structured</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Medium" xml:space="preserve">
+    <value>Medium randomness &#x2014; typical for mixed or compressed data</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_High" xml:space="preserve">
+    <value>High randomness &#x2014; data may be encrypted or highly compressed</value>
+  </data>
+  <data name="PatternAnalysis_ExtremelySkewed" xml:space="preserve">
+    <value>Extremely skewed distribution</value>
+  </data>
+  <data name="PatternAnalysis_NoData" xml:space="preserve">
+    <value>No data to analyze. Select a range in the hex editor.</value>
+  </data>
+  <data name="PatternAnalysis_MoreOptions" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="PatternAnalysis_AnalyzeMenu" xml:space="preserve">
+    <value>Analyze</value>
+  </data>
+  <data name="PatternAnalysis_AnalyzeTooltip" xml:space="preserve">
+    <value>Analyze</value>
+  </data>
+  <data name="PatternAnalysis_Title" xml:space="preserve">
+    <value>Pattern Analysis</value>
+  </data>
+  <data name="PatternAnalysis_ClickToStart" xml:space="preserve">
+    <value>Click 'Analyze' to start</value>
+  </data>
+  <data name="PatternAnalysis_AnalyzeSelection" xml:space="preserve">
+    <value>Analyze Selection</value>
+  </data>
+  <data name="PatternAnalysis_EntropySection" xml:space="preserve">
+    <value>Entropy Analysis</value>
+  </data>
+  <data name="PatternAnalysis_EntropyLabel" xml:space="preserve">
+    <value>Entropy:</value>
+  </data>
+  <data name="PatternAnalysis_MaxBits" xml:space="preserve">
+    <value>/ 8.0 bits</value>
+  </data>
+  <data name="PatternAnalysis_ByteDistribution" xml:space="preserve">
+    <value>Byte Distribution</value>
+  </data>
+  <data name="PatternAnalysis_MostFrequent" xml:space="preserve">
+    <value>Most frequent:</value>
+  </data>
+  <data name="PatternAnalysis_UniqueBytes" xml:space="preserve">
+    <value>Unique bytes:</value>
+  </data>
+  <data name="PatternAnalysis_DetectedPatterns" xml:space="preserve">
+    <value>Detected Patterns</value>
+  </data>
+  <data name="PatternAnalysis_NoPatterns" xml:space="preserve">
+    <value>No significant patterns detected</value>
+  </data>
+  <data name="PatternAnalysis_AnomaliesSection" xml:space="preserve">
+    <value>Anomalies</value>
+  </data>
+  <data name="PatternAnalysis_NoAnomalies" xml:space="preserve">
+    <value>No anomalies detected</value>
+  </data>
+  <data name="PA_Anomalies" xml:space="preserve">
+    <value>&#x26A0;&#xFE0F; Anomalies</value>
+  </data>
+  <data name="PA_NoAnomalies" xml:space="preserve">
+    <value>&#x2705; No anomalies detected</value>
+  </data>
+</root>

@@ -79,7 +79,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_PropName}" Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
                            Style="{StaticResource PropField}"
                            Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
@@ -89,9 +89,9 @@
                            Foreground="{DynamicResource TE_LineNumberForeground}"
                            BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
                            Command="{Binding OpenRawCommand}"
-                           ToolTip="Edit this block as raw JSON"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_EditAsJson}"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Type" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_PropType}" Style="{StaticResource PropLabel}"/>
                 <ComboBox  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
                            Style="{StaticResource PropCombo}"
                            ItemsSource="{Binding BlockTypes}"
@@ -106,12 +106,12 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Color" Style="{StaticResource PropLabel}" MinWidth="0" Margin="0,0,6,0"/>
+                <TextBlock Grid.Column="0" Text="{DynamicResource SE_PropColor}" Style="{StaticResource PropLabel}" MinWidth="0" Margin="0,0,6,0"/>
                 <cp:ColorPicker Grid.Column="1" Grid.ColumnSpan="2"
                                 ShowAlphaChannel="False"
                                 SelectedColor="{Binding Color, Converter={x:Static ctrl:HexStringToColorConverter.Instance}, UpdateSourceTrigger=PropertyChanged}"/>
                 <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <TextBlock Text="Opacity" Style="{StaticResource PropLabel}" MinWidth="0" Margin="12,0,6,0"/>
+                    <TextBlock Text="{DynamicResource SE_PropOpacity}" Style="{StaticResource PropLabel}" MinWidth="0" Margin="12,0,6,0"/>
                     <Slider Minimum="0" Maximum="1" Width="80" VerticalAlignment="Center"
                             Value="{Binding Opacity, UpdateSourceTrigger=PropertyChanged}"/>
                     <TextBlock FontSize="10" VerticalAlignment="Center" Margin="4,0,0,0"
@@ -126,7 +126,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Description" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Column="0" Text="{DynamicResource SE_PropDescription}" Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Column="1" Style="{StaticResource PropField}" AcceptsReturn="False"
                            Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
@@ -139,11 +139,11 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox Grid.Column="0" Content="Hidden" FontSize="11" VerticalAlignment="Center"
+                <CheckBox Grid.Column="0" Content="{DynamicResource SE_PropHidden}" FontSize="11" VerticalAlignment="Center"
                           Foreground="{DynamicResource TE_LineNumberForeground}"
                           IsChecked="{Binding Hidden, UpdateSourceTrigger=PropertyChanged}"
                           Margin="0,0,16,0"/>
-                <TextBlock Grid.Column="2" Text="Endianness" Style="{StaticResource PropLabel}" MinWidth="0" Margin="0,0,6,0"/>
+                <TextBlock Grid.Column="2" Text="{DynamicResource SE_PropEndianness}" Style="{StaticResource PropLabel}" MinWidth="0" Margin="0,0,6,0"/>
                 <ComboBox  Grid.Column="3" Style="{StaticResource PropCombo}"
                            ItemsSource="{Binding EndiannessOptions}"
                            SelectedItem="{Binding Endianness, UpdateSourceTrigger=PropertyChanged}"/>

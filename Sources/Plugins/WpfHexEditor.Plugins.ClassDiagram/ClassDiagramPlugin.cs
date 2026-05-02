@@ -45,6 +45,7 @@ using WpfHexEditor.Editor.ClassDiagram.ViewModels;
 using WpfHexEditor.Plugins.ClassDiagram.Analysis;
 using WpfHexEditor.Plugins.ClassDiagram.Options;
 using WpfHexEditor.Plugins.ClassDiagram.Panels;
+using WpfHexEditor.Plugins.ClassDiagram.Properties;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
@@ -64,7 +65,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     // ── Identity ──────────────────────────────────────────────────────────────
 
     public string  Id      => "WpfHexEditor.Plugins.ClassDiagram";
-    public string  Name    => "Class Diagram";
+    public string  Name    => ClassDiagramResources.ClassDiagram_PluginName;
     public Version Version => new(1, 0, 0);
 
     public PluginCapabilities Capabilities => new()
@@ -148,7 +149,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Class Outline",
+                Title           = ClassDiagramResources.ClassDiagram_OutlinePanelTitle,
                 DefaultDockSide = "Left",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -161,7 +162,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Class Properties",
+                Title           = ClassDiagramResources.ClassDiagram_PropertiesPanelTitle,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = false,
                 CanClose        = true,
@@ -174,7 +175,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Diagram Toolbox",
+                Title           = ClassDiagramResources.ClassDiagram_ToolboxPanelTitle,
                 DefaultDockSide = "Left",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -187,7 +188,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Relationships",
+                Title           = ClassDiagramResources.ClassDiagram_RelationshipsPanelTitle,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -200,7 +201,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Diagram History",
+                Title           = ClassDiagramResources.ClassDiagram_HistoryPanelTitle,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -213,7 +214,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Diagram Search",
+                Title           = ClassDiagramResources.ClassDiagram_SearchPanelTitle,
                 DefaultDockSide = "Bottom",
                 DefaultAutoHide = false,
                 CanClose        = true,
@@ -226,7 +227,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Metrics Dashboard",
+                Title           = ClassDiagramResources.ClassDiagram_MetricsPanelTitle,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -323,7 +324,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     public void LoadOptions() => _optionsPage?.Load();
 
-    public string GetOptionsCategory()     => "Class Diagram";
+    public string GetOptionsCategory()     => ClassDiagramResources.ClassDiagram_OptionsCategory;
     public string GetOptionsCategoryIcon() => "📐";
 
     // ── Focus tracking ────────────────────────────────────────────────────────
@@ -599,7 +600,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         }
 
         // Highlight the arrow and select the source node.
-        _wiredHost.HighlightRelationship(rel.SourceId);
+        _wiredHost.HighlightRelationship($"{rel.SourceId}:{rel.TargetId}");
 
         var srcNode = _wiredHost.Document.Classes.FirstOrDefault(n => n.Id == rel.SourceId);
         if (srcNode is not null)
@@ -671,7 +672,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // "Reset" button to clear custom color
         var resetBtn = new System.Windows.Controls.Button
         {
-            Content    = "Reset",
+            Content    = ClassDiagramResources.ClassDiagram_Reset,
             Width      = 158,
             Height     = 22,
             Margin     = new Thickness(0, 0, 0, 4),
@@ -752,7 +753,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new MenuItemDescriptor
             {
-                Header     = "Class _Outline",
+                Header     = ClassDiagramResources.ClassDiagram_Menu_OutlineHeader,
                 ParentPath = "View",
                 IconGlyph  = "\uE8A5",
                 ToolTip    = "Show / hide the Class Outline panel",
@@ -1073,7 +1074,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 $"The solution contains {totalFiles} source files ({filtered.Count} projects).\n\n" +
                 $"Generating the diagram may take a moment for large solutions.\n\n" +
                 "[Yes]  Continue\n[No]   Cancel",
-                "Generate Class Diagram for Solution",
+                ClassDiagramResources.ClassDiagram_GenerateSolutionDiagram,
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
             if (answer != MessageBoxResult.Yes) return;

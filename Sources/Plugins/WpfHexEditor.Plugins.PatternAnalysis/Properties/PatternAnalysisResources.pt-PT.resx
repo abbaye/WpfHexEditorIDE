@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PatternAnalysis_PluginName" xml:space="preserve">
+    <value>Análise de padrões</value>
+  </data>
+  <data name="PatternAnalysis_PanelTitle" xml:space="preserve">
+    <value>Análise de padrões</value>
+  </data>
+  <data name="PatternAnalysis_MenuItem" xml:space="preserve">
+    <value>_Análise de padrões</value>
+  </data>
+  <data name="PatternAnalysis_NoDataLoaded" xml:space="preserve">
+    <value>Nenhum dado carregado</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh" xml:space="preserve">
+    <value>Entropia muito alta detetada</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh_Desc" xml:space="preserve">
+    <value>Os dados podem estar encriptados ou comprimidos (entropia &gt; 7,5 bits/byte)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow" xml:space="preserve">
+    <value>Entropia muito baixa detetada</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow_Desc" xml:space="preserve">
+    <value>Os dados contêm principalmente bytes repetitivos ou nulos (entropia &lt; 2,0 bits/byte)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Low" xml:space="preserve">
+    <value>Baixa aleatoriedade — dados repetitivos ou estruturados</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Medium" xml:space="preserve">
+    <value>Aleatoriedade média — típica para dados mistos ou comprimidos</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_High" xml:space="preserve">
+    <value>Alta aleatoriedade — os dados podem estar encriptados ou altamente comprimidos</value>
+  </data>
+  <data name="PatternAnalysis_ExtremelySkewed" xml:space="preserve">
+    <value>Distribuição extremamente assimétrica</value>
+  </data>
+  <data name="PatternAnalysis_NoData" xml:space="preserve">
+    <value>Sem dados para analisar. Selecione um intervalo no editor hex.</value>
+  </data>
+  <data name="PA_Anomalies" xml:space="preserve"><value>&#x26A0;&#xFE0F; Anomalias</value></data>
+  <data name="PA_NoAnomalies" xml:space="preserve"><value>&#x2705; Nenhuma anomalia detetada</value></data>
+</root>

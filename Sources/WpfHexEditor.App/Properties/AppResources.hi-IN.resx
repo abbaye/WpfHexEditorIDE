@@ -1,0 +1,896 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="App_MinimizeToolTip" xml:space="preserve"><value>छोटा करें</value></data>
+  <data name="App_MaximizeToolTip" xml:space="preserve"><value>बड़ा करें</value></data>
+  <data name="App_CloseToolTip" xml:space="preserve"><value>बंद करें</value></data>
+  <data name="App_NotificationsToolTip" xml:space="preserve"><value>सूचनाएं</value></data>
+  <data name="App_CustomizeLayoutToolTip" xml:space="preserve"><value>लेआउट अनुकूलित करें (Ctrl+Shift+L)</value></data>
+  <data name="App_CommandPaletteToolTip" xml:space="preserve"><value>कमांड पैलेट (Ctrl+Shift+P)</value></data>
+  <data name="App_WelcomePageToolTip" xml:space="preserve"><value>स्वागत पृष्ठ</value></data>
+
+  <data name="App_Menu_File" xml:space="preserve"><value>फ़ाइल</value></data>
+  <data name="App_Menu_New" xml:space="preserve"><value>नया</value></data>
+  <data name="App_Menu_NewSolution" xml:space="preserve"><value>समाधान...</value></data>
+  <data name="App_Menu_NewProject" xml:space="preserve"><value>प्रोजेक्ट...</value></data>
+  <data name="App_Menu_NewFile" xml:space="preserve"><value>फ़ाइल...</value></data>
+  <data name="App_Menu_Open" xml:space="preserve"><value>खोलें</value></data>
+  <data name="App_Menu_OpenSolutionProject" xml:space="preserve"><value>समाधान/प्रोजेक्ट...</value></data>
+  <data name="App_Menu_OpenFolder" xml:space="preserve"><value>फ़ोल्डर...</value></data>
+  <data name="App_Menu_OpenFile" xml:space="preserve"><value>फ़ाइल...</value></data>
+  <data name="App_Menu_Close" xml:space="preserve"><value>बंद करें</value></data>
+  <data name="App_Menu_CloseAllDocuments" xml:space="preserve"><value>सभी दस्तावेज़ बंद करें</value></data>
+  <data name="App_Menu_CloseSolution" xml:space="preserve"><value>समाधान बंद करें</value></data>
+  <data name="App_Menu_Save" xml:space="preserve"><value>सहेजें</value></data>
+  <data name="App_Menu_SaveAll" xml:space="preserve"><value>सभी सहेजें</value></data>
+  <data name="App_Menu_WriteToDisk" xml:space="preserve"><value>डिस्क पर लिखें</value></data>
+  <data name="App_Menu_Workspace" xml:space="preserve"><value>कार्यक्षेत्र</value></data>
+  <data name="App_Menu_NewWorkspace" xml:space="preserve"><value>नया कार्यक्षेत्र…</value></data>
+  <data name="App_Menu_OpenWorkspace" xml:space="preserve"><value>कार्यक्षेत्र खोलें…</value></data>
+  <data name="App_Menu_SaveWorkspace" xml:space="preserve"><value>कार्यक्षेत्र सहेजें</value></data>
+  <data name="App_Menu_SaveWorkspaceAs" xml:space="preserve"><value>कार्यक्षेत्र इस रूप में सहेजें…</value></data>
+  <data name="App_Menu_CloseWorkspace" xml:space="preserve"><value>कार्यक्षेत्र बंद करें</value></data>
+  <data name="App_Menu_RecentSolutions" xml:space="preserve"><value>हाल के समाधान</value></data>
+  <data name="App_Menu_RecentFiles" xml:space="preserve"><value>हाल की फ़ाइलें</value></data>
+  <data name="App_Menu_Exit" xml:space="preserve"><value>बाहर निकलें</value></data>
+
+  <data name="App_Menu_Edit" xml:space="preserve"><value>संपादित करें</value></data>
+  <data name="App_Menu_Cut" xml:space="preserve"><value>काटें</value></data>
+  <data name="App_Menu_Copy" xml:space="preserve"><value>कॉपी करें</value></data>
+  <data name="App_Menu_Paste" xml:space="preserve"><value>पेस्ट करें</value></data>
+  <data name="App_Menu_Delete" xml:space="preserve"><value>हटाएं</value></data>
+  <data name="App_Menu_SelectAll" xml:space="preserve"><value>सभी चुनें</value></data>
+  <data name="App_Menu_Find" xml:space="preserve"><value>खोजें...</value></data>
+  <data name="App_Menu_AdvancedFindReplace" xml:space="preserve"><value>उन्नत खोज/बदलें...</value></data>
+  <data name="App_Menu_FindNext" xml:space="preserve"><value>अगला खोजें</value></data>
+  <data name="App_Menu_FindPrevious" xml:space="preserve"><value>पिछला खोजें</value></data>
+  <data name="App_Menu_GoToOffset" xml:space="preserve"><value>ऑफसेट पर जाएं…</value></data>
+  <data name="App_Menu_FormatDocument" xml:space="preserve"><value>दस्तावेज़ स्वरूपित करें</value></data>
+  <data name="App_Menu_FormatSelection" xml:space="preserve"><value>चयन स्वरूपित करें</value></data>
+
+  <data name="App_Menu_View" xml:space="preserve"><value>देखें</value></data>
+  <data name="App_Menu_Project" xml:space="preserve"><value>प्रोजेक्ट</value></data>
+  <data name="App_Menu_AddNewItem" xml:space="preserve"><value>नया आइटम जोड़ें...</value></data>
+  <data name="App_Menu_AddExistingItem" xml:space="preserve"><value>मौजूदा आइटम जोड़ें...</value></data>
+  <data name="App_Menu_AddNewProject" xml:space="preserve"><value>नया प्रोजेक्ट जोड़ें...</value></data>
+  <data name="App_Menu_Properties" xml:space="preserve"><value>गुण...</value></data>
+  <data name="App_Menu_Build" xml:space="preserve"><value>बिल्ड करें</value></data>
+  <data name="App_Menu_BuildSolution" xml:space="preserve"><value>समाधान बिल्ड करें</value></data>
+  <data name="App_Menu_BuildProject" xml:space="preserve"><value>प्रोजेक्ट बिल्ड करें</value></data>
+  <data name="App_Menu_RebuildSolution" xml:space="preserve"><value>समाधान पुनर्निर्माण करें</value></data>
+  <data name="App_Menu_RebuildProject" xml:space="preserve"><value>प्रोजेक्ट पुनर्निर्माण करें</value></data>
+  <data name="App_Menu_CleanSolution" xml:space="preserve"><value>समाधान साफ़ करें</value></data>
+  <data name="App_Menu_CleanProject" xml:space="preserve"><value>प्रोजेक्ट साफ़ करें</value></data>
+  <data name="App_Menu_CancelBuild" xml:space="preserve"><value>बिल्ड रद्द करें</value></data>
+  <data name="App_Menu_ConfigurationManager" xml:space="preserve"><value>कॉन्फ़िगरेशन प्रबंधक...</value></data>
+  <data name="App_Menu_Debug" xml:space="preserve"><value>डीबग करें</value></data>
+
+  <data name="App_Menu_Window" xml:space="preserve"><value>विंडो</value></data>
+  <data name="App_Menu_CloseDocument" xml:space="preserve"><value>दस्तावेज़ बंद करें</value></data>
+  <data name="App_Menu_CloseAllButThis" xml:space="preserve"><value>इसे छोड़कर सभी बंद करें</value></data>
+  <data name="App_Menu_CloseAllDocuments2" xml:space="preserve"><value>सभी दस्तावेज़ बंद करें</value></data>
+  <data name="App_Menu_NextDocument" xml:space="preserve"><value>अगला दस्तावेज़</value></data>
+  <data name="App_Menu_PreviousDocument" xml:space="preserve"><value>पिछला दस्तावेज़</value></data>
+  <data name="App_Menu_FullScreen" xml:space="preserve"><value>पूर्ण स्क्रीन</value></data>
+  <data name="App_Menu_TabGroups" xml:space="preserve"><value>टैब समूह</value></data>
+  <data name="App_Menu_NewVerticalTabGroup" xml:space="preserve"><value>नया लंबवत टैब समूह</value></data>
+  <data name="App_Menu_NewHorizontalTabGroup" xml:space="preserve"><value>नया क्षैतिज टैब समूह</value></data>
+  <data name="App_Menu_MoveToNextTabGroup" xml:space="preserve"><value>अगले टैब समूह में ले जाएं</value></data>
+  <data name="App_Menu_MoveToPreviousTabGroup" xml:space="preserve"><value>पिछले टैब समूह में ले जाएं</value></data>
+  <data name="App_Menu_CloseTabGroup" xml:space="preserve"><value>टैब समूह बंद करें</value></data>
+  <data name="App_Menu_CloseAllTabGroups" xml:space="preserve"><value>सभी टैब समूह बंद करें</value></data>
+  <data name="App_Menu_Layout" xml:space="preserve"><value>लेआउट</value></data>
+  <data name="App_Menu_SaveLayout" xml:space="preserve"><value>लेआउट सहेजें</value></data>
+  <data name="App_Menu_LoadLayout" xml:space="preserve"><value>लेआउट लोड करें</value></data>
+  <data name="App_Menu_ResetLayout" xml:space="preserve"><value>लेआउट रीसेट करें</value></data>
+  <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>लॉक किए गए लेआउट को टॉगल करें</value></data>
+
+  <data name="App_Menu_Tools" xml:space="preserve"><value>टूल्स</value></data>
+  <data name="App_Menu_Terminal" xml:space="preserve"><value>टर्मिनल</value></data>
+  <data name="App_Menu_Options" xml:space="preserve"><value>विकल्प...</value></data>
+  <data name="App_Menu_Extensions" xml:space="preserve"><value>एक्सटेंशन</value></data>
+  <data name="App_Menu_ExtensionManager" xml:space="preserve"><value>एक्सटेंशन प्रबंधक</value></data>
+  <data name="App_Menu_ExtensionsMonitor" xml:space="preserve"><value>एक्सटेंशन मॉनिटर</value></data>
+  <data name="App_Menu_ExtensionMarketplace" xml:space="preserve"><value>एक्सटेंशन Marketplace</value></data>
+  <data name="App_Menu_InstallFromFile" xml:space="preserve"><value>फ़ाइल से इंस्टॉल करें...</value></data>
+  <data name="App_Menu_RefreshAllExtensions" xml:space="preserve"><value>सभी एक्सटेंशन रीफ्रेश करें</value></data>
+  <data name="App_Menu_ExtensionDevWatch" xml:space="preserve"><value>एक्सटेंशन Dev Watch...</value></data>
+  <data name="App_Menu_ExtensionSystemSettings" xml:space="preserve"><value>एक्सटेंशन सिस्टम सेटिंग्स...</value></data>
+  <data name="App_Menu_Theme" xml:space="preserve"><value>थीम</value></data>
+  <data name="App_Menu_ThemeDark" xml:space="preserve"><value>गहरा</value></data>
+  <data name="App_Menu_ThemeVS2022Dark" xml:space="preserve"><value>VS2022 गहरा</value></data>
+  <data name="App_Menu_ThemeVisualStudio" xml:space="preserve"><value>Visual Studio</value></data>
+  <data name="App_Menu_ThemeDarkGlass" xml:space="preserve"><value>गहरा कांच</value></data>
+  <data name="App_Menu_ThemeCyberpunk" xml:space="preserve"><value>Cyberpunk</value></data>
+  <data name="App_Menu_ThemeSynthwave" xml:space="preserve"><value>Synthwave '84</value></data>
+  <data name="App_Menu_ThemeMatrix" xml:space="preserve"><value>Matrix / Terminal</value></data>
+  <data name="App_Menu_ThemeNord" xml:space="preserve"><value>Nord</value></data>
+  <data name="App_Menu_ThemeDracula" xml:space="preserve"><value>Dracula</value></data>
+  <data name="App_Menu_ThemeGruvbox" xml:space="preserve"><value>Gruvbox Dark</value></data>
+  <data name="App_Menu_ThemeCatppuccinMocha" xml:space="preserve"><value>Catppuccin Mocha</value></data>
+  <data name="App_Menu_ThemeTokyoNight" xml:space="preserve"><value>Tokyo Night</value></data>
+  <data name="App_Menu_ThemeLight" xml:space="preserve"><value>हल्का</value></data>
+  <data name="App_Menu_ThemeOffice" xml:space="preserve"><value>Office</value></data>
+  <data name="App_Menu_ThemeCatppuccinLatte" xml:space="preserve"><value>Catppuccin Latte</value></data>
+  <data name="App_Menu_ThemeMinimal" xml:space="preserve"><value>न्यूनतम</value></data>
+  <data name="App_Menu_ThemeForest" xml:space="preserve"><value>वन</value></data>
+  <data name="App_Menu_ThemeHighContrast" xml:space="preserve"><value>उच्च कंट्रास्ट</value></data>
+
+  <data name="App_Menu_Image" xml:space="preserve"><value>छवि</value></data>
+  <data name="App_Menu_RotateRight" xml:space="preserve"><value>दाईं ओर घुमाएं</value></data>
+  <data name="App_Menu_RotateLeft" xml:space="preserve"><value>बाईं ओर घुमाएं</value></data>
+  <data name="App_Menu_FlipHorizontal" xml:space="preserve"><value>क्षैतिज पलटें</value></data>
+  <data name="App_Menu_FlipVertical" xml:space="preserve"><value>लंबवत पलटें</value></data>
+  <data name="App_Menu_CropMode" xml:space="preserve"><value>क्रॉप मोड</value></data>
+  <data name="App_Menu_Resize" xml:space="preserve"><value>आकार बदलें...</value></data>
+  <data name="App_Menu_Export" xml:space="preserve"><value>निर्यात करें...</value></data>
+  <data name="App_Menu_ResetImage" xml:space="preserve"><value>मूल छवि पर पुनर्स्थापित करें</value></data>
+
+  <data name="App_OptionsEditJsonToolTip" xml:space="preserve"><value>उपयोगकर्ता सेटिंग्स JSON के रूप में संपादित करें</value></data>
+  <data name="App_OptionsAppliesToLabel" xml:space="preserve"><value>इस पर लागू होता है:</value></data>
+  <data name="App_OptionsUserInstallation" xml:space="preserve"><value>उपयोगकर्ता (इंस्टॉलेशन)</value></data>
+  <data name="App_OptionsFilterLabel" xml:space="preserve"><value>फ़िल्टर:</value></data>
+  <data name="App_OptionsSearchPlaceholder" xml:space="preserve"><value>सेटिंग्स खोजें (Ctrl+F)…</value></data>
+  <data name="App_OptionsClearToolTip" xml:space="preserve"><value>साफ़ करें (Escape)</value></data>
+  <data name="App_OptionsNoResults" xml:space="preserve"><value>कोई सेटिंग नहीं मिली।</value></data>
+
+  <data name="App_PasteConflict_Title" xml:space="preserve"><value>फ़ाइल पहले से मौजूद है</value></data>
+  <data name="App_PasteConflict_Rename" xml:space="preserve"><value>नाम बदलें</value></data>
+  <data name="App_PasteConflict_Skip" xml:space="preserve"><value>छोड़ें</value></data>
+  <data name="App_PasteConflict_CancelAll" xml:space="preserve"><value>सभी रद्द करें</value></data>
+  <data name="App_PasteConflict_AlreadyExists1" xml:space="preserve"><value>नाम की एक फ़ाइल</value></data>
+  <data name="App_PasteConflict_AlreadyExists2" xml:space="preserve"><value>गंतव्य फ़ोल्डर में पहले से मौजूद है।</value></data>
+  <data name="App_PasteConflict_Instructions" xml:space="preserve"><value>पेस्ट की गई फ़ाइल का नाम बदलने के लिए नया नाम दर्ज करें, या नीचे से कोई क्रिया चुनें।</value></data>
+  <data name="App_PasteConflict_NewNameLabel" xml:space="preserve"><value>नया नाम:</value></data>
+
+  <data name="App_SaveChanges_Title" xml:space="preserve"><value>परिवर्तन सहेजें</value></data>
+  <data name="App_SaveChanges_SelectAll" xml:space="preserve"><value>सभी चुनें</value></data>
+  <data name="App_SaveChanges_Save" xml:space="preserve"><value>सहेजें</value></data>
+  <data name="App_SaveChanges_DontSave" xml:space="preserve"><value>सहेजें नहीं</value></data>
+  <data name="App_SaveChanges_Cancel" xml:space="preserve"><value>रद्द करें</value></data>
+
+  <data name="App_GoToOffset_Title" xml:space="preserve"><value>ऑफसेट पर जाएं</value></data>
+  <data name="App_GoToOffset_EnterOffset" xml:space="preserve"><value>ऑफसेट दर्ज करें:</value></data>
+  <data name="App_GoToOffset_Hexadecimal" xml:space="preserve"><value>हेक्साडेसिमल (0x…)</value></data>
+  <data name="App_GoToOffset_Decimal" xml:space="preserve"><value>दशमलव</value></data>
+  <data name="App_GoToOffset_Go" xml:space="preserve"><value>जाएं</value></data>
+  <data name="App_GoToOffset_Cancel" xml:space="preserve"><value>रद्द करें</value></data>
+
+  <data name="App_ImportFormat_Title" xml:space="preserve"><value>अंतर्निहित फ़ॉर्मेट परिभाषा आयात करें</value></data>
+  <data name="App_ImportFormat_VersionLabel" xml:space="preserve"><value>संस्करण:</value></data>
+  <data name="App_ImportFormat_AuthorLabel" xml:space="preserve"><value>लेखक:</value></data>
+  <data name="App_ImportFormat_ExtensionsLabel" xml:space="preserve"><value>एक्सटेंशन</value></data>
+  <data name="App_ImportFormat_QualityLabel" xml:space="preserve"><value>गुणवत्ता</value></data>
+  <data name="App_ImportFormat_PreviewLabel" xml:space="preserve"><value>पूर्वावलोकन</value></data>
+  <data name="App_ImportFormat_DestinationFolder" xml:space="preserve"><value>गंतव्य फ़ोल्डर:</value></data>
+  <data name="App_ImportFormat_Import" xml:space="preserve"><value>आयात करें</value></data>
+  <data name="App_ImportFormat_Cancel" xml:space="preserve"><value>रद्द करें</value></data>
+
+  <data name="App_ImportSyntax_Title" xml:space="preserve"><value>अंतर्निहित सिंटेक्स परिभाषा आयात करें</value></data>
+  <data name="App_ImportSyntax_ShowPreview" xml:space="preserve"><value>पूर्वावलोकन दिखाएं</value></data>
+  <data name="App_ImportSyntax_ExtensionsLabel" xml:space="preserve"><value>एक्सटेंशन</value></data>
+  <data name="App_ImportSyntax_DestinationFolder" xml:space="preserve"><value>गंतव्य फ़ोल्डर:</value></data>
+  <data name="App_ImportSyntax_Import" xml:space="preserve"><value>आयात करें</value></data>
+  <data name="App_ImportSyntax_Cancel" xml:space="preserve"><value>रद्द करें</value></data>
+
+  <data name="App_PanelWelcome" xml:space="preserve"><value>स्वागत है</value></data>
+  <data name="App_PanelSolutionExplorer" xml:space="preserve"><value>समाधान एक्सप्लोरर</value></data>
+  <data name="App_PanelErrorList" xml:space="preserve"><value>त्रुटि सूची</value></data>
+  <data name="App_PanelExtensionsMonitor" xml:space="preserve"><value>एक्सटेंशन मॉनिटर</value></data>
+  <data name="App_PanelOutput" xml:space="preserve"><value>आउटपुट</value></data>
+  <data name="App_ExportFormatDefinitionTitle" xml:space="preserve"><value>फ़ॉर्मेट परिभाषा निर्यात करें</value></data>
+  <data name="App_FormatUpgradeRequired" xml:space="preserve"><value>फ़ॉर्मेट अपग्रेड आवश्यक है</value></data>
+  <data name="App_FormatUpgrade" xml:space="preserve"><value>फ़ॉर्मेट अपग्रेड</value></data>
+  <data name="App_ConvertTbl" xml:space="preserve"><value>TBL कनवर्ट करें</value></data>
+  <data name="App_RemoveFromProject" xml:space="preserve"><value>प्रोजेक्ट से हटाएं</value></data>
+  <data name="App_RemoveFromProjectMessage" xml:space="preserve"><value>प्रोजेक्ट से '{0}' हटाएं?\n(डिस्क पर फ़ाइल हटाई नहीं जाएगी।)</value></data>
+  <data name="App_DeleteFile" xml:space="preserve"><value>फ़ाइल हटाएं</value></data>
+  <data name="App_DeleteFileMessage" xml:space="preserve"><value>'{0}' हटाएं और रीसायकल बिन में भेजें?</value></data>
+  <data name="App_RemoveFolder" xml:space="preserve"><value>फ़ोल्डर हटाएं</value></data>
+  <data name="App_RemoveSolutionFolder" xml:space="preserve"><value>समाधान फ़ोल्डर हटाएं</value></data>
+  <data name="App_SelectImportFolder" xml:space="preserve"><value>आयात करने के लिए फ़ोल्डर चुनें</value></data>
+  <data name="App_OpenSolutionProject" xml:space="preserve"><value>समाधान या प्रोजेक्ट खोलें</value></data>
+  <data name="App_OpenFolder" xml:space="preserve"><value>फ़ोल्डर खोलें</value></data>
+  <data name="App_FailedCreateSolution" xml:space="preserve"><value>समाधान बनाने में विफल:\n{0}</value></data>
+  <data name="App_FailedOpenSolution" xml:space="preserve"><value>समाधान खोलने में विफल:\n{0}</value></data>
+  <data name="App_RenameTitle" xml:space="preserve"><value>नाम बदलें</value></data>
+  <data name="App_Toolbar_New" xml:space="preserve"><value>नया…</value></data>
+  <data name="App_Toolbar_Open" xml:space="preserve"><value>खोलें…</value></data>
+  <data name="App_Toolbar_Save" xml:space="preserve"><value>सहेजें (Ctrl+S)</value></data>
+  <data name="App_Toolbar_SaveAll" xml:space="preserve"><value>सभी सहेजें (Ctrl+Shift+S)</value></data>
+  <data name="App_Toolbar_Cut" xml:space="preserve"><value>काटें (Ctrl+X)</value></data>
+  <data name="App_Toolbar_Copy" xml:space="preserve"><value>कॉपी करें (Ctrl+C)</value></data>
+  <data name="App_Toolbar_Paste" xml:space="preserve"><value>पेस्ट करें (Ctrl+V)</value></data>
+  <data name="App_Toolbar_Find" xml:space="preserve"><value>खोजें… (Ctrl+F)</value></data>
+  <data name="App_Toolbar_FindNext" xml:space="preserve"><value>अगला (F3)</value></data>
+  <data name="App_Toolbar_FindPrevious" xml:space="preserve"><value>पिछला (Shift+F3)</value></data>
+  <data name="App_Toolbar_SolutionExplorer" xml:space="preserve"><value>समाधान एक्सप्लोरर (Ctrl+Alt+L)</value></data>
+  <data name="App_Toolbar_ParsedFields" xml:space="preserve"><value>पार्स किए गए फ़ील्ड</value></data>
+  <data name="App_Toolbar_Properties" xml:space="preserve"><value>गुण (F4)</value></data>
+  <data name="App_Toolbar_Output" xml:space="preserve"><value>आउटपुट</value></data>
+  <data name="App_Toolbar_CharacterTable" xml:space="preserve"><value>वर्ण तालिका</value></data>
+  <data name="App_Toolbar_ActiveCharTable" xml:space="preserve"><value>सक्रिय वर्ण तालिका</value></data>
+  <data name="App_Toolbar_BuildConfig" xml:space="preserve"><value>बिल्ड कॉन्फ़िगरेशन</value></data>
+  <data name="App_Toolbar_TargetPlatform" xml:space="preserve"><value>लक्ष्य प्लेटफ़ॉर्म</value></data>
+  <data name="App_Toolbar_StartupProject" xml:space="preserve"><value>स्टार्टअप प्रोजेक्ट — प्रारंभ (Ctrl+F5) द्वारा लॉन्च</value></data>
+  <data name="App_Toolbar_StartNoDebug" xml:space="preserve"><value>डीबगिंग के बिना प्रारंभ करें (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_BuildSolution" xml:space="preserve"><value>समाधान बनाएं (Ctrl+Shift+B)</value></data>
+  <data name="App_Toolbar_RebuildSolution" xml:space="preserve"><value>समाधान पुनः बनाएं</value></data>
+  <data name="App_Toolbar_CleanSolution" xml:space="preserve"><value>समाधान साफ़ करें</value></data>
+  <data name="App_Toolbar_CancelBuild" xml:space="preserve"><value>बिल्ड रद्द करें</value></data>
+  <data name="App_Toolbar_Continue" xml:space="preserve"><value>जारी रखें (F5)</value></data>
+  <data name="App_Toolbar_Pause" xml:space="preserve"><value>रोकें</value></data>
+  <data name="App_Toolbar_StopDebugging" xml:space="preserve"><value>डीबगिंग बंद करें (Shift+F5)</value></data>
+  <data name="App_Toolbar_StepOver" xml:space="preserve"><value>स्टेप ओवर (F10)</value></data>
+  <data name="App_Toolbar_StepInto" xml:space="preserve"><value>स्टेप इन (F11)</value></data>
+  <data name="App_Toolbar_StepOut" xml:space="preserve"><value>स्टेप आउट (Shift+F11)</value></data>
+  <data name="App_Toolbar_Dismiss" xml:space="preserve"><value>खारिज करें</value></data>
+  <data name="App_Toolbar_CancelOperation" xml:space="preserve"><value>ऑपरेशन रद्द करें</value></data>
+  <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>शाखा बदलने के लिए क्लिक करें</value></data>
+  <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>अप्रतिबद्ध परिवर्तन</value></data>
+  <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>प्लगइन अपडेट उपलब्ध — मार्केटप्लेस खोलने के लिए क्लिक करें</value></data>
+  <data name="App_AddExistingItem" xml:space="preserve">
+    <value>मौजूदा आइटम जोड़ें</value>
+  </data>
+  <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve">
+    <value>प्रोजेक्ट नहीं मिला।</value>
+  </data>
+  <data name="App_Breadcrumb_SolutionNotLoaded" xml:space="preserve">
+    <value>समाधान लोड नहीं हुआ।</value>
+  </data>
+  <data name="App_CodeEditor_MinimapFill" xml:space="preserve">
+    <value>भरें</value>
+  </data>
+  <data name="App_CodeEditor_MinimapFit" xml:space="preserve">
+    <value>फ़िट करें</value>
+  </data>
+  <data name="App_CodeEditor_MinimapLeft" xml:space="preserve">
+    <value>बाएं</value>
+  </data>
+  <data name="App_CodeEditor_MinimapProportional" xml:space="preserve">
+    <value>आनुपातिक</value>
+  </data>
+  <data name="App_CodeEditor_MinimapRight" xml:space="preserve">
+    <value>दाएं</value>
+  </data>
+  <data name="App_CompareWithHead" xml:space="preserve">
+    <value>HEAD से तुलना करें</value>
+  </data>
+  <data name="App_CompareWithHeadNoRepo" xml:space="preserve">
+    <value>इस फ़ाइल के लिए कोई git रिपॉजिटरी नहीं मिली।</value>
+  </data>
+  <data name="App_CompareWithHeadNoVersion" xml:space="preserve">
+    <value>git से HEAD संस्करण निकालने में विफल।</value>
+  </data>
+  <data name="App_Compare_SelectFile" xml:space="preserve">
+    <value>तुलना के लिए फ़ाइल चुनें</value>
+  </data>
+  <data name="App_Comparison_ModeHexText" xml:space="preserve">
+    <value>HexText</value>
+  </data>
+  <data name="App_Comparison_ModeInline" xml:space="preserve">
+    <value>इनलाइन</value>
+  </data>
+  <data name="App_Comparison_ModeSideBySide" xml:space="preserve">
+    <value>साथ-साथ</value>
+  </data>
+  <data name="App_ConfigPage_BuildAll" xml:space="preserve">
+    <value>सब बनाएं</value>
+  </data>
+  <data name="App_ConfigPage_DeployAll" xml:space="preserve">
+    <value>सब तैनात करें</value>
+  </data>
+  <data name="App_ContextMenu_CompareWithActive" xml:space="preserve">
+    <value>सक्रिय संपादक से तुलना करें</value>
+  </data>
+  <data name="App_ContextMenu_CompareWithAnother" xml:space="preserve">
+    <value>किसी अन्य फ़ाइल से तुलना करें…</value>
+  </data>
+  <data name="App_ContextMenu_None" xml:space="preserve">
+    <value>(कोई नहीं)</value>
+  </data>
+  <data name="App_Convert_AlreadyWhsln" xml:space="preserve">
+    <value>वर्तमान समाधान पहले से ही एक .whsln फ़ाइल है।</value>
+  </data>
+  <data name="App_Convert_Confirm" xml:space="preserve">
+    <value>"{0}" को "{1}" में बदलें?{2}{2}मूल फ़ाइल संरक्षित रहेगी।</value>
+  </data>
+  <data name="App_Convert_Failed" xml:space="preserve">
+    <value>रूपांतरण विफल:{0}{1}</value>
+  </data>
+  <data name="App_Convert_NoLoader" xml:space="preserve">
+    <value>{0} प्रारूप के लिए कोई लोडर पंजीकृत नहीं है। सुनिश्चित करें कि VS Solution Loader प्लगइन सक्रिय है।</value>
+  </data>
+  <data name="App_Convert_NoLoaderSimple" xml:space="preserve">
+    <value>{0} प्रारूप के लिए कोई लोडर पंजीकृत नहीं है।</value>
+  </data>
+  <data name="App_Convert_NoSolution" xml:space="preserve">
+    <value>वर्तमान में कोई समाधान खुला नहीं है।</value>
+  </data>
+  <data name="App_Convert_NotSln" xml:space="preserve">
+    <value>वर्तमान समाधान एक .sln फ़ाइल नहीं है।</value>
+  </data>
+  <data name="App_Convert_NotSlnx" xml:space="preserve">
+    <value>वर्तमान समाधान एक .slnx फ़ाइल नहीं है।</value>
+  </data>
+  <data name="App_Convert_Success" xml:space="preserve">
+    <value>"{0}" में बदला गया।{1}{1}अभी परिवर्तित समाधान खोलें?</value>
+  </data>
+  <data name="App_Convert_Title" xml:space="preserve">
+    <value>समाधान प्रारूप बदलें</value>
+  </data>
+  <data name="App_Debug_AttachNotAvailable" xml:space="preserve">
+    <value>डीबगर सेवा उपलब्ध नहीं है।</value>
+  </data>
+  <data name="App_Debug_AttachPidPrompt" xml:space="preserve">
+    <value>संलग्न करने के लिए प्रक्रिया ID (PID) दर्ज करें:</value>
+  </data>
+  <data name="App_Debug_AttachTitle" xml:space="preserve">
+    <value>प्रक्रिया से जोड़ें</value>
+  </data>
+  <data name="App_Debug_BuildFailed" xml:space="preserve">
+    <value>बिल्ड विफल। डीबग करने से पहले त्रुटियां ठीक करें।</value>
+  </data>
+  <data name="App_Debug_ExeNotFound" xml:space="preserve">
+    <value>डीबग करने के लिए प्रोग्राम नहीं मिल रहा:{0}{1}{0}{0}प्रोजेक्ट बनाया गया था लेकिन आउटपुट एक्जीक्यूटेबल नहीं मिला।</value>
+  </data>
+  <data name="App_Debug_NoStartupProject" xml:space="preserve">
+    <value>कोई स्टार्टअप प्रोजेक्ट सेट नहीं है। डीबग करने से पहले एक सेट करें।</value>
+  </data>
+  <data name="App_Debug_StartTitle" xml:space="preserve">
+    <value>डीबगिंग शुरू करें</value>
+  </data>
+  <data name="App_Debugger_AdapterMissing" xml:space="preserve">
+    <value>उपयुक्त अडैप्टर प्लगइन इंस्टॉल करें या कस्टम अडैप्टर कॉन्फ़िगर करें।</value>
+  </data>
+  <data name="App_Debugger_AdapterNotFound" xml:space="preserve">
+    <value>डीबग अडैप्टर (netcoredbg) नहीं मिला।{0}इसे इंस्टॉल करें या विकल्प → डीबगर में पथ सेट करें।</value>
+  </data>
+  <data name="App_Debugger_Title" xml:space="preserve">
+    <value>डीबगर</value>
+  </data>
+  <data name="App_DockTitle_ExtensionManager" xml:space="preserve">
+    <value>एक्सटेंशन मैनेजर</value>
+  </data>
+  <data name="App_DockTitle_ExtensionMarketplace" xml:space="preserve">
+    <value>एक्सटेंशन मार्केटप्लेस</value>
+  </data>
+  <data name="App_DockTitle_ExtensionsMonitor" xml:space="preserve">
+    <value>एक्सटेंशन मॉनिटर</value>
+  </data>
+  <data name="App_DockTitle_NuGet" xml:space="preserve">
+    <value>NuGet — {0}</value>
+  </data>
+  <data name="App_DockTitle_NuGetSolution" xml:space="preserve">
+    <value>NuGet — {0} (समाधान)</value>
+  </data>
+  <data name="App_DockTitle_Properties" xml:space="preserve">
+    <value>{0} — गुण</value>
+  </data>
+  <data name="App_DockTitle_ReadOnly" xml:space="preserve">
+    <value>WpfHexEditor — {0} [केवल-पठनीय प्रारूप v{1}]</value>
+  </data>
+  <data name="App_DockTitle_References" xml:space="preserve">
+    <value>संदर्भ — {0}</value>
+  </data>
+  <data name="App_DockTitle_SettingsJson" xml:space="preserve">
+    <value>settings.json</value>
+  </data>
+  <data name="App_DockTitle_Terminal" xml:space="preserve">
+    <value>टर्मिनल</value>
+  </data>
+  <data name="App_Docking_CornerNormal" xml:space="preserve">
+    <value>सामान्य (तेज कोने)</value>
+  </data>
+  <data name="App_Docking_CornerRoundedContent" xml:space="preserve">
+    <value>गोल — केवल सामग्री क्षेत्र</value>
+  </data>
+  <data name="App_Docking_CornerRoundedFull" xml:space="preserve">
+    <value>गोल — पूर्ण पैनल फ्रेम</value>
+  </data>
+  <data name="App_Docking_ShadowFullBorder" xml:space="preserve">
+    <value>पूर्ण बॉर्डर</value>
+  </data>
+  <data name="App_Docking_ShadowGlow" xml:space="preserve">
+    <value>चमक</value>
+  </data>
+  <data name="App_Docking_ShadowNone" xml:space="preserve">
+    <value>कोई नहीं</value>
+  </data>
+  <data name="App_Docking_ShadowTopBar" xml:space="preserve">
+    <value>शीर्ष बार</value>
+  </data>
+  <data name="App_Editor_Encodings" xml:space="preserve">
+    <value>एन्कोडिंग</value>
+  </data>
+  <data name="App_Editor_FileNotFound" xml:space="preserve">
+    <value>फ़ाइल नहीं मिली:{0}{1}</value>
+  </data>
+  <data name="App_Editor_HexEditor" xml:space="preserve">
+    <value>हेक्स संपादक</value>
+  </data>
+  <data name="App_Editor_NewDocumentText" xml:space="preserve">
+    <value>यह दस्तावेज़ है: {0}{1}{1}इस पाठ को संपादित करें...</value>
+  </data>
+  <data name="App_Editor_ProjectTables" xml:space="preserve">
+    <value>प्रोजेक्ट तालिकाएं</value>
+  </data>
+  <data name="App_Editor_RefreshPrefix" xml:space="preserve">
+    <value>ताज़ा करें:</value>
+  </data>
+  <data name="App_Error" xml:space="preserve">
+    <value>त्रुटि</value>
+  </data>
+  <data name="App_Extensions_SelectOutputDir" xml:space="preserve">
+    <value>एक्सटेंशन बिल्ड आउटपुट डायरेक्टरी चुनें</value>
+  </data>
+  <data name="App_FailedCreateFile" xml:space="preserve">
+    <value>फ़ाइल बनाने में विफल:{0}{1}</value>
+  </data>
+  <data name="App_FailedCreateProject" xml:space="preserve">
+    <value>प्रोजेक्ट बनाने में विफल:{0}{1}</value>
+  </data>
+  <data name="App_FailedLoadLayout" xml:space="preserve">
+    <value>लेआउट लोड करने में विफल:{0}{1}</value>
+  </data>
+  <data name="App_FailedWriteTblx" xml:space="preserve">
+    <value>TBLX फ़ाइल लिखने में विफल:{0}{1}</value>
+  </data>
+  <data name="App_GoTo_EnterOffset" xml:space="preserve">
+    <value>कृपया एक ऑफसेट दर्ज करें।</value>
+  </data>
+  <data name="App_GoTo_InvalidDecimal" xml:space="preserve">
+    <value>अमान्य दशमलव मान।</value>
+  </data>
+  <data name="App_GoTo_InvalidHex" xml:space="preserve">
+    <value>अमान्य हेक्साडेसिमल मान।</value>
+  </data>
+  <data name="App_GoTo_OffsetNonNegative" xml:space="preserve">
+    <value>ऑफसेट ऋणात्मक नहीं होनी चाहिए।</value>
+  </data>
+  <data name="App_ImportIntoProject" xml:space="preserve">
+    <value>प्रोजेक्ट में आयात करें</value>
+  </data>
+  <data name="App_ImportIntoProjectMessage" xml:space="preserve">
+    <value>"{0}" को प्रोजेक्ट डायरेक्टरी में कॉपी करें?{1}{2}{1}मूल फ़ाइल नहीं हटाई जाएगी।</value>
+  </data>
+  <data name="App_InfoBar_Disable" xml:space="preserve">
+    <value>अक्षम करें</value>
+  </data>
+  <data name="App_InfoBar_HexEditor" xml:space="preserve">
+    <value>हेक्स संपादक</value>
+  </data>
+  <data name="App_InfoBar_Ignore" xml:space="preserve">
+    <value>अनदेखा करें</value>
+  </data>
+  <data name="App_InfoBar_KeepEdits" xml:space="preserve">
+    <value>मेरे संपादन रखें</value>
+  </data>
+  <data name="App_InfoBar_Reload" xml:space="preserve">
+    <value>पुनः लोड करें</value>
+  </data>
+  <data name="App_InfoBar_Restart" xml:space="preserve">
+    <value>पुनः आरंभ करें</value>
+  </data>
+  <data name="App_JumpList_RecentFiles" xml:space="preserve">
+    <value>हाल की फ़ाइलें</value>
+  </data>
+  <data name="App_JumpList_RecentProjects" xml:space="preserve">
+    <value>हाल के प्रोजेक्ट</value>
+  </data>
+  <data name="App_LSP_LoadAssembly" xml:space="preserve">
+    <value>असेंबली में नेविगेट करने के लिए Assembly Explorer में असेंबली लोड करें।</value>
+  </data>
+  <data name="App_LSP_TryOpenFile" xml:space="preserve">
+    <value>सीधे घोषणा फ़ाइल खोलने का प्रयास करें, या सुनिश्चित करें कि LSP सर्वर चल रहा है।</value>
+  </data>
+  <data name="App_Lsp_ClangdFailed" xml:space="preserve">
+    <value>clangd डाउनलोड विफल</value>
+  </data>
+  <data name="App_Lsp_ClangdReady" xml:space="preserve">
+    <value>clangd तैयार</value>
+  </data>
+  <data name="App_Lsp_CppNotInstalled" xml:space="preserve">
+    <value>C/C++ LSP सर्वर स्थापित नहीं है</value>
+  </data>
+  <data name="App_Lsp_ErrorTitle" xml:space="preserve">
+    <value>LSP त्रुटि</value>
+  </data>
+  <data name="App_Notifications_ClearAll" xml:space="preserve">
+    <value>सब साफ़ करें</value>
+  </data>
+  <data name="App_Notifications_Empty" xml:space="preserve">
+    <value>कोई सूचना नहीं</value>
+  </data>
+  <data name="App_Notifications_Title" xml:space="preserve">
+    <value>सूचनाएं</value>
+  </data>
+  <data name="App_Options_AllSettings" xml:space="preserve">
+    <value>सभी सेटिंग्स</value>
+  </data>
+  <data name="App_Options_AutoExportBreakpoints" xml:space="preserve">
+    <value>सहेजते समय स्वचालित रूप से ब्रेकपॉइंट को VS XML में निर्यात करें</value>
+  </data>
+  <data name="App_Options_AutoImportBreakpoints" xml:space="preserve">
+    <value>पहली बार समाधान खोलने पर VS ब्रेकपॉइंट स्वचालित रूप से आयात करें</value>
+  </data>
+  <data name="App_Options_AutoReload" xml:space="preserve">
+    <value>बिना प्रॉम्प्ट के बदली हुई फ़ाइलें स्वचालित रूप से पुनः लोड करें</value>
+  </data>
+  <data name="App_Options_Browse" xml:space="preserve">
+    <value>ब्राउज़ करें…</value>
+  </data>
+  <data name="App_Options_ClearAll" xml:space="preserve">
+    <value>सब साफ़ करें</value>
+  </data>
+  <data name="App_Options_ClearHistory" xml:space="preserve">
+    <value>इतिहास साफ़ करें</value>
+  </data>
+  <data name="App_Options_CollapseIdentical" xml:space="preserve">
+    <value>समान क्षेत्रों को संकुचित करें</value>
+  </data>
+  <data name="App_Options_CommandsDefault" xml:space="preserve">
+    <value>कमांड (डिफ़ॉल्ट)</value>
+  </data>
+  <data name="App_Options_DetectExternalChanges" xml:space="preserve">
+    <value>IDE के बाहर फ़ाइलें बदलने पर पहचानें</value>
+  </data>
+  <data name="App_Options_DockedPanel" xml:space="preserve">
+    <value>डॉक्ड पैनल (डिफ़ॉल्ट)</value>
+  </data>
+  <data name="App_Options_EnableDockAnimations" xml:space="preserve">
+    <value>डॉकिंग एनिमेशन सक्षम करें</value>
+  </data>
+  <data name="App_Options_EnableTabPreview" xml:space="preserve">
+    <value>टैब होवर पूर्वावलोकन सक्षम करें</value>
+  </data>
+  <data name="App_Options_EnableTabPreviewHover" xml:space="preserve">
+    <value>होवर पर टैब पूर्वावलोकन सक्षम करें</value>
+  </data>
+  <data name="App_Options_HighlightBreakpoints" xml:space="preserve">
+    <value>संपादक में ब्रेकपॉइंट लाइनों को हाइलाइट करें (लाल/नारंगी/ग्रे टिंट)</value>
+  </data>
+  <data name="App_Options_HighlightCharDiff" xml:space="preserve">
+    <value>संशोधित पंक्तियों में वर्ण-स्तरीय अंतर हाइलाइट करें (≤ 500 वर्ण)</value>
+  </data>
+  <data name="App_Options_InlinePopup" xml:space="preserve">
+    <value>इनलाइन पॉपअप</value>
+  </data>
+  <data name="App_Options_KbCategory" xml:space="preserve">
+    <value>श्रेणी</value>
+  </data>
+  <data name="App_Options_KbCommand" xml:space="preserve">
+    <value>कमांड</value>
+  </data>
+  <data name="App_Options_KbDefault" xml:space="preserve">
+    <value>डिफ़ॉल्ट</value>
+  </data>
+  <data name="App_Options_KbShortcut" xml:space="preserve">
+    <value>शॉर्टकट</value>
+  </data>
+  <data name="App_Options_LspArguments" xml:space="preserve">
+    <value>तर्क</value>
+  </data>
+  <data name="App_Options_LspEnabled" xml:space="preserve">
+    <value>सक्षम</value>
+  </data>
+  <data name="App_Options_LspExecutable" xml:space="preserve">
+    <value>एक्जीक्यूटेबल</value>
+  </data>
+  <data name="App_Options_LspExtensions" xml:space="preserve">
+    <value>एक्सटेंशन</value>
+  </data>
+  <data name="App_Options_LspLanguageId" xml:space="preserve">
+    <value>भाषा ID</value>
+  </data>
+  <data name="App_Options_LspNotActive" xml:space="preserve">
+    <value>LSP सक्रिय नहीं</value>
+  </data>
+  <data name="App_Options_LspSearching" xml:space="preserve">
+    <value>खोज रहा है…</value>
+  </data>
+  <data name="App_Options_LspSource" xml:space="preserve">
+    <value>स्रोत</value>
+  </data>
+  <data name="App_Options_LspTypeToSearch" xml:space="preserve">
+    <value>कार्यक्षेत्र प्रतीकों को खोजने के लिए टाइप करें</value>
+  </data>
+  <data name="App_Options_PromptSaveWorkspace" xml:space="preserve">
+    <value>बंद करने से पहले कार्यक्षेत्र सहेजने के लिए संकेत दें</value>
+  </data>
+  <data name="App_Options_ResetAllOverrides" xml:space="preserve">
+    <value>सभी ओवरराइड रीसेट करें</value>
+  </data>
+  <data name="App_Options_ResetOverrides" xml:space="preserve">
+    <value>ओवरराइड रीसेट करें</value>
+  </data>
+  <data name="App_Options_ResetToDefaults" xml:space="preserve">
+    <value>डिफ़ॉल्ट पर रीसेट करें</value>
+  </data>
+  <data name="App_Options_RestoreSolution" xml:space="preserve">
+    <value>समाधान पुनर्स्थापित करें</value>
+  </data>
+  <data name="App_Options_RestoreTabs" xml:space="preserve">
+    <value>खुले संपादक टैब पुनर्स्थापित करें</value>
+  </data>
+  <data name="App_Options_RestoreTheme" xml:space="preserve">
+    <value>थीम पुनर्स्थापित करें</value>
+  </data>
+  <data name="App_Options_Save" xml:space="preserve">
+    <value>सहेजें</value>
+  </data>
+  <data name="App_Options_SavedComparisons" xml:space="preserve">
+    <value>सहेजी गई तुलनाएं</value>
+  </data>
+  <data name="App_Options_ScrollTabRows" xml:space="preserve">
+    <value>माउस व्हील से टैब पंक्तियां स्क्रॉल करें</value>
+  </data>
+  <data name="App_Options_SelectDebugAdapter" xml:space="preserve">
+    <value>डीबग एडाप्टर एक्जीक्यूटेबल चुनें</value>
+  </data>
+  <data name="App_Options_SelectLspExecutable" xml:space="preserve">
+    <value>LSP सर्वर एक्जीक्यूटेबल चुनें</value>
+  </data>
+  <data name="App_Options_ShowFileNameBelowPreview" xml:space="preserve">
+    <value>पूर्वावलोकन के नीचे फ़ाइल नाम दिखाएं</value>
+  </data>
+  <data name="App_Options_ShowFilenameFooter" xml:space="preserve">
+    <value>फ़ुटर में फ़ाइल नाम दिखाएं</value>
+  </data>
+  <data name="App_Options_ShowMinimap" xml:space="preserve">
+    <value>मिनीमैप दिखाएं</value>
+  </data>
+  <data name="App_Options_ShowReturnValues" xml:space="preserve">
+    <value>प्रत्येक चरण के बाद स्थानीय चरों में वापसी मान दिखाएं</value>
+  </data>
+  <data name="App_Options_StopAtEntry" xml:space="preserve">
+    <value>प्रोग्राम प्रवेश बिंदु पर रोकें (Main)</value>
+  </data>
+  <data name="App_Options_WrapTabs" xml:space="preserve">
+    <value>टैब को अतिरिक्त पंक्तियों में लपेटें (बहु-पंक्ति)</value>
+  </data>
+  <data name="App_PanelFormatCatalog" xml:space="preserve">
+    <value>प्रारूप कैटलॉग</value>
+  </data>
+  <data name="App_PanelOptions" xml:space="preserve">
+    <value>विकल्प</value>
+  </data>
+  <data name="App_PasteConflict_EnterFileName" xml:space="preserve">
+    <value>कृपया एक फ़ाइल नाम दर्ज करें।</value>
+  </data>
+  <data name="App_PasteConflict_InvalidChars" xml:space="preserve">
+    <value>नाम में अमान्य वर्ण हैं।</value>
+  </data>
+  <data name="App_RemoveFolderMessage" xml:space="preserve">
+    <value>प्रोजेक्ट से फ़ोल्डर '{0}' हटाएं?{1}अंदर के आइटम प्रोजेक्ट रूट पर रखे जाएंगे। भौतिक निर्देशिका नहीं हटाई जाएगी।</value>
+  </data>
+  <data name="App_RemoveSolutionFolderMessage" xml:space="preserve">
+    <value>समाधान फ़ोल्डर '{0}' हटाएं?{1}अंदर के प्रोजेक्ट समाधान रूट पर रखे जाएंगे।</value>
+  </data>
+  <data name="App_SaveAs" xml:space="preserve">
+    <value>इस रूप में सहेजें</value>
+  </data>
+  <data name="App_SelectEntropyFile" xml:space="preserve">
+    <value>एंट्रॉपी विश्लेषण के लिए फ़ाइल चुनें</value>
+  </data>
+  <data name="App_SourceFiles_SelectFolder" xml:space="preserve">
+    <value>एक स्रोत फ़ोल्डर चुनें</value>
+  </data>
+  <data name="App_StartupProjects_CurrentSelection" xml:space="preserve">
+    <value>वर्तमान चयन</value>
+  </data>
+  <data name="App_StartupProjects_LaunchProfiles" xml:space="preserve">
+    <value>लॉन्च प्रोफाइल</value>
+  </data>
+  <data name="App_StartupProjects_MultipleProjects" xml:space="preserve">
+    <value>एकाधिक स्टार्टअप प्रोजेक्ट:</value>
+  </data>
+  <data name="App_StartupProjects_SingleProject" xml:space="preserve">
+    <value>एकल स्टार्टअप प्रोजेक्ट:</value>
+  </data>
+  <data name="App_Tabs_GroupByExtension" xml:space="preserve">
+    <value>फ़ाइल एक्सटेंशन द्वारा</value>
+  </data>
+  <data name="App_Tabs_GroupByProject" xml:space="preserve">
+    <value>प्रोजेक्ट द्वारा</value>
+  </data>
+  <data name="App_Tabs_GroupByRegex" xml:space="preserve">
+    <value>Regex नियम द्वारा</value>
+  </data>
+  <data name="App_Tabs_PositionLeft" xml:space="preserve">
+    <value>बाएं</value>
+  </data>
+  <data name="App_Tabs_PositionNone" xml:space="preserve">
+    <value>कोई नहीं</value>
+  </data>
+  <data name="App_Tabs_PositionRight" xml:space="preserve">
+    <value>दाएं</value>
+  </data>
+  <data name="App_Tabs_PositionTop" xml:space="preserve">
+    <value>ऊपर</value>
+  </data>
+  <data name="App_TblImport_Failed" xml:space="preserve">
+    <value>TBL फ़ाइल लोड करने में विफल:{0}{1}</value>
+  </data>
+  <data name="App_UpgradeFailedMessage" xml:space="preserve">
+    <value>अपग्रेड विफल: {0}</value>
+  </data>
+  <data name="App_UpgradeMessagePattern" xml:space="preserve">
+    <value>निम्नलिखित फ़ाइलें पुराने प्रारूप (v{0}) का उपयोग करती हैं जिन्हें v{1} में अपग्रेड किया जाएगा:{2}{2}  • {3}{2}{2}प्रत्येक फ़ाइल के लिए एक बैकअप (.v{0}.bak) बनाया जाएगा।{2}{2}अभी अपग्रेड करें?</value>
+  </data>
+  <data name="App_ViewMenu_ByDockSide" xml:space="preserve">
+    <value>डॉक साइड द्वारा</value>
+  </data>
+  <data name="App_ViewMenu_Categorized" xml:space="preserve">
+    <value>वर्गीकृत</value>
+  </data>
+  <data name="App_ViewMenu_Flat" xml:space="preserve">
+    <value>फ्लैट (क्लासिक)</value>
+  </data>
+  <data name="App_ViewMenu_OrganizeBy" xml:space="preserve">
+    <value>इसके अनुसार व्यवस्थित करें...</value>
+  </data>
+  <data name="App_ViewMenu_PinToViewMenu" xml:space="preserve">
+    <value>दृश्य मेनू में पिन करें</value>
+  </data>
+  <data name="App_ViewMenu_SortAlphabetical" xml:space="preserve">
+    <value>वर्णानुक्रमिक</value>
+  </data>
+  <data name="App_ViewMenu_SortByFrequency" xml:space="preserve">
+    <value>आवृत्ति द्वारा</value>
+  </data>
+  <data name="App_ViewMenu_SortCustom" xml:space="preserve">
+    <value>कस्टम</value>
+  </data>
+  <data name="App_ViewMenu_UnpinFromViewMenu" xml:space="preserve">
+    <value>दृश्य मेनू से अनपिन करें</value>
+  </data>
+  <data name="App_Welcome_ChangelogUnavailable" xml:space="preserve">
+    <value>परिवर्तन लॉग अनुपलब्ध — अपना कनेक्शन जांचें।</value>
+  </data>
+  <data name="App_Welcome_VersionDev" xml:space="preserve">
+    <value>डेवलपमेंट बिल्ड</value>
+  </data>
+  <data name="App_Workspace_CloseSavePrompt" xml:space="preserve">
+    <value>बंद करने से पहले कार्यक्षेत्र '{0}' सहेजें?</value>
+  </data>
+  <data name="App_Workspace_CloseTitle" xml:space="preserve">
+    <value>कार्यक्षेत्र बंद करें</value>
+  </data>
+  <data name="App_Workspace_NewFailed" xml:space="preserve">
+    <value>कार्यक्षेत्र बनाने में विफल:{0}{1}</value>
+  </data>
+  <data name="App_Workspace_NewTitle" xml:space="preserve">
+    <value>नया कार्यक्षेत्र</value>
+  </data>
+  <data name="App_Workspace_OpenFailed" xml:space="preserve">
+    <value>कार्यक्षेत्र खोलने में विफल:{0}{1}</value>
+  </data>
+  <data name="App_Workspace_OpenTitle" xml:space="preserve">
+    <value>कार्यक्षेत्र खोलें</value>
+  </data>
+  <data name="App_Workspace_SaveAsTitle" xml:space="preserve">
+    <value>कार्यक्षेत्र इस रूप में सहेजें</value>
+  </data>
+  <data name="App_Workspace_SaveFailed" xml:space="preserve">
+    <value>कार्यक्षेत्र सहेजने में विफल:{0}{1}</value>
+  </data>
+  <data name="APP_QuickActionsSection" xml:space="preserve">
+    <value>QUICK ACTIONS</value>
+  </data>
+  <data name="APP_NewFileButton" xml:space="preserve">
+    <value>New File</value>
+  </data>
+  <data name="APP_OpenFileButton" xml:space="preserve">
+    <value>Open File…</value>
+  </data>
+  <data name="APP_OpenProjectButton" xml:space="preserve">
+    <value>Open Project / Solution…</value>
+  </data>
+  <data name="APP_OptionsButton" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="APP_RecentSection" xml:space="preserve">
+    <value>RECENT</value>
+  </data>
+  <data name="APP_NoRecentFiles" xml:space="preserve">
+    <value>No recent files</value>
+  </data>
+  <data name="APP_RecentProjectsSection" xml:space="preserve">
+    <value>RECENT PROJECTS</value>
+  </data>
+  <data name="APP_NoRecentProjects" xml:space="preserve">
+    <value>No recent projects</value>
+  </data>
+  <data name="APP_ResourcesSection" xml:space="preserve">
+    <value>RESOURCES</value>
+  </data>
+  <data name="APP_GitHubLink" xml:space="preserve">
+    <value>GitHub Repository ↗</value>
+  </data>
+  <data name="APP_WikiLink" xml:space="preserve">
+    <value>Wiki ↗</value>
+  </data>
+  <data name="APP_ReportIssueLink" xml:space="preserve">
+    <value>Report an Issue ↗</value>
+  </data>
+  <data name="APP_WhatsNewSection" xml:space="preserve">
+    <value>WHAT'S NEW</value>
+  </data>
+  <data name="APP_LoadingChangelog" xml:space="preserve">
+    <value>Loading changelog…</value>
+  </data>
+  <data name="APP_ChangelogNotAvailable" xml:space="preserve">
+    <value>Changelog not available.</value>
+  </data>
+  <data name="APP_GitHubButton" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="APP_WikiButton" xml:space="preserve">
+    <value>Wiki</value>
+  </data>
+  <data name="APP_ReportIssueButton" xml:space="preserve">
+    <value>Report Issue</value>
+  </data>
+  <data name="APP_FullChangelogButton" xml:space="preserve">
+    <value>Full Changelog</value>
+  </data>
+  <data name="APP_Dismiss" xml:space="preserve"><value>खारिज करें</value></data>
+  <data name="APP_ViewIn" xml:space="preserve"><value>इसमें देखें:</value></data>
+  <data name="APP_UnsavedChanges" xml:space="preserve"><value>असहेजे बदलाव</value></data>
+  <data name="APP_ReadOnly" xml:space="preserve"><value>केवल पढ़ने योग्य</value></data>
+  <data name="APP_ExtensionSystem" xml:space="preserve"><value>एक्सटेंशन सिस्टम</value></data>
+  <data name="APP_SlowBadge" xml:space="preserve"><value>धीमा</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>कॉपी करें</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>सभी चुनें</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>आउटपुट इस रूप में सहेजें...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>सभी कॉपी करें</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>सभी साफ़ करें</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>वर्ड रैप टॉगल करें</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>ऑटो-स्क्रॉल टॉगल करें</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>खोजें</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>एक्सप्लोरर</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>प्रारंभ</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>बनाएँ</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>पुनः बनाएँ</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>साफ़</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>रोकें</value></data>
+  <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>अंतर्निहित तालिकाएँ</value></data>
+  <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>डिफ़ॉल्ट (ASCII)</value></data>
+  <data name="APP_InstallEllipsis" xml:space="preserve"><value>इंस्टॉल करें...</value></data>
+  <data name="APP_DBG_StartDebugging" xml:space="preserve"><value>Start _Debugging</value></data>
+  <data name="APP_DBG_StartWithoutDebugging" xml:space="preserve"><value>Start _Without Debugging</value></data>
+  <data name="APP_DBG_StopDebugging" xml:space="preserve"><value>S_top Debugging</value></data>
+  <data name="APP_DBG_Restart" xml:space="preserve"><value>_Restart</value></data>
+  <data name="APP_DBG_Continue" xml:space="preserve"><value>_Continue</value></data>
+  <data name="APP_DBG_Pause" xml:space="preserve"><value>_Pause</value></data>
+  <data name="APP_DBG_AttachToProcess" xml:space="preserve"><value>_Attach to Process…</value></data>
+  <data name="APP_DBG_StepOver" xml:space="preserve"><value>Step _Over</value></data>
+  <data name="APP_DBG_StepInto" xml:space="preserve"><value>Step _Into</value></data>
+  <data name="APP_DBG_StepOut" xml:space="preserve"><value>Step O_ut</value></data>
+  <data name="APP_DBG_ToggleBreakpoint" xml:space="preserve"><value>Toggle _Breakpoint</value></data>
+  <data name="APP_DBG_DeleteAllBreakpoints" xml:space="preserve"><value>_Delete All Breakpoints</value></data>
+  <data name="APP_DBG_ShowBreakpoints" xml:space="preserve"><value>Show _Breakpoints</value></data>
+  <data name="APP_DBG_ShowCallStack" xml:space="preserve"><value>Show _Call Stack</value></data>
+  <data name="APP_DBG_ShowLocals" xml:space="preserve"><value>Show _Locals</value></data>
+  <data name="APP_DBG_ShowWatch" xml:space="preserve"><value>Show _Watch</value></data>
+  <data name="APP_VM_CommandPalette" xml:space="preserve"><value>_Command Palette</value></data>
+  <data name="APP_VM_SolutionExplorer" xml:space="preserve"><value>_Solution Explorer</value></data>
+  <data name="APP_VM_Properties" xml:space="preserve"><value>_Properties</value></data>
+  <data name="APP_VM_Output" xml:space="preserve"><value>_Output</value></data>
+  <data name="APP_VM_ErrorList" xml:space="preserve"><value>_Error List</value></data>
+  <data name="APP_VM_Terminal" xml:space="preserve"><value>_Terminal</value></data>
+  <data name="APP_VM_MarkdownOutline" xml:space="preserve"><value>_Markdown Outline</value></data>
+  <data name="APP_VM_CompareFiles" xml:space="preserve"><value>_Compare Files…</value></data>
+  <data name="APP_VM_FormatBrowser" xml:space="preserve"><value>_Format Browser</value></data>
+  <data name="APP_VM_FormatCatalog" xml:space="preserve"><value>_Format Catalog</value></data>
+  <data name="APP_VM_EntropyAnalysis" xml:space="preserve"><value>_Entropy Analysis…</value></data>
+  <data name="APP_VM_TipMarkdown" xml:space="preserve"><value>Show Markdown Outline panel (heading navigator)</value></data>
+  <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Browse and manage built-in and user .whfmt format definitions</value></data>
+  <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Open the Format Catalog document tab (all formats in a sortable grid)</value></data>
+  <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyse entropy and byte distribution of the active file</value></data>
+</root>

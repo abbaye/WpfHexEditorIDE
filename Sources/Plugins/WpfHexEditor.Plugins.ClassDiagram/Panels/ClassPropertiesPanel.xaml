@@ -32,7 +32,7 @@
 
         <!-- No selection placeholder -->
         <TextBlock DockPanel.Dock="Top"
-                   Text="No selection"
+                   Text="{DynamicResource CD_NoSelection}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Margin="0,24,0,0"
@@ -70,7 +70,7 @@
                         <ColumnDefinition Width="90"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Name"
+                    <TextBlock Grid.Column="0" Text="{DynamicResource CD_PropName}"
                                FontSize="11" VerticalAlignment="Center"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     <TextBlock Grid.Column="1"
@@ -86,7 +86,7 @@
                         <ColumnDefinition Width="90"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Kind"
+                    <TextBlock Grid.Column="0" Text="{DynamicResource CD_PropKind}"
                                FontSize="11" VerticalAlignment="Center"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     <TextBlock Grid.Column="1"
@@ -102,7 +102,7 @@
                         <ColumnDefinition Width="90"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Abstract"
+                    <TextBlock Grid.Column="0" Text="{DynamicResource CD_PropAbstract}"
                                FontSize="11" VerticalAlignment="Center"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     <CheckBox Grid.Column="1"

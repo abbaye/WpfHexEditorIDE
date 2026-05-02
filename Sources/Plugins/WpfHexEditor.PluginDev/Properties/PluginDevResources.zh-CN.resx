@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>新建扩展项目</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>选择插件项目的输出目录</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>权限</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>隔离模式</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>加载优先级 (10–90)：</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>下一步 &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>创建并打开</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>插件已创建</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>发布扩展包</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>发布前签名包</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>浏览…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>在 Explorer 中打开输出文件夹</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>包</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>选择输出目录</value>
+  </data>
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>导出扩展开发日志</value>
+  </data>
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>搜索</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>浏览</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>已安装</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>全部更新</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>扩展市场</value>
+  </data>
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>扩展：</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>配置：</value>
+  </data>
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>就绪</value>
+  </data>
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>作者</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>评分</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>下载</value>
+  </data>
+</root>

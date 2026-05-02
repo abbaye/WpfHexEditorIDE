@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>検索と置換</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>検索:</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>置換:</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>大文字と小文字を区別</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>単語全体</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>すべて検索</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>次を検索</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>前を検索</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>置換</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>すべて置換</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>閉じる</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>ページ</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>用紙サイズ:</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>カスタム</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>印刷の向き:</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>縦</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>横</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>段組み</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>段幅を均等にする</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>段の間に区切り線を表示</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>ヘッダー/フッター</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>ヘッダー</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>ヘッダーを有効にする</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>先頭ページのみ別指定</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>左右ページで同じヘッダー</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>フッター</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>フッターを有効にする</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>罫線</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>なし</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>ボックス</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>影付き</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>適用</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>内側:</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>外側:</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>左:</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>右:</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>テキスト表示</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>分割表示 (テキスト + Hex)</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>Hex 表示</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>構造ツリー表示</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>全表示 (テキスト + 構造 + Hex)</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>フォーカスモード — 禅ライティング (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>テキスト</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>分割</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>構造</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>全表示</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>フォーカス</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>ページ表示 — ページ区切り A4/Letter カード</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>下書き表示 — 連続スクロール、コンパクトな余白</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>アウトライン表示 — 中央寄せ構造ツリー</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>フォレンジック解析モード</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>フォレンジック</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>太字 (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>斜体 (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>下線 (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>取り消し線</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>左揃え</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>中央揃え</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>右揃え</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>段落スタイル</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>標準</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>引用</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Code</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>段落スタイル (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>ページ設定 (用紙サイズ、余白、段組み…)</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>縮小</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>拡大</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>読み取り専用</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>ドキュメントのメタデータ</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>ドキュメントをエクスポート</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>保存</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>タイトル</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>作成者</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>形式</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>作成日</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>更新日</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>マクロ</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>太字 (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>斜体 (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>下線 (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>選択テキストをコピー</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>Hex バイトとしてコピー</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>構造ペインでブロックを検査</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>Hex ペインのオフセットへジャンプ</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>ページ数</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>単語数</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>ズームレベル</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>クリックしてフォレンジックパネルを開く</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>構造</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>すべて折りたたむ</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>すべて展開</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>ブロックを絞り込む…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>フィルターをクリア</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>テキストへ移動</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>Hex オフセットへジャンプ</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>ブロックテキストをコピー</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>オフセットをコピー</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>ドキュメント</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>保存済み — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>保存に失敗: {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>このファイル形式に対応するセーバーが登録されていません。</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>ドキュメントを読み込んでいます…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>IDE の初期化を待機中…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>ドキュメントを開けませんでした: {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>ドキュメントをエクスポート</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>エクスポートに失敗: {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>エクスポート済み — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>'{0}' に対応するセーバーが登録されていません。</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>はい</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>いいえ</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>テキスト</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>分割</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>構造</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>全表示</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>フォーカス</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | 読み取り専用</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>1 ページ</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 語</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>分割</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>形式: {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} 語</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>1 / {0} ページ</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>標準</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>見出し 1</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>見出し 2</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>見出し 3</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>見出し 4</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>見出し 5</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>見出し 6</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>引用</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>キャプション</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>リスト段落</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>強調引用</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>アラート</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>ブロック</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>形式</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>選択</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>バージョン</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>表示</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>フォレンジックモード</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>16進数ビュー</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>分割ビュー</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>構造ビュー</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>テキストビュー</value>
+  </data>
+</root>

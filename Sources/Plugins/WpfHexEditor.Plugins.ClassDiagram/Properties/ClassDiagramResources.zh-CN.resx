@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.ClassDiagram
+    File        : ClassDiagramResources.zh-CN.resx
+    Description : Localized UI strings for the Class Diagram plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CD_PxUnit" xml:space="preserve">
+    <value>px</value>
+  </data>
+  <data name="CD_ParseHintFile" xml:space="preserve">
+    <value>控制从解决方案资源管理器使用查看类图或为项目生成类图时如何解析 C# 源文件。</value>
+  </data>
+  <data name="CD_SolutionHint" xml:space="preserve">
+    <value>控制为解决方案生成类图的行为。生成的图表按项目用泳道对类型进行分组，并将其状态保存到解决方案旁边的 .whscd 孪生文件中。</value>
+  </data>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>类图</value>
+  </data>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>类图</value>
+  </data>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>类大纲</value>
+  </data>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>类属性</value>
+  </data>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>图表工具箱</value>
+  </data>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>关系</value>
+  </data>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>图表历史</value>
+  </data>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>图表搜索</value>
+  </data>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>指标仪表板</value>
+  </data>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>重置</value>
+  </data>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>类_大纲</value>
+  </data>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>为解决方案生成类图</value>
+  </data>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>导出指标 CSV</value>
+  </data>
+  <data name="CD_NoSelection" xml:space="preserve"><value>未选择</value></data>
+  <data name="CD_PropName" xml:space="preserve"><value>名称</value></data>
+  <data name="CD_PropKind" xml:space="preserve"><value>种类</value></data>
+  <data name="CD_PropAbstract" xml:space="preserve"><value>抽象</value></data>
+  <data name="CD_DiagramHistory" xml:space="preserve"><value>关系图历史</value></data>
+  <data name="CD_Relationships" xml:space="preserve"><value>关系</value></data>
+  <data name="CD_TipSearchClasses" xml:space="preserve"><value>搜索类和成员 (Enter)</value></data>
+  <data name="CD_TipRunSearch" xml:space="preserve"><value>运行搜索</value></data>
+  <data name="CD_Results" xml:space="preserve"><value>个结果</value></data>
+  <data name="CD_TipFilterToolbox" xml:space="preserve"><value>筛选工具箱项</value></data>
+</root>

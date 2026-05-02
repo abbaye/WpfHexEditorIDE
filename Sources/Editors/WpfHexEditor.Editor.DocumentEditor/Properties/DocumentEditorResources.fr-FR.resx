@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>Rechercher et remplacer</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>Rechercher :</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>Remplacer :</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>Respecter la casse</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>Mot entier</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>Tout rechercher</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>Suivant</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>Précédent</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>Remplacer</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>Tout remplacer</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>Fermer</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>Page</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>Format :</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>Personnalisé</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>Orientation :</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>Portrait</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>Paysage</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>Colonnes</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>Largeurs de colonnes égales</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>Afficher une ligne de séparation entre les colonnes</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>En-tête/Pied de page</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>En-tête</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>Activer l'en-tête</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>Contenu différent sur la première page</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>Même en-tête sur les pages gauche/droite</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>Pied de page</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>Activer le pied de page</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>Bordure</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>Aucune</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>Encadré</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>Ombre</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>Annuler</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>Appliquer</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>Intérieur :</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>Extérieur :</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>Gauche :</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>Droite :</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>Vue texte</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>Vue fractionnée (texte + Hex)</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>Vue Hex</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>Vue arborescente de la structure</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>Vue complète (texte + structure + Hex)</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>Mode focus — écriture zen (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>Texte</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>Fractionné</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>Structure</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>Complet</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>Focus</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>Vue page — cartes A4/Letter paginées</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>Vue brouillon — défilement continu, marges compactes</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>Vue plan — arbre de structure centré</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>Mode analyse forensique</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>Forensique</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>Gras (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>Italique (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>Souligné (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>Barré</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>Aligner à gauche</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>Centrer</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>Aligner à droite</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>Style de paragraphe</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>Citation</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Code</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>Styles de paragraphe (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>Mise en page (format du papier, marges, colonnes…)</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>Zoom arrière</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>Zoom avant</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>Lecture seule</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Métadonnées du document</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Exporter le document</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Enregistrer</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Titre</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Auteur</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Format</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>Créé</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>Modifié</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>Macros</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>Gras (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>Italique (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>Souligné (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>Copier le texte sélectionné</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>Copier en octets Hex</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>Inspecter le bloc dans le volet Structure</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>Aller à l'offset dans le volet Hex</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>Nombre de pages</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>Nombre de mots</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>Niveau de zoom</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>Cliquer pour ouvrir le panneau forensique</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>Structure</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>Tout réduire</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>Tout développer</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>Filtrer les blocs…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>Effacer le filtre</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>Aller au texte</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>Aller à l'offset Hex</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>Copier le texte du bloc</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>Copier l'offset</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>Document</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>Enregistré — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>Échec de l'enregistrement : {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>Aucun enregistreur enregistré pour ce type de fichier.</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>Chargement du document…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>En attente de l'initialisation de l'IDE…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>Impossible d'ouvrir le document : {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>Exporter le document</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>Échec de l'exportation : {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>Exporté — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>Aucun enregistreur enregistré pour '{0}'.</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>Oui</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>Non</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>Texte</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>Fractionné</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>Structure</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>Complet</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>Focus</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | Lecture seule</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>Page 1</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 mot</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>Fractionné</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>Format : {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} mots</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>Page 1 / {0}</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>Titre 1</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>Titre 2</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>Titre 3</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>Titre 4</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>Titre 5</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>Titre 6</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>Citation</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>Légende</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>Paragraphe de liste</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>Citation intense</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>Alertes</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>Blocs</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>Sélection</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>Affichage</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>Mode forensique</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>Vue hexadécimale</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>Vue fractionnée</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>Vue de structure</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>Vue texte</value>
+  </data>
+</root>

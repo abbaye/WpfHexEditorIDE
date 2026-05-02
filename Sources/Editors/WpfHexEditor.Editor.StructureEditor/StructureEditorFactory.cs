@@ -7,6 +7,7 @@
 using System.IO;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.StructureEditor.Controls;
+using WpfHexEditor.Editor.StructureEditor.Properties;
 
 namespace WpfHexEditor.Editor.StructureEditor;
 
@@ -36,8 +37,8 @@ public sealed class StructureEditorFactory : IEditorFactory
 file sealed class StructureEditorDescriptor : IEditorDescriptor
 {
     public string Id          => "structure-editor";
-    public string DisplayName => "Structure Editor";
-    public string Description => "Visual editor for .whfmt structure definition files. Edit blocks, types, offsets, lengths and colors in a DataGrid.";
+    public string DisplayName => StructureEditorResources.StructureEditor_FactoryDisplayName;
+    public string Description => StructureEditorResources.StructureEditor_FactoryDescription;
 
     public IReadOnlyList<string> SupportedExtensions =>
     [

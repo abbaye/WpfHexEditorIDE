@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 // ==========================================================
 // Project: WpfHexEditor.Core.Options
 // File: SolutionExplorerOptionsPage.xaml
@@ -15,26 +15,35 @@
 <UserControl x:Class="WpfHexEditor.Core.Options.Pages.SolutionExplorerOptionsPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="Transparent">
+             Background="Transparent"
+             xmlns:optSvc="clr-namespace:WpfHexEditor.Core.Options.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <optSvc:OptionsLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Navigation ────────────────────────────────────────────────── -->
-        <TextBlock Text="NAVIGATION"
+        <TextBlock Text="{DynamicResource SolExp_NavigationSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckTrackActive"
-                  Content="Automatically highlight active document in tree"
+                  Content="{DynamicResource SolExp_TrackActive}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckPersistCollapse"
-                  Content="Remember expanded / collapsed state between sessions"
+                  Content="{DynamicResource SolExp_PersistCollapse}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
@@ -44,13 +53,13 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Notifications ─────────────────────────────────────────────── -->
-        <TextBlock Text="NOTIFICATIONS"
+        <TextBlock Text="{DynamicResource SolExp_NotificationsSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckNotifications"
-                  Content="Show contextual notifications (external changes, paste conflicts…)"
+                  Content="{DynamicResource SolExp_ShowNotifications}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
@@ -60,7 +69,7 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Default Sort ───────────────────────────────────────────────── -->
-        <TextBlock Text="DEFAULTS WHEN OPENING A SOLUTION"
+        <TextBlock Text="{DynamicResource SolExp_DefaultsSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -70,16 +79,16 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Default sort:"
+            <TextBlock Text="{DynamicResource SolExp_DefaultSortLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="SortCombo" Grid.Column="1"
                       SelectionChanged="OnComboChanged">
-                <ComboBoxItem Content="None"         Tag="None"/>
-                <ComboBoxItem Content="Name"         Tag="Name"/>
-                <ComboBoxItem Content="Type"         Tag="Type"/>
-                <ComboBoxItem Content="Date Modified" Tag="DateModified"/>
-                <ComboBoxItem Content="Size"         Tag="Size"/>
+                <ComboBoxItem Content="{DynamicResource SolExp_SortNone}"         Tag="None"/>
+                <ComboBoxItem Content="{DynamicResource SolExp_SortName}"         Tag="Name"/>
+                <ComboBoxItem Content="{DynamicResource SolExp_SortType}"         Tag="Type"/>
+                <ComboBoxItem Content="{DynamicResource SolExp_SortDateModified}" Tag="DateModified"/>
+                <ComboBoxItem Content="{DynamicResource SolExp_SortSize}"         Tag="Size"/>
             </ComboBox>
         </Grid>
 
@@ -88,16 +97,16 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Default filter:"
+            <TextBlock Text="{DynamicResource SolExp_DefaultFilterLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="FilterCombo" Grid.Column="1"
                       SelectionChanged="OnComboChanged">
-                <ComboBoxItem Content="All"      Tag="All"/>
-                <ComboBoxItem Content="Binary"   Tag="Binary"/>
-                <ComboBoxItem Content="Text"     Tag="Text"/>
-                <ComboBoxItem Content="Image"    Tag="Image"/>
-                <ComboBoxItem Content="Language" Tag="Language"/>
+                <ComboBoxItem Content="{DynamicResource SolExp_FilterAll}"      Tag="All"/>
+                <ComboBoxItem Content="{DynamicResource SolExp_FilterBinary}"   Tag="Binary"/>
+                <ComboBoxItem Content="{DynamicResource SolExp_FilterText}"     Tag="Text"/>
+                <ComboBoxItem Content="{DynamicResource SolExp_FilterImage}"    Tag="Image"/>
+                <ComboBoxItem Content="{DynamicResource SolExp_FilterLanguage}" Tag="Language"/>
             </ComboBox>
         </Grid>
 

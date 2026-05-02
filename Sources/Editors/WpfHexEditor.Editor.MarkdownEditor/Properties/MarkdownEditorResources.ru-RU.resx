@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="MdSb_ViewLabel" xml:space="preserve">
+    <value>Вид</value>
+  </data>
+  <data name="MdSb_ViewTooltip" xml:space="preserve">
+    <value>Текущий режим просмотра</value>
+  </data>
+  <data name="MdSb_WordsLabel" xml:space="preserve">
+    <value>Слова</value>
+  </data>
+  <data name="MdSb_WordsTooltip" xml:space="preserve">
+    <value>Приблизительное количество слов</value>
+  </data>
+  <data name="MdSb_LinesLabel" xml:space="preserve">
+    <value>Строки</value>
+  </data>
+  <data name="MdSb_LinesTooltip" xml:space="preserve">
+    <value>Общее количество строк</value>
+  </data>
+  <data name="MdSb_ReadLabel" xml:space="preserve">
+    <value>Читать</value>
+  </data>
+  <data name="MdSb_ReadTooltip" xml:space="preserve">
+    <value>Приблизительное время чтения (200 сл/мин)</value>
+  </data>
+  <data name="MdSb_ZoomLabel" xml:space="preserve">
+    <value>Масштаб</value>
+  </data>
+  <data name="MdSb_ZoomTooltip" xml:space="preserve">
+    <value>Масштаб предварительного просмотра (Ctrl+прокрутка в предпросмотре)</value>
+  </data>
+  <data name="MdTb_ViewLabel" xml:space="preserve">
+    <value>Вид</value>
+  </data>
+  <data name="MdTb_ViewTooltip" xml:space="preserve">
+    <value>Режим просмотра (Ctrl+1/2/3)</value>
+  </data>
+  <data name="MdTb_LayoutLabel" xml:space="preserve">
+    <value>Разметка</value>
+  </data>
+  <data name="MdTb_LayoutTooltip" xml:space="preserve">
+    <value>Разделённая разметка (Ctrl+Shift+L)</value>
+  </data>
+  <data name="MdTb_WrapLabel" xml:space="preserve">
+    <value>Перенос</value>
+  </data>
+  <data name="MdTb_WrapTooltip" xml:space="preserve">
+    <value>Перенос слов (Alt+Z)</value>
+  </data>
+  <data name="MdTb_RefreshLabel" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="MdTb_RefreshTooltip" xml:space="preserve">
+    <value>Обновить предварительный просмотр (F9)</value>
+  </data>
+  <data name="MdTb_InsertLabel" xml:space="preserve">
+    <value>Вставить</value>
+  </data>
+  <data name="MdTb_InsertTooltip" xml:space="preserve">
+    <value>Вставить элемент Markdown</value>
+  </data>
+  <data name="MdTb_FormatLabel" xml:space="preserve">
+    <value>Форматировать</value>
+  </data>
+  <data name="MdTb_FormatTooltip" xml:space="preserve">
+    <value>Форматировать выделенный текст</value>
+  </data>
+  <data name="MdTb_FullscreenLabel" xml:space="preserve">
+    <value>Полный экран</value>
+  </data>
+  <data name="MdTb_FullscreenTooltip" xml:space="preserve">
+    <value>Переключить полноэкранный просмотр</value>
+  </data>
+  <data name="MdView_SourceOnly" xml:space="preserve">
+    <value>Только исходник</value>
+  </data>
+  <data name="MdView_Split" xml:space="preserve">
+    <value>Разделённый</value>
+  </data>
+  <data name="MdView_PreviewOnly" xml:space="preserve">
+    <value>Только просмотр</value>
+  </data>
+  <data name="MdLayout_PreviewRight" xml:space="preserve">
+    <value>Просмотр справа</value>
+  </data>
+  <data name="MdLayout_PreviewLeft" xml:space="preserve">
+    <value>Просмотр слева</value>
+  </data>
+  <data name="MdLayout_PreviewBottom" xml:space="preserve">
+    <value>Просмотр снизу</value>
+  </data>
+  <data name="MdLayout_PreviewTop" xml:space="preserve">
+    <value>Просмотр сверху</value>
+  </data>
+  <data name="MdInsert_Table" xml:space="preserve">
+    <value>Таблица</value>
+  </data>
+  <data name="MdInsert_CodeBlock" xml:space="preserve">
+    <value>Блок кода</value>
+  </data>
+  <data name="MdInsert_Image" xml:space="preserve">
+    <value>Изображение</value>
+  </data>
+  <data name="MdInsert_HorizontalRule" xml:space="preserve">
+    <value>Горизонтальная линия</value>
+  </data>
+  <data name="MdInsert_TableOfContents" xml:space="preserve">
+    <value>Оглавление</value>
+  </data>
+  <data name="MdFmt_Bold" xml:space="preserve">
+    <value>Полужирный</value>
+  </data>
+  <data name="MdFmt_Italic" xml:space="preserve">
+    <value>Курсив</value>
+  </data>
+  <data name="MdFmt_Strikethrough" xml:space="preserve">
+    <value>Зачёркнутый</value>
+  </data>
+  <data name="MdFmt_InlineCode" xml:space="preserve">
+    <value>Встроенный код</value>
+  </data>
+  <data name="MdCtx_GroupFormat" xml:space="preserve">
+    <value>ФОРМАТ</value>
+  </data>
+  <data name="MdCtx_GroupInsert" xml:space="preserve">
+    <value>ВСТАВИТЬ</value>
+  </data>
+  <data name="MdCtx_GroupExport" xml:space="preserve">
+    <value>ЭКСПОРТ</value>
+  </data>
+  <data name="MdCtx_GroupView" xml:space="preserve">
+    <value>ВИД</value>
+  </data>
+  <data name="MdCtx_Bold" xml:space="preserve">
+    <value>Полужирный</value>
+  </data>
+  <data name="MdCtx_Italic" xml:space="preserve">
+    <value>Курсив</value>
+  </data>
+  <data name="MdCtx_Strikethrough" xml:space="preserve">
+    <value>Зачёркнутый</value>
+  </data>
+  <data name="MdCtx_InlineCode" xml:space="preserve">
+    <value>Встроенный код</value>
+  </data>
+  <data name="MdCtx_Table" xml:space="preserve">
+    <value>Таблица</value>
+  </data>
+  <data name="MdCtx_CodeBlock" xml:space="preserve">
+    <value>Блок кода</value>
+  </data>
+  <data name="MdCtx_Link" xml:space="preserve">
+    <value>Ссылка</value>
+  </data>
+  <data name="MdCtx_Image" xml:space="preserve">
+    <value>Изображение</value>
+  </data>
+  <data name="MdCtx_HorizontalRule" xml:space="preserve">
+    <value>Горизонтальная линия</value>
+  </data>
+  <data name="MdCtx_WordWrap" xml:space="preserve">
+    <value>Перенос слов	Alt+Z</value>
+  </data>
+  <data name="MdCtx_ExportHtml" xml:space="preserve">
+    <value>Экспорт в HTML...</value>
+  </data>
+  <data name="MdCtx_ExportPdf" xml:space="preserve">
+    <value>Экспорт в PDF...</value>
+  </data>
+  <data name="MdPrev_SourceOnly" xml:space="preserve">
+    <value>Только исходник</value>
+  </data>
+  <data name="MdPrev_SplitView" xml:space="preserve">
+    <value>Разделённый просмотр</value>
+  </data>
+  <data name="MdPrev_PreviewOnly" xml:space="preserve">
+    <value>Только просмотр</value>
+  </data>
+  <data name="MdPrev_Fullscreen" xml:space="preserve">
+    <value>Полный экран</value>
+  </data>
+  <data name="MdPrev_ExitFullscreen" xml:space="preserve">
+    <value>Выйти из полного экрана</value>
+  </data>
+  <data name="MdPrev_RefreshPreview" xml:space="preserve">
+    <value>Обновить предварительный просмотр</value>
+  </data>
+  <data name="MdPrev_CycleLayout" xml:space="preserve">
+    <value>Переключить разметку</value>
+  </data>
+  <data name="MdPrev_ZoomIn" xml:space="preserve">
+    <value>Увеличить</value>
+  </data>
+  <data name="MdPrev_ZoomOut" xml:space="preserve">
+    <value>Уменьшить</value>
+  </data>
+  <data name="MdPrev_ResetZoom" xml:space="preserve">
+    <value>Сбросить масштаб</value>
+  </data>
+  <data name="MdPrev_Copy" xml:space="preserve">
+    <value>Копировать</value>
+  </data>
+  <data name="MdDlg_ExportHtmlTitle" xml:space="preserve">
+    <value>Экспорт в HTML</value>
+  </data>
+  <data name="MdDlg_ExportPdfTitle" xml:space="preserve">
+    <value>Экспорт в PDF</value>
+  </data>
+  <data name="Md_NoHeadingsFound" xml:space="preserve">
+    <value>Заголовки не найдены.</value>
+  </data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Инициализация предварительного просмотра…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>Среда выполнения WebView2 не найдена</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Для предварительного просмотра Markdown требуется среда выполнения Microsoft Edge WebView2. Загрузите её с microsoft.com/edge/webview2.</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Обновить структуру (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>Нет активного файла Markdown.</value></data>
+</root>

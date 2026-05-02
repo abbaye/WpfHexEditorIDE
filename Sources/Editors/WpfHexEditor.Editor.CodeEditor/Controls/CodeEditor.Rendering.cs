@@ -36,6 +36,7 @@ using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Selection;
 using WpfHexEditor.Editor.CodeEditor.Input;
 using WpfHexEditor.Editor.CodeEditor.MultiCaret;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -809,13 +810,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             int prevFirstVisible = _firstVisibleLine, prevLastVisible = _lastVisibleLine;
             CalculateVisibleLines();
 
-            // OPT-D: rebuild per-line Y positions only when the visible range, InlineHints, or
-            // folding state changed — not on every caret-blink render frame.
-            if (_firstVisibleLine != prevFirstVisible || _lastVisibleLine != prevLastVisible)
+            // OPT-D: rebuild per-line Y positions only when the visible range, scroll offset,
+            // InlineHints data, or folding state changed — not on every caret-blink render frame.
+            // IMPORTANT: scroll offset must be tracked separately because RenderBuffer keeps the
+            // same _firstVisibleLine/_lastVisibleLine range across many scroll positions (the
+            // buffer renders extra lines beyond the viewport), so a range-only check leaves stale
+            // Y positions when scrolling within the buffered zone (= first ~RenderBuffer lines).
+            double currentScrollOffset = _currentScrollOffset;
+            if (_firstVisibleLine != prevFirstVisible
+                || _lastVisibleLine != prevLastVisible
+                || Math.Abs(currentScrollOffset - _lastRenderedScrollOffset) > 0.01)
                 _linePositionsDirty = true;
 
             if (_linePositionsDirty)
             {
+                _lastRenderedScrollOffset = currentScrollOffset;
                 ComputeVisibleLinePositions();
                 _linePositionsDirty = false;
             }
@@ -1147,7 +1156,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private int _frameCount = 0; // Frame counter for periodic cache cleanup
         private readonly Stopwatch   _refreshStopwatch = new();
-        private readonly StatusBarItem _sbRefreshTime  = new() { Label = "Refresh", Tooltip = "Render frame time in milliseconds", Value = "—" };
+        private readonly StatusBarItem _sbRefreshTime  = new() { Label = CodeEditorResources.CodeSb_RefreshLabel, Tooltip = CodeEditorResources.CodeSb_RefreshTooltip, Value = "—" };
 
         /// <summary>
         /// Measure: update cached max content width; scrollbars manage their own layout.
@@ -1187,11 +1196,22 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                              + Math.Max(0, finalSize.Height - _lineHeight);
             double totalTW     = textLeft + _maxContentWidth;
 
-            // Determine which scrollbars are needed (check for mutual dependency)
-            bool needsV = totalH  > finalSize.Height;
-            bool needsH = totalTW > finalSize.Width;
-            if (needsV) needsH = totalTW > (finalSize.Width  - ScrollBarThickness);
-            if (needsH) needsV = totalH  > (finalSize.Height - ScrollBarThickness);
+            // Publish content dimensions for the external host (CodeEditorHost).
+            bool contentSizeChanged = TotalContentHeight != totalH || TotalContentWidth != totalTW;
+            TotalContentHeight = totalH;
+            TotalContentWidth  = totalTW;
+            if (contentSizeChanged)
+                ContentSizeChanged?.Invoke(this, EventArgs.Empty);
+
+            // Determine which scrollbars are needed (check for mutual dependency).
+            // When HideScrollBars is true the host manages scrollbars — always suppress internal ones.
+            bool needsV = !HideScrollBars && totalH  > finalSize.Height;
+            bool needsH = !HideScrollBars && totalTW > finalSize.Width;
+            if (!HideScrollBars)
+            {
+                if (needsV) needsH = totalTW > (finalSize.Width  - ScrollBarThickness);
+                if (needsH) needsV = totalH  > (finalSize.Height - ScrollBarThickness);
+            }
 
             double contentW = needsV ? finalSize.Width  - ScrollBarThickness : finalSize.Width;
             double contentH = needsH ? finalSize.Height - ScrollBarThickness : finalSize.Height;
@@ -2505,7 +2525,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                     var    span   = lineText.Substring(ss, se - ss);
                     var    brush  = token.Foreground ?? defaultFg;
-                    double tokenX = x + (ss - startCol) * _charWidth;
+                    double tokenX = _glyphRenderer?.SnapToPixelPublic(x + (ss - startCol) * _charWidth)
+                                   ?? x + (ss - startCol) * _charWidth;
 
                     // Use GlyphRunRenderer when available — same sharp ClearType rendering
                     // as the non-wrap path; correctly applies IsBold / IsItalic flags.
@@ -2761,8 +2782,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     foreach (var token in renderTokens)
                     {
                         // Use tab-aware X so tokens on tab-indented lines are not shifted left.
-                        double tokenX = x + (_glyphRenderer?.ComputeVisualX(line.Text, token.StartColumn)
-                                             ?? token.StartColumn * _charWidth);
+                        // Snap to physical pixel: fractional charWidth × column accumulates sub-pixel
+                        // error that causes glyph overlap at non-100% zoom levels.
+                        double tokenX = _glyphRenderer?.SnapToPixelPublic(
+                                            x + _glyphRenderer.ComputeVisualX(line.Text, token.StartColumn))
+                                        ?? x + token.StartColumn * _charWidth;
 
                         if (_glyphRenderer != null)
                         {

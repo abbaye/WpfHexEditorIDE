@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.DiffViewer
+    File        : DiffViewerResources.resx
+    Description : Localized strings for the DiffViewer editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="DiffViewer_Comparing" xml:space="preserve"><value>Comparing…</value></data>
+  <data name="DiffViewer_PrevDiff" xml:space="preserve">
+    <value>Previous difference (Shift+F8)</value>
+  </data>
+  <data name="DiffViewer_NextDiff" xml:space="preserve">
+    <value>Next difference (F8)</value>
+  </data>
+  <data name="DiffViewer_DiffList" xml:space="preserve">
+    <value>Diff List</value>
+  </data>
+  <data name="DiffViewer_ShowHideDiffList" xml:space="preserve">
+    <value>Show/hide the diff regions list</value>
+  </data>
+  <data name="DiffViewer_ColType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DiffViewer_ColLength" xml:space="preserve">
+    <value>Length</value>
+  </data>
+  <data name="DiffViewer_ColLeftBytes" xml:space="preserve">
+    <value>Left bytes</value>
+  </data>
+  <data name="DiffViewer_ColRightBytes" xml:space="preserve">
+    <value>Right bytes</value>
+  </data>
+  <data name="DiffViewer_OpenFilesHint" xml:space="preserve">
+    <value>Open two files via View &gt; Compare Files…</value>
+  </data>
+  <data name="DiffViewer_Modified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="DiffViewer_Added" xml:space="preserve">
+    <value>Added</value>
+  </data>
+  <data name="DiffViewer_Deleted" xml:space="preserve">
+    <value>Deleted</value>
+  </data>
+  <data name="DiffViewer_PrevButton" xml:space="preserve"><value>◄ Prev</value></data>
+  <data name="DiffViewer_NextButton" xml:space="preserve"><value>Next ►</value></data>
+  <data name="DiffViewer_ModifiedChip" xml:space="preserve"><value>Modified: 0</value></data>
+  <data name="DiffViewer_AddedChip" xml:space="preserve"><value>Added: 0</value></data>
+  <data name="DiffViewer_DeletedChip" xml:space="preserve"><value>Deleted: 0</value></data>
+  <data name="DiffViewer_LeftLabel" xml:space="preserve"><value>— (left)</value></data>
+  <data name="DiffViewer_RightLabel" xml:space="preserve"><value>— (right)</value></data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Offset</value></data>
+</root>

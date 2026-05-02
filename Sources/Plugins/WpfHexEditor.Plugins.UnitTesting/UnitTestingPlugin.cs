@@ -36,6 +36,7 @@ using static WpfHexEditor.SDK.Contracts.WellKnownEditorIds;
 using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Plugins.UnitTesting.Properties;
 
 namespace WpfHexEditor.Plugins.UnitTesting;
 
@@ -187,7 +188,7 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         var testProjects = FindTestProjects();
         if (testProjects.Count == 0)
         {
-            _vm.StatusText = "No test projects found in the current solution.";
+            _vm.StatusText = UnitTestingResources.UnitTest_NoTestProjects;
             return;
         }
 
@@ -239,7 +240,7 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                     // Ensure project node spinner stops even when the run is cancelled.
                     await Application.Current.Dispatcher.InvokeAsync(() =>
                         _vm.RemoveRunningPlaceholder());
-                    throw; // propagate so outer catch sets StatusText = "Run cancelled."
+                    throw; // propagate so outer catch sets StatusText = UnitTestingResources.UnitTest_RunCancelled
                 }
                 catch (Exception ex)
                 {
@@ -252,12 +253,12 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             }
 
             _vm.StatusText = ct.IsCancellationRequested
-                ? "Run cancelled."
+                ? UnitTestingResources.UnitTest_RunCancelled
                 : BuildSummary(_vm.PassCount, _vm.FailCount, _vm.SkipCount);
         }
         catch (OperationCanceledException)
         {
-            _vm.StatusText = "Run cancelled.";
+            _vm.StatusText = UnitTestingResources.UnitTest_RunCancelled;
         }
         finally
         {
@@ -334,19 +335,19 @@ public sealed class UnitTestingPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             });
 
             _vm.StatusText = ct.IsCancellationRequested
-                ? "Run cancelled."
+                ? UnitTestingResources.UnitTest_RunCancelled
                 : BuildSummary(_vm.PassCount, _vm.FailCount, _vm.SkipCount);
         }
         catch (OperationCanceledException)
         {
             await Application.Current.Dispatcher.InvokeAsync(() => row.IsRunning = false);
-            _vm.StatusText = "Run cancelled.";
+            _vm.StatusText = UnitTestingResources.UnitTest_RunCancelled;
         }
         catch (Exception ex)
         {
             _context?.Output.Write("Unit Testing", $"[Error] {ex.Message}");
             await Application.Current.Dispatcher.InvokeAsync(() => row.IsRunning = false);
-            _vm.StatusText = "Run failed — see Output panel.";
+            _vm.StatusText = UnitTestingResources.UnitTest_RunFailed;
         }
         finally
         {

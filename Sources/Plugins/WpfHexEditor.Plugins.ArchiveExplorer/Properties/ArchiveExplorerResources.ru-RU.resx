@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ArchiveExplorer_PluginName" xml:space="preserve">
+    <value>Обозреватель архивов</value>
+  </data>
+  <data name="ArchiveExplorer_OpenArchive" xml:space="preserve">
+    <value>Открыть архив</value>
+  </data>
+  <data name="ArchiveExplorer_SelectExtractFolder" xml:space="preserve">
+    <value>Выберите папку извлечения по умолчанию</value>
+  </data>
+  <data name="AE_ExtractAll" xml:space="preserve"><value>Извлечь всё…</value></data>
+  <data name="AE_ExtractSelected" xml:space="preserve"><value>Извлечь выбранное…</value></data>
+  <data name="AE_Preview" xml:space="preserve"><value>Предпросмотр</value></data>
+  <data name="AE_OpenRawInHex" xml:space="preserve"><value>Открыть raw в Hex</value></data>
+  <data name="AE_OpenArchive" xml:space="preserve"><value>Открыть архив…</value></data>
+  <data name="AE_RefreshArchive" xml:space="preserve"><value>Обновить архив</value></data>
+  <data name="AE_NavigateUp" xml:space="preserve"><value>Перейти вверх (выйти из вложенного архива)</value></data>
+  <data name="AE_MoreOptions" xml:space="preserve"><value>Больше параметров</value></data>
+  <data name="AE_ExtractAllTooltip" xml:space="preserve"><value>Извлечь всё…</value></data>
+  <data name="AE_ExtractSelectedTooltip" xml:space="preserve"><value>Извлечь выбранное…</value></data>
+  <data name="AE_PreviewTooltip" xml:space="preserve"><value>Предпросмотр записи</value></data>
+  <data name="AE_OpenRawInHexTooltip" xml:space="preserve"><value>Открыть сырые байты в Hex-редакторе</value></data>
+  <data name="AE_FilterEntries" xml:space="preserve"><value>Фильтровать записи…</value></data>
+  <data name="AE_ClearFilter" xml:space="preserve"><value>Очистить фильтр</value></data>
+  <data name="AE_Loading" xml:space="preserve"><value>Загрузка…</value></data>
+  <data name="AE_DrillIntoArchive" xml:space="preserve"><value>Войти в архив</value></data>
+  <data name="AE_CopyPath" xml:space="preserve"><value>Копировать путь</value></data>
+  <data name="AE_Properties" xml:space="preserve"><value>Свойства…</value></data>
+  <data name="AE_DropArchiveHere" xml:space="preserve"><value>Перетащите архив сюда</value></data>
+  <data name="AE_ClickOpenToolbar" xml:space="preserve"><value>или нажмите «Открыть» на панели инструментов</value></data>
+  <data name="AE_BehaviourSection" xml:space="preserve"><value>Поведение</value></data>
+  <data name="AE_AutoShowPanel" xml:space="preserve"><value>Автоматически показывать панель при открытии архива</value></data>
+  <data name="AE_ShowCompressionBadge" xml:space="preserve"><value>Показать значок коэффициента сжатия в дереве</value></data>
+  <data name="AE_ShowFormatBadge" xml:space="preserve"><value>Показать значок определения формата (whfmt)</value></data>
+  <data name="AE_PreviewSection" xml:space="preserve"><value>Предпросмотр</value></data>
+  <data name="AE_MaxPreviewSize" xml:space="preserve"><value>Макс. размер предпросмотра (КБ):</value></data>
+  <data name="AE_ExtractionSection" xml:space="preserve"><value>Извлечение</value></data>
+  <data name="AE_MaxFormatDetectionSize" xml:space="preserve"><value>Макс. размер определения формата (КБ):</value></data>
+  <data name="AE_DefaultExtractFolder" xml:space="preserve"><value>Папка извлечения по умолчанию:</value></data>
+  <data name="AE_Browse" xml:space="preserve"><value>Обзор…</value></data>
+  <data name="AE_EntryPropertiesTitle" xml:space="preserve"><value>Свойства записи</value></data>
+  <data name="AE_FullPath" xml:space="preserve"><value>Полный путь:</value></data>
+  <data name="AE_Size" xml:space="preserve"><value>Размер:</value></data>
+  <data name="AE_Compressed" xml:space="preserve"><value>Сжатый:</value></data>
+  <data name="AE_Ratio" xml:space="preserve"><value>Соотношение:</value></data>
+  <data name="AE_Method" xml:space="preserve"><value>Метод:</value></data>
+  <data name="AE_LastModified" xml:space="preserve"><value>Последнее изменение:</value></data>
+  <data name="AE_Crc32" xml:space="preserve"><value>CRC32:</value></data>
+  <data name="AE_Close" xml:space="preserve"><value>Закрыть</value></data>
+</root>

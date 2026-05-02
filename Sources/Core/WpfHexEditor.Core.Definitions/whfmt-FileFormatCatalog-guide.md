@@ -22,7 +22,7 @@ The package ships two assemblies:
 ```
 whfmt.FileFormatCatalog.nupkg
 └── lib/net8.0/
-    ├── WpfHexEditor.Core.Definitions.dll   — catalog engine + 675+ embedded resources
+    ├── WpfHexEditor.Core.Definitions.dll   — catalog engine + 790+ embedded resources
     └── WpfHexEditor.Core.Contracts.dll     — public types (interfaces, records, enums)
 ```
 
@@ -850,7 +850,7 @@ foreach (var entry in catalog.GetByCategory(FormatCategory.Programming)
 }
 ```
 
-Available language grammars (35): Assembly, Batch, C, C++, C#, C# Script, CSS, Dart, F#, Go, HTML, Java, JavaScript, JSON, Kotlin, Lua, Markdown, PHP, Perl, PowerShell, Python, Ruby, Rust, Shell, SQL, Swift, TOML, TypeScript, VB.NET, WHFMT, XAML, XML, XMLMarkup, YAML.
+Available language grammars (57): Assembly, Batch, C, C++, C#, C# Script, Config/INI, CSON, CSS, Dart, DocBook, Dockerfile, `.env`, F#, FB2, FODT, Go, HCL/Terraform, HTML, iCal, Java, JavaScript, JSON, Kotlin, Lua, Markdown, MHT, MSBuild, NDJSON, Nginx, OpenDoc Flat, Perl, PHP, PowerShell, Python, RESW, RESX, Ruby, Rust, Shell, SourceMap, SQL, Swift, TOML, TypeScript, VB.NET, vCard, WAT, WebManifest, WHFMT, WML, XAML, XML, XMLMarkup, YAML. *(+22 new grammars in v1.1.0: Dockerfile, `.env`, Nginx, HCL/Terraform, WAT, MSBuild, SourceMap, WebManifest, CSON, NDJSON, iCal, vCard, DocBook, AbiWord, WML, FODT, FB2, MHT, OpenDoc Flat, Config/INI, RESW, RESX)*
 
 ### Detecting extension spoofing
 
@@ -1377,4 +1377,4 @@ string? schema = EmbeddedFormatCatalog.Instance.GetSchemaJson(SchemaName.Whfmt);
 // Pass to JsonSchema.Net, Newtonsoft.Json.Schema, or any JSON Schema validator
 ```
 
-The embedded schema (`whfmt.schema.json`) is the authoritative v2.4 schema used internally to validate all 675+ bundled definitions at build time.
+The embedded schema (`whfmt.schema.json`) is the authoritative v2.4 schema used internally to validate all 790+ bundled definitions at build time.

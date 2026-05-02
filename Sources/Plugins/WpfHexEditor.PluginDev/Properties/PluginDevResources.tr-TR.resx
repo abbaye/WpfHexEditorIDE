@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>Yeni Uzantı Projesi</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Eklenti projesi için çıktı dizini seçin</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>İzinler</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>Yalıtım Modu</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>Yükleme Önceliği (10–90):</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>İleri &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>Oluştur ve Aç</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>Eklenti Oluşturuldu</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>Uzantı Paketi Yayımla</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>Yayımlamadan önce paketi imzala</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Gözat…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>Çıktı klasörünü Explorer'da aç</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>Paket</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>Çıktı Dizini Seç</value>
+  </data>
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>Uzantı Geliştirme Günlüğünü Dışa Aktar</value>
+  </data>
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>Ara</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>Gözat</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>Yüklü</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>Tümünü Güncelle</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>Güncellemeler</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>Uzantı Market Yeri</value>
+  </data>
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>Uzantı:</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>Yapılandırma:</value>
+  </data>
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>Hazır</value>
+  </data>
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>Yazar</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>Sürüm</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>Puan</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>İndirmeler</value>
+  </data>
+</root>

@@ -23,6 +23,7 @@ using System.Windows.Input;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Models;
+using WpfHexEditor.Core.Properties;
 using WpfHexEditor.HexEditor.ViewModels;
 
 namespace WpfHexEditor.HexEditor
@@ -1155,7 +1156,7 @@ namespace WpfHexEditor.HexEditor
             }
             else
             {
-                SelectionInfo.Text = "No selection";
+                SelectionInfo.Text = WpfHexEditor.Core.Properties.Resources.StatusBar_NoSelection;
             }
         }
 
@@ -1167,7 +1168,7 @@ namespace WpfHexEditor.HexEditor
             }
             else
             {
-                PositionInfo.Text = "Position: 0";
+                PositionInfo.Text = WpfHexEditor.Core.Properties.Resources.StatusBar_PositionZero;
             }
         }
 

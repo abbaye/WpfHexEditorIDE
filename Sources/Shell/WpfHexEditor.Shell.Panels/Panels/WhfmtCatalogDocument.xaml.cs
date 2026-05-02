@@ -21,6 +21,7 @@ using WpfHexEditor.Core.Options;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Shell.Panels.Services;
+using WpfHexEditor.Shell.Panels.Properties;
 using WpfHexEditor.Shell.Panels.ViewModels;
 
 namespace WpfHexEditor.Shell.Panels.Panels;
@@ -54,11 +55,24 @@ public partial class WhfmtCatalogDocument : UserControl,
         // ── Toolbar items ──────────────────────────────────────────────────
         ToolbarItems =
         [
-            new EditorToolbarItem { Icon = "\uE7AC", Tooltip = "Open selected", Command = new LambdaCmd(() => _vm.OpenSelectedCommand.Execute(null)) },
-            new EditorToolbarItem { Icon = "\uE74E", Tooltip = "Export selected to file…", Command = new LambdaCmd(() => _vm.ExportSelectedCommand.Execute(null)) },
+            new EditorToolbarItem { Icon = "\uE7AC", Tooltip = Application.Current.TryFindResource("WhfmtCatalog_Tooltip_OpenSelected") as string ?? "Open selected", Command = new LambdaCmd(() => _vm.OpenSelectedCommand.Execute(null)) },
+            new EditorToolbarItem { Icon = "\uE74E", Tooltip = Application.Current.TryFindResource("WhfmtCatalog_Tooltip_ExportSelected") as string ?? "Export selected to file…", Command = new LambdaCmd(() => _vm.ExportSelectedCommand.Execute(null)) },
             new EditorToolbarItem { IsSeparator = true },
-            new EditorToolbarItem { Icon = "\uE109", Tooltip = "Add format file…", Command = new LambdaCmd(() => _vm.AddFormatCommand.Execute(null)) },
-            new EditorToolbarItem { Icon = "\uE72C", Tooltip = "Refresh catalog (F5)", Command = new LambdaCmd(() => _vm.RefreshCommand.Execute(null)) },
+            new EditorToolbarItem { Icon = "\uE109", Tooltip = Application.Current.TryFindResource("WhfmtCatalog_Tooltip_AddFormat") as string ?? "Add format file…", Command = new LambdaCmd(() => _vm.AddFormatCommand.Execute(null)) },
+            new EditorToolbarItem { Icon = "\uE72C", Tooltip = Application.Current.TryFindResource("WhfmtCatalog_Tooltip_Refresh") as string ?? "Refresh catalog (F5)", Command = new LambdaCmd(() => _vm.RefreshCommand.Execute(null)) },
+            new EditorToolbarItem { IsSeparator = true },
+            new EditorToolbarItem
+            {
+                Icon    = "\uE8A0",
+                Tooltip = Application.Current.TryFindResource("WhfmtCatalog_LayoutTooltip") as string ?? "Detail panel position",
+                DropdownItems =
+                [
+                    new EditorToolbarItem { Label = Application.Current.TryFindResource("WhfmtCatalog_LayoutRight")  as string ?? "Detail Right",  Command = new LambdaCmd(() => SetDetailPosition(WhfmtDetailPanelPosition.Right))  },
+                    new EditorToolbarItem { Label = Application.Current.TryFindResource("WhfmtCatalog_LayoutLeft")   as string ?? "Detail Left",   Command = new LambdaCmd(() => SetDetailPosition(WhfmtDetailPanelPosition.Left))   },
+                    new EditorToolbarItem { Label = Application.Current.TryFindResource("WhfmtCatalog_LayoutBottom") as string ?? "Detail Bottom", Command = new LambdaCmd(() => SetDetailPosition(WhfmtDetailPanelPosition.Bottom)) },
+                    new EditorToolbarItem { Label = Application.Current.TryFindResource("WhfmtCatalog_LayoutTop")    as string ?? "Detail Top",    Command = new LambdaCmd(() => SetDetailPosition(WhfmtDetailPanelPosition.Top))    },
+                ]
+            },
         ];
 
         // ── Status bar items ───────────────────────────────────────────────
@@ -153,8 +167,17 @@ public partial class WhfmtCatalogDocument : UserControl,
     {
         _searchBar = new QuickSearchBar();
         _searchBar.BindToTarget(this);
+        _searchBar.Visibility = Visibility.Collapsed;
+        _searchBar.OnCloseRequested += (_, _) =>
+        {
+            _searchBar.Visibility = Visibility.Collapsed;
+            SearchBarCanvas.IsHitTestVisible = false;
+            ClearSearch();
+        };
         SearchBarCanvas.Children.Add(_searchBar);
-        SearchBarCanvas.IsHitTestVisible = true;
+        SearchBarCanvas.IsHitTestVisible = false;
+
+        ApplyDetailLayout(_vm.DetailPosition);
     }
 
     // ------------------------------------------------------------------
@@ -180,6 +203,7 @@ public partial class WhfmtCatalogDocument : UserControl,
     {
         if (_searchBar is null) return;
         _searchBar.Visibility = Visibility.Visible;
+        SearchBarCanvas.IsHitTestVisible = true;
         _searchBar.EnsureDefaultPosition(SearchBarCanvas);
         _searchBar.FocusSearchInput();
     }
@@ -226,8 +250,8 @@ public partial class WhfmtCatalogDocument : UserControl,
     {
         var dlg = new OpenFileDialog
         {
-            Title           = "Add Format Definition",
-            Filter          = "Whfmt definitions (*.whfmt)|*.whfmt",
+            Title           = ShellPanelsResources.Whfmt_AddFormatTitle,
+            Filter          = ShellPanelsResources.Whfmt_AddFormatFilter,
             Multiselect     = false,
             CheckFileExists = true
         };
@@ -240,6 +264,79 @@ public partial class WhfmtCatalogDocument : UserControl,
         if (e.PropertyName is nameof(WhfmtCatalogViewModel.SelectedCount)
                            or nameof(WhfmtCatalogViewModel.TotalCount))
             RefreshStatusBarItems();
+
+        if (e.PropertyName == nameof(WhfmtCatalogViewModel.DetailPosition))
+            ApplyDetailLayout(_vm.DetailPosition);
+    }
+
+    // ------------------------------------------------------------------
+    // Layout
+    // ------------------------------------------------------------------
+
+    private void SetDetailPosition(WhfmtDetailPanelPosition pos)
+        => _vm.DetailPosition = pos;
+
+    private void ApplyDetailLayout(WhfmtDetailPanelPosition pos)
+    {
+        DetailPanel.PreviewOrientation = pos is WhfmtDetailPanelPosition.Right or WhfmtDetailPanelPosition.Left
+            ? DetailPreviewOrientation.Vertical
+            : DetailPreviewOrientation.Horizontal;
+        // Reset all rows/cols to zero first
+        ContentGrid.RowDefinitions[1].Height    = new GridLength(0);
+        ContentGrid.RowDefinitions[2].Height    = new GridLength(0);
+        ContentGrid.ColumnDefinitions[1].Width  = new GridLength(0);
+        ContentGrid.ColumnDefinitions[2].Width  = new GridLength(0);
+
+        switch (pos)
+        {
+            case WhfmtDetailPanelPosition.Right:
+                ContentGrid.ColumnDefinitions[1].Width = new GridLength(4);
+                ContentGrid.ColumnDefinitions[2].Width = new GridLength(460, GridUnitType.Pixel);
+                Grid.SetRow(CatalogGrid,    0); Grid.SetColumn(CatalogGrid,    0);
+                Grid.SetRow(DetailSplitter, 0); Grid.SetColumn(DetailSplitter, 1);
+                Grid.SetRow(DetailPanel,    0); Grid.SetColumn(DetailPanel,    2);
+                DetailSplitter.Width  = 4; DetailSplitter.Height = double.NaN;
+                DetailSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                DetailSplitter.VerticalAlignment   = VerticalAlignment.Stretch;
+                DetailSplitter.ResizeDirection     = GridResizeDirection.Columns;
+                break;
+
+            case WhfmtDetailPanelPosition.Left:
+                ContentGrid.ColumnDefinitions[1].Width = new GridLength(4);
+                ContentGrid.ColumnDefinitions[2].Width = new GridLength(460, GridUnitType.Pixel);
+                Grid.SetRow(DetailPanel,    0); Grid.SetColumn(DetailPanel,    0);
+                Grid.SetRow(DetailSplitter, 0); Grid.SetColumn(DetailSplitter, 1);
+                Grid.SetRow(CatalogGrid,    0); Grid.SetColumn(CatalogGrid,    2);
+                DetailSplitter.Width  = 4; DetailSplitter.Height = double.NaN;
+                DetailSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                DetailSplitter.VerticalAlignment   = VerticalAlignment.Stretch;
+                DetailSplitter.ResizeDirection     = GridResizeDirection.Columns;
+                break;
+
+            case WhfmtDetailPanelPosition.Bottom:
+                ContentGrid.RowDefinitions[1].Height = new GridLength(4);
+                ContentGrid.RowDefinitions[2].Height = new GridLength(200, GridUnitType.Pixel);
+                Grid.SetRow(CatalogGrid,    0); Grid.SetColumn(CatalogGrid,    0);
+                Grid.SetRow(DetailSplitter, 1); Grid.SetColumn(DetailSplitter, 0);
+                Grid.SetRow(DetailPanel,    2); Grid.SetColumn(DetailPanel,    0);
+                DetailSplitter.Height = 4; DetailSplitter.Width = double.NaN;
+                DetailSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                DetailSplitter.VerticalAlignment   = VerticalAlignment.Stretch;
+                DetailSplitter.ResizeDirection     = GridResizeDirection.Rows;
+                break;
+
+            case WhfmtDetailPanelPosition.Top:
+                ContentGrid.RowDefinitions[1].Height = new GridLength(4);
+                ContentGrid.RowDefinitions[2].Height = new GridLength(200, GridUnitType.Pixel);
+                Grid.SetRow(DetailPanel,    0); Grid.SetColumn(DetailPanel,    0);
+                Grid.SetRow(DetailSplitter, 1); Grid.SetColumn(DetailSplitter, 0);
+                Grid.SetRow(CatalogGrid,    2); Grid.SetColumn(CatalogGrid,    0);
+                DetailSplitter.Height = 4; DetailSplitter.Width = double.NaN;
+                DetailSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                DetailSplitter.VerticalAlignment   = VerticalAlignment.Stretch;
+                DetailSplitter.ResizeDirection     = GridResizeDirection.Rows;
+                break;
+        }
     }
 }
 

@@ -21,6 +21,7 @@ using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 using WpfHexEditor.Editor.TextEditor.Models;
 using WpfHexEditor.Editor.TextEditor.Services;
+using WpfHexEditor.Editor.TextEditor.Properties;
 using WpfHexEditor.Editor.TextEditor.ViewModels;
 
 namespace WpfHexEditor.Editor.TextEditor.Controls;
@@ -81,7 +82,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     private bool             _suppressBufferSync;
 
     // -- IRefreshTimeReporter ------------------------------------------------
-    private readonly StatusBarItem _sbRefreshTime = new() { Label = "Refresh", Tooltip = "Render frame time in milliseconds", Value = "—" };
+    private readonly StatusBarItem _sbRefreshTime = new() { Label = TextEditorResources.TeSb_RefreshLabel, Tooltip = TextEditorResources.TeSb_RefreshTooltip, Value = "—" };
 
     // -- ISearchTarget -------------------------------------------------------
     private readonly List<(int Line, int Col)> _searchMatches = new();
@@ -106,7 +107,8 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         // Wire ViewModel
         Viewport.Attach(_vm);
         _vm.PropertyChanged += OnVmPropertyChanged;
-        Viewport.RefreshTimeUpdated += (_, ms) => _sbRefreshTime.Value = $"{ms} ms";
+        Viewport.RefreshTimeUpdated     += (_, ms) => _sbRefreshTime.Value = $"{ms} ms";
+        Viewport.FirstVisibleLineChanged += (_, _) => SyncVScrollBar();
 
         // Commands
         UndoCommand      = new RelayCommand(() => Undo(),      () => CanUndo);
@@ -165,17 +167,17 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     {
         var cm = new ContextMenu();
 
-        cm.Items.Add(new MenuItem { Header = "Cu_t",        InputGestureText = "Ctrl+X", Command = ApplicationCommands.Cut,       CommandTarget = Viewport, Icon = MakeMenuIcon("\uE74E") });
-        cm.Items.Add(new MenuItem { Header = "_Copy",       InputGestureText = "Ctrl+C", Command = ApplicationCommands.Copy,      CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8C8") });
-        cm.Items.Add(new MenuItem { Header = "_Paste",      InputGestureText = "Ctrl+V", Command = ApplicationCommands.Paste,     CommandTarget = Viewport, Icon = MakeMenuIcon("\uE9F5") });
+        cm.Items.Add(new MenuItem { Header = TextEditorResources.TextEd_Menu_Cut,    InputGestureText = "Ctrl+X", Command = ApplicationCommands.Cut,       CommandTarget = Viewport, Icon = MakeMenuIcon("\uE74E") });
+        cm.Items.Add(new MenuItem { Header = TextEditorResources.TextEd_Menu_Copy,   InputGestureText = "Ctrl+C", Command = ApplicationCommands.Copy,      CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8C8") });
+        cm.Items.Add(new MenuItem { Header = TextEditorResources.TextEd_Menu_Paste,  InputGestureText = "Ctrl+V", Command = ApplicationCommands.Paste,     CommandTarget = Viewport, Icon = MakeMenuIcon("\uE9F5") });
         cm.Items.Add(new Separator());
-        _undoMenuItem = new MenuItem { Header = "_Undo", InputGestureText = "Ctrl+Z", Command = ApplicationCommands.Undo, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A7") };
-        _redoMenuItem = new MenuItem { Header = "_Redo", InputGestureText = "Ctrl+Y/Ctrl+Shift+Z", Command = ApplicationCommands.Redo, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A6") };
+        _undoMenuItem = new MenuItem { Header = TextEditorResources.TextEd_Menu_Undo, InputGestureText = "Ctrl+Z", Command = ApplicationCommands.Undo, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A7") };
+        _redoMenuItem = new MenuItem { Header = TextEditorResources.TextEd_Menu_Redo, InputGestureText = "Ctrl+Y/Ctrl+Shift+Z", Command = ApplicationCommands.Redo, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A6") };
         cm.Items.Add(_undoMenuItem);
         cm.Items.Add(_redoMenuItem);
         cm.Items.Add(new Separator());
-        cm.Items.Add(new MenuItem { Header = "Select _All", InputGestureText = "Ctrl+A", Command = ApplicationCommands.SelectAll, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8B3") });
-        cm.Items.Add(new MenuItem { Header = "_Delete",     InputGestureText = "Del",    Command = ApplicationCommands.Delete,    CommandTarget = Viewport, Icon = MakeMenuIcon("\uE74D") });
+        cm.Items.Add(new MenuItem { Header = TextEditorResources.TextEd_Menu_SelectAll, InputGestureText = "Ctrl+A", Command = ApplicationCommands.SelectAll, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8B3") });
+        cm.Items.Add(new MenuItem { Header = TextEditorResources.TextEd_Menu_Delete,    InputGestureText = "Del",    Command = ApplicationCommands.Delete,    CommandTarget = Viewport, Icon = MakeMenuIcon("\uE74D") });
         cm.Items.Add(new Separator());
 
         // Word Wrap toggle
@@ -190,10 +192,10 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         cm.Items.Add(miWordWrap);
 
         // Show Whitespace submenu (radio-style: None / Selection / Always)
-        var wsMenu = new MenuItem { Header = "Show _Whitespace", Icon = MakeMenuIcon("\uE7C5") };
-        var wsNone = new MenuItem { Header = "None",           IsCheckable = true };
-        var wsSel  = new MenuItem { Header = "Selection Only", IsCheckable = true };
-        var wsAll  = new MenuItem { Header = "Always",         IsCheckable = true };
+        var wsMenu = new MenuItem { Header = TextEditorResources.TextEd_Menu_ShowWhitespace, Icon = MakeMenuIcon("\uE7C5") };
+        var wsNone = new MenuItem { Header = TextEditorResources.TextEd_Menu_WrapNone,          IsCheckable = true };
+        var wsSel  = new MenuItem { Header = TextEditorResources.TextEd_Menu_WrapSelectionOnly, IsCheckable = true };
+        var wsAll  = new MenuItem { Header = TextEditorResources.TextEd_Menu_WrapAlways,        IsCheckable = true };
 
         wsNone.Click += (_, _) => { Viewport.WhitespaceDisplayMode = TextViewport.WhitespaceMode.None;      Viewport.InvalidateVisual(); };
         wsSel.Click  += (_, _) => { Viewport.WhitespaceDisplayMode = TextViewport.WhitespaceMode.Selection;  Viewport.InvalidateVisual(); };
@@ -360,7 +362,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
             ViewportGrid.MinWidth = ScrollView.ViewportWidth;
             if (!Viewport.IsWordWrapEnabled)
                 Viewport.Width = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
-            Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
+            SyncVScrollBar();
             Viewport.InvalidateVisual();
         });
     }
@@ -536,7 +538,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         IsBusy = true;
         OperationStarted?.Invoke(this, new DocumentOperationEventArgs
         {
-            Title = "Opening", Message = Path.GetFileName(filePath), IsIndeterminate = true
+            Title = TextEditorResources.TextEd_Status_Opening, Message = Path.GetFileName(filePath), IsIndeterminate = true
         });
 
         try
@@ -839,7 +841,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, () =>
             {
                 if (Viewport.LineHeight > 0)
-                    ScrollView.ScrollToVerticalOffset(config.FirstVisibleLine * Viewport.LineHeight);
+                    VScrollBar.Value = config.FirstVisibleLine;
             });
         }
 
@@ -896,22 +898,52 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     {
         if (_vm is null || Viewport.LineHeight <= 0) return;
 
-        int firstLine = (int)(e.VerticalOffset / Viewport.LineHeight);
-        Viewport.FirstVisibleLine   = firstLine;
-        Viewport.HorizontalOffset   = e.HorizontalOffset;
-
-        // Keep the inner grid at least as wide as the visible viewport so the
-        // background fills the full pane after a resize (avoids empty strip on the right).
-        ViewportGrid.MinWidth = ScrollView.ViewportWidth;
-
-        // Word wrap: column is Width="*" so WPF passes the correct finite viewport width
-        // through MeasureOverride automatically — no explicit Width needed.
-        // No-wrap: explicit Width provides the horizontal scroll extent.
+        // Horizontal scroll only — the ScrollViewer no longer drives vertical position.
+        Viewport.HorizontalOffset = e.HorizontalOffset;
+        ViewportGrid.MinWidth     = ScrollView.ViewportWidth;
         if (!Viewport.IsWordWrapEnabled)
             Viewport.Width = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
-        Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
 
+        SyncVScrollBar();
         ViewportScrollChanged?.Invoke(this, e);
+    }
+
+    // -----------------------------------------------------------------------
+    // Vertical scroll bar (standalone — decoupled from ScrollViewer)
+    // -----------------------------------------------------------------------
+
+    private bool _syncingVScroll; // prevents re-entrancy between VScrollBar and FirstVisibleLine
+
+    private void VScrollBar_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+    {
+        if (_syncingVScroll) return;
+        int line = (int)Math.Round(VScrollBar.Value);
+        Viewport.FirstVisibleLine     = line;
+        Viewport.ScrollViewportHeight = ScrollView.ViewportHeight;
+        Viewport.InvalidateVisual();
+    }
+
+    /// <summary>
+    /// Updates VScrollBar.Maximum and Value to match the current document size and FirstVisibleLine.
+    /// Call after any change to line count, viewport size, or FirstVisibleLine.
+    /// </summary>
+    private void SyncVScrollBar()
+    {
+        if (_syncingVScroll) return;
+        _syncingVScroll = true;
+        try
+        {
+            int totalLines   = _vm?.LineCount ?? 0;
+            int visibleLines = Viewport.LineHeight > 0
+                ? (int)(ScrollView.ViewportHeight / Viewport.LineHeight)
+                : 0;
+            VScrollBar.Maximum      = Math.Max(0, totalLines - visibleLines);
+            VScrollBar.LargeChange  = Math.Max(1, visibleLines);
+            VScrollBar.ViewportSize = visibleLines;
+            VScrollBar.Value        = Viewport.FirstVisibleLine;
+            Viewport.ScrollViewportHeight = ScrollView.ViewportHeight;
+        }
+        finally { _syncingVScroll = false; }
     }
 
     // -----------------------------------------------------------------------
@@ -939,8 +971,8 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
 
         int direction = mousePos.Y < 0 ? -1 : 1;
 
-        // Scroll the ScrollViewer — ScrollChanged fires next layout pass and updates FirstVisibleLine.
-        ScrollView.ScrollToVerticalOffset(ScrollView.VerticalOffset + direction * Viewport.LineHeight);
+        // Scroll via VScrollBar — fires VScrollBar_Scroll which updates FirstVisibleLine.
+        VScrollBar.Value = Math.Max(0, Math.Min(VScrollBar.Maximum, VScrollBar.Value + direction));
 
         // Extend selection after the scroll completes (Background priority runs after layout).
         double vh = ScrollView.ViewportHeight;
@@ -982,6 +1014,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
                     RefreshTextStatusBarItems();
                     EnsureCaretHorizontallyVisible();
                     Viewport.ScrollIntoView(_vm.CaretLine);
+                    SyncVScrollBar();
                     break;
                 case nameof(TextEditorViewModel.Title):
                     TitleChanged?.Invoke(this, _vm.Title);
@@ -989,6 +1022,9 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
                 case nameof(TextEditorViewModel.HasSelection):
                     SelectionChanged?.Invoke(this, EventArgs.Empty);
                     RefreshCommands();
+                    break;
+                case nameof(TextEditorViewModel.LineCount):
+                    SyncVScrollBar();
                     break;
                 case nameof(TextEditorViewModel.MaxLineLength):
                     if (!Viewport.IsWordWrapEnabled)
@@ -1066,10 +1102,10 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
 
     private ObservableCollection<StatusBarItem> BuildTextStatusBarItems()
     {
-        _sbTeLanguage = new StatusBarItem { Label = "Language", Tooltip = "Active syntax language" };
-        _sbTePosition = new StatusBarItem { Label = "Position", Tooltip = "Caret line and column" };
-        _sbTeZoom     = new StatusBarItem { Label = "Zoom",     Tooltip = "Editor zoom level" };
-        _sbTeEncoding = new StatusBarItem { Label = "Encoding", Tooltip = "File encoding" };
+        _sbTeLanguage = new StatusBarItem { Label = TextEditorResources.TeSb_LanguageLabel, Tooltip = TextEditorResources.TeSb_LanguageTooltip };
+        _sbTePosition = new StatusBarItem { Label = TextEditorResources.TeSb_PositionLabel, Tooltip = TextEditorResources.TeSb_PositionTooltip };
+        _sbTeZoom     = new StatusBarItem { Label = TextEditorResources.TeSb_ZoomLabel,     Tooltip = TextEditorResources.TeSb_ZoomTooltip };
+        _sbTeEncoding = new StatusBarItem { Label = TextEditorResources.TeSb_EncodingLabel, Tooltip = TextEditorResources.TeSb_EncodingTooltip };
 
         // Zoom preset choices.
         foreach (var (pct, factor) in new (string, double)[] { ("50%", 0.5), ("75%", 0.75), ("100%", 1.0), ("125%", 1.25), ("150%", 1.5), ("200%", 2.0) })
@@ -1230,7 +1266,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         _vm.CaretColumn = col + _searchMatchLength;
 
         if (Viewport.LineHeight > 0)
-            ScrollView.ScrollToVerticalOffset(Math.Max(0, (line - 3) * Viewport.LineHeight));
+            VScrollBar.Value = Math.Max(0, line - 3);
     }
 
     // -----------------------------------------------------------------------

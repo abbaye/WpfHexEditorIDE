@@ -19,6 +19,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.Plugins.Debugger.Properties;
 
 namespace WpfHexEditor.Plugins.Debugger.Panels;
 
@@ -72,7 +73,7 @@ public sealed partial class LaunchConfigEditorPanel : UserControl
     {
         if (_currentFilePath is null)
         {
-            StatusText.Text = "No file loaded. Click Open first.";
+            StatusText.Text = DebuggerResources.Debugger_NoFileLoaded;
             return;
         }
 
@@ -83,13 +84,13 @@ public sealed partial class LaunchConfigEditorPanel : UserControl
     {
         if (_debugger is null)
         {
-            StatusText.Text = "IDebuggerService not available.";
+            StatusText.Text = DebuggerResources.Debugger_ServiceNotAvailable;
             return;
         }
 
         if (_currentJson is null)
         {
-            StatusText.Text = "No configuration loaded.";
+            StatusText.Text = DebuggerResources.Debugger_NoConfigLoaded;
             return;
         }
 
@@ -98,7 +99,7 @@ public sealed partial class LaunchConfigEditorPanel : UserControl
             using var doc = JsonDocument.Parse(_currentJson);
             if (!doc.RootElement.TryGetProperty("configurations", out var configs))
             {
-                StatusText.Text = "No 'configurations' array found in .whdbg file.";
+                StatusText.Text = DebuggerResources.Debugger_NoConfigsArray;
                 return;
             }
 
@@ -121,7 +122,7 @@ public sealed partial class LaunchConfigEditorPanel : UserControl
 
             if (target is null)
             {
-                StatusText.Text = "No matching configuration found.";
+                StatusText.Text = DebuggerResources.Debugger_NoMatchingConfig;
                 return;
             }
 

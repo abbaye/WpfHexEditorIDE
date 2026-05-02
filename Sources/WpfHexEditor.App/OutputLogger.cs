@@ -18,6 +18,8 @@ namespace WpfHexEditor.App;
 internal static class OutputLogger
 {
     private static OutputPanel? _panel;
+    private static readonly Queue<(string text, Brush? color, string source)> _preRegisterQueue = new();
+    private const int PreRegisterQueueCapacity = 500;
 
     // --- Log-level brush palette ---------------------------------------
     // INFO  : null  = inherits theme foreground (white/light in dark themes)
@@ -81,6 +83,9 @@ internal static class OutputLogger
         _panel = panel;
         RebuildBrushes();
         OutputLoggerSettings.ColorsChanged += RebuildBrushes;
+
+        while (_preRegisterQueue.TryDequeue(out var msg))
+            Append(msg.text, msg.color, msg.source);
     }
 
     // --- Source channel constants --------------------------------------
@@ -199,7 +204,12 @@ internal static class OutputLogger
 
     private static void Append(string text, Brush? color, string source)
     {
-        if (_panel is null) return;
+        if (_panel is null)
+        {
+            if (_preRegisterQueue.Count < PreRegisterQueueCapacity)
+                _preRegisterQueue.Enqueue((text, color, source));
+            return;
+        }
         _ = _panel.OutputBox.Dispatcher.InvokeAsync(() => _panel.AppendLine(text, color, source));
     }
 }

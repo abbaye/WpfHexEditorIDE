@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>مشروع امتداد جديد</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>تحديد دليل الإخراج لمشروع المكوّن الإضافي</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>الأذونات</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>وضع العزل</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>أولوية التحميل (10–90):</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>التالي &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>إنشاء وفتح</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>تم إنشاء المكوّن الإضافي</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>نشر حزمة الامتداد</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>توقيع الحزمة قبل النشر</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>استعراض…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>فتح مجلد الإخراج في Explorer</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>حزمة</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>تحديد دليل الإخراج</value>
+  </data>
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>تصدير سجل تطوير الامتداد</value>
+  </data>
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>استعراض</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>مثبّت</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>تحديث الكل</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>التحديثات</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>سوق الامتدادات</value>
+  </data>
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>الامتداد:</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>التهيئة:</value>
+  </data>
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>جاهز</value>
+  </data>
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>المؤلف</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>الإصدار</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>التقييم</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>التنزيلات</value>
+  </data>
+</root>

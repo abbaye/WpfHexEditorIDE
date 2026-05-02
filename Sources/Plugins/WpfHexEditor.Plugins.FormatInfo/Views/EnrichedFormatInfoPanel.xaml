@@ -10,9 +10,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="400" d:DesignWidth="350">
+             d:DesignHeight="400" d:DesignWidth="350"
+             xmlns:fiSvc="clr-namespace:WpfHexEditor.Plugins.FormatInfo.Services">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <fiSvc:FormatInfoLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <!-- Semantic colors — constant across themes -->
         <SolidColorBrush x:Key="AccentBrush"       Color="#7ED321"/>
         <SolidColorBrush x:Key="PriorityBadgeBrush" Color="#FF6B6B"/>
@@ -45,6 +50,7 @@
             <Setter Property="Padding"         Value="12"/>
             <Setter Property="Margin"          Value="0,0,0,8"/>
         </Style>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Background="{DynamicResource PFP_PanelBackgroundBrush}">
@@ -62,7 +68,7 @@
 
                             <TextBlock Grid.Column="0"
                                        x:Name="FormatNameTextBlock"
-                                       Text="Format Name"
+                                       Text="{DynamicResource FI_FormatNameLabel}"
                                        FontSize="14" FontWeight="Bold"
                                        Foreground="{DynamicResource PFP_TextBrush}"
                                        TextWrapping="Wrap"/>
@@ -72,18 +78,18 @@
                                     Background="{StaticResource PriorityBadgeBrush}"
                                     CornerRadius="3" Padding="6,2" Margin="8,0,0,0"
                                     Visibility="Collapsed"
-                                    ToolTip="Priority Format — Top 100 most common formats">
-                                <TextBlock Text="&#x2B50; Priority" FontSize="9" FontWeight="Bold" Foreground="White"/>
+                                    ToolTip="{DynamicResource FI_PriorityTooltip}">
+                                <TextBlock Text="{DynamicResource FI_PriorityLabel}" FontSize="9" FontWeight="Bold" Foreground="White"/>
                             </Border>
                         </Grid>
 
                         <TextBlock x:Name="CategoryTextBlock"
-                                   Text="Category"
+                                   Text="{DynamicResource FI_CategoryLabel}"
                                    FontSize="10" FontStyle="Italic" Margin="0,4,0,0"
                                    Foreground="{DynamicResource PFP_AccentBrush}"/>
 
                         <TextBlock x:Name="DescriptionTextBlock"
-                                   Text="Description"
+                                   Text="{DynamicResource FI_DescriptionLabel}"
                                    FontSize="10" TextWrapping="Wrap" Margin="0,8,0,0"
                                    Foreground="{DynamicResource PFP_TextBrush}"/>
 
@@ -94,7 +100,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Quality:"
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FI_QualityLabel}"
                                        Style="{StaticResource InfoLabelStyle}" VerticalAlignment="Center"/>
                             <Border Grid.Column="1" Height="8"
                                     Background="{DynamicResource PFP_CoverageTrackBrush}"
@@ -116,10 +122,10 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Documentation:"
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FI_DocLabel}"
                                        Style="{StaticResource InfoLabelStyle}"/>
                             <TextBlock Grid.Column="1" x:Name="DocumentationLevelTextBlock"
-                                       Text="basic"
+                                       Text="{DynamicResource FI_BasicLabel}"
                                        Style="{StaticResource InfoValueStyle}"
                                        FontWeight="SemiBold"/>
                         </Grid>
@@ -129,7 +135,7 @@
                 <!-- Extensions Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="ExtensionsCard">
                     <StackPanel>
-                        <TextBlock Text="File Extensions" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock Text="{DynamicResource FI_ExtensionsLabel}" Style="{StaticResource SectionHeaderStyle}"/>
                         <TextBlock x:Name="ExtensionsTextBlock" Text="N/A" Style="{StaticResource InfoValueStyle}"/>
                     </StackPanel>
                 </Border>
@@ -137,7 +143,7 @@
                 <!-- MIME Types Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="MimeTypesCard">
                     <StackPanel>
-                        <TextBlock Text="MIME Types" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock Text="{DynamicResource FI_MimeLabel}" Style="{StaticResource SectionHeaderStyle}"/>
                         <TextBlock x:Name="MimeTypesTextBlock" Text="N/A" Style="{StaticResource InfoValueStyle}"/>
                     </StackPanel>
                 </Border>
@@ -145,7 +151,7 @@
                 <!-- Software Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="SoftwareCard">
                     <StackPanel>
-                        <TextBlock Text="Compatible Software" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock Text="{DynamicResource FI_SoftwareLabel}" Style="{StaticResource SectionHeaderStyle}"/>
                         <TextBlock x:Name="SoftwareTextBlock" Text="N/A" Style="{StaticResource InfoValueStyle}"/>
                     </StackPanel>
                 </Border>
@@ -153,7 +159,7 @@
                 <!-- Use Cases Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="UseCasesCard">
                     <StackPanel>
-                        <TextBlock Text="Common Use Cases" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock Text="{DynamicResource FI_UseCasesLabel}" Style="{StaticResource SectionHeaderStyle}"/>
                         <TextBlock x:Name="UseCasesTextBlock" Text="N/A" Style="{StaticResource InfoValueStyle}"/>
                     </StackPanel>
                 </Border>
@@ -161,10 +167,10 @@
                 <!-- References Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="ReferencesCard">
                     <StackPanel>
-                        <TextBlock Text="&#x1F4DA; References &amp; Documentation" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock Text="{DynamicResource FI_RefsSection}" Style="{StaticResource SectionHeaderStyle}"/>
 
                         <StackPanel x:Name="SpecificationsSection" Margin="0,4,0,0">
-                            <TextBlock Text="Specifications:"
+                            <TextBlock Text="{DynamicResource FI_SpecsLabel}"
                                        FontSize="10" FontWeight="SemiBold"
                                        Foreground="{DynamicResource PFP_SubTextBrush}"
                                        Margin="0,0,0,4"/>
@@ -173,7 +179,7 @@
                         </StackPanel>
 
                         <StackPanel x:Name="WebLinksSection" Margin="0,8,0,0">
-                            <TextBlock Text="Documentation:"
+                            <TextBlock Text="{DynamicResource FI_DocLabel}"
                                        FontSize="10" FontWeight="SemiBold"
                                        Foreground="{DynamicResource PFP_SubTextBrush}"
                                        Margin="0,0,0,4"/>
@@ -181,7 +187,7 @@
                         </StackPanel>
 
                         <TextBlock x:Name="NoReferencesTextBlock"
-                                   Text="No references available for this format"
+                                   Text="{DynamicResource FI_NoRefsText}"
                                    FontSize="10" FontStyle="Italic"
                                    Foreground="{DynamicResource PFP_SubTextBrush}"
                                    Visibility="Collapsed"/>
@@ -191,7 +197,7 @@
                 <!-- Technical Details Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="TechnicalDetailsCard">
                     <StackPanel>
-                        <TextBlock Text="&#x2699;&#xFE0F; Technical Details" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock Text="{DynamicResource FI_TechnicalSection}" Style="{StaticResource SectionHeaderStyle}"/>
                         <TextBlock x:Name="TechnicalDetailsTextBlock" Text="N/A" Style="{StaticResource InfoValueStyle}"/>
                     </StackPanel>
                 </Border>
@@ -199,7 +205,7 @@
                 <!-- Related Formats Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="RelatedFormatsCard">
                     <StackPanel>
-                        <TextBlock Text="&#x1F517; Related Formats" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock Text="{DynamicResource FI_RelatedSection}" Style="{StaticResource SectionHeaderStyle}"/>
                         <TextBlock x:Name="RelatedFormatsTextBlock" Text="N/A" Style="{StaticResource InfoValueStyle}"/>
                     </StackPanel>
                 </Border>
@@ -207,13 +213,13 @@
                 <!-- Author & Version Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="AuthorVersionCard">
                     <StackPanel>
-                        <TextBlock Text="&#x1F464; Definition Info" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock Text="{DynamicResource FI_DefinitionSection}" Style="{StaticResource SectionHeaderStyle}"/>
                         <Grid Margin="0,4,0,4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Version:" Style="{StaticResource InfoLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FI_VersionLabel}" Style="{StaticResource InfoLabelStyle}"/>
                             <TextBlock Grid.Column="1" x:Name="VersionTextBlock" Text="N/A" Style="{StaticResource InfoValueStyle}"/>
                         </Grid>
                         <Grid>
@@ -221,7 +227,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Author:" Style="{StaticResource InfoLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FI_AuthorLabel}" Style="{StaticResource InfoLabelStyle}"/>
                             <TextBlock Grid.Column="1" x:Name="AuthorTextBlock" Text="N/A" Style="{StaticResource InfoValueStyle}"/>
                         </Grid>
                     </StackPanel>
@@ -230,13 +236,13 @@
                 <!-- Detection Info Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="DetectionInfoCard">
                     <StackPanel>
-                        <TextBlock Text="&#x1F50D; Detection Details" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock Text="{DynamicResource FI_DetectionSection}" Style="{StaticResource SectionHeaderStyle}"/>
                         <Grid Margin="0,4,0,4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Signature:" Style="{StaticResource InfoLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FI_SignatureLabel}" Style="{StaticResource InfoLabelStyle}"/>
                             <TextBlock Grid.Column="1" x:Name="SignatureHexTextBlock"
                                        Text="N/A" Style="{StaticResource InfoValueStyle}" FontFamily="Consolas"/>
                         </Grid>
@@ -245,7 +251,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Offset:" Style="{StaticResource InfoLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FI_OffsetLabel}" Style="{StaticResource InfoLabelStyle}"/>
                             <TextBlock Grid.Column="1" x:Name="OffsetDisplayTextBlock"
                                        Text="N/A" Style="{StaticResource InfoValueStyle}" FontFamily="Consolas"/>
                         </Grid>
@@ -254,7 +260,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Required:" Style="{StaticResource InfoLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FI_RequiredLabel}" Style="{StaticResource InfoLabelStyle}"/>
                             <TextBlock Grid.Column="1" x:Name="RequiredDisplayTextBlock"
                                        Text="N/A" Style="{StaticResource InfoValueStyle}"/>
                         </Grid>
@@ -264,11 +270,11 @@
                 <!-- No Format Message -->
                 <Border x:Name="NoFormatMessage" Style="{StaticResource CardStyle}" Padding="24" Visibility="Collapsed">
                     <StackPanel HorizontalAlignment="Center">
-                        <TextBlock Text="No format detected"
+                        <TextBlock Text="{DynamicResource FI_NoFormatText}"
                                    FontSize="13" FontWeight="SemiBold"
                                    Foreground="{DynamicResource PFP_TextBrush}"
                                    HorizontalAlignment="Center" Margin="0,8,0,4"/>
-                        <TextBlock Text="Open a file to view format information"
+                        <TextBlock Text="{DynamicResource FI_OpenFileHint}"
                                    FontSize="11" Foreground="{DynamicResource PFP_SubTextBrush}"
                                    HorizontalAlignment="Center" TextAlignment="Center"/>
                     </StackPanel>

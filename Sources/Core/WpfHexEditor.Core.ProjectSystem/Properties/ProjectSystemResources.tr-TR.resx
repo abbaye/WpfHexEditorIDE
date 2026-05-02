@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>Proje adı boş olamaz.</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>Doğrulama</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>Proje yeniden adlandırılamadı:</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>Çıktı klasörü oluşturulamıyor:</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>TBL Dönüştür</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>Çıktı yolu kaynakla aynı. Farklı bir klasör seçin.</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>Başvuruyu Kaldır</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>Kullanılmayan derleme başvurusu bulunamadı.</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>Kullanılmayan Başvuruları Kaldır</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>Aşağıdaki kullanılmayan derleme başvuruları kaldırılsın mı?</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>Eklenecek Dosyaları Seç</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>Tüm Dosyalar (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>Yeni proje için üst klasör seçin</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>Yeni dosya için klasör seçin</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>Yeni çözüm için üst klasör seçin</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>Dönüştürülen TBLX dosyası için çıktı klasörü seçin</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>Proje Başvurusu Ekle</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>Proje dosyaları (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|Tüm dosyalar (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>Derleme Başvurusu Ekle</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>Derleme dosyaları (*.dll;*.exe)|*.dll;*.exe|Tüm dosyalar (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>Çıktı Dizini Seç</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>Simge Seç</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>Simgeler (*.ico)|*.ico|Tüm dosyalar (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>Başvurulacak projeyi seçin</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>C# projeleri (*.csproj)|*.csproj|Tüm projeler (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>Proje Başvuruları</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>Derlemeler</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>Çözümleyiciler</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>Bu proje türü başvuru yönetimini desteklemiyor.</value>
+  </data>
+  <data name="PS_OK" xml:space="preserve"><value>Tamam</value></data>
+  <data name="PS_Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="PS_Add" xml:space="preserve"><value>Ekle</value></data>
+  <data name="PS_Browse" xml:space="preserve"><value>Gözat…</value></data>
+  <data name="PS_Remove" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="PS_Save" xml:space="preserve"><value>Kaydet</value></data>
+  <data name="PS_AddNewItemTitle" xml:space="preserve"><value>Yeni öğe ekle</value></data>
+  <data name="PS_TemplateLabel" xml:space="preserve"><value>Şablon:</value></data>
+  <data name="PS_NameLabel" xml:space="preserve"><value>Ad:</value></data>
+  <data name="PS_FolderLabel" xml:space="preserve"><value>Klasör:</value></data>
+  <data name="PS_AddExistingItemTitle" xml:space="preserve"><value>Mevcut öğe ekle</value></data>
+  <data name="PS_FilesLabel" xml:space="preserve"><value>Dosya(lar):</value></data>
+  <data name="PS_RemoveFileTooltip" xml:space="preserve"><value>Bu dosyayı seçimden kaldır</value></data>
+  <data name="PS_DetectedTypeLabel" xml:space="preserve"><value>Algılanan tür:</value></data>
+  <data name="PS_ConvertTblTitle" xml:space="preserve"><value>TBL'yi TBLX'e dönüştür</value></data>
+  <data name="PS_ConversionSection" xml:space="preserve"><value>Dönüştürme</value></data>
+  <data name="PS_SourceLabel" xml:space="preserve"><value>Kaynak:</value></data>
+  <data name="PS_TargetLabel" xml:space="preserve"><value>Hedef:</value></data>
+  <data name="PS_GameMetadataSection" xml:space="preserve"><value>Oyun Meta Verileri (isteğe bağlı)</value></data>
+  <data name="PS_RomDetectedLabel" xml:space="preserve"><value>ROM algılandı:</value></data>
+  <data name="PS_AutoFill" xml:space="preserve"><value>Otomatik doldur</value></data>
+  <data name="PS_GameTitleLabel" xml:space="preserve"><value>Oyun başlığı:</value></data>
+  <data name="PS_PlatformLabel" xml:space="preserve"><value>Platform:</value></data>
+  <data name="PS_RegionLabel" xml:space="preserve"><value>Bölge:</value></data>
+  <data name="PS_AuthorLabel" xml:space="preserve"><value>Yazar:</value></data>
+  <data name="PS_YearLabel" xml:space="preserve"><value>Yıl:</value></data>
+  <data name="PS_NewFileTitle" xml:space="preserve"><value>Yeni dosya</value></data>
+  <data name="PS_SortLabel" xml:space="preserve"><value>Sırala:</value></data>
+  <data name="PS_SortName" xml:space="preserve"><value>Ad</value></data>
+  <data name="PS_SortCategory" xml:space="preserve"><value>Kategori</value></data>
+  <data name="PS_SortExtension" xml:space="preserve"><value>Uzantı</value></data>
+  <data name="PS_GridView" xml:space="preserve"><value>Kılavuz görünümü</value></data>
+  <data name="PS_ListView" xml:space="preserve"><value>Liste görünümü</value></data>
+  <data name="PS_SearchTemplates" xml:space="preserve"><value>Şablonları ara…</value></data>
+  <data name="PS_BrowseForFolder" xml:space="preserve"><value>Klasör için gözat</value></data>
+  <data name="PS_CreateInMemory" xml:space="preserve"><value>Bellekte belge oluştur; ilk Ctrl+S'de konum seç</value></data>
+  <data name="PS_NewProjectTitle" xml:space="preserve"><value>Yeni proje</value></data>
+  <data name="PS_NewSolutionTitle" xml:space="preserve"><value>Yeni çözüm</value></data>
+  <data name="PS_LocationLabel" xml:space="preserve"><value>Konum:</value></data>
+  <data name="PS_WillCreateLabel" xml:space="preserve"><value>Oluşturulacak:</value></data>
+  <data name="PS_ProjectPropertiesTitle" xml:space="preserve"><value>Proje özellikleri</value></data>
+  <data name="PS_ApplicationTab" xml:space="preserve"><value>Uygulama</value></data>
+  <data name="PS_BuildTab" xml:space="preserve"><value>Derleme</value></data>
+  <data name="PS_ItemsTab" xml:space="preserve"><value>Öğeler</value></data>
+  <data name="PS_ReferencesTab" xml:space="preserve"><value>Referanslar</value></data>
+  <data name="PS_ProjectFileLabel" xml:space="preserve"><value>Proje dosyası:</value></data>
+  <data name="PS_DirectoryLabel" xml:space="preserve"><value>Dizin:</value></data>
+  <data name="PS_FilterSections" xml:space="preserve"><value>Bölümleri filtrele</value></data>
+  <data name="PP_NavApplication" xml:space="preserve"><value>Uygulama</value></data>
+  <data name="PP_NavGeneral" xml:space="preserve"><value>Genel</value></data>
+  <data name="PP_ProjectName" xml:space="preserve"><value>Proje adı</value></data>
+  <data name="PP_ProjectNameDesc" xml:space="preserve"><value>Solution Explorer'da kullanılan mantıksal ad.</value></data>
+  <data name="PP_AssemblyName" xml:space="preserve"><value>Derleme adı</value></data>
+  <data name="PP_AssemblyNameDesc" xml:space="preserve"><value>Derlenmiş çıktı dosyasının adı (uzantısız).</value></data>
+  <data name="PP_DefaultNamespace" xml:space="preserve"><value>Varsayılan ad alanı</value></data>
+  <data name="PP_DefaultNamespaceDesc" xml:space="preserve"><value>Yeni dosyalar için kullanılan kök ad alanı.</value></data>
+  <data name="PP_TargetFramework" xml:space="preserve"><value>Hedef çerçeve</value></data>
+  <data name="PP_TargetFrameworkDesc" xml:space="preserve"><value>Bu proje için hedef .NET çalışma zamanı sürümü.</value></data>
+  <data name="PP_OutputType" xml:space="preserve"><value>Çıktı türü</value></data>
+  <data name="PP_OutputTypeDesc" xml:space="preserve"><value>Projenin .exe, .dll veya WinExe üretip üretmediğini belirler.</value></data>
+  <data name="PP_OutputTypeLibrary" xml:space="preserve"><value>Sınıf kitaplığı</value></data>
+  <data name="PP_OutputTypeConsole" xml:space="preserve"><value>Konsol uygulaması</value></data>
+  <data name="PP_OutputTypeWinApp" xml:space="preserve"><value>Windows uygulaması</value></data>
+  <data name="PP_ProjectFile" xml:space="preserve"><value>Proje dosyası</value></data>
+  <data name="PP_Directory" xml:space="preserve"><value>Dizin</value></data>
+  <data name="PP_ProjectType" xml:space="preserve"><value>Proje türü</value></data>
+  <data name="PP_NavBuild" xml:space="preserve"><value>Derleme</value></data>
+  <data name="PP_Configuration" xml:space="preserve"><value>Yapılandırma</value></data>
+  <data name="PP_ConfigurationDesc" xml:space="preserve"><value>Etkin derleme profili (Debug = semboller, Release = optimize edilmiş).</value></data>
+  <data name="PP_Platform" xml:space="preserve"><value>Platform</value></data>
+  <data name="PP_PlatformDesc" xml:space="preserve"><value>Derlenmiş ikili dosyanın hedef mimarisi.</value></data>
+  <data name="PP_OutputPath" xml:space="preserve"><value>Çıktı yolu</value></data>
+  <data name="PP_OutputPathDesc" xml:space="preserve"><value>Proje köküne göre çıktı dizini.</value></data>
+  <data name="PP_OptimizeCode" xml:space="preserve"><value>Kodu optimize et</value></data>
+  <data name="PP_OptimizeCodeDesc" xml:space="preserve"><value>Derleyici optimizasyonlarını etkinleştir (Debug'da kural gereği devre dışı).</value></data>
+  <data name="PP_WarningsAsErrors" xml:space="preserve"><value>Uyarıları hata olarak değerlendir</value></data>
+  <data name="PP_NavDependencies" xml:space="preserve"><value>Bağımlılıklar</value></data>
+  <data name="PP_DependenciesDesc" xml:space="preserve"><value>Bu projede bildirilen proje referansları ve NuGet paketleri.</value></data>
+  <data name="PP_ColName" xml:space="preserve"><value>Ad</value></data>
+  <data name="PP_ColType" xml:space="preserve"><value>Tür</value></data>
+  <data name="PP_NavGlobalUsings" xml:space="preserve"><value>Global using'ler</value></data>
+  <data name="PP_GlobalUsingsDesc" xml:space="preserve"><value>Projede bildirilen örtük using yönergeleri (ImplicitUsings).</value></data>
+  <data name="PP_ColNamespace" xml:space="preserve"><value>Ad alanı</value></data>
+  <data name="PP_NavItems" xml:space="preserve"><value>Öğeler</value></data>
+  <data name="PP_ColPath" xml:space="preserve"><value>Yol</value></data>
+  <data name="PP_NavReferences" xml:space="preserve"><value>Referanslar</value></data>
+  <data name="PP_AddNuGet" xml:space="preserve"><value>+ NuGet…</value></data>
+  <data name="PP_AddProject" xml:space="preserve"><value>+ Proje…</value></data>
+  <data name="PP_NavWin32Resources" xml:space="preserve"><value>Win32 kaynakları</value></data>
+  <data name="PP_AppIcon" xml:space="preserve"><value>Uygulama simgesi</value></data>
+  <data name="PP_AppIconDesc" xml:space="preserve"><value>Win32 kaynağı olarak derlemeye gömülmüş .ico dosyası.</value></data>
+  <data name="PP_AppManifest" xml:space="preserve"><value>Uygulama bildirimi</value></data>
+  <data name="PP_ManifestDefault" xml:space="preserve"><value>Varsayılan ayarlar</value></data>
+  <data name="PP_ManifestCreate" xml:space="preserve"><value>Yeni bir manifest oluştur</value></data>
+  <data name="PP_ManifestNone" xml:space="preserve"><value>Manifest yok</value></data>
+  <data name="PP_ManifestDesc" xml:space="preserve"><value>UAC yürütme düzeyini ve DPI'yi kontrol eden app.manifest dosyası.</value></data>
+  <data name="PP_NavPackage" xml:space="preserve"><value>Paket</value></data>
+  <data name="PP_PackageDesc" xml:space="preserve"><value>Paket yayınlanırken oluşturulan NuGet meta verileri.</value></data>
+  <data name="PP_PackageId" xml:space="preserve"><value>Paket kimliği</value></data>
+  <data name="PP_PackageIdDesc" xml:space="preserve"><value>NuGet.org'da benzersiz paket tanımlayıcısı.</value></data>
+  <data name="PP_VersionLabel" xml:space="preserve"><value>Sürüm</value></data>
+  <data name="PP_AuthorsLabel" xml:space="preserve"><value>Yazarlar</value></data>
+  <data name="PP_DescriptionLabel" xml:space="preserve"><value>Açıklama</value></data>
+  <data name="PP_NavDebug" xml:space="preserve"><value>Hata ayıklama</value></data>
+  <data name="PP_DebugDesc" xml:space="preserve"><value>Başlatma profili yapılandırması.</value></data>
+  <data name="PP_LaunchProfile" xml:space="preserve"><value>Başlatma profili</value></data>
+  <data name="PP_LaunchProfileDesc" xml:space="preserve"><value>launchSettings.json'da tanımlanan profil.</value></data>
+  <data name="PP_CommandLineArgs" xml:space="preserve"><value>Komut satırı bağımsız değişkenleri</value></data>
+  <data name="PP_WorkingDirectory" xml:space="preserve"><value>Çalışma dizini</value></data>
+  <data name="PS_PackageSourceLabel" xml:space="preserve"><value>Paket kaynağı:</value></data>
+  <data name="PS_IncludePrerelease" xml:space="preserve"><value>Ön sürümü dahil et</value></data>
+  <data name="PS_NuGetBrowseTab" xml:space="preserve"><value>Gözat</value></data>
+  <data name="PS_NuGetInstalledTab" xml:space="preserve"><value>Yüklendi</value></data>
+  <data name="PS_NuGetUpdatesTab" xml:space="preserve"><value>Güncellemeler</value></data>
+  <data name="PS_NuGetLoadMore" xml:space="preserve"><value>Daha fazla yükle…</value></data>
+  <data name="PS_SelectPackageHint" xml:space="preserve"><value>Ayrıntıları görüntülemek için bir paket seçin.</value></data>
+  <data name="PS_NuGetConsolidateTab" xml:space="preserve"><value>Birleştir</value></data>
+  <data name="PS_ProjectsLabel" xml:space="preserve"><value>Projeler</value></data>
+  <data name="PS_VersionLabel" xml:space="preserve"><value>Sürüm:</value></data>
+  <data name="PS_AddProjectRef" xml:space="preserve"><value>Proje referansı ekle…</value></data>
+  <data name="PS_AddAssemblyRef" xml:space="preserve"><value>Derleme referansı ekle…</value></data>
+  <data name="PS_RemoveUnused" xml:space="preserve"><value>Kullanılmayanları kaldır…</value></data>
+  <data name="PS_SearchReferences" xml:space="preserve"><value>Referansları ara…</value></data>
+  <data name="PS_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="PS_Convert" xml:space="preserve">
+    <value>Convert</value>
+  </data>
+  <data name="PS_Install" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="PS_Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="PS_Uninstall" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="PS_CopyOptionsSection" xml:space="preserve">
+    <value>Copy options</value>
+  </data>
+  <data name="PS_KeepOriginalLocation" xml:space="preserve">
+    <value>Keep original location  (reference only)</value>
+  </data>
+  <data name="PS_CopyIntoProject" xml:space="preserve">
+    <value>Copy into project</value>
+  </data>
+  <data name="PS_DestinationFolder" xml:space="preserve">
+    <value>Destination folder</value>
+  </data>
+  <data name="PS_PhysicalSubfolder" xml:space="preserve">
+    <value>Physical subfolder</value>
+  </data>
+  <data name="PS_KeepInPlace" xml:space="preserve">
+    <value>Keep in place</value>
+  </data>
+  <data name="PS_NewFolderTooltip" xml:space="preserve">
+    <value>New physical folder in the selected directory</value>
+  </data>
+  <data name="PS_ConfirmNewFolder" xml:space="preserve">
+    <value>Confirm new folder</value>
+  </data>
+  <data name="PS_PreviewSection" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="PS_DestinationLabel" xml:space="preserve">
+    <value>Destination:</value>
+  </data>
+  <data name="PS_AutoFillTooltip" xml:space="preserve">
+    <value>Pre-fill Platform, Region and Title from the selected ROM</value>
+  </data>
+  <data name="PS_OutputSection" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="PS_SameFolderAsSource" xml:space="preserve">
+    <value>Same folder as source</value>
+  </data>
+  <data name="PS_CustomFolder" xml:space="preserve">
+    <value>Custom folder</value>
+  </data>
+  <data name="PS_AddConvertedToProject" xml:space="preserve">
+    <value>Add converted file to project</value>
+  </data>
+  <data name="PS_OpenAfterConversion" xml:space="preserve">
+    <value>Open in TBL Editor after conversion</value>
+  </data>
+  <data name="PS_AddToProject" xml:space="preserve">
+    <value>Add to project:</value>
+  </data>
+  <data name="PS_CreateInMemoryTooltip" xml:space="preserve">
+    <value>Create document in memory; choose location on first Ctrl+S</value>
+  </data>
+  <data name="PS_PackageDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PS_PackageDownloads" xml:space="preserve">
+    <value>Downloads:</value>
+  </data>
+  <data name="PS_PackagesLabel" xml:space="preserve">
+    <value> package(s)</value>
+  </data>
+  <data name="PS_InstalledVersion" xml:space="preserve">
+    <value>Installed: v</value>
+  </data>
+  <data name="PP_ReferencesLabel" xml:space="preserve">
+    <value>Project and package references:</value>
+  </data>
+  <data name="PP_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="PP_FilterSections" xml:space="preserve">
+    <value>Filter sections</value>
+  </data>
+  <data name="PP_TypeColumn" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="PP_PathColumn" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="PP_ValueColumn" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="PP_NamespaceColumn" xml:space="preserve">
+    <value>Namespace</value>
+  </data>
+  <data name="PP_EnvVars" xml:space="preserve">
+    <value>Environment variables</value>
+  </data>
+  <data name="PP_NavCodeAnalysis" xml:space="preserve">
+    <value>Code Analysis</value>
+  </data>
+  <data name="PP_EnableCodeAnalysis" xml:space="preserve">
+    <value>Enable code analysis on build</value>
+  </data>
+  <data name="PP_EnableCodeAnalysisDesc" xml:space="preserve">
+    <value>Enables Roslyn analyzers on every build.</value>
+  </data>
+  <data name="PP_ReleaseOnlyAnalysis" xml:space="preserve">
+    <value>Enable only on Release configuration</value>
+  </data>
+  <data name="PP_CodeAnalysisDesc" xml:space="preserve">
+    <value>Static code analysis settings.</value>
+  </data>
+  <data name="PP_ChangesSaved" xml:space="preserve">
+    <value>✓ Changes saved</value>
+  </data>
+  <data name="PP_AppManifestDesc" xml:space="preserve">
+    <value>The app.manifest file that controls UAC execution level and DPI.</value>
+  </data>
+  <data name="NG_TipSearch" xml:space="preserve"><value>Ara</value></data>
+</root>

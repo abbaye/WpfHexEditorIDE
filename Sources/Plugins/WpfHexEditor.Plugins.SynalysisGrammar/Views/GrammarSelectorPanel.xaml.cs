@@ -21,6 +21,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
+using WpfHexEditor.Plugins.SynalysisGrammar.Properties;
 using WpfHexEditor.Plugins.SynalysisGrammar.ViewModels;
 
 namespace WpfHexEditor.Plugins.SynalysisGrammar.Views;
@@ -121,7 +122,7 @@ public partial class GrammarSelectorPanel : UserControl
     {
         var dlg = new OpenFileDialog
         {
-            Title           = "Open Grammar File",
+            Title           = SynalysisGrammarResources.Synalysis_OpenGrammarFile,
             Filter          = "UFWB Grammar Files (*.grammar)|*.grammar|All Files (*.*)|*.*",
             Multiselect     = true,
             CheckFileExists = true,

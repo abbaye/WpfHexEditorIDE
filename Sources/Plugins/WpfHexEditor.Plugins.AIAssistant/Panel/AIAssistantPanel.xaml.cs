@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Plugins.AIAssistant.Panel.AccountUsage;
 using WpfHexEditor.Plugins.AIAssistant.Panel.Tabs;
+using WpfHexEditor.Plugins.AIAssistant.Properties;
 
 namespace WpfHexEditor.Plugins.AIAssistant.Panel;
 
@@ -91,7 +92,7 @@ public partial class AIAssistantPanel : UserControl
             // Themed rename dialog matching VS2022 style
             var dlg = new Window
             {
-                Title = "Rename Conversation",
+                Title = AIAssistantResources.AIAssistant_RenameConversation,
                 Width = 380, Height = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = Window.GetWindow(this),
@@ -123,7 +124,7 @@ public partial class AIAssistantPanel : UserControl
             var titleDock = new DockPanel();
             var titleText = new TextBlock
             {
-                Text = "Rename Conversation",
+                Text = AIAssistantResources.AIAssistant_RenameConversation,
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(10, 0, 0, 0),
                 FontSize = 12

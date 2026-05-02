@@ -22,6 +22,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Microsoft.Win32;
+using WpfHexEditor.Core.ProjectSystem.Properties;
 
 namespace WpfHexEditor.Core.ProjectSystem.Documents;
 
@@ -153,7 +154,7 @@ public partial class ProjectPropertiesDocument : UserControl
 
     private void OnBrowseOutputPath(object sender, RoutedEventArgs e)
     {
-        var dlg = new OpenFolderDialog { Title = "Sélectionner le répertoire de sortie" };
+        var dlg = new OpenFolderDialog { Title = ProjectSystemResources.Dialog_SelectOutputDirectory };
         if (dlg.ShowDialog() == true && DataContext is ProjectPropertiesViewModel vm)
             vm.OutputPath = dlg.FolderName;
     }
@@ -162,8 +163,8 @@ public partial class ProjectPropertiesDocument : UserControl
     {
         var dlg = new OpenFileDialog
         {
-            Title  = "Sélectionner une icône",
-            Filter = "Icônes (*.ico)|*.ico|Tous les fichiers (*.*)|*.*"
+            Title  = ProjectSystemResources.Dialog_SelectIcon,
+            Filter = ProjectSystemResources.Filter_IconFiles
         };
         if (dlg.ShowDialog() == true && DataContext is ProjectPropertiesViewModel vm)
             vm.AppIconPath = dlg.FileName;

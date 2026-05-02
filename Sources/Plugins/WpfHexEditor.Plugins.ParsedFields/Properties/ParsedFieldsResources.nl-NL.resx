@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ParsedFields_Error_InvalidOffset" xml:space="preserve">
+    <value>Ongeldige offset. Gebruik hex (0x1A2B) of decimaal (6699).</value>
+  </data>
+  <data name="ParsedFields_Label_AutoMode" xml:space="preserve">
+    <value>Automatisch</value>
+  </data>
+  <data name="ParsedFields_Error_FieldNotEditable" xml:space="preserve">
+    <value>Dit veld kan niet worden bewerkt.</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidValue" xml:space="preserve">
+    <value>Ongeldige waarde voor dit veldtype.</value>
+  </data>
+  <data name="ParsedFields_Dialog_ExportError" xml:space="preserve">
+    <value>Exportfout</value>
+  </data>
+  <data name="ParsedFields_Dialog_ExportComplete" xml:space="preserve">
+    <value>Export voltooid</value>
+  </data>
+  <data name="ParsedFields_Dialog_Copied" xml:space="preserve">
+    <value>Gekopieerd</value>
+  </data>
+  <data name="ParsedFields_Dialog_FieldNotFound" xml:space="preserve">
+    <value>Veld niet gevonden</value>
+  </data>
+  <data name="ParsedFields_Dialog_FindSimilar" xml:space="preserve">
+    <value>Vergelijkbare zoeken</value>
+  </data>
+  <data name="ParsedFields_Dialog_FeatureUnavailable" xml:space="preserve">
+    <value>Functie niet beschikbaar</value>
+  </data>
+  <data name="ParsedFields_Confirm_DeleteField" xml:space="preserve">
+    <value>Dit veld verwijderen?</value>
+  </data>
+  <data name="ParsedFields_Confirm_DeleteAll" xml:space="preserve">
+    <value>Alle velden verwijderen?</value>
+  </data>
+  <data name="ParsedFields_DataInspectorNotConnected" xml:space="preserve">
+    <value>Data Inspector-functie is nog niet verbonden met dit venster.</value>
+  </data>
+  <data name="ParsedFields_PluginName" xml:space="preserve">
+    <value>Geparseerde velden</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset" xml:space="preserve">
+    <value>Naar offset springen</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Label" xml:space="preserve">
+    <value>Offset (hex 0x… of decimaal):</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Placeholder" xml:space="preserve">
+    <value>0x</value>
+  </data>
+  <data name="ParsedFields_Dialog_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidInput" xml:space="preserve">
+    <value>Ongeldige invoer</value>
+  </data>
+  <data name="PF_RefreshLabel" xml:space="preserve">
+    <value>Refresh field values (F5)</value>
+  </data>
+  <data name="PF_ValidFieldsBadge" xml:space="preserve">
+    <value>Valid fields</value>
+  </data>
+  <data name="PF_InvalidFieldsBadge" xml:space="preserve">
+    <value>Fields with validation errors — click to navigate</value>
+  </data>
+  <data name="PF_ShowBookmarkedToggle" xml:space="preserve">
+    <value>Show bookmarked fields only</value>
+  </data>
+  <data name="PF_MoreOptionsButton" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="PF_SourceDocumentMenu" xml:space="preserve">
+    <value>Source document...</value>
+  </data>
+  <data name="PF_ActionsMenu" xml:space="preserve">
+    <value>Field Actions...</value>
+  </data>
+  <data name="PF_ExportMenu" xml:space="preserve">
+    <value>Export...</value>
+  </data>
+  <data name="PF_SearchPlaceholder" xml:space="preserve">
+    <value>Search fields...</value>
+  </data>
+  <data name="PF_ClearSearchButton" xml:space="preserve">
+    <value>Clear search</value>
+  </data>
+  <data name="PF_RegexOption" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="PF_CaseSensitiveOption" xml:space="preserve">
+    <value>Case-sensitive</value>
+  </data>
+  <data name="PF_InLabel" xml:space="preserve">
+    <value>In:</value>
+  </data>
+  <data name="PF_AllFieldsFilter" xml:space="preserve">
+    <value>All fields</value>
+  </data>
+  <data name="PF_NameOnlyFilter" xml:space="preserve">
+    <value>Name only</value>
+  </data>
+  <data name="PF_ValueOnlyFilter" xml:space="preserve">
+    <value>Value only</value>
+  </data>
+  <data name="PF_DescriptionFilter" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PF_TypeLabel" xml:space="preserve">
+    <value>Type:</value>
+  </data>
+  <data name="PF_AllTypesFilter" xml:space="preserve">
+    <value>All types</value>
+  </data>
+  <data name="PF_IntegersFilter" xml:space="preserve">
+    <value>Integers</value>
+  </data>
+  <data name="PF_StringsFilter" xml:space="preserve">
+    <value>Strings</value>
+  </data>
+  <data name="PF_BytesFilter" xml:space="preserve">
+    <value>Bytes</value>
+  </data>
+  <data name="PF_FormatLabel" xml:space="preserve">
+    <value>Format:</value>
+  </data>
+  <data name="PF_SpecificationsHeader" xml:space="preserve">
+    <value>Specifications</value>
+  </data>
+  <data name="PF_WebLinksHeader" xml:space="preserve">
+    <value>Web Links</value>
+  </data>
+  <data name="PF_ReferencesButton" xml:space="preserve">
+    <value>Format References &amp; Specifications</value>
+  </data>
+  <data name="PF_AiAnalysisHeader" xml:space="preserve">
+    <value>AI Analysis</value>
+  </data>
+  <data name="PF_CopyAiPromptButton" xml:space="preserve">
+    <value>Copy AI Prompt</value>
+  </data>
+  <data name="PF_AnalysisContextSection" xml:space="preserve">
+    <value>Analysis Context</value>
+  </data>
+  <data name="PF_VulnerabilitiesSection" xml:space="preserve">
+    <value>Known Vulnerabilities</value>
+  </data>
+  <data name="PF_InspectionsSection" xml:space="preserve">
+    <value>Suggested Inspections</value>
+  </data>
+  <data name="PF_CopyChecklistButton" xml:space="preserve">
+    <value>Copy Checklist</value>
+  </data>
+  <data name="PF_ForensicContextSection" xml:space="preserve">
+    <value>Forensic Context</value>
+  </data>
+  <data name="PF_KeyInsightsTitle" xml:space="preserve">
+    <value>Key Insights</value>
+  </data>
+  <data name="PF_CoverageText" xml:space="preserve">
+    <value>0% parsed</value>
+  </data>
+  <data name="PF_ValueLabel" xml:space="preserve">
+    <value>Value: </value>
+  </data>
+  <data name="PF_HexTooltip" xml:space="preserve">
+    <value>Hexadecimal</value>
+  </data>
+  <data name="PF_DecimalTooltip" xml:space="preserve">
+    <value>Decimal</value>
+  </data>
+  <data name="PF_BinaryTooltip" xml:space="preserve">
+    <value>Binary</value>
+  </data>
+  <data name="PF_EditMenuItem" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="PF_CopyValueMenuItem" xml:space="preserve">
+    <value>Copy value</value>
+  </data>
+  <data name="PF_CopyDetailsMenuItem" xml:space="preserve">
+    <value>Copy Details</value>
+  </data>
+  <data name="PF_NavigateMenuItem" xml:space="preserve">
+    <value>Navigate to field</value>
+  </data>
+  <data name="PF_BookmarkMenuItem" xml:space="preserve">
+    <value>Bookmark</value>
+  </data>
+  <data name="PF_SearchMatchTooltip" xml:space="preserve">
+    <value>Search match</value>
+  </data>
+  <data name="PF_BookmarkedTooltip" xml:space="preserve">
+    <value>Bookmarked</value>
+  </data>
+  <data name="PF_ExportAsText" xml:space="preserve">
+    <value>As Text (.txt)</value>
+  </data>
+  <data name="PF_ExportAsJson" xml:space="preserve">
+    <value>As JSON (.json)</value>
+  </data>
+  <data name="PF_ExportAsCsv" xml:space="preserve">
+    <value>As CSV (.csv)</value>
+  </data>
+  <data name="PF_ExportAsXml" xml:space="preserve">
+    <value>As XML (.xml)</value>
+  </data>
+  <data name="PF_ExportAsHtml" xml:space="preserve">
+    <value>As HTML (.html)</value>
+  </data>
+  <data name="PF_ExportAsMarkdown" xml:space="preserve">
+    <value>As Markdown (.md)</value>
+  </data>
+  <data name="PF_CopyAsDisplayed" xml:space="preserve">
+    <value>As Displayed</value>
+  </data>
+  <data name="PF_CopyAsHex" xml:space="preserve">
+    <value>As Hex</value>
+  </data>
+  <data name="PF_CopyAsDecimal" xml:space="preserve">
+    <value>As Decimal</value>
+  </data>
+  <data name="PF_CopyAsBinary" xml:space="preserve">
+    <value>As Binary</value>
+  </data>
+  <data name="PF_FindSimilarMenuItem" xml:space="preserve">
+    <value>Find Similar Values...</value>
+  </data>
+  <data name="PF_ShowInInspectorMenuItem" xml:space="preserve">
+    <value>Show in Data Inspector</value>
+  </data>
+  <data name="PF_ExportAllMenu" xml:space="preserve">
+    <value>Export All Fields...</value>
+  </data>
+  <data name="PF_NoFieldsPlaceholder" xml:space="preserve">
+    <value>No fields parsed yet.
+Open a file to see its structure.</value>
+  </data>
+  <data name="PF_EntriesLabel" xml:space="preserve">
+    <value>entries</value>
+  </data>
+  <data name="PF_SortByNameAsc" xml:space="preserve">
+    <value>Sort: Name A-Z</value>
+  </data>
+  <data name="PF_SortByNameDesc" xml:space="preserve">
+    <value>Sort: Name Z-A</value>
+  </data>
+  <data name="PF_SortByType" xml:space="preserve">
+    <value>Sort: Type</value>
+  </data>
+  <data name="PF_SortBySize" xml:space="preserve">
+    <value>Sort: Size</value>
+  </data>
+  <data name="PF_FormatterMixed" xml:space="preserve">
+    <value>Mixed (Smart)</value>
+  </data>
+  <data name="PF_FormatterHex" xml:space="preserve">
+    <value>Hexadecimal</value>
+  </data>
+  <data name="PF_FormatterDec" xml:space="preserve">
+    <value>Decimal</value>
+  </data>
+  <data name="PF_FormatterString" xml:space="preserve">
+    <value>String</value>
+  </data>
+  <data name="PF_FieldCountLabel" xml:space="preserve">
+    <value>field(s)</value>
+  </data>
+  <data name="PF_ExpandAllMenuItem" xml:space="preserve">
+    <value>Expand All Groups</value>
+  </data>
+  <data name="PF_CollapseAllMenuItem" xml:space="preserve">
+    <value>Collapse All Groups</value>
+  </data>
+  <data name="PF_ForensicAlertsTitle" xml:space="preserve">
+    <value>Forensic Alerts</value>
+  </data>
+  <data name="PF_GroupValidationWarning" xml:space="preserve">
+    <value>This group contains fields with validation errors</value>
+  </data>
+  <data name="PF_CopyOffsetMenuItem" xml:space="preserve">
+    <value>Copy Offset</value>
+  </data>
+  <data name="PF_JumpToOffsetMenuItem" xml:space="preserve">
+    <value>Jump to Offset...</value>
+  </data>
+  <data name="PF_SortByOffset" xml:space="preserve">
+    <value>Sort: Offset</value>
+  </data>
+  <data name="PF_EditValueMenuItem" xml:space="preserve">
+    <value>Edit Value...</value>
+  </data>
+  <data name="PF_ToggleBookmarkMenuItem" xml:space="preserve">
+    <value>Toggle Bookmark</value>
+  </data>
+  <data name="PF_ExportFieldsTooltip" xml:space="preserve">
+    <value>Export parsed fields to file or clipboard</value>
+  </data>
+  <data name="PF_SourceDocTooltip" xml:space="preserve">
+    <value>Select source document for analysis</value>
+  </data>
+  <data name="PF_FieldActionsTooltip" xml:space="preserve">
+    <value>Field actions (edit, copy, navigate, bookmark...)</value>
+  </data>
+  <data name="PF_SortFieldsTooltip" xml:space="preserve">
+    <value>Sort fields</value>
+  </data>
+  <data name="PF_FormatTooltip" xml:space="preserve">
+    <value>Choose value display format</value>
+  </data>
+  <data name="PF_CollapseFormatTooltip" xml:space="preserve">
+    <value>Collapse format info</value>
+  </data>
+  <data name="PF_CopyAsCSharpBytes" xml:space="preserve">
+    <value>As C# bytes</value>
+  </data>
+  <data name="PF_CopyAsPythonBytes" xml:space="preserve">
+    <value>As Python bytes</value>
+  </data>
+  <data name="PF_AutoButton" xml:space="preserve">
+    <value>Auto ▾</value>
+  </data>
+  <data name="PF_ExportButton" xml:space="preserve">
+    <value>Export ▾</value>
+  </data>
+  <data name="PF_ActionsButton" xml:space="preserve">
+    <value>Actions ▾</value>
+  </data>
+  <data name="PF_ForensicAlerts" xml:space="preserve"><value>&#xE7BA;  Forensische waarschuwingen</value></data>
+</root>

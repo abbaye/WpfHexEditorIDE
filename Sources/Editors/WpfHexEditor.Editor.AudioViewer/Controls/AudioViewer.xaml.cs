@@ -21,6 +21,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Editor.AudioViewer.Properties;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.UI;
 
@@ -132,8 +133,8 @@ public sealed partial class AudioViewer : UserControl, IDocumentEditor, IOpenabl
         CleanupPlayer();
         _filePath = string.Empty;
         WaveCanvas.SetPeaks(null);
-        FormatInfoLabel.Text = "Audio";
-        StatusText.Text      = "Open an audio file";
+        FormatInfoLabel.Text = AudioViewerResources.AudioViewer_FormatLabel;
+        StatusText.Text      = AudioViewerResources.AudioViewer_StatusBarOpenFile;
     }
 
     // -- IOpenableDocument ------------------------------------------------

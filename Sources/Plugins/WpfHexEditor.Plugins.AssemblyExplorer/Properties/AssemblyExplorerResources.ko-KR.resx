@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AsmExplorer_PluginName" xml:space="preserve">
+    <value>어셈블리 탐색기</value>
+  </data>
+  <data name="AsmExplorer_PanelTitle" xml:space="preserve">
+    <value>어셈블리 탐색기</value>
+  </data>
+  <data name="AsmExplorer_SearchPanelTitle" xml:space="preserve">
+    <value>어셈블리 검색</value>
+  </data>
+  <data name="AsmExplorer_DiffPanelTitle" xml:space="preserve">
+    <value>어셈블리 비교</value>
+  </data>
+  <data name="AsmExplorer_ExportCancelled" xml:space="preserve">
+    <value>내보내기 취소됨.</value>
+  </data>
+  <data name="AsmExplorer_NoAssemblyLoaded" xml:space="preserve">
+    <value>로드된 어셈블리 없음</value>
+  </data>
+  <data name="AsmExplorer_AnalysisCancelled" xml:space="preserve">
+    <value>분석 취소됨.</value>
+  </data>
+  <data name="AsmExplorer_Searching" xml:space="preserve">
+    <value>검색 중…</value>
+  </data>
+  <data name="AsmExplorer_Comparing" xml:space="preserve">
+    <value>비교 중…</value>
+  </data>
+  <data name="AsmExplorer_NoPdb" xml:space="preserve">
+    <value>어셈블리 옆에 이식 가능한 PDB가 없습니다.</value>
+  </data>
+  <data name="AsmExplorer_SelectMethod" xml:space="preserve">
+    <value>소스 정보를 보려면 메서드 노드를 선택하세요.</value>
+  </data>
+  <data name="AsmExplorer_Export_OutputFolderLabel" xml:space="preserve">
+    <value>출력 폴더:</value>
+  </data>
+  <data name="AsmExplorer_Export_ExportButton" xml:space="preserve">
+    <value>내보내기</value>
+  </data>
+  <data name="AsmExplorer_Export_CloseButton" xml:space="preserve">
+    <value>닫기</value>
+  </data>
+  <data name="AsmExplorer_Export_BrowseTitle" xml:space="preserve">
+    <value>출력 폴더 선택</value>
+  </data>
+  <data name="AsmExplorer_Export_NoFolderSelected" xml:space="preserve">
+    <value>출력 폴더를 선택하세요.</value>
+  </data>
+  <data name="AE_DecompilerSection" xml:space="preserve">
+    <value>Decompiler</value>
+  </data>
+  <data name="AE_DetailFontSizeLabel" xml:space="preserve">
+    <value>Detail pane font size:</value>
+  </data>
+  <data name="AE_BackendLabel" xml:space="preserve">
+    <value>Decompiler backend:</value>
+  </data>
+  <data name="AE_ILSpyOption" xml:space="preserve">
+    <value>ILSpy engine</value>
+  </data>
+  <data name="AE_SkeletonOption" xml:space="preserve">
+    <value>Skeleton (BCL-only stubs)</value>
+  </data>
+  <data name="AE_QualityLabel" xml:space="preserve">
+    <value>Decompilation quality:</value>
+  </data>
+  <data name="AE_FullQuality" xml:space="preserve">
+    <value>Full (ILSpy + XML docs)</value>
+  </data>
+  <data name="AE_NormalQuality" xml:space="preserve">
+    <value>Normal (ILSpy, no docs)</value>
+  </data>
+  <data name="AE_SkeletonQuality" xml:space="preserve">
+    <value>Skeleton (fast, BCL stubs)</value>
+  </data>
+  <data name="AE_LangVersionLabel" xml:space="preserve">
+    <value>C# language version:</value>
+  </data>
+  <data name="AE_ShowXmlDocs" xml:space="preserve">
+    <value>Show XML documentation comments in decompiled output</value>
+  </data>
+  <data name="AE_ShowHiddenMembers" xml:space="preserve">
+    <value>Show hidden (compiler-generated) members</value>
+  </data>
+  <data name="AE_PdbIntegration" xml:space="preserve">
+    <value>Enable PDB integration (source mapping, local variable names)</value>
+  </data>
+  <data name="AE_DecompileLangLabel" xml:space="preserve">
+    <value>Decompile language:</value>
+  </data>
+  <data name="AE_BehaviourSection" xml:space="preserve">
+    <value>Behaviour</value>
+  </data>
+  <data name="AE_AutoAnalyzeOption" xml:space="preserve">
+    <value>Automatically analyze file when opened in HexEditor</value>
+  </data>
+  <data name="AE_SyncCursorOption" xml:space="preserve">
+    <value>Sync HexEditor cursor when selecting a tree node</value>
+  </data>
+  <data name="AE_ShowResourcesOption" xml:space="preserve">
+    <value>Show Resources group in the tree</value>
+  </data>
+  <data name="AE_ShowMetadataOption" xml:space="preserve">
+    <value>Show Metadata Tables group in the tree</value>
+  </data>
+  <data name="AE_InheritThemeOption" xml:space="preserve">
+    <value>Inherit IDE global theme</value>
+  </data>
+  <data name="AE_ShowNonPublicOption" xml:space="preserve">
+    <value>Show non-public members (private, internal, protected)</value>
+  </data>
+  <data name="AE_ShowInheritedOption" xml:space="preserve">
+    <value>Show inherited members in type nodes</value>
+  </data>
+  <data name="AE_PinAssembliesOption" xml:space="preserve">
+    <value>Pin loaded assemblies across active editor changes</value>
+  </data>
+  <data name="AE_MaxAssembliesLabel" xml:space="preserve">
+    <value>Max loaded assemblies:</value>
+  </data>
+  <data name="AE_MaxAssembliesRange" xml:space="preserve">
+    <value>(1 – 500)</value>
+  </data>
+  <data name="AE_RecentSection" xml:space="preserve">
+    <value>Recent Assemblies</value>
+  </data>
+  <data name="AE_ClearRecentButton" xml:space="preserve">
+    <value>Clear All Recent</value>
+  </data>
+  <data name="AsmExplorer_FilterTypes" xml:space="preserve"><value>형식 필터…</value></data>
+  <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>디컴파일된 파일을 추가할 프로젝트를 선택하세요:</value></data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>오프셋</value></data>
+  <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>필터 지우기</value></data>
+</root>

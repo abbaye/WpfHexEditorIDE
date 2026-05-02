@@ -4,8 +4,12 @@
 // Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.Globalization;
 using System.IO;
 using System.Windows;
+using WpfHexEditor.Core.Localization.Services;
+using WpfHexEditor.Core.Options;
+using LocalizationService = WpfHexEditor.Core.Localization.Services.LocalizationService;
 
 namespace WpfHexEditor.App;
 
@@ -23,10 +27,45 @@ public partial class App : Application
     /// </summary>
     public static (string Left, string Right)? StartupDiffPaths { get; private set; }
 
+    public App()
+    {
+        // Restore the saved UI language BEFORE InitializeComponent() processes
+        // App.xaml and instantiates all LocalizedResourceDictionary entries.
+        // StaticResource bindings resolve at BAML parse time, so the culture
+        // must be set here — OnStartup fires too late.
+        RestorePreferredLanguage();
+        InitializeComponent();
+    }
+
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        LocalizationService.Instance = new LocalizationService();
         ParseCommandLine(e.Args);
+    }
+
+    /// <summary>
+    /// Restores the UI language persisted in AppSettings.
+    /// Empty/missing = keep the system default (no-op).
+    /// </summary>
+    private static void RestorePreferredLanguage()
+    {
+        // Load settings early so PreferredLanguage is available before
+        // InitializeComponent() instantiates the localized dictionaries.
+        // MainWindow.OnLoaded will call Load() again — that is harmless.
+        AppSettingsService.Instance.Load();
+
+        var cultureName = AppSettingsService.Instance.Current.PreferredLanguage;
+        if (string.IsNullOrWhiteSpace(cultureName)) return;
+
+        try
+        {
+            LocalizedResourceDictionary.ChangeCulture(new CultureInfo(cultureName));
+        }
+        catch (CultureNotFoundException)
+        {
+            // Unknown culture name stored in settings — ignore, keep system default.
+        }
     }
 
     private static void ParseCommandLine(string[] args)

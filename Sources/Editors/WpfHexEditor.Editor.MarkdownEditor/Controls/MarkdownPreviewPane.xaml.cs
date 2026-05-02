@@ -27,6 +27,7 @@ using System.Windows.Controls;
 using Microsoft.Web.WebView2.Core;
 using WinFormsWebView2 = Microsoft.Web.WebView2.WinForms.WebView2;
 using WpfHexEditor.Editor.MarkdownEditor.Core.Services;
+using WpfHexEditor.Editor.MarkdownEditor.Properties;
 
 namespace WpfHexEditor.Editor.MarkdownEditor.Controls;
 
@@ -88,6 +89,12 @@ public sealed partial class MarkdownPreviewPane : UserControl
     /// </summary>
     public event EventHandler<MdPreviewContextAction>? PreviewContextMenuAction;
 
+    /// <summary>
+    /// Raised when the user scrolls the preview.
+    /// The double argument is the scroll position as a percentage (0.0–1.0).
+    /// </summary>
+    public event EventHandler<double>? PreviewScrolled;
+
     // Fullscreen menu item — kept as field so the host can update its header
     private MenuItem? _ctxFullscreen;
 
@@ -114,7 +121,7 @@ public sealed partial class MarkdownPreviewPane : UserControl
     public void SyncFullscreenMenuItem(bool isFullscreen)
     {
         if (_ctxFullscreen is not null)
-            _ctxFullscreen.Header = isFullscreen ? "Exit Fullscreen" : "Fullscreen";
+            _ctxFullscreen.Header = isFullscreen ? MarkdownEditorResources.MdPrev_ExitFullscreen : MarkdownEditorResources.MdPrev_Fullscreen;
     }
 
     /// <summary>
@@ -176,29 +183,29 @@ public sealed partial class MarkdownPreviewPane : UserControl
 
         // VIEW group
         AddGroupHeader(menu, "VIEW");
-        AddMenuItem(menu, "Source Only",   "Ctrl+1",         OnCtxSourceOnly,      "\uE8A5");
-        AddMenuItem(menu, "Split View",    "Ctrl+2",         OnCtxSplitView,       "\uE8A9");
-        AddMenuItem(menu, "Preview Only",  "Ctrl+3",         OnCtxPreviewOnly,     "\uE890");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_SourceOnly,  "Ctrl+1",         OnCtxSourceOnly,      "\uE8A5");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_SplitView,  "Ctrl+2",         OnCtxSplitView,       "\uE8A9");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_PreviewOnly,"Ctrl+3",         OnCtxPreviewOnly,     "\uE890");
         AddSeparator(menu);
-        _ctxFullscreen = AddMenuItem(menu, "Fullscreen",     "",                   OnCtxToggleFullscreen, "\uE740");
+        _ctxFullscreen = AddMenuItem(menu, MarkdownEditorResources.MdPrev_Fullscreen,  "",                   OnCtxToggleFullscreen, "\uE740");
 
         // ACTIONS group
         AddSeparator(menu);
         AddGroupHeader(menu, "ACTIONS");
-        AddMenuItem(menu, "Refresh Preview",  "F9",           OnCtxRefresh,        "\uE72C");
-        AddMenuItem(menu, "Cycle Layout",     "Ctrl+Shift+L", OnCtxCycleLayout,    "\uE7C4");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_RefreshPreview, "F9",           OnCtxRefresh,     "\uE72C");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_CycleLayout,   "Ctrl+Shift+L", OnCtxCycleLayout, "\uE7C4");
 
         // ZOOM group
         AddSeparator(menu);
         AddGroupHeader(menu, "ZOOM");
-        AddMenuItem(menu, "Zoom In",   "Ctrl++", OnCtxZoomIn,   "\uE8A3");
-        AddMenuItem(menu, "Zoom Out",  "Ctrl+-", OnCtxZoomOut,  "\uE71F");
-        AddMenuItem(menu, "Reset Zoom","Ctrl+0", OnCtxZoomReset,"\uE9A6");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_ZoomIn,    "Ctrl++", OnCtxZoomIn,    "\uE8A3");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_ZoomOut,   "Ctrl+-", OnCtxZoomOut,   "\uE71F");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_ResetZoom, "Ctrl+0", OnCtxZoomReset, "\uE9A6");
 
         // EDIT group
         AddSeparator(menu);
         AddGroupHeader(menu, "EDIT");
-        AddMenuItem(menu, "Copy",      "Ctrl+C", OnCtxCopyText, "\uE8C8");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_Copy, "Ctrl+C", OnCtxCopyText, "\uE8C8");
 
         return menu;
     }
@@ -450,6 +457,14 @@ public sealed partial class MarkdownPreviewPane : UserControl
                     }
                     break;
 
+                case "scroll":
+                    if (root.TryGetProperty("pct", out var pctProp))
+                    {
+                        var pct = pctProp.GetDouble();
+                        PreviewScrolled?.Invoke(this, pct);
+                    }
+                    break;
+
                 case "contextmenu":
                     // WindowsFormsHost eats WPF right-clicks — open the WPF ContextMenu
                     // at the screen position reported by JS.
@@ -500,6 +515,17 @@ public sealed partial class MarkdownPreviewPane : UserControl
     /// Zoom is persisted in <c>_currentZoom</c> and re-applied after shell reloads.
     /// </summary>
     /// <param name="zoom">Zoom factor (e.g. 1.5 = 150 %).  Clamped to [0.5, 3.0].</param>
+    /// <summary>
+    /// Scrolls the preview to a fractional position (0.0 = top, 1.0 = bottom).
+    /// No-op when not initialized.
+    /// </summary>
+    public void ScrollToPercent(double pct)
+    {
+        if (!_isInitialized || !_shellReady || _webView?.CoreWebView2 is null) return;
+        var pctStr = pct.ToString("F4", System.Globalization.CultureInfo.InvariantCulture);
+        _webView.CoreWebView2.ExecuteScriptAsync($"window.scrollToPercent({pctStr});");
+    }
+
     public void SetZoom(double zoom)
     {
         _currentZoom = Math.Clamp(zoom, 0.5, 3.0);
@@ -539,6 +565,18 @@ public sealed partial class MarkdownPreviewPane : UserControl
 
     private void OnCtxCopyText(object sender, RoutedEventArgs e)
         => PreviewContextMenuAction?.Invoke(this, MdPreviewContextAction.CopyText);
+
+    // --- Export ---------------------------------------------------------------
+
+    /// <summary>
+    /// Prints the current preview content to a PDF file using WebView2's built-in PDF renderer.
+    /// </summary>
+    /// <param name="filePath">Absolute path for the output .pdf file.</param>
+    public async Task ExportPdfAsync(string filePath)
+    {
+        if (!_isInitialized || !_shellReady || _webView?.CoreWebView2 is null) return;
+        await _webView.CoreWebView2.PrintToPdfAsync(filePath);
+    }
 
     // --- Win32 P/Invoke ---------------------------------------------------
 

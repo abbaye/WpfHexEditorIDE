@@ -85,12 +85,12 @@
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
                             WindowChrome.IsHitTestVisibleInChrome="True">
                     <Button Content="&#xE949;" Style="{DynamicResource TitleBarButtonStyle}"
-                            Click="OnMinimize" ToolTip="Minimize" />
+                            Click="OnMinimize" ToolTip="{StaticResource App_MinimizeToolTip}" />
                     <Button x:Name="MaxRestoreButton" Content="&#xE739;"
                             Style="{DynamicResource TitleBarButtonStyle}"
-                            Click="OnMaximizeRestore" ToolTip="Maximize" />
+                            Click="OnMaximizeRestore" ToolTip="{StaticResource App_MaximizeToolTip}" />
                     <Button Content="&#xE106;" Style="{DynamicResource TitleBarCloseButtonStyle}"
-                            Click="OnCloseWindow" ToolTip="Close" />
+                            Click="OnCloseWindow" ToolTip="{StaticResource App_CloseToolTip}" />
                 </StackPanel>
 
                 <!-- Notification bell (title bar) -->
@@ -98,7 +98,7 @@
                         DockPanel.Dock="Right"
                         Width="46" Height="32"
                         Cursor="Hand"
-                        ToolTip="Notifications"
+                        ToolTip="{StaticResource App_NotificationsToolTip}"
                         VerticalAlignment="Stretch"
                         WindowChrome.IsHitTestVisibleInChrome="True"
                         MouseLeftButtonDown="OnNotificationBellClick">
@@ -141,7 +141,7 @@
                         DockPanel.Dock="Right"
                         Click="OnCustomizeLayoutButtonClick"
                         WindowChrome.IsHitTestVisibleInChrome="True"
-                        ToolTip="Customize Layout (Ctrl+Shift+L)"
+                        ToolTip="{StaticResource App_CustomizeLayoutToolTip}"
                         Style="{DynamicResource TitleBarButtonStyle}"
                         Content="&#xE713;"
                         FontFamily="Segoe MDL2 Assets"
@@ -164,24 +164,24 @@
                       WindowChrome.IsHitTestVisibleInChrome="True">
 
                     <!-- ═══════════ File ═══════════ -->
-                    <MenuItem Header="_File"
+                    <MenuItem Header="{StaticResource App_Menu_File}"
                               IsEnabled="{Binding IsMenuEnabled, ElementName=ThisWindow}">
 
                         <!-- New ► -->
-                        <MenuItem Header="_New">
+                        <MenuItem Header="{StaticResource App_Menu_New}">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
-                            <MenuItem Header="_Solution..." Click="OnNewSolution" InputGestureText="Ctrl+Shift+N">
+                            <MenuItem Header="{StaticResource App_Menu_NewSolution}" Click="OnNewSolution" InputGestureText="Ctrl+Shift+N">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="_Project..." Click="OnNewProject">
+                            <MenuItem Header="{StaticResource App_Menu_NewProject}" Click="OnNewProject">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -189,7 +189,7 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="_File..." Click="OnNewFile" InputGestureText="Ctrl+N">
+                            <MenuItem Header="{StaticResource App_Menu_NewFile}" Click="OnNewFile" InputGestureText="Ctrl+N">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -199,27 +199,27 @@
                         </MenuItem>
 
                         <!-- Open ► -->
-                        <MenuItem Header="_Open">
+                        <MenuItem Header="{StaticResource App_Menu_Open}">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
-                            <MenuItem Header="_Solution/Project..." Click="OnOpenSolutionOrProject" InputGestureText="Ctrl+Shift+O">
+                            <MenuItem Header="{StaticResource App_Menu_OpenSolutionProject}" Click="OnOpenSolutionOrProject" InputGestureText="Ctrl+Shift+O">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem x:Name="MenuOpenFolder" Header="_Folder..." Click="OnOpenFolder" InputGestureText="Ctrl+Shift+K">
+                            <MenuItem x:Name="MenuOpenFolder" Header="{StaticResource App_Menu_OpenFolder}" Click="OnOpenFolder" InputGestureText="Ctrl+Shift+K">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xED41;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="_File..." Click="OnOpenFile" InputGestureText="Ctrl+O">
+                            <MenuItem Header="{StaticResource App_Menu_OpenFile}" Click="OnOpenFile" InputGestureText="Ctrl+O">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -231,21 +231,21 @@
                         <Separator />
 
                         <!-- Close active document -->
-                        <MenuItem Header="_Close" Click="OnCloseActiveDocument" InputGestureText="Ctrl+W">
+                        <MenuItem Header="{StaticResource App_Menu_Close}" Click="OnCloseActiveDocument" InputGestureText="Ctrl+W">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Close _All Documents" Click="OnCloseAllDocuments">
+                        <MenuItem Header="{StaticResource App_Menu_CloseAllDocuments}" Click="OnCloseAllDocuments">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Close _Solution" Click="OnCloseSolution"
+                        <MenuItem Header="{StaticResource App_Menu_CloseSolution}" Click="OnCloseSolution"
                                   IsEnabled="{Binding HasSolution, ElementName=ThisWindow}">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -257,7 +257,7 @@
                         <Separator />
 
                         <!-- Save -->
-                        <MenuItem Header="_Save"
+                        <MenuItem Header="{StaticResource App_Menu_Save}"
                                   Command="{x:Static ApplicationCommands.Save}"
                                   InputGestureText="Ctrl+S">
                             <MenuItem.Icon>
@@ -266,14 +266,14 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Save _All" Click="OnSaveAll" InputGestureText="Ctrl+Shift+S">
+                        <MenuItem Header="{StaticResource App_Menu_SaveAll}" Click="OnSaveAll" InputGestureText="Ctrl+Shift+S">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE78C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Write to Disk"
+                        <MenuItem Header="{StaticResource App_Menu_WriteToDisk}"
                                   Command="{x:Static local:MainWindow.WriteToDiskCommand}"
                                   InputGestureText="Ctrl+Shift+W">
                             <MenuItem.Icon>
@@ -286,20 +286,20 @@
                         <Separator />
 
                         <!-- Workspace ► -->
-                        <MenuItem Header="_Workspace">
+                        <MenuItem Header="{StaticResource App_Menu_Workspace}">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xF16A;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
-                            <MenuItem Header="_New Workspace…" Click="OnNewWorkspace">
+                            <MenuItem Header="{StaticResource App_Menu_NewWorkspace}" Click="OnNewWorkspace">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xF16A;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="_Open Workspace…" Click="OnOpenWorkspace">
+                            <MenuItem Header="{StaticResource App_Menu_OpenWorkspace}" Click="OnOpenWorkspace">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE8A9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -307,14 +307,14 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="_Save Workspace" Click="OnSaveWorkspace">
+                            <MenuItem Header="{StaticResource App_Menu_SaveWorkspace}" Click="OnSaveWorkspace">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Save Workspace _As…" Click="OnSaveWorkspaceAs">
+                            <MenuItem Header="{StaticResource App_Menu_SaveWorkspaceAs}" Click="OnSaveWorkspaceAs">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -322,7 +322,7 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="C_lose Workspace" Click="OnCloseWorkspace">
+                            <MenuItem Header="{StaticResource App_Menu_CloseWorkspace}" Click="OnCloseWorkspace">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -334,7 +334,7 @@
                         <Separator />
 
                         <!-- Recent Solutions ► -->
-                        <MenuItem x:Name="RecentSolutionsMenuItem" Header="Recent _Solutions">
+                        <MenuItem x:Name="RecentSolutionsMenuItem" Header="{StaticResource App_Menu_RecentSolutions}">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -344,7 +344,7 @@
                         </MenuItem>
 
                         <!-- Recent Files ► -->
-                        <MenuItem x:Name="RecentFilesMenuItem" Header="Recent _Files">
+                        <MenuItem x:Name="RecentFilesMenuItem" Header="{StaticResource App_Menu_RecentFiles}">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -354,7 +354,7 @@
                         </MenuItem>
 
                         <Separator />
-                        <MenuItem Header="E_xit" Click="OnExit" InputGestureText="Alt+F4">
+                        <MenuItem Header="{StaticResource App_Menu_Exit}" Click="OnExit" InputGestureText="Alt+F4">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE7E8;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -364,7 +364,7 @@
                     </MenuItem>
 
                     <!-- ═══════════ Edit ═══════════ -->
-                    <MenuItem Header="_Edit"
+                    <MenuItem Header="{StaticResource App_Menu_Edit}"
                               IsEnabled="{Binding IsMenuEnabled, ElementName=ThisWindow}">
                         <MenuItem Header="{Binding ActiveDocumentEditor.UndoDescription, ElementName=ThisWindow, FallbackValue='_Undo'}"
                                   Command="{Binding ActiveDocumentEditor.UndoCommand, ElementName=ThisWindow}"
@@ -385,7 +385,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="Cu_t"
+                        <MenuItem Header="{StaticResource App_Menu_Cut}"
                                   Command="{Binding ActiveDocumentEditor.CutCommand, ElementName=ThisWindow}"
                                   InputGestureText="Ctrl+X">
                             <MenuItem.Icon>
@@ -394,7 +394,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Copy"
+                        <MenuItem Header="{StaticResource App_Menu_Copy}"
                                   Command="{Binding ActiveDocumentEditor.CopyCommand, ElementName=ThisWindow}"
                                   InputGestureText="Ctrl+C">
                             <MenuItem.Icon>
@@ -403,7 +403,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Paste"
+                        <MenuItem Header="{StaticResource App_Menu_Paste}"
                                   Command="{Binding ActiveDocumentEditor.PasteCommand, ElementName=ThisWindow}"
                                   InputGestureText="Ctrl+V">
                             <MenuItem.Icon>
@@ -412,7 +412,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Delete"
+                        <MenuItem Header="{StaticResource App_Menu_Delete}"
                                   Command="{Binding ActiveDocumentEditor.DeleteCommand, ElementName=ThisWindow}">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -421,7 +421,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="Select _All"
+                        <MenuItem Header="{StaticResource App_Menu_SelectAll}"
                                   Command="{Binding ActiveDocumentEditor.SelectAllCommand, ElementName=ThisWindow}"
                                   InputGestureText="Ctrl+A">
                             <MenuItem.Icon>
@@ -431,7 +431,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="_Find..."
+                        <MenuItem Header="{StaticResource App_Menu_Find}"
                                   Command="{x:Static ApplicationCommands.Find}"
                                   CommandTarget="{Binding ElementName=ThisWindow}"
                                   InputGestureText="Ctrl+F">
@@ -441,7 +441,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Advanced Find / Replace..."
+                        <MenuItem Header="{StaticResource App_Menu_AdvancedFindReplace}"
                                   Command="{x:Static local:MainWindow.AdvancedSearchCommand}"
                                   InputGestureText="Ctrl+Shift+F">
                             <MenuItem.Icon>
@@ -450,14 +450,14 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Find _Next"
+                        <MenuItem Header="{StaticResource App_Menu_FindNext}"
                                   Click="OnFindNext"
                                   InputGestureText="F3" />
-                        <MenuItem Header="Find _Previous"
+                        <MenuItem Header="{StaticResource App_Menu_FindPrevious}"
                                   Click="OnFindPrevious"
                                   InputGestureText="Shift+F3" />
                         <Separator />
-                        <MenuItem Header="_Go To Offset…" Click="OnGoToOffset" InputGestureText="Ctrl+G">
+                        <MenuItem Header="{StaticResource App_Menu_GoToOffset}" Click="OnGoToOffset" InputGestureText="Ctrl+G">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -465,14 +465,14 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="Format _Document"  Click="OnFormatDocument"  InputGestureText="Ctrl+K, Ctrl+D">
+                        <MenuItem Header="{StaticResource App_Menu_FormatDocument}"  Click="OnFormatDocument"  InputGestureText="Ctrl+K, Ctrl+D">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Format _Selection" Click="OnFormatSelection" InputGestureText="Ctrl+K, Ctrl+F">
+                        <MenuItem Header="{StaticResource App_Menu_FormatSelection}" Click="OnFormatSelection" InputGestureText="Ctrl+K, Ctrl+F">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xEF20;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -483,19 +483,19 @@
 
                     <!-- ═══════════ View ═══════════ -->
                     <!-- Content is generated dynamically by ViewMenuOrganizer.RebuildMenu() -->
-                    <MenuItem Header="_View" x:Name="ViewMenu" />
+                    <MenuItem Header="{StaticResource App_Menu_View}" x:Name="ViewMenu" />
 
                     <!-- ═══════════ Project ═══════════ (enabled when solution loaded AND no operation active) -->
-                    <MenuItem Header="_Project"
+                    <MenuItem Header="{StaticResource App_Menu_Project}"
                               IsEnabled="{Binding IsProjectMenuEnabled, ElementName=ThisWindow}">
-                        <MenuItem Header="Add _New Item..." Click="OnProjectAddNewItem" InputGestureText="Ctrl+Shift+A">
+                        <MenuItem Header="{StaticResource App_Menu_AddNewItem}" Click="OnProjectAddNewItem" InputGestureText="Ctrl+Shift+A">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Add E_xisting Item..." Click="OnProjectAddExistingItem" InputGestureText="Shift+Alt+A">
+                        <MenuItem Header="{StaticResource App_Menu_AddExistingItem}" Click="OnProjectAddExistingItem" InputGestureText="Shift+Alt+A">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -503,7 +503,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="Add New _Project..." Click="OnNewProject">
+                        <MenuItem Header="{StaticResource App_Menu_AddNewProject}" Click="OnNewProject">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -511,7 +511,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="P_roperties..." Click="OnProjectProperties">
+                        <MenuItem Header="{StaticResource App_Menu_Properties}" Click="OnProjectProperties">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -521,16 +521,16 @@
                     </MenuItem>
 
                     <!-- ═══════════ Build ═══════════ -->
-                    <MenuItem Header="_Build"
+                    <MenuItem Header="{StaticResource App_Menu_Build}"
                               IsEnabled="{Binding IsBuildMenuEnabled, ElementName=ThisWindow}">
-                        <MenuItem Header="Build _Solution" Click="OnBuildSolution" InputGestureText="Ctrl+Shift+B">
+                        <MenuItem Header="{StaticResource App_Menu_BuildSolution}" Click="OnBuildSolution" InputGestureText="Ctrl+Shift+B">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Build _Project" Click="OnBuildProject" InputGestureText="F7">
+                        <MenuItem Header="{StaticResource App_Menu_BuildProject}" Click="OnBuildProject" InputGestureText="F7">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -538,14 +538,14 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="_Rebuild Solution" Click="OnRebuildSolution">
+                        <MenuItem Header="{StaticResource App_Menu_RebuildSolution}" Click="OnRebuildSolution">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Rebuild _Project" Click="OnRebuildProject">
+                        <MenuItem Header="{StaticResource App_Menu_RebuildProject}" Click="OnRebuildProject">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -553,14 +553,14 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="_Clean Solution" Click="OnCleanSolution">
+                        <MenuItem Header="{StaticResource App_Menu_CleanSolution}" Click="OnCleanSolution">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Clean _Project" Click="OnCleanProject">
+                        <MenuItem Header="{StaticResource App_Menu_CleanProject}" Click="OnCleanProject">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -568,7 +568,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem x:Name="MenuCancelBuild" Header="C_ancel Build" Click="OnCancelBuild"
+                        <MenuItem x:Name="MenuCancelBuild" Header="{StaticResource App_Menu_CancelBuild}" Click="OnCancelBuild"
                                   IsEnabled="{Binding HasActiveBuild, ElementName=ThisWindow}">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -577,7 +577,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="_Configuration Manager..." Click="OnOpenConfigManager">
+                        <MenuItem Header="{StaticResource App_Menu_ConfigurationManager}" Click="OnOpenConfigManager">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -587,27 +587,27 @@
                     </MenuItem>
 
                     <!-- ═══════════ Debug (dynamic — populated by DebugMenuOrganizer) ═══════════ -->
-                    <MenuItem Header="_Debug" x:Name="DebugMenu" IsEnabled="{Binding IsMenuEnabled, ElementName=ThisWindow}" />
+                    <MenuItem Header="{StaticResource App_Menu_Debug}" x:Name="DebugMenu" IsEnabled="{Binding IsMenuEnabled, ElementName=ThisWindow}" />
 
                     <!-- ═══════════ Window ═══════════ -->
-                    <MenuItem Header="_Window" SubmenuOpened="OnWindowMenuOpened">
+                    <MenuItem Header="{StaticResource App_Menu_Window}" SubmenuOpened="OnWindowMenuOpened">
 
                         <!-- ── Close operations ── -->
-                        <MenuItem Header="_Close Document" Click="OnCloseActiveDocument" InputGestureText="Ctrl+W">
+                        <MenuItem Header="{StaticResource App_Menu_CloseDocument}" Click="OnCloseActiveDocument" InputGestureText="Ctrl+W">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Close All _But This" Click="OnCloseAllButThis">
+                        <MenuItem Header="{StaticResource App_Menu_CloseAllButThis}" Click="OnCloseAllButThis">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Close _All Documents" Click="OnCloseAllDocuments">
+                        <MenuItem Header="{StaticResource App_Menu_CloseAllDocuments2}" Click="OnCloseAllDocuments">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -618,14 +618,14 @@
                         <Separator />
 
                         <!-- ── Document navigation ── -->
-                        <MenuItem Header="_Next Document" Click="OnNextDocument" InputGestureText="Ctrl+Tab">
+                        <MenuItem Header="{StaticResource App_Menu_NextDocument}" Click="OnNextDocument" InputGestureText="Ctrl+Tab">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Previous Document" Click="OnPreviousDocument" InputGestureText="Ctrl+Shift+Tab">
+                        <MenuItem Header="{StaticResource App_Menu_PreviousDocument}" Click="OnPreviousDocument" InputGestureText="Ctrl+Shift+Tab">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE76B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -636,7 +636,7 @@
                         <Separator />
 
                         <!-- ── Full Screen ── -->
-                        <MenuItem Header="_Full Screen" Click="OnToggleFullScreenMenuClick" InputGestureText="F11">
+                        <MenuItem Header="{StaticResource App_Menu_FullScreen}" Click="OnToggleFullScreenMenuClick" InputGestureText="F11">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE740;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -647,8 +647,8 @@
                         <Separator />
 
                         <!-- ── Tab Groups ── -->
-                        <MenuItem Header="Tab _Groups">
-                            <MenuItem Header="New _Vertical Tab Group"
+                        <MenuItem Header="{StaticResource App_Menu_TabGroups}">
+                            <MenuItem Header="{StaticResource App_Menu_NewVerticalTabGroup}"
                                       Click="OnTabGroupNewVertical"
                                       InputGestureText="Ctrl+Alt+\"
                                       x:Name="MenuItemNewVerticalTabGroup">
@@ -658,7 +658,7 @@
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="New _Horizontal Tab Group"
+                            <MenuItem Header="{StaticResource App_Menu_NewHorizontalTabGroup}"
                                       Click="OnTabGroupNewHorizontal"
                                       InputGestureText="Ctrl+Alt+Shift+\"
                                       x:Name="MenuItemNewHorizontalTabGroup">
@@ -669,7 +669,7 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="Move to _Next Tab Group"
+                            <MenuItem Header="{StaticResource App_Menu_MoveToNextTabGroup}"
                                       Click="OnTabGroupMoveNext"
                                       InputGestureText="Ctrl+Alt+PgDn"
                                       x:Name="MenuItemMoveToNextTabGroup">
@@ -679,7 +679,7 @@
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Move to _Previous Tab Group"
+                            <MenuItem Header="{StaticResource App_Menu_MoveToPreviousTabGroup}"
                                       Click="OnTabGroupMovePrevious"
                                       InputGestureText="Ctrl+Alt+PgUp"
                                       x:Name="MenuItemMoveToPreviousTabGroup">
@@ -690,7 +690,7 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="_Close Tab Group"
+                            <MenuItem Header="{StaticResource App_Menu_CloseTabGroup}"
                                       Click="OnTabGroupCloseCurrentGroup"
                                       x:Name="MenuItemCloseTabGroup"
                                       IsEnabled="False">
@@ -700,7 +700,7 @@
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Close _All Tab Groups"
+                            <MenuItem Header="{StaticResource App_Menu_CloseAllTabGroups}"
                                       Click="OnTabGroupCloseAll"
                                       x:Name="MenuItemCloseAllTabGroups"
                                       IsEnabled="False">
@@ -713,22 +713,22 @@
                         </MenuItem>
 
                         <!-- ── Layout (moved from top-level) ── -->
-                        <MenuItem Header="_Layout">
-                            <MenuItem Header="_Save Layout" Click="OnSaveLayout">
+                        <MenuItem Header="{StaticResource App_Menu_Layout}">
+                            <MenuItem Header="{StaticResource App_Menu_SaveLayout}" Click="OnSaveLayout">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="_Load Layout" Click="OnLoadLayout">
+                            <MenuItem Header="{StaticResource App_Menu_LoadLayout}" Click="OnLoadLayout">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="_Reset Layout" Click="OnResetLayout">
+                            <MenuItem Header="{StaticResource App_Menu_ResetLayout}" Click="OnResetLayout">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -736,7 +736,7 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="Toggle _Locked Layout" Click="OnToggleLock" IsCheckable="True" x:Name="LockMenuItem">
+                            <MenuItem Header="{StaticResource App_Menu_ToggleLockedLayout}" Click="OnToggleLock" IsCheckable="True" x:Name="LockMenuItem">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -750,8 +750,8 @@
                     </MenuItem>
 
                     <!-- ═══════════ Tools ═══════════ -->
-                    <MenuItem Header="_Tools">
-                        <MenuItem Header="_Terminal" Click="OnOpenTerminal">
+                    <MenuItem Header="{StaticResource App_Menu_Tools}" x:Name="ToolsMenu">
+                        <MenuItem Header="{StaticResource App_Menu_Terminal}" Click="OnOpenTerminal">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -762,7 +762,7 @@
                         <Separator />
 
                         <!-- Options -->
-                        <MenuItem Header="_Options..." Click="OnSettings">
+                        <MenuItem Header="{StaticResource App_Menu_Options}" Click="OnSettings">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -772,8 +772,8 @@
                     </MenuItem>
 
                     <!-- ═══════════ Extensions ═══════════ -->
-                    <MenuItem Header="_Extensions">
-                        <MenuItem Header="_Extension Manager"
+                    <MenuItem Header="{StaticResource App_Menu_Extensions}">
+                        <MenuItem Header="{StaticResource App_Menu_ExtensionManager}"
                                   Command="{x:Static local:MainWindow.OpenPluginManagerCommand}"
                                   CommandTarget="{Binding ElementName=ThisWindow}">
                             <MenuItem.Icon>
@@ -782,14 +782,14 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Extensions _Monitor" Click="OnOpenPluginMonitor">
+                        <MenuItem Header="{StaticResource App_Menu_ExtensionsMonitor}" Click="OnOpenPluginMonitor">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Extension _Marketplace" Click="OnOpenMarketplace">
+                        <MenuItem Header="{StaticResource App_Menu_ExtensionMarketplace}" Click="OnOpenMarketplace">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE719;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -797,21 +797,21 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator/>
-                        <MenuItem Header="_Install from File..." Click="OnInstallPluginFromMenu">
+                        <MenuItem Header="{StaticResource App_Menu_InstallFromFile}" Click="OnInstallPluginFromMenu">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8F4;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Refresh All Extensions" Click="OnRefreshAllPlugins">
+                        <MenuItem Header="{StaticResource App_Menu_RefreshAllExtensions}" Click="OnRefreshAllPlugins">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Extension _Dev Watch..." Click="OnOpenPluginDevWatch">
+                        <MenuItem Header="{StaticResource App_Menu_ExtensionDevWatch}" Click="OnOpenPluginDevWatch">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xECC6;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -819,7 +819,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator/>
-                        <MenuItem Header="Extension System _Settings..." Click="OnOpenPluginSettings">
+                        <MenuItem Header="{StaticResource App_Menu_ExtensionSystemSettings}" Click="OnOpenPluginSettings">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -829,25 +829,25 @@
                     </MenuItem>
 
                     <!-- ═══════════ Theme ═══════════ -->
-                    <MenuItem Header="_Theme">
+                    <MenuItem Header="{StaticResource App_Menu_Theme}">
 
                         <!-- ─── Dark IDE ─── -->
                         <MenuItem Header="─── Dark IDE ───" IsEnabled="False" />
-                        <MenuItem Header="_Dark" Click="OnDarkTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeDark}" Click="OnDarkTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE708;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="VS2022 Dar_k" Click="OnVS2022DarkTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeVS2022Dark}" Click="OnVS2022DarkTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Visual Studio" Click="OnVisualStudioTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeVisualStudio}" Click="OnVisualStudioTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -858,28 +858,28 @@
                         <!-- ─── Dark Atmospheric ─── -->
                         <Separator />
                         <MenuItem Header="─── Dark Atmospheric ───" IsEnabled="False" />
-                        <MenuItem Header="Dark _Glass" Click="OnDarkGlassTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeDarkGlass}" Click="OnDarkGlassTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Cyberpunk" Click="OnCyberpunkTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeCyberpunk}" Click="OnCyberpunkTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Synthwave '8_4" Click="OnSynthwave84Theme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeSynthwave}" Click="OnSynthwave84Theme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Matri_x / Terminal" Click="OnMatrixTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeMatrix}" Click="OnMatrixTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -890,35 +890,35 @@
                         <!-- ─── Dark Legends ─── -->
                         <Separator />
                         <MenuItem Header="─── Dark Legends ───" IsEnabled="False" />
-                        <MenuItem Header="_Nord" Click="OnNordTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeNord}" Click="OnNordTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Dr_acula" Click="OnDraculaTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeDracula}" Click="OnDraculaTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Gruvbo_x Dark" Click="OnGruvboxDarkTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeGruvbox}" Click="OnGruvboxDarkTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Catppuccin _Mocha" Click="OnCatppuccinMochaTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeCatppuccinMocha}" Click="OnCatppuccinMochaTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Tokyo _Night" Click="OnTokyoNightTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeTokyoNight}" Click="OnTokyoNightTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -929,21 +929,21 @@
                         <!-- ─── Light ─── -->
                         <Separator />
                         <MenuItem Header="─── Light ───" IsEnabled="False" />
-                        <MenuItem Header="_Light" Click="OnLightTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeLight}" Click="OnLightTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE706;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Office" Click="OnOfficeTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeOffice}" Click="OnOfficeTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Catppuccin _Latte" Click="OnCatppuccinLatteTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeCatppuccinLatte}" Click="OnCatppuccinLatteTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -954,21 +954,21 @@
                         <!-- ─── Special ─── -->
                         <Separator />
                         <MenuItem Header="─── Special ───" IsEnabled="False" />
-                        <MenuItem Header="_Minimal" Click="OnMinimalTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeMinimal}" Click="OnMinimalTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Forest" Click="OnForestTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeForest}" Click="OnForestTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_High Contrast" Click="OnHighContrastTheme">
+                        <MenuItem Header="{StaticResource App_Menu_ThemeHighContrast}" Click="OnHighContrastTheme">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -979,7 +979,7 @@
 
                     <!-- ═══════════ Image ═══════════ -->
                     <!-- Visible only when an ImageViewer is the active/last-focused editor -->
-                    <MenuItem Header="_Image"
+                    <MenuItem Header="{StaticResource App_Menu_Image}"
                               Visibility="{Binding IsImageViewerActive, RelativeSource={RelativeSource AncestorType=Window},
                                            Converter={StaticResource BoolToVisibilityConverter}}">
                         <MenuItem.HeaderTemplate>
@@ -995,7 +995,7 @@
                             </DataTemplate>
                         </MenuItem.HeaderTemplate>
                         <!-- Transform -->
-                        <MenuItem Header="Rotate _Right" InputGestureText="Ctrl+R"
+                        <MenuItem Header="{StaticResource App_Menu_RotateRight}" InputGestureText="Ctrl+R"
                                   Click="OnImageRotateRight">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE7AD;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -1003,7 +1003,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Rotate _Left" InputGestureText="Ctrl+Shift+R"
+                        <MenuItem Header="{StaticResource App_Menu_RotateLeft}" InputGestureText="Ctrl+Shift+R"
                                   Click="OnImageRotateLeft">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE7AE;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -1011,7 +1011,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Flip _Horizontal" InputGestureText="Ctrl+H"
+                        <MenuItem Header="{StaticResource App_Menu_FlipHorizontal}" InputGestureText="Ctrl+H"
                                   Click="OnImageFlipH">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -1019,7 +1019,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Flip _Vertical" InputGestureText="Ctrl+Shift+H"
+                        <MenuItem Header="{StaticResource App_Menu_FlipVertical}" InputGestureText="Ctrl+Shift+H"
                                   Click="OnImageFlipV">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8B0;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -1029,7 +1029,7 @@
                         </MenuItem>
                         <Separator/>
                         <!-- Crop & Resize -->
-                        <MenuItem Header="_Crop Mode" InputGestureText="Ctrl+K"
+                        <MenuItem Header="{StaticResource App_Menu_CropMode}" InputGestureText="Ctrl+K"
                                   Click="OnImageCropMode">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE7A8;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -1037,7 +1037,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="R_esize..." InputGestureText="Ctrl+Shift+Z"
+                        <MenuItem Header="{StaticResource App_Menu_Resize}" InputGestureText="Ctrl+Shift+Z"
                                   Click="OnImageResize">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8D4;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -1047,7 +1047,7 @@
                         </MenuItem>
                         <Separator/>
                         <!-- Export -->
-                        <MenuItem Header="_Export..." InputGestureText="Ctrl+Shift+S"
+                        <MenuItem Header="{StaticResource App_Menu_Export}" InputGestureText="Ctrl+Shift+S"
                                   Click="OnImageSaveAs">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -1056,7 +1056,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator/>
-                        <MenuItem Header="Reset to _Original Image"
+                        <MenuItem Header="{StaticResource App_Menu_ResetImage}"
                                   Click="OnImageResetTransforms">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -1071,7 +1071,7 @@
                 <Button x:Name="TitleBarSearchButton"
                         Command="{x:Static local:MainWindow.ShowCommandPaletteCommand}"
                         WindowChrome.IsHitTestVisibleInChrome="True"
-                        ToolTip="Command Palette (Ctrl+Shift+P)"
+                        ToolTip="{StaticResource App_CommandPaletteToolTip}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Stretch"
                         Width="380"
@@ -1147,7 +1147,7 @@
 
             <!-- ── Home ──────────────────────────────────────────────────── -->
             <Border Style="{DynamicResource DockToolBarPodStyle}">
-                <Button Click="OnShowWelcome" ToolTip="Welcome Page"
+                <Button Click="OnShowWelcome" ToolTip="{StaticResource App_WelcomePageToolTip}"
                         Style="{DynamicResource DockDarkToolBarButtonStyle}">
                     <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                VerticalAlignment="Center"/>
@@ -1161,24 +1161,24 @@
                 <StackPanel Orientation="Horizontal">
 
                     <!-- New ▾ : New File / New Project / New Solution -->
-                    <Button Click="OnToolBarDropDownClick" ToolTip="New…"
+                    <Button Click="OnToolBarDropDownClick" ToolTip="{StaticResource App_Toolbar_New}"
                             Style="{DynamicResource DockToolBarPodDropDownButtonStyle}">
                         <Button.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="New _File…"     Click="OnNewFile"
+                                <MenuItem Header="{StaticResource App_Menu_NewFile}"     Click="OnNewFile"
                                           InputGestureText="Ctrl+N">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                    Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="New _Project…"  Click="OnNewProject">
+                                <MenuItem Header="{StaticResource App_Menu_NewProject}"  Click="OnNewProject">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xE8F9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                    Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="New _Solution…" Click="OnNewSolution"
+                                <MenuItem Header="{StaticResource App_Menu_NewSolution}" Click="OnNewSolution"
                                           InputGestureText="Ctrl+Shift+N">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xE8A1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -1194,25 +1194,25 @@
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
 
                     <!-- Open ▾ : Open File / Open Solution or Project -->
-                    <Button Click="OnToolBarDropDownClick" ToolTip="Open…"
+                    <Button Click="OnToolBarDropDownClick" ToolTip="{StaticResource App_Toolbar_Open}"
                             Style="{DynamicResource DockToolBarPodDropDownButtonStyle}">
                         <Button.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Open _File…"              Click="OnOpenFile"
+                                <MenuItem Header="{StaticResource App_Menu_OpenFile}"              Click="OnOpenFile"
                                           InputGestureText="Ctrl+O">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                    Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="Open Solution/_Project…"  Click="OnOpenSolutionOrProject"
+                                <MenuItem Header="{StaticResource App_Menu_OpenSolutionProject}"  Click="OnOpenSolutionOrProject"
                                           InputGestureText="Ctrl+Shift+O">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xE8F9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                    Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="Open _Folder…" Click="OnOpenFolder"
+                                <MenuItem Header="{StaticResource App_Menu_OpenFolder}" Click="OnOpenFolder"
                                           InputGestureText="Ctrl+Shift+K">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xED41;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -1229,14 +1229,14 @@
 
                     <!-- Save — Command binding (auto-enable/disable) -->
                     <Button Command="{x:Static ApplicationCommands.Save}"
-                            ToolTip="Save (Ctrl+S)"
+                            ToolTip="{StaticResource App_Toolbar_Save}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
 
                     <!-- Save All -->
-                    <Button Click="OnSaveAll" ToolTip="Save All (Ctrl+Shift+S)"
+                    <Button Click="OnSaveAll" ToolTip="{StaticResource App_Toolbar_SaveAll}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
@@ -1269,19 +1269,19 @@
 
                     <!-- Cut / Copy / Paste — Command bindings -->
                     <Button Command="{Binding ActiveDocumentEditor.CutCommand, ElementName=ThisWindow}"
-                            ToolTip="Cut (Ctrl+X)"
+                            ToolTip="{StaticResource App_Toolbar_Cut}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE8C6;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
                     <Button Command="{Binding ActiveDocumentEditor.CopyCommand, ElementName=ThisWindow}"
-                            ToolTip="Copy (Ctrl+C)"
+                            ToolTip="{StaticResource App_Toolbar_Copy}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
                     <Button Command="{Binding ActiveDocumentEditor.PasteCommand, ElementName=ThisWindow}"
-                            ToolTip="Paste (Ctrl+V)"
+                            ToolTip="{StaticResource App_Toolbar_Paste}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE77F;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
@@ -1297,25 +1297,25 @@
                 <StackPanel Orientation="Horizontal">
 
                     <!-- Find — icon + label -->
-                    <Button Click="OnShowAdvancedSearch" ToolTip="Find… (Ctrl+F)"
+                    <Button Click="OnShowAdvancedSearch" ToolTip="{StaticResource App_Toolbar_Find}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        VerticalAlignment="Center" Margin="0,0,4,0"/>
-                            <TextBlock Text="Find" VerticalAlignment="Center"/>
+                            <TextBlock Text="{StaticResource APP_ToolbarFind}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
 
                     <!-- Find Next (F3) -->
-                    <Button Click="OnFindNext" ToolTip="Find Next (F3)"
+                    <Button Click="OnFindNext" ToolTip="{StaticResource App_Toolbar_FindNext}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE74B;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    VerticalAlignment="Center"/>
                     </Button>
                     <!-- Find Previous (Shift+F3) -->
-                    <Button Click="OnFindPrevious" ToolTip="Find Previous (Shift+F3)"
+                    <Button Click="OnFindPrevious" ToolTip="{StaticResource App_Toolbar_FindPrevious}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    VerticalAlignment="Center"/>
@@ -1329,19 +1329,19 @@
                 <StackPanel Orientation="Horizontal">
 
                     <!-- Solution Explorer : icon + label -->
-                    <Button Click="OnShowSolutionExplorer" ToolTip="Solution Explorer (Ctrl+Alt+L)"
+                    <Button Click="OnShowSolutionExplorer" ToolTip="{StaticResource App_Toolbar_SolutionExplorer}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        VerticalAlignment="Center" Margin="0,0,4,0"/>
-                            <TextBlock Text="Explorer" VerticalAlignment="Center"/>
+                            <TextBlock Text="{StaticResource APP_ToolbarExplorer}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
 
                     <!-- Parsed Fields -->
-                    <Button Click="OnShowParsedFields" ToolTip="Parsed Fields"
+                    <Button Click="OnShowParsedFields" ToolTip="{StaticResource App_Toolbar_ParsedFields}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xEBD2;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
@@ -1350,7 +1350,7 @@
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
 
                     <!-- Properties -->
-                    <Button Click="OnShowProperties" ToolTip="Properties (F4)"
+                    <Button Click="OnShowProperties" ToolTip="{StaticResource App_Toolbar_Properties}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
@@ -1359,7 +1359,7 @@
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
 
                     <!-- Output -->
-                    <Button Click="OnShowOutput" ToolTip="Output"
+                    <Button Click="OnShowOutput" ToolTip="{StaticResource App_Toolbar_Output}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE9A8;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
@@ -1552,12 +1552,12 @@
                     <TextBlock Text="&#xE8C1;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                VerticalAlignment="Center" Margin="4,0,4,0"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
-                               ToolTip="Character Table"/>
+                               ToolTip="{StaticResource App_Toolbar_CharacterTable}"/>
                     <!-- TBL ComboBox -->
                     <ComboBox Width="180" VerticalAlignment="Center"
                               ItemsSource="{Binding TblItems, ElementName=ThisWindow}"
                               SelectedItem="{Binding SelectedTblItem, ElementName=ThisWindow, Mode=TwoWay}"
-                              ToolTip="Active character table"
+                              ToolTip="{StaticResource App_Toolbar_ActiveCharTable}"
                               Background="Transparent"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
                               IsTextSearchEnabled="False">
@@ -1627,7 +1627,7 @@
                     <!-- Configuration ComboBox -->
                     <ComboBox x:Name="CbBuildConfig"
                               Width="100" Margin="2,0" VerticalAlignment="Center"
-                              ToolTip="Build Configuration"
+                              ToolTip="{StaticResource App_Toolbar_BuildConfig}"
                               ItemsSource="{Binding BuildConfigurations, ElementName=ThisWindow}"
                               SelectedItem="{Binding ActiveBuildConfiguration, ElementName=ThisWindow, Mode=TwoWay}"
                               Background="Transparent"
@@ -1635,7 +1635,7 @@
                     <!-- Platform ComboBox -->
                     <ComboBox x:Name="CbBuildPlatform"
                               Width="80" Margin="2,0" VerticalAlignment="Center"
-                              ToolTip="Target Platform"
+                              ToolTip="{StaticResource App_Toolbar_TargetPlatform}"
                               ItemsSource="{Binding BuildPlatforms, ElementName=ThisWindow}"
                               SelectedItem="{Binding ActiveBuildPlatform, ElementName=ThisWindow, Mode=TwoWay}"
                               Background="Transparent"
@@ -1643,7 +1643,7 @@
                     <!-- Startup project selector -->
                     <ComboBox x:Name="CbStartupProject"
                               Width="160" Margin="2,0" VerticalAlignment="Center"
-                              ToolTip="Startup Project — launched by ▶ Start (Ctrl+F5)"
+                              ToolTip="{StaticResource App_Toolbar_StartupProject}"
                               ItemsSource="{Binding StartupProjectNames, ElementName=ThisWindow}"
                               SelectedItem="{Binding ActiveStartupProjectName, ElementName=ThisWindow, Mode=TwoWay}"
                               IsEnabled="{Binding HasSolution, ElementName=ThisWindow}"
@@ -1696,64 +1696,52 @@
                     <!-- Start (Run startup project without debugger — Ctrl+F5) -->
                     <Button x:Name="BtnRunStartup"
                             Click="OnRunStartupProject"
-                            ToolTip="Start Without Debugging (Ctrl+F5)"
+                            ToolTip="{StaticResource App_Toolbar_StartNoDebug}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding CanRunStartupProject, ElementName=ThisWindow}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="#3CB371"
                                        VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="Start" VerticalAlignment="Center" FontSize="11"/>
+                            <TextBlock Text="{StaticResource APP_BuildStart}" VerticalAlignment="Center" FontSize="11"/>
                         </StackPanel>
                     </Button>
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
                     <!-- Build -->
                     <Button x:Name="BtnBuild"
                             Click="OnBuildSolution"
-                            ToolTip="Build Solution (Ctrl+Shift+B)"
+                            ToolTip="{StaticResource App_Toolbar_BuildSolution}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding IsBuildMenuEnabled, ElementName=ThisWindow}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                       VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="Build" VerticalAlignment="Center" FontSize="11"/>
-                        </StackPanel>
+                        <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   VerticalAlignment="Center"/>
                     </Button>
                     <!-- Rebuild -->
                     <Button x:Name="BtnRebuild"
                             Click="OnRebuildSolution"
-                            ToolTip="Rebuild Solution"
+                            ToolTip="{StaticResource App_Toolbar_RebuildSolution}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding IsBuildMenuEnabled, ElementName=ThisWindow}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                       VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="Rebuild" VerticalAlignment="Center" FontSize="11"/>
-                        </StackPanel>
+                        <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   VerticalAlignment="Center"/>
                     </Button>
                     <!-- Clean -->
                     <Button x:Name="BtnClean"
                             Click="OnCleanSolution"
-                            ToolTip="Clean Solution"
+                            ToolTip="{StaticResource App_Toolbar_CleanSolution}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding IsBuildMenuEnabled, ElementName=ThisWindow}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                       VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="Clean" VerticalAlignment="Center" FontSize="11"/>
-                        </StackPanel>
+                        <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   VerticalAlignment="Center"/>
                     </Button>
                     <!-- Cancel -->
                     <Button x:Name="BtnStopBuild"
                             Click="OnCancelBuild"
-                            ToolTip="Cancel Build"
+                            ToolTip="{StaticResource App_Toolbar_CancelBuild}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding HasActiveBuild, ElementName=ThisWindow}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                       VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="Stop" VerticalAlignment="Center" FontSize="11"/>
-                        </StackPanel>
+                        <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   VerticalAlignment="Center"/>
                     </Button>
                 </StackPanel>
             </Border>
@@ -1766,14 +1754,14 @@
                     <!-- Continue / Pause -->
                     <Button x:Name="BtnDbgContinue"
                             Click="OnDebugContinue"
-                            ToolTip="Continue (F5)"
+                            ToolTip="{StaticResource App_Toolbar_Continue}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="15"
                                    Foreground="#3CB371" VerticalAlignment="Center"/>
                     </Button>
                     <Button x:Name="BtnDbgPause"
                             Click="OnDebugPause"
-                            ToolTip="Pause"
+                            ToolTip="{StaticResource App_Toolbar_Pause}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets" FontSize="15"
                                    VerticalAlignment="Center"/>
@@ -1781,7 +1769,7 @@
                     <!-- Stop -->
                     <Button x:Name="BtnDbgStop"
                             Click="OnDebugStop"
-                            ToolTip="Stop Debugging (Shift+F5)"
+                            ToolTip="{StaticResource App_Toolbar_StopDebugging}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    Foreground="#E06060" VerticalAlignment="Center"/>
@@ -1790,21 +1778,21 @@
                     <!-- Step Over / Into / Out -->
                     <Button x:Name="BtnDbgStepOver"
                             Click="OnDebugStepOver"
-                            ToolTip="Step Over (F10)"
+                            ToolTip="{StaticResource App_Toolbar_StepOver}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE7EE;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
                     <Button x:Name="BtnDbgStepInto"
                             Click="OnDebugStepInto"
-                            ToolTip="Step Into (F11)"
+                            ToolTip="{StaticResource App_Toolbar_StepInto}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
                     <Button x:Name="BtnDbgStepOut"
                             Click="OnDebugStepOut"
-                            ToolTip="Step Out (Shift+F11)"
+                            ToolTip="{StaticResource App_Toolbar_StepOut}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE70E;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
@@ -1842,17 +1830,17 @@
                                Text="" Foreground="White" FontSize="12"
                                VerticalAlignment="Center" TextWrapping="NoWrap"/>
                     <Button x:Name="PluginInfoBarDisable" Grid.Column="2"
-                            Content="Disable" Margin="8,0,4,0"
+                            Content="{StaticResource App_InfoBar_Disable}" Margin="8,0,4,0"
                             Click="OnPluginInfoBarDisable"
                             Style="{StaticResource InfoBarButtonStyle}"
                             Visibility="Collapsed"/>
                     <Button x:Name="PluginInfoBarRestart" Grid.Column="3"
-                            Content="Restart" Margin="4,0"
+                            Content="{StaticResource App_InfoBar_Restart}" Margin="4,0"
                             Click="OnPluginInfoBarRestart"
                             Style="{StaticResource InfoBarButtonStyle}"
                             Visibility="Collapsed"/>
                     <Button x:Name="PluginInfoBarIgnore" Grid.Column="4"
-                            Content="Ignore" Margin="4,0"
+                            Content="{StaticResource App_InfoBar_Ignore}" Margin="4,0"
                             Click="OnPluginInfoBarIgnore"
                             Style="{StaticResource InfoBarButtonStyle}"
                             Visibility="Collapsed"/>
@@ -1862,7 +1850,7 @@
                             Click="OnPluginInfoBarClose"
                             Style="{StaticResource InfoBarButtonStyle}"
                             BorderBrush="Transparent"
-                            ToolTip="Dismiss"/>
+                            ToolTip="{StaticResource App_Toolbar_Dismiss}"/>
                 </Grid>
             </Border>
 
@@ -1887,11 +1875,11 @@
                                Text="" Foreground="White" FontSize="12"
                                VerticalAlignment="Center" TextWrapping="NoWrap"/>
                     <Button x:Name="FileChangeInfoBarReload" Grid.Column="2"
-                            Content="Reload" Margin="8,0,4,0"
+                            Content="{StaticResource App_InfoBar_Reload}" Margin="8,0,4,0"
                             Click="OnFileChangeInfoBarReload"
                             Style="{StaticResource InfoBarButtonStyle}"/>
                     <Button x:Name="FileChangeInfoBarKeep" Grid.Column="3"
-                            Content="Keep my edits" Margin="4,0"
+                            Content="{StaticResource App_InfoBar_KeepEdits}" Margin="4,0"
                             Click="OnFileChangeInfoBarKeep"
                             Style="{StaticResource InfoBarButtonStyle}"
                             Visibility="Collapsed"/>
@@ -1901,7 +1889,7 @@
                             Click="OnFileChangeInfoBarClose"
                             Style="{StaticResource InfoBarButtonStyle}"
                             BorderBrush="Transparent"
-                            ToolTip="Dismiss"/>
+                            ToolTip="{StaticResource App_Toolbar_Dismiss}"/>
                 </Grid>
             </Border>
 
@@ -1979,7 +1967,7 @@
                                VerticalAlignment="Center"/>
                     <Button x:Name="ProgressCancelButton"
                             Content="✕"
-                            ToolTip="Cancel operation"
+                            ToolTip="{StaticResource App_Toolbar_CancelOperation}"
                             Click="OnProgressCancel"
                             Visibility="Collapsed"
                             Padding="6,1"
@@ -2012,7 +2000,7 @@
                 <Button x:Name="GitBranchButton"
                         Background="Transparent" BorderThickness="0" Padding="0"
                         Cursor="Hand" Click="OnGitBranchButtonClick"
-                        ToolTip="Click to switch branch">
+                        ToolTip="{StaticResource App_Toolbar_SwitchBranch}">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="&#xE7C1;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    Foreground="{DynamicResource DockTabActiveTextBrush}"
@@ -2023,7 +2011,7 @@
                         <TextBlock x:Name="GitDirtyDot" Text="●" FontSize="9"
                                    Foreground="#E8A838" VerticalAlignment="Center"
                                    Margin="0,0,6,0" Visibility="Collapsed"
-                                   ToolTip="Uncommitted changes"/>
+                                   ToolTip="{StaticResource App_Toolbar_UncommittedChanges}"/>
                     </StackPanel>
                 </Button>
             </StatusBarItem>
@@ -2110,7 +2098,7 @@
                         CornerRadius="3"
                         Padding="6,1"
                         Cursor="Hand"
-                        ToolTip="Plugin updates available — click to open Marketplace"
+                        ToolTip="{StaticResource App_Toolbar_PluginUpdates}"
                         MouseLeftButtonDown="OnMarketplaceBadgeClick">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="10"

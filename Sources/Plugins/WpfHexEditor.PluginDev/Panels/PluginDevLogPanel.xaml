@@ -15,9 +15,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WpfHexEditor.PluginDev.Panels"
              Background="{DynamicResource DockMenuBackgroundBrush}"
-             Foreground="{DynamicResource DockMenuForegroundBrush}">
+             Foreground="{DynamicResource DockMenuForegroundBrush}"
+             xmlns:pdSvc="clr-namespace:WpfHexEditor.PluginDev.Services">
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <pdSvc:PluginDevLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <!-- Level badge converter -->
         <local:LogLevelToBrushConverter x:Key="LevelBrushConverter"/>
 
@@ -51,7 +57,8 @@
             <Setter Property="Padding"      Value="6,2"/>
             <Setter Property="Cursor"       Value="Hand"/>
         </Style>
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <DockPanel>
 
@@ -66,8 +73,7 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
 
                 <!-- Clear -->
-                <Button x:Name="BtnClear" Style="{StaticResource TbBtnStyle}"
-                        ToolTip="Clear log"
+                <Button x:Name="BtnClear" Style="{StaticResource TbBtnStyle}" ToolTip="{DynamicResource PluginDev_ClearLog}"
                         Click="OnClear">
                     <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </Button>
@@ -76,14 +82,14 @@
 
                 <!-- Level filter toggles -->
                 <ToggleButton x:Name="TbgDebug" Style="{StaticResource TbToggleStyle}"
-                              IsChecked="{Binding ShowDebug}" Content="Debug" FontSize="10"/>
+                              IsChecked="{Binding ShowDebug}" Content="{DynamicResource PluginDev_LogDebug}" FontSize="10"/>
                 <ToggleButton x:Name="TbgInfo" Style="{StaticResource TbToggleStyle}"
-                              IsChecked="{Binding ShowInfo}" Content="Info" FontSize="10"/>
+                              IsChecked="{Binding ShowInfo}" Content="{DynamicResource PluginDev_LogInfo}" FontSize="10"/>
                 <ToggleButton x:Name="TbgWarning" Style="{StaticResource TbToggleStyle}"
-                              IsChecked="{Binding ShowWarning}" Content="Warn" FontSize="10"
+                              IsChecked="{Binding ShowWarning}" Content="{DynamicResource PluginDev_LogInfo}" FontSize="10"
                               Foreground="#DCDCAA"/>
                 <ToggleButton x:Name="TbgError" Style="{StaticResource TbToggleStyle}"
-                              IsChecked="{Binding ShowError}" Content="Error" FontSize="10"
+                              IsChecked="{Binding ShowError}" Content="{DynamicResource PluginDev_LogError}" FontSize="10"
                               Foreground="#F48771"/>
 
                 <Separator Width="1" Background="{DynamicResource DockBorderBrush}" Margin="4,4"/>
@@ -95,14 +101,13 @@
                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                          BorderBrush="{DynamicResource DockBorderBrush}"
                          Text="{Binding FilterSource, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="Filter by source"
+                         ToolTip="{DynamicResource PluginDev_FilterBySource}"
                          VerticalContentAlignment="Center" Padding="4,0"/>
 
                 <Separator Width="1" Background="{DynamicResource DockBorderBrush}" Margin="4,4"/>
 
                 <!-- Export -->
-                <Button x:Name="BtnExport" Style="{StaticResource TbBtnStyle}"
-                        ToolTip="Export log to file"
+                <Button x:Name="BtnExport" Style="{StaticResource TbBtnStyle}" ToolTip="{DynamicResource PluginDev_ExportLog}"
                         Click="OnExport">
                     <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </Button>
@@ -110,7 +115,7 @@
                 <!-- Auto-scroll toggle -->
                 <ToggleButton x:Name="TbgAutoScroll" Style="{StaticResource TbToggleStyle}"
                               IsChecked="{Binding AutoScroll}"
-                              ToolTip="Auto-scroll to latest entry"
+                              ToolTip="{DynamicResource PluginDev_AutoScroll}"
                               Margin="4,0,0,0">
                     <TextBlock Text="&#xE74C;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </ToggleButton>
@@ -135,9 +140,9 @@
 
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Time"    Width="80"
+                    <GridViewColumn Header="{DynamicResource PluginDev_ColTime}"    Width="80"
                                     DisplayMemberBinding="{Binding Timestamp, StringFormat=HH:mm:ss.fff}"/>
-                    <GridViewColumn Header="Level"   Width="60">
+                    <GridViewColumn Header="{DynamicResource PluginDev_ColLevel}"   Width="60">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Level}"
@@ -146,9 +151,9 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Source"  Width="100"
+                    <GridViewColumn Header="{DynamicResource PluginDev_ColSource}"  Width="100"
                                     DisplayMemberBinding="{Binding Source}"/>
-                    <GridViewColumn Header="Message" Width="600"
+                    <GridViewColumn Header="{DynamicResource PluginDev_ColMessage}" Width="600"
                                     DisplayMemberBinding="{Binding Message}"/>
                 </GridView>
             </ListView.View>

@@ -11,6 +11,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Options;
@@ -117,9 +118,9 @@ public sealed class ViewMenuOptionsPage : UserControl, IOptionsPage
         });
 
         _sortOrder = new ComboBox { Width = 160, VerticalAlignment = VerticalAlignment.Center };
-        _sortOrder.Items.Add("Alphabetical");
-        _sortOrder.Items.Add("By Frequency");
-        _sortOrder.Items.Add("Custom");
+        _sortOrder.Items.Add(AppResources.App_ViewMenu_SortAlphabetical);
+        _sortOrder.Items.Add(AppResources.App_ViewMenu_SortByFrequency);
+        _sortOrder.Items.Add(AppResources.App_ViewMenu_SortCustom);
         _sortOrder.SelectionChanged += (_, _) => Changed?.Invoke(this, EventArgs.Empty);
         sortPanel.Children.Add(_sortOrder);
 

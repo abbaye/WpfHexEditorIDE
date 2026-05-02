@@ -35,6 +35,7 @@ using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Events;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Plugins.ParsedFields.Properties;
 
 namespace WpfHexEditor.Plugins.ParsedFields;
 
@@ -46,7 +47,7 @@ namespace WpfHexEditor.Plugins.ParsedFields;
 public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
 {
     public string  Id      => "WpfHexEditor.Plugins.ParsedFields";
-    public string  Name    => "Parsed Fields";
+    public string  Name    => ParsedFieldsResources.ParsedFields_PluginName;
     public Version Version => new(0, 7, 1);
 
     public PluginCapabilities Capabilities => new()
@@ -94,7 +95,7 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         // Register the panel (Right dock).
         context.UIRegistry.RegisterPanel(PanelUiId, _panel, Id, new PanelDescriptor
         {
-            Title           = "Parsed Fields",
+            Title           = ParsedFieldsResources.ParsedFields_PluginName,
             DefaultDockSide = "Right",
             DefaultAutoHide = false,
             CanClose        = true,
@@ -104,7 +105,7 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         // Register View menu item.
         context.UIRegistry.RegisterMenuItem($"{Id}.Menu.Show", Id, new MenuItemDescriptor
         {
-            Header     = "_Parsed Fields",
+            Header     = $"_{ParsedFieldsResources.ParsedFields_PluginName}",
             ParentPath = "View",
             Group      = "Analysis",
             IconGlyph  = "\uE81E",

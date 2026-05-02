@@ -14,6 +14,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Editor.StructureEditor.Dialogs;
+using WpfHexEditor.Editor.StructureEditor.Properties;
 using WpfHexEditor.Editor.StructureEditor.ViewModels;
 
 namespace WpfHexEditor.Editor.StructureEditor.Tabs;
@@ -219,7 +220,7 @@ public sealed partial class BlocksTab : UserControl
 
         var applyBtn = new Button
         {
-            Content = "Apply",
+            Content = StructureEditorResources.StructureEditor_RawJsonApply,
             Width   = 80,
             Margin  = new Thickness(0, 0, 8, 0),
             Padding = new Thickness(6, 3, 6, 3),
@@ -228,7 +229,7 @@ public sealed partial class BlocksTab : UserControl
 
         var cancelBtn = new Button
         {
-            Content = "Cancel",
+            Content = StructureEditorResources.StructureEditor_RawJsonCancel,
             Width   = 80,
             Padding = new Thickness(6, 3, 6, 3),
         };
@@ -253,7 +254,7 @@ public sealed partial class BlocksTab : UserControl
 
         var win = new Window
         {
-            Title                 = $"Raw JSON — {vm.Name}",
+            Title                 = string.Format(StructureEditorResources.StructureEditor_RawJsonTitle, vm.Name),
             Width                 = 600,
             Height                = 480,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,

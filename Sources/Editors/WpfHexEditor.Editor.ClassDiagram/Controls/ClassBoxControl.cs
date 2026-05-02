@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Editor.ClassDiagram.Properties;
 
 namespace WpfHexEditor.Editor.ClassDiagram.Controls;
 
@@ -451,7 +452,7 @@ public sealed class ClassBoxControl : FrameworkElement
         menu.Items.Add(new Separator());
 
         // Add member submenu
-        var addMenu = new MenuItem { Header = "Add Member" };
+        var addMenu = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_AddMember };
         addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, (Node!, MemberKind.Field))));
         addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, (Node!, MemberKind.Property))));
         addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, (Node!, MemberKind.Method))));

@@ -16,6 +16,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Options;
@@ -58,7 +59,7 @@ public sealed class DebuggerOptionsPage : UserControl, IOptionsPage
 
         var browseButton = new Button
         {
-            Content = "Browse…",
+            Content = AppResources.App_Options_Browse,
             Padding = new Thickness(8, 2, 8, 2),
         };
         browseButton.Click += OnBrowseAdapter;
@@ -83,7 +84,7 @@ public sealed class DebuggerOptionsPage : UserControl, IOptionsPage
         // ── Launch defaults ───────────────────────────────────────────────────
         _stopAtEntryCheck = new CheckBox
         {
-            Content = "Stop at program entry point (Main)",
+            Content = AppResources.App_Options_StopAtEntry,
             Margin = new Thickness(0, 4, 0, 4),
         };
         _stopAtEntryCheck.Checked   += OnChanged;
@@ -91,7 +92,7 @@ public sealed class DebuggerOptionsPage : UserControl, IOptionsPage
 
         _showReturnValuesCheck = new CheckBox
         {
-            Content = "Show return values in Locals after each step",
+            Content = AppResources.App_Options_ShowReturnValues,
             Margin = new Thickness(0, 4, 0, 4),
         };
         _showReturnValuesCheck.Checked   += OnChanged;
@@ -120,7 +121,7 @@ public sealed class DebuggerOptionsPage : UserControl, IOptionsPage
         // ── Editor Integration ──────────────────────────────────────────────
         _bpLineHighlightCheck = new CheckBox
         {
-            Content = "Highlight breakpoint lines in editor (red/orange/gray tint)",
+            Content = AppResources.App_Options_HighlightBreakpoints,
             Margin = new Thickness(0, 4, 0, 4),
         };
         _bpLineHighlightCheck.Checked   += OnChanged;
@@ -132,7 +133,7 @@ public sealed class DebuggerOptionsPage : UserControl, IOptionsPage
         // ── VS Breakpoint Interop ─────────────────────────────────────────────
         _autoImportVsCheck = new CheckBox
         {
-            Content = "Auto-import VS breakpoints on first solution open",
+            Content = AppResources.App_Options_AutoImportBreakpoints,
             Margin  = new Thickness(0, 4, 0, 4),
         };
         _autoImportVsCheck.Checked   += OnChanged;
@@ -140,7 +141,7 @@ public sealed class DebuggerOptionsPage : UserControl, IOptionsPage
 
         _autoExportVsCheck = new CheckBox
         {
-            Content = "Auto-export breakpoints to VS XML on save",
+            Content = AppResources.App_Options_AutoExportBreakpoints,
             Margin  = new Thickness(0, 4, 0, 4),
         };
         _autoExportVsCheck.Checked   += OnChanged;
@@ -241,7 +242,7 @@ public sealed class DebuggerOptionsPage : UserControl, IOptionsPage
     {
         var dlg = new OpenFileDialog
         {
-            Title  = "Select debug adapter executable",
+            Title  = AppResources.App_Options_SelectDebugAdapter,
             Filter = "Executable files (*.exe)|*.exe|All files (*.*)|*.*",
         };
 

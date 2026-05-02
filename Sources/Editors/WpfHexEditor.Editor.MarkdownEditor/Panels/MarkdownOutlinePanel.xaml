@@ -7,10 +7,15 @@
 <UserControl x:Class="WpfHexEditor.Editor.MarkdownEditor.Panels.MarkdownOutlinePanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mdSvc="clr-namespace:WpfHexEditor.Editor.MarkdownEditor.Services"
              Background="{DynamicResource SE_BackgroundBrush}"
              Foreground="{DynamicResource SE_ForegroundBrush}">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mdSvc:MarkdownEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <!-- Icon button style (26px toolbar) -->
         <Style x:Key="MDO_IconButton" TargetType="Button">
             <Setter Property="Background"      Value="Transparent"/>
@@ -86,6 +91,7 @@
                 </Border.Triggers>
             </Border>
         </DataTemplate>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
@@ -101,7 +107,7 @@
                 BorderBrush="{DynamicResource SE_SeparatorBrush}"
                 Background="{DynamicResource SE_ToolbarBrush}">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
-                <TextBlock Text="Markdown Outline"
+                <TextBlock Text="{DynamicResource Md_OutlineTitle}"
                            FontWeight="SemiBold"
                            FontSize="11"
                            VerticalAlignment="Center"
@@ -109,7 +115,7 @@
                            Foreground="{DynamicResource SE_ForegroundBrush}"/>
                 <Button x:Name="RefreshButton"
                         Style="{StaticResource MDO_IconButton}"
-                        ToolTip="Refresh outline (F5)"
+                        ToolTip="{DynamicResource MdOut_RefreshTooltip}"
                         Click="OnRefreshClick">
                     <TextBlock Text="&#xE72C;"
                                FontFamily="Segoe MDL2 Assets"
@@ -121,7 +127,7 @@
         <!-- ── Empty-state overlay ──────────────────────────────────────── -->
         <Grid Grid.Row="1">
             <TextBlock x:Name="EmptyLabel"
-                       Text="No Markdown file active."
+                       Text="{DynamicResource MdOut_NoActiveFile}"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        FontSize="11"

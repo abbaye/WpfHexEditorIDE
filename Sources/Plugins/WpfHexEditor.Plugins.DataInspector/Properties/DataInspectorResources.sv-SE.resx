@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>Datainspektör</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>Dataanalys</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>Datainspektör</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>_Datainspektör</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>Inga data att visa</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Totalt</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Max</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Entropi</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>Bitar/byte</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>Byte</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>Inga byte valda — välj byte i hex-redigeraren.</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>Aktiv vy</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>Hela filen</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>Markering</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>Frekvens</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>Entropi</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>Inga data</value>
+  </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Kategori:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>Alla</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Heltal</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>Flyttal</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Datum/Tid</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Nätverk</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Färg</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>Grundläggande</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>Bitar</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>Alla format</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>Fler alternativ</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Visa axeletiketter</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Visa rutnätslinjer</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Visa statistik</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Frekvensfördelning</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Entropi (glidande fönster)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Zooma in</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Zooma ut</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Återställ zoom</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Uppdatera diagram</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Kopiera diagrambild</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Layout</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Vänster</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Höger</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Topp</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Botten</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Omfång:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Aktiv vy</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Markering</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>Hela filen</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Frekvens</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Layout:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Diagramposition relativt tolkningslistan</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Analyserar fil...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Tolkningar: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>Inga data</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Automatisk uppdatering vid markeringsändring</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Standard byteordning: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Visa bytediagrampanel</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Diagramposition:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Max förhandsgranskningsbytes för sträng:</value></data>
+</root>

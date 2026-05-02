@@ -11,9 +11,9 @@
 
     <!-- NuGet metadata -->
     <PackageId>WpfHexEditor.Core.ByteProvider</PackageId>
-    <Version>1.0.1</Version>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1</FileVersion>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0</FileVersion>
     <Authors>Derek Tremblay;Claude Sonnet 4.6</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfHexEditor.Core.ByteProvider</Product>
@@ -42,13 +42,22 @@
 
     <!-- Packaging -->
     <PackageOutputPath>$(MSBuildThisFileDirectory)..\..\..\artifacts\nuget</PackageOutputPath>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>1.0.1 — README corrections: OpenFile/GetBytes/SearchText/SearchHex examples, batch undo transaction example, changeset iteration example.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.1.0 — IUndoAwareEditor contract + HexByteUndoEntry for shared undo engine across HexEditor/CodeEditor; DocumentBuffer undo wiring; regression test suite added (ByteProvider, UndoRedo, Search, Edits, Changeset).</PackageReleaseNotes>
+
+    <!-- SourceLink: enables step-through debugging for NuGet consumers -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.*" PrivateAssets="All" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="\" />

@@ -28,6 +28,7 @@ using WpfHexEditor.Plugins.FileComparison.Commands;
 using WpfHexEditor.Plugins.FileComparison.Views;
 using WpfHexEditor.Plugins.FileComparison.Services;
 using WpfHexEditor.Plugins.FileComparison.ViewModels;
+using WpfHexEditor.Plugins.FileComparison.Properties;
 
 namespace WpfHexEditor.Plugins.FileComparison;
 
@@ -80,7 +81,7 @@ public sealed class FileComparisonPlugin : IWpfHexEditorPlugin
                     Id,
                     new DocumentDescriptor
                     {
-                        Title    = "Diff Hub",
+                        Title    = FileComparisonResources.FileComparison_PanelTitle,
                         CanClose = true
                     });
                 _diffHubDocumentOpen = true;

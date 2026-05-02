@@ -9,7 +9,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ev="clr-namespace:WpfHexEditor.Editor.EntropyViewer.Controls"
              Background="{DynamicResource TE_Background}"
-             Focusable="True">
+             Focusable="True"
+             xmlns:evSvc="clr-namespace:WpfHexEditor.Editor.EntropyViewer.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <evSvc:EntropyViewerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -20,23 +28,23 @@
 
         <!-- Toolbar -->
         <ToolBar Grid.Row="0" Background="{DynamicResource TE_LineNumberBackground}">
-            <TextBlock Text="Window:" VerticalAlignment="Center" Padding="4,0"
+            <TextBlock Text="{DynamicResource EntropyViewer_WindowLabel}" VerticalAlignment="Center" Padding="4,0"
                        Foreground="{DynamicResource TE_LineNumberForeground}"/>
             <ComboBox x:Name="WindowSizeCombo" Width="80"
                       SelectionChanged="OnWindowSizeChanged">
-                <ComboBoxItem Content="256 B"   Tag="256"  />
-                <ComboBoxItem Content="512 B"   Tag="512"  />
-                <ComboBoxItem Content="1 KB"    Tag="1024" IsSelected="True"/>
-                <ComboBoxItem Content="4 KB"    Tag="4096" />
-                <ComboBoxItem Content="16 KB"   Tag="16384"/>
+                <ComboBoxItem Content="{DynamicResource EntropyViewer_256B}"   Tag="256"  />
+                <ComboBoxItem Content="{DynamicResource EntropyViewer_512B}"   Tag="512"  />
+                <ComboBoxItem Content="{DynamicResource EntropyViewer_1KB}"    Tag="1024" IsSelected="True"/>
+                <ComboBoxItem Content="{DynamicResource EntropyViewer_4KB}"    Tag="4096" />
+                <ComboBoxItem Content="{DynamicResource EntropyViewer_16KB}"   Tag="16384"/>
             </ComboBox>
             <Separator/>
-            <CheckBox x:Name="ShowRegionsCheck" Content="Regions"
+            <CheckBox x:Name="ShowRegionsCheck" Content="{DynamicResource EntropyViewer_Regions}"
                       IsChecked="True"
                       VerticalAlignment="Center" Margin="2,0"
                       Foreground="{DynamicResource TE_LineNumberForeground}"
                       Checked="OnShowRegionsChanged" Unchecked="OnShowRegionsChanged"/>
-            <CheckBox x:Name="ShowThresholdCheck" Content="Threshold"
+            <CheckBox x:Name="ShowThresholdCheck" Content="{DynamicResource EntropyViewer_Threshold}"
                       IsChecked="True"
                       VerticalAlignment="Center" Margin="2,0"
                       Foreground="{DynamicResource TE_LineNumberForeground}"
@@ -53,7 +61,7 @@
                       Background="{DynamicResource TE_Background}">
             <StackPanel>
                 <!-- Entropy chart header -->
-                <TextBlock Text="Entropy by region  (green = structured · red = compressed/encrypted)"
+                <TextBlock Text="{DynamicResource EntropyViewer_RegionChart}"
                            Margin="8,8,8,2"
                            Foreground="{DynamicResource TE_LineNumberForeground}"
                            FontSize="11"/>
@@ -66,7 +74,7 @@
                 </Border>
 
                 <!-- Byte distribution header -->
-                <TextBlock Text="Byte distribution (0x00–0xFF)" Margin="8,10,8,2"
+                <TextBlock Text="{DynamicResource EntropyViewer_ByteDist}" Margin="8,10,8,2"
                            Foreground="{DynamicResource TE_LineNumberForeground}"
                            FontSize="11"/>
                 <Border Margin="8,0,8,0" BorderThickness="1"

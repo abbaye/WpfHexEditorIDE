@@ -7,8 +7,6 @@ Drop it into any WPF window — no IDE, no plugin host, no external dependencies
 dotnet add package WPFHexaEditor
 ```
 
-> **Full documentation**: [WPFHexaEditor-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Editors/WpfHexEditor.HexEditor/WPFHexaEditor-guide.md) — Architecture, API reference, integration guides (Level 1–4), format detection pipeline, and settings reference.
-
 ---
 
 ## Quick Start
@@ -96,7 +94,7 @@ Context menus use opaque backgrounds by default. No extra theming is needed.
 - Fill selection with value
 
 ### Format Detection
-- 600+ built-in format definitions (.whfmt) — auto-detection on open
+- 790+ built-in format definitions (.whfmt) — auto-detection on open
 - Format field overlay — semi-transparent colored blocks over detected structures
 - Syntax coloring driven by format rules
 - Shannon entropy, byte distribution, anomaly detection
@@ -124,14 +122,22 @@ Context menus use opaque backgrounds by default. No extra theming is needed.
 
 ---
 
-## What's New in 3.1.4
+## What's New in 3.2.0
 
-- **Feat**: 155+ new `.whfmt` format definitions — total exceeds 790 definitions (schema v2.4).
-- **Feat**: `.whfmt` schema v2.4 — `formatId`, `SyntaxDefinition` promoted to first-class property, new block types (`group`, `header`, `data`), `until`/`maxLength` sentinel scanning, `imports` array for cross-format struct references.
-- **Feat**: 57 language grammars with `syntaxDefinition` blocks (up from 35).
-- **Feat**: `LSP IsFullyLoaded` lifecycle gate — suppresses init-time diagnostic noise before the language server workspace is ready.
-- **Fix**: Format detection — `HexEditor.FileOperations` now correctly triggers format detection even when no background blocks are produced by the active `.whfmt`.
-- **Fix**: ParsedFields sync — `HexEditor.ParsedFieldsIntegration` reliably re-syncs the parsed-fields panel when the active document changes.
+- **New**: Go to position dialog — jump directly to any byte offset via `Ctrl+G`.
+- **New**: Unified `UndoEngine` — `Ctrl+Z`/`Ctrl+Y` history now uses a shared undo engine; undo groups and coalescence work consistently across sessions.
+- **Fix**: Drag-selection auto-scroll — window-level mouse capture ensures scrolling continues when the cursor leaves the control boundary.
+- **Fix**: Column highlight defaults — `ShowColumnHighlight` and `ShowAsciiColumnHighlight` now default to `false` to reduce visual noise out-of-the-box.
+- **Fix**: `HexBreadcrumbBar` freeze — Render-priority dispatcher guard prevents mouse re-dispatch loop during visual tree rebuild on rapid navigation.
+- **Fix**: `HexBreadcrumbBar` double rebuild — phantom empty row caused by XAML/code-behind duplication resolved; bookmark chip re-render only fires on actual bookmark set changes.
+- **Perf**: `ByteProvider` extracted to `WpfHexEditor.Core.ByteProvider` standalone library.
+
+## What's New in 3.1.3
+
+- **Feat**: 155+ new `.whfmt` format definitions added (Groups C–J) — total now exceeds 600 definitions.
+- **Feat**: `FormatSchemaValidator` wired — `.whfmt` files are now validated against schema v2.3 at load time; violations are reported via `FormatLoadFailure`.
+- **Feat**: `.whfmt` schema bumped to v2.3 — `references` and `detection` fields unified across all categories.
+- **Fix**: Stream operations — contributor enhancements to stream-backed byte provider edge cases.
 - **Fix**: `ForensicPattern` tolerant converter — invalid pattern values no longer throw; fallback to `null` with log entry.
 - **New**: `InputFilter` control — reusable filter-bar `UserControl` for hex/byte input.
 - **New**: `HexStringToColorConverter` — XAML binding converter for hex color strings.
@@ -185,7 +191,7 @@ All bundled inside the package — zero external NuGet dependencies:
 | WpfHexEditor.HexEditor | `HexEditor` UserControl — main entry point |
 | WpfHexEditor.Core | Byte providers, format detection, search, undo/redo |
 | WpfHexEditor.Core.BinaryAnalysis | Cross-platform binary analysis (no WPF dependency) |
-| WpfHexEditor.Core.Definitions | 600+ embedded format definitions (.whfmt) |
+| WpfHexEditor.Core.Definitions | 790+ embedded format definitions (.whfmt) |
 | WpfHexEditor.Editor.Core | Shared editor abstractions |
 | WpfHexEditor.ColorPicker | Color picker control (settings panel) |
 | WpfHexEditor.HexBox | Hex display rendering control |
@@ -201,5 +207,6 @@ GNU Affero General Public License v3.0 (AGPL-3.0)
 
 ## Links
 
+- **Full documentation**: [WPFHexaEditor-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Editors/WpfHexEditor.HexEditor/WPFHexaEditor-guide.md) — Architecture, API reference, integration guides (Level 1–4), format detection, search, export, and settings reference.
 - [GitHub Repository](https://github.com/abbaye/WpfHexEditorIDE)
 - [Report Issues](https://github.com/abbaye/WpfHexEditorIDE/issues)

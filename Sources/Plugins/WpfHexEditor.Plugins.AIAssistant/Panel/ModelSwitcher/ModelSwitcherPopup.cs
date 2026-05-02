@@ -16,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using WpfHexEditor.Plugins.AIAssistant.Api;
+using WpfHexEditor.Plugins.AIAssistant.Properties;
 using WpfTextBlock = System.Windows.Controls.TextBlock;
 
 namespace WpfHexEditor.Plugins.AIAssistant.Panel.ModelSwitcher;
@@ -148,7 +149,7 @@ public sealed class ModelSwitcherPopup : Popup
 
         var thinkingCheck = new CheckBox
         {
-            Content = "Enable Thinking (Anthropic only)",
+            Content = AIAssistantResources.AIAssistant_EnableThinking,
             IsChecked = thinkingEnabled,
             FontSize = 11.5,
             Margin = new Thickness(4, 0, 0, 4)

@@ -17,6 +17,7 @@
 
 using System.Windows;
 using WpfHexEditor.Plugins.ArchiveExplorer.Options;
+using WpfHexEditor.Plugins.ArchiveExplorer.Properties;
 using WpfHexEditor.Plugins.ArchiveExplorer.Services;
 using WpfHexEditor.Plugins.ArchiveExplorer.Views;
 using WpfHexEditor.SDK.Commands;
@@ -35,7 +36,7 @@ public sealed class ArchiveExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpti
     // ── Identity ──────────────────────────────────────────────────────────────
 
     public string  Id      => "WpfHexEditor.Plugins.ArchiveExplorer";
-    public string  Name    => "Archive Explorer";
+    public string  Name    => ArchiveExplorerResources.ArchiveExplorer_PluginName;
     public Version Version => new(1, 0, 0);
 
     public PluginCapabilities Capabilities => new()
@@ -75,7 +76,7 @@ public sealed class ArchiveExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpti
             Id,
             new PanelDescriptor
             {
-                Title           = "Archive Explorer",
+                Title           = ArchiveExplorerResources.ArchiveExplorer_PluginName,
                 DefaultDockSide = "Left",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -171,7 +172,7 @@ public sealed class ArchiveExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpti
         var exts = string.Join(";", ArchiveReaderFactory.SupportedExtensions.Select(e => $"*{e}"));
         var dlg = new Microsoft.Win32.OpenFileDialog
         {
-            Title  = "Open Archive",
+            Title  = ArchiveExplorerResources.ArchiveExplorer_OpenArchive,
             Filter = $"Archive files ({exts})|{exts}|All files (*.*)|*.*"
         };
         if (dlg.ShowDialog() == true)

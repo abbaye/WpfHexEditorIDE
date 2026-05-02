@@ -1,57 +1,66 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Contributors: Claude Sonnet 4.6
 -->
 <UserControl x:Class="WpfHexEditor.Core.Options.Pages.HexEditorBehaviorPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="Transparent">
+             Background="Transparent"
+             xmlns:optSvc="clr-namespace:WpfHexEditor.Core.Options.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <optSvc:OptionsLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="0,0,0,16">
 
-        <TextBlock Text="ADVANCED BEHAVIOR"
+        <TextBlock Text="{DynamicResource HexBehavior_Section}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckAllowAutoHighLight"
-                  Content="Highlight same bytes under cursor"
+                  Content="{DynamicResource HexBehavior_AllowAutoHighLight}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckAllowAutoSelectDoubleClick"
-                  Content="Auto-select same bytes on double-click"
+                  Content="{DynamicResource HexBehavior_AllowAutoSelectDoubleClick}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckAllowContextMenu"
-                  Content="Enable context menu"
+                  Content="{DynamicResource HexBehavior_AllowContextMenu}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckAllowDeleteByte"
-                  Content="Allow byte deletion"
+                  Content="{DynamicResource HexBehavior_AllowDeleteByte}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckAllowExtend"
-                  Content="Allow file extension (append bytes)"
+                  Content="{DynamicResource HexBehavior_AllowExtend}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckFileDroppingConfirmation"
-                  Content="Confirm before opening dropped file"
+                  Content="{DynamicResource HexBehavior_FileDroppingConfirmation}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,16"
                   Checked="OnCheckChanged"
@@ -66,7 +75,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Byte preload mode:"
+            <TextBlock Text="{DynamicResource HexBehavior_PreloadModeLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="PreloadModeCombo" Grid.Column="1"

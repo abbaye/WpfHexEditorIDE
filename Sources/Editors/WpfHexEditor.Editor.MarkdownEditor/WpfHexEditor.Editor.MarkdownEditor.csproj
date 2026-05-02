@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -6,6 +6,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>WpfHexEditor.Editor.MarkdownEditor</RootNamespace>
     <AssemblyName>WpfHexEditor.Editor.MarkdownEditor</AssemblyName>
+    <NeutralLanguage>en-US</NeutralLanguage>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -36,4 +37,18 @@
 
   <!-- JS/CSS assets and rendering services moved to WpfHexEditor.Editor.MarkdownEditor.Core -->
 
+
+  <ItemGroup>
+    <Compile Update="Properties\MarkdownEditorResources.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MarkdownEditorResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Update="Properties\MarkdownEditorResources.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>MarkdownEditorResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

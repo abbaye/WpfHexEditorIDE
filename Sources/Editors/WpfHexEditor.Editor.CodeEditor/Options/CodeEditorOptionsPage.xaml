@@ -8,7 +8,16 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="500"
              Background="{DynamicResource DockMenuBackgroundBrush}"
-             Foreground="{DynamicResource DockMenuForegroundBrush}">
+             Foreground="{DynamicResource DockMenuForegroundBrush}"
+             xmlns:codeSvc="clr-namespace:WpfHexEditor.Editor.CodeEditor.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <codeSvc:CodeEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
     <!-- Code Editor Options Page — IDE global theme compliant -->
 
@@ -17,7 +26,7 @@
         <StackPanel Margin="12,10,12,16" >
 
             <!-- ── Font ─────────────────────────────────────────────── -->
-            <TextBlock Text="Font"
+            <TextBlock Text="{DynamicResource CodeEditorOptions_FontSection}"
                        FontWeight="SemiBold"
                        Margin="0,0,0,6"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" />
@@ -34,7 +43,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Column="0" Text="Font family:"
+                <TextBlock Grid.Column="0" Text="{DynamicResource CodeEditorOptions_FontFamilyLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <TextBox   Grid.Column="1"
@@ -43,7 +52,7 @@
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            BorderBrush="{DynamicResource DockBorderBrush}" />
 
-                <TextBlock Grid.Column="3" Text="Size:"
+                <TextBlock Grid.Column="3" Text="{DynamicResource CodeEditorOptions_FontSizeLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <TextBox   Grid.Column="4"
@@ -56,7 +65,7 @@
             <Separator Margin="0,4,0,10" Background="{DynamicResource DockBorderBrush}" />
 
             <!-- ── Indentation ──────────────────────────────────────── -->
-            <TextBlock Text="Indentation"
+            <TextBlock Text="{DynamicResource CodeEditorOptions_IndentationSection}"
                        FontWeight="SemiBold"
                        Margin="0,0,0,6"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" />
@@ -67,7 +76,7 @@
                     <ColumnDefinition Width="60" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Tab size:"
+                <TextBlock Grid.Column="0" Text="{DynamicResource CodeEditorOptions_TabSizeLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <TextBox   Grid.Column="1"
@@ -77,7 +86,7 @@
                            BorderBrush="{DynamicResource DockBorderBrush}" />
             </Grid>
 
-            <CheckBox Content="Convert tabs to spaces"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_ConvertTabsContent}"
                       IsChecked="{Binding ConvertTabsToSpaces}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
@@ -87,7 +96,7 @@
                     <ColumnDefinition Width="140" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Auto-indent:"
+                <TextBlock Grid.Column="0" Text="{DynamicResource CodeEditorOptions_AutoIndentLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <ComboBox  Grid.Column="1"
@@ -104,12 +113,12 @@
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 
             <!-- ── Display ──────────────────────────────────────────── -->
-            <TextBlock Text="Display"
+            <TextBlock Text="{DynamicResource CodeEditorOptions_DisplaySection}"
                        FontWeight="SemiBold"
                        Margin="0,0,0,6"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="Show line numbers"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_ShowLineNumbersContent}"
                       IsChecked="{Binding ShowLineNumbers}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
@@ -120,7 +129,7 @@
                     <ColumnDefinition Width="8" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Show whitespace:"
+                <TextBlock Grid.Column="0" Text="{DynamicResource CodeEditorOptions_ShowWhitespaceLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <ComboBox  Grid.Column="2"
@@ -135,17 +144,17 @@
                 </ComboBox>
             </Grid>
 
-            <CheckBox Content="Enable code folding"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_CodeFoldingContent}"
                       IsChecked="{Binding EnableFolding}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="Toggle fold regions on double-click"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_FoldToggleContent}"
                       IsChecked="{Binding FoldToggleOnDoubleClick}"
                       Margin="16,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="Show scope guides"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_ScopeGuidesContent}"
                       IsChecked="{Binding ShowScopeGuides}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
@@ -153,125 +162,125 @@
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 
             <!-- ── Features ─────────────────────────────────────────── -->
-            <TextBlock Text="Features"
+            <TextBlock Text="{DynamicResource CodeEditorOptions_FeaturesSection}"
                        FontWeight="SemiBold"
                        Margin="0,0,0,6"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="Enable SmartComplete"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_SmartCompleteContent}"
                       IsChecked="{Binding EnableSmartComplete}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="Enable snippets"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_SnippetsContent}"
                       IsChecked="{Binding EnableSnippets}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="Enable multi-caret editing (Alt+Click)"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_MultiCaretContent}"
                       IsChecked="{Binding EnableMultiCaret}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="Enable Find All References (Shift+F12)"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_FindAllRefsContent}"
                       IsChecked="{Binding EnableFindAllReferences}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Requires an active Language Server (LSP) for the current file type" />
+                      ToolTip="{DynamicResource CodeEditorOptions_FindAllRefsToolTip}" />
 
-            <CheckBox Content="Show Code Lens (inline reference counts)"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_CodeLensContent}"
                       IsChecked="{Binding ShowInlineHints}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Shows reference count above each declaration. Click the hint to open the References popup." />
+                      ToolTip="{DynamicResource CodeEditorOptions_CodeLensToolTip}" />
 
-            <CheckBox Content="Highlight word under caret"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_WordHighlightContent}"
                       IsChecked="{Binding EnableWordHighlight}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Highlights all occurrences of the word under the cursor and shows tick marks on the scroll bar" />
+                      ToolTip="{DynamicResource CodeEditorOptions_WordHighlightToolTip}" />
 
-            <CheckBox Content="Bracket pair colorization"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_BracketColorizeContent}"
                       IsChecked="{Binding BracketPairColorization}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Colors brackets with CE_Bracket_1/2/3/4 based on nesting depth (requires bracketPairs in the language's whfmt)" />
+                      ToolTip="{DynamicResource CodeEditorOptions_BracketColorizeToolTip}" />
 
-            <CheckBox Content="Color swatch preview"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_ColorSwatchContent}"
                       IsChecked="{Binding ColorSwatchPreview}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Shows a 12×12 color swatch next to color literals (e.g. #FF5733) in CSS, XAML, C# files" />
+                      ToolTip="{DynamicResource CodeEditorOptions_ColorSwatchToolTip}" />
 
-            <CheckBox Content="Format on Save (Ctrl+S)"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_FormatOnSaveContent}"
                       IsChecked="{Binding FormatOnSave}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Automatically formats the document when saving. Uses LSP formatting if available, otherwise applies whfmt indentation rules." />
+                      ToolTip="{DynamicResource CodeEditorOptions_FormatOnSaveToolTip}" />
 
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 
             <!-- ── Code Formatting (overrides .whfmt) ───────────────── -->
-            <TextBlock Text="Code Formatting"
+            <TextBlock Text="{DynamicResource CodeEditorOptions_CodeFormattingSection}"
                        FontWeight="SemiBold"
                        Margin="0,0,0,6"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <TextBlock Text="These settings override the language .whfmt defaults. Leave unchecked checkboxes at their default (indeterminate) state to inherit the language rules."
+            <TextBlock Text="{DynamicResource CodeEditorOptions_CodeFormattingInfo}"
                        TextWrapping="Wrap"
                        FontSize="11"
                        Margin="0,0,0,8"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Opacity="0.65" />
 
-            <CheckBox Content="Trim trailing whitespace"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_TrimTrailingContent}"
                       IsThreeState="True"
                       IsChecked="{Binding TrimTrailingWhitespace}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Remove trailing spaces/tabs on each line. Indeterminate = use .whfmt language default." />
+                      ToolTip="{DynamicResource CodeEditorOptions_TrimTrailingToolTip}" />
 
-            <CheckBox Content="Insert final newline"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_InsertFinalNewlineContent}"
                       IsThreeState="True"
                       IsChecked="{Binding InsertFinalNewline}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Ensure the file ends with exactly one newline. Indeterminate = use .whfmt language default." />
+                      ToolTip="{DynamicResource CodeEditorOptions_InsertFinalNewlineToolTip}" />
 
-            <CheckBox Content="Space after keywords (if, for, while)"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_SpaceAfterKeywordsContent}"
                       IsThreeState="True"
                       IsChecked="{Binding SpaceAfterKeywords}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Insert a space between control keywords and opening paren: if (...) vs if(...). Indeterminate = .whfmt default." />
+                      ToolTip="{DynamicResource CodeEditorOptions_SpaceAfterKeywordsToolTip}" />
 
-            <CheckBox Content="Space around binary operators"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_SpaceAroundOpsContent}"
                       IsThreeState="True"
                       IsChecked="{Binding SpaceAroundBinaryOperators}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Insert spaces around +, -, *, /, ==, etc. Indeterminate = .whfmt default." />
+                      ToolTip="{DynamicResource CodeEditorOptions_SpaceAroundOpsToolTip}" />
 
-            <CheckBox Content="Space after commas"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_SpaceAfterCommaContent}"
                       IsThreeState="True"
                       IsChecked="{Binding SpaceAfterComma}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Insert a space after commas in argument/parameter lists. Indeterminate = .whfmt default." />
+                      ToolTip="{DynamicResource CodeEditorOptions_SpaceAfterCommaToolTip}" />
 
-            <CheckBox Content="Indent case/when labels"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_IndentCaseLabelsContent}"
                       IsThreeState="True"
                       IsChecked="{Binding IndentCaseLabels}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Add one indent level to case/when labels inside switch. Indeterminate = .whfmt default." />
+                      ToolTip="{DynamicResource CodeEditorOptions_IndentCaseLabelsToolTip}" />
 
-            <CheckBox Content="Organize imports on format"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_OrganizeImportsContent}"
                       IsThreeState="True"
                       IsChecked="{Binding OrganizeImports}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="Sort using/import directives alphabetically when formatting. Indeterminate = .whfmt default." />
+                      ToolTip="{DynamicResource CodeEditorOptions_OrganizeImportsToolTip}" />
 
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 
@@ -282,13 +291,13 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
-                           Text="Syntax Colors"
+                           Text="{DynamicResource CodeEditorOptions_SyntaxColorsSection}"
                            FontWeight="SemiBold"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <Button   Grid.Column="1"
                           x:Name="BtnResetColors"
-                          Content="Reset to theme"
+                          Content="{DynamicResource CodeEditorOptions_ResetColorsButton}"
                           Padding="8,2"
                           Background="{DynamicResource DockMenuBackgroundBrush}"
                           Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -336,7 +345,7 @@
 
                             <!-- Pick button — opens the ColorPicker popup -->
                             <Button Grid.Column="3"
-                                    Content="Pick"
+                                    Content="{DynamicResource CodeEditorOptions_ColorPickButton}"
                                     Padding="4,2"
                                     VerticalAlignment="Center"
                                     Background="{DynamicResource DockMenuBackgroundBrush}"

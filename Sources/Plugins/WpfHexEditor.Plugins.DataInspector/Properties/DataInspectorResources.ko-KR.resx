@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>데이터 검사기</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>데이터 분석</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>데이터 검사기</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>데이터 _검사기</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>표시할 데이터 없음</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>합계</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>최대</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>엔트로피</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>비트/바이트</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>바이트</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>선택된 바이트 없음 — hex 편집기에서 바이트를 선택하세요.</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>활성 뷰</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>전체 파일</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>선택</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>빈도</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>엔트로피</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>데이터 없음</value>
+  </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>카테고리:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>전체</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>정수</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>부동소수</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>날짜/시간</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>네트워크</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>색상</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>기본</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>비트</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>모든 형식</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>추가 옵션</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>축 레이블 표시</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>격자선 표시</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>통계 표시</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>빈도 분포</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>엔트로피 (슬라이딩 윈도우)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>확대</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>축소</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>확대/축소 초기화</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>차트 새로고침</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>차트 이미지 복사</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>레이아웃</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>왼쪽</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>오른쪽</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>위</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>아래</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>범위:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>활성 뷰</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>선택</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>전체 파일</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>빈도</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>레이아웃:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>해석 목록에 대한 차트 위치</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>파일 분석 중...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>해석: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>데이터 없음</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>선택 변경 시 자동 새로고침</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>기본 바이트 순서: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>바이트 차트 패널 표시</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>차트 위치:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>최대 문자열 미리보기 바이트:</value></data>
+</root>

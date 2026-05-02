@@ -63,6 +63,7 @@ using WpfHexEditor.Editor.XamlDesigner.ViewModels;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.Editor.XamlDesigner.Properties;
 // Resolve ambiguity: StatusBarItem and DiagnosticSeverity exist in both Core and SDK.Contracts.Services
 using CoreStatusBarItem       = WpfHexEditor.Editor.Core.StatusBarItem;
 using CoreDiagnosticSeverity  = WpfHexEditor.Editor.Core.DiagnosticSeverity;
@@ -2262,7 +2263,7 @@ public sealed class XamlDesignerSplitHost : Grid,
         menu.SetResourceReference(ContextMenu.BorderBrushProperty,  "DockMenuBorderBrush");
 
         // "Select Parent" — visible only when there is a selectable parent within the canvas.
-        var selectParentItem = new MenuItem { Header = "Select Parent", InputGestureText = "Esc" };
+        var selectParentItem = new MenuItem { Header = XamlDesignerResources.XamlDesigEd_Menu_SelectParent, InputGestureText = "Esc" };
         selectParentItem.SetResourceReference(MenuItem.ForegroundProperty, "DockMenuForegroundBrush");
         selectParentItem.Icon = MakeMenuIcon("\uE898");
         menu.Opened += (_, _) =>

@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Core.Options;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.SDK.Descriptors;
 
 namespace WpfHexEditor.App.Services.ViewMenu;
@@ -331,12 +332,21 @@ public sealed class ViewMenuOrganizer
     private MenuItem BuildMenuItem(ViewMenuEntry entry)
     {
         var settings = Settings;
+
+        var resolvedHeader = entry.HeaderResourceKey is not null
+            ? Application.Current.TryFindResource(entry.HeaderResourceKey) as string ?? entry.Header
+            : entry.Header;
+
+        var resolvedToolTip = entry.ToolTipResourceKey is not null
+            ? Application.Current.TryFindResource(entry.ToolTipResourceKey) as string ?? entry.ToolTip
+            : entry.ToolTip;
+
         var mi = new MenuItem
         {
-            Header           = entry.Header,
+            Header           = resolvedHeader,
             Command          = entry.Command,
             CommandParameter = entry.CommandParameter,
-            ToolTip          = entry.ToolTip,
+            ToolTip          = resolvedToolTip,
             Tag              = entry.Id, // Store ID for pin/unpin lookup
         };
 
@@ -375,7 +385,7 @@ public sealed class ViewMenuOrganizer
 
         var pinItem = new MenuItem
         {
-            Header = isPinned ? "_Unpin from View Menu" : "_Pin to View Menu",
+            Header = isPinned ? AppResources.App_ViewMenu_UnpinFromViewMenu : AppResources.App_ViewMenu_PinToViewMenu,
             Icon = new TextBlock
             {
                 Text       = isPinned ? "\uE77A" : "\uE718", // Unpin / Pin
@@ -432,7 +442,7 @@ public sealed class ViewMenuOrganizer
     {
         var submenu = new MenuItem
         {
-            Header = "Or_ganize By…",
+            Header = AppResources.App_ViewMenu_OrganizeBy,
             Icon = new TextBlock
             {
                 Text       = "\uE700", // GlobalNavButton
@@ -444,9 +454,9 @@ public sealed class ViewMenuOrganizer
             },
         };
 
-        submenu.Items.Add(BuildModeItem("_Flat (Classic)", ViewMenuOrganizationMode.Flat, currentMode));
-        submenu.Items.Add(BuildModeItem("_Categorized",    ViewMenuOrganizationMode.Categorized, currentMode));
-        submenu.Items.Add(BuildModeItem("By _Dock Side",   ViewMenuOrganizationMode.ByDockSide, currentMode));
+        submenu.Items.Add(BuildModeItem(AppResources.App_ViewMenu_Flat,        ViewMenuOrganizationMode.Flat, currentMode));
+        submenu.Items.Add(BuildModeItem(AppResources.App_ViewMenu_Categorized, ViewMenuOrganizationMode.Categorized, currentMode));
+        submenu.Items.Add(BuildModeItem(AppResources.App_ViewMenu_ByDockSide,  ViewMenuOrganizationMode.ByDockSide, currentMode));
 
         return submenu;
     }

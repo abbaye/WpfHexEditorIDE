@@ -121,10 +121,6 @@
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
     <value>Localizar Anterior</value>
   </data>
-  <data name="RelativeSearchMenuString" xml:space="preserve">
-    <value>Pesquisa Relativa</value>
-    <comment>Search menu - Relative Search command</comment>
-  </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>Ferramentas</value>
   </data>

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 // ==========================================================
 // Project: WpfHexEditor.Core.Options
 // File: CodeEditorInlineHintsPage.xaml
@@ -15,7 +15,9 @@
 <UserControl x:Class="WpfHexEditor.Core.Options.Pages.CodeEditorInlineHintsPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="Transparent">
+             Background="Transparent"
+             xmlns:optSvc="clr-namespace:WpfHexEditor.Core.Options.Services">
+
 
     <UserControl.Resources>
         <!-- Themed text button — proper IsMouseOver/IsPressed triggers using IDE palette. -->
@@ -63,28 +65,28 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Inline Hints ──────────────────────────────────────────────────── -->
-        <TextBlock Text="INLINE HINTS"
+        <TextBlock Text="{DynamicResource CodeInlineHints_Section}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckInlineHintsEnabled"
-                  Content="Enable Inline Hints (show inline reference counts above declarations)"
+                  Content="{DynamicResource CodeInlineHints_EnableHints}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-            <TextBlock Text="Reference source:"
+            <TextBlock Text="{DynamicResource CodeInlineHints_SourceLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Margin="0,0,8,0"/>
             <ComboBox x:Name="CboSource" Width="240"
                       SelectionChanged="OnSourceChanged">
-                <ComboBoxItem Content="Auto (Roslyn when available, regex fallback)" Tag="0"/>
-                <ComboBoxItem Content="Roslyn only (C# / VB.NET)" Tag="1"/>
-                <ComboBoxItem Content="Regex always" Tag="2"/>
+                <ComboBoxItem Content="{DynamicResource CodeInlineHints_SourceAuto}" Tag="0"/>
+                <ComboBoxItem Content="{DynamicResource CodeInlineHints_SourceRoslyn}" Tag="1"/>
+                <ComboBoxItem Content="{DynamicResource CodeInlineHints_SourceRegex}" Tag="2"/>
             </ComboBox>
         </StackPanel>
 
@@ -92,12 +94,12 @@
         <Separator Margin="0,12,0,12"
                    Background="{DynamicResource DockBorderBrush}"/>
 
-        <TextBlock Text="ROSLYN SEMANTIC HINTS (C# / VB.NET)"
+        <TextBlock Text="{DynamicResource CodeInlineHints_RoslynSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,0,0,6"/>
 
-        <TextBlock Text="Show inferred types and return types inline when Roslyn is the active language client."
+        <TextBlock Text="{DynamicResource CodeInlineHints_RoslynNote}"
                    FontSize="11"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Opacity="0.65"
@@ -105,24 +107,24 @@
                    Margin="0,0,0,8"/>
 
         <CheckBox x:Name="ChkShowVarTypeHints"
-                  Content="Show inferred type for 'var' declarations  (e.g. var x = … → : List&lt;int&gt;)"
+                  Content="{DynamicResource CodeInlineHints_ShowVarType}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,6"
                   Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="ChkShowLambdaReturnTypeHints"
-                  Content="Show return type for lambda expressions  (e.g. x => x * 2 → → int)"
+                  Content="{DynamicResource CodeInlineHints_ShowLambdaReturn}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,12"
                   Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
         <!-- ── Symbol Kinds ──────────────────────────────────────────────────── -->
-        <TextBlock Text="SHOW HINTS FOR SYMBOL KINDS:"
+        <TextBlock Text="{DynamicResource CodeInlineHints_KindsSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
-        <TextBlock Text="Uncheck a kind to hide its reference-count hints while keeping Inline Hints active for others."
+        <TextBlock Text="{DynamicResource CodeInlineHints_KindsNote}"
                    FontSize="11"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Opacity="0.65"
@@ -134,7 +136,7 @@
                     IsEnabled="{Binding IsChecked, ElementName=CheckInlineHintsEnabled}">
 
             <!-- Types sub-group -->
-            <TextBlock Text="Types"
+            <TextBlock Text="{DynamicResource CodeInlineHints_TypesGroup}"
                        FontSize="11"
                        FontWeight="SemiBold"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -142,43 +144,43 @@
                        Margin="0,0,0,6"/>
 
             <CheckBox x:Name="ChkClass"
-                      Content="Class"
+                      Content="{DynamicResource CodeInlineHints_Class}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="12,0,0,6"
                       Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
             <CheckBox x:Name="ChkInterface"
-                      Content="Interface"
+                      Content="{DynamicResource CodeInlineHints_Interface}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="12,0,0,6"
                       Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
             <CheckBox x:Name="ChkStruct"
-                      Content="Struct"
+                      Content="{DynamicResource CodeInlineHints_Struct}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="12,0,0,6"
                       Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
             <CheckBox x:Name="ChkEnum"
-                      Content="Enum"
+                      Content="{DynamicResource CodeInlineHints_Enum}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="12,0,0,6"
                       Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
             <CheckBox x:Name="ChkRecord"
-                      Content="Record"
+                      Content="{DynamicResource CodeInlineHints_Record}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="12,0,0,6"
                       Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
             <CheckBox x:Name="ChkDelegate"
-                      Content="Delegate"
+                      Content="{DynamicResource CodeInlineHints_Delegate}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="12,0,0,12"
                       Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
             <!-- Members sub-group -->
-            <TextBlock Text="Members"
+            <TextBlock Text="{DynamicResource CodeInlineHints_MembersGroup}"
                        FontSize="11"
                        FontWeight="SemiBold"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -186,37 +188,37 @@
                        Margin="0,0,0,6"/>
 
             <CheckBox x:Name="ChkMethod"
-                      Content="Method"
+                      Content="{DynamicResource CodeInlineHints_Method}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="12,0,0,6"
                       Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
             <CheckBox x:Name="ChkConstructor"
-                      Content="Constructor"
+                      Content="{DynamicResource CodeInlineHints_Constructor}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="12,0,0,6"
                       Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
             <CheckBox x:Name="ChkProperty"
-                      Content="Property"
+                      Content="{DynamicResource CodeInlineHints_Property}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="12,0,0,6"
                       Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
             <CheckBox x:Name="ChkIndexer"
-                      Content="Indexer"
+                      Content="{DynamicResource CodeInlineHints_Indexer}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="12,0,0,6"
                       Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
             <CheckBox x:Name="ChkField"
-                      Content="Field"
+                      Content="{DynamicResource CodeInlineHints_Field}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="12,0,0,6"
                       Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
             <CheckBox x:Name="ChkEvent"
-                      Content="Event"
+                      Content="{DynamicResource CodeInlineHints_Event}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="12,0,0,12"
                       Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
@@ -224,11 +226,11 @@
             <!-- Quick-pick row -->
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="BtnSelectAll"
-                        Content="Select All"
+                        Content="{DynamicResource CodeInlineHints_SelectAll}"
                         Style="{StaticResource OptionsTextButtonStyle}"
                         Click="OnSelectAll"/>
                 <Button x:Name="BtnSelectNone"
-                        Content="Select None"
+                        Content="{DynamicResource CodeInlineHints_SelectNone}"
                         Margin="8,0,0,0"
                         Style="{StaticResource OptionsTextButtonStyle}"
                         Click="OnSelectNone"/>

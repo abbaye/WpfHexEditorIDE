@@ -1,6 +1,7 @@
 <UserControl x:Class="WpfHexEditor.Shell.Panels.Panels.WhfmtBrowserPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svc="clr-namespace:WpfHexEditor.Shell.Panels.Services"
              xmlns:vm="clr-namespace:WpfHexEditor.Shell.Panels.ViewModels"
              xmlns:local="clr-namespace:WpfHexEditor.Shell.Panels.Panels"
              Background="{DynamicResource SE_BackgroundBrush}"
@@ -9,6 +10,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <svc:ShellPanelsLocalizedDictionary/>
                 <ResourceDictionary Source="WhfmtPanelStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
@@ -79,17 +81,17 @@
                                             </Border.Effect>
                                             <StackPanel Orientation="Horizontal">
                                                 <Button x:Name="PopOpenBtn" Style="{StaticResource PopRowButton}"
-                                                        ToolTip="Open in Structure Editor">
+                                                        ToolTip="{DynamicResource WhfmtBrowser_OpenInEditorToolTip}">
                                                     <TextBlock Text="&#xE7AC;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                                Foreground="{DynamicResource SE_ForegroundBrush}"/>
                                                 </Button>
                                                 <Button x:Name="PopExportBtn" Style="{StaticResource PopRowButton}"
-                                                        ToolTip="Export to file…">
+                                                        ToolTip="{DynamicResource WhfmtBrowser_ExportToFileToolTip}">
                                                     <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                                Foreground="{DynamicResource SE_ForegroundBrush}"/>
                                                 </Button>
                                                 <Button x:Name="PopJsonBtn" Style="{StaticResource PopRowButton}"
-                                                        ToolTip="View JSON">
+                                                        ToolTip="{DynamicResource WhfmtBrowser_ViewJsonToolTip}">
                                                     <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                                Foreground="{DynamicResource SE_ForegroundBrush}"/>
                                                 </Button>
@@ -152,7 +154,7 @@
                 <TextBlock Text="&#xE783;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                            Margin="5,0,0,0" VerticalAlignment="Center"
                            Foreground="{DynamicResource Panel_WarningTextBrush}"
-                           ToolTip="One or more formats failed to load"
+                           ToolTip="{DynamicResource WhfmtBrowser_LoadFailureIndicator}"
                            Visibility="{Binding HasFailures, Converter={StaticResource BoolToVisibility}}"/>
             </StackPanel>
         </DataTemplate>
@@ -227,18 +229,18 @@
         <ContextMenu x:Key="FormatItemContextMenu"
                      Background="{DynamicResource SE_BackgroundBrush}"
                      Foreground="{DynamicResource SE_ForegroundBrush}">
-            <MenuItem Header="Open"               Command="{Binding OpenCommand}"/>
-            <MenuItem Header="Open as Read-Only"  Command="{Binding OpenReadOnlyCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_Open}"               Command="{Binding OpenCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_OpenReadOnly}"  Command="{Binding OpenReadOnlyCommand}"/>
             <Separator/>
-            <MenuItem Header="Export to File…"    Command="{Binding ExportToFileCommand}"/>
-            <MenuItem Header="View JSON"          Command="{Binding ViewJsonCommand}"/>
-            <MenuItem Header="Copy Path"          Command="{Binding CopyPathCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_ExportToFile}"    Command="{Binding ExportToFileCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_ViewJson}"          Command="{Binding ViewJsonCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_CopyPath}"          Command="{Binding CopyPathCommand}"/>
             <Separator/>
-            <MenuItem Header="Delete"             Command="{Binding DeleteCommand}"/>
-            <MenuItem Header="Reveal in Explorer" Command="{Binding RevealInExplorerCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_Delete}"             Command="{Binding DeleteCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_RevealInExplorer}" Command="{Binding RevealInExplorerCommand}"/>
             <Separator/>
-            <MenuItem Header="Duplicate Format…"        Command="{Binding DuplicateCommand}"/>
-            <MenuItem Header="Edit in Code Editor"      Command="{Binding ViewJsonCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_DuplicateFormat}"        Command="{Binding DuplicateCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_EditInCodeEditor}"      Command="{Binding ViewJsonCommand}"/>
         </ContextMenu>
         </ResourceDictionary>
     </UserControl.Resources>

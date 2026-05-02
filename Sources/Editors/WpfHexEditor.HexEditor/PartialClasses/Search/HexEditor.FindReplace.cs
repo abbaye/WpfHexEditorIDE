@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Windows.Media;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.CharacterTable;
+using WpfHexEditor.Core.Properties;
 
 namespace WpfHexEditor.HexEditor
 {
@@ -141,7 +142,7 @@ namespace WpfHexEditor.HexEditor
         {
             if (_viewModel == null || !_viewModel.HasSelection)
             {
-                StatusText.Text = "No selection to find";
+                StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_NoSelectionToFind;
                 return;
             }
 
@@ -151,7 +152,7 @@ namespace WpfHexEditor.HexEditor
                 var pattern = _viewModel.GetSelectionBytes();
                 if (pattern == null || pattern.Length == 0)
                 {
-                    StatusText.Text = "Selection is empty";
+                    StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_SelectionIsEmpty;
                     return;
                 }
 

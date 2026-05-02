@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="MdSb_ViewLabel" xml:space="preserve">
+    <value>Ver</value>
+  </data>
+  <data name="MdSb_ViewTooltip" xml:space="preserve">
+    <value>Modo de vista actual</value>
+  </data>
+  <data name="MdSb_WordsLabel" xml:space="preserve">
+    <value>Palabras</value>
+  </data>
+  <data name="MdSb_WordsTooltip" xml:space="preserve">
+    <value>Recuento aproximado de palabras</value>
+  </data>
+  <data name="MdSb_LinesLabel" xml:space="preserve">
+    <value>Líneas</value>
+  </data>
+  <data name="MdSb_LinesTooltip" xml:space="preserve">
+    <value>Total de líneas</value>
+  </data>
+  <data name="MdSb_ReadLabel" xml:space="preserve">
+    <value>Leer</value>
+  </data>
+  <data name="MdSb_ReadTooltip" xml:space="preserve">
+    <value>Tiempo de lectura estimado (200 ppm)</value>
+  </data>
+  <data name="MdSb_ZoomLabel" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="MdSb_ZoomTooltip" xml:space="preserve">
+    <value>Zoom de vista previa (Ctrl+desplazamiento en la vista previa)</value>
+  </data>
+  <data name="MdTb_ViewLabel" xml:space="preserve">
+    <value>Ver</value>
+  </data>
+  <data name="MdTb_ViewTooltip" xml:space="preserve">
+    <value>Modo de vista (Ctrl+1/2/3)</value>
+  </data>
+  <data name="MdTb_LayoutLabel" xml:space="preserve">
+    <value>Diseño</value>
+  </data>
+  <data name="MdTb_LayoutTooltip" xml:space="preserve">
+    <value>Diseño dividido (Ctrl+Mayús+L)</value>
+  </data>
+  <data name="MdTb_WrapLabel" xml:space="preserve">
+    <value>Ajustar</value>
+  </data>
+  <data name="MdTb_WrapTooltip" xml:space="preserve">
+    <value>Ajuste de palabras (Alt+Z)</value>
+  </data>
+  <data name="MdTb_RefreshLabel" xml:space="preserve">
+    <value>Actualizar</value>
+  </data>
+  <data name="MdTb_RefreshTooltip" xml:space="preserve">
+    <value>Actualizar vista previa (F9)</value>
+  </data>
+  <data name="MdTb_InsertLabel" xml:space="preserve">
+    <value>Insertar</value>
+  </data>
+  <data name="MdTb_InsertTooltip" xml:space="preserve">
+    <value>Insertar elemento Markdown</value>
+  </data>
+  <data name="MdTb_FormatLabel" xml:space="preserve">
+    <value>Formato</value>
+  </data>
+  <data name="MdTb_FormatTooltip" xml:space="preserve">
+    <value>Dar formato al texto seleccionado</value>
+  </data>
+  <data name="MdTb_FullscreenLabel" xml:space="preserve">
+    <value>Pantalla completa</value>
+  </data>
+  <data name="MdTb_FullscreenTooltip" xml:space="preserve">
+    <value>Alternar vista previa a pantalla completa</value>
+  </data>
+  <data name="MdView_SourceOnly" xml:space="preserve">
+    <value>Solo código</value>
+  </data>
+  <data name="MdView_Split" xml:space="preserve">
+    <value>Dividido</value>
+  </data>
+  <data name="MdView_PreviewOnly" xml:space="preserve">
+    <value>Solo vista previa</value>
+  </data>
+  <data name="MdLayout_PreviewRight" xml:space="preserve">
+    <value>Vista previa a la derecha</value>
+  </data>
+  <data name="MdLayout_PreviewLeft" xml:space="preserve">
+    <value>Vista previa a la izquierda</value>
+  </data>
+  <data name="MdLayout_PreviewBottom" xml:space="preserve">
+    <value>Vista previa abajo</value>
+  </data>
+  <data name="MdLayout_PreviewTop" xml:space="preserve">
+    <value>Vista previa arriba</value>
+  </data>
+  <data name="MdInsert_Table" xml:space="preserve">
+    <value>Tabla</value>
+  </data>
+  <data name="MdInsert_CodeBlock" xml:space="preserve">
+    <value>Bloque de código</value>
+  </data>
+  <data name="MdInsert_Image" xml:space="preserve">
+    <value>Imagen</value>
+  </data>
+  <data name="MdInsert_HorizontalRule" xml:space="preserve">
+    <value>Línea horizontal</value>
+  </data>
+  <data name="MdInsert_TableOfContents" xml:space="preserve">
+    <value>Tabla de contenido</value>
+  </data>
+  <data name="MdFmt_Bold" xml:space="preserve">
+    <value>Negrita</value>
+  </data>
+  <data name="MdFmt_Italic" xml:space="preserve">
+    <value>Cursiva</value>
+  </data>
+  <data name="MdFmt_Strikethrough" xml:space="preserve">
+    <value>Tachado</value>
+  </data>
+  <data name="MdFmt_InlineCode" xml:space="preserve">
+    <value>Código en línea</value>
+  </data>
+  <data name="MdCtx_GroupFormat" xml:space="preserve">
+    <value>FORMATO</value>
+  </data>
+  <data name="MdCtx_GroupInsert" xml:space="preserve">
+    <value>INSERTAR</value>
+  </data>
+  <data name="MdCtx_GroupExport" xml:space="preserve">
+    <value>EXPORTAR</value>
+  </data>
+  <data name="MdCtx_GroupView" xml:space="preserve">
+    <value>VER</value>
+  </data>
+  <data name="MdCtx_Bold" xml:space="preserve">
+    <value>Negrita</value>
+  </data>
+  <data name="MdCtx_Italic" xml:space="preserve">
+    <value>Cursiva</value>
+  </data>
+  <data name="MdCtx_Strikethrough" xml:space="preserve">
+    <value>Tachado</value>
+  </data>
+  <data name="MdCtx_InlineCode" xml:space="preserve">
+    <value>Código en línea</value>
+  </data>
+  <data name="MdCtx_Table" xml:space="preserve">
+    <value>Tabla</value>
+  </data>
+  <data name="MdCtx_CodeBlock" xml:space="preserve">
+    <value>Bloque de código</value>
+  </data>
+  <data name="MdCtx_Link" xml:space="preserve">
+    <value>Enlace</value>
+  </data>
+  <data name="MdCtx_Image" xml:space="preserve">
+    <value>Imagen</value>
+  </data>
+  <data name="MdCtx_HorizontalRule" xml:space="preserve">
+    <value>Línea horizontal</value>
+  </data>
+  <data name="MdCtx_WordWrap" xml:space="preserve">
+    <value>Ajuste de palabras	Alt+Z</value>
+  </data>
+  <data name="MdCtx_ExportHtml" xml:space="preserve">
+    <value>Exportar como HTML...</value>
+  </data>
+  <data name="MdCtx_ExportPdf" xml:space="preserve">
+    <value>Exportar como PDF...</value>
+  </data>
+  <data name="MdPrev_SourceOnly" xml:space="preserve">
+    <value>Solo código</value>
+  </data>
+  <data name="MdPrev_SplitView" xml:space="preserve">
+    <value>Vista dividida</value>
+  </data>
+  <data name="MdPrev_PreviewOnly" xml:space="preserve">
+    <value>Solo vista previa</value>
+  </data>
+  <data name="MdPrev_Fullscreen" xml:space="preserve">
+    <value>Pantalla completa</value>
+  </data>
+  <data name="MdPrev_ExitFullscreen" xml:space="preserve">
+    <value>Salir de pantalla completa</value>
+  </data>
+  <data name="MdPrev_RefreshPreview" xml:space="preserve">
+    <value>Actualizar vista previa</value>
+  </data>
+  <data name="MdPrev_CycleLayout" xml:space="preserve">
+    <value>Cambiar diseño</value>
+  </data>
+  <data name="MdPrev_ZoomIn" xml:space="preserve">
+    <value>Acercar</value>
+  </data>
+  <data name="MdPrev_ZoomOut" xml:space="preserve">
+    <value>Alejar</value>
+  </data>
+  <data name="MdPrev_ResetZoom" xml:space="preserve">
+    <value>Restablecer zoom</value>
+  </data>
+  <data name="MdPrev_Copy" xml:space="preserve">
+    <value>Copiar</value>
+  </data>
+  <data name="MdDlg_ExportHtmlTitle" xml:space="preserve">
+    <value>Exportar como HTML</value>
+  </data>
+  <data name="MdDlg_ExportPdfTitle" xml:space="preserve">
+    <value>Exportar como PDF</value>
+  </data>
+  <data name="Md_NoHeadingsFound" xml:space="preserve">
+    <value>No se encontraron encabezados.</value>
+  </data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Inicializando vista previa…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>No se encontró el runtime WebView2</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>La vista previa de Markdown requiere Microsoft Edge WebView2 Runtime. Descárgalo desde microsoft.com/edge/webview2.</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Actualizar esquema (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>No hay archivo Markdown activo.</value></data>
+</root>

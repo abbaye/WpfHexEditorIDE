@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using Microsoft.Win32;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Workspaces;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.Docking.Core.Serialization;
@@ -68,7 +69,7 @@ public partial class MainWindow
     {
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title            = "New Workspace",
+            Title            = AppResources.App_Workspace_NewTitle,
             Filter           = WorkspaceFileFilter,
             DefaultExt       = ".whidews",
             OverwritePrompt  = true
@@ -86,8 +87,8 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, $"Failed to create workspace:\n{ex.Message}",
-                "New Workspace", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(this, string.Format(AppResources.App_Workspace_NewFailed, "\n", ex.Message),
+                AppResources.App_Workspace_NewTitle, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -95,7 +96,7 @@ public partial class MainWindow
     {
         var dlg = new OpenFileDialog
         {
-            Title  = "Open Workspace",
+            Title  = AppResources.App_Workspace_OpenTitle,
             Filter = WorkspaceFileFilter
         };
 
@@ -109,8 +110,8 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, $"Failed to open workspace:\n{ex.Message}",
-                "Open Workspace", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(this, string.Format(AppResources.App_Workspace_OpenFailed, "\n", ex.Message),
+                AppResources.App_Workspace_OpenTitle, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -129,8 +130,8 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, $"Failed to save workspace:\n{ex.Message}",
-                "Save Workspace", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(this, string.Format(AppResources.App_Workspace_SaveFailed, "\n", ex.Message),
+                AppResources.App_Workspace_NewTitle, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -138,7 +139,7 @@ public partial class MainWindow
     {
         var dlg = new SaveFileDialog
         {
-            Title           = "Save Workspace As",
+            Title           = AppResources.App_Workspace_SaveAsTitle,
             Filter          = WorkspaceFileFilter,
             DefaultExt      = ".whidews",
             OverwritePrompt = true,
@@ -154,8 +155,8 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, $"Failed to save workspace:\n{ex.Message}",
-                "Save Workspace As", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(this, string.Format(AppResources.App_Workspace_SaveFailed, "\n", ex.Message),
+                AppResources.App_Workspace_SaveAsTitle, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -167,8 +168,8 @@ public partial class MainWindow
         if (prefs.PromptSaveOnClose)
         {
             var result = MessageBox.Show(this,
-                $"Save workspace '{_workspaceManager.CurrentName}' before closing?",
-                "Close Workspace",
+                string.Format(AppResources.App_Workspace_CloseSavePrompt, _workspaceManager.CurrentName),
+                AppResources.App_Workspace_CloseTitle,
                 MessageBoxButton.YesNoCancel,
                 MessageBoxImage.Question);
 

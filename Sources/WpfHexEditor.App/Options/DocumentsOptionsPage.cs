@@ -10,6 +10,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Options;
@@ -32,7 +33,7 @@ public sealed class DocumentsOptionsPage : UserControl, IOptionsPage
     {
         _detectExternalChanges = new CheckBox
         {
-            Content = "Detect when files are changed outside the IDE",
+            Content = AppResources.App_Options_DetectExternalChanges,
             Margin  = new Thickness(0, 4, 0, 4),
         };
         _detectExternalChanges.Checked   += OnChanged;
@@ -40,7 +41,7 @@ public sealed class DocumentsOptionsPage : UserControl, IOptionsPage
 
         _autoReload = new CheckBox
         {
-            Content = "Auto-reload changed files without prompting",
+            Content = AppResources.App_Options_AutoReload,
             Margin  = new Thickness(16, 4, 0, 4),
         };
         _autoReload.Checked   += OnChanged;

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="XamlDesigner_Panel_Outline" xml:space="preserve">
+    <value>XAML-overzicht</value>
+  </data>
+  <data name="XamlDesigner_Panel_Properties" xml:space="preserve">
+    <value>XAML-eigenschappen</value>
+  </data>
+  <data name="XamlDesigner_Panel_Toolbox" xml:space="preserve">
+    <value>XAML-werkset</value>
+  </data>
+  <data name="XamlDesigner_Panel_ResourceBrowser" xml:space="preserve">
+    <value>Bronnenverkenner</value>
+  </data>
+  <data name="XamlDesigner_Panel_DesignData" xml:space="preserve">
+    <value>Ontwerpgegevens</value>
+  </data>
+  <data name="XamlDesigner_Panel_AnimationTimeline" xml:space="preserve">
+    <value>Animatietijdlijn</value>
+  </data>
+  <data name="XamlDesigner_Panel_DesignHistory" xml:space="preserve">
+    <value>Ontwerpgeschiedenis</value>
+  </data>
+  <data name="XamlDesigner_Panel_BindingInspector" xml:space="preserve">
+    <value>Bindingsinspector</value>
+  </data>
+  <data name="XamlDesigner_Panel_LiveVisualTree" xml:space="preserve">
+    <value>Live visuele structuur</value>
+  </data>
+  <data name="XD_ColType" xml:space="preserve"><value>Type</value></data>
+</root>

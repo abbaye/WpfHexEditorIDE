@@ -23,6 +23,7 @@ using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.Plugins.DataInspector.Options;
+using WpfHexEditor.Plugins.DataInspector.Properties;
 using WpfHexEditor.Plugins.DataInspector.Views;
 
 namespace WpfHexEditor.Plugins.DataInspector;
@@ -35,7 +36,7 @@ namespace WpfHexEditor.Plugins.DataInspector;
 public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 {
     public string  Id      => "WpfHexEditor.Plugins.DataInspector";
-    public string  Name    => "Data Inspector";
+    public string  Name    => DataInspectorResources.DataInspector_PluginName;
     public Version Version => new(0, 6, 0);
 
     public PluginCapabilities Capabilities => new()
@@ -67,7 +68,7 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
             Id,
             new PanelDescriptor
             {
-                Title           = "Data Inspector",
+                Title           = DataInspectorResources.DataInspector_PanelTitle,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = false,
                 CanClose        = true,
@@ -80,7 +81,7 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
             Id,
             new MenuItemDescriptor
             {
-                Header     = "_Data Inspector",
+                Header     = DataInspectorResources.DataInspector_MenuItem,
                 ParentPath = "View",
                 Group      = "Analysis",
                 IconGlyph  = "\uE9E6",
@@ -162,7 +163,7 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
     public void LoadOptions() => _optionsPage?.Load();
 
     /// <summary>Returns the options category for this plugin (groups related plugins together).</summary>
-    public string GetOptionsCategory() => "Data Analysis";
+    public string GetOptionsCategory() => DataInspectorResources.DataInspector_OptionsCategory;
 
     /// <summary>Returns an emoji/icon for the options category.</summary>
     public string GetOptionsCategoryIcon() => "📊";

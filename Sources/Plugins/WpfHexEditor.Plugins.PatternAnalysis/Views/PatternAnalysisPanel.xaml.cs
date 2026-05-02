@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using WpfHexEditor.Plugins.PatternAnalysis.Properties;
 using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Plugins.PatternAnalysis.Views;
@@ -206,7 +207,7 @@ public partial class PatternAnalysisPanel : UserControl
             var dominant = Array.IndexOf(distribution, maxFreq);
             anomalies.Add(new AnomalyInfo
             {
-                Title       = "Extremely skewed distribution",
+                Title       = PatternAnalysisResources.PatternAnalysis_ExtremelySkewed,
                 Description = $"Byte 0x{dominant:X2} appears {maxFreq * 100.0 / data.Length:F1}% of the time"
             });
         }
@@ -215,15 +216,15 @@ public partial class PatternAnalysisPanel : UserControl
         if (entropy > 7.5)
             anomalies.Add(new AnomalyInfo
             {
-                Title       = "Very high entropy detected",
-                Description = "Data may be encrypted or compressed (entropy > 7.5 bits/byte)"
+                Title       = PatternAnalysisResources.PatternAnalysis_Entropy_VeryHigh,
+                Description = PatternAnalysisResources.PatternAnalysis_Entropy_VeryHigh_Desc
             });
 
         if (entropy < 2.0)
             anomalies.Add(new AnomalyInfo
             {
-                Title       = "Very low entropy detected",
-                Description = "Data contains mostly repetitive or zero bytes (entropy < 2.0 bits/byte)"
+                Title       = PatternAnalysisResources.PatternAnalysis_Entropy_VeryLow,
+                Description = PatternAnalysisResources.PatternAnalysis_Entropy_VeryLow_Desc
             });
 
         return anomalies;
@@ -241,17 +242,17 @@ public partial class PatternAnalysisPanel : UserControl
         if (entropy < 3.0)
         {
             EntropyBar.Background       = (SolidColorBrush)FindResource("LowEntropyBrush");
-            EntropyInterpretation.Text  = "Low randomness \u2014 data is repetitive or structured";
+            EntropyInterpretation.Text  = PatternAnalysisResources.PatternAnalysis_Entropy_Low;
         }
         else if (entropy < 6.0)
         {
             EntropyBar.Background       = (SolidColorBrush)FindResource("MediumEntropyBrush");
-            EntropyInterpretation.Text  = "Medium randomness \u2014 typical for mixed or compressed data";
+            EntropyInterpretation.Text  = PatternAnalysisResources.PatternAnalysis_Entropy_Medium;
         }
         else
         {
             EntropyBar.Background       = (SolidColorBrush)FindResource("HighEntropyBrush");
-            EntropyInterpretation.Text  = "High randomness \u2014 data may be encrypted or highly compressed";
+            EntropyInterpretation.Text  = PatternAnalysisResources.PatternAnalysis_Entropy_High;
         }
 
         EntropyCard.Visibility = Visibility.Visible;
@@ -348,7 +349,7 @@ public partial class PatternAnalysisPanel : UserControl
 
     private void ShowNoDataMessage()
     {
-        StatusTextBlock.Text        = "No data to analyze. Select a range in the hex editor.";
+        StatusTextBlock.Text        = PatternAnalysisResources.PatternAnalysis_NoData;
         EntropyCard.Visibility      = Visibility.Collapsed;
         DistributionCard.Visibility = Visibility.Collapsed;
         PatternsCard.Visibility     = Visibility.Collapsed;

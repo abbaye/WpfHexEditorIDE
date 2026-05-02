@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.pl-PL.resx
+    Description : Localized UI strings for the Structure Editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Przesunięcie</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>Siła</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>Wymagane</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Dodaj blok</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Dodaj</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Anuluj</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Metadane</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Wykrywanie</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Bloki</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Zmienne</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Zaawansowane</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Jakość</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Test</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Zapisz (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Waliduj (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Cofnij (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Ponów (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Przełącz podgląd kodu na żywo</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Dodaj blok (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Duplikuj blok (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Niezapisane zmiany</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Filtruj bloki według nazwy</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Dodaj blok...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Duplikuj</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Usuń</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Przenieś w górę</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Przenieś w dół</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Kopiuj jako JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Wklej blok</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Wybierz blok, aby edytować jego właściwości,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>lub naciśnij Ctrl+N / kliknij prawym przyciskiem, aby dodać nowy blok.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Sygnatura szesnastkowa</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Bajty hex bez spacji, np. 89504E47 dla PNG</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Sygnatura</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>Sygnatury v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Tryb dopasowania</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Wartość hex</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Przesunięcie</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Etykieta</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ Dodaj sygnaturę</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Wskazówka entropii</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Minimalna entropia</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Maksymalna entropia</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Minimalny wynik</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Próg wyniku</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Wzorce treści (formaty tekstowe)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Wzorzec Regex</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Dodaj wzorzec</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>Ogólne</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Nazwa formatu</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Czytelna nazwa formatu (np. 'Archiwum ZIP', 'Obraz PNG')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Wersja</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Wersja tej definicji (np. '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Autor</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Autor tego pliku definicji</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Kategoria</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Kategoria (ustawiana automatycznie ze struktury folderów: Archiwa, Obrazy, Audio, Wideo itp.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Tryb diff</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Preferowany algorytm diff dla DiffViewer</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Preferowany edytor</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>Preferowany identyfikator fabryki edytora dla plików pasujących do tego formatu</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Opis</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Format tekstowy (domyślnie otwierany w edytorze kodu)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Rozszerzenia plików</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Dodaj rozszerzenie</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>Typy MIME</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ Dodaj typ MIME</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Oprogramowanie</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Dodaj oprogramowanie</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Obliczone metryki</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Pokrycie bloków</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Wynik kompletności</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Rozkład typów</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Bloki</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Głębokość</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Zmienne</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Reguły</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Metadane</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Poziom dokumentacji</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Ostatnia aktualizacja</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Format: YYYY-MM-DD (wypełniany automatycznie przy zapisie)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Format priorytetowy (top 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Automatycznie udoskonalony (wzbogacony przez skrypt — tylko do odczytu)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Testuj format na pliku</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Ścieżka do testowanego pliku binarnego</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Przeglądaj…</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Uruchom test</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Kopiuj wyniki do schowka (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Wybierz plik i kliknij ▶ Uruchom test, aby przetestować bieżącą definicję formatu.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Status</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Nazwa bloku</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Typ</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Przesunięcie</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Dług.</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Surowe (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Przetworzona wartość</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Uwaga</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Ostrzeżenie</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Błąd</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Pominięto</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Początkowe zmienne dostępne dla interpretera bloków (np. liczniki pętli, obliczone przesunięcia).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Filtruj zmienne według nazwy</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Nazwa zmiennej</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Typ</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Wartość początkowa</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Opis</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Dodaj zmienną</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Asercje</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:name equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Wyrażenie logiczne — Ctrl+Space dla funkcji i zmiennych</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Sumy kontrolne</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Wersjonowanie (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Importy ($ref Kompozycja)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = nazwa formatu (lub structs/Nazwa), as = alias używany w blokach structRef.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Odwołanie do formatu np. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>Alias w structRef np. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Dodaj import</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Kryminalistyka</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Zakładki nawigacyjne</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>nazwaZmiennej</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Zmienna przechowująca przesunięcie bajtów — Ctrl+Space dla sugestii</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Dodaj zakładkę</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Układ inspektora</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Szablony eksportu</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Dodaj szablon</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>Wskazówki AI</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Pole binarne ze stałym lub zmiennym przesunięciem i długością.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Magic bytes identyfikujące format na określonym przesunięciu.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Odczytuje wartość o zmiennej długości lub symboliczną do nazwanej zmiennej.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Warunkowo przetwarza bloki na podstawie wartości pola lub zmiennej.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Powtarza treść bloku, dopóki warunek jest spełniony.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Modyfikuje zmienną (inkrementacja, dekrementacja, ustawZmienną).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Oblicza wyrażenie matematyczne i przechowuje wynik.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Przetwarza tablicę o stałej liczbie strukturowanych wpisów.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Wybiera zestaw bloków wariantów na podstawie zmiennej dyskryminanta.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Osadza zewnętrzną definicję struktury przez odwołanie.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Tworzy adnotację nawigacyjną do wskazywanego przesunięcia.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} błąd(ów)</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} ostrzeżenie(ń)</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>Surowy JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Zastosuj</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Anuluj</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Edytor struktury</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Wizualny edytor plików definicji struktury .whfmt. Edytuj bloki, typy, przesunięcia, długości i kolory w DataGrid.</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Waliduj (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Dodaj blok (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Przełącz widok kodu na żywo</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Układ</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Układ widoku kodu</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Kod po prawej</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Kod po lewej</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Kod na dole</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Kod na górze</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Format</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Karta</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Bloki</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Walidacja</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Dlugosc:</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Wybierz plik binarny do testowania</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Nazwa</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Typ</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Kolor</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Krycie</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Opis</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Ukryty</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Endianness</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Typ bloku</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Akcja</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Zmienna</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Wartość</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Obliczenie</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Wyrażenie</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Zapisz jako</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Pozycja</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Przesunięcie</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Przesunięcie od</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Dodatkowe przesunięcie</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Długość</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Typ wartości</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Tablica</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Liczba</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Rozmiar wpisu</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Zmienna indeksu</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Cykl kolorów</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Pola wpisów są wyświetlane jako dzieci w drzewie.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Unia</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Dyskryminator</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Warianty</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Zagnieżdżona struktura</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Odn. struktury</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Lokalizacja wskaźnika</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Cel i przechowywanie</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Zmienna docelowa</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Etykieta</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Pozycja i rozmiar</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Przechowywanie</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Zapisz zmapowane jako</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Mapa wartości</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Pola bitowe</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Nazwa</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Bity</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Do</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Maks. długość</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Min. wartość</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Maks. wartość</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Wzorzec (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Komunikat o błędzie</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Nazwa zmiennej</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Grupa</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Grupa wizualnie oznacza zestaw pól podrzędnych nakładką kolorystyczną. Sama nie zużywa bajtów.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Elementy podrzędne są wyświetlane w drzewie bloków — użyj drzewa, aby dodawać/zmieniać kolejność bloków podrzędnych.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Pola podrzędne są wyświetlane w drzewie bloków.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Region danych surowych</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Oznacza region surowych bajtów nakładką kolorystyczną. Żadna wartość nie jest wyodrębniana.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Warunek</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Etykiety gałęzi</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>Etykieta True</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>Etykieta False</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Bloki Then / Else są wyświetlane jako dzieci w drzewie.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Warunek pętli</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Granice</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Maks. iteracje</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Bloki ciała są wyświetlane jako dzieci w drzewie.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Nazwa zmiennej, na której operować — wpisz, aby zobaczyć podpowiedzi (Ctrl+Spacja)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Wartość do ustawienia / ilość do dodania lub odjęcia — obsługuje var:nazwa</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Wyrażenie matematyczne ze zmiennymi i funkcjami — Ctrl+Spacja dla autouzupełniania</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Nazwa zmiennej do przechowania obliczonego wyniku — Ctrl+Spacja dla podpowiedzi</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Offset w pliku, gdzie zaczyna się tablica — Ctrl+Spacja dla autouzupełniania</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Zmienna używana jako offset bazowy dla tej tablicy</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Liczba wpisów — Ctrl+Spacja dla podpowiedzi zmiennych</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Rozmiar każdego wpisu w bajtach — Ctrl+Spacja dla podpowiedzi zmiennych</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Nazwa zmiennej indeksu pętli (np. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Dodaj kolor</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Zmienna sterująca wyborem wariantu — Ctrl+Spacja dla podpowiedzi</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Nazwa formatu lub ścieżka względna do pliku .whfmt</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Przeglądaj…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Offset w pliku, skąd odczytywana jest wartość wskaźnika — Ctrl+Spacja dla autouzupełniania</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Nazwa zmiennej używanej jako offset bazowy</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>Rozmiar wartości wskaźnika w bajtach (np. 4 dla uint32) — lub var:nazwa</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Zmienna, która otrzyma rozwiązany adres wskaźnika</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Zmienna do przechowania surowej wartości wskaźnika</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Etykieta adnotacji wyświetlana w widoku hex</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Spacja dla autouzupełniania — liczba całk., var:nazwa, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Nazwa zmiennej, której wartość jest offsetem bazowym — Ctrl+Spacja dla podpowiedzi</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>Dodatkowe bajty dodawane do OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Spacja dla autouzupełniania — liczba całk., var:nazwa, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Nazwa zmiennej do przechowania sparsowanej wartości — Ctrl+Spacja dla podpowiedzi</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>Nazwa zmiennej dla wartości tłumaczonej przez ValueMap — Ctrl+Spacja dla podpowiedzi</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>surowe=Wyświetlanie (np. 0=Skala szarości)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ Dodaj wpis ValueMap</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Zakres bitów np. 7-6 lub pojedynczy bit np. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Dodaj pole bitowe</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Wartownik (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Wzorzec hex lub var:nazwa, gdzie zatrzymać odczyt. Zastępuje Length, gdy ustawiony.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Limit bezpieczeństwa (bajty), jeśli wzorzec Until nigdy nie zostanie znaleziony. 0 = domyślny interpretera (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until inkluzywne (uwzględnij bajty wzorca w długości pola)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Reguły walidacji</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Nazwa zmiennej odczytywanej przez ten blok metadanych</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Stała liczba całk. lub var:nazwa — Ctrl+Spacja dla podpowiedzi</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Limit bezpieczeństwa — liczba całk.</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Zmienna otrzymująca bieżący indeks iteracji (od 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Zmienna do przechowania liczby iteracji po pętli — Ctrl+Spacja dla podpowiedzi</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Edytuj ten blok jako surowy JSON</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Dodaj asercję</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Dodaj sumę kontrolną</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Nazwa szablonu</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Nazwa struktury (struct C)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Tylko cyfry hex (np. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Pokaż:</value></data>
+</root>

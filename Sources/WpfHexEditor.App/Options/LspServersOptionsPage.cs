@@ -17,6 +17,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Microsoft.Win32;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Core.Options;
 
@@ -69,7 +70,7 @@ public sealed class LspServersOptionsPage : UserControl, IOptionsPage
         // ── Toolbar ────────────────────────────────────────────────────────────
         var addBtn    = MakeButton("Add",    OnAdd);
         var removeBtn = MakeButton("Remove", OnRemove);
-        var browseBtn = MakeButton("Browse", OnBrowse);
+        var browseBtn = MakeButton(AppResources.App_Options_Browse, OnBrowse);
         var toolbar   = new StackPanel
         {
             Orientation = Orientation.Horizontal,
@@ -91,37 +92,37 @@ public sealed class LspServersOptionsPage : UserControl, IOptionsPage
 
         _grid.Columns.Add(new DataGridCheckBoxColumn
         {
-            Header  = "Enabled",
+            Header  = AppResources.App_Options_LspEnabled,
             Binding = new Binding(nameof(LspServerRow.IsEnabled)) { Mode = BindingMode.TwoWay },
             Width   = new DataGridLength(60),
         });
         _grid.Columns.Add(new DataGridTextColumn
         {
-            Header  = "Language ID",
+            Header  = AppResources.App_Options_LspLanguageId,
             Binding = new Binding(nameof(LspServerRow.LanguageId)) { Mode = BindingMode.TwoWay },
             Width   = new DataGridLength(1, DataGridLengthUnitType.Star),
         });
         _grid.Columns.Add(new DataGridTextColumn
         {
-            Header  = "Extensions",
+            Header  = AppResources.App_Options_LspExtensions,
             Binding = new Binding(nameof(LspServerRow.Extensions)) { Mode = BindingMode.TwoWay },
             Width   = new DataGridLength(1, DataGridLengthUnitType.Star),
         });
         _grid.Columns.Add(new DataGridTextColumn
         {
-            Header  = "Executable",
+            Header  = AppResources.App_Options_LspExecutable,
             Binding = new Binding(nameof(LspServerRow.ExecutablePath)) { Mode = BindingMode.TwoWay },
             Width   = new DataGridLength(2, DataGridLengthUnitType.Star),
         });
         _grid.Columns.Add(new DataGridTextColumn
         {
-            Header  = "Arguments",
+            Header  = AppResources.App_Options_LspArguments,
             Binding = new Binding(nameof(LspServerRow.Arguments)) { Mode = BindingMode.TwoWay },
             Width   = new DataGridLength(1, DataGridLengthUnitType.Star),
         });
         _grid.Columns.Add(new DataGridTextColumn
         {
-            Header   = "Source",
+            Header   = AppResources.App_Options_LspSource,
             Binding  = new Binding(nameof(LspServerRow.Source)),
             IsReadOnly = true,
             Width    = new DataGridLength(70),
@@ -174,7 +175,7 @@ public sealed class LspServersOptionsPage : UserControl, IOptionsPage
 
         var dlg = new OpenFileDialog
         {
-            Title  = "Select LSP server executable",
+            Title  = AppResources.App_Options_SelectLspExecutable,
             Filter = "Executable|*.exe;*.cmd;*.bat|All files|*.*",
         };
         if (dlg.ShowDialog() != true) return;

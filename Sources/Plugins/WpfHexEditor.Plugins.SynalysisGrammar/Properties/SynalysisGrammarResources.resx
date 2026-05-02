@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.SynalysisGrammar
+    File        : SynalysisGrammarResources.resx
+    Description : Localized UI strings for the Synalysis Grammar plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Status message after overlay is cleared -->
+  <data name="Synalysis_OverlayCleared" xml:space="preserve">
+    <value>Overlay cleared</value>
+  </data>
+
+  <!-- File open dialog title -->
+  <data name="Synalysis_OpenGrammarFile" xml:space="preserve">
+    <value>Open Grammar File</value>
+  </data>
+
+  <data name="Synalysis_ApplyGrammar" xml:space="preserve">
+    <value>Apply Grammar</value>
+  </data>
+  <data name="Synalysis_CopyName" xml:space="preserve">
+    <value>Copy Name</value>
+  </data>
+  <data name="Synalysis_CopyExtensions" xml:space="preserve">
+    <value>Copy Extensions</value>
+  </data>
+  <data name="Synalysis_RemoveGrammar" xml:space="preserve">
+    <value>Remove Grammar</value>
+  </data>
+  <data name="Synalysis_LoadFromDisk" xml:space="preserve">
+    <value>Load grammar from disk (.grammar file)</value>
+  </data>
+  <data name="Synalysis_ReloadList" xml:space="preserve">
+    <value>Reload grammar list (F5)</value>
+  </data>
+  <data name="Synalysis_ApplySelected" xml:space="preserve">
+    <value>Apply selected grammar (Enter)</value>
+  </data>
+  <data name="Synalysis_ClearOverlay" xml:space="preserve">
+    <value>Clear grammar overlay from hex view</value>
+  </data>
+  <data name="Synalysis_AutoApply" xml:space="preserve">
+    <value>Auto-apply grammar on file open</value>
+  </data>
+  <data name="Synalysis_SearchGrammars" xml:space="preserve">
+    <value>Search grammars…</value>
+  </data>
+  <data name="Synalysis_TabInfo" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Synalysis_TabStructure" xml:space="preserve">
+    <value>Structure</value>
+  </data>
+  <data name="Synalysis_BehaviourSection" xml:space="preserve">
+    <value>Behaviour</value>
+  </data>
+  <data name="Synalysis_AutoApplyOnOpen" xml:space="preserve">
+    <value>Auto-apply grammar when a file is opened</value>
+  </data>
+  <data name="Synalysis_MaxSampleSize" xml:space="preserve">
+    <value>Max sample size (KB):</value>
+  </data>
+  <data name="Synalysis_GrammarListFilter" xml:space="preserve">
+    <value>Grammar List Filter</value>
+  </data>
+  <data name="Synalysis_ShowBuiltIn" xml:space="preserve">
+    <value>Show built-in grammars (shipped with WpfHexEditor)</value>
+  </data>
+  <data name="Synalysis_ShowFromDisk" xml:space="preserve">
+    <value>Show grammars loaded from disk</value>
+  </data>
+  <data name="Synalysis_ShowFromPlugins" xml:space="preserve">
+    <value>Show grammars contributed by plugins</value>
+  </data>
+  <data name="Synalysis_OverlaySection" xml:space="preserve">
+    <value>Overlay</value>
+  </data>
+  <data name="Synalysis_ClearOnRemove" xml:space="preserve">
+    <value>Clear hex view overlay when a grammar is removed from the list</value>
+  </data>
+</root>

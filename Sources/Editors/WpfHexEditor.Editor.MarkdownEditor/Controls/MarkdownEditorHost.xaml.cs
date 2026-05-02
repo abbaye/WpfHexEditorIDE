@@ -31,6 +31,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -40,6 +41,7 @@ using System.Windows.Threading;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.MarkdownEditor.Core.Services;
+using WpfHexEditor.Editor.MarkdownEditor.Properties;
 using TextEditorControl = WpfHexEditor.Editor.TextEditor.Controls.TextEditor;
 
 namespace WpfHexEditor.Editor.MarkdownEditor.Controls;
@@ -92,6 +94,11 @@ public sealed partial class MarkdownEditorHost : UserControl,
 
     // Debounce timers
     private readonly DispatcherTimer _refreshTimer;
+    private readonly DispatcherTimer _scrollSyncTimer;
+
+    // Scroll sync state
+    private bool _suppressEditorScrollSync;   // prevents feedback loop when preview→editor
+    private bool _suppressPreviewScrollSync;  // prevents feedback loop when editor→preview
 
     // Cached document length — updated after each render, used by ScheduleRefresh()
     // to avoid calling GetText() on every keystroke.
@@ -123,11 +130,12 @@ public sealed partial class MarkdownEditorHost : UserControl,
 
     // --- Status bar -------------------------------------------------------
     private readonly ObservableCollection<StatusBarItem> _statusItems = new();
-    private readonly StatusBarItem _sbView        = new() { Label = "View",  Tooltip = "Current view mode" };
-    private readonly StatusBarItem _sbWordCount   = new() { Label = "Words", Tooltip = "Approximate word count" };
-    private readonly StatusBarItem _sbLineCount   = new() { Label = "Lines", Tooltip = "Total line count" };
-    private readonly StatusBarItem _sbReadingTime = new() { Label = "Read",  Tooltip = "Estimated reading time (200 wpm)" };
-    private readonly StatusBarItem _sbZoom        = new() { Label = "Zoom",  Tooltip = "Preview zoom (Ctrl+scroll in preview)" };
+    private readonly StatusBarItem _sbView        = new() { Label = MarkdownEditorResources.MdSb_ViewLabel,  Tooltip = MarkdownEditorResources.MdSb_ViewTooltip };
+    private readonly StatusBarItem _sbWordCount   = new() { Label = MarkdownEditorResources.MdSb_WordsLabel, Tooltip = MarkdownEditorResources.MdSb_WordsTooltip };
+    private readonly StatusBarItem _sbLineCount   = new() { Label = MarkdownEditorResources.MdSb_LinesLabel, Tooltip = MarkdownEditorResources.MdSb_LinesTooltip };
+    private readonly StatusBarItem _sbReadingTime = new() { Label = MarkdownEditorResources.MdSb_ReadLabel,  Tooltip = MarkdownEditorResources.MdSb_ReadTooltip };
+    private readonly StatusBarItem _sbZoom        = new() { Label = MarkdownEditorResources.MdSb_ZoomLabel,  Tooltip = MarkdownEditorResources.MdSb_ZoomTooltip };
+    private readonly StatusBarItem _sbYamlTitle   = new() { Label = "YAML", Tooltip = "YAML front-matter title" };
 
     // --- Construction -----------------------------------------------------
 
@@ -147,6 +155,13 @@ public sealed partial class MarkdownEditorHost : UserControl,
             Interval = TimeSpan.FromMilliseconds(300),
         };
         _refreshTimer.Tick += OnRefreshTimerTick;
+
+        // Scroll-sync debounce timer
+        _scrollSyncTimer = new DispatcherTimer(DispatcherPriority.Background)
+        {
+            Interval = TimeSpan.FromMilliseconds(200),
+        };
+        _scrollSyncTimer.Tick += OnScrollSyncTick;
 
         // Enable word wrap by default for Markdown source
         _editor.IsWordWrapEnabled = true;
@@ -173,11 +188,21 @@ public sealed partial class MarkdownEditorHost : UserControl,
         // Preview pane context menu actions → delegate to host methods
         _preview.PreviewContextMenuAction += OnPreviewContextMenuAction;
 
+        // Scroll sync — editor scrolls → sync preview; preview scrolls → sync editor
+        _editor.ViewportScrollChanged += OnEditorScrollChanged;
+        _preview.PreviewScrolled      += OnPreviewScrolled;
+
         // Source editor context menu — FORMAT + INSERT groups
         _editor.ContextMenu = BuildEditorContextMenu();
 
         // Intercept Ctrl+V for image paste before forwarding to the inner TextEditor.
-        PreviewKeyDown += OnPreviewKeyDown;
+        PreviewKeyDown  += OnPreviewKeyDown;
+        PreviewTextInput += OnPreviewTextInput;
+
+        // Drag-drop images onto the source editor pane
+        AllowDrop = true;
+        PreviewDragOver += OnEditorDragOver;
+        PreviewDrop     += OnEditorDrop;
 
         // Keyboard shortcuts
         CommandBindings.Add(new CommandBinding(MdCommands.TogglePreview, (_, _) => CycleViewMode()));
@@ -404,11 +429,164 @@ public sealed partial class MarkdownEditorHost : UserControl,
         }
 
         // Only intercept Ctrl+V and only when the clipboard contains image data.
-        if (e.Key != Key.V || (Keyboard.Modifiers & ModifierKeys.Control) == 0) return;
-        if (!Clipboard.ContainsImage()) return;
+        if (e.Key == Key.V && (Keyboard.Modifiers & ModifierKeys.Control) != 0 && Clipboard.ContainsImage())
+        {
+            e.Handled = true;
+            _ = PasteImageAsync();
+            return;
+        }
 
-        e.Handled = true;  // prevent TextEditor from processing this paste
-        _ = PasteImageAsync();
+        // List continuation on Enter
+        if (e.Key == Key.Return && Keyboard.Modifiers == ModifierKeys.None && _viewMode != MdViewMode.PreviewOnly)
+        {
+            if (TryHandleListContinuation())
+                e.Handled = true;
+        }
+    }
+
+    // ── Auto-pair Markdown characters ─────────────────────────────────────────
+
+    private static readonly (char Trigger, string Open, string Close)[] _autoPairs =
+    [
+        ('*',  "**",  "**"),   // **|**
+        ('`',  "`",   "`"),    // `|`
+        ('[',  "[",   "]()"),  // [|]()
+        ('(',  "(",   ")"),    // (|)
+    ];
+
+    private void OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+    {
+        if (_viewMode == MdViewMode.PreviewOnly) return;
+        if (e.Text.Length != 1) return;
+
+        var ch   = e.Text[0];
+        var pair = _autoPairs.FirstOrDefault(p => p.Trigger == ch);
+        if (pair == default) return;
+
+        // If there is a selection, wrap it
+        var selected = _editor.GetSelectedText();
+        if (!string.IsNullOrEmpty(selected))
+        {
+            WrapSelection(pair.Open, pair.Close, selected);
+            e.Handled = true;
+            return;
+        }
+
+        // No selection — insert full pair and position caret inside
+        _editor.InsertText(pair.Open + pair.Close);
+
+        // Move caret back inside the pair (before closing delimiter)
+        var cfg    = _editorPersist.GetEditorConfig();
+        var newCol = Math.Max(1, cfg.CaretColumn - pair.Close.Length);
+        _editorNav.NavigateTo(cfg.CaretLine, newCol);
+
+        e.Handled = true;
+    }
+
+    // ── List continuation ─────────────────────────────────────────────────────
+
+    private static readonly Regex _listPrefixRegex =
+        new(@"^(\s*)([-*+]|\d+\.)\s", RegexOptions.Compiled);
+
+    private bool TryHandleListContinuation()
+    {
+        var text  = _editor.GetText();
+        if (text is null) return false;
+
+        var cfg       = _editorPersist.GetEditorConfig();
+        var caretLine = cfg.CaretLine - 1; // convert to 0-based
+        var lines     = text.Split('\n');
+        if (caretLine < 0 || caretLine >= lines.Length) return false;
+
+        var line = lines[caretLine].TrimEnd('\r');
+        var m    = _listPrefixRegex.Match(line);
+        if (!m.Success) return false;
+
+        var indent = m.Groups[1].Value;
+        var marker = m.Groups[2].Value;
+
+        // If the list item body is empty → end the list (remove marker)
+        var fullPrefix = m.Value;
+        if (line.Length == fullPrefix.Length)
+        {
+            // Replace current line with empty line (delete the marker)
+            _editor.InsertText("\n");
+            // Simulate Home + Shift+End + Delete to clear the marker on previous line is complex;
+            // instead just insert newline and the outer editor handles the rest via normal Enter.
+            return false; // let the editor process Enter normally to remove the empty marker
+        }
+
+        // Continue the list: compute the next marker
+        string nextMarker;
+        if (int.TryParse(marker.TrimEnd('.'), out var num))
+            nextMarker = $"{num + 1}.";
+        else
+            nextMarker = marker;
+
+        _editor.InsertText($"\n{indent}{nextMarker} ");
+        return true;
+    }
+
+    private static readonly string[] _imageExtensions = [".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".svg"];
+
+    private void OnEditorDragOver(object sender, System.Windows.DragEventArgs e)
+    {
+        if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop))
+        {
+            var files = e.Data.GetData(System.Windows.DataFormats.FileDrop) as string[];
+            if (files?.Any(f => _imageExtensions.Contains(Path.GetExtension(f).ToLowerInvariant())) == true)
+            {
+                e.Effects = System.Windows.DragDropEffects.Copy;
+                e.Handled = true;
+                return;
+            }
+        }
+        e.Effects = System.Windows.DragDropEffects.None;
+    }
+
+    private async void OnEditorDrop(object sender, System.Windows.DragEventArgs e)
+    {
+        if (!e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop)) return;
+
+        var files = e.Data.GetData(System.Windows.DataFormats.FileDrop) as string[];
+        if (files is null) return;
+
+        foreach (var file in files.Where(f => _imageExtensions.Contains(Path.GetExtension(f).ToLowerInvariant())))
+            await DropImageFileAsync(file);
+
+        e.Handled = true;
+    }
+
+    private async Task DropImageFileAsync(string sourcePath)
+    {
+        try
+        {
+            string relativePath;
+
+            if (!string.IsNullOrEmpty(_filePath))
+            {
+                var dir       = Path.GetDirectoryName(_filePath)!;
+                var assetsDir = Path.Combine(dir, "assets");
+                Directory.CreateDirectory(assetsDir);
+                var fileName = Path.GetFileName(sourcePath);
+                var destPath = Path.Combine(assetsDir, fileName);
+
+                await Task.Run(() => File.Copy(sourcePath, destPath, overwrite: true));
+                relativePath = $"assets/{fileName}";
+            }
+            else
+            {
+                var image  = new BitmapImage(new Uri(sourcePath));
+                var base64 = await Task.Run(() => ImageToBase64(image));
+                relativePath = $"data:image/png;base64,{base64}";
+            }
+
+            InsertSnippet($"![{Path.GetFileNameWithoutExtension(sourcePath)}]({relativePath})");
+        }
+        catch (Exception ex)
+        {
+            OutputMessage?.Invoke(this, $"[MarkdownEditor] Image drop failed: {ex.Message}");
+        }
     }
 
     private async Task PasteImageAsync()
@@ -527,43 +705,162 @@ public sealed partial class MarkdownEditorHost : UserControl,
         menu.SetResourceReference(StyleProperty, "MD_ContextMenuStyle");
 
         // FORMAT group
-        var fmtHeader = new MenuItem { Header = "FORMAT" };
+        var fmtHeader = new MenuItem { Header = MarkdownEditorResources.MdCtx_GroupFormat };
         fmtHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
         menu.Items.Add(fmtHeader);
 
-        menu.Items.Add(MakeEditorMenuItem("Bold",          "Ctrl+B", () => WrapSelection("**", "**",  "bold text")));
-        menu.Items.Add(MakeEditorMenuItem("Italic",        "Ctrl+I", () => WrapSelection("_",  "_",   "italic text")));
-        menu.Items.Add(MakeEditorMenuItem("Strikethrough", "",       () => WrapSelection("~~", "~~",  "strikethrough")));
-        menu.Items.Add(MakeEditorMenuItem("Inline Code",   "",       () => WrapSelection("`",  "`",   "code")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_Bold,          "Ctrl+B", () => WrapSelection("**", "**",  "bold text")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_Italic,        "Ctrl+I", () => WrapSelection("_",  "_",   "italic text")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_Strikethrough, "",       () => WrapSelection("~~", "~~",  "strikethrough")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_InlineCode,    "",       () => WrapSelection("`",  "`",   "code")));
 
         var sep1 = new Separator();
         sep1.SetResourceReference(StyleProperty, "MD_GroupSeparatorStyle");
         menu.Items.Add(sep1);
 
         // INSERT group
-        var insHeader = new MenuItem { Header = "INSERT" };
+        var insHeader = new MenuItem { Header = MarkdownEditorResources.MdCtx_GroupInsert };
         insHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
         menu.Items.Add(insHeader);
 
-        menu.Items.Add(MakeEditorMenuItem("Table",          "", () => InsertSnippet(
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_Table,          "", () => InsertSnippet(
             "\n| Header 1 | Header 2 | Header 3 |\n| --- | --- | --- |\n| Cell 1 | Cell 2 | Cell 3 |\n")));
-        menu.Items.Add(MakeEditorMenuItem("Code Block",     "", () => InsertSnippet("\n```\n\n```\n")));
-        menu.Items.Add(MakeEditorMenuItem("Link",           "", () => WrapSelection("[", "](url)", "link text")));
-        menu.Items.Add(MakeEditorMenuItem("Image",          "", () => InsertSnippet("![alt text](image.png)")));
-        menu.Items.Add(MakeEditorMenuItem("Horizontal Rule","", () => InsertSnippet("\n---\n")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_CodeBlock,     "", () => InsertSnippet("\n```\n\n```\n")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_Link,          "", () => WrapSelection("[", "](url)", "link text")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_Image,         "", () => InsertSnippet("![alt text](image.png)")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_HorizontalRule,"", () => InsertSnippet("\n---\n")));
 
         var sep2 = new Separator();
         sep2.SetResourceReference(StyleProperty, "MD_GroupSeparatorStyle");
         menu.Items.Add(sep2);
 
+        // EXPORT group
+        var sep3 = new Separator();
+        sep3.SetResourceReference(StyleProperty, "MD_GroupSeparatorStyle");
+        menu.Items.Add(sep3);
+
+        var exportHeader = new MenuItem { Header = MarkdownEditorResources.MdCtx_GroupExport };
+        exportHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
+        menu.Items.Add(exportHeader);
+
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_ExportHtml, "", async () => await ExportHtmlAsync()));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_ExportPdf,  "", async () => await ExportPdfAsync()));
+
+        var sep4 = new Separator();
+        sep4.SetResourceReference(StyleProperty, "MD_GroupSeparatorStyle");
+        menu.Items.Add(sep4);
+
         // VIEW group
-        var viewHeader = new MenuItem { Header = "VIEW" };
+        var viewHeader = new MenuItem { Header = MarkdownEditorResources.MdCtx_GroupView };
         viewHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
         menu.Items.Add(viewHeader);
 
-        menu.Items.Add(MakeEditorMenuItem("Word Wrap\tAlt+Z", "", () => SetWordWrap(!_wordWrap)));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_WordWrap, "", () => SetWordWrap(!_wordWrap)));
 
         return menu;
+    }
+
+    // --- Scroll sync ---------------------------------------------------------
+
+    private double _pendingScrollPct; // target percent for debounced sync
+
+    private void OnEditorScrollChanged(object? sender, ScrollChangedEventArgs e)
+    {
+        if (_suppressEditorScrollSync) return;
+        if (_viewMode == MdViewMode.SourceOnly) return;
+
+        var maxScroll = e.ExtentHeight - e.ViewportHeight;
+        if (maxScroll <= 0) return;
+
+        _pendingScrollPct = e.VerticalOffset / maxScroll;
+        _scrollSyncTimer.Stop();
+        _scrollSyncTimer.Start();
+    }
+
+    private void OnScrollSyncTick(object? sender, EventArgs e)
+    {
+        _scrollSyncTimer.Stop();
+        _suppressPreviewScrollSync = true;
+        _preview.ScrollToPercent(_pendingScrollPct);
+        // Release the suppress flag after a short delay to absorb the JS scroll event
+        Dispatcher.BeginInvoke(() => _suppressPreviewScrollSync = false,
+            DispatcherPriority.ApplicationIdle);
+    }
+
+    private void OnPreviewScrolled(object? sender, double pct)
+    {
+        // Preview→editor reverse sync is intentionally a no-op.
+        // The TextEditor has no public scroll-to-offset API — NavigateTo() moves the caret,
+        // which fires ViewportScrollChanged and interrupts any active scrollbar drag in the editor.
+        // One-way sync (editor→preview) is the correct model here.
+    }
+
+    // --- Export ---------------------------------------------------------------
+
+    private async Task ExportHtmlAsync()
+    {
+        var dlg = new Microsoft.Win32.SaveFileDialog
+        {
+            Title      = MarkdownEditorResources.MdDlg_ExportHtmlTitle,
+            Filter     = "HTML file (*.html)|*.html",
+            DefaultExt = ".html",
+            FileName   = Path.GetFileNameWithoutExtension(_filePath ?? "document"),
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        var text      = _editor.GetText() ?? string.Empty;
+        var hasMermaid = HasMermaidDiagram(text);
+        var html      = MarkdownRenderService.GetHtmlPage(text, _isDark, hasMermaid);
+
+        await File.WriteAllTextAsync(dlg.FileName, html, System.Text.Encoding.UTF8);
+    }
+
+    private async Task ExportPdfAsync()
+    {
+        var dlg = new Microsoft.Win32.SaveFileDialog
+        {
+            Title      = MarkdownEditorResources.MdDlg_ExportPdfTitle,
+            Filter     = "PDF file (*.pdf)|*.pdf",
+            DefaultExt = ".pdf",
+            FileName   = Path.GetFileNameWithoutExtension(_filePath ?? "document"),
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        await _preview.ExportPdfAsync(dlg.FileName);
+    }
+
+    // --- Table of Contents ---------------------------------------------------
+
+    private static readonly Regex _headingRegex =
+        new(@"^(#{1,6})\s+(.+?)(?:\s+#+)?\s*$", RegexOptions.Multiline | RegexOptions.Compiled);
+
+    private void InsertTableOfContents()
+    {
+        var text = _editor.GetText();
+        if (string.IsNullOrEmpty(text)) return;
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("## Table of Contents");
+
+        foreach (System.Text.RegularExpressions.Match m in _headingRegex.Matches(text))
+        {
+            var level   = m.Groups[1].Value.Length;
+            var heading = m.Groups[2].Value.Trim();
+            var anchor  = ToGfmAnchor(heading);
+            var indent  = new string(' ', (level - 1) * 2);
+            sb.AppendLine($"{indent}- [{heading}](#{anchor})");
+        }
+
+        InsertSnippet(sb.ToString());
+    }
+
+    private static string ToGfmAnchor(string heading)
+    {
+        // GFM anchor: lowercase, spaces → hyphens, remove all non-alphanumeric except hyphens
+        var anchor = heading.ToLowerInvariant();
+        anchor = Regex.Replace(anchor, @"\s+", "-");
+        anchor = Regex.Replace(anchor, @"[^\w-]", "");
+        return anchor;
     }
 
     private static MenuItem MakeEditorMenuItem(string header, string gesture, Action onClick)
@@ -828,27 +1125,27 @@ public sealed partial class MarkdownEditorHost : UserControl,
         // View mode dropdown
         var viewItems = new ObservableCollection<EditorToolbarItem>
         {
-            new() { Label = "Source Only",  Icon = "\uE8A5", Command = new RelayCmd(() => SetViewMode(MdViewMode.SourceOnly)) },
-            new() { Label = "Split",        Icon = "\uE8A0", Command = new RelayCmd(() => SetViewMode(MdViewMode.Split)) },
-            new() { Label = "Preview Only", Icon = "\uE8A1", Command = new RelayCmd(() => SetViewMode(MdViewMode.PreviewOnly)) },
+            new() { Label = MarkdownEditorResources.MdView_SourceOnly,  Icon = "\uE8A5", Command = new RelayCmd(() => SetViewMode(MdViewMode.SourceOnly)) },
+            new() { Label = MarkdownEditorResources.MdView_Split,        Icon = "\uE8A0", Command = new RelayCmd(() => SetViewMode(MdViewMode.Split)) },
+            new() { Label = MarkdownEditorResources.MdView_PreviewOnly, Icon = "\uE8A1", Command = new RelayCmd(() => SetViewMode(MdViewMode.PreviewOnly)) },
         };
         _podView = new EditorToolbarItem
         {
-            Icon = "\uE8A1", Label = "View", Tooltip = "View mode (Ctrl+1/2/3)",
+            Icon = "\uE8A1", Label = MarkdownEditorResources.MdTb_ViewLabel, Tooltip = MarkdownEditorResources.MdTb_ViewTooltip,
             DropdownItems = viewItems,
         };
 
         // Layout dropdown
         var layoutItems = new ObservableCollection<EditorToolbarItem>
         {
-            new() { Label = "Preview Right",  Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewRight)) },
-            new() { Label = "Preview Left",   Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewLeft)) },
-            new() { Label = "Preview Bottom", Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewBottom)) },
-            new() { Label = "Preview Top",    Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewTop)) },
+            new() { Label = MarkdownEditorResources.MdLayout_PreviewRight,  Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewRight)) },
+            new() { Label = MarkdownEditorResources.MdLayout_PreviewLeft,   Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewLeft)) },
+            new() { Label = MarkdownEditorResources.MdLayout_PreviewBottom, Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewBottom)) },
+            new() { Label = MarkdownEditorResources.MdLayout_PreviewTop,    Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewTop)) },
         };
         _podLayout = new EditorToolbarItem
         {
-            Icon = "\uF57E", Label = "Layout", Tooltip = "Split layout (Ctrl+Shift+L)",
+            Icon = "\uF57E", Label = MarkdownEditorResources.MdTb_LayoutLabel, Tooltip = MarkdownEditorResources.MdTb_LayoutTooltip,
             DropdownItems = layoutItems,
         };
 
@@ -858,7 +1155,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
         // Word-wrap toggle
         _podWrap = new EditorToolbarItem
         {
-            Icon = "\uE8A3", Label = "Wrap", Tooltip = "Word wrap (Alt+Z)",
+            Icon = "\uE8A3", Label = MarkdownEditorResources.MdTb_WrapLabel, Tooltip = MarkdownEditorResources.MdTb_WrapTooltip,
             IsToggle = true, IsChecked = _wordWrap,
             Command = new RelayCmd(() => SetWordWrap(!_wordWrap)),
         };
@@ -866,44 +1163,45 @@ public sealed partial class MarkdownEditorHost : UserControl,
         // Force-refresh button
         var podRefresh = new EditorToolbarItem
         {
-            Icon = "\uE72C", Label = "Refresh", Tooltip = "Refresh preview (F9)",
+            Icon = "\uE72C", Label = MarkdownEditorResources.MdTb_RefreshLabel, Tooltip = MarkdownEditorResources.MdTb_RefreshTooltip,
             Command = new RelayCmd(async () => await ForceRefreshAsync()),
         };
 
         // Insert pod
         var insertItems = new ObservableCollection<EditorToolbarItem>
         {
-            new() { Label = "Table",          Icon = "\uE8EC", Command = new RelayCmd(() => InsertSnippet("\n| Column 1 | Column 2 | Column 3 |\n|---|---|---|\n| Cell | Cell | Cell |\n")) },
-            new() { Label = "Code Block",     Icon = "\uE943", Command = new RelayCmd(() => InsertSnippet("\n```\n\n```\n")) },
-            new() { Label = "Link",           Icon = "\uE8C1", Command = new RelayCmd(() => InsertSnippet("[link text](https://example.com)")) },
-            new() { Label = "Image",          Icon = "\uEB9F", Command = new RelayCmd(() => InsertSnippet("![alt text](image.png)")) },
-            new() { Label = "Horizontal Rule",Icon = "\uE8EF", Command = new RelayCmd(() => InsertSnippet("\n---\n")) },
+            new() { Label = MarkdownEditorResources.MdInsert_Table,          Icon = "\uE8EC", Command = new RelayCmd(() => InsertSnippet("\n| Column 1 | Column 2 | Column 3 |\n|---|---|---|\n| Cell | Cell | Cell |\n")) },
+            new() { Label = MarkdownEditorResources.MdInsert_CodeBlock,      Icon = "\uE943", Command = new RelayCmd(() => InsertSnippet("\n```\n\n```\n")) },
+            new() { Label = MarkdownEditorResources.MdCtx_Link,              Icon = "\uE8C1", Command = new RelayCmd(() => InsertSnippet("[link text](https://example.com)")) },
+            new() { Label = MarkdownEditorResources.MdInsert_Image,          Icon = "\uEB9F", Command = new RelayCmd(() => InsertSnippet("![alt text](image.png)")) },
+            new() { Label = MarkdownEditorResources.MdInsert_HorizontalRule, Icon = "\uE8EF", Command = new RelayCmd(() => InsertSnippet("\n---\n")) },
+            new() { Label = MarkdownEditorResources.MdInsert_TableOfContents, Icon = "\uE8FD", Command = new RelayCmd(InsertTableOfContents) },
         };
         var podInsert = new EditorToolbarItem
         {
-            Icon = "\uE710", Label = "Insert", Tooltip = "Insert Markdown element",
+            Icon = "\uE710", Label = MarkdownEditorResources.MdTb_InsertLabel, Tooltip = MarkdownEditorResources.MdTb_InsertTooltip,
             DropdownItems = insertItems,
         };
 
         // Format pod
         var formatItems = new ObservableCollection<EditorToolbarItem>
         {
-            new() { Label = "Bold",            Icon = "\uE8DD", Command = new RelayCmd(() => WrapSelection("**", "**", "bold text")) },
-            new() { Label = "Italic",          Icon = "\uE8DB", Command = new RelayCmd(() => WrapSelection("*", "*", "italic text")) },
-            new() { Label = "Strikethrough",   Icon = "\uEDE0", Command = new RelayCmd(() => WrapSelection("~~", "~~", "strikethrough")) },
-            new() { Label = "Inline Code",     Icon = "\uE943", Command = new RelayCmd(() => WrapSelection("`", "`", "code")) },
+            new() { Label = MarkdownEditorResources.MdFmt_Bold,          Icon = "\uE8DD", Command = new RelayCmd(() => WrapSelection("**", "**", "bold text")) },
+            new() { Label = MarkdownEditorResources.MdFmt_Italic,        Icon = "\uE8DB", Command = new RelayCmd(() => WrapSelection("*", "*", "italic text")) },
+            new() { Label = MarkdownEditorResources.MdFmt_Strikethrough, Icon = "\uEDE0", Command = new RelayCmd(() => WrapSelection("~~", "~~", "strikethrough")) },
+            new() { Label = MarkdownEditorResources.MdFmt_InlineCode,    Icon = "\uE943", Command = new RelayCmd(() => WrapSelection("`", "`", "code")) },
         };
         var podFormat = new EditorToolbarItem
         {
-            Icon = "\uE8D2", Label = "Format", Tooltip = "Format selected text",
+            Icon = "\uE8D2", Label = MarkdownEditorResources.MdTb_FormatLabel, Tooltip = MarkdownEditorResources.MdTb_FormatTooltip,
             DropdownItems = formatItems,
         };
 
         // Fullscreen toggle button
         _podFullscreen = new EditorToolbarItem
         {
-            Icon      = "\uE740", Label   = "Fullscreen",
-            Tooltip   = "Toggle fullscreen preview",
+            Icon      = "\uE740", Label   = MarkdownEditorResources.MdTb_FullscreenLabel,
+            Tooltip   = MarkdownEditorResources.MdTb_FullscreenTooltip,
             IsToggle  = true,     IsChecked = false,
             Command   = new RelayCmd(ToggleFullscreen),
         };
@@ -975,6 +1273,8 @@ public sealed partial class MarkdownEditorHost : UserControl,
         _statusItems.Add(_sbLineCount);
         _statusItems.Add(_sbReadingTime);
         _statusItems.Add(_sbZoom);
+        _sbYamlTitle.IsVisible = false;
+        _statusItems.Add(_sbYamlTitle);
 
         UpdateStatusBar();
     }
@@ -1009,6 +1309,28 @@ public sealed partial class MarkdownEditorHost : UserControl,
         _sbWordCount.Value = words.ToString("N0");
         _sbLineCount.Value = lines.ToString("N0");
         UpdateReadingTime(words);
+        UpdateYamlStatusBar(text);
+    }
+
+    private void UpdateYamlStatusBar(string? text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            _sbYamlTitle.IsVisible = false;
+            return;
+        }
+
+        var (yaml, _) = MarkdownRenderService.ExtractYamlFrontmatter(text);
+        if (yaml is null)
+        {
+            _sbYamlTitle.IsVisible = false;
+            return;
+        }
+
+        // Extract "title:" key if present
+        var titleMatch = Regex.Match(yaml, @"^title\s*:\s*(.+)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+        _sbYamlTitle.Value     = titleMatch.Success ? titleMatch.Groups[1].Value.Trim() : "front-matter";
+        _sbYamlTitle.IsVisible = true;
     }
 
     private void UpdateReadingTime(int wordCount)

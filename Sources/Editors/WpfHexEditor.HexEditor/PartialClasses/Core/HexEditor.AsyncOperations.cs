@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WpfHexEditor.Core.Models;
+using WpfHexEditor.Core.Properties;
 using WpfHexEditor.Core.Services;
 using WpfHexEditor.HexEditor.ViewModels;
 
@@ -156,7 +157,7 @@ namespace WpfHexEditor.HexEditor
                 // Update UI on completion
                 Dispatcher.Invoke(() =>
                 {
-                    StatusText.Text = "File saved";
+                    StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_FileSaved;
                     OnChangesSubmited(EventArgs.Empty);
                 });
             }

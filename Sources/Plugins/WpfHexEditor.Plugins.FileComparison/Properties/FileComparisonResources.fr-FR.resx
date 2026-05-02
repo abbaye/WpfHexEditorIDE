@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="FileComparison_PanelTitle" xml:space="preserve">
+    <value>Centre de diff</value>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>Sélectionner le fichier 1 à comparer</value>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>Sélectionner le fichier 2 à comparer</value>
+  </data>
+  <data name="FileComparison_SelectFilesHint" xml:space="preserve">
+    <value>Sélectionner des fichiers à comparer</value>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>Sélectionner les deux fichiers à comparer</value>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>Sélectionner des fichiers à comparer</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>Comparaison…</value>
+  </data>
+  <data name="FileComparison_Cancelled" xml:space="preserve">
+    <value>Annulé</value>
+  </data>
+  <data name="FileComparison_SelectTwoFiles" xml:space="preserve">
+    <value>Sélectionnez deux fichiers et cliquez sur Comparer</value>
+  </data>
+  <data name="FileComparison_MultipleFormats" xml:space="preserve">
+    <value>Plusieurs formats détectés</value>
+  </data>
+  <data name="FileComparison_SelectFile" xml:space="preserve">
+    <value>Sélectionner un fichier à comparer</value>
+  </data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>FICHIERS</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>RÉSUMÉ DES DIFFÉRENCES</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>Modifié</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>Inséré</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>Supprimé</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>FRÉQUENCE DES OCTETS (NIBBLES)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>ENTROPIE DE SHANNON (par bloc de 256 octets)</value></data>
+</root>

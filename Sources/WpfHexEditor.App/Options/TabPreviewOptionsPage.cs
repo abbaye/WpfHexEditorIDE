@@ -10,6 +10,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Options;
@@ -39,7 +40,7 @@ public sealed class TabPreviewOptionsPage : UserControl, IOptionsPage
     {
         _enabledCheck = new CheckBox
         {
-            Content = "Enable tab preview on hover",
+            Content = AppResources.App_Options_EnableTabPreviewHover,
             Margin  = new Thickness(0, 4, 0, 4),
         };
         _enabledCheck.Checked   += OnChanged;
@@ -52,7 +53,7 @@ public sealed class TabPreviewOptionsPage : UserControl, IOptionsPage
 
         _showFileNameCheck = new CheckBox
         {
-            Content = "Show file name below preview",
+            Content = AppResources.App_Options_ShowFileNameBelowPreview,
             Margin  = new Thickness(0, 4, 0, 4),
         };
         _showFileNameCheck.Checked   += OnChanged;

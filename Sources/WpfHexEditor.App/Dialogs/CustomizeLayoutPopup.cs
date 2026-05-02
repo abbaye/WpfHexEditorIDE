@@ -22,6 +22,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Threading;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Dialogs;
@@ -233,7 +234,7 @@ public sealed class CustomizeLayoutPopup : Window
             Background        = Brushes.Transparent,
             BorderThickness   = new Thickness(0),
             Cursor            = Cursors.Hand,
-            ToolTip           = "Reset to defaults",
+            ToolTip           = AppResources.App_Options_ResetToDefaults,
             Padding           = new Thickness(4, 2, 4, 2),
             VerticalAlignment = VerticalAlignment.Center,
             Template          = BuildIconButtonTemplate()

@@ -10,7 +10,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="800"
+             xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <fcSvc:FileComparisonLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <Grid Background="{DynamicResource PFP_PanelBackgroundBrush}">
         <Grid.RowDefinitions>
@@ -27,19 +35,18 @@
                 Padding="8,5">
             <DockPanel>
                 <Button DockPanel.Dock="Right"
-                        Content="Load File 2&#x2026;"
+                        Content="{DynamicResource FileComparison_LoadFile2}"
                         Style="{StaticResource PanelDropdownButtonStyle}"
                         Padding="12,3" Height="22" Margin="0,0,4,0"
                         Click="LoadFile2_Click"/>
                 <Button DockPanel.Dock="Right"
-                        Content="Load File 1&#x2026;"
+                        Content="{DynamicResource FileComparison_LoadFile1}"
                         Style="{StaticResource PanelDropdownButtonStyle}"
                         Padding="12,3" Height="22" Margin="0,0,8,0"
                         Click="LoadFile1_Click"/>
                 <Rectangle DockPanel.Dock="Right" Width="1" Margin="0,4,8,4"
                            Fill="{DynamicResource PFP_BorderBrush}"/>
-                <TextBlock x:Name="ComparisonInfoText"
-                           Text="Select files to compare"
+                <TextBlock x:Name="ComparisonInfoText" Text="{DynamicResource FileComparison_SelectFiles}"
                            VerticalAlignment="Center"
                            Margin="4,0,0,0" FontSize="11"
                            Foreground="{DynamicResource PFP_SubTextBrush}"/>
@@ -69,7 +76,7 @@
                             BorderBrush="{DynamicResource PFP_BorderBrush}"
                             BorderThickness="0,0,0,1"
                             Padding="8,5">
-                        <TextBlock x:Name="File1NameText" Text="File 1"
+                        <TextBlock x:Name="File1NameText" Text="{DynamicResource FileComparison_File1}"
                                    FontWeight="SemiBold" FontSize="11"
                                    Foreground="{DynamicResource PFP_TextBrush}"/>
                     </Border>
@@ -121,21 +128,21 @@
                     <Border Background="{DynamicResource DiffAdded_BackgroundBrush}"
                             BorderBrush="{DynamicResource DiffAdded_BorderBrush}"
                             BorderThickness="1"
-                            Width="26" Height="26" Margin="0,4" CornerRadius="4" ToolTip="Added"/>
+                            Width="26" Height="26" Margin="0,4" CornerRadius="4"/>
                     <TextBlock Text="+" FontWeight="Bold" HorizontalAlignment="Center"
                                Foreground="{DynamicResource DiffAdded_BorderBrush}"/>
 
                     <Border Background="{DynamicResource DiffModified_BackgroundBrush}"
                             BorderBrush="{DynamicResource DiffModified_BorderBrush}"
                             BorderThickness="1"
-                            Width="26" Height="26" Margin="0,8,0,4" CornerRadius="4" ToolTip="Modified"/>
+                            Width="26" Height="26" Margin="0,8,0,4" CornerRadius="4"/>
                     <TextBlock Text="&#x2260;" FontWeight="Bold" HorizontalAlignment="Center"
                                Foreground="{DynamicResource DiffModified_BorderBrush}"/>
 
                     <Border Background="{DynamicResource DiffRemoved_BackgroundBrush}"
                             BorderBrush="{DynamicResource DiffRemoved_BorderBrush}"
                             BorderThickness="1"
-                            Width="26" Height="26" Margin="0,8,0,4" CornerRadius="4" ToolTip="Removed"/>
+                            Width="26" Height="26" Margin="0,8,0,4" CornerRadius="4"/>
                     <TextBlock Text="-" FontWeight="Bold" HorizontalAlignment="Center"
                                Foreground="{DynamicResource DiffRemoved_BorderBrush}"/>
                 </StackPanel>
@@ -156,7 +163,7 @@
                             BorderBrush="{DynamicResource PFP_BorderBrush}"
                             BorderThickness="0,0,0,1"
                             Padding="8,5">
-                        <TextBlock x:Name="File2NameText" Text="File 2"
+                        <TextBlock x:Name="File2NameText" Text="{DynamicResource FileComparison_File2}"
                                    FontWeight="SemiBold" FontSize="11"
                                    Foreground="{DynamicResource PFP_TextBrush}"/>
                     </Border>

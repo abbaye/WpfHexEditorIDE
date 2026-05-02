@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.zh-CN.resx
+    Description : Localized UI strings for the Structure Editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>偏移量</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>强度</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>必填</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>添加块</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>添加</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>元数据</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>检测</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>块</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>变量</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>高级</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>质量</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>测试</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>保存 (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>验证 (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>撤销 (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>重做 (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>切换实时代码视图</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>添加块 (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>复制块 (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>未保存的更改</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>按名称筛选块</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>添加块...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>复制</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>删除</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>上移</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>下移</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>复制为 JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>粘贴块</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>选择一个块以编辑其属性，</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>或按 Ctrl+N / 右键单击以添加新块。</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>十六进制签名</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>不带空格的十六进制字节，例如 PNG 为 89504E47</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>签名</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>v2.0 签名</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>匹配模式</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>十六进制值</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>偏移量</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>标签</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ 添加签名</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>熵提示</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>最小熵</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>最大熵</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>最低分数</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>分数阈值</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>内容模式（文本格式）</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Regex 模式</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ 添加模式</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>基本</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>格式名称</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>可读的格式名称（例如"ZIP 压缩包"、"PNG 图片"）</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>版本</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>此定义的版本（例如"1.0"、"2.0"）</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>作者</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>此定义文件的作者</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>类别</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>类别（从文件夹结构自动设置：压缩包、图片、音频、视频等）</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>差异模式</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>DiffViewer 的首选差异算法</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>首选编辑器</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>匹配此格式的文件的首选编辑器工厂 ID</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>描述</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>文本格式（默认在代码编辑器中打开）</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>文件扩展名</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ 添加扩展名</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME 类型</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ 添加 MIME 类型</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>软件</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ 添加软件</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>计算指标</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>块覆盖率</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>完整性评分</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>类型分布</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>块</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>深度</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>变量</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>规则</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>元数据</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>文档级别</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>最后更新</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>格式：YYYY-MM-DD（保存时自动填写）</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>优先格式（前 100）</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>自动精化（由脚本丰富——只读）</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>对文件测试格式</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>要测试的二进制文件路径</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>浏览…</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ 运行测试</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>将结果复制到剪贴板 (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>选择一个文件并单击 ▶ 运行测试以测试当前格式定义。</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>状态</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>块名称</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>类型</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>偏移量</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>长度</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>原始 (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>解析值</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>注释</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ 警告</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ 错误</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ 已跳过</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>可用于块解释器的初始变量（例如循环计数器、计算偏移量）。</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>按名称筛选变量</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>变量名称</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>类型</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>初始值</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>描述</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ 添加变量</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>断言</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:name equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>布尔表达式 — Ctrl+Space 获取函数和变量</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>校验和</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>版本控制 (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>导入（$ref 组合）</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = 格式名称（或 structs/名称），as = structRef 块中使用的别名。</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>格式引用，例如 structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>structRef 中的别名，例如 PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ 添加导入</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>取证</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>导航书签</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>变量名称</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>保存字节偏移量的变量 — Ctrl+Space 获取建议</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ 添加书签</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>检查器布局</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>导出模板</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ 添加模板</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>AI 提示</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>具有固定或可变偏移量和长度的二进制字段。</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>在特定偏移量处标识格式的魔术字节。</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>将可变长度或符号值读入命名变量。</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>根据字段值或变量有条件地解析块。</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>当条件为真时重复块体。</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>修改变量（递增、递减、设置变量）。</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>计算数学表达式并存储结果。</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>解析固定数量的结构化条目数组。</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>根据判别变量选择变体块集。</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>通过引用嵌入外部结构定义。</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>创建指向目标偏移量的导航注释。</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} 个错误</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} 个警告</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>原始 JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>应用</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>结构编辑器</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>.whfmt 结构定义文件的可视化编辑器。在 DataGrid 中编辑块、类型、偏移量、长度和颜色。</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>验证 (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>添加块 (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>切换实时代码视图</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>布局</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>代码视图布局</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>代码在右</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>代码在左</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>代码在下</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>代码在上</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>格式</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>选项卡</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>块</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>验证</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>长度:</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>选择要测试的二进制文件</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>名称</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>类型</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>颜色</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>不透明度</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>描述</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>隐藏</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>字节序</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>块类型</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>操作</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>变量</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>值</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>计算</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>表达式</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>存储为</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>位置</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>偏移</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>偏移起点</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>偏移加</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>长度</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>值类型</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>数组</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>数量</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>条目大小</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>索引变量</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>颜色循环</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>条目字段在树中作为子项显示。</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>联合</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>判别符</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>变体</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>嵌套结构</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>结构引用</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>指针位置</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>目标和存储</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>目标变量</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>标签</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>位置和大小</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>存储</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>映射存储为</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>值映射</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>位字段</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>名称</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>位</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>直到</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>最大长度</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>最小值</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>最大值</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>模式 (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>错误消息</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>变量名</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>分组</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>分组以颜色覆盖层为一组子字段提供视觉标记。它本身不消耗任何字节。</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>子项显示在块树中 — 使用树添加/重新排序子块。</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>子字段显示在块树中。</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>原始数据区域</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>用颜色覆盖层标记一段原始字节区域。不提取任何值。</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>条件</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>分支标签</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>True 标签</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>False 标签</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Then / Else 块在树中作为子项显示。</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>循环条件</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>边界</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>最大迭代</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>主体块在树中作为子项显示。</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>要操作的变量名 — 键入以查看建议 (Ctrl+空格)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>要设置的值 / 要加或减的量 — 支持 var:名称</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>使用变量和函数的数学表达式 — Ctrl+空格自动完成</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>存储计算结果的变量名 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>数组开始的文件偏移量 — Ctrl+空格自动完成</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>用作此数组基偏移的变量</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>条目数 — Ctrl+空格显示变量建议</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>每个条目的字节大小 — Ctrl+空格显示变量建议</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>循环索引变量名 (如 i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ 添加颜色</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>驱动变体选择的变量 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>格式名称或 .whfmt 文件的相对路径</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>浏览…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>读取指针值的文件偏移量 — Ctrl+空格自动完成</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>用作基偏移的变量名</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>指针值的字节大小 (如 uint32 为 4) — 或 var:名称</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>接收解析后指针地址的变量</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>存储原始指针值的变量</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>在 Hex 视图中显示的注释标签</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+空格自动完成 — 整数、var:名称、calc:expr、offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>其值为基偏移的变量名 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>添加到 OffsetFrom 的额外字节</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+空格自动完成 — 整数、var:名称、calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>存储解析值的变量名 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>ValueMap 翻译后值的变量名 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>原始=显示 (如 0=灰度)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ 添加 ValueMap 条目</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>位范围如 7-6 或单个位如 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ 添加位字段</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>哨兵 (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>停止读取的 Hex 模式或 var:名称。设置时替换 Length。</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>如果找不到 Until 模式，安全上限 (字节)。0 = 解释器默认 (4096)。</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until 包含 (将模式字节计入字段长度)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>验证规则</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>此元数据块读取的变量名</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>固定整数或 var:名称 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>安全上限 — 整数</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>接收当前迭代索引的变量 (从 0 开始)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>循环完成后存储迭代次数的变量 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>将此块编辑为原始 JSON</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ 添加断言</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ 添加校验和</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>模板名称</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>结构名称 (C 结构)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>仅 Hex 数字 (如 FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>显示:</value></data>
+</root>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="MdSb_ViewLabel" xml:space="preserve">
+    <value>Görünüm</value>
+  </data>
+  <data name="MdSb_ViewTooltip" xml:space="preserve">
+    <value>Geçerli görünüm modu</value>
+  </data>
+  <data name="MdSb_WordsLabel" xml:space="preserve">
+    <value>Kelimeler</value>
+  </data>
+  <data name="MdSb_WordsTooltip" xml:space="preserve">
+    <value>Yaklaşık kelime sayısı</value>
+  </data>
+  <data name="MdSb_LinesLabel" xml:space="preserve">
+    <value>Satırlar</value>
+  </data>
+  <data name="MdSb_LinesTooltip" xml:space="preserve">
+    <value>Toplam satır sayısı</value>
+  </data>
+  <data name="MdSb_ReadLabel" xml:space="preserve">
+    <value>Oku</value>
+  </data>
+  <data name="MdSb_ReadTooltip" xml:space="preserve">
+    <value>Tahmini okuma süresi (200 kpm)</value>
+  </data>
+  <data name="MdSb_ZoomLabel" xml:space="preserve">
+    <value>Yakınlaştır</value>
+  </data>
+  <data name="MdSb_ZoomTooltip" xml:space="preserve">
+    <value>Önizleme yakınlaştırma (önizlemede Ctrl+kaydırma)</value>
+  </data>
+  <data name="MdTb_ViewLabel" xml:space="preserve">
+    <value>Görünüm</value>
+  </data>
+  <data name="MdTb_ViewTooltip" xml:space="preserve">
+    <value>Görünüm modu (Ctrl+1/2/3)</value>
+  </data>
+  <data name="MdTb_LayoutLabel" xml:space="preserve">
+    <value>Düzen</value>
+  </data>
+  <data name="MdTb_LayoutTooltip" xml:space="preserve">
+    <value>Bölünmüş düzen (Ctrl+Shift+L)</value>
+  </data>
+  <data name="MdTb_WrapLabel" xml:space="preserve">
+    <value>Kaydır</value>
+  </data>
+  <data name="MdTb_WrapTooltip" xml:space="preserve">
+    <value>Sözcük kaydırma (Alt+Z)</value>
+  </data>
+  <data name="MdTb_RefreshLabel" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="MdTb_RefreshTooltip" xml:space="preserve">
+    <value>Önizlemeyi yenile (F9)</value>
+  </data>
+  <data name="MdTb_InsertLabel" xml:space="preserve">
+    <value>Ekle</value>
+  </data>
+  <data name="MdTb_InsertTooltip" xml:space="preserve">
+    <value>Markdown öğesi ekle</value>
+  </data>
+  <data name="MdTb_FormatLabel" xml:space="preserve">
+    <value>Biçimlendir</value>
+  </data>
+  <data name="MdTb_FormatTooltip" xml:space="preserve">
+    <value>Seçili metni biçimlendir</value>
+  </data>
+  <data name="MdTb_FullscreenLabel" xml:space="preserve">
+    <value>Tam Ekran</value>
+  </data>
+  <data name="MdTb_FullscreenTooltip" xml:space="preserve">
+    <value>Tam ekran önizlemeyi aç/kapat</value>
+  </data>
+  <data name="MdView_SourceOnly" xml:space="preserve">
+    <value>Yalnızca Kaynak</value>
+  </data>
+  <data name="MdView_Split" xml:space="preserve">
+    <value>Bölünmüş</value>
+  </data>
+  <data name="MdView_PreviewOnly" xml:space="preserve">
+    <value>Yalnızca Önizleme</value>
+  </data>
+  <data name="MdLayout_PreviewRight" xml:space="preserve">
+    <value>Sağda Önizleme</value>
+  </data>
+  <data name="MdLayout_PreviewLeft" xml:space="preserve">
+    <value>Solda Önizleme</value>
+  </data>
+  <data name="MdLayout_PreviewBottom" xml:space="preserve">
+    <value>Altta Önizleme</value>
+  </data>
+  <data name="MdLayout_PreviewTop" xml:space="preserve">
+    <value>Üstte Önizleme</value>
+  </data>
+  <data name="MdInsert_Table" xml:space="preserve">
+    <value>Tablo</value>
+  </data>
+  <data name="MdInsert_CodeBlock" xml:space="preserve">
+    <value>Kod Bloğu</value>
+  </data>
+  <data name="MdInsert_Image" xml:space="preserve">
+    <value>Görüntü</value>
+  </data>
+  <data name="MdInsert_HorizontalRule" xml:space="preserve">
+    <value>Yatay Çizgi</value>
+  </data>
+  <data name="MdInsert_TableOfContents" xml:space="preserve">
+    <value>İçindekiler</value>
+  </data>
+  <data name="MdFmt_Bold" xml:space="preserve">
+    <value>Kalın</value>
+  </data>
+  <data name="MdFmt_Italic" xml:space="preserve">
+    <value>İtalik</value>
+  </data>
+  <data name="MdFmt_Strikethrough" xml:space="preserve">
+    <value>Üstü Çizili</value>
+  </data>
+  <data name="MdFmt_InlineCode" xml:space="preserve">
+    <value>Satır İçi Kod</value>
+  </data>
+  <data name="MdCtx_GroupFormat" xml:space="preserve">
+    <value>BİÇİM</value>
+  </data>
+  <data name="MdCtx_GroupInsert" xml:space="preserve">
+    <value>EKLE</value>
+  </data>
+  <data name="MdCtx_GroupExport" xml:space="preserve">
+    <value>DIŞA AKTAR</value>
+  </data>
+  <data name="MdCtx_GroupView" xml:space="preserve">
+    <value>GÖRÜNÜM</value>
+  </data>
+  <data name="MdCtx_Bold" xml:space="preserve">
+    <value>Kalın</value>
+  </data>
+  <data name="MdCtx_Italic" xml:space="preserve">
+    <value>İtalik</value>
+  </data>
+  <data name="MdCtx_Strikethrough" xml:space="preserve">
+    <value>Üstü Çizili</value>
+  </data>
+  <data name="MdCtx_InlineCode" xml:space="preserve">
+    <value>Satır İçi Kod</value>
+  </data>
+  <data name="MdCtx_Table" xml:space="preserve">
+    <value>Tablo</value>
+  </data>
+  <data name="MdCtx_CodeBlock" xml:space="preserve">
+    <value>Kod Bloğu</value>
+  </data>
+  <data name="MdCtx_Link" xml:space="preserve">
+    <value>Bağlantı</value>
+  </data>
+  <data name="MdCtx_Image" xml:space="preserve">
+    <value>Görüntü</value>
+  </data>
+  <data name="MdCtx_HorizontalRule" xml:space="preserve">
+    <value>Yatay Çizgi</value>
+  </data>
+  <data name="MdCtx_WordWrap" xml:space="preserve">
+    <value>Sözcük kaydırma	Alt+Z</value>
+  </data>
+  <data name="MdCtx_ExportHtml" xml:space="preserve">
+    <value>HTML olarak dışa aktar...</value>
+  </data>
+  <data name="MdCtx_ExportPdf" xml:space="preserve">
+    <value>PDF olarak dışa aktar...</value>
+  </data>
+  <data name="MdPrev_SourceOnly" xml:space="preserve">
+    <value>Yalnızca Kaynak</value>
+  </data>
+  <data name="MdPrev_SplitView" xml:space="preserve">
+    <value>Bölünmüş Görünüm</value>
+  </data>
+  <data name="MdPrev_PreviewOnly" xml:space="preserve">
+    <value>Yalnızca Önizleme</value>
+  </data>
+  <data name="MdPrev_Fullscreen" xml:space="preserve">
+    <value>Tam Ekran</value>
+  </data>
+  <data name="MdPrev_ExitFullscreen" xml:space="preserve">
+    <value>Tam Ekrandan Çık</value>
+  </data>
+  <data name="MdPrev_RefreshPreview" xml:space="preserve">
+    <value>Önizlemeyi Yenile</value>
+  </data>
+  <data name="MdPrev_CycleLayout" xml:space="preserve">
+    <value>Düzeni Döngüle</value>
+  </data>
+  <data name="MdPrev_ZoomIn" xml:space="preserve">
+    <value>Yakınlaştır</value>
+  </data>
+  <data name="MdPrev_ZoomOut" xml:space="preserve">
+    <value>Uzaklaştır</value>
+  </data>
+  <data name="MdPrev_ResetZoom" xml:space="preserve">
+    <value>Yakınlaştırmayı Sıfırla</value>
+  </data>
+  <data name="MdPrev_Copy" xml:space="preserve">
+    <value>Kopyala</value>
+  </data>
+  <data name="MdDlg_ExportHtmlTitle" xml:space="preserve">
+    <value>HTML olarak dışa aktar</value>
+  </data>
+  <data name="MdDlg_ExportPdfTitle" xml:space="preserve">
+    <value>PDF olarak dışa aktar</value>
+  </data>
+  <data name="Md_NoHeadingsFound" xml:space="preserve">
+    <value>Başlık bulunamadı.</value>
+  </data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Önizleme başlatılıyor…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>WebView2 Çalışma Zamanı Bulunamadı</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Markdown önizlemesi için Microsoft Edge WebView2 Çalışma Zamanı gereklidir. microsoft.com/edge/webview2 adresinden indirin.</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Ana hattı yenile (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>Etkin Markdown dosyası yok.</value></data>
+</root>

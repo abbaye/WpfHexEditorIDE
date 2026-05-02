@@ -18,6 +18,7 @@ using System.Text.Json.Nodes;
 using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Editor.CodeEditor.Models;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -148,8 +149,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load embedded formats: {ex.Message}",
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_LoadFormatsError, ex.Message),
+                    CodeEditorResources.FormatScriptEditor_LoadFormatsErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -191,7 +192,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 CodeEditorControl.LoadText(template);
                 _currentFilePath = null;
                 _isModified = true;
-                FileNameText.Text = "Untitled.json";
+                FileNameText.Text = CodeEditorResources.FormatScriptEditor_DefaultFileName;
                 UpdateStatusBar();
             }
         }
@@ -203,7 +204,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 var dialog = new OpenFileDialog
                 {
                     Filter = "JSON Files (*.json)|*.json|All Files (*.*)|*.*",
-                    Title = "Open Format Definition"
+                    Title = CodeEditorResources.FormatScriptEditor_OpenDialogTitle
                 };
 
                 if (dialog.ShowDialog() == true)
@@ -250,8 +251,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to format JSON: {ex.Message}",
-                    "Format Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_FormatJsonError, ex.Message),
+                    CodeEditorResources.FormatScriptEditor_FormatJsonErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -304,8 +305,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load file: {ex.Message}",
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_LoadFileError, ex.Message),
+                    CodeEditorResources.FormatScriptEditor_LoadFileErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -324,8 +325,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load embedded format: {ex.Message}",
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_LoadEmbeddedError, ex.Message),
+                    CodeEditorResources.FormatScriptEditor_LoadEmbeddedErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -337,7 +338,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 var dialog = new SaveFileDialog
                 {
                     Filter = "JSON Files (*.json)|*.json|All Files (*.*)|*.*",
-                    Title = "Save Format Definition",
+                    Title = CodeEditorResources.FormatScriptEditor_SaveDialogTitle,
                     DefaultExt = ".json"
                 };
 
@@ -357,13 +358,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 File.WriteAllText(_currentFilePath, content);
                 _isModified = false;
                 FileNameText.Text = Path.GetFileName(_currentFilePath);
-                MessageBox.Show("File saved successfully!", "Success",
+                MessageBox.Show(CodeEditorResources.FormatScriptEditor_SaveSuccessMessage, CodeEditorResources.FormatScriptEditor_SaveSuccessTitle,
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to save file: {ex.Message}",
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_SaveFailedMessage, ex.Message),
+                    CodeEditorResources.FormatScriptEditor_SaveFailedTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -372,8 +373,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_isModified)
             {
                 var result = MessageBox.Show(
-                    "Do you want to save changes to the current file?",
-                    "Save Changes",
+                    CodeEditorResources.FormatScriptEditor_SaveChangesMessage,
+                    CodeEditorResources.FormatScriptEditor_SaveChangesTitle,
                     MessageBoxButton.YesNoCancel,
                     MessageBoxImage.Question);
 
@@ -403,11 +404,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 // Update line/column
                 var pos = CodeEditorControl.CursorPosition;
-                LineColumnText.Text = $"Ln {pos.Line + 1}, Col {pos.Column + 1}";
+                LineColumnText.Text = string.Format(CodeEditorResources.FormatScriptEditor_StatusLineCol, pos.Line + 1, pos.Column + 1);
 
                 // Update errors/warnings
-                ErrorCountText.Text = $"{CodeEditorControl.ValidationErrorCount} Errors";
-                WarningCountText.Text = $"{CodeEditorControl.ValidationWarningCount} Warnings";
+                ErrorCountText.Text = string.Format(CodeEditorResources.FormatScriptEditor_StatusErrors, CodeEditorControl.ValidationErrorCount);
+                WarningCountText.Text = string.Format(CodeEditorResources.FormatScriptEditor_StatusWarnings, CodeEditorControl.ValidationWarningCount);
 
                 // Update undo/redo buttons
                 UndoButton.IsEnabled = CodeEditorControl.CanUndo;

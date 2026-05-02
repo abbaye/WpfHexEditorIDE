@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ArchiveExplorer_PluginName" xml:space="preserve">
+    <value>Arkivutforskare</value>
+  </data>
+  <data name="ArchiveExplorer_OpenArchive" xml:space="preserve">
+    <value>Öppna arkiv</value>
+  </data>
+  <data name="ArchiveExplorer_SelectExtractFolder" xml:space="preserve">
+    <value>Välj standardextraktionsmapp</value>
+  </data>
+  <data name="AE_ExtractAll" xml:space="preserve"><value>Extrahera allt…</value></data>
+  <data name="AE_ExtractSelected" xml:space="preserve"><value>Extrahera markerade…</value></data>
+  <data name="AE_Preview" xml:space="preserve"><value>Förhandsgranskning</value></data>
+  <data name="AE_OpenRawInHex" xml:space="preserve"><value>Öppna raw i Hex</value></data>
+  <data name="AE_OpenArchive" xml:space="preserve"><value>Öppna arkiv…</value></data>
+  <data name="AE_RefreshArchive" xml:space="preserve"><value>Uppdatera arkiv</value></data>
+  <data name="AE_NavigateUp" xml:space="preserve"><value>Navigera upp (lämna kapslat arkiv)</value></data>
+  <data name="AE_MoreOptions" xml:space="preserve"><value>Fler alternativ</value></data>
+  <data name="AE_ExtractAllTooltip" xml:space="preserve"><value>Extrahera allt…</value></data>
+  <data name="AE_ExtractSelectedTooltip" xml:space="preserve"><value>Extrahera markerade…</value></data>
+  <data name="AE_PreviewTooltip" xml:space="preserve"><value>Förhandsgranska post</value></data>
+  <data name="AE_OpenRawInHexTooltip" xml:space="preserve"><value>Öppna råa bytes i Hex-redigeraren</value></data>
+  <data name="AE_FilterEntries" xml:space="preserve"><value>Filtrera poster…</value></data>
+  <data name="AE_ClearFilter" xml:space="preserve"><value>Rensa filter</value></data>
+  <data name="AE_Loading" xml:space="preserve"><value>Laddar…</value></data>
+  <data name="AE_DrillIntoArchive" xml:space="preserve"><value>Utforska arkiv</value></data>
+  <data name="AE_CopyPath" xml:space="preserve"><value>Kopiera sökväg</value></data>
+  <data name="AE_Properties" xml:space="preserve"><value>Egenskaper…</value></data>
+  <data name="AE_DropArchiveHere" xml:space="preserve"><value>Släpp ett arkiv här</value></data>
+  <data name="AE_ClickOpenToolbar" xml:space="preserve"><value>eller klicka på Öppna i verktygsfältet ovan</value></data>
+  <data name="AE_BehaviourSection" xml:space="preserve"><value>Beteende</value></data>
+  <data name="AE_AutoShowPanel" xml:space="preserve"><value>Visa panel automatiskt när en arkivfil öppnas</value></data>
+  <data name="AE_ShowCompressionBadge" xml:space="preserve"><value>Visa komprimeringsförhållandemärke i trädet</value></data>
+  <data name="AE_ShowFormatBadge" xml:space="preserve"><value>Visa formatdetekteringsbadge (whfmt)</value></data>
+  <data name="AE_PreviewSection" xml:space="preserve"><value>Förhandsgranskning</value></data>
+  <data name="AE_MaxPreviewSize" xml:space="preserve"><value>Max förhandsgranskningsstorlek (KB):</value></data>
+  <data name="AE_ExtractionSection" xml:space="preserve"><value>Extraktion</value></data>
+  <data name="AE_MaxFormatDetectionSize" xml:space="preserve"><value>Max formatdetekteringsstorlek (KB):</value></data>
+  <data name="AE_DefaultExtractFolder" xml:space="preserve"><value>Standardmapp för extrahering:</value></data>
+  <data name="AE_Browse" xml:space="preserve"><value>Bläddra…</value></data>
+  <data name="AE_EntryPropertiesTitle" xml:space="preserve"><value>Postegenskaper</value></data>
+  <data name="AE_FullPath" xml:space="preserve"><value>Fullständig sökväg:</value></data>
+  <data name="AE_Size" xml:space="preserve"><value>Storlek:</value></data>
+  <data name="AE_Compressed" xml:space="preserve"><value>Komprimerad:</value></data>
+  <data name="AE_Ratio" xml:space="preserve"><value>Förhållande:</value></data>
+  <data name="AE_Method" xml:space="preserve"><value>Metod:</value></data>
+  <data name="AE_LastModified" xml:space="preserve"><value>Senast ändrad:</value></data>
+  <data name="AE_Crc32" xml:space="preserve"><value>CRC32:</value></data>
+  <data name="AE_Close" xml:space="preserve"><value>Stäng</value></data>
+</root>

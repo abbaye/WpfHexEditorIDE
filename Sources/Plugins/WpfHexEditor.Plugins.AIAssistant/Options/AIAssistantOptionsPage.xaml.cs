@@ -15,6 +15,7 @@ using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Plugins.AIAssistant.Api;
+using WpfHexEditor.Plugins.AIAssistant.Properties;
 
 namespace WpfHexEditor.Plugins.AIAssistant.Options;
 
@@ -222,7 +223,7 @@ public partial class AIAssistantOptionsPage : UserControl
 
         button.IsEnabled = false;
         var originalContent = button.Content;
-        button.Content = "Testing...";
+        button.Content = AIAssistantResources.AIAssistant_ConnectionTest_Testing;
 
         try
         {
@@ -231,8 +232,10 @@ public partial class AIAssistantOptionsPage : UserControl
 
             if (provider is null)
             {
-                MessageBox.Show($"Provider '{providerId}' is not registered.",
-                    "Connection Test", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    string.Format(AIAssistantResources.AIAssistant_Error_ProviderNotRegistered, providerId),
+                    AIAssistantResources.AIAssistant_ConnectionTest_Title,
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -241,26 +244,32 @@ public partial class AIAssistantOptionsPage : UserControl
 
             MessageBox.Show(
                 success
-                    ? $"Connection to {provider.DisplayName} successful!"
-                    : $"Connection to {provider.DisplayName} failed. Check your API key and settings.",
-                "Connection Test",
+                    ? string.Format(AIAssistantResources.AIAssistant_ConnectionTest_Success, provider.DisplayName)
+                    : string.Format(AIAssistantResources.AIAssistant_ConnectionTest_Failure, provider.DisplayName),
+                AIAssistantResources.AIAssistant_ConnectionTest_Title,
                 MessageBoxButton.OK,
                 success ? MessageBoxImage.Information : MessageBoxImage.Warning);
         }
         catch (OperationCanceledException)
         {
-            MessageBox.Show($"Connection test timed out after 10 seconds.",
-                "Connection Test", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(
+                AIAssistantResources.AIAssistant_Error_Timeout,
+                AIAssistantResources.AIAssistant_ConnectionTest_Title,
+                MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (HttpRequestException ex)
         {
-            MessageBox.Show($"Network error: {ex.Message}",
-                "Connection Test", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(
+                string.Format(AIAssistantResources.AIAssistant_Error_NetworkError, ex.Message),
+                AIAssistantResources.AIAssistant_ConnectionTest_Title,
+                MessageBoxButton.OK, MessageBoxImage.Error);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error: {ex.Message}",
-                "Connection Test", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(
+                string.Format(AIAssistantResources.AIAssistant_Error_Generic, ex.Message),
+                AIAssistantResources.AIAssistant_ConnectionTest_Title,
+                MessageBoxButton.OK, MessageBoxImage.Error);
         }
         finally
         {

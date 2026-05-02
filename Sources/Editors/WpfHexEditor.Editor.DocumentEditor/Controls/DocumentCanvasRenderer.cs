@@ -26,7 +26,9 @@ using System.Windows.Threading;
 using WpfHexEditor.Editor.DocumentEditor.Core.Forensic;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Core.Options;
+using WpfHexEditor.Editor.DocumentEditor.Rendering;
 using WpfHexEditor.Editor.DocumentEditor.ViewModels;
+using RenderMode = WpfHexEditor.Editor.DocumentEditor.Core.Options.DocumentRenderMode;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -116,6 +118,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private bool               _caretVisible;
     private bool               _isDragging;
 
+    // Dedicated DrawingVisual for the caret so blink only redraws a 2px rect
+    private readonly DrawingVisual _caretVisual = new();
+
     // Visual-line cache: keyed by block index, cleared on RebuildLayout
     private Dictionary<int, IReadOnlyList<VisualLine>> _visualLineCache = [];
     private bool _lastMoveWasVertical;
@@ -127,11 +132,20 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
+    // ── Visual children (caret layer on top of main render) ──────────────────
+
+    protected override int VisualChildrenCount => 1;
+    protected override Visual GetVisualChild(int index) => _caretVisual;
+
+    // ── Constructor ──────────────────────────────────────────────────────────
+
     public DocumentCanvasRenderer()
     {
         ClipToBounds  = true;
         Focusable     = true;
         Cursor        = Cursors.IBeam;
+
+        AddVisualChild(_caretVisual);
 
         MouseMove     += OnMouseMove;
         MouseLeave    += OnMouseLeave;
@@ -143,9 +157,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         PreviewKeyDown    += OnPreviewKeyDown;
         PreviewTextInput  += OnPreviewTextInput;
 
-        // Caret blink timer (500ms interval)
+        // Blink timer: only redraws the 2px caret visual, not the whole page
         _blinkTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
-        _blinkTimer.Tick += (_, _) => { _caretVisible = !_caretVisible; InvalidateVisual(); };
+        _blinkTimer.Tick += (_, _) => { _caretVisible = !_caretVisible; RefreshCaretVisual(); };
     }
 
     // ── Public API ───────────────────────────────────────────────────────────
@@ -213,12 +227,23 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// <summary>Sets the zoom level (0.5–2.0). Applied via LayoutTransform by the parent.</summary>
     public void SetZoom(double zoom) => _zoom = Math.Clamp(zoom, 0.5, 2.0);
 
+    /// <summary>
+    /// Switches the render mode (Page / Draft / Outline) and triggers a full layout rebuild.
+    /// </summary>
+    public void SetRenderMode(RenderMode mode)
+    {
+        if (_renderMode == mode) return;
+        _renderMode = mode;
+        RebuildLayout();
+    }
+
     // ── Read-Only / Render mode ───────────────────────────────────────────────
 
     private bool                 _isReadOnly      = false;
     private bool                 _showPageShadows = true;
     private Thickness            _pageMargin      = new(40);
     private DocumentPageSettings _pageSettings    = DocumentPageSettings.Default;
+    private RenderMode           _renderMode      = RenderMode.Page;
 
     /// <summary>
     /// When true, all text input handlers are suppressed and cursor reverts to Arrow.
@@ -293,6 +318,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _offset.X = Math.Clamp(offset, 0, Math.Max(0, _extent.Width - _viewport.Width));
         _scrollOwner?.InvalidateScrollInfo();
         InvalidateVisual();
+        RefreshCaretVisual();
     }
 
     public void SetVerticalOffset(double offset)
@@ -300,6 +326,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _offset.Y = Math.Clamp(offset, 0, Math.Max(0, _extent.Height - _viewport.Height));
         _scrollOwner?.InvalidateScrollInfo();
         InvalidateVisual();
+        RefreshCaretVisual();
     }
 
     public Rect MakeVisible(Visual visual, Rect rectangle) => rectangle;
@@ -341,18 +368,36 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             return;
         }
 
-        // ── 2. Page cards (one white card per page) ───────────────────────
+        // Dispatch to mode-specific renderer
+        if (_renderMode == RenderMode.Draft)
+        {
+            OnRenderDraft(dc, vw, vh);
+            return;
+        }
+
+        if (_renderMode == RenderMode.Outline)
+        {
+            OnRenderOutline(dc, vw, vh);
+            return;
+        }
+
+        // ── Page mode (default) ───────────────────────────────────────────
+        OnRenderPage(dc, vw, vh);
+    }
+
+    private void OnRenderPage(DrawingContext dc, double vw, double vh)
+    {
+        // ── 2. Page cards ─────────────────────────────────────────────────
         double pageH = _pageSettings.EffectivePageHeight;
         foreach (var pageStart in _pageStarts)
         {
             double cardTop = PageCanvasPad + pageStart - _offset.Y;
-            if (cardTop + pageH < 0 || cardTop > vh) continue; // culled
+            if (cardTop + pageH < 0 || cardTop > vh) continue;
 
             var pageRect = new Rect(_pageLeft, cardTop, _pageWidth, pageH);
             DrawPageShadow(dc, pageRect);
             dc.DrawRectangle(_pageBg, _pageCardPen, pageRect);
 
-            // Header separator line
             if (_pageSettings.HeaderEnabled)
             {
                 double hSep = cardTop + _pageSettings.MarginTop + _pageSettings.HeaderHeightPx;
@@ -361,7 +406,6 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                     new Point(_pageLeft + _pageWidth - _pageSettings.MarginRight, hSep));
             }
 
-            // Footer separator line
             if (_pageSettings.FooterEnabled)
             {
                 double fSep = cardTop + pageH - _pageSettings.MarginBottom - _pageSettings.FooterHeightPx;
@@ -370,27 +414,114 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                     new Point(_pageLeft + _pageWidth - _pageSettings.MarginRight, fSep));
             }
 
-            // Page border
             if (_pageSettings.BorderStyle != DocumentPageBorderStyle.None)
                 DrawPageBorder(dc, pageRect);
         }
 
-        // ── 3. Blocks (virtual: only render what's in viewport) ───────────
-        double contentX = _pageLeft + _pageSettings.MarginLeft;
-        double contentW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
+        DrawBlocksInViewport(dc, vw, vh,
+            contentX: _pageLeft + _pageSettings.MarginLeft,
+            contentW: Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight));
+    }
+
+    /// <summary>
+    /// Draft render: solid background, no page cards, compact margins, continuous flow.
+    /// </summary>
+    private void OnRenderDraft(DrawingContext dc, double vw, double vh)
+    {
+        const double DraftMarginH = 32.0;
+
+        // Solid paper-white strip centered on the canvas (no card chrome)
+        double stripW = Math.Max(400, _pageWidth);
+        double stripX = (vw - stripW) / 2;
+        var stripBrush = _pageBg ?? Brushes.White;
+        dc.DrawRectangle(stripBrush, null, new Rect(stripX, 0, stripW, vh));
+
+        // Subtle left/right border lines to delimit the content area
+        if (_fgDimBrush is not null && _pageBreakPen is not null)
+        {
+            dc.DrawLine(_pageBreakPen, new Point(stripX, 0), new Point(stripX, vh));
+            dc.DrawLine(_pageBreakPen, new Point(stripX + stripW, 0), new Point(stripX + stripW, vh));
+        }
+
+        DrawBlocksInViewport(dc, vw, vh,
+            contentX: stripX + DraftMarginH,
+            contentW: Math.Max(1, stripW - DraftMarginH * 2));
+    }
+
+    /// <summary>
+    /// Outline render: white background, only headings drawn with level-based indentation.
+    /// Non-heading blocks are invisible; paragraph text is shown as a dim placeholder line.
+    /// </summary>
+    private void OnRenderOutline(DrawingContext dc, double vw, double vh)
+    {
+        // White background covering the full viewport
+        dc.DrawRectangle(_pageBg ?? Brushes.White, null, new Rect(0, 0, vw, vh));
+
+        double baseX  = _pageLeft + _pageSettings.MarginLeft;
+        double maxW   = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
 
         for (int idx = 0; idx < _blocks.Count; idx++)
         {
             var rb = _blocks[idx];
-            // rb.Y is absolute canvas Y (includes page offsets + MarginTop)
+            if (rb.Block.Kind != "heading") continue;
+
+            double blockScreenY = PageCanvasPad + rb.Y - _offset.Y;
+            if (blockScreenY + rb.Height < 0) continue;
+            if (blockScreenY > vh)            break;
+
+            int level  = int.TryParse(rb.Block.Attributes.GetValueOrDefault("level") as string, out int lv) ? lv : 1;
+            double indent = (level - 1) * 20.0;
+
+            // Selection highlight
+            if (idx == _selectedIndex)
+                dc.DrawRoundedRectangle(_selBrush, null,
+                    new Rect(baseX + indent - 4, blockScreenY - 2, maxW - indent + 8, rb.Height + 4), 3, 3);
+            else if (idx == _hoverIndex)
+                dc.DrawRoundedRectangle(_hoverBrush, _blockHoverPen,
+                    new Rect(baseX + indent - 4, blockScreenY - 2, maxW - indent + 8, rb.Height + 4), 3, 3);
+
+            // Expand/collapse triangle indicator (visual affordance)
+            DrawOutlineTriangle(dc, baseX + indent - 16, blockScreenY + rb.Height / 2, level);
+
+            if (rb.GlyphLines is { Count: > 0 })
+                DrawVisualLines(dc, rb.GlyphLines, baseX + indent, blockScreenY, isHeading: true, headingLevel: level);
+            else if (rb.FormattedLines is { Count: > 0 })
+                dc.DrawText(rb.FormattedLines[0], new Point(baseX + indent, blockScreenY));
+        }
+    }
+
+    /// <summary>Small right-pointing triangle for outline mode hierarchy affordance.</summary>
+    private void DrawOutlineTriangle(DrawingContext dc, double x, double midY, int level)
+    {
+        if (_fgDimBrush is null) return;
+        double sz = Math.Max(3, 7 - level);
+        var geo = new StreamGeometry();
+        using (var ctx = geo.Open())
+        {
+            ctx.BeginFigure(new Point(x, midY - sz / 2), isFilled: true, isClosed: true);
+            ctx.LineTo(new Point(x + sz, midY), isStroked: false, isSmoothJoin: false);
+            ctx.LineTo(new Point(x, midY + sz / 2), isStroked: false, isSmoothJoin: false);
+        }
+        geo.Freeze();
+        dc.DrawGeometry(_fgDimBrush, null, geo);
+    }
+
+    /// <summary>
+    /// Shared block-draw loop used by Page and Draft modes.
+    /// </summary>
+    private void DrawBlocksInViewport(DrawingContext dc, double vw, double vh,
+                                       double contentX, double contentW)
+    {
+        for (int idx = 0; idx < _blocks.Count; idx++)
+        {
+            var rb = _blocks[idx];
             double blockScreenY = PageCanvasPad + rb.Y - _offset.Y;
 
-            if (blockScreenY + rb.Height < 0) continue; // above viewport
-            if (blockScreenY > vh)            break;    // below viewport (blocks sorted by Y)
+            if (blockScreenY + rb.Height < 0) continue;
+            if (blockScreenY > vh)            break;
 
-            if (rb.IsPageBreak) continue; // no longer drawn (automatic pagination)
+            if (rb.IsPageBreak) continue;
 
-            // Block selection / hover highlight — structural blocks only
             bool isStructural = rb.Block.Kind is "heading" or "table" or "image" or "code";
             if (isStructural)
             {
@@ -402,17 +533,15 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                     dc.DrawRoundedRectangle(_hoverBrush, _blockHoverPen, blockRect, 3, 3);
             }
 
-            // Forensic mode overlays
             if (_forensicMode) DrawKindChip(dc, rb, blockScreenY);
             if (_forensicMode && rb.ForensicSeverity.HasValue) DrawForensicBadge(dc, rb, blockScreenY);
 
             DrawBlock(dc, rb, blockScreenY);
         }
 
-        // ── 4. Text selection + caret overlays ───────────────────────────
         DrawFindHighlights(dc, contentX, contentW);
         DrawTextSelection(dc, contentX, contentW);
-        DrawCaret(dc, contentX, contentW);
+        // Caret is drawn in _caretVisual (separate layer) — see RefreshCaretVisual()
     }
 
     // ── Rendering helpers ────────────────────────────────────────────────────
@@ -505,7 +634,17 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             return;
         }
 
-        // Paragraph / heading / run / default
+        // Paragraph / heading / run / default — prefer GlyphRun pipeline
+        if (rb.GlyphLines is { Count: > 0 })
+        {
+            bool isHeading = rb.Block.Kind == "heading";
+            int level = isHeading && int.TryParse(
+                rb.Block.Attributes.GetValueOrDefault("level") as string, out int lv) ? lv : 1;
+            DrawVisualLines(dc, rb.GlyphLines, x, y, isHeading, level);
+            return;
+        }
+
+        // Fallback: FormattedText (used when GlyphRun build fails or block is empty)
         if (rb.FormattedLines is { Count: > 0 })
         {
             double lineY = y;
@@ -773,27 +912,38 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         EnsureTypefaces();
 
+        if (_renderMode == RenderMode.Draft)
+            RebuildLayoutDraft();
+        else
+            RebuildLayoutPaged();
+    }
+
+    private void RebuildLayoutPaged()
+    {
         double maxW         = Math.Max(100, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
-        double pageContentH = _pageSettings.ContentHeight; // usable content height per page
-        double yCanvas      = _pageSettings.ContentTopY;   // absolute Y in paginated canvas; starts at first page's top margin
-        double yOnPage      = 0;                           // Y within the current page's content area
-        int    curPage     = 0;
-        var    result      = new List<RenderBlock>();
-        var    pageStarts  = new List<double> { 0.0 };
-        var    alertMap    = BuildAlertMap();
+        double pageContentH = _pageSettings.ContentHeight;
+        double yCanvas      = _pageSettings.ContentTopY;
+        double yOnPage      = 0;
+        int    curPage      = 0;
+        var    result       = new List<RenderBlock>();
+        var    pageStarts   = new List<double> { 0.0 };
+        var    alertMap     = BuildAlertMap();
 
-        foreach (var block in _model.Blocks)
+        foreach (var block in _model!.Blocks)
         {
-            var rb = BuildRenderBlock(block, 0, maxW, alertMap); // Y placeholder
+            // Outline mode: skip non-heading blocks in the paged layout too
+            if (_renderMode == RenderMode.Outline && block.Kind != "heading")
+                continue;
 
-            // If this block won't fit on the current page, advance to the next page
+            var rb = BuildRenderBlock(block, 0, maxW, alertMap);
+
             if (yOnPage > 0 && yOnPage + rb.SpaceBefore + rb.Height > pageContentH)
             {
                 curPage++;
                 double pageOrigin = curPage * (_pageSettings.EffectivePageHeight + PageGapPx);
                 pageStarts.Add(pageOrigin);
-                yCanvas  = pageOrigin + _pageSettings.ContentTopY;
-                yOnPage  = 0;
+                yCanvas = pageOrigin + _pageSettings.ContentTopY;
+                yOnPage = 0;
             }
 
             yCanvas += rb.SpaceBefore;
@@ -804,15 +954,57 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             yOnPage += placed.Height + placed.SpaceAfter;
         }
 
-        _pageStarts       = pageStarts;
-        _pageCount        = pageStarts.Count;
-        _blocks           = result;
-        _totalHeight      = yCanvas;
+        _pageStarts      = pageStarts;
+        _pageCount       = pageStarts.Count;
+        _blocks          = result;
+        _totalHeight     = yCanvas;
         _visualLineCache.Clear();
-        _caretFtDirty     = false;
+        _caretFtDirty    = false;
 
         UpdateScrollExtent();
         InvalidateVisual();
+    }
+
+    /// <summary>
+    /// Draft layout: continuous flow — no page cards, no pagination.
+    /// Y grows linearly from a small top pad using compact margins.
+    /// </summary>
+    private void RebuildLayoutDraft()
+    {
+        const double DraftPad    = 16.0;  // top/bottom canvas padding in draft mode
+        const double DraftMarginH = 32.0; // left/right content margin in draft mode
+
+        double maxW     = Math.Max(100, _pageWidth - DraftMarginH * 2);
+        double yCanvas  = DraftPad;
+        var    result   = new List<RenderBlock>();
+        var    alertMap = BuildAlertMap();
+
+        foreach (var block in _model!.Blocks)
+        {
+            var rb = BuildRenderBlock(block, 0, maxW, alertMap);
+            yCanvas += rb.SpaceBefore;
+            result.Add(rb with { Y = yCanvas });
+            yCanvas += rb.Height + rb.SpaceAfter;
+        }
+
+        // Draft uses a single virtual "page" so scroll extent = content height
+        _pageStarts      = [0.0];
+        _pageCount       = 1;
+        _blocks          = result;
+        _totalHeight     = yCanvas + DraftPad;
+        _visualLineCache.Clear();
+        _caretFtDirty    = false;
+
+        UpdateScrollExtentDraft();
+        InvalidateVisual();
+    }
+
+    private void UpdateScrollExtentDraft()
+    {
+        _extent = new Size(
+            Math.Max(_viewport.Width, _pageWidth + PageCanvasPad * 2),
+            Math.Max(_viewport.Height, _totalHeight));
+        _scrollOwner?.InvalidateScrollInfo();
     }
 
     private RenderBlock BuildRenderBlock(
@@ -830,17 +1022,26 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 double fs     = level == 1 ? 22 : level == 2 ? 18 : 15;
                 double spaceB = level == 1 ? 18 : level == 2 ? 14 : 10;
                 double spaceA = level == 1 ?  8 : level == 2 ?  6 :  4;
-                var lines = WrapText(block.Text, _bodyBoldFace!, fs, maxW, _fgBrush!);
-                double h  = lines.Sum(t => t.Height + 2);
-                return new RenderBlock(block, y, h, spaceB, spaceA, lines, false, 0, severity);
+                var glyphLines = BuildGlyphLines(block, maxW);
+                double h  = glyphLines.Count > 0
+                    ? glyphLines.Sum(vl => vl.LineHeight)
+                    : fs + 4;
+                // Extra space for H1 rule
+                if (level == 1) h += 6;
+                if (level == 2) h += 4;
+                var ftLines = WrapText(block.Text, _bodyBoldFace!, fs, maxW, _fgBrush!);
+                return new RenderBlock(block, y, h, spaceB, spaceA, ftLines, false, 0, severity, glyphLines);
             }
 
             case "paragraph":
             case "run":
             {
-                var lines = BuildInlineFormattedText(block, maxW);
-                double h  = lines.Sum(t => t.Height + 2);
-                return new RenderBlock(block, y, h, 0, 4, lines, false, 0, severity);
+                var glyphLines = BuildGlyphLines(block, maxW);
+                double h  = glyphLines.Count > 0
+                    ? glyphLines.Sum(vl => vl.LineHeight)
+                    : _baseFontSize + 4;
+                var ftLines = BuildInlineFormattedText(block, maxW);
+                return new RenderBlock(block, y, h, 0, 4, ftLines, false, 0, severity, glyphLines);
             }
 
             case "table":
@@ -862,10 +1063,167 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 if (string.IsNullOrEmpty(block.Text))
                     return new RenderBlock(block, y, 8, 0, 2, null, false, 0, severity);
 
-                var lines = WrapText(block.Text, _bodyFace!, _baseFontSize, maxW, _fgBrush!);
-                double h  = lines.Sum(t => t.Height + 2);
-                return new RenderBlock(block, y, h, 0, 2, lines, false, 0, severity);
+                var glyphLines = BuildGlyphLines(block, maxW);
+                double h  = glyphLines.Count > 0
+                    ? glyphLines.Sum(vl => vl.LineHeight)
+                    : _baseFontSize + 4;
+                var ftLines = WrapText(block.Text, _bodyFace!, _baseFontSize, maxW, _fgBrush!);
+                return new RenderBlock(block, y, h, 0, 2, ftLines, false, 0, severity, glyphLines);
             }
+        }
+    }
+
+    // ── GlyphRun pipeline ─────────────────────────────────────────────────────
+
+    private double GetPixelsPerDip()
+    {
+        try
+        {
+            var mainWindow = Application.Current?.MainWindow;
+            if (mainWindow is not null)
+                return VisualTreeHelper.GetDpi(mainWindow).PixelsPerDip;
+        }
+        catch { }
+        return 1.0;
+    }
+
+    /// <summary>
+    /// Converts a document block into <see cref="InlineVisualLine"/> objects using
+    /// <see cref="InlineLineBreaker"/>. Called from <see cref="BuildRenderBlock"/>.
+    /// </summary>
+    private IReadOnlyList<InlineVisualLine> BuildGlyphLines(DocumentBlock block, double maxW)
+    {
+        var segments = BuildSegments(block);
+        if (segments.Count == 0) return [];
+        return InlineLineBreaker.Break(segments, maxW, GetPixelsPerDip());
+    }
+
+    /// <summary>
+    /// Produces <see cref="InlineSegment"/> list from a block's runs (or plain text).
+    /// </summary>
+    private List<InlineSegment> BuildSegments(DocumentBlock block)
+    {
+        EnsureBrushCache();
+        var defaultColor = _fgBrush is SolidColorBrush sb ? sb.Color : Color.FromRgb(20, 20, 20);
+        var result = new List<InlineSegment>();
+
+        bool isHeading = block.Kind == "heading";
+        int headingLevel = isHeading && int.TryParse(
+            block.Attributes.GetValueOrDefault("level") as string, out int hl) ? hl : 1;
+        double defaultSize = isHeading
+            ? (headingLevel == 1 ? 22 : headingLevel == 2 ? 18 : 15)
+            : _baseFontSize;
+        bool defaultBold = isHeading;
+        string defaultFamily = BodyFontFamily;
+
+        IEnumerable<DocumentBlock> runs = block.Children.Count > 0
+            ? block.Children.Where(c => c.Kind == "run")
+            : [block];
+
+        foreach (var run in runs)
+        {
+            var text = run.Text;
+            if (string.IsNullOrEmpty(text)) continue;
+
+            bool   bold   = defaultBold || (run.Attributes.TryGetValue("bold",   out var b) && b is true);
+            bool   italic = run.Attributes.TryGetValue("italic",  out var i) && i is true;
+            bool   under  = run.Attributes.TryGetValue("underline", out var u) && u is true;
+            bool   strike = run.Attributes.TryGetValue("strikethrough", out var st) && st is true;
+
+            double size = defaultSize;
+            if (run.Attributes.TryGetValue("fontSize", out var fs))
+                size = fs is int fi ? fi : fs is double fd ? fd : size;
+
+            string family = defaultFamily;
+            if (run.Attributes.TryGetValue("fontFamily", out var ffv) && ffv is string ff && ff.Length > 0)
+                family = ff;
+
+            Color color = defaultColor;
+            if (run.Attributes.TryGetValue("color", out var cv) && cv is string cs)
+            {
+                try
+                {
+                    var converted = System.Windows.Media.ColorConverter.ConvertFromString(cs);
+                    if (converted is Color c2) color = c2;
+                }
+                catch { }
+            }
+
+            var gt = GlyphTypefaceCache.Get(family, bold, italic);
+            result.Add(new InlineSegment(text, gt, size, color, under, strike));
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Draws <see cref="InlineVisualLine"/> objects at (originX, blockTopY) using DrawGlyphRun.
+    /// Underline and strikethrough are drawn as separate lines.
+    /// </summary>
+    private void DrawVisualLines(DrawingContext dc,
+                                  IReadOnlyList<InlineVisualLine> lines,
+                                  double originX, double blockTopY,
+                                  bool isHeading = false, int headingLevel = 1)
+    {
+        double ppd = GetPixelsPerDip();
+        double y   = blockTopY;
+
+        for (int li = 0; li < lines.Count; li++)
+        {
+            var    line      = lines[li];
+            double baselineY = y + line.Ascent;
+
+            foreach (var seg in line.Segments)
+            {
+                var absOrigin = new Point(originX + seg.OffsetX, baselineY);
+                var run       = seg.BuildGlyphRun(absOrigin, ppd);
+
+                var brush = new SolidColorBrush(seg.Foreground);
+                brush.Freeze();
+                dc.DrawGlyphRun(brush, run);
+
+                if (seg.Underline)
+                {
+                    double uY  = baselineY + seg.UnderlineOffset;
+                    var uPen   = new Pen(brush, 0.75);
+                    uPen.Freeze();
+                    dc.DrawLine(uPen,
+                        new Point(originX + seg.OffsetX,               uY),
+                        new Point(originX + seg.OffsetX + seg.Width,   uY));
+                }
+
+                if (seg.Strikethrough)
+                {
+                    double sY  = baselineY - seg.StrikethroughOffset;
+                    var sPen   = new Pen(brush, 0.75);
+                    sPen.Freeze();
+                    dc.DrawLine(sPen,
+                        new Point(originX + seg.OffsetX,               sY),
+                        new Point(originX + seg.OffsetX + seg.Width,   sY));
+                }
+            }
+
+            // H1: full-width rule below first line
+            if (isHeading && headingLevel == 1 && li == 0 && _fgDimBrush is not null)
+            {
+                double ruleY = y + line.LineHeight + 3;
+                double ruleW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
+                var pen = new Pen(_fgDimBrush, 0.5);
+                pen.Freeze();
+                dc.DrawLine(pen, new Point(originX, ruleY), new Point(originX + ruleW, ruleY));
+            }
+
+            // H2: 30%-width rule below first line
+            if (isHeading && headingLevel == 2 && li == 0 && _fgDimBrush is not null)
+            {
+                double ruleY = y + line.LineHeight + 2;
+                double ruleW = Math.Max(1, (_pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight) * 0.3);
+                var pen = new Pen(_fgDimBrush, 0.5);
+                pen.Freeze();
+                dc.DrawLine(pen, new Point(originX, ruleY), new Point(originX + ruleW, ruleY));
+            }
+
+            y += line.LineHeight;
         }
     }
 
@@ -1225,14 +1583,14 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         _caretVisible = true;
         _blinkTimer?.Start();
-        InvalidateVisual();
+        RefreshCaretVisual();
     }
 
     private void OnLostFocus(object sender, RoutedEventArgs e)
     {
         _blinkTimer?.Stop();
         _caretVisible = false;
-        InvalidateVisual();
+        RefreshCaretVisual(); // clear the caret rectangle
     }
 
     private void OnPreviewKeyDown(object sender, KeyEventArgs e)
@@ -1406,6 +1764,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _caretVisible = true;
         EnsureCaretVisible();
         InvalidateVisual();
+        RefreshCaretVisual();
     }
 
     /// <summary>Scrolls the viewport to make the caret's visual line visible (± 16px).</summary>
@@ -1538,31 +1897,36 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     }
 
     /// <summary>Draws the blinking insertion caret — one visual line tall, on the correct wrapped line.</summary>
-    private void DrawCaret(DrawingContext dc, double contentX, double contentW)
+    /// <summary>
+    /// Redraws only the caret layer (<see cref="_caretVisual"/>).
+    /// Called by the blink timer and by any state change that moves or shows/hides the caret.
+    /// Never triggers a full <see cref="OnRender"/> pass.
+    /// </summary>
+    private void RefreshCaretVisual()
     {
+        using var dc = _caretVisual.RenderOpen();
+
         if (_caretBrush is null || !_caretVisible || !_selection.IsEmpty || !IsFocused) return;
         if (_caret.BlockIndex < 0 || _caret.BlockIndex >= _blocks.Count) return;
 
+        EnsureBrushCache();
+
+        double contentX    = _pageLeft + _pageSettings.MarginLeft;
+        double contentW    = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
         var rb             = _blocks[_caret.BlockIndex];
         double blockScreenY = PageCanvasPad + rb.Y - _offset.Y;
         double caretX      = contentX;
         double caretY      = blockScreenY;
-        double caretH      = _baseFontSize + 2; // fallback: one approximate line
+        double caretH      = _baseFontSize + 2;
 
         var text = GetFlatText(_caret.BlockIndex);
         if (!string.IsNullOrEmpty(text))
         {
-            // Use cached FT only when it is definitely fresh (RebuildLayout ran after last mutation).
-            // _caretFtDirty is set immediately on BlocksChanged and cleared only at end of RebuildLayout,
-            // so between a mutation and the async rebuild the blink timer always builds a fresh FT.
             var ft = (!_caretFtDirty && rb.FormattedLines is { Count: > 0 })
                 ? rb.FormattedLines[0]
                 : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
                                     _fgBrush ?? Brushes.Gray, contentW);
 
-            // Probe the char just before (or at) the caret to get the visual-line geometry.
-            // geo.Bounds.Top  = Y offset of that visual line within FormattedText
-            // geo.Bounds.Height = height of that single visual line
             int probeChar = Math.Clamp(
                 _caret.CharOffset > 0 ? _caret.CharOffset - 1 : 0,
                 0, text.Length - 1);
@@ -1570,10 +1934,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
             if (geo is not null && !geo.Bounds.IsEmpty)
             {
-                caretY = blockScreenY + geo.Bounds.Top;   // ← correct visual-line Y
-                caretH = geo.Bounds.Height;                // ← single line height only
+                caretY = blockScreenY + geo.Bounds.Top;
+                caretH = geo.Bounds.Height;
                 if (_caret.CharOffset > 0)
-                    caretX = contentX + geo.Bounds.Right;  // ← X after last char
+                    caretX = contentX + geo.Bounds.Right;
             }
         }
 
@@ -2018,15 +2382,16 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
 /// <summary>Pre-computed layout entry for a single document block.</summary>
 internal sealed record RenderBlock(
-    DocumentBlock         Block,
-    double                Y,
-    double                Height,
-    double                SpaceBefore,
-    double                SpaceAfter,
-    List<FormattedText>?  FormattedLines,
-    bool                  IsPageBreak,
-    int                   PageNumber,
-    ForensicSeverity?     ForensicSeverity);
+    DocumentBlock              Block,
+    double                     Y,
+    double                     Height,
+    double                     SpaceBefore,
+    double                     SpaceAfter,
+    List<FormattedText>?       FormattedLines,
+    bool                       IsPageBreak,
+    int                        PageNumber,
+    ForensicSeverity?          ForensicSeverity,
+    IReadOnlyList<InlineVisualLine>? GlyphLines = null);
 
 // ── Visual-line navigation types ──────────────────────────────────────────────
 

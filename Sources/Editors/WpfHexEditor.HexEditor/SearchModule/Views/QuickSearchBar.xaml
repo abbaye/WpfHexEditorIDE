@@ -12,9 +12,14 @@
              xmlns:local="clr-namespace:WpfHexEditor.HexEditor.Search.Views"
              mc:Ignorable="d"
              MinWidth="300"
-             d:DesignHeight="64" d:DesignWidth="480">
+             d:DesignHeight="64" d:DesignWidth="480"
+             xmlns:hexSvc="clr-namespace:WpfHexEditor.HexEditor.Services">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <hexSvc:HexEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <local:StringEmptyToVisibilityConverter x:Key="StringEmptyToVisibilityConverter"/>
 
@@ -131,6 +136,7 @@
             <Setter Property="FontSize"   Value="11"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
@@ -209,7 +215,7 @@
                                   Style="{StaticResource QuickToggleStyle}"
                                   Width="22" Height="22"
                                   Margin="3,0,1,0"
-                                  ToolTip="Afficher / masquer le remplacement (Ctrl+H)">
+                                  ToolTip="{DynamicResource HE_ShowReplaceTooltip}">
                         <!-- ChevronDown icon rotated −90° = pointing right when collapsed -->
                         <TextBlock x:Name="ExpandIcon"
                                    Text="&#xE70D;"
@@ -250,7 +256,7 @@
 
                             <!-- Placeholder (shown when empty and not focused) -->
                             <TextBlock Grid.Column="1"
-                                       Text="Rechercher..."
+                                       Text="{DynamicResource HE_SearchPlaceholder}"
                                        FontFamily="Segoe UI"
                                        FontSize="12"
                                        VerticalAlignment="Center"
@@ -291,21 +297,21 @@
                                   Content="Ab"
                                   Style="{StaticResource QuickToggleStyle}"
                                   IsChecked="{Binding CaseSensitive}"
-                                  ToolTip="Respecter la casse (Alt+C)"/>
+                                  ToolTip="{DynamicResource HE_CaseSensitiveTooltip}"/>
 
                     <!-- ── .* — Use Wildcard ── -->
                     <ToggleButton Grid.Column="4"
                                   Content=".*"
                                   Style="{StaticResource QuickToggleStyle}"
                                   IsChecked="{Binding UseWildcard}"
-                                  ToolTip="Utiliser des jokers ?? (Alt+E)"/>
+                                  ToolTip="{DynamicResource HE_WildcardTooltip}"/>
 
                     <!-- ── 0x — Hex Mode ── -->
                     <ToggleButton Grid.Column="5"
                                   Content="0x"
                                   Style="{StaticResource QuickToggleStyle}"
                                   IsChecked="{Binding IsHexMode}"
-                                  ToolTip="Mode hexad&#233;cimal (Alt+H)"/>
+                                  ToolTip="{DynamicResource HE_HexModeTooltip}"/>
 
                     <!-- ── Separator ── -->
                     <Rectangle Grid.Column="6"
@@ -336,14 +342,14 @@
                             Content="&#xE70E;"
                             Style="{StaticResource QuickButtonStyle}"
                             Command="{Binding FindPreviousCommand}"
-                            ToolTip="R&#233;sultat pr&#233;c&#233;dent (Maj+Entr&#233;e)"/>
+                            ToolTip="{DynamicResource HE_PrevResultTooltip}"/>
 
                     <!-- ── Next ▼ (MDL2 ChevronDown &#xE70D;) ── -->
                     <Button Grid.Column="10"
                             Content="&#xE70D;"
                             Style="{StaticResource QuickButtonStyle}"
                             Command="{Binding FindNextCommand}"
-                            ToolTip="R&#233;sultat suivant (Entr&#233;e)"/>
+                            ToolTip="{DynamicResource HE_NextResultTooltip}"/>
 
                     <!-- ── Separator ── -->
                     <Rectangle Grid.Column="11"
@@ -356,7 +362,7 @@
                             Content="&#xE712;"
                             x:Name="AdvancedSearchButton"
                             Style="{StaticResource QuickButtonStyle}"
-                            ToolTip="Recherche avanc&#233;e (Ctrl+Maj+F)"
+                            ToolTip="{DynamicResource HE_AdvancedSearchTooltip}"
                             Margin="1,0"/>
 
                     <!-- ── Close ✕ (MDL2 ChromeClose &#xE8BB;) ── -->
@@ -364,7 +370,7 @@
                             Content="&#xE8BB;"
                             x:Name="CloseButton"
                             Style="{StaticResource QuickButtonStyle}"
-                            ToolTip="Fermer (Esc)"
+                            ToolTip="{DynamicResource HE_CloseSearchTooltip}"
                             Margin="1,0,4,0"/>
 
                     <!-- ── Progress indicator (bottom edge, visible during search) ── -->
@@ -430,7 +436,7 @@
 
                             <!-- Placeholder -->
                             <TextBlock Grid.Column="1"
-                                       Text="Remplacer..."
+                                       Text="{DynamicResource HE_ReplacePlaceholder}"
                                        FontFamily="Segoe UI"
                                        FontSize="12"
                                        VerticalAlignment="Center"
@@ -470,7 +476,7 @@
                             x:Name="ReplaceNextButton"
                             Style="{StaticResource QuickReplaceButtonStyle}"
                             Command="{Binding ReplaceNextCommand}"
-                            ToolTip="Remplacer (Alt+R)"
+                            ToolTip="{DynamicResource HE_ReplaceOneTooltip}"
                             Margin="1,0">
                         <TextBlock FontFamily="Segoe UI" FontSize="11" Text="→1"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -481,7 +487,7 @@
                             x:Name="ReplaceAllButton"
                             Style="{StaticResource QuickReplaceButtonStyle}"
                             Command="{Binding ReplaceAllCommand}"
-                            ToolTip="Remplacer tout (Alt+A)"
+                            ToolTip="{DynamicResource HE_ReplaceAllTooltip}"
                             Margin="1,0,4,0">
                         <TextBlock FontFamily="Segoe UI" FontSize="11" Text="→∀"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>

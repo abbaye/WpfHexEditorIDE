@@ -12,7 +12,9 @@
              xmlns:vm="clr-namespace:WpfHexEditor.Editor.StructureEditor.ViewModels"
              xmlns:local="clr-namespace:WpfHexEditor.Editor.StructureEditor.Tabs"
              Background="{DynamicResource TE_Background}"
-             Foreground="{DynamicResource TE_Foreground}">
+             Foreground="{DynamicResource TE_Foreground}"
+             xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services">
+
 
     <UserControl.Resources>
 
@@ -87,7 +89,7 @@
 
         <!-- ── Header ──────────────────────────────────────────────────────── -->
         <TextBlock Grid.Row="0"
-                   Text="Test Format Against File"
+                   Text="{DynamicResource StructureEditor_TestSection}"
                    FontSize="13" FontWeight="SemiBold"
                    Foreground="{DynamicResource TE_Foreground}"
                    Margin="0,0,0,10"/>
@@ -110,15 +112,15 @@
                      Foreground="{DynamicResource TE_Foreground}"
                      BorderBrush="{DynamicResource DockBorderBrush}"
                      BorderThickness="1"
-                     ToolTip="Path to the binary file to test"
+                     ToolTip="{DynamicResource StructureEditor_TestFilePathToolTip}"
                      VerticalContentAlignment="Center"/>
 
-            <Button Grid.Column="1" Content="Browse…"
+            <Button Grid.Column="1" Content="{DynamicResource StructureEditor_TestBrowseButton}"
                     Style="{StaticResource GridBtn}"
                     Margin="6,0,0,0"
                     Command="{Binding BrowseCommand}"/>
 
-            <Button Grid.Column="2" Content="▶ Run Test"
+            <Button Grid.Column="2" Content="{DynamicResource StructureEditor_TestRunButton}"
                     Style="{StaticResource GridBtn}"
                     Margin="6,0,0,0"
                     x:Name="RunBtn"
@@ -128,7 +130,7 @@
             <Button Grid.Column="3" Content="📋"
                     Style="{StaticResource GridBtn}"
                     Margin="6,0,0,0"
-                    ToolTip="Copy results to clipboard (TSV)"
+                    ToolTip="{DynamicResource StructureEditor_TestCopyToolTip}"
                     Click="OnCopyClicked"/>
         </Grid>
 
@@ -160,12 +162,12 @@
 
         <!-- ── Filter bar ──────────────────────────────────────────────────── -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,6">
-            <TextBlock Text="Show:" FontSize="11" VerticalAlignment="Center"
+            <TextBlock Text="{DynamicResource SE_ShowLabel}" FontSize="11" VerticalAlignment="Center"
                        Foreground="{DynamicResource TE_LineNumberForeground}" Margin="0,0,10,0"/>
-            <CheckBox Content="✓ OK"      Style="{StaticResource FilterCheck}" IsChecked="{Binding ShowOk}"/>
-            <CheckBox Content="⚠ Warning" Style="{StaticResource FilterCheck}" IsChecked="{Binding ShowWarning}"/>
-            <CheckBox Content="✕ Error"   Style="{StaticResource FilterCheck}" IsChecked="{Binding ShowError}"/>
-            <CheckBox Content="⊘ Skipped" Style="{StaticResource FilterCheck}" IsChecked="{Binding ShowSkipped}"/>
+            <CheckBox Content="{DynamicResource StructureEditor_TestFilterOk}"      Style="{StaticResource FilterCheck}" IsChecked="{Binding ShowOk}"/>
+            <CheckBox Content="{DynamicResource StructureEditor_TestFilterWarning}" Style="{StaticResource FilterCheck}" IsChecked="{Binding ShowWarning}"/>
+            <CheckBox Content="{DynamicResource StructureEditor_TestFilterError}"   Style="{StaticResource FilterCheck}" IsChecked="{Binding ShowError}"/>
+            <CheckBox Content="{DynamicResource StructureEditor_TestFilterSkipped}" Style="{StaticResource FilterCheck}" IsChecked="{Binding ShowSkipped}"/>
         </StackPanel>
 
         <!-- ── Results grid ────────────────────────────────────────────────── -->
@@ -230,7 +232,7 @@
 
             <DataGrid.Columns>
 
-                <DataGridTemplateColumn Header="Status" Width="68" SortMemberPath="Status">
+                <DataGridTemplateColumn Header="{DynamicResource StructureEditor_TestColStatus}" Width="68" SortMemberPath="Status">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Status}" Style="{StaticResource StatusCell}"/>
@@ -238,7 +240,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Block Name" Width="170" SortMemberPath="BlockName">
+                <DataGridTemplateColumn Header="{DynamicResource StructureEditor_TestColBlockName}" Width="170" SortMemberPath="BlockName">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding BlockName}" Padding="6,3" FontSize="11"
@@ -261,7 +263,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTextColumn Header="Type" Binding="{Binding BlockType}" Width="90">
+                <DataGridTextColumn Header="{DynamicResource StructureEditor_TestColType}" Binding="{Binding BlockType}" Width="90">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="Padding"    Value="6,3"/>
@@ -276,7 +278,7 @@
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
 
-                <DataGridTemplateColumn Header="Offset" Width="76" SortMemberPath="Offset">
+                <DataGridTemplateColumn Header="{DynamicResource StructureEditor_TestColOffset}" Width="76" SortMemberPath="Offset">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Offset, Converter={StaticResource OffsetConverter}}"
@@ -296,7 +298,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTextColumn Header="Len" Binding="{Binding Length}" Width="42">
+                <DataGridTextColumn Header="{DynamicResource StructureEditor_TestColLen}" Binding="{Binding Length}" Width="42">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="Padding"  Value="6,3"/>
@@ -305,7 +307,7 @@
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
 
-                <DataGridTextColumn Header="Raw (hex)" Binding="{Binding RawHex}" Width="130">
+                <DataGridTextColumn Header="{DynamicResource StructureEditor_TestColRaw}" Binding="{Binding RawHex}" Width="130">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="Padding"    Value="6,3"/>
@@ -320,7 +322,7 @@
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
 
-                <DataGridTextColumn Header="Parsed Value" Binding="{Binding ParsedValue}" Width="130">
+                <DataGridTextColumn Header="{DynamicResource StructureEditor_TestColParsed}" Binding="{Binding ParsedValue}" Width="130">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="Padding"  Value="6,3"/>
@@ -330,7 +332,7 @@
                 </DataGridTextColumn>
 
                 <!-- Note column: single line, full text in row tooltip -->
-                <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="*">
+                <DataGridTextColumn Header="{DynamicResource StructureEditor_TestColNote}" Binding="{Binding Note}" Width="*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="Padding"              Value="6,3"/>
@@ -359,7 +361,7 @@
                                         <Border Background="{DynamicResource TE_LineNumberBackground}"
                                                 BorderBrush="{DynamicResource DockBorderBrush}"
                                                 BorderThickness="1" CornerRadius="3">
-                                            <TextBlock Text="Select a file and click ▶ Run Test to test the current format definition."
+                                            <TextBlock Text="{DynamicResource StructureEditor_TestEmptyMessage}"
                                                        FontSize="12" FontStyle="Italic"
                                                        Foreground="{DynamicResource TE_LineNumberForeground}"
                                                        HorizontalAlignment="Center"

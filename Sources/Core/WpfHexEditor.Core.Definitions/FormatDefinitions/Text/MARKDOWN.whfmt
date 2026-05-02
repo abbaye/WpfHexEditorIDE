@@ -7,7 +7,7 @@
   "description": "Markdown is a lightweight markup language created by John Gruber in 2004 designed to be readable as plain text while converting to HTML. It supports headings (# ATX-style or underline Setext-style), emphasis (*italic* **bold**), lists (- or *), links ([text](url)), images (![alt](url)), code blocks (``` fenced or indented), blockquotes (>), and horizontal rules (---). Variants include CommonMark, GitHub Flavored Markdown (GFM), MultiMarkdown, and Pandoc Markdown. Markdown files are text with no binary magic — identified by extension and text patterns.",
   "category": "Text",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "code-editor",
+  "preferredEditor": "markdown-editor",
   "references": {
     "specifications": [
       "CommonMark Specification",
@@ -164,11 +164,11 @@
     "Technical writing and e-book authoring"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 85,
+    "CompletenessScore": 92,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 4,
     "ValidationRules": 3,
-    "LastUpdated": "2026-04-15",
+    "LastUpdated": "2026-04-28",
     "ReviewedBy": "WPFHexaEditor Team"
   },
   "TechnicalDetails": {
@@ -176,5 +176,103 @@
     "NoMagic": true,
     "Dialects": ["CommonMark", "GitHub Flavored Markdown (GFM)", "MultiMarkdown", "Pandoc Markdown"],
     "Note": "No binary magic. Detection is purely by file extension and text content patterns."
+  },
+  "syntaxDefinition": {
+    "id": "markdown",
+    "name": "Markdown",
+    "extensions": [".md", ".markdown", ".mkd", ".mdown"],
+    "lineCommentPrefix": null,
+    "rules": [
+      {
+        "type": "YamlFrontmatter",
+        "colorKey": "CE_Comment",
+        "pattern": "^---\\r?\\n[\\s\\S]*?\\r?\\n---\\r?\\n"
+      },
+      {
+        "type": "FencedCodeBlock",
+        "colorKey": "CE_String",
+        "pattern": "```[\\s\\S]*?```"
+      },
+      {
+        "type": "InlineCode",
+        "colorKey": "CE_String",
+        "pattern": "`[^`\\n]+`"
+      },
+      {
+        "type": "Heading1",
+        "colorKey": "CE_Type",
+        "pattern": "^#{1}\\s+.*$"
+      },
+      {
+        "type": "Heading2",
+        "colorKey": "CE_Type",
+        "pattern": "^#{2}\\s+.*$"
+      },
+      {
+        "type": "Heading3",
+        "colorKey": "CE_Keyword",
+        "pattern": "^#{3}\\s+.*$"
+      },
+      {
+        "type": "Heading456",
+        "colorKey": "CE_Keyword",
+        "pattern": "^#{4,6}\\s+.*$"
+      },
+      {
+        "type": "Bold",
+        "colorKey": "CE_Identifier",
+        "pattern": "(\\*\\*|__)[^\\s*].*?\\1"
+      },
+      {
+        "type": "Italic",
+        "colorKey": "CE_Identifier",
+        "pattern": "(\\*|_)[^\\s*].*?\\1"
+      },
+      {
+        "type": "Strikethrough",
+        "colorKey": "CE_Comment",
+        "pattern": "~~[^~]+~~"
+      },
+      {
+        "type": "Link",
+        "colorKey": "CE_Attribute",
+        "pattern": "!?\\[[^\\]]*\\]\\([^)]*\\)"
+      },
+      {
+        "type": "LinkReference",
+        "colorKey": "CE_Attribute",
+        "pattern": "!?\\[[^\\]]*\\]\\[[^\\]]*\\]"
+      },
+      {
+        "type": "Blockquote",
+        "colorKey": "CE_Comment",
+        "pattern": "^>\\s*.*$"
+      },
+      {
+        "type": "ListItem",
+        "colorKey": "CE_ControlFlow",
+        "pattern": "^\\s*([-*+]|\\d+\\.)\\s"
+      },
+      {
+        "type": "HorizontalRule",
+        "colorKey": "CE_Comment",
+        "pattern": "^(---+|\\*\\*\\*+|___+)\\s*$"
+      },
+      {
+        "type": "HtmlTag",
+        "colorKey": "CE_Keyword",
+        "pattern": "</?[a-zA-Z][^>]*>"
+      },
+      {
+        "type": "TaskCheckbox",
+        "colorKey": "CE_ControlFlow",
+        "pattern": "^\\s*[-*+]\\s+\\[[ xX]\\]"
+      },
+      {
+        "type": "Number",
+        "colorKey": "CE_Number",
+        "pattern": "\\b\\d+\\.?\\d*\\b"
+      }
+    ]
   }
 }

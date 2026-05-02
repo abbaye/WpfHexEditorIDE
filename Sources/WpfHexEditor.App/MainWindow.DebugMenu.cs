@@ -52,183 +52,199 @@ public partial class MainWindow
 
         // ── Session ─────────────────────────────────────────────────────────
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.StartDebugging,
-            Header:           "Start _Debugging",
-            GestureText:      "F5",
-            IconGlyph:        "\uE768",
-            Command:          new RelayCommand(_ => OnDebugStartOrContinue()),
-            CommandParameter: null,
-            Group:            "Session",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.StartDebugging,
+            Header:            "Start _Debugging",
+            GestureText:       "F5",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => OnDebugStartOrContinue()),
+            CommandParameter:  null,
+            Group:             "Session",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_StartDebugging"));
 
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.StartWithoutDebugging,
-            Header:           "Start _Without Debugging",
-            GestureText:      "Ctrl+F5",
-            IconGlyph:        "\uEDB5",
-            Command:          new RelayCommand(_ => _ = RunStartupProjectAsync()),
-            CommandParameter: null,
-            Group:            "Session",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.StartWithoutDebugging,
+            Header:            "Start _Without Debugging",
+            GestureText:       "Ctrl+F5",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => _ = RunStartupProjectAsync()),
+            CommandParameter:  null,
+            Group:             "Session",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_StartWithoutDebugging"));
 
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.StopDebugging,
-            Header:           "S_top Debugging",
-            GestureText:      "Shift+F5",
-            IconGlyph:        "\uE71A",
-            Command:          new RelayCommand(_ => _ = _debuggerService?.StopSessionAsync()),
-            CommandParameter: null,
-            Group:            "Session",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.StopDebugging,
+            Header:            "S_top Debugging",
+            GestureText:       "Shift+F5",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => _ = _debuggerService?.StopSessionAsync()),
+            CommandParameter:  null,
+            Group:             "Session",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_StopDebugging"));
 
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.RestartDebugging,
-            Header:           "_Restart",
-            GestureText:      "Ctrl+Shift+F5",
-            IconGlyph:        "\uE72C",
-            Command:          new RelayCommand(_ => OnDebugRestart()),
-            CommandParameter: null,
-            Group:            "Session",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.RestartDebugging,
+            Header:            "_Restart",
+            GestureText:       "Ctrl+Shift+F5",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => OnDebugRestart()),
+            CommandParameter:  null,
+            Group:             "Session",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_Restart"));
 
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.Continue,
-            Header:           "_Continue",
-            GestureText:      "F5",
-            IconGlyph:        "\uE768",
-            Command:          new RelayCommand(_ => _ = _debuggerService?.ContinueAsync()),
-            CommandParameter: null,
-            Group:            "Session",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.Continue,
+            Header:            "_Continue",
+            GestureText:       "F5",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => _ = _debuggerService?.ContinueAsync()),
+            CommandParameter:  null,
+            Group:             "Session",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_Continue"));
 
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.Pause,
-            Header:           "_Pause",
-            GestureText:      null,
-            IconGlyph:        "\uE769",
-            Command:          new RelayCommand(_ => _ = _debuggerService?.PauseAsync()),
-            CommandParameter: null,
-            Group:            "Session",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.Pause,
+            Header:            "_Pause",
+            GestureText:       null,
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => _ = _debuggerService?.PauseAsync()),
+            CommandParameter:  null,
+            Group:             "Session",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_Pause"));
 
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.AttachToProcess,
-            Header:           "_Attach to Process\u2026",
-            GestureText:      "Ctrl+Alt+P",
-            IconGlyph:        "\uE71B",
-            Command:          new RelayCommand(_ => OnAttachToProcess()),
-            CommandParameter: null,
-            Group:            "Session",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.AttachToProcess,
+            Header:            "_Attach to Process…",
+            GestureText:       "Ctrl+Alt+P",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => OnAttachToProcess()),
+            CommandParameter:  null,
+            Group:             "Session",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_AttachToProcess"));
 
         // ── Stepping ────────────────────────────────────────────────────────
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.StepOver,
-            Header:           "Step _Over",
-            GestureText:      "F10",
-            IconGlyph:        "\uE7EE",
-            Command:          new RelayCommand(_ => _ = _debuggerService?.StepOverAsync()),
-            CommandParameter: null,
-            Group:            "Stepping",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.StepOver,
+            Header:            "Step _Over",
+            GestureText:       "F10",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => _ = _debuggerService?.StepOverAsync()),
+            CommandParameter:  null,
+            Group:             "Stepping",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_StepOver"));
 
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.StepInto,
-            Header:           "Step _Into",
-            GestureText:      "F11",
-            IconGlyph:        "\uE70D",
-            Command:          new RelayCommand(_ => _ = _debuggerService?.StepIntoAsync()),
-            CommandParameter: null,
-            Group:            "Stepping",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.StepInto,
+            Header:            "Step _Into",
+            GestureText:       "F11",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => _ = _debuggerService?.StepIntoAsync()),
+            CommandParameter:  null,
+            Group:             "Stepping",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_StepInto"));
 
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.StepOut,
-            Header:           "Step O_ut",
-            GestureText:      "Shift+F11",
-            IconGlyph:        "\uE70E",
-            Command:          new RelayCommand(_ => _ = _debuggerService?.StepOutAsync()),
-            CommandParameter: null,
-            Group:            "Stepping",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.StepOut,
+            Header:            "Step O_ut",
+            GestureText:       "Shift+F11",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => _ = _debuggerService?.StepOutAsync()),
+            CommandParameter:  null,
+            Group:             "Stepping",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_StepOut"));
 
         // ── Breakpoints ─────────────────────────────────────────────────────
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.ToggleBreakpoint,
-            Header:           "Toggle _Breakpoint",
-            GestureText:      "F9",
-            IconGlyph:        "\uE7C1",
-            Command:          new RelayCommand(_ => OnToggleBreakpoint()),
-            CommandParameter: null,
-            Group:            "Breakpoints",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.ToggleBreakpoint,
+            Header:            "Toggle _Breakpoint",
+            GestureText:       "F9",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => OnToggleBreakpoint()),
+            CommandParameter:  null,
+            Group:             "Breakpoints",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_ToggleBreakpoint"));
 
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.DeleteAllBreakpoints,
-            Header:           "_Delete All Breakpoints",
-            GestureText:      "Ctrl+Shift+F9",
-            IconGlyph:        "\uE74D",
-            Command:          new RelayCommand(_ => _ = _debuggerService?.ClearAllBreakpointsAsync()),
-            CommandParameter: null,
-            Group:            "Breakpoints",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.DeleteAllBreakpoints,
+            Header:            "_Delete All Breakpoints",
+            GestureText:       "Ctrl+Shift+F9",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => _ = _debuggerService?.ClearAllBreakpointsAsync()),
+            CommandParameter:  null,
+            Group:             "Breakpoints",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_DeleteAllBreakpoints"));
 
         // ── Panels ──────────────────────────────────────────────────────────
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.ShowBreakpoints,
-            Header:           "Show _Breakpoints",
-            GestureText:      null,
-            IconGlyph:        "\uEBE8",
-            Command:          new RelayCommand(_ => ShowOrCreatePanel("Breakpoints", "panel-dbg-breakpoints", DockDirection.Bottom)),
-            CommandParameter: null,
-            Group:            "Panels",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.ShowBreakpoints,
+            Header:            "Show _Breakpoints",
+            GestureText:       null,
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => ShowOrCreatePanel("Breakpoints", "panel-dbg-breakpoints", DockDirection.Bottom)),
+            CommandParameter:  null,
+            Group:             "Panels",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_ShowBreakpoints"));
 
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.ShowCallStack,
-            Header:           "Show _Call Stack",
-            GestureText:      null,
-            IconGlyph:        "\uE81E",
-            Command:          new RelayCommand(_ => ShowOrCreatePanel("Call Stack", "panel-dbg-callstack", DockDirection.Bottom)),
-            CommandParameter: null,
-            Group:            "Panels",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.ShowCallStack,
+            Header:            "Show _Call Stack",
+            GestureText:       null,
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => ShowOrCreatePanel("Call Stack", "panel-dbg-callstack", DockDirection.Bottom)),
+            CommandParameter:  null,
+            Group:             "Panels",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_ShowCallStack"));
 
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.ShowLocals,
-            Header:           "Show _Locals",
-            GestureText:      null,
-            IconGlyph:        "\uE943",
-            Command:          new RelayCommand(_ => ShowOrCreatePanel("Locals", "panel-dbg-locals", DockDirection.Bottom)),
-            CommandParameter: null,
-            Group:            "Panels",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.ShowLocals,
+            Header:            "Show _Locals",
+            GestureText:       null,
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => ShowOrCreatePanel("Locals", "panel-dbg-locals", DockDirection.Bottom)),
+            CommandParameter:  null,
+            Group:             "Panels",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_ShowLocals"));
 
         _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
-            Id:               CommandIds.Debug.ShowWatch,
-            Header:           "Show _Watch",
-            GestureText:      null,
-            IconGlyph:        "\uE7B3",
-            Command:          new RelayCommand(_ => ShowOrCreatePanel("Watch", "panel-dbg-watch", DockDirection.Bottom)),
-            CommandParameter: null,
-            Group:            "Panels",
-            ToolTip:          null,
-            IsBuiltIn:        true));
+            Id:                CommandIds.Debug.ShowWatch,
+            Header:            "Show _Watch",
+            GestureText:       null,
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => ShowOrCreatePanel("Watch", "panel-dbg-watch", DockDirection.Bottom)),
+            CommandParameter:  null,
+            Group:             "Panels",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: "APP_DBG_ShowWatch"));
     }
 
     private void OnDebugMenuItemsChanged()

@@ -19,6 +19,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfHexEditor.PluginDev.Properties;
 using WpfHexEditor.PluginDev.Services;
 
 namespace WpfHexEditor.PluginDev.UI;
@@ -103,7 +104,7 @@ public sealed class PluginMarketplacePanel : UserControl
         DockPanel.SetDock(_tbSearch, Dock.Left);
         searchRow.Children.Add(_tbSearch);
 
-        var btnSearch = new Button { Content = "Search", Width = 70, Height = 26, Margin = new Thickness(4, 0, 0, 0) };
+        var btnSearch = new Button { Content = PluginDevResources.PluginDev_Search, Width = 70, Height = 26, Margin = new Thickness(4, 0, 0, 0) };
         btnSearch.Click += async (_, _) => await SearchAsync(_tbSearch.Text);
         DockPanel.SetDock(btnSearch, Dock.Right);
         searchRow.Children.Add(btnSearch);
@@ -116,7 +117,7 @@ public sealed class PluginMarketplacePanel : UserControl
         Grid.SetRow(_lvBrowse, 1);
         grid.Children.Add(_lvBrowse);
 
-        return new TabItem { Header = "Browse", Content = grid };
+        return new TabItem { Header = PluginDevResources.PluginDev_Browse_Tab, Content = grid };
     }
 
     // ── Installed tab ────────────────────────────────────────────────────────
@@ -128,7 +129,7 @@ public sealed class PluginMarketplacePanel : UserControl
         grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
         var toolbar = new ToolBar { Margin = new Thickness(0, 4, 0, 4) };
-        var btnRefresh = new Button { Content = "⟳  Refresh" };
+        var btnRefresh = new Button { Content = $"⟳  {PluginDevResources.PluginDev_Refresh}" };
         btnRefresh.Click += async (_, _) => await RefreshInstalledAsync();
         toolbar.Items.Add(btnRefresh);
         Grid.SetRow(toolbar, 0);
@@ -138,7 +139,7 @@ public sealed class PluginMarketplacePanel : UserControl
         Grid.SetRow(_lvInstalled, 1);
         grid.Children.Add(_lvInstalled);
 
-        return new TabItem { Header = "Installed", Content = grid };
+        return new TabItem { Header = PluginDevResources.PluginDev_Installed, Content = grid };
     }
 
     // ── Updates tab ──────────────────────────────────────────────────────────
@@ -150,7 +151,7 @@ public sealed class PluginMarketplacePanel : UserControl
         grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
         var toolbar = new ToolBar { Margin = new Thickness(0, 4, 0, 4) };
-        var btnUpdateAll = new Button { Content = "Update All" };
+        var btnUpdateAll = new Button { Content = PluginDevResources.PluginDev_UpdateAll };
         btnUpdateAll.Click += async (_, _) => await UpdateAllAsync();
         toolbar.Items.Add(btnUpdateAll);
         Grid.SetRow(toolbar, 0);
@@ -160,7 +161,7 @@ public sealed class PluginMarketplacePanel : UserControl
         Grid.SetRow(_lvUpdates, 1);
         grid.Children.Add(_lvUpdates);
 
-        return new TabItem { Header = "Updates", Content = grid };
+        return new TabItem { Header = PluginDevResources.PluginDev_Updates, Content = grid };
     }
 
     // -----------------------------------------------------------------------
@@ -225,13 +226,13 @@ public sealed class PluginMarketplacePanel : UserControl
             var ok = await _svc.InstallAsync(pkg, progress);
             MessageBox.Show(
                 ok ? $"'{pkg.Name}' installed successfully." : $"Install failed for '{pkg.Name}'.",
-                "Extension Marketplace",
+                PluginDevResources.PluginDev_ExtensionMarketplace,
                 MessageBoxButton.OK,
                 ok ? MessageBoxImage.Information : MessageBoxImage.Warning);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Install error: {ex.Message}", "Extension Marketplace",
+            MessageBox.Show($"Install error: {ex.Message}", PluginDevResources.PluginDev_ExtensionMarketplace,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -239,7 +240,7 @@ public sealed class PluginMarketplacePanel : UserControl
     private async void OnUninstallRequested(MarketplacePackage pkg)
     {
         var confirm = MessageBox.Show(
-            $"Uninstall '{pkg.Name}'?", "Extension Marketplace",
+            $"Uninstall '{pkg.Name}'?", PluginDevResources.PluginDev_ExtensionMarketplace,
             MessageBoxButton.YesNo, MessageBoxImage.Question);
 
         if (confirm != MessageBoxResult.Yes) return;
@@ -251,7 +252,7 @@ public sealed class PluginMarketplacePanel : UserControl
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Uninstall error: {ex.Message}", "Extension Marketplace",
+            MessageBox.Show($"Uninstall error: {ex.Message}", PluginDevResources.PluginDev_ExtensionMarketplace,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -281,11 +282,11 @@ public sealed class PluginMarketplacePanel : UserControl
         };
 
         var gv = new GridView();
-        gv.Columns.Add(new GridViewColumn { Header = "Name",     Width = 180, DisplayMemberBinding = new System.Windows.Data.Binding("Name") });
-        gv.Columns.Add(new GridViewColumn { Header = "Author",   Width = 120, DisplayMemberBinding = new System.Windows.Data.Binding("Author") });
-        gv.Columns.Add(new GridViewColumn { Header = "Version",  Width = 70,  DisplayMemberBinding = new System.Windows.Data.Binding("Version") });
-        gv.Columns.Add(new GridViewColumn { Header = "Rating",   Width = 60,  DisplayMemberBinding = new System.Windows.Data.Binding("Rating") });
-        gv.Columns.Add(new GridViewColumn { Header = "Downloads",Width = 80,  DisplayMemberBinding = new System.Windows.Data.Binding("Downloads") });
+        gv.Columns.Add(new GridViewColumn { Header = PluginDevResources.PluginDev_Col_Name,      Width = 180, DisplayMemberBinding = new System.Windows.Data.Binding("Name") });
+        gv.Columns.Add(new GridViewColumn { Header = PluginDevResources.PluginDev_Col_Author,    Width = 120, DisplayMemberBinding = new System.Windows.Data.Binding("Author") });
+        gv.Columns.Add(new GridViewColumn { Header = PluginDevResources.PluginDev_Col_Version,   Width = 70,  DisplayMemberBinding = new System.Windows.Data.Binding("Version") });
+        gv.Columns.Add(new GridViewColumn { Header = PluginDevResources.PluginDev_Col_Rating,    Width = 60,  DisplayMemberBinding = new System.Windows.Data.Binding("Rating") });
+        gv.Columns.Add(new GridViewColumn { Header = PluginDevResources.PluginDev_Col_Downloads, Width = 80,  DisplayMemberBinding = new System.Windows.Data.Binding("Downloads") });
         gv.Columns.Add(new GridViewColumn
         {
             Header = actionLabel,

@@ -7,14 +7,38 @@
 <Application x:Class="WpfHexEditor.App.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:hexServices="clr-namespace:WpfHexEditor.Core.Services;assembly=WpfHexEditor.HexEditor"
+             xmlns:loc="clr-namespace:WpfHexEditor.Core.Localization.Services;assembly=WpfHexEditor.Core.Localization"
+             xmlns:panelsSvc="clr-namespace:WpfHexEditor.Shell.Panels.Services;assembly=WpfHexEditor.Shell.Panels"
+             xmlns:optSvc="clr-namespace:WpfHexEditor.Core.Options.Services;assembly=WpfHexEditor.Core.Options"
+             xmlns:textSvc="clr-namespace:WpfHexEditor.Editor.TextEditor.Services;assembly=WpfHexEditor.Editor.TextEditor"
+             xmlns:audioSvc="clr-namespace:WpfHexEditor.Editor.AudioViewer.Services;assembly=WpfHexEditor.Editor.AudioViewer"
+             xmlns:disasmSvc="clr-namespace:WpfHexEditor.Editor.DisassemblyViewer.Services;assembly=WpfHexEditor.Editor.DisassemblyViewer"
+             xmlns:codeSvc="clr-namespace:WpfHexEditor.Editor.CodeEditor.Services;assembly=WpfHexEditor.Editor.CodeEditor"
+             xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services;assembly=WpfHexEditor.Editor.DocumentEditor"
+             xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services;assembly=WpfHexEditor.Editor.StructureEditor"
+             xmlns:mdSvc="clr-namespace:WpfHexEditor.Editor.MarkdownEditor.Services;assembly=WpfHexEditor.Editor.MarkdownEditor"
+             xmlns:appSvc="clr-namespace:WpfHexEditor.App.Services"
              StartupUri="MainWindow.xaml"
              ShutdownMode="OnMainWindowClose">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- HexEditor localized strings (UndoString, CopyString, etc.) -->
-                <hexServices:LocalizedResourceDictionary/>
+                <!-- Common IDE strings (Close, OK, Cancel, hex editor keys, etc.) -->
+                <loc:LocalizedResourceDictionary/>
+                <!-- Shell panel strings (Bookmarks, Error, Properties, SolutionExplorer, Whfmt*) -->
+                <panelsSvc:ShellPanelsLocalizedDictionary/>
+                <!-- Options editor strings (EnvironmentGeneralPage) -->
+                <optSvc:OptionsLocalizedDictionary/>
+                <!-- Editor-specific strings -->
+                <textSvc:TextEditorLocalizedDictionary/>
+                <audioSvc:AudioViewerLocalizedDictionary/>
+                <disasmSvc:DisassemblyViewerLocalizedDictionary/>
+                <codeSvc:CodeEditorLocalizedDictionary/>
+                <docSvc:DocumentEditorLocalizedDictionary/>
+                <structSvc:StructureEditorLocalizedDictionary/>
+                <mdSvc:MarkdownEditorLocalizedDictionary/>
+                <!-- App-level strings (main menu headers, toolbar tooltips) -->
+                <appSvc:AppLocalizedDictionary/>
                 <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Shell;component/Themes/DarkTheme.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

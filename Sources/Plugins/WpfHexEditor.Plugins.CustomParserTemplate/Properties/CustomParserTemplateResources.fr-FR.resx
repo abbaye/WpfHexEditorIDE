@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="CustomParser_Dialog_LoadError" xml:space="preserve">
+    <value>Erreur de chargement</value>
+  </data>
+  <data name="CustomParser_Dialog_ConfirmDelete" xml:space="preserve">
+    <value>Confirmer la suppression</value>
+  </data>
+  <data name="CustomParser_Dialog_DeleteError" xml:space="preserve">
+    <value>Erreur de suppression</value>
+  </data>
+  <data name="CustomParser_Dialog_SaveTemplate" xml:space="preserve">
+    <value>Enregistrer le modèle</value>
+  </data>
+  <data name="CustomParser_Dialog_SaveError" xml:space="preserve">
+    <value>Erreur d'enregistrement</value>
+  </data>
+  <data name="CustomParser_Dialog_AddBlock" xml:space="preserve">
+    <value>Ajouter un bloc</value>
+  </data>
+  <data name="CustomParser_Dialog_ApplyTemplate" xml:space="preserve">
+    <value>Appliquer le modèle</value>
+  </data>
+  <data name="CustomParser_Dialog_Export" xml:space="preserve">
+    <value>Exporter</value>
+  </data>
+  <data name="CustomParser_Dialog_ExportSuccess" xml:space="preserve">
+    <value>Export réussi</value>
+  </data>
+  <data name="CustomParser_Dialog_ExportError" xml:space="preserve">
+    <value>Erreur d'exportation</value>
+  </data>
+  <data name="CustomParser_Dialog_ImportSuccess" xml:space="preserve">
+    <value>Import réussi</value>
+  </data>
+  <data name="CustomParser_Dialog_ImportError" xml:space="preserve">
+    <value>Erreur d'importation</value>
+  </data>
+  <data name="CustomParser_Dialog_ImportTemplate" xml:space="preserve">
+    <value>Importer un modèle</value>
+  </data>
+  <data name="CustomParser_PluginName" xml:space="preserve">
+    <value>Modèle d'analyseur personnalisé</value>
+  </data>
+  <data name="CustomParser_NoTemplateSelected" xml:space="preserve">
+    <value>Aucun modèle sélectionné</value>
+  </data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Décalage</value></data>
+</root>

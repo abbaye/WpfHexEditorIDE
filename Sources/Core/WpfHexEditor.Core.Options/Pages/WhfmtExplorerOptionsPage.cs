@@ -10,6 +10,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Core.Options.Properties;
 
 namespace WpfHexEditor.Core.Options.Pages;
 
@@ -97,8 +98,8 @@ public sealed class WhfmtExplorerOptionsPage : UserControl, IOptionsPage
             HorizontalAlignment = HorizontalAlignment.Left,
             Margin              = new Thickness(0, 0, 0, 4),
         };
-        _defaultViewMode.Items.Add("Tree");
-        _defaultViewMode.Items.Add("Flat");
+        _defaultViewMode.Items.Add(OptionsResources.Opt_ViewMode_Tree);
+        _defaultViewMode.Items.Add(OptionsResources.Opt_ViewMode_Flat);
         stack.Children.Add(_defaultViewMode);
         stack.Children.Add(new TextBlock
         {

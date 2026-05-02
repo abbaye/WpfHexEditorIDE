@@ -16,6 +16,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Options;
@@ -157,7 +158,7 @@ public sealed class LayoutOptionsPage : UserControl, IOptionsPage
 
         var resetBtn = new Button
         {
-            Content = "Reset to Defaults",
+            Content = AppResources.App_Options_ResetToDefaults,
             HorizontalAlignment = HorizontalAlignment.Left,
             Margin = new Thickness(0, 16, 0, 0),
             Padding = new Thickness(12, 4, 12, 4)

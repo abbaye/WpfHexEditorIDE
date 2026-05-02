@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.ClassDiagram
+    File        : ClassDiagramResources.fr-FR.resx
+    Description : Localized UI strings for the Class Diagram plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CD_PxUnit" xml:space="preserve">
+    <value>px</value>
+  </data>
+  <data name="CD_ParseHintFile" xml:space="preserve">
+    <value>Contrôle la façon dont les fichiers source C# sont analysés lors de l'utilisation de "Afficher le diagramme de classes" ou "Générer le diagramme de classes pour le projet" depuis l'Explorateur de solutions.</value>
+  </data>
+  <data name="CD_SolutionHint" xml:space="preserve">
+    <value>Contrôle le comportement de "Générer le diagramme de classes pour la solution". Le diagramme généré regroupe les types par projet avec des couloirs par projet et persiste son état dans un fichier jumeau .whscd à côté de la solution.</value>
+  </data>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>Diagramme de classes</value>
+  </data>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>Diagramme de classes</value>
+  </data>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>Plan de la classe</value>
+  </data>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>Propriétés de la classe</value>
+  </data>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>Boîte à outils du diagramme</value>
+  </data>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>Relations</value>
+  </data>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>Historique du diagramme</value>
+  </data>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>Recherche de diagramme</value>
+  </data>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>Tableau de bord des métriques</value>
+  </data>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>Réinitialiser</value>
+  </data>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>Plan de la _classe</value>
+  </data>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>Générer un diagramme de classes pour la solution</value>
+  </data>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>Exporter les métriques en CSV</value>
+  </data>
+  <data name="CD_NoSelection" xml:space="preserve"><value>Aucune sélection</value></data>
+  <data name="CD_PropName" xml:space="preserve"><value>Nom</value></data>
+  <data name="CD_PropKind" xml:space="preserve"><value>Genre</value></data>
+  <data name="CD_PropAbstract" xml:space="preserve"><value>Abstrait</value></data>
+  <data name="CD_DiagramHistory" xml:space="preserve"><value>Historique du diagramme</value></data>
+  <data name="CD_Relationships" xml:space="preserve"><value>Relations</value></data>
+  <data name="CD_TipSearchClasses" xml:space="preserve"><value>Rechercher des classes et des membres (Entrée)</value></data>
+  <data name="CD_TipRunSearch" xml:space="preserve"><value>Lancer la recherche</value></data>
+  <data name="CD_Results" xml:space="preserve"><value>résultat(s)</value></data>
+  <data name="CD_TipFilterToolbox" xml:space="preserve"><value>Filtrer les éléments de la boîte à outils</value></data>
+</root>

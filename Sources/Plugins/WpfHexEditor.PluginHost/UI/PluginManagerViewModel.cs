@@ -15,6 +15,7 @@ using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.PluginHost.Properties;
 
 namespace WpfHexEditor.PluginHost.UI;
 
@@ -413,7 +414,7 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
     {
         var dialog = new OpenFileDialog
         {
-            Title           = "Install Extension Package",
+            Title           = PluginHostResources.PluginHost_InstallPackage,
             Filter          = "Extension Package (*.whxplugin)|*.whxplugin|All Files (*.*)|*.*",
             CheckFileExists = true
         };
@@ -448,7 +449,7 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
     {
         var dlg = new SaveFileDialog
         {
-            Title      = "Export Extension Diagnostics",
+            Title      = PluginHostResources.PluginHost_ExportDiagnostics,
             Filter     = "CSV files (*.csv)|*.csv|JSON files (*.json)|*.json|All files (*.*)|*.*",
             FileName   = $"extension-diagnostics-{DateTime.Now:yyyyMMdd-HHmmss}.csv"
         };

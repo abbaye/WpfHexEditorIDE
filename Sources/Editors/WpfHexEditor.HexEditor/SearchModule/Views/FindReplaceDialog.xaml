@@ -12,12 +12,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfHexEditor.HexEditor.Search.Views"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
+        xmlns:hexSvc="clr-namespace:WpfHexEditor.HexEditor.Services"
         mc:Ignorable="d"
-        Title="Find and Replace" Height="400" Width="600"
+        Title="{DynamicResource FindAndReplaceDialogTitle}" Height="400" Width="600"
         ResizeMode="CanResize"
         Background="{DynamicResource BackgroundBrush}">
 
     <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <hexSvc:HexEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <!-- Value Converters -->
         <local:SearchModeToVisibilityConverter x:Key="SearchModeToVisibilityConverter"/>
         <local:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
@@ -71,6 +76,7 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid Margin="10">
@@ -84,7 +90,7 @@
         </Grid.RowDefinitions>
 
         <!-- Find Section -->
-        <GroupBox Grid.Row="0" Header="Find" Padding="10" Margin="0,0,0,10">
+        <GroupBox Grid.Row="0" Header="{DynamicResource FindGroupHeader}" Padding="10" Margin="0,0,0,10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -97,7 +103,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Find input row -->
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Find what:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource FindTextLabel}" VerticalAlignment="Center" Margin="0,0,10,0"/>
 
                 <TextBox Grid.Row="0" Grid.Column="1"
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
@@ -118,20 +124,20 @@
                 </TextBox>
 
                 <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Margin="10,0,0,0">
-                    <RadioButton Content="Text" IsChecked="{Binding SelectedSearchMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Text}" Margin="0,0,10,0"/>
-                    <RadioButton Content="Hex" IsChecked="{Binding SelectedSearchMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Hex}"/>
+                    <RadioButton Content="{DynamicResource TextModeLabel}" IsChecked="{Binding SelectedSearchMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Text}" Margin="0,0,10,0"/>
+                    <RadioButton Content="{DynamicResource HexModeLabel}" IsChecked="{Binding SelectedSearchMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Hex}"/>
                 </StackPanel>
 
                 <!-- Find options row -->
                 <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Vertical" Margin="0,10,0,0">
-                    <CheckBox Content="Case sensitive" IsChecked="{Binding CaseSensitive}" Margin="0,0,0,5"
+                    <CheckBox Content="{DynamicResource CaseSensitiveCheckbox}" IsChecked="{Binding CaseSensitive}" Margin="0,0,0,5"
                               Visibility="{Binding SelectedSearchMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Text}"/>
-                    <CheckBox Content="Use wildcard (??)" IsChecked="{Binding UseWildcard}" Margin="0,0,0,5"
+                    <CheckBox Content="{DynamicResource WildcardCheckbox}" IsChecked="{Binding UseWildcard}" Margin="0,0,0,5"
                               Visibility="{Binding SelectedSearchMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Hex}"/>
-                    <CheckBox Content="Wrap around" IsChecked="{Binding WrapAround}" Margin="0,0,0,5"/>
+                    <CheckBox Content="{DynamicResource WrapAroundString}" IsChecked="{Binding WrapAround}" Margin="0,0,0,5"/>
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0"
                                 Visibility="{Binding SelectedSearchMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Text}">
-                        <TextBlock Text="Encoding:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBlock Text="{DynamicResource EncodingLabel}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <ComboBox ItemsSource="{Binding AvailableEncodings}"
                                   SelectedItem="{Binding SelectedEncoding}"
                                   Width="180"/>
@@ -141,7 +147,7 @@
         </GroupBox>
 
         <!-- Replace Section -->
-        <GroupBox Grid.Row="1" Header="Replace" Padding="10" Margin="0,0,0,10">
+        <GroupBox Grid.Row="1" Header="{DynamicResource ReplaceGroupHeader}" Padding="10" Margin="0,0,0,10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -152,7 +158,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Replace with:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource ReplaceTextLabel}" VerticalAlignment="Center" Margin="0,0,10,0"/>
 
                 <TextBox Grid.Row="0" Grid.Column="1"
                          Text="{Binding ReplaceText, UpdateSourceTrigger=PropertyChanged}"
@@ -165,7 +171,7 @@
                          Visibility="{Binding SelectedSearchMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Hex}"/>
 
                 <CheckBox Grid.Row="1" Grid.Column="1"
-                          Content="Truncate replacement to match find length"
+                          Content="{DynamicResource TruncateReplacementString}"
                           IsChecked="{Binding TruncateReplacement}"
                           Margin="0,10,0,0"/>
             </Grid>
@@ -173,15 +179,15 @@
 
         <!-- Action Buttons -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-            <Button Content="Find Next" Command="{Binding FindNextCommand}" Style="{StaticResource PrimaryButtonStyle}"/>
-            <Button Content="Find Previous" Command="{Binding FindPreviousCommand}" Style="{StaticResource DialogButtonStyle}"/>
-            <Button Content="Find All" Command="{Binding FindAllCommand}" Style="{StaticResource DialogButtonStyle}"/>
-            <Button Content="Replace" Command="{Binding ReplaceNextCommand}" Style="{StaticResource DialogButtonStyle}"/>
-            <Button Content="Replace All" Command="{Binding ReplaceAllCommand}" Style="{StaticResource DialogButtonStyle}"/>
+            <Button Content="{DynamicResource FindNextButtonLabel}" Command="{Binding FindNextCommand}" Style="{StaticResource PrimaryButtonStyle}"/>
+            <Button Content="{DynamicResource FindPreviousButtonLabel}" Command="{Binding FindPreviousCommand}" Style="{StaticResource DialogButtonStyle}"/>
+            <Button Content="{DynamicResource FindAllButton}" Command="{Binding FindAllCommand}" Style="{StaticResource DialogButtonStyle}"/>
+            <Button Content="{DynamicResource ReplaceButton}" Command="{Binding ReplaceNextCommand}" Style="{StaticResource DialogButtonStyle}"/>
+            <Button Content="{DynamicResource ReplaceAllButton}" Command="{Binding ReplaceAllCommand}" Style="{StaticResource DialogButtonStyle}"/>
         </StackPanel>
 
         <!-- Results Section -->
-        <GroupBox Grid.Row="3" Header="Results" Padding="5" Margin="0,0,0,10">
+        <GroupBox Grid.Row="3" Header="{DynamicResource HE_ResultsHeader}" Padding="5" Margin="0,0,0,10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -196,7 +202,7 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Column="0" Text="{Binding CurrentMatchText}" Margin="5" FontWeight="Bold"/>
-                    <Button Grid.Column="1" Content="Clear" Command="{Binding ClearResultsCommand}"
+                    <Button Grid.Column="1" Content="{DynamicResource ClearString}" Command="{Binding ClearResultsCommand}"
                             Style="{StaticResource DialogButtonStyle}" Height="22" MinWidth="60"/>
                 </Grid>
 
@@ -209,9 +215,9 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Position: " FontWeight="SemiBold"/>
+                                <TextBlock Text="{DynamicResource PositionString}" FontWeight="SemiBold"/>
                                 <TextBlock Text="{Binding Position, StringFormat=0x{0:X8}}"/>
-                                <TextBlock Text=" | Length: " Margin="10,0,0,0" FontWeight="SemiBold"/>
+                                <TextBlock Text="{DynamicResource LengthString}" Margin="10,0,0,0" FontWeight="SemiBold"/>
                                 <TextBlock Text="{Binding Length}"/>
                             </StackPanel>
                         </DataTemplate>
@@ -233,7 +239,7 @@
 
         <!-- Bottom Buttons -->
         <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Close" Click="CloseButton_Click" Style="{StaticResource DialogButtonStyle}" IsCancel="True"/>
+            <Button Content="{DynamicResource CloseDialogButton}" Click="CloseButton_Click" Style="{StaticResource DialogButtonStyle}" IsCancel="True"/>
         </StackPanel>
 
         <!-- Progress indicator -->

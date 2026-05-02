@@ -8,7 +8,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
-        Title="Breakpoint Settings"
+        Title="{DynamicResource DBG_BreakpointSettings}"
         Width="560" MinHeight="420"
         ResizeMode="CanResizeWithGrip"
         Background="{DynamicResource DockBackgroundBrush}"
@@ -50,7 +50,7 @@
                 <StackPanel x:Name="ConditionsSection">
                     <!-- Section header checkbox -->
                     <CheckBox x:Name="ConditionsCheck"
-                              Content="Conditions"
+                              Content="{DynamicResource DBG_ConditionsLabel}"
                               FontWeight="SemiBold" FontSize="12"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
                               Checked="OnConditionsCheckedChanged"
@@ -64,7 +64,7 @@
 
                     <!-- "Add a condition" link -->
                     <TextBlock x:Name="AddConditionLink"
-                               Text="+ Add a condition"
+                               Text="{DynamicResource DBG_AddCondition}"
                                FontSize="11"
                                Margin="20,2,0,8"
                                Cursor="Hand"
@@ -81,7 +81,7 @@
                 <!-- ─── Actions section ─── -->
                 <StackPanel x:Name="ActionsSection">
                     <CheckBox x:Name="ActionsCheck"
-                              Content="Actions"
+                              Content="{DynamicResource DBG_ActionsLabel}"
                               FontWeight="SemiBold" FontSize="12"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
                               Checked="OnActionsCheckedChanged"
@@ -94,8 +94,7 @@
 
                         <!-- Log message label + info button -->
                         <DockPanel Margin="0,0,0,4">
-                            <TextBlock DockPanel.Dock="Left"
-                                       Text="Log a message to Output window:"
+                            <TextBlock DockPanel.Dock="Left" Text="{DynamicResource DBG_LogMessage}"
                                        FontSize="11"
                                        VerticalAlignment="Center"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}" />
@@ -111,8 +110,7 @@
                                     BorderThickness="0"
                                     Cursor="Hand"
                                     VerticalAlignment="Center"
-                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                    ToolTip="Use $FUNCTION for method name, {expression} for values, $ADDRESS, $CALLER"
+                                    Foreground="{DynamicResource DockMenuForegroundBrush}" ToolTip="{DynamicResource DBG_LogHint}"
                                     Click="OnLogHintClicked" />
                         </DockPanel>
 
@@ -130,8 +128,7 @@
                                  LostFocus="OnLogBoxLostFocus" />
 
                         <!-- Continue execution -->
-                        <CheckBox x:Name="ContinueCheck"
-                                  Content="Continue code execution"
+                        <CheckBox x:Name="ContinueCheck" Content="{DynamicResource DBG_ContinueExecution}"
                                   FontSize="11"
                                   IsChecked="True"
                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -145,8 +142,7 @@
 
                 <!-- ─── Options section ─── -->
                 <StackPanel Margin="0,0,0,8">
-                    <CheckBox x:Name="DisableOnceCheck"
-                              Content="Disable breakpoint once hit"
+                    <CheckBox x:Name="DisableOnceCheck" Content="{DynamicResource DBG_DisableOnHit}"
                               FontSize="11"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
                               Margin="0,0,0,8" />
@@ -158,7 +154,7 @@
                                   VerticalAlignment="Center"
                                   Checked="OnDependsOnCheckedChanged"
                                   Unchecked="OnDependsOnCheckedChanged"
-                                  Content="Only enable when following breakpoint is hit:" />
+                                  Content="{DynamicResource DBG_OnlyWhen}" />
                         <ComboBox x:Name="DependsOnCombo"
                                   FontSize="11"
                                   MinWidth="160" Height="22"
@@ -183,8 +179,7 @@
                 <DynamicResource ResourceKey="DockBorderBrush" />
             </Border.BorderBrush>
             <DockPanel>
-                <Button x:Name="ResetBtn"
-                        Content="Reset"
+                <Button x:Name="ResetBtn" Content="{DynamicResource DBG_ResetButton}"
                         DockPanel.Dock="Left"
                         Width="80" Height="26"
                         FontSize="11"
@@ -192,8 +187,7 @@
                         Foreground="{DynamicResource DockMenuForegroundBrush}"
                         BorderBrush="{DynamicResource DockBorderBrush}"
                         Click="OnResetClicked" />
-                <Button x:Name="CloseBtn"
-                        Content="Close"
+                <Button x:Name="CloseBtn" Content="{DynamicResource DBG_CloseButton}"
                         HorizontalAlignment="Right"
                         Width="80" Height="26"
                         FontSize="11"

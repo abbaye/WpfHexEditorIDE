@@ -28,6 +28,7 @@ using WpfHexEditor.Editor.CodeEditor.Snippets;
 using WpfHexEditor.Editor.CodeEditor.NavigationBar;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Settings;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Helpers;
 using WpfHexEditor.Editor.Core.Documents;
@@ -288,7 +289,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// matching the Visual Studio keyboard binding.
         /// </summary>
         public static readonly RoutedUICommand FindAllReferencesCommand = new(
-            "Find All References",
+            CodeEditorResources.CodeCtx_FindAllReferences,
             "FindAllReferences",
             typeof(CodeEditor),
             new InputGestureCollection { new KeyGesture(Key.F12, ModifierKeys.Shift) });
@@ -308,7 +309,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// Forces an immediate clear and re-request of all highlight layers.
         /// </summary>
         public static readonly RoutedUICommand RefreshHighlightsCommand = new(
-            "Refresh Highlights",
+            CodeEditorResources.CodeCtx_RefreshHighlights,
             "RefreshHighlights",
             typeof(CodeEditor),
             new InputGestureCollection { new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Shift) });
@@ -663,6 +664,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private Typeface? _cachedLineNumberTypeface;
         private double _cachedLineNumberFontSize = -1;
 
+
+
         // Background highlight pipeline (P1-CE-06)
         private readonly Services.HighlightPipelineService _highlightPipeline = new();
         // Last visible range that was submitted to the pipeline — avoids re-scheduling when unchanged.
@@ -675,8 +678,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         // OPT-D: lineYLookup dirty flag — avoids rebuilding per-line Y positions on every
         // render frame (e.g. caret blink at 530 ms).  Rebuilt only when the visible range,
-        // InlineHints data, or folding regions actually change.
-        private bool _linePositionsDirty = true;
+        // InlineHints data, folding regions, or scroll offset actually change.
+        private bool   _linePositionsDirty       = true;
+        private double _lastRenderedScrollOffset = -1.0;
 
         #endregion
 
@@ -1512,10 +1516,35 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private static void OnZoomLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not CodeEditor editor) return;
-            editor._fontSize = editor._baseFontSize * (double)e.NewValue;
+            var newZoom = (double)e.NewValue;
+            var oldZoom = (double)e.OldValue;
+
+            editor._fontSize = editor._baseFontSize * newZoom;
+            editor._lineNumberCache.Clear();
+
+            // Capture old line height BEFORE CalculateCharacterDimensions overwrites it.
+            double oldLineHeight = editor._lineHeight;
+
             editor.CalculateCharacterDimensions();
+
+            // Keep the first visible line anchored when zooming: rebase the pixel offset
+            // so the same line stays at the top after the line height changes.
+            if (oldLineHeight > 0 && editor._verticalScrollOffset > 0)
+            {
+                double firstVisibleFrac = editor._verticalScrollOffset / oldLineHeight;
+                editor._verticalScrollOffset = firstVisibleFrac * editor._lineHeight;
+                editor._currentScrollOffset  = editor._verticalScrollOffset;
+                editor._targetScrollOffset   = editor._verticalScrollOffset;
+                if (editor._virtualizationEngine != null)
+                    editor._virtualizationEngine.ScrollOffset = editor._verticalScrollOffset;
+                // Sync scrollbar Value immediately so it reflects the rebased offset
+                // before the ArrangeOverride (which updates Maximum) has had a chance to run.
+                // Without this, the user could interact with a stale scrollbar position.
+                editor.SyncVScrollBar();
+            }
+
             editor.InvalidateMeasure();
-            editor.ZoomLevelChanged?.Invoke(editor, (double)e.NewValue);
+            editor.ZoomLevelChanged?.Invoke(editor, newZoom);
         }
 
         /// <summary>
@@ -2134,6 +2163,62 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             set => SetValue(HorizontalScrollSensitivityProperty, Math.Max(0.5, Math.Min(3.0, value)));
         }
 
+        // -- External scroll control (used by CodeEditorHost) ------------------
+
+        /// <summary>
+        /// When true, internal scrollbars are always hidden.
+        /// The host (CodeEditorHost) manages scrollbars externally and drives scroll
+        /// via <see cref="VerticalScrollOffset"/> and <see cref="HorizontalScrollOffset"/>.
+        /// </summary>
+        public bool HideScrollBars { get; set; }
+
+        /// <summary>
+        /// Gets or sets the vertical scroll offset in pixels.
+        /// Setting this triggers a re-render without going through the internal ScrollBar control.
+        /// </summary>
+        public double VerticalScrollOffset
+        {
+            get => _verticalScrollOffset;
+            set
+            {
+                _verticalScrollOffset = value;
+                _currentScrollOffset  = value;
+                _targetScrollOffset   = value;
+                if (_virtualizationEngine != null)
+                {
+                    _virtualizationEngine.ScrollOffset = value;
+                    _virtualizationEngine.CalculateVisibleRange();
+                }
+                SyncVScrollBar();
+                InvalidateVisual();
+                MinimapRefreshRequested?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the horizontal scroll offset in pixels.
+        /// </summary>
+        public double HorizontalScrollOffset
+        {
+            get => _horizontalScrollOffset;
+            set { _horizontalScrollOffset = value; SyncHScrollBar(); InvalidateVisual(); }
+        }
+
+        /// <summary>Total scrollable content height in pixels (updated each arrange pass).</summary>
+        public double TotalContentHeight { get; private set; }
+
+        /// <summary>Total scrollable content width in pixels (updated each arrange pass).</summary>
+        public double TotalContentWidth  { get; private set; }
+
+        /// <summary>Current line height in pixels (for SmallChange on external scrollbar).</summary>
+        public double LineHeightValue => _lineHeight;
+
+        /// <summary>Current character width in pixels (for SmallChange on external H scrollbar).</summary>
+        public double CharWidthValue => _charWidth;
+
+        /// <summary>Raised when TotalContentHeight or TotalContentWidth changes (host updates scrollbars).</summary>
+        public event EventHandler? ContentSizeChanged;
+
         public static readonly DependencyProperty ScrollBarVisibilityModeProperty =
             DependencyProperty.Register(nameof(ScrollBarVisibilityMode), typeof(ScrollBarVisibility), typeof(CodeEditor),
                 new FrameworkPropertyMetadata(ScrollBarVisibility.Auto));
@@ -2551,6 +2636,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // outside the control bounds when scroll / InlineHints push Y values past
             // the viewport.  The docking host does not clip its content presenter.
             ClipToBounds = true;
+
 
             // Initialize document
             _document = new CodeDocument();
@@ -3182,6 +3268,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void RenderCaretVisual()
         {
             if (_caretVisual is null || !IsLoaded) return;
+            if (ActualWidth <= 0 || ActualHeight <= 0) return;
 
             using var dc = _caretVisual.RenderOpen();
 
@@ -3190,8 +3277,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             bool hasVBar = _vScrollBar?.Visibility == Visibility.Visible;
             bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
-            double contentW = ActualWidth  - (hasVBar ? ScrollBarThickness : 0);
-            double contentH = ActualHeight - (hasHBar ? ScrollBarThickness : 0);
+            double contentW = Math.Max(0, ActualWidth  - (hasVBar ? ScrollBarThickness : 0));
+            double contentH = Math.Max(0, ActualHeight - (hasHBar ? ScrollBarThickness : 0));
             double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
             // Mirror the exact clip + transform stack active when RenderCursor is called in OnRender.
@@ -3483,7 +3570,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Select All
             var selectAllMenuItem = new MenuItem
             {
-                Header           = "Select _All",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuSelectAll,
                 InputGestureText = "Ctrl+A",
                 Command          = ApplicationCommands.SelectAll,
                 CommandTarget    = this,
@@ -3494,7 +3581,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Delete
             var deleteMenuItem = new MenuItem
             {
-                Header           = "_Delete",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuDelete,
                 InputGestureText = "Del",
                 Command          = ApplicationCommands.Delete,
                 CommandTarget    = this,
@@ -3508,7 +3595,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Find
             var findMenuItem = new MenuItem
             {
-                Header           = "_Find...",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuFind,
                 InputGestureText = "Ctrl+F",
                 Command          = ApplicationCommands.Find,
                 CommandTarget    = this,
@@ -3519,7 +3606,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Replace
             var replaceMenuItem = new MenuItem
             {
-                Header           = "_Replace...",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuReplace,
                 InputGestureText = "Ctrl+H",
                 Command          = ApplicationCommands.Replace,
                 CommandTarget    = this,
@@ -3533,7 +3620,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Find All References (LSP)
             var findRefsMenuItem = new MenuItem
             {
-                Header           = "Find All _References",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuFindAllRefs,
                 InputGestureText = "Shift+F12",
                 Command          = FindAllReferencesCommand,
                 CommandTarget    = this,
@@ -3549,7 +3636,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Quick Fix (LSP Code Actions)
             var quickFixMenuItem = new MenuItem
             {
-                Header           = "_Quick Fix…",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuQuickFix,
                 InputGestureText = "Ctrl+.",
                 Icon             = MakeMenuIcon("\uE73E"),
             };
@@ -3559,7 +3646,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Rename Symbol (LSP Rename)
             var renameMenuItem = new MenuItem
             {
-                Header           = "_Rename Symbol",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuRenameSymbol,
                 InputGestureText = "F2",
                 Icon             = MakeMenuIcon("\uE70F"),
             };
@@ -3569,7 +3656,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Go to Definition (F12)
             var goToDefMenuItem = new MenuItem
             {
-                Header           = "_Go to Definition",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuGoToDefinition,
                 InputGestureText = "F12",
                 Icon             = MakeMenuIcon("\uE8A9"),
             };
@@ -3579,7 +3666,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Go to Implementation (Ctrl+F12)
             var goToImplMenuItem = new MenuItem
             {
-                Header           = "Go to _Implementation",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuGoToImplementation,
                 InputGestureText = "Ctrl+F12",
                 Icon             = MakeMenuIcon("\uE8A9"),
             };
@@ -3589,7 +3676,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Peek Definition (Alt+F12)
             var peekDefMenuItem = new MenuItem
             {
-                Header           = "_Peek Definition",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuPeekDefinition,
                 InputGestureText = "Alt+F12",
                 Icon             = MakeMenuIcon("\uE7C3"),
             };
@@ -3599,7 +3686,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Show Call Hierarchy (Shift+Alt+H)
             var callHierarchyMenuItem = new MenuItem
             {
-                Header           = "Show _Call Hierarchy",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuShowCallHierarchy,
                 InputGestureText = "Shift+Alt+H",
                 Icon             = MakeMenuIcon("\uE81E"),
             };
@@ -3609,7 +3696,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Show Type Hierarchy (Ctrl+Alt+F12)
             var typeHierarchyMenuItem = new MenuItem
             {
-                Header           = "Show _Type Hierarchy",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuShowTypeHierarchy,
                 InputGestureText = "Ctrl+Alt+F12",
                 Icon             = MakeMenuIcon("\uE8A9"),
             };
@@ -3633,12 +3720,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             contextMenu.Items.Add(new Separator());
 
             // ── Formatting submenu ──────────────────────────────────────────────
-            var formattingMenu = new MenuItem { Header = "_Formatting", Icon = MakeMenuIcon("\uE8E3") };
+            var formattingMenu = new MenuItem { Header = CodeEditorResources.CodeEditor_ContextMenuFormatting, Icon = MakeMenuIcon("\uE8E3") };
 
             // Format Document (Ctrl+K, Ctrl+D)
             var formatDocMenuItem = new MenuItem
             {
-                Header           = "Format _Document",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuFormatDocument,
                 InputGestureText = "Ctrl+K, Ctrl+D",
                 Icon             = MakeMenuIcon("\uE8E3")
             };
@@ -3647,7 +3734,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Format Selection (Ctrl+K, Ctrl+F)
             var formatSelMenuItem = new MenuItem
             {
-                Header           = "Format _Selection",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuFormatSelection,
                 InputGestureText = "Ctrl+K, Ctrl+F",
                 Icon             = MakeMenuIcon("\uE762")
             };
@@ -3660,7 +3747,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Format JSON
             var formatJsonMenuItem = new MenuItem
             {
-                Header           = "F_ormat JSON",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuFormatJson,
                 InputGestureText = "Ctrl+Shift+F",
                 Icon             = MakeMenuIcon("\uE70F")
             };
@@ -3669,7 +3756,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Validate JSON
             var validateMenuItem = new MenuItem
             {
-                Header           = "_Validate JSON",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuValidateJson,
                 InputGestureText = "F5",
                 Icon             = MakeMenuIcon("\uE73E")
             };
@@ -3682,7 +3769,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Options...
             var formattingOptionsMenuItem = new MenuItem
             {
-                Header = "_Options...",
+                Header = CodeEditorResources.CodeEditor_ContextMenuFormattingOptions,
                 Icon   = MakeMenuIcon("\uE713")   // Settings gear
             };
             formattingOptionsMenuItem.Click += (_, _) =>
@@ -3702,11 +3789,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             contextMenu.Items.Add(new Separator());
 
             // ── Outlining submenu — mirrors Visual Studio outlining menu ──
-            var outlineMenu = new MenuItem { Header = "_Outlining" };
+            var outlineMenu = new MenuItem { Header = CodeEditorResources.CodeEditor_ContextMenuOutlining };
 
             var miToggleCurrent = new MenuItem
             {
-                Header           = "Toggle _Outlining",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuToggleOutlining,
                 InputGestureText = "Ctrl+M, Ctrl+M",
                 Icon             = MakeMenuIcon("\uE8A0")
             };
@@ -3714,7 +3801,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             var miToggleAll = new MenuItem
             {
-                Header           = "Toggle _All Outlining",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuToggleAllOutlining,
                 InputGestureText = "Ctrl+M, Ctrl+L",
                 Icon             = MakeMenuIcon("\uE8B7")
             };
@@ -3722,7 +3809,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             var miStop = new MenuItem
             {
-                Header           = "_Stop Outlining",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuStopOutlining,
                 InputGestureText = "Ctrl+M, Ctrl+P",
                 Icon             = MakeMenuIcon("\uE711")
             };
@@ -3730,7 +3817,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             var miStopHiding = new MenuItem
             {
-                Header           = "Stop _Hiding Current",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuStopHidingCurrent,
                 InputGestureText = "Ctrl+M, Ctrl+U",
                 Icon             = MakeMenuIcon("\uE7B3")
             };
@@ -3738,7 +3825,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             var miCollapseDefs = new MenuItem
             {
-                Header           = "_Collapse to Definitions",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuCollapseToDefs,
                 InputGestureText = "Ctrl+M, Ctrl+O",
                 Icon             = MakeMenuIcon("\uE8C4")
             };
@@ -3762,7 +3849,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             contextMenu.Items.Add(new Separator());
             var miWordWrap = new MenuItem
             {
-                Header           = "_Word Wrap",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuWordWrap,
                 IsCheckable      = true,
                 InputGestureText = "Alt+Z",
                 Icon             = MakeMenuIcon("\uE751")
@@ -3774,7 +3861,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Column Rulers toggle
             var miColumnRulers = new MenuItem
             {
-                Header      = "_Column Rulers",
+                Header      = CodeEditorResources.CodeEditor_ContextMenuColumnRulers,
                 IsCheckable = true,
                 Icon        = MakeMenuIcon("\uE745")
             };
@@ -3783,10 +3870,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             contextMenu.Items.Add(miColumnRulers);
 
             // Show Whitespace submenu (radio-style: None / Selection / Always)
-            var wsMenu = new MenuItem { Header = "Show _Whitespace", Icon = MakeMenuIcon("\uE7C5") };
-            var wsNone = new MenuItem { Header = "None",           IsCheckable = true };
-            var wsSel  = new MenuItem { Header = "Selection Only", IsCheckable = true };
-            var wsAll  = new MenuItem { Header = "Always",         IsCheckable = true };
+            var wsMenu = new MenuItem { Header = CodeEditorResources.CodeEditor_ContextMenuShowWhitespace, Icon = MakeMenuIcon("\uE7C5") };
+            var wsNone = new MenuItem { Header = CodeEditorResources.CodeEditor_ContextMenuWhitespaceNone,      IsCheckable = true };
+            var wsSel  = new MenuItem { Header = CodeEditorResources.CodeEditor_ContextMenuWhitespaceSelection, IsCheckable = true };
+            var wsAll  = new MenuItem { Header = CodeEditorResources.CodeEditor_ContextMenuWhitespaceAlways,    IsCheckable = true };
 
             wsNone.Click += (_, _) => { _whitespaceMode = Options.WhitespaceDisplayMode.None;      InvalidateVisual(); };
             wsSel.Click  += (_, _) => { _whitespaceMode = Options.WhitespaceDisplayMode.Selection;  InvalidateVisual(); };
@@ -3808,7 +3895,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             contextMenu.Items.Add(new Separator());
             var miRefreshHighlights = new MenuItem
             {
-                Header           = "_Refresh Highlights",
+                Header           = CodeEditorResources.CodeEditor_ContextMenuRefreshHighlights,
                 InputGestureText = "Ctrl+Shift+R",
                 Icon             = MakeMenuIcon("\uE72C")
             };
@@ -3821,7 +3908,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Re-analyze Folding
             var miReanalyzeFolding = new MenuItem
             {
-                Header = "Re-anal_yze Folding",
+                Header = CodeEditorResources.CodeEditor_ContextMenuReanalyzeFolding,
                 Icon   = MakeMenuIcon("\uE8A0")
             };
             miReanalyzeFolding.Click += (_, _) => ReanalyzeFolding();
@@ -3831,7 +3918,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Toggle Word Highlight
             var miWordHighlight = new MenuItem
             {
-                Header    = "Word _Highlight",
+                Header    = CodeEditorResources.CodeEditor_ContextMenuWordHighlight,
                 Icon      = MakeMenuIcon("\uE7C1"),  // Highlight glyph
                 IsCheckable = true,
             };
@@ -4142,8 +4229,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             catch (System.Text.Json.JsonException ex)
             {
-                MessageBox.Show($"Cannot format — invalid JSON:\n{ex.Message}",
-                    "Format Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(string.Format(CodeEditorResources.CodeEditor_FormatJsonError, ex.Message),
+                    CodeEditorResources.CodeEditor_FormatJsonErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -4156,15 +4243,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 using var _ = System.Text.Json.JsonDocument.Parse(text,
                     new System.Text.Json.JsonDocumentOptions { AllowTrailingCommas = true });
-                StatusMessage?.Invoke(this, "JSON is valid.");
-                MessageBox.Show("JSON is valid.", "Validation",
+                StatusMessage?.Invoke(this, CodeEditorResources.CodeEditor_ValidateJsonSuccess);
+                MessageBox.Show(CodeEditorResources.CodeEditor_ValidateJsonSuccess, CodeEditorResources.CodeEditor_ValidateJsonTitle,
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (System.Text.Json.JsonException ex)
             {
-                var msg = $"Invalid JSON: {ex.Message}";
+                var msg = string.Format(CodeEditorResources.CodeEditor_ValidateJsonError, ex.Message);
                 StatusMessage?.Invoke(this, msg);
-                MessageBox.Show(msg, "Validation Error",
+                MessageBox.Show(msg, CodeEditorResources.CodeEditor_ValidateJsonErrorTitle,
                     MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
@@ -4393,7 +4480,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 newOffset = _verticalScrollOffset; // already visible — no scroll needed
 
             double maxV = _vScrollBar?.Maximum ?? double.MaxValue;
-            newOffset = Math.Min(newOffset, maxV);
+            newOffset = Math.Clamp(newOffset, 0, maxV);
 
             if (Math.Abs(newOffset - _verticalScrollOffset) > 0.1)
             {
@@ -4570,7 +4657,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (formatted == original) return;
 
-            using (_undoEngine.BeginTransaction("Format Document"))
+            using (_undoEngine.BeginTransaction(CodeEditorResources.CodeEditor_FormatDocumentTransaction))
             {
                 SelectAll();
                 DeleteSelection();
@@ -4632,7 +4719,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (formatted == original) return;
 
-            using (_undoEngine.BeginTransaction("Format Selection"))
+            using (_undoEngine.BeginTransaction(CodeEditorResources.CodeEditor_FormatSelectionTransaction))
             {
                 // Replace full text; the service has already scoped the change.
                 SelectAll();

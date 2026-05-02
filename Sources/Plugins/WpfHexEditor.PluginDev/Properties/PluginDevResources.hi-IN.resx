@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>नया एक्सटेंशन प्रोजेक्ट</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>प्लगइन प्रोजेक्ट के लिए आउटपुट निर्देशिका चुनें</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>अनुमतियाँ</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>आइसोलेशन मोड</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>लोड प्राथमिकता (10–90):</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>अगला &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>बनाएं और खोलें</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>प्लगइन बनाया गया</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>त्रुटि</value>
+  </data>
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>एक्सटेंशन पैकेज प्रकाशित करें</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>प्रकाशन से पहले पैकेज पर हस्ताक्षर करें</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>ब्राउज़ करें…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>आउटपुट फ़ोल्डर Explorer में खोलें</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>पैकेज</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>बंद करें</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>आउटपुट निर्देशिका चुनें</value>
+  </data>
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>एक्सटेंशन डेव लॉग निर्यात करें</value>
+  </data>
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>खोजें</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>ब्राउज़</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>स्थापित</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>सभी अपडेट करें</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>अपडेट</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>एक्सटेंशन मार्केटप्लेस</value>
+  </data>
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>एक्सटेंशन:</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>कॉन्फ़िग:</value>
+  </data>
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>तैयार</value>
+  </data>
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>ताज़ा करें</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>नाम</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>लेखक</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>संस्करण</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>रेटिंग</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>डाउनलोड</value>
+  </data>
+</root>

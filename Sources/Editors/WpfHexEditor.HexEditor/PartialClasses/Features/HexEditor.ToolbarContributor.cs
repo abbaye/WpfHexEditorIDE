@@ -15,7 +15,9 @@
 // ==========================================================
 
 using System.Collections.ObjectModel;
+using WpfHexEditor.Core.Localization.Services;
 using WpfHexEditor.Editor.Core;
+using L10n = WpfHexEditor.Core.Properties.Resources;
 
 namespace WpfHexEditor.HexEditor
 {
@@ -53,7 +55,7 @@ namespace WpfHexEditor.HexEditor
             {
                 Icon    = "\uE7C1",   // Page icon (Segoe MDL2)
                 Label   = "—",
-                Tooltip = "Detected file format"
+                Tooltip = L10n.HE_Toolbar_DetectedFormat
             };
 
             // Separator
@@ -64,7 +66,7 @@ namespace WpfHexEditor.HexEditor
             {
                 Icon    = "\uE9D9",   // Shield icon
                 Label   = "—",
-                Tooltip = "Detection confidence score"
+                Tooltip = L10n.HE_Toolbar_ConfidenceScore
             };
 
             // Separator
@@ -74,9 +76,19 @@ namespace WpfHexEditor.HexEditor
             _tbChangeFormat = new EditorToolbarItem
             {
                 Icon          = "\uE8AB",   // Switch icon
-                Label         = "Format",
-                Tooltip       = "Change detected format",
+                Label         = L10n.HE_Toolbar_ChangeFormat,
+                Tooltip       = L10n.HE_Toolbar_ChangeFormatTooltip,
                 DropdownItems = new ObservableCollection<EditorToolbarItem>()
+            };
+
+            // Refresh static labels/tooltips when culture changes at runtime.
+            LocalizedResourceDictionary.CultureChanged += (_, _) =>
+            {
+                _tbFormat.Tooltip       = L10n.HE_Toolbar_DetectedFormat;
+                _tbConfidence.Tooltip   = L10n.HE_Toolbar_ConfidenceScore;
+                _tbChangeFormat.Label   = L10n.HE_Toolbar_ChangeFormat;
+                _tbChangeFormat.Tooltip = L10n.HE_Toolbar_ChangeFormatTooltip;
+                RefreshToolbarItems();
             };
 
             RefreshToolbarItems();
@@ -114,12 +126,12 @@ namespace WpfHexEditor.HexEditor
                 {
                     var topScore = _detectionCandidates[0].ConfidenceScore;
                     _tbConfidence.Label   = $"{topScore:P0}";
-                    _tbConfidence.Tooltip = $"Detection confidence: {topScore:P1}";
+                    _tbConfidence.Tooltip = string.Format(L10n.HE_Toolbar_ConfidenceFormat, $"{topScore:P1}");
                 }
                 else
                 {
                     _tbConfidence.Label   = "—";
-                    _tbConfidence.Tooltip = "Detection confidence score";
+                    _tbConfidence.Tooltip = L10n.HE_Toolbar_ConfidenceScore;
                 }
             }
 

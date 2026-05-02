@@ -7,10 +7,17 @@
 <UserControl x:Class="WpfHexEditor.App.Controls.OutputPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="{DynamicResource DockBackgroundBrush}">
+             Background="{DynamicResource DockBackgroundBrush}"
+             xmlns:appSvc="clr-namespace:WpfHexEditor.App.Services">
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <appSvc:AppLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -24,7 +31,7 @@
                 BorderThickness="0,0,0,1"
                 Padding="4,3">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="Show output from:"
+                <TextBlock Text="{DynamicResource APP_ShowOutputFrom}"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            VerticalAlignment="Center"
                            Margin="4,0,6,0"
@@ -49,8 +56,7 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button Content="&#xD7;"
-                        ToolTip="Clear All"
+                <Button Content="&#xD7;" ToolTip="{DynamicResource APP_ClearAll}"
                         Click="OnClear"
                         Style="{DynamicResource DockDarkToolBarButtonStyle}"
                         FontSize="14" FontWeight="Bold"
@@ -58,23 +64,20 @@
                         Margin="6,0,0,0"
                         Padding="0,-2,0,0" />
                 <Button x:Name="WrapButton"
-                        Content="&#x21A9;"
-                        ToolTip="Toggle Word Wrap"
+                        Content="&#x21A9;" ToolTip="{DynamicResource APP_ToggleWordWrap}"
                         Click="OnToggleWordWrap"
                         Style="{DynamicResource DockDarkToolBarButtonStyle}"
                         FontSize="14"
                         Width="26" Height="24"
                         Padding="0,-1,0,0" />
-                <Button Content="&#x2398;"
-                        ToolTip="Copy All"
+                <Button Content="&#x2398;" ToolTip="{DynamicResource APP_CopyAll}"
                         Click="OnCopyAll"
                         Style="{DynamicResource DockDarkToolBarButtonStyle}"
                         FontSize="14"
                         Width="26" Height="24"
                         Padding="0,-1,0,0" />
                 <Button x:Name="AutoScrollButton"
-                        Content="&#x2913;"
-                        ToolTip="Toggle Auto-Scroll"
+                        Content="&#x2913;" ToolTip="{DynamicResource APP_ToggleAutoScroll}"
                         Click="OnToggleAutoScroll"
                         Style="{DynamicResource DockDarkToolBarButtonStyle}"
                         FontSize="14" FontWeight="Bold"
@@ -96,6 +99,36 @@
                      FontFamily="Cascadia Mono, Consolas, monospace"
                      FontSize="12"
                      Padding="4,2">
+            <RichTextBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{DynamicResource APP_Copy}"
+                              Command="ApplicationCommands.Copy"
+                              InputGestureText="Ctrl+C">
+                        <MenuItem.Icon>
+                            <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="{DynamicResource APP_CopyAll}"
+                              Click="OnCopyAll"/>
+                    <MenuItem Header="{DynamicResource APP_SelectAll}"
+                              Command="ApplicationCommands.SelectAll"
+                              InputGestureText="Ctrl+A"/>
+                    <Separator/>
+                    <MenuItem Header="{DynamicResource APP_ClearAll}"
+                              Click="OnClear"/>
+                    <MenuItem Header="{DynamicResource APP_SaveOutputAs}"
+                              Click="OnSaveOutputAs"/>
+                    <Separator/>
+                    <MenuItem x:Name="WordWrapMenuItem"
+                              Header="{DynamicResource APP_ToggleWordWrap}"
+                              IsCheckable="True"
+                              Click="OnToggleWordWrap"/>
+                    <MenuItem x:Name="AutoScrollMenuItem"
+                              Header="{DynamicResource APP_ToggleAutoScroll}"
+                              IsCheckable="True"
+                              Click="OnToggleAutoScroll"/>
+                </ContextMenu>
+            </RichTextBox.ContextMenu>
             <RichTextBox.Document>
                 <FlowDocument PagePadding="0" />
             </RichTextBox.Document>

@@ -8,7 +8,9 @@
 <UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Controls.StructurePopToolbar"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Opacity="0.95">
+             Opacity="0.95"
+             xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services">
+
     <UserControl.Resources>
         <Style x:Key="PopBtnStyle" TargetType="Button">
             <Setter Property="Background"      Value="Transparent"/>
@@ -64,14 +66,14 @@
             <!-- Group 1: File -->
             <Button x:Name="PART_SaveBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Save (Ctrl+S)"
+                    ToolTip="{DynamicResource StructureEditor_SaveToolTip}"
                     Click="OnSaveClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74E;" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_ValidateBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Validate (Ctrl+Shift+V)"
+                    ToolTip="{DynamicResource StructureEditor_ValidateToolTip}"
                     Click="OnValidateClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE73E;" FontSize="13"/>
             </Button>
@@ -81,14 +83,14 @@
             <!-- Group 2: Edit -->
             <Button x:Name="PART_UndoBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Undo (Ctrl+Z)"
+                    ToolTip="{DynamicResource StructureEditor_UndoToolTip}"
                     Click="OnUndoClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7A7;" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_RedoBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Redo (Ctrl+Y)"
+                    ToolTip="{DynamicResource StructureEditor_RedoToolTip}"
                     Click="OnRedoClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7A6;" FontSize="13"/>
             </Button>
@@ -98,7 +100,7 @@
             <!-- Toggle Live Code View -->
             <Button x:Name="PART_ToggleCodeViewBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Toggle Live Code View"
+                    ToolTip="{DynamicResource StructureEditor_LiveCodeViewToolTip}"
                     Click="OnToggleCodeViewClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE943;" FontSize="13"/>
             </Button>
@@ -108,7 +110,7 @@
 
             <Button x:Name="PART_AddBlockBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Add block (Ctrl+N)"
+                    ToolTip="{DynamicResource StructureEditor_AddBlockToolTip}"
                     Click="OnAddBlockClicked"
                     Visibility="Collapsed">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE710;" FontSize="13"/>
@@ -116,7 +118,7 @@
 
             <Button x:Name="PART_DuplicateBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="Duplicate block (Ctrl+D)"
+                    ToolTip="{DynamicResource StructureEditor_DuplicateBlockToolTip}"
                     Click="OnDuplicateClicked"
                     Visibility="Collapsed">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C8;" FontSize="13"/>

@@ -15,7 +15,7 @@
              xmlns:controls="clr-namespace:WpfHexEditor.HexEditor.Controls"
              xmlns:coreViews="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
              xmlns:prop="clr-namespace:WpfHexEditor.Core.Properties;assembly=WpfHexEditor.Core"
-             xmlns:hexServices="clr-namespace:WpfHexEditor.Core.Services"
+             xmlns:hexSvc="clr-namespace:WpfHexEditor.HexEditor.Services"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              FontFamily="Consolas"
@@ -161,11 +161,9 @@
     <!-- V1 Compatible Context Menu -->
     <UserControl.ContextMenu>
         <ContextMenu x:Name="ByteContextMenu" Visibility="Collapsed">
-            <!-- Inject localized strings directly so DynamicResource resolves correctly
-                 inside the Popup's isolated visual tree (Application.Resources lookup can
-                 fail for ContextMenu popups; placing the dictionary here guarantees it). -->
             <ContextMenu.Resources>
-                <hexServices:LocalizedResourceDictionary/>
+                <!-- Provides common + HexEditor-specific strings for this isolated ContextMenu tree -->
+                <hexSvc:HexEditorLocalizedDictionary/>
             </ContextMenu.Resources>
             <!-- Undo -->
             <MenuItem x:Name="UndoMenuItem" Header="{DynamicResource UndoString}" Click="UndoMenuItem_Click">
@@ -254,7 +252,7 @@
             <Separator/>
 
             <!-- Find All (Async with Progress) -->
-            <MenuItem x:Name="FindAllMenuItem" Header="{DynamicResource FindAllString}" Click="FindAllMenuItemAsync_Click" ToolTip="Search for all occurrences with progress overlay">
+            <MenuItem x:Name="FindAllMenuItem" Header="{DynamicResource FindAllString}" Click="FindAllMenuItemAsync_Click" ToolTip="{DynamicResource HE_TipSearchAllOccurrences}">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -341,7 +339,7 @@
             <Separator/>
 
             <!-- Compare File with… (always enabled when a file is open) -->
-            <MenuItem x:Name="CompareFileMenuItem" Header="Compare File with…"
+            <MenuItem x:Name="CompareFileMenuItem" Header="{DynamicResource HE_CompareFileWith}"
                       Click="CompareFileMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -351,7 +349,7 @@
             </MenuItem>
 
             <!-- Compare Selection as Left… (enabled only when selection is active) -->
-            <MenuItem x:Name="CompareSelectionMenuItem" Header="Compare Selection as Left…"
+            <MenuItem x:Name="CompareSelectionMenuItem" Header="{DynamicResource HE_CompareSelectionLeft}"
                       Click="CompareSelectionMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -530,7 +528,7 @@
                            Cursor="Hand">
                     <TextBlock.ToolTip>
                         <ToolTip x:Name="TblStatusTooltip">
-                            <TextBlock x:Name="TblStatusTooltipText" Text="No TBL loaded"/>
+                            <TextBlock x:Name="TblStatusTooltipText" Text="{DynamicResource HE_NoTblLoaded}"/>
                         </ToolTip>
                     </TextBlock.ToolTip>
                 </TextBlock>

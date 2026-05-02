@@ -16,6 +16,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.App.Dialogs.SolutionPropertyPages;
@@ -123,7 +124,7 @@ internal sealed class StartupProjectsPage : UserControl
         // "Sélection actuelle" (not implemented — grayed out)
         _rbCurrentSelection = new RadioButton
         {
-            Content   = "Sélection actuelle",
+            Content   = AppResources.App_StartupProjects_CurrentSelection,
             IsEnabled = false,
             Margin    = new Thickness(0, 0, 0, 8)
         };
@@ -132,7 +133,7 @@ internal sealed class StartupProjectsPage : UserControl
         // "Projet de démarrage unique"
         _rbSingle = new RadioButton
         {
-            Content   = "Projet de démarrage unique :",
+            Content   = AppResources.App_StartupProjects_SingleProject,
             IsChecked = true,
             Margin    = new Thickness(0, 0, 0, 4)
         };
@@ -151,7 +152,7 @@ internal sealed class StartupProjectsPage : UserControl
         // "Plusieurs projets de démarrage"
         _rbMultiple = new RadioButton
         {
-            Content = "Plusieurs projets de démarrage :",
+            Content = AppResources.App_StartupProjects_MultipleProjects,
             Margin  = new Thickness(0, 0, 0, 4)
         };
         _rbMultiple.SetResourceReference(ForegroundProperty, "DockMenuForegroundBrush");
@@ -160,7 +161,7 @@ internal sealed class StartupProjectsPage : UserControl
         // Profils toolbar
         var profilsLabel = new TextBlock
         {
-            Text   = "Profils de lancement",
+            Text   = AppResources.App_StartupProjects_LaunchProfiles,
             Margin = new Thickness(16, 0, 0, 4)
         };
         profilsLabel.SetResourceReference(TextBlock.ForegroundProperty, "DockMenuForegroundBrush");

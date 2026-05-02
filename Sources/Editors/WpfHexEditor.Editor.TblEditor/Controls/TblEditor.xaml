@@ -15,9 +15,15 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="700"
              KeyDown="UserControl_KeyDown"
-             PreviewMouseWheel="UserControl_PreviewMouseWheel">
+             PreviewMouseWheel="UserControl_PreviewMouseWheel"
+             xmlns:tblSvc="clr-namespace:WpfHexEditor.Editor.TblEditor.Services">
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <tblSvc:TblEditorLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <!-- Bool → Visibility -->
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
@@ -108,7 +114,7 @@
                 </Trigger>
                 <DataTrigger Binding="{Binding HasConflict}" Value="True">
                     <Setter Property="Background" Value="#20FF6B00"/>
-                    <Setter Property="ToolTip"    Value="Prefix conflict detected"/>
+                    <Setter Property="ToolTip"    Value="{DynamicResource TblEditor_PrefixConflict}"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsValid}" Value="False">
                     <Setter Property="Background" Value="#20FF0000"/>
@@ -116,7 +122,8 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid Background="{DynamicResource ERR_BackgroundBrush}">
         <Grid.RowDefinitions>
@@ -157,7 +164,7 @@
                 <ContextMenu>
                     <!-- ── Group 1 : Entry editing ───────────────────── -->
                     <MenuItem x:Name="CtxAdd"
-                              Header="Add Entry"
+                              Header="{DynamicResource TblEditor_AddEntry}"
                               InputGestureText="Ctrl+Insert"
                               Click="CtxAdd_Click">
                         <MenuItem.Icon>
@@ -165,14 +172,14 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="CtxDuplicate"
-                              Header="Duplicate Entry"
+                              Header="{DynamicResource TblEditor_DuplicateEntry}"
                               Click="CtxDuplicate_Click">
                         <MenuItem.Icon>
                             <TextBlock Text="&#xE780;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="CtxDelete"
-                              Header="Delete"
+                              Header="{DynamicResource TblEditor_Delete}"
                               InputGestureText="Delete"
                               Click="CtxDelete_Click">
                         <MenuItem.Icon>
@@ -183,7 +190,7 @@
 
                     <!-- ── Group 2 : Clipboard ───────────────────────── -->
                     <MenuItem x:Name="CtxCut"
-                              Header="Cut"
+                              Header="{DynamicResource TblEditor_Cut}"
                               InputGestureText="Ctrl+X"
                               Click="CtxCut_Click">
                         <MenuItem.Icon>
@@ -191,7 +198,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="CtxCopy"
-                              Header="Copy"
+                              Header="{DynamicResource TblEditor_Copy}"
                               InputGestureText="Ctrl+C"
                               Click="CtxCopy_Click">
                         <MenuItem.Icon>
@@ -199,7 +206,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="CtxPaste"
-                              Header="Paste"
+                              Header="{DynamicResource TblEditor_Paste}"
                               InputGestureText="Ctrl+V"
                               Click="CtxPaste_Click">
                         <MenuItem.Icon>
@@ -210,7 +217,7 @@
 
                     <!-- ── Group 3 : Navigation / search ────────────── -->
                     <MenuItem x:Name="CtxFind"
-                              Header="Find…"
+                              Header="{DynamicResource TblEditor_Find}"
                               InputGestureText="Ctrl+F"
                               Click="CtxFind_Click">
                         <MenuItem.Icon>
@@ -218,7 +225,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="CtxSelectAll"
-                              Header="Select All"
+                              Header="{DynamicResource TblEditor_SelectAll}"
                               InputGestureText="Ctrl+A"
                               Click="CtxSelectAll_Click">
                         <MenuItem.Icon>
@@ -229,14 +236,14 @@
 
                     <!-- ── Group 4 : Validation ──────────────────────── -->
                     <MenuItem x:Name="CtxForceValidation"
-                              Header="Force TBL Validation"
+                              Header="{DynamicResource TblEditor_ForceValidation}"
                               Click="CtxForceValidation_Click">
                         <MenuItem.Icon>
                             <TextBlock Text="&#xE8FB;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="CtxShowConflictsOnly"
-                              Header="Show Conflicts Only"
+                              Header="{DynamicResource TblEditor_ShowConflictsOnly}"
                               IsCheckable="True"
                               Click="CtxShowConflictsOnly_Click">
                         <MenuItem.Icon>
@@ -244,7 +251,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="CtxNextConflict"
-                              Header="Go to Next Conflict"
+                              Header="{DynamicResource TblEditor_GoToNextConflict}"
                               Click="CtxNextConflict_Click">
                         <MenuItem.Icon>
                             <TextBlock Text="&#xEA47;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
@@ -254,7 +261,7 @@
 
                     <!-- ── Group 5 : Undo / Redo ─────────────────────── -->
                     <MenuItem x:Name="CtxUndo"
-                              Header="Undo"
+                              Header="{DynamicResource TblEditor_Undo}"
                               InputGestureText="Ctrl+Z"
                               Click="CtxUndo_Click">
                         <MenuItem.Icon>
@@ -262,7 +269,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="CtxRedo"
-                              Header="Redo"
+                              Header="{DynamicResource TblEditor_Redo}"
                               InputGestureText="Ctrl+Y"
                               Click="CtxRedo_Click">
                         <MenuItem.Icon>
@@ -286,7 +293,7 @@
                 </DataGridTemplateColumn>
 
                 <!-- Hex Entry -->
-                <DataGridTextColumn Header="Hex Entry"
+                <DataGridTextColumn Header="{DynamicResource TblEditor_ColHex}"
                                     Binding="{Binding Entry, UpdateSourceTrigger=LostFocus}"
                                     Width="100"
                                     IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}">
@@ -298,13 +305,13 @@
                 </DataGridTextColumn>
 
                 <!-- Character Value -->
-                <DataGridTextColumn Header="Character"
+                <DataGridTextColumn Header="{DynamicResource TblEditor_ColCharacter}"
                                     Binding="{Binding Value, UpdateSourceTrigger=LostFocus}"
                                     Width="120"
                                     IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
 
                 <!-- DTE Type badge -->
-                <DataGridTemplateColumn Header="Type" Width="75" IsReadOnly="True" SortMemberPath="Type">
+                <DataGridTemplateColumn Header="{DynamicResource TblEditor_ColType}" Width="75" IsReadOnly="True" SortMemberPath="Type">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border x:Name="Badge"
@@ -350,13 +357,13 @@
                 </DataGridTemplateColumn>
 
                 <!-- Byte length -->
-                <DataGridTextColumn Header="Bytes"
+                <DataGridTextColumn Header="{DynamicResource TblEditor_ColBytes}"
                                     Binding="{Binding ByteLength}"
                                     Width="50"
                                     IsReadOnly="True"/>
 
                 <!-- Comment -->
-                <DataGridTextColumn Header="Comment"
+                <DataGridTextColumn Header="{DynamicResource TblEditor_ColComment}"
                                     Binding="{Binding Comment, UpdateSourceTrigger=LostFocus}"
                                     Width="*"
                                     IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"/>

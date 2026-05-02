@@ -22,6 +22,7 @@ using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.PluginHost.Properties;
 
 namespace WpfHexEditor.PluginHost.UI;
 
@@ -100,7 +101,7 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
 
     private bool   _isInstalling;
     private int    _installPercent;
-    private string _statusText = "Ready.";
+    private string _statusText = PluginHostResources.PluginHost_Ready;
 
     public bool IsInstalling
     {
@@ -182,7 +183,7 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
 
     private async Task LoadBrowseTabAsync()
     {
-        StatusText = "Loading marketplaceâ€¦";
+        StatusText = PluginHostResources.PluginHost_LoadingMarketplace;
         try
         {
             var listings = await _marketplace.SearchAsync(string.Empty).ConfigureAwait(false);
@@ -346,7 +347,7 @@ public sealed class MarketplacePanelViewModel : ViewModelBase
     {
         var dlg = new Microsoft.Win32.OpenFileDialog
         {
-            Title     = "Install Extension",
+            Title     = PluginHostResources.PluginHost_InstallExtension,
             Filter    = "Extension Packages (*.whxplugin)|*.whxplugin",
             Multiselect = false,
         };

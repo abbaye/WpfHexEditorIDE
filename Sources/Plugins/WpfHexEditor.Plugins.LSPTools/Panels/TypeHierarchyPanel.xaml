@@ -8,9 +8,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="{DynamicResource CH_BackgroundBrush}"
-             Foreground="{DynamicResource CH_ForegroundBrush}">
+             Foreground="{DynamicResource CH_ForegroundBrush}"
+             xmlns:lspSvc="clr-namespace:WpfHexEditor.Plugins.LSPTools.Services">
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <lspSvc:LspToolsLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
 
         <!-- ── Mode button style (reuses CH_ tokens) ──────────────────────── -->
         <Style x:Key="TH_ModeButton" TargetType="ToggleButton">
@@ -61,7 +67,8 @@
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         </Style>
 
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -77,8 +84,7 @@
             <DockPanel Margin="4,0" LastChildFill="True" VerticalAlignment="Center">
 
                 <Button DockPanel.Dock="Left"
-                        Style="{DynamicResource PanelIconButtonStyle}"
-                        ToolTip="Refresh"
+                        Style="{DynamicResource PanelIconButtonStyle}" ToolTip="{DynamicResource LspTools_RefreshTooltip}"
                         Click="OnRefreshClicked"
                         Margin="0,0,4,0">
                     <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
@@ -94,12 +100,11 @@
                                   Style="{StaticResource TH_ModeButton}"
                                   IsChecked="True"
                                   Checked="OnModeChanged"
-                                  Unchecked="OnModeChanged"
-                                  ToolTip="Show base types / interfaces">
+                                  Unchecked="OnModeChanged" ToolTip="{DynamicResource LspTools_ShowBaseTypes}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                        Margin="0,0,4,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Supertypes" FontSize="11" VerticalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource LspTools_Supertypes}" FontSize="11" VerticalAlignment="Center"/>
                         </StackPanel>
                     </ToggleButton>
                     <ToggleButton x:Name="SubtypesToggle"
@@ -107,12 +112,12 @@
                                   IsChecked="False"
                                   Checked="OnModeChanged"
                                   Unchecked="OnModeChanged"
-                                  ToolTip="Show derived types / implementors"
+                                  ToolTip="{DynamicResource LspTools_ShowDerivedTypes}"
                                   Margin="4,0,0,0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE74B;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                        Margin="0,0,4,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Subtypes" FontSize="11" VerticalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource LspTools_Subtypes}" FontSize="11" VerticalAlignment="Center"/>
                         </StackPanel>
                     </ToggleButton>
                 </StackPanel>
@@ -163,8 +168,7 @@
         </TreeView>
 
         <TextBlock x:Name="EmptyPlaceholder"
-                   Grid.Row="1"
-                   Text="No type hierarchy. Place caret on a type and press Ctrl+F12."
+                   Grid.Row="1" Text="{DynamicResource LspTools_NoTypeHierarchy}"
                    Foreground="{DynamicResource CH_ForegroundBrush}"
                    Opacity="0.5"
                    FontSize="11"

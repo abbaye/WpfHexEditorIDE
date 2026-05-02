@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>新しい拡張プロジェクト</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>プラグインプロジェクトの出力ディレクトリを選択</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>アクセス許可</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>分離モード</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>読み込み優先度 (10–90):</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>次へ &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>作成して開く</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>プラグインが作成されました</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>拡張パッケージを発行</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>発行前にパッケージに署名する</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>参照…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>出力フォルダーをエクスプローラーで開く</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>パッケージ</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>閉じる</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>出力ディレクトリを選択</value>
+  </data>
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>拡張機能開発ログのエクスポート</value>
+  </data>
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>検索</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>参照</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>インストール済み</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>すべて更新</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>拡張機能マーケットプレース</value>
+  </data>
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>拡張機能:</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>構成:</value>
+  </data>
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>準備完了</value>
+  </data>
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>作成者</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>バージョン</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>評価</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>ダウンロード</value>
+  </data>
+</root>

@@ -5,9 +5,15 @@
     xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
     xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Git.ViewModels"
     Background="{DynamicResource DockBackgroundBrush}"
-    Foreground="{DynamicResource DockMenuForegroundBrush}">
+    Foreground="{DynamicResource DockMenuForegroundBrush}"
+             xmlns:gitSvc="clr-namespace:WpfHexEditor.Plugins.Git.Services">
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <gitSvc:GitPluginLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
 
         <!-- Dark TextBox — DockDarkTextBoxStyle does not exist in docking themes;
@@ -127,13 +133,13 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
-                <Button Grid.Column="2" ToolTip="Stage"
+                <Button Grid.Column="2" ToolTip="{DynamicResource Git_Stage}"
                         Command="{Binding DataContext.StageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         CommandParameter="{Binding}"
                         Style="{DynamicResource DockDarkToolBarButtonStyle}" Padding="4,0" Margin="2,0,0,0">
                     <TextBlock Text="+" FontSize="11"/>
                 </Button>
-                <Button Grid.Column="3" ToolTip="Discard"
+                <Button Grid.Column="3" ToolTip="{DynamicResource Git_Discard}"
                         Command="{Binding DataContext.DiscardCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         CommandParameter="{Binding}"
                         Style="{DynamicResource DockDarkToolBarButtonStyle}" Padding="4,0">
@@ -156,19 +162,20 @@
                     <TextBlock Text="{Binding DateText}" FontSize="10" Opacity="0.5"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 </StackPanel>
-                <Button Grid.Column="1" Content="Pop"
+                <Button Grid.Column="1" Content="{DynamicResource Git_PopStash}"
                         Command="{Binding DataContext.StashPopCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         CommandParameter="{Binding}"
                         Style="{DynamicResource DockDarkToolBarButtonStyle}" Padding="6,0" Margin="2,0,0,0"
                         FontSize="11"/>
-                <Button Grid.Column="2" Content="Drop"
+                <Button Grid.Column="2" ToolTip="{DynamicResource Git_DropStash}"
                         Command="{Binding DataContext.StashDropCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         CommandParameter="{Binding}"
                         Style="{DynamicResource DockDarkToolBarButtonStyle}" Padding="6,0" Margin="2,0,0,0"
                         FontSize="11"/>
             </Grid>
         </DataTemplate>
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -184,28 +191,23 @@
             <DockPanel LastChildFill="False">
                 <Button Style="{StaticResource PanelIconButtonStyle}"
                         Content="&#xE72C;"
-                        Command="{Binding RefreshCommand}"
-                        ToolTip="Refresh"/>
+                        Command="{Binding RefreshCommand}" ToolTip="{DynamicResource Git_Refresh}"/>
                 <Separator Width="1" Margin="2,4"
                            Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 <Button Style="{StaticResource PanelIconButtonStyle}"
                         Content="&#xE710;"
-                        Command="{Binding StageAllCommand}"
-                        ToolTip="Stage All"/>
+                        Command="{Binding StageAllCommand}" ToolTip="{DynamicResource Git_StageAll}"/>
                 <Button Style="{StaticResource PanelIconButtonStyle}"
                         Content="&#xE738;"
-                        Command="{Binding UnstageAllCommand}"
-                        ToolTip="Unstage All"/>
+                        Command="{Binding UnstageAllCommand}" ToolTip="{DynamicResource Git_UnstageAll}"/>
                 <Button Style="{StaticResource PanelIconButtonStyle}"
                         Content="&#xE74D;"
-                        Command="{Binding DiscardAllCommand}"
-                        ToolTip="Discard All Changes"/>
+                        Command="{Binding DiscardAllCommand}" ToolTip="{DynamicResource Git_DiscardAll}"/>
                 <Separator Width="1" Margin="2,4"
                            Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 <Button Style="{StaticResource PanelIconButtonStyle}"
                         Content="&#xE72A;"
-                        Command="{Binding StashCommand}"
-                        ToolTip="Stash Changes"/>
+                        Command="{Binding StashCommand}" ToolTip="{DynamicResource Git_StashChanges}"/>
             </DockPanel>
         </Border>
 
@@ -233,19 +235,19 @@
                                       Visibility="{Binding IsRemoteOp, Converter={StaticResource BoolToVis}}"
                                       VerticalAlignment="Center"/>
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
-                    <Button ToolTip="Sync (Pull + Push)" Command="{Binding SyncCommand}"
+                    <Button ToolTip="{DynamicResource Git_SyncPullPush}" Command="{Binding SyncCommand}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}" Padding="5,2">
                         <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                     </Button>
-                    <Button ToolTip="Pull" Command="{Binding PullCommand}"
+                    <Button ToolTip="{DynamicResource Git_Pull}" Command="{Binding PullCommand}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}" Padding="5,2">
                         <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                     </Button>
-                    <Button ToolTip="Push" Command="{Binding PushCommand}"
+                    <Button ToolTip="{DynamicResource Git_Push}" Command="{Binding PushCommand}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}" Padding="5,2">
                         <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                     </Button>
-                    <Button ToolTip="Fetch" Command="{Binding FetchCommand}"
+                    <Button ToolTip="{DynamicResource Git_Fetch}" Command="{Binding FetchCommand}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}" Padding="5,2">
                         <TextBlock Text="&#xE8CB;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                     </Button>
@@ -279,7 +281,7 @@
                          Text="{Binding CommitMessage, UpdateSourceTrigger=PropertyChanged}"
                          AcceptsReturn="True" MaxLines="4" MinHeight="52"
                          TextWrapping="Wrap"
-                         ToolTip="Commit message (Ctrl+Enter to commit)"
+                         ToolTip="{DynamicResource Git_CommitMessageHint}"
                          Style="{StaticResource GC_CommitTextBoxStyle}">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Return" Modifiers="Ctrl" Command="{Binding CommitCommand}" />
@@ -290,10 +292,10 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <CheckBox Content="Amend last" IsChecked="{Binding IsAmend}"
+                    <CheckBox Content="{DynamicResource Git_AmendLast}" IsChecked="{Binding IsAmend}"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
                               VerticalAlignment="Center" FontSize="11"/>
-                    <Button Grid.Column="1" Content="Commit"
+                    <Button Grid.Column="1" ToolTip="{DynamicResource Git_Commit}"
                             Command="{Binding CommitCommand}"
                             Style="{StaticResource GC_CommitButtonStyle}"/>
                 </Grid>
@@ -316,7 +318,7 @@
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Style>
-                    <TextBlock Style="{StaticResource SectionHeader}" Text="MERGE CONFLICTS"
+                    <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource Git_MergeConflicts}"
                                Foreground="{DynamicResource GC_ConflictForeground}"/>
                     <ItemsControl ItemsSource="{Binding ConflictFiles}" />
                 </StackPanel>
@@ -333,7 +335,7 @@
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Style>
-                    <TextBlock Style="{StaticResource SectionHeader}" Text="STAGED CHANGES"/>
+                    <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource Git_StagedChanges}"/>
                     <ItemsControl ItemsSource="{Binding StagedFiles}" />
                 </StackPanel>
 
@@ -349,7 +351,7 @@
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Style>
-                    <TextBlock Style="{StaticResource SectionHeader}" Text="CHANGES"/>
+                    <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource Git_Changes}"/>
                     <ItemsControl ItemsSource="{Binding ModifiedFiles}" />
                 </StackPanel>
 
@@ -365,7 +367,7 @@
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Style>
-                    <TextBlock Style="{StaticResource SectionHeader}" Text="UNTRACKED FILES"/>
+                    <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource Git_UntrackedFiles}"/>
                     <ItemsControl ItemsSource="{Binding UntrackedFiles}" />
                 </StackPanel>
 
@@ -381,12 +383,12 @@
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Style>
-                    <TextBlock Style="{StaticResource SectionHeader}" Text="STASH"/>
+                    <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource Git_Stash}"/>
                     <ItemsControl ItemsSource="{Binding StashEntries}" />
                 </StackPanel>
 
                 <!-- Empty state -->
-                <TextBlock Text="No changes detected."
+                <TextBlock Text="{DynamicResource Git_NoChanges}"
                            HorizontalAlignment="Center" Margin="0,20"
                            Opacity="0.45"
                            Foreground="{DynamicResource DockMenuForegroundBrush}">

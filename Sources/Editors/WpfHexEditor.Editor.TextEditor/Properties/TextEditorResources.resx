@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.TextEditor
+    File        : TextEditorResources.resx
+    Description : Localized strings for the TextEditor editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       TextEditor.xaml.cs — Status bar items
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="TeSb_RefreshLabel" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="TeSb_RefreshTooltip" xml:space="preserve">
+    <value>Render frame time in milliseconds</value>
+  </data>
+  <data name="TeSb_LanguageLabel" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="TeSb_LanguageTooltip" xml:space="preserve">
+    <value>Active syntax language</value>
+  </data>
+  <data name="TeSb_PositionLabel" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="TeSb_PositionTooltip" xml:space="preserve">
+    <value>Caret line and column</value>
+  </data>
+  <data name="TeSb_ZoomLabel" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="TeSb_ZoomTooltip" xml:space="preserve">
+    <value>Editor zoom level</value>
+  </data>
+  <data name="TeSb_EncodingLabel" xml:space="preserve">
+    <value>Encoding</value>
+  </data>
+  <data name="TeSb_EncodingTooltip" xml:space="preserve">
+    <value>File encoding</value>
+  </data>
+
+  <data name="TextEditor_LanguageLabelPlainText" xml:space="preserve">
+    <value>Plain Text</value>
+  </data>
+  <data name="TextEditor_StatusBarCaretPosition" xml:space="preserve">
+    <value>Ln 1, Col 1</value>
+  </data>
+  <data name="TextEditor_StatusBarEncoding" xml:space="preserve">
+    <value>UTF-8</value>
+  </data>
+
+  <!-- Context menu items -->
+  <data name="TextEd_Menu_Cut" xml:space="preserve">
+    <value>Cu_t</value>
+    <comment>Context menu Cut item (underscore = accelerator key)</comment>
+  </data>
+  <data name="TextEd_Menu_Copy" xml:space="preserve">
+    <value>_Copy</value>
+    <comment>Context menu Copy item</comment>
+  </data>
+  <data name="TextEd_Menu_Paste" xml:space="preserve">
+    <value>_Paste</value>
+    <comment>Context menu Paste item</comment>
+  </data>
+  <data name="TextEd_Menu_Undo" xml:space="preserve">
+    <value>_Undo</value>
+    <comment>Context menu Undo item</comment>
+  </data>
+  <data name="TextEd_Menu_Redo" xml:space="preserve">
+    <value>_Redo</value>
+    <comment>Context menu Redo item</comment>
+  </data>
+  <data name="TextEd_Menu_SelectAll" xml:space="preserve">
+    <value>Select _All</value>
+    <comment>Context menu Select All item</comment>
+  </data>
+  <data name="TextEd_Menu_Delete" xml:space="preserve">
+    <value>_Delete</value>
+    <comment>Context menu Delete item</comment>
+  </data>
+  <data name="TextEd_Menu_ShowWhitespace" xml:space="preserve">
+    <value>Show _Whitespace</value>
+    <comment>Context menu Show Whitespace submenu header</comment>
+  </data>
+  <data name="TextEd_Menu_WrapNone" xml:space="preserve">
+    <value>None</value>
+    <comment>Word wrap submenu: no whitespace display</comment>
+  </data>
+  <data name="TextEd_Menu_WrapSelectionOnly" xml:space="preserve">
+    <value>Selection Only</value>
+    <comment>Word wrap submenu: show whitespace in selection only</comment>
+  </data>
+  <data name="TextEd_Menu_WrapAlways" xml:space="preserve">
+    <value>Always</value>
+    <comment>Word wrap submenu: always show whitespace</comment>
+  </data>
+
+  <!-- Status messages -->
+  <data name="TextEd_Status_Opening" xml:space="preserve">
+    <value>Opening</value>
+    <comment>Status title shown while a file is being opened</comment>
+  </data>
+
+</root>

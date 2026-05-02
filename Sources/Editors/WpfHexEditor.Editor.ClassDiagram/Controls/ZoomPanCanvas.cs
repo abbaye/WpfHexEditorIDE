@@ -30,6 +30,9 @@ namespace WpfHexEditor.Editor.ClassDiagram.Controls;
 /// </summary>
 public class ZoomPanCanvas : Canvas
 {
+    public const double MinZoom = 0.1;
+    public const double MaxZoom = 4.0;
+
     private readonly ScaleTransform     _scale     = new(1.0, 1.0);
     private readonly TranslateTransform _translate = new(0, 0);
 
@@ -167,7 +170,7 @@ public class ZoomPanCanvas : Canvas
     public double ZoomFactor
     {
         get => (double)GetValue(ZoomFactorProperty);
-        set => SetValue(ZoomFactorProperty, Math.Max(0.1, Math.Min(10.0, value)));
+        set => SetValue(ZoomFactorProperty, Math.Clamp(value, MinZoom, MaxZoom));
     }
 
     public double OffsetX
@@ -234,7 +237,7 @@ public class ZoomPanCanvas : Canvas
         const double padding = 40.0;
         double scaleX = (availableWidth  - padding * 2) / b.Width;
         double scaleY = (availableHeight - padding * 2) / b.Height;
-        double zoom   = Math.Max(0.1, Math.Min(4.0, Math.Min(scaleX, scaleY)));
+        double zoom   = Math.Clamp(Math.Min(scaleX, scaleY), MinZoom, MaxZoom);
 
         ZoomFactor = zoom;
         OffsetX    = -b.X * zoom + padding;
@@ -252,8 +255,7 @@ public class ZoomPanCanvas : Canvas
 
         double scaleX = (availableWidth  - padding * 2) / r.Width;
         double scaleY = (availableHeight - padding * 2) / r.Height;
-        double zoom   = Math.Min(scaleX, scaleY);
-        zoom = Math.Max(0.1, Math.Min(4.0, zoom));
+        double zoom   = Math.Clamp(Math.Min(scaleX, scaleY), MinZoom, MaxZoom);
 
         ZoomFactor = zoom;
         OffsetX    = -(r.X * zoom) + padding;
@@ -273,7 +275,7 @@ public class ZoomPanCanvas : Canvas
             // Ctrl+Wheel → zoom (centred on mouse cursor); step proportional to delta
             double step  = e.Delta / 120.0 * 0.1;
             double oldZ  = ZoomFactor;
-            double newZ  = Math.Clamp(oldZ + step, 0.1, 10.0);
+            double newZ  = Math.Clamp(oldZ + step, MinZoom, MaxZoom);
             if (Math.Abs(newZ - oldZ) < 1e-10) { e.Handled = true; return; }
 
             // Adjust offset so the point under the cursor stays fixed
@@ -301,8 +303,9 @@ public class ZoomPanCanvas : Canvas
         base.OnMouseDown(e);
         if (e.MiddleButton != MouseButtonState.Pressed) return;
 
-        _isPanning      = true;
-        _panStartMouse  = e.GetPosition(Parent as IInputElement);
+        IInputElement? parentEl = Parent as IInputElement ?? this;
+        _isPanning       = true;
+        _panStartMouse   = e.GetPosition(parentEl);
         _panStartOffsetX = OffsetX;
         _panStartOffsetY = OffsetY;
         CaptureMouse();
@@ -315,7 +318,8 @@ public class ZoomPanCanvas : Canvas
 
         if (_isPanning)
         {
-            Point current = e.GetPosition(Parent as IInputElement);
+            IInputElement? parentEl = Parent as IInputElement ?? this;
+            Point current = e.GetPosition(parentEl);
             OffsetX = _panStartOffsetX + (current.X - _panStartMouse.X);
             OffsetY = _panStartOffsetY + (current.Y - _panStartMouse.Y);
             e.Handled = true;

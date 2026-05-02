@@ -21,6 +21,7 @@ using System.Windows.Input;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Core.Models;
+using WpfHexEditor.Core.Properties;
 
 namespace WpfHexEditor.HexEditor
 {
@@ -79,7 +80,7 @@ namespace WpfHexEditor.HexEditor
                 }
                 else
                 {
-                    StatusText.Text = "File already exists";
+                    StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_FileAlreadyExists;
                 }
             }
             catch (Exception ex)
@@ -136,7 +137,7 @@ namespace WpfHexEditor.HexEditor
 
             _viewModel.Provider.ClearAllEdits();
             IsModified = false;
-            StatusText.Text = "All changes cleared";
+            StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_AllChangesCleared;
         }
 
         /// <summary>
@@ -359,7 +360,7 @@ namespace WpfHexEditor.HexEditor
         {
             if (_viewModel == null || !_viewModel.HasSelection)
             {
-                StatusText.Text = "No selection to reverse";
+                StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_NoSelectionToReverse;
                 return;
             }
 
@@ -370,7 +371,7 @@ namespace WpfHexEditor.HexEditor
                 var bytes = _viewModel.GetSelectionBytes();
                 if (bytes == null || bytes.Length == 0)
                 {
-                    StatusText.Text = "Selection is empty";
+                    StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_SelectionIsEmpty;
                     return;
                 }
 
@@ -398,7 +399,7 @@ namespace WpfHexEditor.HexEditor
         {
             if (_viewModel == null || !_viewModel.HasSelection)
             {
-                StatusText.Text = "No selection to invert";
+                StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_NoSelectionToInvert;
                 return;
             }
 
@@ -409,7 +410,7 @@ namespace WpfHexEditor.HexEditor
                 var bytes = _viewModel.GetSelectionBytes();
                 if (bytes == null || bytes.Length == 0)
                 {
-                    StatusText.Text = "Selection is empty";
+                    StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_SelectionIsEmpty;
                     return;
                 }
 

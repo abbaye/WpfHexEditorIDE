@@ -23,4 +23,9 @@
   <ItemGroup>
     <Resource Include="Themes\Generic.xaml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\ClassDiagramResources.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

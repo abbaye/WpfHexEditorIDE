@@ -1,19 +1,20 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <RootNamespace>WpfHexEditor.Editor.CodeEditor</RootNamespace>
     <AssemblyName>WpfHexEditor.Editor.CodeEditor</AssemblyName>
+    <NeutralLanguage>en-US</NeutralLanguage>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 
     <!-- NuGet package metadata -->
     <PackageId>WpfCodeEditor</PackageId>
-    <Version>0.9.7.0</Version>
-    <AssemblyVersion>0.9.7.0</AssemblyVersion>
-    <FileVersion>0.9.7.0</FileVersion>
+    <Version>0.9.8.0</Version>
+    <AssemblyVersion>0.9.8.0</AssemblyVersion>
+    <FileVersion>0.9.8.0</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfCodeEditor</Product>
@@ -28,9 +29,10 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
+    <PackageReleaseNotes>0.9.8.0 — LSP semantic token colorization; zoom snap-to-pixel; IReferenceCountProvider inline hints; Ctrl+Click links/emails; minimap scroll fix; SourceLink + satellite assemblies now correctly bundled.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <NoWarn>$(NoWarn);CS1591;NU5100</NoWarn>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
@@ -65,20 +67,72 @@
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\..\Controls\WpfHexEditor.ColorPicker\WpfHexEditor.ColorPicker.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Localization\WpfHexEditor.Core.Localization.csproj" PrivateAssets="all" />
   </ItemGroup>
 
-  <!-- Bundle all dependency DLLs into the NuGet package -->
+  <!-- Bundle only the explicitly required dependency DLLs into the NuGet package.
+       Whitelist approach prevents transitive assemblies from unrelated projects
+       (ResxEditor, Debugger, Diff, Docking, etc.) polluting the package when the
+       solution is built and all output lands in the same bin folder. -->
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
     <ItemGroup>
-      <!-- Bundle dependency DLLs -->
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference'))" />
-      <!-- Bundle matching XML IntelliSense docs alongside each DLL -->
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference')-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
+      <_BundledProjectDll Include="
+        $(OutputPath)WpfHexEditor.SDK.dll;
+        $(OutputPath)WpfHexEditor.Core.Events.dll;
+        $(OutputPath)WpfHexEditor.Core.dll;
+        $(OutputPath)WpfHexEditor.Core.BinaryAnalysis.dll;
+        $(OutputPath)WpfHexEditor.Core.Contracts.dll;
+        $(OutputPath)WpfHexEditor.Core.Definitions.dll;
+        $(OutputPath)WpfHexEditor.Core.Localization.dll;
+        $(OutputPath)WpfHexEditor.Core.ProjectSystem.dll;
+        $(OutputPath)WpfHexEditor.Editor.Core.dll;
+        $(OutputPath)WpfHexEditor.Editor.TextEditor.dll;
+        $(OutputPath)WpfHexEditor.ColorPicker.dll" />
+
+      <BuildOutputInPackage Include="@(_BundledProjectDll)" Condition="Exists('%(Identity)')" />
+
+      <BuildOutputInPackage Include="@(_BundledProjectDll->'%(RootDir)%(Directory)%(Filename).xml')"
                             Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')" />
     </ItemGroup>
   </Target>
 
+  <!--
+    Satellite assemblies: glob each culture subfolder in OutputPath.
+  -->
+  <Target Name="IncludeSatelliteAssembliesInPackage" AfterTargets="CopyProjectReferencesToPackage">
+    <ItemGroup>
+      <_AllSatellites Include="$(OutputPath)*\*.resources.dll" />
+      <_AllSatellites Remove="$(OutputPath)*\WpfHexEditor.Editor.CodeEditor.resources.dll" />
+      <TfmSpecificPackageFile Include="@(_AllSatellites)"
+                              Condition="'%(Filename)' == 'WpfHexEditor.SDK.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Core.Events.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Core.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Core.BinaryAnalysis.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Core.Contracts.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Core.Definitions.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Core.Localization.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Core.ProjectSystem.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Editor.Core.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Editor.TextEditor.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.ColorPicker.resources'"
+                              PackagePath="%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <Compile Update="Properties\CodeEditorResources.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CodeEditorResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Update="Properties\CodeEditorResources.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>CodeEditorResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

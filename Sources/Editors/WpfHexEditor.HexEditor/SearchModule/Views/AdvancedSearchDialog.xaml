@@ -16,13 +16,18 @@
         xmlns:models="clr-namespace:WpfHexEditor.Core.Search.Models;assembly=WpfHexEditor.Core"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         mc:Ignorable="d"
-        Title="Rechercher / Remplacer"
+        Title="{DynamicResource HE_SearchDialogTitle}"
         Height="460" Width="560"
         MinHeight="380" MinWidth="480"
         ResizeMode="CanResizeWithGrip"
-        Background="{DynamicResource DockBackgroundBrush}">
+        Background="{DynamicResource DockBackgroundBrush}"
+        xmlns:hexSvc="clr-namespace:WpfHexEditor.HexEditor.Services">
 
     <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <hexSvc:HexEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <!-- Converters -->
         <local:BoolToVisibilityConverter      x:Key="BoolToVisibilityConverter"/>
         <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
@@ -265,6 +270,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+            </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
@@ -304,14 +310,14 @@
                               Width="130"
                               Style="{DynamicResource DockComboBoxStyle}"
                               SelectedIndex="{Binding SelectedModeIndex}"
-                              ToolTip="Mode de recherche">
-                        <ComboBoxItem Content="TEXT"/>
-                        <ComboBoxItem Content="HEX"/>
-                        <ComboBoxItem Content="WILDCARD"/>
-                        <ComboBoxItem Content="TBL TEXT"
+                              ToolTip="{DynamicResource HE_SearchModeTooltip}">
+                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeText}"/>
+                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeHex}"/>
+                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeWildcard}"/>
+                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeTbl}"
                                       IsEnabled="{Binding IsTblLoaded}"
                                       ToolTip="{Binding TblInfo}"/>
-                        <ComboBoxItem Content="RELATIVE"/>
+                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeRelative}"/>
                     </ComboBox>
 
                     <!-- Separator -->
@@ -323,7 +329,7 @@
                                   Content="Ab"
                                   Style="{StaticResource SmallToggleStyle}"
                                   IsChecked="{Binding CaseSensitive}"
-                                  ToolTip="Respecter la casse (Alt+C)"
+                                  ToolTip="{DynamicResource HE_CaseSensitiveTooltip}"
                                   Visibility="{Binding IsTextMode, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                     <!-- .* — Use wildcard -->
@@ -331,7 +337,7 @@
                                   Content=".*"
                                   Style="{StaticResource SmallToggleStyle}"
                                   IsChecked="{Binding UseWildcard}"
-                                  ToolTip="Utiliser des jokers ?? (Alt+E)"/>
+                                  ToolTip="{DynamicResource HE_WildcardTooltip}"/>
 
                     <!-- Separator -->
                     <Rectangle DockPanel.Dock="Left" Width="1" Margin="8,4" Opacity="0.35"
@@ -339,7 +345,7 @@
 
                     <!-- Wrap -->
                     <CheckBox DockPanel.Dock="Left"
-                              Content="Boucler"
+                              Content="{DynamicResource HE_LoopSearch}"
                               Style="{DynamicResource DockCheckBoxStyle}"
                               IsChecked="{Binding WrapAround}"
                               VerticalAlignment="Center"
@@ -353,7 +359,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0"
-                               Text="Rechercher :"
+                               Text="{DynamicResource HE_FindLabel}"
                                VerticalAlignment="Center"
                                FontSize="12"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -384,7 +390,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0"
-                               Text="Remplacer :"
+                               Text="{DynamicResource HE_ReplaceLabel}"
                                VerticalAlignment="Center"
                                FontSize="12"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -397,7 +403,7 @@
                 <StackPanel Grid.Row="6"
                             Orientation="Horizontal"
                             Visibility="{Binding IsTextMode, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <TextBlock Text="Encodage :"
+                    <TextBlock Text="{DynamicResource HE_EncodingLabel}"
                                VerticalAlignment="Center"
                                FontSize="12"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -407,7 +413,7 @@
                               Style="{DynamicResource DockComboBoxStyle}"
                               DisplayMemberPath="Name"
                               Width="155"/>
-                    <TextBlock Text="Max :"
+                    <TextBlock Text="{DynamicResource HE_MaxLabel}"
                                VerticalAlignment="Center"
                                FontSize="12"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -421,7 +427,7 @@
                 <StackPanel Grid.Row="6"
                             Orientation="Horizontal"
                             Visibility="{Binding IsTextMode, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                    <TextBlock Text="Max :"
+                    <TextBlock Text="{DynamicResource HE_MaxLabel}"
                                VerticalAlignment="Center"
                                FontSize="12"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -450,7 +456,7 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    VerticalAlignment="Center" Margin="0,0,5,0"/>
-                        <TextBlock Text="Stop" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource HE_StopButton}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
@@ -472,14 +478,14 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE70E;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    VerticalAlignment="Center" Margin="0,0,4,0"/>
-                        <TextBlock Text="Pr&#233;c." VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource HE_PrevButton}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button DockPanel.Dock="Left"
                         Command="{Binding FindNextCommand}"
                         Style="{StaticResource DialogButtonStyle}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Suiv." VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBlock Text="{DynamicResource HE_NextButton}" VerticalAlignment="Center" Margin="0,0,4,0"/>
                         <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
@@ -491,18 +497,18 @@
 
                 <!-- Find All -->
                 <Button DockPanel.Dock="Left"
-                        Content="Tout chercher"
+                        Content="{DynamicResource HE_FindAllButton}"
                         Command="{Binding FindAllCommand}"
                         Style="{StaticResource PrimaryButtonStyle}"/>
 
                 <!-- Replace / Replace All (hidden in RELATIVE mode) -->
                 <Button DockPanel.Dock="Left"
-                        Content="Remplacer"
+                        Content="{DynamicResource HE_ReplaceButton}"
                         Command="{Binding ReplaceSelectedCommand}"
                         Style="{StaticResource DialogButtonStyle}"
                         Visibility="{Binding ShowReplaceControls, Converter={StaticResource BoolToVisibilityConverter}}"/>
                 <Button DockPanel.Dock="Left"
-                        Content="Tout remplacer"
+                        Content="{DynamicResource HE_ReplaceAllButton}"
                         Command="{Binding ReplaceAllCommand}"
                         Style="{StaticResource DialogButtonStyle}"
                         Visibility="{Binding ShowReplaceControls, Converter={StaticResource BoolToVisibilityConverter}}"/>
@@ -525,12 +531,12 @@
                            FontSize="12"
                            FontWeight="SemiBold"
                            Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <Run Text="R&#233;sultats ("/>
+                    <Run Text="{DynamicResource HE_ResultsLabel}"/>
                     <Run Text="{Binding TotalResultCount, Mode=OneWay}"/>
                     <Run Text=")"/>
                 </TextBlock>
                 <Button DockPanel.Dock="Right"
-                        Content="Exporter &#x25BE;"
+                        Content="{DynamicResource HE_ExportButton}"
                         Command="{Binding ExportResultsCommand}"
                         Style="{StaticResource DialogButtonStyle}"
                         MinWidth="80"/>
@@ -554,10 +560,10 @@
                 <ListView.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle}">
                         <GridViewColumn Header="#"              Width="44"  DisplayMemberBinding="{Binding Index}"/>
-                        <GridViewColumn Header="Offset (Hex)"  Width="100" DisplayMemberBinding="{Binding PositionHex}"/>
-                        <GridViewColumn Header="Offset (Dec)"  Width="100" DisplayMemberBinding="{Binding PositionDec}"/>
-                        <GridViewColumn Header="Aper&#231;u"   Width="230" DisplayMemberBinding="{Binding HexContext}"/>
-                        <GridViewColumn Header="Long."         Width="60"  DisplayMemberBinding="{Binding Length}"/>
+                        <GridViewColumn Header="{DynamicResource HE_OffsetHexColumn}"  Width="100" DisplayMemberBinding="{Binding PositionHex}"/>
+                        <GridViewColumn Header="{DynamicResource HE_OffsetDecColumn}"  Width="100" DisplayMemberBinding="{Binding PositionDec}"/>
+                        <GridViewColumn Header="{DynamicResource HE_PreviewColumn}"   Width="230" DisplayMemberBinding="{Binding HexContext}"/>
+                        <GridViewColumn Header="{DynamicResource HE_LengthColumn}"         Width="60"  DisplayMemberBinding="{Binding Length}"/>
                     </GridView>
                 </ListView.View>
             </ListView>
@@ -580,22 +586,22 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Offset"    Width="66"  DisplayMemberBinding="{Binding Offset, StringFormat='+{0}'}"/>
-                        <GridViewColumn Header="Score"     Width="58"  DisplayMemberBinding="{Binding Score, StringFormat=F1}"/>
-                        <GridViewColumn Header="Occ."      Width="54"  DisplayMemberBinding="{Binding MatchCount}"/>
-                        <GridViewColumn Header="Aper&#231;u" Width="240" DisplayMemberBinding="{Binding SampleText}"/>
-                        <GridViewColumn Header="% Imprim." Width="70"  DisplayMemberBinding="{Binding PrintableCharPercentage, StringFormat=F1}"/>
-                        <GridViewColumn Header="Actions"   Width="130">
+                        <GridViewColumn Header="{DynamicResource HE_ColOffset}"    Width="66"  DisplayMemberBinding="{Binding Offset, StringFormat='+{0}'}"/>
+                        <GridViewColumn Header="{DynamicResource HE_OccColumn}"     Width="58"  DisplayMemberBinding="{Binding Score, StringFormat=F1}"/>
+                        <GridViewColumn Header="{DynamicResource HE_OccColumn}"      Width="54"  DisplayMemberBinding="{Binding MatchCount}"/>
+                        <GridViewColumn Header="{DynamicResource HE_PreviewColumn}" Width="240" DisplayMemberBinding="{Binding SampleText}"/>
+                        <GridViewColumn Header="{DynamicResource HE_PrintPctColumn}" Width="70"  DisplayMemberBinding="{Binding PrintableCharPercentage, StringFormat=F1}"/>
+                        <GridViewColumn Header="{DynamicResource HE_ActionsColumn}"   Width="130">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <Button Content="Export TBL"
+                                        <Button Content="{DynamicResource HE_ExportTblButton}"
                                                 Command="{Binding DataContext.ExportProposalToTblCommand,
                                                           RelativeSource={RelativeSource AncestorType=Window}}"
                                                 CommandParameter="{Binding}"
                                                 Style="{StaticResource DialogButtonStyle}"
                                                 MinWidth="64" Height="20" Margin="0,0,4,0"/>
-                                        <Button Content="Appliquer"
+                                        <Button Content="{DynamicResource HE_ApplyButton}"
                                                 Command="{Binding DataContext.ApplyEncodingCommand,
                                                           RelativeSource={RelativeSource AncestorType=Window}}"
                                                 CommandParameter="{Binding}"
@@ -626,11 +632,11 @@
                         Height="18" Padding="6,0"
                         Margin="0"
                         Visibility="{Binding IsTblLoaded, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                        ToolTip="Charger un fichier TBL (table de caract&#232;res ROM)">
+                        ToolTip="{DynamicResource HE_LoadTblTooltip}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xED25;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                                    VerticalAlignment="Center" Margin="0,0,4,0"/>
-                        <TextBlock Text="Charger TBL..." VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource HE_LoadTblButton}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
@@ -639,17 +645,17 @@
                             Visibility="{Binding IsTblLoaded, Converter={StaticResource BoolToVisibilityConverter}}">
                     <TextBlock VerticalAlignment="Center" Margin="0,0,6,0" FontSize="11"
                                Foreground="{DynamicResource DockMenuForegroundBrush}">
-                        <Run Text="TBL :"/>
+                        <Run Text="{DynamicResource HE_TblLabel}"/>
                         <Run Text="{Binding TblInfo, Mode=OneWay}"/>
                     </TextBlock>
                     <Button Command="{Binding CloseTblCommand}"
                             Style="{StaticResource DialogButtonStyle}"
                             Height="18" Padding="6,0" Margin="0"
-                            ToolTip="Fermer le fichier TBL">
+                            ToolTip="{DynamicResource HE_CloseTblTooltip}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                                        VerticalAlignment="Center" Margin="0,0,4,0"/>
-                            <TextBlock Text="Fermer" VerticalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource HE_CloseSearchTooltip}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -667,9 +673,9 @@
                                VerticalAlignment="Stretch"/>
                     <TextBlock FontSize="11" Margin="8,0,0,0"
                                Foreground="{DynamicResource DockMenuForegroundBrush}">
-                        <Run Text="Taille :"/>
+                        <Run Text="{DynamicResource HE_SizeLabel}"/>
                         <Run Text="{Binding FileLength, StringFormat=N0, Mode=OneWay}"/>
-                        <Run Text="octets"/>
+                        <Run Text="{DynamicResource HE_BytesLabel}"/>
                     </TextBlock>
                 </StackPanel>
             </DockPanel>

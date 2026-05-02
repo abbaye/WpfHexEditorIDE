@@ -10,7 +10,7 @@
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:ce="clr-namespace:WpfHexEditor.Editor.CodeEditor.Controls;assembly=WpfHexEditor.Editor.CodeEditor"
         xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
-        Title="Import Built-in Format Definition"
+        Title="{StaticResource App_ImportFormat_Title}"
         Width="980" Height="580"
         MinWidth="680" MinHeight="420"
         ResizeMode="CanResizeWithGrip"
@@ -139,7 +139,7 @@
                                 <ColumnDefinition Width="60"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Version:" Opacity="0.65" FontSize="11"/>
+                            <TextBlock Text="{StaticResource App_ImportFormat_VersionLabel}" Opacity="0.65" FontSize="11"/>
                             <TextBlock x:Name="DetailVersionText" Grid.Column="1"
                                        FontSize="11" TextWrapping="Wrap"/>
                         </Grid>
@@ -151,20 +151,20 @@
                                 <ColumnDefinition Width="60"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Author:" Opacity="0.65" FontSize="11"/>
+                            <TextBlock Text="{StaticResource App_ImportFormat_AuthorLabel}" Opacity="0.65" FontSize="11"/>
                             <TextBlock x:Name="DetailAuthorText" Grid.Column="1"
                                        FontSize="11" TextWrapping="Wrap"/>
                         </Grid>
 
                         <!-- Extensions label -->
-                        <TextBlock Text="Extensions" Opacity="0.65"
+                        <TextBlock Text="{StaticResource App_ImportFormat_ExtensionsLabel}" Opacity="0.65"
                                    FontSize="11" Margin="0,0,0,4"/>
 
                         <!-- Extension badges (populated in code-behind) -->
                         <WrapPanel x:Name="DetailExtWrap" Margin="0,0,0,10"/>
 
                         <!-- Quality label -->
-                        <TextBlock Text="Quality" Opacity="0.65"
+                        <TextBlock Text="{StaticResource App_ImportFormat_QualityLabel}" Opacity="0.65"
                                    FontSize="11" Margin="0,0,0,4"/>
 
                         <!-- Quality bar + percentage -->
@@ -192,7 +192,7 @@
 
                     <!-- Preview label -->
                     <TextBlock Grid.Row="0"
-                               Text="Preview"
+                               Text="{StaticResource App_ImportFormat_PreviewLabel}"
                                Opacity="0.65"
                                FontSize="11"
                                Margin="10,6,10,4"/>
@@ -213,7 +213,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Content="_Destination folder:"/>
+            <Label Content="{StaticResource App_ImportFormat_DestinationFolder}"/>
             <ComboBox x:Name="FolderCombo" Grid.Column="1"
                       Style="{StaticResource DockComboBoxStyle}"/>
         </Grid>
@@ -229,9 +229,9 @@
                        VerticalAlignment="Center" Opacity="0.7"/>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button x:Name="ImportButton" Content="_Import" IsDefault="True"
+                <Button x:Name="ImportButton" Content="{StaticResource App_ImportFormat_Import}" IsDefault="True"
                         IsEnabled="False" Click="OnImport" Margin="0,0,8,0"/>
-                <Button Content="Cancel" IsCancel="True"/>
+                <Button Content="{StaticResource App_ImportFormat_Cancel}" IsCancel="True"/>
             </StackPanel>
         </Grid>
     </Grid>

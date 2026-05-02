@@ -23,9 +23,15 @@
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.ViewModels"
              xmlns:models="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Models;assembly=WpfHexEditor.Editor.XamlDesigner"
              xmlns:editors="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Controls.Editors;assembly=WpfHexEditor.Editor.XamlDesigner"
-             Background="{DynamicResource DockBackgroundBrush}">
+             Background="{DynamicResource DockBackgroundBrush}"
+             xmlns:xdSvc="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.Services">
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <xdSvc:XamlDesignerLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
         <!-- Icon button style -->
@@ -142,7 +148,7 @@
                            VerticalAlignment="Center"/>
                 <!-- "(inherited)" suffix shown only when not local and not from style and not default
                      (i.e. value comes from inheritance). Only shown when !IsLocalValue && !IsFromStyle && !IsDefault -->
-                <TextBlock Text=" (inherited)"
+                <TextBlock Text="{DynamicResource XamlDesigner_Inherited}"
                            FontSize="10" FontStyle="Italic"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Opacity="0.45"
@@ -198,8 +204,7 @@
                         Content="&#xE711;"
                         Background="Transparent"
                         BorderThickness="0"
-                        Cursor="Hand"
-                        ToolTip="Reset to default"
+                        Cursor="Hand" ToolTip="{DynamicResource XamlDesigner_ResetToDefault}"
                         Tag="{Binding}"
                         Click="OnResetValueClick"
                         Visibility="{Binding IsLocalValue, Converter={StaticResource BoolToVis}}">
@@ -303,7 +308,7 @@
                         Background="Transparent"
                         BorderThickness="0"
                         Cursor="Hand"
-                        ToolTip="Reset to default"
+                        ToolTip="{DynamicResource XamlDesigner_ResetToDefault}"
                         Tag="{Binding}"
                         Click="OnResetValueClick"
                         Visibility="{Binding IsLocalValue, Converter={StaticResource BoolToVis}}">
@@ -314,7 +319,8 @@
             </Grid>
         </DataTemplate>
 
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -336,12 +342,12 @@
                     <!-- Show default values toggle -->
                     <ToggleButton x:Name="BtnShowDefault"
                                   Style="{StaticResource XD_PropToggleButton}"
-                                  Content="&#xE73E;" ToolTip="Show properties with default values"
+                                  Content="&#xE73E;" ToolTip="{DynamicResource XamlDesigner_ShowDefaultValues}"
                                   IsChecked="{Binding ShowDefaultValues}"/>
                     <!-- Group/flat view toggle: ≡ (list icon) -->
                     <ToggleButton x:Name="BtnToggleGroup"
                                   Style="{StaticResource XD_PropToggleButton}"
-                                  Content="&#xE8FD;" ToolTip="Toggle grouped / flat view"
+                                  Content="&#xE8FD;" ToolTip="{DynamicResource XamlDesigner_ToggleGrouped}"
                                   IsChecked="{Binding IsGroupedView}"
                                   Command="{Binding ToggleGroupCommand}"/>
                     <!-- Separator -->
@@ -349,16 +355,14 @@
                                Background="{DynamicResource DockBorderBrush}"/>
                     <!-- Reset all locally-set properties to default -->
                     <Button x:Name="BtnResetAll"
-                            Style="{StaticResource XD_PropIconButton}"
-                            ToolTip="Reset all locally-set properties to default"
+                            Style="{StaticResource XD_PropIconButton}" ToolTip="{DynamicResource XamlDesigner_ResetAllProps}"
                             Command="{Binding ResetAllCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE777;"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                     <!-- Copy visible properties to clipboard -->
                     <Button x:Name="BtnCopyProperties"
-                            Style="{StaticResource XD_PropIconButton}"
-                            ToolTip="Copy visible properties to clipboard"
+                            Style="{StaticResource XD_PropIconButton}" ToolTip="{DynamicResource XamlDesigner_CopyProperties}"
                             Command="{Binding CopyPropertiesCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE8C8;"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -366,7 +370,7 @@
                     <!-- Show/hide attached and system properties -->
                     <ToggleButton x:Name="BtnShowAttached"
                                   Style="{StaticResource XD_PropToggleButton}"
-                                  ToolTip="Show/hide attached and system properties"
+                                  ToolTip="{DynamicResource XamlDesigner_ShowAttached}"
                                   IsChecked="{Binding ShowAttachedProperties, Mode=TwoWay}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE7C4;"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -377,7 +381,7 @@
                                   Background="Transparent" BorderThickness="0"
                                   FontFamily="Segoe MDL2 Assets" FontSize="11"
                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                  Content="&#xE712;" ToolTip="More options"
+                                  Content="&#xE712;" ToolTip="{DynamicResource XamlDesigner_MoreOptions}"
                                   Visibility="Collapsed"/>
                 </StackPanel>
 
@@ -387,7 +391,7 @@
                     <TextBox x:Name="TbxFilter"
                              Width="120"
                              Style="{DynamicResource PanelSearchBoxStyle}"
-                             Tag="Filter properties…"
+                             ToolTip="{DynamicResource XamlDesigner_FilterProperties}"
                              Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </DockPanel>
@@ -402,8 +406,7 @@
                 Background="{DynamicResource DockMenuBackgroundBrush}"
                 BorderBrush="{DynamicResource DockBorderBrush}"
                 BorderThickness="0,0,0,1" Padding="6,3">
-            <TextBlock x:Name="TbkElementName"
-                       Text="(no selection)"
+            <TextBlock x:Name="TbkElementName" Text="{DynamicResource XamlDesigner_NoSelection}"
                        Foreground="{DynamicResource XD_PropertyNameForeground}"
                        FontSize="11" FontStyle="Italic"/>
         </Border>
@@ -425,7 +428,7 @@
                 <GridView>
 
                     <!-- Column: Property name (130px) — includes "(inherited)" suffix -->
-                    <GridViewColumn Header="Property" Width="130"
+                    <GridViewColumn Header="{DynamicResource XamlDesigner_ColProperty}" Width="130"
                                     CellTemplate="{StaticResource PropertyNameCellTemplate}"/>
 
                     <!-- Column: Binding badge (30px)
@@ -440,8 +443,7 @@
                                     <TextBlock x:Name="BindingBadge"
                                                Text="{}{B}"
                                                FontSize="9" FontWeight="Bold"
-                                               Foreground="{DynamicResource XD_BindingStatusOkBrush}"
-                                               ToolTip="Has active data binding — click to inspect"
+                                               Foreground="{DynamicResource XD_BindingStatusOkBrush}" ToolTip="{DynamicResource XamlDesigner_HasBinding}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                Cursor="Hand"
@@ -453,8 +455,7 @@
                                     <TextBlock x:Name="AnimBadge"
                                                Text="●"
                                                FontSize="9"
-                                               Foreground="{DynamicResource XD_TimelineKeyframeSelectedBrush}"
-                                               ToolTip="Property is animated"
+                                               Foreground="{DynamicResource XD_TimelineKeyframeSelectedBrush}" ToolTip="{DynamicResource XamlDesigner_PropertyAnimated}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                Visibility="Collapsed"/>
@@ -508,7 +509,7 @@
                     </GridViewColumn>
 
                     <!-- Column: Value (160px) — template selected by PropertyEditorTemplateSelector -->
-                    <GridViewColumn x:Name="ValueColumn" Header="Value" Width="160"/>
+                    <GridViewColumn x:Name="ValueColumn" Header="{DynamicResource XamlDesigner_ColValue}" Width="160"/>
 
                 </GridView>
             </ListView.View>

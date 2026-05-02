@@ -10,6 +10,7 @@ using System.IO;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 using WpfHexEditor.Plugins.AssemblyExplorer.Events;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
+using WpfHexEditor.Plugins.AssemblyExplorer.Properties;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 
@@ -55,7 +56,7 @@ public sealed partial class AssemblyExplorerViewModel
         if (string.IsNullOrEmpty(filePath) || !_analysisService.CanAnalyze(filePath))
         {
             if (_workspace.Count == 0)
-                StatusText = "No assembly loaded";
+                StatusText = AssemblyExplorerResources.AsmExplorer_NoAssemblyLoaded;
             return;
         }
 
@@ -119,7 +120,7 @@ public sealed partial class AssemblyExplorerViewModel
         }
         catch (OperationCanceledException)
         {
-            StatusText = "Analysis cancelled.";
+            StatusText = AssemblyExplorerResources.AsmExplorer_AnalysisCancelled;
         }
         catch (Exception ex)
         {

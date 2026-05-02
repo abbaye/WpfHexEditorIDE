@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="CustomParser_Dialog_LoadError" xml:space="preserve">
+    <value>加载错误</value>
+  </data>
+  <data name="CustomParser_Dialog_ConfirmDelete" xml:space="preserve">
+    <value>确认删除</value>
+  </data>
+  <data name="CustomParser_Dialog_DeleteError" xml:space="preserve">
+    <value>删除错误</value>
+  </data>
+  <data name="CustomParser_Dialog_SaveTemplate" xml:space="preserve">
+    <value>保存模板</value>
+  </data>
+  <data name="CustomParser_Dialog_SaveError" xml:space="preserve">
+    <value>保存错误</value>
+  </data>
+  <data name="CustomParser_Dialog_AddBlock" xml:space="preserve">
+    <value>添加块</value>
+  </data>
+  <data name="CustomParser_Dialog_ApplyTemplate" xml:space="preserve">
+    <value>应用模板</value>
+  </data>
+  <data name="CustomParser_Dialog_Export" xml:space="preserve">
+    <value>导出</value>
+  </data>
+  <data name="CustomParser_Dialog_ExportSuccess" xml:space="preserve">
+    <value>导出成功</value>
+  </data>
+  <data name="CustomParser_Dialog_ExportError" xml:space="preserve">
+    <value>导出错误</value>
+  </data>
+  <data name="CustomParser_Dialog_ImportSuccess" xml:space="preserve">
+    <value>导入成功</value>
+  </data>
+  <data name="CustomParser_Dialog_ImportError" xml:space="preserve">
+    <value>导入错误</value>
+  </data>
+  <data name="CustomParser_Dialog_ImportTemplate" xml:space="preserve">
+    <value>导入模板</value>
+  </data>
+  <data name="CustomParser_PluginName" xml:space="preserve">
+    <value>自定义解析器模板</value>
+  </data>
+  <data name="CustomParser_NoTemplateSelected" xml:space="preserve">
+    <value>未选择模板</value>
+  </data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>偏移</value></data>
+</root>

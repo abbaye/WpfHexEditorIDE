@@ -1,8 +1,16 @@
 <UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentHexPane"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
              xmlns:hex="clr-namespace:WpfHexEditor.HexEditor;assembly=WpfHexEditor.HexEditor"
              Background="{DynamicResource DE_TextPaneBackground}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <docSvc:DocumentEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -16,7 +24,7 @@
                 BorderThickness="0,0,0,1"
                 Padding="6,2">
             <TextBlock x:Name="PART_OffsetLabel"
-                       Text="Hex"
+                       Text="{DynamicResource DocHexPane_HexLabel}"
                        FontWeight="SemiBold"
                        Foreground="{DynamicResource DE_StructureNodeFg}"
                        FontSize="11"/>

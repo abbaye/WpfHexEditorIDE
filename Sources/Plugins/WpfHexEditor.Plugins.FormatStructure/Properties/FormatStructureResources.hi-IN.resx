@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="FormatStruct_ZeroFields" xml:space="preserve">
+    <value>0 फ़ील्ड</value>
+  </data>
+  <data name="FormatStruct_NoFormatDetected" xml:space="preserve">
+    <value>कोई प्रारूप नहीं पहचाना</value>
+  </data>
+  <data name="FormatStruct_ColName" xml:space="preserve"><value>नाम</value></data>
+  <data name="FormatStruct_ColOffset" xml:space="preserve"><value>ऑफ़सेट</value></data>
+  <data name="FormatStruct_ColSize" xml:space="preserve"><value>आकार</value></data>
+</root>

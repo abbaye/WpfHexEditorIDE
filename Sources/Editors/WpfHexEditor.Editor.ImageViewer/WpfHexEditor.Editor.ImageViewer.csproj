@@ -5,6 +5,7 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>WpfHexEditor.Editor.ImageViewer</RootNamespace>
     <AssemblyName>WpfHexEditor.Editor.ImageViewer</AssemblyName>
+    <NeutralLanguage>en-US</NeutralLanguage>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

@@ -10,7 +10,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="800"
+             xmlns:codeSvc="clr-namespace:WpfHexEditor.Editor.CodeEditor.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <codeSvc:CodeEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
     <Grid Background="{DynamicResource TE_Background}">
         <Grid.RowDefinitions>
@@ -28,14 +37,14 @@
                 Padding="8"
                 TextElement.Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="ResetButton" Content="ðŸ”„ Reset to Defaults" Padding="8,4" Margin="0,0,5,0"
-                        ToolTip="Reset all settings to default values"
+                <Button x:Name="ResetButton" Content="{DynamicResource CodeEditorSettings_ResetButtonContent}" Padding="8,4" Margin="0,0,5,0"
+                        ToolTip="{DynamicResource CodeEditorSettings_ResetButtonToolTip}"
                         Click="ResetButton_Click"/>
-                <Button x:Name="ExportButton" Content="ðŸ’¾ Export Settings" Padding="8,4" Margin="0,0,5,0"
-                        ToolTip="Export settings to JSON file"
+                <Button x:Name="ExportButton" Content="{DynamicResource CodeEditorSettings_ExportButtonContent}" Padding="8,4" Margin="0,0,5,0"
+                        ToolTip="{DynamicResource CodeEditorSettings_ExportButtonToolTip}"
                         Click="ExportButton_Click"/>
-                <Button x:Name="ImportButton" Content="ðŸ“‚ Import Settings" Padding="8,4"
-                        ToolTip="Import settings from JSON file"
+                <Button x:Name="ImportButton" Content="{DynamicResource CodeEditorSettings_ImportButtonContent}" Padding="8,4"
+                        ToolTip="{DynamicResource CodeEditorSettings_ImportButtonToolTip}"
                         Click="ImportButton_Click"/>
             </StackPanel>
         </Border>
@@ -72,7 +81,7 @@
                             BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
                             BorderThickness="0,0,0,1"
                             Padding="8">
-                        <TextBlock Text="ðŸ“ Live Preview"
+                        <TextBlock Text="{DynamicResource CodeEditorSettings_PreviewHeader}"
                                    FontWeight="Bold"
                                    FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
@@ -86,7 +95,7 @@
                                 BorderThickness="1">
                             <!-- CodeEditor preview will be added here programmatically -->
                             <TextBlock x:Name="PreviewPlaceholder"
-                                       Text="Preview will appear here when a CodeEditor is connected"
+                                       Text="{DynamicResource CodeEditorSettings_PreviewPlaceholder}"
                                        VerticalAlignment="Center" HorizontalAlignment="Center"
                                        Foreground="{DynamicResource PFP_SubTextBrush}"
                                        FontStyle="Italic"/>

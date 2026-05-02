@@ -11,12 +11,21 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
-    Title="Go To Position"
+    xmlns:hexSvc="clr-namespace:WpfHexEditor.HexEditor.Services"
+    Title="{DynamicResource GoToPositionTitle}"
     Width="380"
     Height="210"
     x:ClassModifier="public"
     Background="{DynamicResource DockWindowBackgroundBrush}"
     mc:Ignorable="d">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <hexSvc:HexEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -27,7 +36,7 @@
         </Grid.RowDefinitions>
 
         <!-- Position Input GroupBox -->
-        <GroupBox Header="Position" Grid.Row="0" Margin="0,0,0,8">
+        <GroupBox Header="{DynamicResource GoToPositionHeader}" Grid.Row="0" Margin="0,0,0,8">
             <Grid Margin="8,6,8,6">
                 <TextBox
                     x:Name="PositionTextBox"
@@ -37,7 +46,7 @@
                     Padding="4,0"
                     TextChanged="PositionTextBox_TextChanged"/>
                 <TextBlock
-                    Text="0x00000000 or decimal"
+                    Text="{DynamicResource GoToPositionPlaceholder}"
                     IsHitTestVisible="False"
                     VerticalAlignment="Center"
                     Margin="6,0,0,0"
@@ -60,14 +69,14 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
             <RadioButton
                 x:Name="HexRadio"
-                Content="Hexadecimal"
+                Content="{DynamicResource HexadecimalString}"
                 IsChecked="True"
                 Margin="0,0,16,0"
                 TabIndex="1"
                 Checked="ModeRadio_Changed"/>
             <RadioButton
                 x:Name="DecimalRadio"
-                Content="Decimal"
+                Content="{DynamicResource DecimalString}"
                 TabIndex="2"
                 Checked="ModeRadio_Changed"/>
         </StackPanel>
@@ -78,7 +87,7 @@
                     HorizontalAlignment="Right">
             <Button
                 x:Name="OkButton"
-                Content="OK"
+                Content="{DynamicResource OkString}"
                 Width="90"
                 Height="28"
                 Margin="0,0,8,0"
@@ -109,7 +118,7 @@
             </Button>
 
             <Button
-                Content="Cancel"
+                Content="{DynamicResource CancelString}"
                 Width="90"
                 Height="28"
                 IsCancel="True"

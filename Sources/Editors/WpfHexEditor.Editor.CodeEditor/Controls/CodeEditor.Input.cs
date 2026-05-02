@@ -36,6 +36,7 @@ using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Selection;
 using WpfHexEditor.Editor.CodeEditor.Input;
 using WpfHexEditor.Editor.CodeEditor.MultiCaret;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -776,7 +777,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void ShowUrlTooltip(bool isEmail = false)
         {
             _urlTooltip ??= new ToolTip();
-            _urlTooltip.Content         = isEmail ? "Ctrl+Click to send email" : "Ctrl+Click to open";
+            _urlTooltip.Content         = isEmail ? CodeEditorResources.CodeEditor_UrlTooltipEmail : CodeEditorResources.CodeEditor_UrlTooltipLink;
             _urlTooltip.PlacementTarget = this;
             _urlTooltip.Placement       = System.Windows.Controls.Primitives.PlacementMode.Mouse;
             _urlTooltip.IsOpen          = true;
@@ -1093,7 +1094,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_document == null) return;
             var dialog = new System.Windows.Window
             {
-                Title = "Go to Line",
+                Title = CodeEditorResources.CodeEditor_GoToLine,
                 Width = 300, Height = 120,
                 WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner,
                 Owner = System.Windows.Window.GetWindow(this),

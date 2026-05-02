@@ -6,6 +6,33 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.6.5.15] — 2026-05-01 — NuGet Wave, 790+ Formats, Phase 6 Localization, WpfDocking 0.9.7
+
+### ✨ Added
+
+- **WPFHexaEditor 3.2.0** — new standalone NuGet package release: Go to offset dialog (`Ctrl+G`), unified `UndoEngine` with `Ctrl+Z/Y`, undo groups and coalescence; drag-selection auto-scroll via window-level mouse capture; `ShowColumnHighlight`/`ShowAsciiColumnHighlight` default `false`; BreadcrumbBar Render-priority guard (freeze fix) + phantom empty row fix (XAML/code-behind duplication resolved); `ByteProvider` extracted to `WpfHexEditor.Core.ByteProvider` standalone assembly
+- **WpfCodeEditor 0.9.8.0** — standalone NuGet package release: full guide (`WpfCodeEditor-guide.md`) bundled; 57+ language definitions; LSP 3.17 full suite; all satellite assemblies (17 languages) correctly isolated
+- **WpfDocking 0.9.7.0** — horizontal reorder for docked tool-panel tabs (drag left/right within the same edge); tab-switch triple-fire eliminated (layout passes reduced 3→1); StaticResource toolbar labels fix (pre-register output queue prevents first-display race); full Phase 5+6 localization wired into all Docking strings (17 languages); guide (`WpfDocking-guide.md`) bundled
+- **WpfTerminal 0.9.7.0** — standalone NuGet release: LSP host startup stability (burst-init dispatcher calls downgraded to `Background` priority); scroll-bar theming consistent across all docked terminal panels; plugin error routing fixed (forwarded to output panel); guide (`WpfTerminal-guide.md`) bundled
+- **whfmt.FileFormatCatalog v1.1.0** — `FormatMatcher`, `FormatFileAnalyzer`, `CatalogQuery`, `FormatMetadataExtensions`, `FormatSummaryBuilder` utility layer added; `GetAll()` / `GetCategories()` now return `IReadOnlySet<T>` backed by `FrozenSet<T>`; `LazyInitializer.EnsureInitialized` replaces manual double-checked lock
+- **WpfHexEditor.Core.ByteProvider 1.1.0** — standalone cross-platform `net8.0` NuGet package; `IByteProvider` abstraction with file, stream, and memory backends; undo-aware byte operations
+- **790+ .whfmt format definitions** — +100 new definitions (Groups C–J complete); `FormatSchemaValidator` wired at load time (schema v2.3 validation on open, violations reported via `FormatLoadFailure`)
+- **Phase 6 Localization** — 77.9% DynamicResource coverage; all panels, menus, context menus, dialogs, and toolbar buttons translated into 17 languages (waves 1–25, keys: PH_*, DB_*, HE_*, CE_*, TE_*, TG_*, GC_*, DS_*, CA_*, DT_*, SP_*, XD_*, CD_*, DW_*); per-assembly `LocalizedResourceDictionary` pattern
+
+### 🔧 Changed
+
+- **NuGet satellite assembly isolation** — all 6 packages now use `_BundledProjectDll` direct-path pattern (replaces broken `ReferenceCopyLocalPaths` approach for `PrivateAssets="all"` project references); single `_AllSatellites` glob + per-filename `Condition` filter eliminates NU5118 collisions and contamination from unrelated solution projects
+- **`GeneratePackageOnBuild`** — set to `false` on all non-release projects to prevent auto-pack during solution builds
+- **NuGet badges count** — updated to reflect 7 packages (added ByteProvider)
+
+### 🐛 Fixed
+
+- **Satellite contamination in nupkgs** — ResxEditor, Debugger, and other unrelated assembly satellites no longer appear inside WPFHexaEditor, WpfDocking, and other standalone packages
+- **NU5118 collision** — multiple `TfmSpecificPackageFile` items with overlapping culture folders resolved by single-glob + condition pattern
+- **WpfDocking toolbar StaticResource** — localized labels now resolve correctly on first display (pre-register output queue)
+
+---
+
 ## [0.6.4.75] — 2026-04-15 — Structure Editor, 690+ Formats, whfmt.FileFormatCatalog NuGet
 
 ### ✨ Added

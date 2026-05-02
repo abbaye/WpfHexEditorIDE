@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.ko-KR.resx
+    Description : Localized UI strings for the Structure Editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>오프셋</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>강도</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>필수</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>블록 추가</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>추가</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>취소</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>메타데이터</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>감지</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>블록</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>변수</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>고급</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>품질</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>테스트</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>저장 (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>유효성 검사 (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>실행 취소 (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>다시 실행 (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>라이브 코드 뷰 전환</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>블록 추가 (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>블록 복제 (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>저장되지 않은 변경 내용</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>이름으로 블록 필터링</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>블록 추가...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>복제</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>제거</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>위로 이동</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>아래로 이동</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>JSON으로 복사</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>블록 붙여넣기</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>속성을 편집하려면 블록을 선택하세요,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>또는 Ctrl+N / 마우스 오른쪽 클릭으로 새 블록을 추가하세요.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>16진 시그니처</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>공백 없는 16진 바이트, 예: PNG는 89504E47</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>시그니처</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>v2.0 시그니처</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>일치 모드</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>16진 값</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>오프셋</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>레이블</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ 시그니처 추가</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>엔트로피 힌트</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>최소 엔트로피</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>최대 엔트로피</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>최소 점수</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>점수 임계값</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>콘텐츠 패턴 (텍스트 형식)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Regex 패턴</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ 패턴 추가</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>기본</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>형식 이름</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>읽기 쉬운 형식 이름 (예: 'ZIP 아카이브', 'PNG 이미지')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>버전</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>이 정의의 버전 (예: '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>작성자</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>이 정의 파일의 작성자</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>범주</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>범주 (폴더 구조에서 자동 설정: 아카이브, 이미지, 오디오, 비디오 등)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Diff 모드</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>DiffViewer를 위한 기본 diff 알고리즘</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>기본 편집기</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>이 형식과 일치하는 파일의 기본 편집기 팩토리 ID</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>설명</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>텍스트 형식 (기본적으로 코드 편집기에서 열림)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>파일 확장자</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ 확장자 추가</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME 형식</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ MIME 형식 추가</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>소프트웨어</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ 소프트웨어 추가</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>계산된 메트릭</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>블록 커버리지</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>완전성 점수</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>유형 분포</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>블록</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>깊이</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>변수</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>규칙</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>메타데이터</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>문서화 수준</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>마지막 업데이트</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>형식: YYYY-MM-DD (저장 시 자동 입력)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>우선 형식 (상위 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>자동 정제됨 (스크립트로 강화됨 — 읽기 전용)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>파일에 대해 형식 테스트</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>테스트할 바이너리 파일 경로</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>찾아보기…</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ 테스트 실행</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>결과를 클립보드에 복사 (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>파일을 선택하고 ▶ 테스트 실행을 클릭하여 현재 형식 정의를 테스트하세요.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>상태</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>블록 이름</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>유형</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>오프셋</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>길이</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>원시 (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>파싱된 값</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>메모</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ 경고</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ 오류</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ 건너뜀</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>블록 인터프리터에서 사용 가능한 초기 변수 (예: 루프 카운터, 계산된 오프셋).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>이름으로 변수 필터링</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>변수 이름</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>유형</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>초기값</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>설명</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ 변수 추가</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>어설션</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:name equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>부울 식 — Ctrl+Space로 함수 및 변수 표시</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>체크섬</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>버전 관리 (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>가져오기 ($ref 구성)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = 형식 이름 (또는 structs/이름), as = structRef 블록에서 사용하는 별칭.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>형식 참조 예: structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>structRef의 별칭 예: PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ 가져오기 추가</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>포렌식</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>탐색 책갈피</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>변수이름</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>바이트 오프셋을 보유하는 변수 — Ctrl+Space로 제안 표시</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ 책갈피 추가</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>검사기 레이아웃</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>내보내기 템플릿</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ 템플릿 추가</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>AI 힌트</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>고정 또는 가변 오프셋과 길이를 가진 이진 필드.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>특정 오프셋에서 형식을 식별하는 매직 바이트.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>가변 길이 또는 기호 값을 명명된 변수로 읽습니다.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>필드 값 또는 변수에 따라 조건부로 블록을 파싱합니다.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>조건이 참인 동안 블록 본문을 반복합니다.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>변수를 수정합니다 (증가, 감소, 변수설정).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>수학 식을 평가하고 결과를 저장합니다.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>고정 개수의 구조화된 항목 배열을 파싱합니다.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>판별 변수를 기반으로 변형 블록 집합을 선택합니다.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>참조로 외부 구조 정의를 포함합니다.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>가리키는 오프셋에 대한 탐색 주석을 만듭니다.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0}개 오류</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0}개 경고</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>원시 JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>적용</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>취소</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>구조 편집기</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>.whfmt 구조 정의 파일용 시각적 편집기. DataGrid에서 블록, 유형, 오프셋, 길이, 색상을 편집합니다.</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>유효성 검사 (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>블록 추가 (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>라이브 코드 보기 전환</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>레이아웃</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>코드 보기 레이아웃</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>오른쪽 코드</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>왼쪽 코드</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>아래쪽 코드</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>위쪽 코드</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>형식</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>탭</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>블록</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>유효성 검사</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>길이:</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>테스트할 바이너리 파일 선택</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>이름</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>형식</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>색상</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>불투명도</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>설명</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>숨김</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>엔디안</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>블록 형식</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>작업</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>변수</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>값</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>계산</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>식</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>저장 이름</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>위치</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>오프셋</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>오프셋 기준</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>오프셋 추가</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>길이</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>값 형식</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>배열</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>개수</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>항목 크기</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>인덱스 변수</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>색상 주기</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>항목 필드는 트리의 자식으로 표시됩니다.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>유니온</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>판별자</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>변형</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>중첩 구조체</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>구조체 참조</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>포인터 위치</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>대상 및 저장소</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>대상 변수</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>레이블</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>위치 및 크기</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>저장소</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>매핑된 저장 이름</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>값 매핑</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>비트필드</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>이름</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>비트</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>종료 조건</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>최대 길이</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>최솟값</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>최댓값</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>패턴 (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>오류 메시지</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>변수 이름</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>그룹</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>그룹은 자식 필드 집합을 색상 오버레이로 시각적으로 레이블 지정합니다. 바이트를 소비하지 않습니다.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>자식은 블록 트리에 표시됩니다 — 트리를 사용하여 자식 블록을 추가/재정렬하세요.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>자식 필드는 블록 트리에 표시됩니다.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>원시 데이터 영역</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>원시 바이트 영역을 색상 오버레이로 표시합니다. 값은 추출되지 않습니다.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>조건</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>분기 레이블</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>True 레이블</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>False 레이블</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Then / Else 블록은 트리의 자식으로 표시됩니다.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>루프 조건</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>경계</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>최대 반복 횟수</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>본문 블록은 트리의 자식으로 표시됩니다.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>작업할 변수 이름 — 입력하면 제안 표시 (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>설정할 값 / 더하거나 뺄 양 — var:이름 지원</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>변수와 함수가 있는 수식 — Ctrl+Space로 자동 완성</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>계산 결과를 저장할 변수 이름 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>배열이 시작되는 파일 오프셋 — Ctrl+Space로 자동 완성</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>이 배열의 기준 오프셋으로 사용되는 변수</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>항목 수 — Ctrl+Space로 변수 제안</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>각 항목의 바이트 크기 — Ctrl+Space로 변수 제안</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>루프 인덱스 변수 이름 (예: i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ 색 추가</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>변형 선택을 제어하는 변수 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>형식 이름 또는 .whfmt 파일의 상대 경로</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>찾아보기…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>포인터 값이 읽히는 파일 오프셋 — Ctrl+Space로 자동 완성</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>기준 오프셋으로 사용되는 변수 이름</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>포인터 값의 바이트 크기 (예: uint32은 4) — 또는 var:이름</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>해결된 포인터 주소를 받을 변수</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>원시 포인터 값을 저장할 변수</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Hex 뷰에 표시되는 주석 레이블</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space로 자동 완성 — 정수, var:이름, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>값이 기준 오프셋인 변수 이름 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>OffsetFrom에 추가되는 추가 바이트</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space로 자동 완성 — 정수, var:이름, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>구문 분석된 값을 저장할 변수 이름 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>ValueMap으로 번역된 값의 변수 이름 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>원시=표시 (예: 0=그레이스케일)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ ValueMap 항목 추가</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>비트 범위 예: 7-6 또는 단일 비트 예: 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ 비트필드 추가</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>센티넬 (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>읽기를 중지할 Hex 패턴 또는 var:이름. 설정 시 Length를 대체합니다.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Until 패턴을 찾지 못할 경우 안전 한도 (바이트). 0 = 인터프리터 기본값 (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until 포함 (패턴 바이트를 필드 길이에 포함)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>검증 규칙</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>이 메타데이터 블록이 읽는 변수 이름</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>고정 정수 또는 var:이름 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>안전 한도 — 정수</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>현재 반복 인덱스를 받는 변수 (0부터 시작)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>루프 완료 후 반복 횟수를 저장할 변수 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>이 블록을 원시 JSON으로 편집</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ 어설션 추가</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ 체크섬 추가</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>템플릿 이름</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>구조체 이름 (C 구조체)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Hex 숫자만 (예: FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>표시:</value></data>
+</root>

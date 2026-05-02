@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata"><xsd:complexType><xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" /><xsd:attribute name="type" /></xsd:complexType></xsd:element>
+          <xsd:element name="value"><xsd:complexType><xsd:any minOccurs="0" maxOccurs="unbounded" /></xsd:complexType></xsd:element>
+          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /><xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- FileComparison panel and dialog titles -->
+  <data name="FileComparison_PanelTitle" xml:space="preserve">
+    <value>Diff Hub</value>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>Select File 1 to Compare</value>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>Select File 2 to Compare</value>
+  </data>
+  <data name="FileComparison_SelectFilesHint" xml:space="preserve">
+    <value>Select files to compare</value>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>Select both files to compare</value>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>Select files to compare</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>Comparing&#x2026;</value>
+  </data>
+  <data name="FileComparison_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="FileComparison_SelectTwoFiles" xml:space="preserve">
+    <value>Select two files and click Compare</value>
+  </data>
+  <data name="FileComparison_MultipleFormats" xml:space="preserve">
+    <value>Multiple Formats Detected</value>
+  </data>
+  <data name="FileComparison_SelectFile" xml:space="preserve">
+    <value>Select file to compare</value>
+  </data>
+  <data name="FileComparison_PrevDiff" xml:space="preserve">
+    <value>Previous difference (Alt+Up)</value>
+  </data>
+  <data name="FileComparison_NextDiff" xml:space="preserve">
+    <value>Next difference (Alt+Down)</value>
+  </data>
+  <data name="FileComparison_SideBySideUnified" xml:space="preserve">
+    <value>Side by side / Unified</value>
+  </data>
+  <data name="FileComparison_SideBySide" xml:space="preserve">
+    <value>Side by side</value>
+  </data>
+  <data name="FileComparison_IgnoreWS" xml:space="preserve">
+    <value>Ignore leading/trailing whitespace when comparing lines</value>
+  </data>
+  <data name="FileComparison_IgnoreWSLabel" xml:space="preserve">
+    <value>Ignore WS</value>
+  </data>
+  <data name="FileComparison_ContextLabel" xml:space="preserve">
+    <value>Context:</value>
+  </data>
+  <data name="FileComparison_Context0Lines" xml:space="preserve">
+    <value>0 lines</value>
+  </data>
+  <data name="FileComparison_Context3Lines" xml:space="preserve">
+    <value>3 lines</value>
+  </data>
+  <data name="FileComparison_Context8Lines" xml:space="preserve">
+    <value>8 lines</value>
+  </data>
+  <data name="FileComparison_ContextAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="FileComparison_CopyHexDump" xml:space="preserve">
+    <value>Copy hex dump to clipboard</value>
+  </data>
+  <data name="FileComparison_BlockAlignedTooltip" xml:space="preserve">
+    <value>Block-aligned diff: detects true byte insertions/deletions (slower)</value>
+  </data>
+  <data name="FileComparison_BlockAligned" xml:space="preserve">
+    <value>Block-aligned</value>
+  </data>
+  <data name="FileComparison_ToggleStats" xml:space="preserve">
+    <value>Show/hide entropy and frequency stats</value>
+  </data>
+  <data name="FileComparison_ToggleFormatOverlay" xml:space="preserve">
+    <value>Toggle whfmt format-field color overlay</value>
+  </data>
+  <data name="FileComparison_StructureDiff" xml:space="preserve">
+    <value>Show field-level structure diff (requires same format on both sides)</value>
+  </data>
+  <data name="FileComparison_Structure" xml:space="preserve">
+    <value>Structure</value>
+  </data>
+  <data name="FileComparison_BuildingRows" xml:space="preserve">
+    <value>Building hex rows…</value>
+  </data>
+  <data name="FileComparison_SwapFiles" xml:space="preserve">
+    <value>Swap files</value>
+  </data>
+  <data name="FileComparison_RunComparison" xml:space="preserve">
+    <value>Run comparison (Ctrl+Enter)</value>
+  </data>
+  <data name="FileComparison_Compare" xml:space="preserve">
+    <value>Compare</value>
+  </data>
+  <data name="FileComparison_ClearInputs" xml:space="preserve">
+    <value>Clear inputs</value>
+  </data>
+  <data name="FileComparison_File1Label" xml:space="preserve">
+    <value>File 1 (Left)</value>
+  </data>
+  <data name="FileComparison_File2Label" xml:space="preserve">
+    <value>File 2 (Right)</value>
+  </data>
+  <data name="FileComparison_Browse" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="FileComparison_RecentComparisons" xml:space="preserve">
+    <value>Recent Comparisons</value>
+  </data>
+  <data name="FileComparison_ColLeft" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="FileComparison_ColRight" xml:space="preserve">
+    <value>Right</value>
+  </data>
+  <data name="FileComparison_ColMode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="FileComparison_ColLastUsed" xml:space="preserve">
+    <value>Last Used</value>
+  </data>
+  <data name="FileComparison_NoRecentComparisons" xml:space="preserve">
+    <value>No recent comparisons.
+Compare two files to build history.</value>
+  </data>
+  <data name="FileComparison_LoadFile2" xml:space="preserve">
+    <value>Load File 2…</value>
+  </data>
+  <data name="FileComparison_LoadFile1" xml:space="preserve">
+    <value>Load File 1…</value>
+  </data>
+  <data name="FileComparison_File1" xml:space="preserve">
+    <value>File 1</value>
+  </data>
+  <data name="FileComparison_File2" xml:space="preserve">
+    <value>File 2</value>
+  </data>
+  <data name="FileComparison_Added" xml:space="preserve">
+    <value>Added</value>
+  </data>
+  <data name="FileComparison_Modified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="FileComparison_Removed" xml:space="preserve">
+    <value>Removed</value>
+  </data>
+  <data name="FileComparison_FormatSelectionTitle" xml:space="preserve">
+    <value>Format Selection</value>
+  </data>
+  <data name="FileComparison_MultipleFormatsHeader" xml:space="preserve">
+    <value>Multiple File Formats Detected</value>
+  </data>
+  <data name="FileComparison_MultipleFormatsMessage" xml:space="preserve">
+    <value>Multiple file formats match this file. Please select the most appropriate format:</value>
+  </data>
+  <data name="FileComparison_ConfidenceTip" xml:space="preserve">
+    <value>ℹ Tip: Higher confidence scores indicate a better match.</value>
+  </data>
+  <data name="FileComparison_SelectFormatInfo" xml:space="preserve">
+    <value>Select the format that best matches your file type.</value>
+  </data>
+  <data name="FileComparison_SelectFormatButton" xml:space="preserve">
+    <value>Select Format</value>
+  </data>
+  <data name="FileComparison_BlocksParsed" xml:space="preserve">
+    <value>blocks parsed</value>
+  </data>
+  <data name="FileComparison_TierLabel" xml:space="preserve">
+    <value>Tier:</value>
+  </data>
+
+  <!-- BinaryStatsPanel section headers and labels -->
+  <data name="FileComparison_FilesSection"   xml:space="preserve"><value>FILES</value></data>
+  <data name="FileComparison_DiffSummary"    xml:space="preserve"><value>DIFF SUMMARY</value></data>
+  <data name="FileComparison_ModifiedLabel"  xml:space="preserve"><value>Modified</value></data>
+  <data name="FileComparison_InsertedLabel"  xml:space="preserve"><value>Inserted</value></data>
+  <data name="FileComparison_DeletedLabel"   xml:space="preserve"><value>Deleted</value></data>
+  <data name="FileComparison_ByteFrequency"  xml:space="preserve"><value>BYTE FREQUENCY (NIBBLES)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>SHANNON ENTROPY (per 256-byte block)</value></data>
+</root>

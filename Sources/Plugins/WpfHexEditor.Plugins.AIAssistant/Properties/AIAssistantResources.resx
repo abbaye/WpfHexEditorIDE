@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.AIAssistant
+    File        : AIAssistantResources.resx
+    Description : Localized UI strings for the AI Assistant plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Connection test dialog title -->
+  <data name="AIAssistant_ConnectionTest_Title" xml:space="preserve">
+    <value>Connection Test</value>
+  </data>
+
+  <!-- Button label while test is running -->
+  <data name="AIAssistant_ConnectionTest_Testing" xml:space="preserve">
+    <value>Testing...</value>
+  </data>
+
+  <!-- Provider not found in registry -->
+  <data name="AIAssistant_Error_ProviderNotRegistered" xml:space="preserve">
+    <value>Provider '{0}' is not registered.</value>
+  </data>
+
+  <!-- Successful connection -->
+  <data name="AIAssistant_ConnectionTest_Success" xml:space="preserve">
+    <value>Connection to {0} successful!</value>
+  </data>
+
+  <!-- Failed connection -->
+  <data name="AIAssistant_ConnectionTest_Failure" xml:space="preserve">
+    <value>Connection to {0} failed. Check your API key and settings.</value>
+  </data>
+
+  <!-- Operation cancelled / timed out -->
+  <data name="AIAssistant_Error_Timeout" xml:space="preserve">
+    <value>Connection test timed out after 10 seconds.</value>
+  </data>
+
+  <!-- HTTP network error prefix -->
+  <data name="AIAssistant_Error_NetworkError" xml:space="preserve">
+    <value>Network error: {0}</value>
+  </data>
+
+  <!-- Generic error prefix -->
+  <data name="AIAssistant_Error_Generic" xml:space="preserve">
+    <value>Error: {0}</value>
+  </data>
+
+  <!-- Thinking toggle label in model switcher -->
+  <data name="AIAssistant_EnableThinking" xml:space="preserve">
+    <value>Enable Thinking (Anthropic only)</value>
+  </data>
+
+  <!-- Copy button tooltip after click -->
+  <data name="AIAssistant_Copied" xml:space="preserve">
+    <value>Copied!</value>
+  </data>
+
+  <!-- Copy button default tooltip -->
+  <data name="AIAssistant_CopyCode" xml:space="preserve">
+    <value>Copy code</value>
+  </data>
+
+  <!-- Connection status dot tooltip while testing -->
+  <data name="AIAssistant_Testing" xml:space="preserve">
+    <value>Testing...</value>
+  </data>
+
+  <!-- Connection status dot tooltip on success -->
+  <data name="AIAssistant_Connected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+
+  <!-- Connection status dot tooltip on failure -->
+  <data name="AIAssistant_ConnectionFailed" xml:space="preserve">
+    <value>Connection failed</value>
+  </data>
+
+  <!-- Plugin / panel display name -->
+  <data name="AIAssistant_PluginName" xml:space="preserve">
+    <value>AI Assistant</value>
+  </data>
+
+  <!-- Rename conversation dialog title -->
+  <data name="AIAssistant_RenameConversation" xml:space="preserve">
+    <value>Rename Conversation</value>
+  </data>
+
+  <data name="AIAssistant_Title" xml:space="preserve">
+    <value>AI Assistant</value>
+  </data>
+  <data name="AIAssistant_Subtitle" xml:space="preserve">
+    <value>Ask questions, get code help, or explore your data.</value>
+  </data>
+  <data name="AIAssistant_ExplainSelection" xml:space="preserve">
+    <value>Explain selection</value>
+  </data>
+  <data name="AIAssistant_FixErrors" xml:space="preserve">
+    <value>Fix errors</value>
+  </data>
+  <data name="AIAssistant_GenerateTests" xml:space="preserve">
+    <value>Generate tests</value>
+  </data>
+  <data name="AIAssistant_ExplainHex" xml:space="preserve">
+    <value>Explain hex data</value>
+  </data>
+  <data name="AIAssistant_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="AIAssistant_CopyAsMarkdown" xml:space="preserve">
+    <value>Copy as Markdown</value>
+  </data>
+  <data name="AIAssistant_RegenerateResponse" xml:space="preserve">
+    <value>Regenerate response</value>
+  </data>
+  <data name="AIAssistant_DeleteMessage" xml:space="preserve">
+    <value>Delete message</value>
+  </data>
+  <data name="AIAssistant_Thinking" xml:space="preserve">
+    <value>Thinking...</value>
+  </data>
+  <data name="AIAssistant_Arguments" xml:space="preserve">
+    <value>Arguments:</value>
+  </data>
+  <data name="AIAssistant_Result" xml:space="preserve">
+    <value>Result:</value>
+  </data>
+  <data name="AIAssistant_InputHint" xml:space="preserve">
+    <value>Ask AI anything... (@ to mention, Alt+Enter to send)</value>
+  </data>
+  <data name="AIAssistant_Send" xml:space="preserve">
+    <value>Send (Alt+Enter)</value>
+  </data>
+  <data name="AIAssistant_Stop" xml:space="preserve">
+    <value>Stop (Escape)</value>
+  </data>
+  <data name="AIAssistant_SwitchProvider" xml:space="preserve">
+    <value>Switch provider / model</value>
+  </data>
+  <data name="AIAssistant_AccountUsage" xml:space="preserve">
+    <value>Account &amp; Usage</value>
+  </data>
+  <data name="AIAssistant_ConversationHistory" xml:space="preserve">
+    <value>Conversation history</value>
+  </data>
+  <data name="AIAssistant_NewConversation" xml:space="preserve">
+    <value>New conversation (Ctrl+Shift+Alt+A)</value>
+  </data>
+  <data name="AIAssistant_MoreActions" xml:space="preserve">
+    <value>More actions</value>
+  </data>
+  <data name="AIAssistant_ManageConnections" xml:space="preserve">
+    <value>Manage Connections...</value>
+  </data>
+  <data name="AIAssistant_PromptPresets" xml:space="preserve">
+    <value>Prompt Presets...</value>
+  </data>
+  <data name="AIAssistant_Options" xml:space="preserve">
+    <value>Options...</value>
+  </data>
+  <data name="AIAssistant_Rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="AIAssistant_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="AIAssistant_CloseOthers" xml:space="preserve">
+    <value>Close Others</value>
+  </data>
+  <data name="AIAssistant_CloseAll" xml:space="preserve">
+    <value>Close All</value>
+  </data>
+  <data name="AIAssistant_AnthropicClaude" xml:space="preserve">
+    <value>Anthropic Claude</value>
+  </data>
+  <data name="AIAssistant_ApiKeyLabel" xml:space="preserve">
+    <value>API Key:</value>
+  </data>
+  <data name="AIAssistant_TestButton" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="AIAssistant_OpenAI" xml:space="preserve">
+    <value>OpenAI</value>
+  </data>
+  <data name="AIAssistant_AzureOpenAI" xml:space="preserve">
+    <value>Azure OpenAI</value>
+  </data>
+  <data name="AIAssistant_EndpointLabel" xml:space="preserve">
+    <value>Endpoint:</value>
+  </data>
+  <data name="AIAssistant_DeploymentLabel" xml:space="preserve">
+    <value>Deployment:</value>
+  </data>
+  <data name="AIAssistant_GoogleGemini" xml:space="preserve">
+    <value>Google Gemini</value>
+  </data>
+  <data name="AIAssistant_OllamaLocal" xml:space="preserve">
+    <value>Ollama (Local)</value>
+  </data>
+  <data name="AIAssistant_BaseUrlLabel" xml:space="preserve">
+    <value>Base URL:</value>
+  </data>
+  <data name="AIAssistant_DefaultsSection" xml:space="preserve">
+    <value>Defaults</value>
+  </data>
+  <data name="AIAssistant_ProviderLabel" xml:space="preserve">
+    <value>Provider:</value>
+  </data>
+  <data name="AIAssistant_ModelLabel" xml:space="preserve">
+    <value>Model:</value>
+  </data>
+  <data name="AIAssistant_EnableThinkingOption" xml:space="preserve">
+    <value>Enable Extended Thinking (Anthropic only)</value>
+  </data>
+  <data name="AIAssistant_ThinkingBudget" xml:space="preserve">
+    <value>Thinking budget:</value>
+  </data>
+  <data name="AIAssistant_MaxTokens" xml:space="preserve">
+    <value>Max tokens:</value>
+  </data>
+  <data name="AIAssistant_ShowToolCalls" xml:space="preserve">
+    <value>Show tool calls inline</value>
+  </data>
+  <data name="AIAssistant_McpServers" xml:space="preserve">
+    <value>MCP Servers</value>
+  </data>
+  <data name="AIAssistant_ColEnabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="AIAssistant_ColName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="AIAssistant_ColCommand" xml:space="preserve">
+    <value>Command</value>
+  </data>
+  <data name="AIAssistant_ColDisplayName" xml:space="preserve">
+    <value>Display Name</value>
+  </data>
+  <data name="AIAssistant_ColArgs" xml:space="preserve">
+    <value>Args (comma-separated)</value>
+  </data>
+  <data name="AIAssistant_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AIAssistant_Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="AIAssistant_TitleBarTooltip" xml:space="preserve">
+    <value>AI Assistant (Ctrl+Shift+A)</value>
+  </data>
+  <data name="AIAssistant_CliBadge" xml:space="preserve">
+    <value>CLI</value>
+  </data>
+  <data name="AIAssistant_AskAboutSelection" xml:space="preserve">
+    <value>Ask About Selection</value>
+  </data>
+  <data name="AIAssistant_FixErrors2" xml:space="preserve">
+    <value>Fix Errors</value>
+  </data>
+  <data name="AIAssistant_AccountUsage2" xml:space="preserve">
+    <value>Account &amp; Usage...</value>
+  </data>
+  <data name="AIAssistant_ManageConnections2" xml:space="preserve">
+    <value>Manage Connections...</value>
+  </data>
+  <data name="AIAssistant_Options2" xml:space="preserve">
+    <value>Options...</value>
+  </data>
+  <data name="AIAssistant_Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="AIAssistant_ApplyTooltip" xml:space="preserve">
+    <value>Apply code changes (Phase 7+)</value>
+  </data>
+  <data name="AIAssistant_OpenInTab" xml:space="preserve">
+    <value>Open in Tab</value>
+  </data>
+  <data name="AIAssistant_Dismiss" xml:space="preserve">
+    <value>Dismiss</value>
+  </data>
+  <data name="AI_ConversationHistory" xml:space="preserve">
+    <value>Conversation History</value>
+  </data>
+  <data name="AI_ClearAll" xml:space="preserve">
+    <value>Clear all</value>
+  </data>
+  <data name="AI_SearchConversations" xml:space="preserve">
+    <value>Search conversations...</value>
+  </data>
+  <data name="AI_CopyMessage" xml:space="preserve">
+    <value>Copy message</value>
+  </data>
+  <data name="AI_TipMcpCommand" xml:space="preserve">
+    <value>Command (e.g. npx)</value>
+  </data>
+</root>

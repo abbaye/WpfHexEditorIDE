@@ -11,25 +11,26 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using WpfHexEditor.Editor.StructureEditor.Properties;
 using WpfHexEditor.Editor.StructureEditor.ViewModels;
 
 namespace WpfHexEditor.Editor.StructureEditor.Dialogs;
 
 public sealed partial class AddBlockDialog : Window
 {
-    private static readonly Dictionary<string, string> TypeHints = new()
+    private static Dictionary<string, string> TypeHints => new()
     {
-        ["field"]               = "A binary field with a fixed or variable offset and length.",
-        ["signature"]           = "Magic bytes that identify the format at a specific offset.",
-        ["metadata"]            = "Reads a variable-length or symbolic value into a named variable.",
-        ["conditional"]         = "Conditionally parses blocks based on a field value or variable.",
-        ["loop"]                = "Repeats a block body while a condition is true.",
-        ["action"]              = "Modifies a variable (increment, decrement, setVariable).",
-        ["computeFromVariables"]= "Evaluates a math expression and stores the result.",
-        ["repeating"]           = "Parses a fixed-count array of structured entries.",
-        ["union"]               = "Selects a variant block set based on a discriminant variable.",
-        ["nested"]              = "Embeds an external struct definition by reference.",
-        ["pointer"]             = "Creates a navigation annotation to a pointed-to offset.",
+        ["field"]               = StructureEditorResources.StructureEditor_TypeHintField,
+        ["signature"]           = StructureEditorResources.StructureEditor_TypeHintSignature,
+        ["metadata"]            = StructureEditorResources.StructureEditor_TypeHintMetadata,
+        ["conditional"]         = StructureEditorResources.StructureEditor_TypeHintConditional,
+        ["loop"]                = StructureEditorResources.StructureEditor_TypeHintLoop,
+        ["action"]              = StructureEditorResources.StructureEditor_TypeHintAction,
+        ["computeFromVariables"]= StructureEditorResources.StructureEditor_TypeHintCompute,
+        ["repeating"]           = StructureEditorResources.StructureEditor_TypeHintRepeating,
+        ["union"]               = StructureEditorResources.StructureEditor_TypeHintUnion,
+        ["nested"]              = StructureEditorResources.StructureEditor_TypeHintNested,
+        ["pointer"]             = StructureEditorResources.StructureEditor_TypeHintPointer,
     };
 
     public string SelectedBlockType { get; private set; } = "field";

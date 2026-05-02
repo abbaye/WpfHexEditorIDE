@@ -7,9 +7,15 @@
     Background="{DynamicResource DT_PanelBackground}"
     Foreground="{DynamicResource DT_PanelForeground}"
     FontFamily="Segoe UI"
-    FontSize="12">
+    FontSize="12"
+             xmlns:dtSvc="clr-namespace:WpfHexEditor.Plugins.DiagnosticTools.Services">
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <dtSvc:DiagnosticToolsLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
 
         <!-- Implicit styles: reference DT_* theme tokens only — no hard-coded colors -->
         <Style TargetType="TabItem">
@@ -139,7 +145,8 @@
             </Setter>
         </Style>
 
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -160,8 +167,7 @@
                 <!-- Fixed LEFT: Pause/Resume -->
                 <StackPanel x:Name="ToolbarLeftPanel" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="{Binding PauseResumeGlyph}"
-                            Style="{StaticResource ToolbarBtn}"
-                            ToolTip="Pause / Resume collection"
+                            Style="{StaticResource ToolbarBtn}" ToolTip="{DynamicResource DiagTools_PauseResume}"
                             Click="OnPauseResumeClick" />
                     <Separator Width="1" Background="{DynamicResource DT_GraphBorder}" Margin="4,2" />
                 </StackPanel>
@@ -173,17 +179,16 @@
                 <Button x:Name="OverflowButton"
                         DockPanel.Dock="Right"
                         Style="{StaticResource ToolbarBtn}"
-                        Visibility="Collapsed"
-                        ToolTip="More options"
+                        Visibility="Collapsed" ToolTip="{DynamicResource DiagTools_MoreOptions}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowMenu" Opened="OnOverflowMenuOpened">
-                            <MenuItem Header="Heap Snapshot"  Tag="TbgActions" Click="OnSnapshotClick" />
-                            <MenuItem Header="Clear Events"   Tag="TbgActions" Click="OnClearEventsClick" />
-                            <MenuItem Header="Export CSV"     Tag="TbgActions" Click="OnExportClick" />
+                            <MenuItem Header="{DynamicResource DiagTools_HeapSnapshot}"  Tag="TbgActions" Click="OnSnapshotClick" />
+                            <MenuItem Header="{DynamicResource DiagTools_ClearEvents}"   Tag="TbgActions" Click="OnClearEventsClick" />
+                            <MenuItem Header="{DynamicResource DiagTools_ExportCsv}"     Tag="TbgActions" Click="OnExportClick" />
                             <Separator />
-                            <MenuItem Header="CPU / Mem / GC metrics" Tag="TbgMetrics" IsEnabled="False" />
+                            <MenuItem Header="{DynamicResource DiagTools_CpuMemGc}" Tag="TbgMetrics" IsEnabled="False" />
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
@@ -206,16 +211,13 @@
                 <StackPanel x:Name="TbgActions" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <Separator Width="1" Background="{DynamicResource DT_GraphBorder}" Margin="4,2" />
                     <Button Content="&#xE9F9;"
-                            Style="{StaticResource ToolbarBtn}"
-                            ToolTip="Capture heap snapshot (.gcdump)"
+                            Style="{StaticResource ToolbarBtn}" ToolTip="{DynamicResource DiagTools_CaptureHeap}"
                             Click="OnSnapshotClick" />
                     <Button Content="&#xE894;"
-                            Style="{StaticResource ToolbarBtn}"
-                            ToolTip="Clear event log"
+                            Style="{StaticResource ToolbarBtn}" ToolTip="{DynamicResource DiagTools_ClearEventLog}"
                             Click="OnClearEventsClick" />
                     <Button Content="&#xE74E;"
-                            Style="{StaticResource ToolbarBtn}"
-                            ToolTip="Export metrics to CSV"
+                            Style="{StaticResource ToolbarBtn}" ToolTip="{DynamicResource DiagTools_ExportMetricsCsv}"
                             Click="OnExportClick" />
                 </StackPanel>
 
@@ -240,7 +242,7 @@
                     BorderThickness="0">
 
             <!-- Summary tab -->
-            <TabItem Header="Summary">
+            <TabItem Header="{DynamicResource DiagTools_Summary}">
                 <Grid Margin="4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -253,8 +255,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0"
-                               Text="CPU Usage"
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource DiagTools_CpuUsage}"
                                Style="{StaticResource SectionLabel}" />
                     <Border Grid.Row="1" Grid.Column="0"
                             BorderBrush="{DynamicResource DT_GraphBorder}"
@@ -262,8 +263,7 @@
                         <ctrl:CpuGraphControl Samples="{Binding CpuSamples}" />
                     </Border>
 
-                    <TextBlock Grid.Row="0" Grid.Column="1"
-                               Text="Working Set"
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{DynamicResource DiagTools_WorkingSet}"
                                Style="{StaticResource SectionLabel}" />
                     <Border Grid.Row="1" Grid.Column="1"
                             BorderBrush="{DynamicResource DT_GraphBorder}"
@@ -271,22 +271,21 @@
                         <ctrl:MemoryGraphControl Samples="{Binding MemorySamples}" />
                     </Border>
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                               Text=".NET Runtime"
+                    <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="{DynamicResource DiagTools_DotNetRuntime}"
                                Style="{StaticResource SectionLabel}" />
                     <WrapPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="4,2">
-                        <TextBlock Text="GC Heap:"        Style="{StaticResource MetricLabel}" />
+                        <TextBlock Text="{DynamicResource DiagTools_GcHeap}"        Style="{StaticResource MetricLabel}" />
                         <TextBlock Text="{Binding GcHeapMbText}"     Style="{StaticResource MetricValue}" />
-                        <TextBlock Text="TP queue:"        Style="{StaticResource MetricLabel}" />
+                        <TextBlock Text="{DynamicResource DiagTools_TpQueue}"        Style="{StaticResource MetricLabel}" />
                         <TextBlock Text="{Binding ThreadPoolQueue}"   Style="{StaticResource MetricValue}" />
-                        <TextBlock Text="Threads:"         Style="{StaticResource MetricLabel}" />
+                        <TextBlock Text="{DynamicResource DiagTools_Threads}"         Style="{StaticResource MetricLabel}" />
                         <TextBlock Text="{Binding ThreadPoolThreads}" Style="{StaticResource MetricValue}" />
                     </WrapPanel>
                 </Grid>
             </TabItem>
 
             <!-- Events tab with filter -->
-            <TabItem Header="Events">
+            <TabItem Header="{DynamicResource DiagTools_Events}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="26" />
@@ -299,17 +298,17 @@
                             BorderBrush="{DynamicResource DT_GraphBorder}"
                             BorderThickness="0,0,0,1">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="6,0">
-                            <TextBlock Text="Filter:" Margin="0,0,6,0" VerticalAlignment="Center"
+                            <TextBlock Text="{DynamicResource DiagTools_Filter}" Margin="0,0,6,0" VerticalAlignment="Center"
                                        Foreground="{DynamicResource DT_PanelForeground}" />
                             <ComboBox SelectedValue="{Binding EventFilter}"
                                       SelectedValuePath="Tag"
                                       Width="120"
                                       Background="{DynamicResource DT_GraphBackground}"
                                       Foreground="{DynamicResource DT_PanelForeground}">
-                                <ComboBoxItem Content="All"        Tag="{x:Static vm:EventFilter.All}"        IsSelected="True" />
-                                <ComboBoxItem Content="GC"         Tag="{x:Static vm:EventFilter.GC}" />
-                                <ComboBoxItem Content="Exceptions" Tag="{x:Static vm:EventFilter.Exceptions}" />
-                                <ComboBoxItem Content="ThreadPool" Tag="{x:Static vm:EventFilter.ThreadPool}" />
+                                <ComboBoxItem Content="{DynamicResource DiagTools_All}"        Tag="{x:Static vm:EventFilter.All}"        IsSelected="True" />
+                                <ComboBoxItem Content="{DynamicResource DiagTools_Gc}"         Tag="{x:Static vm:EventFilter.GC}" />
+                                <ComboBoxItem Content="{DynamicResource DiagTools_Exceptions}" Tag="{x:Static vm:EventFilter.Exceptions}" />
+                                <ComboBoxItem Content="{DynamicResource DiagTools_ThreadPool}" Tag="{x:Static vm:EventFilter.ThreadPool}" />
                             </ComboBox>
                         </StackPanel>
                     </Border>
@@ -324,9 +323,9 @@
                               VirtualizingPanel.VirtualizationMode="Recycling">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Time"    Width="90"
+                                <GridViewColumn Header="{DynamicResource DiagTools_ColTime}"    Width="90"
                                                 DisplayMemberBinding="{Binding TimeText}" />
-                                <GridViewColumn Header="Message" Width="600"
+                                <GridViewColumn Header="{DynamicResource DiagTools_ColMessage}" Width="600"
                                                 DisplayMemberBinding="{Binding Text}" />
                             </GridView>
                         </ListView.View>
@@ -335,7 +334,7 @@
             </TabItem>
 
             <!-- CPU full-height -->
-            <TabItem Header="CPU">
+            <TabItem Header="{DynamicResource DiagTools_Cpu}">
                 <Border BorderBrush="{DynamicResource DT_GraphBorder}"
                         BorderThickness="1" Margin="4">
                     <ctrl:CpuGraphControl Samples="{Binding CpuSamples}" />
@@ -343,7 +342,7 @@
             </TabItem>
 
             <!-- Memory full-height -->
-            <TabItem Header="Memory">
+            <TabItem Header="{DynamicResource DiagTools_Memory}">
                 <Border BorderBrush="{DynamicResource DT_GraphBorder}"
                         BorderThickness="1" Margin="4">
                     <ctrl:MemoryGraphControl Samples="{Binding MemorySamples}" />

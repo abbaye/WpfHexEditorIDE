@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.hi-IN.resx
+    Description : Localized UI strings for the Structure Editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>ऑफसेट</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>शक्ति</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>आवश्यक</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>ब्लॉक जोड़ें</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>जोड़ें</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>रद्द करें</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>मेटाडेटा</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>पहचान</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>ब्लॉक</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>चर</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>उन्नत</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>गुणवत्ता</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>परीक्षण</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>सहेजें (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>मान्य करें (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>पूर्ववत करें (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>फिर से करें (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>लाइव कोड दृश्य टॉगल करें</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>ब्लॉक जोड़ें (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>ब्लॉक डुप्लिकेट करें (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>असहेजे परिवर्तन</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>नाम से ब्लॉक फ़िल्टर करें</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>ब्लॉक जोड़ें...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>डुप्लिकेट</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>हटाएं</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>ऊपर ले जाएं</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>नीचे ले जाएं</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>JSON के रूप में कॉपी करें</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>ब्लॉक पेस्ट करें</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>गुण संपादित करने के लिए एक ब्लॉक चुनें,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>या नया ब्लॉक जोड़ने के लिए Ctrl+N / राइट-क्लिक करें।</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>हेक्स हस्ताक्षर</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>बिना स्पेस के hex बाइट, जैसे PNG के लिए 89504E47</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>हस्ताक्षर</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>v2.0 हस्ताक्षर</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>मिलान मोड</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>hex मान</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>ऑफ़सेट</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>लेबल</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ हस्ताक्षर जोड़ें</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>एन्ट्रॉपी संकेत</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>न्यूनतम एन्ट्रॉपी</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>अधिकतम एन्ट्रॉपी</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>न्यूनतम स्कोर</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>स्कोर सीमा</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>सामग्री पैटर्न (पाठ प्रारूप)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Regex पैटर्न</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ पैटर्न जोड़ें</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>मुख्य</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>प्रारूप नाम</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>पठनीय प्रारूप नाम (जैसे 'ZIP संग्रह', 'PNG छवि')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>संस्करण</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>इस परिभाषा का संस्करण (जैसे '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>लेखक</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>इस परिभाषा फ़ाइल के लेखक</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>श्रेणी</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>श्रेणी (फ़ोल्डर संरचना से स्वतः सेट: संग्रह, छवियां, ऑडियो, वीडियो, आदि)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Diff मोड</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>DiffViewer के लिए पसंदीदा diff एल्गोरिदम</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>पसंदीदा संपादक</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>इस प्रारूप से मेल खाने वाली फ़ाइलों के लिए पसंदीदा संपादक फ़ैक्टरी ID</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>विवरण</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>पाठ प्रारूप (डिफ़ॉल्ट रूप से कोड संपादक में खुलता है)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>फ़ाइल एक्सटेंशन</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ एक्सटेंशन जोड़ें</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME प्रकार</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ MIME प्रकार जोड़ें</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>सॉफ़्टवेयर</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ सॉफ़्टवेयर जोड़ें</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>परिकलित मेट्रिक्स</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>ब्लॉक कवरेज</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>पूर्णता स्कोर</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>प्रकार वितरण</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>ब्लॉक</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>गहराई</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>चर</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>नियम</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>मेटाडेटा</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>दस्तावेज़ीकरण स्तर</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>अंतिम अपडेट</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>प्रारूप: YYYY-MM-DD (सहेजने पर स्वतः भरा जाता है)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>प्राथमिकता प्रारूप (शीर्ष 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>स्वतः परिष्कृत (स्क्रिप्ट द्वारा समृद्ध — केवल पठन)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>फ़ाइल पर प्रारूप परीक्षण करें</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>परीक्षण करने के लिए बाइनरी फ़ाइल का पथ</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>ब्राउज़ करें…</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ परीक्षण चलाएं</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>परिणाम क्लिपबोर्ड पर कॉपी करें (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>एक फ़ाइल चुनें और वर्तमान प्रारूप परिभाषा का परीक्षण करने के लिए ▶ परीक्षण चलाएं पर क्लिक करें।</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>स्थिति</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>ब्लॉक नाम</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>प्रकार</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>ऑफ़सेट</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>लंबाई</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>कच्चा (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>पार्स किया मान</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>नोट</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ चेतावनी</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ त्रुटि</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ छोड़ा</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>ब्लॉक इंटरप्रेटर के लिए उपलब्ध प्रारंभिक चर (जैसे लूप काउंटर, परिकलित ऑफसेट)।</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>नाम से चर फ़िल्टर करें</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>चर नाम</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>प्रकार</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>प्रारंभिक मान</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>विवरण</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ चर जोड़ें</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>अभिकथन</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:name equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>बूलियन अभिव्यक्ति — Ctrl+Space से फंक्शन और चर देखें</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>चेकसम</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>संस्करण प्रबंधन (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>आयात ($ref संयोजन)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = प्रारूप नाम (या structs/नाम), as = structRef ब्लॉक में उपयोग किया जाने वाला उपनाम।</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>प्रारूप संदर्भ जैसे structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>structRef में उपनाम जैसे PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ आयात जोड़ें</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>फोरेंसिक</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>नेविगेशन बुकमार्क</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>चरनाम</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>बाइट ऑफसेट रखने वाला चर — Ctrl+Space से सुझाव देखें</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ बुकमार्क जोड़ें</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>इंस्पेक्टर लेआउट</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>निर्यात टेम्पलेट</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ टेम्पलेट जोड़ें</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>AI संकेत</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>स्थिर या परिवर्तनशील ऑफसेट और लंबाई वाला बाइनरी फ़ील्ड।</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>जादुई बाइट जो किसी विशिष्ट ऑफसेट पर प्रारूप की पहचान करते हैं।</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>परिवर्तनशील लंबाई या प्रतीकात्मक मान को नामित चर में पढ़ता है।</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>फ़ील्ड मान या चर के आधार पर सशर्त रूप से ब्लॉक पार्स करता है।</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>जब तक शर्त सत्य हो ब्लॉक बॉडी दोहराता है।</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>चर को संशोधित करता है (वृद्धि, कमी, चरसेट)।</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>गणितीय अभिव्यक्ति का मूल्यांकन करता है और परिणाम संग्रहीत करता है।</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>संरचित प्रविष्टियों की निश्चित-गणना सरणी पार्स करता है।</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>विभेदक चर के आधार पर वैरिएंट ब्लॉक सेट चुनता है।</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>संदर्भ द्वारा बाहरी संरचना परिभाषा एम्बेड करता है।</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>इंगित ऑफसेट के लिए नेविगेशन एनोटेशन बनाता है।</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} त्रुटि(यां)</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} चेतावनी(यां)</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>कच्चा JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>लागू करें</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>रद्द करें</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>संरचना संपादक</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>.whfmt संरचना परिभाषा फ़ाइलों के लिए दृश्य संपादक। DataGrid में ब्लॉक, प्रकार, ऑफसेट, लंबाई और रंग संपादित करें।</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>मान्य करें (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>ब्लॉक जोड़ें (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>लाइव कोड दृश्य टॉगल करें</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>लेआउट</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>कोड दृश्य लेआउट</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>कोड दाईं ओर</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>कोड बाईं ओर</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>कोड नीचे</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>कोड ऊपर</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>प्रारूप</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>टैब</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>ब्लॉक</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>सत्यापन</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>लंबाई:</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>परीक्षण के लिए बाइनरी फ़ाइल चुनें</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>नाम</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>प्रकार</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>रंग</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>अपारदर्शिता</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>विवरण</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>छिपा हुआ</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>एंडियननेस</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>ब्लॉक प्रकार</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>क्रिया</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>चर</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>मान</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>गणना</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>अभिव्यक्ति</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>इस रूप में सहेजें</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>स्थिति</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>ऑफ़सेट</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>ऑफ़सेट कहाँ से</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>ऑफ़सेट जोड़ें</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>लंबाई</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>मान प्रकार</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>सरणी</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>गणना</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>एंट्री आकार</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>इंडेक्स चर</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>रंग चक्र</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>एंट्री फ़ील्ड वृक्ष में बच्चों के रूप में दिखाए जाते हैं।</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>यूनियन</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>विभेदक</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>विकल्प</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>नेस्टेड संरचना</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>संरचना संदर्भ</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>पॉइंटर स्थान</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>लक्ष्य और भंडारण</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>लक्ष्य चर</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>लेबल</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>स्थिति और आकार</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>भंडारण</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>मैप किया गया सहेजें</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>मान मानचित्र</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>बिट फ़ील्ड</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>नाम</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>बिट्स</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>तक</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>अधिकतम लंबाई</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>न्यूनतम मान</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>अधिकतम मान</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>पैटर्न (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>त्रुटि संदेश</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>चर का नाम</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>समूह</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>एक समूह बच्चों के क्षेत्रों के सेट को रंग ओवरले के साथ दृश्यमान रूप से लेबल करता है। यह स्वयं कोई बाइट नहीं लेता है।</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>बच्चे ब्लॉक वृक्ष में दिखाए जाते हैं — चाइल्ड ब्लॉकों को जोड़ने/पुनःक्रमित करने के लिए वृक्ष का उपयोग करें।</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>चाइल्ड फ़ील्ड ब्लॉक वृक्ष में दिखाए जाते हैं।</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>कच्चा डेटा क्षेत्र</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>कच्चे बाइट क्षेत्र को रंग ओवरले के साथ चिह्नित करता है। कोई मान नहीं निकाला जाता है।</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>शर्त</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>शाखा लेबल</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>True लेबल</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>False लेबल</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Then / Else ब्लॉक वृक्ष में बच्चों के रूप में दिखाए जाते हैं।</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>लूप शर्त</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>सीमाएँ</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>अधिकतम पुनरावृत्तियाँ</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>मुख्य ब्लॉक वृक्ष में बच्चों के रूप में दिखाए जाते हैं।</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>कार्य करने के लिए वेरिएबल का नाम — सुझाव देखने के लिए टाइप करें (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>सेट करने के लिए मान / जोड़ने या घटाने की मात्रा — var:नाम का समर्थन करता है</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>वेरिएबल और फ़ंक्शन के साथ गणितीय अभिव्यक्ति — स्वतः पूर्णता के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>गणित परिणाम संग्रहीत करने के लिए वेरिएबल नाम — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>जहाँ सरणी शुरू होती है वह फ़ाइल ऑफ़सेट — स्वतः पूर्णता के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>इस सरणी के लिए आधार ऑफ़सेट के रूप में उपयोग किया जाने वाला वेरिएबल</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>प्रविष्टियों की संख्या — वेरिएबल सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>प्रत्येक प्रविष्टि का बाइट आकार — वेरिएबल सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>लूप अनुक्रमणिका वेरिएबल नाम (उदा. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ रंग जोड़ें</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>वेरिएंट चयन को संचालित करने वाला वेरिएबल — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>प्रारूप का नाम या .whfmt फ़ाइल का सापेक्ष पथ</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>ब्राउज़ करें…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>जहाँ पॉइंटर मान पढ़ा जाता है वह फ़ाइल ऑफ़सेट — स्वतः पूर्णता के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>आधार ऑफ़सेट के रूप में उपयोग किया जाने वाला वेरिएबल नाम</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>पॉइंटर मान का बाइट आकार (उदा. uint32 के लिए 4) — या var:नाम</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>हल किए गए पॉइंटर पते को प्राप्त करने वाला वेरिएबल</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>कच्चे पॉइंटर मान को संग्रहीत करने के लिए वेरिएबल</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Hex दृश्य में दिखाया जाने वाला एनोटेशन लेबल</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>स्वतः पूर्णता के लिए Ctrl+Space — पूर्णांक, var:नाम, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>जिसका मान आधार ऑफ़सेट है वह वेरिएबल नाम — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>OffsetFrom में जोड़े गए अतिरिक्त बाइट</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>स्वतः पूर्णता के लिए Ctrl+Space — पूर्णांक, var:नाम, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>पार्स किए गए मान को संग्रहीत करने के लिए वेरिएबल नाम — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>ValueMap-अनुवादित मान के लिए वेरिएबल नाम — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>कच्चा=प्रदर्शन (उदा. 0=ग्रेस्केल)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ ValueMap प्रविष्टि जोड़ें</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>बिट श्रेणी उदा. 7-6 या एकल बिट उदा. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ बिटफ़ील्ड जोड़ें</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>प्रहरी (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>पढ़ना रोकने के लिए Hex पैटर्न या var:नाम। सेट होने पर Length को बदलता है।</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>यदि Until पैटर्न कभी नहीं मिलता तो सुरक्षा सीमा (बाइट)। 0 = इंटरप्रेटर डिफ़ॉल्ट (4096)।</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until समावेशी (पैटर्न बाइट को फ़ील्ड लंबाई में शामिल करें)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>सत्यापन नियम</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>इस मेटाडेटा ब्लॉक द्वारा पढ़े जाने वाले वेरिएबल का नाम</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>स्थिर पूर्णांक या var:नाम — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>सुरक्षा सीमा — पूर्णांक</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>वर्तमान पुनरावृत्ति अनुक्रमणिका प्राप्त करने वाला वेरिएबल (0-आधारित)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>लूप पूरा होने के बाद पुनरावृत्ति गणना संग्रहीत करने के लिए वेरिएबल — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>इस ब्लॉक को कच्चे JSON के रूप में संपादित करें</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ अभिकथन जोड़ें</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ चेकसम जोड़ें</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>टेम्पलेट नाम</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>संरचना नाम (C struct)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>केवल Hex अंक (उदा. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>दिखाएँ:</value></data>
+</root>

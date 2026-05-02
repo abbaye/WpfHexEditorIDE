@@ -3,10 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:appSvc="clr-namespace:WpfHexEditor.App.Services"
              mc:Ignorable="d"
              d:DesignWidth="160" d:DesignHeight="22"
              Background="Transparent"
              ToolTip="{Binding FilePath}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <appSvc:AppLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <!--
         DocumentTabHeader — displays tab title with optional dirty (*) indicator.
@@ -36,7 +45,7 @@
                    FontSize="8"
                    VerticalAlignment="Center"
                    Foreground="{DynamicResource DockAccentBrush}"
-                   ToolTip="Unsaved changes">
+                   ToolTip="{DynamicResource APP_UnsavedChanges}">
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -55,7 +64,7 @@
                    FontSize="8"
                    VerticalAlignment="Center"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   ToolTip="Read-only">
+                   ToolTip="{DynamicResource APP_ReadOnly}">
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
                     <Setter Property="Visibility" Value="Collapsed" />

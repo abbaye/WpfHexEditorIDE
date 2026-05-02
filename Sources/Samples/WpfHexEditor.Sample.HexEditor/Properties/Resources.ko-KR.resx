@@ -121,10 +121,6 @@
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
     <value>이전 찾기(P)</value>
   </data>
-  <data name="RelativeSearchMenuString" xml:space="preserve">
-    <value>상대 검색</value>
-    <comment>Search menu - Relative Search command</comment>
-  </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>도구(T)</value>
   </data>

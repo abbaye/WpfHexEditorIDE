@@ -16,6 +16,7 @@
 // ==========================================================
 
 using System.IO;
+using WpfHexEditor.PluginDev.Properties;
 
 namespace WpfHexEditor.PluginDev.Templates;
 
@@ -104,7 +105,7 @@ public sealed class {{name}}Panel : UserControl
 
         // Toolbar
         var toolbar = new ToolBar();
-        var refreshBtn = new Button { Content = "\u27F3  Refresh", Padding = new Thickness(6, 2, 6, 2) };
+        var refreshBtn = new Button { Content = $"\u27F3  {PluginDevResources.PluginDev_Refresh}", Padding = new Thickness(6, 2, 6, 2) };
         refreshBtn.Click += (_, _) => _vm.Refresh();
         toolbar.Items.Add(refreshBtn);
         Grid.SetRow(toolbar, 0);
@@ -144,7 +145,7 @@ namespace {{ns}};
 /// </summary>
 public sealed class {{name}}PanelViewModel : INotifyPropertyChanged
 {
-    private string _statusText = "Ready";
+    private string _statusText = PluginDevResources.PluginDev_Ready;
 
     public string StatusText
     {

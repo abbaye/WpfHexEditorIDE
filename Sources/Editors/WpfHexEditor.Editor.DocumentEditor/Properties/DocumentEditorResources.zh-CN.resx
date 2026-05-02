@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>查找和替换</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>查找:</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>替换:</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>区分大小写</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>整词</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>全部查找</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>查找下一个</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>查找上一个</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>替换</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>全部替换</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>关闭</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>页面</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>格式:</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>自定义</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>方向:</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>纵向</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>横向</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>分栏</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>等宽分栏</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>显示栏间分隔线</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>页眉/页脚</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>页眉</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>启用页眉</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>首页不同</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>奇偶页使用相同页眉</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>页脚</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>启用页脚</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>边框</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>无</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>方框</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>阴影</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>取消</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>应用</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>内侧:</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>外侧:</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>左:</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>右:</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>文本视图</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>拆分视图（文本 + Hex）</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>Hex 视图</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>结构树视图</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>完整视图（文本 + 结构 + Hex）</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>专注模式 — 禅式写作 (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>文本</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>拆分</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>结构</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>完整</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>专注</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>页面视图 — 分页的 A4/Letter 卡片</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>草稿视图 — 连续滚动，紧凑边距</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>大纲视图 — 结构树居中</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>取证分析模式</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>取证</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>加粗 (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>斜体 (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>下划线 (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>删除线</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>左对齐</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>居中</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>右对齐</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>段落样式</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>正文</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>引用</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Code</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>段落样式 (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>页面设置（纸张大小、页边距、分栏…）</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>缩小</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>放大</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>只读</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>文档元数据</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>导出文档</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>保存</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>标题</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>作者</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>格式</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>创建日期</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>修改日期</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>宏</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>加粗 (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>斜体 (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>下划线 (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>复制所选文本</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>复制为 Hex 字节</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>在结构窗格中检查块</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>跳转到 Hex 窗格中的偏移量</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>页数</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>字数</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>缩放级别</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>单击打开取证面板</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>结构</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>全部折叠</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>全部展开</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>筛选块…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>清除筛选</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>导航到文本</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>跳转到 Hex 偏移量</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>复制块文本</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>复制偏移量</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>文档</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>已保存 — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>保存失败: {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>没有为此文件类型注册的保存程序。</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>正在加载文档…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>正在等待 IDE 初始化…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>无法打开文档: {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>导出文档</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>导出失败: {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>已导出 — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>没有为"{0}"注册的保存程序。</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>是</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>否</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>文本</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>拆分</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>结构</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>完整</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>专注</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | 只读</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>第 1 页</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 字</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>拆分</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>格式: {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} 字</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>第 1 / {0} 页</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>正文</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>标题 1</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>标题 2</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>标题 3</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>标题 4</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>标题 5</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>标题 6</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>引用</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>题注</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>列表段落</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>明显引用</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>块</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>格式</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>选择</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>视图</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>取证模式</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>十六进制视图</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>分割视图</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>结构视图</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>文本视图</value>
+  </data>
+</root>

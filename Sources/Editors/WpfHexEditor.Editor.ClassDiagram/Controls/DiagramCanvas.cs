@@ -29,6 +29,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.ClassDiagram.Controls.Adorners;
+using WpfHexEditor.Editor.ClassDiagram.Properties;
 using WpfHexEditor.Editor.ClassDiagram.Core.Layout;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Editor.ClassDiagram.Services;
@@ -50,6 +51,14 @@ public sealed class DiagramCanvas : Canvas
 
     // ── Grid rendering (B1) ───────────────────────────────────────────────────
     private const double GridSpacing = 24.0;  // dot-grid spacing in logical px
+    private bool _showGrid = true;
+
+    /// <summary>Gets or sets whether the dot-grid background is visible.</summary>
+    public bool ShowGrid
+    {
+        get => _showGrid;
+        set { _showGrid = value; InvalidateVisual(); }
+    }
 
     // ── State ─────────────────────────────────────────────────────────────────
     private DiagramDocument?  _doc;
@@ -158,8 +167,9 @@ public sealed class DiagramCanvas : Canvas
 
         // Filter bar — top-center, hidden by default.
         _filterBar.Visibility  = Visibility.Collapsed;
-        _filterBar.FilterChanged  += OnFilterChanged;
-        _filterBar.CloseRequested += (_, _) => HideFilterBar();
+        _filterBar.FilterChanged   += OnFilterChanged;
+        _filterBar.CloseRequested  += (_, _) => HideFilterBar();
+        _filterBar.NavigateToMatch += OnFilterBarNavigate;
         Children.Add(_filterBar);
         Panel.SetZIndex(_filterBar, 200);
         SizeChanged += (_, _) => UpdateFilterBarPosition();
@@ -524,6 +534,10 @@ public sealed class DiagramCanvas : Canvas
         }
     }
 
+    // ── Dot-grid brush cache — rebuilt only when the theme token resolves to a different color ──
+    private Brush?  _cachedDotBrush;
+    private Color   _cachedDotColor;
+
     // B1 — Dot-grid background rendered in OnRender (only redraws when Canvas is invalidated)
     protected override void OnRender(DrawingContext dc)
     {
@@ -536,14 +550,22 @@ public sealed class DiagramCanvas : Canvas
 
         if (ActualWidth < 1 || ActualHeight < 1) return;
 
-        // Dot-grid: tiny circles spaced GridSpacing apart
-        Color gridColor = (TryFindResource("CD_CanvasGridLineBrush") as SolidColorBrush)?.Color
-                       ?? Color.FromArgb(80, 80, 85, 120);
-        var dotBrush = new SolidColorBrush(Color.FromArgb(gridColor.A, gridColor.R, gridColor.G, gridColor.B));
+        if (_showGrid)
+        {
+            // Dot-grid: tiny circles spaced GridSpacing apart
+            Color gridColor = (TryFindResource("CD_CanvasGridLineBrush") as SolidColorBrush)?.Color
+                           ?? Color.FromArgb(80, 80, 85, 120);
+            if (_cachedDotBrush is null || _cachedDotColor != gridColor)
+            {
+                _cachedDotColor = gridColor;
+                _cachedDotBrush = new SolidColorBrush(gridColor);
+                _cachedDotBrush.Freeze();
+            }
 
-        for (double x = GridSpacing; x < ActualWidth; x += GridSpacing)
-            for (double y = GridSpacing; y < ActualHeight; y += GridSpacing)
-                dc.DrawEllipse(dotBrush, null, new Point(x, y), 1.0, 1.0);
+            for (double x = GridSpacing; x < ActualWidth; x += GridSpacing)
+                for (double y = GridSpacing; y < ActualHeight; y += GridSpacing)
+                    dc.DrawEllipse(_cachedDotBrush, null, new Point(x, y), 1.0, 1.0);
+        }
     }
 
     // ── Filter bar (Phase 12) ─────────────────────────────────────────────────
@@ -615,8 +637,23 @@ public sealed class DiagramCanvas : Canvas
             }
         }
 
+        var orderedIds = _doc.Classes
+            .Where(n => matched.Contains(n.Id))
+            .OrderBy(n => n.Name)
+            .Select(n => n.Id)
+            .ToList();
+
         _filterBar.SetMatchCount(matched.Count, _doc.Classes.Count);
+        _filterBar.SetMatchedNodes(orderedIds);
         _layer.SetFocusNodes(args.FocusMode && matched.Count > 0 ? matched : null);
+    }
+
+    private void OnFilterBarNavigate(object? sender, string nodeId)
+    {
+        if (_doc is null) return;
+        var node = _doc.Classes.FirstOrDefault(n => n.Id == nodeId);
+        if (node is null) return;
+        ZoomToNodeRequested?.Invoke(this, node);
     }
 
     // ── Selection ─────────────────────────────────────────────────────────────
@@ -1301,7 +1338,7 @@ public sealed class DiagramCanvas : Canvas
                 UpdateSelectAdornerPosition();
             }));
 
-        var addMenu = new MenuItem { Header = "Add Member" };
+        var addMenu = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_AddMember };
         addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, node)));
         addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, node)));
         addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, node)));
@@ -1332,7 +1369,7 @@ public sealed class DiagramCanvas : Canvas
             menu.Items.Add(new Separator());
         }
 
-        var addMenu = new MenuItem { Header = "Add Member" };
+        var addMenu = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_AddMember };
         addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, node)));
         addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, node)));
         addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, node)));
@@ -1350,7 +1387,7 @@ public sealed class DiagramCanvas : Canvas
         menu.Items.Add(MakeItem("\uE70F", "Edit Label",       () => EditRelationshipLabel(rel)));
         menu.Items.Add(new Separator());
 
-        var changeType = new MenuItem { Header = "Change Type" };
+        var changeType = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_ChangeType };
         foreach (RelationshipKind rk in Enum.GetValues<RelationshipKind>())
         {
             var captured = rk;
@@ -1386,7 +1423,7 @@ public sealed class DiagramCanvas : Canvas
         menu.Items.Add(new Separator());
         menu.Items.Add(MakeItem("\uE8B3", "Select All",    () => SelectAll()));
         menu.Items.Add(new Separator());
-        var layoutSub = new MenuItem { Header = "Auto Layout" };
+        var layoutSub = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_AutoLayout };
         layoutSub.Icon = new System.Windows.Controls.TextBlock
             { Text = "\uE947", FontFamily = new FontFamily("Segoe MDL2 Assets"), FontSize = 12 };
         layoutSub.Items.Add(MakeItem("\uE947", "Force-Directed",

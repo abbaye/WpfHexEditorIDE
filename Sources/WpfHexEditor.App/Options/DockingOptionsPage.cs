@@ -10,6 +10,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.Docking.Core;
 
@@ -79,10 +80,10 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
         });
 
         _highlightModeCombo = new ComboBox { MinWidth = 160 };
-        _highlightModeCombo.Items.Add("None");
-        _highlightModeCombo.Items.Add("Top Bar");
-        _highlightModeCombo.Items.Add("Full Border");
-        _highlightModeCombo.Items.Add("Glow");
+        _highlightModeCombo.Items.Add(AppResources.App_Docking_ShadowNone);
+        _highlightModeCombo.Items.Add(AppResources.App_Docking_ShadowTopBar);
+        _highlightModeCombo.Items.Add(AppResources.App_Docking_ShadowFullBorder);
+        _highlightModeCombo.Items.Add(AppResources.App_Docking_ShadowGlow);
         _highlightModeCombo.SelectionChanged += OnHighlightModeChanged;
 
         (_openDelaySlider,  _openDelayLabel)  = MakeSlider(100, 1000, 50);
@@ -91,7 +92,7 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
 
         _animationsEnabledCheck = new CheckBox
         {
-            Content = "Enable docking animations",
+            Content = AppResources.App_Options_EnableDockAnimations,
             Margin  = new Thickness(0, 4, 0, 4),
         };
         _animationsEnabledCheck.Checked   += OnChanged;
@@ -112,9 +113,9 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
         _cornerRadiusSlider.ValueChanged += OnCornerRadiusChanged;
 
         _cornerScopeCombo = new ComboBox { MinWidth = 200 };
-        _cornerScopeCombo.Items.Add("Normal (sharp corners)");
-        _cornerScopeCombo.Items.Add("Rounded — Content area only");
-        _cornerScopeCombo.Items.Add("Rounded — Full panel frame");
+        _cornerScopeCombo.Items.Add(AppResources.App_Docking_CornerNormal);
+        _cornerScopeCombo.Items.Add(AppResources.App_Docking_CornerRoundedContent);
+        _cornerScopeCombo.Items.Add(AppResources.App_Docking_CornerRoundedFull);
         _cornerScopeCombo.SelectionChanged += OnCornerScopeChanged;
         _profileDirBox.TextChanged += (_, _) => { if (!_loading) Changed?.Invoke(this, EventArgs.Empty); };
 

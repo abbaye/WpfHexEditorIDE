@@ -25,6 +25,7 @@ using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.Plugins.PatternAnalysis.Commands;
+using WpfHexEditor.Plugins.PatternAnalysis.Properties;
 using WpfHexEditor.Plugins.PatternAnalysis.Views;
 
 namespace WpfHexEditor.Plugins.PatternAnalysis;
@@ -42,7 +43,7 @@ public sealed class PatternAnalysisPlugin : IWpfHexEditorPlugin
     private const string PanelUiId = "WpfHexEditor.Plugins.PatternAnalysis.Panel.PatternAnalysisPanel";
 
     public string  Id      => "WpfHexEditor.Plugins.PatternAnalysis";
-    public string  Name    => "Pattern Analysis";
+    public string  Name    => PatternAnalysisResources.PatternAnalysis_PluginName;
     public Version Version => new(0, 4, 0);
 
     public PluginCapabilities Capabilities => new()
@@ -65,7 +66,7 @@ public sealed class PatternAnalysisPlugin : IWpfHexEditorPlugin
             Id,
             new PanelDescriptor
             {
-                Title           = "Pattern Analysis",
+                Title           = PatternAnalysisResources.PatternAnalysis_PanelTitle,
                 DefaultDockSide = "Bottom",
                 DefaultAutoHide = false,
                 CanClose        = true
@@ -77,7 +78,7 @@ public sealed class PatternAnalysisPlugin : IWpfHexEditorPlugin
             Id,
             new MenuItemDescriptor
             {
-                Header     = "_Pattern Analysis",
+                Header     = PatternAnalysisResources.PatternAnalysis_MenuItem,
                 ParentPath = "View",
                 Group      = "Statistics",
                 IconGlyph  = "\uE773",
