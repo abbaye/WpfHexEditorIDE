@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="MdSb_ViewLabel"     xml:space="preserve"><value>Näkymä</value></data>
+  <data name="MdSb_ViewTooltip"   xml:space="preserve"><value>Nykyinen näyttötila</value></data>
+  <data name="MdSb_WordsLabel"    xml:space="preserve"><value>Sanat</value></data>
+  <data name="MdSb_WordsTooltip"  xml:space="preserve"><value>Arvioidut sanamäärä</value></data>
+  <data name="MdSb_LinesLabel"    xml:space="preserve"><value>Rivit</value></data>
+  <data name="MdSb_LinesTooltip"  xml:space="preserve"><value>Rivien kokonaismäärä</value></data>
+  <data name="MdSb_ReadLabel"     xml:space="preserve"><value>Lukuaika</value></data>
+  <data name="MdSb_ReadTooltip"   xml:space="preserve"><value>Arvioitu lukuaika (200 spm)</value></data>
+  <data name="MdSb_ZoomLabel"     xml:space="preserve"><value>Zoom</value></data>
+  <data name="MdSb_ZoomTooltip"   xml:space="preserve"><value>Esikatselun zoom (Ctrl+vieritys)</value></data>
+  <data name="MdTb_ViewLabel"        xml:space="preserve"><value>Näkymä</value></data>
+  <data name="MdTb_ViewTooltip"      xml:space="preserve"><value>Näyttötila (Ctrl+1/2/3)</value></data>
+  <data name="MdTb_LayoutLabel"      xml:space="preserve"><value>Asettelu</value></data>
+  <data name="MdTb_LayoutTooltip"    xml:space="preserve"><value>Jaettu asettelu (Ctrl+Shift+L)</value></data>
+  <data name="MdTb_WrapLabel"        xml:space="preserve"><value>Rivitys</value></data>
+  <data name="MdTb_WrapTooltip"      xml:space="preserve"><value>Automaattinen rivitys (Alt+Z)</value></data>
+  <data name="MdTb_RefreshLabel"     xml:space="preserve"><value>Päivitä</value></data>
+  <data name="MdTb_RefreshTooltip"   xml:space="preserve"><value>Päivitä esikatselu (F9)</value></data>
+  <data name="MdTb_InsertLabel"      xml:space="preserve"><value>Lisää</value></data>
+  <data name="MdTb_InsertTooltip"    xml:space="preserve"><value>Lisää Markdown-elementti</value></data>
+  <data name="MdTb_FormatLabel"      xml:space="preserve"><value>Muotoile</value></data>
+  <data name="MdTb_FormatTooltip"    xml:space="preserve"><value>Muotoile valittu teksti</value></data>
+  <data name="MdTb_FullscreenLabel"  xml:space="preserve"><value>Koko näyttö</value></data>
+  <data name="MdTb_FullscreenTooltip" xml:space="preserve"><value>Vaihda esikatselu koko näyttöön</value></data>
+  <data name="MdView_SourceOnly"  xml:space="preserve"><value>Vain lähde</value></data>
+  <data name="MdView_Split"       xml:space="preserve"><value>Jaettu</value></data>
+  <data name="MdView_PreviewOnly" xml:space="preserve"><value>Vain esikatselu</value></data>
+  <data name="MdLayout_PreviewRight"  xml:space="preserve"><value>Esikatselu oikealla</value></data>
+  <data name="MdLayout_PreviewLeft"   xml:space="preserve"><value>Esikatselu vasemmalla</value></data>
+  <data name="MdLayout_PreviewBottom" xml:space="preserve"><value>Esikatselu alhaalla</value></data>
+  <data name="MdLayout_PreviewTop"    xml:space="preserve"><value>Esikatselu ylhäällä</value></data>
+  <data name="MdInsert_Table"          xml:space="preserve"><value>Taulukko</value></data>
+  <data name="MdInsert_CodeBlock"      xml:space="preserve"><value>Koodilohko</value></data>
+  <data name="MdInsert_Image"          xml:space="preserve"><value>Kuva</value></data>
+  <data name="MdInsert_HorizontalRule" xml:space="preserve"><value>Vaakaviiva</value></data>
+  <data name="MdInsert_TableOfContents" xml:space="preserve"><value>Sisällysluettelo</value></data>
+  <data name="MdFmt_Bold"          xml:space="preserve"><value>Lihavoitu</value></data>
+  <data name="MdFmt_Italic"        xml:space="preserve"><value>Kursivoitu</value></data>
+  <data name="MdFmt_Strikethrough" xml:space="preserve"><value>Yliviivattu</value></data>
+  <data name="MdFmt_InlineCode"    xml:space="preserve"><value>Rivinsisäinen koodi</value></data>
+  <data name="MdCtx_GroupFormat"    xml:space="preserve"><value>MUOTOILU</value></data>
+  <data name="MdCtx_GroupInsert"    xml:space="preserve"><value>LISÄÄ</value></data>
+  <data name="MdCtx_GroupExport"    xml:space="preserve"><value>VIE</value></data>
+  <data name="MdCtx_GroupView"      xml:space="preserve"><value>NÄYTÄ</value></data>
+  <data name="MdCtx_Bold"           xml:space="preserve"><value>Lihavoitu</value></data>
+  <data name="MdCtx_Italic"         xml:space="preserve"><value>Kursivoitu</value></data>
+  <data name="MdCtx_Strikethrough"  xml:space="preserve"><value>Yliviivattu</value></data>
+  <data name="MdCtx_InlineCode"     xml:space="preserve"><value>Rivinsisäinen koodi</value></data>
+  <data name="MdCtx_Table"          xml:space="preserve"><value>Taulukko</value></data>
+  <data name="MdCtx_CodeBlock"      xml:space="preserve"><value>Koodilohko</value></data>
+  <data name="MdCtx_Link"           xml:space="preserve"><value>Linkki</value></data>
+  <data name="MdCtx_Image"          xml:space="preserve"><value>Kuva</value></data>
+  <data name="MdCtx_HorizontalRule" xml:space="preserve"><value>Vaakaviiva</value></data>
+  <data name="MdCtx_WordWrap"       xml:space="preserve"><value>Automaattinen rivitys&#9;Alt+Z</value></data>
+  <data name="MdCtx_ExportHtml"     xml:space="preserve"><value>Vie HTML-muotoon...</value></data>
+  <data name="MdCtx_ExportPdf"      xml:space="preserve"><value>Vie PDF-muotoon...</value></data>
+  <data name="MdPrev_SourceOnly"     xml:space="preserve"><value>Vain lähde</value></data>
+  <data name="MdPrev_SplitView"      xml:space="preserve"><value>Jaettu näkymä</value></data>
+  <data name="MdPrev_PreviewOnly"    xml:space="preserve"><value>Vain esikatselu</value></data>
+  <data name="MdPrev_Fullscreen"     xml:space="preserve"><value>Koko näyttö</value></data>
+  <data name="MdPrev_ExitFullscreen" xml:space="preserve"><value>Poistu koko näytöstä</value></data>
+  <data name="MdPrev_RefreshPreview" xml:space="preserve"><value>Päivitä esikatselu</value></data>
+  <data name="MdPrev_CycleLayout"    xml:space="preserve"><value>Vaihda asettelua</value></data>
+  <data name="MdPrev_ZoomIn"         xml:space="preserve"><value>Lähennä</value></data>
+  <data name="MdPrev_ZoomOut"        xml:space="preserve"><value>Loitonna</value></data>
+  <data name="MdPrev_ResetZoom"      xml:space="preserve"><value>Palauta zoom</value></data>
+  <data name="MdPrev_Copy"           xml:space="preserve"><value>Kopioi</value></data>
+  <data name="MdDlg_ExportHtmlTitle" xml:space="preserve"><value>Vie HTML-muotoon</value></data>
+  <data name="MdDlg_ExportPdfTitle"  xml:space="preserve"><value>Vie PDF-muotoon</value></data>
+  <data name="Md_NoHeadingsFound"    xml:space="preserve"><value>Otsikoita ei löydy.</value></data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Alustetaan esikatselua…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>WebView2 Runtime puuttuu</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Markdown-esikatselu vaatii Microsoft Edge WebView2 Runtime -ajonaikaisen ympäristön. Lataa se osoitteesta microsoft.com/edge/webview2.</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Päivitä jäsennys (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>Ei aktiivista Markdown-tiedostoa.</value></data>
+</root>
