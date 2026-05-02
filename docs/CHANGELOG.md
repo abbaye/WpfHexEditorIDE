@@ -6,18 +6,18 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
-## [0.6.5.15] — 2026-05-01 — NuGet Wave, 790+ Formats, Phase 6 Localization, WpfDocking 0.9.7
+## [0.6.5.15] — 2026-05-01 — NuGet Wave, 790+ Formats, 27-Language Localization, WpfDocking 0.9.7
 
 ### ✨ Added
 
 - **WPFHexaEditor 3.2.0** — new standalone NuGet package release: Go to offset dialog (`Ctrl+G`), unified `UndoEngine` with `Ctrl+Z/Y`, undo groups and coalescence; drag-selection auto-scroll via window-level mouse capture; `ShowColumnHighlight`/`ShowAsciiColumnHighlight` default `false`; BreadcrumbBar Render-priority guard (freeze fix) + phantom empty row fix (XAML/code-behind duplication resolved); `ByteProvider` extracted to `WpfHexEditor.Core.ByteProvider` standalone assembly
-- **WpfCodeEditor 0.9.8.0** — standalone NuGet package release: full guide (`WpfCodeEditor-guide.md`) bundled; 57+ language definitions; LSP 3.17 full suite; all satellite assemblies (17 languages) correctly isolated
-- **WpfDocking 0.9.7.0** — horizontal reorder for docked tool-panel tabs (drag left/right within the same edge); tab-switch triple-fire eliminated (layout passes reduced 3→1); StaticResource toolbar labels fix (pre-register output queue prevents first-display race); full Phase 5+6 localization wired into all Docking strings (17 languages); guide (`WpfDocking-guide.md`) bundled
+- **WpfCodeEditor 0.9.8.0** — standalone NuGet package release: full guide (`WpfCodeEditor-guide.md`) bundled; 57+ language definitions; LSP 3.17 full suite; all satellite assemblies (27 languages) correctly isolated
+- **WpfDocking 0.9.7.0** — horizontal reorder for docked tool-panel tabs (drag left/right within the same edge); tab-switch triple-fire eliminated (layout passes reduced 3→1); StaticResource toolbar labels fix (pre-register output queue prevents first-display race); full localization wired into all Docking strings (27 languages); guide (`WpfDocking-guide.md`) bundled
 - **WpfTerminal 0.9.7.0** — standalone NuGet release: LSP host startup stability (burst-init dispatcher calls downgraded to `Background` priority); scroll-bar theming consistent across all docked terminal panels; plugin error routing fixed (forwarded to output panel); guide (`WpfTerminal-guide.md`) bundled
 - **whfmt.FileFormatCatalog v1.1.0** — `FormatMatcher`, `FormatFileAnalyzer`, `CatalogQuery`, `FormatMetadataExtensions`, `FormatSummaryBuilder` utility layer added; `GetAll()` / `GetCategories()` now return `IReadOnlySet<T>` backed by `FrozenSet<T>`; `LazyInitializer.EnsureInitialized` replaces manual double-checked lock
 - **WpfHexEditor.Core.ByteProvider 1.1.0** — standalone cross-platform `net8.0` NuGet package; `IByteProvider` abstraction with file, stream, and memory backends; undo-aware byte operations
 - **790+ .whfmt format definitions** — +100 new definitions (Groups C–J complete); `FormatSchemaValidator` wired at load time (schema v2.3 validation on open, violations reported via `FormatLoadFailure`)
-- **Phase 6 Localization** — 77.9% DynamicResource coverage; all panels, menus, context menus, dialogs, and toolbar buttons translated into 17 languages (waves 1–25, keys: PH_*, DB_*, HE_*, CE_*, TE_*, TG_*, GC_*, DS_*, CA_*, DT_*, SP_*, XD_*, CD_*, DW_*); per-assembly `LocalizedResourceDictionary` pattern
+- **IDE Localization — 27 languages** — 77.9% DynamicResource coverage; all panels, menus, context menus, dialogs, and toolbar buttons translated into 27 languages (ar-SA · cs-CZ · da-DK · de-DE · el-GR · es-419 · es-ES · fi-FI · fr-CA · fr-FR · hi-IN · hu-HU · id-ID · it-IT · ja-JP · ko-KR · nl-NL · pl-PL · pt-BR · pt-PT · ro-RO · ru-RU · sv-SE · th-TH · tr-TR · uk-UA · vi-VN · zh-CN); per-assembly `LocalizedResourceDictionary` pattern
 
 ### 🔧 Changed
 
