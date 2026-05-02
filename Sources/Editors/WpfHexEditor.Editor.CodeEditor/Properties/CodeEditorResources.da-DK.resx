@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.CodeEditor
+    File        : CodeEditorResources.fr-CA.resx
+    Description : fr-CA translations for CodeEditor UI strings.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CodeEditorSettings_ResetButtonContent" xml:space="preserve">
+    <value>Nulstil indstillinger</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonContent" xml:space="preserve">
+    <value>Eksportér indstillinger</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonContent" xml:space="preserve">
+    <value>Importér indstillinger</value>
+  </data>
+  <data name="CodeEditorSettings_ResetButtonToolTip" xml:space="preserve">
+    <value>Nulstil alle indstillinger til standardværdier</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonToolTip" xml:space="preserve">
+    <value>Eksportér indstillinger til en JSON-fil</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonToolTip" xml:space="preserve">
+    <value>Importér indstillinger fra en JSON-fil</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewHeader" xml:space="preserve">
+    <value>Direkte forhåndsvisning</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewPlaceholder" xml:space="preserve">
+    <value>Forhåndsvisningen vises her, når en CodeEditor er tilkoblet</value>
+  </data>
+  <data name="CodeEditorOptions_FontSection" xml:space="preserve">
+    <value>Skrifttype</value>
+  </data>
+  <data name="CodeEditorOptions_FontFamilyLabel" xml:space="preserve">
+    <value>Skriftfamilie:</value>
+  </data>
+  <data name="CodeEditorOptions_FontSizeLabel" xml:space="preserve">
+    <value>Størrelse:</value>
+  </data>
+  <data name="CodeEditorOptions_IndentationSection" xml:space="preserve">
+    <value>Indrykning</value>
+  </data>
+  <data name="CodeEditorOptions_TabSizeLabel" xml:space="preserve">
+    <value>Tabulatorstørrelse:</value>
+  </data>
+  <data name="CodeEditorOptions_ConvertTabsContent" xml:space="preserve">
+    <value>Konvertér tabulatorer til mellemrum</value>
+  </data>
+  <data name="CodeEditorOptions_AutoIndentLabel" xml:space="preserve">
+    <value>Automatisk indrykning:</value>
+  </data>
+  <data name="CodeEditorOptions_DisplaySection" xml:space="preserve">
+    <value>Visning</value>
+  </data>
+  <data name="CodeEditorOptions_ShowLineNumbersContent" xml:space="preserve">
+    <value>Vis linjenumre</value>
+  </data>
+  <data name="CodeEditorOptions_ShowWhitespaceLabel" xml:space="preserve">
+    <value>Vis mellemrum:</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFoldingContent" xml:space="preserve">
+    <value>Aktivér kodesammenfolding</value>
+  </data>
+  <data name="CodeEditorOptions_FoldToggleContent" xml:space="preserve">
+    <value>Skift sammenfoldet region ved dobbeltklik</value>
+  </data>
+  <data name="CodeEditorOptions_ScopeGuidesContent" xml:space="preserve">
+    <value>Vis omfangsguider</value>
+  </data>
+  <data name="CodeEditorOptions_FeaturesSection" xml:space="preserve">
+    <value>Funktioner</value>
+  </data>
+  <data name="CodeEditorOptions_SmartCompleteContent" xml:space="preserve">
+    <value>Aktivér SmartComplete</value>
+  </data>
+  <data name="CodeEditorOptions_SnippetsContent" xml:space="preserve">
+    <value>Aktivér kodestykker</value>
+  </data>
+  <data name="CodeEditorOptions_MultiCaretContent" xml:space="preserve">
+    <value>Aktivér multi-redigering (Alt+Klik)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsContent" xml:space="preserve">
+    <value>Aktivér Find alle referencer (Shift+F12)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsToolTip" xml:space="preserve">
+    <value>Kræver en aktiv sprogserver (LSP) for den aktuelle filtype</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensContent" xml:space="preserve">
+    <value>Vis Code Lens (inline-referencetæller)</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensToolTip" xml:space="preserve">
+    <value>Viser antallet af referencer over hver deklaration. Klik på indikatoren for at åbne pop-up-vinduet Referencer.</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightContent" xml:space="preserve">
+    <value>Fremhæv ordet under markøren</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightToolTip" xml:space="preserve">
+    <value>Fremhæver alle forekomster af ordet under markøren og viser markører på rullepanelet</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeContent" xml:space="preserve">
+    <value>Farvekodning af parentespar</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeToolTip" xml:space="preserve">
+    <value>Farver parenteser med CE_Bracket_1/2/3/4 efter indlejringsdybde (kræver bracketPairs i sprogets .whfmt)</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchContent" xml:space="preserve">
+    <value>Forhåndsvisning af farvenuance</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchToolTip" xml:space="preserve">
+    <value>Viser et 12x12-farvefelt ved siden af farvelitteraler (f.eks. #FF5733) i CSS-, XAML- og C#-filer</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveContent" xml:space="preserve">
+    <value>Formatér ved gem (Ctrl+S)</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveToolTip" xml:space="preserve">
+    <value>Formaterer dokumentet automatisk ved gem. Bruger LSP-formatering, hvis tilgængeligt, ellers anvendes .whfmt-indrykningsregler.</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingSection" xml:space="preserve">
+    <value>Kodeformatering</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingInfo" xml:space="preserve">
+    <value>Disse indstillinger tilsidesætter .whfmt-standarderne for sproget. Lad afkrydsningsfelter stå i mellemtilstand for at arve sprogreglerne.</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingContent" xml:space="preserve">
+    <value>Fjern efterstillede mellemrum</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingToolTip" xml:space="preserve">
+    <value>Fjerner mellemrum/tabulatorer i slutningen af hver linje. Mellemtilstand = .whfmt-standard.</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineContent" xml:space="preserve">
+    <value>Indsæt afsluttende ny linje</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineToolTip" xml:space="preserve">
+    <value>Sikrer at filen slutter med præcis én ny linje. Mellemtilstand = .whfmt-standard.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsContent" xml:space="preserve">
+    <value>Mellemrum efter nøgleord (if, for, while)</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsToolTip" xml:space="preserve">
+    <value>Indsætter et mellemrum mellem kontrol-nøgleord og den åbne parentes. Mellemtilstand = .whfmt-standard.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsContent" xml:space="preserve">
+    <value>Mellemrum omkring binære operatorer</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsToolTip" xml:space="preserve">
+    <value>Indsætter mellemrum omkring +, -, *, /, ==, osv. Mellemtilstand = .whfmt-standard.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaContent" xml:space="preserve">
+    <value>Mellemrum efter kommaer</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaToolTip" xml:space="preserve">
+    <value>Indsætter et mellemrum efter kommaer i argument-/parameterlister. Mellemtilstand = .whfmt-standard.</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsContent" xml:space="preserve">
+    <value>Indrykke case/when-etiketter</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsToolTip" xml:space="preserve">
+    <value>Tilføjer et indrykningsniveau til case/when-etiketter i switch. Mellemtilstand = .whfmt-standard.</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsContent" xml:space="preserve">
+    <value>Organisér imports ved formatering</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsToolTip" xml:space="preserve">
+    <value>Sorterer using/import-direktiver alfabetisk ved formatering. Mellemtilstand = .whfmt-standard.</value>
+  </data>
+  <data name="CodeEditorOptions_SyntaxColorsSection" xml:space="preserve">
+    <value>Syntaksfarver</value>
+  </data>
+  <data name="CodeEditorOptions_ResetColorsButton" xml:space="preserve">
+    <value>Nulstil til tema</value>
+  </data>
+  <data name="CodeEditorOptions_ColorPickButton" xml:space="preserve">
+    <value>Vælg</value>
+  </data>
+  <data name="FormatScriptEditor_NewToolTip" xml:space="preserve">
+    <value>Ny formatdefinition</value>
+  </data>
+  <data name="FormatScriptEditor_OpenToolTip" xml:space="preserve">
+    <value>Åbn formatdefinition</value>
+  </data>
+  <data name="FormatScriptEditor_SaveToolTip" xml:space="preserve">
+    <value>Gem aktuel fil</value>
+  </data>
+  <data name="FormatScriptEditor_UndoToolTip" xml:space="preserve">
+    <value>Fortryd (Ctrl+Z)</value>
+  </data>
+  <data name="FormatScriptEditor_RedoToolTip" xml:space="preserve">
+    <value>Gentag (Ctrl+Y)</value>
+  </data>
+  <data name="FormatScriptEditor_FormatToolTip" xml:space="preserve">
+    <value>Formatér JSON (Ctrl+Shift+F)</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateToolTip" xml:space="preserve">
+    <value>Valider formatdefinition</value>
+  </data>
+  <data name="FormatScriptEditor_NoFileLoaded" xml:space="preserve">
+    <value>Ingen fil indlæst</value>
+  </data>
+  <data name="FormatScriptEditor_EmbeddedFormatsHeader" xml:space="preserve">
+    <value>Indbyggede formater</value>
+  </data>
+  <data name="FormatScriptEditor_EditorTabHeader" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewPlaceholder" xml:space="preserve">
+    <value>Indlæs en formatdefinition for at se forhåndsvisning...</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationTabHeader" xml:space="preserve">
+    <value>Validering</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationResultsHeader" xml:space="preserve">
+    <value>Valideringsresultater</value>
+  </data>
+  <data name="FormatScriptEditor_SelectTestFileButton" xml:space="preserve">
+    <value>Vælg testfil...</value>
+  </data>
+  <data name="FormatScriptEditor_RunTestButton" xml:space="preserve">
+    <value>Kør test</value>
+  </data>
+  <data name="FormatScriptEditor_TestInstructions" xml:space="preserve">
+    <value>Testez votre définition de format avec des fichiers exemples ici.\n\nSélectionnez un fichier et cliquez sur 'Exécuter le test' pour voir les résultats.</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorMessage" xml:space="preserve">
+    <value>Ingen CodeEditor-kontrol er tilkoblet.</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorTitle" xml:space="preserve">
+    <value>Fejl</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmMessage" xml:space="preserve">
+    <value>Er du sikker på, at du vil nulstille alle indstillinger til standardværdier?</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmTitle" xml:space="preserve">
+    <value>Bekæft nulstilling</value>
+  </data>
+  <data name="CodeEditorSettings_ExportDialogTitle" xml:space="preserve">
+    <value>Eksportér indstillinger</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessMessage" xml:space="preserve">
+    <value>Indstillinger eksporteret til:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessTitle" xml:space="preserve">
+    <value>Eksport gennemført</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedMessage" xml:space="preserve">
+    <value>Échec de l'exportation des paramètres :\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedTitle" xml:space="preserve">
+    <value>Eksport mislykkedes</value>
+  </data>
+  <data name="CodeEditorSettings_ImportDialogTitle" xml:space="preserve">
+    <value>Importér indstillinger</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessMessage" xml:space="preserve">
+    <value>Indstillinger importeret fra:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessTitle" xml:space="preserve">
+    <value>Import gennemført</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedMessage" xml:space="preserve">
+    <value>Échec de l'importation des paramètres :\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedTitle" xml:space="preserve">
+    <value>Import mislykkedes</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteMessage" xml:space="preserve">
+    <value>Alle indstillinger er nulstillet til standardværdier.</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteTitle" xml:space="preserve">
+    <value>Nulstilling gennemført</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsError" xml:space="preserve">
+    <value>Kunne ikke indlæse indbyggede formater: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_OpenDialogTitle" xml:space="preserve">
+    <value>Åbn formatdefinition</value>
+  </data>
+  <data name="FormatScriptEditor_SaveDialogTitle" xml:space="preserve">
+    <value>Gem formatdefinition</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonError" xml:space="preserve">
+    <value>JSON-formatering mislykkedes: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Formateringsfejl</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileError" xml:space="preserve">
+    <value>Kunne ikke indlæse filen: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedError" xml:space="preserve">
+    <value>Kunne ikke indlæse indbygget format: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessMessage" xml:space="preserve">
+    <value>Filen blev gemt!</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessTitle" xml:space="preserve">
+    <value>Succes</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedMessage" xml:space="preserve">
+    <value>Kunne ikke gemme filen: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesMessage" xml:space="preserve">
+    <value>Vil du gemme ændringer i den aktuelle fil?</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesTitle" xml:space="preserve">
+    <value>Gem ændringer</value>
+  </data>
+  <data name="FormatScriptEditor_StatusErrors" xml:space="preserve">
+    <value>{0} fejl</value>
+  </data>
+  <data name="FormatScriptEditor_StatusWarnings" xml:space="preserve">
+    <value>{0} advarsel(er)</value>
+  </data>
+  <data name="CodeEditor_ContextMenuSelectAll" xml:space="preserve">
+    <value>Markér alt</value>
+  </data>
+  <data name="CodeEditor_ContextMenuDelete" xml:space="preserve">
+    <value>Slet</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFind" xml:space="preserve">
+    <value>Find...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReplace" xml:space="preserve">
+    <value>Erstat...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFindAllRefs" xml:space="preserve">
+    <value>Find alle referencer</value>
+  </data>
+  <data name="CodeEditor_ContextMenuQuickFix" xml:space="preserve">
+    <value>Hurtig løsning…</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRenameSymbol" xml:space="preserve">
+    <value>Omdøb symbol</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToDefinition" xml:space="preserve">
+    <value>Gå til definition</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToImplementation" xml:space="preserve">
+    <value>Gå til implementering</value>
+  </data>
+  <data name="CodeEditor_ContextMenuPeekDefinition" xml:space="preserve">
+    <value>Kig i definition</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowCallHierarchy" xml:space="preserve">
+    <value>Vis kaldhierarki</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowTypeHierarchy" xml:space="preserve">
+    <value>Vis typehierarki</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatting" xml:space="preserve">
+    <value>Formatering</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatDocument" xml:space="preserve">
+    <value>Formatér dokument</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatSelection" xml:space="preserve">
+    <value>Formatér markering</value>
+  </data>
+  <data name="CodeEditor_ContextMenuOutlining" xml:space="preserve">
+    <value>Dispositionstilstand</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleOutlining" xml:space="preserve">
+    <value>Skift dispositionstilstand</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleAllOutlining" xml:space="preserve">
+    <value>Skift al dispositionstilstand</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopOutlining" xml:space="preserve">
+    <value>Stop dispositionstilstand</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopHidingCurrent" xml:space="preserve">
+    <value>Stop skjuling af aktuel</value>
+  </data>
+  <data name="CodeEditor_ContextMenuCollapseToDefs" xml:space="preserve">
+    <value>Fold til definitioner</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordWrap" xml:space="preserve">
+    <value>Automatisk linjeskift</value>
+  </data>
+  <data name="CodeEditor_ContextMenuColumnRulers" xml:space="preserve">
+    <value>Kolonnelinjer</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowWhitespace" xml:space="preserve">
+    <value>Vis mellemrum</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceNone" xml:space="preserve">
+    <value>Ingen</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceSelection" xml:space="preserve">
+    <value>Kun markering</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceAlways" xml:space="preserve">
+    <value>Altid</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRefreshHighlights" xml:space="preserve">
+    <value>Opdatér fremhævninger</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReanalyzeFolding" xml:space="preserve">
+    <value>Genanalyser sammenfolding</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordHighlight" xml:space="preserve">
+    <value>Ordfremhævning</value>
+  </data>
+  <data name="CodeEditor_FormatDocumentTransaction" xml:space="preserve">
+    <value>Formatér dokument</value>
+  </data>
+  <data name="CodeEditor_FormatSelectionTransaction" xml:space="preserve">
+    <value>Formatér markering</value>
+  </data>
+  <data name="CodeEditor_FormatJsonError" xml:space="preserve">
+    <value>Impossible de formater — JSON invalide :\n{0}</value>
+  </data>
+  <data name="CodeEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Formateringsfejl</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonSuccess" xml:space="preserve">
+    <value>JSON er gyldigt.</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonTitle" xml:space="preserve">
+    <value>Validering</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonError" xml:space="preserve">
+    <value>Ugyldigt JSON: {0}</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonErrorTitle" xml:space="preserve">
+    <value>Valideringsfejl</value>
+  </data>
+  <data name="CodeEditor_GoToLineTitle" xml:space="preserve">
+    <value>Gå til linje</value>
+  </data>
+  <data name="CodeEditor_GoToLineLabel" xml:space="preserve">
+    <value>Linjenummer (1 - {0}):</value>
+  </data>
+  <data name="CodeEditor_GoToLineButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="CodeEditor_BreakpointToggleToolTip" xml:space="preserve">
+    <value>Klik for at aktivere/deaktivere pausepunkt</value>
+  </data>
+  <data name="CodeEditor_BreakpointInvalidToolTip" xml:space="preserve">
+    <value>Kan ikke placere et pausepunkt på denne linje</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipEmail" xml:space="preserve">
+    <value>Ctrl+Klik for at sende e-mail</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipLink" xml:space="preserve">
+    <value>Ctrl+Klik for at åbne</value>
+  </data>
+  <data name="CodeEditor_ReferencesCollapseAll" xml:space="preserve">
+    <value>Fold alle sammen</value>
+  </data>
+  <data name="CodeEditor_ReferencesExpandAll" xml:space="preserve">
+    <value>Udvid alle</value>
+  </data>
+  <data name="CodeEditor_ReferencesTitle" xml:space="preserve">
+    <value>Referencer — {0}</value>
+  </data>
+  <data name="CodeEditor_ReferencesCounter" xml:space="preserve">
+    <value>{0} reference(r)</value>
+  </data>
+  <data name="CodeEditor_ReferencesRefresh" xml:space="preserve">
+    <value>Opdatér</value>
+  </data>
+  <data name="CodeEditor_ReferencesPinTooltip" xml:space="preserve">
+    <value>Fastgør til panelet Find referencer</value>
+  </data>
+  <data name="CodeEditor_BreakpointDisable" xml:space="preserve">
+    <value>Deaktivér</value>
+  </data>
+  <data name="CodeEditor_BreakpointEnable" xml:space="preserve">
+    <value>Aktivér</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeDisabled" xml:space="preserve">
+    <value>Deaktiveret</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeConditional" xml:space="preserve">
+    <value>Betinget</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeBreakpoint" xml:space="preserve">
+    <value>Pausepunkt</value>
+  </data>
+  <data name="CodeEditor_BreakpointEditCondition" xml:space="preserve">
+    <value>Rediger betingelse</value>
+  </data>
+  <data name="CodeEditor_BreakpointDeleteBreakpoint" xml:space="preserve">
+    <value>Slet pausepunkt</value>
+  </data>
+  <data name="CodeEditor_BreakpointDelete" xml:space="preserve">
+    <value>Slet</value>
+  </data>
+  <data name="CodeEditor_BreakpointSave" xml:space="preserve">
+    <value>Gem</value>
+  </data>
+  <data name="CodeEditor_BreakpointConditionLabel" xml:space="preserve">
+    <value>Betingelse:</value>
+  </data>
+  <data name="CodeEditor_BreakpointSettings" xml:space="preserve">
+    <value>Indstillinger…</value>
+  </data>
+  <data name="CodeEditor_DisplayName" xml:space="preserve">
+    <value>Kodeeditor</value>
+  </data>
+  <data name="CodeEditor_GoToLine" xml:space="preserve">
+    <value>Gå til linje</value>
+  </data>
+  <data name="CodeEd_FindRef_CollapseAll" xml:space="preserve">
+    <value>Fold alle sammen</value>
+  </data>
+  <data name="CodeEd_Minimap_MenuTitle" xml:space="preserve">
+    <value>_Miniaturoversigt</value>
+  </data>
+  <data name="CodeEd_Minimap_RenderChars" xml:space="preserve">
+    <value>Vis _tegn</value>
+  </data>
+  <data name="CodeEd_Minimap_VerticalSize" xml:space="preserve">
+    <value>_Lodret størrelse</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeProportional" xml:space="preserve">
+    <value>Proportional</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFill" xml:space="preserve">
+    <value>Udfyld</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFit" xml:space="preserve">
+    <value>Tilpas</value>
+  </data>
+  <data name="CodeEd_Minimap_Slider" xml:space="preserve">
+    <value>_Skyder</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderAlways" xml:space="preserve">
+    <value>Altid</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderMouseOver" xml:space="preserve">
+    <value>Ved musehovring</value>
+  </data>
+  <data name="CodeEd_Minimap_Side" xml:space="preserve">
+    <value>_Side</value>
+  </data>
+  <data name="CodeEd_Minimap_SideLeft" xml:space="preserve">
+    <value>Venstre</value>
+  </data>
+  <data name="CodeEd_Minimap_SideRight" xml:space="preserve">
+    <value>Højre</value>
+  </data>
+  <data name="CodeEd_Refs_CollapseAll" xml:space="preserve">
+    <value>Fold alle sammen</value>
+  </data>
+  <data name="CodeEd_Refs_Refresh" xml:space="preserve">
+    <value>Opdatér</value>
+  </data>
+  <data name="CodeEd_Refs_ExpandAll" xml:space="preserve">
+    <value>Udvid alle</value>
+  </data>
+
+</root>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.ArchiveExplorer
+    File        : ArchiveExplorerResources.fr-CA.resx
+    Description : French-Canadian (fr-CA) translations for the Archive Explorer plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="ArchiveExplorer_PluginName" xml:space="preserve">
+    <value>Arkivstifinder</value>
+  </data>
+
+  <data name="ArchiveExplorer_OpenArchive" xml:space="preserve">
+    <value>Åbn arkiv</value>
+  </data>
+
+  <data name="ArchiveExplorer_SelectExtractFolder" xml:space="preserve">
+    <value>Vælg standardmappe til udpakkning</value>
+  </data>
+
+  <data name="AE_ExtractAll" xml:space="preserve"><value>Udpak alt…</value></data>
+  <data name="AE_ExtractSelected" xml:space="preserve"><value>Udpak markering…</value></data>
+  <data name="AE_Preview" xml:space="preserve"><value>Forhåndsvisning</value></data>
+  <data name="AE_OpenRawInHex" xml:space="preserve"><value>Åbn rå data i Hex</value></data>
+  <data name="AE_OpenArchive" xml:space="preserve"><value>Åbn arkiv…</value></data>
+  <data name="AE_RefreshArchive" xml:space="preserve"><value>Opdatér arkiv</value></data>
+  <data name="AE_NavigateUp" xml:space="preserve"><value>Gå op (forlad indlejret arkiv)</value></data>
+  <data name="AE_MoreOptions" xml:space="preserve"><value>Flere muligheder</value></data>
+  <data name="AE_ExtractAllTooltip" xml:space="preserve"><value>Udpak alt…</value></data>
+  <data name="AE_ExtractSelectedTooltip" xml:space="preserve"><value>Udpak markering…</value></data>
+  <data name="AE_PreviewTooltip" xml:space="preserve"><value>Forhåndsvis post</value></data>
+  <data name="AE_OpenRawInHexTooltip" xml:space="preserve"><value>Åbn rå bytes i Hex-editor</value></data>
+  <data name="AE_FilterEntries" xml:space="preserve"><value>Filtrér poster…</value></data>
+  <data name="AE_ClearFilter" xml:space="preserve"><value>Ryd filter</value></data>
+  <data name="AE_Loading" xml:space="preserve"><value>Indlæser…</value></data>
+  <data name="AE_DrillIntoArchive" xml:space="preserve"><value>Udforsk arkiv</value></data>
+  <data name="AE_CopyPath" xml:space="preserve"><value>Kopiér sti</value></data>
+  <data name="AE_Properties" xml:space="preserve"><value>Egenskaber…</value></data>
+  <data name="AE_DropArchiveHere" xml:space="preserve"><value>Slip et arkiv her</value></data>
+  <data name="AE_ClickOpenToolbar" xml:space="preserve"><value>eller klik Åbn i værktøjslinjen</value></data>
+  <data name="AE_BehaviourSection" xml:space="preserve"><value>Adfærd</value></data>
+  <data name="AE_AutoShowPanel" xml:space="preserve"><value>Vis panel automatisk ved åbning af arkivfil</value></data>
+  <data name="AE_ShowCompressionBadge" xml:space="preserve"><value>Vis kompressionsbadge i trævisningen</value></data>
+  <data name="AE_ShowFormatBadge" xml:space="preserve"><value>Vis formatdetekteringsbadge (whfmt)</value></data>
+  <data name="AE_PreviewSection" xml:space="preserve"><value>Forhåndsvisning</value></data>
+  <data name="AE_MaxPreviewSize" xml:space="preserve"><value>Maks. forhåndsvisningsstørrelse (KB):</value></data>
+  <data name="AE_ExtractionSection" xml:space="preserve"><value>Udpakkning</value></data>
+  <data name="AE_MaxFormatDetectionSize" xml:space="preserve"><value>Maks. størrelse for formatdetektering (KB):</value></data>
+  <data name="AE_DefaultExtractFolder" xml:space="preserve"><value>Standardmappe til udpakkning:</value></data>
+  <data name="AE_Browse" xml:space="preserve"><value>Gennemse…</value></data>
+  <data name="AE_EntryPropertiesTitle" xml:space="preserve"><value>Postegenskaber</value></data>
+  <data name="AE_FullPath" xml:space="preserve"><value>Fuld sti:</value></data>
+  <data name="AE_Size" xml:space="preserve"><value>Størrelse:</value></data>
+  <data name="AE_Compressed" xml:space="preserve"><value>Komprimeret:</value></data>
+  <data name="AE_Ratio" xml:space="preserve"><value>Ratio:</value></data>
+  <data name="AE_Method" xml:space="preserve"><value>Metode:</value></data>
+  <data name="AE_LastModified" xml:space="preserve"><value>Sidst ændret:</value></data>
+  <data name="AE_Crc32" xml:space="preserve"><value>CRC32:</value></data>
+  <data name="AE_Close" xml:space="preserve"><value>Luk</value></data>
+</root>

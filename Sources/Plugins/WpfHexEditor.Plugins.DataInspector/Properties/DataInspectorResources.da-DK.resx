@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.DataInspector
+    File        : DataInspectorResources.fr-CA.resx
+    Description : French (Canada) localized UI strings for the Data Inspector plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>Datainspektør</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>Dataanalyse</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>Datainspektør</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>_Datainspektør</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>Ingen data at vise</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Maks</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Entropi</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>bit/byte</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>Ingen bytes valgt — markér bytes i hex-editoren.</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>Aktiv visning</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>Hele filen</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>Markering</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>Frekvens</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>Entropi</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>Ingen data</value>
+  </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Kategori:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>Alle</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Heltal</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>Kommatal</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Dato/tid</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Netværk</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Farve</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>Grundlæggende</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>Bits</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>Alle formater</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>Flere muligheder</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Vis akseetiketter</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Vis gitterlinjer</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Vis statistik</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Frekvensfordeling</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Entropi (glidende vindue)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Zoom ind</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Zoom ud</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Nulstil zoom</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Opdatér diagram</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Kopiér diagrambillede</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Layout</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Venstre</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Højre</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Øverst</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Nederst</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Omfang:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Aktiv visning</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Markering</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>Hele filen</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Frekvens</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Layout:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Diagramposition i forhold til fortolkningslisten</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Analyserer fil...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Fortolkninger: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>Ingen data</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Auto-opdater ved markéringsændring</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Standard byte-rækkefølge: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Vis byte-diagrampanel</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Diagramposition:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Maks. bytes til strengforhåndsvisning:</value></data>
+</root>

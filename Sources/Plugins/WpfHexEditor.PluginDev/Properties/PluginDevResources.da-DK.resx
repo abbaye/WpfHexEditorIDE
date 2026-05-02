@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.PluginDev
+    File        : Properties/PluginDevResources.fr-CA.resx
+    Description : PluginDev-specific UI strings — French (Canada) satellite.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- NewPluginWizardWindow -->
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>Nyt udvidelsesprojekt</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Vælg outputmappe til plugin-projektet</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>Tilladelser</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>Isoleringstilstand</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>Indlæsningsprioritet (10&#8211;90)&#160;:</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>Næste &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>Opret og åbn</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>Plugin oprettet</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>Fejl</value>
+  </data>
+
+  <!-- PluginPackagePublisherDialog -->
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>Publicér udvidelsespakke</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>Underskriv pakken før publicering</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Gennemse&#8230;</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>Åbn outputmappe i Stifinder</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>Pak</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>Luk</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>Vælg outputmappe</value>
+  </data>
+
+  <!-- PluginDevLogPanel -->
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>Eksportér udviklingslog for udvidelse</value>
+  </data>
+
+  <!-- PluginMarketplacePanel -->
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>Søg</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>Gennemse</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>Installerede</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>Opdatér alle</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>Opdateringer</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>Udvidelsesmarked</value>
+  </data>
+
+  <!-- PluginDevToolbar -->
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>Udvidelse&#160;:</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>Konfiguration&#160;:</value>
+  </data>
+
+  <!-- PanelPluginTemplate -->
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>Klar</value>
+  </data>
+
+  <!-- PluginMarketplacePanel toolbar and column headers -->
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>Opdater</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>Navn</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>Forfatter</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>Vurdering</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+
+</root>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.PatternAnalysis
+    File        : PatternAnalysisResources.fr-CA.resx
+    Description : French (Canada) localized UI strings for the Pattern Analysis plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PatternAnalysis_PluginName" xml:space="preserve">
+    <value>Mønsteranalyse</value>
+  </data>
+  <data name="PatternAnalysis_PanelTitle" xml:space="preserve">
+    <value>Mønsteranalyse</value>
+  </data>
+  <data name="PatternAnalysis_MenuItem" xml:space="preserve">
+    <value>_Mønsteranalyse</value>
+  </data>
+  <data name="PatternAnalysis_NoDataLoaded" xml:space="preserve">
+    <value>Ingen data indlæst</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh" xml:space="preserve">
+    <value>Meget høj entropi registreret</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh_Desc" xml:space="preserve">
+    <value>Data er muligvis krypteret eller komprimeret (entropi &gt; 7,5 bit/byte)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow" xml:space="preserve">
+    <value>Meget lav entropi registreret</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow_Desc" xml:space="preserve">
+    <value>Data indeholder primært gentagne eller nul-bytes (entropi &lt; 2,0 bit/byte)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Low" xml:space="preserve">
+    <value>Lav tilfældighed &#x2014; gentagne eller strukturerede data</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Medium" xml:space="preserve">
+    <value>Middel tilfældighed &#x2014; typisk for blandede eller komprimerede data</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_High" xml:space="preserve">
+    <value>Høj tilfældighed &#x2014; data er muligvis krypteret eller stærkt komprimeret</value>
+  </data>
+  <data name="PatternAnalysis_ExtremelySkewed" xml:space="preserve">
+    <value>Ekstremt skæv fordeling</value>
+  </data>
+  <data name="PatternAnalysis_NoData" xml:space="preserve">
+    <value>Ingen data at analysere. Markér et område i hex-editoren</value>
+  </data>
+  <data name="PA_Anomalies" xml:space="preserve"><value>&#x26A0;&#xFE0F; Anomalier</value></data>
+  <data name="PA_NoAnomalies" xml:space="preserve"><value>&#x2705; Ingen anomalier registreret</value></data>
+</root>
