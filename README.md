@@ -54,6 +54,7 @@ ${\color{#2E7BDE}\texttt{<}}{\color{#E87A20}\texttt{WpfHexEditor}}\ {\color{#2E7
 | **🐞 .NET Debugger** *(~60%)* | Integrated .NET debugging UI — Debug menu (Start/Stop/Restart, Step Over/Into/Out), collapsible toolbar pod, execution line highlight, full breakpoint system with conditions, hit counts, enable/disable toggle, and solution-scoped persistence, Breakpoint Explorer panel, right-click gutter popup for breakpoint editing, debug status bar · ⚠️ *Debug launch not yet functional — UI and breakpoint infrastructure are ready, runtime attach pending* |
 | **🧪 Unit Testing** | Built-in test runner — auto-detects xunit, nunit, and mstest projects, runs via `dotnet test` with TRX result parsing, pass/fail/skip counters with color-coded outcome glyphs, context-sensitive detail panel (project summary, class summary, or individual test details), auto-run on successful build |
 | **📋 IDE Infrastructure** | Unified editor plugin architecture via `IDocumentEditor` — shared undo engine with coalescence and VS-style history dropdown, `Ctrl+Z/Y` across all editors, rectangular block selection (`Alt+Click`), adaptive status bar, 30+ options pages, workspace system (`.whidews` save/restore), dynamic View menu (Flat/Categorized/ByDockSide), middle-click pan mode, NuGet Solution Manager, dependency injection via `Microsoft.Extensions.DependencyInjection`, **tab groups** (split editors horizontally/vertically, `ITabGroupService`, 16 `TG_*` theme tokens, keyboard shortcuts, settings page), **Window menu** (`_Window` top-level menu — Close/Close All But This/Close All Documents, Next/Previous Document `Ctrl+Tab`, **Full Screen `F11`** via Win32 `MonitorFromWindow`/`GetMonitorInfo` — covers entire monitor including taskbar, restores exact position on exit) |
+| **🌐 Localization** | **Phase 6 complete** — 77.9% DynamicResource coverage across all panels, menus, context menus, dialogs, and toolbar buttons; **17 languages**: ar-SA · de-DE · es-419 · es-ES · fr-CA · fr-FR · hi-IN · it-IT · ja-JP · ko-KR · nl-NL · pl-PL · pt-BR · pt-PT · ru-RU · sv-SE · tr-TR · zh-CN; per-assembly `LocalizedResourceDictionary` pattern; runtime language switching; waves 1–25 complete |
 
 ---
 
@@ -260,7 +261,6 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 |---------|--------|---|
 | **Editors Phase 2** — TextEditor LSP, DiffViewer 3-way merge, AudioViewer playback, TileEditor pixel tools | 🔜 Planned | #169–178 |
 | **Plugin Marketplace & Auto-Update** — online registry, signed packages, auto-update | 🔜 Planned | #41–43 |
-| **IDE Localization Engine** — full i18n for IDE UI (EN/FR initial, plugin-provided translations) | 🔜 Planned | #100 |
 | **Installable Package** — MSI / MSIX / WinGet, auto-update channel, no SDK required | 🔜 Planned | #109 |
 | **Official Website** — landing page, feature showcase, documentation browser, plugin registry | 🔜 Planned | #108 |
 
