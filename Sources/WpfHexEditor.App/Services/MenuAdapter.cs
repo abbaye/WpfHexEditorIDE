@@ -36,6 +36,9 @@ public sealed class MenuAdapter : IMenuAdapter
     // uiId → original descriptor (Tools-parented items only, for ToolsMenuOrganizer)
     private readonly Dictionary<string, MenuItemDescriptor> _toolsDescriptors = new(StringComparer.OrdinalIgnoreCase);
 
+    // uiId → original descriptor (Edit-parented items only, for EditMenuOrganizer)
+    private readonly Dictionary<string, MenuItemDescriptor> _editDescriptors = new(StringComparer.OrdinalIgnoreCase);
+
     // (normalised parentPath + group) → Separator element that heads that group block
     private readonly Dictionary<string, Separator> _groupSeparators = new(StringComparer.OrdinalIgnoreCase);
 
@@ -56,6 +59,9 @@ public sealed class MenuAdapter : IMenuAdapter
 
     /// <inheritdoc />
     public event Action? ToolsItemsChanged;
+
+    /// <inheritdoc />
+    public event Action? EditItemsChanged;
 
     /// <inheritdoc />
     public void AddMenuItem(string uiId, MenuItemDescriptor descriptor)
@@ -88,6 +94,15 @@ public sealed class MenuAdapter : IMenuAdapter
         {
             _toolsDescriptors[uiId] = descriptor;
             ToolsItemsChanged?.Invoke();
+            return;
+        }
+
+        // Edit-parented items are intercepted — store but do not create WPF MenuItems.
+        // MainWindow wires EditItemsChanged → RebuildEditPluginItems.
+        if (IsEditParent(descriptor.ParentPath))
+        {
+            _editDescriptors[uiId] = descriptor;
+            EditItemsChanged?.Invoke();
             return;
         }
 
@@ -169,6 +184,13 @@ public sealed class MenuAdapter : IMenuAdapter
             return;
         }
 
+        // Edit-parented item?
+        if (_editDescriptors.Remove(uiId))
+        {
+            EditItemsChanged?.Invoke();
+            return;
+        }
+
         // Non-View item: remove WPF MenuItem
         if (!_addedItems.TryGetValue(uiId, out var item)) return;
 
@@ -205,6 +227,9 @@ public sealed class MenuAdapter : IMenuAdapter
     /// <inheritdoc />
     public IReadOnlyDictionary<string, MenuItemDescriptor> GetAllToolsMenuItems() => _toolsDescriptors;
 
+    /// <inheritdoc />
+    public IReadOnlyDictionary<string, MenuItemDescriptor> GetAllEditMenuItems() => _editDescriptors;
+
     private static bool IsViewParent(string parentPath)
         => string.Equals(parentPath?.TrimStart('_'), "View", StringComparison.OrdinalIgnoreCase);
 
@@ -213,6 +238,9 @@ public sealed class MenuAdapter : IMenuAdapter
 
     private static bool IsToolsParent(string parentPath)
         => string.Equals(parentPath?.TrimStart('_'), "Tools", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsEditParent(string parentPath)
+        => string.Equals(parentPath?.TrimStart('_'), "Edit", StringComparison.OrdinalIgnoreCase);
 
     private ItemsControl FindOrCreateParent(string parentPath)
     {

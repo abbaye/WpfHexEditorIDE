@@ -144,6 +144,7 @@ public partial class MainWindow
             InitViewMenuOrganizer();
             InitDebugMenuOrganizer();
             InitToolsMenuOrganizer();
+            InitEditMenuOrganizer();
 
             // 2. Build PluginHost singletons
             var permissionService = new PermissionService();
