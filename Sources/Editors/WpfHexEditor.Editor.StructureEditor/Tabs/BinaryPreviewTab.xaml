@@ -1,0 +1,77 @@
+<UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Tabs.BinaryPreviewTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Editor.StructureEditor.ViewModels">
+    <!-- ==========================================================
+         Project: WpfHexEditor.Editor.StructureEditor
+         File: Tabs/BinaryPreviewTab.xaml
+         Description:
+             Live binary-preview tab — DataGrid showing field name/offset/
+             length/value results from SimpleBlockInterpreter, refreshed
+             automatically on every structure edit.
+         ========================================================== -->
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>   <!-- toolbar -->
+            <RowDefinition Height="*"/>    <!-- data grid -->
+            <RowDefinition Height="22"/>   <!-- status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <ToolBar Grid.Row="0" ToolBarTray.IsLocked="True">
+            <Button x:Name="BtnLoadBinary"
+                    Content="Load Binary…"
+                    Padding="6,2"
+                    Click="OnLoadBinaryClicked"
+                    ToolTip="Choose the binary file to interpret"/>
+        </ToolBar>
+
+        <!-- Results DataGrid -->
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Rows}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  CanUserResizeRows="False"
+                  CanUserSortColumns="True"
+                  RowHeaderWidth="0"
+                  BorderThickness="0"
+                  Background="{DynamicResource SE_BackgroundBrush}"
+                  Foreground="{DynamicResource SE_ForegroundBrush}">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name"    Binding="{Binding Name}"         Width="160"/>
+                <DataGridTextColumn Header="Offset"  Binding="{Binding Offset}"        Width="72"/>
+                <DataGridTextColumn Header="Length"  Binding="{Binding Length}"        Width="56"/>
+                <DataGridTextColumn Header="Raw Hex" Binding="{Binding RawHex}"        Width="120"/>
+                <DataGridTextColumn Header="Value"   Binding="{Binding DecodedValue}"  Width="*"/>
+                <DataGridTextColumn Header="Status"  Binding="{Binding Status}"        Width="70"/>
+            </DataGrid.Columns>
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Status}" Value="Error">
+                            <Setter Property="Foreground" Value="#E57373"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Status}" Value="Warning">
+                            <Setter Property="Foreground" Value="#FFB74D"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Status}" Value="Skipped">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+
+        <!-- Status bar -->
+        <StatusBar Grid.Row="2" Padding="4,0">
+            <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontSize="11"/>
+        </StatusBar>
+    </Grid>
+</UserControl>

@@ -127,6 +127,10 @@
                     <tabs:TestTab x:Name="TestTabCtrl"/>
                 </TabItem>
 
+                <TabItem Header="Preview">
+                    <tabs:BinaryPreviewTab x:Name="BinaryPreviewTabCtrl"/>
+                </TabItem>
+
             </TabControl>
 
             <!-- ── Col 1 : Splitter ────────────────────────────────────── -->
