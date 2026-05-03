@@ -1803,15 +1803,34 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private int HitTestBlock(Point pt)
     {
-        for (int i = 0; i < _blocks.Count; i++)
+        if (_blocks.Count == 0) return -1;
+
+        double blockScreenX = _pageLeft + _pageSettings.MarginLeft - 8;
+        double blockW       = _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight + 16;
+
+        // Fast X rejection: if pt is outside the column strip, nothing will match
+        if (pt.X < blockScreenX || pt.X > blockScreenX + blockW) return -1;
+
+        // Binary search: find the first block whose bottom edge (Y + Height + 4) >= pt.Y
+        // Blocks are sorted by Y, so we binary-search for the first candidate
+        double ptYInCanvas = pt.Y + _offset.Y - PageCanvasPad; // convert to canvas space
+        int lo = 0, hi = _blocks.Count - 1, candidate = -1;
+        while (lo <= hi)
+        {
+            int mid = (lo + hi) >> 1;
+            double midBottom = _blocks[mid].Y + _blocks[mid].Height + 4;
+            if (midBottom < ptYInCanvas)
+                lo = mid + 1;
+            else
+            { candidate = mid; hi = mid - 1; }
+        }
+
+        // Verify the found candidate (and its neighbours) with exact rect check
+        for (int i = Math.Max(0, candidate - 1); i <= Math.Min(_blocks.Count - 1, candidate + 1) && candidate >= 0; i++)
         {
             var rb = _blocks[i];
             if (rb.IsPageBreak) continue;
-
             double blockScreenY = PageCanvasPad + rb.Y - _offset.Y;
-            double blockScreenX = _pageLeft + _pageSettings.MarginLeft - 8;
-            double blockW       = _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight + 16;
-
             var rect = new Rect(blockScreenX, blockScreenY - 4, blockW, rb.Height + 8);
             if (rect.Contains(pt)) return i;
         }
