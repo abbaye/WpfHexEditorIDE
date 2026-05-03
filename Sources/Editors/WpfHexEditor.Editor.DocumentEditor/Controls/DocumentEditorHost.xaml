@@ -573,11 +573,11 @@
         <!-- ══ Row 2: Content grid (3 panes + splitters) ══════════════════════ -->
         <Grid x:Name="PART_ContentGrid" Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="PART_TextCol"      Width="2*"  MinWidth="100"/>
+                <ColumnDefinition x:Name="PART_TextCol"      Width="2*"/>
                 <ColumnDefinition x:Name="PART_Splitter1Col" Width="4"/>
-                <ColumnDefinition x:Name="PART_StructCol"    Width="0"   MinWidth="0"/>
+                <ColumnDefinition x:Name="PART_StructCol"    Width="0"/>
                 <ColumnDefinition x:Name="PART_Splitter2Col" Width="0"/>
-                <ColumnDefinition x:Name="PART_HexCol"       Width="*"   MinWidth="100"/>
+                <ColumnDefinition x:Name="PART_HexCol"       Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Text pane (col 0) -->

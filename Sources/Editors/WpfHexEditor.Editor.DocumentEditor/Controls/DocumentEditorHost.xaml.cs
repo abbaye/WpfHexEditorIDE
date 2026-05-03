@@ -699,6 +699,9 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_Splitter2.Visibility     = hex && structure ? Visibility.Visible : Visibility.Collapsed;
 
         Grid.SetColumn(PART_HexPane, 4);
+        PART_TextCol.MinWidth   = text      ? 100 : 0;
+        PART_StructCol.MinWidth = structure ? 100 : 0;
+        PART_HexCol.MinWidth    = hex       ? 100 : 0;
         PART_TextCol.Width      = text      ? new GridLength(2, GridUnitType.Star) : new GridLength(0);
         PART_StructCol.Width    = structure ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
         PART_HexCol.Width       = hex       ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
