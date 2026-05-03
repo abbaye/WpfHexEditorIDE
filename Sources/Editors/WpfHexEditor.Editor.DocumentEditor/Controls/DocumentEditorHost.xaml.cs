@@ -348,7 +348,6 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             await Dispatcher.InvokeAsync(() =>
             {
                 PART_TextPane.ShowError(ex.Message);
-                PART_HexPane.LoadFile(filePath);
             });
             TitleChanged?.Invoke(this, fileName + " ⚠");
         }
@@ -375,50 +374,39 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     private void ApplyViewMode(DocumentViewMode mode)
     {
-        // Exit focus mode first if switching away
         if (_isFocusMode && mode != DocumentViewMode.Focus)
             ExitFocusMode();
 
         switch (mode)
         {
-            case DocumentViewMode.Full:
-                SetPaneVisibility(text: true, structure: true, hex: true);
-                break;
             case DocumentViewMode.Focus:
                 EnterFocusMode();
                 break;
+            case DocumentViewMode.Structure:
+                SetPaneVisibility(text: true, structure: true);
+                break;
             default:
-                SetPaneVisibility(
-                    text:      mode is DocumentViewMode.TextOnly or DocumentViewMode.Split or DocumentViewMode.Structure,
-                    structure: mode == DocumentViewMode.Structure,
-                    hex:       mode is DocumentViewMode.Split or DocumentViewMode.HexOnly);
+                SetPaneVisibility(text: true, structure: false);
                 break;
         }
 
         if (PART_TextModeBtn   is not null) PART_TextModeBtn.IsChecked   = mode == DocumentViewMode.TextOnly;
-        if (PART_SplitModeBtn  is not null) PART_SplitModeBtn.IsChecked  = mode == DocumentViewMode.Split;
-        if (PART_HexModeBtn    is not null) PART_HexModeBtn.IsChecked    = mode == DocumentViewMode.HexOnly;
         if (PART_StructModeBtn is not null) PART_StructModeBtn.IsChecked = mode == DocumentViewMode.Structure;
-        if (PART_FullModeBtn   is not null) PART_FullModeBtn.IsChecked   = mode == DocumentViewMode.Full;
         if (PART_FocusModeBtn  is not null) PART_FocusModeBtn.IsChecked  = mode == DocumentViewMode.Focus;
 
         var readOnlySuffix = IsReadOnly ? DocumentEditorResources.DocEditorHost_ReadOnlySuffix : string.Empty;
         PART_StatusBar.ViewModeText = mode switch
         {
-            DocumentViewMode.TextOnly  => DocumentEditorResources.DocEditorHost_ViewModeText      + readOnlySuffix,
-            DocumentViewMode.Split     => DocumentEditorResources.DocEditorHost_ViewModeSplit      + readOnlySuffix,
-            DocumentViewMode.HexOnly   => DocumentEditorResources.DocEditorHost_ViewModeHex       + readOnlySuffix,
             DocumentViewMode.Structure => DocumentEditorResources.DocEditorHost_ViewModeStructure + readOnlySuffix,
-            DocumentViewMode.Full      => DocumentEditorResources.DocEditorHost_ViewModeFull      + readOnlySuffix,
             DocumentViewMode.Focus     => DocumentEditorResources.DocEditorHost_ViewModeFocus     + readOnlySuffix,
-            _                          => DocumentEditorResources.DocEditorHost_ViewModeSplit     + readOnlySuffix
+            _                          => DocumentEditorResources.DocEditorHost_ViewModeText      + readOnlySuffix
         };
     }
 
     private void EnterFocusMode()
     {
         _isFocusMode = true;
-        SetPaneVisibility(text: true, structure: false, hex: false);
+        SetPaneVisibility(text: true, structure: false);
         // Hide chrome rows: toolbar (row 0), breadcrumb (row 1), minimap (row 3), statusbar (row 4)
         // These are accessed via RowDefinitions on the root Grid
         if (FindName("PART_ToolbarRow") is RowDefinition toolbar)
@@ -480,19 +468,19 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
                 renderer.ShowPageShadows = true;
                 renderer.PageMargin      = new Thickness(40);
                 // Restore text pane if coming from Outline
-                SetPaneVisibility(text: true, structure: false, hex: ViewMode == DocumentViewMode.Split);
+                SetPaneVisibility(text: true, structure: false);
                 break;
 
             case DocumentRenderMode.Draft:
                 renderer.ShowPageShadows = false;
                 renderer.PageMargin      = new Thickness(8, 4, 8, 4);
                 // Restore text pane if coming from Outline
-                SetPaneVisibility(text: true, structure: false, hex: ViewMode == DocumentViewMode.Split);
+                SetPaneVisibility(text: true, structure: false);
                 break;
 
             case DocumentRenderMode.Outline:
                 // Show text pane (renderer draws outline mode inline, structure pane is optional)
-                SetPaneVisibility(text: true, structure: false, hex: false);
+                SetPaneVisibility(text: true, structure: false);
                 break;
         }
 
@@ -639,7 +627,6 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     // ── View mode toolbar handlers ────────────────────────────────────────────
 
-    private void OnFullModeClicked(object sender, RoutedEventArgs e)    => ViewMode = DocumentViewMode.Full;
     private void OnFocusModeClicked(object sender, RoutedEventArgs e)   => ViewMode = DocumentViewMode.Focus;
     private void OnPageModeClicked(object sender, RoutedEventArgs e)    => RenderMode = DocumentRenderMode.Page;
     private void OnDraftModeClicked(object sender, RoutedEventArgs e)   => RenderMode = DocumentRenderMode.Draft;
@@ -682,65 +669,17 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_TextPane.ShowQuickSearch(target);
     }
 
-    private void SetPaneVisibility(bool text, bool structure, bool hex)
+    private void SetPaneVisibility(bool text, bool structure)
     {
-        PART_TextPane.Visibility      = text      ? Visibility.Visible   : Visibility.Collapsed;
-        PART_Splitter1.Visibility     = text && (structure || hex) ? Visibility.Visible : Visibility.Collapsed;
-        PART_StructurePane.Visibility = structure ? Visibility.Visible   : Visibility.Collapsed;
-        PART_HexPane.Visibility       = hex       ? Visibility.Visible   : Visibility.Collapsed;
-        PART_Splitter2.Visibility     = hex && structure ? Visibility.Visible : Visibility.Collapsed;
+        PART_TextPane.Visibility      = text      ? Visibility.Visible : Visibility.Collapsed;
+        PART_StructurePane.Visibility = structure ? Visibility.Visible : Visibility.Collapsed;
+        PART_Splitter1.Visibility     = text && structure ? Visibility.Visible : Visibility.Collapsed;
 
-        Grid.SetColumn(PART_HexPane, 4);
         PART_TextCol.MinWidth   = text      ? 100 : 0;
         PART_StructCol.MinWidth = structure ? 100 : 0;
-        PART_HexCol.MinWidth    = hex       ? 100 : 0;
         PART_TextCol.Width      = text      ? new GridLength(2, GridUnitType.Star) : new GridLength(0);
         PART_StructCol.Width    = structure ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
-        PART_HexCol.Width       = hex       ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
-        PART_Splitter1Col.Width = (text && (structure || hex)) ? new GridLength(4) : new GridLength(0);
-        PART_Splitter2Col.Width = (structure && hex)           ? new GridLength(4) : new GridLength(0);
-    }
-
-    // Last known pixel widths before each drag sequence starts
-    private double _splitter1TextPxBase = double.NaN;
-    private double _splitter1HexPxBase  = double.NaN;
-
-    private void OnSplitter1DragDelta(object sender, DragDeltaEventArgs e)
-    {
-        // GridSplitter is in col 1: natively resizes col 0 (text) and col 2 (struct).
-        // DragDelta fires AFTER GridSplitter has already applied HorizontalChange to
-        // col 0 and col 2.  In Split mode (struct=0) we intercept to mirror that
-        // change onto col 4 (hex) instead of col 2, and zero col 2 back out.
-        if (PART_StructCol.Width.Value > 0) return; // three-pane: let GridSplitter handle
-
-        // Snapshot pre-drag base widths on first tick (before GridSplitter touch)
-        // We reconstruct pre-drag text width by subtracting e.HorizontalChange from
-        // the post-drag ActualWidth that GridSplitter just set.
-        double postDragText = PART_TextCol.ActualWidth;  // GridSplitter already moved this
-        double preDragText  = postDragText - e.HorizontalChange;
-
-        if (double.IsNaN(_splitter1TextPxBase))
-            _splitter1HexPxBase = PART_HexCol.ActualWidth;  // hex is untouched by GridSplitter
-
-        double newText = Math.Max(100, postDragText);
-        double newHex  = Math.Max(100, _splitter1HexPxBase - (newText - preDragText));
-
-        // Clamp: if hex hits minimum, give extra space back to text
-        if (newHex < 100) { newText -= (100 - newHex); newHex = 100; }
-
-        _splitter1TextPxBase = newText;
-        _splitter1HexPxBase  = newHex;
-
-        PART_TextCol.Width   = new GridLength(newText, GridUnitType.Pixel);
-        PART_StructCol.Width = new GridLength(0);   // undo GridSplitter's expansion of col 2
-        PART_HexCol.Width    = new GridLength(newHex,  GridUnitType.Pixel);
-        e.Handled = true;
-    }
-
-    private void OnSplitter1DragCompleted(object sender, DragCompletedEventArgs e)
-    {
-        _splitter1TextPxBase = double.NaN;
-        _splitter1HexPxBase  = double.NaN;
+        PART_Splitter1Col.Width = text && structure ? new GridLength(4) : new GridLength(0);
     }
 
     private static void OnIsForensicModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -776,8 +715,6 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     // ── Toolbar handlers ─────────────────────────────────────────────────────
 
     private void OnTextModeClicked(object sender, RoutedEventArgs e)      => ViewMode = DocumentViewMode.TextOnly;
-    private void OnSplitModeClicked(object sender, RoutedEventArgs e)     => ViewMode = DocumentViewMode.Split;
-    private void OnHexModeClicked(object sender, RoutedEventArgs e)       => ViewMode = DocumentViewMode.HexOnly;
     private void OnStructureModeClicked(object sender, RoutedEventArgs e) => ViewMode = DocumentViewMode.Structure;
     private void OnForensicModeClicked(object sender, RoutedEventArgs e)  => IsForensicMode = PART_ForensicBtn.IsChecked == true;
     private void OnSaveClicked(object sender, RoutedEventArgs e)          => Save();
@@ -947,8 +884,6 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     private void OnPopToolbarJumpHex(object? sender, DocumentBlock? block)
     {
-        if (block is not null)
-            PART_HexPane.ScrollToBlock(block);
         PART_PopToolbar.IsOpen = false;
     }
 
@@ -976,7 +911,6 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
         PART_TextPane.BindModel(model);
         PART_StructurePane.BindModel(model);
-        PART_HexPane.BindModel(model);
         PART_MiniMap.BindModel(model);
         PART_StatusBar.BindModel(model, _currentFileExtension);
 
@@ -991,12 +925,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_TextPane.SetZoom(ZoomLevel);
         PART_TextPane.PART_Renderer.IsReadOnly = IsReadOnly;
 
-        // Wire hex highlight manager
-        _hexHighlightMgr = new DocumentHexHighlightManager(PART_HexPane);
         _mutator.BlockMutated += OnBlockMutated;
-
-        _syncService = new BinaryMapSyncService(model);
-        _syncService.Wire(PART_TextPane, PART_HexPane);
 
         ApplyViewMode(ViewMode);
         ApplyRenderMode(RenderMode);

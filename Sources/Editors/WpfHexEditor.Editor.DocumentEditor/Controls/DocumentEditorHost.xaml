@@ -116,30 +116,6 @@
                     </StackPanel>
                 </ToggleButton>
 
-                <ToggleButton x:Name="PART_SplitModeBtn"
-                              Style="{StaticResource DocViewToggleStyle}"
-                              DockPanel.Dock="Left"
-                              Margin="2,0,0,0"
-                              ToolTip="{DynamicResource DocEditorHost_TooltipSplitView}"
-                              Click="OnSplitModeClicked">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C4;" FontSize="13" VerticalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource DocEditorHost_LabelSplit}" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
-                    </StackPanel>
-                </ToggleButton>
-
-                <ToggleButton x:Name="PART_HexModeBtn"
-                              Style="{StaticResource DocViewToggleStyle}"
-                              DockPanel.Dock="Left"
-                              Margin="2,0,0,0"
-                              ToolTip="{DynamicResource DocEditorHost_TooltipHexView}"
-                              Click="OnHexModeClicked">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F4;" FontSize="13" VerticalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource DocEditorHost_LabelHex}" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
-                    </StackPanel>
-                </ToggleButton>
-
                 <ToggleButton x:Name="PART_StructModeBtn"
                               Style="{StaticResource DocViewToggleStyle}"
                               DockPanel.Dock="Left"
@@ -149,18 +125,6 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C9;" FontSize="13" VerticalAlignment="Center"/>
                         <TextBlock Text="{DynamicResource DocEditorHost_LabelStructure}" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
-                    </StackPanel>
-                </ToggleButton>
-
-                <ToggleButton x:Name="PART_FullModeBtn"
-                              Style="{StaticResource DocViewToggleStyle}"
-                              DockPanel.Dock="Left"
-                              Margin="2,0,0,0"
-                              ToolTip="{DynamicResource DocEditorHost_TooltipFullView}"
-                              Click="OnFullModeClicked">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE9D9;" FontSize="13" VerticalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource DocEditorHost_LabelFull}" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
                     </StackPanel>
                 </ToggleButton>
 
@@ -570,14 +534,12 @@
                                   Grid.Row="1"
                                   BlockSelected="OnBreadcrumbBlockSelected"/>
 
-        <!-- ══ Row 2: Content grid (3 panes + splitters) ══════════════════════ -->
+        <!-- ══ Row 2: Content grid (text + optional structure pane) ════════════ -->
         <Grid x:Name="PART_ContentGrid" Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="PART_TextCol"      Width="2*"/>
-                <ColumnDefinition x:Name="PART_Splitter1Col" Width="4"/>
+                <ColumnDefinition x:Name="PART_TextCol"      Width="*"/>
+                <ColumnDefinition x:Name="PART_Splitter1Col" Width="0"/>
                 <ColumnDefinition x:Name="PART_StructCol"    Width="0"/>
-                <ColumnDefinition x:Name="PART_Splitter2Col" Width="0"/>
-                <ColumnDefinition x:Name="PART_HexCol"       Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Text pane (col 0) -->
@@ -586,32 +548,19 @@
                                     SelectedBlockChanged="OnTextPaneSelectedBlockChanged"
                                     PopToolbarRequested="OnPopToolbarRequested"/>
 
-            <!-- Splitter 1 (col 1) -->
+            <!-- Splitter (col 1) — visible in Structure mode -->
             <GridSplitter x:Name="PART_Splitter1"
                           Grid.Column="1"
                           Width="4"
                           HorizontalAlignment="Stretch"
                           Background="{DynamicResource DockBorderBrush}"
-                          DragDelta="OnSplitter1DragDelta"
-                          DragCompleted="OnSplitter1DragCompleted"/>
+                          Visibility="Collapsed"/>
 
             <!-- Structure pane (col 2) — hidden unless Structure mode -->
             <local:DocumentStructurePane x:Name="PART_StructurePane"
                                          Grid.Column="2"
                                          Visibility="Collapsed"
                                          BlockNavigated="OnStructureBlockNavigated"/>
-
-            <!-- Splitter 2 (col 3) — hidden by default -->
-            <GridSplitter x:Name="PART_Splitter2"
-                          Grid.Column="3"
-                          Width="4"
-                          HorizontalAlignment="Stretch"
-                          Background="{DynamicResource DockBorderBrush}"
-                          Visibility="Collapsed"/>
-
-            <!-- Hex pane (col 4) -->
-            <local:DocumentHexPane x:Name="PART_HexPane"
-                                   Grid.Column="4"/>
 
             <!-- Pop-toolbar popup (anchored to content grid) -->
             <Popup x:Name="PART_PopToolbar"

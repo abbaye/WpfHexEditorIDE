@@ -60,7 +60,7 @@ public sealed class DocumentEditorOptions
     // ──────────────────────────────── Layout ──────────────────────────────────
 
     /// <summary>Default view mode when opening a document.</summary>
-    public DocumentViewMode DefaultViewMode { get; set; } = DocumentViewMode.Split;
+    public DocumentViewMode DefaultViewMode { get; set; } = DocumentViewMode.TextOnly;
 }
 
 /// <summary>
@@ -70,14 +70,8 @@ public enum DocumentViewMode
 {
     /// <summary>Rich-text pane only.</summary>
     TextOnly,
-    /// <summary>Rich-text + Hex panes side-by-side.</summary>
-    Split,
-    /// <summary>Hex pane only (raw binary view).</summary>
-    HexOnly,
     /// <summary>Rich-text + Structure tree panes.</summary>
     Structure,
-    /// <summary>All three panes: text + structure + hex (3-column).</summary>
-    Full,
     /// <summary>Zen/focus mode: chrome hidden, text centred with generous margins.</summary>
     Focus
 }
