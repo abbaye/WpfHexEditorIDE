@@ -138,4 +138,26 @@ public sealed partial class AssemblyExplorerViewModel : ViewModelBase
     public event EventHandler?                                AssemblyUnloaded;
     public event EventHandler<AssemblyMemberSelectedEvent>?   MemberSelected;
     public event EventHandler?                                WorkspaceStatsChanged;
+
+    // ── Stats (shown in status bar) ───────────────────────────────────────────
+
+    private string _statsText = "No assemblies loaded.";
+
+    /// <summary>Human-readable summary shown in the panel's status bar.</summary>
+    public string StatsText
+    {
+        get => _statsText;
+        private set { _statsText = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Updates <see cref="StatsText"/> from the already-computed workspace counts.</summary>
+    internal void RefreshStats()
+    {
+        int asmCount    = TotalLoadedAssemblies;
+        int typeCount   = TotalLoadedTypes;
+
+        StatsText = asmCount == 0
+            ? "No assemblies loaded."
+            : $"{asmCount} {(asmCount == 1 ? "assembly" : "assemblies")} | {typeCount} types";
+    }
 }

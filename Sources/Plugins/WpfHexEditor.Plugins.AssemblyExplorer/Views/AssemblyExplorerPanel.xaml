@@ -39,6 +39,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>  <!-- Toolbar -->
             <RowDefinition Height="*"/>     <!-- Main content -->
+            <RowDefinition Height="22"/>    <!-- Stats status bar -->
         </Grid.RowDefinitions>
 
         <!-- ═══ ROW 0: Toolbar ════════════════════════════════════════════════ -->
@@ -220,5 +221,13 @@
             <views:AssemblyDetailPane x:Name="DetailPane"
                                       Grid.Row="2"/>
         </Grid>
+
+        <!-- ═══ ROW 2: Stats status bar ══════════════════════════════════════ -->
+        <StatusBar Grid.Row="2" Padding="4,0"
+                   Background="{DynamicResource PFP_BorderBrush}">
+            <TextBlock FontSize="11"
+                       Text="{Binding StatsText, FallbackValue='No assemblies loaded.'}"
+                       VerticalAlignment="Center"/>
+        </StatusBar>
     </Grid>
 </UserControl>

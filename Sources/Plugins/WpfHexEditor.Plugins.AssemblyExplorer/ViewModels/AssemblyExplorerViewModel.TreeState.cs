@@ -179,6 +179,10 @@ public sealed partial class AssemblyExplorerViewModel
     {
         TotalLoadedAssemblies = _workspace.Count;
         TotalLoadedTypes      = _workspace.Values.Sum(e => e.Model.Types.Count);
+
+        // Refresh the status bar stats text
+        RefreshStats();
+
         WorkspaceStatsChanged?.Invoke(this, EventArgs.Empty);
     }
 
