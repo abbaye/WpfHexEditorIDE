@@ -192,4 +192,75 @@
   <data name="WhfmtCatalog_LayoutLeft" xml:space="preserve"><value>Деталі ліворуч</value></data>
   <data name="WhfmtCatalog_LayoutBottom" xml:space="preserve"><value>Деталі знизу</value></data>
   <data name="WhfmtCatalog_LayoutTop" xml:space="preserve"><value>Деталі зверху</value></data>
+  <data name="WorkspaceFindReplace_Title" xml:space="preserve">
+    <value>Знайти та замінити в рішенні</value>
+  </data>
+  <data name="WorkspaceFindReplace_FindLabel" xml:space="preserve">
+    <value>Знайти:</value>
+  </data>
+  <data name="WorkspaceFindReplace_ReplaceLabel" xml:space="preserve">
+    <value>Замінити:</value>
+  </data>
+  <data name="WorkspaceFindReplace_FindAll" xml:space="preserve">
+    <value>Знайти все</value>
+  </data>
+  <data name="WorkspaceFindReplace_ReplaceAll" xml:space="preserve">
+    <value>Замінити все</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionRegex" xml:space="preserve">
+    <value>Регекс</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionMatchCase" xml:space="preserve">
+    <value>Враховувати реєстр</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionWholeWord" xml:space="preserve">
+    <value>Ціле слово</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReady" xml:space="preserve">
+    <value>Готово.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusSearching" xml:space="preserve">
+    <value>Пошук…</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReplacing" xml:space="preserve">
+    <value>Заміна…</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusNoMatches" xml:space="preserve">
+    <value>Збігів не знайдено.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusMatches" xml:space="preserve">
+    <value>{0} збігів у {1} файлі(ах).</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusNoReplacements" xml:space="preserve">
+    <value>Замін не виконано.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReplaced" xml:space="preserve">
+    <value>{0} входжень замінено у {1} файлі(ах).</value>
+  </data>
+  <data name="WorkspaceFindReplace_ConfirmTitle" xml:space="preserve">
+    <value>Замінити все — у всьому рішенні</value>
+  </data>
+  <data name="WorkspaceFindReplace_ConfirmMessage" xml:space="preserve">
+    <value>Замінити всі входження «{0}» на «{1}» у всьому рішенні? Це змінить файли на диску.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColFile" xml:space="preserve">
+    <value>Файл</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColLine" xml:space="preserve">
+    <value>Рядок</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColCol" xml:space="preserve">
+    <value>Стб.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColPreview" xml:space="preserve">
+    <value>Перегляд</value>
+  </data>
+  <data name="WorkspaceFindReplace_Cancel" xml:space="preserve"><value>Скасувати</value></data>
+  <data name="WorkspaceFindReplace_ClearResults" xml:space="preserve"><value>Очистити результати</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenFile" xml:space="preserve"><value>Відкрити файл</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenAtLine" xml:space="preserve"><value>Відкрити файл на рядку</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPath" xml:space="preserve"><value>Копіювати шлях</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPreview" xml:space="preserve"><value>Копіювати текст попереднього перегляду</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeRow" xml:space="preserve"><value>Виключити цей результат</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeFile" xml:space="preserve"><value>Виключити всі результати цього файлу</value></data>
 </root>

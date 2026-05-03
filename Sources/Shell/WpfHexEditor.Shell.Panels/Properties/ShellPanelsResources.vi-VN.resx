@@ -192,4 +192,75 @@
   <data name="WhfmtCatalog_LayoutLeft" xml:space="preserve"><value>Petails a gauche</value></data>
   <data name="WhfmtCatalog_LayoutDottom" xml:space="preserve"><value>Petails en bas</value></data>
   <data name="WhfmtCatalog_LayoutTop" xml:space="preserve"><value>Petails en haut</value></data>
+  <data name="WorkspaceFindReplace_Title" xml:space="preserve">
+    <value>Tìm và Thay thế trong Giải pháp</value>
+  </data>
+  <data name="WorkspaceFindReplace_FindLabel" xml:space="preserve">
+    <value>Tìm:</value>
+  </data>
+  <data name="WorkspaceFindReplace_ReplaceLabel" xml:space="preserve">
+    <value>Thay thế:</value>
+  </data>
+  <data name="WorkspaceFindReplace_FindAll" xml:space="preserve">
+    <value>Tìm Tất cả</value>
+  </data>
+  <data name="WorkspaceFindReplace_ReplaceAll" xml:space="preserve">
+    <value>Thay thế Tất cả</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionRegex" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionMatchCase" xml:space="preserve">
+    <value>Phân biệt hoa/thường</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionWholeWord" xml:space="preserve">
+    <value>Toàn từ</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReady" xml:space="preserve">
+    <value>Sẵn sàng.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusSearching" xml:space="preserve">
+    <value>Đang tìm kiếm…</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReplacing" xml:space="preserve">
+    <value>Đang thay thế…</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusNoMatches" xml:space="preserve">
+    <value>Không tìm thấy kết quả.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusMatches" xml:space="preserve">
+    <value>{0} kết quả trong {1} tệp.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusNoReplacements" xml:space="preserve">
+    <value>Không có thay thế nào được thực hiện.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReplaced" xml:space="preserve">
+    <value>{0} lần xuất hiện đã được thay thế trong {1} tệp.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ConfirmTitle" xml:space="preserve">
+    <value>Thay thế Tất cả — Toàn bộ Giải pháp</value>
+  </data>
+  <data name="WorkspaceFindReplace_ConfirmMessage" xml:space="preserve">
+    <value>Thay thế tất cả các lần xuất hiện của "{0}" bằng "{1}" trên toàn bộ giải pháp? Thao tác này sẽ sửa đổi các tệp trên đĩa.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColFile" xml:space="preserve">
+    <value>Tệp</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColLine" xml:space="preserve">
+    <value>Dòng</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColCol" xml:space="preserve">
+    <value>Cột</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColPreview" xml:space="preserve">
+    <value>Xem trước</value>
+  </data>
+  <data name="WorkspaceFindReplace_Cancel" xml:space="preserve"><value>Hủy bỏ</value></data>
+  <data name="WorkspaceFindReplace_ClearResults" xml:space="preserve"><value>Xóa kết quả</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenFile" xml:space="preserve"><value>Mở tệp</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenAtLine" xml:space="preserve"><value>Mở tệp tại dòng</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPath" xml:space="preserve"><value>Sao chép đường dẫn</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPreview" xml:space="preserve"><value>Sao chép văn bản xem trước</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeRow" xml:space="preserve"><value>Loại trừ kết quả này</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeFile" xml:space="preserve"><value>Loại trừ tất cả kết quả từ tệp này</value></data>
 </root>

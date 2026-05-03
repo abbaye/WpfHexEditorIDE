@@ -11,10 +11,10 @@
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="WFR_ActionButton" TargetType="Button">
-                <Setter Property="Background"   Value="{DynamicResource InfoBar_ButtonBackgroundBrush}"/>
-                <Setter Property="Foreground"   Value="{DynamicResource InfoBar_ButtonForegroundBrush}"/>
+                <Setter Property="Background"      Value="{DynamicResource InfoBar_ButtonBackgroundBrush}"/>
+                <Setter Property="Foreground"      Value="{DynamicResource InfoBar_ButtonForegroundBrush}"/>
                 <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="Cursor"       Value="Hand"/>
+                <Setter Property="Cursor"          Value="Hand"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
@@ -42,12 +42,13 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="22"/>
+            <RowDefinition Height="Auto"/>   <!-- Row 0: inputs -->
+            <RowDefinition Height="3"/>      <!-- Row 1: progress bar -->
+            <RowDefinition Height="*"/>      <!-- Row 2: results -->
+            <RowDefinition Height="22"/>     <!-- Row 3: status bar -->
         </Grid.RowDefinitions>
 
-        <!-- ── Input area ─────────────────────────────────────── -->
+        <!-- ── Row 0: Input area ──────────────────────────────── -->
         <Grid Grid.Row="0" Margin="4,4,4,2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -62,6 +63,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
+            <!-- Find row -->
             <TextBlock Grid.Row="0" Grid.Column="0"
                        Text="{StaticResource WorkspaceFindReplace_FindLabel}"
                        VerticalAlignment="Center" FontSize="11" Margin="0,0,4,0"/>
@@ -69,13 +71,22 @@
                        Grid.Row="0" Grid.Column="1"
                        FontSize="11" Padding="3,2"
                        KeyDown="OnFindBoxKeyDown"/>
+            <!-- Find All / Cancel toggle -->
             <Button    x:Name="FindAllBtn"
                        Grid.Row="0" Grid.Column="2"
                        Style="{StaticResource WFR_ActionButton}"
                        Content="{StaticResource WorkspaceFindReplace_FindAll}"
                        Padding="8,2" Margin="4,0,0,0" FontSize="11"
                        Click="OnFindAllClick"/>
+            <Button    x:Name="CancelBtn"
+                       Grid.Row="0" Grid.Column="2"
+                       Style="{StaticResource WFR_ActionButton}"
+                       Content="{StaticResource WorkspaceFindReplace_Cancel}"
+                       Padding="8,2" Margin="4,0,0,0" FontSize="11"
+                       Visibility="Collapsed"
+                       Click="OnCancelClick"/>
 
+            <!-- Replace row -->
             <TextBlock Grid.Row="2" Grid.Column="0"
                        Text="{StaticResource WorkspaceFindReplace_ReplaceLabel}"
                        VerticalAlignment="Center" FontSize="11" Margin="0,0,4,0"/>
@@ -89,6 +100,7 @@
                        Padding="8,2" Margin="4,0,0,0" FontSize="11"
                        Click="OnReplaceAllClick"/>
 
+            <!-- Options row -->
             <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
                         Orientation="Horizontal">
                 <CheckBox x:Name="RegexCheck"
@@ -102,14 +114,23 @@
                           Margin="0,0,10,0" FontSize="11"/>
                 <Button   x:Name="ClearBtn"
                           Style="{StaticResource WFR_ActionButton}"
-                          Content="&#x2715;" ToolTip="Clear results"
+                          Content="&#x2715;" ToolTip="{StaticResource WorkspaceFindReplace_ClearResults}"
                           Padding="5,0" FontSize="11" Click="OnClearClick"/>
             </StackPanel>
         </Grid>
 
-        <!-- ── Results ────────────────────────────────────────── -->
+        <!-- ── Row 1: Indeterminate progress bar (visible during search) ── -->
+        <ProgressBar x:Name="SearchProgress"
+                     Grid.Row="1"
+                     IsIndeterminate="True"
+                     Visibility="Collapsed"
+                     Foreground="{DynamicResource DockAccentBrush}"
+                     Background="Transparent"
+                     BorderThickness="0"/>
+
+        <!-- ── Row 2: Results list ──────────────────────────────── -->
         <ListView x:Name="ResultsList"
-                  Grid.Row="1"
+                  Grid.Row="2"
                   FontSize="11"
                   BorderThickness="0"
                   Background="Transparent"
@@ -118,6 +139,27 @@
                   MouseDoubleClick="OnResultDoubleClick"
                   VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling">
+
+            <!-- ── Context menu ─────────────────────────────────── -->
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{StaticResource WorkspaceFindReplace_CM_OpenFile}"
+                              Click="OnCM_OpenFile"/>
+                    <MenuItem Header="{StaticResource WorkspaceFindReplace_CM_OpenAtLine}"
+                              Click="OnCM_OpenAtLine"/>
+                    <Separator/>
+                    <MenuItem Header="{StaticResource WorkspaceFindReplace_CM_CopyPath}"
+                              Click="OnCM_CopyPath"/>
+                    <MenuItem Header="{StaticResource WorkspaceFindReplace_CM_CopyPreview}"
+                              Click="OnCM_CopyPreview"/>
+                    <Separator/>
+                    <MenuItem Header="{StaticResource WorkspaceFindReplace_CM_ExcludeRow}"
+                              Click="OnCM_ExcludeRow"/>
+                    <MenuItem Header="{StaticResource WorkspaceFindReplace_CM_ExcludeFile}"
+                              Click="OnCM_ExcludeFile"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="{StaticResource WorkspaceFindReplace_ColFile}"    Width="160"
@@ -132,8 +174,8 @@
             </ListView.View>
         </ListView>
 
-        <!-- ── Status bar ─────────────────────────────────────── -->
-        <StatusBar Grid.Row="2" Padding="4,0"
+        <!-- ── Row 3: Status bar ────────────────────────────────── -->
+        <StatusBar Grid.Row="3" Padding="4,0"
                    Background="{DynamicResource ERR_BackgroundBrush}">
             <TextBlock x:Name="StatusText"
                        FontSize="11"

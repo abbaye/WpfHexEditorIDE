@@ -5,7 +5,7 @@
 //     Dockable panel for solution-wide find & replace (Ctrl+Shift+H).
 //     Searches all text files in the active solution; results are
 //     shown in a GridView with file / line / col / preview columns.
-//     Double-click a result to open the file and navigate to the line.
+//     Double-click or context menu to open file and navigate to line.
 // ==========================================================
 
 using System.Collections.ObjectModel;
@@ -13,6 +13,8 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using WpfHexEditor.Shell.Panels.Properties;
+#pragma warning disable IDE0060
 
 namespace WpfHexEditor.Shell.Panels.Panels;
 
@@ -59,6 +61,12 @@ public partial class WorkspaceFindReplacePanel : UserControl
     private async void OnFindBoxKeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter) await RunSearchAsync();
+        if (e.Key == Key.Escape) OnCancelClick(sender, e);
+    }
+
+    private void OnCancelClick(object sender, RoutedEventArgs e)
+    {
+        _cts?.Cancel();
     }
 
     private async Task RunSearchAsync()
@@ -69,15 +77,12 @@ public partial class WorkspaceFindReplacePanel : UserControl
         _cts?.Cancel();
         _cts = new CancellationTokenSource();
 
-        _rows.Clear();
-        FindAllBtn.IsEnabled    = false;
-        ReplaceAllBtn.IsEnabled = false;
-        StatusText.Text         = "Searching…";
+        bool useRegex  = RegexCheck.IsChecked     == true;
+        bool matchCase = MatchCaseCheck.IsChecked  == true;
+        bool wholeWord = WholeWordCheck.IsChecked  == true;
+        var  ct        = _cts.Token;
 
-        bool useRegex     = RegexCheck.IsChecked     == true;
-        bool matchCase    = MatchCaseCheck.IsChecked  == true;
-        bool wholeWord    = WholeWordCheck.IsChecked  == true;
-        var  ct           = _cts.Token;
+        SetSearchingState(true);
 
         try
         {
@@ -86,6 +91,7 @@ public partial class WorkspaceFindReplacePanel : UserControl
                     pattern, useRegex, matchCase, wholeWord, ct),
                 ct);
 
+            _rows.Clear();
             foreach (var r in results)
                 _rows.Add(new WorkspaceResultRow
                 {
@@ -95,13 +101,15 @@ public partial class WorkspaceFindReplacePanel : UserControl
                     Preview  = r.Preview,
                 });
 
+            int fileCount = results.Select(r => r.FilePath).Distinct().Count();
             StatusText.Text = results.Count == 0
-                ? "No matches found."
-                : $"{results.Count} match{(results.Count == 1 ? "" : "es")} in {results.Select(r => r.FilePath).Distinct().Count()} file(s).";
+                ? ShellPanelsResources.WorkspaceFindReplace_StatusNoMatches
+                : string.Format(ShellPanelsResources.WorkspaceFindReplace_StatusMatches,
+                                results.Count, fileCount);
         }
         catch (OperationCanceledException)
         {
-            StatusText.Text = "Search cancelled.";
+            StatusText.Text = ShellPanelsResources.WorkspaceFindReplace_StatusReady;
         }
         catch (Exception ex)
         {
@@ -109,8 +117,7 @@ public partial class WorkspaceFindReplacePanel : UserControl
         }
         finally
         {
-            FindAllBtn.IsEnabled    = true;
-            ReplaceAllBtn.IsEnabled = true;
+            SetSearchingState(false);
         }
     }
 
@@ -123,8 +130,8 @@ public partial class WorkspaceFindReplacePanel : UserControl
         if (string.IsNullOrWhiteSpace(pattern)) return;
 
         var confirm = MessageBox.Show(
-            $"Replace all occurrences of \"{pattern}\" with \"{replacement}\" across the entire solution?\n\nThis will modify files on disk.",
-            "Replace All — Solution-wide",
+            string.Format(ShellPanelsResources.WorkspaceFindReplace_ConfirmMessage, pattern, replacement),
+            ShellPanelsResources.WorkspaceFindReplace_ConfirmTitle,
             MessageBoxButton.YesNo,
             MessageBoxImage.Warning);
 
@@ -138,9 +145,8 @@ public partial class WorkspaceFindReplacePanel : UserControl
         bool wholeWord2 = WholeWordCheck.IsChecked  == true;
         var  ct2        = _cts.Token;
 
-        FindAllBtn.IsEnabled    = false;
-        ReplaceAllBtn.IsEnabled = false;
-        StatusText.Text         = "Replacing…";
+        SetSearchingState(true);
+        StatusText.Text = ShellPanelsResources.WorkspaceFindReplace_StatusReplacing;
 
         try
         {
@@ -152,10 +158,10 @@ public partial class WorkspaceFindReplacePanel : UserControl
 
             int total = changed.Sum(c => c.Count);
             StatusText.Text = total == 0
-                ? "No replacements made."
-                : $"Replaced {total} occurrence{(total == 1 ? "" : "s")} in {changed.Count} file(s).";
+                ? ShellPanelsResources.WorkspaceFindReplace_StatusNoReplacements
+                : string.Format(ShellPanelsResources.WorkspaceFindReplace_StatusReplaced,
+                                total, changed.Count);
 
-            // Refresh results after replace
             if (total > 0)
             {
                 _rows.Clear();
@@ -163,13 +169,15 @@ public partial class WorkspaceFindReplacePanel : UserControl
                     _rows.Add(new WorkspaceResultRow
                     {
                         FilePath = file,
-                        Preview  = $"{count} replacement{(count == 1 ? "" : "s")} made",
+                        Preview  = string.Format(
+                            ShellPanelsResources.WorkspaceFindReplace_StatusReplaced,
+                            count, 1),
                     });
             }
         }
         catch (OperationCanceledException)
         {
-            StatusText.Text = "Replace cancelled.";
+            StatusText.Text = ShellPanelsResources.WorkspaceFindReplace_StatusReady;
         }
         catch (Exception ex)
         {
@@ -177,8 +185,24 @@ public partial class WorkspaceFindReplacePanel : UserControl
         }
         finally
         {
-            FindAllBtn.IsEnabled    = true;
-            ReplaceAllBtn.IsEnabled = true;
+            SetSearchingState(false);
+        }
+    }
+
+    // ── Search state toggle ───────────────────────────────────────────────────
+
+    private void SetSearchingState(bool searching)
+    {
+        SearchProgress.Visibility   = searching ? Visibility.Visible   : Visibility.Collapsed;
+        FindAllBtn.Visibility       = searching ? Visibility.Collapsed : Visibility.Visible;
+        CancelBtn.Visibility        = searching ? Visibility.Visible   : Visibility.Collapsed;
+        FindAllBtn.IsEnabled        = !searching;
+        ReplaceAllBtn.IsEnabled     = !searching;
+
+        if (searching)
+        {
+            _rows.Clear();
+            StatusText.Text = ShellPanelsResources.WorkspaceFindReplace_StatusSearching;
         }
     }
 
@@ -187,9 +211,50 @@ public partial class WorkspaceFindReplacePanel : UserControl
     private void OnResultSelected(object sender, SelectionChangedEventArgs e) { }
 
     private void OnResultDoubleClick(object sender, MouseButtonEventArgs e)
+        => NavigateToSelected();
+
+    private void NavigateToSelected()
     {
         if (ResultsList.SelectedItem is not WorkspaceResultRow row) return;
-        NavigationRequested?.Invoke(this, new WorkspaceNavigationRequest(row.FilePath, row.Line, row.Column));
+        NavigationRequested?.Invoke(this,
+            new WorkspaceNavigationRequest(row.FilePath, row.Line, row.Column));
+    }
+
+    // ── Context menu ──────────────────────────────────────────────────────────
+
+    private void OnCM_OpenFile(object sender, RoutedEventArgs e)
+    {
+        if (ResultsList.SelectedItem is not WorkspaceResultRow row) return;
+        NavigationRequested?.Invoke(this,
+            new WorkspaceNavigationRequest(row.FilePath, 0, 0));
+    }
+
+    private void OnCM_OpenAtLine(object sender, RoutedEventArgs e)
+        => NavigateToSelected();
+
+    private void OnCM_CopyPath(object sender, RoutedEventArgs e)
+    {
+        if (ResultsList.SelectedItem is not WorkspaceResultRow row) return;
+        try { Clipboard.SetText(row.FilePath); } catch { }
+    }
+
+    private void OnCM_CopyPreview(object sender, RoutedEventArgs e)
+    {
+        if (ResultsList.SelectedItem is not WorkspaceResultRow row) return;
+        try { Clipboard.SetText(row.Preview); } catch { }
+    }
+
+    private void OnCM_ExcludeRow(object sender, RoutedEventArgs e)
+    {
+        if (ResultsList.SelectedItem is WorkspaceResultRow row)
+            _rows.Remove(row);
+    }
+
+    private void OnCM_ExcludeFile(object sender, RoutedEventArgs e)
+    {
+        if (ResultsList.SelectedItem is not WorkspaceResultRow row) return;
+        var toRemove = _rows.Where(r => r.FilePath == row.FilePath).ToList();
+        foreach (var r in toRemove) _rows.Remove(r);
     }
 
     // ── Clear ─────────────────────────────────────────────────────────────────
@@ -197,7 +262,7 @@ public partial class WorkspaceFindReplacePanel : UserControl
     private void OnClearClick(object sender, RoutedEventArgs e)
     {
         _rows.Clear();
-        StatusText.Text = "Ready.";
+        StatusText.Text = ShellPanelsResources.WorkspaceFindReplace_StatusReady;
     }
 
     // ── Public API ────────────────────────────────────────────────────────────

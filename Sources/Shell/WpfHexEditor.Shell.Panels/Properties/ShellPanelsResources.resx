@@ -298,4 +298,12 @@
   <data name="WorkspaceFindReplace_ColLine" xml:space="preserve"><value>Line</value></data>
   <data name="WorkspaceFindReplace_ColCol" xml:space="preserve"><value>Col</value></data>
   <data name="WorkspaceFindReplace_ColPreview" xml:space="preserve"><value>Preview</value></data>
+  <data name="WorkspaceFindReplace_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="WorkspaceFindReplace_ClearResults" xml:space="preserve"><value>Clear results</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenFile" xml:space="preserve"><value>Open file</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenAtLine" xml:space="preserve"><value>Open file at line</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPath" xml:space="preserve"><value>Copy path</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPreview" xml:space="preserve"><value>Copy preview text</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeRow" xml:space="preserve"><value>Exclude this result</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeFile" xml:space="preserve"><value>Exclude all results from this file</value></data>
 </root>

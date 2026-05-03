@@ -192,4 +192,75 @@
   <data name="WhfmtCatalog_LayoutLeft" xml:space="preserve"><value>รายละเอียดด้านซ้าย</value></data>
   <data name="WhfmtCatalog_LayoutBottom" xml:space="preserve"><value>รายละเอียดด้านล่าง</value></data>
   <data name="WhfmtCatalog_LayoutTop" xml:space="preserve"><value>รายละเอียดด้านบน</value></data>
+  <data name="WorkspaceFindReplace_Title" xml:space="preserve">
+    <value>ค้นหาและแทนที่ในโซลูชัน</value>
+  </data>
+  <data name="WorkspaceFindReplace_FindLabel" xml:space="preserve">
+    <value>ค้นหา:</value>
+  </data>
+  <data name="WorkspaceFindReplace_ReplaceLabel" xml:space="preserve">
+    <value>แทนที่:</value>
+  </data>
+  <data name="WorkspaceFindReplace_FindAll" xml:space="preserve">
+    <value>ค้นหาทั้งหมด</value>
+  </data>
+  <data name="WorkspaceFindReplace_ReplaceAll" xml:space="preserve">
+    <value>แทนที่ทั้งหมด</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionRegex" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionMatchCase" xml:space="preserve">
+    <value>ตัวพิมพ์ใหญ่-เล็ก</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionWholeWord" xml:space="preserve">
+    <value>ทั้งคำ</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReady" xml:space="preserve">
+    <value>พร้อม.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusSearching" xml:space="preserve">
+    <value>กำลังค้นหา…</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReplacing" xml:space="preserve">
+    <value>กำลังแทนที่…</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusNoMatches" xml:space="preserve">
+    <value>ไม่พบผลลัพธ์.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusMatches" xml:space="preserve">
+    <value>{0} รายการใน {1} ไฟล์.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusNoReplacements" xml:space="preserve">
+    <value>ไม่มีการแทนที่.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReplaced" xml:space="preserve">
+    <value>แทนที่ {0} รายการใน {1} ไฟล์.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ConfirmTitle" xml:space="preserve">
+    <value>แทนที่ทั้งหมด — ทั้งโซลูชัน</value>
+  </data>
+  <data name="WorkspaceFindReplace_ConfirmMessage" xml:space="preserve">
+    <value>แทนที่ทุกรายการของ "{0}" ด้วย "{1}" ทั่วทั้งโซลูชันหรือไม่? การดำเนินการนี้จะแก้ไขไฟล์บนดิสก์.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColFile" xml:space="preserve">
+    <value>ไฟล์</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColLine" xml:space="preserve">
+    <value>บรรทัด</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColCol" xml:space="preserve">
+    <value>คอลัมน์</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColPreview" xml:space="preserve">
+    <value>ดูตัวอย่าง</value>
+  </data>
+  <data name="WorkspaceFindReplace_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="WorkspaceFindReplace_ClearResults" xml:space="preserve"><value>ล้างผลลัพธ์</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenFile" xml:space="preserve"><value>เปิดไฟล์</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenAtLine" xml:space="preserve"><value>เปิดไฟล์ที่บรรทัด</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPath" xml:space="preserve"><value>คัดลอกเส้นทาง</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPreview" xml:space="preserve"><value>คัดลอกข้อความตัวอย่าง</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeRow" xml:space="preserve"><value>ยกเว้นผลลัพธ์นี้</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeFile" xml:space="preserve"><value>ยกเว้นผลลัพธ์ทั้งหมดจากไฟล์นี้</value></data>
 </root>

@@ -1733,7 +1733,7 @@ namespace WpfHexEditor.Shell.Panels.Properties {
                 return ResourceManager.GetString("WhfmtDetail_ViewRawJsonToolTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Web Links.
         /// </summary>
@@ -1741,6 +1741,118 @@ namespace WpfHexEditor.Shell.Panels.Properties {
             get {
                 return ResourceManager.GetString("WhfmtDetail_WebLinksLabel", resourceCulture);
             }
+        }
+
+        internal static string WorkspaceFindReplace_FindLabel {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_FindLabel", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_ReplaceLabel {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_ReplaceLabel", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_FindAll {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_FindAll", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_ReplaceAll {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_ReplaceAll", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_Cancel {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_Cancel", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_ClearResults {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_ClearResults", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_OptionRegex {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_OptionRegex", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_OptionMatchCase {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_OptionMatchCase", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_OptionWholeWord {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_OptionWholeWord", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_ColFile {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_ColFile", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_ColLine {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_ColLine", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_ColCol {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_ColCol", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_ColPreview {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_ColPreview", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_StatusReady {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_StatusReady", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_StatusSearching {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_StatusSearching", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_StatusNoMatches {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_StatusNoMatches", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_StatusMatches {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_StatusMatches", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_StatusReplacing {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_StatusReplacing", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_StatusNoReplacements {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_StatusNoReplacements", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_StatusReplaced {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_StatusReplaced", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_ConfirmTitle {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_ConfirmTitle", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_ConfirmMessage {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_ConfirmMessage", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_CM_OpenFile {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_CM_OpenFile", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_CM_OpenAtLine {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_CM_OpenAtLine", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_CM_CopyPath {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_CM_CopyPath", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_CM_CopyPreview {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_CM_CopyPreview", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_CM_ExcludeRow {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_CM_ExcludeRow", resourceCulture); }
+        }
+
+        internal static string WorkspaceFindReplace_CM_ExcludeFile {
+            get { return ResourceManager.GetString("WorkspaceFindReplace_CM_ExcludeFile", resourceCulture); }
         }
     }
 }
