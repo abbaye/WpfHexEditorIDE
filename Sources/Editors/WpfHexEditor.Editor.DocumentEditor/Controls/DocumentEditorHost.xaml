@@ -630,7 +630,8 @@
         <!-- ══ Row 3: MiniMap strip ════════════════════════════════════════════ -->
         <local:DocumentMiniMap x:Name="PART_MiniMap"
                                Grid.Row="3"
-                               Height="14"/>
+                               Height="14"
+                               Visibility="Collapsed"/>
 
         <!-- ══ Row 4: Status bar ════════════════════════════════════════════════ -->
         <local:DocumentStatusBar x:Name="PART_StatusBar"
