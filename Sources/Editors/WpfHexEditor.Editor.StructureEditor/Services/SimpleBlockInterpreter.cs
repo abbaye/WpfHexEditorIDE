@@ -5,8 +5,8 @@
 // Project: WpfHexEditor.Editor.StructureEditor
 // File: Services/SimpleBlockInterpreter.cs
 // Description: Lightweight format-against-file interpreter for the Test Panel.
-//              Fully handles: field, signature, conditional, loop, metadata.
-//              Reports skips for union, nested, repeating (partial), pointer.
+//              Fully handles: field, signature, conditional, loop, metadata,
+//              union, nested, pointer, bitfields (inline after field/nested).
 //////////////////////////////////////////////////////
 
 using System.Collections.Generic;
@@ -44,7 +44,10 @@ internal sealed class BlockTestResult
 ///   <item>header               — overlay section; child fields executed</item>
 ///   <item>data                 — raw byte region; hex preview only</item>
 ///   <item>repeating            — iterated up to MaxTestIterations; entry fields executed</item>
-///   <item>union, nested, pointer — skipped</item>
+///   <item>union                — discriminant variable resolved; active variant fields executed</item>
+///   <item>nested               — inline struct expansion; bitfields expanded if present</item>
+///   <item>pointer              — reads target address, stores in TargetVar, shows label</item>
+///   <item>bitfields            — extracted from any field/nested with Bitfields list</item>
 /// </list>
 /// Assertions in <see cref="FormatDefinition.Assertions"/> are evaluated after all blocks
 /// and appended as assertion rows (OK = passed, Warning = failed).
@@ -92,6 +95,8 @@ internal sealed class SimpleBlockInterpreter
             case "field":
             case "signature":
                 results.Add(InterpretField(block));
+                if (block.Bitfields is { Count: > 0 })
+                    InterpretBitfields(block, results);
                 break;
 
             case "conditional":
@@ -128,6 +133,18 @@ internal sealed class SimpleBlockInterpreter
 
             case "repeating":
                 InterpretRepeating(block, results);
+                break;
+
+            case "union":
+                InterpretUnion(block, results);
+                break;
+
+            case "nested":
+                InterpretNested(block, results);
+                break;
+
+            case "pointer":
+                results.Add(InterpretPointer(block));
                 break;
 
             default:
@@ -650,6 +667,209 @@ internal sealed class SimpleBlockInterpreter
                 }
             }
         }
+    }
+
+    // ── Union ─────────────────────────────────────────────────────────────────
+
+    private void InterpretUnion(BlockDefinition block, List<BlockTestResult> results)
+    {
+        var condVar  = block.UnionCondition ?? "";
+        var variants = block.Variants;
+
+        if (variants is not { Count: > 0 })
+        {
+            results.Add(new BlockTestResult
+            {
+                BlockName = block.Name ?? "",
+                BlockType = "union",
+                Status    = "Skipped",
+                Note      = "Union has no variants defined.",
+            });
+            return;
+        }
+
+        // Resolve the discriminant variable.
+        string discriminant = _vars.TryGetValue(condVar, out var dv)
+            ? dv?.ToString() ?? ""
+            : condVar;
+
+        results.Add(new BlockTestResult
+        {
+            BlockName   = block.Name ?? "",
+            BlockType   = "union",
+            Status      = "OK",
+            IsSummary   = true,
+            ParsedValue = discriminant,
+            Note        = $"Union — condition var '{condVar}' = '{discriminant}'. {variants.Count} variant(s).",
+        });
+
+        // Find matching variant; fall back to first if none match.
+        var key = variants.Keys.FirstOrDefault(
+            k => string.Equals(k, discriminant, StringComparison.OrdinalIgnoreCase))
+            ?? variants.Keys.First();
+
+        var variant = variants[key];
+
+        results.Add(new BlockTestResult
+        {
+            BlockName   = $"[variant '{key}']",
+            BlockType   = "union",
+            Status      = "OK",
+            IsSummary   = true,
+            Note        = variant.Description ?? $"Active variant: {key}",
+        });
+
+        // Execute variant sub-fields if present.
+        if (variant.Fields is { Count: > 0 })
+        {
+            foreach (var b in variant.Fields)
+                InterpretBlock(b, results);
+        }
+        else if (variant.ValueType is not null)
+        {
+            // Inline variant — treat like a single field at the current cursor.
+            long   offset  = ResolveNumber(block.Offset, -1);
+            int    length  = (int)ResolveNumber(variant.Length, 0);
+            bool   ok      = offset >= 0 && offset < _bytes.Length;
+            int    safeLen = ok ? (int)Math.Min(length, _bytes.Length - offset) : 0;
+            string rawHex  = ok && safeLen > 0 ? Convert.ToHexString(_bytes[(int)offset..(int)(offset + safeLen)]) : "";
+            string parsed  = ok && safeLen > 0 ? ParseValue(_bytes[(int)offset..(int)(offset + safeLen)], variant.ValueType, false) : "(out of range)";
+
+            results.Add(new BlockTestResult
+            {
+                BlockName   = $"[variant '{key}'] {block.Name}",
+                BlockType   = "union",
+                Offset      = offset,
+                Length      = safeLen,
+                RawHex      = rawHex,
+                ParsedValue = parsed,
+                Status      = ok ? "OK" : "Error",
+                Note        = ok ? "" : $"Offset 0x{offset:X} is beyond file end.",
+            });
+        }
+    }
+
+    // ── Nested ────────────────────────────────────────────────────────────────
+
+    private void InterpretNested(BlockDefinition block, List<BlockTestResult> results)
+    {
+        // Nested blocks are inline struct expansions — execute their Fields list.
+        var fields = block.Fields ?? [];
+
+        results.Add(new BlockTestResult
+        {
+            BlockName   = block.Name ?? "",
+            BlockType   = "nested",
+            Status      = "OK",
+            IsSummary   = true,
+            Note        = string.IsNullOrEmpty(block.StructRef)
+                ? $"Nested struct — {fields.Count} inline field(s)."
+                : $"Nested struct '{block.StructRef}' — {fields.Count} field(s) (StructRef resolved inline).",
+        });
+
+        foreach (var b in fields)
+            InterpretBlock(b, results);
+
+        // If the block has bitfields, expand them after the base field interpretation.
+        if (block.Bitfields is { Count: > 0 })
+            InterpretBitfields(block, results);
+    }
+
+    /// <summary>
+    /// Expands BitfieldDefinition entries for a field whose raw numeric value has been
+    /// read. Called after InterpretField (via InterpretNested or directly from the field
+    /// path when Bitfields are present).
+    /// </summary>
+    private void InterpretBitfields(BlockDefinition block, List<BlockTestResult> results)
+    {
+        if (block.Bitfields is not { Count: > 0 }) return;
+
+        long   offset  = ResolveNumber(block.Offset, -1);
+        int    length  = (int)ResolveNumber(block.Length, 1);
+        bool   ok      = offset >= 0 && (offset + length) <= _bytes.Length;
+        long   rawLong = 0;
+
+        if (ok && length > 0)
+        {
+            var slice = _bytes[(int)offset..(int)(offset + Math.Min(length, 8))];
+            rawLong = TryParseNumeric(slice, block.ValueType ?? "uint8",
+                string.Equals(block.Endianness, "big", StringComparison.OrdinalIgnoreCase)) ?? 0;
+        }
+
+        results.Add(new BlockTestResult
+        {
+            BlockName   = $"{block.Name} (bitfields)",
+            BlockType   = "bitfield",
+            Status      = "OK",
+            IsSummary   = true,
+            ParsedValue = ok ? $"0x{rawLong:X}" : "(unresolved)",
+            Note        = $"{block.Bitfields.Count} bitfield(s) in {length}-byte value.",
+        });
+
+        foreach (var bf in block.Bitfields)
+        {
+            long extracted = ok ? bf.ExtractValue(rawLong) : 0;
+            string mapped  = "";
+            if (bf.ValueMap is { Count: > 0 } && bf.ValueMap.TryGetValue(extracted.ToString(), out var m))
+                mapped = $" ({m})";
+
+            if (!string.IsNullOrEmpty(bf.StoreAs))
+                _vars[bf.StoreAs] = extracted;
+
+            results.Add(new BlockTestResult
+            {
+                BlockName   = bf.Name ?? "",
+                BlockType   = "bitfield",
+                Offset      = offset,
+                Length      = length,
+                ParsedValue = $"{extracted}{mapped}",
+                Status      = "OK",
+                Note        = $"Bits [{bf.Bits}]{(string.IsNullOrEmpty(bf.Description) ? "" : $" — {bf.Description}")}",
+            });
+        }
+    }
+
+    // ── Pointer ───────────────────────────────────────────────────────────────
+
+    private BlockTestResult InterpretPointer(BlockDefinition block)
+    {
+        long offset = ResolveNumber(block.Offset, -1);
+        int  length = (int)ResolveNumber(block.Length, 4);
+
+        if (offset < 0 || offset >= _bytes.Length)
+        {
+            return new BlockTestResult
+            {
+                BlockName = block.Name ?? "",
+                BlockType = "pointer",
+                Offset    = offset,
+                Status    = "Error",
+                Note      = $"Offset 0x{offset:X} is beyond file end.",
+            };
+        }
+
+        int    safeLen   = (int)Math.Min(length, _bytes.Length - offset);
+        var    rawBytes  = _bytes[(int)offset..(int)(offset + safeLen)];
+        bool   bigEndian = string.Equals(block.Endianness, "big", StringComparison.OrdinalIgnoreCase);
+        long?  target    = TryParseNumeric(rawBytes, block.ValueType ?? "uint32", bigEndian);
+
+        string label   = block.Label ?? $"→ 0x{target:X}";
+        string parsed  = target.HasValue ? $"0x{target.Value:X8} {label}" : "(unresolved)";
+
+        if (target.HasValue && !string.IsNullOrEmpty(block.TargetVar))
+            _vars[block.TargetVar] = target.Value;
+
+        return new BlockTestResult
+        {
+            BlockName   = block.Name ?? "",
+            BlockType   = "pointer",
+            Offset      = offset,
+            Length      = safeLen,
+            RawHex      = Convert.ToHexString(rawBytes),
+            ParsedValue = parsed,
+            Status      = "OK",
+            Note        = $"Pointer — target stored in var '{block.TargetVar ?? "(none)"}'.",
+        };
     }
 
     // ── Until sentinel (simple linear scan) ──────────────────────────────────
