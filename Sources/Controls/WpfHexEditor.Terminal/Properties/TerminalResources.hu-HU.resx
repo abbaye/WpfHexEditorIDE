@@ -87,4 +87,16 @@
   <data name="Terminal_PreviousMatch" xml:space="preserve"><value>Előző egyezés (Shift+F3)</value></data>
   <data name="Terminal_NextMatch" xml:space="preserve"><value>Következő egyezés (F3 / Enter)</value></data>
   <data name="Terminal_AutoScrollTip" xml:space="preserve"><value>Automatikus görgetés lefelé</value></data>
+  <data name="Terminal_TabBash" xml:space="preserve">
+    <value>Bash</value>
+  </data>
+  <data name="Terminal_TabCmd" xml:space="preserve">
+    <value>CMD</value>
+  </data>
+  <data name="Terminal_TabHxTerminal" xml:space="preserve">
+    <value>HxTerminal</value>
+  </data>
+  <data name="Terminal_TabPowerShell" xml:space="preserve">
+    <value>PowerShell</value>
+  </data>
 </root>
