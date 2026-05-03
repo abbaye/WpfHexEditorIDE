@@ -260,12 +260,15 @@ public sealed class ClassDiagramExportService
         var canvas = new DiagramCanvas();
         canvas.ApplyDocument(doc);
 
-        // Provide a large measure pass to discover natural size
-        canvas.Measure(new Size(8000, 6000));
-        canvas.Arrange(new Rect(canvas.DesiredSize));
+        // Use actual diagram content bounds instead of layout size —
+        // Canvas.ActualWidth/Height reflects arranged size, not content extent.
+        var bounds = canvas.GetDiagramBounds();
+        double width  = Math.Max(bounds.Width,  100);
+        double height = Math.Max(bounds.Height, 100);
 
-        double width  = Math.Max(canvas.ActualWidth,  100);
-        double height = Math.Max(canvas.ActualHeight, 100);
+        // Arrange the canvas at content size so all nodes are within bounds
+        canvas.Measure(new Size(width, height));
+        canvas.Arrange(new Rect(0, 0, width, height));
 
         var renderBitmap = new RenderTargetBitmap(
             (int)Math.Ceiling(width),

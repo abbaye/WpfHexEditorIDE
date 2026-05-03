@@ -198,7 +198,7 @@ public sealed class DiagramMinimapControl : FrameworkElement
     {
         _mouseDown           = true;
         _repositionConfirmed = false;
-        _mouseDownParentPt   = e.GetPosition((IInputElement)Parent);
+        _mouseDownParentPt   = e.GetPosition(Parent as IInputElement ?? this);
         _lastParentPt        = _mouseDownParentPt;
         CaptureMouse();
         e.Handled = true;
@@ -208,7 +208,7 @@ public sealed class DiagramMinimapControl : FrameworkElement
     {
         if (!_mouseDown) { e.Handled = false; return; }
 
-        Point  cur   = e.GetPosition((IInputElement)Parent);
+        Point  cur   = e.GetPosition(Parent as IInputElement ?? this);
         Vector delta = cur - _lastParentPt;
 
         if (!_repositionConfirmed)
