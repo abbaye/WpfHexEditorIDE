@@ -1419,10 +1419,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         // Phase 12 — cursor + selection (WYSIWYG: black caret, blue selection on white)
         _textSelBrush       = new SolidColorBrush(Color.FromArgb(80, 66, 133, 244));
         ((SolidColorBrush)_textSelBrush).Freeze();
-        // Use theme foreground for caret; fall back to white so it's visible on dark themes
-        _caretBrush = (TryFindResource("DE_TextPaneForeground") as Brush)
-                      ?? new SolidColorBrush(Colors.White);
-        if (_caretBrush.CanFreeze) _caretBrush.Freeze();
+        // WYSIWYG: page is always white, so caret must always be near-black
+        _caretBrush = new SolidColorBrush(Color.FromRgb(20, 20, 20));
+        ((SolidColorBrush)_caretBrush).Freeze();
 
         // Phase 19 — find highlight (yellow, like Word Ctrl+F)
         _findHighlightBrush = new SolidColorBrush(Color.FromArgb(120, 255, 215, 0));
@@ -1548,6 +1547,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             new Rect(pt.X, pt.Y - 36, 0, 0), block));
 
         _caretVisible = true;
+        _blinkTimer?.Start();   // ensure blinking even if GotFocus fires after mouse handling
         RefreshCaretVisual();
         InvalidateVisual();
         e.Handled = true;
@@ -1926,7 +1926,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         using var dc = _caretVisual.RenderOpen();
 
-        if (_caretBrush is null || !_caretVisible || !_selection.IsEmpty || !IsFocused) return;
+        // Use timer-running as focus proxy: timer only runs while we have logical focus
+        if (_caretBrush is null || !_caretVisible || !_selection.IsEmpty) return;
+        if (_blinkTimer is null || !_blinkTimer.IsEnabled) return;
         if (_caret.BlockIndex < 0 || _caret.BlockIndex >= _blocks.Count) return;
 
         EnsureBrushCache();
