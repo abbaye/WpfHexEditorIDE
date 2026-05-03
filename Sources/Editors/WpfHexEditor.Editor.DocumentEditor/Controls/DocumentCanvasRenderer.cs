@@ -62,6 +62,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// <summary>Raised when a block is selected — host should show pop-toolbar.</summary>
     public event EventHandler<PopToolbarRequestedArgs>? PopToolbarRequested;
 
+    /// <summary>Raised when caret or selection moves so the host can refresh format toggle states.</summary>
+    public event EventHandler? SelectionFormatChanged;
+
     // ── Fields ────────────────────────────────────────────────────────────────
 
     // Model
@@ -1707,6 +1710,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         _isDragging = false;
         ReleaseMouseCapture();
+        SelectionFormatChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnGotFocus(object sender, RoutedEventArgs e)
@@ -1786,6 +1790,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             e.Handled = true;  // prevent propagation to IDE shell
             break;
         }
+        if (e.Handled) SelectionFormatChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnPreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -2286,7 +2291,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         if (_mutator is null || _blocks.Count == 0) return;
         int bi  = _caret.BlockIndex;
         var block = _blocks[bi].Block;
-        int off = Math.Clamp(_caret.CharOffset, 0, block.Text.Length);
+        int flatLen = GetFlatText(bi).Length;
+        int off = Math.Clamp(_caret.CharOffset, 0, flatLen);
         _mutator.InsertText(block, off, text);
         _caret = _caret with { CharOffset = off + text.Length };
         _selection.Anchor = _caret;
@@ -2298,7 +2304,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         if (_mutator is null || _blocks.Count == 0) return;
         int bi  = _caret.BlockIndex;
-        int off = _caret.CharOffset;
+        int off = Math.Clamp(_caret.CharOffset, 0, GetFlatText(bi).Length);
         _mutator.SplitBlock(bi, off);
         // Caret moves to start of newly created block
         _caret = new TextCaret(bi + 1, 0, 0);
@@ -2392,15 +2398,54 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 0, end.CharOffset, attribute, value);
         }
         InvalidateVisual();
+        SelectionFormatChanged?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>Returns which formatting attributes are present on all selected runs.</summary>
+    /// <summary>
+    /// Returns attributes present on ALL runs (or blocks) covered by the selection —
+    /// i.e., the intersection so that Bold is active only if every selected char is bold.
+    /// </summary>
     public HashSet<string> GetSelectionAttributes()
     {
-        if (_selection.IsEmpty || _blocks.Count == 0) return [];
-        var (start, _) = _selection.Ordered;
-        var block = _blocks[start.BlockIndex].Block;
-        return new HashSet<string>(block.Attributes.Keys);
+        if (_blocks.Count == 0) return [];
+        var (start, end) = _selection.IsEmpty
+            ? (_caret, _caret)
+            : _selection.Ordered;
+
+        HashSet<string>? result = null;
+
+        for (int bi = start.BlockIndex; bi <= end.BlockIndex && bi < _blocks.Count; bi++)
+        {
+            var block = _blocks[bi].Block;
+            int charFrom = bi == start.BlockIndex ? start.CharOffset : 0;
+            int charTo   = bi == end.BlockIndex   ? end.CharOffset   : GetFlatText(bi).Length;
+
+            if (block.Children.Count == 0)
+            {
+                // Flat block — use its own attributes
+                var keys = block.Attributes.Keys.ToHashSet();
+                result = result is null ? keys : result.Intersect(keys).ToHashSet();
+            }
+            else
+            {
+                // Run-based block — find which runs overlap the selection range
+                int pos = 0;
+                foreach (var run in block.Children)
+                {
+                    int runEnd = pos + run.Text.Length;
+                    bool overlaps = pos < charTo && runEnd > charFrom;
+                    if (overlaps)
+                    {
+                        var keys = run.Attributes.Keys.ToHashSet();
+                        result = result is null ? keys : result.Intersect(keys).ToHashSet();
+                    }
+                    pos = runEnd;
+                }
+            }
+        }
+
+        return result ?? [];
     }
 
     // ── Phase 15: Block-level formatting ─────────────────────────────────────

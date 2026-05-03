@@ -11,6 +11,7 @@
 
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
@@ -988,19 +989,36 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         ApplyViewMode(ViewMode);
-        PopulateFontFamilyDropdown();
+        _ = PopulateFontFamilyDropdownAsync();
+        PART_TextPane.PART_Renderer.SelectionFormatChanged += OnSelectionFormatChanged;
     }
 
-    private void PopulateFontFamilyDropdown()
+    private void OnSelectionFormatChanged(object? sender, EventArgs e)
     {
+        var attrs = PART_TextPane.PART_Renderer.GetSelectionAttributes();
+        if (PART_BoldBtn          is not null) PART_BoldBtn.IsChecked          = attrs.Contains("bold");
+        if (PART_ItalicBtn        is not null) PART_ItalicBtn.IsChecked        = attrs.Contains("italic");
+        if (PART_UnderlineBtn     is not null) PART_UnderlineBtn.IsChecked     = attrs.Contains("underline");
+        if (PART_StrikethroughBtn is not null) PART_StrikethroughBtn.IsChecked = attrs.Contains("strikethrough");
+    }
+
+    private async Task PopulateFontFamilyDropdownAsync()
+    {
+        if (PART_FontFamilyDropdown is null) return;
+
+        // Collect font names off the UI thread to avoid freezing on 200+ system fonts
+        var names = await Task.Run(() =>
+            Fonts.SystemFontFamilies
+                 .Select(f => f.Source)
+                 .OrderBy(s => s, StringComparer.OrdinalIgnoreCase)
+                 .ToList());
+
         if (PART_FontFamilyDropdown is null) return;
         _suppressFontDropdown = true;
         try
         {
             PART_FontFamilyDropdown.Items.Clear();
-            foreach (var name in Fonts.SystemFontFamilies
-                                      .Select(f => f.Source)
-                                      .OrderBy(s => s, StringComparer.OrdinalIgnoreCase))
+            foreach (var name in names)
                 PART_FontFamilyDropdown.Items.Add(name);
             PART_FontFamilyDropdown.Text = "Georgia";
         }
