@@ -416,8 +416,8 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             toolbar.Height = new GridLength(0);
         if (FindName("PART_BreadcrumbRow") is RowDefinition breadcrumb)
             breadcrumb.Height = new GridLength(0);
-        if (FindName("PART_MiniMapRow") is RowDefinition minimap)
-            minimap.Height = new GridLength(0);
+        if (FindName("PART_MiniMapCol") is ColumnDefinition mmCol)
+            mmCol.Width = new GridLength(0);
         if (FindName("PART_StatusBarRow") is RowDefinition statusbar)
             statusbar.Height = new GridLength(0);
         PART_TextPane.Margin = new Thickness(80, 40, 80, 40);
@@ -431,8 +431,8 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             toolbar.Height = GridLength.Auto;
         if (FindName("PART_BreadcrumbRow") is RowDefinition breadcrumb)
             breadcrumb.Height = GridLength.Auto;
-        if (FindName("PART_MiniMapRow") is RowDefinition minimap)
-            minimap.Height = GridLength.Auto;
+        if (FindName("PART_MiniMapCol") is ColumnDefinition mmCol)
+            mmCol.Width = new GridLength(80);
         if (FindName("PART_StatusBarRow") is RowDefinition statusbar)
             statusbar.Height = GridLength.Auto;
     }
@@ -1027,8 +1027,18 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_TextPane.PART_Renderer.PageChanged += OnRendererPageChanged;
     }
 
-    private void OnRendererPageChanged(object? sender, (int Current, int Total) e) =>
+    private void OnRendererPageChanged(object? sender, (int Current, int Total) e)
+    {
         PART_StatusBar.UpdateCurrentPage(e.Current, e.Total);
+        var r = PART_TextPane.PART_Renderer;
+        PART_MiniMap.UpdateScroll(r.VerticalOffset, r.ExtentHeight, r.ViewportHeight);
+    }
+
+    private void OnMiniMapScrollRequested(object? sender, double normalised)
+    {
+        var r = PART_TextPane.PART_Renderer;
+        r.SetVerticalOffset(normalised * Math.Max(0, r.ExtentHeight - r.ViewportHeight));
+    }
 
     private void OnSelectionFormatChanged(object? sender, EventArgs e)
     {

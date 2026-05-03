@@ -93,7 +93,7 @@
             <RowDefinition x:Name="PART_ToolbarRow"    Height="Auto"/>  <!-- Row 0: Toolbar -->
             <RowDefinition x:Name="PART_BreadcrumbRow" Height="Auto"/>  <!-- Row 1: Breadcrumb bar -->
             <RowDefinition                              Height="*"/>     <!-- Row 2: Content panes -->
-            <RowDefinition x:Name="PART_MiniMapRow"    Height="Auto"/>  <!-- Row 3: MiniMap strip -->
+            <RowDefinition x:Name="PART_MiniMapRow"    Height="0"/>     <!-- Row 3: unused (MiniMap moved to right column) -->
             <RowDefinition x:Name="PART_StatusBarRow"  Height="Auto"/>  <!-- Row 4: Status bar -->
         </Grid.RowDefinitions>
 
@@ -558,12 +558,13 @@
                                   Grid.Row="1"
                                   BlockSelected="OnBreadcrumbBlockSelected"/>
 
-        <!-- ══ Row 2: Content grid (text + optional structure pane) ════════════ -->
+        <!-- ══ Row 2: Content grid (text + optional structure pane + minimap) ══ -->
         <Grid x:Name="PART_ContentGrid" Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="PART_TextCol"      Width="*"/>
                 <ColumnDefinition x:Name="PART_Splitter1Col" Width="0"/>
                 <ColumnDefinition x:Name="PART_StructCol"    Width="0"/>
+                <ColumnDefinition x:Name="PART_MiniMapCol"   Width="80"/>
             </Grid.ColumnDefinitions>
 
             <!-- Text pane (col 0) -->
@@ -586,6 +587,11 @@
                                          Visibility="Collapsed"
                                          BlockNavigated="OnStructureBlockNavigated"/>
 
+            <!-- MiniMap — vertical right panel (col 3) -->
+            <local:DocumentMiniMap x:Name="PART_MiniMap"
+                                   Grid.Column="3"
+                                   ScrollRequested="OnMiniMapScrollRequested"/>
+
             <!-- Pop-toolbar popup (anchored to content grid) -->
             <Popup x:Name="PART_PopToolbar"
                    AllowsTransparency="True"
@@ -602,11 +608,7 @@
             </Popup>
         </Grid>
 
-        <!-- ══ Row 3: MiniMap strip ════════════════════════════════════════════ -->
-        <local:DocumentMiniMap x:Name="PART_MiniMap"
-                               Grid.Row="3"
-                               Height="14"
-                               Visibility="Collapsed"/>
+        <!-- MiniMap is in PART_ContentGrid col 3 (see below) -->
 
         <!-- ══ Row 4: Status bar ════════════════════════════════════════════════ -->
         <local:DocumentStatusBar x:Name="PART_StatusBar"
