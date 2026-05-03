@@ -289,6 +289,26 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
                 return;
             }
 
+            // A lazy plugin may be activating right now (fire-and-forget Task.Run in PluginActivationService).
+            // Poll up to 3 s in 200 ms steps so the loader gets a chance to register before we throw.
+            if (_ideContext is not null && loaders.FirstOrDefault(l => l.CanLoad(filePath)) is null)
+            {
+                const int maxWaitMs = 3000;
+                const int stepMs    = 200;
+                int waited = 0;
+                while (waited < maxWaitMs)
+                {
+                    await Task.Delay(stepMs, linked).ConfigureAwait(false);
+                    waited += stepMs;
+                    loaders = _ideContext.ExtensionRegistry.GetExtensions<IDocumentLoader>();
+                    if (loaders.FirstOrDefault(l => l.CanLoad(filePath)) is not null)
+                    {
+                        OutputMessage?.Invoke(this, $"[DocEditor] loader appeared after {waited} ms wait");
+                        break;
+                    }
+                }
+            }
+
             var loader = loaders.FirstOrDefault(l => l.CanLoad(filePath))
                          ?? throw new NotSupportedException(
                              $"No document loader registered for '{System.IO.Path.GetExtension(filePath)}'.");
