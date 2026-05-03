@@ -641,23 +641,59 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             return;
         }
 
-        // Paragraph / heading / run / default — prefer GlyphRun pipeline
+        // ── Style-based rendering (quote / code) ──────────────────────────
+        var style = rb.Block.Attributes.GetValueOrDefault("style") as string ?? string.Empty;
+
+        if (style == "quote")
+        {
+            // Left accent bar + indentation
+            var barBrush = _fgDimBrush ?? Brushes.Gray;
+            dc.DrawRectangle(barBrush, null, new Rect(x, y, 3, rb.Height));
+            x    += 12;
+            maxW -= 12;
+        }
+        else if (style == "code")
+        {
+            // Monospace background pill
+            var codeBg = new SolidColorBrush(Color.FromArgb(30, 128, 128, 128));
+            codeBg.Freeze();
+            dc.DrawRoundedRectangle(codeBg, null, new Rect(x - 4, y - 2, maxW + 8, rb.Height + 4), 3, 3);
+        }
+
+        // ── Alignment offset ─────────────────────────────────────────────
+        var align = rb.Block.Attributes.GetValueOrDefault("align") as string ?? "left";
+        double drawX = x;
+        if (rb.GlyphLines is { Count: > 0 } && align != "left")
+        {
+            double lineW = rb.GlyphLines.Count > 0 ? rb.GlyphLines.Max(l => l.Width) : 0;
+            drawX = align == "center" ? x + (maxW - lineW) / 2
+                                       : x + maxW - lineW; // right
+            drawX = Math.Max(x, drawX);
+        }
+        else if (rb.FormattedLines is { Count: > 0 } && align != "left")
+        {
+            double lineW = rb.FormattedLines.Max(ft => ft.Width);
+            drawX = align == "center" ? x + (maxW - lineW) / 2
+                                       : x + maxW - lineW;
+            drawX = Math.Max(x, drawX);
+        }
+
+        // ── Draw ─────────────────────────────────────────────────────────
         if (rb.GlyphLines is { Count: > 0 })
         {
-            bool isHeading = rb.Block.Kind == "heading";
+            bool isHeading = rb.Block.Kind == "heading" || style == "heading";
             int level = isHeading && int.TryParse(
                 rb.Block.Attributes.GetValueOrDefault("level") as string, out int lv) ? lv : 1;
-            DrawVisualLines(dc, rb.GlyphLines, x, y, isHeading, level);
+            DrawVisualLines(dc, rb.GlyphLines, drawX, y, isHeading, level);
             return;
         }
 
-        // Fallback: FormattedText (used when GlyphRun build fails or block is empty)
         if (rb.FormattedLines is { Count: > 0 })
         {
             double lineY = y;
             foreach (var ft in rb.FormattedLines)
             {
-                dc.DrawText(ft, new Point(x, lineY));
+                dc.DrawText(ft, new Point(drawX, lineY));
                 lineY += ft.Height + 2;
             }
         }
@@ -1052,12 +1088,30 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             case "paragraph":
             case "run":
             {
+                // Style attribute may promote a paragraph to heading-like rendering
+                var pStyle = block.Attributes.GetValueOrDefault("style") as string ?? string.Empty;
+                if (pStyle == "heading")
+                {
+                    int level  = int.TryParse(
+                        block.Attributes.GetValueOrDefault("level") as string, out int l) ? l : 1;
+                    double fs     = level == 1 ? 22 : level == 2 ? 18 : 15;
+                    double spaceB = level == 1 ? 18 : level == 2 ? 14 : 10;
+                    double spaceA = level == 1 ?  8 : level == 2 ?  6 :  4;
+                    var hGlyphLines = BuildGlyphLines(block, maxW);
+                    double hh = hGlyphLines.Count > 0 ? hGlyphLines.Sum(vl => vl.LineHeight) : fs + 4;
+                    if (level == 1) hh += 6;
+                    if (level == 2) hh += 4;
+                    var hFtLines = WrapText(block.Text, _bodyBoldFace!, fs, maxW, _fgBrush!);
+                    return new RenderBlock(block, y, hh, spaceB, spaceA, hFtLines, false, 0, severity, hGlyphLines);
+                }
+
+                double spaceAfter = pStyle == "quote" ? 6 : pStyle == "code" ? 6 : 4;
                 var glyphLines = BuildGlyphLines(block, maxW);
                 double h  = glyphLines.Count > 0
                     ? glyphLines.Sum(vl => vl.LineHeight)
                     : _baseFontSize + 4;
                 var ftLines = BuildInlineFormattedText(block, maxW);
-                return new RenderBlock(block, y, h, 0, 4, ftLines, false, 0, severity, glyphLines);
+                return new RenderBlock(block, y, h, 0, spaceAfter, ftLines, false, 0, severity, glyphLines);
             }
 
             case "table":
@@ -1123,14 +1177,15 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var defaultColor = _fgBrush is SolidColorBrush sb ? sb.Color : Color.FromRgb(20, 20, 20);
         var result = new List<InlineSegment>();
 
-        bool isHeading = block.Kind == "heading";
+        var blockStyle = block.Attributes.GetValueOrDefault("style") as string ?? string.Empty;
+        bool isHeading = block.Kind == "heading" || blockStyle == "heading";
         int headingLevel = isHeading && int.TryParse(
             block.Attributes.GetValueOrDefault("level") as string, out int hl) ? hl : 1;
         double defaultSize = isHeading
             ? (headingLevel == 1 ? 22 : headingLevel == 2 ? 18 : 15)
             : _baseFontSize;
         bool defaultBold = isHeading;
-        string defaultFamily = BodyFontFamily;
+        string defaultFamily = blockStyle == "code" ? "Courier New" : BodyFontFamily;
 
         IEnumerable<DocumentBlock> runs = block.Children.Count > 0
             ? block.Children.Where(c => c.Kind == "run")
