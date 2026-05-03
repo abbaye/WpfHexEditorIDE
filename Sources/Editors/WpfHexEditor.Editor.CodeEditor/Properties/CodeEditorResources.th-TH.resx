@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.CodeEditor
+    File        : CodeEditorResources.fr-CA.resx
+    Description : fr-CA translations for CodeEditor UI strings.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CodeEditorSettings_ResetButtonContent" xml:space="preserve">
+    <value>รีเซ็ตการตั้งค่า</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonContent" xml:space="preserve">
+    <value>ส่งออกการตั้งค่า</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonContent" xml:space="preserve">
+    <value>นำเข้าการตั้งค่า</value>
+  </data>
+  <data name="CodeEditorSettings_ResetButtonToolTip" xml:space="preserve">
+    <value>รีเซ็ตการตั้งค่าทั้งหมดเป็นค่าเริ่มต้น</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonToolTip" xml:space="preserve">
+    <value>ส่งออกการตั้งค่าไปยังไฟล์ JSON</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonToolTip" xml:space="preserve">
+    <value>นำเข้าการตั้งค่าจากไฟล์ JSON</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewHeader" xml:space="preserve">
+    <value>ดูตัวอย่างสด</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewPlaceholder" xml:space="preserve">
+    <value>ตัวอย่างจะแสดงที่นี่เมื่อ CodeEditor เชื่อมต่อ</value>
+  </data>
+  <data name="CodeEditorOptions_FontSection" xml:space="preserve">
+    <value>แบบอักษร</value>
+  </data>
+  <data name="CodeEditorOptions_FontFamilyLabel" xml:space="preserve">
+    <value>Famille de police :</value>
+  </data>
+  <data name="CodeEditorOptions_FontSizeLabel" xml:space="preserve">
+    <value>Taille :</value>
+  </data>
+  <data name="CodeEditorOptions_IndentationSection" xml:space="preserve">
+    <value>การเยื้อง</value>
+  </data>
+  <data name="CodeEditorOptions_TabSizeLabel" xml:space="preserve">
+    <value>Taille de tabulation :</value>
+  </data>
+  <data name="CodeEditorOptions_ConvertTabsContent" xml:space="preserve">
+    <value>แปลงแท็บเป็นช่องว่าง</value>
+  </data>
+  <data name="CodeEditorOptions_AutoIndentLabel" xml:space="preserve">
+    <value>Indentation automatique :</value>
+  </data>
+  <data name="CodeEditorOptions_DisplaySection" xml:space="preserve">
+    <value>การแสดงผล</value>
+  </data>
+  <data name="CodeEditorOptions_ShowLineNumbersContent" xml:space="preserve">
+    <value>แสดงหมายเลขบรรทัด</value>
+  </data>
+  <data name="CodeEditorOptions_ShowWhitespaceLabel" xml:space="preserve">
+    <value>Afficher les espaces :</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFoldingContent" xml:space="preserve">
+    <value>เปิดใช้งานการพับโค้ด</value>
+  </data>
+  <data name="CodeEditorOptions_FoldToggleContent" xml:space="preserve">
+    <value>สลับส่วนที่พับด้วยดับเบิลคลิก</value>
+  </data>
+  <data name="CodeEditorOptions_ScopeGuidesContent" xml:space="preserve">
+    <value>แสดงเส้นนำทางขอบเขต</value>
+  </data>
+  <data name="CodeEditorOptions_FeaturesSection" xml:space="preserve">
+    <value>คุณลักษณะ</value>
+  </data>
+  <data name="CodeEditorOptions_SmartCompleteContent" xml:space="preserve">
+    <value>เปิดใช้งาน SmartComplete</value>
+  </data>
+  <data name="CodeEditorOptions_SnippetsContent" xml:space="preserve">
+    <value>เปิดใช้งาน code snippet</value>
+  </data>
+  <data name="CodeEditorOptions_MultiCaretContent" xml:space="preserve">
+    <value>เปิดใช้งานการแก้ไขหลายจุด (Alt+คลิก)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsContent" xml:space="preserve">
+    <value>เปิดใช้งานค้นหาการอ้างอิงทั้งหมด (Shift+F12)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsToolTip" xml:space="preserve">
+    <value>ต้องการเซิร์ฟเวอร์ภาษา (LSP) ที่ใช้งานอยู่สำหรับประเภทไฟล์ปัจจุบัน</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensContent" xml:space="preserve">
+    <value>แสดง Code Lens (ตัวนับการอ้างอิงแบบ inline)</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensToolTip" xml:space="preserve">
+    <value>แสดงจำนวนการอ้างอิงเหนือแต่ละการประกาศ คลิกที่คำแนะนำเพื่อเปิดป็อปอัปการอ้างอิง</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightContent" xml:space="preserve">
+    <value>ไฮไลต์คำใต้เคอร์เซอร์</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightToolTip" xml:space="preserve">
+    <value>ไฮไลต์การเกิดขึ้นทั้งหมดของคำใต้เคอร์เซอร์และแสดงเครื่องหมายบนแถบเลื่อน</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeContent" xml:space="preserve">
+    <value>การกำหนดสีคู่วงเล็บ</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeToolTip" xml:space="preserve">
+    <value>กำหนดสีวงเล็บด้วย CE_Bracket_1/2/3/4 ตามความลึกการซ้อน (ต้องการ bracketPairs ใน .whfmt ภาษา)</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchContent" xml:space="preserve">
+    <value>ดูตัวอย่างชุดตัวอย่างสี</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchToolTip" xml:space="preserve">
+    <value>แสดงชุดตัวอย่าง 12×12 ข้างๆ ค่าตัวอักษรสี (เช่น #FF5733) ในไฟล์ CSS, XAML, C#</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveContent" xml:space="preserve">
+    <value>จัดรูปแบบเมื่อบันทึก (Ctrl+S)</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveToolTip" xml:space="preserve">
+    <value>จัดรูปแบบเอกสารโดยอัตโนมัติเมื่อบันทึก ใช้การจัดรูปแบบ LSP หากมี ไม่เช่นนั้นใช้กฎ indentation .whfmt</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingSection" xml:space="preserve">
+    <value>การจัดรูปแบบโค้ด</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingInfo" xml:space="preserve">
+    <value>การตั้งค่าเหล่านี้แทนที่ค่าเริ่มต้น .whfmt ของภาษา ปล่อยให้ช่องกาเครื่องหมายอยู่ในสถานะกลางเพื่อสืบทอดกฎภาษา</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingContent" xml:space="preserve">
+    <value>ลบช่องว่างท้ายบรรทัด</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingToolTip" xml:space="preserve">
+    <value>ลบช่องว่าง/แท็บท้ายแต่ละบรรทัด ค่ากลาง = ค่าเริ่มต้น .whfmt</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineContent" xml:space="preserve">
+    <value>แทรกบรรทัดใหม่สุดท้าย</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineToolTip" xml:space="preserve">
+    <value>ตรวจสอบให้แน่ใจว่าไฟล์ลงท้ายด้วยบรรทัดใหม่หนึ่งบรรทัด ค่ากลาง = ค่าเริ่มต้น .whfmt</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsContent" xml:space="preserve">
+    <value>ช่องว่างหลังคีย์เวิร์ด (if, for, while)</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsToolTip" xml:space="preserve">
+    <value>แทรกช่องว่างระหว่างคีย์เวิร์ดการควบคุมและวงเล็บเปิด ค่ากลาง = ค่าเริ่มต้น .whfmt</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsContent" xml:space="preserve">
+    <value>ช่องว่างรอบตัวดำเนินการไบนารี</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsToolTip" xml:space="preserve">
+    <value>แทรกช่องว่างรอบ +, -, *, /, ==, ฯลฯ ค่ากลาง = ค่าเริ่มต้น .whfmt</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaContent" xml:space="preserve">
+    <value>ช่องว่างหลังเครื่องหมายจุลภาค</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaToolTip" xml:space="preserve">
+    <value>แทรกช่องว่างหลังเครื่องหมายจุลภาคในรายการอาร์กิวเมนต์/พารามิเตอร์ ค่ากลาง = ค่าเริ่มต้น .whfmt</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsContent" xml:space="preserve">
+    <value>เยื้องป้ายกำกับ case/when</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsToolTip" xml:space="preserve">
+    <value>เพิ่มระดับการเยื้องให้ป้ายกำกับ case/when ใน switch ค่ากลาง = ค่าเริ่มต้น .whfmt</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsContent" xml:space="preserve">
+    <value>จัดระเบียบการนำเข้าเมื่อจัดรูปแบบ</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsToolTip" xml:space="preserve">
+    <value>เรียง using/import ตามตัวอักษรเมื่อจัดรูปแบบ ค่ากลาง = ค่าเริ่มต้น .whfmt</value>
+  </data>
+  <data name="CodeEditorOptions_SyntaxColorsSection" xml:space="preserve">
+    <value>สีไวยากรณ์</value>
+  </data>
+  <data name="CodeEditorOptions_ResetColorsButton" xml:space="preserve">
+    <value>รีเซ็ตเป็นธีม</value>
+  </data>
+  <data name="CodeEditorOptions_ColorPickButton" xml:space="preserve">
+    <value>เลือก</value>
+  </data>
+  <data name="FormatScriptEditor_NewToolTip" xml:space="preserve">
+    <value>นิยามรูปแบบใหม่</value>
+  </data>
+  <data name="FormatScriptEditor_OpenToolTip" xml:space="preserve">
+    <value>เปิดนิยามรูปแบบ</value>
+  </data>
+  <data name="FormatScriptEditor_SaveToolTip" xml:space="preserve">
+    <value>บันทึกไฟล์ปัจจุบัน</value>
+  </data>
+  <data name="FormatScriptEditor_UndoToolTip" xml:space="preserve">
+    <value>เลิกทำ (Ctrl+Z)</value>
+  </data>
+  <data name="FormatScriptEditor_RedoToolTip" xml:space="preserve">
+    <value>ทำซ้ำ (Ctrl+Y)</value>
+  </data>
+  <data name="FormatScriptEditor_FormatToolTip" xml:space="preserve">
+    <value>จัดรูปแบบ JSON (Ctrl+Shift+F)</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateToolTip" xml:space="preserve">
+    <value>ตรวจสอบนิยามรูปแบบ</value>
+  </data>
+  <data name="FormatScriptEditor_NoFileLoaded" xml:space="preserve">
+    <value>ไม่มีไฟล์ที่โหลด</value>
+  </data>
+  <data name="FormatScriptEditor_EmbeddedFormatsHeader" xml:space="preserve">
+    <value>รูปแบบในตัว</value>
+  </data>
+  <data name="FormatScriptEditor_EditorTabHeader" xml:space="preserve">
+    <value>ตัวแก้ไข</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewPlaceholder" xml:space="preserve">
+    <value>โหลดนิยามรูปแบบเพื่อดูตัวอย่าง...</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationTabHeader" xml:space="preserve">
+    <value>การตรวจสอบ</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationResultsHeader" xml:space="preserve">
+    <value>ผลการตรวจสอบ</value>
+  </data>
+  <data name="FormatScriptEditor_SelectTestFileButton" xml:space="preserve">
+    <value>เลือกไฟล์ทดสอบ...</value>
+  </data>
+  <data name="FormatScriptEditor_RunTestButton" xml:space="preserve">
+    <value>เรียกใช้การทดสอบ</value>
+  </data>
+  <data name="FormatScriptEditor_TestInstructions" xml:space="preserve">
+    <value>Testez votre définition de format avec des fichiers exemples ici.\n\nSélectionnez un fichier et cliquez sur 'Exécuter le test' pour voir les résultats.</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorMessage" xml:space="preserve">
+    <value>ไม่มีตัวควบคุม CodeEditor ที่เชื่อมต่อ</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorTitle" xml:space="preserve">
+    <value>ข้อผิดพลาด</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmMessage" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir réinitialiser tous les paramètres à leurs valeurs par défaut ?</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmTitle" xml:space="preserve">
+    <value>ยืนยันการรีเซ็ต</value>
+  </data>
+  <data name="CodeEditorSettings_ExportDialogTitle" xml:space="preserve">
+    <value>ส่งออกการตั้งค่า</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessMessage" xml:space="preserve">
+    <value>Paramètres exportés avec succès vers :\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessTitle" xml:space="preserve">
+    <value>ส่งออกสำเร็จ</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedMessage" xml:space="preserve">
+    <value>Échec de l'exportation des paramètres :\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedTitle" xml:space="preserve">
+    <value>การส่งออกล้มเหลว</value>
+  </data>
+  <data name="CodeEditorSettings_ImportDialogTitle" xml:space="preserve">
+    <value>นำเข้าการตั้งค่า</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessMessage" xml:space="preserve">
+    <value>Paramètres importés avec succès depuis :\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessTitle" xml:space="preserve">
+    <value>นำเข้าสำเร็จ</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedMessage" xml:space="preserve">
+    <value>Échec de l'importation des paramètres :\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedTitle" xml:space="preserve">
+    <value>การนำเข้าล้มเหลว</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteMessage" xml:space="preserve">
+    <value>การตั้งค่าทั้งหมดถูกรีเซ็ตเป็นค่าเริ่มต้นแล้ว</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteTitle" xml:space="preserve">
+    <value>รีเซ็ตเสร็จสิ้น</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsError" xml:space="preserve">
+    <value>Échec du chargement des formats intégrés : {0}</value>
+  </data>
+  <data name="FormatScriptEditor_OpenDialogTitle" xml:space="preserve">
+    <value>เปิดนิยามรูปแบบ</value>
+  </data>
+  <data name="FormatScriptEditor_SaveDialogTitle" xml:space="preserve">
+    <value>บันทึกนิยามรูปแบบ</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonError" xml:space="preserve">
+    <value>Échec du formatage JSON : {0}</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>ข้อผิดพลาดการจัดรูปแบบ</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileError" xml:space="preserve">
+    <value>Échec du chargement du fichier : {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedError" xml:space="preserve">
+    <value>Échec du chargement du format intégré : {0}</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessMessage" xml:space="preserve">
+    <value>Fichier enregistré avec succès !</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessTitle" xml:space="preserve">
+    <value>สำเร็จ</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedMessage" xml:space="preserve">
+    <value>Échec de l'enregistrement du fichier : {0}</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesMessage" xml:space="preserve">
+    <value>Voulez-vous enregistrer les modifications du fichier actuel ?</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesTitle" xml:space="preserve">
+    <value>บันทึกการเปลี่ยนแปลง</value>
+  </data>
+  <data name="FormatScriptEditor_StatusErrors" xml:space="preserve">
+    <value>{0} ข้อผิดพลาด</value>
+  </data>
+  <data name="FormatScriptEditor_StatusWarnings" xml:space="preserve">
+    <value>{0} คำเตือน</value>
+  </data>
+  <data name="CodeEditor_ContextMenuSelectAll" xml:space="preserve">
+    <value>เลือกทั้งหมด</value>
+  </data>
+  <data name="CodeEditor_ContextMenuDelete" xml:space="preserve">
+    <value>ลบ</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFind" xml:space="preserve">
+    <value>ค้นหา...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReplace" xml:space="preserve">
+    <value>แทนที่...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFindAllRefs" xml:space="preserve">
+    <value>ค้นหาการอ้างอิงทั้งหมด</value>
+  </data>
+  <data name="CodeEditor_ContextMenuQuickFix" xml:space="preserve">
+    <value>แก้ไขด่วน…</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRenameSymbol" xml:space="preserve">
+    <value>เปลี่ยนชื่อสัญลักษณ์</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToDefinition" xml:space="preserve">
+    <value>ไปที่นิยาม</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToImplementation" xml:space="preserve">
+    <value>ไปที่การใช้งาน</value>
+  </data>
+  <data name="CodeEditor_ContextMenuPeekDefinition" xml:space="preserve">
+    <value>ดูตัวอย่างนิยาม</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowCallHierarchy" xml:space="preserve">
+    <value>แสดงลำดับชั้นการเรียก</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowTypeHierarchy" xml:space="preserve">
+    <value>แสดงลำดับชั้นประเภท</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatting" xml:space="preserve">
+    <value>การจัดรูปแบบ</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatDocument" xml:space="preserve">
+    <value>จัดรูปแบบเอกสาร</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatSelection" xml:space="preserve">
+    <value>จัดรูปแบบการเลือก</value>
+  </data>
+  <data name="CodeEditor_ContextMenuOutlining" xml:space="preserve">
+    <value>โหมด outline</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleOutlining" xml:space="preserve">
+    <value>สลับโหมด outline</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleAllOutlining" xml:space="preserve">
+    <value>สลับโหมด outline ทั้งหมด</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopOutlining" xml:space="preserve">
+    <value>หยุดโหมด outline</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopHidingCurrent" xml:space="preserve">
+    <value>หยุดซ่อนรายการปัจจุบัน</value>
+  </data>
+  <data name="CodeEditor_ContextMenuCollapseToDefs" xml:space="preserve">
+    <value>ยุบเป็นนิยาม</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordWrap" xml:space="preserve">
+    <value>ตัดบรรทัดอัตโนมัติ</value>
+  </data>
+  <data name="CodeEditor_ContextMenuColumnRulers" xml:space="preserve">
+    <value>ไม้บรรทัดคอลัมน์</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowWhitespace" xml:space="preserve">
+    <value>แสดงช่องว่าง</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceNone" xml:space="preserve">
+    <value>ไม่มี</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceSelection" xml:space="preserve">
+    <value>การเลือกเท่านั้น</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceAlways" xml:space="preserve">
+    <value>เสมอ</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRefreshHighlights" xml:space="preserve">
+    <value>รีเฟรชการไฮไลต์</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReanalyzeFolding" xml:space="preserve">
+    <value>วิเคราะห์การพับซ้ำ</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordHighlight" xml:space="preserve">
+    <value>การไฮไลต์คำ</value>
+  </data>
+  <data name="CodeEditor_FormatDocumentTransaction" xml:space="preserve">
+    <value>จัดรูปแบบเอกสาร</value>
+  </data>
+  <data name="CodeEditor_FormatSelectionTransaction" xml:space="preserve">
+    <value>จัดรูปแบบการเลือก</value>
+  </data>
+  <data name="CodeEditor_FormatJsonError" xml:space="preserve">
+    <value>Impossible de formater — JSON invalide :\n{0}</value>
+  </data>
+  <data name="CodeEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>ข้อผิดพลาดการจัดรูปแบบ</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonSuccess" xml:space="preserve">
+    <value>JSON ถูกต้อง</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonTitle" xml:space="preserve">
+    <value>การตรวจสอบ</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonError" xml:space="preserve">
+    <value>JSON invalide : {0}</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonErrorTitle" xml:space="preserve">
+    <value>ข้อผิดพลาดการตรวจสอบ</value>
+  </data>
+  <data name="CodeEditor_GoToLineTitle" xml:space="preserve">
+    <value>ไปที่บรรทัด</value>
+  </data>
+  <data name="CodeEditor_GoToLineLabel" xml:space="preserve">
+    <value>Numéro de ligne (1 - {0}) :</value>
+  </data>
+  <data name="CodeEditor_GoToLineButton" xml:space="preserve">
+    <value>ตกลง</value>
+  </data>
+  <data name="CodeEditor_BreakpointToggleToolTip" xml:space="preserve">
+    <value>คลิกเพื่อสลับ breakpoint</value>
+  </data>
+  <data name="CodeEditor_BreakpointInvalidToolTip" xml:space="preserve">
+    <value>ไม่สามารถวาง breakpoint บนบรรทัดนี้</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipEmail" xml:space="preserve">
+    <value>Ctrl+คลิกเพื่อส่งอีเมล</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipLink" xml:space="preserve">
+    <value>Ctrl+คลิกเพื่อเปิด</value>
+  </data>
+  <data name="CodeEditor_ReferencesCollapseAll" xml:space="preserve">
+    <value>ยุบทั้งหมด</value>
+  </data>
+  <data name="CodeEditor_ReferencesExpandAll" xml:space="preserve">
+    <value>ขยายทั้งหมด</value>
+  </data>
+  <data name="CodeEditor_ReferencesTitle" xml:space="preserve">
+    <value>อ้างอิง — {0}</value>
+  </data>
+  <data name="CodeEditor_ReferencesCounter" xml:space="preserve">
+    <value>{0} การอ้างอิง</value>
+  </data>
+  <data name="CodeEditor_ReferencesRefresh" xml:space="preserve">
+    <value>รีเฟรช</value>
+  </data>
+  <data name="CodeEditor_ReferencesPinTooltip" xml:space="preserve">
+    <value>ปักหมุดที่แผงค้นหาการอ้างอิง</value>
+  </data>
+  <data name="CodeEditor_BreakpointDisable" xml:space="preserve">
+    <value>ปิดใช้งาน</value>
+  </data>
+  <data name="CodeEditor_BreakpointEnable" xml:space="preserve">
+    <value>เปิดใช้งาน</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeDisabled" xml:space="preserve">
+    <value>ปิดใช้งาน</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeConditional" xml:space="preserve">
+    <value>มีเงื่อนไข</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeBreakpoint" xml:space="preserve">
+    <value>Breakpoint</value>
+  </data>
+  <data name="CodeEditor_BreakpointEditCondition" xml:space="preserve">
+    <value>แก้ไขเงื่อนไข</value>
+  </data>
+  <data name="CodeEditor_BreakpointDeleteBreakpoint" xml:space="preserve">
+    <value>ลบ breakpoint</value>
+  </data>
+  <data name="CodeEditor_BreakpointDelete" xml:space="preserve">
+    <value>ลบ</value>
+  </data>
+  <data name="CodeEditor_BreakpointSave" xml:space="preserve">
+    <value>บันทึก</value>
+  </data>
+  <data name="CodeEditor_BreakpointConditionLabel" xml:space="preserve">
+    <value>เงื่อนไข:</value>
+  </data>
+  <data name="CodeEditor_BreakpointSettings" xml:space="preserve">
+    <value>การตั้งค่า…</value>
+  </data>
+  <data name="CodeEditor_DisplayName" xml:space="preserve">
+    <value>ตัวแก้ไขโค้ด</value>
+  </data>
+  <data name="CodeEditor_GoToLine" xml:space="preserve">
+    <value>ไปที่บรรทัด</value>
+  </data>
+  <data name="CodeEd_FindRef_CollapseAll" xml:space="preserve">
+    <value>ยุบทั้งหมด</value>
+  </data>
+  <data name="CodeEd_Minimap_MenuTitle" xml:space="preserve">
+    <value>_มินิแมป</value>
+  </data>
+  <data name="CodeEd_Minimap_RenderChars" xml:space="preserve">
+    <value>แสดง_อักขระ</value>
+  </data>
+  <data name="CodeEd_Minimap_VerticalSize" xml:space="preserve">
+    <value>_ขนาดแนวตั้ง</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeProportional" xml:space="preserve">
+    <value>สัดส่วน</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFill" xml:space="preserve">
+    <value>เติม</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFit" xml:space="preserve">
+    <value>ปรับให้พอดี</value>
+  </data>
+  <data name="CodeEd_Minimap_Slider" xml:space="preserve">
+    <value>ต_ัวเลื่อน</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderAlways" xml:space="preserve">
+    <value>เสมอ</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderMouseOver" xml:space="preserve">
+    <value>เมื่อวางเมาส์</value>
+  </data>
+  <data name="CodeEd_Minimap_Side" xml:space="preserve">
+    <value>_ด้าน</value>
+  </data>
+  <data name="CodeEd_Minimap_SideLeft" xml:space="preserve">
+    <value>ซ้าย</value>
+  </data>
+  <data name="CodeEd_Minimap_SideRight" xml:space="preserve">
+    <value>ขวา</value>
+  </data>
+  <data name="CodeEd_Refs_CollapseAll" xml:space="preserve">
+    <value>ยุบทั้งหมด</value>
+  </data>
+  <data name="CodeEd_Refs_Refresh" xml:space="preserve">
+    <value>รีเฟรช</value>
+  </data>
+  <data name="CodeEd_Refs_ExpandAll" xml:space="preserve">
+    <value>ขยายทั้งหมด</value>
+  </data>
+
+</root>

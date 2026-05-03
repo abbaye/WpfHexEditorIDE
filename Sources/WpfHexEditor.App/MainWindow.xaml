@@ -365,6 +365,7 @@
 
                     <!-- ═══════════ Edit ═══════════ -->
                     <MenuItem Header="{StaticResource App_Menu_Edit}"
+                              x:Name="EditMenu"
                               IsEnabled="{Binding IsMenuEnabled, ElementName=ThisWindow}">
                         <MenuItem Header="{Binding ActiveDocumentEditor.UndoDescription, ElementName=ThisWindow, FallbackValue='_Undo'}"
                                   Command="{Binding ActiveDocumentEditor.UndoCommand, ElementName=ThisWindow}"

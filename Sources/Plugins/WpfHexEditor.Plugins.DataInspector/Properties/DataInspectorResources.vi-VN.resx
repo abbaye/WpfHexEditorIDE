@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.DataInspector
+    File        : DataInspectorResources.vi-VN.resx
+    Description : Chuỗi UI đã bản địa hóa tiếng Việt cho plugin Data Inspector.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>Trình kiểm tra dữ liệu</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>Phân tích dữ liệu</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>Trình kiểm tra dữ liệu</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>_Trình kiểm tra dữ liệu</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>Không có dữ liệu để hiển thị</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Tổng</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Tối đa</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Entropy</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>bit/byte</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>byte</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>Chưa chọn byte nào — hãy chọn byte trong trình soạn thảo hex.</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>Chế độ xem đang hoạt động</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>Toàn bộ tệp</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>Vùng chọn</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>Tần suất</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>Entropy</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>Không có dữ liệu</value>
+  </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Danh mục :</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>Tất cả</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Số nguyên</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>Số thực</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Ngày/Giờ</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Mạng</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Màu sắc</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>Cơ bản</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>Bits</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>Tất cả định dạng</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>Thêm tùy chọn</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Hiển thị nhãn trục</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Hiển thị đường lưới</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Hiển thị thống kê</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Phân phối tần suất</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Entropy (cửa sổ trượt)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Phóng to</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Thu nhỏ</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Đặt lại zoom</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Làm mới biểu đồ</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Sao chép ảnh biểu đồ</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Bố cục</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Trái</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Phải</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Trên</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Dưới</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Phạm vi :</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Chế độ xem đang hoạt động</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Sélection</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>Toàn bộ tệp</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Tần suất</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Bố cục :</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Vị trí biểu đồ so với danh sách diễn giải</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Đang phân tích tệp...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Diễn giải : </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>Không có dữ liệu</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Tự động làm mới khi thay đổi vùng chọn</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Thứ tự byte mặc định : Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Hiển thị bảng biểu đồ byte</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Vị trí biểu đồ :</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Số byte tối đa cho xem trước chuỗi :</value></data>
+</root>

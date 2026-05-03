@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="App_MinimizeToolTip" xml:space="preserve"><value>Згорнути</value></data>
+  <data name="App_MaximizeToolTip" xml:space="preserve"><value>Розгорнути</value></data>
+  <data name="App_CloseToolTip" xml:space="preserve"><value>Закрити</value></data>
+  <data name="App_NotificationsToolTip" xml:space="preserve"><value>Сповіщення</value></data>
+  <data name="App_CustomizeLayoutToolTip" xml:space="preserve"><value>Налаштувати розташування (Ctrl+Shift+L)</value></data>
+  <data name="App_CommandPaletteToolTip" xml:space="preserve"><value>Палітра команд (Ctrl+Shift+P)</value></data>
+  <data name="App_WelcomePageToolTip" xml:space="preserve"><value>Стартова сторінка</value></data>
+
+  <data name="App_Menu_File" xml:space="preserve"><value>_Файл</value></data>
+  <data name="App_Menu_New" xml:space="preserve"><value>_Створити</value></data>
+  <data name="App_Menu_NewSolution" xml:space="preserve"><value>_Рішення...</value></data>
+  <data name="App_Menu_NewProject" xml:space="preserve"><value>_Проект...</value></data>
+  <data name="App_Menu_NewFile" xml:space="preserve"><value>_Файл...</value></data>
+  <data name="App_Menu_Open" xml:space="preserve"><value>_Відкрити</value></data>
+  <data name="App_Menu_OpenSolutionProject" xml:space="preserve"><value>_Рішення/Проект...</value></data>
+  <data name="App_Menu_OpenFolder" xml:space="preserve"><value>_Папку...</value></data>
+  <data name="App_Menu_OpenFile" xml:space="preserve"><value>_Файл...</value></data>
+  <data name="App_Menu_Close" xml:space="preserve"><value>_Закрити</value></data>
+  <data name="App_Menu_CloseAllDocuments" xml:space="preserve"><value>Закрити _всі документи</value></data>
+  <data name="App_Menu_CloseSolution" xml:space="preserve"><value>Закрити _рішення</value></data>
+  <data name="App_Menu_Save" xml:space="preserve"><value>_Зберегти</value></data>
+  <data name="App_Menu_SaveAll" xml:space="preserve"><value>Зберегти _все</value></data>
+  <data name="App_Menu_WriteToDisk" xml:space="preserve"><value>_Записати на диск</value></data>
+  <data name="App_Menu_Workspace" xml:space="preserve"><value>_Робочий простір</value></data>
+  <data name="App_Menu_NewWorkspace" xml:space="preserve"><value>_Новий робочий простір…</value></data>
+  <data name="App_Menu_OpenWorkspace" xml:space="preserve"><value>_Відкрити робочий простір…</value></data>
+  <data name="App_Menu_SaveWorkspace" xml:space="preserve"><value>_Зберегти робочий простір</value></data>
+  <data name="App_Menu_SaveWorkspaceAs" xml:space="preserve"><value>Зберегти робочий простір _як…</value></data>
+  <data name="App_Menu_CloseWorkspace" xml:space="preserve"><value>З_акрити робочий простір</value></data>
+  <data name="App_Menu_RecentSolutions" xml:space="preserve"><value>_Останні рішення</value></data>
+  <data name="App_Menu_RecentFiles" xml:space="preserve"><value>_Останні файли</value></data>
+  <data name="App_Menu_Exit" xml:space="preserve"><value>_Вийти</value></data>
+
+  <data name="App_Menu_Edit" xml:space="preserve"><value>_Правка</value></data>
+  <data name="App_Menu_Cut" xml:space="preserve"><value>Ви_різати</value></data>
+  <data name="App_Menu_Copy" xml:space="preserve"><value>_Копіювати</value></data>
+  <data name="App_Menu_Paste" xml:space="preserve"><value>_Вставити</value></data>
+  <data name="App_Menu_Delete" xml:space="preserve"><value>_Видалити</value></data>
+  <data name="App_Menu_SelectAll" xml:space="preserve"><value>Вибрати _все</value></data>
+  <data name="App_Menu_Find" xml:space="preserve"><value>_Знайти...</value></data>
+  <data name="App_Menu_AdvancedFindReplace" xml:space="preserve"><value>_Розширений пошук/заміна...</value></data>
+  <data name="App_Menu_FindNext" xml:space="preserve"><value>Знайти _наступне</value></data>
+  <data name="App_Menu_FindPrevious" xml:space="preserve"><value>Знайти _попереднє</value></data>
+  <data name="App_Menu_GoToOffset" xml:space="preserve"><value>_Перейти до зміщення…</value></data>
+  <data name="App_Menu_FormatDocument" xml:space="preserve"><value>Форматувати _документ</value></data>
+  <data name="App_Menu_FormatSelection" xml:space="preserve"><value>Форматувати _виділення</value></data>
+
+  <data name="App_Menu_View" xml:space="preserve"><value>_Вигляд</value></data>
+  <data name="App_Menu_Project" xml:space="preserve"><value>_Проект</value></data>
+  <data name="App_Menu_AddNewItem" xml:space="preserve"><value>Додати _новий елемент...</value></data>
+  <data name="App_Menu_AddExistingItem" xml:space="preserve"><value>Додати _існуючий елемент...</value></data>
+  <data name="App_Menu_AddNewProject" xml:space="preserve"><value>Додати новий _проект...</value></data>
+  <data name="App_Menu_Properties" xml:space="preserve"><value>В_ластивості...</value></data>
+  <data name="App_Menu_Build" xml:space="preserve"><value>_Збирання</value></data>
+  <data name="App_Menu_BuildSolution" xml:space="preserve"><value>Зібрати _рішення</value></data>
+  <data name="App_Menu_BuildProject" xml:space="preserve"><value>Зібрати _проект</value></data>
+  <data name="App_Menu_RebuildSolution" xml:space="preserve"><value>_Перезібрати рішення</value></data>
+  <data name="App_Menu_RebuildProject" xml:space="preserve"><value>Перезібрати _проект</value></data>
+  <data name="App_Menu_CleanSolution" xml:space="preserve"><value>_Очистити рішення</value></data>
+  <data name="App_Menu_CleanProject" xml:space="preserve"><value>Очистити _проект</value></data>
+  <data name="App_Menu_CancelBuild" xml:space="preserve"><value>С_касувати збирання</value></data>
+  <data name="App_Menu_ConfigurationManager" xml:space="preserve"><value>_Менеджер конфігурацій...</value></data>
+  <data name="App_Menu_Debug" xml:space="preserve"><value>_Налагодження</value></data>
+
+  <data name="App_Menu_Window" xml:space="preserve"><value>_Вікно</value></data>
+  <data name="App_Menu_CloseDocument" xml:space="preserve"><value>_Закрити документ</value></data>
+  <data name="App_Menu_CloseAllButThis" xml:space="preserve"><value>Закрити все, _крім цього</value></data>
+  <data name="App_Menu_CloseAllDocuments2" xml:space="preserve"><value>Закрити _всі документи</value></data>
+  <data name="App_Menu_NextDocument" xml:space="preserve"><value>_Наступний документ</value></data>
+  <data name="App_Menu_PreviousDocument" xml:space="preserve"><value>_Попередній документ</value></data>
+  <data name="App_Menu_FullScreen" xml:space="preserve"><value>_Повноекранний режим</value></data>
+  <data name="App_Menu_TabGroups" xml:space="preserve"><value>Групи _вкладок</value></data>
+  <data name="App_Menu_NewVerticalTabGroup" xml:space="preserve"><value>Нова _вертикальна група вкладок</value></data>
+  <data name="App_Menu_NewHorizontalTabGroup" xml:space="preserve"><value>Нова _горизонтальна група вкладок</value></data>
+  <data name="App_Menu_MoveToNextTabGroup" xml:space="preserve"><value>Перемістити до _наступної групи вкладок</value></data>
+  <data name="App_Menu_MoveToPreviousTabGroup" xml:space="preserve"><value>Перемістити до _попередньої групи вкладок</value></data>
+  <data name="App_Menu_CloseTabGroup" xml:space="preserve"><value>_Закрити групу вкладок</value></data>
+  <data name="App_Menu_CloseAllTabGroups" xml:space="preserve"><value>Закрити _всі групи вкладок</value></data>
+  <data name="App_Menu_Layout" xml:space="preserve"><value>_Розташування</value></data>
+  <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Зберегти розташування</value></data>
+  <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Завантажити розташування</value></data>
+  <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Скинути розташування</value></data>
+  <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Увімкнути/вимкнути блокування _розташування</value></data>
+
+  <data name="App_Menu_Tools" xml:space="preserve"><value>_Інструменти</value></data>
+  <data name="App_Menu_Terminal" xml:space="preserve"><value>_Термінал</value></data>
+  <data name="App_Menu_Options" xml:space="preserve"><value>_Параметри...</value></data>
+  <data name="App_Menu_Extensions" xml:space="preserve"><value>_Розширення</value></data>
+  <data name="App_Menu_ExtensionManager" xml:space="preserve"><value>_Менеджер розширень</value></data>
+  <data name="App_Menu_ExtensionsMonitor" xml:space="preserve"><value>_Монітор розширень</value></data>
+  <data name="App_Menu_ExtensionMarketplace" xml:space="preserve"><value>_Marketplace розширень</value></data>
+  <data name="App_Menu_InstallFromFile" xml:space="preserve"><value>_Встановити з файлу...</value></data>
+  <data name="App_Menu_RefreshAllExtensions" xml:space="preserve"><value>_Оновити всі розширення</value></data>
+  <data name="App_Menu_ExtensionDevWatch" xml:space="preserve"><value>Спостереження _Dev за розширенням...</value></data>
+  <data name="App_Menu_ExtensionSystemSettings" xml:space="preserve"><value>_Системні параметри розширень...</value></data>
+  <data name="App_Menu_Theme" xml:space="preserve"><value>_Тема</value></data>
+  <data name="App_Menu_ThemeDark" xml:space="preserve"><value>_Темна</value></data>
+  <data name="App_Menu_ThemeVS2022Dark" xml:space="preserve"><value>VS2022 Тем_на</value></data>
+  <data name="App_Menu_ThemeVisualStudio" xml:space="preserve"><value>_Visual Studio</value></data>
+  <data name="App_Menu_ThemeDarkGlass" xml:space="preserve"><value>Темне _скло</value></data>
+  <data name="App_Menu_ThemeCyberpunk" xml:space="preserve"><value>_Cyberpunk</value></data>
+  <data name="App_Menu_ThemeSynthwave" xml:space="preserve"><value>Synthwave '8_4</value></data>
+  <data name="App_Menu_ThemeMatrix" xml:space="preserve"><value>Matri_x / Terminal</value></data>
+  <data name="App_Menu_ThemeNord" xml:space="preserve"><value>_Nord</value></data>
+  <data name="App_Menu_ThemeDracula" xml:space="preserve"><value>Dr_acula</value></data>
+  <data name="App_Menu_ThemeGruvbox" xml:space="preserve"><value>Gruvbo_x Dark</value></data>
+  <data name="App_Menu_ThemeCatppuccinMocha" xml:space="preserve"><value>Catppuccin _Mocha</value></data>
+  <data name="App_Menu_ThemeTokyoNight" xml:space="preserve"><value>Tokyo _Night</value></data>
+  <data name="App_Menu_ThemeLight" xml:space="preserve"><value>_Світла</value></data>
+  <data name="App_Menu_ThemeOffice" xml:space="preserve"><value>_Office</value></data>
+  <data name="App_Menu_ThemeCatppuccinLatte" xml:space="preserve"><value>Catppuccin _Latte</value></data>
+  <data name="App_Menu_ThemeMinimal" xml:space="preserve"><value>_Мінімальна</value></data>
+  <data name="App_Menu_ThemeForest" xml:space="preserve"><value>_Ліс</value></data>
+  <data name="App_Menu_ThemeHighContrast" xml:space="preserve"><value>_Висока контрастність</value></data>
+
+  <data name="App_Menu_Image" xml:space="preserve"><value>_Зображення</value></data>
+  <data name="App_Menu_RotateRight" xml:space="preserve"><value>Повернути _праворуч</value></data>
+  <data name="App_Menu_RotateLeft" xml:space="preserve"><value>Повернути _ліворуч</value></data>
+  <data name="App_Menu_FlipHorizontal" xml:space="preserve"><value>Відобразити _горизонтально</value></data>
+  <data name="App_Menu_FlipVertical" xml:space="preserve"><value>Відобразити _вертикально</value></data>
+  <data name="App_Menu_CropMode" xml:space="preserve"><value>Режим _обрізання</value></data>
+  <data name="App_Menu_Resize" xml:space="preserve"><value>З_мінити розмір...</value></data>
+  <data name="App_Menu_Export" xml:space="preserve"><value>_Експортувати...</value></data>
+  <data name="App_Menu_ResetImage" xml:space="preserve"><value>Відновити _оригінальне зображення</value></data>
+
+  <data name="App_OptionsEditJsonToolTip" xml:space="preserve"><value>Редагувати параметри користувача у JSON</value></data>
+  <data name="App_OptionsAppliesToLabel" xml:space="preserve"><value>Застосовується до:</value></data>
+  <data name="App_OptionsUserInstallation" xml:space="preserve"><value>Користувач (встановлення)</value></data>
+  <data name="App_OptionsFilterLabel" xml:space="preserve"><value>Фільтр:</value></data>
+  <data name="App_OptionsSearchPlaceholder" xml:space="preserve"><value>Пошук параметрів (Ctrl+F)…</value></data>
+  <data name="App_OptionsClearToolTip" xml:space="preserve"><value>Очистити (Esc)</value></data>
+  <data name="App_OptionsNoResults" xml:space="preserve"><value>Параметри не знайдено.</value></data>
+
+  <data name="App_PasteConflict_Title" xml:space="preserve"><value>Файл вже існує</value></data>
+  <data name="App_PasteConflict_Rename" xml:space="preserve"><value>Перейменувати</value></data>
+  <data name="App_PasteConflict_Skip" xml:space="preserve"><value>Пропустити</value></data>
+  <data name="App_PasteConflict_CancelAll" xml:space="preserve"><value>Скасувати все</value></data>
+  <data name="App_PasteConflict_AlreadyExists1" xml:space="preserve"><value>Файл з ім'ям</value></data>
+  <data name="App_PasteConflict_AlreadyExists2" xml:space="preserve"><value>вже існує в цільовій папці.</value></data>
+  <data name="App_PasteConflict_Instructions" xml:space="preserve"><value>Введіть нове ім'я для перейменування файлу, що вставляється, або оберіть дію нижче.</value></data>
+  <data name="App_PasteConflict_NewNameLabel" xml:space="preserve"><value>Нове ім'я:</value></data>
+
+  <data name="App_SaveChanges_Title" xml:space="preserve"><value>Зберегти зміни</value></data>
+  <data name="App_SaveChanges_SelectAll" xml:space="preserve"><value>Вибрати все</value></data>
+  <data name="App_SaveChanges_Save" xml:space="preserve"><value>Зберегти</value></data>
+  <data name="App_SaveChanges_DontSave" xml:space="preserve"><value>Не зберігати</value></data>
+  <data name="App_SaveChanges_Cancel" xml:space="preserve"><value>Скасувати</value></data>
+
+  <data name="App_GoToOffset_Title" xml:space="preserve"><value>Перейти до зміщення</value></data>
+  <data name="App_GoToOffset_EnterOffset" xml:space="preserve"><value>Введіть зміщення:</value></data>
+  <data name="App_GoToOffset_Hexadecimal" xml:space="preserve"><value>Шістнадцяткове (0x…)</value></data>
+  <data name="App_GoToOffset_Decimal" xml:space="preserve"><value>Десяткове</value></data>
+  <data name="App_GoToOffset_Go" xml:space="preserve"><value>Перейти</value></data>
+  <data name="App_GoToOffset_Cancel" xml:space="preserve"><value>Скасувати</value></data>
+
+  <data name="App_ImportFormat_Title" xml:space="preserve"><value>Імпортувати вбудоване визначення формату</value></data>
+  <data name="App_ImportFormat_VersionLabel" xml:space="preserve"><value>Версія:</value></data>
+  <data name="App_ImportFormat_AuthorLabel" xml:space="preserve"><value>Автор:</value></data>
+  <data name="App_ImportFormat_ExtensionsLabel" xml:space="preserve"><value>Розширення</value></data>
+  <data name="App_ImportFormat_QualityLabel" xml:space="preserve"><value>Якість</value></data>
+  <data name="App_ImportFormat_PreviewLabel" xml:space="preserve"><value>Попередній перегляд</value></data>
+  <data name="App_ImportFormat_DestinationFolder" xml:space="preserve"><value>_Цільова папка:</value></data>
+  <data name="App_ImportFormat_Import" xml:space="preserve"><value>_Імпортувати</value></data>
+  <data name="App_ImportFormat_Cancel" xml:space="preserve"><value>Скасувати</value></data>
+
+  <data name="App_ImportSyntax_Title" xml:space="preserve"><value>Імпортувати вбудоване визначення синтаксису</value></data>
+  <data name="App_ImportSyntax_ShowPreview" xml:space="preserve"><value>Показати попередній перегляд</value></data>
+  <data name="App_ImportSyntax_ExtensionsLabel" xml:space="preserve"><value>Розширення</value></data>
+  <data name="App_ImportSyntax_DestinationFolder" xml:space="preserve"><value>_Цільова папка:</value></data>
+  <data name="App_ImportSyntax_Import" xml:space="preserve"><value>_Імпортувати</value></data>
+  <data name="App_ImportSyntax_Cancel" xml:space="preserve"><value>Скасувати</value></data>
+
+  <data name="App_PanelWelcome" xml:space="preserve"><value>Ласкаво просимо</value></data>
+  <data name="App_PanelSolutionExplorer" xml:space="preserve"><value>Оглядач рішень</value></data>
+  <data name="App_PanelErrorList" xml:space="preserve"><value>Список помилок</value></data>
+  <data name="App_PanelExtensionsMonitor" xml:space="preserve"><value>Монітор розширень</value></data>
+  <data name="App_PanelOutput" xml:space="preserve"><value>Виведення</value></data>
+  <data name="App_ExportFormatDefinitionTitle" xml:space="preserve"><value>Експортувати визначення формату</value></data>
+  <data name="App_FormatUpgradeRequired" xml:space="preserve"><value>Потрібне оновлення формату</value></data>
+  <data name="App_FormatUpgrade" xml:space="preserve"><value>Оновлення формату</value></data>
+  <data name="App_ConvertTbl" xml:space="preserve"><value>Конвертувати TBL</value></data>
+  <data name="App_RemoveFromProject" xml:space="preserve"><value>Видалити з проекту</value></data>
+  <data name="App_RemoveFromProjectMessage" xml:space="preserve"><value>Видалити '{0}' з проекту?\n(Файл на диску не буде видалено.)</value></data>
+  <data name="App_DeleteFile" xml:space="preserve"><value>Видалити файл</value></data>
+  <data name="App_DeleteFileMessage" xml:space="preserve"><value>Видалити '{0}' і перемістити до кошика?</value></data>
+  <data name="App_RemoveFolder" xml:space="preserve"><value>Видалити папку</value></data>
+  <data name="App_RemoveSolutionFolder" xml:space="preserve"><value>Видалити папку рішення</value></data>
+  <data name="App_SelectImportFolder" xml:space="preserve"><value>Вибрати папку для імпорту</value></data>
+  <data name="App_OpenSolutionProject" xml:space="preserve"><value>Відкрити рішення або проект</value></data>
+  <data name="App_OpenFolder" xml:space="preserve"><value>Відкрити папку</value></data>
+  <data name="App_FailedCreateSolution" xml:space="preserve"><value>Не вдалося створити рішення:\n{0}</value></data>
+  <data name="App_FailedOpenSolution" xml:space="preserve"><value>Не вдалося відкрити рішення:\n{0}</value></data>
+  <data name="App_RenameTitle" xml:space="preserve"><value>Перейменувати</value></data>
+
+  <!-- DockItem titles -->
+  <data name="App_DockTitle_ExtensionManager" xml:space="preserve"><value>Менеджер розширень</value></data>
+  <data name="App_DockTitle_ExtensionsMonitor" xml:space="preserve"><value>Монітор розширень</value></data>
+  <data name="App_DockTitle_ExtensionMarketplace" xml:space="preserve"><value>Marketplace розширень</value></data>
+  <data name="App_DockTitle_Terminal" xml:space="preserve"><value>Термінал</value></data>
+  <data name="App_DockTitle_SettingsJson" xml:space="preserve"><value>settings.json</value></data>
+  <data name="App_DockTitle_Properties" xml:space="preserve"><value>{0} — Властивості</value></data>
+  <data name="App_DockTitle_NuGet" xml:space="preserve"><value>NuGet — {0}</value></data>
+  <data name="App_DockTitle_NuGetSolution" xml:space="preserve"><value>NuGet — {0} (Рішення)</value></data>
+  <data name="App_DockTitle_References" xml:space="preserve"><value>Посилання — {0}</value></data>
+  <data name="App_DockTitle_ReadOnly" xml:space="preserve"><value>WpfHexEditor — {0} [формат лише для читання v{1}]</value></data>
+
+  <!-- Context menus -->
+  <data name="App_ContextMenu_None" xml:space="preserve"><value>(жодного)</value></data>
+  <data name="App_ContextMenu_CompareWithActive" xml:space="preserve"><value>Порівняти з активним редактором</value></data>
+  <data name="App_ContextMenu_CompareWithAnother" xml:space="preserve"><value>Порівняти з іншим файлом…</value></data>
+  <data name="App_JumpList_RecentProjects" xml:space="preserve"><value>Останні проекти</value></data>
+  <data name="App_JumpList_RecentFiles" xml:space="preserve"><value>Останні файли</value></data>
+
+  <!-- Workspace dialogs -->
+  <data name="App_Workspace_NewTitle" xml:space="preserve"><value>Новий робочий простір</value></data>
+  <data name="App_Workspace_NewFailed" xml:space="preserve"><value>Не вдалося створити робочий простір:{0}{1}</value></data>
+  <data name="App_Workspace_OpenTitle" xml:space="preserve"><value>Відкрити робочий простір</value></data>
+  <data name="App_Workspace_OpenFailed" xml:space="preserve"><value>Не вдалося відкрити робочий простір:{0}{1}</value></data>
+  <data name="App_Workspace_SaveFailed" xml:space="preserve"><value>Не вдалося зберегти робочий простір:{0}{1}</value></data>
+  <data name="App_Workspace_SaveAsTitle" xml:space="preserve"><value>Зберегти робочий простір як</value></data>
+  <data name="App_Workspace_CloseTitle" xml:space="preserve"><value>Закрити робочий простір</value></data>
+  <data name="App_Workspace_CloseSavePrompt" xml:space="preserve"><value>Зберегти робочий простір '{0}' перед закриттям?</value></data>
+
+  <!-- Debugger dialogs -->
+  <data name="App_Debug_AttachTitle" xml:space="preserve"><value>Підключитись до процесу</value></data>
+  <data name="App_Debug_AttachNotAvailable" xml:space="preserve"><value>Служба налагодження недоступна.</value></data>
+  <data name="App_Debug_AttachPidPrompt" xml:space="preserve"><value>Введіть ідентифікатор процесу (PID), до якого підключаєтесь:</value></data>
+  <data name="App_Debug_StartTitle" xml:space="preserve"><value>Запустити налагодження</value></data>
+  <data name="App_Debug_NoStartupProject" xml:space="preserve"><value>Стартовий проект не визначено. Будь ласка, визначте стартовий проект перед налагодженням.</value></data>
+  <data name="App_Debug_BuildFailed" xml:space="preserve"><value>Збирання не вдалося. Виправте помилки перед налагодженням.</value></data>
+  <data name="App_Debug_ExeNotFound" xml:space="preserve"><value>Не вдалося знайти програму для налагодження:{0}{1}{0}{0}Проект було зібрано, але вихідний виконуваний файл не знайдено.</value></data>
+
+  <!-- TBL import -->
+  <data name="App_TblImport_Failed" xml:space="preserve"><value>Не вдалося завантажити файл TBL:{0}{1}</value></data>
+
+  <!-- Extensions -->
+  <data name="App_Extensions_SelectOutputDir" xml:space="preserve"><value>Вибрати вихідний каталог розширення</value></data>
+
+  <!-- Solution Convert dialogs -->
+  <data name="App_Convert_Title" xml:space="preserve"><value>Конвертувати формат рішення</value></data>
+  <data name="App_Convert_NoSolution" xml:space="preserve"><value>Жодне рішення наразі не відкрито.</value></data>
+  <data name="App_Convert_NotSln" xml:space="preserve"><value>Поточне рішення не є файлом .sln.</value></data>
+  <data name="App_Convert_NotSlnx" xml:space="preserve"><value>Поточне рішення не є файлом .slnx.</value></data>
+  <data name="App_Convert_AlreadyWhsln" xml:space="preserve"><value>Поточне рішення вже є файлом .whsln.</value></data>
+  <data name="App_Convert_Confirm" xml:space="preserve"><value>Конвертувати «{0}» → «{1}»?{2}{2}Оригінальний файл буде збережено.</value></data>
+  <data name="App_Convert_NoLoader" xml:space="preserve"><value>Немає зареєстрованого завантажувача для формату {0}. Переконайтесь, що плагін VS Solution Loader активний.</value></data>
+  <data name="App_Convert_NoLoaderSimple" xml:space="preserve"><value>Немає зареєстрованого завантажувача для формату {0}.</value></data>
+  <data name="App_Convert_Success" xml:space="preserve"><value>Конвертовано в «{0}».{1}{1}Відкрити конвертоване рішення зараз?</value></data>
+  <data name="App_Convert_Failed" xml:space="preserve"><value>Не вдалося конвертувати:{0}{1}</value></data>
+
+  <!-- Compare dialog -->
+  <data name="App_Compare_SelectFile" xml:space="preserve"><value>Вибрати файл для порівняння</value></data>
+
+  <!-- Document/Editor labels -->
+  <data name="App_Editor_HexEditor" xml:space="preserve"><value>Hex-редактор</value></data>
+  <data name="App_Editor_Encodings" xml:space="preserve"><value>Кодування</value></data>
+  <data name="App_Editor_ProjectTables" xml:space="preserve"><value>Таблиці проекту</value></data>
+  <data name="App_Editor_FileNotFound" xml:space="preserve"><value>Файл не знайдено:{0}{1}</value></data>
+  <data name="App_Editor_NewDocumentText" xml:space="preserve"><value>Це документ: {0}{1}{1}Редагуйте цей текст...</value></data>
+  <data name="App_Editor_RefreshPrefix" xml:space="preserve"><value>Оновлення: </value></data>
+
+  <!-- LSP / navigation messages -->
+  <data name="App_LSP_TryOpenFile" xml:space="preserve"><value>Спробуйте відкрити файл оголошення безпосередньо або переконайтесь, що LSP-сервер запущено.</value></data>
+  <data name="App_LSP_LoadAssembly" xml:space="preserve"><value>Завантажте збірку в оглядачі збірок для доступу до декомпільованого джерела.</value></data>
+
+  <!-- Breadcrumb "not found" labels -->
+  <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve"><value>Проект не знайдено.</value></data>
+  <data name="App_Breadcrumb_SolutionNotLoaded" xml:space="preserve"><value>Рішення не завантажено.</value></data>
+
+  <!-- Debugger service messages -->
+  <data name="App_Debugger_AdapterNotFound" xml:space="preserve"><value>Адаптер налагодження (netcoredbg) не знайдено.{0}Встановіть його або вкажіть шлях у Параметри → Налагодження.</value></data>
+  <data name="App_Debugger_AdapterMissing" xml:space="preserve"><value>Встановіть відповідний плагін адаптера або налаштуйте власний адаптер.</value></data>
+  <data name="App_Debugger_Title" xml:space="preserve"><value>Налагоджувач</value></data>
+
+  <!-- Toolbar tooltips -->
+  <data name="App_Toolbar_New" xml:space="preserve"><value>Створити…</value></data>
+  <data name="App_Toolbar_Open" xml:space="preserve"><value>Відкрити…</value></data>
+  <data name="App_Toolbar_Save" xml:space="preserve"><value>Зберегти (Ctrl+S)</value></data>
+  <data name="App_Toolbar_SaveAll" xml:space="preserve"><value>Зберегти все (Ctrl+Shift+S)</value></data>
+  <data name="App_Toolbar_Cut" xml:space="preserve"><value>Вирізати (Ctrl+X)</value></data>
+  <data name="App_Toolbar_Copy" xml:space="preserve"><value>Копіювати (Ctrl+C)</value></data>
+  <data name="App_Toolbar_Paste" xml:space="preserve"><value>Вставити (Ctrl+V)</value></data>
+  <data name="App_Toolbar_Find" xml:space="preserve"><value>Знайти… (Ctrl+F)</value></data>
+  <data name="App_Toolbar_FindNext" xml:space="preserve"><value>Наступне (F3)</value></data>
+  <data name="App_Toolbar_FindPrevious" xml:space="preserve"><value>Попереднє (Shift+F3)</value></data>
+  <data name="App_Toolbar_SolutionExplorer" xml:space="preserve"><value>Оглядач рішень (Ctrl+Alt+L)</value></data>
+  <data name="App_Toolbar_ParsedFields" xml:space="preserve"><value>Розібрані поля</value></data>
+  <data name="App_Toolbar_Properties" xml:space="preserve"><value>Властивості (F4)</value></data>
+  <data name="App_Toolbar_Output" xml:space="preserve"><value>Виведення</value></data>
+  <data name="App_Toolbar_CharacterTable" xml:space="preserve"><value>Таблиця символів</value></data>
+  <data name="App_Toolbar_ActiveCharTable" xml:space="preserve"><value>Активна таблиця символів</value></data>
+  <data name="App_Toolbar_BuildConfig" xml:space="preserve"><value>Конфігурація збирання</value></data>
+  <data name="App_Toolbar_TargetPlatform" xml:space="preserve"><value>Цільова платформа</value></data>
+  <data name="App_Toolbar_StartupProject" xml:space="preserve"><value>Стартовий проект — запускається через ▶ Запустити (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_StartNoDebug" xml:space="preserve"><value>Запустити без налагодження (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_BuildSolution" xml:space="preserve"><value>Зібрати рішення (Ctrl+Shift+B)</value></data>
+  <data name="App_Toolbar_RebuildSolution" xml:space="preserve"><value>Перезібрати рішення</value></data>
+  <data name="App_Toolbar_CleanSolution" xml:space="preserve"><value>Очистити рішення</value></data>
+  <data name="App_Toolbar_CancelBuild" xml:space="preserve"><value>Скасувати збирання</value></data>
+  <data name="App_Toolbar_Continue" xml:space="preserve"><value>Продовжити (F5)</value></data>
+  <data name="App_Toolbar_Pause" xml:space="preserve"><value>Призупинити</value></data>
+  <data name="App_Toolbar_StopDebugging" xml:space="preserve"><value>Зупинити налагодження (Shift+F5)</value></data>
+  <data name="App_Toolbar_StepOver" xml:space="preserve"><value>Крок через (F10)</value></data>
+  <data name="App_Toolbar_StepInto" xml:space="preserve"><value>Крок у (F11)</value></data>
+  <data name="App_Toolbar_StepOut" xml:space="preserve"><value>Крок з (Shift+F11)</value></data>
+  <data name="App_Toolbar_Dismiss" xml:space="preserve"><value>Закрити</value></data>
+  <data name="App_Toolbar_CancelOperation" xml:space="preserve"><value>Скасувати операцію</value></data>
+  <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>Натисніть для зміни гілки</value></data>
+  <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>Незафіксовані зміни</value></data>
+  <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>Доступні оновлення плагінів — натисніть для відкриття Marketplace</value></data>
+
+  <!-- Shell / project / misc -->
+  <data name="App_Error" xml:space="preserve"><value>Помилка</value></data>
+  <data name="App_SaveAs" xml:space="preserve"><value>Зберегти як</value></data>
+  <data name="App_AddExistingItem" xml:space="preserve"><value>Додати існуючий елемент</value></data>
+  <data name="App_PanelOptions" xml:space="preserve"><value>Параметри</value></data>
+  <data name="App_PanelFormatCatalog" xml:space="preserve"><value>Каталог форматів</value></data>
+  <data name="App_SelectEntropyFile" xml:space="preserve"><value>Вибрати файл для аналізу ентропії</value></data>
+  <data name="App_RemoveFolderMessage" xml:space="preserve"><value>Видалити папку «{0}» з проекту?{1}Елементи всередині будуть збережені в кореневій папці проекту. Фізичний каталог не буде видалено.</value></data>
+  <data name="App_RemoveSolutionFolderMessage" xml:space="preserve"><value>Видалити папку рішення «{0}»?{1}Проекти всередині будуть збережені в кореневій папці рішення.</value></data>
+  <data name="App_ImportIntoProject" xml:space="preserve"><value>Імпортувати до проекту</value></data>
+  <data name="App_ImportIntoProjectMessage" xml:space="preserve"><value>Скопіювати «{0}» до каталогу проекту?{1}{2}{1}Оригінальний файл не буде видалено.</value></data>
+  <data name="App_FailedCreateProject" xml:space="preserve"><value>Не вдалося створити проект:{0}{1}</value></data>
+  <data name="App_FailedCreateFile" xml:space="preserve"><value>Не вдалося створити файл:{0}{1}</value></data>
+  <data name="App_FailedLoadLayout" xml:space="preserve"><value>Не вдалося завантажити розташування:{0}{1}</value></data>
+  <data name="App_FailedWriteTblx" xml:space="preserve"><value>Не вдалося записати файл TBLX:{0}{1}</value></data>
+  <data name="App_CompareWithHead" xml:space="preserve"><value>Порівняти з HEAD</value></data>
+  <data name="App_CompareWithHeadNoRepo" xml:space="preserve"><value>Репозиторій git для цього файлу не знайдено.</value></data>
+  <data name="App_CompareWithHeadNoVersion" xml:space="preserve"><value>Не вдалося отримати версію HEAD з git.</value></data>
+  <data name="App_UpgradeMessagePattern" xml:space="preserve"><value>Наступні файли використовують старий формат (v{0}), який буде оновлено до v{1}:{2}{2}  • {3}{2}{2}Для кожного файлу буде створено резервну копію (.v{0}.bak).{2}{2}Оновити зараз?</value></data>
+  <data name="App_UpgradeFailedMessage" xml:space="preserve"><value>Не вдалося оновити: {0}</value></data>
+  <data name="App_InfoBar_Disable" xml:space="preserve"><value>Вимкнути</value></data>
+  <data name="App_InfoBar_Restart" xml:space="preserve"><value>Перезапустити</value></data>
+  <data name="App_InfoBar_Ignore" xml:space="preserve"><value>Ігнорувати</value></data>
+  <data name="App_InfoBar_Reload" xml:space="preserve"><value>Перезавантажити</value></data>
+  <data name="App_InfoBar_KeepEdits" xml:space="preserve"><value>Зберегти мої зміни</value></data>
+
+  <!-- Options panel strings -->
+  <data name="App_Options_ClearAll" xml:space="preserve"><value>Очистити все</value></data>
+  <data name="App_Options_ResetToDefaults" xml:space="preserve"><value>Скинути до значень за замовчуванням</value></data>
+  <data name="App_Options_ClearHistory" xml:space="preserve"><value>Очистити історію</value></data>
+  <data name="App_Options_Save" xml:space="preserve"><value>Зберегти</value></data>
+  <data name="App_Options_Browse" xml:space="preserve"><value>Огляд…</value></data>
+  <data name="App_Options_SavedComparisons" xml:space="preserve"><value>збережених порівнянь</value></data>
+  <data name="App_Options_ShowMinimap" xml:space="preserve"><value>Показати мінікарту</value></data>
+  <data name="App_Options_HighlightCharDiff" xml:space="preserve"><value>Підсвічувати відмінності на рівні символів у змінених рядках (≤ 500 симв.)</value></data>
+  <data name="App_Options_CollapseIdentical" xml:space="preserve"><value>Згорнути ідентичні ділянки</value></data>
+  <data name="App_Options_StopAtEntry" xml:space="preserve"><value>Зупинятись на точці входу програми (Main)</value></data>
+  <data name="App_Options_ShowReturnValues" xml:space="preserve"><value>Показувати значення, що повертаються, у локальних змінних після кожного кроку</value></data>
+  <data name="App_Options_HighlightBreakpoints" xml:space="preserve"><value>Підсвічувати рядки точок зупину в редакторі (червоний/оранжевий/сірий відтінок)</value></data>
+  <data name="App_Options_AutoImportBreakpoints" xml:space="preserve"><value>Автоматично імпортувати точки зупину VS при першому відкритті рішення</value></data>
+  <data name="App_Options_AutoExportBreakpoints" xml:space="preserve"><value>Автоматично експортувати точки зупину у VS XML при збереженні</value></data>
+  <data name="App_Options_DetectExternalChanges" xml:space="preserve"><value>Виявляти зміни файлів поза IDE</value></data>
+  <data name="App_Options_AutoReload" xml:space="preserve"><value>Автоматично перезавантажувати змінені файли без підтвердження</value></data>
+  <data name="App_Options_EnableDockAnimations" xml:space="preserve"><value>Увімкнути анімації закріплення</value></data>
+  <data name="App_Options_WrapTabs" xml:space="preserve"><value>Розміщувати вкладки у кількох рядках</value></data>
+  <data name="App_Options_ScrollTabRows" xml:space="preserve"><value>Прокручувати рядки вкладок колесом миші</value></data>
+  <data name="App_Options_EnableTabPreview" xml:space="preserve"><value>Увімкнути попередній перегляд вкладок при наведенні</value></data>
+  <data name="App_Options_ShowFilenameFooter" xml:space="preserve"><value>Показувати ім'я файлу в нижньому колонтитулі</value></data>
+  <data name="App_Options_RestoreSolution" xml:space="preserve"><value>Відновити рішення</value></data>
+  <data name="App_Options_RestoreTabs" xml:space="preserve"><value>Відновити відкриті вкладки редактора</value></data>
+  <data name="App_Options_RestoreTheme" xml:space="preserve"><value>Відновити тему</value></data>
+  <data name="App_Options_PromptSaveWorkspace" xml:space="preserve"><value>Запитувати про збереження робочого простору перед закриттям</value></data>
+  <data name="App_Options_EnableTabPreviewHover" xml:space="preserve"><value>Увімкнути попередній перегляд вкладок при наведенні</value></data>
+  <data name="App_Options_ShowFileNameBelowPreview" xml:space="preserve"><value>Показувати ім'я файлу під попереднім переглядом</value></data>
+  <data name="App_Options_KbCategory" xml:space="preserve"><value>Категорія</value></data>
+  <data name="App_Options_KbCommand" xml:space="preserve"><value>Команда</value></data>
+  <data name="App_Options_KbDefault" xml:space="preserve"><value>За замовчуванням</value></data>
+  <data name="App_Options_KbShortcut" xml:space="preserve"><value>Скорочення</value></data>
+  <data name="App_Options_LspEnabled" xml:space="preserve"><value>Увімкнено</value></data>
+  <data name="App_Options_LspLanguageId" xml:space="preserve"><value>ID мови</value></data>
+  <data name="App_Options_LspExtensions" xml:space="preserve"><value>Розширення</value></data>
+  <data name="App_Options_LspExecutable" xml:space="preserve"><value>Виконуваний файл</value></data>
+  <data name="App_Options_LspArguments" xml:space="preserve"><value>Аргументи</value></data>
+  <data name="App_Options_LspSource" xml:space="preserve"><value>Джерело</value></data>
+  <data name="App_Options_AllSettings" xml:space="preserve"><value>Всі параметри</value></data>
+  <data name="App_Options_ResetOverrides" xml:space="preserve"><value>Скинути підстановки</value></data>
+  <data name="App_Options_ResetAllOverrides" xml:space="preserve"><value>Скинути всі підстановки</value></data>
+  <data name="App_Options_DockedPanel" xml:space="preserve"><value>Закріплена панель (за замовчуванням)</value></data>
+  <data name="App_Options_InlinePopup" xml:space="preserve"><value>Вбудований спливаючий елемент</value></data>
+  <data name="App_Options_CommandsDefault" xml:space="preserve"><value>Команди (за замовчуванням)</value></data>
+  <data name="App_Options_LspNotActive" xml:space="preserve"><value>LSP неактивний</value></data>
+  <data name="App_Options_LspTypeToSearch" xml:space="preserve"><value>Введіть для пошуку символів робочого простору</value></data>
+  <data name="App_Options_LspSearching" xml:space="preserve"><value>Пошук…</value></data>
+
+  <data name="App_Lsp_CppNotInstalled" xml:space="preserve"><value>LSP-сервер C/C++ не встановлено</value></data>
+  <data name="App_Lsp_ClangdReady" xml:space="preserve"><value>clangd готовий</value></data>
+  <data name="App_Lsp_ClangdFailed" xml:space="preserve"><value>Не вдалося завантажити clangd</value></data>
+  <!-- Welcome Panel -->
+  <data name="App_Welcome_ChangelogUnavailable" xml:space="preserve"><value>Журнал змін недоступний — перевірте підключення до мережі.</value></data>
+  <data name="App_Welcome_VersionDev" xml:space="preserve"><value>Версія для розробників</value></data>
+  <!-- View Menu Organizer -->
+  <data name="App_ViewMenu_OrganizeBy" xml:space="preserve"><value>Впо_рядкувати за…</value></data>
+  <data name="App_ViewMenu_Flat" xml:space="preserve"><value>_Плоский (класичний)</value></data>
+  <data name="App_ViewMenu_Categorized" xml:space="preserve"><value>За _категоріями</value></data>
+  <data name="App_ViewMenu_ByDockSide" xml:space="preserve"><value>За стороною _закріплення</value></data>
+  <data name="App_ViewMenu_PinToViewMenu" xml:space="preserve"><value>_Закріпити в меню Вигляд</value></data>
+  <data name="App_ViewMenu_UnpinFromViewMenu" xml:space="preserve"><value>_Відкріпити від меню Вигляд</value></data>
+  <!-- Document InfoBar -->
+  <data name="App_InfoBar_HexEditor" xml:space="preserve"><value>Hex-редактор</value></data>
+  <!-- Notification Center -->
+  <data name="App_Notifications_Title" xml:space="preserve"><value>Сповіщення</value></data>
+  <data name="App_Notifications_Empty" xml:space="preserve"><value>Немає сповіщень</value></data>
+  <data name="App_Notifications_ClearAll" xml:space="preserve"><value>Очистити все</value></data>
+  <!-- Source Files Page -->
+  <data name="App_SourceFiles_SelectFolder" xml:space="preserve"><value>Вибрати папку з вихідними файлами</value></data>
+  <!-- Configuration Properties Page -->
+  <data name="App_ConfigPage_BuildAll" xml:space="preserve"><value>Зібрати все</value></data>
+  <data name="App_ConfigPage_DeployAll" xml:space="preserve"><value>Розгорнути все</value></data>
+  <!-- Startup Projects Page -->
+  <data name="App_StartupProjects_CurrentSelection" xml:space="preserve"><value>Поточний вибір</value></data>
+  <data name="App_StartupProjects_SingleProject" xml:space="preserve"><value>Одиночний стартовий проект:</value></data>
+  <data name="App_StartupProjects_MultipleProjects" xml:space="preserve"><value>Кілька стартових проектів:</value></data>
+  <data name="App_StartupProjects_LaunchProfiles" xml:space="preserve"><value>Профілі запуску</value></data>
+  <!-- Options Pages -->
+  <data name="App_Options_SelectDebugAdapter" xml:space="preserve"><value>Вибрати виконуваний файл адаптера налагодження</value></data>
+  <data name="App_Options_SelectLspExecutable" xml:space="preserve"><value>Вибрати виконуваний файл LSP-сервера</value></data>
+  <!-- LSP Status -->
+  <data name="App_Lsp_ErrorTitle" xml:space="preserve"><value>Помилка LSP</value></data>
+
+  <!-- Options combo items — View Menu sort order -->
+  <data name="App_ViewMenu_SortAlphabetical"      xml:space="preserve"><value>За алфавітом</value></data>
+  <data name="App_ViewMenu_SortByFrequency"       xml:space="preserve"><value>За частотою</value></data>
+  <data name="App_ViewMenu_SortCustom"            xml:space="preserve"><value>Власний порядок</value></data>
+
+  <!-- Options combo items — Tabs placement -->
+  <data name="App_Tabs_PositionTop"               xml:space="preserve"><value>Зверху</value></data>
+  <data name="App_Tabs_PositionLeft"              xml:space="preserve"><value>Ліворуч</value></data>
+  <data name="App_Tabs_PositionRight"             xml:space="preserve"><value>Праворуч</value></data>
+  <data name="App_Tabs_PositionNone"              xml:space="preserve"><value>Немає</value></data>
+
+  <!-- Options combo items — Tabs color mode (group by) -->
+  <data name="App_Tabs_GroupByProject"            xml:space="preserve"><value>За проектом</value></data>
+  <data name="App_Tabs_GroupByExtension"          xml:space="preserve"><value>За розширенням файлу</value></data>
+  <data name="App_Tabs_GroupByRegex"              xml:space="preserve"><value>За правилом regex</value></data>
+
+  <!-- Options combo items — Docking shadow/highlight mode -->
+  <data name="App_Docking_ShadowNone"             xml:space="preserve"><value>Немає</value></data>
+  <data name="App_Docking_ShadowTopBar"           xml:space="preserve"><value>Верхня смуга</value></data>
+  <data name="App_Docking_ShadowFullBorder"       xml:space="preserve"><value>Повна рамка</value></data>
+  <data name="App_Docking_ShadowGlow"             xml:space="preserve"><value>Підсвічування</value></data>
+
+  <!-- Options combo items — Docking corner radius scope -->
+  <data name="App_Docking_CornerNormal"           xml:space="preserve"><value>Звичайний (гострі кути)</value></data>
+  <data name="App_Docking_CornerRoundedContent"   xml:space="preserve"><value>Закруглений — лише область вмісту</value></data>
+  <data name="App_Docking_CornerRoundedFull"      xml:space="preserve"><value>Закруглений — повна рамка панелі</value></data>
+
+  <!-- Options combo items — Comparison view mode -->
+  <data name="App_Comparison_ModeSideBySide"      xml:space="preserve"><value>Поруч</value></data>
+  <data name="App_Comparison_ModeInline"          xml:space="preserve"><value>Вбудований</value></data>
+  <data name="App_Comparison_ModeHexText"         xml:space="preserve"><value>HexТекст</value></data>
+
+  <!-- Options combo items — Code Editor minimap side -->
+  <data name="App_CodeEditor_MinimapRight"        xml:space="preserve"><value>Праворуч</value></data>
+  <data name="App_CodeEditor_MinimapLeft"         xml:space="preserve"><value>Ліворуч</value></data>
+
+  <!-- Options combo items — Code Editor minimap vertical size -->
+  <data name="App_CodeEditor_MinimapProportional" xml:space="preserve"><value>Пропорційний</value></data>
+  <data name="App_CodeEditor_MinimapFill"         xml:space="preserve"><value>Заповнити</value></data>
+  <data name="App_CodeEditor_MinimapFit"          xml:space="preserve"><value>Вмістити</value></data>
+
+  <!-- GoToOffsetDialog validation messages -->
+  <data name="App_GoTo_EnterOffset" xml:space="preserve"><value>Будь ласка, введіть зміщення.</value></data>
+  <data name="App_GoTo_InvalidHex" xml:space="preserve"><value>Недійсне шістнадцяткове значення.</value></data>
+  <data name="App_GoTo_InvalidDecimal" xml:space="preserve"><value>Недійсне десяткове значення.</value></data>
+  <data name="App_GoTo_OffsetNonNegative" xml:space="preserve"><value>Зміщення має бути невід'ємним.</value></data>
+
+  <!-- PasteConflictDialog validation messages -->
+  <data name="App_PasteConflict_EnterFileName" xml:space="preserve"><value>Будь ласка, введіть ім'я файлу.</value></data>
+  <data name="App_PasteConflict_InvalidChars" xml:space="preserve"><value>Ім'я містить недійсні символи.</value></data>
+  <data name="APP_QuickActionsSection" xml:space="preserve">
+    <value>ШВИДКІ ДІЇ</value>
+  </data>
+  <data name="APP_NewFileButton" xml:space="preserve">
+    <value>Новий файл</value>
+  </data>
+  <data name="APP_OpenFileButton" xml:space="preserve">
+    <value>Відкрити файл…</value>
+  </data>
+  <data name="APP_OpenProjectButton" xml:space="preserve">
+    <value>Відкрити проект / рішення…</value>
+  </data>
+  <data name="APP_OptionsButton" xml:space="preserve">
+    <value>Параметри</value>
+  </data>
+  <data name="APP_RecentSection" xml:space="preserve">
+    <value>ОСТАННІ</value>
+  </data>
+  <data name="APP_NoRecentFiles" xml:space="preserve">
+    <value>Немає останніх файлів</value>
+  </data>
+  <data name="APP_RecentProjectsSection" xml:space="preserve">
+    <value>ОСТАННІ ПРОЕКТИ</value>
+  </data>
+  <data name="APP_NoRecentProjects" xml:space="preserve">
+    <value>Немає останніх проектів</value>
+  </data>
+  <data name="APP_ResourcesSection" xml:space="preserve">
+    <value>РЕСУРСИ</value>
+  </data>
+  <data name="APP_GitHubLink" xml:space="preserve">
+    <value>Репозиторій GitHub ↗</value>
+  </data>
+  <data name="APP_WikiLink" xml:space="preserve">
+    <value>Wiki ↗</value>
+  </data>
+  <data name="APP_ReportIssueLink" xml:space="preserve">
+    <value>Повідомити про проблему ↗</value>
+  </data>
+  <data name="APP_WhatsNewSection" xml:space="preserve">
+    <value>ЩО НОВОГО</value>
+  </data>
+  <data name="APP_LoadingChangelog" xml:space="preserve">
+    <value>Завантаження журналу змін…</value>
+  </data>
+  <data name="APP_ChangelogNotAvailable" xml:space="preserve">
+    <value>Журнал змін недоступний.</value>
+  </data>
+  <data name="APP_GitHubButton" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="APP_WikiButton" xml:space="preserve">
+    <value>Wiki</value>
+  </data>
+  <data name="APP_ReportIssueButton" xml:space="preserve">
+    <value>Повідомити про проблему</value>
+  </data>
+  <data name="APP_FullChangelogButton" xml:space="preserve">
+    <value>Повний журнал змін</value>
+  </data>
+  <data name="APP_Dismiss" xml:space="preserve"><value>Закрити</value></data>
+  <data name="APP_ViewIn" xml:space="preserve"><value>Переглянути в:</value></data>
+  <data name="APP_UnsavedChanges" xml:space="preserve"><value>Незбережені зміни</value></data>
+  <data name="APP_ReadOnly" xml:space="preserve"><value>Лише для читання</value></data>
+  <data name="APP_ExtensionSystem" xml:space="preserve"><value>СИСТЕМА РОЗШИРЕНЬ</value></data>
+  <data name="APP_SlowBadge" xml:space="preserve"><value>ПОВІЛЬНО</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>Копіювати</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>Вибрати все</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>Зберегти виведення як...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>Копіювати все</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>Очистити все</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>Увімкнути/вимкнути перенесення рядків</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>Увімкнути/вимкнути автопрокрутку</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>Знайти</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>Оглядач</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>Запустити</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>Зібрати</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>Перезібрати</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>Очистити</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>Зупинити</value></data>
+  <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>Вбудовані таблиці</value></data>
+  <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>За замовчуванням (ASCII)</value></data>
+  <data name="APP_InstallEllipsis" xml:space="preserve"><value>Встановити...</value></data>
+  <data name="APP_DBG_StartDebugging" xml:space="preserve"><value>_Запустити налагодження</value></data>
+  <data name="APP_DBG_StartWithoutDebugging" xml:space="preserve"><value>Запустити _без налагодження</value></data>
+  <data name="APP_DBG_StopDebugging" xml:space="preserve"><value>З_упинити налагодження</value></data>
+  <data name="APP_DBG_Restart" xml:space="preserve"><value>_Перезапустити</value></data>
+  <data name="APP_DBG_Continue" xml:space="preserve"><value>_Продовжити</value></data>
+  <data name="APP_DBG_Pause" xml:space="preserve"><value>_Призупинити</value></data>
+  <data name="APP_DBG_AttachToProcess" xml:space="preserve"><value>_Підключитись до процесу…</value></data>
+  <data name="APP_DBG_StepOver" xml:space="preserve"><value>Крок _через</value></data>
+  <data name="APP_DBG_StepInto" xml:space="preserve"><value>Крок _у</value></data>
+  <data name="APP_DBG_StepOut" xml:space="preserve"><value>Крок _з</value></data>
+  <data name="APP_DBG_ToggleBreakpoint" xml:space="preserve"><value>Перемкнути _точку зупину</value></data>
+  <data name="APP_DBG_DeleteAllBreakpoints" xml:space="preserve"><value>_Видалити всі точки зупину</value></data>
+  <data name="APP_DBG_ShowBreakpoints" xml:space="preserve"><value>Показати _точки зупину</value></data>
+  <data name="APP_DBG_ShowCallStack" xml:space="preserve"><value>Показати _стек викликів</value></data>
+  <data name="APP_DBG_ShowLocals" xml:space="preserve"><value>Показати _локальні змінні</value></data>
+  <data name="APP_DBG_ShowWatch" xml:space="preserve"><value>Показати _спостереження</value></data>
+  <data name="APP_VM_CommandPalette" xml:space="preserve"><value>_Палітра команд</value></data>
+  <data name="APP_VM_SolutionExplorer" xml:space="preserve"><value>_Оглядач рішень</value></data>
+  <data name="APP_VM_Properties" xml:space="preserve"><value>_Властивості</value></data>
+  <data name="APP_VM_Output" xml:space="preserve"><value>_Виведення</value></data>
+  <data name="APP_VM_ErrorList" xml:space="preserve"><value>_Список помилок</value></data>
+  <data name="APP_VM_Terminal" xml:space="preserve"><value>_Термінал</value></data>
+  <data name="APP_VM_MarkdownOutline" xml:space="preserve"><value>_Структура Markdown</value></data>
+  <data name="APP_VM_CompareFiles" xml:space="preserve"><value>_Порівняти файли…</value></data>
+  <data name="APP_VM_FormatBrowser" xml:space="preserve"><value>_Браузер форматів</value></data>
+  <data name="APP_VM_FormatCatalog" xml:space="preserve"><value>_Каталог форматів</value></data>
+  <data name="APP_VM_EntropyAnalysis" xml:space="preserve"><value>_Аналіз ентропії…</value></data>
+  <data name="APP_VM_TipMarkdown" xml:space="preserve"><value>Показати панель структури Markdown (навігатор заголовків)</value></data>
+  <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Переглядати та управляти вбудованими та користувацькими визначеннями форматів .whfmt</value></data>
+  <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Відкрити вкладку документа Каталог форматів (всі формати в сортованій таблиці)</value></data>
+  <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Аналізувати ентропію та розподіл байтів активного файлу</value></data>
+</root>

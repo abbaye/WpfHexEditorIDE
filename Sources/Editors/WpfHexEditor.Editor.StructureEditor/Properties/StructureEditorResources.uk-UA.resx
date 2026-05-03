@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>Сила</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>Обов'язкове</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Додати блок</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Додати</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Скасувати</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Метадані</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Виявлення</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Блоки</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Змінні</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Додатково</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Якість</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Тест</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Зберегти (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Перевірити (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Скасувати (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Повторити (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Перемкнути вигляд коду в реальному часі</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Додати блок (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Дублювати блок (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Незбережені зміни</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Фільтрувати блоки за назвою</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Додати блок...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Дублювати</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Видалити</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Вгору</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Вниз</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Копіювати як JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Вставити блок</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Виберіть блок для редагування його властивостей,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>або натисніть Ctrl+N / правою кнопкою миші для додавання нового блоку.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Hex-підпис</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Hex-байти без пробілів, наприклад 89504E47 для PNG</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Підпис</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>Підписи v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Режим збігу</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Hex-значення</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Мітка</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ Додати підпис</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Індекс ентропії</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Мінімальна ентропія</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Максимальна ентропія</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Мінімальний бал</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Поріг балу</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Шаблони вмісту (текстові формати)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Шаблон Regex</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Додати шаблон</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>Загальне</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Назва формату</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Зрозуміла назва формату (наприклад «ZIP-архів», «PNG-зображення»)</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Версія</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Версія цього визначення (наприклад «1.0», «2.0»)</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Автор</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Автор цього файлу визначення</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Категорія</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Категорія (визначається автоматично зі структури папок: Архіви, Зображення, Аудіо, Відео тощо)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Режим diff</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Бажаний алгоритм diff для DiffViewer</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Бажаний редактор</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>ID фабрики бажаного редактора для файлів, що відповідають цьому формату</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Опис</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Текстовий формат (відкривається в редакторі коду за замовчуванням)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Розширення файлів</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Додати розширення</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME-типи</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ Додати MIME-тип</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Програмне забезпечення</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Додати ПЗ</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Обчислені метрики</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Покриття блоків</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Оцінка повноти</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Розподіл типів</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Блоки</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Глибина</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Змінні</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Правила</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Метадані</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Рівень документування</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Останнє оновлення</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Формат: YYYY-MM-DD (заповнюється автоматично при збереженні)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Пріоритетний формат (топ 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Автоматично вдосконалено (збагачено скриптом — лише для читання)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Тестувати формат на файлі</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Шлях до бінарного файлу для тестування</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Огляд…</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Виберіть бінарний файл для тестування</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Запустити тест</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Копіювати результати до буфера обміну (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Виберіть файл і натисніть ▶ Запустити тест для перевірки поточного визначення формату.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Статус</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Назва блоку</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Тип</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Довж.</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Сирий (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Розібране значення</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Примітка</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Попередження</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Помилка</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Пропущено</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Початкові змінні для інтерпретатора блоків (наприклад лічильники циклів, обчислені зміщення).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Фільтрувати змінні за назвою</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Назва змінної</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Тип</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Початкове значення</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Опис</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Додати змінну</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Твердження</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:ім'я equals 0 or calc:вираз</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Булевий вираз — Ctrl+Space для функцій і змінних</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Контрольні суми</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Версіонування (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Імпорти ($ref Composition)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = назва формату (або structs/Назва), as = псевдонім, що використовується в блоках structRef.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Посилання на формат, наприклад structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>Псевдонім, що використовується в structRef, наприклад PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Додати імпорт</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Криміналістика</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Закладки навігації</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>ім'яЗмінної</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Змінна, що містить зміщення в байтах — Ctrl+Space для підказок</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Додати закладку</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Розташування інспектора</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Шаблони експорту</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Додати шаблон</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>Підказки ШІ</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Бінарне поле з фіксованим або змінним зміщенням і довжиною.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Магічні байти, що ідентифікують формат за певним зміщенням.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Зчитує значення змінної або символічної довжини в іменовану змінну.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Умовно розбирає блоки залежно від значення поля або змінної.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Повторює тіло блоку, поки виконується умова.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Змінює змінну (збільшити, зменшити, встановитиЗмінну).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Обчислює математичний вираз і зберігає результат.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Розбирає масив із фіксованою кількістю структурованих записів.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Вибирає набір блоків-варіантів залежно від дискримінантної змінної.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Вбудовує зовнішнє визначення структури за посиланням.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Створює анотацію навігації до вказаного зміщення.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} помилок</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} попереджень</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>Сирий JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Застосувати</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Скасувати</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Редактор структури</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Візуальний редактор для файлів визначення структури .whfmt. Редагуйте блоки, типи, зміщення, довжини та кольори в DataGrid.</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Довжина:</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Перевірити (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Додати блок (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Перемкнути вигляд коду в реальному часі</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Розташування</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Розташування вигляду коду</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Код праворуч</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Код ліворуч</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Код знизу</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Код зверху</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Формат</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Вкладка</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Блоки</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Перевірка</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Ім'я</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Тип</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Колір</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Прозорість</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Опис</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Прихований</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Порядок байтів</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Тип блоку</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Дія</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Змінна</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Значення</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Обчислення</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Вираз</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Зберегти як</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Позиція</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Offset</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Offset від</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Додати до offset</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Довжина</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Тип значення</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Масив</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Кількість</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Розмір запису</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Змінна індексу</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Цикл кольорів</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Поля запису відображаються як дочірні елементи в дереві.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Union</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Дискримінант</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Варіанти</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Вкладена структура</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Посилання на структуру</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Розташування вказівника</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Ціль і сховище</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Цільова змінна</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Мітка</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Позиція та розмір</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Сховище</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Відображене сховище</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Відображення значень</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Бітові поля</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Ім'я</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Біти</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>До</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Макс. довжина</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Мін. значення</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Макс. значення</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Шаблон (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Повідомлення про помилку</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Ім'я змінної</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Група</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Група візуально позначає набір дочірніх полів кольоровим шаром. Вона не споживає байти.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Дочірні елементи відображаються в дереві блоків — використовуйте дерево для додавання/перестановки дочірніх блоків.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Дочірні поля відображаються в дереві блоків.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Область сирих даних</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Позначає область сирих байтів кольоровим шаром. Значення не витягується.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Умова</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Мітки гілок</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>Мітка «Істина»</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>Мітка «Хибність»</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Блоки Then / Else відображаються як дочірні елементи в дереві.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Умова циклу</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Межі</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Макс. ітерацій</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Блоки тіла відображаються як дочірні елементи в дереві.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Ім'я змінної для зміни — введіть для підказок (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Значення для встановлення / кількість для додавання або віднімання — приймає var:ім'я</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Математичний вираз із змінними та функціями — Ctrl+Space для автодоповнення</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Ім'я змінної для збереження обчисленого результату — Ctrl+Space для підказок</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Зміщення файлу, де починається масив — Ctrl+Space для автодоповнення</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Змінна, що використовується як базове зміщення для цього масиву</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Кількість записів — Ctrl+Space для підказок змінних</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Розмір кожного запису в байтах — Ctrl+Space для підказок змінних</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Ім'я змінної індексу циклу (наприклад i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Додати колір</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Змінна, що керує вибором варіанту — Ctrl+Space для підказок</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Назва формату або відносний шлях до файлу .whfmt</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Огляд…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Зміщення файлу, де зчитується значення вказівника — Ctrl+Space для автодоповнення</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Ім'я змінної, що використовується як базове зміщення</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>Розмір значення вказівника в байтах (наприклад 4 для uint32) — або var:ім'я</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Змінна, що отримає розв'язану адресу вказівника</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Змінна для збереження сирого значення вказівника</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Мітка анотації, що відображається у hex-вигляді</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space для автодоповнення — ціле число, var:ім'я, calc:вираз, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Ім'я змінної, значення якої є базовим зміщенням — Ctrl+Space для підказок</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>Додаткові байти, що додаються до OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space для автодоповнення — ціле число, var:ім'я, calc:вираз</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Ім'я змінної для збереження розібраного значення — Ctrl+Space для підказок</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>Ім'я змінної для перекладеного значення ValueMap — Ctrl+Space для підказок</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>сирий=Відображення (наприклад 0=Відтінки сірого)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ Додати запис ValueMap</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Діапазон бітів, наприклад 7-6, або один біт, наприклад 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Додати бітове поле</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Сторожовий символ (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Hex-шаблон або var:ім'я, де зупинити читання. Замінює Length, якщо встановлено.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Обмеження безпеки (байти), якщо шаблон Until не знайдено. 0 = значення за замовчуванням інтерпретатора (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until включно (включити байти шаблону в довжину поля)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Правила перевірки</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Ім'я змінної, що зчитується цим блоком метаданих</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Фіксоване ціле число або var:ім'я — Ctrl+Space для підказок</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Обмеження безпеки — ціле число</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Змінна, що отримує поточний індекс ітерації (з 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Змінна для збереження кількості ітерацій після циклу — Ctrl+Space для підказок</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Редагувати цей блок як сирий JSON</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Додати твердження</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Додати контрольну суму</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Ім'я шаблону</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Ім'я структури (C struct)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Лише шістнадцяткові цифри (наприклад FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Показати:</value></data>
+</root>

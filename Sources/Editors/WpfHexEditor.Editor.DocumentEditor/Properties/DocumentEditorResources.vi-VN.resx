@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>Tìm và thay thế</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>Tìm :</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>Thay thế :</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>Phân biệt chữ hoa/thường</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>Toàn từ</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>Tìm tất cả</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>Tiếp theo</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>Trước đó</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>Thay thế</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>Thay thế tất cả</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>Đóng</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>Trang</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>Định dạng :</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>Tùy chỉnh</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>Hướng :</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>Dọc</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>Ngang</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>Cột</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>Độ rộng cột bằng nhau</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>Hiển thị đường phân cách giữa các cột</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>Đầu/Chân trang</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>Đầu trang</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>Bật đầu trang</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>Nội dung khác trên trang đầu</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>Cùng đầu trang trên trang trái/phải</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>Chân trang</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>Bật chân trang</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>Viền</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>Không</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>Khung</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>Bóng</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>Hủy</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>Áp dụng</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>Trong :</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>Ngoài :</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>Trái :</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>Phải :</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>Chế độ xem văn bản</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>Chế độ xem phân đôi (văn bản + Hex)</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>Chế độ xem Hex</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>Chế độ xem cấu trúc dạng cây</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>Chế độ xem đầy đủ (văn bản + cấu trúc + Hex)</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>Chế độ tập trung — viết zen (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>Văn bản</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>Phân đôi</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>Cấu trúc</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>Đầy đủ</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>Tập trung</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>Chế độ xem trang — thẻ A4/Letter có phân trang</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>Chế độ xem nháp — cuộn liên tục, lề thu gọn</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>Chế độ xem phác thảo — cây cấu trúc ở giữa</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>Chế độ phân tích pháp lý</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>Pháp lý</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>In đậm (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>In nghiêng (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>Gạch chân (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>Gạch ngang</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>Căn trái</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>Căn giữa</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>Căn phải</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>Kiểu đoạn văn</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>Bình thường</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>Trích dẫn</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Mã</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>Kiểu đoạn văn (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>Cài đặt trang (khổ giấy, lề, cột…)</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>Thu nhỏ</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>Phóng to</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>Chỉ đọc</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Siêu dữ liệu tài liệu</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Xuất tài liệu</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Lưu</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Tiêu đề</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Tác giả</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Định dạng</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>Ngày tạo</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>Đã sửa đổi</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>Macro</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>In đậm (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>In nghiêng (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>Gạch chân (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>Sao chép văn bản đã chọn</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>Sao chép dưới dạng byte Hex</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>Kiểm tra khối trong bảng Cấu trúc</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>Đến offset trong bảng Hex</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>Số trang</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>Số từ</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>Mức zoom</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>Nhấp để mở bảng pháp lý</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>Cấu trúc</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>Thu gọn tất cả</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>Mở rộng tất cả</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>Lọc khối…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>Xóa bộ lọc</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>Đến văn bản</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>Đến offset Hex</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>Sao chép văn bản khối</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>Sao chép offset</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>Tài liệu</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>Đã lưu — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>Lưu thất bại : {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>Không có trình lưu đã đăng ký cho loại tệp này.</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>Đang tải tài liệu…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>Đang chờ khởi tạo IDE…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>Không thể mở tài liệu : {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>Xuất tài liệu</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>Xuất thất bại : {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>Đã xuất — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>Không có trình lưu đã đăng ký cho '{0}'.</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>Có</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>Không</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>Văn bản</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>Phân đôi</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>Cấu trúc</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>Đầy đủ</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>Tập trung</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | Chỉ đọc</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>Trang 1</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 từ</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>Phân đôi</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>Định dạng : {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} từ</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>Trang 1 / {0}</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>Bình thường</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>Tiêu đề 1</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>Tiêu đề 2</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>Tiêu đề 3</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>Tiêu đề 4</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>Tiêu đề 5</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>Tiêu đề 6</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>Trích dẫn</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Mã</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>Chú thích</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>Đoạn danh sách</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>Trích dẫn mạnh</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>Cảnh báo</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>Khối</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>Định dạng</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>Vùng chọn</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>Phiên bản</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>Hiển thị</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>Chế độ pháp lý</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>Chế độ xem Hex</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>Lưu</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>Chế độ xem phân đôi</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>Chế độ xem cấu trúc</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>Chế độ xem văn bản</value>
+  </data>
+</root>

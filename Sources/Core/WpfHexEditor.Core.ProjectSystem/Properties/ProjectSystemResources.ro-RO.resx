@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>Numele proiectului nu poate fi gol.</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>Validare</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>Imposibil de redenumit proiectul:</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>Eroare</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>Imposibil de creat dosarul de ieșire:</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>Convertire TBL</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>Calea de ieșire este identică cu sursa. Alegeți un dosar diferit.</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>Eliminare referință</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>Nu s-au găsit referințe de assembly nefolosite.</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>Eliminare referințe nefolosite</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>Eliminați următoarele referințe de assembly nefolosite?</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>Selectați fișierul/fișierele de adăugat</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>Toate fișierele (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>Selectați dosarul părinte al noului proiect</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>Selectați dosarul noului fișier</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>Selectați dosarul părinte al noii soluții</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>Selectați dosarul de ieșire pentru fișierul TBLX convertit</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>Adăugare referință de proiect</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>Fișiere proiect (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|Toate fișierele (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>Adăugare referință de assembly</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>Fișiere assembly (*.dll;*.exe)|*.dll;*.exe|Toate fișierele (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>Selectați directorul de ieșire</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>Selectați o pictogramă</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>Pictograme (*.ico)|*.ico|Toate fișierele (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>Selectați un proiect de referențiat</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>Proiecte C# (*.csproj)|*.csproj|Toate proiectele (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>Referințe proiect</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>Assembly-uri</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>Analizoare</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>Acest tip de proiect nu acceptă gestionarea referințelor.</value>
+  </data>
+  <data name="PS_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PS_Cancel" xml:space="preserve"><value>Anulare</value></data>
+  <data name="PS_Add" xml:space="preserve"><value>Adăugare</value></data>
+  <data name="PS_Browse" xml:space="preserve"><value>Răsfoire…</value></data>
+  <data name="PS_Remove" xml:space="preserve"><value>Eliminare</value></data>
+  <data name="PS_Save" xml:space="preserve"><value>Salvare</value></data>
+  <data name="PS_AddNewItemTitle" xml:space="preserve"><value>Adăugare element nou</value></data>
+  <data name="PS_TemplateLabel" xml:space="preserve"><value>Șablon:</value></data>
+  <data name="PS_NameLabel" xml:space="preserve"><value>Nume:</value></data>
+  <data name="PS_FolderLabel" xml:space="preserve"><value>Dosar:</value></data>
+  <data name="PS_AddExistingItemTitle" xml:space="preserve"><value>Adăugare element existent</value></data>
+  <data name="PS_FilesLabel" xml:space="preserve"><value>Fișier(e):</value></data>
+  <data name="PS_RemoveFileTooltip" xml:space="preserve"><value>Eliminare fișier din selecție</value></data>
+  <data name="PS_DetectedTypeLabel" xml:space="preserve"><value>Tip detectat:</value></data>
+  <data name="PS_ConvertTblTitle" xml:space="preserve"><value>Convertire TBL în TBLX</value></data>
+  <data name="PS_ConversionSection" xml:space="preserve"><value>Conversie</value></data>
+  <data name="PS_SourceLabel" xml:space="preserve"><value>Sursă:</value></data>
+  <data name="PS_TargetLabel" xml:space="preserve"><value>Destinație:</value></data>
+  <data name="PS_GameMetadataSection" xml:space="preserve"><value>Metadate joc (opțional)</value></data>
+  <data name="PS_RomDetectedLabel" xml:space="preserve"><value>ROM detectat:</value></data>
+  <data name="PS_AutoFill" xml:space="preserve"><value>Completare automată</value></data>
+  <data name="PS_GameTitleLabel" xml:space="preserve"><value>Titlul jocului:</value></data>
+  <data name="PS_PlatformLabel" xml:space="preserve"><value>Platformă:</value></data>
+  <data name="PS_RegionLabel" xml:space="preserve"><value>Regiune:</value></data>
+  <data name="PS_AuthorLabel" xml:space="preserve"><value>Autor:</value></data>
+  <data name="PS_YearLabel" xml:space="preserve"><value>An:</value></data>
+  <data name="PS_NewFileTitle" xml:space="preserve"><value>Fișier nou</value></data>
+  <data name="PS_SortLabel" xml:space="preserve"><value>Sortare:</value></data>
+  <data name="PS_SortName" xml:space="preserve"><value>Nume</value></data>
+  <data name="PS_SortCategory" xml:space="preserve"><value>Categorie</value></data>
+  <data name="PS_SortExtension" xml:space="preserve"><value>Extensie</value></data>
+  <data name="PS_GridView" xml:space="preserve"><value>Vizualizare grilă</value></data>
+  <data name="PS_ListView" xml:space="preserve"><value>Vizualizare listă</value></data>
+  <data name="PS_SearchTemplates" xml:space="preserve"><value>Căutare șabloane…</value></data>
+  <data name="PS_BrowseForFolder" xml:space="preserve"><value>Răsfoire dosar</value></data>
+  <data name="PS_CreateInMemory" xml:space="preserve"><value>Creare document în memorie; alegeți locația la primul Ctrl+S</value></data>
+  <data name="PS_NewProjectTitle" xml:space="preserve"><value>Proiect nou</value></data>
+  <data name="PS_NewSolutionTitle" xml:space="preserve"><value>Soluție nouă</value></data>
+  <data name="PS_LocationLabel" xml:space="preserve"><value>Locație:</value></data>
+  <data name="PS_WillCreateLabel" xml:space="preserve"><value>Va crea:</value></data>
+  <data name="PS_ProjectPropertiesTitle" xml:space="preserve"><value>Proprietăți proiect</value></data>
+  <data name="PS_ApplicationTab" xml:space="preserve"><value>Aplicație</value></data>
+  <data name="PS_BuildTab" xml:space="preserve"><value>Compilare</value></data>
+  <data name="PS_ItemsTab" xml:space="preserve"><value>Elemente</value></data>
+  <data name="PS_ReferencesTab" xml:space="preserve"><value>Referințe</value></data>
+  <data name="PS_ProjectFileLabel" xml:space="preserve"><value>Fișier proiect:</value></data>
+  <data name="PS_DirectoryLabel" xml:space="preserve"><value>Director:</value></data>
+  <data name="PS_FilterSections" xml:space="preserve"><value>Filtrare secțiuni</value></data>
+  <data name="PP_NavApplication" xml:space="preserve"><value>Aplicație</value></data>
+  <data name="PP_NavGeneral" xml:space="preserve"><value>General</value></data>
+  <data name="PP_ProjectName" xml:space="preserve"><value>Nume proiect</value></data>
+  <data name="PP_ProjectNameDesc" xml:space="preserve"><value>Nume logic utilizat în Explorator soluții.</value></data>
+  <data name="PP_AssemblyName" xml:space="preserve"><value>Nume assembly</value></data>
+  <data name="PP_AssemblyNameDesc" xml:space="preserve"><value>Numele fișierului de ieșire compilat (fără extensie).</value></data>
+  <data name="PP_DefaultNamespace" xml:space="preserve"><value>Spațiu de nume implicit</value></data>
+  <data name="PP_DefaultNamespaceDesc" xml:space="preserve"><value>Spațiu de nume rădăcină utilizat pentru fișiere noi.</value></data>
+  <data name="PP_TargetFramework" xml:space="preserve"><value>Framework țintă</value></data>
+  <data name="PP_TargetFrameworkDesc" xml:space="preserve"><value>Versiunea runtime .NET vizată de acest proiect.</value></data>
+  <data name="PP_OutputType" xml:space="preserve"><value>Tip de ieșire</value></data>
+  <data name="PP_OutputTypeDesc" xml:space="preserve"><value>Determină dacă proiectul produce un .exe, .dll sau WinExe.</value></data>
+  <data name="PP_OutputTypeLibrary" xml:space="preserve"><value>Bibliotecă de clase</value></data>
+  <data name="PP_OutputTypeConsole" xml:space="preserve"><value>Aplicație consolă</value></data>
+  <data name="PP_OutputTypeWinApp" xml:space="preserve"><value>Aplicație Windows</value></data>
+  <data name="PP_ProjectFile" xml:space="preserve"><value>Fișier proiect</value></data>
+  <data name="PP_Directory" xml:space="preserve"><value>Director</value></data>
+  <data name="PP_ProjectType" xml:space="preserve"><value>Tip proiect</value></data>
+  <data name="PP_NavBuild" xml:space="preserve"><value>Compilare</value></data>
+  <data name="PP_Configuration" xml:space="preserve"><value>Configurare</value></data>
+  <data name="PP_ConfigurationDesc" xml:space="preserve"><value>Profilul de build activ (Debug = simboluri, Release = optimizat).</value></data>
+  <data name="PP_Platform" xml:space="preserve"><value>Platformă</value></data>
+  <data name="PP_PlatformDesc" xml:space="preserve"><value>Arhitectura țintă a binarului compilat.</value></data>
+  <data name="PP_OutputPath" xml:space="preserve"><value>Cale de ieșire</value></data>
+  <data name="PP_OutputPathDesc" xml:space="preserve"><value>Directorul de ieșire relativ la rădăcina proiectului.</value></data>
+  <data name="PP_OptimizeCode" xml:space="preserve"><value>Optimizare cod</value></data>
+  <data name="PP_OptimizeCodeDesc" xml:space="preserve"><value>Activează optimizările compilatorului (dezactivat în Debug prin convenție).</value></data>
+  <data name="PP_WarningsAsErrors" xml:space="preserve"><value>Tratare avertismente ca erori</value></data>
+  <data name="PP_NavDependencies" xml:space="preserve"><value>Dependențe</value></data>
+  <data name="PP_DependenciesDesc" xml:space="preserve"><value>Referințe de proiect și pachete NuGet declarate în acest proiect.</value></data>
+  <data name="PP_ColName" xml:space="preserve"><value>Nume</value></data>
+  <data name="PP_ColType" xml:space="preserve"><value>Tip</value></data>
+  <data name="PP_NavGlobalUsings" xml:space="preserve"><value>Using-uri globale</value></data>
+  <data name="PP_GlobalUsingsDesc" xml:space="preserve"><value>Directive using implicite declarate în proiect (ImplicitUsings).</value></data>
+  <data name="PP_ColNamespace" xml:space="preserve"><value>Spațiu de nume</value></data>
+  <data name="PP_NavItems" xml:space="preserve"><value>Elemente</value></data>
+  <data name="PP_ColPath" xml:space="preserve"><value>Cale</value></data>
+  <data name="PP_NavReferences" xml:space="preserve"><value>Referințe</value></data>
+  <data name="PP_AddNuGet" xml:space="preserve"><value>+ NuGet…</value></data>
+  <data name="PP_AddProject" xml:space="preserve"><value>+ Projet…</value></data>
+  <data name="PP_NavWin32Resources" xml:space="preserve"><value>Resurse Win32</value></data>
+  <data name="PP_AppIcon" xml:space="preserve"><value>Pictogramă aplicație</value></data>
+  <data name="PP_AppIconDesc" xml:space="preserve"><value>Fișier .ico integrat în assembly ca resursă Win32.</value></data>
+  <data name="PP_AppManifest" xml:space="preserve"><value>Manifest aplicație</value></data>
+  <data name="PP_ManifestDefault" xml:space="preserve"><value>Setări implicite</value></data>
+  <data name="PP_ManifestCreate" xml:space="preserve"><value>Creare manifest nou</value></data>
+  <data name="PP_ManifestNone" xml:space="preserve"><value>Fără manifest</value></data>
+  <data name="PP_ManifestDesc" xml:space="preserve"><value>Fișierul app.manifest care controlează nivelul de execuție UAC și DPI.</value></data>
+  <data name="PP_NavPackage" xml:space="preserve"><value>Pachet</value></data>
+  <data name="PP_PackageDesc" xml:space="preserve"><value>Metadate NuGet generate la publicarea pachetului.</value></data>
+  <data name="PP_PackageId" xml:space="preserve"><value>ID pachet</value></data>
+  <data name="PP_PackageIdDesc" xml:space="preserve"><value>Identificatorul unic al pachetului pe NuGet.org.</value></data>
+  <data name="PP_VersionLabel" xml:space="preserve"><value>Versiune</value></data>
+  <data name="PP_AuthorsLabel" xml:space="preserve"><value>Autori</value></data>
+  <data name="PP_DescriptionLabel" xml:space="preserve"><value>Descriere</value></data>
+  <data name="PP_NavDebug" xml:space="preserve"><value>Depanare</value></data>
+  <data name="PP_DebugDesc" xml:space="preserve"><value>Configurarea profilului de lansare.</value></data>
+  <data name="PP_LaunchProfile" xml:space="preserve"><value>Profil de lansare</value></data>
+  <data name="PP_LaunchProfileDesc" xml:space="preserve"><value>Profil definit în launchSettings.json.</value></data>
+  <data name="PP_CommandLineArgs" xml:space="preserve"><value>Argumente linie de comandă</value></data>
+  <data name="PP_WorkingDirectory" xml:space="preserve"><value>Director de lucru</value></data>
+  <data name="PS_PackageSourceLabel" xml:space="preserve"><value>Sursă pachet:</value></data>
+  <data name="PS_IncludePrerelease" xml:space="preserve"><value>Includeți prepublicările</value></data>
+  <data name="PS_NuGetBrowseTab" xml:space="preserve"><value>Răsfoire</value></data>
+  <data name="PS_NuGetInstalledTab" xml:space="preserve"><value>Instalat</value></data>
+  <data name="PS_NuGetUpdatesTab" xml:space="preserve"><value>Actualizări</value></data>
+  <data name="PS_NuGetLoadMore" xml:space="preserve"><value>Încărcați mai mult…</value></data>
+  <data name="PS_SelectPackageHint" xml:space="preserve"><value>Selectați un pachet pentru a vedea detaliile.</value></data>
+  <data name="PS_NuGetConsolidateTab" xml:space="preserve"><value>Consolidare</value></data>
+  <data name="PS_ProjectsLabel" xml:space="preserve"><value>Proiecte</value></data>
+  <data name="PS_VersionLabel" xml:space="preserve"><value>Versiune:</value></data>
+  <data name="PS_AddProjectRef" xml:space="preserve"><value>Adăugare referință proiect…</value></data>
+  <data name="PS_AddAssemblyRef" xml:space="preserve"><value>Adăugare referință assembly…</value></data>
+  <data name="PS_RemoveUnused" xml:space="preserve"><value>Eliminare neutilizate…</value></data>
+  <data name="PS_SearchReferences" xml:space="preserve"><value>Căutare referințe…</value></data>
+  <data name="PS_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="PS_Convert" xml:space="preserve">
+    <value>Convert</value>
+  </data>
+  <data name="PS_Install" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="PS_Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="PS_Uninstall" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="PS_CopyOptionsSection" xml:space="preserve">
+    <value>Copy options</value>
+  </data>
+  <data name="PS_KeepOriginalLocation" xml:space="preserve">
+    <value>Keep original location  (reference only)</value>
+  </data>
+  <data name="PS_CopyIntoProject" xml:space="preserve">
+    <value>Copy into project</value>
+  </data>
+  <data name="PS_DestinationFolder" xml:space="preserve">
+    <value>Destination folder</value>
+  </data>
+  <data name="PS_PhysicalSubfolder" xml:space="preserve">
+    <value>Physical subfolder</value>
+  </data>
+  <data name="PS_KeepInPlace" xml:space="preserve">
+    <value>Keep in place</value>
+  </data>
+  <data name="PS_NewFolderTooltip" xml:space="preserve">
+    <value>New physical folder in the selected directory</value>
+  </data>
+  <data name="PS_ConfirmNewFolder" xml:space="preserve">
+    <value>Confirm new folder</value>
+  </data>
+  <data name="PS_PreviewSection" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="PS_DestinationLabel" xml:space="preserve">
+    <value>Destination:</value>
+  </data>
+  <data name="PS_AutoFillTooltip" xml:space="preserve">
+    <value>Pre-fill Platform, Region and Title from the selected ROM</value>
+  </data>
+  <data name="PS_OutputSection" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="PS_SameFolderAsSource" xml:space="preserve">
+    <value>Same folder as source</value>
+  </data>
+  <data name="PS_CustomFolder" xml:space="preserve">
+    <value>Custom folder</value>
+  </data>
+  <data name="PS_AddConvertedToProject" xml:space="preserve">
+    <value>Add converted file to project</value>
+  </data>
+  <data name="PS_OpenAfterConversion" xml:space="preserve">
+    <value>Open in TBL Editor after conversion</value>
+  </data>
+  <data name="PS_AddToProject" xml:space="preserve">
+    <value>Add to project:</value>
+  </data>
+  <data name="PS_CreateInMemoryTooltip" xml:space="preserve">
+    <value>Create document in memory; choose location on first Ctrl+S</value>
+  </data>
+  <data name="PS_PackageDescription" xml:space="preserve">
+    <value>Descriere</value>
+  </data>
+  <data name="PS_PackageDownloads" xml:space="preserve">
+    <value>Downloads:</value>
+  </data>
+  <data name="PS_PackagesLabel" xml:space="preserve">
+    <value> package(s)</value>
+  </data>
+  <data name="PS_InstalledVersion" xml:space="preserve">
+    <value>Installed: v</value>
+  </data>
+  <data name="PP_ReferencesLabel" xml:space="preserve">
+    <value>Project and package references:</value>
+  </data>
+  <data name="PP_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="PP_FilterSections" xml:space="preserve">
+    <value>Filter sections</value>
+  </data>
+  <data name="PP_TypeColumn" xml:space="preserve">
+    <value>Tip</value>
+  </data>
+  <data name="PP_PathColumn" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="PP_ValueColumn" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="PP_NamespaceColumn" xml:space="preserve">
+    <value>Namespace</value>
+  </data>
+  <data name="PP_EnvVars" xml:space="preserve">
+    <value>Environment variables</value>
+  </data>
+  <data name="PP_NavCodeAnalysis" xml:space="preserve">
+    <value>Code Analysis</value>
+  </data>
+  <data name="PP_EnableCodeAnalysis" xml:space="preserve">
+    <value>Enable code analysis on build</value>
+  </data>
+  <data name="PP_EnableCodeAnalysisDesc" xml:space="preserve">
+    <value>Enables Roslyn analyzers on every build.</value>
+  </data>
+  <data name="PP_ReleaseOnlyAnalysis" xml:space="preserve">
+    <value>Enable only on Release configuration</value>
+  </data>
+  <data name="PP_CodeAnalysisDesc" xml:space="preserve">
+    <value>Static code analysis settings.</value>
+  </data>
+  <data name="PP_ChangesSaved" xml:space="preserve">
+    <value>✓ Changes saved</value>
+  </data>
+  <data name="PP_AppManifestDesc" xml:space="preserve">
+    <value>Fișierul app.manifest care controlează nivelul de execuție UAC și DPI.</value>
+  </data>
+  <data name="NG_TipSearch" xml:space="preserve"><value>Căutare</value></data>
+</root>

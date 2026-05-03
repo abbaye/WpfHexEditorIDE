@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="BookmarksPanel_RefreshToolTip" xml:space="preserve"><value>Päivitä kirjanmerkit</value></data>
+  <data name="BookmarksPanel_ClearAllToolTip" xml:space="preserve"><value>Tyhjennä kaikki kirjanmerkit</value></data>
+  <data name="BookmarksPanel_EmptyCount" xml:space="preserve"><value>0 kirjanmerkkiä</value></data>
+  <data name="BookmarksPanel_OffsetHeader" xml:space="preserve"><value>Offset</value></data>
+  <data name="BookmarksPanel_DescriptionHeader" xml:space="preserve"><value>Kuvaus</value></data>
+  <data name="BookmarksPanel_CategoryHeader" xml:space="preserve"><value>Kategoria</value></data>
+  <data name="BookmarksPanel_EmptyMessage" xml:space="preserve"><value>Ei kirjanmerkkejä. Paina Ctrl+F2 lisätäksesi/poistaaksesi kirjanmerkin aktiivisessa editorissa.</value></data>
+  <data name="ErrorPanel_ScopeEntireSolution" xml:space="preserve"><value>Koko ratkaisu</value></data>
+  <data name="ErrorPanel_ScopeCurrentProject" xml:space="preserve"><value>Nykyinen projekti</value></data>
+  <data name="ErrorPanel_ScopeCurrentDocument" xml:space="preserve"><value>Nykyinen asiakirja</value></data>
+  <data name="ErrorPanel_ScopeOpenDocuments" xml:space="preserve"><value>Avoimet asiakirjat</value></data>
+  <data name="ErrorPanel_ScopeChangedDocuments" xml:space="preserve"><value>Muokatut asiakirjat</value></data>
+  <data name="ErrorPanel_OverflowButtonToolTip" xml:space="preserve"><value>Lisää asetuksia</value></data>
+  <data name="ErrorPanel_ShowErrorsMenu" xml:space="preserve"><value>Näytä virheet</value></data>
+  <data name="ErrorPanel_ShowWarningsMenu" xml:space="preserve"><value>Näytä varoitukset</value></data>
+  <data name="ErrorPanel_ShowMessagesMenu" xml:space="preserve"><value>Näytä viestit</value></data>
+  <data name="ErrorPanel_SearchPlaceholder" xml:space="preserve"><value>Etsi...</value></data>
+  <data name="ErrorPanel_ErrorToggleToolTip" xml:space="preserve"><value>Näytä/piilota virheet</value></data>
+  <data name="ErrorPanel_ErrorCountText" xml:space="preserve"><value>0 virhettä</value></data>
+  <data name="ErrorPanel_WarningToggleToolTip" xml:space="preserve"><value>Näytä/piilota varoitukset</value></data>
+  <data name="ErrorPanel_WarningCountText" xml:space="preserve"><value>0 varoitusta</value></data>
+  <data name="ErrorPanel_MessageToggleToolTip" xml:space="preserve"><value>Näytä/piilota viestit</value></data>
+  <data name="ErrorPanel_MessageCountText" xml:space="preserve"><value>0 viestiä</value></data>
+  <data name="ErrorPanel_CodeHeader" xml:space="preserve"><value>Koodi</value></data>
+  <data name="ErrorPanel_DescriptionHeader" xml:space="preserve"><value>Kuvaus</value></data>
+  <data name="ErrorPanel_ProjectHeader" xml:space="preserve"><value>Projekti</value></data>
+  <data name="ErrorPanel_FileHeader" xml:space="preserve"><value>Tiedosto</value></data>
+  <data name="ErrorPanel_OffsetHeader" xml:space="preserve"><value>Offset</value></data>
+  <data name="ErrorPanel_LineColHeader" xml:space="preserve"><value>Rivi:Sar</value></data>
+  <data name="PropertiesPanel_ContextLabel" xml:space="preserve"><value>Ominaisuudet</value></data>
+  <data name="PropertiesPanel_RefreshToolTip" xml:space="preserve"><value>Päivitä ominaisuudet</value></data>
+  <data name="PropertiesPanel_OverflowToolTip" xml:space="preserve"><value>Lisää asetuksia</value></data>
+  <data name="PropertiesPanel_SortAlphabetically" xml:space="preserve"><value>Lajittele aakkosjärjestykseen</value></data>
+  <data name="PropertiesPanel_CopyValue" xml:space="preserve"><value>Kopioi arvo</value></data>
+  <data name="PropertiesPanel_SortToggleToolTip" xml:space="preserve"><value>Lajittele ominaisuudet aakkosjärjestykseen</value></data>
+  <data name="PropertiesPanel_CopyButtonToolTip" xml:space="preserve"><value>Kopioi valitun ominaisuuden arvo</value></data>
+  <data name="PropertiesPanel_SearchPlaceholder" xml:space="preserve"><value>Suodata ominaisuudet&#x2026;</value></data>
+  <data name="PropertiesPanel_OpenFolderToolTip" xml:space="preserve"><value>Avaa sisältävä kansio Resurssienhallinnassa</value></data>
+  <data name="PropertiesPanel_ThicknessLeft" xml:space="preserve"><value>Vasen</value></data>
+  <data name="PropertiesPanel_ThicknessTop" xml:space="preserve"><value>Ylä</value></data>
+  <data name="PropertiesPanel_ThicknessRight" xml:space="preserve"><value>Oikea</value></data>
+  <data name="PropertiesPanel_ThicknessBottom" xml:space="preserve"><value>Ala</value></data>
+  <data name="PropertiesPanel_ThicknessLLabel" xml:space="preserve"><value>V</value></data>
+  <data name="PropertiesPanel_ThicknessTLabel" xml:space="preserve"><value>Y</value></data>
+  <data name="PropertiesPanel_ThicknessRLabel" xml:space="preserve"><value>O</value></data>
+  <data name="PropertiesPanel_ThicknessBLabel" xml:space="preserve"><value>A</value></data>
+  <data name="PropertiesPanel_ContextMenu_CopyValue" xml:space="preserve"><value>Kopioi arvo</value></data>
+  <data name="PropertiesPanel_ContextMenu_CopyName" xml:space="preserve"><value>Kopioi nimi</value></data>
+  <data name="PropertiesPanel_ResetToDefaultToolTip" xml:space="preserve"><value>Palauta oletusarvo</value></data>
+  <data name="SolutionExplorer_ShowAllFilesToolTip" xml:space="preserve"><value>Näytä kaikki tiedostot</value></data>
+  <data name="SolutionExplorer_CollapseAllToolTip" xml:space="preserve"><value>Tiivistä kaikki</value></data>
+  <data name="SolutionExplorer_SyncWithActiveDocToolTip" xml:space="preserve"><value>Synkronoi aktiivisen asiakirjan kanssa</value></data>
+  <data name="SolutionExplorer_RefreshToolTip" xml:space="preserve"><value>Päivitä</value></data>
+  <data name="SolutionExplorer_SortToolTip" xml:space="preserve"><value>Lajittele</value></data>
+  <data name="SolutionExplorer_SortNone" xml:space="preserve"><value>Ei lajittelua</value></data>
+  <data name="SolutionExplorer_SortName" xml:space="preserve"><value>Nimi</value></data>
+  <data name="SolutionExplorer_SortType" xml:space="preserve"><value>Tyyppi</value></data>
+  <data name="SolutionExplorer_SortDateModified" xml:space="preserve"><value>Muokkauspäivä</value></data>
+  <data name="SolutionExplorer_SortSize" xml:space="preserve"><value>Koko</value></data>
+  <data name="SolutionExplorer_FilterToolTip" xml:space="preserve"><value>Suodata</value></data>
+  <data name="SolutionExplorer_FilterAll" xml:space="preserve"><value>Kaikki</value></data>
+  <data name="SolutionExplorer_FilterBinary" xml:space="preserve"><value>Binääri</value></data>
+  <data name="SolutionExplorer_FilterText" xml:space="preserve"><value>Teksti</value></data>
+  <data name="SolutionExplorer_FilterImages" xml:space="preserve"><value>Kuvat</value></data>
+  <data name="SolutionExplorer_FilterLanguage" xml:space="preserve"><value>Kieli</value></data>
+  <data name="SolutionExplorer_SearchPlaceholder" xml:space="preserve"><value>Etsi ratkaisuselaajasta (Ctrl+;)</value></data>
+  <data name="SolutionExplorer_SearchModeFileName" xml:space="preserve"><value>Tiedostonimi</value></data>
+  <data name="SolutionExplorer_SearchModeNameContent" xml:space="preserve"><value>Nimi + sisältö</value></data>
+  <data name="SolutionExplorer_SearchModeContentOnly" xml:space="preserve"><value>Vain sisältö</value></data>
+  <data name="SolutionExplorer_SearchModeRegex" xml:space="preserve"><value>Regex (tiedostonimi)</value></data>
+  <data name="SolutionExplorer_SolutionFolderTooltip" xml:space="preserve"><value>Ratkaisukansio (looginen)</value></data>
+  <data name="SolutionExplorer_PhysicalFolderTooltip" xml:space="preserve"><value>Fyysinen kansio</value></data>
+  <data name="SolutionExplorer_PropertiesFolderTooltip" xml:space="preserve"><value>Ominaisuudet-kansio</value></data>
+  <data name="SolutionExplorer_BuildDirtyIndicator" xml:space="preserve"><value>Projektilla on muutoksia viimeisen koonnin jälkeen (Ctrl+Alt+F7 koontia varten)</value></data>
+  <data name="SolutionExplorer_UnsavedModifications" xml:space="preserve"><value>Tallentamattomat muutokset</value></data>
+  <data name="SolutionExplorer_ExternalFileIndicator" xml:space="preserve"><value>Tiedosto sijaitsee projektin hakemiston ulkopuolella</value></data>
+  <data name="SolutionExplorer_ExternalModIndicator" xml:space="preserve"><value>Muokattu ulkoisesti — uudelleenlataus suositellaan</value></data>
+  <data name="SolutionExplorer_LoadingIndicator" xml:space="preserve"><value>Ladataan&#x2026;</value></data>
+  <data name="SolutionExplorer_GoToDefinition" xml:space="preserve"><value>Siirry määritykseen</value></data>
+  <data name="SolutionExplorer_Open" xml:space="preserve"><value>Avaa</value></data>
+  <data name="SolutionExplorer_OpenWith" xml:space="preserve"><value>Avaa sovelluksella</value></data>
+  <data name="SolutionExplorer_OpenWithHexEditor" xml:space="preserve"><value>Hex-editori</value></data>
+  <data name="SolutionExplorer_Add" xml:space="preserve"><value>Lisää</value></data>
+  <data name="SolutionExplorer_AddNewItem" xml:space="preserve"><value>Lisää uusi kohde...</value></data>
+  <data name="SolutionExplorer_AddExistingItem" xml:space="preserve"><value>Lisää olemassa oleva kohde...</value></data>
+  <data name="SolutionExplorer_ImportFormat" xml:space="preserve"><value>Tuo sisäinen formaatti...</value></data>
+  <data name="SolutionExplorer_ImportSyntax" xml:space="preserve"><value>Tuo sisäinen syntaksi...</value></data>
+  <data name="SolutionExplorer_NewFolder" xml:space="preserve"><value>Uusi kansio</value></data>
+  <data name="SolutionExplorer_NewSolutionFolder" xml:space="preserve"><value>Uusi ratkaisukansio</value></data>
+  <data name="SolutionExplorer_AddExistingFolder" xml:space="preserve"><value>Lisää olemassa oleva kansio...</value></data>
+  <data name="SolutionExplorer_IncludeInProject" xml:space="preserve"><value>Sisällytä projektiin</value></data>
+  <data name="SolutionExplorer_SetDefaultTbl" xml:space="preserve"><value>Aseta oletukseksi TBL</value></data>
+  <data name="SolutionExplorer_ClearDefaultTbl" xml:space="preserve"><value>Tyhjennä oletus-TBL</value></data>
+  <data name="SolutionExplorer_ConvertToTblx" xml:space="preserve"><value>Muunna TBLX-muotoon...</value></data>
+  <data name="SolutionExplorer_ApplyTblToActive" xml:space="preserve"><value>Käytä aktiiviseen asiakirjaan</value></data>
+  <data name="SolutionExplorer_ApplyTblToAll" xml:space="preserve"><value>Käytä kaikkiin asiakirjoihin</value></data>
+  <data name="SolutionExplorer_OpenInExplorer" xml:space="preserve"><value>Avaa Resurssienhallinnassa</value></data>
+  <data name="SolutionExplorer_CopyPath" xml:space="preserve"><value>Kopioi polku</value></data>
+  <data name="SolutionExplorer_Copy" xml:space="preserve"><value>Kopioi</value></data>
+  <data name="SolutionExplorer_Cut" xml:space="preserve"><value>Leikkaa</value></data>
+  <data name="SolutionExplorer_Paste" xml:space="preserve"><value>Liitä</value></data>
+  <data name="SolutionExplorer_Rename" xml:space="preserve"><value>Nimeä uudelleen</value></data>
+  <data name="SolutionExplorer_RemoveFromProject" xml:space="preserve"><value>Poista projektista</value></data>
+  <data name="SolutionExplorer_Delete" xml:space="preserve"><value>Poista</value></data>
+  <data name="SolutionExplorer_ExcludeFromProject" xml:space="preserve"><value>Sulje pois projektista</value></data>
+  <data name="SolutionExplorer_ImportIntoProject" xml:space="preserve"><value>Tuo projektiin...</value></data>
+  <data name="SolutionExplorer_ApplyToDisk" xml:space="preserve"><value>Tallenna levylle</value></data>
+  <data name="SolutionExplorer_DiscardChanges" xml:space="preserve"><value>Hylkää muutokset</value></data>
+  <data name="SolutionExplorer_Build" xml:space="preserve"><value>Kokoa</value></data>
+  <data name="SolutionExplorer_Rebuild" xml:space="preserve"><value>Kokoa uudelleen</value></data>
+  <data name="SolutionExplorer_Clean" xml:space="preserve"><value>Siivoa</value></data>
+  <data name="SolutionExplorer_SetAsStartup" xml:space="preserve"><value>Aseta käynnistysprojektiksi</value></data>
+  <data name="SolutionExplorer_AddReference" xml:space="preserve"><value>Lisää viite&#x2026;</value></data>
+  <data name="SolutionExplorer_RemoveUnusedReferences" xml:space="preserve"><value>Poista käyttämättömät viitteet&#x2026;</value></data>
+  <data name="SolutionExplorer_ManageNugetPackages" xml:space="preserve"><value>Hallitse NuGet-paketteja&#x2026;</value></data>
+  <data name="SolutionExplorer_ManageNugetPackagesSolution" xml:space="preserve"><value>Hallitse ratkaisun NuGet-paketteja&#x2026;</value></data>
+  <data name="SolutionExplorer_Properties" xml:space="preserve"><value>Ominaisuudet</value></data>
+  <data name="SolutionExplorer_SaveAll" xml:space="preserve"><value>Tallenna kaikki</value></data>
+  <data name="SolutionExplorer_CloseSolution" xml:space="preserve"><value>Sulje ratkaisu</value></data>
+  <data name="WhfmtBrowser_LoadFailureIndicator" xml:space="preserve"><value>Yhtä tai useampaa formaattia ei voitu ladata</value></data>
+  <data name="WhfmtBrowser_OpenInEditorToolTip" xml:space="preserve"><value>Avaa rakenteen editorissa</value></data>
+  <data name="WhfmtBrowser_ExportToFileToolTip" xml:space="preserve"><value>Vie tiedostoon&#x2026;</value></data>
+  <data name="WhfmtBrowser_ViewJsonToolTip" xml:space="preserve"><value>Näytä JSON</value></data>
+  <data name="WhfmtBrowser_Open" xml:space="preserve"><value>Avaa</value></data>
+  <data name="WhfmtBrowser_OpenReadOnly" xml:space="preserve"><value>Avaa vain luku -tilassa</value></data>
+  <data name="WhfmtBrowser_ExportToFile" xml:space="preserve"><value>Vie tiedostoon&#x2026;</value></data>
+  <data name="WhfmtBrowser_ViewJson" xml:space="preserve"><value>Näytä JSON</value></data>
+  <data name="WhfmtBrowser_CopyPath" xml:space="preserve"><value>Kopioi polku</value></data>
+  <data name="WhfmtBrowser_Delete" xml:space="preserve"><value>Poista</value></data>
+  <data name="WhfmtBrowser_RevealInExplorer" xml:space="preserve"><value>Näytä Resurssienhallinnassa</value></data>
+  <data name="WhfmtBrowser_DuplicateFormat" xml:space="preserve"><value>Kopioi formaatti&#x2026;</value></data>
+  <data name="WhfmtBrowser_EditInCodeEditor" xml:space="preserve"><value>Muokkaa koodieditorissa</value></data>
+  <data name="WhfmtCatalog_NameHeader" xml:space="preserve"><value>Nimi</value></data>
+  <data name="WhfmtCatalog_CategoryHeader" xml:space="preserve"><value>Kategoria</value></data>
+  <data name="WhfmtCatalog_ExtensionsHeader" xml:space="preserve"><value>Laajennukset</value></data>
+  <data name="WhfmtCatalog_VersionHeader" xml:space="preserve"><value>Versio</value></data>
+  <data name="WhfmtCatalog_QualityHeader" xml:space="preserve"><value>Laatu</value></data>
+  <data name="WhfmtCatalog_AuthorHeader" xml:space="preserve"><value>Tekijä</value></data>
+  <data name="WhfmtCatalog_SourceHeader" xml:space="preserve"><value>Lähde</value></data>
+  <data name="WhfmtCatalog_Open" xml:space="preserve"><value>Avaa</value></data>
+  <data name="WhfmtCatalog_OpenReadOnly" xml:space="preserve"><value>Avaa vain luku -tilassa</value></data>
+  <data name="WhfmtCatalog_ExportToFile" xml:space="preserve"><value>Vie tiedostoon&#x2026;</value></data>
+  <data name="WhfmtCatalog_ViewJson" xml:space="preserve"><value>Näytä JSON</value></data>
+  <data name="WhfmtCatalog_RevealInExplorer" xml:space="preserve"><value>Näytä Resurssienhallinnassa</value></data>
+  <data name="WhfmtCatalog_ErrorText" xml:space="preserve"><value> Virhe</value></data>
+  <data name="WhfmtDetail_EmptyPlaceholder" xml:space="preserve"><value>Valitse formaatti nähdäksesi tiedot.</value></data>
+  <data name="WhfmtDetail_OpenInEditorToolTip" xml:space="preserve"><value>Avaa rakenteen editorissa</value></data>
+  <data name="WhfmtDetail_ExportToFileToolTip" xml:space="preserve"><value>Vie tiedostoon&#x2026;</value></data>
+  <data name="WhfmtDetail_ViewRawJsonToolTip" xml:space="preserve"><value>Näytä raaka-JSON</value></data>
+  <data name="WhfmtDetail_RetryLoadToolTip" xml:space="preserve"><value>Yritä ladata tämä formaatti uudelleen</value></data>
+  <data name="WhfmtDetail_ExcludeFromCatalogToolTip" xml:space="preserve"><value>Sulje tämä formaatti pois katalogista</value></data>
+  <data name="WhfmtDetail_FormatLoadedSuccessfully" xml:space="preserve"><value>Formaatti ladattu onnistuneesti</value></data>
+  <data name="WhfmtDetail_FormatLoadFailed" xml:space="preserve"><value>Formaatin lataus epäonnistui</value></data>
+  <data name="WhfmtDetail_OverviewTab" xml:space="preserve"><value>Yleiskatsaus</value></data>
+  <data name="WhfmtDetail_VersionLabel" xml:space="preserve"><value>Versio</value></data>
+  <data name="WhfmtDetail_AuthorLabel" xml:space="preserve"><value>Tekijä</value></data>
+  <data name="WhfmtDetail_CategoryLabel" xml:space="preserve"><value>Kategoria</value></data>
+  <data name="WhfmtDetail_PlatformLabel" xml:space="preserve"><value>Alusta</value></data>
+  <data name="WhfmtDetail_EditorLabel" xml:space="preserve"><value>Editori</value></data>
+  <data name="WhfmtDetail_DiffLabel" xml:space="preserve"><value>Diff</value></data>
+  <data name="WhfmtDetail_StatusLabel" xml:space="preserve"><value>Tila</value></data>
+  <data name="WhfmtDetail_ExtensionsLabel" xml:space="preserve"><value>Laajennukset</value></data>
+  <data name="WhfmtDetail_QualityScoreLabel" xml:space="preserve"><value>Laatupisteet</value></data>
+  <data name="WhfmtDetail_DetectionLabel" xml:space="preserve"><value>Tunnistus</value></data>
+  <data name="WhfmtDetail_BlocksLabel" xml:space="preserve"><value>Lohkot</value></data>
+  <data name="WhfmtDetail_LoadErrorTitle" xml:space="preserve"><value>Latausvirhe</value></data>
+  <data name="WhfmtDetail_ReferencesTab" xml:space="preserve"><value>Viitteet</value></data>
+  <data name="WhfmtDetail_SpecificationsLabel" xml:space="preserve"><value>Määrittelyt</value></data>
+  <data name="WhfmtDetail_WebLinksLabel" xml:space="preserve"><value>Verkkolinkit</value></data>
+  <data name="WhfmtDetail_AssertionsTab" xml:space="preserve"><value>Vahvistukset</value></data>
+  <data name="WhfmtDetail_AIHintsTab" xml:space="preserve"><value>AI-vihjeet</value></data>
+  <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Analyysikonteksti</value></data>
+  <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Tunnetut haavoittuvuudet</value></data>
+  <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <!-- Whfmt add/delete format dialogs -->
+  <data name="Whfmt_AddFormatTitle" xml:space="preserve"><value>Lisää formaattimääritys</value></data>
+  <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>Whfmt-määritykset (*.whfmt)|*.whfmt</value></data>
+  <data name="Whfmt_AddFormatError" xml:space="preserve"><value>Lisää formaatti</value></data>
+  <data name="Whfmt_DeleteFormatTitle" xml:space="preserve"><value>Poista formaatti</value></data>
+  <data name="WhfmtCatalog_Tooltip_OpenSelected" xml:space="preserve"><value>Avaa valinta</value></data>
+  <data name="WhfmtCatalog_Tooltip_ExportSelected" xml:space="preserve"><value>Vie valinta tiedostoon&#x2026;</value></data>
+  <data name="WhfmtCatalog_Tooltip_AddFormat" xml:space="preserve"><value>Lisää formaattitiedosto&#x2026;</value></data>
+  <data name="WhfmtCatalog_Tooltip_Refresh" xml:space="preserve"><value>Päivitä katalogi (F5)</value></data>
+  <data name="WhfmtCatalog_LayoutTooltip" xml:space="preserve"><value>Tietopaneelin sijainti</value></data>
+  <data name="WhfmtCatalog_LayoutRight" xml:space="preserve"><value>Tiedot oikealla</value></data>
+  <data name="WhfmtCatalog_LayoutLeft" xml:space="preserve"><value>Tiedot vasemmalla</value></data>
+  <data name="WhfmtCatalog_LayoutBottom" xml:space="preserve"><value>Tiedot alhaalla</value></data>
+  <data name="WhfmtCatalog_LayoutTop" xml:space="preserve"><value>Tiedot ylhäällä</value></data>
+</root>

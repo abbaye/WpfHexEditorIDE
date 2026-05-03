@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>Το όνομα του έργου δεν μπορεί να είναι κενό.</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>Επικύρωση</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>Αδύνατη η μετονομασία του έργου :</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>Σφάλμα</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>Αδύνατη η δημιουργία του φακέλου εξόδου :</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>Μετατροπή TBL</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>Η διαδρομή εξόδου είναι ίδια με την πηγή. Επιλέξτε διαφορετικό φάκελο.</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>Κατάργηση αναφοράς</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>Δεν βρέθηκαν αχρησιμοποίητες αναφορές assembly.</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>Κατάργηση αχρησιμοποίητων αναφορών</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>Κατάργηση των παρακάτω αχρησιμοποίητων αναφορών assembly;</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>Επιλογή αρχείου(-ων) προς προσθήκη</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>Όλα τα αρχεία (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>Επιλογή γονικού φακέλου νέου έργου</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>Επιλογή φακέλου νέου αρχείου</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>Επιλογή γονικού φακέλου νέας λύσης</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>Επιλογή φακέλου εξόδου για το μετατραπέν αρχείο TBLX</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>Προσθήκη αναφοράς έργου</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>Αρχεία έργου (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|Όλα τα αρχεία (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>Προσθήκη αναφοράς assembly</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>Αρχεία assembly (*.dll;*.exe)|*.dll;*.exe|Όλα τα αρχεία (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>Επιλογή καταλόγου εξόδου</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>Επιλογή εικονιδίου</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>Εικονίδια (*.ico)|*.ico|Όλα τα αρχεία (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>Επιλογή έργου προς αναφορά</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>Έργα C# (*.csproj)|*.csproj|Όλα τα έργα (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>Αναφορές έργου</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>Assemblies</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>Αναλυτές</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>Αυτός ο τύπος έργου δεν υποστηρίζει διαχείριση αναφορών.</value>
+  </data>
+  <data name="PS_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PS_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+  <data name="PS_Add" xml:space="preserve"><value>Προσθήκη</value></data>
+  <data name="PS_Browse" xml:space="preserve"><value>Αναζήτηση…</value></data>
+  <data name="PS_Remove" xml:space="preserve"><value>Κατάργηση</value></data>
+  <data name="PS_Save" xml:space="preserve"><value>Αποθήκευση</value></data>
+  <data name="PS_AddNewItemTitle" xml:space="preserve"><value>Προσθήκη νέου στοιχείου</value></data>
+  <data name="PS_TemplateLabel" xml:space="preserve"><value>Πρότυπο :</value></data>
+  <data name="PS_NameLabel" xml:space="preserve"><value>Όνομα :</value></data>
+  <data name="PS_FolderLabel" xml:space="preserve"><value>Φάκελος :</value></data>
+  <data name="PS_AddExistingItemTitle" xml:space="preserve"><value>Προσθήκη υπάρχοντος στοιχείου</value></data>
+  <data name="PS_FilesLabel" xml:space="preserve"><value>Αρχείο(-α) :</value></data>
+  <data name="PS_RemoveFileTooltip" xml:space="preserve"><value>Κατάργηση αυτού του αρχείου από την επιλογή</value></data>
+  <data name="PS_DetectedTypeLabel" xml:space="preserve"><value>Εντοπισμένος τύπος :</value></data>
+  <data name="PS_ConvertTblTitle" xml:space="preserve"><value>Μετατροπή TBL σε TBLX</value></data>
+  <data name="PS_ConversionSection" xml:space="preserve"><value>Μετατροπή</value></data>
+  <data name="PS_SourceLabel" xml:space="preserve"><value>Πηγή :</value></data>
+  <data name="PS_TargetLabel" xml:space="preserve"><value>Στόχος :</value></data>
+  <data name="PS_GameMetadataSection" xml:space="preserve"><value>Μεταδεδομένα παιχνιδιού (προαιρετικό)</value></data>
+  <data name="PS_RomDetectedLabel" xml:space="preserve"><value>Εντοπίστηκε ROM :</value></data>
+  <data name="PS_AutoFill" xml:space="preserve"><value>Αυτόματη συμπλήρωση</value></data>
+  <data name="PS_GameTitleLabel" xml:space="preserve"><value>Τίτλος παιχνιδιού :</value></data>
+  <data name="PS_PlatformLabel" xml:space="preserve"><value>Πλατφόρμα :</value></data>
+  <data name="PS_RegionLabel" xml:space="preserve"><value>Περιοχή :</value></data>
+  <data name="PS_AuthorLabel" xml:space="preserve"><value>Συγγραφέας :</value></data>
+  <data name="PS_YearLabel" xml:space="preserve"><value>Έτος :</value></data>
+  <data name="PS_NewFileTitle" xml:space="preserve"><value>Νέο αρχείο</value></data>
+  <data name="PS_SortLabel" xml:space="preserve"><value>Ταξινόμηση :</value></data>
+  <data name="PS_SortName" xml:space="preserve"><value>Όνομα</value></data>
+  <data name="PS_SortCategory" xml:space="preserve"><value>Κατηγορία</value></data>
+  <data name="PS_SortExtension" xml:space="preserve"><value>Επέκταση</value></data>
+  <data name="PS_GridView" xml:space="preserve"><value>Προβολή πλέγματος</value></data>
+  <data name="PS_ListView" xml:space="preserve"><value>Προβολή λίστας</value></data>
+  <data name="PS_SearchTemplates" xml:space="preserve"><value>Αναζήτηση προτύπων…</value></data>
+  <data name="PS_BrowseForFolder" xml:space="preserve"><value>Αναζήτηση φακέλου</value></data>
+  <data name="PS_CreateInMemory" xml:space="preserve"><value>Δημιουργία εγγράφου στη μνήμη · επιλογή τοποθεσίας στο πρώτο Ctrl+S</value></data>
+  <data name="PS_NewProjectTitle" xml:space="preserve"><value>Νέο έργο</value></data>
+  <data name="PS_NewSolutionTitle" xml:space="preserve"><value>Νέα λύση</value></data>
+  <data name="PS_LocationLabel" xml:space="preserve"><value>Τοποθεσία :</value></data>
+  <data name="PS_WillCreateLabel" xml:space="preserve"><value>Θα δημιουργηθεί :</value></data>
+  <data name="PS_ProjectPropertiesTitle" xml:space="preserve"><value>Ιδιότητες έργου</value></data>
+  <data name="PS_ApplicationTab" xml:space="preserve"><value>Εφαρμογή</value></data>
+  <data name="PS_BuildTab" xml:space="preserve"><value>Μεταγλώττιση</value></data>
+  <data name="PS_ItemsTab" xml:space="preserve"><value>Στοιχεία</value></data>
+  <data name="PS_ReferencesTab" xml:space="preserve"><value>Αναφορές</value></data>
+  <data name="PS_ProjectFileLabel" xml:space="preserve"><value>Αρχείο έργου :</value></data>
+  <data name="PS_DirectoryLabel" xml:space="preserve"><value>Κατάλογος :</value></data>
+  <data name="PS_FilterSections" xml:space="preserve"><value>Φιλτράρισμα ενοτήτων</value></data>
+  <data name="PP_NavApplication" xml:space="preserve"><value>Εφαρμογή</value></data>
+  <data name="PP_NavGeneral" xml:space="preserve"><value>Γενικά</value></data>
+  <data name="PP_ProjectName" xml:space="preserve"><value>Όνομα έργου</value></data>
+  <data name="PP_ProjectNameDesc" xml:space="preserve"><value>Λογικό όνομα που εμφανίζεται στον Solution Explorer.</value></data>
+  <data name="PP_AssemblyName" xml:space="preserve"><value>Όνομα assembly</value></data>
+  <data name="PP_AssemblyNameDesc" xml:space="preserve"><value>Όνομα μεταγλωττισμένου αρχείου εξόδου (χωρίς επέκταση).</value></data>
+  <data name="PP_DefaultNamespace" xml:space="preserve"><value>Προεπιλεγμένος χώρος ονομάτων</value></data>
+  <data name="PP_DefaultNamespaceDesc" xml:space="preserve"><value>Χώρος ονομάτων ρίζας για νέα αρχεία.</value></data>
+  <data name="PP_TargetFramework" xml:space="preserve"><value>Πλαίσιο στόχος</value></data>
+  <data name="PP_TargetFrameworkDesc" xml:space="preserve"><value>Έκδοση .NET runtime που στοχεύει αυτό το έργο.</value></data>
+  <data name="PP_OutputType" xml:space="preserve"><value>Τύπος εξόδου</value></data>
+  <data name="PP_OutputTypeDesc" xml:space="preserve"><value>Καθορίζει αν το έργο παράγει .exe, .dll ή WinExe.</value></data>
+  <data name="PP_OutputTypeLibrary" xml:space="preserve"><value>Βιβλιοθήκη κλάσεων</value></data>
+  <data name="PP_OutputTypeConsole" xml:space="preserve"><value>Εφαρμογή κονσόλας</value></data>
+  <data name="PP_OutputTypeWinApp" xml:space="preserve"><value>Εφαρμογή Windows</value></data>
+  <data name="PP_ProjectFile" xml:space="preserve"><value>Αρχείο έργου</value></data>
+  <data name="PP_Directory" xml:space="preserve"><value>Κατάλογος</value></data>
+  <data name="PP_ProjectType" xml:space="preserve"><value>Τύπος έργου</value></data>
+  <data name="PP_NavBuild" xml:space="preserve"><value>Μεταγλώττιση</value></data>
+  <data name="PP_Configuration" xml:space="preserve"><value>Διαμόρφωση</value></data>
+  <data name="PP_ConfigurationDesc" xml:space="preserve"><value>Ενεργό προφίλ build (Debug = σύμβολα, Release = βελτιστοποιημένο).</value></data>
+  <data name="PP_Platform" xml:space="preserve"><value>Πλατφόρμα</value></data>
+  <data name="PP_PlatformDesc" xml:space="preserve"><value>Αρχιτεκτονική στόχος του μεταγλωττισμένου δυαδικού.</value></data>
+  <data name="PP_OutputPath" xml:space="preserve"><value>Διαδρομή εξόδου</value></data>
+  <data name="PP_OutputPathDesc" xml:space="preserve"><value>Κατάλογος εξόδου σχετικά με τη ρίζα του έργου.</value></data>
+  <data name="PP_OptimizeCode" xml:space="preserve"><value>Βελτιστοποίηση κώδικα</value></data>
+  <data name="PP_OptimizeCodeDesc" xml:space="preserve"><value>Ενεργοποίηση βελτιστοποιήσεων μεταγλωττιστή (απενεργοποιημένο σε Debug κατά σύμβαση).</value></data>
+  <data name="PP_WarningsAsErrors" xml:space="preserve"><value>Μεταχείριση προειδοποιήσεων ως σφαλμάτων</value></data>
+  <data name="PP_NavDependencies" xml:space="preserve"><value>Εξαρτήσεις</value></data>
+  <data name="PP_DependenciesDesc" xml:space="preserve"><value>Αναφορές έργου και packages NuGet που δηλώνονται σε αυτό το έργο.</value></data>
+  <data name="PP_ColName" xml:space="preserve"><value>Όνομα</value></data>
+  <data name="PP_ColType" xml:space="preserve"><value>Τύπος</value></data>
+  <data name="PP_NavGlobalUsings" xml:space="preserve"><value>Καθολικά usings</value></data>
+  <data name="PP_GlobalUsingsDesc" xml:space="preserve"><value>Implicit using οδηγίες που δηλώνονται στο έργο (ImplicitUsings).</value></data>
+  <data name="PP_ColNamespace" xml:space="preserve"><value>Χώρος ονομάτων</value></data>
+  <data name="PP_NavItems" xml:space="preserve"><value>Στοιχεία</value></data>
+  <data name="PP_ColPath" xml:space="preserve"><value>Διαδρομή</value></data>
+  <data name="PP_NavReferences" xml:space="preserve"><value>Αναφορές</value></data>
+  <data name="PP_AddNuGet" xml:space="preserve"><value>+ NuGet…</value></data>
+  <data name="PP_AddProject" xml:space="preserve"><value>+ Έργο…</value></data>
+  <data name="PP_NavWin32Resources" xml:space="preserve"><value>Πόροι Win32</value></data>
+  <data name="PP_AppIcon" xml:space="preserve"><value>Εικονίδιο εφαρμογής</value></data>
+  <data name="PP_AppIconDesc" xml:space="preserve"><value>Αρχείο .ico ενσωματωμένο στο assembly ως πόρος Win32.</value></data>
+  <data name="PP_AppManifest" xml:space="preserve"><value>Manifest εφαρμογής</value></data>
+  <data name="PP_ManifestDefault" xml:space="preserve"><value>Προεπιλεγμένες ρυθμίσεις</value></data>
+  <data name="PP_ManifestCreate" xml:space="preserve"><value>Δημιουργία νέου manifest</value></data>
+  <data name="PP_ManifestNone" xml:space="preserve"><value>Χωρίς manifest</value></data>
+  <data name="PP_ManifestDesc" xml:space="preserve"><value>Αρχείο app.manifest που ελέγχει επίπεδο εκτέλεσης UAC και DPI.</value></data>
+  <data name="PP_NavPackage" xml:space="preserve"><value>Package</value></data>
+  <data name="PP_PackageDesc" xml:space="preserve"><value>Μεταδεδομένα NuGet που δημιουργούνται κατά τη δημοσίευση package.</value></data>
+  <data name="PP_PackageId" xml:space="preserve"><value>ID package</value></data>
+  <data name="PP_PackageIdDesc" xml:space="preserve"><value>Μοναδικό αναγνωριστικό package στο NuGet.org.</value></data>
+  <data name="PP_VersionLabel" xml:space="preserve"><value>Έκδοση</value></data>
+  <data name="PP_AuthorsLabel" xml:space="preserve"><value>Συγγραφείς</value></data>
+  <data name="PP_DescriptionLabel" xml:space="preserve"><value>Περιγραφή</value></data>
+  <data name="PP_NavDebug" xml:space="preserve"><value>Εντοπισμός σφαλμάτων</value></data>
+  <data name="PP_DebugDesc" xml:space="preserve"><value>Διαμόρφωση προφίλ εκκίνησης.</value></data>
+  <data name="PP_LaunchProfile" xml:space="preserve"><value>Προφίλ εκκίνησης</value></data>
+  <data name="PP_LaunchProfileDesc" xml:space="preserve"><value>Προφίλ ορισμένο στο launchSettings.json.</value></data>
+  <data name="PP_CommandLineArgs" xml:space="preserve"><value>Ορίσματα γραμμής εντολών</value></data>
+  <data name="PP_WorkingDirectory" xml:space="preserve"><value>Κατάλογος εργασίας</value></data>
+  <data name="PS_PackageSourceLabel" xml:space="preserve"><value>Πηγή package :</value></data>
+  <data name="PS_IncludePrerelease" xml:space="preserve"><value>Συμπερίληψη προεκδόσεων</value></data>
+  <data name="PS_NuGetBrowseTab" xml:space="preserve"><value>Αναζήτηση</value></data>
+  <data name="PS_NuGetInstalledTab" xml:space="preserve"><value>Εγκατεστημένα</value></data>
+  <data name="PS_NuGetUpdatesTab" xml:space="preserve"><value>Ενημερώσεις</value></data>
+  <data name="PS_NuGetLoadMore" xml:space="preserve"><value>Φόρτωση περισσότερων…</value></data>
+  <data name="PS_SelectPackageHint" xml:space="preserve"><value>Επιλέξτε package για προβολή λεπτομερειών.</value></data>
+  <data name="PS_NuGetConsolidateTab" xml:space="preserve"><value>Ενοποίηση</value></data>
+  <data name="PS_ProjectsLabel" xml:space="preserve"><value>Έργα</value></data>
+  <data name="PS_VersionLabel" xml:space="preserve"><value>Έκδοση :</value></data>
+  <data name="PS_AddProjectRef" xml:space="preserve"><value>Προσθήκη αναφοράς έργου…</value></data>
+  <data name="PS_AddAssemblyRef" xml:space="preserve"><value>Προσθήκη αναφοράς assembly…</value></data>
+  <data name="PS_RemoveUnused" xml:space="preserve"><value>Κατάργηση αχρησιμοποίητων…</value></data>
+  <data name="PS_SearchReferences" xml:space="preserve"><value>Αναζήτηση αναφορών…</value></data>
+  <data name="PS_Close" xml:space="preserve">
+    <value>Κλείσιμο</value>
+  </data>
+  <data name="PS_Convert" xml:space="preserve">
+    <value>Μετατροπή</value>
+  </data>
+  <data name="PS_Install" xml:space="preserve">
+    <value>Εγκατάσταση</value>
+  </data>
+  <data name="PS_Update" xml:space="preserve">
+    <value>Ενημέρωση</value>
+  </data>
+  <data name="PS_Uninstall" xml:space="preserve">
+    <value>Απεγκατάσταση</value>
+  </data>
+  <data name="PS_CopyOptionsSection" xml:space="preserve">
+    <value>Επιλογές αντιγραφής</value>
+  </data>
+  <data name="PS_KeepOriginalLocation" xml:space="preserve">
+    <value>Διατήρηση αρχικής τοποθεσίας (μόνο αναφορά)</value>
+  </data>
+  <data name="PS_CopyIntoProject" xml:space="preserve">
+    <value>Αντιγραφή στο έργο</value>
+  </data>
+  <data name="PS_DestinationFolder" xml:space="preserve">
+    <value>Φάκελος προορισμού</value>
+  </data>
+  <data name="PS_PhysicalSubfolder" xml:space="preserve">
+    <value>Φυσικός υποφάκελος</value>
+  </data>
+  <data name="PS_KeepInPlace" xml:space="preserve">
+    <value>Διατήρηση στη θέση του</value>
+  </data>
+  <data name="PS_NewFolderTooltip" xml:space="preserve">
+    <value>Νέος φυσικός φάκελος στον επιλεγμένο κατάλογο</value>
+  </data>
+  <data name="PS_ConfirmNewFolder" xml:space="preserve">
+    <value>Επιβεβαίωση νέου φακέλου</value>
+  </data>
+  <data name="PS_PreviewSection" xml:space="preserve">
+    <value>Προεπισκόπηση</value>
+  </data>
+  <data name="PS_DestinationLabel" xml:space="preserve">
+    <value>Προορισμός:</value>
+  </data>
+  <data name="PS_AutoFillTooltip" xml:space="preserve">
+    <value>Προσυμπλήρωση Πλατφόρμας, Περιοχής και Τίτλου από την επιλεγμένη ROM</value>
+  </data>
+  <data name="PS_OutputSection" xml:space="preserve">
+    <value>Έξοδος</value>
+  </data>
+  <data name="PS_SameFolderAsSource" xml:space="preserve">
+    <value>Ίδιος φάκελος με την πηγή</value>
+  </data>
+  <data name="PS_CustomFolder" xml:space="preserve">
+    <value>Προσαρμοσμένος φάκελος</value>
+  </data>
+  <data name="PS_AddConvertedToProject" xml:space="preserve">
+    <value>Προσθήκη μετατραπέντος αρχείου στο έργο</value>
+  </data>
+  <data name="PS_OpenAfterConversion" xml:space="preserve">
+    <value>Άνοιγμα στον Επεξεργαστή TBL μετά τη μετατροπή</value>
+  </data>
+  <data name="PS_AddToProject" xml:space="preserve">
+    <value>Προσθήκη στο έργο:</value>
+  </data>
+  <data name="PS_CreateInMemoryTooltip" xml:space="preserve">
+    <value>Δημιουργία εγγράφου στη μνήμη · επιλογή τοποθεσίας στο πρώτο Ctrl+S</value>
+  </data>
+  <data name="PS_PackageDescription" xml:space="preserve">
+    <value>Περιγραφή</value>
+  </data>
+  <data name="PS_PackageDownloads" xml:space="preserve">
+    <value>Λήψεις:</value>
+  </data>
+  <data name="PS_PackagesLabel" xml:space="preserve">
+    <value> package(s)</value>
+  </data>
+  <data name="PS_InstalledVersion" xml:space="preserve">
+    <value>Εγκατεστημένο: v</value>
+  </data>
+  <data name="PP_ReferencesLabel" xml:space="preserve">
+    <value>Αναφορές έργου και package:</value>
+  </data>
+  <data name="PP_Save" xml:space="preserve">
+    <value>Αποθήκευση</value>
+  </data>
+  <data name="PP_FilterSections" xml:space="preserve">
+    <value>Φιλτράρισμα ενοτήτων</value>
+  </data>
+  <data name="PP_TypeColumn" xml:space="preserve">
+    <value>Τύπος</value>
+  </data>
+  <data name="PP_PathColumn" xml:space="preserve">
+    <value>Διαδρομή</value>
+  </data>
+  <data name="PP_ValueColumn" xml:space="preserve">
+    <value>Τιμή</value>
+  </data>
+  <data name="PP_NamespaceColumn" xml:space="preserve">
+    <value>Χώρος ονομάτων</value>
+  </data>
+  <data name="PP_EnvVars" xml:space="preserve">
+    <value>Μεταβλητές περιβάλλοντος</value>
+  </data>
+  <data name="PP_NavCodeAnalysis" xml:space="preserve">
+    <value>Ανάλυση κώδικα</value>
+  </data>
+  <data name="PP_EnableCodeAnalysis" xml:space="preserve">
+    <value>Ενεργοποίηση ανάλυσης κώδικα κατά τη μεταγλώττιση</value>
+  </data>
+  <data name="PP_EnableCodeAnalysisDesc" xml:space="preserve">
+    <value>Ενεργοποιεί τους αναλυτές Roslyn σε κάθε μεταγλώττιση.</value>
+  </data>
+  <data name="PP_ReleaseOnlyAnalysis" xml:space="preserve">
+    <value>Ενεργοποίηση μόνο σε διαμόρφωση Release</value>
+  </data>
+  <data name="PP_CodeAnalysisDesc" xml:space="preserve">
+    <value>Ρυθμίσεις στατικής ανάλυσης κώδικα.</value>
+  </data>
+  <data name="PP_ChangesSaved" xml:space="preserve">
+    <value>✓ Οι αλλαγές αποθηκεύτηκαν</value>
+  </data>
+  <data name="PP_AppManifestDesc" xml:space="preserve">
+    <value>Το αρχείο app.manifest που ελέγχει επίπεδο εκτέλεσης UAC και DPI.</value>
+  </data>
+  <data name="NG_TipSearch" xml:space="preserve"><value>Αναζήτηση</value></data>
+</root>

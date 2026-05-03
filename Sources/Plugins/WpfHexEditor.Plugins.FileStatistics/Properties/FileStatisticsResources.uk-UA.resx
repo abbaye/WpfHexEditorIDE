@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.FileStatistics
+    File        : FileStatisticsResources.uk-UA.resx
+    Description : Ukrainian (Ukraine) translations for the File Statistics plugin.
+-->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="FileStats_PluginName" xml:space="preserve"><value>Статистика файлу</value></data>
+  <data name="FileStats_HighNullRatio" xml:space="preserve"><value>Висока частка нульових байтів</value></data>
+  <data name="FileStats_VeryHighEntropy" xml:space="preserve"><value>Дуже висока ентропія</value></data>
+  <data name="FileStats_MayBeEncrypted" xml:space="preserve"><value>Дані можуть бути зашифровані або стиснуті</value></data>
+  <data name="FileStats_NoFileLoaded" xml:space="preserve"><value>Файл не завантажено</value></data>
+  <data name="FS_Title" xml:space="preserve"><value>Статистика файлу</value></data>
+  <data name="FS_ReanalyzeButton" xml:space="preserve"><value>Повторний аналіз</value></data>
+  <data name="FS_FileInfoSection" xml:space="preserve"><value>Інформація про файл</value></data>
+  <data name="FS_NoFileLoaded" xml:space="preserve"><value>Файл не завантажено</value></data>
+  <data name="FS_SizeLabel" xml:space="preserve"><value>Розмір:</value></data>
+  <data name="FS_ZeroBytesPlaceholder" xml:space="preserve"><value>0 байт</value></data>
+  <data name="FS_FormatLabel" xml:space="preserve"><value>Формат:</value></data>
+  <data name="FS_UnknownFormat" xml:space="preserve"><value>Невідомо</value></data>
+  <data name="FS_AnalyzedLabel" xml:space="preserve"><value>Проаналізовано:</value></data>
+  <data name="FS_DetectedTypeSection" xml:space="preserve"><value>Виявлений тип даних</value></data>
+  <data name="FS_ByteCompositionSection" xml:space="preserve"><value>Склад байтів</value></data>
+  <data name="FS_NullBytesLabel" xml:space="preserve"><value>Нульові байти:</value></data>
+  <data name="FS_PrintableAsciiLabel" xml:space="preserve"><value>Друковані ASCII:</value></data>
+  <data name="FS_OtherBytesLabel" xml:space="preserve"><value>Інші байти:</value></data>
+  <data name="FS_MostCommonLabel" xml:space="preserve"><value>Найчастіші:</value></data>
+  <data name="FS_UniqueBytesLabel" xml:space="preserve"><value>Унікальні байти:</value></data>
+  <data name="FS_HealthSection" xml:space="preserve"><value>Загальний стан</value></data>
+  <data name="FS_EntropySection" xml:space="preserve"><value>Аналіз ентропії</value></data>
+  <data name="FS_EntropyLevel" xml:space="preserve"><value>Рівень:</value></data>
+  <data name="FS_ValidationSection" xml:space="preserve"><value>Перевірка</value></data>
+  <data name="FS_StructureLabel" xml:space="preserve"><value>Структура</value></data>
+  <data name="FS_ValidLabel" xml:space="preserve"><value>Дійсна</value></data>
+  <data name="FS_ChecksumsLabel" xml:space="preserve"><value>Контрольні суми</value></data>
+  <data name="FS_AllPassLabel" xml:space="preserve"><value>Всі пройдено</value></data>
+  <data name="FS_IssuesSection" xml:space="preserve"><value>Виявлені проблеми</value></data>
+  <data name="FS_NoIssuesText" xml:space="preserve"><value>✅ Проблем не виявлено</value></data>
+  <data name="FS_AnalyzingLabel" xml:space="preserve"><value>Аналіз файлу...</value></data>
+  <data name="FS_HealthStatusDefault" xml:space="preserve"><value>Структура файлу дійсна та справна</value></data>
+  <data name="FS_EntropyDescDefault" xml:space="preserve"><value>Дані, ймовірно, стиснуті або зашифровані</value></data>
+  <data name="FS_TipMoreOptions" xml:space="preserve"><value>Більше параметрів</value></data>
+  <data name="FS_NoIssuesDetected" xml:space="preserve"><value>&#x2705; Проблем не виявлено</value></data>
+</root>

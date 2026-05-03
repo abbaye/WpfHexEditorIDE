@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Docking_TabSettings_Title" xml:space="preserve"><value>Možnosti karet dokumentu</value></data>
+  <data name="Docking_TabSettings_TabStripPlacement" xml:space="preserve"><value>Umístění lišty karet</value></data>
+  <data name="Docking_TabSettings_Top" xml:space="preserve"><value>Nahoře (výchozí)</value></data>
+  <data name="Docking_TabSettings_Left" xml:space="preserve"><value>Vlevo</value></data>
+  <data name="Docking_TabSettings_Right" xml:space="preserve"><value>Vpravo</value></data>
+  <data name="Docking_TabSettings_ColorBy" xml:space="preserve"><value>Barvit karty dokumentu podle</value></data>
+  <data name="Docking_TabSettings_NoColorization" xml:space="preserve"><value>Bez zbarvení</value></data>
+  <data name="Docking_TabSettings_FileExtension" xml:space="preserve"><value>Přípona souboru</value></data>
+  <data name="Docking_TabSettings_Project" xml:space="preserve"><value>Projekt</value></data>
+  <data name="Docking_TabSettings_RegexRules" xml:space="preserve"><value>Pravidla regex</value></data>
+  <data name="Docking_TabSettings_RegexFirstMatch" xml:space="preserve"><value>Pravidla regex — první shoda vyhrává:</value></data>
+  <data name="Docking_TabSettings_PatternColumn" xml:space="preserve"><value>Vzor (regex)</value></data>
+  <data name="Docking_TabSettings_ColorColumn" xml:space="preserve"><value>Barva</value></data>
+  <data name="Docking_TabSettings_HexColorTooltip" xml:space="preserve"><value>Zadejte hex barvu: #RRGGBB nebo #AARRGGBB</value></data>
+  <data name="Docking_TabSettings_PressDelete" xml:space="preserve"><value>Stiskněte Del pro smazání vybraného řádku.</value></data>
+  <data name="Docking_TabSettings_TabRows" xml:space="preserve"><value>Řádky karet</value></data>
+  <data name="Docking_TabSettings_ShowMultipleRows" xml:space="preserve"><value>Zobrazit karty na více řádcích</value></data>
+  <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve"><value>Přepínat řádky kolečkem myši</value></data>
+
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve"><value>Maximalizovat</value></data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve"><value>Obnovit</value></data>
+  <data name="Dock_LSP_Connecting" xml:space="preserve"><value>Jazykový server: připojování…</value></data>
+  <data name="Dock_LSP_Ready" xml:space="preserve"><value>Jazykový server: připraven</value></data>
+  <data name="Dock_LSP_Error" xml:space="preserve"><value>Jazykový server: chyba</value></data>
+  <data name="Dock_AutoHide_Show" xml:space="preserve"><value>Zobrazit</value></data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve"><value>Plovoucí</value></data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve"><value>Zavřít</value></data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve"><value>Ukotvit</value></data>
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve"><value>Barvit karty dokumentu podle</value></data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve"><value>Možnosti…</value></data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve"><value>Zobrazit karty na více řádcích</value></data>
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve"><value>Nová svislá skupina karet</value></data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve"><value>Nová vodorovná skupina karet</value></data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve"><value>Zavřít skupinu karet</value></data>
+  <data name="Dock_Menu_Float" xml:space="preserve"><value>Plovoucí</value></data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve"><value>Ukotvit jako dokument s kartami</value></data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve"><value>Ukotvit jako okno nástroje</value></data>
+  <data name="Dock_Menu_Hide" xml:space="preserve"><value>Skrýt</value></data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve"><value>Zavřít vše</value></data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve"><value>Zavřít vše kromě tohoto</value></data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve"><value>Zavřít vše kromě připnutých</value></data>
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve"><value>Otevřete dokument pro začátek</value></data>
+  <data name="Dock_Tab_Start" xml:space="preserve"><value>Úvod</value></data>
+</root>

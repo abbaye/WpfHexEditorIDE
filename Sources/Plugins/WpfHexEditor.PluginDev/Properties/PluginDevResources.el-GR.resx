@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.PluginDev
+    File        : Properties/PluginDevResources.el-GR.resx
+    Description : PluginDev-specific UI strings — Greek (Greece) satellite.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- NewPluginWizardWindow -->
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>Νέο έργο επέκτασης</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Επιλέξτε τον φάκελο εξόδου για το έργο plugin</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>Δικαιώματα</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>Λειτουργία απομόνωσης</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>Προτεραιότητα φόρτωσης (10–90)&#160;:</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>Επόμενο &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>Δημιουργία και άνοιγμα</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>Το plugin δημιουργήθηκε</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>Σφάλμα</value>
+  </data>
+
+  <!-- PluginPackagePublisherDialog -->
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>Δημοσίευση πακέτου επέκτασης</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>Υπογραφή πακέτου πριν τη δημοσίευση</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Αναζήτηση…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>Άνοιγμα φακέλου εξόδου στην Εξερεύνηση</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>Δημιουργία πακέτου</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>Κλείσιμο</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>Επιλογή φακέλου εξόδου</value>
+  </data>
+
+  <!-- PluginDevLogPanel -->
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>Εξαγωγή αρχείου καταγραφής ανάπτυξης επέκτασης</value>
+  </data>
+
+  <!-- PluginMarketplacePanel -->
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>Αναζήτηση</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>Αναζήτηση</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>Εγκατεστημένες</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>Ενημέρωση όλων</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>Ενημερώσεις</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>Marketplace επεκτάσεων</value>
+  </data>
+
+  <!-- PluginDevToolbar -->
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>Επέκταση&#160;:</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>Config&#160;:</value>
+  </data>
+
+  <!-- PanelPluginTemplate -->
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>Έτοιμο</value>
+  </data>
+
+  <!-- PluginMarketplacePanel toolbar and column headers -->
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>Ανανέωση</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>Όνομα</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>Συγγραφέας</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>Έκδοση</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>Αξιολόγηση</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>Λήψεις</value>
+  </data>
+
+</root>

@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="AppendByteConfirmationString" xml:space="preserve">
+    <value>Φτάσατε στο τέλος του αρχείου. Θέλετε να προσθέσετε ένα byte; Αυτή η λειτουργία δεν μπορεί να αναιρεθεί αν συνεχίσετε.</value>
+  </data>
+  <data name="BookmarksString" xml:space="preserve">
+    <value>Σελιδοδείκτες</value>
+  </data>
+  <data name="ByteActionString" xml:space="preserve">
+    <value>Ενέργεια byte</value>
+  </data>
+  <data name="ByteString" xml:space="preserve">
+    <value>Byte</value>
+  </data>
+  <data name="CancelLongProcessString" xml:space="preserve">
+    <value>Ακύρωση μακράς διεργασίας</value>
+  </data>
+  <data name="CancelLongProcessToolTipString" xml:space="preserve">
+    <value>Κλικ για ακύρωση της μακράς διεργασίας.</value>
+  </data>
+  <data name="CancelString" xml:space="preserve">
+    <value>Ακύρωση</value>
+  </data>
+  <data name="ClearBookMarkString" xml:space="preserve">
+    <value>Διαγραφή σελιδοδείκτη</value>
+  </data>
+  <data name="ClearString" xml:space="preserve">
+    <value>Εκκαθάριση</value>
+  </data>
+  <data name="ClickToGoAtPositionString" xml:space="preserve">
+    <value>Κλικ για μετάβαση στη θέση.</value>
+  </data>
+  <data name="CloseString" xml:space="preserve">
+    <value>Κλείσιμο</value>
+  </data>
+  <data name="CopyAsASCIIString" xml:space="preserve">
+    <value>Αντιγραφή ως ASCII</value>
+  </data>
+  <data name="CopyAsDecimalString" xml:space="preserve">
+    <value>Αντιγραφή ως δεκαδικό</value>
+  </data>
+  <data name="CopyAsHexadecimalString" xml:space="preserve">
+    <value>Αντιγραφή ως Hex</value>
+  </data>
+  <data name="CopyAsTBLString" xml:space="preserve">
+    <value>Συμβολοσειρά TBL (φορτωμένο αρχείο χαρακτήρων)</value>
+  </data>
+  <data name="CopySelectionAsString" xml:space="preserve">
+    <value>Αντιγραφή επιλογής ως...</value>
+  </data>
+  <data name="CountOfString" xml:space="preserve">
+    <value>Αριθμός</value>
+  </data>
+  <data name="DefaultTBLString" xml:space="preserve">
+    <value>Προεπιλεγμένο TBL</value>
+  </data>
+  <data name="DeleteString" xml:space="preserve">
+    <value>Διαγραφή</value>
+  </data>
+  <data name="DescriptionString" xml:space="preserve">
+    <value>Περιγραφή</value>
+  </data>
+  <data name="EndTagString" xml:space="preserve">
+    <value>&lt;τέλος&gt;</value>
+  </data>
+  <data name="EnterHexValueMsgString" xml:space="preserve">
+    <value>Εισάγετε hex τιμή...</value>
+  </data>
+  <data name="FileDroppingConfirmationString" xml:space="preserve">
+    <value>Θέλετε να κλείσετε το τρέχον αρχείο και να ανοίξετε: </value>
+  </data>
+  <data name="FillSelectionAloneString" xml:space="preserve">
+    <value>Συμπλήρωση επιλογής με ένα byte</value>
+  </data>
+  <data name="FillSelectionString" xml:space="preserve">
+    <value>Συμπλήρωση επιλογής με ένα byte...</value>
+  </data>
+  <data name="FindAllString" xml:space="preserve">
+    <value>Εύρεση όλων</value>
+  </data>
+  <data name="FindAndReplaceString" xml:space="preserve">
+    <value>Αναζήτηση και αντικατάσταση</value>
+  </data>
+  <data name="FindByteString" xml:space="preserve">
+    <value>Byte προς αναζήτηση</value>
+  </data>
+  <data name="FindFirstString" xml:space="preserve">
+    <value>Εύρεση πρώτου</value>
+  </data>
+  <data name="FindLastString" xml:space="preserve">
+    <value>Εύρεση τελευταίου</value>
+  </data>
+  <data name="FindNextString" xml:space="preserve">
+    <value>Εύρεση επόμενου</value>
+  </data>
+  <data name="FindSelectionString" xml:space="preserve">
+    <value>Εύρεση όλων των εμφανίσεων επιλογής</value>
+  </data>
+  <data name="FindString" xml:space="preserve">
+    <value>Αναζήτηση</value>
+  </data>
+  <data name="FindWhatString" xml:space="preserve">
+    <value>Αναζήτηση :</value>
+  </data>
+  <data name="FirstByteString" xml:space="preserve">
+    <value>Πρώτο byte</value>
+  </data>
+  <data name="HexString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="KBTagString" xml:space="preserve">
+    <value>KB</value>
+  </data>
+  <data name="LengthString" xml:space="preserve">
+    <value>Μήκος</value>
+  </data>
+  <data name="LineStatusBarTagString" xml:space="preserve">
+    <value>Γρ</value>
+  </data>
+  <data name="LineTagString" xml:space="preserve">
+    <value>&lt;γρ&gt;</value>
+  </data>
+  <data name="LongString" xml:space="preserve">
+    <value>Long</value>
+  </data>
+  <data name="MBTagString" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="OkString" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PasteExtendByteConfirmationString" xml:space="preserve">
+    <value>Η λειτουργία επικόλλησης έφτασε στο τέλος του αρχείου. Θέλετε να επεκτείνετε το αρχείο για να ολοκληρωθεί η λειτουργία; Αυτή η λειτουργία δεν μπορεί να αναιρεθεί αν συνεχίσετε.</value>
+  </data>
+  <data name="PasteFromClipboardString" xml:space="preserve">
+    <value>Επικόλληση από πρόχειρο</value>
+  </data>
+  <data name="PasteNotInsertString" xml:space="preserve">
+    <value>Επικόλληση χωρίς εισαγωγή</value>
+  </data>
+  <data name="PositionString" xml:space="preserve">
+    <value>Θέση</value>
+  </data>
+  <data name="ReplaceAllString" xml:space="preserve">
+    <value>Αντικατάσταση όλων</value>
+  </data>
+  <data name="ReplaceByByteString" xml:space="preserve">
+    <value>Αντικατάσταση με byte</value>
+  </data>
+  <data name="ReplaceNextString" xml:space="preserve">
+    <value>Αντικατάσταση επόμενου</value>
+  </data>
+  <data name="ReplaceSelectionString" xml:space="preserve">
+    <value>Αντικατάσταση byte στην επιλογή...</value>
+  </data>
+  <data name="ReplaceString" xml:space="preserve">
+    <value>Αντικατάσταση</value>
+  </data>
+  <data name="ReplaceWithByteString" xml:space="preserve">
+    <value>Αντικατάσταση με byte</value>
+  </data>
+  <data name="ReplaceWithString" xml:space="preserve">
+    <value>Αντικατάσταση με :</value>
+  </data>
+  <data name="ReplaceInSelectionOnlyString" xml:space="preserve">
+    <value>Αντικατάσταση μόνο στην επιλογή</value>
+  </data>
+  <data name="ShowConfirmationString" xml:space="preserve">
+    <value>Εμφάνιση διαλόγου επιβεβαίωσης</value>
+  </data>
+  <data name="PreviewString" xml:space="preserve">
+    <value>Προεπισκόπηση :</value>
+  </data>
+  <data name="ValidationInvalidHexString" xml:space="preserve">
+    <value>Μη έγκυρη hex τιμή</value>
+  </data>
+  <data name="ValidationRequiredString" xml:space="preserve">
+    <value>Απαιτείται τιμή</value>
+  </data>
+  <data name="OccurrencesFoundString" xml:space="preserve">
+    <value>{0} εμφανίσεις βρέθηκαν</value>
+  </data>
+  <data name="ReplacementCompleteString" xml:space="preserve">
+    <value>{0} εμφανίσεις αντικαταστάθηκαν</value>
+  </data>
+  <data name="NoOccurrencesFoundString" xml:space="preserve">
+    <value>Δεν βρέθηκαν εμφανίσεις</value>
+  </data>
+  <data name="InSelectionString" xml:space="preserve">
+    <value>στην επιλογή</value>
+  </data>
+  <data name="InFileString" xml:space="preserve">
+    <value>στο αρχείο</value>
+  </data>
+  <data name="SelectAllString" xml:space="preserve">
+    <value>Επιλογή όλων</value>
+  </data>
+  <data name="SetBookMarkString" xml:space="preserve">
+    <value>Ορισμός σελιδοδείκτη</value>
+  </data>
+  <data name="TBLString" xml:space="preserve">
+    <value>TBL</value>
+  </data>
+  <data name="ThisStringAreNotHexString" xml:space="preserve">
+    <value>Αυτή η συμβολοσειρά δεν είναι hex</value>
+  </data>
+  <data name="UndoString" xml:space="preserve">
+    <value>Αναίρεση</value>
+  </data>
+  <data name="ValueString" xml:space="preserve">
+    <value>Τιμή</value>
+  </data>
+  <data name="WritingErrorExeptionString" xml:space="preserve">
+    <value>Παρουσιάστηκε σφάλμα κατά την εγγραφή.</value>
+  </data>
+  <data name="HighLightSettingString" xml:space="preserve">
+    <value>Επισήμανση όλων των βρεθέντων δεδομένων</value>
+  </data>
+  <data name="ReplaceTrimSettingString" xml:space="preserve">
+    <value>Περικοπή δεδομένων στο μήκος αναζήτησης κατά την αντικατάσταση</value>
+  </data>
+  <data name="ZoomResetString" xml:space="preserve">
+    <value>Επαναφορά ζουμ στο 100%</value>
+  </data>
+  <data name="ZoomString" xml:space="preserve">
+    <value>Ζουμ</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>Αδύνατη η μετατροπή αυτής της συμβολοσειράς σε long</value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>Το αρχείο είναι κλειδωμένο. Θέλετε να το ανοίξετε σε λειτουργία μόνο ανάγνωσης;</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>Bytes</value>
+  </data>
+  <data name="SearchCommandCenterString" xml:space="preserve">
+    <value>ΚΕΝΤΡΟ ΕΝΤΟΛΩΝ ΑΝΑΖΗΤΗΣΗΣ</value>
+  </data>
+  <data name="SearchTextModeString" xml:space="preserve">
+    <value>Κείμενο</value>
+  </data>
+  <data name="SearchHexModeString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="SearchRegexModeString" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="SearchWildcardModeString" xml:space="preserve">
+    <value>Χαρακτήρας μπαλαντέρ</value>
+  </data>
+  <data name="SearchPreviousString" xml:space="preserve">
+    <value>Προηγούμενο</value>
+  </data>
+  <data name="SearchNextString" xml:space="preserve">
+    <value>Επόμενο</value>
+  </data>
+  <data name="SearchFindAllString" xml:space="preserve">
+    <value>Εύρεση όλων</value>
+  </data>
+  <data name="SearchMatchesString" xml:space="preserve">
+    <value>αντιστοιχίες</value>
+  </data>
+  <data name="SearchInString" xml:space="preserve">
+    <value>σε</value>
+  </data>
+  <data name="SearchNoMatchesString" xml:space="preserve">
+    <value>Δεν βρέθηκαν αντιστοιχίες</value>
+  </data>
+  <data name="SearchV2BadgeString" xml:space="preserve">
+    <value>99% ΤΑΧΥΤΕΡΟ ΜΕ V2</value>
+  </data>
+  <data name="ClearSearchString" xml:space="preserve">
+    <value>Εκκαθάριση</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>Παλέτα εντολών</value>
+  </data>
+  <data name="PerformanceDashboardString" xml:space="preserve">
+    <value>Πίνακας απόδοσης</value>
+  </data>
+  <data name="ThemeDarkGlassString" xml:space="preserve">
+    <value>Σκούρο γυαλί</value>
+  </data>
+  <data name="ThemeLightString" xml:space="preserve">
+    <value>Φωτεινό</value>
+  </data>
+  <data name="ThemeCyberpunkString" xml:space="preserve">
+    <value>Cyberpunk</value>
+  </data>
+  <data name="ThemeMinimalString" xml:space="preserve">
+    <value>Μινιμαλιστικό</value>
+  </data>
+  <data name="CopyAsCSharpCodeString" xml:space="preserve">
+    <value>Αντιγραφή ως κώδικας C#</value>
+  </data>
+  <data name="CopyAsCCodeString" xml:space="preserve">
+    <value>Αντιγραφή ως κώδικας C</value>
+  </data>
+  <data name="CopyAsFormattedViewString" xml:space="preserve">
+    <value>Αντιγραφή σε μορφοποιημένη προβολή</value>
+  </data>
+  <data name="CopyString" xml:space="preserve">
+    <value>Αντιγραφή</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Επικόλληση</value>
+  </data>
+  <data name="FillWithByteString" xml:space="preserve">
+    <value>Συμπλήρωση με byte...</value>
+  </data>
+  <data name="ReplaceByteMenuString" xml:space="preserve">
+    <value>Αντικατάσταση byte...</value>
+  </data>
+  <data name="ReverseSelectionString" xml:space="preserve">
+    <value>Αντιστροφή επιλογής</value>
+  </data>
+  <data name="InvertSelectionString" xml:space="preserve">
+    <value>Αναστροφή bytes</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Μήνυμα κατάστασης</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Μέγεθος αρχείου</value>
+  </data>
+  <data name="SelectionInfoString" xml:space="preserve">
+    <value>Πληροφορίες επιλογής</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Λειτουργία επεξεργασίας</value>
+  </data>
+  <data name="BytesPerLineString" xml:space="preserve">
+    <value>Bytes ανά γραμμή</value>
+  </data>
+  <data name="RefreshTimeString" xml:space="preserve">
+    <value>Χρόνος ανανέωσης</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Έτοιμο</value>
+  </data>
+  <data name="NoSelectionString" xml:space="preserve">
+    <value>Χωρίς επιλογή</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Λειτουργία: Αντικατάσταση</value>
+  </data>
+  <data name="FindAndReplaceDialogTitle" xml:space="preserve">
+    <value>Αναζήτηση και αντικατάσταση</value>
+  </data>
+  <data name="FindGroupHeader" xml:space="preserve">
+    <value>Αναζήτηση</value>
+  </data>
+  <data name="ReplaceGroupHeader" xml:space="preserve">
+    <value>Αντικατάσταση</value>
+  </data>
+  <data name="ResultsGroupHeader" xml:space="preserve">
+    <value>Αποτελέσματα</value>
+  </data>
+  <data name="FindTextLabel" xml:space="preserve">
+    <value>Αναζήτηση :</value>
+  </data>
+  <data name="ReplaceTextLabel" xml:space="preserve">
+    <value>Αντικατάσταση με :</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Προηγούμενο</value>
+  </data>
+  <data name="FindNextButton" xml:space="preserve">
+    <value>Επόμενο</value>
+  </data>
+  <data name="FindAllButton" xml:space="preserve">
+    <value>Εύρεση όλων</value>
+  </data>
+  <data name="ReplaceButton" xml:space="preserve">
+    <value>Αντικατάσταση</value>
+  </data>
+  <data name="ReplaceAllButton" xml:space="preserve">
+    <value>Αντικατάσταση όλων</value>
+  </data>
+  <data name="CaseSensitiveCheckbox" xml:space="preserve">
+    <value>Διάκριση πεζών-κεφαλαίων</value>
+  </data>
+  <data name="WholeWordCheckbox" xml:space="preserve">
+    <value>Ολόκληρη λέξη</value>
+  </data>
+  <data name="UseRegexCheckbox" xml:space="preserve">
+    <value>Χρήση κανονικών εκφράσεων</value>
+  </data>
+  <data name="SearchInSelectionCheckbox" xml:space="preserve">
+    <value>Αναζήτηση μόνο στην επιλογή</value>
+  </data>
+  <data name="HighlightAllCheckbox" xml:space="preserve">
+    <value>Επισήμανση όλων των αντιστοιχιών</value>
+  </data>
+  <data name="CloseDialogButton" xml:space="preserve">
+    <value>Κλείσιμο</value>
+  </data>
+  <data name="NoResultsFound" xml:space="preserve">
+    <value>Δεν βρέθηκαν αποτελέσματα</value>
+  </data>
+  <data name="MatchesFoundFormat" xml:space="preserve">
+    <value>{0} αντιστοιχίες βρέθηκαν</value>
+  </data>
+  <data name="ReplacedFormat" xml:space="preserve">
+    <value>{0} αντικαταστάθηκαν</value>
+  </data>
+  <data name="SearchPanelTitle" xml:space="preserve">
+    <value>Αναζήτηση</value>
+  </data>
+  <data name="SearchFindLabel" xml:space="preserve">
+    <value>Αναζήτηση :</value>
+  </data>
+  <data name="SearchModePlaceholder" xml:space="preserve">
+    <value>Εισάγετε κείμενο αναζήτησης...</value>
+  </data>
+  <data name="TextModeLabel" xml:space="preserve">
+    <value>Κείμενο</value>
+  </data>
+  <data name="HexModeLabel" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="RegexModeLabel" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WildcardModeLabel" xml:space="preserve">
+    <value>Μπαλαντέρ</value>
+  </data>
+  <data name="MatchCaseLabel" xml:space="preserve">
+    <value>Διάκριση πεζών-κεφαλαίων</value>
+  </data>
+  <data name="WholeWordLabel" xml:space="preserve">
+    <value>Ολόκληρη λέξη</value>
+  </data>
+  <data name="SearchOptionsLabel" xml:space="preserve">
+    <value>Επιλογές</value>
+  </data>
+  <data name="SearchResultsLabel" xml:space="preserve">
+    <value>Αποτελέσματα</value>
+  </data>
+  <data name="CurrentMatchLabel" xml:space="preserve">
+    <value>Τρέχουσα αντιστοιχία</value>
+  </data>
+  <data name="TotalMatchesLabel" xml:space="preserve">
+    <value>Σύνολο αντιστοιχιών</value>
+  </data>
+  <data name="QuickSearchTooltip" xml:space="preserve">
+    <value>Γρήγορη αναζήτηση (Ctrl+F)</value>
+  </data>
+  <data name="PreviousMatchTooltip" xml:space="preserve">
+    <value>Προηγούμενη αντιστοιχία (Shift+F3)</value>
+  </data>
+  <data name="NextMatchTooltip" xml:space="preserve">
+    <value>Επόμενη αντιστοιχία (F3)</value>
+  </data>
+  <data name="CloseSearchTooltip" xml:space="preserve">
+    <value>Κλείσιμο αναζήτησης (Esc)</value>
+  </data>
+  <data name="SearchOptionsTooltip" xml:space="preserve">
+    <value>Επιλογές αναζήτησης</value>
+  </data>
+  <data name="StatusSearching" xml:space="preserve">
+    <value>Αναζήτηση σε εξέλιξη...</value>
+  </data>
+  <data name="StatusSearchComplete" xml:space="preserve">
+    <value>Αναζήτηση ολοκληρώθηκε</value>
+  </data>
+  <data name="StatusFoundMatchesFormat" xml:space="preserve">
+    <value>{0} αντιστοιχίες βρέθηκαν σε {1} ms</value>
+  </data>
+  <data name="StatusMatchFoundAtFormat" xml:space="preserve">
+    <value>Αντιστοιχία στη θέση 0x{0:X8}</value>
+  </data>
+  <data name="StatusNoMoreMatches" xml:space="preserve">
+    <value>Δεν βρέθηκαν άλλες αντιστοιχίες</value>
+  </data>
+  <data name="StatusReachedEndOfFile" xml:space="preserve">
+    <value>Τέλος αρχείου</value>
+  </data>
+  <data name="StatusReachedStartOfFile" xml:space="preserve">
+    <value>Αρχή αρχείου</value>
+  </data>
+  <data name="StatusReplacing" xml:space="preserve">
+    <value>Αντικατάσταση σε εξέλιξη...</value>
+  </data>
+  <data name="StatusReplaceComplete" xml:space="preserve">
+    <value>Αντικατάσταση ολοκληρώθηκε</value>
+  </data>
+  <data name="StatusReplacedFormat" xml:space="preserve">
+    <value>{0} εμφανίσεις αντικαταστάθηκαν</value>
+  </data>
+  <data name="StatusInvalidSearchPattern" xml:space="preserve">
+    <value>Μη έγκυρο μοτίβο αναζήτησης</value>
+  </data>
+  <data name="StatusInvalidRegex" xml:space="preserve">
+    <value>Μη έγκυρη κανονική έκφραση</value>
+  </data>
+  <data name="StatusSearchCancelled" xml:space="preserve">
+    <value>Αναζήτηση ακυρώθηκε</value>
+  </data>
+  <data name="StatusReplaceCancelled" xml:space="preserve">
+    <value>Αντικατάσταση ακυρώθηκε</value>
+  </data>
+  <data name="StatusCancelling" xml:space="preserve">
+    <value>Ακύρωση...</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Σφάλμα: {0}</value>
+  </data>
+  <data name="StatusFoundMatchesWithSpeedFormat" xml:space="preserve">
+    <value>{0} αντιστοιχίες σε {1} ms ({2:F2} MB/s)</value>
+  </data>
+  <data name="StatusMatchFoundAtWrappedFormat" xml:space="preserve">
+    <value>Αντιστοιχία στη θέση 0x{0:X8} (κυκλική)</value>
+  </data>
+  <data name="StatusNoPreviousMatches" xml:space="preserve">
+    <value>Δεν βρέθηκαν προηγούμενες αντιστοιχίες</value>
+  </data>
+  <data name="StatusMatchOfTotalFormat" xml:space="preserve">
+    <value>Αντιστοιχία {0} από {1} στη θέση 0x{2:X8}</value>
+  </data>
+  <data name="StatusReplacedAtFormat" xml:space="preserve">
+    <value>Αντικαταστάθηκε στη θέση 0x{0:X8} (Σύνολο: {1})</value>
+  </data>
+  <data name="StatusReplaceError" xml:space="preserve">
+    <value>Σφάλμα αντικατάστασης: {0}</value>
+  </data>
+  <data name="StatusNoMatchesToReplace" xml:space="preserve">
+    <value>Δεν υπάρχουν αντιστοιχίες προς αντικατάσταση</value>
+  </data>
+  <data name="StatusInvalidReplacementPattern" xml:space="preserve">
+    <value>Μη έγκυρο μοτίβο αντικατάστασης</value>
+  </data>
+  <data name="StatusReplacedOccurrencesFormat" xml:space="preserve">
+    <value>{0} εμφάνιση(-εις) αντικαταστάθηκε(-αν). Σύνολο: {1}</value>
+  </data>
+  <data name="StatusReplaceAllError" xml:space="preserve">
+    <value>Σφάλμα αντικατάστασης όλων: {0}</value>
+  </data>
+  <data name="StatusNoMoreBookmarksAfter" xml:space="preserve">
+    <value>Δεν υπάρχουν σελιδοδείκτες μετά την τρέχουσα θέση</value>
+  </data>
+  <data name="StatusNoMoreBookmarksBefore" xml:space="preserve">
+    <value>Δεν υπάρχουν σελιδοδείκτες πριν την τρέχουσα θέση</value>
+  </data>
+  <data name="BookmarkSetFormat" xml:space="preserve">
+    <value>Σελιδοδείκτης ορίστηκε στο 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkClearedFormat" xml:space="preserve">
+    <value>Σελιδοδείκτης διαγράφηκε στο 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkNavigatedFormat" xml:space="preserve">
+    <value>Πλοήγηση σε σελιδοδείκτη στο 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkAllCleared" xml:space="preserve">
+    <value>Όλοι οι σελιδοδείκτες διαγράφηκαν</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Αντιγραφή επιλογής</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Αποκοπή επιλογής</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Εισαγωγή byte...</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Διαγραφή byte</value>
+  </data>
+  <data name="DeleteSelectionString" xml:space="preserve">
+    <value>Διαγραφή επιλογής</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Μετάβαση σε offset...</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Ιδιότητες</value>
+  </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Ακύρωση</value>
+  </data>
+  <data name="ProgressMessageFileOpenedSuccessfully" xml:space="preserve">
+    <value>Το αρχείο ανοίχθηκε επιτυχώς</value>
+  </data>
+  <data name="ProgressMessageFileSavedSuccessfully" xml:space="preserve">
+    <value>Το αρχείο αποθηκεύτηκε επιτυχώς</value>
+  </data>
+  <data name="ProgressMessageFindingMatches" xml:space="preserve">
+    <value>Αναζήτηση αντιστοιχιών...</value>
+  </data>
+  <data name="ProgressMessageFoundMatchesFormat" xml:space="preserve">
+    <value>{0} αντιστοιχίες βρέθηκαν</value>
+  </data>
+  <data name="ProgressMessageLoadingFileData" xml:space="preserve">
+    <value>Φόρτωση δεδομένων αρχείου...</value>
+  </data>
+  <data name="ProgressMessageOpeningFileStream" xml:space="preserve">
+    <value>Άνοιγμα ροής αρχείου...</value>
+  </data>
+  <data name="ProgressMessagePreparingToSave" xml:space="preserve">
+    <value>Προετοιμασία αποθήκευσης...</value>
+  </data>
+  <data name="ProgressMessageReplacedFormat" xml:space="preserve">
+    <value>{0} εμφανίσεις αντικαταστάθηκαν</value>
+  </data>
+  <data name="ProgressMessageReplacingFormat" xml:space="preserve">
+    <value>{0} αντιστοιχίες βρέθηκαν. Αντικατάσταση...</value>
+  </data>
+  <data name="ProgressMessageSearchingFoundFormat" xml:space="preserve">
+    <value>Αναζήτηση... {0} βρέθηκαν</value>
+  </data>
+  <data name="ProgressMessageStartingSearch" xml:space="preserve">
+    <value>Έναρξη αναζήτησης...</value>
+  </data>
+  <data name="ProgressTitleOpeningFile" xml:space="preserve">
+    <value>Άνοιγμα αρχείου</value>
+  </data>
+  <data name="ProgressTitleReplacing" xml:space="preserve">
+    <value>Αντικατάσταση</value>
+  </data>
+  <data name="ProgressTitleSavingFile" xml:space="preserve">
+    <value>Αποθήκευση αρχείου</value>
+  </data>
+  <data name="ProgressTitleSearching" xml:space="preserve">
+    <value>Αναζήτηση</value>
+  </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>Συμπλήρωση επιλογής με συγκεκριμένη τιμή byte</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>Αντικατάσταση όλων των εμφανίσεων ενός byte με άλλο</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>Αντιστροφή σειράς bytes στην επιλογή (μετατροπή endianness)</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>Αναστροφή όλων των bits κάθε byte (XOR με 0xFF)</value>
+  </data>
+
+  <!-- TBL Editor Localizations -->
+  <data name="TblEditor_Title" xml:space="preserve">
+    <value>Επεξεργαστής πίνακα χαρακτήρων TBL</value>
+    <comment>TBL Editor - Title</comment>
+  </data>
+  <data name="TblEditor_NoTblLoaded" xml:space="preserve">
+    <value>Δεν έχει φορτωθεί αρχείο TBL. Φορτώστε ένα αρχείο TBL πρώτα.</value>
+    <comment>TBL Editor - NoTblLoaded</comment>
+  </data>
+  <data name="TblEditor_UnsavedChanges" xml:space="preserve">
+    <value>Υπάρχουν μη αποθηκευμένες αλλαγές. Θέλετε να αποθηκεύσετε πριν κλείσετε;</value>
+    <comment>TBL Editor - UnsavedChanges</comment>
+  </data>
+  <data name="TblEditor_ConfirmDelete" xml:space="preserve">
+    <value>Διαγραφή {0} εγγραφών;</value>
+    <comment>TBL Editor - ConfirmDelete</comment>
+  </data>
+  <data name="TblEditor_ErrorSaving" xml:space="preserve">
+    <value>Σφάλμα κατά την αποθήκευση TBL: {0}</value>
+    <comment>TBL Editor - ErrorSaving</comment>
+  </data>
+  <data name="TblEditor_SavedSuccessfully" xml:space="preserve">
+    <value>TBL αποθηκεύτηκε επιτυχώς</value>
+    <comment>TBL Editor - SavedSuccessfully</comment>
+  </data>
+  <data name="TblEditor_NoConflicts" xml:space="preserve">
+    <value>Δεν εντοπίστηκαν συγκρούσεις!</value>
+    <comment>TBL Editor - NoConflicts</comment>
+  </data>
+  <data name="TblEditor_ConflictsDetected" xml:space="preserve">
+    <value>{0} συγκρούσεις εντοπίστηκαν</value>
+    <comment>TBL Editor - ConflictsDetected</comment>
+  </data>
+  <data name="TblEditor_PrefixConflict" xml:space="preserve">
+    <value>Η εγγραφή '{0}' είναι πρόθεμα {1} μεγαλύτερων εγγραφών</value>
+    <comment>TBL Editor - PrefixConflict</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry" xml:space="preserve">
+    <value>Διπλότυπη εγγραφή '{0}'</value>
+    <comment>TBL Editor - DuplicateEntry</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveShorter" xml:space="preserve">
+    <value>Καταργήστε τη συντομότερη εγγραφή ή χρησιμοποιήστε διαφορετικές τιμές bytes</value>
+    <comment>TBL Editor - Suggestion RemoveShorter</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveDuplicate" xml:space="preserve">
+    <value>Καταργήστε το διπλότυπο ή συγχωνεύστε τις τιμές</value>
+    <comment>TBL Editor - Suggestion RemoveDuplicate</comment>
+  </data>
+  <data name="TblEditor_AddEntry" xml:space="preserve">
+    <value>Προσθήκη εγγραφής</value>
+    <comment>TBL Editor - AddEntry</comment>
+  </data>
+  <data name="TblEditor_DeleteEntry" xml:space="preserve">
+    <value>Διαγραφή εγγραφής</value>
+    <comment>TBL Editor - DeleteEntry</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry_Button" xml:space="preserve">
+    <value>Αντιγραφή</value>
+    <comment>TBL Editor - DuplicateEntry Button</comment>
+  </data>
+  <data name="TblEditor_Save" xml:space="preserve">
+    <value>Αποθήκευση</value>
+    <comment>TBL Editor - Save</comment>
+  </data>
+  <data name="TblEditor_SaveAs" xml:space="preserve">
+    <value>Αποθήκευση ως</value>
+    <comment>TBL Editor - SaveAs</comment>
+  </data>
+  <data name="TblEditor_Validate" xml:space="preserve">
+    <value>Επικύρωση</value>
+    <comment>TBL Editor - Validate</comment>
+  </data>
+  <data name="TblEditor_Undo" xml:space="preserve">
+    <value>Αναίρεση ({0})</value>
+    <comment>TBL Editor - Undo</comment>
+  </data>
+  <data name="TblEditor_Redo" xml:space="preserve">
+    <value>Επανάληψη ({0})</value>
+    <comment>TBL Editor - Redo</comment>
+  </data>
+  <data name="TblEditor_Search" xml:space="preserve">
+    <value>Αναζήτηση κατά hex τιμή ή χαρακτήρα</value>
+    <comment>TBL Editor - Search</comment>
+  </data>
+  <data name="TblEditor_FilterByType" xml:space="preserve">
+    <value>Τύπος:</value>
+    <comment>TBL Editor - FilterByType</comment>
+  </data>
+  <data name="TblEditor_ConflictsOnly" xml:space="preserve">
+    <value>⚠ Μόνο συγκρούσεις</value>
+    <comment>TBL Editor - ConflictsOnly</comment>
+  </data>
+  <data name="TblEditor_ClearFilters" xml:space="preserve">
+    <value>Εκκαθάριση</value>
+    <comment>TBL Editor - ClearFilters</comment>
+  </data>
+  <data name="TblEditor_EntriesCount" xml:space="preserve">
+    <value>{0} εγγραφές</value>
+    <comment>TBL Editor - EntriesCount</comment>
+  </data>
+  <data name="TblEditor_HexValue" xml:space="preserve">
+    <value>Hex τιμή</value>
+    <comment>TBL Editor - HexValue</comment>
+  </data>
+  <data name="TblEditor_Character" xml:space="preserve">
+    <value>Χαρακτήρας(-ες)</value>
+    <comment>TBL Editor - Character</comment>
+  </data>
+  <data name="TblEditor_Type" xml:space="preserve">
+    <value>Τύπος</value>
+    <comment>TBL Editor - Type</comment>
+  </data>
+  <data name="TblEditor_Bytes" xml:space="preserve">
+    <value>Bytes</value>
+    <comment>TBL Editor - Bytes</comment>
+  </data>
+  <data name="TblEditor_Details" xml:space="preserve">
+    <value>Λεπτομέρειες</value>
+    <comment>TBL Editor - Details</comment>
+  </data>
+  <data name="TblEditor_Statistics" xml:space="preserve">
+    <value>Στατιστικά</value>
+    <comment>TBL Editor - Statistics</comment>
+  </data>
+  <data name="TblEditor_Advanced" xml:space="preserve">
+    <value>Σύνθετα</value>
+    <comment>TBL Editor - Advanced</comment>
+  </data>
+  <data name="TblEditor_Modified" xml:space="preserve">
+    <value>● Τροποποιημένο</value>
+    <comment>TBL Editor - Modified</comment>
+  </data>
+
+<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+    <value>Εμφάνιση αριθμών γραμμών (προσωρινό)</value>
+  </data>
+<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+    <value>Αυτή η λειτουργία δεν είναι ακόμα διαθέσιμη στο V2</value>
+  </data>
+<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+    <value>Εμφάνιση επεξήγησης byte</value>
+  </data>
+<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+    <value>Επιτρεπόμενη εισαγωγή οπουδήποτε</value>
+  </data>
+<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+    <value>Επιτρεπόμενη διαγραφή byte</value>
+  </data>
+<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+    <value>Επιτρεπόμενη επέκταση αρχείου</value>
+  </data>
+<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+    <value>Η προσθήκη απαιτεί επιβεβαίωση</value>
+  </data>
+<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+    <value>Αντικατάσταση</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+    <value>Επιτρεπόμενη απόθεση αρχείου</value>
+  </data>
+<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+    <value>Επιβεβαίωση απόθεσης αρχείου</value>
+  </data>
+<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+    <value>Επιτρεπόμενη απόθεση κειμένου</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+    <value>Αυτόματη επιλογή ίδιου byte (διπλό κλικ)</value>
+  </data>
+<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+    <value>Επιτρεπόμενη πλοήγηση με κλικ σε δείκτη</value>
+  </data>
+<data name="HexSettings_Highlight_Color" xml:space="preserve">
+    <value>Χρώμα αυτόματης επισήμανσης :</value>
+  </data>
+<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+    <value>Ενεργοποίηση παράλληλης αναζήτησης</value>
+  </data>
+<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+    <value>Χρήση αναζήτησης με μπαλαντέρ (??)</value>
+  </data>
+</root>

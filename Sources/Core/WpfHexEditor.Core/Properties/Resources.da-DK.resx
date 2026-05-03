@@ -1,0 +1,1953 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- French (Canada) -->
+  <data name="AppendByteConfirmationString" xml:space="preserve">
+    <value>Du har nået slutningen af filen. Vil du tilføje en ny byte?</value>
+  </data>
+  <data name="BookmarksString" xml:space="preserve">
+    <value>Bogmærker</value>
+  </data>
+  <data name="ByteActionString" xml:space="preserve">
+    <value>Bytehandling</value>
+  </data>
+  <data name="ByteString" xml:space="preserve">
+    <value>Octet</value>
+  </data>
+  <data name="CancelLongProcessString" xml:space="preserve">
+    <value>Annuller lang proces</value>
+  </data>
+  <data name="CancelLongProcessToolTipString" xml:space="preserve">
+    <value>Cliquez pour annuler le processus long.</value>
+  </data>
+  <data name="CancelString" xml:space="preserve">
+    <value>Annuller</value>
+  </data>
+  <data name="ClearBookMarkString" xml:space="preserve">
+    <value>Effacer le signet</value>
+  </data>
+  <data name="ClearString" xml:space="preserve">
+    <value>Effacer</value>
+  </data>
+  <data name="ClickToGoAtPositionString" xml:space="preserve">
+    <value>Cliquez pour aller à la position.</value>
+  </data>
+  <data name="CloseString" xml:space="preserve">
+    <value>Luk</value>
+  </data>
+  <data name="CopyAsASCIIString" xml:space="preserve">
+    <value>Kopiér som ASCII</value>
+  </data>
+  <data name="CopyAsDecimalString" xml:space="preserve">
+    <value>Kopiér som decimal</value>
+  </data>
+  <data name="CopyAsHexadecimalString" xml:space="preserve">
+    <value>Kopiér som hexadecimal</value>
+  </data>
+  <data name="CopyAsTBLString" xml:space="preserve">
+    <value>Chaîne TBL (fichier de caractères chargé)</value>
+  </data>
+  <data name="CopySelectionAsString" xml:space="preserve">
+    <value>Copier la sélection comme...</value>
+  </data>
+  <data name="CountOfString" xml:space="preserve">
+    <value>Nombre de</value>
+  </data>
+  <data name="DefaultTBLString" xml:space="preserve">
+    <value>TBL par défaut</value>
+  </data>
+  <data name="DeleteString" xml:space="preserve">
+    <value>Slet</value>
+  </data>
+  <data name="DescriptionString" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="EndTagString" xml:space="preserve">
+    <value>&lt;fin&gt;</value>
+  </data>
+  <data name="EnterHexValueMsgString" xml:space="preserve">
+    <value>Entrez une valeur hexadécimale...</value>
+  </data>
+  <data name="FileDroppingConfirmationString" xml:space="preserve">
+    <value>Voulez-vous fermer le fichier actuel et ouvrir : </value>
+  </data>
+  <data name="FillSelectionAloneString" xml:space="preserve">
+    <value>Remplir la sélection avec un octet</value>
+  </data>
+  <data name="FillSelectionString" xml:space="preserve">
+    <value>Remplir la sélection avec un octet...</value>
+  </data>
+  <data name="FindAllString" xml:space="preserve">
+    <value>Tout trouver</value>
+  </data>
+  <data name="FindAndReplaceString" xml:space="preserve">
+    <value>Søg og erstat</value>
+  </data>
+  <data name="FindByteString" xml:space="preserve">
+    <value>Octet à rechercher</value>
+  </data>
+  <data name="FindFirstString" xml:space="preserve">
+    <value>Trouver le premier</value>
+  </data>
+  <data name="FindLastString" xml:space="preserve">
+    <value>Trouver le dernier</value>
+  </data>
+  <data name="FindNextString" xml:space="preserve">
+    <value>Trouver le suivant</value>
+  </data>
+  <data name="FindSelectionString" xml:space="preserve">
+    <value>Trouver toutes les occurrences de la sélection</value>
+  </data>
+  <data name="FindString" xml:space="preserve">
+    <value>Søg</value>
+  </data>
+  <data name="FindWhatString" xml:space="preserve">
+    <value>Søg efter:</value>
+  </data>
+  <data name="FirstByteString" xml:space="preserve">
+    <value>Premier octet</value>
+  </data>
+  <data name="HexString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="KBTagString" xml:space="preserve">
+    <value>Ko</value>
+  </data>
+  <data name="LengthString" xml:space="preserve">
+    <value>Longueur</value>
+  </data>
+  <data name="LineStatusBarTagString" xml:space="preserve">
+    <value>Ln</value>
+  </data>
+  <data name="LineTagString" xml:space="preserve">
+    <value>&lt;ln&gt;</value>
+  </data>
+  <data name="LongString" xml:space="preserve">
+    <value>Long</value>
+  </data>
+  <data name="MBTagString" xml:space="preserve">
+    <value>Mo</value>
+  </data>
+  <data name="OkString" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PasteExtendByteConfirmationString" xml:space="preserve">
+    <value>L'opération de collage a atteint la fin du fichier. Voulez-vous étendre le fichier pour terminer l'opération ? Cette opération ne peut pas être annulée si vous continuez.</value>
+  </data>
+  <data name="PasteFromClipboardString" xml:space="preserve">
+    <value>Indsæt fra udklipsholder</value>
+  </data>
+  <data name="PasteNotInsertString" xml:space="preserve">
+    <value>Indsæt uden at indsætte</value>
+  </data>
+  <data name="PositionString" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="ReplaceAllString" xml:space="preserve">
+    <value>Tout remplacer</value>
+  </data>
+  <data name="ReplaceByByteString" xml:space="preserve">
+    <value>Remplacer par un octet</value>
+  </data>
+  <data name="ReplaceNextString" xml:space="preserve">
+    <value>Remplacer le suivant</value>
+  </data>
+  <data name="ReplaceSelectionString" xml:space="preserve">
+    <value>Remplacer l'octet dans la sélection...</value>
+  </data>
+  <data name="ReplaceString" xml:space="preserve">
+    <value>Erstat</value>
+  </data>
+  <data name="ReplaceWithByteString" xml:space="preserve">
+    <value>Remplacer par un octet</value>
+  </data>
+  <data name="ReplaceWithString" xml:space="preserve">
+    <value>Remplacer par :</value>
+  </data>
+  <data name="ReplaceInSelectionOnlyString" xml:space="preserve">
+    <value>Remplacer dans la sélection uniquement</value>
+  </data>
+  <data name="ShowConfirmationString" xml:space="preserve">
+    <value>Vis bekræftelsesdialog</value>
+  </data>
+  <data name="PreviewString" xml:space="preserve">
+    <value>Aperçu :</value>
+  </data>
+  <data name="ValidationInvalidHexString" xml:space="preserve">
+    <value>Valeur hexadécimale invalide</value>
+  </data>
+  <data name="ValidationRequiredString" xml:space="preserve">
+    <value>Valeur requise</value>
+  </data>
+  <data name="OccurrencesFoundString" xml:space="preserve">
+    <value>{0} occurrences trouvées</value>
+  </data>
+  <data name="ReplacementCompleteString" xml:space="preserve">
+    <value>{0} occurrences remplacées</value>
+  </data>
+  <data name="NoOccurrencesFoundString" xml:space="preserve">
+    <value>Ingen forekomster fundet</value>
+  </data>
+  <data name="InSelectionString" xml:space="preserve">
+    <value>dans la sélection</value>
+  </data>
+  <data name="InFileString" xml:space="preserve">
+    <value>dans le fichier</value>
+  </data>
+  <data name="SelectAllString" xml:space="preserve">
+    <value>Vælg alle</value>
+  </data>
+  <data name="SetBookMarkString" xml:space="preserve">
+    <value>Définir le signet</value>
+  </data>
+  <data name="TBLString" xml:space="preserve">
+    <value>TBL</value>
+  </data>
+  <data name="ThisStringAreNotHexString" xml:space="preserve">
+    <value>Cette chaîne n'est pas hexadécimale</value>
+  </data>
+  <data name="UndoString" xml:space="preserve">
+    <value>Fortryd</value>
+  </data>
+  <data name="ValueString" xml:space="preserve">
+    <value>Valeur</value>
+  </data>
+  <data name="WritingErrorExeptionString" xml:space="preserve">
+    <value>Une erreur s'est produite lors de l'écriture.</value>
+  </data>
+  <data name="HighLightSettingString" xml:space="preserve">
+    <value>Surligner toutes les données trouvées</value>
+  </data>
+  <data name="ReplaceTrimSettingString" xml:space="preserve">
+    <value>Tronquer les données à la longueur de recherche lors du remplacement</value>
+  </data>
+  <data name="ZoomResetString" xml:space="preserve">
+    <value>Réinitialiser le zoom à 100 %</value>
+  </data>
+  <data name="ZoomString" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>Impossible de convertir cette chaîne en long</value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>Le fichier est verrouillé. Voulez-vous l'ouvrir en mode lecture seule ?</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>Bytes</value>
+  </data>
+  <data name="SearchCommandCenterString" xml:space="preserve">
+    <value>CENTRE DE COMMANDE DE RECHERCHE</value>
+  </data>
+  <data name="SearchTextModeString" xml:space="preserve">
+    <value>Texte</value>
+  </data>
+  <data name="SearchHexModeString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="SearchRegexModeString" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="SearchWildcardModeString" xml:space="preserve">
+    <value>Caractère générique</value>
+  </data>
+  <data name="SearchPreviousString" xml:space="preserve">
+    <value>Précédent</value>
+  </data>
+  <data name="SearchNextString" xml:space="preserve">
+    <value>Suivant</value>
+  </data>
+  <data name="SearchFindAllString" xml:space="preserve">
+    <value>Tout trouver</value>
+  </data>
+  <data name="SearchMatchesString" xml:space="preserve">
+    <value>correspondances</value>
+  </data>
+  <data name="SearchInString" xml:space="preserve">
+    <value>dans</value>
+  </data>
+  <data name="SearchNoMatchesString" xml:space="preserve">
+    <value>Ingen overensstemmelser fundet</value>
+  </data>
+  <data name="SearchV2BadgeString" xml:space="preserve">
+    <value>99 % PLUS RAPIDE AVEC V2</value>
+  </data>
+  <data name="ClearSearchString" xml:space="preserve">
+    <value>Effacer</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>Palette de commandes</value>
+  </data>
+  <data name="PerformanceDashboardString" xml:space="preserve">
+    <value>Tableau de bord de performance</value>
+  </data>
+  <data name="ThemeDarkGlassString" xml:space="preserve">
+    <value>Verre sombre</value>
+  </data>
+  <data name="ThemeLightString" xml:space="preserve">
+    <value>Clair</value>
+  </data>
+  <data name="ThemeCyberpunkString" xml:space="preserve">
+    <value>Cyberpunk</value>
+  </data>
+  <data name="ThemeMinimalString" xml:space="preserve">
+    <value>Minimaliste</value>
+  </data>
+  <data name="CopyAsCSharpCodeString" xml:space="preserve">
+    <value>Copier comme code C#</value>
+  </data>
+  <data name="CopyAsCCodeString" xml:space="preserve">
+    <value>Copier comme code C</value>
+  </data>
+  <data name="CopyAsFormattedViewString" xml:space="preserve">
+    <value>Copier en vue formatée</value>
+  </data>
+  <data name="CopyString" xml:space="preserve">
+    <value>Kopiér</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Indsæt</value>
+  </data>
+  <data name="FillWithByteString" xml:space="preserve">
+    <value>Remplir avec un octet...</value>
+  </data>
+  <data name="ReplaceByteMenuString" xml:space="preserve">
+    <value>Remplacer l'octet...</value>
+  </data>
+  <data name="ReverseSelectionString" xml:space="preserve">
+    <value>Inverser la sélection</value>
+  </data>
+  <data name="InvertSelectionString" xml:space="preserve">
+    <value>Inverser les octets</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Message d'état</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Taille du fichier</value>
+  </data>
+  <data name="SelectionInfoString" xml:space="preserve">
+    <value>Informations de sélection</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Mode d'édition</value>
+  </data>
+  <data name="BytesPerLineString" xml:space="preserve">
+    <value>Bytes pr. linje</value>
+  </data>
+  <data name="RefreshTimeString" xml:space="preserve">
+    <value>Temps de rafraîchissement</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Prêt</value>
+  </data>
+  <data name="NoSelectionString" xml:space="preserve">
+    <value>Ingen markering</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Mode : Écraser</value>
+  </data>
+  <data name="FindAndReplaceDialogTitle" xml:space="preserve">
+    <value>Søg og erstat</value>
+  </data>
+  <data name="FindGroupHeader" xml:space="preserve">
+    <value>Søg</value>
+  </data>
+  <data name="ReplaceGroupHeader" xml:space="preserve">
+    <value>Remplacer</value>
+  </data>
+  <data name="ResultsGroupHeader" xml:space="preserve">
+    <value>Résultats</value>
+  </data>
+  <data name="FindTextLabel" xml:space="preserve">
+    <value>Søg:</value>
+  </data>
+  <data name="ReplaceTextLabel" xml:space="preserve">
+    <value>Remplacer par :</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Précédent</value>
+  </data>
+  <data name="FindNextButton" xml:space="preserve">
+    <value>Suivant</value>
+  </data>
+  <data name="FindAllButton" xml:space="preserve">
+    <value>Tout trouver</value>
+  </data>
+  <data name="ReplaceButton" xml:space="preserve">
+    <value>Remplacer</value>
+  </data>
+  <data name="ReplaceAllButton" xml:space="preserve">
+    <value>Tout remplacer</value>
+  </data>
+  <data name="CaseSensitiveCheckbox" xml:space="preserve">
+    <value>Respecter la casse</value>
+  </data>
+  <data name="WholeWordCheckbox" xml:space="preserve">
+    <value>Mot entier</value>
+  </data>
+  <data name="UseRegexCheckbox" xml:space="preserve">
+    <value>Utiliser les expressions régulières</value>
+  </data>
+  <data name="SearchInSelectionCheckbox" xml:space="preserve">
+    <value>Søg kun i markering</value>
+  </data>
+  <data name="HighlightAllCheckbox" xml:space="preserve">
+    <value>Surligner toutes les correspondances</value>
+  </data>
+  <data name="CloseDialogButton" xml:space="preserve">
+    <value>Luk</value>
+  </data>
+  <data name="NoResultsFound" xml:space="preserve">
+    <value>Ingen resultater fundet</value>
+  </data>
+  <data name="MatchesFoundFormat" xml:space="preserve">
+    <value>{0} correspondances trouvées</value>
+  </data>
+  <data name="ReplacedFormat" xml:space="preserve">
+    <value>{0} remplacés</value>
+  </data>
+  <data name="SearchPanelTitle" xml:space="preserve">
+    <value>Søgning</value>
+  </data>
+  <data name="SearchFindLabel" xml:space="preserve">
+    <value>Søg:</value>
+  </data>
+  <data name="SearchModePlaceholder" xml:space="preserve">
+    <value>Entrez le texte de recherche...</value>
+  </data>
+  <data name="TextModeLabel" xml:space="preserve">
+    <value>Texte</value>
+  </data>
+  <data name="HexModeLabel" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="RegexModeLabel" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WildcardModeLabel" xml:space="preserve">
+    <value>Caractère générique</value>
+  </data>
+  <data name="MatchCaseLabel" xml:space="preserve">
+    <value>Respecter la casse</value>
+  </data>
+  <data name="WholeWordLabel" xml:space="preserve">
+    <value>Mot entier</value>
+  </data>
+  <data name="SearchOptionsLabel" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="SearchResultsLabel" xml:space="preserve">
+    <value>Résultats</value>
+  </data>
+  <data name="CurrentMatchLabel" xml:space="preserve">
+    <value>Correspondance actuelle</value>
+  </data>
+  <data name="TotalMatchesLabel" xml:space="preserve">
+    <value>Total de correspondances</value>
+  </data>
+  <data name="QuickSearchTooltip" xml:space="preserve">
+    <value>Hurtig søgning (Ctrl+F)</value>
+  </data>
+  <data name="PreviousMatchTooltip" xml:space="preserve">
+    <value>Correspondance précédente (Shift+F3)</value>
+  </data>
+  <data name="NextMatchTooltip" xml:space="preserve">
+    <value>Correspondance suivante (F3)</value>
+  </data>
+  <data name="CloseSearchTooltip" xml:space="preserve">
+    <value>Luk søgning (Esc)</value>
+  </data>
+  <data name="SearchOptionsTooltip" xml:space="preserve">
+    <value>Options de recherche</value>
+  </data>
+  <data name="StatusSearching" xml:space="preserve">
+    <value>Søger...</value>
+  </data>
+  <data name="StatusSearchComplete" xml:space="preserve">
+    <value>Søgning afsluttet</value>
+  </data>
+  <data name="StatusFoundMatchesFormat" xml:space="preserve">
+    <value>{0} correspondances trouvées en {1} ms</value>
+  </data>
+  <data name="StatusMatchFoundAtFormat" xml:space="preserve">
+    <value>Correspondance trouvée à la position 0x{0:X8}</value>
+  </data>
+  <data name="StatusNoMoreMatches" xml:space="preserve">
+    <value>Ingen flere overensstemmelser fundet</value>
+  </data>
+  <data name="StatusReachedEndOfFile" xml:space="preserve">
+    <value>Fin du fichier atteinte</value>
+  </data>
+  <data name="StatusReachedStartOfFile" xml:space="preserve">
+    <value>Début du fichier atteint</value>
+  </data>
+  <data name="StatusReplacing" xml:space="preserve">
+    <value>Remplacement en cours...</value>
+  </data>
+  <data name="StatusReplaceComplete" xml:space="preserve">
+    <value>Remplacement terminé</value>
+  </data>
+  <data name="StatusReplacedFormat" xml:space="preserve">
+    <value>{0} occurrences remplacées</value>
+  </data>
+  <data name="StatusInvalidSearchPattern" xml:space="preserve">
+    <value>Motif de recherche invalide</value>
+  </data>
+  <data name="StatusInvalidRegex" xml:space="preserve">
+    <value>Expression régulière invalide</value>
+  </data>
+  <data name="StatusSearchCancelled" xml:space="preserve">
+    <value>Søgning annulleret</value>
+  </data>
+  <data name="StatusReplaceCancelled" xml:space="preserve">
+    <value>Remplacement annulé</value>
+  </data>
+  <data name="StatusCancelling" xml:space="preserve">
+    <value>Annulation...</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Fejl: {0}</value>
+  </data>
+  <data name="StatusFoundMatchesWithSpeedFormat" xml:space="preserve">
+    <value>{0} correspondances trouvées en {1} ms ({2:F2} Mo/s)</value>
+  </data>
+  <data name="StatusMatchFoundAtWrappedFormat" xml:space="preserve">
+    <value>Correspondance trouvée à la position 0x{0:X8} (bouclée)</value>
+  </data>
+  <data name="StatusNoPreviousMatches" xml:space="preserve">
+    <value>Ingen tidligere overensstemmelser fundet</value>
+  </data>
+  <data name="StatusMatchOfTotalFormat" xml:space="preserve">
+    <value>Correspondance {0} sur {1} à la position 0x{2:X8}</value>
+  </data>
+  <data name="StatusReplacedAtFormat" xml:space="preserve">
+    <value>Remplacé à la position 0x{0:X8} (Total : {1})</value>
+  </data>
+  <data name="StatusReplaceError" xml:space="preserve">
+    <value>Erstatningsfejl: {0}</value>
+  </data>
+  <data name="StatusNoMatchesToReplace" xml:space="preserve">
+    <value>Ingen overensstemmelser at erstatte</value>
+  </data>
+  <data name="StatusInvalidReplacementPattern" xml:space="preserve">
+    <value>Motif de remplacement invalide</value>
+  </data>
+  <data name="StatusReplacedOccurrencesFormat" xml:space="preserve">
+    <value>{0} occurrence(s) remplacée(s). Total des remplacements : {1}</value>
+  </data>
+  <data name="StatusReplaceAllError" xml:space="preserve">
+    <value>Fejl ved erstat alle: {0}</value>
+  </data>
+  <data name="StatusNoMoreBookmarksAfter" xml:space="preserve">
+    <value>Ingen flere bogmærker efter den aktuelle position</value>
+  </data>
+  <data name="StatusNoMoreBookmarksBefore" xml:space="preserve">
+    <value>Ingen flere bogmærker før den aktuelle position</value>
+  </data>
+  <data name="BookmarkSetFormat" xml:space="preserve">
+    <value>Signet défini à 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkClearedFormat" xml:space="preserve">
+    <value>Signet effacé à 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkNavigatedFormat" xml:space="preserve">
+    <value>Navigation vers le signet à 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkAllCleared" xml:space="preserve">
+    <value>Alle bogmærker ryddet</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Kopiér markering</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Klip markering</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Indsæt byte</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Slet byte</value>
+  </data>
+  <data name="DeleteSelectionString" xml:space="preserve">
+    <value>Slet markering</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Gå til offset</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Egenskaber</value>
+  </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Annuller</value>
+  </data>
+  <data name="ProgressMessageFileOpenedSuccessfully" xml:space="preserve">
+    <value>Fil åbnet</value>
+  </data>
+  <data name="ProgressMessageFileSavedSuccessfully" xml:space="preserve">
+    <value>Fil gemt</value>
+  </data>
+  <data name="ProgressMessageFindingMatches" xml:space="preserve">
+    <value>Søger efter overensstemmelser...</value>
+  </data>
+  <data name="ProgressMessageFoundMatchesFormat" xml:space="preserve">
+    <value>{0} correspondances trouvées</value>
+  </data>
+  <data name="ProgressMessageLoadingFileData" xml:space="preserve">
+    <value>Indlæser fildata...</value>
+  </data>
+  <data name="ProgressMessageOpeningFileStream" xml:space="preserve">
+    <value>Ouverture du flux de fichier...</value>
+  </data>
+  <data name="ProgressMessagePreparingToSave" xml:space="preserve">
+    <value>Forbereder gemning...</value>
+  </data>
+  <data name="ProgressMessageReplacedFormat" xml:space="preserve">
+    <value>{0} occurrences remplacées</value>
+  </data>
+  <data name="ProgressMessageReplacingFormat" xml:space="preserve">
+    <value>{0} correspondances trouvées. Remplacement...</value>
+  </data>
+  <data name="ProgressMessageSearchingFoundFormat" xml:space="preserve">
+    <value>Søger... {0} fundet</value>
+  </data>
+  <data name="ProgressMessageStartingSearch" xml:space="preserve">
+    <value>Début de la recherche...</value>
+  </data>
+  <data name="ProgressTitleOpeningFile" xml:space="preserve">
+    <value>Ouverture du fichier</value>
+  </data>
+  <data name="ProgressTitleReplacing" xml:space="preserve">
+    <value>Remplacement</value>
+  </data>
+  <data name="ProgressTitleSavingFile" xml:space="preserve">
+    <value>Gemmer fil</value>
+  </data>
+  <data name="ProgressTitleSearching" xml:space="preserve">
+    <value>Søger</value>
+  </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>Udfyld markering med byte</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>Erstat byte i markering</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>Omvend markering</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>Inverter markering (bit)</value>
+  </data>
+
+  <!-- TBL Editor Localizations -->
+  <data name="TblEditor_Title" xml:space="preserve">
+    <value>TBL-editor</value>
+    <comment>TBL Editor - Title</comment>
+  </data>
+  <data name="TblEditor_NoTblLoaded" xml:space="preserve">
+    <value>Ingen TBL-fil indlæst. Indlæs venligst en TBL-fil først.</value>
+    <comment>TBL Editor - NoTblLoaded</comment>
+  </data>
+  <data name="TblEditor_UnsavedChanges" xml:space="preserve">
+    <value>Vous avez des modifications non enregistrées. Voulez-vous enregistrer avant de fermer?</value>
+    <comment>TBL Editor - UnsavedChanges</comment>
+  </data>
+  <data name="TblEditor_ConfirmDelete" xml:space="preserve">
+    <value>Slet {0} poster?</value>
+    <comment>TBL Editor - ConfirmDelete</comment>
+  </data>
+  <data name="TblEditor_ErrorSaving" xml:space="preserve">
+    <value>Fejl ved gemning af TBL: {0}</value>
+    <comment>TBL Editor - ErrorSaving</comment>
+  </data>
+  <data name="TblEditor_SavedSuccessfully" xml:space="preserve">
+    <value>TBL enregistré avec succès</value>
+    <comment>TBL Editor - SavedSuccessfully</comment>
+  </data>
+  <data name="TblEditor_NoConflicts" xml:space="preserve">
+    <value>Ingen konflikter opdaget!</value>
+    <comment>TBL Editor - NoConflicts</comment>
+  </data>
+  <data name="TblEditor_ConflictsDetected" xml:space="preserve">
+    <value>{0} conflits détectés</value>
+    <comment>TBL Editor - ConflictsDetected</comment>
+  </data>
+  <data name="TblEditor_PrefixConflict" xml:space="preserve">
+    <value>L'entrée '{0}' est un préfixe de {1} entrées plus longues</value>
+    <comment>TBL Editor - PrefixConflict</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry" xml:space="preserve">
+    <value>Entrée dupliquée '{0}'</value>
+    <comment>TBL Editor - DuplicateEntry</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveShorter" xml:space="preserve">
+    <value>Slet den korteste post eller brug forskellige byte-værdier</value>
+    <comment>TBL Editor - Suggestion RemoveShorter</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveDuplicate" xml:space="preserve">
+    <value>Slet duplikat eller flet værdier</value>
+    <comment>TBL Editor - Suggestion RemoveDuplicate</comment>
+  </data>
+  <data name="TblEditor_AddEntry" xml:space="preserve">
+    <value>Tilføj post</value>
+    <comment>TBL Editor - AddEntry</comment>
+  </data>
+  <data name="TblEditor_DeleteEntry" xml:space="preserve">
+    <value>Slet post</value>
+    <comment>TBL Editor - DeleteEntry</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry_Button" xml:space="preserve">
+    <value>Dupliquer</value>
+    <comment>TBL Editor - DuplicateEntry Button</comment>
+  </data>
+  <data name="TblEditor_Save" xml:space="preserve">
+    <value>Gem</value>
+    <comment>TBL Editor - Save</comment>
+  </data>
+  <data name="TblEditor_SaveAs" xml:space="preserve">
+    <value>Gem som</value>
+    <comment>TBL Editor - SaveAs</comment>
+  </data>
+  <data name="TblEditor_Validate" xml:space="preserve">
+    <value>Validér</value>
+    <comment>TBL Editor - Validate</comment>
+  </data>
+  <data name="TblEditor_Undo" xml:space="preserve">
+    <value>Fortryd ({0})</value>
+    <comment>TBL Editor - Undo</comment>
+  </data>
+  <data name="TblEditor_Redo" xml:space="preserve">
+    <value>Rétablir ({0})</value>
+    <comment>TBL Editor - Redo</comment>
+  </data>
+  <data name="TblEditor_Search" xml:space="preserve">
+    <value>Søg</value>
+    <comment>TBL Editor - Search</comment>
+  </data>
+  <data name="TblEditor_FilterByType" xml:space="preserve">
+    <value>Type:</value>
+    <comment>TBL Editor - FilterByType</comment>
+  </data>
+  <data name="TblEditor_ConflictsOnly" xml:space="preserve">
+    <value>⚠ Conflits uniquement</value>
+    <comment>TBL Editor - ConflictsOnly</comment>
+  </data>
+  <data name="TblEditor_ClearFilters" xml:space="preserve">
+    <value>Ryd filtre</value>
+    <comment>TBL Editor - ClearFilters</comment>
+  </data>
+  <data name="TblEditor_EntriesCount" xml:space="preserve">
+    <value>{0} poster</value>
+    <comment>TBL Editor - EntriesCount</comment>
+  </data>
+  <data name="TblEditor_HexValue" xml:space="preserve">
+    <value>Hex-værdi</value>
+    <comment>TBL Editor - HexValue</comment>
+  </data>
+  <data name="TblEditor_Character" xml:space="preserve">
+    <value>Tegn</value>
+    <comment>TBL Editor - Character</comment>
+  </data>
+  <data name="TblEditor_Type" xml:space="preserve">
+    <value>Type</value>
+    <comment>TBL Editor - Type</comment>
+  </data>
+  <data name="TblEditor_Bytes" xml:space="preserve">
+    <value>Bytes</value>
+    <comment>TBL Editor - Bytes</comment>
+  </data>
+  <data name="TblEditor_Details" xml:space="preserve">
+    <value>Detaljer</value>
+    <comment>TBL Editor - Details</comment>
+  </data>
+  <data name="TblEditor_Statistics" xml:space="preserve">
+    <value>Statistik</value>
+    <comment>TBL Editor - Statistics</comment>
+  </data>
+  <data name="TblEditor_Advanced" xml:space="preserve">
+    <value>Avanceret</value>
+    <comment>TBL Editor - Advanced</comment>
+  </data>
+  <data name="TblEditor_Modified" xml:space="preserve">
+    <value>● Modificeret</value>
+    <comment>TBL Editor - Modified</comment>
+  </data>
+
+<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+    <value>Vis linjenumre (midlertidig)</value>
+  </data>
+<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+    <value>Denne funktion er endnu ikke tilgængelig i V2</value>
+  </data>
+<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+    <value>Vis byte-tooltip</value>
+  </data>
+
+
+
+<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+    <value>Tillad indsættelse overalt</value>
+  </data>
+<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+    <value>Tillad sletning af byte</value>
+  </data>
+<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+    <value>Tillad udvidelse af fil</value>
+  </data>
+<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+    <value>Tilføjelse kræver bekræftelse</value>
+  </data>
+
+<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+    <value>Overskriv</value>
+  </data>
+
+
+
+
+
+
+
+
+
+<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+    <value>Tillad fildrop</value>
+  </data>
+<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+    <value>Bekræftelse ved fildrop</value>
+  </data>
+<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+    <value>Tillad tekstdrop</value>
+  </data>
+
+<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+    <value>Automatisk valg af samme byte (dobbeltklik)</value>
+  </data>
+<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+    <value>Tillad navigation via klik på markering</value>
+  </data>
+<data name="HexSettings_Highlight_Color" xml:space="preserve">
+    <value>Automatisk fremhævningsfarve:</value>
+  </data>
+<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+    <value>Aktiver parallel søgning</value>
+  </data>
+<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+    <value>Brug wildcard-søgning (??)</value>
+  </data>
+<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+    <value>Fremhæv alle resultater</value>
+  </data>
+
+<data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+    <value>Tillad byte-tælling</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+    <value>Byte-skift til venstre:</value>
+  </data>
+
+
+<data name="HexSettings_Title" xml:space="preserve">
+    <value>INDSTILLINGER FOR HEX-EDITOR</value>
+  </data>
+<data name="HexSettings_Display_Title" xml:space="preserve">
+    <value>📺 Visningsindstillinger</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>Vis linjenumre (pladsholder)</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+    <value>Denne funktion er endnu ikke tilgængelig i V2</value>
+  </data>
+<data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+    <value>Vis byte-tooltip</value>
+  </data>
+<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+    <value>Bytes pr. linje:</value>
+  </data>
+<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+    <value>Zoomskala:</value>
+  </data>
+<data name="HexSettings_Editing_Title" xml:space="preserve">
+    <value>✏️ Redigeringsindstillinger</value>
+  </data>
+<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+    <value>Skrivebeskyttet tilstand</value>
+  </data>
+<data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+    <value>Tillad indsættelse overalt</value>
+  </data>
+<data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+    <value>Tillad sletning af byte</value>
+  </data>
+<data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+    <value>Tillad udvidelse af fil</value>
+  </data>
+<data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+    <value>Tilføjelse kræver bekræftelse</value>
+  </data>
+<data name="HexSettings_Editing_EditMode" xml:space="preserve">
+    <value>Redigeringstilstand:</value>
+  </data>
+
+<data name="HexSettings_Editing_Insert" xml:space="preserve">
+    <value>Indsæt</value>
+  </data>
+<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
+    <value>Markørtilstand:</value>
+  </data>
+<data name="HexSettings_Clipboard_Title" xml:space="preserve">
+    <value>📋 Udklipsholder-indstillinger</value>
+  </data>
+<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
+    <value>Standard kopieringstilstand:</value>
+  </data>
+<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+    <value>Hex-streng</value>
+  </data>
+<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+    <value>Byte-array</value>
+  </data>
+<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+    <value>C#-kode</value>
+  </data>
+<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+    <value>VB-kode</value>
+  </data>
+<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+    <value>C-kode</value>
+  </data>
+<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+    <value>Java-kode</value>
+  </data>
+<data name="HexSettings_DragDrop_Title" xml:space="preserve">
+    <value>📎 Træk-og-slip-indstillinger</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+    <value>Tillad fildrop</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+    <value>Bekræftelse ved fildrop</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+    <value>Tillad tekstdrop</value>
+  </data>
+<data name="HexSettings_Highlight_Title" xml:space="preserve">
+    <value>🎨 Fremhævning og markering</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+    <value>Fremhæv automatisk den valgte byte</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+    <value>Automatisk valg af samme byte (dobbeltklik)</value>
+  </data>
+<data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+    <value>Tillad navigation via klik på markering</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+    <value>Automatisk fremhævningsfarve:</value>
+  </data>
+<data name="HexSettings_Search_Title" xml:space="preserve">
+    <value>🔍 Søgeindstillinger</value>
+  </data>
+<data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+    <value>Aktiver parallel søgning</value>
+  </data>
+<data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+    <value>Brug wildcard-søgning (??)</value>
+  </data>
+
+<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+    <value>Grænse for søgeresultater:</value>
+  </data>
+<data name="HexSettings_Statistics_Title" xml:space="preserve">
+    <value>📊 Statistik</value>
+  </data>
+<data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+    <value>Tillad byte-tælling</value>
+  </data>
+<data name="HexSettings_Advanced_Title" xml:space="preserve">
+    <value>⚙️ Avancerede indstillinger</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+    <value>Byte-skift til venstre:</value>
+  </data>
+<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+    <value>Gem nuværende tilstand</value>
+  </data>
+<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+    <value>Indlæs gemt tilstand</value>
+  </data>
+<data name="HexSettings_ResetButton" xml:space="preserve">
+    <value>🔄 Nulstil alt til standard</value>
+  </data>
+<data name="HexSettings_StatusBar_Title" xml:space="preserve">
+    <value>Statuslinje</value>
+  </data>
+<data name="HexSettings_Colors_Title" xml:space="preserve">
+    <value>Farver</value>
+  </data>
+<data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
+    <value>Rullemærkninger</value>
+    <comment>Hex editor settings - Scroll Markers category header</comment>
+  </data>
+<data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Vis bogmærkemærkninger</value>
+    <comment>Hex editor settings - Toggle bookmark markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowModifiedMarkers" xml:space="preserve">
+    <value>Vis modificerede byte-mærkninger</value>
+    <comment>Hex editor settings - Toggle modified byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
+    <value>Vis indsættede byte-mærkninger</value>
+    <comment>Hex editor settings - Toggle inserted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
+    <value>Vis slettede byte-mærkninger</value>
+    <comment>Hex editor settings - Toggle deleted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Vis søgeresultat-mærkninger</value>
+    <comment>Hex editor settings - Toggle search result markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_Behavior_Title" xml:space="preserve">
+    <value>Adfærd</value>
+  </data>
+<data name="HexSettings_Data_Title" xml:space="preserve">
+    <value>Data</value>
+  </data>
+<data name="HexSettings_Visual_Title" xml:space="preserve">
+    <value>Visuelt</value>
+  </data>
+<data name="HexSettings_Keyboard_Title" xml:space="preserve">
+    <value>Tastatur</value>
+  </data>
+<data name="HexSettings_TBL_Title" xml:space="preserve">
+    <value>Tegntabel</value>
+  </data>
+<data name="HexSettings_SaveButton" xml:space="preserve"><value>Gem tilstand</value></data>
+<data name="HexSettings_LoadButton" xml:space="preserve"><value>Indlæs tilstand</value></data>
+  <data name="HexSettings_BarChart_Title" xml:space="preserve">
+    <value>📈 Bar Chart</value>
+    <comment>Hex editor settings - Bar Chart category header</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelVisibility" xml:space="preserve">
+    <value>Panel Visibility</value>
+    <comment>Bar Chart - Show/hide the bar chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_BarColor" xml:space="preserve">
+    <value>Bar Color</value>
+    <comment>Bar Chart - Color of the frequency bars</comment>
+  </data>
+  <data name="HexSettings_BarChart_BackgroundColor" xml:space="preserve">
+    <value>Background Color</value>
+    <comment>Bar Chart - Background color of the chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_TextColor" xml:space="preserve">
+    <value>Text Color</value>
+    <comment>Bar Chart - Color for labels and statistics text</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelHeight" xml:space="preserve">
+    <value>Panel Height</value>
+    <comment>Bar Chart - Height of the chart panel in pixels</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowAxisLabels" xml:space="preserve">
+    <value>Show Axis Labels</value>
+    <comment>Bar Chart - Display byte value labels (00-FF)</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowGridLines" xml:space="preserve">
+    <value>Show Grid Lines</value>
+    <comment>Bar Chart - Display horizontal reference grid lines</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowStatistics" xml:space="preserve">
+    <value>Vis statistik</value>
+    <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
+  </data>
+
+  <!-- ByteValueTooltip labels -->
+  <data name="ByteTooltip_NoData" xml:space="preserve"><value>Ingen data</value></data>
+  <data name="ByteTooltip_Signed" xml:space="preserve"><value>Fortegnet</value></data>
+  <data name="ByteTooltip_Binary" xml:space="preserve"><value>Binær</value></data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve"><value>(ikke udskrivbar)</value></data>
+  <data name="ByteTooltip_Octal" xml:space="preserve"><value>Oktal</value></data>
+
+  <!-- HexEditor status messages -->
+  <data name="StatusText_OperationCancelled" xml:space="preserve"><value>Handling annulleret</value></data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve"><value>Filen findes allerede</value></data>
+  <data name="StatusText_Ready" xml:space="preserve"><value>Klar</value></data>
+  <data name="StatusText_FileSaved" xml:space="preserve"><value>Fil gemt</value></data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve"><value>Søgemærkninger ryddet.</value></data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve"><value>Alle ændringer ryddet</value></data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve"><value>TBL lukket, bruger ASCII</value></data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve"><value>Ingen markering at omvende</value></data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve"><value>Markeringen er tom</value></data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve"><value>Ingen markering at invertere bit-for-bit</value></data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve"><value>Ingen markering at søge efter</value></data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve"><value>Ingen resultater fundet.</value></data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve"><value>Størrelse: -</value></data>
+  <data name="StatusBar_NoSelection" xml:space="preserve"><value>Ingen markering</value></data>
+  <data name="StatusBar_PositionZero" xml:space="preserve"><value>Position: 0</value></data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve"><value>Tilstand: Overskriv</value></data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve"><value>Bytes/Linje: 16</value></data>
+
+  <!-- Search Module -->
+  <data name="Search_NoMatches" xml:space="preserve">
+    <value>Ingen resultater</value>
+  </data>
+  <data name="Search_Error_Title" xml:space="preserve">
+    <value>Søgefejl</value>
+  </data>
+  <data name="Search_Error_Label" xml:space="preserve">
+    <value>Fejl</value>
+  </data>
+  <data name="Search_Error_NoTBLLoaded" xml:space="preserve">
+    <value>Ingen TBL indlæst. Kan ikke søge i TBL-tekst.</value>
+  </data>
+  <data name="Search_Error_TBLRequired" xml:space="preserve">
+    <value>TBL kræves</value>
+  </data>
+  <data name="Search_Error_NoTBLForReplacement" xml:space="preserve">
+    <value>Ingen TBL indlæst. Kan ikke encode erstatningsbytes i TBL TEXT-tilstand.</value>
+  </data>
+  <data name="Search_Replace_Title" xml:space="preserve">
+    <value>Erstatningsfejl</value>
+  </data>
+  <data name="Search_ReplaceAll_Title" xml:space="preserve">
+    <value>Erstat alle</value>
+  </data>
+  <data name="Search_ExportDialog_Filter" xml:space="preserve">
+    <value>CSV-filer (*.csv)|*.csv|Tekstfiler (*.txt)|*.txt|JSON-filer (*.json)|*.json</value>
+  </data>
+  <data name="Search_ExportTBL_Title" xml:space="preserve">
+    <value>Eksportér TBL-fil</value>
+  </data>
+  <data name="Search_TBLFileDialog_Filter" xml:space="preserve">
+    <value>TBL-filer (*.tbl)|*.tbl|Alle filer (*.*)|*.*</value>
+  </data>
+  <data name="Search_ExportTBL_Success" xml:space="preserve">
+    <value>Eksport lykkedes</value>
+  </data>
+  <data name="Search_ExportTBL_Error" xml:space="preserve">
+    <value>Eksportfejl</value>
+  </data>
+  <data name="Search_EncodingApplied_Title" xml:space="preserve">
+    <value>Encoding anvendt</value>
+  </data>
+  <data name="Search_EncodingApplied_Message" xml:space="preserve">
+    <value>Encoding anvendt! Du kan nu bruge TBL TEXT-tilstanden.</value>
+  </data>
+  <data name="Search_LoadTBL_Title" xml:space="preserve">
+    <value>Vælg en TBL-fil (tegntabel)</value>
+  </data>
+  <data name="Search_TBLLoaded_Title" xml:space="preserve">
+    <value>TBL indlæst</value>
+  </data>
+  <data name="Search_ErrorLoadingTBL_Title" xml:space="preserve">
+    <value>Fejl ved indlæsning af TBL</value>
+  </data>
+  <data name="Search_CloseTBL_Title" xml:space="preserve">
+    <value>Luk TBL</value>
+  </data>
+  <!-- IPS Patcher -->
+  <data name="IPS_Error_NoFileOpen" xml:space="preserve">
+    <value>Åbn først en ROM-fil, inden du anvender en patch.</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen_Title" xml:space="preserve">
+    <value>Ingen fil åben</value>
+  </data>
+  <data name="IPS_ApplyPatch_Title" xml:space="preserve">
+    <value>Vælg IPS-patchfil</value>
+  </data>
+  <data name="IPS_FileDialog_Filter" xml:space="preserve">
+    <value>IPS-patchfiler (*.ips)|*.ips|Alle filer (*.*)|*.*</value>
+  </data>
+  <data name="IPS_Error_InvalidFile" xml:space="preserve">
+    <value>Den valgte fil er ikke en gyldig IPS-patch.</value>
+  </data>
+  <data name="IPS_Error_InvalidFile_Title" xml:space="preserve">
+    <value>Ugyldig IPS-fil</value>
+  </data>
+  <data name="IPS_ApplyPatch_Confirm_Title" xml:space="preserve">
+    <value>Anvend IPS-patch</value>
+  </data>
+  <data name="IPS_ApplyPatch_SaveReminder" xml:space="preserve">
+    <value>Husk at gemme filen!</value>
+  </data>
+  <data name="IPS_ApplyPatch_Success_Title" xml:space="preserve">
+    <value>Patch anvendt</value>
+  </data>
+  <data name="IPS_ApplyPatch_Error_Title" xml:space="preserve">
+    <value>Patch mislykkedes</value>
+  </data>
+  <data name="IPS_CreatePatch_NoFileOpen" xml:space="preserve">
+    <value>Åbn først en modificeret ROM-fil.</value>
+  </data>
+  <data name="IPS_CreatePatch_SelectOriginal_Title" xml:space="preserve">
+    <value>Vælg original ROM-fil (umodificeret)</value>
+  </data>
+  <data name="IPS_ROMFileDialog_Filter" xml:space="preserve">
+    <value>ROM-filer|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|Alle filer (*.*)|*.*</value>
+  </data>
+  <data name="IPS_CreatePatch_SaveDialog_Title" xml:space="preserve">
+    <value>Gem IPS-patch som</value>
+  </data>
+  <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
+    <value>Patch oprettet</value>
+  </data>
+  <!-- Undo/Redo history popup -->
+  <data name="UndoHistory_Undo" xml:space="preserve">
+    <value>Fortryd</value>
+  </data>
+  <data name="UndoHistory_Redo" xml:space="preserve">
+    <value>Annuller fortryd</value>
+  </data>
+  <data name="UndoHistory_Action" xml:space="preserve">
+    <value>handling</value>
+  </data>
+  <data name="UndoHistory_Actions" xml:space="preserve">
+    <value>handlinger</value>
+  </data>
+
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>Indstillinger for hex-editor</value>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>Gem tilstand</value>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>Indlæs tilstand</value>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>Nulstil standardværdier</value>
+  </data>
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>Intet at fortryde</value>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>Intet at annullere fortrydelse af</value>
+  </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Relativ søgning...</value>
+  </data>
+  <data name="RelativeSearchString" xml:space="preserve">
+    <value>Relativ søgning — Encoding-opdagelse</value>
+  </data>
+  <data name="RelativeSearchKnownTextString" xml:space="preserve">
+    <value>Kendt tekst:</value>
+  </data>
+  <data name="RelativeSearchSearchButtonString" xml:space="preserve">
+    <value>Søg</value>
+  </data>
+  <data name="RelativeSearchUseParallelString" xml:space="preserve">
+    <value>Brug parallel søgning</value>
+  </data>
+  <data name="RelativeSearchMinMatchesString" xml:space="preserve">
+    <value>Min. overensstemmelser:</value>
+  </data>
+  <data name="RelativeSearchMaxProposalsString" xml:space="preserve">
+    <value>Maks. forslag:</value>
+  </data>
+  <data name="RelativeSearchTblLoadedString" xml:space="preserve">
+    <value>TBL indlæst: {0} poster (bruges til validering)</value>
+  </data>
+  <data name="RelativeSearchNoTblString" xml:space="preserve">
+    <value>Ingen TBL indlæst (forslag scores uafhængigt)</value>
+  </data>
+  <data name="RelativeSearchProposalsHeaderString" xml:space="preserve">
+    <value>Encoding-forslag</value>
+  </data>
+  <data name="RelativeSearchOffsetColumnString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="RelativeSearchScoreColumnString" xml:space="preserve">
+    <value>Score</value>
+  </data>
+  <data name="RelativeSearchMatchesColumnString" xml:space="preserve">
+    <value>Overensstemmelser</value>
+  </data>
+  <data name="RelativeSearchSampleColumnString" xml:space="preserve">
+    <value>Eksempeltekst</value>
+  </data>
+  <data name="RelativeSearchPreviewHeaderString" xml:space="preserve">
+    <value>Forhåndsvisning (afkodet tekst)</value>
+  </data>
+  <data name="RelativeSearchMatchPositionsString" xml:space="preserve">
+    <value>Overensstemmelser ved:</value>
+  </data>
+  <data name="RelativeSearchExportTblString" xml:space="preserve">
+    <value>Eksportér til TBL</value>
+  </data>
+  <data name="RelativeSearchNavigateString" xml:space="preserve">
+    <value>Naviger til overensstemmelse</value>
+  </data>
+  <data name="RelativeSearchSearchingString" xml:space="preserve">
+    <value>Søger 256 encoding-offsets...</value>
+  </data>
+  <data name="RelativeSearchFoundProposalsString" xml:space="preserve">
+    <value>{0} forslag fundet på {1} ms</value>
+  </data>
+  <data name="RelativeSearchFoundWithValidationString" xml:space="preserve">
+    <value>{0} forslag fundet på {1} ms (top-overensstemmelse valideret mod indlæst TBL!)</value>
+  </data>
+  <data name="RelativeSearchSearchingWithTblString" xml:space="preserve">
+    <value>Søger 256 offsets (validering mod {0} TBL-poster)...</value>
+  </data>
+  <data name="RelativeSearchCancelledString" xml:space="preserve">
+    <value>Søgning annulleret</value>
+  </data>
+  <data name="RelativeSearchNoProposalsString" xml:space="preserve">
+    <value>Ingen encoding-forslag fundet. Prøv en anden søgetekst.</value>
+  </data>
+  <data name="RelativeSearchNoFileOpenString" xml:space="preserve">
+    <value>Ingen fil åben</value>
+  </data>
+  <data name="RelativeSearchKnownTextTooltipString" xml:space="preserve">
+    <value>Indtast tekst, du ved forekommer i ROM'en (f.eks. "World", "Start", "Hero")</value>
+  </data>
+  <data name="RelativeSearchExportTooltipString" xml:space="preserve">
+    <value>Gem det valgte encoding-forslag som TBL-fil</value>
+  </data>
+  <data name="TblConflict_Title" xml:space="preserve">
+    <value>TBL konflikt-analyserapport</value>
+  </data>
+  <data name="TblConflict_TotalConflicts" xml:space="preserve">
+    <value>Konflikter i alt:</value>
+  </data>
+  <data name="TblConflict_Errors" xml:space="preserve">
+    <value>Fejl:</value>
+  </data>
+  <data name="TblConflict_Warnings" xml:space="preserve">
+    <value>Advarsler:</value>
+  </data>
+  <data name="TblConflict_Info" xml:space="preserve">
+    <value>Info:</value>
+  </data>
+  <data name="TblConflict_Description" xml:space="preserve">
+    <value>Beskrivelse:</value>
+  </data>
+  <data name="TblConflict_Suggestion" xml:space="preserve">
+    <value>Foreslået løsning:</value>
+  </data>
+  <data name="TblConflict_ConflictingEntries" xml:space="preserve">
+    <value>Konflikterénde poster:</value>
+  </data>
+  <data name="TblTemplate_Title" xml:space="preserve">
+    <value>TBL-skabeloner</value>
+  </data>
+  <data name="TblTemplate_Categories" xml:space="preserve">
+    <value>Kategorier</value>
+  </data>
+  <data name="TblTemplate_AvailableTemplates" xml:space="preserve">
+    <value>Tilgængelige skabeloner</value>
+  </data>
+  <data name="TblTemplate_Preview" xml:space="preserve">
+    <value>Forhåndsvisning</value>
+  </data>
+  <data name="TblTemplate_LoadTemplate" xml:space="preserve">
+    <value>Indlæs skabelon</value>
+  </data>
+  <data name="TblTemplate_MergeWithCurrent" xml:space="preserve">
+    <value>Flet med nuværende</value>
+  </data>
+  <data name="TblTemplate_BuiltIn" xml:space="preserve">
+    <value>Indbygget</value>
+  </data>
+  <data name="PatternAnalysis_Title" xml:space="preserve">
+    <value>Mønsteranalyse</value>
+  </data>
+  <data name="PatternAnalysis_Entropy" xml:space="preserve">
+    <value>Entropi</value>
+  </data>
+  <data name="PatternAnalysis_ByteDistribution" xml:space="preserve">
+    <value>Byte-fordeling</value>
+  </data>
+  <data name="PatternAnalysis_DetectedPatterns" xml:space="preserve">
+    <value>Opdagede mønstre</value>
+  </data>
+  <data name="PatternAnalysis_NoPatternsDetected" xml:space="preserve">
+    <value>Ingen mønstre opdaget</value>
+  </data>
+  <data name="PatternAnalysis_Anomalies" xml:space="preserve">
+    <value>Anomalier</value>
+  </data>
+  <data name="PatternAnalysis_NoAnomalies" xml:space="preserve">
+    <value>Ingen anomalier opdaget</value>
+  </data>
+  <data name="PatternAnalysis_BitsPerByte" xml:space="preserve">
+    <value>bits/byte</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropy" xml:space="preserve">
+    <value>Høj entropi opdaget</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropyDesc" xml:space="preserve">
+    <value>Data synes at være komprimerede eller krypterede</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropy" xml:space="preserve">
+    <value>Meget lav entropi opdaget</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropyDesc" xml:space="preserve">
+    <value>Data indeholder mange gentagede eller ens bytes</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDistribution" xml:space="preserve">
+    <value>Skæv byte-fordeling</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDesc" xml:space="preserve">
+    <value>En byte-værdi forekommer mere end 20 % af tiden</value>
+  </data>
+  <data name="PatternAnalysis_NullBytes" xml:space="preserve">
+    <value>NULL-bytes (0x00)</value>
+  </data>
+  <data name="PatternAnalysis_RepeatedSequence" xml:space="preserve">
+    <value>Gentaget sekvens</value>
+  </data>
+  <data name="PatternAnalysis_AsciiText" xml:space="preserve">
+    <value>ASCII-tekst opdaget</value>
+  </data>
+  <data name="FileStats_Title" xml:space="preserve">
+    <value>Filstatistik</value>
+  </data>
+  <data name="FileStats_OverallHealth" xml:space="preserve">
+    <value>Generel tilstand</value>
+  </data>
+  <data name="FileStats_HealthyStructure" xml:space="preserve">
+    <value>Filstrukturen er gyldig og sund</value>
+  </data>
+  <data name="FileStats_Structure" xml:space="preserve">
+    <value>Struktur</value>
+  </data>
+  <data name="FileStats_Valid" xml:space="preserve">
+    <value>Gyldig</value>
+  </data>
+  <data name="FileStats_Invalid" xml:space="preserve">
+    <value>Ugyldig</value>
+  </data>
+  <data name="FileStats_Checksums" xml:space="preserve">
+    <value>Kontrolsummer</value>
+  </data>
+  <data name="FileStats_AllPass" xml:space="preserve">
+    <value>Alle bestået</value>
+  </data>
+  <data name="FileStats_SomeFailed" xml:space="preserve">
+    <value>Nogle kontrolsummer fejlede</value>
+  </data>
+  <data name="FileStats_Compression" xml:space="preserve">
+    <value>Komprimering</value>
+  </data>
+  <data name="FileStats_Ratio" xml:space="preserve">
+    <value>Ratio:</value>
+  </data>
+  <data name="FileStats_SubOptimalCompression" xml:space="preserve">
+    <value>Suboptimal komprimering</value>
+  </data>
+  <data name="FileStats_EntropyAnalysis" xml:space="preserve">
+    <value>Entropianalyse</value>
+  </data>
+  <data name="FileStats_Level" xml:space="preserve">
+    <value>Niveau:</value>
+  </data>
+  <data name="FileStats_CompressedOrEncrypted" xml:space="preserve">
+    <value>Data er sandsynligvis komprimerede eller krypterede</value>
+  </data>
+  <data name="FileStats_DetectedIssues" xml:space="preserve">
+    <value>Opdagede problemer</value>
+  </data>
+  <data name="FileStats_NoIssues" xml:space="preserve">
+    <value>Ingen problemer opdaget</value>
+  </data>
+  <data name="FileStats_FileInformation" xml:space="preserve">
+    <value>Filoplysninger</value>
+  </data>
+  <data name="FileStats_Size" xml:space="preserve">
+    <value>Størrelse:</value>
+  </data>
+  <data name="FileStats_Fields" xml:space="preserve">
+    <value>Felter:</value>
+  </data>
+  <data name="FileStats_Format" xml:space="preserve">
+    <value>Format:</value>
+  </data>
+  <data name="FileStats_Unknown" xml:space="preserve">
+    <value>Ukendt</value>
+  </data>
+  <data name="ArchiveStructure_Title" xml:space="preserve">
+    <value>Arkivstruktur</value>
+  </data>
+  <data name="ArchiveStructure_NoArchive" xml:space="preserve">
+    <value>Intet arkiv indlæst</value>
+  </data>
+  <data name="ArchiveStructure_Extract" xml:space="preserve">
+    <value>Udpak...</value>
+  </data>
+  <data name="ArchiveStructure_ViewDetails" xml:space="preserve">
+    <value>Vis detaljer</value>
+  </data>
+  <data name="ArchiveStructure_ExpandAll" xml:space="preserve">
+    <value>Udvid alle</value>
+  </data>
+  <data name="ArchiveStructure_CollapseAll" xml:space="preserve">
+    <value>Skjul alle</value>
+  </data>
+  <data name="ArchiveStructure_Files" xml:space="preserve">
+    <value>filer</value>
+  </data>
+  <data name="ArchiveStructure_Folders" xml:space="preserve">
+    <value>mapper</value>
+  </data>
+  <data name="ArchiveStructure_TotalSize" xml:space="preserve">
+    <value>Størrelse i alt:</value>
+  </data>
+  <data name="ArchiveStructure_CompressionRatio" xml:space="preserve">
+    <value>Ratio:</value>
+  </data>
+  <data name="ArchiveStructure_ExtractFunctionality" xml:space="preserve">
+    <value>Udpakningsfunktion — implementeres med arkivbibliotek</value>
+  </data>
+  <data name="ArchiveStructure_ExtractTitle" xml:space="preserve">
+    <value>Udpak</value>
+  </data>
+  <data name="ArchiveStructure_DetailsTitle" xml:space="preserve">
+    <value>Detaljer</value>
+  </data>
+  <data name="ArchiveStructure_DetailName" xml:space="preserve">
+    <value>Navn:</value>
+  </data>
+  <data name="ArchiveStructure_DetailType" xml:space="preserve">
+    <value>Type:</value>
+  </data>
+  <data name="ArchiveStructure_DetailFolder" xml:space="preserve">
+    <value>Mappe</value>
+  </data>
+  <data name="ArchiveStructure_DetailFile" xml:space="preserve">
+    <value>Fil</value>
+  </data>
+  <data name="ArchiveStructure_DetailCompressed" xml:space="preserve">
+    <value>Komprimeret:</value>
+  </data>
+  <data name="ArchiveStructure_DetailCRC" xml:space="preserve">
+    <value>CRC:</value>
+  </data>
+  <data name="ArchiveStructure_DetailMethod" xml:space="preserve">
+    <value>Metode:</value>
+  </data>
+  <data name="FileComparison_Title" xml:space="preserve">
+    <value>Filsammenligning</value>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>Vælg filer at sammenligne</value>
+  </data>
+  <data name="FileComparison_LoadFile1" xml:space="preserve">
+    <value>Indlæs fil 1...</value>
+  </data>
+  <data name="FileComparison_LoadFile2" xml:space="preserve">
+    <value>Indlæs fil 2...</value>
+  </data>
+  <data name="FileComparison_File1" xml:space="preserve">
+    <value>Fil 1</value>
+  </data>
+  <data name="FileComparison_File2" xml:space="preserve">
+    <value>Fil 2</value>
+  </data>
+  <data name="FileComparison_Matching" xml:space="preserve">
+    <value>Overensstemmende:</value>
+  </data>
+  <data name="FileComparison_Added" xml:space="preserve">
+    <value>Tilføjet:</value>
+  </data>
+  <data name="FileComparison_Modified" xml:space="preserve">
+    <value>Modificeret:</value>
+  </data>
+  <data name="FileComparison_Removed" xml:space="preserve">
+    <value>Fjernet:</value>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>Vælg fil 1 at sammenligne</value>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>Vælg fil 2 at sammenligne</value>
+  </data>
+  <data name="FileComparison_AllFiles" xml:space="preserve">
+    <value>Alle filer (*.*)|*.*</value>
+  </data>
+  <data name="FileComparison_ErrorLoading" xml:space="preserve">
+    <value>Fejl ved indlæsning af fil: {0}</value>
+  </data>
+  <data name="FileComparison_Error" xml:space="preserve">
+    <value>Fejl</value>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>Vælg begge filer at sammenligne</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>Sammenligner {0} ↔ {1}</value>
+  </data>
+  <data name="CustomTemplate_Title" xml:space="preserve">
+    <value>Skabeloner</value>
+  </data>
+  <data name="CustomTemplate_NewTemplate" xml:space="preserve">
+    <value>Ny skabelon</value>
+  </data>
+  <data name="CustomTemplate_DeleteTemplate" xml:space="preserve">
+    <value>Slet skabelon</value>
+  </data>
+  <data name="CustomTemplate_EditorTitle" xml:space="preserve">
+    <value>Skabeloneditor</value>
+  </data>
+  <data name="CustomTemplate_Name" xml:space="preserve">
+    <value>Navn:</value>
+  </data>
+  <data name="CustomTemplate_Description" xml:space="preserve">
+    <value>Beskrivelse:</value>
+  </data>
+  <data name="CustomTemplate_Extensions" xml:space="preserve">
+    <value>Filtypenavne:</value>
+  </data>
+  <data name="CustomTemplate_ExtensionsTooltip" xml:space="preserve">
+    <value>Adskilt af kommaer, f.eks. .bin,.dat</value>
+  </data>
+  <data name="CustomTemplate_SaveTemplate" xml:space="preserve">
+    <value>Gem skabelon</value>
+  </data>
+  <data name="CustomTemplate_FormatBlocks" xml:space="preserve">
+    <value>Formatblokke</value>
+  </data>
+  <data name="CustomTemplate_AddBlock" xml:space="preserve">
+    <value>Tilføj blok</value>
+  </data>
+  <data name="CustomTemplate_RemoveBlock" xml:space="preserve">
+    <value>Fjern blok</value>
+  </data>
+  <data name="CustomTemplate_ApplyToFile" xml:space="preserve">
+    <value>Anvend på nuværende fil</value>
+  </data>
+  <data name="CustomTemplate_ApplyDescription" xml:space="preserve">
+    <value>Anvend denne skabelon til at analysere den aktuelt indlæste fil i hex-editoren.</value>
+  </data>
+  <data name="CustomTemplate_ApplyButton" xml:space="preserve">
+    <value>Anvend skabelon på fil</value>
+  </data>
+  <data name="CustomTemplate_ExportImport" xml:space="preserve">
+    <value>Eksportér/Importér</value>
+  </data>
+  <data name="CustomTemplate_ExportJSON" xml:space="preserve">
+    <value>Eksportér til JSON</value>
+  </data>
+  <data name="CustomTemplate_ImportJSON" xml:space="preserve">
+    <value>Importér fra JSON</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateSelected" xml:space="preserve">
+    <value>Ingen skabelon valgt til at gemme.</value>
+  </data>
+  <data name="CustomTemplate_SavedSuccessfully" xml:space="preserve">
+    <value>Skabelon '{0}' gemt!</value>
+  </data>
+  <data name="CustomTemplate_ErrorSaving" xml:space="preserve">
+    <value>Fejl ved gemning af skabelon: {0}</value>
+  </data>
+  <data name="CustomTemplate_SelectOrCreate" xml:space="preserve">
+    <value>Vælg eller opret først en skabelon.</value>
+  </data>
+  <data name="CustomTemplate_AddBlockTitle" xml:space="preserve">
+    <value>Tilføj blok</value>
+  </data>
+  <data name="CustomTemplate_DeleteConfirm" xml:space="preserve">
+    <value>Slet skabelon '{0}'?</value>
+  </data>
+  <data name="CustomTemplate_ConfirmDelete" xml:space="preserve">
+    <value>Bekræft sletning</value>
+  </data>
+  <data name="CustomTemplate_ErrorDeleting" xml:space="preserve">
+    <value>Fejl ved sletning af fil: {0}</value>
+  </data>
+  <data name="CustomTemplate_DeleteError" xml:space="preserve">
+    <value>Sletningsfejl</value>
+  </data>
+  <data name="CustomTemplate_ApplyingTemplate" xml:space="preserve">
+    <value>Application du modèle '{0}' au fichier actuel.
+
+Cela analysera {1} blocs selon votre définition de modèle.
+
+Remarque : L'intégration complète avec HexEditor nécessite de se connecter au modèle de vue principal.</value>
+  </data>
+  <data name="CustomTemplate_ApplyTitle" xml:space="preserve">
+    <value>Anvend skabelon</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateToApply" xml:space="preserve">
+    <value>Ingen skabelon valgt til at anvende.</value>
+  </data>
+  <data name="CustomTemplate_ExportTitle" xml:space="preserve">
+    <value>Eksportér skabelon til JSON</value>
+  </data>
+  <data name="CustomTemplate_JSONFiles" xml:space="preserve">
+    <value>JSON-filer (*.json)|*.json</value>
+  </data>
+  <data name="CustomTemplate_ExportedTo" xml:space="preserve">
+    <value>Modèle exporté vers :
+{0}</value>
+  </data>
+  <data name="CustomTemplate_ExportSuccess" xml:space="preserve">
+    <value>Eksport lykkedes</value>
+  </data>
+  <data name="CustomTemplate_ErrorExporting" xml:space="preserve">
+    <value>Fejl ved eksport af skabelon: {0}</value>
+  </data>
+  <data name="CustomTemplate_ExportError" xml:space="preserve">
+    <value>Eksportfejl</value>
+  </data>
+  <data name="CustomTemplate_ImportTitle" xml:space="preserve">
+    <value>Importér skabelon fra JSON</value>
+  </data>
+  <data name="CustomTemplate_ImportedSuccessfully" xml:space="preserve">
+    <value>Skabelon '{0}' importeret!</value>
+  </data>
+  <data name="CustomTemplate_ImportSuccess" xml:space="preserve">
+    <value>Import lykkedes</value>
+  </data>
+  <data name="CustomTemplate_ErrorImporting" xml:space="preserve">
+    <value>Fejl ved import af skabelon: {0}</value>
+  </data>
+  <data name="CustomTemplate_ImportError" xml:space="preserve">
+    <value>Importfejl</value>
+  </data>
+  <data name="CustomTemplate_ColumnName" xml:space="preserve">
+    <value>Navn</value>
+  </data>
+  <data name="CustomTemplate_ColumnOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="CustomTemplate_ColumnLength" xml:space="preserve">
+    <value>Længde</value>
+  </data>
+  <data name="CustomTemplate_ColumnType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="CustomTemplate_ColumnColor" xml:space="preserve">
+    <value>Farve</value>
+  </data>
+  <data name="CustomTemplate_ColumnDescription" xml:space="preserve">
+    <value>Beskrivelse</value>
+  </data>
+  <data name="CopyAsAutoString" xml:space="preserve">
+    <value>Kopiér (auto)</value>
+  </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>Ombryd søgning</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Encoding:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Hexadecimal</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Decimal</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>Gå til position</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>Position</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 eller decimal</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Wildcard (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Trunker erstatning til søgelængde</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Næste</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Forrige</value></data>
+  <data name="HE_SearchDialogTitle" xml:space="preserve">
+    <value>Find / Replace</value>
+  </data>
+  <data name="HE_SearchModeTooltip" xml:space="preserve">
+    <value>Search mode</value>
+  </data>
+  <data name="HE_CaseSensitiveTooltip" xml:space="preserve">
+    <value>Match case (Alt+C)</value>
+  </data>
+  <data name="HE_WildcardTooltip" xml:space="preserve">
+    <value>Use wildcards ?? (Alt+E)</value>
+  </data>
+  <data name="HE_LoopSearch" xml:space="preserve">
+    <value>Loop</value>
+  </data>
+  <data name="HE_FindLabel" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="HE_ReplaceLabel" xml:space="preserve">
+    <value>Replace:</value>
+  </data>
+  <data name="HE_EncodingLabel" xml:space="preserve">
+    <value>Encoding:</value>
+  </data>
+  <data name="HE_MaxLabel" xml:space="preserve">
+    <value>Max:</value>
+  </data>
+  <data name="HE_StopButton" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="HE_PrevButton" xml:space="preserve">
+    <value>Prev.</value>
+  </data>
+  <data name="HE_NextButton" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="HE_FindAllButton" xml:space="preserve">
+    <value>Find All</value>
+  </data>
+  <data name="HE_ReplaceButton" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="HE_ReplaceAllButton" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="HE_ResultsLabel" xml:space="preserve">
+    <value>Results (</value>
+  </data>
+  <data name="HE_ExportButton" xml:space="preserve">
+    <value>Export ▾</value>
+  </data>
+  <data name="HE_OffsetHexColumn" xml:space="preserve">
+    <value>Offset (Hex)</value>
+  </data>
+  <data name="HE_OffsetDecColumn" xml:space="preserve">
+    <value>Offset (Dec)</value>
+  </data>
+  <data name="HE_PreviewColumn" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="HE_LengthColumn" xml:space="preserve">
+    <value>Len.</value>
+  </data>
+  <data name="HE_OccColumn" xml:space="preserve">
+    <value>Occ.</value>
+  </data>
+  <data name="HE_PrintPctColumn" xml:space="preserve">
+    <value>% Print.</value>
+  </data>
+  <data name="HE_ActionsColumn" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="HE_ExportTblButton" xml:space="preserve">
+    <value>Export TBL</value>
+  </data>
+  <data name="HE_ApplyButton" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="HE_SizeLabel" xml:space="preserve">
+    <value>Size: </value>
+  </data>
+  <data name="HE_BytesLabel" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="HE_LoadTblButton" xml:space="preserve">
+    <value>Load TBL...</value>
+  </data>
+  <data name="HE_LoadTblTooltip" xml:space="preserve">
+    <value>Load a TBL file (ROM character table)</value>
+  </data>
+  <data name="HE_TblLabel" xml:space="preserve">
+    <value>TBL: </value>
+  </data>
+  <data name="HE_CloseTblTooltip" xml:space="preserve">
+    <value>Close TBL file</value>
+  </data>
+  <data name="HE_ShowReplaceTooltip" xml:space="preserve">
+    <value>Show / hide replace (Ctrl+H)</value>
+  </data>
+  <data name="HE_SearchPlaceholder" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="HE_PrevResultTooltip" xml:space="preserve">
+    <value>Previous result (Shift+Enter)</value>
+  </data>
+  <data name="HE_NextResultTooltip" xml:space="preserve">
+    <value>Next result (Enter)</value>
+  </data>
+  <data name="HE_AdvancedSearchTooltip" xml:space="preserve">
+    <value>Advanced search (Ctrl+Shift+F)</value>
+  </data>
+  <data name="HE_CloseSearchTooltip" xml:space="preserve">
+    <value>Close (Esc)</value>
+  </data>
+  <data name="HE_ReplacePlaceholder" xml:space="preserve">
+    <value>Replace...</value>
+  </data>
+  <data name="HE_ReplaceOneTooltip" xml:space="preserve">
+    <value>Replace (Alt+R)</value>
+  </data>
+  <data name="HE_ReplaceAllTooltip" xml:space="preserve">
+    <value>Replace All (Alt+A)</value>
+  </data>
+  <data name="HE_HexModeTooltip" xml:space="preserve">
+    <value>Hexadecimal mode (Alt+H)</value>
+  </data>
+  <data name="HE_MoveBarTooltip" xml:space="preserve">
+    <value>Move search bar</value>
+  </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>Sammenlign fil med…</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>Sammenlign markering til venstre…</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>Ingen TBL-fil indlæst</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>TEKST</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>WILDCARD</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL TEKST</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIV</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Opdaget filformat</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Opdagelsesscore</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Opdagelsestillid: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Format</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Skift det opdagede format</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Søger alle forekomster med fremdriftsoverlag</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>Offset</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>Resultater</value>
+  </data>
+</root>

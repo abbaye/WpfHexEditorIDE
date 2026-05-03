@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>Etsi ja korvaa</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>Etsi:</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>Korvaa:</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>Sama kirjainkoko</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>Koko sana</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>Etsi kaikki</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>Seuraava</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>Edellinen</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>Korvaa</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>Korvaa kaikki</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>Sulje</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>Sivu</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>Muoto:</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>Mukautettu</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>Suunta:</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>Pysty</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>Vaaka</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>Sarakkeet</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>Yhtälevyiset sarakkeet</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>Näytä sarake-erotin</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>Ylä-/alatunniste</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>Ylätunniste</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>Ota ylätunniste käyttöön</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>Erilainen sisältö ensimmäisellä sivulla</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>Sama ylätunniste vasemmalla/oikealla sivulla</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>Alatunniste</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>Ota alatunniste käyttöön</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>Reunus</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>Ei mitään</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>Kehys</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>Varjo</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>Peruuta</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>Käytä</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>Sisempi:</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>Ulompi:</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>Vasen:</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>Oikea:</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>Tekstinäkymä</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>Jaettu näkymä (teksti + Hex)</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>Hex-näkymä</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>Rakenteen puunäkymä</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>Täysi näkymä (teksti + rakenne + Hex)</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>Kohdistustila — zen-kirjoittaminen (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>Teksti</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>Jaettu</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>Rakenne</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>Täysi</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>Kohdistus</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>Sivunäkymä — sivutetut A4/Letter-sivut</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>Luonnosnäkymä — jatkuva vieritys, kompaktit marginaalit</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>Jäsennysnäkymä — rakennepuu keskitetty</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>Forensiikka-analyysitila</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>Forensiikka</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>Lihavoitu (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>Kursivoitu (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>Alleviivattu (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>Yliviivattu</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>Tasaa vasemmalle</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>Keskitä</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>Tasaa oikealle</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>Kappaletyyli</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>Normaali</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>Lainaus</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Koodi</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>Kappaletyylit (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>Sivun asetukset (paperi, marginaalit, sarakkeet…)</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>Loitonna</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>Lähennä</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>Vain luku</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Asiakirjan metatiedot</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Vie asiakirja</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Tallenna</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Otsikko</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Tekijä</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Muoto</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>Luotu</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>Muokattu</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>Makrot</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>Lihavoitu (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>Kursivoitu (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>Alleviivattu (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>Kopioi valittu teksti</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>Kopioi Hex-tavuina</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>Tarkasta lohko Rakenne-paneelissa</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>Siirry offsetiin Hex-paneelissa</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>Sivujen määrä</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>Sanojen määrä</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>Zoomitaso</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>Napsauta avataksesi forensiikkapaneelin</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>Rakenne</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>Tiivistä kaikki</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>Laajenna kaikki</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>Suodata lohkoja…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>Tyhjennä suodatin</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>Siirry tekstiin</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>Siirry Hex-offsetiin</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>Kopioi lohkon teksti</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>Kopioi offset</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>Asiakirja</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>Tallennettu — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>Tallennus epäonnistui: {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>Tälle tiedostotyypille ei ole rekisteröity tallentajaa.</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>Ladataan asiakirjaa…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>Odotetaan IDE:n alustusta…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>Asiakirjaa ei voi avata: {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>Vie asiakirja</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>Vienti epäonnistui: {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>Viety — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>Tälle tyypille '{0}' ei ole rekisteröity tallentajaa.</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>Kyllä</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>Ei</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>Teksti</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>Jaettu</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>Rakenne</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>Täysi</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>Kohdistus</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | Vain luku</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>Sivu 1</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 sanaa</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>Jaettu</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>Muoto: {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} sanaa</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>Sivu 1 / {0}</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>Normaali</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>Otsikko 1</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>Otsikko 2</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>Otsikko 3</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>Otsikko 4</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>Otsikko 5</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>Otsikko 6</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>Lainaus</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Koodi</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>Kuvateksti</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>Luettelokappale</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>Voimakas lainaus</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>Hälytykset</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>Lohkot</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>Muoto</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>Valinta</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>Versio</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>Näkymä</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>Forensiikkatila</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>Hex-näkymä</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>Tallenna</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>Jaettu näkymä</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>Rakennenäkymä</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>Tekstinäkymä</value>
+  </data>
+</root>

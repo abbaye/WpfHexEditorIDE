@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="App_MinimizeToolTip" xml:space="preserve"><value>Ελαχιστοποίηση</value></data>
+  <data name="App_MaximizeToolTip" xml:space="preserve"><value>Μεγιστοποίηση</value></data>
+  <data name="App_CloseToolTip" xml:space="preserve"><value>Κλείσιμο</value></data>
+  <data name="App_NotificationsToolTip" xml:space="preserve"><value>Ειδοποιήσεις</value></data>
+  <data name="App_CustomizeLayoutToolTip" xml:space="preserve"><value>Προσαρμογή διάταξης (Ctrl+Shift+L)</value></data>
+  <data name="App_CommandPaletteToolTip" xml:space="preserve"><value>Παλέτα εντολών (Ctrl+Shift+P)</value></data>
+  <data name="App_WelcomePageToolTip" xml:space="preserve"><value>Σελίδα καλωσορίσματος</value></data>
+
+  <data name="App_Menu_File" xml:space="preserve"><value>_Αρχείο</value></data>
+  <data name="App_Menu_New" xml:space="preserve"><value>_Νέο</value></data>
+  <data name="App_Menu_NewSolution" xml:space="preserve"><value>_Λύση...</value></data>
+  <data name="App_Menu_NewProject" xml:space="preserve"><value>_Έργο...</value></data>
+  <data name="App_Menu_NewFile" xml:space="preserve"><value>_Αρχείο...</value></data>
+  <data name="App_Menu_Open" xml:space="preserve"><value>_Άνοιγμα</value></data>
+  <data name="App_Menu_OpenSolutionProject" xml:space="preserve"><value>_Λύση/Έργο...</value></data>
+  <data name="App_Menu_OpenFolder" xml:space="preserve"><value>_Φάκελος...</value></data>
+  <data name="App_Menu_OpenFile" xml:space="preserve"><value>_Αρχείο...</value></data>
+  <data name="App_Menu_Close" xml:space="preserve"><value>_Κλείσιμο</value></data>
+  <data name="App_Menu_CloseAllDocuments" xml:space="preserve"><value>Κλείσιμο _όλων των εγγράφων</value></data>
+  <data name="App_Menu_CloseSolution" xml:space="preserve"><value>Κλείσιμο _λύσης</value></data>
+  <data name="App_Menu_Save" xml:space="preserve"><value>_Αποθήκευση</value></data>
+  <data name="App_Menu_SaveAll" xml:space="preserve"><value>Αποθήκευση _όλων</value></data>
+  <data name="App_Menu_WriteToDisk" xml:space="preserve"><value>_Εγγραφή στο δίσκο</value></data>
+  <data name="App_Menu_Workspace" xml:space="preserve"><value>_Χώρος εργασίας</value></data>
+  <data name="App_Menu_NewWorkspace" xml:space="preserve"><value>_Νέος χώρος εργασίας…</value></data>
+  <data name="App_Menu_OpenWorkspace" xml:space="preserve"><value>_Άνοιγμα χώρου εργασίας…</value></data>
+  <data name="App_Menu_SaveWorkspace" xml:space="preserve"><value>_Αποθήκευση χώρου εργασίας</value></data>
+  <data name="App_Menu_SaveWorkspaceAs" xml:space="preserve"><value>Αποθήκευση χώρου εργασίας _ως…</value></data>
+  <data name="App_Menu_CloseWorkspace" xml:space="preserve"><value>_Κλείσιμο χώρου εργασίας</value></data>
+  <data name="App_Menu_RecentSolutions" xml:space="preserve"><value>_Πρόσφατες λύσεις</value></data>
+  <data name="App_Menu_RecentFiles" xml:space="preserve"><value>_Πρόσφατα αρχεία</value></data>
+  <data name="App_Menu_Exit" xml:space="preserve"><value>_Έξοδος</value></data>
+
+  <data name="App_Menu_Edit" xml:space="preserve"><value>_Επεξεργασία</value></data>
+  <data name="App_Menu_Cut" xml:space="preserve"><value>Αποκ_οπή</value></data>
+  <data name="App_Menu_Copy" xml:space="preserve"><value>_Αντιγραφή</value></data>
+  <data name="App_Menu_Paste" xml:space="preserve"><value>_Επικόλληση</value></data>
+  <data name="App_Menu_Delete" xml:space="preserve"><value>_Διαγραφή</value></data>
+  <data name="App_Menu_SelectAll" xml:space="preserve"><value>Επιλογή _όλων</value></data>
+  <data name="App_Menu_Find" xml:space="preserve"><value>_Αναζήτηση...</value></data>
+  <data name="App_Menu_AdvancedFindReplace" xml:space="preserve"><value>_Σύνθετη αναζήτηση/αντικατάσταση...</value></data>
+  <data name="App_Menu_FindNext" xml:space="preserve"><value>Εύρεση _επόμενου</value></data>
+  <data name="App_Menu_FindPrevious" xml:space="preserve"><value>Εύρεση _προηγούμενου</value></data>
+  <data name="App_Menu_GoToOffset" xml:space="preserve"><value>_Μετάβαση σε offset…</value></data>
+  <data name="App_Menu_FormatDocument" xml:space="preserve"><value>Μορφοποίηση _εγγράφου</value></data>
+  <data name="App_Menu_FormatSelection" xml:space="preserve"><value>Μορφοποίηση _επιλογής</value></data>
+
+  <data name="App_Menu_View" xml:space="preserve"><value>_Προβολή</value></data>
+  <data name="App_Menu_Project" xml:space="preserve"><value>_Έργο</value></data>
+  <data name="App_Menu_AddNewItem" xml:space="preserve"><value>Προσθήκη _νέου στοιχείου...</value></data>
+  <data name="App_Menu_AddExistingItem" xml:space="preserve"><value>Προσθήκη _υπάρχοντος στοιχείου...</value></data>
+  <data name="App_Menu_AddNewProject" xml:space="preserve"><value>Προσθήκη νέου _έργου...</value></data>
+  <data name="App_Menu_Properties" xml:space="preserve"><value>_Ιδιότητες...</value></data>
+  <data name="App_Menu_Build" xml:space="preserve"><value>_Δημιουργία</value></data>
+  <data name="App_Menu_BuildSolution" xml:space="preserve"><value>Δημιουργία _λύσης</value></data>
+  <data name="App_Menu_BuildProject" xml:space="preserve"><value>Δημιουργία _έργου</value></data>
+  <data name="App_Menu_RebuildSolution" xml:space="preserve"><value>_Αναδημιουργία λύσης</value></data>
+  <data name="App_Menu_RebuildProject" xml:space="preserve"><value>Αναδημιουργία _έργου</value></data>
+  <data name="App_Menu_CleanSolution" xml:space="preserve"><value>_Εκκαθάριση λύσης</value></data>
+  <data name="App_Menu_CleanProject" xml:space="preserve"><value>Εκκαθάριση _έργου</value></data>
+  <data name="App_Menu_CancelBuild" xml:space="preserve"><value>_Ακύρωση δημιουργίας</value></data>
+  <data name="App_Menu_ConfigurationManager" xml:space="preserve"><value>_Διαχειριστής ρυθμίσεων...</value></data>
+  <data name="App_Menu_Debug" xml:space="preserve"><value>_Αποσφαλμάτωση</value></data>
+
+  <data name="App_Menu_Window" xml:space="preserve"><value>_Παράθυρο</value></data>
+  <data name="App_Menu_CloseDocument" xml:space="preserve"><value>_Κλείσιμο εγγράφου</value></data>
+  <data name="App_Menu_CloseAllButThis" xml:space="preserve"><value>Κλείσιμο _όλων εκτός αυτού</value></data>
+  <data name="App_Menu_CloseAllDocuments2" xml:space="preserve"><value>Κλείσιμο _όλων των εγγράφων</value></data>
+  <data name="App_Menu_NextDocument" xml:space="preserve"><value>_Επόμενο έγγραφο</value></data>
+  <data name="App_Menu_PreviousDocument" xml:space="preserve"><value>_Προηγούμενο έγγραφο</value></data>
+  <data name="App_Menu_FullScreen" xml:space="preserve"><value>_Πλήρης οθόνη</value></data>
+  <data name="App_Menu_TabGroups" xml:space="preserve"><value>Ομάδες _καρτελών</value></data>
+  <data name="App_Menu_NewVerticalTabGroup" xml:space="preserve"><value>Νέα _κατακόρυφη ομάδα καρτελών</value></data>
+  <data name="App_Menu_NewHorizontalTabGroup" xml:space="preserve"><value>Νέα _οριζόντια ομάδα καρτελών</value></data>
+  <data name="App_Menu_MoveToNextTabGroup" xml:space="preserve"><value>Μετακίνηση στην _επόμενη ομάδα καρτελών</value></data>
+  <data name="App_Menu_MoveToPreviousTabGroup" xml:space="preserve"><value>Μετακίνηση στην _προηγούμενη ομάδα καρτελών</value></data>
+  <data name="App_Menu_CloseTabGroup" xml:space="preserve"><value>_Κλείσιμο ομάδας καρτελών</value></data>
+  <data name="App_Menu_CloseAllTabGroups" xml:space="preserve"><value>Κλείσιμο _όλων των ομάδων καρτελών</value></data>
+  <data name="App_Menu_Layout" xml:space="preserve"><value>_Διάταξη</value></data>
+  <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Αποθήκευση διάταξης</value></data>
+  <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Φόρτωση διάταξης</value></data>
+  <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Επαναφορά διάταξης</value></data>
+  <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Εναλλαγή κλειδώματος _διάταξης</value></data>
+
+  <data name="App_Menu_Tools" xml:space="preserve"><value>_Εργαλεία</value></data>
+  <data name="App_Menu_Terminal" xml:space="preserve"><value>_Terminal</value></data>
+  <data name="App_Menu_Options" xml:space="preserve"><value>_Επιλογές...</value></data>
+  <data name="App_Menu_Extensions" xml:space="preserve"><value>_Επεκτάσεις</value></data>
+  <data name="App_Menu_ExtensionManager" xml:space="preserve"><value>_Διαχειριστής επεκτάσεων</value></data>
+  <data name="App_Menu_ExtensionsMonitor" xml:space="preserve"><value>_Οθόνη επεκτάσεων</value></data>
+  <data name="App_Menu_ExtensionMarketplace" xml:space="preserve"><value>_Marketplace επεκτάσεων</value></data>
+  <data name="App_Menu_InstallFromFile" xml:space="preserve"><value>_Εγκατάσταση από αρχείο...</value></data>
+  <data name="App_Menu_RefreshAllExtensions" xml:space="preserve"><value>_Ανανέωση όλων των επεκτάσεων</value></data>
+  <data name="App_Menu_ExtensionDevWatch" xml:space="preserve"><value>Παρακολούθηση _Dev επέκτασης...</value></data>
+  <data name="App_Menu_ExtensionSystemSettings" xml:space="preserve"><value>_Ρυθμίσεις συστήματος επεκτάσεων...</value></data>
+  <data name="App_Menu_Theme" xml:space="preserve"><value>_Θέμα</value></data>
+  <data name="App_Menu_ThemeDark" xml:space="preserve"><value>_Σκοτεινό</value></data>
+  <data name="App_Menu_ThemeVS2022Dark" xml:space="preserve"><value>VS2022 _Σκοτεινό</value></data>
+  <data name="App_Menu_ThemeVisualStudio" xml:space="preserve"><value>_Visual Studio</value></data>
+  <data name="App_Menu_ThemeDarkGlass" xml:space="preserve"><value>Σκοτεινό _γυαλί</value></data>
+  <data name="App_Menu_ThemeCyberpunk" xml:space="preserve"><value>_Cyberpunk</value></data>
+  <data name="App_Menu_ThemeSynthwave" xml:space="preserve"><value>Synthwave '8_4</value></data>
+  <data name="App_Menu_ThemeMatrix" xml:space="preserve"><value>Matri_x / Terminal</value></data>
+  <data name="App_Menu_ThemeNord" xml:space="preserve"><value>_Nord</value></data>
+  <data name="App_Menu_ThemeDracula" xml:space="preserve"><value>Dr_acula</value></data>
+  <data name="App_Menu_ThemeGruvbox" xml:space="preserve"><value>Gruvbo_x Dark</value></data>
+  <data name="App_Menu_ThemeCatppuccinMocha" xml:space="preserve"><value>Catppuccin _Mocha</value></data>
+  <data name="App_Menu_ThemeTokyoNight" xml:space="preserve"><value>Tokyo _Night</value></data>
+  <data name="App_Menu_ThemeLight" xml:space="preserve"><value>_Φωτεινό</value></data>
+  <data name="App_Menu_ThemeOffice" xml:space="preserve"><value>_Office</value></data>
+  <data name="App_Menu_ThemeCatppuccinLatte" xml:space="preserve"><value>Catppuccin _Latte</value></data>
+  <data name="App_Menu_ThemeMinimal" xml:space="preserve"><value>_Minimal</value></data>
+  <data name="App_Menu_ThemeForest" xml:space="preserve"><value>_Δάσος</value></data>
+  <data name="App_Menu_ThemeHighContrast" xml:space="preserve"><value>_Υψηλή αντίθεση</value></data>
+
+  <data name="App_Menu_Image" xml:space="preserve"><value>_Εικόνα</value></data>
+  <data name="App_Menu_RotateRight" xml:space="preserve"><value>Περιστροφή _δεξιά</value></data>
+  <data name="App_Menu_RotateLeft" xml:space="preserve"><value>Περιστροφή _αριστερά</value></data>
+  <data name="App_Menu_FlipHorizontal" xml:space="preserve"><value>Αναστροφή _οριζόντια</value></data>
+  <data name="App_Menu_FlipVertical" xml:space="preserve"><value>Αναστροφή _κατακόρυφα</value></data>
+  <data name="App_Menu_CropMode" xml:space="preserve"><value>Λειτουργία _περικοπής</value></data>
+  <data name="App_Menu_Resize" xml:space="preserve"><value>_Αλλαγή μεγέθους...</value></data>
+  <data name="App_Menu_Export" xml:space="preserve"><value>_Εξαγωγή...</value></data>
+  <data name="App_Menu_ResetImage" xml:space="preserve"><value>Επαναφορά _αρχικής εικόνας</value></data>
+
+  <data name="App_OptionsEditJsonToolTip" xml:space="preserve"><value>Επεξεργασία ρυθμίσεων χρήστη σε JSON</value></data>
+  <data name="App_OptionsAppliesToLabel" xml:space="preserve"><value>Ισχύει για:</value></data>
+  <data name="App_OptionsUserInstallation" xml:space="preserve"><value>Χρήστης (εγκατάσταση)</value></data>
+  <data name="App_OptionsFilterLabel" xml:space="preserve"><value>Φίλτρο:</value></data>
+  <data name="App_OptionsSearchPlaceholder" xml:space="preserve"><value>Αναζήτηση ρυθμίσεων (Ctrl+F)…</value></data>
+  <data name="App_OptionsClearToolTip" xml:space="preserve"><value>Εκκαθάριση (Esc)</value></data>
+  <data name="App_OptionsNoResults" xml:space="preserve"><value>Δεν βρέθηκαν ρυθμίσεις.</value></data>
+
+  <data name="App_PasteConflict_Title" xml:space="preserve"><value>Το αρχείο υπάρχει ήδη</value></data>
+  <data name="App_PasteConflict_Rename" xml:space="preserve"><value>Μετονομασία</value></data>
+  <data name="App_PasteConflict_Skip" xml:space="preserve"><value>Παράλειψη</value></data>
+  <data name="App_PasteConflict_CancelAll" xml:space="preserve"><value>Ακύρωση όλων</value></data>
+  <data name="App_PasteConflict_AlreadyExists1" xml:space="preserve"><value>Ένα αρχείο με όνομα</value></data>
+  <data name="App_PasteConflict_AlreadyExists2" xml:space="preserve"><value>υπάρχει ήδη στον φάκελο προορισμού.</value></data>
+  <data name="App_PasteConflict_Instructions" xml:space="preserve"><value>Εισάγετε νέο όνομα για μετονομασία του επικολλημένου αρχείου ή επιλέξτε ενέργεια παρακάτω.</value></data>
+  <data name="App_PasteConflict_NewNameLabel" xml:space="preserve"><value>Νέο όνομα:</value></data>
+
+  <data name="App_SaveChanges_Title" xml:space="preserve"><value>Αποθήκευση αλλαγών</value></data>
+  <data name="App_SaveChanges_SelectAll" xml:space="preserve"><value>Επιλογή όλων</value></data>
+  <data name="App_SaveChanges_Save" xml:space="preserve"><value>Αποθήκευση</value></data>
+  <data name="App_SaveChanges_DontSave" xml:space="preserve"><value>Χωρίς αποθήκευση</value></data>
+  <data name="App_SaveChanges_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+
+  <data name="App_GoToOffset_Title" xml:space="preserve"><value>Μετάβαση σε offset</value></data>
+  <data name="App_GoToOffset_EnterOffset" xml:space="preserve"><value>Εισάγετε offset:</value></data>
+  <data name="App_GoToOffset_Hexadecimal" xml:space="preserve"><value>Hex (0x…)</value></data>
+  <data name="App_GoToOffset_Decimal" xml:space="preserve"><value>Δεκαδικός</value></data>
+  <data name="App_GoToOffset_Go" xml:space="preserve"><value>Μετάβαση</value></data>
+  <data name="App_GoToOffset_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+
+  <data name="App_ImportFormat_Title" xml:space="preserve"><value>Εισαγωγή ενσωματωμένου ορισμού μορφής</value></data>
+  <data name="App_ImportFormat_VersionLabel" xml:space="preserve"><value>Έκδοση:</value></data>
+  <data name="App_ImportFormat_AuthorLabel" xml:space="preserve"><value>Συγγραφέας:</value></data>
+  <data name="App_ImportFormat_ExtensionsLabel" xml:space="preserve"><value>Επεκτάσεις</value></data>
+  <data name="App_ImportFormat_QualityLabel" xml:space="preserve"><value>Ποιότητα</value></data>
+  <data name="App_ImportFormat_PreviewLabel" xml:space="preserve"><value>Προεπισκόπηση</value></data>
+  <data name="App_ImportFormat_DestinationFolder" xml:space="preserve"><value>_Φάκελος προορισμού:</value></data>
+  <data name="App_ImportFormat_Import" xml:space="preserve"><value>_Εισαγωγή</value></data>
+  <data name="App_ImportFormat_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+
+  <data name="App_ImportSyntax_Title" xml:space="preserve"><value>Εισαγωγή ενσωματωμένου ορισμού σύνταξης</value></data>
+  <data name="App_ImportSyntax_ShowPreview" xml:space="preserve"><value>Εμφάνιση προεπισκόπησης</value></data>
+  <data name="App_ImportSyntax_ExtensionsLabel" xml:space="preserve"><value>Επεκτάσεις</value></data>
+  <data name="App_ImportSyntax_DestinationFolder" xml:space="preserve"><value>_Φάκελος προορισμού:</value></data>
+  <data name="App_ImportSyntax_Import" xml:space="preserve"><value>_Εισαγωγή</value></data>
+  <data name="App_ImportSyntax_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+
+  <data name="App_PanelWelcome" xml:space="preserve"><value>Καλωσόρισμα</value></data>
+  <data name="App_PanelSolutionExplorer" xml:space="preserve"><value>Εξερεύνηση λύσης</value></data>
+  <data name="App_PanelErrorList" xml:space="preserve"><value>Λίστα σφαλμάτων</value></data>
+  <data name="App_PanelExtensionsMonitor" xml:space="preserve"><value>Οθόνη επεκτάσεων</value></data>
+  <data name="App_PanelOutput" xml:space="preserve"><value>Έξοδος</value></data>
+  <data name="App_ExportFormatDefinitionTitle" xml:space="preserve"><value>Εξαγωγή ορισμού μορφής</value></data>
+  <data name="App_FormatUpgradeRequired" xml:space="preserve"><value>Απαιτείται αναβάθμιση μορφής</value></data>
+  <data name="App_FormatUpgrade" xml:space="preserve"><value>Αναβάθμιση μορφής</value></data>
+  <data name="App_ConvertTbl" xml:space="preserve"><value>Μετατροπή TBL</value></data>
+  <data name="App_RemoveFromProject" xml:space="preserve"><value>Αφαίρεση από το έργο</value></data>
+  <data name="App_RemoveFromProjectMessage" xml:space="preserve"><value>Αφαίρεση '{0}' από το έργο;\n(Το αρχείο στο δίσκο δεν θα διαγραφεί.)</value></data>
+  <data name="App_DeleteFile" xml:space="preserve"><value>Διαγραφή αρχείου</value></data>
+  <data name="App_DeleteFileMessage" xml:space="preserve"><value>Διαγραφή '{0}' και αποστολή στον κάδο ανακύκλωσης;</value></data>
+  <data name="App_RemoveFolder" xml:space="preserve"><value>Αφαίρεση φακέλου</value></data>
+  <data name="App_RemoveSolutionFolder" xml:space="preserve"><value>Αφαίρεση φακέλου λύσης</value></data>
+  <data name="App_SelectImportFolder" xml:space="preserve"><value>Επιλογή φακέλου για εισαγωγή</value></data>
+  <data name="App_OpenSolutionProject" xml:space="preserve"><value>Άνοιγμα λύσης ή έργου</value></data>
+  <data name="App_OpenFolder" xml:space="preserve"><value>Άνοιγμα φακέλου</value></data>
+  <data name="App_FailedCreateSolution" xml:space="preserve"><value>Αποτυχία δημιουργίας λύσης:\n{0}</value></data>
+  <data name="App_FailedOpenSolution" xml:space="preserve"><value>Αποτυχία ανοίγματος λύσης:\n{0}</value></data>
+  <data name="App_RenameTitle" xml:space="preserve"><value>Μετονομασία</value></data>
+
+  <data name="App_DockTitle_ExtensionManager" xml:space="preserve"><value>Διαχειριστής επεκτάσεων</value></data>
+  <data name="App_DockTitle_ExtensionsMonitor" xml:space="preserve"><value>Οθόνη επεκτάσεων</value></data>
+  <data name="App_DockTitle_ExtensionMarketplace" xml:space="preserve"><value>Marketplace επεκτάσεων</value></data>
+  <data name="App_DockTitle_Terminal" xml:space="preserve"><value>Terminal</value></data>
+  <data name="App_DockTitle_SettingsJson" xml:space="preserve"><value>settings.json</value></data>
+  <data name="App_DockTitle_Properties" xml:space="preserve"><value>{0} — Ιδιότητες</value></data>
+  <data name="App_DockTitle_NuGet" xml:space="preserve"><value>NuGet — {0}</value></data>
+  <data name="App_DockTitle_NuGetSolution" xml:space="preserve"><value>NuGet — {0} (Λύση)</value></data>
+  <data name="App_DockTitle_References" xml:space="preserve"><value>Αναφορές — {0}</value></data>
+  <data name="App_DockTitle_ReadOnly" xml:space="preserve"><value>WpfHexEditor — {0} [μορφή μόνο ανάγνωσης v{1}]</value></data>
+
+  <data name="App_ContextMenu_None" xml:space="preserve"><value>(κανένα)</value></data>
+  <data name="App_ContextMenu_CompareWithActive" xml:space="preserve"><value>Σύγκριση με τον ενεργό επεξεργαστή</value></data>
+  <data name="App_ContextMenu_CompareWithAnother" xml:space="preserve"><value>Σύγκριση με άλλο αρχείο…</value></data>
+  <data name="App_JumpList_RecentProjects" xml:space="preserve"><value>Πρόσφατα έργα</value></data>
+  <data name="App_JumpList_RecentFiles" xml:space="preserve"><value>Πρόσφατα αρχεία</value></data>
+
+  <data name="App_Workspace_NewTitle" xml:space="preserve"><value>Νέος χώρος εργασίας</value></data>
+  <data name="App_Workspace_NewFailed" xml:space="preserve"><value>Αποτυχία δημιουργίας χώρου εργασίας:{0}{1}</value></data>
+  <data name="App_Workspace_OpenTitle" xml:space="preserve"><value>Άνοιγμα χώρου εργασίας</value></data>
+  <data name="App_Workspace_OpenFailed" xml:space="preserve"><value>Αποτυχία ανοίγματος χώρου εργασίας:{0}{1}</value></data>
+  <data name="App_Workspace_SaveFailed" xml:space="preserve"><value>Αποτυχία αποθήκευσης χώρου εργασίας:{0}{1}</value></data>
+  <data name="App_Workspace_SaveAsTitle" xml:space="preserve"><value>Αποθήκευση χώρου εργασίας ως</value></data>
+  <data name="App_Workspace_CloseTitle" xml:space="preserve"><value>Κλείσιμο χώρου εργασίας</value></data>
+  <data name="App_Workspace_CloseSavePrompt" xml:space="preserve"><value>Αποθήκευση χώρου εργασίας '{0}' πριν το κλείσιμο;</value></data>
+
+  <data name="App_Debug_AttachTitle" xml:space="preserve"><value>Σύνδεση σε διεργασία</value></data>
+  <data name="App_Debug_AttachNotAvailable" xml:space="preserve"><value>Η υπηρεσία αποσφαλμάτωσης δεν είναι διαθέσιμη.</value></data>
+  <data name="App_Debug_AttachPidPrompt" xml:space="preserve"><value>Εισάγετε το αναγνωριστικό διεργασίας (PID) στο οποίο συνδέεστε:</value></data>
+  <data name="App_Debug_StartTitle" xml:space="preserve"><value>Έναρξη αποσφαλμάτωσης</value></data>
+  <data name="App_Debug_NoStartupProject" xml:space="preserve"><value>Δεν έχει οριστεί έργο εκκίνησης. Ορίστε έργο εκκίνησης πριν την αποσφαλμάτωση.</value></data>
+  <data name="App_Debug_BuildFailed" xml:space="preserve"><value>Αποτυχία μεταγλώττισης. Διορθώστε τα σφάλματα πριν την αποσφαλμάτωση.</value></data>
+  <data name="App_Debug_ExeNotFound" xml:space="preserve"><value>Αδύνατη η εύρεση του προγράμματος αποσφαλμάτωσης:{0}{1}{0}{0}Το έργο μεταγλωττίστηκε αλλά το εκτελέσιμο αρχείο δεν βρέθηκε.</value></data>
+
+  <data name="App_TblImport_Failed" xml:space="preserve"><value>Αποτυχία φόρτωσης αρχείου TBL:{0}{1}</value></data>
+
+  <data name="App_Extensions_SelectOutputDir" xml:space="preserve"><value>Επιλογή καταλόγου εξόδου επέκτασης</value></data>
+
+  <data name="App_Convert_Title" xml:space="preserve"><value>Μετατροπή μορφής λύσης</value></data>
+  <data name="App_Convert_NoSolution" xml:space="preserve"><value>Δεν υπάρχει ανοιχτή λύση.</value></data>
+  <data name="App_Convert_NotSln" xml:space="preserve"><value>Η τρέχουσα λύση δεν είναι αρχείο .sln.</value></data>
+  <data name="App_Convert_NotSlnx" xml:space="preserve"><value>Η τρέχουσα λύση δεν είναι αρχείο .slnx.</value></data>
+  <data name="App_Convert_AlreadyWhsln" xml:space="preserve"><value>Η τρέχουσα λύση είναι ήδη αρχείο .whsln.</value></data>
+  <data name="App_Convert_Confirm" xml:space="preserve"><value>Μετατροπή «{0}» → «{1}»;{2}{2}Το αρχικό αρχείο θα διατηρηθεί.</value></data>
+  <data name="App_Convert_NoLoader" xml:space="preserve"><value>Δεν βρέθηκε φορτωτής για τη μορφή {0}. Βεβαιωθείτε ότι το plugin VS Solution Loader είναι ενεργό.</value></data>
+  <data name="App_Convert_NoLoaderSimple" xml:space="preserve"><value>Δεν βρέθηκε φορτωτής για τη μορφή {0}.</value></data>
+  <data name="App_Convert_Success" xml:space="preserve"><value>Μετατράπηκε σε «{0}».{1}{1}Άνοιγμα της μετατραπείσας λύσης τώρα;</value></data>
+  <data name="App_Convert_Failed" xml:space="preserve"><value>Αποτυχία μετατροπής:{0}{1}</value></data>
+
+  <data name="App_Compare_SelectFile" xml:space="preserve"><value>Επιλογή αρχείου για σύγκριση</value></data>
+
+  <data name="App_Editor_HexEditor" xml:space="preserve"><value>Hex editor</value></data>
+  <data name="App_Editor_Encodings" xml:space="preserve"><value>Κωδικοποιήσεις</value></data>
+  <data name="App_Editor_ProjectTables" xml:space="preserve"><value>Πίνακες έργου</value></data>
+  <data name="App_Editor_FileNotFound" xml:space="preserve"><value>Το αρχείο δεν βρέθηκε:{0}{1}</value></data>
+  <data name="App_Editor_NewDocumentText" xml:space="preserve"><value>Αυτό είναι το έγγραφο: {0}{1}{1}Επεξεργαστείτε αυτό το κείμενο...</value></data>
+  <data name="App_Editor_RefreshPrefix" xml:space="preserve"><value>Ανανέωση: </value></data>
+
+  <data name="App_LSP_TryOpenFile" xml:space="preserve"><value>Δοκιμάστε να ανοίξετε απευθείας το αρχείο δήλωσης ή βεβαιωθείτε ότι ο διακομιστής LSP εκτελείται.</value></data>
+  <data name="App_LSP_LoadAssembly" xml:space="preserve"><value>Φορτώστε το assembly στον εξερευνητή assemblies για πρόσβαση στον αποσυμπιεσμένο κώδικα.</value></data>
+
+  <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve"><value>Το έργο δεν βρέθηκε.</value></data>
+  <data name="App_Breadcrumb_SolutionNotLoaded" xml:space="preserve"><value>Η λύση δεν φορτώθηκε.</value></data>
+
+  <data name="App_Debugger_AdapterNotFound" xml:space="preserve"><value>Ο adapter αποσφαλμάτωσης (netcoredbg) δεν βρέθηκε.{0}Εγκαταστήστε τον ή ορίστε τη διαδρομή του στο Επιλογές → Αποσφαλμάτωση.</value></data>
+  <data name="App_Debugger_AdapterMissing" xml:space="preserve"><value>Εγκαταστήστε το κατάλληλο plugin adapter ή ρυθμίστε έναν προσαρμοσμένο adapter.</value></data>
+  <data name="App_Debugger_Title" xml:space="preserve"><value>Αποσφαλμάτωση</value></data>
+
+  <data name="App_Toolbar_New" xml:space="preserve"><value>Νέο…</value></data>
+  <data name="App_Toolbar_Open" xml:space="preserve"><value>Άνοιγμα…</value></data>
+  <data name="App_Toolbar_Save" xml:space="preserve"><value>Αποθήκευση (Ctrl+S)</value></data>
+  <data name="App_Toolbar_SaveAll" xml:space="preserve"><value>Αποθήκευση όλων (Ctrl+Shift+S)</value></data>
+  <data name="App_Toolbar_Cut" xml:space="preserve"><value>Αποκοπή (Ctrl+X)</value></data>
+  <data name="App_Toolbar_Copy" xml:space="preserve"><value>Αντιγραφή (Ctrl+C)</value></data>
+  <data name="App_Toolbar_Paste" xml:space="preserve"><value>Επικόλληση (Ctrl+V)</value></data>
+  <data name="App_Toolbar_Find" xml:space="preserve"><value>Αναζήτηση… (Ctrl+F)</value></data>
+  <data name="App_Toolbar_FindNext" xml:space="preserve"><value>Επόμενο (F3)</value></data>
+  <data name="App_Toolbar_FindPrevious" xml:space="preserve"><value>Προηγούμενο (Shift+F3)</value></data>
+  <data name="App_Toolbar_SolutionExplorer" xml:space="preserve"><value>Εξερεύνηση λύσης (Ctrl+Alt+L)</value></data>
+  <data name="App_Toolbar_ParsedFields" xml:space="preserve"><value>Αναλυμένα πεδία</value></data>
+  <data name="App_Toolbar_Properties" xml:space="preserve"><value>Ιδιότητες (F4)</value></data>
+  <data name="App_Toolbar_Output" xml:space="preserve"><value>Έξοδος</value></data>
+  <data name="App_Toolbar_CharacterTable" xml:space="preserve"><value>Πίνακας χαρακτήρων</value></data>
+  <data name="App_Toolbar_ActiveCharTable" xml:space="preserve"><value>Ενεργός πίνακας χαρακτήρων</value></data>
+  <data name="App_Toolbar_BuildConfig" xml:space="preserve"><value>Ρύθμιση build</value></data>
+  <data name="App_Toolbar_TargetPlatform" xml:space="preserve"><value>Πλατφόρμα στόχου</value></data>
+  <data name="App_Toolbar_StartupProject" xml:space="preserve"><value>Έργο εκκίνησης — εκκινείται με ▶ Έναρξη (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_StartNoDebug" xml:space="preserve"><value>Έναρξη χωρίς αποσφαλμάτωση (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_BuildSolution" xml:space="preserve"><value>Δημιουργία λύσης (Ctrl+Shift+B)</value></data>
+  <data name="App_Toolbar_RebuildSolution" xml:space="preserve"><value>Αναδημιουργία λύσης</value></data>
+  <data name="App_Toolbar_CleanSolution" xml:space="preserve"><value>Εκκαθάριση λύσης</value></data>
+  <data name="App_Toolbar_CancelBuild" xml:space="preserve"><value>Ακύρωση δημιουργίας</value></data>
+  <data name="App_Toolbar_Continue" xml:space="preserve"><value>Συνέχεια (F5)</value></data>
+  <data name="App_Toolbar_Pause" xml:space="preserve"><value>Παύση</value></data>
+  <data name="App_Toolbar_StopDebugging" xml:space="preserve"><value>Διακοπή αποσφαλμάτωσης (Shift+F5)</value></data>
+  <data name="App_Toolbar_StepOver" xml:space="preserve"><value>Βήμα πάνω (F10)</value></data>
+  <data name="App_Toolbar_StepInto" xml:space="preserve"><value>Βήμα μέσα (F11)</value></data>
+  <data name="App_Toolbar_StepOut" xml:space="preserve"><value>Βήμα έξω (Shift+F11)</value></data>
+  <data name="App_Toolbar_Dismiss" xml:space="preserve"><value>Απόρριψη</value></data>
+  <data name="App_Toolbar_CancelOperation" xml:space="preserve"><value>Ακύρωση λειτουργίας</value></data>
+  <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>Κλικ για αλλαγή κλαδιού</value></data>
+  <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>Μη υποβληθείσες αλλαγές</value></data>
+  <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>Διαθέσιμες ενημερώσεις plugins — κλικ για άνοιγμα του Marketplace</value></data>
+
+  <data name="App_Error" xml:space="preserve"><value>Σφάλμα</value></data>
+  <data name="App_SaveAs" xml:space="preserve"><value>Αποθήκευση ως</value></data>
+  <data name="App_AddExistingItem" xml:space="preserve"><value>Προσθήκη υπάρχοντος στοιχείου</value></data>
+  <data name="App_PanelOptions" xml:space="preserve"><value>Επιλογές</value></data>
+  <data name="App_PanelFormatCatalog" xml:space="preserve"><value>Κατάλογος μορφών</value></data>
+  <data name="App_SelectEntropyFile" xml:space="preserve"><value>Επιλογή αρχείου για ανάλυση εντροπίας</value></data>
+  <data name="App_RemoveFolderMessage" xml:space="preserve"><value>Αφαίρεση φακέλου «{0}» από το έργο;{1}Τα στοιχεία εντός θα διατηρηθούν στη ρίζα του έργου. Ο φυσικός κατάλογος δεν θα διαγραφεί.</value></data>
+  <data name="App_RemoveSolutionFolderMessage" xml:space="preserve"><value>Αφαίρεση φακέλου λύσης «{0}»;{1}Τα έργα εντός θα διατηρηθούν στη ρίζα της λύσης.</value></data>
+  <data name="App_ImportIntoProject" xml:space="preserve"><value>Εισαγωγή στο έργο</value></data>
+  <data name="App_ImportIntoProjectMessage" xml:space="preserve"><value>Αντιγραφή «{0}» στον κατάλογο του έργου;{1}{2}{1}Το αρχικό αρχείο δεν θα διαγραφεί.</value></data>
+  <data name="App_FailedCreateProject" xml:space="preserve"><value>Αποτυχία δημιουργίας έργου:{0}{1}</value></data>
+  <data name="App_FailedCreateFile" xml:space="preserve"><value>Αποτυχία δημιουργίας αρχείου:{0}{1}</value></data>
+  <data name="App_FailedLoadLayout" xml:space="preserve"><value>Αποτυχία φόρτωσης διάταξης:{0}{1}</value></data>
+  <data name="App_FailedWriteTblx" xml:space="preserve"><value>Αποτυχία εγγραφής αρχείου TBLX:{0}{1}</value></data>
+  <data name="App_CompareWithHead" xml:space="preserve"><value>Σύγκριση με HEAD</value></data>
+  <data name="App_CompareWithHeadNoRepo" xml:space="preserve"><value>Δεν βρέθηκε αποθετήριο git για αυτό το αρχείο.</value></data>
+  <data name="App_CompareWithHeadNoVersion" xml:space="preserve"><value>Αδύνατη η εξαγωγή της έκδοσης HEAD από το git.</value></data>
+  <data name="App_UpgradeMessagePattern" xml:space="preserve"><value>Τα παρακάτω αρχεία χρησιμοποιούν παλιά μορφή (v{0}) που θα αναβαθμιστεί σε v{1}:{2}{2}  • {3}{2}{2}Θα δημιουργηθεί αντίγραφο ασφαλείας (.v{0}.bak) για κάθε αρχείο.{2}{2}Αναβάθμιση τώρα;</value></data>
+  <data name="App_UpgradeFailedMessage" xml:space="preserve"><value>Αποτυχία αναβάθμισης: {0}</value></data>
+  <data name="App_InfoBar_Disable" xml:space="preserve"><value>Απενεργοποίηση</value></data>
+  <data name="App_InfoBar_Restart" xml:space="preserve"><value>Επανεκκίνηση</value></data>
+  <data name="App_InfoBar_Ignore" xml:space="preserve"><value>Αγνόηση</value></data>
+  <data name="App_InfoBar_Reload" xml:space="preserve"><value>Επαναφόρτωση</value></data>
+  <data name="App_InfoBar_KeepEdits" xml:space="preserve"><value>Διατήρηση των αλλαγών μου</value></data>
+
+  <data name="App_Options_ClearAll" xml:space="preserve"><value>Εκκαθάριση όλων</value></data>
+  <data name="App_Options_ResetToDefaults" xml:space="preserve"><value>Επαναφορά προεπιλογών</value></data>
+  <data name="App_Options_ClearHistory" xml:space="preserve"><value>Εκκαθάριση ιστορικού</value></data>
+  <data name="App_Options_Save" xml:space="preserve"><value>Αποθήκευση</value></data>
+  <data name="App_Options_Browse" xml:space="preserve"><value>Αναζήτηση…</value></data>
+  <data name="App_Options_SavedComparisons" xml:space="preserve"><value>αποθηκευμένες συγκρίσεις</value></data>
+  <data name="App_Options_ShowMinimap" xml:space="preserve"><value>Εμφάνιση minimap</value></data>
+  <data name="App_Options_HighlightCharDiff" xml:space="preserve"><value>Επισήμανση διαφορών χαρακτήρων σε τροποποιημένες γραμμές (≤ 500 χαρ.)</value></data>
+  <data name="App_Options_CollapseIdentical" xml:space="preserve"><value>Σύμπτυξη πανομοιότυπων περιοχών</value></data>
+  <data name="App_Options_StopAtEntry" xml:space="preserve"><value>Διακοπή στο σημείο εισόδου του προγράμματος (Main)</value></data>
+  <data name="App_Options_ShowReturnValues" xml:space="preserve"><value>Εμφάνιση τιμών επιστροφής στις Τοπικές μεταβλητές μετά από κάθε βήμα</value></data>
+  <data name="App_Options_HighlightBreakpoints" xml:space="preserve"><value>Επισήμανση γραμμών σημείου διακοπής στον επεξεργαστή (κόκκινη/πορτοκαλί/γκρι απόχρωση)</value></data>
+  <data name="App_Options_AutoImportBreakpoints" xml:space="preserve"><value>Αυτόματη εισαγωγή σημείων διακοπής VS κατά το πρώτο άνοιγμα λύσης</value></data>
+  <data name="App_Options_AutoExportBreakpoints" xml:space="preserve"><value>Αυτόματη εξαγωγή σημείων διακοπής σε XML VS κατά την αποθήκευση</value></data>
+  <data name="App_Options_DetectExternalChanges" xml:space="preserve"><value>Εντοπισμός εξωτερικών αλλαγών αρχείων στο IDE</value></data>
+  <data name="App_Options_AutoReload" xml:space="preserve"><value>Αυτόματη επαναφόρτωση τροποποιημένων αρχείων χωρίς επιβεβαίωση</value></data>
+  <data name="App_Options_EnableDockAnimations" xml:space="preserve"><value>Ενεργοποίηση κινούμενων σχεδίων αγκύρωσης</value></data>
+  <data name="App_Options_WrapTabs" xml:space="preserve"><value>Κατανομή καρτελών σε πολλές γραμμές</value></data>
+  <data name="App_Options_ScrollTabRows" xml:space="preserve"><value>Κύλιση σειρών καρτελών με τον τροχό</value></data>
+  <data name="App_Options_EnableTabPreview" xml:space="preserve"><value>Ενεργοποίηση προεπισκόπησης καρτελών κατά την τοποθέτηση δείκτη</value></data>
+  <data name="App_Options_ShowFilenameFooter" xml:space="preserve"><value>Εμφάνιση ονόματος αρχείου στο υποσέλιδο</value></data>
+  <data name="App_Options_RestoreSolution" xml:space="preserve"><value>Επαναφορά λύσης</value></data>
+  <data name="App_Options_RestoreTabs" xml:space="preserve"><value>Επαναφορά ανοιχτών καρτελών επεξεργαστή</value></data>
+  <data name="App_Options_RestoreTheme" xml:space="preserve"><value>Επαναφορά θέματος</value></data>
+  <data name="App_Options_PromptSaveWorkspace" xml:space="preserve"><value>Ερώτηση αποθήκευσης χώρου εργασίας πριν το κλείσιμο</value></data>
+  <data name="App_Options_EnableTabPreviewHover" xml:space="preserve"><value>Ενεργοποίηση προεπισκόπησης καρτελών κατά την τοποθέτηση δείκτη</value></data>
+  <data name="App_Options_ShowFileNameBelowPreview" xml:space="preserve"><value>Εμφάνιση ονόματος αρχείου κάτω από την προεπισκόπηση</value></data>
+  <data name="App_Options_KbCategory" xml:space="preserve"><value>Κατηγορία</value></data>
+  <data name="App_Options_KbCommand" xml:space="preserve"><value>Εντολή</value></data>
+  <data name="App_Options_KbDefault" xml:space="preserve"><value>Προεπιλογή</value></data>
+  <data name="App_Options_KbShortcut" xml:space="preserve"><value>Συντόμευση</value></data>
+  <data name="App_Options_LspEnabled" xml:space="preserve"><value>Ενεργοποιημένο</value></data>
+  <data name="App_Options_LspLanguageId" xml:space="preserve"><value>ID γλώσσας</value></data>
+  <data name="App_Options_LspExtensions" xml:space="preserve"><value>Επεκτάσεις</value></data>
+  <data name="App_Options_LspExecutable" xml:space="preserve"><value>Εκτελέσιμο</value></data>
+  <data name="App_Options_LspArguments" xml:space="preserve"><value>Ορίσματα</value></data>
+  <data name="App_Options_LspSource" xml:space="preserve"><value>Πηγή</value></data>
+  <data name="App_Options_AllSettings" xml:space="preserve"><value>Όλες οι ρυθμίσεις</value></data>
+  <data name="App_Options_ResetOverrides" xml:space="preserve"><value>Επαναφορά αντικαταστάσεων</value></data>
+  <data name="App_Options_ResetAllOverrides" xml:space="preserve"><value>Επαναφορά όλων των αντικαταστάσεων</value></data>
+  <data name="App_Options_DockedPanel" xml:space="preserve"><value>Αγκυρωμένος πίνακας (προεπιλογή)</value></data>
+  <data name="App_Options_InlinePopup" xml:space="preserve"><value>Ενσωματωμένο αναδυόμενο παράθυρο</value></data>
+  <data name="App_Options_CommandsDefault" xml:space="preserve"><value>Εντολές (προεπιλογή)</value></data>
+  <data name="App_Options_LspNotActive" xml:space="preserve"><value>LSP ανενεργό</value></data>
+  <data name="App_Options_LspTypeToSearch" xml:space="preserve"><value>Πληκτρολογήστε για αναζήτηση συμβόλων χώρου εργασίας</value></data>
+  <data name="App_Options_LspSearching" xml:space="preserve"><value>Αναζήτηση σε εξέλιξη…</value></data>
+
+  <data name="App_Lsp_CppNotInstalled" xml:space="preserve"><value>Ο διακομιστής LSP C/C++ δεν είναι εγκατεστημένος</value></data>
+  <data name="App_Lsp_ClangdReady" xml:space="preserve"><value>clangd έτοιμο</value></data>
+  <data name="App_Lsp_ClangdFailed" xml:space="preserve"><value>Αποτυχία λήψης clangd</value></data>
+  <data name="App_Welcome_ChangelogUnavailable" xml:space="preserve"><value>Το αρχείο καταγραφής αλλαγών δεν είναι διαθέσιμο — ελέγξτε τη σύνδεσή σας.</value></data>
+  <data name="App_Welcome_VersionDev" xml:space="preserve"><value>Έκδοση ανάπτυξης</value></data>
+  <data name="App_ViewMenu_OrganizeBy" xml:space="preserve"><value>Ο_ργάνωση κατά…</value></data>
+  <data name="App_ViewMenu_Flat" xml:space="preserve"><value>_Επίπεδη (κλασική)</value></data>
+  <data name="App_ViewMenu_Categorized" xml:space="preserve"><value>Ανά _κατηγορία</value></data>
+  <data name="App_ViewMenu_ByDockSide" xml:space="preserve"><value>Ανά πλευρά _αγκύρωσης</value></data>
+  <data name="App_ViewMenu_PinToViewMenu" xml:space="preserve"><value>_Καρφίτσωμα στο μενού Προβολή</value></data>
+  <data name="App_ViewMenu_UnpinFromViewMenu" xml:space="preserve"><value>_Ξεκαρφίτσωμα από το μενού Προβολή</value></data>
+  <data name="App_InfoBar_HexEditor" xml:space="preserve"><value>Hex editor</value></data>
+  <data name="App_Notifications_Title" xml:space="preserve"><value>Ειδοποιήσεις</value></data>
+  <data name="App_Notifications_Empty" xml:space="preserve"><value>Δεν υπάρχουν ειδοποιήσεις</value></data>
+  <data name="App_Notifications_ClearAll" xml:space="preserve"><value>Εκκαθάριση όλων</value></data>
+  <data name="App_SourceFiles_SelectFolder" xml:space="preserve"><value>Επιλογή φακέλου πηγαίων αρχείων</value></data>
+  <data name="App_ConfigPage_BuildAll" xml:space="preserve"><value>Δημιουργία όλων</value></data>
+  <data name="App_ConfigPage_DeployAll" xml:space="preserve"><value>Ανάπτυξη όλων</value></data>
+  <data name="App_StartupProjects_CurrentSelection" xml:space="preserve"><value>Τρέχουσα επιλογή</value></data>
+  <data name="App_StartupProjects_SingleProject" xml:space="preserve"><value>Μεμονωμένο έργο εκκίνησης:</value></data>
+  <data name="App_StartupProjects_MultipleProjects" xml:space="preserve"><value>Πολλαπλά έργα εκκίνησης:</value></data>
+  <data name="App_StartupProjects_LaunchProfiles" xml:space="preserve"><value>Προφίλ εκκίνησης</value></data>
+  <data name="App_Options_SelectDebugAdapter" xml:space="preserve"><value>Επιλογή εκτελέσιμου adapter αποσφαλμάτωσης</value></data>
+  <data name="App_Options_SelectLspExecutable" xml:space="preserve"><value>Επιλογή εκτελέσιμου διακομιστή LSP</value></data>
+  <data name="App_Lsp_ErrorTitle" xml:space="preserve"><value>Σφάλμα LSP</value></data>
+
+  <data name="App_ViewMenu_SortAlphabetical"      xml:space="preserve"><value>Αλφαβητική</value></data>
+  <data name="App_ViewMenu_SortByFrequency"       xml:space="preserve"><value>Κατά συχνότητα</value></data>
+  <data name="App_ViewMenu_SortCustom"            xml:space="preserve"><value>Προσαρμοσμένη</value></data>
+
+  <data name="App_Tabs_PositionTop"               xml:space="preserve"><value>Πάνω</value></data>
+  <data name="App_Tabs_PositionLeft"              xml:space="preserve"><value>Αριστερά</value></data>
+  <data name="App_Tabs_PositionRight"             xml:space="preserve"><value>Δεξιά</value></data>
+  <data name="App_Tabs_PositionNone"              xml:space="preserve"><value>Καμία</value></data>
+
+  <data name="App_Tabs_GroupByProject"            xml:space="preserve"><value>Ανά έργο</value></data>
+  <data name="App_Tabs_GroupByExtension"          xml:space="preserve"><value>Ανά επέκταση αρχείου</value></data>
+  <data name="App_Tabs_GroupByRegex"              xml:space="preserve"><value>Ανά κανόνα regex</value></data>
+
+  <data name="App_Docking_ShadowNone"             xml:space="preserve"><value>Καμία</value></data>
+  <data name="App_Docking_ShadowTopBar"           xml:space="preserve"><value>Επάνω μπάρα</value></data>
+  <data name="App_Docking_ShadowFullBorder"       xml:space="preserve"><value>Πλήρες περίγραμμα</value></data>
+  <data name="App_Docking_ShadowGlow"             xml:space="preserve"><value>Λάμψη</value></data>
+
+  <data name="App_Docking_CornerNormal"           xml:space="preserve"><value>Κανονικό (αιχμηρές γωνίες)</value></data>
+  <data name="App_Docking_CornerRoundedContent"   xml:space="preserve"><value>Στρογγυλεμένο — μόνο περιοχή περιεχομένου</value></data>
+  <data name="App_Docking_CornerRoundedFull"      xml:space="preserve"><value>Στρογγυλεμένο — πλήρες πλαίσιο πίνακα</value></data>
+
+  <data name="App_Comparison_ModeSideBySide"      xml:space="preserve"><value>Δίπλα-δίπλα</value></data>
+  <data name="App_Comparison_ModeInline"          xml:space="preserve"><value>Ενσωματωμένο</value></data>
+  <data name="App_Comparison_ModeHexText"         xml:space="preserve"><value>HexΚείμενο</value></data>
+
+  <data name="App_CodeEditor_MinimapRight"        xml:space="preserve"><value>Δεξιά</value></data>
+  <data name="App_CodeEditor_MinimapLeft"         xml:space="preserve"><value>Αριστερά</value></data>
+
+  <data name="App_CodeEditor_MinimapProportional" xml:space="preserve"><value>Αναλογικό</value></data>
+  <data name="App_CodeEditor_MinimapFill"         xml:space="preserve"><value>Γέμισμα</value></data>
+  <data name="App_CodeEditor_MinimapFit"          xml:space="preserve"><value>Προσαρμογή</value></data>
+
+  <data name="App_GoTo_EnterOffset" xml:space="preserve"><value>Εισάγετε offset.</value></data>
+  <data name="App_GoTo_InvalidHex" xml:space="preserve"><value>Μη έγκυρη hex τιμή.</value></data>
+  <data name="App_GoTo_InvalidDecimal" xml:space="preserve"><value>Μη έγκυρη δεκαδική τιμή.</value></data>
+  <data name="App_GoTo_OffsetNonNegative" xml:space="preserve"><value>Το offset πρέπει να είναι μη αρνητικό.</value></data>
+
+  <data name="App_PasteConflict_EnterFileName" xml:space="preserve"><value>Εισάγετε όνομα αρχείου.</value></data>
+  <data name="App_PasteConflict_InvalidChars" xml:space="preserve"><value>Το όνομα περιέχει μη έγκυρους χαρακτήρες.</value></data>
+  <data name="APP_QuickActionsSection" xml:space="preserve">
+    <value>QUICK ACTIONS</value>
+  </data>
+  <data name="APP_NewFileButton" xml:space="preserve">
+    <value>New File</value>
+  </data>
+  <data name="APP_OpenFileButton" xml:space="preserve">
+    <value>Open File…</value>
+  </data>
+  <data name="APP_OpenProjectButton" xml:space="preserve">
+    <value>Open Project / Solution…</value>
+  </data>
+  <data name="APP_OptionsButton" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="APP_RecentSection" xml:space="preserve">
+    <value>RECENT</value>
+  </data>
+  <data name="APP_NoRecentFiles" xml:space="preserve">
+    <value>No recent files</value>
+  </data>
+  <data name="APP_RecentProjectsSection" xml:space="preserve">
+    <value>RECENT PROJECTS</value>
+  </data>
+  <data name="APP_NoRecentProjects" xml:space="preserve">
+    <value>No recent projects</value>
+  </data>
+  <data name="APP_ResourcesSection" xml:space="preserve">
+    <value>RESOURCES</value>
+  </data>
+  <data name="APP_GitHubLink" xml:space="preserve">
+    <value>GitHub Repository ↗</value>
+  </data>
+  <data name="APP_WikiLink" xml:space="preserve">
+    <value>Wiki ↗</value>
+  </data>
+  <data name="APP_ReportIssueLink" xml:space="preserve">
+    <value>Report an Issue ↗</value>
+  </data>
+  <data name="APP_WhatsNewSection" xml:space="preserve">
+    <value>WHAT'S NEW</value>
+  </data>
+  <data name="APP_LoadingChangelog" xml:space="preserve">
+    <value>Loading changelog…</value>
+  </data>
+  <data name="APP_ChangelogNotAvailable" xml:space="preserve">
+    <value>Changelog not available.</value>
+  </data>
+  <data name="APP_GitHubButton" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="APP_WikiButton" xml:space="preserve">
+    <value>Wiki</value>
+  </data>
+  <data name="APP_ReportIssueButton" xml:space="preserve">
+    <value>Report Issue</value>
+  </data>
+  <data name="APP_FullChangelogButton" xml:space="preserve">
+    <value>Full Changelog</value>
+  </data>
+  <data name="APP_Dismiss" xml:space="preserve"><value>Κλείσιμο</value></data>
+  <data name="APP_ViewIn" xml:space="preserve"><value>Προβολή σε:</value></data>
+  <data name="APP_UnsavedChanges" xml:space="preserve"><value>Μη αποθηκευμένες αλλαγές</value></data>
+  <data name="APP_ReadOnly" xml:space="preserve"><value>Μόνο ανάγνωση</value></data>
+  <data name="APP_ExtensionSystem" xml:space="preserve"><value>ΣΥΣΤΗΜΑ ΕΠΕΚΤΑΣΕΩΝ</value></data>
+  <data name="APP_SlowBadge" xml:space="preserve"><value>ΑΡΓΟ</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>Αντιγραφή</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>Επιλογή όλων</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>Αποθήκευση εξόδου ως...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>Αντιγραφή όλων</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>Εκκαθάριση όλων</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>Εναλλαγή αναδίπλωσης λέξεων</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>Εναλλαγή αυτόματης κύλισης</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>Αναζήτηση</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>Εξερεύνηση</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>Έναρξη</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>Δημιουργία</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>Αναδημιουργία</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>Εκκαθάριση</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>Διακοπή</value></data>
+  <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>Ενσωματωμένοι πίνακες</value></data>
+  <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>Προεπιλογή (ASCII)</value></data>
+  <data name="APP_InstallEllipsis" xml:space="preserve"><value>Εγκατάσταση...</value></data>
+  <data name="APP_DBG_StartDebugging" xml:space="preserve"><value>Start _Debugging</value></data>
+  <data name="APP_DBG_StartWithoutDebugging" xml:space="preserve"><value>Start _Without Debugging</value></data>
+  <data name="APP_DBG_StopDebugging" xml:space="preserve"><value>S_top Debugging</value></data>
+  <data name="APP_DBG_Restart" xml:space="preserve"><value>_Restart</value></data>
+  <data name="APP_DBG_Continue" xml:space="preserve"><value>_Continue</value></data>
+  <data name="APP_DBG_Pause" xml:space="preserve"><value>_Pause</value></data>
+  <data name="APP_DBG_AttachToProcess" xml:space="preserve"><value>_Attach to Process…</value></data>
+  <data name="APP_DBG_StepOver" xml:space="preserve"><value>Step _Over</value></data>
+  <data name="APP_DBG_StepInto" xml:space="preserve"><value>Step _Into</value></data>
+  <data name="APP_DBG_StepOut" xml:space="preserve"><value>Step O_ut</value></data>
+  <data name="APP_DBG_ToggleBreakpoint" xml:space="preserve"><value>Toggle _Breakpoint</value></data>
+  <data name="APP_DBG_DeleteAllBreakpoints" xml:space="preserve"><value>_Delete All Breakpoints</value></data>
+  <data name="APP_DBG_ShowBreakpoints" xml:space="preserve"><value>Show _Breakpoints</value></data>
+  <data name="APP_DBG_ShowCallStack" xml:space="preserve"><value>Show _Call Stack</value></data>
+  <data name="APP_DBG_ShowLocals" xml:space="preserve"><value>Show _Locals</value></data>
+  <data name="APP_DBG_ShowWatch" xml:space="preserve"><value>Show _Watch</value></data>
+  <data name="APP_VM_CommandPalette" xml:space="preserve"><value>_Command Palette</value></data>
+  <data name="APP_VM_SolutionExplorer" xml:space="preserve"><value>_Solution Explorer</value></data>
+  <data name="APP_VM_Properties" xml:space="preserve"><value>_Properties</value></data>
+  <data name="APP_VM_Output" xml:space="preserve"><value>_Output</value></data>
+  <data name="APP_VM_ErrorList" xml:space="preserve"><value>_Error List</value></data>
+  <data name="APP_VM_Terminal" xml:space="preserve"><value>_Terminal</value></data>
+  <data name="APP_VM_MarkdownOutline" xml:space="preserve"><value>_Markdown Outline</value></data>
+  <data name="APP_VM_CompareFiles" xml:space="preserve"><value>_Compare Files…</value></data>
+  <data name="APP_VM_FormatBrowser" xml:space="preserve"><value>_Format Browser</value></data>
+  <data name="APP_VM_FormatCatalog" xml:space="preserve"><value>_Format Catalog</value></data>
+  <data name="APP_VM_EntropyAnalysis" xml:space="preserve"><value>_Entropy Analysis…</value></data>
+  <data name="APP_VM_TipMarkdown" xml:space="preserve"><value>Show Markdown Outline panel (heading navigator)</value></data>
+  <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Browse and manage built-in and user .whfmt format definitions</value></data>
+  <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Open the Format Catalog document tab (all formats in a sortable grid)</value></data>
+  <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyse entropy and byte distribution of the active file</value></data>
+</root>

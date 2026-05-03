@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.PluginDev
+    File        : Properties/PluginDevResources.cs-CZ.resx
+    Description : PluginDev-specific UI strings — Czech (Czech Republic) satellite.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- NewPluginWizardWindow -->
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>Nový projekt rozšíření</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Vyberte výstupní adresář pro projekt pluginu</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>Oprávnění</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>Režim izolace</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>Priorita načítání (10–90)&#160;:</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>Další &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>Vytvořit a otevřít</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>Plugin vytvořen</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+
+  <!-- PluginPackagePublisherDialog -->
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>Publikovat balíček rozšíření</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>Podepsat balíček před publikováním</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Procházet…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>Otevřít výstupní složku v průzkumníku</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>Zabalit</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>Zavřít</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>Vybrat výstupní adresář</value>
+  </data>
+
+  <!-- PluginDevLogPanel -->
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>Exportovat vývojový protokol rozšíření</value>
+  </data>
+
+  <!-- PluginMarketplacePanel -->
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>Hledat</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>Procházet</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>Nainstalované</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>Aktualizovat vše</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>Aktualizace</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>Tržiště rozšíření</value>
+  </data>
+
+  <!-- PluginDevToolbar -->
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>Rozšíření&#160;:</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>Konfig&#160;:</value>
+  </data>
+
+  <!-- PanelPluginTemplate -->
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>Připraveno</value>
+  </data>
+
+  <!-- PluginMarketplacePanel toolbar and column headers -->
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>Obnovit</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>Název</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>Autor</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>Verze</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>Hodnocení</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>Stahování</value>
+  </data>
+
+</root>

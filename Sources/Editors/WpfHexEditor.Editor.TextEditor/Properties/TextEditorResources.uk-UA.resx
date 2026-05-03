@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="TextEditor_LanguageLabelPlainText" xml:space="preserve">
+    <value>Звичайний текст</value>
+  </data>
+  <data name="TextEditor_StatusBarCaretPosition" xml:space="preserve">
+    <value>Рядок 1, Стовп 1</value>
+  </data>
+  <data name="TextEditor_StatusBarEncoding" xml:space="preserve">
+    <value>UTF-8</value>
+  </data>
+
+  <data name="TextEd_Menu_Cut" xml:space="preserve">
+    <value>_Вирізати</value>
+  </data>
+  <data name="TextEd_Menu_Copy" xml:space="preserve">
+    <value>_Копіювати</value>
+  </data>
+  <data name="TextEd_Menu_Paste" xml:space="preserve">
+    <value>_Вставити</value>
+  </data>
+  <data name="TextEd_Menu_Undo" xml:space="preserve">
+    <value>_Скасувати</value>
+  </data>
+  <data name="TextEd_Menu_Redo" xml:space="preserve">
+    <value>_Повторити</value>
+  </data>
+  <data name="TextEd_Menu_SelectAll" xml:space="preserve">
+    <value>Вибрати _все</value>
+  </data>
+  <data name="TextEd_Menu_Delete" xml:space="preserve">
+    <value>_Видалити</value>
+  </data>
+  <data name="TextEd_Menu_ShowWhitespace" xml:space="preserve">
+    <value>Показати _пробіли</value>
+  </data>
+  <data name="TextEd_Menu_WrapNone" xml:space="preserve">
+    <value>Немає</value>
+  </data>
+  <data name="TextEd_Menu_WrapSelectionOnly" xml:space="preserve">
+    <value>Лише виділення</value>
+  </data>
+  <data name="TextEd_Menu_WrapAlways" xml:space="preserve">
+    <value>Завжди</value>
+  </data>
+  <data name="TextEd_Status_Opening" xml:space="preserve">
+    <value>Відкривається</value>
+  </data>
+
+  <data name="TeSb_EncodingLabel" xml:space="preserve">
+    <value>Кодування</value>
+  </data>
+  <data name="TeSb_EncodingTooltip" xml:space="preserve">
+    <value>Кодування файлу</value>
+  </data>
+  <data name="TeSb_LanguageLabel" xml:space="preserve">
+    <value>Мова</value>
+  </data>
+  <data name="TeSb_LanguageTooltip" xml:space="preserve">
+    <value>Активна мова синтаксису</value>
+  </data>
+  <data name="TeSb_PositionLabel" xml:space="preserve">
+    <value>Позиція</value>
+  </data>
+  <data name="TeSb_PositionTooltip" xml:space="preserve">
+    <value>Рядок і стовпець курсора</value>
+  </data>
+  <data name="TeSb_RefreshLabel" xml:space="preserve">
+    <value>Оновити</value>
+  </data>
+  <data name="TeSb_RefreshTooltip" xml:space="preserve">
+    <value>Час рендеринга в мілісекундах</value>
+  </data>
+  <data name="TeSb_ZoomLabel" xml:space="preserve">
+    <value>Масштаб</value>
+  </data>
+  <data name="TeSb_ZoomTooltip" xml:space="preserve">
+    <value>Рівень масштабу редактора</value>
+  </data>
+</root>

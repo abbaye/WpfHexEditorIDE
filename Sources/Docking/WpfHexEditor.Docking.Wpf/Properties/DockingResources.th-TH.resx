@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Docking_TabSettings_Title" xml:space="preserve">
+    <value>ตัวเลือกแท็บเอกสาร</value>
+  </data>
+  <data name="Docking_TabSettings_TabStripPlacement" xml:space="preserve">
+    <value>ตำแหน่งแถบแท็บ</value>
+  </data>
+  <data name="Docking_TabSettings_Top" xml:space="preserve">
+    <value>ด้านบน (ค่าเริ่มต้น)</value>
+  </data>
+  <data name="Docking_TabSettings_Left" xml:space="preserve">
+    <value>ด้านซ้าย</value>
+  </data>
+  <data name="Docking_TabSettings_Right" xml:space="preserve">
+    <value>ด้านขวา</value>
+  </data>
+  <data name="Docking_TabSettings_ColorBy" xml:space="preserve">
+    <value>กำหนดสีแท็บเอกสารตาม</value>
+  </data>
+  <data name="Docking_TabSettings_NoColorization" xml:space="preserve">
+    <value>ไม่มีการกำหนดสี</value>
+  </data>
+  <data name="Docking_TabSettings_FileExtension" xml:space="preserve">
+    <value>นามสกุลไฟล์</value>
+  </data>
+  <data name="Docking_TabSettings_Project" xml:space="preserve">
+    <value>Projet</value>
+  </data>
+  <data name="Docking_TabSettings_RegexRules" xml:space="preserve">
+    <value>กฎ regex</value>
+  </data>
+  <data name="Docking_TabSettings_RegexFirstMatch" xml:space="preserve">
+    <value>กฎ regex — รายการที่ตรงกันแรกชนะ:</value>
+  </data>
+  <data name="Docking_TabSettings_PatternColumn" xml:space="preserve">
+    <value>รูปแบบ (regex)</value>
+  </data>
+  <data name="Docking_TabSettings_ColorColumn" xml:space="preserve">
+    <value>สี</value>
+  </data>
+  <data name="Docking_TabSettings_HexColorTooltip" xml:space="preserve">
+    <value>ป้อนสี hex: #RRGGBB หรือ #AARRGGBB</value>
+  </data>
+  <data name="Docking_TabSettings_PressDelete" xml:space="preserve">
+    <value>กด Del เพื่อลบแถวที่เลือก</value>
+  </data>
+  <data name="Docking_TabSettings_TabRows" xml:space="preserve">
+    <value>แถวแท็บ</value>
+  </data>
+  <data name="Docking_TabSettings_ShowMultipleRows" xml:space="preserve">
+    <value>แสดงแท็บบนหลายแถว</value>
+  </data>
+  <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve">
+    <value>สลับแถวด้วยล้อเมาส์</value>
+  </data>
+
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve">
+    <value>ขยาย</value>
+  </data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve">
+    <value>คืนค่า</value>
+  </data>
+  <data name="Dock_LSP_Connecting" xml:space="preserve">
+    <value>เซิร์ฟเวอร์ภาษา: กำลังเชื่อมต่อ…</value>
+  </data>
+  <data name="Dock_LSP_Ready" xml:space="preserve">
+    <value>เซิร์ฟเวอร์ภาษา: พร้อม</value>
+  </data>
+  <data name="Dock_LSP_Error" xml:space="preserve">
+    <value>เซิร์ฟเวอร์ภาษา: ข้อผิดพลาด</value>
+  </data>
+  <data name="Dock_AutoHide_Show" xml:space="preserve">
+    <value>แสดง</value>
+  </data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve">
+    <value>ลอย</value>
+  </data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve">
+    <value>ปิด</value>
+  </data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve">
+    <value>ยึด</value>
+  </data>
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve">
+    <value>กำหนดสีแท็บเอกสารตาม</value>
+  </data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve">
+    <value>ตัวเลือก…</value>
+  </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>แสดงแท็บบนหลายบรรทัด</value>
+  </data>
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>กลุ่มแท็บแนวตั้งใหม่</value>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>กลุ่มแท็บแนวนอนใหม่</value>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>ปิดกลุ่มแท็บ</value>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>ลอย</value>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>ยึดเป็นเอกสารแบบแท็บ</value>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>ยึดเป็นหน้าต่างเครื่องมือ</value>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>ซ่อน</value>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>ปิดทั้งหมด</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>ปิดทั้งหมดยกเว้นนี้</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>ปิดทั้งหมดยกเว้นที่ปักหมุด</value>
+  </data>
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>เปิดเอกสารเพื่อเริ่มต้น</value>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>เริ่ม</value>
+  </data>
+</root>

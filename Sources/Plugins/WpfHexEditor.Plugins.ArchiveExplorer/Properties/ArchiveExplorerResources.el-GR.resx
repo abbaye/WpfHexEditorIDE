@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.ArchiveExplorer
+    File        : ArchiveExplorerResources.el-GR.resx
+    Description : Greek (Greece) translations for the Archive Explorer plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="ArchiveExplorer_PluginName" xml:space="preserve">
+    <value>Εξερευνητής αρχειοθήκης</value>
+  </data>
+
+  <data name="ArchiveExplorer_OpenArchive" xml:space="preserve">
+    <value>Άνοιγμα αρχειοθήκης</value>
+  </data>
+
+  <data name="ArchiveExplorer_SelectExtractFolder" xml:space="preserve">
+    <value>Επιλογή προεπιλεγμένου φακέλου εξαγωγής</value>
+  </data>
+
+  <data name="AE_ExtractAll" xml:space="preserve"><value>Εξαγωγή όλων…</value></data>
+  <data name="AE_ExtractSelected" xml:space="preserve"><value>Εξαγωγή επιλογής…</value></data>
+  <data name="AE_Preview" xml:space="preserve"><value>Προεπισκόπηση</value></data>
+  <data name="AE_OpenRawInHex" xml:space="preserve"><value>Άνοιγμα ακατέργαστων δεδομένων στο Hex</value></data>
+  <data name="AE_OpenArchive" xml:space="preserve"><value>Άνοιγμα αρχειοθήκης…</value></data>
+  <data name="AE_RefreshArchive" xml:space="preserve"><value>Ανανέωση αρχειοθήκης</value></data>
+  <data name="AE_NavigateUp" xml:space="preserve"><value>Επιστροφή (έξοδος από εμφωλευμένη αρχειοθήκη)</value></data>
+  <data name="AE_MoreOptions" xml:space="preserve"><value>Περισσότερες επιλογές</value></data>
+  <data name="AE_ExtractAllTooltip" xml:space="preserve"><value>Εξαγωγή όλων…</value></data>
+  <data name="AE_ExtractSelectedTooltip" xml:space="preserve"><value>Εξαγωγή επιλογής…</value></data>
+  <data name="AE_PreviewTooltip" xml:space="preserve"><value>Προεπισκόπηση εγγραφής</value></data>
+  <data name="AE_OpenRawInHexTooltip" xml:space="preserve"><value>Άνοιγμα ακατέργαστων bytes στον Hex επεξεργαστή</value></data>
+  <data name="AE_FilterEntries" xml:space="preserve"><value>Φιλτράρισμα εγγραφών…</value></data>
+  <data name="AE_ClearFilter" xml:space="preserve"><value>Εκκαθάριση φίλτρου</value></data>
+  <data name="AE_Loading" xml:space="preserve"><value>Φόρτωση…</value></data>
+  <data name="AE_DrillIntoArchive" xml:space="preserve"><value>Εξερεύνηση αρχειοθήκης</value></data>
+  <data name="AE_CopyPath" xml:space="preserve"><value>Αντιγραφή διαδρομής</value></data>
+  <data name="AE_Properties" xml:space="preserve"><value>Ιδιότητες…</value></data>
+  <data name="AE_DropArchiveHere" xml:space="preserve"><value>Αποθέστε αρχειοθήκη εδώ</value></data>
+  <data name="AE_ClickOpenToolbar" xml:space="preserve"><value>ή κάντε κλικ στο Άνοιγμα στη γραμμή εργαλείων</value></data>
+  <data name="AE_BehaviourSection" xml:space="preserve"><value>Συμπεριφορά</value></data>
+  <data name="AE_AutoShowPanel" xml:space="preserve"><value>Αυτόματη εμφάνιση πίνακα κατά το άνοιγμα αρχείου αρχειοθήκης</value></data>
+  <data name="AE_ShowCompressionBadge" xml:space="preserve"><value>Εμφάνιση badge αναλογίας συμπίεσης στο δέντρο</value></data>
+  <data name="AE_ShowFormatBadge" xml:space="preserve"><value>Εμφάνιση badge ανίχνευσης μορφής (whfmt)</value></data>
+  <data name="AE_PreviewSection" xml:space="preserve"><value>Προεπισκόπηση</value></data>
+  <data name="AE_MaxPreviewSize" xml:space="preserve"><value>Μέγ. μέγεθος προεπισκόπησης (KB):</value></data>
+  <data name="AE_ExtractionSection" xml:space="preserve"><value>Εξαγωγή</value></data>
+  <data name="AE_MaxFormatDetectionSize" xml:space="preserve"><value>Μέγ. μέγεθος ανίχνευσης μορφής (KB):</value></data>
+  <data name="AE_DefaultExtractFolder" xml:space="preserve"><value>Προεπιλεγμένος φάκελος εξαγωγής:</value></data>
+  <data name="AE_Browse" xml:space="preserve"><value>Αναζήτηση…</value></data>
+  <data name="AE_EntryPropertiesTitle" xml:space="preserve"><value>Ιδιότητες εγγραφής</value></data>
+  <data name="AE_FullPath" xml:space="preserve"><value>Πλήρης διαδρομή:</value></data>
+  <data name="AE_Size" xml:space="preserve"><value>Μέγεθος:</value></data>
+  <data name="AE_Compressed" xml:space="preserve"><value>Συμπιεσμένο:</value></data>
+  <data name="AE_Ratio" xml:space="preserve"><value>Αναλογία:</value></data>
+  <data name="AE_Method" xml:space="preserve"><value>Μέθοδος:</value></data>
+  <data name="AE_LastModified" xml:space="preserve"><value>Τελευταία τροποποίηση:</value></data>
+  <data name="AE_Crc32" xml:space="preserve"><value>CRC32:</value></data>
+  <data name="AE_Close" xml:space="preserve"><value>Κλείσιμο</value></data>
+</root>

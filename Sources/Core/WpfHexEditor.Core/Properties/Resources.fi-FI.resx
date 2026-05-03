@@ -1,0 +1,1948 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Finnish (fi-FI) -->
+  <data name="AppendByteConfirmationString" xml:space="preserve">
+    <value>Olet saavuttanut tiedoston lopun. Haluatko lisätä tavun? Tätä toimintoa ei voi peruuttaa jatkaessasi.</value>
+  </data>
+  <data name="BookmarksString" xml:space="preserve">
+    <value>Kirjanmerkit</value>
+  </data>
+  <data name="ByteActionString" xml:space="preserve">
+    <value>Tavutoiminto</value>
+  </data>
+  <data name="ByteString" xml:space="preserve">
+    <value>Tavu</value>
+  </data>
+  <data name="CancelLongProcessString" xml:space="preserve">
+    <value>Peruuta pitkä prosessi</value>
+  </data>
+  <data name="CancelLongProcessToolTipString" xml:space="preserve">
+    <value>Napsauta peruuttaaksesi pitkän prosessin.</value>
+  </data>
+  <data name="CancelString" xml:space="preserve">
+    <value>Peruuta</value>
+  </data>
+  <data name="ClearBookMarkString" xml:space="preserve">
+    <value>Poista kirjanmerkki</value>
+  </data>
+  <data name="ClearString" xml:space="preserve">
+    <value>Tyhjennä</value>
+  </data>
+  <data name="ClickToGoAtPositionString" xml:space="preserve">
+    <value>Napsauta siirtyäksesi sijaintiin.</value>
+  </data>
+  <data name="CloseString" xml:space="preserve">
+    <value>Sulje</value>
+  </data>
+  <data name="CopyAsASCIIString" xml:space="preserve">
+    <value>Kopioi ASCII-muodossa</value>
+  </data>
+  <data name="CopyAsDecimalString" xml:space="preserve">
+    <value>Kopioi desimaaliksi</value>
+  </data>
+  <data name="CopyAsHexadecimalString" xml:space="preserve">
+    <value>Kopioi heksadesimaaliksi</value>
+  </data>
+  <data name="CopyAsTBLString" xml:space="preserve">
+    <value>TBL-merkkijono (ladattu merkkitiedosto)</value>
+  </data>
+  <data name="CopySelectionAsString" xml:space="preserve">
+    <value>Kopioi valinta muodossa...</value>
+  </data>
+  <data name="CountOfString" xml:space="preserve">
+    <value>Määrä</value>
+  </data>
+  <data name="DefaultTBLString" xml:space="preserve">
+    <value>Oletus-TBL</value>
+  </data>
+  <data name="DeleteString" xml:space="preserve">
+    <value>Poista</value>
+  </data>
+  <data name="DescriptionString" xml:space="preserve">
+    <value>Kuvaus</value>
+  </data>
+  <data name="EndTagString" xml:space="preserve">
+    <value>&lt;loppu&gt;</value>
+  </data>
+  <data name="EnterHexValueMsgString" xml:space="preserve">
+    <value>Anna heksadesimaaliarvo...</value>
+  </data>
+  <data name="FileDroppingConfirmationString" xml:space="preserve">
+    <value>Haluatko sulkea nykyisen tiedoston ja avata: </value>
+  </data>
+  <data name="FillSelectionAloneString" xml:space="preserve">
+    <value>Täytä valinta tavulla</value>
+  </data>
+  <data name="FillSelectionString" xml:space="preserve">
+    <value>Täytä valinta tavulla...</value>
+  </data>
+  <data name="FindAllString" xml:space="preserve">
+    <value>Etsi kaikki</value>
+  </data>
+  <data name="FindAndReplaceString" xml:space="preserve">
+    <value>Etsi ja korvaa</value>
+  </data>
+  <data name="FindByteString" xml:space="preserve">
+    <value>Etsittävä tavu</value>
+  </data>
+  <data name="FindFirstString" xml:space="preserve">
+    <value>Etsi ensimmäinen</value>
+  </data>
+  <data name="FindLastString" xml:space="preserve">
+    <value>Etsi viimeinen</value>
+  </data>
+  <data name="FindNextString" xml:space="preserve">
+    <value>Etsi seuraava</value>
+  </data>
+  <data name="FindSelectionString" xml:space="preserve">
+    <value>Etsi kaikki valinnan esiintymät</value>
+  </data>
+  <data name="FindString" xml:space="preserve">
+    <value>Etsi</value>
+  </data>
+  <data name="FindWhatString" xml:space="preserve">
+    <value>Etsi:</value>
+  </data>
+  <data name="FirstByteString" xml:space="preserve">
+    <value>Ensimmäinen tavu</value>
+  </data>
+  <data name="HexString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="KBTagString" xml:space="preserve">
+    <value>kt</value>
+  </data>
+  <data name="LengthString" xml:space="preserve">
+    <value>Pituus</value>
+  </data>
+  <data name="LineStatusBarTagString" xml:space="preserve">
+    <value>Ln</value>
+  </data>
+  <data name="LineTagString" xml:space="preserve">
+    <value>&lt;ln&gt;</value>
+  </data>
+  <data name="LongString" xml:space="preserve">
+    <value>Long</value>
+  </data>
+  <data name="MBTagString" xml:space="preserve">
+    <value>Mt</value>
+  </data>
+  <data name="OkString" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PasteExtendByteConfirmationString" xml:space="preserve">
+    <value>Liitämistoiminto saavutti tiedoston lopun. Haluatko laajentaa tiedostoa toiminnon suorittamiseksi? Tätä toimintoa ei voi peruuttaa jatkaessasi.</value>
+  </data>
+  <data name="PasteFromClipboardString" xml:space="preserve">
+    <value>Liitä leikepöydältä</value>
+  </data>
+  <data name="PasteNotInsertString" xml:space="preserve">
+    <value>Liitä ilman lisäystä</value>
+  </data>
+  <data name="PositionString" xml:space="preserve">
+    <value>Sijainti</value>
+  </data>
+  <data name="ReplaceAllString" xml:space="preserve">
+    <value>Korvaa kaikki</value>
+  </data>
+  <data name="ReplaceByByteString" xml:space="preserve">
+    <value>Korvaa tavulla</value>
+  </data>
+  <data name="ReplaceNextString" xml:space="preserve">
+    <value>Korvaa seuraava</value>
+  </data>
+  <data name="ReplaceSelectionString" xml:space="preserve">
+    <value>Korvaa tavu valinnassa...</value>
+  </data>
+  <data name="ReplaceString" xml:space="preserve">
+    <value>Korvaa</value>
+  </data>
+  <data name="ReplaceWithByteString" xml:space="preserve">
+    <value>Korvaa tavulla</value>
+  </data>
+  <data name="ReplaceWithString" xml:space="preserve">
+    <value>Korvaa:</value>
+  </data>
+  <data name="ReplaceInSelectionOnlyString" xml:space="preserve">
+    <value>Korvaa vain valinnassa</value>
+  </data>
+  <data name="ShowConfirmationString" xml:space="preserve">
+    <value>Näytä vahvistusikkuna</value>
+  </data>
+  <data name="PreviewString" xml:space="preserve">
+    <value>Esikatselu:</value>
+  </data>
+  <data name="ValidationInvalidHexString" xml:space="preserve">
+    <value>Virheellinen heksadesimaaliarvo</value>
+  </data>
+  <data name="ValidationRequiredString" xml:space="preserve">
+    <value>Arvo vaaditaan</value>
+  </data>
+  <data name="OccurrencesFoundString" xml:space="preserve">
+    <value>{0} esiintymää löydetty</value>
+  </data>
+  <data name="ReplacementCompleteString" xml:space="preserve">
+    <value>{0} esiintymää korvattu</value>
+  </data>
+  <data name="NoOccurrencesFoundString" xml:space="preserve">
+    <value>Esiintymiä ei löydetty</value>
+  </data>
+  <data name="InSelectionString" xml:space="preserve">
+    <value>valinnassa</value>
+  </data>
+  <data name="InFileString" xml:space="preserve">
+    <value>tiedostossa</value>
+  </data>
+  <data name="SelectAllString" xml:space="preserve">
+    <value>Valitse kaikki</value>
+  </data>
+  <data name="SetBookMarkString" xml:space="preserve">
+    <value>Aseta kirjanmerkki</value>
+  </data>
+  <data name="TBLString" xml:space="preserve">
+    <value>TBL</value>
+  </data>
+  <data name="ThisStringAreNotHexString" xml:space="preserve">
+    <value>Tämä merkkijono ei ole heksadesimaali</value>
+  </data>
+  <data name="UndoString" xml:space="preserve">
+    <value>Kumoa</value>
+  </data>
+  <data name="ValueString" xml:space="preserve">
+    <value>Arvo</value>
+  </data>
+  <data name="WritingErrorExeptionString" xml:space="preserve">
+    <value>Kirjoituksen aikana tapahtui virhe.</value>
+  </data>
+  <data name="HighLightSettingString" xml:space="preserve">
+    <value>Korosta kaikki löydetyt tiedot</value>
+  </data>
+  <data name="ReplaceTrimSettingString" xml:space="preserve">
+    <value>Katkaise korvausdata hakupituuteen korvattaessa</value>
+  </data>
+  <data name="ZoomResetString" xml:space="preserve">
+    <value>Palauta zoom 100 %:iin</value>
+  </data>
+  <data name="ZoomString" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>Merkkijonoa ei voida muuntaa long-tyypiksi</value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>Tiedosto on lukittu. Haluatko avata sen vain luku -tilassa?</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>Tavua</value>
+  </data>
+  <data name="SearchCommandCenterString" xml:space="preserve">
+    <value>HAKUKOMENTOKESKUS</value>
+  </data>
+  <data name="SearchTextModeString" xml:space="preserve">
+    <value>Teksti</value>
+  </data>
+  <data name="SearchHexModeString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="SearchRegexModeString" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="SearchWildcardModeString" xml:space="preserve">
+    <value>Jokeri</value>
+  </data>
+  <data name="SearchPreviousString" xml:space="preserve">
+    <value>Edellinen</value>
+  </data>
+  <data name="SearchNextString" xml:space="preserve">
+    <value>Seuraava</value>
+  </data>
+  <data name="SearchFindAllString" xml:space="preserve">
+    <value>Etsi kaikki</value>
+  </data>
+  <data name="SearchMatchesString" xml:space="preserve">
+    <value>osumaa</value>
+  </data>
+  <data name="SearchInString" xml:space="preserve">
+    <value>kohteessa</value>
+  </data>
+  <data name="SearchNoMatchesString" xml:space="preserve">
+    <value>Osumia ei löydetty</value>
+  </data>
+  <data name="SearchV2BadgeString" xml:space="preserve">
+    <value>99 % NOPEAMPI V2:LLA</value>
+  </data>
+  <data name="ClearSearchString" xml:space="preserve">
+    <value>Tyhjennä</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>Komentovalikko</value>
+  </data>
+  <data name="PerformanceDashboardString" xml:space="preserve">
+    <value>Suorituskykypaneeli</value>
+  </data>
+  <data name="ThemeDarkGlassString" xml:space="preserve">
+    <value>Tumma lasi</value>
+  </data>
+  <data name="ThemeLightString" xml:space="preserve">
+    <value>Vaalea</value>
+  </data>
+  <data name="ThemeCyberpunkString" xml:space="preserve">
+    <value>Cyberpunk</value>
+  </data>
+  <data name="ThemeMinimalString" xml:space="preserve">
+    <value>Minimaalinen</value>
+  </data>
+  <data name="CopyAsCSharpCodeString" xml:space="preserve">
+    <value>Kopioi C#-koodina</value>
+  </data>
+  <data name="CopyAsCCodeString" xml:space="preserve">
+    <value>Kopioi C-koodina</value>
+  </data>
+  <data name="CopyAsFormattedViewString" xml:space="preserve">
+    <value>Kopioi muotoiltuna näkymänä</value>
+  </data>
+  <data name="CopyString" xml:space="preserve">
+    <value>Kopioi</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Liitä</value>
+  </data>
+  <data name="FillWithByteString" xml:space="preserve">
+    <value>Täytä tavulla...</value>
+  </data>
+  <data name="ReplaceByteMenuString" xml:space="preserve">
+    <value>Korvaa tavu...</value>
+  </data>
+  <data name="ReverseSelectionString" xml:space="preserve">
+    <value>Käännä valinta</value>
+  </data>
+  <data name="InvertSelectionString" xml:space="preserve">
+    <value>Invertoi tavut</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Tilaviesti</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Tiedostokoko</value>
+  </data>
+  <data name="SelectionInfoString" xml:space="preserve">
+    <value>Valintatiedot</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Muokkaustila</value>
+  </data>
+  <data name="BytesPerLineString" xml:space="preserve">
+    <value>Tavua per rivi</value>
+  </data>
+  <data name="RefreshTimeString" xml:space="preserve">
+    <value>Päivitysaika</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Valmis</value>
+  </data>
+  <data name="NoSelectionString" xml:space="preserve">
+    <value>Ei valintaa</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Tila: Ylikirjoitus</value>
+  </data>
+  <data name="FindAndReplaceDialogTitle" xml:space="preserve">
+    <value>Etsi ja korvaa</value>
+  </data>
+  <data name="FindGroupHeader" xml:space="preserve">
+    <value>Etsi</value>
+  </data>
+  <data name="ReplaceGroupHeader" xml:space="preserve">
+    <value>Korvaa</value>
+  </data>
+  <data name="ResultsGroupHeader" xml:space="preserve">
+    <value>Tulokset</value>
+  </data>
+  <data name="FindTextLabel" xml:space="preserve">
+    <value>Etsi:</value>
+  </data>
+  <data name="ReplaceTextLabel" xml:space="preserve">
+    <value>Korvaa:</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Edellinen</value>
+  </data>
+  <data name="FindNextButton" xml:space="preserve">
+    <value>Seuraava</value>
+  </data>
+  <data name="FindAllButton" xml:space="preserve">
+    <value>Etsi kaikki</value>
+  </data>
+  <data name="ReplaceButton" xml:space="preserve">
+    <value>Korvaa</value>
+  </data>
+  <data name="ReplaceAllButton" xml:space="preserve">
+    <value>Korvaa kaikki</value>
+  </data>
+  <data name="CaseSensitiveCheckbox" xml:space="preserve">
+    <value>Kirjainkoko</value>
+  </data>
+  <data name="WholeWordCheckbox" xml:space="preserve">
+    <value>Koko sana</value>
+  </data>
+  <data name="UseRegexCheckbox" xml:space="preserve">
+    <value>Käytä säännöllisiä lausekkeita</value>
+  </data>
+  <data name="SearchInSelectionCheckbox" xml:space="preserve">
+    <value>Etsi vain valinnasta</value>
+  </data>
+  <data name="HighlightAllCheckbox" xml:space="preserve">
+    <value>Korosta kaikki osumat</value>
+  </data>
+  <data name="CloseDialogButton" xml:space="preserve">
+    <value>Sulje</value>
+  </data>
+  <data name="NoResultsFound" xml:space="preserve">
+    <value>Tuloksia ei löydetty</value>
+  </data>
+  <data name="MatchesFoundFormat" xml:space="preserve">
+    <value>{0} osumaa löydetty</value>
+  </data>
+  <data name="ReplacedFormat" xml:space="preserve">
+    <value>{0} korvattu</value>
+  </data>
+  <data name="SearchPanelTitle" xml:space="preserve">
+    <value>Haku</value>
+  </data>
+  <data name="SearchFindLabel" xml:space="preserve">
+    <value>Etsi:</value>
+  </data>
+  <data name="SearchModePlaceholder" xml:space="preserve">
+    <value>Kirjoita hakuteksti...</value>
+  </data>
+  <data name="TextModeLabel" xml:space="preserve">
+    <value>Teksti</value>
+  </data>
+  <data name="HexModeLabel" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="RegexModeLabel" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WildcardModeLabel" xml:space="preserve">
+    <value>Jokeri</value>
+  </data>
+  <data name="MatchCaseLabel" xml:space="preserve">
+    <value>Kirjainkoko</value>
+  </data>
+  <data name="WholeWordLabel" xml:space="preserve">
+    <value>Koko sana</value>
+  </data>
+  <data name="SearchOptionsLabel" xml:space="preserve">
+    <value>Asetukset</value>
+  </data>
+  <data name="SearchResultsLabel" xml:space="preserve">
+    <value>Tulokset</value>
+  </data>
+  <data name="CurrentMatchLabel" xml:space="preserve">
+    <value>Nykyinen osuma</value>
+  </data>
+  <data name="TotalMatchesLabel" xml:space="preserve">
+    <value>Osumat yhteensä</value>
+  </data>
+  <data name="QuickSearchTooltip" xml:space="preserve">
+    <value>Pikahaku (Ctrl+F)</value>
+  </data>
+  <data name="PreviousMatchTooltip" xml:space="preserve">
+    <value>Edellinen osuma (Shift+F3)</value>
+  </data>
+  <data name="NextMatchTooltip" xml:space="preserve">
+    <value>Seuraava osuma (F3)</value>
+  </data>
+  <data name="CloseSearchTooltip" xml:space="preserve">
+    <value>Sulje haku (Esc)</value>
+  </data>
+  <data name="SearchOptionsTooltip" xml:space="preserve">
+    <value>Hakuasetukset</value>
+  </data>
+  <data name="StatusSearching" xml:space="preserve">
+    <value>Haetaan...</value>
+  </data>
+  <data name="StatusSearchComplete" xml:space="preserve">
+    <value>Haku valmis</value>
+  </data>
+  <data name="StatusFoundMatchesFormat" xml:space="preserve">
+    <value>{0} osumaa löydetty {1} ms:ssa</value>
+  </data>
+  <data name="StatusMatchFoundAtFormat" xml:space="preserve">
+    <value>Osuma sijainnissa 0x{0:X8}</value>
+  </data>
+  <data name="StatusNoMoreMatches" xml:space="preserve">
+    <value>Muita osumia ei löydetty</value>
+  </data>
+  <data name="StatusReachedEndOfFile" xml:space="preserve">
+    <value>Tiedoston loppu saavutettu</value>
+  </data>
+  <data name="StatusReachedStartOfFile" xml:space="preserve">
+    <value>Tiedoston alku saavutettu</value>
+  </data>
+  <data name="StatusReplacing" xml:space="preserve">
+    <value>Korvataan...</value>
+  </data>
+  <data name="StatusReplaceComplete" xml:space="preserve">
+    <value>Korvaus valmis</value>
+  </data>
+  <data name="StatusReplacedFormat" xml:space="preserve">
+    <value>{0} esiintymää korvattu</value>
+  </data>
+  <data name="StatusInvalidSearchPattern" xml:space="preserve">
+    <value>Virheellinen hakukaava</value>
+  </data>
+  <data name="StatusInvalidRegex" xml:space="preserve">
+    <value>Virheellinen säännöllinen lauseke</value>
+  </data>
+  <data name="StatusSearchCancelled" xml:space="preserve">
+    <value>Haku peruutettu</value>
+  </data>
+  <data name="StatusReplaceCancelled" xml:space="preserve">
+    <value>Korvaus peruutettu</value>
+  </data>
+  <data name="StatusCancelling" xml:space="preserve">
+    <value>Peruutetaan...</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Virhe: {0}</value>
+  </data>
+  <data name="StatusFoundMatchesWithSpeedFormat" xml:space="preserve">
+    <value>{0} osumaa löydetty {1} ms:ssa ({2:F2} Mt/s)</value>
+  </data>
+  <data name="StatusMatchFoundAtWrappedFormat" xml:space="preserve">
+    <value>Osuma sijainnissa 0x{0:X8} (kierretty)</value>
+  </data>
+  <data name="StatusNoPreviousMatches" xml:space="preserve">
+    <value>Aiempia osumia ei löydetty</value>
+  </data>
+  <data name="StatusMatchOfTotalFormat" xml:space="preserve">
+    <value>Osuma {0} / {1} sijainnissa 0x{2:X8}</value>
+  </data>
+  <data name="StatusReplacedAtFormat" xml:space="preserve">
+    <value>Korvattu sijainnissa 0x{0:X8} (yhteensä: {1})</value>
+  </data>
+  <data name="StatusReplaceError" xml:space="preserve">
+    <value>Korvausvirhe: {0}</value>
+  </data>
+  <data name="StatusNoMatchesToReplace" xml:space="preserve">
+    <value>Ei korvattavia osumia</value>
+  </data>
+  <data name="StatusInvalidReplacementPattern" xml:space="preserve">
+    <value>Virheellinen korvauskaava</value>
+  </data>
+  <data name="StatusReplacedOccurrencesFormat" xml:space="preserve">
+    <value>{0} esiintymä(ä) korvattu. Korvauksia yhteensä: {1}</value>
+  </data>
+  <data name="StatusReplaceAllError" xml:space="preserve">
+    <value>Korvaa kaikki -virhe: {0}</value>
+  </data>
+  <data name="StatusNoMoreBookmarksAfter" xml:space="preserve">
+    <value>Ei muita kirjanmerkkejä nykyisen sijainnin jälkeen</value>
+  </data>
+  <data name="StatusNoMoreBookmarksBefore" xml:space="preserve">
+    <value>Ei muita kirjanmerkkejä ennen nykyistä sijaintia</value>
+  </data>
+  <data name="BookmarkSetFormat" xml:space="preserve">
+    <value>Kirjanmerkki asetettu sijaintiin 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkClearedFormat" xml:space="preserve">
+    <value>Kirjanmerkki poistettu sijainnista 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkNavigatedFormat" xml:space="preserve">
+    <value>Siirrytty kirjanmerkkiin sijainnissa 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkAllCleared" xml:space="preserve">
+    <value>Kaikki kirjanmerkit poistettu</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Kopioi valinta</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Leikkaa valinta</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Lisää tavu...</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Poista tavu</value>
+  </data>
+  <data name="DeleteSelectionString" xml:space="preserve">
+    <value>Poista valinta</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Siirry offsetiin...</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Ominaisuudet</value>
+  </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Peruuta</value>
+  </data>
+  <data name="ProgressMessageFileOpenedSuccessfully" xml:space="preserve">
+    <value>Tiedosto avattu onnistuneesti</value>
+  </data>
+  <data name="ProgressMessageFileSavedSuccessfully" xml:space="preserve">
+    <value>Tiedosto tallennettu onnistuneesti</value>
+  </data>
+  <data name="ProgressMessageFindingMatches" xml:space="preserve">
+    <value>Etsitään osumia...</value>
+  </data>
+  <data name="ProgressMessageFoundMatchesFormat" xml:space="preserve">
+    <value>{0} osumaa löydetty</value>
+  </data>
+  <data name="ProgressMessageLoadingFileData" xml:space="preserve">
+    <value>Ladataan tiedoston dataa...</value>
+  </data>
+  <data name="ProgressMessageOpeningFileStream" xml:space="preserve">
+    <value>Avataan tiedostovirtaa...</value>
+  </data>
+  <data name="ProgressMessagePreparingToSave" xml:space="preserve">
+    <value>Valmistellaan tallennusta...</value>
+  </data>
+  <data name="ProgressMessageReplacedFormat" xml:space="preserve">
+    <value>{0} esiintymää korvattu</value>
+  </data>
+  <data name="ProgressMessageReplacingFormat" xml:space="preserve">
+    <value>{0} osumaa löydetty. Korvataan...</value>
+  </data>
+  <data name="ProgressMessageSearchingFoundFormat" xml:space="preserve">
+    <value>Haetaan... {0} löydetty</value>
+  </data>
+  <data name="ProgressMessageStartingSearch" xml:space="preserve">
+    <value>Aloitetaan haku...</value>
+  </data>
+  <data name="ProgressTitleOpeningFile" xml:space="preserve">
+    <value>Avataan tiedostoa</value>
+  </data>
+  <data name="ProgressTitleReplacing" xml:space="preserve">
+    <value>Korvataan</value>
+  </data>
+  <data name="ProgressTitleSavingFile" xml:space="preserve">
+    <value>Tallennetaan tiedostoa</value>
+  </data>
+  <data name="ProgressTitleSearching" xml:space="preserve">
+    <value>Haetaan</value>
+  </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>Täytä valinta tietyllä tavuarvolla</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>Korvaa kaikki yhden tavun esiintymät toisella</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>Käännä tavujärjestys valinnassa (endianness-muunnos)</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>Invertoi kaikki bitit jokaisessa tavussa (XOR 0xFF:llä)</value>
+  </data>
+
+  <!-- TBL Editor Localizations -->
+  <data name="TblEditor_Title" xml:space="preserve">
+    <value>TBL-merkkitaulukon muokkain</value>
+    <comment>TBL Editor - Title</comment>
+  </data>
+  <data name="TblEditor_NoTblLoaded" xml:space="preserve">
+    <value>TBL-tiedostoa ei ole ladattu. Lataa ensin TBL-tiedosto.</value>
+    <comment>TBL Editor - NoTblLoaded</comment>
+  </data>
+  <data name="TblEditor_UnsavedChanges" xml:space="preserve">
+    <value>Sinulla on tallentamattomia muutoksia. Haluatko tallentaa ennen sulkemista?</value>
+    <comment>TBL Editor - UnsavedChanges</comment>
+  </data>
+  <data name="TblEditor_ConfirmDelete" xml:space="preserve">
+    <value>Poistetaanko {0} merkintää?</value>
+    <comment>TBL Editor - ConfirmDelete</comment>
+  </data>
+  <data name="TblEditor_ErrorSaving" xml:space="preserve">
+    <value>Virhe tallennettaessa TBL:ää: {0}</value>
+    <comment>TBL Editor - ErrorSaving</comment>
+  </data>
+  <data name="TblEditor_SavedSuccessfully" xml:space="preserve">
+    <value>TBL tallennettu onnistuneesti</value>
+    <comment>TBL Editor - SavedSuccessfully</comment>
+  </data>
+  <data name="TblEditor_NoConflicts" xml:space="preserve">
+    <value>Ristiriitoja ei havaittu!</value>
+    <comment>TBL Editor - NoConflicts</comment>
+  </data>
+  <data name="TblEditor_ConflictsDetected" xml:space="preserve">
+    <value>{0} ristiriitaa havaittu</value>
+    <comment>TBL Editor - ConflictsDetected</comment>
+  </data>
+  <data name="TblEditor_PrefixConflict" xml:space="preserve">
+    <value>Merkintä '{0}' on {1} pidemmän merkinnän etuliite</value>
+    <comment>TBL Editor - PrefixConflict</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry" xml:space="preserve">
+    <value>Kaksoiskappalemerkintä '{0}'</value>
+    <comment>TBL Editor - DuplicateEntry</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveShorter" xml:space="preserve">
+    <value>Poista lyhyempi merkintä tai käytä eri tavuarvoja</value>
+    <comment>TBL Editor - Suggestion RemoveShorter</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveDuplicate" xml:space="preserve">
+    <value>Poista kaksoiskappale tai yhdistä arvot</value>
+    <comment>TBL Editor - Suggestion RemoveDuplicate</comment>
+  </data>
+  <data name="TblEditor_AddEntry" xml:space="preserve">
+    <value>Lisää merkintä</value>
+    <comment>TBL Editor - AddEntry</comment>
+  </data>
+  <data name="TblEditor_DeleteEntry" xml:space="preserve">
+    <value>Poista merkintä</value>
+    <comment>TBL Editor - DeleteEntry</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry_Button" xml:space="preserve">
+    <value>Kopioi</value>
+    <comment>TBL Editor - DuplicateEntry Button</comment>
+  </data>
+  <data name="TblEditor_Save" xml:space="preserve">
+    <value>Tallenna</value>
+    <comment>TBL Editor - Save</comment>
+  </data>
+  <data name="TblEditor_SaveAs" xml:space="preserve">
+    <value>Tallenna nimellä</value>
+    <comment>TBL Editor - SaveAs</comment>
+  </data>
+  <data name="TblEditor_Validate" xml:space="preserve">
+    <value>Tarkista</value>
+    <comment>TBL Editor - Validate</comment>
+  </data>
+  <data name="TblEditor_Undo" xml:space="preserve">
+    <value>Kumoa ({0})</value>
+    <comment>TBL Editor - Undo</comment>
+  </data>
+  <data name="TblEditor_Redo" xml:space="preserve">
+    <value>Tee uudelleen ({0})</value>
+    <comment>TBL Editor - Redo</comment>
+  </data>
+  <data name="TblEditor_Search" xml:space="preserve">
+    <value>Hae hex-arvolla tai merkillä</value>
+    <comment>TBL Editor - Search</comment>
+  </data>
+  <data name="TblEditor_FilterByType" xml:space="preserve">
+    <value>Tyyppi:</value>
+    <comment>TBL Editor - FilterByType</comment>
+  </data>
+  <data name="TblEditor_ConflictsOnly" xml:space="preserve">
+    <value>⚠ Vain ristiriidat</value>
+    <comment>TBL Editor - ConflictsOnly</comment>
+  </data>
+  <data name="TblEditor_ClearFilters" xml:space="preserve">
+    <value>Tyhjennä</value>
+    <comment>TBL Editor - ClearFilters</comment>
+  </data>
+  <data name="TblEditor_EntriesCount" xml:space="preserve">
+    <value>{0} merkintää</value>
+    <comment>TBL Editor - EntriesCount</comment>
+  </data>
+  <data name="TblEditor_HexValue" xml:space="preserve">
+    <value>Hex-arvo</value>
+    <comment>TBL Editor - HexValue</comment>
+  </data>
+  <data name="TblEditor_Character" xml:space="preserve">
+    <value>Merkki(t)</value>
+    <comment>TBL Editor - Character</comment>
+  </data>
+  <data name="TblEditor_Type" xml:space="preserve">
+    <value>Tyyppi</value>
+    <comment>TBL Editor - Type</comment>
+  </data>
+  <data name="TblEditor_Bytes" xml:space="preserve">
+    <value>Tavua</value>
+    <comment>TBL Editor - Bytes</comment>
+  </data>
+  <data name="TblEditor_Details" xml:space="preserve">
+    <value>Tiedot</value>
+    <comment>TBL Editor - Details</comment>
+  </data>
+  <data name="TblEditor_Statistics" xml:space="preserve">
+    <value>Tilastot</value>
+    <comment>TBL Editor - Statistics</comment>
+  </data>
+  <data name="TblEditor_Advanced" xml:space="preserve">
+    <value>Lisäasetukset</value>
+    <comment>TBL Editor - Advanced</comment>
+  </data>
+  <data name="TblEditor_Modified" xml:space="preserve">
+    <value>● Muokattu</value>
+    <comment>TBL Editor - Modified</comment>
+  </data>
+
+<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+    <value>Näytä rivinumerot (väliaikainen)</value>
+  </data>
+<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+    <value>Tämä ominaisuus ei ole vielä käytettävissä V2:ssa</value>
+  </data>
+<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+    <value>Näytä tavuvihje</value>
+  </data>
+
+
+
+<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+    <value>Salli lisäys mihin tahansa</value>
+  </data>
+<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+    <value>Salli tavun poistaminen</value>
+  </data>
+<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+    <value>Salli tiedoston laajentaminen</value>
+  </data>
+<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+    <value>Liittäminen vaatii vahvistuksen</value>
+  </data>
+
+<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+    <value>Ylikirjoita</value>
+  </data>
+
+
+
+
+<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+    <value>Salli tiedoston pudottaminen</value>
+  </data>
+<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+    <value>Vahvistus tiedoston pudottamisesta</value>
+  </data>
+<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+    <value>Salli tekstin pudottaminen</value>
+  </data>
+
+<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+    <value>Automaattinen saman tavun valinta (kaksoisnapsautus)</value>
+  </data>
+<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+    <value>Salli merkistä navigointi napsauttamalla</value>
+  </data>
+<data name="HexSettings_Highlight_Color" xml:space="preserve">
+    <value>Automaattinen korostusväri:</value>
+  </data>
+<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+    <value>Ota rinnakkaishaku käyttöön</value>
+  </data>
+<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+    <value>Käytä jokerimerkkihakua (??)</value>
+  </data>
+<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+    <value>Korosta kaikki tulokset</value>
+  </data>
+
+<data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+    <value>Salli tavujen laskenta</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+    <value>Tavusiirto vasemmalle:</value>
+  </data>
+
+
+<data name="HexSettings_Title" xml:space="preserve">
+    <value>HEX-EDITORIN ASETUKSET</value>
+  </data>
+<data name="HexSettings_Display_Title" xml:space="preserve">
+    <value>📺 Näyttöasetukset</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>Näytä rivinumerot (paikkamerkki)</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+    <value>Tämä ominaisuus ei ole vielä käytettävissä V2:ssa</value>
+  </data>
+<data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+    <value>Näytä tavuvihje</value>
+  </data>
+<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+    <value>Tavua per rivi:</value>
+  </data>
+<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+    <value>Zoomaustaso:</value>
+  </data>
+<data name="HexSettings_Editing_Title" xml:space="preserve">
+    <value>✏️ Muokkausasetukset</value>
+  </data>
+<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+    <value>Vain luku -tila</value>
+  </data>
+<data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+    <value>Salli lisäys mihin tahansa</value>
+  </data>
+<data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+    <value>Salli tavun poistaminen</value>
+  </data>
+<data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+    <value>Salli tiedoston laajentaminen</value>
+  </data>
+<data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+    <value>Liittäminen vaatii vahvistuksen</value>
+  </data>
+<data name="HexSettings_Editing_EditMode" xml:space="preserve">
+    <value>Muokkaustila:</value>
+  </data>
+
+<data name="HexSettings_Editing_Insert" xml:space="preserve">
+    <value>Lisää</value>
+  </data>
+<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
+    <value>Kohdistintila:</value>
+  </data>
+<data name="HexSettings_Clipboard_Title" xml:space="preserve">
+    <value>📋 Leikepöytäasetukset</value>
+  </data>
+<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
+    <value>Oletuskopiointi-tila:</value>
+  </data>
+<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+    <value>Hex-merkkijono</value>
+  </data>
+<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+    <value>Tavutaulukko</value>
+  </data>
+<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+    <value>C#-koodi</value>
+  </data>
+<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+    <value>VB-koodi</value>
+  </data>
+<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+    <value>C-koodi</value>
+  </data>
+<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+    <value>Java-koodi</value>
+  </data>
+<data name="HexSettings_DragDrop_Title" xml:space="preserve">
+    <value>📎 Vedä ja pudota -asetukset</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+    <value>Salli tiedoston pudottaminen</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+    <value>Vahvistus tiedoston pudottamisesta</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+    <value>Salli tekstin pudottaminen</value>
+  </data>
+<data name="HexSettings_Highlight_Title" xml:space="preserve">
+    <value>🎨 Korostus ja valinta</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+    <value>Korosta valittu tavu automaattisesti</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+    <value>Valitse sama tavu automaattisesti (kaksoisnapsautus)</value>
+  </data>
+<data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+    <value>Salli merkistä navigointi napsauttamalla</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+    <value>Automaattinen korostusväri:</value>
+  </data>
+<data name="HexSettings_Search_Title" xml:space="preserve">
+    <value>🔍 Hakuasetukset</value>
+  </data>
+<data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+    <value>Ota rinnakkaishaku käyttöön</value>
+  </data>
+<data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+    <value>Käytä jokerimerkkihakua (??)</value>
+  </data>
+
+<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+    <value>Hakutulosraja:</value>
+  </data>
+<data name="HexSettings_Statistics_Title" xml:space="preserve">
+    <value>📊 Tilastot</value>
+  </data>
+<data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+    <value>Salli tavujen laskenta</value>
+  </data>
+<data name="HexSettings_Advanced_Title" xml:space="preserve">
+    <value>⚙️ Lisäasetukset</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+    <value>Tavusiirto vasemmalle:</value>
+  </data>
+<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+    <value>Tallenna nykyinen tila</value>
+  </data>
+<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+    <value>Lataa tallennettu tila</value>
+  </data>
+<data name="HexSettings_ResetButton" xml:space="preserve">
+    <value>🔄 Palauta kaikki oletusasetuksiin</value>
+  </data>
+<data name="HexSettings_StatusBar_Title" xml:space="preserve">
+    <value>Tilarivi</value>
+  </data>
+<data name="HexSettings_Colors_Title" xml:space="preserve">
+    <value>Värit</value>
+  </data>
+<data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
+    <value>Vieritysmerkit</value>
+    <comment>Hex editor settings - Scroll Markers category header</comment>
+  </data>
+<data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Näytä kirjanmerkkimerkit</value>
+    <comment>Hex editor settings - Toggle bookmark markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowModifiedMarkers" xml:space="preserve">
+    <value>Näytä muokattujen tavujen merkit</value>
+    <comment>Hex editor settings - Toggle modified byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
+    <value>Näytä lisättyjen tavujen merkit</value>
+    <comment>Hex editor settings - Toggle inserted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
+    <value>Näytä poistettujen tavujen merkit</value>
+    <comment>Hex editor settings - Toggle deleted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Näytä hakutulosmerkit</value>
+    <comment>Hex editor settings - Toggle search result markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_Behavior_Title" xml:space="preserve">
+    <value>Toiminta</value>
+  </data>
+<data name="HexSettings_Data_Title" xml:space="preserve">
+    <value>Data</value>
+  </data>
+<data name="HexSettings_Visual_Title" xml:space="preserve">
+    <value>Visuaalinen</value>
+  </data>
+<data name="HexSettings_Keyboard_Title" xml:space="preserve">
+    <value>Näppäimistö</value>
+  </data>
+<data name="HexSettings_TBL_Title" xml:space="preserve">
+    <value>Merkkitaulukko</value>
+  </data>
+<data name="HexSettings_SaveButton" xml:space="preserve"><value>Tallenna tila</value></data>
+<data name="HexSettings_LoadButton" xml:space="preserve"><value>Lataa tila</value></data>
+  <data name="HexSettings_BarChart_Title" xml:space="preserve">
+    <value>📈 Bar Chart</value>
+    <comment>Hex editor settings - Bar Chart category header</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelVisibility" xml:space="preserve">
+    <value>Panel Visibility</value>
+    <comment>Bar Chart - Show/hide the bar chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_BarColor" xml:space="preserve">
+    <value>Bar Color</value>
+    <comment>Bar Chart - Color of the frequency bars</comment>
+  </data>
+  <data name="HexSettings_BarChart_BackgroundColor" xml:space="preserve">
+    <value>Background Color</value>
+    <comment>Bar Chart - Background color of the chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_TextColor" xml:space="preserve">
+    <value>Text Color</value>
+    <comment>Bar Chart - Color for labels and statistics text</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelHeight" xml:space="preserve">
+    <value>Panel Height</value>
+    <comment>Bar Chart - Height of the chart panel in pixels</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowAxisLabels" xml:space="preserve">
+    <value>Show Axis Labels</value>
+    <comment>Bar Chart - Display byte value labels (00-FF)</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowGridLines" xml:space="preserve">
+    <value>Show Grid Lines</value>
+    <comment>Bar Chart - Display horizontal reference grid lines</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowStatistics" xml:space="preserve">
+    <value>Näytä tilastot</value>
+    <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
+  </data>
+
+  <!-- ByteValueTooltip labels -->
+  <data name="ByteTooltip_NoData" xml:space="preserve"><value>Ei dataa</value></data>
+  <data name="ByteTooltip_Signed" xml:space="preserve"><value>Etumerkillinen</value></data>
+  <data name="ByteTooltip_Binary" xml:space="preserve"><value>Binääri</value></data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve"><value>(ei tulostettava)</value></data>
+  <data name="ByteTooltip_Octal" xml:space="preserve"><value>Oktaali</value></data>
+
+  <!-- HexEditor status messages -->
+  <data name="StatusText_OperationCancelled" xml:space="preserve"><value>Toiminto peruutettu</value></data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve"><value>Tiedosto on jo olemassa</value></data>
+  <data name="StatusText_Ready" xml:space="preserve"><value>Valmis</value></data>
+  <data name="StatusText_FileSaved" xml:space="preserve"><value>Tiedosto tallennettu</value></data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve"><value>Hakumerkit tyhjennetty.</value></data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve"><value>Kaikki muutokset tyhjennetty</value></data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve"><value>TBL suljettu, käytetään ASCII:ta</value></data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve"><value>Ei valintaa käännettäväksi</value></data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve"><value>Valinta on tyhjä</value></data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve"><value>Ei valintaa bitti-invertointiin</value></data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve"><value>Ei valintaa etsittäväksi</value></data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve"><value>Tuloksia ei löydetty.</value></data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve"><value>Koko: -</value></data>
+  <data name="StatusBar_NoSelection" xml:space="preserve"><value>Ei valintaa</value></data>
+  <data name="StatusBar_PositionZero" xml:space="preserve"><value>Sijainti: 0</value></data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve"><value>Tila: Ylikirjoitus</value></data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve"><value>Tavua/rivi: 16</value></data>
+
+  <!-- Search Module -->
+  <data name="Search_NoMatches" xml:space="preserve">
+    <value>Ei tuloksia</value>
+  </data>
+  <data name="Search_Error_Title" xml:space="preserve">
+    <value>Hakuvirhe</value>
+  </data>
+  <data name="Search_Error_Label" xml:space="preserve">
+    <value>Virhe</value>
+  </data>
+  <data name="Search_Error_NoTBLLoaded" xml:space="preserve">
+    <value>TBL-tiedostoa ei ole ladattu. TBL-tekstihaku ei ole mahdollinen.</value>
+  </data>
+  <data name="Search_Error_TBLRequired" xml:space="preserve">
+    <value>TBL vaaditaan</value>
+  </data>
+  <data name="Search_Error_NoTBLForReplacement" xml:space="preserve">
+    <value>TBL-tiedostoa ei ole ladattu. Korvaustavu-koodausta TBL TEXT -tilassa ei voida suorittaa.</value>
+  </data>
+  <data name="Search_Replace_Title" xml:space="preserve">
+    <value>Korvausvirhe</value>
+  </data>
+  <data name="Search_ReplaceAll_Title" xml:space="preserve">
+    <value>Korvaa kaikki</value>
+  </data>
+  <data name="Search_ExportDialog_Filter" xml:space="preserve">
+    <value>CSV-tiedostot (*.csv)|*.csv|Tekstitiedostot (*.txt)|*.txt|JSON-tiedostot (*.json)|*.json</value>
+  </data>
+  <data name="Search_ExportTBL_Title" xml:space="preserve">
+    <value>Vie TBL-tiedosto</value>
+  </data>
+  <data name="Search_TBLFileDialog_Filter" xml:space="preserve">
+    <value>TBL-tiedostot (*.tbl)|*.tbl|Kaikki tiedostot (*.*)|*.*</value>
+  </data>
+  <data name="Search_ExportTBL_Success" xml:space="preserve">
+    <value>Vienti onnistui</value>
+  </data>
+  <data name="Search_ExportTBL_Error" xml:space="preserve">
+    <value>Vientivirhe</value>
+  </data>
+  <data name="Search_EncodingApplied_Title" xml:space="preserve">
+    <value>Koodaus sovellettu</value>
+  </data>
+  <data name="Search_EncodingApplied_Message" xml:space="preserve">
+    <value>Koodaus sovellettu! Voit nyt käyttää TBL TEXT -tilaa.</value>
+  </data>
+  <data name="Search_LoadTBL_Title" xml:space="preserve">
+    <value>Valitse TBL-tiedosto (merkkitaulukko)</value>
+  </data>
+  <data name="Search_TBLLoaded_Title" xml:space="preserve">
+    <value>TBL ladattu</value>
+  </data>
+  <data name="Search_ErrorLoadingTBL_Title" xml:space="preserve">
+    <value>TBL-latausvirhe</value>
+  </data>
+  <data name="Search_CloseTBL_Title" xml:space="preserve">
+    <value>Sulje TBL</value>
+  </data>
+  <!-- IPS Patcher -->
+  <data name="IPS_Error_NoFileOpen" xml:space="preserve">
+    <value>Avaa ensin ROM-tiedosto ennen patchin soveltamista.</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen_Title" xml:space="preserve">
+    <value>Tiedostoa ei avattu</value>
+  </data>
+  <data name="IPS_ApplyPatch_Title" xml:space="preserve">
+    <value>Valitse IPS-patch-tiedosto</value>
+  </data>
+  <data name="IPS_FileDialog_Filter" xml:space="preserve">
+    <value>IPS-patch-tiedostot (*.ips)|*.ips|Kaikki tiedostot (*.*)|*.*</value>
+  </data>
+  <data name="IPS_Error_InvalidFile" xml:space="preserve">
+    <value>Valittu tiedosto ei ole kelvollinen IPS-patch.</value>
+  </data>
+  <data name="IPS_Error_InvalidFile_Title" xml:space="preserve">
+    <value>Virheellinen IPS-tiedosto</value>
+  </data>
+  <data name="IPS_ApplyPatch_Confirm_Title" xml:space="preserve">
+    <value>Sovella IPS-patch</value>
+  </data>
+  <data name="IPS_ApplyPatch_SaveReminder" xml:space="preserve">
+    <value>Muista tallentaa tiedosto!</value>
+  </data>
+  <data name="IPS_ApplyPatch_Success_Title" xml:space="preserve">
+    <value>Patch sovellettu</value>
+  </data>
+  <data name="IPS_ApplyPatch_Error_Title" xml:space="preserve">
+    <value>Patch epäonnistui</value>
+  </data>
+  <data name="IPS_CreatePatch_NoFileOpen" xml:space="preserve">
+    <value>Avaa ensin muokattu ROM-tiedosto.</value>
+  </data>
+  <data name="IPS_CreatePatch_SelectOriginal_Title" xml:space="preserve">
+    <value>Valitse alkuperäinen (muokkaamaton) ROM-tiedosto</value>
+  </data>
+  <data name="IPS_ROMFileDialog_Filter" xml:space="preserve">
+    <value>ROM-tiedostot|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|Kaikki tiedostot (*.*)|*.*</value>
+  </data>
+  <data name="IPS_CreatePatch_SaveDialog_Title" xml:space="preserve">
+    <value>Tallenna IPS-patch nimellä</value>
+  </data>
+  <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
+    <value>Patch luotu</value>
+  </data>
+  <!-- Undo/Redo history popup -->
+  <data name="UndoHistory_Undo" xml:space="preserve">
+    <value>Kumoa</value>
+  </data>
+  <data name="UndoHistory_Redo" xml:space="preserve">
+    <value>Tee uudelleen</value>
+  </data>
+  <data name="UndoHistory_Action" xml:space="preserve">
+    <value>toiminto</value>
+  </data>
+  <data name="UndoHistory_Actions" xml:space="preserve">
+    <value>toimintoa</value>
+  </data>
+
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>Hex-editorin asetukset</value>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>Tallenna tila</value>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>Lataa tila</value>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>Palauta oletusarvot</value>
+  </data>
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>Ei kumottavia toimintoja</value>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>Ei uudelleen tehtäviä toimintoja</value>
+  </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Suhteellinen haku...</value>
+  </data>
+  <data name="RelativeSearchString" xml:space="preserve">
+    <value>Suhteellinen haku — koodauksen löytäminen</value>
+  </data>
+  <data name="RelativeSearchKnownTextString" xml:space="preserve">
+    <value>Tunnettu teksti:</value>
+  </data>
+  <data name="RelativeSearchSearchButtonString" xml:space="preserve">
+    <value>Etsi</value>
+  </data>
+  <data name="RelativeSearchUseParallelString" xml:space="preserve">
+    <value>Käytä rinnakkaishakua</value>
+  </data>
+  <data name="RelativeSearchMinMatchesString" xml:space="preserve">
+    <value>Min. osumat:</value>
+  </data>
+  <data name="RelativeSearchMaxProposalsString" xml:space="preserve">
+    <value>Maks. ehdotukset:</value>
+  </data>
+  <data name="RelativeSearchTblLoadedString" xml:space="preserve">
+    <value>TBL ladattu: {0} merkintää (käytetään validointiin)</value>
+  </data>
+  <data name="RelativeSearchNoTblString" xml:space="preserve">
+    <value>TBL-tiedostoa ei ladattu (ehdotukset pisteytetty erikseen)</value>
+  </data>
+  <data name="RelativeSearchProposalsHeaderString" xml:space="preserve">
+    <value>Koodausehdotukset</value>
+  </data>
+  <data name="RelativeSearchOffsetColumnString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="RelativeSearchScoreColumnString" xml:space="preserve">
+    <value>Pisteet</value>
+  </data>
+  <data name="RelativeSearchMatchesColumnString" xml:space="preserve">
+    <value>Osumat</value>
+  </data>
+  <data name="RelativeSearchSampleColumnString" xml:space="preserve">
+    <value>Esimerkkiteksti</value>
+  </data>
+  <data name="RelativeSearchPreviewHeaderString" xml:space="preserve">
+    <value>Esikatselu (purettu teksti)</value>
+  </data>
+  <data name="RelativeSearchMatchPositionsString" xml:space="preserve">
+    <value>Osumat kohdissa:</value>
+  </data>
+  <data name="RelativeSearchExportTblString" xml:space="preserve">
+    <value>Vie TBL:ään</value>
+  </data>
+  <data name="RelativeSearchNavigateString" xml:space="preserve">
+    <value>Siirry osumaan</value>
+  </data>
+  <data name="RelativeSearchSearchingString" xml:space="preserve">
+    <value>Haetaan 256 koodaussiirtoa...</value>
+  </data>
+  <data name="RelativeSearchFoundProposalsString" xml:space="preserve">
+    <value>{0} ehdotusta löydetty {1} ms:ssa</value>
+  </data>
+  <data name="RelativeSearchFoundWithValidationString" xml:space="preserve">
+    <value>{0} ehdotusta löydetty {1} ms:ssa (parhaan osuman validoi ladattu TBL!)</value>
+  </data>
+  <data name="RelativeSearchSearchingWithTblString" xml:space="preserve">
+    <value>Haetaan 256 siirtoa (validoidaan {0} TBL-merkintää vastaan)...</value>
+  </data>
+  <data name="RelativeSearchCancelledString" xml:space="preserve">
+    <value>Haku peruutettu</value>
+  </data>
+  <data name="RelativeSearchNoProposalsString" xml:space="preserve">
+    <value>Koodausehdotuksia ei löydetty. Kokeile eri hakutekstiä.</value>
+  </data>
+  <data name="RelativeSearchNoFileOpenString" xml:space="preserve">
+    <value>Tiedostoa ei avattu</value>
+  </data>
+  <data name="RelativeSearchKnownTextTooltipString" xml:space="preserve">
+    <value>Anna teksti, jonka tiedät esiintyvän ROM:ssa (esim. "World", "Start", "Hero")</value>
+  </data>
+  <data name="RelativeSearchExportTooltipString" xml:space="preserve">
+    <value>Tallenna valittu koodausehdotus TBL-tiedostona</value>
+  </data>
+  <data name="TblConflict_Title" xml:space="preserve">
+    <value>TBL-ristiriitojen analyysirapotti</value>
+  </data>
+  <data name="TblConflict_TotalConflicts" xml:space="preserve">
+    <value>Ristiriidat yhteensä:</value>
+  </data>
+  <data name="TblConflict_Errors" xml:space="preserve">
+    <value>Virheet:</value>
+  </data>
+  <data name="TblConflict_Warnings" xml:space="preserve">
+    <value>Varoitukset:</value>
+  </data>
+  <data name="TblConflict_Info" xml:space="preserve">
+    <value>Tiedot:</value>
+  </data>
+  <data name="TblConflict_Description" xml:space="preserve">
+    <value>Kuvaus:</value>
+  </data>
+  <data name="TblConflict_Suggestion" xml:space="preserve">
+    <value>Ehdotettu ratkaisu:</value>
+  </data>
+  <data name="TblConflict_ConflictingEntries" xml:space="preserve">
+    <value>Ristiriitaiset merkinnät:</value>
+  </data>
+  <data name="TblTemplate_Title" xml:space="preserve">
+    <value>TBL-mallit</value>
+  </data>
+  <data name="TblTemplate_Categories" xml:space="preserve">
+    <value>Kategoriat</value>
+  </data>
+  <data name="TblTemplate_AvailableTemplates" xml:space="preserve">
+    <value>Käytettävissä olevat mallit</value>
+  </data>
+  <data name="TblTemplate_Preview" xml:space="preserve">
+    <value>Esikatselu</value>
+  </data>
+  <data name="TblTemplate_LoadTemplate" xml:space="preserve">
+    <value>Lataa malli</value>
+  </data>
+  <data name="TblTemplate_MergeWithCurrent" xml:space="preserve">
+    <value>Yhdistä nykyiseen</value>
+  </data>
+  <data name="TblTemplate_BuiltIn" xml:space="preserve">
+    <value>Sisäänrakennettu</value>
+  </data>
+  <data name="PatternAnalysis_Title" xml:space="preserve">
+    <value>Kaava-analyysi</value>
+  </data>
+  <data name="PatternAnalysis_Entropy" xml:space="preserve">
+    <value>Entropia</value>
+  </data>
+  <data name="PatternAnalysis_ByteDistribution" xml:space="preserve">
+    <value>Tavujakauma</value>
+  </data>
+  <data name="PatternAnalysis_DetectedPatterns" xml:space="preserve">
+    <value>Havaitut kaavat</value>
+  </data>
+  <data name="PatternAnalysis_NoPatternsDetected" xml:space="preserve">
+    <value>Kaavoja ei havaittu</value>
+  </data>
+  <data name="PatternAnalysis_Anomalies" xml:space="preserve">
+    <value>Poikkeamat</value>
+  </data>
+  <data name="PatternAnalysis_NoAnomalies" xml:space="preserve">
+    <value>Poikkeamia ei havaittu</value>
+  </data>
+  <data name="PatternAnalysis_BitsPerByte" xml:space="preserve">
+    <value>bittiä/tavu</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropy" xml:space="preserve">
+    <value>Korkea entropia havaittu</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropyDesc" xml:space="preserve">
+    <value>Data vaikuttaa pakatulta tai salatulta</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropy" xml:space="preserve">
+    <value>Erittäin alhainen entropia havaittu</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropyDesc" xml:space="preserve">
+    <value>Data sisältää paljon toistuvia tai samankaltaisia tavuja</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDistribution" xml:space="preserve">
+    <value>Vino tavujakauma</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDesc" xml:space="preserve">
+    <value>Yksi tavuarvo esiintyy yli 20 % ajasta</value>
+  </data>
+  <data name="PatternAnalysis_NullBytes" xml:space="preserve">
+    <value>NULL-tavut (0x00)</value>
+  </data>
+  <data name="PatternAnalysis_RepeatedSequence" xml:space="preserve">
+    <value>Toistuva sekvenssi</value>
+  </data>
+  <data name="PatternAnalysis_AsciiText" xml:space="preserve">
+    <value>ASCII-teksti havaittu</value>
+  </data>
+  <data name="FileStats_Title" xml:space="preserve">
+    <value>Tiedostotilastot</value>
+  </data>
+  <data name="FileStats_OverallHealth" xml:space="preserve">
+    <value>Yleinen kunto</value>
+  </data>
+  <data name="FileStats_HealthyStructure" xml:space="preserve">
+    <value>Tiedostorakenne on kelvollinen ja terve</value>
+  </data>
+  <data name="FileStats_Structure" xml:space="preserve">
+    <value>Rakenne</value>
+  </data>
+  <data name="FileStats_Valid" xml:space="preserve">
+    <value>Kelvollinen</value>
+  </data>
+  <data name="FileStats_Invalid" xml:space="preserve">
+    <value>Virheellinen</value>
+  </data>
+  <data name="FileStats_Checksums" xml:space="preserve">
+    <value>Tarkistussummat</value>
+  </data>
+  <data name="FileStats_AllPass" xml:space="preserve">
+    <value>Kaikki läpäisivät</value>
+  </data>
+  <data name="FileStats_SomeFailed" xml:space="preserve">
+    <value>Joitakin tarkistussummia epäonnistui</value>
+  </data>
+  <data name="FileStats_Compression" xml:space="preserve">
+    <value>Pakkaus</value>
+  </data>
+  <data name="FileStats_Ratio" xml:space="preserve">
+    <value>Suhde:</value>
+  </data>
+  <data name="FileStats_SubOptimalCompression" xml:space="preserve">
+    <value>Epäoptimaalinen pakkaus</value>
+  </data>
+  <data name="FileStats_EntropyAnalysis" xml:space="preserve">
+    <value>Entropiaanalyysi</value>
+  </data>
+  <data name="FileStats_Level" xml:space="preserve">
+    <value>Taso:</value>
+  </data>
+  <data name="FileStats_CompressedOrEncrypted" xml:space="preserve">
+    <value>Data on todennäköisesti pakattu tai salattu</value>
+  </data>
+  <data name="FileStats_DetectedIssues" xml:space="preserve">
+    <value>Havaitut ongelmat</value>
+  </data>
+  <data name="FileStats_NoIssues" xml:space="preserve">
+    <value>Ongelmia ei havaittu</value>
+  </data>
+  <data name="FileStats_FileInformation" xml:space="preserve">
+    <value>Tiedostotiedot</value>
+  </data>
+  <data name="FileStats_Size" xml:space="preserve">
+    <value>Koko:</value>
+  </data>
+  <data name="FileStats_Fields" xml:space="preserve">
+    <value>Kentät:</value>
+  </data>
+  <data name="FileStats_Format" xml:space="preserve">
+    <value>Formaatti:</value>
+  </data>
+  <data name="FileStats_Unknown" xml:space="preserve">
+    <value>Tuntematon</value>
+  </data>
+  <data name="ArchiveStructure_Title" xml:space="preserve">
+    <value>Arkistorakenne</value>
+  </data>
+  <data name="ArchiveStructure_NoArchive" xml:space="preserve">
+    <value>Arkistoa ei ladattu</value>
+  </data>
+  <data name="ArchiveStructure_Extract" xml:space="preserve">
+    <value>Pura...</value>
+  </data>
+  <data name="ArchiveStructure_ViewDetails" xml:space="preserve">
+    <value>Näytä tiedot</value>
+  </data>
+  <data name="ArchiveStructure_ExpandAll" xml:space="preserve">
+    <value>Laajenna kaikki</value>
+  </data>
+  <data name="ArchiveStructure_CollapseAll" xml:space="preserve">
+    <value>Tiivistä kaikki</value>
+  </data>
+  <data name="ArchiveStructure_Files" xml:space="preserve">
+    <value>tiedostoa</value>
+  </data>
+  <data name="ArchiveStructure_Folders" xml:space="preserve">
+    <value>kansiota</value>
+  </data>
+  <data name="ArchiveStructure_TotalSize" xml:space="preserve">
+    <value>Kokonaiskoko:</value>
+  </data>
+  <data name="ArchiveStructure_CompressionRatio" xml:space="preserve">
+    <value>Suhde:</value>
+  </data>
+  <data name="ArchiveStructure_ExtractFunctionality" xml:space="preserve">
+    <value>Purkutoiminto — toteutettava arkistokijastolle</value>
+  </data>
+  <data name="ArchiveStructure_ExtractTitle" xml:space="preserve">
+    <value>Pura</value>
+  </data>
+  <data name="ArchiveStructure_DetailsTitle" xml:space="preserve">
+    <value>Tiedot</value>
+  </data>
+  <data name="ArchiveStructure_DetailName" xml:space="preserve">
+    <value>Nimi:</value>
+  </data>
+  <data name="ArchiveStructure_DetailType" xml:space="preserve">
+    <value>Tyyppi:</value>
+  </data>
+  <data name="ArchiveStructure_DetailFolder" xml:space="preserve">
+    <value>Kansio</value>
+  </data>
+  <data name="ArchiveStructure_DetailFile" xml:space="preserve">
+    <value>Tiedosto</value>
+  </data>
+  <data name="ArchiveStructure_DetailCompressed" xml:space="preserve">
+    <value>Pakattu:</value>
+  </data>
+  <data name="ArchiveStructure_DetailCRC" xml:space="preserve">
+    <value>CRC:</value>
+  </data>
+  <data name="ArchiveStructure_DetailMethod" xml:space="preserve">
+    <value>Menetelmä:</value>
+  </data>
+  <data name="FileComparison_Title" xml:space="preserve">
+    <value>Tiedostojen vertailu</value>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>Valitse vertailtavat tiedostot</value>
+  </data>
+  <data name="FileComparison_LoadFile1" xml:space="preserve">
+    <value>Lataa tiedosto 1...</value>
+  </data>
+  <data name="FileComparison_LoadFile2" xml:space="preserve">
+    <value>Lataa tiedosto 2...</value>
+  </data>
+  <data name="FileComparison_File1" xml:space="preserve">
+    <value>Tiedosto 1</value>
+  </data>
+  <data name="FileComparison_File2" xml:space="preserve">
+    <value>Tiedosto 2</value>
+  </data>
+  <data name="FileComparison_Matching" xml:space="preserve">
+    <value>Vastaavat:</value>
+  </data>
+  <data name="FileComparison_Added" xml:space="preserve">
+    <value>Lisätty:</value>
+  </data>
+  <data name="FileComparison_Modified" xml:space="preserve">
+    <value>Muokattu:</value>
+  </data>
+  <data name="FileComparison_Removed" xml:space="preserve">
+    <value>Poistettu:</value>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>Valitse vertailtava tiedosto 1</value>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>Valitse vertailtava tiedosto 2</value>
+  </data>
+  <data name="FileComparison_AllFiles" xml:space="preserve">
+    <value>Kaikki tiedostot (*.*)|*.*</value>
+  </data>
+  <data name="FileComparison_ErrorLoading" xml:space="preserve">
+    <value>Virhe ladattaessa tiedostoa: {0}</value>
+  </data>
+  <data name="FileComparison_Error" xml:space="preserve">
+    <value>Virhe</value>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>Valitse molemmat vertailtavat tiedostot</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>Vertaillaan {0} ↔ {1}</value>
+  </data>
+  <data name="CustomTemplate_Title" xml:space="preserve">
+    <value>Mallit</value>
+  </data>
+  <data name="CustomTemplate_NewTemplate" xml:space="preserve">
+    <value>Uusi malli</value>
+  </data>
+  <data name="CustomTemplate_DeleteTemplate" xml:space="preserve">
+    <value>Poista malli</value>
+  </data>
+  <data name="CustomTemplate_EditorTitle" xml:space="preserve">
+    <value>Mallimuokkain</value>
+  </data>
+  <data name="CustomTemplate_Name" xml:space="preserve">
+    <value>Nimi:</value>
+  </data>
+  <data name="CustomTemplate_Description" xml:space="preserve">
+    <value>Kuvaus:</value>
+  </data>
+  <data name="CustomTemplate_Extensions" xml:space="preserve">
+    <value>Laajennukset:</value>
+  </data>
+  <data name="CustomTemplate_ExtensionsTooltip" xml:space="preserve">
+    <value>Pilkulla erotettu, esim. .bin,.dat</value>
+  </data>
+  <data name="CustomTemplate_SaveTemplate" xml:space="preserve">
+    <value>Tallenna malli</value>
+  </data>
+  <data name="CustomTemplate_FormatBlocks" xml:space="preserve">
+    <value>Formaattilohkot</value>
+  </data>
+  <data name="CustomTemplate_AddBlock" xml:space="preserve">
+    <value>Lisää lohko</value>
+  </data>
+  <data name="CustomTemplate_RemoveBlock" xml:space="preserve">
+    <value>Poista lohko</value>
+  </data>
+  <data name="CustomTemplate_ApplyToFile" xml:space="preserve">
+    <value>Sovella nykyiseen tiedostoon</value>
+  </data>
+  <data name="CustomTemplate_ApplyDescription" xml:space="preserve">
+    <value>Sovella tätä mallia analysoidaksesi hex-editorissa ladatun tiedoston.</value>
+  </data>
+  <data name="CustomTemplate_ApplyButton" xml:space="preserve">
+    <value>Sovella malli tiedostoon</value>
+  </data>
+  <data name="CustomTemplate_ExportImport" xml:space="preserve">
+    <value>Vie/Tuo</value>
+  </data>
+  <data name="CustomTemplate_ExportJSON" xml:space="preserve">
+    <value>Vie JSON:na</value>
+  </data>
+  <data name="CustomTemplate_ImportJSON" xml:space="preserve">
+    <value>Tuo JSON:sta</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateSelected" xml:space="preserve">
+    <value>Mallia ei valittu tallennettavaksi.</value>
+  </data>
+  <data name="CustomTemplate_SavedSuccessfully" xml:space="preserve">
+    <value>Malli '{0}' tallennettu onnistuneesti!</value>
+  </data>
+  <data name="CustomTemplate_ErrorSaving" xml:space="preserve">
+    <value>Virhe tallennettaessa mallia: {0}</value>
+  </data>
+  <data name="CustomTemplate_SelectOrCreate" xml:space="preserve">
+    <value>Valitse tai luo ensin malli.</value>
+  </data>
+  <data name="CustomTemplate_AddBlockTitle" xml:space="preserve">
+    <value>Lisää lohko</value>
+  </data>
+  <data name="CustomTemplate_DeleteConfirm" xml:space="preserve">
+    <value>Poistetaanko malli '{0}'?</value>
+  </data>
+  <data name="CustomTemplate_ConfirmDelete" xml:space="preserve">
+    <value>Vahvista poisto</value>
+  </data>
+  <data name="CustomTemplate_ErrorDeleting" xml:space="preserve">
+    <value>Virhe poistettaessa tiedostoa: {0}</value>
+  </data>
+  <data name="CustomTemplate_DeleteError" xml:space="preserve">
+    <value>Poistovirhe</value>
+  </data>
+  <data name="CustomTemplate_ApplyingTemplate" xml:space="preserve">
+    <value>Sovelletaan mallia '{0}' nykyiseen tiedostoon.
+
+Tämä analysoi {1} lohkoa mallin määrityksen mukaisesti.
+
+Huomio: Täysi integraatio HexEditoriin vaatii yhteyden pääkäyttöliittymämalliin.</value>
+  </data>
+  <data name="CustomTemplate_ApplyTitle" xml:space="preserve">
+    <value>Sovella malli</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateToApply" xml:space="preserve">
+    <value>Mallia ei valittu sovellettavaksi.</value>
+  </data>
+  <data name="CustomTemplate_ExportTitle" xml:space="preserve">
+    <value>Vie malli JSON:na</value>
+  </data>
+  <data name="CustomTemplate_JSONFiles" xml:space="preserve">
+    <value>JSON-tiedostot (*.json)|*.json</value>
+  </data>
+  <data name="CustomTemplate_ExportedTo" xml:space="preserve">
+    <value>Malli viety kohteeseen:
+{0}</value>
+  </data>
+  <data name="CustomTemplate_ExportSuccess" xml:space="preserve">
+    <value>Vienti onnistui</value>
+  </data>
+  <data name="CustomTemplate_ErrorExporting" xml:space="preserve">
+    <value>Virhe vietäessä mallia: {0}</value>
+  </data>
+  <data name="CustomTemplate_ExportError" xml:space="preserve">
+    <value>Vientivirhe</value>
+  </data>
+  <data name="CustomTemplate_ImportTitle" xml:space="preserve">
+    <value>Tuo malli JSON:sta</value>
+  </data>
+  <data name="CustomTemplate_ImportedSuccessfully" xml:space="preserve">
+    <value>Malli '{0}' tuotu onnistuneesti!</value>
+  </data>
+  <data name="CustomTemplate_ImportSuccess" xml:space="preserve">
+    <value>Tuonti onnistui</value>
+  </data>
+  <data name="CustomTemplate_ErrorImporting" xml:space="preserve">
+    <value>Virhe tuotaessa mallia: {0}</value>
+  </data>
+  <data name="CustomTemplate_ImportError" xml:space="preserve">
+    <value>Tuontivirhe</value>
+  </data>
+  <data name="CustomTemplate_ColumnName" xml:space="preserve">
+    <value>Nimi</value>
+  </data>
+  <data name="CustomTemplate_ColumnOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="CustomTemplate_ColumnLength" xml:space="preserve">
+    <value>Pituus</value>
+  </data>
+  <data name="CustomTemplate_ColumnType" xml:space="preserve">
+    <value>Tyyppi</value>
+  </data>
+  <data name="CustomTemplate_ColumnColor" xml:space="preserve">
+    <value>Väri</value>
+  </data>
+  <data name="CustomTemplate_ColumnDescription" xml:space="preserve">
+    <value>Kuvaus</value>
+  </data>
+  <data name="CopyAsAutoString" xml:space="preserve">
+    <value>Kopioi (auto)</value>
+  </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>Kierrä haku</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Koodaus:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Heksadesimaali</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Desimaali</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>Siirry sijaintiin</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>Sijainti</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 tai desimaali</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Jokeri (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Katkaise korvaus hakupituuteen</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Seuraava</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Edellinen</value></data>
+  <data name="HE_SearchDialogTitle" xml:space="preserve">
+    <value>Find / Replace</value>
+  </data>
+  <data name="HE_SearchModeTooltip" xml:space="preserve">
+    <value>Search mode</value>
+  </data>
+  <data name="HE_CaseSensitiveTooltip" xml:space="preserve">
+    <value>Match case (Alt+C)</value>
+  </data>
+  <data name="HE_WildcardTooltip" xml:space="preserve">
+    <value>Use wildcards ?? (Alt+E)</value>
+  </data>
+  <data name="HE_LoopSearch" xml:space="preserve">
+    <value>Loop</value>
+  </data>
+  <data name="HE_FindLabel" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="HE_ReplaceLabel" xml:space="preserve">
+    <value>Replace:</value>
+  </data>
+  <data name="HE_EncodingLabel" xml:space="preserve">
+    <value>Encoding:</value>
+  </data>
+  <data name="HE_MaxLabel" xml:space="preserve">
+    <value>Max:</value>
+  </data>
+  <data name="HE_StopButton" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="HE_PrevButton" xml:space="preserve">
+    <value>Prev.</value>
+  </data>
+  <data name="HE_NextButton" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="HE_FindAllButton" xml:space="preserve">
+    <value>Find All</value>
+  </data>
+  <data name="HE_ReplaceButton" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="HE_ReplaceAllButton" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="HE_ResultsLabel" xml:space="preserve">
+    <value>Results (</value>
+  </data>
+  <data name="HE_ExportButton" xml:space="preserve">
+    <value>Export ▾</value>
+  </data>
+  <data name="HE_OffsetHexColumn" xml:space="preserve">
+    <value>Offset (Hex)</value>
+  </data>
+  <data name="HE_OffsetDecColumn" xml:space="preserve">
+    <value>Offset (Dec)</value>
+  </data>
+  <data name="HE_PreviewColumn" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="HE_LengthColumn" xml:space="preserve">
+    <value>Len.</value>
+  </data>
+  <data name="HE_OccColumn" xml:space="preserve">
+    <value>Occ.</value>
+  </data>
+  <data name="HE_PrintPctColumn" xml:space="preserve">
+    <value>% Print.</value>
+  </data>
+  <data name="HE_ActionsColumn" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="HE_ExportTblButton" xml:space="preserve">
+    <value>Export TBL</value>
+  </data>
+  <data name="HE_ApplyButton" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="HE_SizeLabel" xml:space="preserve">
+    <value>Size: </value>
+  </data>
+  <data name="HE_BytesLabel" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="HE_LoadTblButton" xml:space="preserve">
+    <value>Load TBL...</value>
+  </data>
+  <data name="HE_LoadTblTooltip" xml:space="preserve">
+    <value>Load a TBL file (ROM character table)</value>
+  </data>
+  <data name="HE_TblLabel" xml:space="preserve">
+    <value>TBL: </value>
+  </data>
+  <data name="HE_CloseTblTooltip" xml:space="preserve">
+    <value>Close TBL file</value>
+  </data>
+  <data name="HE_ShowReplaceTooltip" xml:space="preserve">
+    <value>Show / hide replace (Ctrl+H)</value>
+  </data>
+  <data name="HE_SearchPlaceholder" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="HE_PrevResultTooltip" xml:space="preserve">
+    <value>Previous result (Shift+Enter)</value>
+  </data>
+  <data name="HE_NextResultTooltip" xml:space="preserve">
+    <value>Next result (Enter)</value>
+  </data>
+  <data name="HE_AdvancedSearchTooltip" xml:space="preserve">
+    <value>Advanced search (Ctrl+Shift+F)</value>
+  </data>
+  <data name="HE_CloseSearchTooltip" xml:space="preserve">
+    <value>Close (Esc)</value>
+  </data>
+  <data name="HE_ReplacePlaceholder" xml:space="preserve">
+    <value>Replace...</value>
+  </data>
+  <data name="HE_ReplaceOneTooltip" xml:space="preserve">
+    <value>Replace (Alt+R)</value>
+  </data>
+  <data name="HE_ReplaceAllTooltip" xml:space="preserve">
+    <value>Replace All (Alt+A)</value>
+  </data>
+  <data name="HE_HexModeTooltip" xml:space="preserve">
+    <value>Hexadecimal mode (Alt+H)</value>
+  </data>
+  <data name="HE_MoveBarTooltip" xml:space="preserve">
+    <value>Move search bar</value>
+  </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>Vertaile tiedostoa...</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>Vertaile valintaa vasemmalla...</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>TBL-tiedostoa ei ladattu</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>TEKSTI</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>JOKERI</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL-TEKSTI</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>SUHTEELLINEN</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Havaittu tiedostoformaatti</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Tunnistuksen luottamusarvo</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Tunnistuksen luottamus: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Formaatti</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Vaihda havaittu formaatti</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Etsii kaikki esiintymät edistymisen näyttämällä</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>Offset</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>Tulokset</value>
+  </data>
+</root>

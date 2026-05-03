@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>Назва проекту не може бути порожньою.</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>Перевірка</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>Неможливо перейменувати проект:</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>Помилка</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>Неможливо створити вихідну теку:</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>Конвертувати TBL</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>Вихідний шлях збігається з джерелом. Виберіть іншу теку.</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>Видалити посилання</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>Невикористовуваних посилань на збірки не знайдено.</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>Видалити невикористовувані посилання</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>Видалити такі невикористовувані посилання на збірки?</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>Вибрати файл(и) для додавання</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>Усі файли (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>Вибрати батьківську теку нового проекту</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>Вибрати теку нового файлу</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>Вибрати батьківську теку нового рішення</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>Вибрати вихідну теку для конвертованого файлу TBLX</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>Додати посилання на проект</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>Файли проектів (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|Усі файли (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>Додати посилання на збірку</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>Файли збірок (*.dll;*.exe)|*.dll;*.exe|Усі файли (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>Вибрати вихідний каталог</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>Вибрати значок</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>Значки (*.ico)|*.ico|Усі файли (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>Вибрати проект для посилання</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>Проекти C# (*.csproj)|*.csproj|Усі проекти (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>Посилання на проекти</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>Збірки</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>Аналізатори</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>Цей тип проекту не підтримує керування посиланнями.</value>
+  </data>
+  <data name="PS_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PS_Cancel" xml:space="preserve"><value>Скасувати</value></data>
+  <data name="PS_Add" xml:space="preserve"><value>Додати</value></data>
+  <data name="PS_Browse" xml:space="preserve"><value>Огляд…</value></data>
+  <data name="PS_Remove" xml:space="preserve"><value>Видалити</value></data>
+  <data name="PS_Save" xml:space="preserve"><value>Зберегти</value></data>
+  <data name="PS_AddNewItemTitle" xml:space="preserve"><value>Додати новий елемент</value></data>
+  <data name="PS_TemplateLabel" xml:space="preserve"><value>Шаблон:</value></data>
+  <data name="PS_NameLabel" xml:space="preserve"><value>Назва:</value></data>
+  <data name="PS_FolderLabel" xml:space="preserve"><value>Тека:</value></data>
+  <data name="PS_AddExistingItemTitle" xml:space="preserve"><value>Додати існуючий елемент</value></data>
+  <data name="PS_FilesLabel" xml:space="preserve"><value>Файл(и):</value></data>
+  <data name="PS_RemoveFileTooltip" xml:space="preserve"><value>Видалити цей файл з вибору</value></data>
+  <data name="PS_DetectedTypeLabel" xml:space="preserve"><value>Визначений тип:</value></data>
+  <data name="PS_ConvertTblTitle" xml:space="preserve"><value>Конвертувати TBL у TBLX</value></data>
+  <data name="PS_ConversionSection" xml:space="preserve"><value>Конвертація</value></data>
+  <data name="PS_SourceLabel" xml:space="preserve"><value>Джерело:</value></data>
+  <data name="PS_TargetLabel" xml:space="preserve"><value>Ціль:</value></data>
+  <data name="PS_GameMetadataSection" xml:space="preserve"><value>Метадані гри (необов'язково)</value></data>
+  <data name="PS_RomDetectedLabel" xml:space="preserve"><value>Знайдено ROM:</value></data>
+  <data name="PS_AutoFill" xml:space="preserve"><value>Автозаповнення</value></data>
+  <data name="PS_GameTitleLabel" xml:space="preserve"><value>Назва гри:</value></data>
+  <data name="PS_PlatformLabel" xml:space="preserve"><value>Платформа:</value></data>
+  <data name="PS_RegionLabel" xml:space="preserve"><value>Регіон:</value></data>
+  <data name="PS_AuthorLabel" xml:space="preserve"><value>Автор:</value></data>
+  <data name="PS_YearLabel" xml:space="preserve"><value>Рік:</value></data>
+  <data name="PS_NewFileTitle" xml:space="preserve"><value>Новий файл</value></data>
+  <data name="PS_SortLabel" xml:space="preserve"><value>Сортування:</value></data>
+  <data name="PS_SortName" xml:space="preserve"><value>Назва</value></data>
+  <data name="PS_SortCategory" xml:space="preserve"><value>Категорія</value></data>
+  <data name="PS_SortExtension" xml:space="preserve"><value>Розширення</value></data>
+  <data name="PS_GridView" xml:space="preserve"><value>Сітка</value></data>
+  <data name="PS_ListView" xml:space="preserve"><value>Список</value></data>
+  <data name="PS_SearchTemplates" xml:space="preserve"><value>Пошук шаблонів…</value></data>
+  <data name="PS_BrowseForFolder" xml:space="preserve"><value>Вибрати теку</value></data>
+  <data name="PS_CreateInMemory" xml:space="preserve"><value>Створити документ у пам'яті; вибрати розташування при першому Ctrl+S</value></data>
+  <data name="PS_NewProjectTitle" xml:space="preserve"><value>Новий проект</value></data>
+  <data name="PS_NewSolutionTitle" xml:space="preserve"><value>Нове рішення</value></data>
+  <data name="PS_LocationLabel" xml:space="preserve"><value>Розташування:</value></data>
+  <data name="PS_WillCreateLabel" xml:space="preserve"><value>Буде створено:</value></data>
+  <data name="PS_ProjectPropertiesTitle" xml:space="preserve"><value>Властивості проекту</value></data>
+  <data name="PS_ApplicationTab" xml:space="preserve"><value>Програма</value></data>
+  <data name="PS_BuildTab" xml:space="preserve"><value>Збирання</value></data>
+  <data name="PS_ItemsTab" xml:space="preserve"><value>Елементи</value></data>
+  <data name="PS_ReferencesTab" xml:space="preserve"><value>Посилання</value></data>
+  <data name="PS_ProjectFileLabel" xml:space="preserve"><value>Файл проекту:</value></data>
+  <data name="PS_DirectoryLabel" xml:space="preserve"><value>Каталог:</value></data>
+  <data name="PS_FilterSections" xml:space="preserve"><value>Фільтр розділів</value></data>
+  <data name="PP_NavApplication" xml:space="preserve"><value>Програма</value></data>
+  <data name="PP_NavGeneral" xml:space="preserve"><value>Загальне</value></data>
+  <data name="PP_ProjectName" xml:space="preserve"><value>Назва проекту</value></data>
+  <data name="PP_ProjectNameDesc" xml:space="preserve"><value>Логічна назва у провіднику рішень.</value></data>
+  <data name="PP_AssemblyName" xml:space="preserve"><value>Назва збірки</value></data>
+  <data name="PP_AssemblyNameDesc" xml:space="preserve"><value>Назва скомпільованого вихідного файлу (без розширення).</value></data>
+  <data name="PP_DefaultNamespace" xml:space="preserve"><value>Простір імен за замовчуванням</value></data>
+  <data name="PP_DefaultNamespaceDesc" xml:space="preserve"><value>Кореневий простір імен для нових файлів.</value></data>
+  <data name="PP_TargetFramework" xml:space="preserve"><value>Цільова платформа</value></data>
+  <data name="PP_TargetFrameworkDesc" xml:space="preserve"><value>Версія середовища виконання .NET для цього проекту.</value></data>
+  <data name="PP_OutputType" xml:space="preserve"><value>Тип виводу</value></data>
+  <data name="PP_OutputTypeDesc" xml:space="preserve"><value>Визначає, чи проект створює .exe, .dll або WinExe.</value></data>
+  <data name="PP_OutputTypeLibrary" xml:space="preserve"><value>Бібліотека класів</value></data>
+  <data name="PP_OutputTypeConsole" xml:space="preserve"><value>Консольний застосунок</value></data>
+  <data name="PP_OutputTypeWinApp" xml:space="preserve"><value>Застосунок Windows</value></data>
+  <data name="PP_ProjectFile" xml:space="preserve"><value>Файл проекту</value></data>
+  <data name="PP_Directory" xml:space="preserve"><value>Каталог</value></data>
+  <data name="PP_ProjectType" xml:space="preserve"><value>Тип проекту</value></data>
+  <data name="PP_NavBuild" xml:space="preserve"><value>Збирання</value></data>
+  <data name="PP_Configuration" xml:space="preserve"><value>Конфігурація</value></data>
+  <data name="PP_ConfigurationDesc" xml:space="preserve"><value>Активний профіль збирання (Debug = символи, Release = оптимізовано).</value></data>
+  <data name="PP_Platform" xml:space="preserve"><value>Платформа</value></data>
+  <data name="PP_PlatformDesc" xml:space="preserve"><value>Цільова архітектура скомпільованого двійкового файлу.</value></data>
+  <data name="PP_OutputPath" xml:space="preserve"><value>Вихідний шлях</value></data>
+  <data name="PP_OutputPathDesc" xml:space="preserve"><value>Вихідний каталог відносно кореня проекту.</value></data>
+  <data name="PP_OptimizeCode" xml:space="preserve"><value>Оптимізувати код</value></data>
+  <data name="PP_OptimizeCodeDesc" xml:space="preserve"><value>Увімкнути оптимізації компілятора (вимкнено в Debug за угодою).</value></data>
+  <data name="PP_WarningsAsErrors" xml:space="preserve"><value>Трактувати попередження як помилки</value></data>
+  <data name="PP_NavDependencies" xml:space="preserve"><value>Залежності</value></data>
+  <data name="PP_DependenciesDesc" xml:space="preserve"><value>Посилання на проекти та пакети NuGet, оголошені в цьому проекті.</value></data>
+  <data name="PP_ColName" xml:space="preserve"><value>Назва</value></data>
+  <data name="PP_ColType" xml:space="preserve"><value>Тип</value></data>
+  <data name="PP_NavGlobalUsings" xml:space="preserve"><value>Глобальні using</value></data>
+  <data name="PP_GlobalUsingsDesc" xml:space="preserve"><value>Неявні директиви using, оголошені в проекті (ImplicitUsings).</value></data>
+  <data name="PP_ColNamespace" xml:space="preserve"><value>Простір імен</value></data>
+  <data name="PP_NavItems" xml:space="preserve"><value>Елементи</value></data>
+  <data name="PP_ColPath" xml:space="preserve"><value>Шлях</value></data>
+  <data name="PP_NavReferences" xml:space="preserve"><value>Посилання</value></data>
+  <data name="PP_AddNuGet" xml:space="preserve"><value>+ NuGet…</value></data>
+  <data name="PP_AddProject" xml:space="preserve"><value>+ Проект…</value></data>
+  <data name="PP_NavWin32Resources" xml:space="preserve"><value>Ресурси Win32</value></data>
+  <data name="PP_AppIcon" xml:space="preserve"><value>Значок програми</value></data>
+  <data name="PP_AppIconDesc" xml:space="preserve"><value>Файл .ico, вбудований у збірку як ресурс Win32.</value></data>
+  <data name="PP_AppManifest" xml:space="preserve"><value>Маніфест програми</value></data>
+  <data name="PP_ManifestDefault" xml:space="preserve"><value>Стандартні параметри</value></data>
+  <data name="PP_ManifestCreate" xml:space="preserve"><value>Створити новий маніфест</value></data>
+  <data name="PP_ManifestNone" xml:space="preserve"><value>Без маніфесту</value></data>
+  <data name="PP_ManifestDesc" xml:space="preserve"><value>Файл app.manifest, що керує рівнем виконання UAC і DPI.</value></data>
+  <data name="PP_NavPackage" xml:space="preserve"><value>Пакет</value></data>
+  <data name="PP_PackageDesc" xml:space="preserve"><value>Метадані NuGet, що генеруються при публікації пакету.</value></data>
+  <data name="PP_PackageId" xml:space="preserve"><value>Ідентифікатор пакету</value></data>
+  <data name="PP_PackageIdDesc" xml:space="preserve"><value>Унікальний ідентифікатор пакету на NuGet.org.</value></data>
+  <data name="PP_VersionLabel" xml:space="preserve"><value>Версія</value></data>
+  <data name="PP_AuthorsLabel" xml:space="preserve"><value>Автори</value></data>
+  <data name="PP_DescriptionLabel" xml:space="preserve"><value>Опис</value></data>
+  <data name="PP_NavDebug" xml:space="preserve"><value>Налагодження</value></data>
+  <data name="PP_DebugDesc" xml:space="preserve"><value>Налаштування профілю запуску.</value></data>
+  <data name="PP_LaunchProfile" xml:space="preserve"><value>Профіль запуску</value></data>
+  <data name="PP_LaunchProfileDesc" xml:space="preserve"><value>Профіль, визначений у launchSettings.json.</value></data>
+  <data name="PP_CommandLineArgs" xml:space="preserve"><value>Аргументи командного рядка</value></data>
+  <data name="PP_WorkingDirectory" xml:space="preserve"><value>Робочий каталог</value></data>
+  <data name="PS_PackageSourceLabel" xml:space="preserve"><value>Джерело пакету:</value></data>
+  <data name="PS_IncludePrerelease" xml:space="preserve"><value>Включати попередні версії</value></data>
+  <data name="PS_NuGetBrowseTab" xml:space="preserve"><value>Огляд</value></data>
+  <data name="PS_NuGetInstalledTab" xml:space="preserve"><value>Встановлено</value></data>
+  <data name="PS_NuGetUpdatesTab" xml:space="preserve"><value>Оновлення</value></data>
+  <data name="PS_NuGetLoadMore" xml:space="preserve"><value>Завантажити більше…</value></data>
+  <data name="PS_SelectPackageHint" xml:space="preserve"><value>Виберіть пакет для перегляду деталей.</value></data>
+  <data name="PS_NuGetConsolidateTab" xml:space="preserve"><value>Консолідувати</value></data>
+  <data name="PS_ProjectsLabel" xml:space="preserve"><value>Проекти</value></data>
+  <data name="PS_VersionLabel" xml:space="preserve"><value>Версія:</value></data>
+  <data name="PS_AddProjectRef" xml:space="preserve"><value>Додати посилання на проект…</value></data>
+  <data name="PS_AddAssemblyRef" xml:space="preserve"><value>Додати посилання на збірку…</value></data>
+  <data name="PS_RemoveUnused" xml:space="preserve"><value>Видалити невикористовувані…</value></data>
+  <data name="PS_SearchReferences" xml:space="preserve"><value>Пошук посилань…</value></data>
+  <data name="PS_Close" xml:space="preserve">
+    <value>Закрити</value>
+  </data>
+  <data name="PS_Convert" xml:space="preserve">
+    <value>Конвертувати</value>
+  </data>
+  <data name="PS_Install" xml:space="preserve">
+    <value>Встановити</value>
+  </data>
+  <data name="PS_Update" xml:space="preserve">
+    <value>Оновити</value>
+  </data>
+  <data name="PS_Uninstall" xml:space="preserve">
+    <value>Видалити</value>
+  </data>
+  <data name="PS_CopyOptionsSection" xml:space="preserve">
+    <value>Параметри копіювання</value>
+  </data>
+  <data name="PS_KeepOriginalLocation" xml:space="preserve">
+    <value>Зберегти оригінальне розташування (лише посилання)</value>
+  </data>
+  <data name="PS_CopyIntoProject" xml:space="preserve">
+    <value>Скопіювати у проект</value>
+  </data>
+  <data name="PS_DestinationFolder" xml:space="preserve">
+    <value>Цільова тека</value>
+  </data>
+  <data name="PS_PhysicalSubfolder" xml:space="preserve">
+    <value>Фізична підтека</value>
+  </data>
+  <data name="PS_KeepInPlace" xml:space="preserve">
+    <value>Залишити на місці</value>
+  </data>
+  <data name="PS_NewFolderTooltip" xml:space="preserve">
+    <value>Нова фізична тека у вибраному каталозі</value>
+  </data>
+  <data name="PS_ConfirmNewFolder" xml:space="preserve">
+    <value>Підтвердити нову теку</value>
+  </data>
+  <data name="PS_PreviewSection" xml:space="preserve">
+    <value>Перегляд</value>
+  </data>
+  <data name="PS_DestinationLabel" xml:space="preserve">
+    <value>Призначення:</value>
+  </data>
+  <data name="PS_AutoFillTooltip" xml:space="preserve">
+    <value>Попередньо заповнити Платформу, Регіон і Назву з вибраної ROM</value>
+  </data>
+  <data name="PS_OutputSection" xml:space="preserve">
+    <value>Вивід</value>
+  </data>
+  <data name="PS_SameFolderAsSource" xml:space="preserve">
+    <value>Та сама тека, що й джерело</value>
+  </data>
+  <data name="PS_CustomFolder" xml:space="preserve">
+    <value>Довільна тека</value>
+  </data>
+  <data name="PS_AddConvertedToProject" xml:space="preserve">
+    <value>Додати конвертований файл до проекту</value>
+  </data>
+  <data name="PS_OpenAfterConversion" xml:space="preserve">
+    <value>Відкрити у редакторі TBL після конвертації</value>
+  </data>
+  <data name="PS_AddToProject" xml:space="preserve">
+    <value>Додати до проекту:</value>
+  </data>
+  <data name="PS_CreateInMemoryTooltip" xml:space="preserve">
+    <value>Створити документ у пам'яті; вибрати розташування при першому Ctrl+S</value>
+  </data>
+  <data name="PS_PackageDescription" xml:space="preserve">
+    <value>Опис</value>
+  </data>
+  <data name="PS_PackageDownloads" xml:space="preserve">
+    <value>Завантажень:</value>
+  </data>
+  <data name="PS_PackagesLabel" xml:space="preserve">
+    <value> пакет(ів)</value>
+  </data>
+  <data name="PS_InstalledVersion" xml:space="preserve">
+    <value>Встановлено: v</value>
+  </data>
+  <data name="PP_ReferencesLabel" xml:space="preserve">
+    <value>Посилання на проекти та пакети:</value>
+  </data>
+  <data name="PP_Save" xml:space="preserve">
+    <value>Зберегти</value>
+  </data>
+  <data name="PP_FilterSections" xml:space="preserve">
+    <value>Фільтр розділів</value>
+  </data>
+  <data name="PP_TypeColumn" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="PP_PathColumn" xml:space="preserve">
+    <value>Шлях</value>
+  </data>
+  <data name="PP_ValueColumn" xml:space="preserve">
+    <value>Значення</value>
+  </data>
+  <data name="PP_NamespaceColumn" xml:space="preserve">
+    <value>Простір імен</value>
+  </data>
+  <data name="PP_EnvVars" xml:space="preserve">
+    <value>Змінні середовища</value>
+  </data>
+  <data name="PP_NavCodeAnalysis" xml:space="preserve">
+    <value>Аналіз коду</value>
+  </data>
+  <data name="PP_EnableCodeAnalysis" xml:space="preserve">
+    <value>Увімкнути аналіз коду при збиранні</value>
+  </data>
+  <data name="PP_EnableCodeAnalysisDesc" xml:space="preserve">
+    <value>Запускає аналізатори Roslyn при кожному збиранні.</value>
+  </data>
+  <data name="PP_ReleaseOnlyAnalysis" xml:space="preserve">
+    <value>Увімкнути лише для конфігурації Release</value>
+  </data>
+  <data name="PP_CodeAnalysisDesc" xml:space="preserve">
+    <value>Параметри статичного аналізу коду.</value>
+  </data>
+  <data name="PP_ChangesSaved" xml:space="preserve">
+    <value>✓ Зміни збережено</value>
+  </data>
+  <data name="PP_AppManifestDesc" xml:space="preserve">
+    <value>Файл app.manifest, що керує рівнем виконання UAC і DPI.</value>
+  </data>
+  <data name="NG_TipSearch" xml:space="preserve"><value>Пошук</value></data>
+</root>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.AIAssistant
+    File        : AIAssistantResources.fr-CA.resx
+    Description : Localized UI strings for the AI Assistant plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AI_ConversationHistory" xml:space="preserve">
+    <value>Samtalehistorik</value>
+  </data>
+  <data name="AI_ClearAll" xml:space="preserve">
+    <value>Ryd alle</value>
+  </data>
+  <data name="AI_SearchConversations" xml:space="preserve">
+    <value>Søg i samtaler...</value>
+  </data>
+  <data name="AI_CopyMessage" xml:space="preserve">
+    <value>Kopiér besked</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Title" xml:space="preserve">
+    <value>Forbindelsestest</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Testing" xml:space="preserve">
+    <value>Tester...</value>
+  </data>
+  <data name="AIAssistant_Error_ProviderNotRegistered" xml:space="preserve">
+    <value>Udbyderen '{0}' er ikke registreret.</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Success" xml:space="preserve">
+    <value>Forbindelse til {0} lykkedes!</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Failure" xml:space="preserve">
+    <value>Forbindelse til {0} mislykkedes. Tjek din API-nøgle og indstillinger.</value>
+  </data>
+  <data name="AIAssistant_Error_Timeout" xml:space="preserve">
+    <value>Forbindelsestesten udløb efter 10 sekunder.</value>
+  </data>
+  <data name="AIAssistant_Error_NetworkError" xml:space="preserve">
+    <value>Netværksfejl: {0}</value>
+  </data>
+  <data name="AIAssistant_Error_Generic" xml:space="preserve">
+    <value>Fejl: {0}</value>
+  </data>
+  <data name="AIAssistant_EnableThinking" xml:space="preserve">
+    <value>Aktivér tænkning (kun Anthropic)</value>
+  </data>
+  <data name="AIAssistant_Copied" xml:space="preserve">
+    <value>Kopieret!</value>
+  </data>
+  <data name="AIAssistant_CopyCode" xml:space="preserve">
+    <value>Kopiér kode</value>
+  </data>
+  <data name="AIAssistant_Testing" xml:space="preserve">
+    <value>Tester...</value>
+  </data>
+  <data name="AIAssistant_Connected" xml:space="preserve">
+    <value>Forbundet</value>
+  </data>
+  <data name="AIAssistant_ConnectionFailed" xml:space="preserve">
+    <value>Forbindelse mislykkedes</value>
+  </data>
+  <data name="AIAssistant_PluginName" xml:space="preserve">
+    <value>AI-assistent</value>
+  </data>
+  <data name="AIAssistant_RenameConversation" xml:space="preserve">
+    <value>Omdøb samtale</value>
+  </data>
+  <data name="AI_TipMcpCommand" xml:space="preserve"><value>Kommando (f.eks. npx)</value></data>
+</root>

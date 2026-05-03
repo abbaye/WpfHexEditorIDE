@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.DataInspector
+    File        : DataInspectorResources.uk-UA.resx
+    Description : Ukrainian (Ukraine) UI strings for the Data Inspector plugin.
+-->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="DataInspector_PluginName" xml:space="preserve"><value>Інспектор даних</value></data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve"><value>Аналіз даних</value></data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve"><value>Інспектор даних</value></data>
+  <data name="DataInspector_MenuItem" xml:space="preserve"><value>_Інспектор даних</value></data>
+  <data name="BarChart_NoData" xml:space="preserve"><value>Немає даних для відображення</value></data>
+  <data name="BarChart_Total" xml:space="preserve"><value>Всього</value></data>
+  <data name="BarChart_Max" xml:space="preserve"><value>Макс.</value></data>
+  <data name="BarChart_Entropy" xml:space="preserve"><value>Ентропія</value></data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve"><value>біт/байт</value></data>
+  <data name="BarChart_Bytes" xml:space="preserve"><value>байт</value></data>
+  <data name="DataInspector_EmptyState" xml:space="preserve"><value>Байти не вибрано &#8212; виберіть байти в редакторі Hex.</value></data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve"><value>Активний вигляд</value></data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve"><value>Весь файл</value></data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve"><value>Виділення</value></data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve"><value>Частота</value></data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve"><value>Ентропія</value></data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve"><value>Немає даних</value></data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Категорія :</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>Всі</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Ціле</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>Дробове</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Дата/Час</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Мережа</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Колір</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>Основні</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>Біти</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>Усі формати</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>Більше параметрів</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Показати мітки осей</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Показати лінії сітки</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Показати статистику</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Розподіл частот</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Ентропія (ковзне вікно)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Збільшити</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Зменшити</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Скинути масштаб</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Оновити графік</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Копіювати зображення графіка</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Розташування</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Ліворуч</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Праворуч</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Зверху</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Знизу</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Область :</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Активний вигляд</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Виділення</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>Весь файл</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Частота</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Розташування :</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Положення графіка відносно списку інтерпретацій</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Аналіз файлу...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Інтерпретації : </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>Немає даних</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Автооновлення при зміні виділення</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Порядок байтів за замовчуванням : Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Показати панель графіка байтів</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Положення графіка :</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Макс. байт для попереднього перегляду рядка :</value></data>
+</root>

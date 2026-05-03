@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.fr-CA.resx
+    Description : Localized UI strings for the Structure Editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>Intensitate</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>Obligatoriu</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Adăugare bloc</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Adăugare</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Anulare</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Metadate</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Detectare</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Blocuri</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Variabile</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Avansat</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Calitate</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Test</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Salvare (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Validare (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Anulare (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Refacere (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Comutare vizualizare cod în direct</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Adăugare bloc (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Duplicare bloc (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Modificări nesalvate</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Filtrare blocuri după nume</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Adăugare bloc...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Duplicare</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Ștergere</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Sus</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Jos</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Copiere ca JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Lipire bloc</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Selectați un bloc pentru a modifica proprietățile,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>sau apăsați Ctrl+N / clic dreapta pentru a adăuga un bloc nou.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Semnătură hexadecimală</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Octeți hex fără spații, ex. 89504E47 pentru PNG</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Semnătură</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>Semnături v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Mod de potrivire</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Valoare hex</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Etichetă</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ Adăugare semnătură</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Indice entropie</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Entropie minimă</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Entropie maximă</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Scor minim</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Prag scor</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Tipare de conținut (formate text)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Tipar Regex</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Adăugare tipar</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>General</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Numele formatului</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Numele lizibil al formatului (ex. 'Arhivă ZIP', 'Imagine PNG')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Versiune</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Versiunea acestei definiții (ex. '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Autor</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Autorul acestui fișier de definiție</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Categorie</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Categorie (definită automat din structura dosarelor: Arhive, Imagini, Audio, Video, etc.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Mod diff</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Algoritm diff preferat pentru DiffViewer</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Editor preferat</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>ID fabrică editor preferat pentru fișierele corespunzătoare acestui format</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Descriere</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Format text (se deschide în editorul de cod implicit)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Extensii de fișier</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Adăugare extensie</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>Tipuri MIME</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ Adăugare tip MIME</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Software</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Adăugare software</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Metrici calculate</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Acoperire blocuri</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Scor completitudine</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Distribuție tipuri</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Blocuri</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Adâncime</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Variabile</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Reguli</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Metadate</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Nivel documentație</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Ultima actualizare</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Format: YYYY-MM-DD (completat automat la salvare)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Format prioritar (top 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Rafinat automat (îmbogățit prin script — doar citire)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Testare format pe un fișier</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Calea spre fișierul binar de testat</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Răsfoire…</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Selectați un fișier binar de testat</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Lansare test</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Copiere rezultate în clipboard (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Selectați un fișier și faceți clic pe ▶ Lansare test pentru a testa definiția formatului curent.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Stare</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Numele blocului</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Type</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Lung.</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Brut (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Valoare analizată</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Notă</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Avertisment</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Eroare</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Ignorat</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Variabile inițiale disponibile pentru interpretorul de blocuri (ex. contoare bucle, offset-uri calculate).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Filtrare variabile după nume</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Numele variabilei</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Type</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Valoare inițială</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Descriere</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Adăugare variabilă</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Aserțiuni</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:nom equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Expresie booleană — Ctrl+Space pentru funcții și variabile</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Sume de control</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Gestiune versiuni (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Importuri ($ref Composition)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = numele formatului (sau structs/Num), as = alias folosit în blocurile structRef.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Referință format, ex. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>Alias folosit în structRef, ex. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Adăugare import</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Forensic</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Marcaje de navigare</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>nomVariable</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Variabilă care conține offset-ul în octeți — Ctrl+Space pentru sugestii</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Adăugare marcaj</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Dispunere inspector</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Șabloane de export</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Adăugare șablon</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>Indicii IA</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Un câmp binar cu un offset și o lungime fixe sau variabile.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Octeți magici care identifică formatul la un offset specific.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Citește o valoare de lungime variabilă sau simbolică într-o variabilă numită.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Analizează condiționat blocuri pe baza valorii unui câmp sau variabile.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Repetă un corp de bloc atât timp cât o condiție este adevărată.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Modifică o variabilă (incrementare, decrementare, setareVariabilă).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Evaluează o expresie matematică și stochează rezultatul.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Analizează un tablou cu număr fix de intrări structurate.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Selectează un set de blocuri variante pe baza unei variabile discriminante.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Integrează o definiție de structură externă prin referință.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Creează o adnotare de navigare către un offset indicat.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} eroare(i)</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} avertisment(e)</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>JSON brut — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Aplicare</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Anulare</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Editor de structură</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Editor vizual pentru fișierele de definiție structură .whfmt. Editați blocuri, tipuri, offset-uri, lungimi și culori într-un DataGrid.</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Lungime:</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Validare (Ctrl+Maj+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Adăugare bloc (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Comutare vizualizare cod în direct</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Dispunere</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Dispunere vizualizare cod</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Cod la dreapta</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Cod la stânga</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Cod jos</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Cod sus</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Format</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Filă</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Blocuri</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Validare</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Nume</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Type</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Culoare</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Opacitate</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Descriere</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Ascuns</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Endianness</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Tip bloc</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Acțiune</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Variabilă</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Valoare</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Calcul</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Expresie</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Stocare ca</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Poziție</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Offset</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Offset de la</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Offset adăugat</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Lungime</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Tip valoare</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Tablou</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Număr</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Dimensiune intrare</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Variabilă index</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Ciclu culori</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Câmpurile de intrare sunt afișate ca copii în arbore.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Uniune</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Discriminant</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Variante</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Structură imbricată</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Ref. structură</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Locație pointer</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Țintă și stocare</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Variabilă țintă</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Etichetă</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Poziție și dimensiune</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Stocare</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Stocare mapată</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Mapare valori</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Câmpuri de biți</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Nume</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Biți</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Până la</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Lungime max.</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Valoare min.</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Valoare max.</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Tipar (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Mesaj eroare</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Nume variabilă</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Grup</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Un grup etichetează vizual un set de câmpuri copil cu un strat de culoare. Nu consumă octeți.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Copiii sunt afișați în arborele blocurilor — utilizați arborele pentru a adăuga/reorganiza blocurile copil.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Câmpurile copil sunt afișate în arborele blocurilor.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Regiune date brute</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Marchează o regiune de octeți bruți cu un strat de culoare. Nicio valoare nu este extrasă.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Condiție</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Etichete ramură</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>Etichetă „Adevărat"</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>Etichetă „Fals"</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Blocurile Then / Else sunt afișate ca copii în arbore.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Condiție buclă</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Limite</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Iterații max.</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Blocurile corpului sunt afișate ca copii în arbore.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Numele variabilei de modificat — tastați pentru sugestii (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Valoarea de setat / cantitatea de adăugat sau scăzut — acceptă var:nume</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Expresie matematică cu variabile și funcții — Ctrl+Space pentru completare automată</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Numele variabilei unde se stochează rezultatul calculat — Ctrl+Space pentru sugestii</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Offset-ul fișierului unde începe tabloul — Ctrl+Space pentru completare automată</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Variabilă folosită ca offset de bază pentru acest tablou</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Numărul de intrări — Ctrl+Space pentru sugestii de variabile</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Dimensiunea fiecărei intrări în octeți — Ctrl+Space pentru sugestii de variabile</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Numele variabilei de index de buclă (ex. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Adăugare culoare</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Variabilă care gestionează selecția variantei — Ctrl+Space pentru sugestii</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Numele formatului sau calea relativă spre fișierul .whfmt</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Răsfoire…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Offset-ul fișierului unde valoarea pointerului este citită — Ctrl+Space pentru completare automată</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Numele variabilei folosite ca offset de bază</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>Dimensiunea valorii pointerului în octeți (ex. 4 pentru uint32) — sau var:nume</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Variabilă care va primi adresa rezolvată a pointerului</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Variabilă unde se stochează valoarea brută a pointerului</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Etichetă de adnotare afișată în vizualizarea hex</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space pentru completare automată — întreg, var:nume, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Numele variabilei a cărei valoare este offset-ul de bază — Ctrl+Space pentru sugestii</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>Octeți suplimentari adăugați la OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space pentru completare automată — întreg, var:nume, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Numele variabilei unde se stochează valoarea analizată — Ctrl+Space pentru sugestii</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>Numele variabilei pentru valoarea tradusă de ValueMap — Ctrl+Space pentru sugestii</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>brut=Afișare (ex. 0=Nuanțe de gri)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ Adăugare intrare ValueMap</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Interval biți ex. 7-6 sau bit unic ex. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Adăugare câmp de biți</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Santinelă (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Tipar hex sau var:nume unde se oprește citirea. Înlocuiește Lungimea când este definit.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Limită de siguranță (octeți) dacă tiparul Until nu este găsit. 0 = implicit interpret (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until inclusiv (include octeții tiparului în lungimea câmpului)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Reguli de validare</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Numele variabilei citite de acest bloc de metadate</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Întreg fix sau var:nume — Ctrl+Space pentru sugestii</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Limită de siguranță — întreg</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Variabilă care primește indexul de iterație curent (baza 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Variabilă unde se stochează numărul de iterații după buclă — Ctrl+Space pentru sugestii</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Editare acest bloc ca JSON brut</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Adăugare aserțiune</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Adăugare sumă de control</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Numele șablonului</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Numele structurii (struct C)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Numai cifre hexadecimale (ex. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Afișare:</value></data>
+</root>

@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.vi-VN.resx
+    Description : Chuỗi UI đã bản địa hóa cho Trình soạn thảo cấu trúc.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>Độ mạnh</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>Bắt buộc</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Thêm khối</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Thêm</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Siêu dữ liệu</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Phát hiện</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Khối</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Biến</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Nâng cao</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Chất lượng</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Kiểm thử</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Lưu (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Xác nhận (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Hoàn tác (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Làm lại (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Bật/tắt xem mã trực tiếp</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Thêm khối (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Nhân đôi khối (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Thay đổi chưa lưu</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Lọc khối theo tên</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Thêm khối...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Nhân đôi</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Xóa</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Lên</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Xuống</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Sao chép JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Dán khối</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Chọn một khối để chỉnh sửa thuộc tính,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>hoặc nhấn Ctrl+N / chuột phải để thêm khối mới.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Chữ ký hex</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Byte hex không có khoảng trắng, vd. 89504E47 cho PNG</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Chữ ký</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>Chữ ký v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Chế độ khớp</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Giá trị hex</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Nhãn</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ Thêm chữ ký</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Chỉ số entropy</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Entropy tối thiểu</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Entropy tối đa</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Điểm tối thiểu</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Ngưỡng điểm</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Mẫu nội dung (định dạng văn bản)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Mẫu Regex</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Thêm mẫu</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>Tổng quan</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Tên định dạng</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Tên hiển thị của định dạng (vd. 'Archive ZIP', 'Image PNG')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Phiên bản</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Phiên bản định nghĩa này (vd. '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Tác giả</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Tác giả tệp định nghĩa này</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Danh mục</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Danh mục (tự động từ cấu trúc thư mục: Archives, Images, Audio, Video, v.v.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Chế độ diff</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Thuật toán diff ưa thích cho DiffViewer</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Trình soạn thảo ưa thích</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>ID factory trình soạn thảo ưa thích cho tệp khớp định dạng này</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Mô tả</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Định dạng văn bản (mở trong trình soạn thảo mã mặc định)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Đuôi tệp</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Thêm đuôi tệp</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>Loại MIME</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ Thêm loại MIME</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Phần mềm</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Thêm phần mềm</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Số liệu tính toán</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Độ bao phủ khối</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Điểm hoàn chỉnh</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Phân phối kiểu</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Khối</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Độ sâu</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Biến</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Quy tắc</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Siêu dữ liệu</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Mức tài liệu</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Cập nhật lần cuối</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Định dạng : YYYY-MM-DD (tự động điền khi lưu)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Định dạng ưu tiên (top 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Tinh chỉnh tự động (làm phong phú bởi script — chỉ đọc)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Kiểm thử định dạng trên tệp</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Đường dẫn tệp nhị phân cần kiểm thử</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Duyệt…</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Chọn tệp nhị phân để kiểm thử</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Chạy kiểm thử</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Sao chép kết quả vào clipboard (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Chọn tệp và nhấp ▶ Chạy kiểm thử để kiểm thử định nghĩa định dạng hiện tại.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Trạng thái</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Tên khối</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Kiểu</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Độ dài</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Thô (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Giá trị phân tích</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Ghi chú</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Cảnh báo</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Lỗi</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Bỏ qua</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Biến ban đầu khả dụng cho trình thông dịch khối (vd. bộ đếm vòng lặp, offset tính toán).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Lọc biến theo tên</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Tên biến</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Kiểu</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Giá trị ban đầu</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Mô tả</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Thêm biến</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Kiểm định</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:tên equals 0 or calc:biểu thức</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Biểu thức boolean — Ctrl+Space cho hàm và biến</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Tổng kiểm tra</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Quản lý phiên bản (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Imports ($ref Composition)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = tên định dạng (hoặc structs/Tên), as = alias dùng trong khối structRef.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Tham chiếu định dạng, vd. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>Alias dùng trong structRef, vd. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Thêm import</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Pháp y</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Dấu trang điều hướng</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>tenBien</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Biến chứa offset byte — Ctrl+Space để gợi ý</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Thêm dấu trang</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Bố cục trình kiểm tra</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Mẫu xuất</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Thêm mẫu</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>Gợi ý AI</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Trường nhị phân với offset và độ dài cố định hoặc biến.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Byte ma thuật xác định định dạng tại offset cụ thể.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Đọc giá trị có độ dài biến hoặc ký hiệu vào biến có tên.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Phân tích có điều kiện các khối dựa trên giá trị trường hoặc biến.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Lặp lại khối cho đến khi điều kiện không còn đúng.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Sửa đổi biến (tăng, giảm, đặt biến).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Tính biểu thức toán học và lưu kết quả.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Phân tích mảng với số mục cố định có cấu trúc.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Chọn tập khối biến thể dựa trên biến phân biệt.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Nhúng định nghĩa cấu trúc ngoài theo tham chiếu.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Tạo chú thích điều hướng đến offset được trỏ tới.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} lỗi</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} cảnh báo</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>JSON thô — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Áp dụng</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Trình soạn thảo cấu trúc</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Trình chỉnh sửa trực quan cho tệp định nghĩa cấu trúc .whfmt. Chỉnh sửa khối, kiểu, offset, độ dài và màu sắc trong DataGrid.</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Độ dài :</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Xác nhận (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Thêm khối (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Bật/tắt xem mã trực tiếp</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Bố cục</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Bố cục xem mã</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Mã bên phải</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Mã bên trái</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Mã bên dưới</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Mã bên trên</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Định dạng</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Tab</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Khối</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Xác thực</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Tên</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Kiểu</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Màu sắc</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Độ mờ</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Mô tả</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Ẩn</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Thứ tự byte</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Kiểu khối</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Hành động</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Biến</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Giá trị</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Tính toán</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Biểu thức</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Lưu vào</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Vị trí</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Offset</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Offset từ</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Offset cộng thêm</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Độ dài</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Kiểu giá trị</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Mảng</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Số lượng</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Kích thước mục</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Biến chỉ số</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Chu kỳ màu</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Các trường mục hiển thị dưới dạng nút con trong cây.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Union</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Phân biệt</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Biến thể</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Cấu trúc lồng nhau</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Tham chiếu cấu trúc</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Vị trí con trỏ</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Đích và lưu trữ</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Biến đích</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Nhãn</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Vị trí và kích thước</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Lưu trữ</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Lưu trữ ánh xạ</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Ánh xạ giá trị</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Trường bit</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Tên</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Bits</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Cho đến</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Độ dài tối đa</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Giá trị tối thiểu</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Giá trị tối đa</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Mẫu (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Thông báo lỗi</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Tên biến</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Nhóm</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Nhóm gắn nhãn trực quan tập hợp trường con với lớp màu. Không tiêu thụ byte.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Các con hiển thị trong cây khối — dùng cây để thêm/sắp xếp lại khối con.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Các trường con hiển thị trong cây khối.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Vùng dữ liệu thô</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Đánh dấu vùng byte thô với lớp màu. Không có giá trị nào được trích xuất.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Điều kiện</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Nhãn nhánh</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>Nhãn "Đúng"</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>Nhãn "Sai"</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Khối Then / Else hiển thị dưới dạng nút con trong cây.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Điều kiện vòng lặp</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Giới hạn</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Lần lặp tối đa</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Các khối thân hiển thị dưới dạng nút con trong cây.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Tên biến cần sửa đổi — nhập để xem gợi ý (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Giá trị cần đặt / lượng cộng hay trừ — chấp nhận var:tên</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Biểu thức toán học với biến và hàm — Ctrl+Space để tự hoàn thành</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Tên biến lưu kết quả tính toán — Ctrl+Space để gợi ý</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Offset tệp nơi mảng bắt đầu — Ctrl+Space để tự hoàn thành</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Biến dùng làm offset cơ sở cho mảng này</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Số mục — Ctrl+Space để gợi ý biến</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Kích thước mỗi mục theo byte — Ctrl+Space để gợi ý biến</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Tên biến chỉ số vòng lặp (vd. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Thêm màu</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Biến điều khiển lựa chọn biến thể — Ctrl+Space để gợi ý</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Tên định dạng hoặc đường dẫn tương đối đến tệp .whfmt</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Duyệt…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Offset tệp nơi giá trị con trỏ được đọc — Ctrl+Space để tự hoàn thành</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Tên biến dùng làm offset cơ sở</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>Kích thước giá trị con trỏ theo byte (vd. 4 cho uint32) — hoặc var:tên</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Biến nhận địa chỉ đã giải quyết của con trỏ</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Biến lưu giá trị thô của con trỏ</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Nhãn chú thích hiển thị trong chế độ hex</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space để tự hoàn thành — số nguyên, var:tên, calc:biểu thức, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Tên biến có giá trị là offset cơ sở — Ctrl+Space để gợi ý</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>Byte bổ sung cộng vào OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space để tự hoàn thành — số nguyên, var:tên, calc:biểu thức</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Tên biến lưu giá trị đã phân tích — Ctrl+Space để gợi ý</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>Tên biến cho giá trị được dịch bởi ValueMap — Ctrl+Space để gợi ý</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>thô=Hiển thị (vd. 0=Thang xám)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ Thêm mục ValueMap</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Phạm vi bit vd. 7-6 hoặc bit đơn vd. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Thêm trường bit</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Sentinel (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Mẫu hex hoặc var:tên nơi dừng đọc. Ghi đè Length khi được đặt.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Giới hạn an toàn (byte) nếu không tìm thấy mẫu Until. 0 = mặc định trình thông dịch (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until toàn diện (bao gồm byte mẫu trong độ dài trường)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Quy tắc xác thực</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Tên biến được đọc bởi khối siêu dữ liệu này</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Số nguyên cố định hoặc var:tên — Ctrl+Space để gợi ý</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Giới hạn an toàn — số nguyên</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Biến nhận chỉ số lần lặp hiện tại (cơ sở 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Biến lưu số lần lặp sau vòng lặp — Ctrl+Space để gợi ý</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Chỉnh sửa khối này bằng JSON thô</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Thêm kiểm định</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Thêm tổng kiểm tra</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Tên mẫu</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Tên cấu trúc (struct C)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Chỉ chữ số hex (vd. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Hiển thị :</value></data>
+</root>

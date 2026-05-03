@@ -67,6 +67,16 @@ public sealed partial class EnvironmentGeneralPage : UserControl, IOptionsPage
         ("Swedish (Sweden)",        "sv-SE"),
         ("Turkish (Turkey)",        "tr-TR"),
         ("Chinese Simplified",      "zh-CN"),
+        ("Ukrainian (Ukraine)",      "uk-UA"),
+        ("Czech (Czech Republic)",   "cs-CZ"),
+        ("Vietnamese (Vietnam)",     "vi-VN"),
+        ("Hungarian (Hungary)",      "hu-HU"),
+        ("Romanian (Romania)",       "ro-RO"),
+        ("Indonesian (Indonesia)",   "id-ID"),
+        ("Thai (Thailand)",          "th-TH"),
+        ("Greek (Greece)",           "el-GR"),
+        ("Danish (Denmark)",         "da-DK"),
+        ("Finnish (Finland)",        "fi-FI"),
     ];
 
     public event EventHandler? Changed;

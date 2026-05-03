@@ -54,7 +54,7 @@ ${\color{#2E7BDE}\texttt{<}}{\color{#E87A20}\texttt{WpfHexEditor}}\ {\color{#2E7
 | **🐞 .NET Debugger** *(~60%)* | Integrated .NET debugging UI — Debug menu (Start/Stop/Restart, Step Over/Into/Out), collapsible toolbar pod, execution line highlight, full breakpoint system with conditions, hit counts, enable/disable toggle, and solution-scoped persistence, Breakpoint Explorer panel, right-click gutter popup for breakpoint editing, debug status bar · ⚠️ *Debug launch not yet functional — UI and breakpoint infrastructure are ready, runtime attach pending* |
 | **🧪 Unit Testing** | Built-in test runner — auto-detects xunit, nunit, and mstest projects, runs via `dotnet test` with TRX result parsing, pass/fail/skip counters with color-coded outcome glyphs, context-sensitive detail panel (project summary, class summary, or individual test details), auto-run on successful build |
 | **📋 IDE Infrastructure** | Unified editor plugin architecture via `IDocumentEditor` — shared undo engine with coalescence and VS-style history dropdown, `Ctrl+Z/Y` across all editors, rectangular block selection (`Alt+Click`), adaptive status bar, 30+ options pages, workspace system (`.whidews` save/restore), dynamic View menu (Flat/Categorized/ByDockSide), middle-click pan mode, NuGet Solution Manager, dependency injection via `Microsoft.Extensions.DependencyInjection`, **tab groups** (split editors horizontally/vertically, `ITabGroupService`, 16 `TG_*` theme tokens, keyboard shortcuts, settings page), **Window menu** (`_Window` top-level menu — Close/Close All But This/Close All Documents, Next/Previous Document `Ctrl+Tab`, **Full Screen `F11`** via Win32 `MonitorFromWindow`/`GetMonitorInfo` — covers entire monitor including taskbar, restores exact position on exit) |
-| **🌐 Localization** | Full IDE UI localization — **17 languages**: ar-SA · de-DE · es-419 · es-ES · fr-CA · fr-FR · hi-IN · it-IT · ja-JP · ko-KR · nl-NL · pl-PL · pt-BR · pt-PT · ru-RU · sv-SE · tr-TR · zh-CN; all panels, menus, context menus, dialogs, and toolbar buttons translated; runtime language switching |
+| **🌐 Localization** | Full IDE UI localization — **27 languages**: ar-SA · cs-CZ · da-DK · de-DE · el-GR · es-419 · es-ES · fi-FI · fr-CA · fr-FR · hi-IN · hu-HU · id-ID · it-IT · ja-JP · ko-KR · nl-NL · pl-PL · pt-BR · pt-PT · ro-RO · ru-RU · sv-SE · th-TH · tr-TR · uk-UA · vi-VN · zh-CN; all panels, menus, context menus, dialogs, and toolbar buttons translated; runtime language switching |
 
 ---
 
@@ -253,7 +253,7 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 | **Structure Editor** — block DataGrid, drag-drop, validation, undo/redo, TestTab, SmartComplete; remaining: live binary sync, complex types | 🔧 ~35% | #172 |
 | **.NET Debugger** — UI complete (menus, toolbar, breakpoints, explorer), remaining: runtime attach and debug launch | 🔧 ~30% | #44, #90 |
 | **Git Integration** — UI in place (changes panel, history, blame gutter, branch picker, stash), not yet integration-tested | 🔧 ~40% | #91 |
-| **IDE Localization** — Phase 6 complete (77.9% DynamicResource coverage), 17 languages, all panels + menus translated; remaining: remaining code-behind strings | 🔧 ~78% | #100 |
+| **IDE Localization** — 27 languages, all panels + menus translated; remaining: remaining code-behind strings | 🔧 ~78% | #100 |
 
 **Planned:**
 
@@ -270,7 +270,7 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 | Feature | Version |
 |---------|---------|
 | **NuGet release wave** — standalone packages: WPFHexaEditor 3.2.0, WpfCodeEditor 0.9.8.0, WpfDocking 0.9.7.0, WpfTerminal 0.9.7.0, ByteProvider 1.1.0, whfmt.FileFormatCatalog 1.1.0; full guide docs bundled; satellite assembly contamination fix; `_BundledProjectDll` isolation pattern | v0.6.5.15 |
-| **Phase 6 Localization** — 77.9% DynamicResource coverage; all panels, menus, context menus, dialogs, and toolbar buttons translated into 17 languages (waves 1–25); per-assembly `LocalizedResourceDictionary` pattern | v0.6.5.15 |
+| **IDE Localization** — 77.9% DynamicResource coverage; all panels, menus, context menus, dialogs, and toolbar buttons translated into 27 languages; per-assembly `LocalizedResourceDictionary` pattern | v0.6.5.15 |
 | **WpfDocking 0.9.7.0** — horizontal tab reorder for docked panels, tab-switch triple-fire eliminated (perf), StaticResource toolbar labels fix, full Phase 5+6 localization wired | v0.6.5.15 |
 | **790+ .whfmt format definitions** — +100 new definitions (waves 155+), Groups C–J completed, all validated against schema v2.3; `FormatSchemaValidator` wired at load time | v0.6.5.15 |
 | **whfmt.FileFormatCatalog v1.1.0 NuGet** — `FormatMatcher`, `FormatFileAnalyzer`, `CatalogQuery`, `FormatMetadataExtensions`, `FormatSummaryBuilder` utility layer added; `EmbeddedFormatCatalog` returns `IReadOnlySet<T>` backed by `FrozenSet<T>` | v0.6.5.15 |
@@ -350,7 +350,7 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 
 **.NET 8.0-windows** — Span\<T\>, SIMD, PGO. .NET Framework 4.8 is no longer supported (use legacy NuGet `WPFHexaEditor` for .NET Framework).
 
-**HexEditor control** supports 18 UI languages (ar-SA · de-DE · es-419 · es-ES · fr-CA · fr-FR · hi-IN · it-IT · ja-JP · ko-KR · nl-NL · pl-PL · pt-BR · pt-PT · ru-RU · sv-SE · tr-TR · zh-CN) with instant runtime switching. **IDE UI localization** — Phase 6 complete (77.9% coverage, 17 languages wired); remaining code-behind strings planned (#100).
+**HexEditor control** supports 18 UI languages (ar-SA · de-DE · es-419 · es-ES · fr-CA · fr-FR · hi-IN · it-IT · ja-JP · ko-KR · nl-NL · pl-PL · pt-BR · pt-PT · ru-RU · sv-SE · tr-TR · zh-CN) with instant runtime switching. **IDE UI localization** — 27 languages wired (77.9% DynamicResource coverage); remaining code-behind strings planned (#100).
 
 ---
 

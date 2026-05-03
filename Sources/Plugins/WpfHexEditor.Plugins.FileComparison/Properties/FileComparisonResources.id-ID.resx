@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="FileComparison_PanelTitle" xml:space="preserve"><value>Hub diff</value></data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve"><value>Pilih file 1 untuk dibandingkan</value></data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve"><value>Pilih file 2 untuk dibandingkan</value></data>
+  <data name="FileComparison_SelectFilesHint" xml:space="preserve"><value>Pilih file untuk dibandingkan</value></data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve"><value>Pilih kedua file untuk dibandingkan</value></data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve"><value>Pilih file untuk dibandingkan</value></data>
+  <data name="FileComparison_Comparing" xml:space="preserve"><value>Sedang membandingkan…</value></data>
+  <data name="FileComparison_Cancelled" xml:space="preserve"><value>Dibatalkan</value></data>
+  <data name="FileComparison_SelectTwoFiles" xml:space="preserve"><value>Pilih dua file dan klik Bandingkan</value></data>
+  <data name="FileComparison_MultipleFormats" xml:space="preserve"><value>Beberapa format terdeteksi</value></data>
+  <data name="FileComparison_SelectFile" xml:space="preserve"><value>Pilih file untuk dibandingkan</value></data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>FILE</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>RINGKASAN PERBEDAAN</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>Dimodifikasi</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>Disisipkan</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>Dihapus</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>FREKUENSI BYTE (NIBBLES)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>ENTROPI SHANNON (per blok 256 byte)</value></data>
+</root>

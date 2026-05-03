@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.DataInspector
+    File        : DataInspectorResources.fr-CA.resx
+    Description : French (Canada) localized UI strings for the Data Inspector plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>Inspektur data</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>Analisis data</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>Inspektur data</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>_Inspektur data</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>Tidak ada data untuk ditampilkan</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Maks</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Entropi</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>bit/byte</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>byte</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>Tidak ada byte yang dipilih — pilih byte di editor heksadesimal.</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>Tampilan aktif</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>File seluruhnya</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>Pilihan</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>Frekuensi</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>Entropi</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>Tidak ada data</value>
+  </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Kategori:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>Semua</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Integer</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>Mengambang</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Tanggal/Waktu</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Jaringan</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Warna</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>Dasar</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>Bit</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>Semua format</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>Opsi lainnya</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Tampilkan label sumbu</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Tampilkan garis grid</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Tampilkan statistik</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Distribusi frekuensi</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Entropi (jendela geser)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Perbesar</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Perkecil</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Reset zoom</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Perbarui grafik</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Salin gambar grafik</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Tata letak</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Kiri</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Kanan</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Atas</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Bawah</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Cakupan:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Tampilan aktif</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Pilihan</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>File seluruhnya</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Frekuensi</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Tata letak:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Posisi grafik relatif terhadap daftar interpretasi</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Menganalisis file...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Interpretasi: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>Tidak ada data</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Perbarui otomatis saat pilihan berubah</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Urutan byte default: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Tampilkan panel grafik byte</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Posisi grafik:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Byte maks untuk pratinjau string:</value></data>
+</root>

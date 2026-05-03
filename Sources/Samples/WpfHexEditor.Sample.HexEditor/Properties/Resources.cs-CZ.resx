@@ -1,0 +1,735 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" use="preserve" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="QAT_Save_Label" xml:space="preserve">
+    <value>Ulo&#382;it</value>
+  </data>
+  <data name="QAT_Save_Tooltip" xml:space="preserve">
+    <value>Ulo&#382;it (Ctrl+S)</value>
+  </data>
+  <data name="QAT_Undo_Label" xml:space="preserve">
+    <value>Zp&#283;t</value>
+  </data>
+  <data name="QAT_Undo_Tooltip" xml:space="preserve">
+    <value>Zp&#283;t (Ctrl+Z)</value>
+  </data>
+  <data name="QAT_Redo_Label" xml:space="preserve">
+    <value>Znovu</value>
+  </data>
+  <data name="QAT_Redo_Tooltip" xml:space="preserve">
+    <value>Znovu (Ctrl+Y)</value>
+  </data>
+  <data name="Ribbon_Home_Tab" xml:space="preserve">
+    <value>Dom&#367;</value>
+  </data>
+  <data name="Ribbon_Home_Clipboard_Group" xml:space="preserve">
+    <value>Schr&#225;nka</value>
+  </data>
+  <data name="Ribbon_Home_Paste" xml:space="preserve">
+    <value>Vlo&#382;it</value>
+  </data>
+  <data name="Ribbon_Home_Cut" xml:space="preserve">
+    <value>Vyjmout</value>
+  </data>
+  <data name="Ribbon_Home_Copy" xml:space="preserve">
+    <value>Kop&#237;rovat</value>
+  </data>
+  <data name="Ribbon_Home_Edit_Group" xml:space="preserve">
+    <value>&#218;pravy</value>
+  </data>
+  <data name="Ribbon_Home_Undo" xml:space="preserve">
+    <value>Zp&#283;t</value>
+  </data>
+  <data name="Ribbon_Home_Redo" xml:space="preserve">
+    <value>Znovu</value>
+  </data>
+  <data name="Ribbon_Home_Selection_Group" xml:space="preserve">
+    <value>V&#253;b&#283;r</value>
+  </data>
+  <data name="Ribbon_Home_SelectAll" xml:space="preserve">
+    <value>Vybrat v&#353;e</value>
+  </data>
+  <data name="Ribbon_Home_Clear" xml:space="preserve">
+    <value>Vymazat</value>
+  </data>
+  <data name="Ribbon_Home_Display_Group" xml:space="preserve">
+    <value>Zobrazen&#237;</value>
+  </data>
+  <data name="Ribbon_Home_16BytesPerLine" xml:space="preserve">
+    <value>16 bajt&#367;/&#345;&#225;dek</value>
+  </data>
+  <data name="Ribbon_Edit_Tab" xml:space="preserve">
+    <value>&#218;pravy</value>
+  </data>
+  <data name="Ribbon_Edit_Find_Group" xml:space="preserve">
+    <value>Hledat</value>
+  </data>
+  <data name="Ribbon_Edit_Find" xml:space="preserve">
+    <value>Hledat</value>
+  </data>
+  <data name="Ribbon_Edit_Navigate_Group" xml:space="preserve">
+    <value>Navigace</value>
+  </data>
+  <data name="Ribbon_Edit_GoTo" xml:space="preserve">
+    <value>P&#345;ej&#237;t na</value>
+  </data>
+  <data name="Ribbon_Edit_Bookmarks" xml:space="preserve">
+    <value>Z&#225;lo&#382;ky</value>
+  </data>
+  <data name="Ribbon_Edit_Modify_Group" xml:space="preserve">
+    <value>Upravit</value>
+  </data>
+  <data name="Ribbon_Edit_InsertByte" xml:space="preserve">
+    <value>Vlo&#382;it bajt</value>
+  </data>
+  <data name="Ribbon_Edit_DeleteByte" xml:space="preserve">
+    <value>Smazat bajt</value>
+  </data>
+  <data name="Ribbon_Edit_FillSelection" xml:space="preserve">
+    <value>Vyplnit v&#253;b&#283;r</value>
+  </data>
+  <data name="Ribbon_Edit_Mode_Group" xml:space="preserve">
+    <value>Re&#382;im</value>
+  </data>
+  <data name="Ribbon_Edit_Overwrite" xml:space="preserve">
+    <value>P&#345;epsat</value>
+  </data>
+  <data name="Ribbon_Edit_Insert" xml:space="preserve">
+    <value>Vlo&#382;it</value>
+  </data>
+  <data name="Ribbon_Edit_ReadOnly" xml:space="preserve">
+    <value>Pouze ke&#269;ten&#237;</value>
+  </data>
+  <data name="Ribbon_View_Tab" xml:space="preserve">
+    <value>Zobrazen&#237;</value>
+  </data>
+  <data name="Ribbon_View_Zoom_Group" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="Ribbon_View_ZoomIn" xml:space="preserve">
+    <value>P&#345;ibl&#237;&#382;it</value>
+  </data>
+  <data name="Ribbon_View_ZoomOut" xml:space="preserve">
+    <value>Odd&#225;lit</value>
+  </data>
+  <data name="Ribbon_View_Zoom100" xml:space="preserve">
+    <value>100%</value>
+  </data>
+  <data name="Ribbon_View_DisplayOptions_Group" xml:space="preserve">
+    <value>Mo&#382;nosti zobrazen&#237;</value>
+  </data>
+  <data name="Ribbon_View_ShowTooltip" xml:space="preserve">
+    <value>Zobrazit n&#225;pov&#283;du</value>
+  </data>
+  <data name="Ribbon_View_HighlightMatches" xml:space="preserve">
+    <value>Zv&#253;raznit v&#253;sledky</value>
+  </data>
+  <data name="Ribbon_View_Themes_Group" xml:space="preserve">
+    <value>T&#233;mata</value>
+  </data>
+  <data name="Ribbon_View_SelectTheme" xml:space="preserve">
+    <value>Vybrat t&#233;ma</value>
+  </data>
+  <data name="Ribbon_View_Theme_Office" xml:space="preserve">
+    <value>Office (sv&#283;tl&#233;)</value>
+  </data>
+  <data name="Ribbon_View_Theme_DarkGlass" xml:space="preserve">
+    <value>Tmav&#233; sklo</value>
+  </data>
+  <data name="Ribbon_View_Theme_VisualStudio" xml:space="preserve">
+    <value>Visual Studio</value>
+  </data>
+  <data name="Ribbon_View_Theme_Minimal" xml:space="preserve">
+    <value>Minim&#225;ln&#237;</value>
+  </data>
+  <data name="Ribbon_View_Panels_Group" xml:space="preserve">
+    <value>Panely</value>
+  </data>
+  <data name="Ribbon_View_SettingsPanel" xml:space="preserve">
+    <value>Panel nastaven&#237;</value>
+  </data>
+  <data name="Ribbon_Data_Tab" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="Ribbon_Data_Export_Group" xml:space="preserve">
+    <value>Exportovat</value>
+  </data>
+  <data name="Ribbon_Data_Export" xml:space="preserve">
+    <value>Exportovat</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs" xml:space="preserve">
+    <value>Exportovat jako</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs_CSharpByteArray" xml:space="preserve">
+    <value>Pole bajt&#367; C#</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs_CCode" xml:space="preserve">
+    <value>K&#243;d C</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs_JavaCode" xml:space="preserve">
+    <value>K&#243;d Java</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs_HexString" xml:space="preserve">
+    <value>Hex &#345;et&#283;zec</value>
+  </data>
+  <data name="Ribbon_Data_Compare_Group" xml:space="preserve">
+    <value>Porovnat</value>
+  </data>
+  <data name="Ribbon_Data_CompareFiles" xml:space="preserve">
+    <value>Porovnat soubory</value>
+  </data>
+  <data name="Ribbon_Data_Statistics_Group" xml:space="preserve">
+    <value>Statistiky</value>
+  </data>
+  <data name="Ribbon_Data_ByteCount" xml:space="preserve">
+    <value>Po&#269;et bajt&#367;</value>
+  </data>
+  <data name="Ribbon_Data_Statistics" xml:space="preserve">
+    <value>Statistiky</value>
+  </data>
+  <data name="Ribbon_Data_Entropy" xml:space="preserve">
+    <value>Entropie</value>
+  </data>
+  <data name="Ribbon_Data_Advanced_Group" xml:space="preserve">
+    <value>Pokro&#269;il&#233;</value>
+  </data>
+  <data name="Ribbon_Data_Checksum" xml:space="preserve">
+    <value>Kontroln&#237; sou&#269;et</value>
+  </data>
+  <data name="Ribbon_Data_Hash" xml:space="preserve">
+    <value>Hash (MD5/SHA)</value>
+  </data>
+  <data name="Ribbon_Tools_Tab" xml:space="preserve">
+    <value>N&#225;stroje</value>
+  </data>
+  <data name="Ribbon_Tools_Options_Group" xml:space="preserve">
+    <value>Mo&#382;nosti</value>
+  </data>
+  <data name="Ribbon_Tools_Settings" xml:space="preserve">
+    <value>Nastaven&#237;</value>
+  </data>
+  <data name="Ribbon_Tools_Language_Group" xml:space="preserve">
+    <value>Jazyk</value>
+  </data>
+  <data name="Ribbon_Tools_Language" xml:space="preserve">
+    <value>Jazyk</value>
+  </data>
+  <data name="Ribbon_Tools_Language_Tooltip" xml:space="preserve">
+    <value>Zm&#283;nit jazyk aplikace</value>
+  </data>
+  <data name="Ribbon_Tools_Help_Group" xml:space="preserve">
+    <value>N&#225;pov&#283;da</value>
+  </data>
+  <data name="Ribbon_Tools_Documentation" xml:space="preserve">
+    <value>Dokumentace</value>
+  </data>
+  <data name="Ribbon_Tools_About" xml:space="preserve">
+    <value>O aplikaci</value>
+  </data>
+  <data name="Options_Title" xml:space="preserve">
+    <value>Mo&#382;nosti</value>
+  </data>
+  <data name="Options_Header_Title" xml:space="preserve">
+    <value>Mo&#382;nosti aplikace</value>
+  </data>
+  <data name="Options_Header_Subtitle" xml:space="preserve">
+    <value>Konfigurujte sv&#233; p&#345;edvolby hex editoru</value>
+  </data>
+  <data name="Options_Tab_Language" xml:space="preserve">
+    <value>Jazyk</value>
+  </data>
+  <data name="Options_Tab_Appearance" xml:space="preserve">
+    <value>Vzhled</value>
+  </data>
+  <data name="Options_Tab_Performance" xml:space="preserve">
+    <value>V&#253;kon</value>
+  </data>
+  <data name="Options_Language_Instructions" xml:space="preserve">
+    <value>Vyberte preferovan&#253; jazyk zobrazen&#237;:</value>
+  </data>
+  <data name="Options_Language_CurrentLanguage" xml:space="preserve">
+    <value>Aktu&#225;ln&#237; jazyk</value>
+  </data>
+  <data name="Options_Language_ListView_Header_Language" xml:space="preserve">
+    <value>Jazyk</value>
+  </data>
+  <data name="Options_Language_ListView_Header_NativeName" xml:space="preserve">
+    <value>Nativn&#237; n&#225;zev</value>
+  </data>
+  <data name="Options_Language_ListView_Header_Code" xml:space="preserve">
+    <value>K&#243;d</value>
+  </data>
+  <data name="Options_Language_Warning" xml:space="preserve">
+    <value>Po zm&#283;n&#283; jazyka pros&#237;m restartujte aplikaci.</value>
+  </data>
+  <data name="Options_ComingSoon" xml:space="preserve">
+    <value>Brzy k dispozici...</value>
+  </data>
+  <data name="Options_Button_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Options_Button_Cancel" xml:space="preserve">
+    <value>Storno</value>
+  </data>
+  <data name="Settings_Header" xml:space="preserve">
+    <value>NASTAVEN&#205;</value>
+  </data>
+  <data name="Settings_Theme_Header" xml:space="preserve">
+    <value>&#127912; T&#233;ma</value>
+  </data>
+  <data name="Settings_Language_Header" xml:space="preserve">
+    <value>&#127760; Jazyk</value>
+  </data>
+  <data name="Settings_SearchOptions_Header" xml:space="preserve">
+    <value>&#128269; Mo&#382;nosti hled&#225;n&#237;</value>
+  </data>
+  <data name="Settings_SearchOptions_ParallelSearch" xml:space="preserve">
+    <value>Povolit paraleln&#237; hled&#225;n&#237; (rychlej&#353;&#237; pro velk&#233; soubory)</value>
+  </data>
+  <data name="Settings_SearchOptions_WildcardSearch" xml:space="preserve">
+    <value>Pou&#382;&#237;t hled&#225;n&#237; se z&#225;stupn&#253;mi znaky (notace ??)</value>
+  </data>
+  <data name="Settings_SearchOptions_HighlightMatches" xml:space="preserve">
+    <value>Zv&#253;raznit v&#353;echny v&#253;sledky</value>
+  </data>
+  <data name="Settings_SearchOptions_ResultLimit" xml:space="preserve">
+    <value>Limit v&#253;sledk&#367; hled&#225;n&#237;:</value>
+  </data>
+  <data name="Settings_DisplayOptions_Header" xml:space="preserve">
+    <value>&#128250; Mo&#382;nosti zobrazen&#237;</value>
+  </data>
+  <data name="Settings_DisplayOptions_LineNumbers" xml:space="preserve">
+    <value>Zobrazit &#269;&#237;sla &#345;&#225;dk&#367;</value>
+  </data>
+  <data name="Settings_DisplayOptions_ScrollMarkers" xml:space="preserve">
+    <value>Zobrazit zna&#269;ky posouv&#225;n&#237;</value>
+  </data>
+  <data name="Settings_DisplayOptions_StatusBar" xml:space="preserve">
+    <value>Zobrazit stavov&#253; &#345;&#225;dek</value>
+  </data>
+  <data name="Settings_DisplayOptions_BytesPerLine" xml:space="preserve">
+    <value>Bajty na &#345;&#225;dek:</value>
+  </data>
+  <data name="Settings_Performance_Header" xml:space="preserve">
+    <value>&#9889; V&#253;kon</value>
+  </data>
+  <data name="Settings_Performance_V2Active" xml:space="preserve">
+    <value>MODUL V2 AKTIVN&#205;</value>
+  </data>
+  <data name="Settings_Performance_BoyerMoore" xml:space="preserve">
+    <value>&#8226; Algoritmus Boyer-Moore-Horspool</value>
+  </data>
+  <data name="Settings_Performance_Parallel" xml:space="preserve">
+    <value>&#8226; Podpora paraleln&#237;ho zpracov&#225;n&#237;</value>
+  </data>
+  <data name="Settings_Performance_Faster" xml:space="preserve">
+    <value>&#8226; A&#382; o 99 % rychlej&#353;&#237; ne&#382; V1</value>
+  </data>
+  <data name="Settings_Button_ResetDefaults" xml:space="preserve">
+    <value>Obnovit v&#253;choz&#237;</value>
+  </data>
+  <data name="Settings_Button_Save" xml:space="preserve">
+    <value>Ulo&#382;it nastaven&#237;</value>
+  </data>
+  <data name="Search_Mode_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="Search_Mode_Hex" xml:space="preserve">
+    <value>Hexadecim&#225;ln&#237;</value>
+  </data>
+  <data name="Search_Mode_Regex" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="Search_Clear_ToolTip" xml:space="preserve">
+    <value>Vymazat</value>
+  </data>
+  <data name="Search_Button_Clear" xml:space="preserve">
+    <value>Vymazat</value>
+  </data>
+  <data name="Search_Previous_ToolTip" xml:space="preserve">
+    <value>P&#345;edchoz&#237; (Shift+F3)</value>
+  </data>
+  <data name="Search_Button_Previous" xml:space="preserve">
+    <value>P&#345;edchoz&#237; (Shift+F3)</value>
+  </data>
+  <data name="Search_Next_ToolTip" xml:space="preserve">
+    <value>Dal&#353;&#237; (F3)</value>
+  </data>
+  <data name="Search_Button_Next" xml:space="preserve">
+    <value>Dal&#353;&#237; (F3)</value>
+  </data>
+  <data name="Search_FindAll" xml:space="preserve">
+    <value>Najít v&#353;e</value>
+  </data>
+  <data name="Search_Button_FindAll" xml:space="preserve">
+    <value>Najít v&#353;e</value>
+  </data>
+  <data name="Search_FindAll_ToolTip" xml:space="preserve">
+    <value>Naj&#237;t v&#353;echny v&#253;skyty</value>
+  </data>
+  <data name="Search_Button_FindAll_Tooltip" xml:space="preserve">
+    <value>Naj&#237;t v&#353;echny v&#253;skyty</value>
+  </data>
+  <data name="Search_Matches" xml:space="preserve">
+    <value>shod</value>
+  </data>
+  <data name="Search_Results_Matches" xml:space="preserve">
+    <value>shod</value>
+  </data>
+  <data name="Search_Results_V2Badge" xml:space="preserve">
+    <value>V2</value>
+  </data>
+  <data name="Message_FileOpenError" xml:space="preserve">
+    <value>Nepoda&#345;ilo se otev&#345;&#237;t soubor: {0}</value>
+  </data>
+  <data name="Message_FileSaveError" xml:space="preserve">
+    <value>Nepoda&#345;ilo se ulo&#382;it soubor: {0}</value>
+  </data>
+  <data name="Message_ErrorTitle" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="Message_LanguageUnchanged_Title" xml:space="preserve">
+    <value>Jazyk nezm&#283;n&#283;n</value>
+  </data>
+  <data name="Message_LanguageUnchanged_Text" xml:space="preserve">
+    <value>Jazyk je ji&#382; nastaven na {0}.</value>
+  </data>
+  <data name="Message_LanguageChanged_Title" xml:space="preserve">
+    <value>Jazyk zm&#283;n&#283;n</value>
+  </data>
+  <data name="Message_LanguageChanged_Text" xml:space="preserve">
+    <value>Jazyk byl &#250;sp&#283;&#353;n&#283; zm&#283;n&#283;n na {0}!</value>
+  </data>
+  <data name="Message_NoLanguageSelected_Title" xml:space="preserve">
+    <value>Nebyl vybr&#225;n &#382;&#225;dn&#253; jazyk</value>
+  </data>
+  <data name="Message_NoLanguageSelected_Text" xml:space="preserve">
+    <value>P&#345;ed kliknut&#237;m na OK vyberte jazyk.</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>NASTAVEN&#205;</value>
+  </data>
+  <data name="Settings_Theme_Title" xml:space="preserve">
+    <value>&#127912; T&#233;ma</value>
+  </data>
+  <data name="Settings_Language_Title" xml:space="preserve">
+    <value>&#127760; Jazyk</value>
+  </data>
+  <data name="Settings_Search_Title" xml:space="preserve">
+    <value>&#128269; Mo&#382;nosti hled&#225;n&#237;</value>
+  </data>
+  <data name="Settings_Search_EnableParallel" xml:space="preserve">
+    <value>Povolit paraleln&#237; hled&#225;n&#237; (rychlej&#353;&#237; pro velk&#233; soubory)</value>
+  </data>
+  <data name="Settings_Search_UseWildcard" xml:space="preserve">
+    <value>Pou&#382;&#237;t hled&#225;n&#237; se z&#225;stupn&#253;mi znaky (notace ??)</value>
+  </data>
+  <data name="Settings_Search_HighlightMatches" xml:space="preserve">
+    <value>Zv&#253;raznit v&#353;echny shody</value>
+  </data>
+  <data name="Settings_Search_ResultLimit" xml:space="preserve">
+    <value>Limit v&#253;sledk&#367; hled&#225;n&#237;:</value>
+  </data>
+  <data name="Settings_Display_Title" xml:space="preserve">
+    <value>&#128250; Mo&#382;nosti zobrazen&#237;</value>
+  </data>
+  <data name="Settings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>Zobrazit &#269;&#237;sla &#345;&#225;dk&#367;</value>
+  </data>
+  <data name="Settings_Display_ShowScrollMarkers" xml:space="preserve">
+    <value>Zobrazit zna&#269;ky posouv&#225;n&#237;</value>
+  </data>
+  <data name="Settings_Display_ShowStatusBar" xml:space="preserve">
+    <value>Zobrazit stavov&#253; &#345;&#225;dek</value>
+  </data>
+  <data name="Settings_Display_BytesPerLine" xml:space="preserve">
+    <value>Bajty na &#345;&#225;dek:</value>
+  </data>
+  <data name="Settings_Performance_Title" xml:space="preserve">
+    <value>&#9889; V&#253;kon</value>
+  </data>
+  <data name="Settings_Performance_V2Active" xml:space="preserve">
+    <value>MODUL V2 AKTIVN&#205;</value>
+  </data>
+  <data name="Settings_Performance_Feature1" xml:space="preserve">
+    <value>&#8226; Algoritmus Boyer-Moore-Horspool</value>
+  </data>
+  <data name="Settings_Performance_Feature2" xml:space="preserve">
+    <value>&#8226; Podpora paraleln&#237;ho zpracov&#225;n&#237;</value>
+  </data>
+  <data name="Settings_Performance_Feature3" xml:space="preserve">
+    <value>&#8226; A&#382; o 99 % rychlej&#353;&#237; ne&#382; V1</value>
+  </data>
+  <data name="Settings_Button_ResetDefaults" xml:space="preserve">
+    <value>Obnovit v&#253;choz&#237;</value>
+  </data>
+  <data name="Settings_Button_SaveSettings" xml:space="preserve">
+    <value>Ulo&#382;it nastaven&#237;</value>
+  </data>
+  <data name="Options_LanguageTab" xml:space="preserve">
+    <value>Jazyk</value>
+  </data>
+  <data name="Options_AppearanceTab" xml:space="preserve">
+    <value>Vzhled</value>
+  </data>
+  <data name="Options_PerformanceTab" xml:space="preserve">
+    <value>V&#253;kon</value>
+  </data>
+  <data name="Options_Language_CurrentLabel" xml:space="preserve">
+    <value>Aktu&#225;ln&#237; jazyk</value>
+  </data>
+  <data name="Options_Language_ColumnLanguage" xml:space="preserve">
+    <value>Jazyk</value>
+  </data>
+  <data name="Options_Language_ColumnNativeName" xml:space="preserve">
+    <value>Nativn&#237; n&#225;zev</value>
+  </data>
+  <data name="Options_Language_ColumnCode" xml:space="preserve">
+    <value>K&#243;d</value>
+  </data>
+  <data name="Options_Language_SystemLanguage_Name" xml:space="preserve">
+    <value>Jazyk syst&#233;mu</value>
+    <comment>Options dialog - System Language option name</comment>
+  </data>
+  <data name="Options_Language_SystemLanguage_Description" xml:space="preserve">
+    <value>Pou&#382;&#237;t jazyk syst&#233;mu</value>
+    <comment>Options dialog - System Language option description</comment>
+  </data>
+  <data name="Options_Language_RestartWarning" xml:space="preserve">
+    <value>Zm&#283;ny jazyka se pou&#382;ij&#237; okam&#382;it&#283; &#8212; restartov&#225;n&#237; nen&#237; nutno! &#128640;</value>
+  </data>
+  <data name="Menu_File_Open" xml:space="preserve">
+    <value>Otev&#345;&#237;t</value>
+  </data>
+  <data name="Menu_File_Save" xml:space="preserve">
+    <value>Ulo&#382;it</value>
+  </data>
+  <data name="Menu_File_SaveAs" xml:space="preserve">
+    <value>Ulo&#382;it jako...</value>
+  </data>
+  <data name="Menu_File_Close" xml:space="preserve">
+    <value>Zav&#345;&#237;t</value>
+  </data>
+  <data name="Menu_File_Exit" xml:space="preserve">
+    <value>Ukon&#269;it</value>
+  </data>
+  <data name="Menu_Edit" xml:space="preserve">
+    <value>&#218;pravy</value>
+  </data>
+  <data name="Menu_Edit_Undo" xml:space="preserve">
+    <value>Zp&#283;t</value>
+  </data>
+  <data name="Menu_Edit_Redo" xml:space="preserve">
+    <value>Znovu</value>
+  </data>
+  <data name="Menu_Edit_Find" xml:space="preserve">
+    <value>Naj&#237;t...</value>
+  </data>
+  <data name="Menu_Edit_FindReplace" xml:space="preserve">
+    <value>Naj&#237;t a nahradit...</value>
+  </data>
+  <data name="Menu_Edit_Copy" xml:space="preserve">
+    <value>Kop&#237;rovat</value>
+  </data>
+  <data name="Menu_Edit_Paste" xml:space="preserve">
+    <value>Vlo&#382;it</value>
+  </data>
+  <data name="Menu_Edit_DeleteSelection" xml:space="preserve">
+    <value>Smazat v&#253;b&#283;r</value>
+  </data>
+  <data name="Menu_Edit_SelectAll" xml:space="preserve">
+    <value>Vybrat v&#353;e</value>
+  </data>
+  <data name="Menu_Edit_ClearSelection" xml:space="preserve">
+    <value>Zru&#353;it v&#253;b&#283;r</value>
+  </data>
+  <data name="Menu_Edit_Bookmarks" xml:space="preserve">
+    <value>Z&#225;lo&#382;ky</value>
+  </data>
+  <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
+    <value>P&#345;epnout z&#225;lo&#382;ku</value>
+  </data>
+  <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
+    <value>Vymazat v&#353;echny z&#225;lo&#382;ky</value>
+  </data>
+  <data name="Menu_Search" xml:space="preserve">
+    <value>Hledat</value>
+  </data>
+  <data name="Menu_Search_FindNext" xml:space="preserve">
+    <value>Naj&#237;t dal&#353;&#237;</value>
+  </data>
+  <data name="Menu_Search_FindPrevious" xml:space="preserve">
+    <value>Naj&#237;t p&#345;edchoz&#237;</value>
+  </data>
+  <data name="Menu_Tools" xml:space="preserve">
+    <value>N&#225;stroje</value>
+  </data>
+  <data name="Menu_Tools_Bookmarks" xml:space="preserve">
+    <value>Z&#225;lo&#382;ky</value>
+  </data>
+  <data name="Menu_Tools_NextBookmark" xml:space="preserve">
+    <value>Dal&#353;&#237; z&#225;lo&#382;ka</value>
+  </data>
+  <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
+    <value>P&#345;edchoz&#237; z&#225;lo&#382;ka</value>
+  </data>
+  <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
+    <value>Zobrazit v&#353;echny z&#225;lo&#382;ky...</value>
+  </data>
+  <data name="Menu_Position" xml:space="preserve">
+    <value>Pozice</value>
+  </data>
+  <data name="Menu_Position_GoTo" xml:space="preserve">
+    <value>P&#345;ej&#237;t na pozici...</value>
+  </data>
+  <data name="Menu_View" xml:space="preserve">
+    <value>Zobrazen&#237;</value>
+  </data>
+  <data name="Menu_View_DisplayOptions" xml:space="preserve">
+    <value>Mo&#382;nosti zobrazen&#237;</value>
+  </data>
+  <data name="Menu_View_ShowStatusBar" xml:space="preserve">
+    <value>Zobrazit stavov&#253; &#345;&#225;dek</value>
+  </data>
+  <data name="Menu_View_ShowHeader" xml:space="preserve">
+    <value>Zobrazit z&#225;hlav&#237;</value>
+  </data>
+  <data name="Menu_View_ShowOffset" xml:space="preserve">
+    <value>Zobrazit Offset</value>
+  </data>
+  <data name="Menu_View_ShowASCII" xml:space="preserve">
+    <value>Zobrazit ASCII</value>
+  </data>
+  <data name="Menu_View_ShowParsedFields" xml:space="preserve">
+    <value>Zobrazit parsovan&#225; pole</value>
+  </data>
+  <data name="Menu_View_BytesPerLine" xml:space="preserve">
+    <value>Bajty na &#345;&#225;dek</value>
+  </data>
+  <data name="Menu_Options" xml:space="preserve">
+    <value>Mo&#382;nosti</value>
+  </data>
+  <data name="Menu_Options_SettingsPanel" xml:space="preserve">
+    <value>Panel nastaven&#237;...</value>
+  </data>
+  <data name="Menu_Options_Advanced" xml:space="preserve">
+    <value>Pokro&#269;il&#233; mo&#382;nosti (t&#233;ma, jazyk)...</value>
+  </data>
+  <data name="Menu_Options_ContextMenu" xml:space="preserve">
+    <value>Kontextov&#225; nab&#237;dka</value>
+  </data>
+  <data name="Menu_Options_ShowByteToolTip" xml:space="preserve">
+    <value>Zobrazit n&#225;pov&#283;du bajtu</value>
+  </data>
+  <data name="Menu_Options_AutoHighlight" xml:space="preserve">
+    <value>Automatick&#233; zv&#253;razn&#283;n&#237;</value>
+  </data>
+  <data name="Menu_Options_CountSelected" xml:space="preserve">
+    <value>Po&#269;&#237;tat vybran&#233; bajty</value>
+  </data>
+  <data name="Menu_Help" xml:space="preserve">
+    <value>N&#225;pov&#283;da</value>
+  </data>
+  <data name="Menu_Help_About" xml:space="preserve">
+    <value>O aplikaci</value>
+  </data>
+  <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
+    <value>Kl&#225;vesov&#233; zkratky</value>
+  </data>
+  <data name="Menu_File" xml:space="preserve">
+    <value>Soubor</value>
+  </data>
+  <data name="Toolbar_Open" xml:space="preserve">
+    <value>&#128194; Otev&#345;&#237;t</value>
+  </data>
+  <data name="Toolbar_Open_ToolTip" xml:space="preserve">
+    <value>Otev&#345;&#237;t soubor (Ctrl+O)</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>&#128190; Ulo&#382;it</value>
+  </data>
+  <data name="Toolbar_Save_ToolTip" xml:space="preserve">
+    <value>Ulo&#382;it soubor (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Undo" xml:space="preserve">
+    <value>&#8630; Zp&#283;t</value>
+  </data>
+  <data name="Toolbar_Undo_ToolTip" xml:space="preserve">
+    <value>Zp&#283;t (Ctrl+Z)</value>
+  </data>
+  <data name="Toolbar_Redo" xml:space="preserve">
+    <value>&#8631; Znovu</value>
+  </data>
+  <data name="Toolbar_Redo_ToolTip" xml:space="preserve">
+    <value>Znovu (Ctrl+Y)</value>
+  </data>
+  <data name="Toolbar_Insert" xml:space="preserve">
+    <value>INS</value>
+  </data>
+  <data name="Toolbar_Insert_ToolTip" xml:space="preserve">
+    <value>P&#345;epnout re&#382;im Vlo&#382;it/P&#345;epsat (kl&#225;vesa Insert)</value>
+  </data>
+  <data name="Toolbar_ReadOnly" xml:space="preserve">
+    <value>&#268;T</value>
+  </data>
+  <data name="Toolbar_ReadOnly_ToolTip" xml:space="preserve">
+    <value>P&#345;epnout re&#382;im pouze ke&#269;ten&#237;</value>
+  </data>
+<data name="HexSettings_SaveButton" xml:space="preserve"><value>Ulo&#382;it stav</value></data><data name="HexSettings_LoadButton" xml:space="preserve"><value>Na&#269;&#237;st stav</value></data></root>

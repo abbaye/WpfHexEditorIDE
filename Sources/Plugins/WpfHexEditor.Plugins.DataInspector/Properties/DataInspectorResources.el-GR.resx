@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.DataInspector
+    File        : DataInspectorResources.el-GR.resx
+    Description : Greek (Greece) localized UI strings for the Data Inspector plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>Επιθεωρητής δεδομένων</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>Ανάλυση δεδομένων</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>Επιθεωρητής δεδομένων</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>_Επιθεωρητής δεδομένων</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>Δεν υπάρχουν δεδομένα για εμφάνιση</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Σύνολο</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Μέγιστο</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Εντροπία</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>bits/byte</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>Κανένα byte επιλεγμένο — επιλέξτε bytes στον Hex επεξεργαστή.</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>Ενεργή προβολή</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>Ολόκληρο αρχείο</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>Επιλογή</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>Συχνότητα</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>Εντροπία</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>Χωρίς δεδομένα</value>
+  </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Κατηγορία:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>Όλα</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Ακέραιος</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>Κινητής υποδιαστολής</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Ημερομηνία/Ώρα</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Δίκτυο</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Χρώμα</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>Βασικό</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>Bits</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>Όλες οι μορφές</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>Περισσότερες επιλογές</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Εμφάνιση ετικετών άξονα</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Εμφάνιση γραμμών πλέγματος</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Εμφάνιση στατιστικών</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Κατανομή συχνότητας</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Εντροπία (κυλιόμενο παράθυρο)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Μεγέθυνση</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Σμίκρυνση</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Επαναφορά zoom</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Ανανέωση γραφήματος</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Αντιγραφή εικόνας γραφήματος</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Διάταξη</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Αριστερά</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Δεξιά</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Πάνω</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Κάτω</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Εύρος:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Ενεργή προβολή</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Επιλογή</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>Ολόκληρο αρχείο</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Συχνότητα</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Διάταξη:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Θέση γραφήματος σε σχέση με τη λίστα ερμηνειών</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Ανάλυση αρχείου...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Ερμηνείες: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>Χωρίς δεδομένα</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Αυτόματη ανανέωση κατά την αλλαγή επιλογής</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Προεπιλεγμένη σειρά bytes: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Εμφάνιση πίνακα γραφήματος bytes</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Θέση γραφήματος:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Μέγ. bytes για προεπισκόπηση συμβολοσειράς:</value></data>
+</root>

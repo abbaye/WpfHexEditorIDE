@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.FormatInfo
+    File        : FormatInfoResources.fr-CA.resx
+    Description : French-Canadian (fr-CA) translations for the Format Info plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="FormatInfo_PluginName" xml:space="preserve">
+    <value>Informace o form&#225;tu</value>
+  </data>
+
+  <data name="FI_FormatNameLabel" xml:space="preserve">
+    <value>N&#225;zev form&#225;tu</value>
+  </data>
+  <data name="FI_PriorityLabel" xml:space="preserve">
+    <value>&#11088; Priorita</value>
+  </data>
+  <data name="FI_PriorityTooltip" xml:space="preserve">
+    <value>Prioritn&#237; form&#225;t &#8212; Top 100 nejb&#283;&#382;n&#283;j&#353;&#237;ch form&#225;t&#367;</value>
+  </data>
+  <data name="FI_CategoryLabel" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="FI_DescriptionLabel" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="FI_QualityLabel" xml:space="preserve">
+    <value>Kvalita:</value>
+  </data>
+  <data name="FI_DocLabel" xml:space="preserve">
+    <value>Dokumentace:</value>
+  </data>
+  <data name="FI_BasicLabel" xml:space="preserve">
+    <value>z&#225;kladn&#237;</value>
+  </data>
+  <data name="FI_ExtensionsLabel" xml:space="preserve">
+    <value>P&#345;&#237;pony soubor&#367;</value>
+  </data>
+  <data name="FI_NaLabel" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="FI_MimeLabel" xml:space="preserve">
+    <value>Typy MIME</value>
+  </data>
+  <data name="FI_SoftwareLabel" xml:space="preserve">
+    <value>Kompatibiln&#237; software</value>
+  </data>
+  <data name="FI_UseCasesLabel" xml:space="preserve">
+    <value>B&#283;&#382;n&#233; p&#345;&#237;pady pou&#382;it&#237;</value>
+  </data>
+  <data name="FI_RefsSection" xml:space="preserve">
+    <value>&#128218; Reference &amp; Dokumentace</value>
+  </data>
+  <data name="FI_SpecsLabel" xml:space="preserve">
+    <value>Specifikace:</value>
+  </data>
+  <data name="FI_NoRefsText" xml:space="preserve">
+    <value>&#381;&#225;dn&#233; reference pro tento form&#225;t nejsou k dispozici</value>
+  </data>
+  <data name="FI_TechnicalSection" xml:space="preserve">
+    <value>&#9881;&#65039; Technick&#233; detaily</value>
+  </data>
+  <data name="FI_RelatedSection" xml:space="preserve">
+    <value>&#128279; Souvisej&#237;c&#237; form&#225;ty</value>
+  </data>
+  <data name="FI_DefinitionSection" xml:space="preserve">
+    <value>&#128100; Informace o definici</value>
+  </data>
+  <data name="FI_VersionLabel" xml:space="preserve">
+    <value>Verze:</value>
+  </data>
+  <data name="FI_AuthorLabel" xml:space="preserve">
+    <value>Autor:</value>
+  </data>
+  <data name="FI_DetectionSection" xml:space="preserve">
+    <value>&#128269; Podrobnosti detekce</value>
+  </data>
+  <data name="FI_SignatureLabel" xml:space="preserve">
+    <value>Podpis:</value>
+  </data>
+  <data name="FI_RequiredLabel" xml:space="preserve">
+    <value>Vy&#382;adov&#225;no:</value>
+  </data>
+  <data name="FI_NoFormatText" xml:space="preserve">
+    <value>&#381;&#225;dn&#253; form&#225;t nezji&#353;t&#283;n</value>
+  </data>
+  <data name="FI_OpenFileHint" xml:space="preserve">
+    <value>Otev&#345;ete soubor pro zobrazen&#237; informac&#237; o form&#225;tu</value>
+  </data>
+  <data name="FI_OffsetLabel" xml:space="preserve"><value>Offset:</value></data>
+</root>

@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.fr-CA.resx
+    Description : Localized UI strings for the Structure Editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>Styrke</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>Påkrævet</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Tilføj blok</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Tilføj</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Annuller</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Metadata</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Detektion</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Blokke</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Variable</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Avanceret</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Kvalitet</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Test</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Gem (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Validér (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Fortryd (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Annuller fortryd (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Skift live-kodevisning</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Tilføj blok (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Dupliker blok (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Ikke-gemte ændringer</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Filtrer blokke efter navn</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Tilføj blok...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Dupliker</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Fjern</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Flyt op</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Flyt ned</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Kopiér som JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Indsæt blok</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Vælg en blok for at redigere dens egenskaber,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>eller tryk Ctrl+N / højreklik for at tilføje en ny blok.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Hex-signatur</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Hex-bytes uden mellemrum, f.eks. 89504E47 for PNG</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Signatur</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>Signaturer v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Overensstemmelsestilstand</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Hex-værdi</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Etiket</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>Plus Tilføj signatur</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Entropiindeks</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Minimumentropie</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Maksimumentropie</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Minimumscore</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Scoregrænse</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Indholdmønstre (tekstformater)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Regex-mønster</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>Plus Tilføj mønster</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>Generelt</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Formatnavn</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Læsbart navn for formatet (f.eks. ZIP-arkiv, PNG-billede)</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Version</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Version af denne definition (f.eks. 1.0, 2.0)</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Forfatter</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Forfatter til denne definitionsfil</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Kategori</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Kategori (angives automatisk fra mappestruktur: Arkiver, Billeder, Lyd, Video, osv.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Diff-tilstand</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Foretrukket diff-algoritme til DiffViewer</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Foretrukket editor</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>Editor-fabrik-ID foretrukket for filer der matcher dette format</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Beskrivelse</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Tekstformat (åbnes i kodeeditor som standard)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Filtypenavne</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>Plus Tilføj filtypenavn</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME-typer</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>Plus Tilføj MIME-type</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Software</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>Plus Tilføj software</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Beregnede målinger</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Blok-dækning</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Færdighedsscore</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Typefordeling</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Blokke</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Dybde</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Variable</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Regler</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Metadata</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Dokumentationsniveau</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Sidst opdateret</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Format: YYYY-MM-DD (udfyldes automatisk ved gemning)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Prioritetsformat (top 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Automatisk forfinet (beriget via script — skrivebeskyttet)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Test format på en fil</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Sti til den binære fil der skal testes</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Gennemse…</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Vælg en binær fil at teste</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Kør test</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Kopiér resultater til udklipsholderen (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Vælg en fil og klik på Kør test for at teste den aktuelle formatdefinition.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Status</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Bloknavn</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Type</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Længde</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Rå (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Fortolket værdi</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Note</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Advarsel</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Fejl</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Sprunget over</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Indledende variable tilgængelige for blok-fortolkeren (f.eks. løkketællere, beregnede offsets).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Filtrer variable efter navn</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Variabelnavn</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Type</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Startværdi</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Beskrivelse</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>Plus Tilføj variabel</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Assertions</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:navn equals 0 or calc:udtryk</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Boolesk udtryk — Ctrl+Space for funktioner og variable</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Kontrolsummer</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Versionshåndtering (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Imports ($ref Komposition)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = formatnavn (eller structs/Navn), as = alias brugt i structRef-blokke.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Formatreference, f.eks. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>Alias brugt i structRef, f.eks. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Tilføj import</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Forensik</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Navigationsbogmærker</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>variabelNavn</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Variabel indeholdende byte-offset — Ctrl+Space for forslag</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>Plus Tilføj bogmærke</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Inspektørlayout</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Eksportskabeloner</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>Plus Tilføj skabelon</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>AI-tip</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Et binært felt med en fast eller variabel offset og længde.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Magiske bytes der identificerer formatet ved en specifik offset.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Læser en variabel-længde eller symbolsk værdi ind i en navngivet variabel.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Fortolker blokke betinget baseret på en feltværdi eller variabel.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Gentager et blok-krop så længe en betingelse er sand.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Modificerer en variabel (inkrementér, dekrementér, sætVariabel).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Evaluerer et matematisk udtryk og gemmer resultatet.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Fortolker et array med et fast antal strukturerede poster.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Vælger et sæt af variantblokke baseret på en diskriminantvariabel.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Indlejrer en ekstern strukturdefinition via reference.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Opretter en navigationsannotering til en peget offset.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} fejl</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} advarsel(er)</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>Rå JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Anvend</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Annuller</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Struktureditor</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Visuel editor til .whfmt strukturdefinitionsfiler. Rediger blokke, typer, offsets, længder og farver i et DataGrid.</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Længde:</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Validér (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Tilføj blok (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Skift live-kodevisning</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Layout</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Kodevisningslayout</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Kode til højre</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Kode til venstre</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Kode i bunden</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Kode i toppen</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Format</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Fane</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Blokke</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Validering</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Navn</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Type</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Farve</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Gennemsigtighed</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Beskrivelse</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Skjult</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Endianness</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Bloktype</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Handling</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Variabel</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Værdi</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Beregning</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Udtryk</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Gem som</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Position</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Offset</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Offset fra</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Tilføjet offset</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Længde</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Værditype</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Array</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Antal</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Postsørrelse</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Indeksvariabel</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Farvecyklus</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Postfelter vises som børn i træet.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Union</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Diskriminant</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Varianter</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Indlejret struktur</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Strukturref.</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Pekerplacering</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Mål og lager</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Målvariabel</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Etiket</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Position og størrelse</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Lager</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Mappet lager</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Værdimapping</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Bit-felter</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Navn</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Bits</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Indtil</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Maks. længde</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Min. værdi</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Maks. værdi</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Mønster (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Fejlbesked</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Variabelnavn</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Gruppe</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>En gruppe mærker visuelt et sæt af børnefelter med et farvelag. Den forbruger ikke bytes.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Børn vises i bloktræet — brug træet til at tilføje/omarrangere børneblokke.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Børnefelter vises i bloktræet.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Rå dataregion</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Mærker en region af rå bytes med et farvelag. Ingen værdi udtrækkes.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Betingelse</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Grenetiketter</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>Etiket Sand</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>Etiket Falsk</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Then/Else-blokke vises som børn i træet.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Løkkebetingelse</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Grænser</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Maks. iterationer</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Kropblokke vises som børn i træet.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Navn på den variabel der skal modificeres — skriv for at se forslag (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Værdi at sætte / mængde at lægge til eller trække fra — accepterer var:navn</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Matematisk udtryk med variable og funktioner — Ctrl+Space for autofuldendelse</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Variabelnavn til at gemme det beregnede resultat — Ctrl+Space for forslag</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Filoffset hvor arrayet starter — Ctrl+Space for autofuldendelse</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Variabel brugt som base-offset for dette array</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Antal poster — Ctrl+Space for variabelforslag</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Størrelse på hver post i bytes — Ctrl+Space for variabelforslag</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Navn på løkkens indeksvariabel (f.eks. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>Plus Tilføj farve</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Variabel der styrer variantvalget — Ctrl+Space for forslag</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Formatnavn eller relativ sti til .whfmt-filen</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Gennemse…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Filoffset hvor pekeren læses — Ctrl+Space for autofuldendelse</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Variabelnavn brugt som base-offset</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>Størrelse på pekerværdien i bytes (f.eks. 4 for uint32) — eller var:navn</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Variabel der modtager den opløste pekeradresse</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Variabel til at gemme den rå pekerværdi</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Annotationsetiket vist i hex-visningen</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space for autofuldendelse — heltal, var:navn, calc:udtryk, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Variabelnavn hvis værdi er base-offset — Ctrl+Space for forslag</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>Ekstra bytes tilføjet til OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space for autofuldendelse — heltal, var:navn, calc:udtryk</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Variabelnavn til at gemme den fortolkede værdi — Ctrl+Space for forslag</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>Variabelnavn for den ValueMap-oversatte værdi — Ctrl+Space for forslag</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>rå=Visning (f.eks. 0=Gråtoner)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>Plus Tilføj ValueMap-post</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Bit-interval f.eks. 7-6 eller enkelt bit f.eks. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>Plus Tilføj bit-felt</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Sentinel (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Hex-mønster eller var:navn hvor læsning stopper. Erstatter Længde når angivet.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Sikkerhedsgrænse (bytes) hvis Until-mønsteret ikke findes. 0 = fortolker-standard (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until inklusive (inkluder mønsterbytes i feltlængden)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Valideringsregler</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Navn på den variabel der læses af denne metadatablok</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Fast heltal eller var:navn — Ctrl+Space for forslag</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Sikkerhedsgrænse — heltal</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Variabel der modtager det aktuelle iterationsindeks (base 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Variabel til at gemme antal iterationer efter løkken — Ctrl+Space for forslag</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Rediger denne blok som rå JSON</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>Plus Tilføj assertion</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>Plus Tilføj kontrolsum</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Skabelonnavn</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Strukturnavn (C struct)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Kun hex-cifre (f.eks. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Vis:</value></data>
+</root>

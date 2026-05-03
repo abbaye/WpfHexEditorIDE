@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.DocumentStructure
+    File        : DocumentStructureResources.el-GR.resx
+    Description : Greek (Greece) translations for the Document Structure plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="DocStructure_PluginName" xml:space="preserve">
+    <value>Δομή εγγράφου</value>
+  </data>
+
+  <data name="DS_NavigateToMenu" xml:space="preserve">
+    <value>Πλοήγηση σε</value>
+  </data>
+  <data name="DS_CopyNameMenu" xml:space="preserve">
+    <value>Αντιγραφή ονόματος</value>
+  </data>
+  <data name="DS_CopyQualifiedMenu" xml:space="preserve">
+    <value>Αντιγραφή πλήρους ονόματος</value>
+  </data>
+  <data name="DS_ExpandAllMenu" xml:space="preserve">
+    <value>Ανάπτυξη όλων</value>
+  </data>
+  <data name="DS_CollapseAllMenu" xml:space="preserve">
+    <value>Σύμπτυξη όλων</value>
+  </data>
+  <data name="DS_RefreshTooltip" xml:space="preserve">
+    <value>Ανανέωση</value>
+  </data>
+  <data name="DS_TreeViewTooltip" xml:space="preserve">
+    <value>Προβολή δέντρου</value>
+  </data>
+  <data name="DS_CollapseAllTooltip" xml:space="preserve">
+    <value>Σύμπτυξη όλων</value>
+  </data>
+  <data name="DS_PinDocumentTooltip" xml:space="preserve">
+    <value>Καρφίτσωμα εγγράφου (διατήρηση δομής κατά την πλοήγηση)</value>
+  </data>
+  <data name="DS_SyncCursorTooltip" xml:space="preserve">
+    <value>Συγχρονισμός με τον κέρσορα επεξεργαστή</value>
+  </data>
+  <data name="DS_SortOrderTooltip" xml:space="preserve">
+    <value>Σειρά ταξινόμησης</value>
+  </data>
+  <data name="DS_SourceOrderOption" xml:space="preserve">
+    <value>Σειρά πηγής</value>
+  </data>
+  <data name="DS_AlphabeticalOption" xml:space="preserve">
+    <value>Αλφαβητική</value>
+  </data>
+  <data name="DS_ByKindOption" xml:space="preserve">
+    <value>Κατά τύπο</value>
+  </data>
+  <data name="DS_MaxDepthTooltip" xml:space="preserve">
+    <value>Μέγιστο βάθος δέντρου</value>
+  </data>
+  <data name="DS_InfiniteDepth" xml:space="preserve">
+    <value>∞ Βάθος</value>
+  </data>
+  <data name="DS_Depth2" xml:space="preserve">
+    <value>2 Επίπεδα</value>
+  </data>
+  <data name="DS_Depth3" xml:space="preserve">
+    <value>3 Επίπεδα</value>
+  </data>
+  <data name="DS_Depth5" xml:space="preserve">
+    <value>5 Επίπεδα</value>
+  </data>
+  <data name="DS_Depth10" xml:space="preserve">
+    <value>10 Επίπεδα</value>
+  </data>
+  <data name="DS_MoreOptionsTooltip" xml:space="preserve">
+    <value>Περισσότερες επιλογές</value>
+  </data>
+  <data name="DS_NoDocumentText" xml:space="preserve">
+    <value>Ανοίξτε έγγραφο για να δείτε τη δομή του</value>
+  </data>
+  <data name="DS_FilterPlaceholder" xml:space="preserve">
+    <value>Φιλτράρισμα συμβόλων…</value>
+  </data>
+</root>

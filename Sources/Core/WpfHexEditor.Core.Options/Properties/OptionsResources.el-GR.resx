@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="EnvGeneral_AppearanceSection" xml:space="preserve"><value>ΕΜΦΑΝΙΣΗ</value></data>
+  <data name="EnvGeneral_ColorThemeLabel" xml:space="preserve"><value>Θέμα χρωμάτων :</value></data>
+  <data name="EnvGeneral_ThemePreviewNote" xml:space="preserve"><value>Η προεπισκόπηση εφαρμόζεται αμέσως.</value></data>
+  <data name="EnvGeneral_LanguageSection" xml:space="preserve"><value>ΓΛΩΣΣΑ</value></data>
+  <data name="EnvGeneral_IdeLanguageLabel" xml:space="preserve"><value>Γλώσσα IDE :</value></data>
+  <data name="EnvGeneral_LanguageRestartNote" xml:space="preserve"><value>Απαιτείται επανεκκίνηση για πλήρη εφαρμογή της νέας γλώσσας.</value></data>
+  <!-- MARKETPLACE OPTIONS PAGE -->
+  <data name="Mkt_GitHubSection" xml:space="preserve"><value>GITHUB API</value></data>
+  <data name="Mkt_PatDescription" xml:space="preserve"><value>Personal Access Token (PAT) — raises the GitHub rate limit from 60 to 5 000 requests/hour. Leave empty for anonymous access.</value></data>
+  <data name="Mkt_PatWarning" xml:space="preserve"><value>Token is stored in plaintext in the settings file. Do not use a token with write permissions.</value></data>
+  <data name="Mkt_AutoUpdateSection" xml:space="preserve"><value>AUTOMATIC UPDATES</value></data>
+  <data name="Mkt_AutoUpdate" xml:space="preserve"><value>Check for plugin updates automatically at startup</value></data>
+  <data name="Mkt_UpdateIntervalLabel" xml:space="preserve"><value>Update check interval (hours):</value></data>
+  <data name="Mkt_UpdateIntervalNote" xml:space="preserve"><value>Minimum interval: 1 hour.</value></data>
+  <!-- OUTPUT OPTIONS PAGE -->
+  <data name="Output_Section" xml:space="preserve"><value>LOG-LEVEL COLOURS</value></data>
+  <data name="Output_Note" xml:space="preserve"><value>Customise the colour used for each log level in the Output panel. INFO inherits the active theme foreground and cannot be changed.</value></data>
+  <data name="Output_WarnLabel" xml:space="preserve"><value>Warning (WARN):</value></data>
+  <data name="Output_ErrorLabel" xml:space="preserve"><value>Error (ERROR):</value></data>
+  <data name="Output_DebugLabel" xml:space="preserve"><value>Debug (DEBUG):</value></data>
+  <data name="Output_SuccessLabel" xml:space="preserve"><value>Success (OK):</value></data>
+  <data name="Output_ResetColors" xml:space="preserve"><value>Reset to Default Colours</value></data>
+  <!-- PLUGIN DEV LOADER OPTIONS PAGE -->
+  <data name="PluginDev_Section" xml:space="preserve"><value>PLUGIN DEV LOADER</value></data>
+  <data name="PluginDev_Enable" xml:space="preserve"><value>Enable Plugin Dev Loader (Watch Mode available in Plugin Manager)</value></data>
+  <data name="PluginDev_DebounceSection" xml:space="preserve"><value>DEBOUNCE</value></data>
+  <data name="PluginDev_DebounceNote" xml:space="preserve"><value>Delay before triggering hot-reload after a file change (ms):</value></data>
+  <data name="PluginDev_DebounceDefault" xml:space="preserve"><value>ms  (default: 500)</value></data>
+  <data name="PluginDev_WatchedSection" xml:space="preserve"><value>WATCHED FOLDERS</value></data>
+  <data name="PluginDev_WatchedNote" xml:space="preserve"><value>Additional output directories to watch (semicolon-separated). Plugins in these folders are hot-reloaded when their DLL changes.</value></data>
+  <data name="PluginDev_Browse" xml:space="preserve"><value>Browse…</value></data>
+  <data name="PluginDev_Example" xml:space="preserve"><value>Example: C:\MyPlugin\bin\Debug\net8.0-windows;D:\AnotherPlugin\bin\Debug\net8.0-windows</value></data>
+  <!-- PLUGIN SYSTEM OPTIONS PAGE -->
+  <data name="Plugin_GeneralSection" xml:space="preserve"><value>GENERAL</value></data>
+  <data name="Plugin_AutoLoad" xml:space="preserve"><value>Automatically load all discovered plugins at startup</value></data>
+  <data name="Plugin_PluginsDirNote" xml:space="preserve"><value>Additional plugins directory (leave empty to use %AppData%\WpfHexEditor\Plugins):</value></data>
+  <data name="Plugin_Browse" xml:space="preserve"><value>Browse…</value></data>
+  <data name="Plugin_WatchdogSection" xml:space="preserve"><value>WATCHDOG</value></data>
+  <data name="Plugin_EnableWatchdog" xml:space="preserve"><value>Enable plugin watchdog (monitors call timeouts)</value></data>
+  <data name="Plugin_WatchdogTimeoutLabel" xml:space="preserve"><value>Watchdog timeout (seconds):</value></data>
+  <data name="Plugin_DiagnosticsSection" xml:space="preserve"><value>DIAGNOSTICS &amp; SAMPLING</value></data>
+  <data name="Plugin_DiagSamplingLabel" xml:space="preserve"><value>Diagnostic sampling interval (seconds):</value></data>
+  <data name="Plugin_DiagNote" xml:space="preserve"><value>Drives the Plugin Monitor CPU/Memory chart refresh rate.</value></data>
+  <data name="Plugin_SlowDetectionSection" xml:space="preserve"><value>SLOW-PLUGIN DETECTION</value></data>
+  <data name="Plugin_MonitorIntervalLabel" xml:space="preserve"><value>Monitoring interval (seconds):</value></data>
+  <data name="Plugin_ResponseTimeLabel" xml:space="preserve"><value>Response time threshold (ms):</value></data>
+  <data name="Plugin_CpuThresholdLabel" xml:space="preserve"><value>CPU threshold (%):</value></data>
+  <data name="Plugin_MemoryAlertSection" xml:space="preserve"><value>MEMORY ALERT THRESHOLDS</value></data>
+  <data name="Plugin_EnableMemoryAlerts" xml:space="preserve"><value>Enable memory usage alerts and badges</value></data>
+  <data name="Plugin_ShowColorGradation" xml:space="preserve"><value>Show color gradation in monitors (green/yellow/orange/red)</value></data>
+  <data name="Plugin_MemWarningLabel" xml:space="preserve"><value>⚠️ Warning threshold (yellow):</value></data>
+  <data name="Plugin_MemHighLabel" xml:space="preserve"><value>🟠 High threshold (orange):</value></data>
+  <data name="Plugin_MemCriticalLabel" xml:space="preserve"><value>🔴 Critical threshold (red):</value></data>
+  <data name="Plugin_MB" xml:space="preserve"><value> MB</value></data>
+  <data name="Plugin_MemThresholdNote" xml:space="preserve"><value>Note: Thresholds should be in ascending order (Warning &lt; High &lt; Critical).</value></data>
+  <data name="Plugin_MemColorSection" xml:space="preserve"><value>MEMORY ALERT COLORS</value></data>
+  <data name="Plugin_MemColorNote" xml:space="preserve"><value>Customize badge colors for each memory threshold level.</value></data>
+  <data name="Plugin_MemNormalColor" xml:space="preserve"><value>🟢 Normal threshold:</value></data>
+  <data name="Plugin_MemWarningColor" xml:space="preserve"><value>🟡 Warning threshold:</value></data>
+  <data name="Plugin_MemHighColor" xml:space="preserve"><value>🟠 High threshold:</value></data>
+  <data name="Plugin_MemCriticalColor" xml:space="preserve"><value>🔴 Critical threshold:</value></data>
+  <data name="Plugin_ResetColors" xml:space="preserve"><value>Reset to Default Colors</value></data>
+  <!-- SOLUTION EXPLORER OPTIONS PAGE -->
+  <data name="SolExp_NavigationSection" xml:space="preserve"><value>NAVIGATION</value></data>
+  <data name="SolExp_TrackActive" xml:space="preserve"><value>Automatically highlight active document in tree</value></data>
+  <data name="SolExp_PersistCollapse" xml:space="preserve"><value>Remember expanded / collapsed state between sessions</value></data>
+  <data name="SolExp_NotificationsSection" xml:space="preserve"><value>NOTIFICATIONS</value></data>
+  <data name="SolExp_ShowNotifications" xml:space="preserve"><value>Show contextual notifications (external changes, paste conflicts…)</value></data>
+  <data name="SolExp_DefaultsSection" xml:space="preserve"><value>DEFAULTS WHEN OPENING A SOLUTION</value></data>
+  <data name="SolExp_DefaultSortLabel" xml:space="preserve"><value>Default sort:</value></data>
+  <data name="SolExp_SortNone" xml:space="preserve"><value>None</value></data>
+  <data name="SolExp_SortName" xml:space="preserve"><value>Name</value></data>
+  <data name="SolExp_SortType" xml:space="preserve"><value>Type</value></data>
+  <data name="SolExp_SortDateModified" xml:space="preserve"><value>Date Modified</value></data>
+  <data name="SolExp_SortSize" xml:space="preserve"><value>Size</value></data>
+  <data name="SolExp_DefaultFilterLabel" xml:space="preserve"><value>Default filter:</value></data>
+  <data name="SolExp_FilterAll" xml:space="preserve"><value>All</value></data>
+  <data name="SolExp_FilterBinary" xml:space="preserve"><value>Binary</value></data>
+  <data name="SolExp_FilterText" xml:space="preserve"><value>Text</value></data>
+  <data name="SolExp_FilterImage" xml:space="preserve"><value>Image</value></data>
+  <data name="SolExp_FilterLanguage" xml:space="preserve"><value>Language</value></data>
+  <!-- TAB GROUPS OPTIONS PAGE -->
+  <data name="TabGroups_SplitSection" xml:space="preserve"><value>SPLIT BEHAVIOR</value></data>
+  <data name="TabGroups_EnforceEqualSize" xml:space="preserve"><value>Enforce equal pane size on split (50 / 50)</value></data>
+  <data name="TabGroups_MinWidthLabel" xml:space="preserve"><value>Minimum pane width (px):</value></data>
+  <data name="TabGroups_MinHeightLabel" xml:space="preserve"><value>Minimum pane height (px):</value></data>
+  <data name="TabGroups_VisualSection" xml:space="preserve"><value>VISUAL</value></data>
+  <data name="TabGroups_ShowGroupBadge" xml:space="preserve"><value>Show 'Group N' badge on tab bar when multiple groups are open</value></data>
+  <data name="TabGroups_PersistSection" xml:space="preserve"><value>PERSISTENCE</value></data>
+  <data name="TabGroups_PersistLayout" xml:space="preserve"><value>Include tab group layout in workspace saves</value></data>
+  <!-- TEXT EDITOR OPTIONS PAGE -->
+  <data name="TextOpt_FontSection" xml:space="preserve"><value>FONT</value></data>
+  <data name="TextOpt_FontFamilyLabel" xml:space="preserve"><value>Font family:</value></data>
+  <data name="TextOpt_FontSizeLabel" xml:space="preserve"><value>Font size (pt):</value></data>
+  <data name="TextOpt_IndentSection" xml:space="preserve"><value>INDENTATION</value></data>
+  <data name="TextOpt_IndentSizeLabel" xml:space="preserve"><value>Indent size:</value></data>
+  <data name="TextOpt_UseSpaces" xml:space="preserve"><value>Insert spaces instead of tab characters</value></data>
+  <data name="TextOpt_FeaturesSection" xml:space="preserve"><value>FEATURES</value></data>
+  <data name="TextOpt_ShowLineNumbers" xml:space="preserve"><value>Show line numbers</value></data>
+  <data name="TextOpt_ShowRefreshRate" xml:space="preserve"><value>Show refresh rate in status bar (render frame time)</value></data>
+  <data name="TextOpt_WordWrap" xml:space="preserve"><value>Word Wrap (Alt+Z)</value></data>
+  <data name="TextOpt_ClickableLinks" xml:space="preserve"><value>Enable Ctrl+Click to open web links (http/https)</value></data>
+  <data name="TextOpt_ClickableEmails" xml:space="preserve"><value>Enable Ctrl+Click to compose email</value></data>
+  <data name="TextOpt_DefaultZoomLabel" xml:space="preserve"><value>Default zoom (%):</value></data>
+  <data name="TextOpt_MouseWheelLabel" xml:space="preserve"><value>Mouse wheel speed:</value></data>
+  <data name="TextOpt_ChangesetSection" xml:space="preserve"><value>CHANGESET (.WHCHG)</value></data>
+  <data name="TextOpt_TrackEdits" xml:space="preserve"><value>Track edits in .whchg companion file (requires Tracked save mode)</value></data>
+  <data name="TextOpt_SyntaxSection" xml:space="preserve"><value>SYNTAX COLOUR OVERRIDES</value></data>
+  <data name="TextOpt_SyntaxNote" xml:space="preserve"><value>Enable a colour to override the active theme's default.</value></data>
+  <data name="TextOpt_Background" xml:space="preserve"><value>Background:</value></data>
+  <data name="TextOpt_Foreground" xml:space="preserve"><value>Foreground:</value></data>
+  <data name="TextOpt_Keyword" xml:space="preserve"><value>Keyword:</value></data>
+  <data name="TextOpt_String" xml:space="preserve"><value>String:</value></data>
+  <data name="TextOpt_Comment" xml:space="preserve"><value>Comment:</value></data>
+  <data name="TextOpt_Number" xml:space="preserve"><value>Number:</value></data>
+  <data name="TextOpt_Type" xml:space="preserve"><value>Type:</value></data>
+  <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Preprocessor:</value></data>
+  <data name="TextOpt_Operator" xml:space="preserve"><value>Operator:</value></data>
+  <data name="TextOpt_Identifier" xml:space="preserve"><value>Identifier:</value></data>
+
+  <!-- Options categories -->
+  <data name="Opt_Category_Environment"      xml:space="preserve"><value>Περιβάλλον</value></data>
+  <data name="Opt_Category_HexEditor"        xml:space="preserve"><value>Επεξεργαστής Hex</value></data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>Εξερευνητής λύσης</value></data>
+  <data name="Opt_Category_CodeEditor"       xml:space="preserve"><value>Επεξεργαστής κώδικα</value></data>
+  <data name="Opt_Category_TextEditor"       xml:space="preserve"><value>Επεξεργαστής κειμένου</value></data>
+  <data name="Opt_Category_PluginSystem"     xml:space="preserve"><value>Σύστημα plugins</value></data>
+  <data name="Opt_Category_BuildRun"         xml:space="preserve"><value>Δημιουργία και εκτέλεση</value></data>
+  <data name="Opt_Category_Debugger"         xml:space="preserve"><value>Εντοπισμός σφαλμάτων</value></data>
+  <data name="Opt_Category_Extensions"       xml:space="preserve"><value>Επεκτάσεις</value></data>
+  <data name="Opt_Category_FormatEditor"     xml:space="preserve"><value>Επεξεργαστής μορφής (.whfmt)</value></data>
+  <data name="Opt_Category_Tools"            xml:space="preserve"><value>Εργαλεία</value></data>
+
+  <!-- Options page names -->
+  <data name="Opt_Page_General"              xml:space="preserve"><value>Γενικά</value></data>
+  <data name="Opt_Page_Save"                 xml:space="preserve"><value>Αποθήκευση</value></data>
+  <data name="Opt_Page_Output"               xml:space="preserve"><value>Έξοδος</value></data>
+  <data name="Opt_Page_TabGroups"            xml:space="preserve"><value>Ομάδες καρτελών</value></data>
+  <data name="Opt_Page_KeyboardShortcuts"    xml:space="preserve"><value>Συντομεύσεις πληκτρολογίου</value></data>
+  <data name="Opt_Page_Documents"            xml:space="preserve"><value>Έγγραφα</value></data>
+  <data name="Opt_Page_Workspace"            xml:space="preserve"><value>Χώρος εργασίας</value></data>
+  <data name="Opt_Page_Tabs"                 xml:space="preserve"><value>Καρτέλες</value></data>
+  <data name="Opt_Page_Layout"               xml:space="preserve"><value>Διάταξη</value></data>
+  <data name="Opt_Page_Docking"              xml:space="preserve"><value>Αγκύρωση</value></data>
+  <data name="Opt_Page_ViewMenu"             xml:space="preserve"><value>Μενού Προβολή</value></data>
+  <data name="Opt_Page_Display"              xml:space="preserve"><value>Εμφάνιση</value></data>
+  <data name="Opt_Page_Editing"              xml:space="preserve"><value>Επεξεργασία</value></data>
+  <data name="Opt_Page_StatusBar"            xml:space="preserve"><value>Γραμμή κατάστασης</value></data>
+  <data name="Opt_Page_Behavior"             xml:space="preserve"><value>Συμπεριφορά</value></data>
+  <data name="Opt_Page_AppearanceColors"     xml:space="preserve"><value>Εμφάνιση και χρώματα</value></data>
+  <data name="Opt_Page_InlineHints"          xml:space="preserve"><value>Ενσωματωμένες υποδείξεις</value></data>
+  <data name="Opt_Page_Navigation"           xml:space="preserve"><value>Πλοήγηση</value></data>
+  <data name="Opt_Page_Formatting"           xml:space="preserve"><value>Μορφοποίηση</value></data>
+  <data name="Opt_Page_Features"             xml:space="preserve"><value>Λειτουργίες</value></data>
+  <data name="Opt_Page_LanguageServers"      xml:space="preserve"><value>Διακομιστές γλώσσας</value></data>
+  <data name="Opt_Page_Markdown"             xml:space="preserve"><value>Markdown</value></data>
+  <data name="Opt_Page_Development"          xml:space="preserve"><value>Ανάπτυξη</value></data>
+  <data name="Opt_Page_Migration"            xml:space="preserve"><value>Μετεγκατάσταση</value></data>
+  <data name="Opt_Page_EventBus"             xml:space="preserve"><value>Δίαυλος συμβάντων</value></data>
+  <data name="Opt_Page_Compiler"             xml:space="preserve"><value>Μεταγλωττιστής</value></data>
+  <data name="Opt_Page_Breakpoints"          xml:space="preserve"><value>Σημεία διακοπής</value></data>
+  <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
+  <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Εξερευνητής μορφών</value></data>
+  <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Σύγκριση αρχείων</value></data>
+  <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Παλέτα εντολών</value></data>
+
+  <!-- Plugin System Options Page — folder picker dialog -->
+  <data name="Opt_Plugin_SelectExtDir"       xml:space="preserve"><value>Επιλογή καταλόγου πρόσθετων επεκτάσεων</value></data>
+
+  <!-- Plugin Dev Loader Options Page — folder picker dialog -->
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve"><value>Επιλογή καταλόγου εξόδου επέκτασης</value></data>
+
+  <!-- Whfmt Explorer Options Page — view mode combo -->
+  <data name="Opt_ViewMode_Tree"             xml:space="preserve"><value>Δενδρική</value></data>
+  <data name="Opt_ViewMode_Flat"             xml:space="preserve"><value>Επίπεδη</value></data>
+
+  <!-- Structure Editor Options Page — panel position combo -->
+  <data name="Opt_Position_Right"            xml:space="preserve"><value>Δεξιά</value></data>
+  <data name="Opt_Position_Left"             xml:space="preserve"><value>Αριστερά</value></data>
+  <data name="Opt_Position_Bottom"           xml:space="preserve"><value>Κάτω</value></data>
+  <data name="Opt_Position_Top"              xml:space="preserve"><value>Πάνω</value></data>
+
+  <!-- Structure Editor Options Page — endianness combo -->
+  <data name="Opt_Endian_Little"             xml:space="preserve"><value>little-endian</value></data>
+  <data name="Opt_Endian_Big"                xml:space="preserve"><value>big-endian</value></data>
+
+  <!-- Code Editor Formatting Page — indentation levels combo -->
+  <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 επίπεδο (4 κενά στη ρίζα)</value></data>
+  <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 επίπεδα (8 κενά στη ρίζα) — προεπιλογή VS</value></data>
+  <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 επίπεδα (12 κενά στη ρίζα)</value></data>
+
+  <!-- Markdown Editor Options Page — layout combo -->
+  <data name="Opt_MdLayout_PreviewRight"     xml:space="preserve"><value>Προεπισκόπηση δεξιά</value></data>
+  <data name="Opt_MdLayout_PreviewBottom"    xml:space="preserve"><value>Προεπισκόπηση κάτω</value></data>
+  <data name="Opt_MdLayout_EditorOnly"       xml:space="preserve"><value>Μόνο επεξεργαστής</value></data>
+  <data name="Opt_MdLayout_PreviewOnly"      xml:space="preserve"><value>Μόνο προεπισκόπηση</value></data>
+  <data name="Opt_Preview_Label"             xml:space="preserve"><value>Προεπισκόπηση</value></data>
+  <data name="BuildCompiler_CSharpSection" xml:space="preserve">
+    <value>ΠΡΟΕΠΙΛΟΓΕΣ C# / .NET</value>
+  </data>
+  <data name="BuildCompiler_NullableCheck" xml:space="preserve">
+    <value>Μεταχείριση προειδοποιήσεων nullable ως σφαλμάτων (C# 8+)</value>
+  </data>
+  <data name="BuildCompiler_ImplicitUsings" xml:space="preserve">
+    <value>Ενεργοποίηση implicit usings (C# 10+)</value>
+  </data>
+  <data name="BuildCompiler_GenerateDocs" xml:space="preserve">
+    <value>Δημιουργία αρχείου τεκμηρίωσης XML</value>
+  </data>
+  <data name="BuildCompiler_WarningsSection" xml:space="preserve">
+    <value>ΠΡΟΕΙΔΟΠΟΙΗΣΕΙΣ</value>
+  </data>
+  <data name="BuildCompiler_WarnLevelLabel" xml:space="preserve">
+    <value>Προεπιλεγμένο επίπεδο προειδοποίησης (0–9) :</value>
+  </data>
+  <data name="BuildRun_GeneralSection" xml:space="preserve">
+    <value>ΓΕΝΙΚΑ</value>
+  </data>
+  <data name="BuildRun_SaveBeforeBuild" xml:space="preserve">
+    <value>Αποθήκευση όλων των αλλαγών πριν από τη μεταγλώττιση</value>
+  </data>
+  <data name="BuildRun_VerbosityLabel" xml:space="preserve">
+    <value>Λεπτομέρεια εξόδου μεταγλώττισης :</value>
+  </data>
+  <data name="BuildRun_VerbQuiet" xml:space="preserve">
+    <value>Σιωπηλό</value>
+  </data>
+  <data name="BuildRun_VerbMinimal" xml:space="preserve">
+    <value>Ελάχιστο</value>
+  </data>
+  <data name="BuildRun_VerbNormal" xml:space="preserve">
+    <value>Κανονικό</value>
+  </data>
+  <data name="BuildRun_VerbDetailed" xml:space="preserve">
+    <value>Λεπτομερές</value>
+  </data>
+  <data name="BuildRun_VerbDiagnostic" xml:space="preserve">
+    <value>Διαγνωστικό</value>
+  </data>
+  <data name="BuildRun_RunInProcess" xml:space="preserve">
+    <value>Εκτέλεση MSBuild ενδοδιεργασιακά (ταχύτερο, συνιστάται)</value>
+  </data>
+  <data name="BuildRun_MaxParallelLabel" xml:space="preserve">
+    <value>Μέγιστος αριθμός παράλληλων μεταγλωττίσεων :</value>
+  </data>
+  <data name="BuildRun_OutputSection" xml:space="preserve">
+    <value>ΠΑΡΑΘΥΡΟ ΕΞΟΔΟΥ</value>
+  </data>
+  <data name="BuildRun_ShowOnStart" xml:space="preserve">
+    <value>Εμφάνιση παραθύρου εξόδου κατά την έναρξη μεταγλώττισης</value>
+  </data>
+  <data name="BuildRun_ShowOnError" xml:space="preserve">
+    <value>Εμφάνιση παραθύρου εξόδου σε σφάλμα μεταγλώττισης</value>
+  </data>
+  <data name="BuildRun_RunSection" xml:space="preserve">
+    <value>ΕΚΤΕΛΕΣΗ</value>
+  </data>
+  <data name="BuildRun_OnRunBuildErrorLabel" xml:space="preserve">
+    <value>Κατά την εκτέλεση, αν υπάρχουν σφάλματα μεταγλώττισης :</value>
+  </data>
+  <data name="BuildRun_DoNotLaunch" xml:space="preserve">
+    <value>Χωρίς εκκίνηση</value>
+  </data>
+  <data name="BuildRun_Launch" xml:space="preserve">
+    <value>Εκκίνηση</value>
+  </data>
+  <data name="BuildRun_ShowOutputOnRun" xml:space="preserve">
+    <value>Εμφάνιση παραθύρου εξόδου κατά την εκκίνηση εκτέλεσης</value>
+  </data>
+  <data name="CodeInlineHints_Section" xml:space="preserve">
+    <value>ΕΝΣΩΜΑΤΩΜΕΝΕΣ ΥΠΟΔΕΙΞΕΙΣ</value>
+  </data>
+  <data name="CodeInlineHints_EnableHints" xml:space="preserve">
+    <value>Ενεργοποίηση ενσωματωμένων υποδείξεων (εμφάνιση αριθμών αναφορών πάνω από δηλώσεις)</value>
+  </data>
+  <data name="CodeInlineHints_SourceLabel" xml:space="preserve">
+    <value>Πηγή αναφοράς :</value>
+  </data>
+  <data name="CodeInlineHints_SourceAuto" xml:space="preserve">
+    <value>Αυτόματο (Roslyn αν διαθέσιμο, regex ως εφεδρικό)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRoslyn" xml:space="preserve">
+    <value>Μόνο Roslyn (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRegex" xml:space="preserve">
+    <value>Πάντα Regex</value>
+  </data>
+  <data name="CodeInlineHints_RoslynSection" xml:space="preserve">
+    <value>ΣΗΜΑΣΙΟΛΟΓΙΚΕΣ ΥΠΟΔΕΙΞΕΙΣ ROSLYN (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_RoslynNote" xml:space="preserve">
+    <value>Εμφάνιση συναγόμενων τύπων και τύπων επιστροφής inline όταν το Roslyn είναι ο ενεργός γλωσσικός πελάτης.</value>
+  </data>
+  <data name="CodeInlineHints_ShowVarType" xml:space="preserve">
+    <value>Εμφάνιση συναγόμενου τύπου για δηλώσεις var (π.χ. var x = … → : List&amp;lt;int&amp;gt;)</value>
+  </data>
+  <data name="CodeInlineHints_ShowLambdaReturn" xml:space="preserve">
+    <value>Εμφάνιση τύπου επιστροφής για εκφράσεις lambda (π.χ. x =&amp;gt; x * 2 → int)</value>
+  </data>
+  <data name="CodeInlineHints_KindsSection" xml:space="preserve">
+    <value>ΕΜΦΑΝΙΣΗ ΥΠΟΔΕΙΞΕΩΝ ΓΙΑ ΤΥΠΟΥΣ ΣΥΜΒΟΛΩΝ :</value>
+  </data>
+  <data name="CodeInlineHints_KindsNote" xml:space="preserve">
+    <value>Αποεπιλέξτε έναν τύπο για απόκρυψη των υποδείξεών του ενώ παραμένουν ενεργές οι υπόλοιπες.</value>
+  </data>
+  <data name="CodeInlineHints_TypesGroup" xml:space="preserve">
+    <value>Τύποι</value>
+  </data>
+  <data name="CodeInlineHints_Class" xml:space="preserve">
+    <value>Κλάση</value>
+  </data>
+  <data name="CodeInlineHints_Interface" xml:space="preserve">
+    <value>Διεπαφή</value>
+  </data>
+  <data name="CodeInlineHints_Struct" xml:space="preserve">
+    <value>Δομή</value>
+  </data>
+  <data name="CodeInlineHints_Enum" xml:space="preserve">
+    <value>Απαρίθμηση</value>
+  </data>
+  <data name="CodeInlineHints_Record" xml:space="preserve">
+    <value>Εγγραφή</value>
+  </data>
+  <data name="CodeInlineHints_Delegate" xml:space="preserve">
+    <value>Αντιπρόσωπος</value>
+  </data>
+  <data name="CodeInlineHints_MembersGroup" xml:space="preserve">
+    <value>Μέλη</value>
+  </data>
+  <data name="CodeInlineHints_Method" xml:space="preserve">
+    <value>Μέθοδος</value>
+  </data>
+  <data name="CodeInlineHints_Constructor" xml:space="preserve">
+    <value>Κατασκευαστής</value>
+  </data>
+  <data name="CodeInlineHints_Property" xml:space="preserve">
+    <value>Ιδιότητα</value>
+  </data>
+  <data name="CodeInlineHints_Field" xml:space="preserve">
+    <value>Πεδίο</value>
+  </data>
+  <data name="CodeInlineHints_Event" xml:space="preserve">
+    <value>Συμβάν</value>
+  </data>
+  <data name="CodeInlineHints_OtherGroup" xml:space="preserve">
+    <value>Άλλο</value>
+  </data>
+  <data name="CodeInlineHints_LocalVar" xml:space="preserve">
+    <value>Τοπική μεταβλητή</value>
+  </data>
+  <data name="CodeInlineHints_Parameter" xml:space="preserve">
+    <value>Παράμετρος</value>
+  </data>
+  <data name="CodeInlineHints_TypeParam" xml:space="preserve">
+    <value>Παράμετρος τύπου</value>
+  </data>
+  <data name="CodeInlineHints_Namespace" xml:space="preserve">
+    <value>Χώρος ονομάτων</value>
+  </data>
+  <data name="CodeInlineHints_SelectAll" xml:space="preserve">
+    <value>Επιλογή όλων</value>
+  </data>
+  <data name="CodeInlineHints_ClearAll" xml:space="preserve">
+    <value>Εκκαθάριση όλων</value>
+  </data>
+  <data name="CodeOpt_FontSection" xml:space="preserve">
+    <value>ΓΡΑΜΜΑΤΟΣΕΙΡΑ</value>
+  </data>
+  <data name="CodeOpt_FontFamilyLabel" xml:space="preserve">
+    <value>Οικογένεια γραμματοσειράς :</value>
+  </data>
+  <data name="CodeOpt_FontSizeLabel" xml:space="preserve">
+    <value>Μέγεθος γραμματοσειράς (pt) :</value>
+  </data>
+  <data name="CodeOpt_IndentSection" xml:space="preserve">
+    <value>ΕΣΟΧΗ</value>
+  </data>
+  <data name="CodeOpt_IndentSizeLabel" xml:space="preserve">
+    <value>Μέγεθος εσοχής :</value>
+  </data>
+  <data name="CodeOpt_UseSpaces" xml:space="preserve">
+    <value>Εισαγωγή κενών αντί για χαρακτήρες tab</value>
+  </data>
+  <data name="CodeOpt_FeaturesSection" xml:space="preserve">
+    <value>ΛΕΙΤΟΥΡΓΙΕΣ</value>
+  </data>
+  <data name="CodeOpt_ShowLineNumbers" xml:space="preserve">
+    <value>Εμφάνιση αριθμών γραμμών</value>
+  </data>
+  <data name="CodeOpt_HighlightCurrentLine" xml:space="preserve">
+    <value>Επισήμανση τρέχουσας γραμμής</value>
+  </data>
+  <data name="CodeOpt_CtrlClickLinks" xml:space="preserve">
+    <value>Ενεργοποίηση Ctrl+Κλικ για μετάβαση σε ορισμό / άνοιγμα συνδέσμων</value>
+  </data>
+  <data name="CodeOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>Προεπιλεγμένο ζουμ (%) :</value>
+  </data>
+  <data name="CodeOpt_MouseWheelLabel" xml:space="preserve">
+    <value>Ταχύτητα τροχού ποντικιού :</value>
+  </data>
+  <data name="CodeOpt_ChangesetSection" xml:space="preserve">
+    <value>ΣΥΝΟΛΟ ΑΛΛΑΓΩΝ (.WHCHG)</value>
+  </data>
+  <data name="CodeOpt_TrackEdits" xml:space="preserve">
+    <value>Παρακολούθηση αλλαγών σε αρχείο .whchg (απαιτεί λειτουργία αποθήκευσης με παρακολούθηση)</value>
+  </data>
+  <data name="CodeOpt_SyntaxSection" xml:space="preserve">
+    <value>ΠΑΡΑΚΑΜΨΕΙΣ ΧΡΩΜΑΤΩΝ ΣΥΝΤΑΞΗΣ</value>
+  </data>
+  <data name="CodeOpt_SyntaxNote" xml:space="preserve">
+    <value>Ενεργοποιήστε χρώμα για παράκαμψη της προεπιλογής του ενεργού θέματος.</value>
+  </data>
+  <data name="CodeOpt_Background" xml:space="preserve">
+    <value>Φόντο :</value>
+  </data>
+  <data name="CodeOpt_Foreground" xml:space="preserve">
+    <value>Πρώτο πλάνο :</value>
+  </data>
+  <data name="CodeOpt_Keyword" xml:space="preserve">
+    <value>Λέξη-κλειδί :</value>
+  </data>
+  <data name="CodeOpt_String" xml:space="preserve">
+    <value>Συμβολοσειρά :</value>
+  </data>
+  <data name="CodeOpt_Comment" xml:space="preserve">
+    <value>Σχόλιο :</value>
+  </data>
+  <data name="CodeOpt_Number" xml:space="preserve">
+    <value>Αριθμός :</value>
+  </data>
+  <data name="CodeOpt_Type" xml:space="preserve">
+    <value>Τύπος :</value>
+  </data>
+  <data name="CodeOpt_Preprocessor" xml:space="preserve">
+    <value>Προεπεξεργαστής :</value>
+  </data>
+  <data name="CodeOpt_Operator" xml:space="preserve">
+    <value>Τελεστής :</value>
+  </data>
+  <data name="CodeOpt_Identifier" xml:space="preserve">
+    <value>Αναγνωριστικό :</value>
+  </data>
+  <data name="CodeOpt_ResetColors" xml:space="preserve">
+    <value>Επαναφορά προεπιλεγμένων χρωμάτων θέματος</value>
+  </data>
+  <data name="EnvSave_SaveModeSection" xml:space="preserve">
+    <value>Λειτουργία αποθήκευσης</value>
+  </data>
+  <data name="EnvSave_DirectMode" xml:space="preserve">
+    <value>Άμεση λειτουργία</value>
+  </data>
+  <data name="EnvSave_TrackedMode" xml:space="preserve">
+    <value>Λειτουργία με παρακολούθηση</value>
+  </data>
+  <data name="EnvSave_AutoSaveSection" xml:space="preserve">
+    <value>Αυτόματη αποθήκευση</value>
+  </data>
+  <data name="EnvSave_AutoSerialize" xml:space="preserve">
+    <value>Ενεργοποίηση αυτόματης αποθήκευσης</value>
+  </data>
+  <data name="EnvSave_IntervalLabel" xml:space="preserve">
+    <value>Διάστημα (δευτερόλεπτα)</value>
+  </data>
+  <data name="EnvSave_StandaloneSection" xml:space="preserve">
+    <value>Αυτόνομη λειτουργία</value>
+  </data>
+  <data name="EnvSave_StandaloneNote" xml:space="preserve">
+    <value>Σε αυτόνομη λειτουργία, κάθε επεξεργαστής ελέγχει τον τρόπο αποθήκευσής του.</value>
+  </data>
+  <data name="EnvSave_HexEditorDirect" xml:space="preserve">
+    <value>Επεξεργαστής Hex : Άμεση λειτουργία</value>
+  </data>
+  <data name="EnvSave_CodeEditorDirect" xml:space="preserve">
+    <value>Επεξεργαστής κώδικα : Άμεση λειτουργία</value>
+  </data>
+  <data name="EnvSave_TextEditorDirect" xml:space="preserve">
+    <value>Επεξεργαστής κειμένου : Άμεση λειτουργία</value>
+  </data>
+  <data name="EnvSave_TblEditorDirect" xml:space="preserve">
+    <value>Επεξεργαστής TBL : Άμεση λειτουργία</value>
+  </data>
+  <data name="EnvSave_ImageViewerDirect" xml:space="preserve">
+    <value>Προβολή εικόνων : Άμεση λειτουργία</value>
+  </data>
+  <data name="EnvSave_SaveAsNote" xml:space="preserve">
+    <value>Η «Αποθήκευση ως» απαιτεί επιλογή νέας διαδρομής.</value>
+  </data>
+  <data name="HexBehavior_Section" xml:space="preserve">
+    <value>Συμπεριφορά επεξεργαστή Hex</value>
+  </data>
+  <data name="HexBehavior_AllowAutoHighLight" xml:space="preserve">
+    <value>Ενεργοποίηση αυτόματης επισήμανσης</value>
+  </data>
+  <data name="HexBehavior_AllowAutoSelectDoubleClick" xml:space="preserve">
+    <value>Αυτόματη επιλογή με διπλό κλικ</value>
+  </data>
+  <data name="HexBehavior_AllowContextMenu" xml:space="preserve">
+    <value>Ενεργοποίηση μενού περιβάλλοντος</value>
+  </data>
+  <data name="HexBehavior_AllowDeleteByte" xml:space="preserve">
+    <value>Επιτρεπόμενη διαγραφή byte</value>
+  </data>
+  <data name="HexBehavior_AllowExtend" xml:space="preserve">
+    <value>Επιτρεπόμενη επέκταση</value>
+  </data>
+  <data name="HexBehavior_FileDroppingConfirmation" xml:space="preserve">
+    <value>Επιβεβαίωση κατά την απόθεση αρχείου</value>
+  </data>
+  <data name="HexBehavior_PreloadModeLabel" xml:space="preserve">
+    <value>Λειτουργία προφόρτωσης</value>
+  </data>
+  <data name="HexDisplay_DisplaySection" xml:space="preserve">
+    <value>Ρυθμίσεις εμφάνισης</value>
+  </data>
+  <data name="HexDisplay_BytesPerLineLabel" xml:space="preserve">
+    <value>Bytes ανά γραμμή</value>
+  </data>
+  <data name="HexDisplay_ShowOffset" xml:space="preserve">
+    <value>Εμφάνιση offset</value>
+  </data>
+  <data name="HexDisplay_ShowAscii" xml:space="preserve">
+    <value>Εμφάνιση στήλης ASCII</value>
+  </data>
+  <data name="HexDisplay_MouseWheelLabel" xml:space="preserve">
+    <value>Τροχός ποντικιού</value>
+  </data>
+  <data name="HexDisplay_ByteTooltipLabel" xml:space="preserve">
+    <value>Επεξήγηση byte</value>
+  </data>
+  <data name="HexDisplay_FormatSection" xml:space="preserve">
+    <value>Μορφή</value>
+  </data>
+  <data name="HexDisplay_ValueFormatLabel" xml:space="preserve">
+    <value>Μορφή τιμής</value>
+  </data>
+  <data name="HexDisplay_OffsetFormatLabel" xml:space="preserve">
+    <value>Μορφή offset</value>
+  </data>
+  <data name="HexDisplay_ByteGroupingLabel" xml:space="preserve">
+    <value>Ομαδοποίηση bytes</value>
+  </data>
+  <data name="HexDisplay_SpacerPositionLabel" xml:space="preserve">
+    <value>Θέση διαχωριστή</value>
+  </data>
+  <data name="HexDisplay_ScrollMarkersSection" xml:space="preserve">
+    <value>Δείκτες κύλισης</value>
+  </data>
+  <data name="HexDisplay_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Εμφάνιση δεικτών σελιδοδεικτών</value>
+  </data>
+  <data name="HexDisplay_ShowModifiedMarkers" xml:space="preserve">
+    <value>Εμφάνιση δεικτών τροποποίησης</value>
+  </data>
+  <data name="HexDisplay_ShowInsertedMarkers" xml:space="preserve">
+    <value>Εμφάνιση δεικτών εισαγωγής</value>
+  </data>
+  <data name="HexDisplay_ShowDeletedMarkers" xml:space="preserve">
+    <value>Εμφάνιση δεικτών διαγραφής</value>
+  </data>
+  <data name="HexDisplay_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Εμφάνιση δεικτών αποτελεσμάτων αναζήτησης</value>
+  </data>
+  <data name="HexDisplay_ColumnRowSection" xml:space="preserve">
+    <value>Επισήμανση στηλών και γραμμών</value>
+  </data>
+  <data name="HexDisplay_ShowColumnHighlight" xml:space="preserve">
+    <value>Εμφάνιση επισήμανσης στήλης</value>
+  </data>
+  <data name="HexDisplay_ShowAsciiColumnHighlight" xml:space="preserve">
+    <value>Εμφάνιση επισήμανσης στήλης ASCII</value>
+  </data>
+  <data name="HexDisplay_ShowRowHighlight" xml:space="preserve">
+    <value>Εμφάνιση επισήμανσης γραμμής</value>
+  </data>
+  <data name="HexEdit_EditingSection" xml:space="preserve">
+    <value>Ρυθμίσεις επεξεργασίας</value>
+  </data>
+  <data name="HexEdit_DefaultEditModeLabel" xml:space="preserve">
+    <value>Προεπιλεγμένη λειτουργία επεξεργασίας</value>
+  </data>
+  <data name="HexEdit_MouseWheelLabel" xml:space="preserve">
+    <value>Τροχός ποντικιού</value>
+  </data>
+  <data name="HexEdit_AllowZoom" xml:space="preserve">
+    <value>Επιτρεπόμενο ζουμ</value>
+  </data>
+  <data name="HexEdit_AllowFileDrop" xml:space="preserve">
+    <value>Επιτρεπόμενη απόθεση αρχείου</value>
+  </data>
+  <data name="HexEdit_DataSection" xml:space="preserve">
+    <value>Ρυθμίσεις δεδομένων</value>
+  </data>
+  <data name="HexEdit_ByteSizeLabel" xml:space="preserve">
+    <value>Μέγεθος byte</value>
+  </data>
+  <data name="HexEdit_ByteOrderLabel" xml:space="preserve">
+    <value>Σειρά bytes</value>
+  </data>
+  <data name="HexEdit_DefaultCopyFormatLabel" xml:space="preserve">
+    <value>Προεπιλεγμένη μορφή αντιγραφής</value>
+  </data>
+  <data name="HexEdit_SpacerVisualLabel" xml:space="preserve">
+    <value>Εμφάνιση διαχωριστή</value>
+  </data>
+  <data name="HexStatus_Section" xml:space="preserve">
+    <value>Γραμμή κατάστασης</value>
+  </data>
+  <data name="HexStatus_ShowStatusMessage" xml:space="preserve">
+    <value>Εμφάνιση μηνύματος κατάστασης</value>
+  </data>
+  <data name="HexStatus_ShowFileSize" xml:space="preserve">
+    <value>Εμφάνιση μεγέθους αρχείου</value>
+  </data>
+  <data name="HexStatus_ShowSelection" xml:space="preserve">
+    <value>Εμφάνιση επιλογής</value>
+  </data>
+  <data name="HexStatus_ShowPosition" xml:space="preserve">
+    <value>Εμφάνιση θέσης</value>
+  </data>
+  <data name="HexStatus_ShowEditMode" xml:space="preserve">
+    <value>Εμφάνιση λειτουργίας επεξεργασίας</value>
+  </data>
+  <data name="HexStatus_ShowBytesPerLine" xml:space="preserve">
+    <value>Εμφάνιση bytes ανά γραμμή</value>
+  </data>
+  <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
+    <value>Εμφάνιση ρυθμού ανανέωσης</value>
+  </data>
+</root>

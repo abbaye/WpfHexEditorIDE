@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.hu-HU.resx
+    Description : Hungarian (Hungary) UI strings for the Structure Editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Eltolás</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>Erősség</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>Kötelező</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Blokk hozzáadása</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Hozzáadás</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Mégse</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Metaadatok</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Észlelés</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Blokkok</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Változók</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Speciális</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Minőség</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Teszt</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Mentés (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Érvényesítés (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Visszavonás (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Újra (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Élő kódnézet ki/be</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Blokk hozzáadása (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Blokk duplikálása (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Nem mentett módosítások</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Blokkok szűrése név szerint</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Blokk hozzáadása...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Duplikálás</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Törlés</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Feljebb</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Lejjebb</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Másolás JSON-ként</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Blokk beillesztése</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Válasszon egy blokkot a tulajdonságainak szerkesztéséhez,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>vagy nyomja meg a Ctrl+N-t / kattintson jobb gombbal új blokk hozzáadásához.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Hexadecimális aláírás</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Hex bájtok szóközök nélkül, pl. 89504E47 PNG-hez</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Aláírás</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>Aláírások v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Egyezési mód</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Hex érték</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Eltolás</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Felirat</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ Aláírás hozzáadása</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Entrópiaszint</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Minimális entrópia</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Maximális entrópia</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Minimális pontszám</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Pontszámküszöb</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Tartalmi minták (szöveges formátumok)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Regex minta</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Minta hozzáadása</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>Általános</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Formátum neve</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>A formátum olvasható neve (pl. 'ZIP Archívum', 'PNG Kép')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Verzió</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Ezen definíció verziója (pl. '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Szerző</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Ezen definíciós fájl szerzője</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Kategória</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Kategória (automatikusan a mappastruktúrából: Archívumok, Képek, Hang, Videó stb.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Diff-mód</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Preferált diff-algoritmus a DiffViewerhez</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Preferált szerkesztő</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>Preferált szerkesztőgyár azonosítója az ezen formátumnak megfelelő fájlokhoz</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Leírás</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Szöveges formátum (alapértelmezetten a kódszerkesztőben nyílik meg)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Fájlkiterjesztések</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Kiterjesztés hozzáadása</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME-típusok</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ MIME-típus hozzáadása</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Szoftverek</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Szoftver hozzáadása</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Számított metrikák</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Blokklefedettség</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Teljességi pontszám</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Típuseloszlás</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Blokkok</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Mélység</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Változók</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Szabályok</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Metaadatok</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Dokumentáció szintje</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Utolsó frissítés</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Formátum: ÉÉÉÉ-HH-NN (automatikusan kitöltve mentéskor)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Prioritásos formátum (top 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Automatikusan finomítva (szkripttel bővítve — csak olvasható)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Formátum tesztelése fájlon</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>A tesztelendő bináris fájl elérési útja</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Tallózás…</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Válasszon egy bináris fájlt a teszteléshez</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Teszt futtatása</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Eredmények másolása a vágólapra (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Válasszon egy fájlt és kattintson a ▶ Teszt futtatása gombra az aktuális formátumdefiníció teszteléséhez.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Állapot</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Blokk neve</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Típus</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Eltolás</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Hossz</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Nyers (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Elemzett érték</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Megjegyzés</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Figyelmeztetés</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Hiba</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Kihagyva</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>A blokk-értelmező számára elérhető kezdeti változók (pl. ciklusszámlálók, számított eltolások).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Változók szűrése név szerint</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Változó neve</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Típus</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Kezdeti érték</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Leírás</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Változó hozzáadása</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Állítások</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:nom equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Logikai kifejezés — Ctrl+Space a függvények és változók eléréséhez</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Ellenőrzőösszegek</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Verziókezelés (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Importálások ($ref összetétel)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = formátum neve (vagy structs/Név), as = structRef blokkokban használt alias.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Formátumirodalom, pl. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>structRef-ben használt alias, pl. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Importálás hozzáadása</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Törvényszéki</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Navigációs könyvjelzők</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>változóNév</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Bájt-eltolást tartalmazó változó — Ctrl+Space a javaslatokhoz</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Könyvjelző hozzáadása</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Ellenőrző elrendezése</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Exportálási sablonok</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Sablon hozzáadása</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>AI-tippek</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Bináris mező rögzített vagy változó eltolással és hosszal.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Varázsbájtok, amelyek egy adott eltolásban azonosítják a formátumot.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Változó hosszúságú vagy szimbolikus értéket olvas egy megnevezett változóba.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Feltételesen elemzi a blokkokat egy mező értéke vagy változó alapján.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Ismétli a blokktörzset, amíg a feltétel igaz.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Módosít egy változót (növel, csökkent, setVariable).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Matematikai kifejezést értékel ki és tárolja az eredményt.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Rögzített számú strukturált bejegyzésből álló tömböt elemez.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Variansblokkokat választ ki egy diszkrimináló változó alapján.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Külső struktúradefiníciót ágyaz be hivatkozással.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Navigációs annotációt hoz létre egy mutatott eltoláshoz.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} hiba</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} figyelmeztetés</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>Nyers JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Alkalmaz</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Mégse</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Struktúraszerkesztő</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Vizuális szerkesztő .whfmt struktúradefiníciós fájlokhoz. A blokkokat, típusokat, eltolásokat, hosszakat és színeket szerkesztheti DataGridben.</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Hossz:</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Érvényesítés (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Blokk hozzáadása (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Élő kódnézet ki/be</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Elrendezés</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Kódnézet elrendezése</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Kód jobbra</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Kód balra</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Kód alulra</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Kód felülre</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Formátum</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Lap</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Blokkok</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Érvényesítés</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Név</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Típus</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Szín</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Átlátszatlanság</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Leírás</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Rejtett</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Bájtsorrend</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Blokktípus</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Művelet</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Változó</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Érték</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Számítás</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Kifejezés</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Tárolás mint</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Pozíció</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Eltolás</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Eltolás innen</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Eltolás hozzáadva</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Hossz</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Érték típusa</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Tömb</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Darab</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Bejegyzésméret</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Indexváltozó</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Színciklus</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>A bejegyzésmezők gyermekként jelennek meg a fában.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Unió</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Diszkrimináns</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Variánsok</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Beágyazott struktúra</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Struktúrahivatkozás</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Mutató helye</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Cél és tárolás</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Célváltozó</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Felirat</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Pozíció és méret</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Tárolás</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Leképezett tárolás</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Értéklekérdezés</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Bitmezők</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Név</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Bitek</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Eddig</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Max. hossz</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Min. érték</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Max. érték</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Minta (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Hibaüzenet</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Változónév</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Csoport</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Egy csoport vizuálisan összefogja a gyermekmezőket egy színes réteggel. Nem fogyaszt bájtokat.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>A gyermekek a blokk-fában jelennek meg — a fát használja a gyermekblokkok hozzáadásához/átrendezéséhez.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>A gyermekmezők a blokk-fában jelennek meg.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Nyers adatrégió</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Nyers bájtrégió jelölése színes réteggel. Nem kerül kinyerésre érték.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Feltétel</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Ágfeliratok</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>„Igaz" felirat</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>„Hamis" felirat</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>A Then / Else blokkok gyermekként jelennek meg a fában.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Ciklusfeltétel</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Határok</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Max. iteráció</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>A törzsblokkok gyermekként jelennek meg a fában.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>A módosítandó változó neve — gépelésre megjelennek a javaslatok (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Beállítandó érték / hozzáadandó vagy kivonandó mennyiség — elfogad var:név alakot</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Matematikai kifejezés változókkal és függvényekkel — Ctrl+Space az automatikus kiegészítéshez</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>A számított eredményt tároló változónév — Ctrl+Space a javaslatokhoz</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Fájl-eltolás, ahol a tömb kezdődik — Ctrl+Space az automatikus kiegészítéshez</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Ezen tömb alapeltolásként használt változó</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Bejegyzések száma — Ctrl+Space a változójavaslatokhoz</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Minden bejegyzés mérete bájtban — Ctrl+Space a változójavaslatokhoz</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>A ciklusindex-változó neve (pl. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Szín hozzáadása</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>A variánsválasztást vezérlő változó — Ctrl+Space a javaslatokhoz</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Formátumnév vagy relatív elérési út a .whfmt fájlhoz</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Tallózás…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Fájl-eltolás, ahol a mutatóérték olvasódik — Ctrl+Space az automatikus kiegészítéshez</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Alapeltolásként használt változónév</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>A mutatóérték mérete bájtban (pl. 4 uint32-hez) — vagy var:név</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>A mutató feloldott címét kapó változó</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>A mutató nyers értékét tároló változó</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>A hex-nézetben megjelenő annotációs felirat</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space az automatikus kiegészítéshez — egész, var:név, calc:kifejezés, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Az alapeltolást tartalmazó változó neve — Ctrl+Space a javaslatokhoz</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>OffsetFromhoz hozzáadott extra bájtok</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space az automatikus kiegészítéshez — egész, var:név, calc:kifejezés</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Az elemzett értéket tároló változónév — Ctrl+Space a javaslatokhoz</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>A ValueMap által fordított értéket tároló változónév — Ctrl+Space a javaslatokhoz</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>nyers=Megjelenítés (pl. 0=Szürkeárnyalatos)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ ValueMap-bejegyzés hozzáadása</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Bittartomány pl. 7-6 vagy egyetlen bit pl. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Bitmező hozzáadása</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Sentinel (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Hex minta vagy var:név ahol leállítandó az olvasás. Felülírja a Length értéket ha be van állítva.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Biztonsági korlát (bájtban), ha az Until minta nem található. 0 = értelmező alapértéke (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until inkluzív (a minta bájtjait a mező hosszába számítja)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Érvényesítési szabályok</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Ezen metaadatblokk által olvasott változó neve</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Rögzített egész vagy var:név — Ctrl+Space a javaslatokhoz</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Biztonsági korlát — egész</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Az aktuális iterációs indexet (0-bázisú) kapó változó</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Az iterációk számát a ciklus után tároló változó — Ctrl+Space a javaslatokhoz</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Blokk szerkesztése nyers JSON-ként</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Állítás hozzáadása</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Ellenőrzőösszeg hozzáadása</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Sablon neve</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Struktúra neve (C struct)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Csak hexadecimális számjegyek (pl. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Megjelenítés:</value></data>
+</root>

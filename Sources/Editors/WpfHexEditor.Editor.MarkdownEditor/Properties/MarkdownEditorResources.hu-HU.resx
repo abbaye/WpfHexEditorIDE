@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="MdSb_ViewLabel"     xml:space="preserve"><value>Nézet</value></data>
+  <data name="MdSb_ViewTooltip"   xml:space="preserve"><value>Aktuális megjelenítési mód</value></data>
+  <data name="MdSb_WordsLabel"    xml:space="preserve"><value>Szavak</value></data>
+  <data name="MdSb_WordsTooltip"  xml:space="preserve"><value>Hozzávetőleges szószám</value></data>
+  <data name="MdSb_LinesLabel"    xml:space="preserve"><value>Sorok</value></data>
+  <data name="MdSb_LinesTooltip"  xml:space="preserve"><value>Összes sor száma</value></data>
+  <data name="MdSb_ReadLabel"     xml:space="preserve"><value>Olvasás</value></data>
+  <data name="MdSb_ReadTooltip"   xml:space="preserve"><value>Becsült olvasási idő (200 szó/perc)</value></data>
+  <data name="MdSb_ZoomLabel"     xml:space="preserve"><value>Nagyítás</value></data>
+  <data name="MdSb_ZoomTooltip"   xml:space="preserve"><value>Előnézet nagyítása (Ctrl+görgetés)</value></data>
+  <data name="MdTb_ViewLabel"        xml:space="preserve"><value>Nézet</value></data>
+  <data name="MdTb_ViewTooltip"      xml:space="preserve"><value>Megjelenítési mód (Ctrl+1/2/3)</value></data>
+  <data name="MdTb_LayoutLabel"      xml:space="preserve"><value>Elrendezés</value></data>
+  <data name="MdTb_LayoutTooltip"    xml:space="preserve"><value>Osztott elrendezés (Ctrl+Shift+L)</value></data>
+  <data name="MdTb_WrapLabel"        xml:space="preserve"><value>Törés</value></data>
+  <data name="MdTb_WrapTooltip"      xml:space="preserve"><value>Automatikus sortörés (Alt+Z)</value></data>
+  <data name="MdTb_RefreshLabel"     xml:space="preserve"><value>Frissítés</value></data>
+  <data name="MdTb_RefreshTooltip"   xml:space="preserve"><value>Előnézet frissítése (F9)</value></data>
+  <data name="MdTb_InsertLabel"      xml:space="preserve"><value>Beszúrás</value></data>
+  <data name="MdTb_InsertTooltip"    xml:space="preserve"><value>Markdown elem beszúrása</value></data>
+  <data name="MdTb_FormatLabel"      xml:space="preserve"><value>Formázás</value></data>
+  <data name="MdTb_FormatTooltip"    xml:space="preserve"><value>Kijelölt szöveg formázása</value></data>
+  <data name="MdTb_FullscreenLabel"  xml:space="preserve"><value>Teljes képernyő</value></data>
+  <data name="MdTb_FullscreenTooltip" xml:space="preserve"><value>Előnézet teljes képernyőre váltása</value></data>
+  <data name="MdView_SourceOnly"  xml:space="preserve"><value>Csak forrás</value></data>
+  <data name="MdView_Split"       xml:space="preserve"><value>Osztott</value></data>
+  <data name="MdView_PreviewOnly" xml:space="preserve"><value>Csak előnézet</value></data>
+  <data name="MdLayout_PreviewRight"  xml:space="preserve"><value>Előnézet jobbra</value></data>
+  <data name="MdLayout_PreviewLeft"   xml:space="preserve"><value>Előnézet balra</value></data>
+  <data name="MdLayout_PreviewBottom" xml:space="preserve"><value>Előnézet alulra</value></data>
+  <data name="MdLayout_PreviewTop"    xml:space="preserve"><value>Előnézet felülre</value></data>
+  <data name="MdInsert_Table"          xml:space="preserve"><value>Táblázat</value></data>
+  <data name="MdInsert_CodeBlock"      xml:space="preserve"><value>Kódblokk</value></data>
+  <data name="MdInsert_Image"          xml:space="preserve"><value>Kép</value></data>
+  <data name="MdInsert_HorizontalRule" xml:space="preserve"><value>Vízszintes vonal</value></data>
+  <data name="MdInsert_TableOfContents" xml:space="preserve"><value>Tartalomjegyzék</value></data>
+  <data name="MdFmt_Bold"          xml:space="preserve"><value>Félkövér</value></data>
+  <data name="MdFmt_Italic"        xml:space="preserve"><value>Dőlt</value></data>
+  <data name="MdFmt_Strikethrough" xml:space="preserve"><value>Áthúzott</value></data>
+  <data name="MdFmt_InlineCode"    xml:space="preserve"><value>Soron belüli kód</value></data>
+  <data name="MdCtx_GroupFormat"    xml:space="preserve"><value>FORMÁZÁS</value></data>
+  <data name="MdCtx_GroupInsert"    xml:space="preserve"><value>BESZÚRÁS</value></data>
+  <data name="MdCtx_GroupExport"    xml:space="preserve"><value>EXPORTÁLÁS</value></data>
+  <data name="MdCtx_GroupView"      xml:space="preserve"><value>NÉZET</value></data>
+  <data name="MdCtx_Bold"           xml:space="preserve"><value>Félkövér</value></data>
+  <data name="MdCtx_Italic"         xml:space="preserve"><value>Dőlt</value></data>
+  <data name="MdCtx_Strikethrough"  xml:space="preserve"><value>Áthúzott</value></data>
+  <data name="MdCtx_InlineCode"     xml:space="preserve"><value>Soron belüli kód</value></data>
+  <data name="MdCtx_Table"          xml:space="preserve"><value>Táblázat</value></data>
+  <data name="MdCtx_CodeBlock"      xml:space="preserve"><value>Kódblokk</value></data>
+  <data name="MdCtx_Link"           xml:space="preserve"><value>Hivatkozás</value></data>
+  <data name="MdCtx_Image"          xml:space="preserve"><value>Kép</value></data>
+  <data name="MdCtx_HorizontalRule" xml:space="preserve"><value>Vízszintes vonal</value></data>
+  <data name="MdCtx_WordWrap"       xml:space="preserve"><value>Automatikus sortörés&#9;Alt+Z</value></data>
+  <data name="MdCtx_ExportHtml"     xml:space="preserve"><value>Exportálás HTML-be...</value></data>
+  <data name="MdCtx_ExportPdf"      xml:space="preserve"><value>Exportálás PDF-be...</value></data>
+  <data name="MdPrev_SourceOnly"     xml:space="preserve"><value>Csak forrás</value></data>
+  <data name="MdPrev_SplitView"      xml:space="preserve"><value>Osztott nézet</value></data>
+  <data name="MdPrev_PreviewOnly"    xml:space="preserve"><value>Csak előnézet</value></data>
+  <data name="MdPrev_Fullscreen"     xml:space="preserve"><value>Teljes képernyő</value></data>
+  <data name="MdPrev_ExitFullscreen" xml:space="preserve"><value>Kilépés a teljes képernyőből</value></data>
+  <data name="MdPrev_RefreshPreview" xml:space="preserve"><value>Előnézet frissítése</value></data>
+  <data name="MdPrev_CycleLayout"    xml:space="preserve"><value>Elrendezés váltása</value></data>
+  <data name="MdPrev_ZoomIn"         xml:space="preserve"><value>Nagyítás</value></data>
+  <data name="MdPrev_ZoomOut"        xml:space="preserve"><value>Kicsinyítés</value></data>
+  <data name="MdPrev_ResetZoom"      xml:space="preserve"><value>Nagyítás visszaállítása</value></data>
+  <data name="MdPrev_Copy"           xml:space="preserve"><value>Másolás</value></data>
+  <data name="MdDlg_ExportHtmlTitle" xml:space="preserve"><value>Exportálás HTML-be</value></data>
+  <data name="MdDlg_ExportPdfTitle"  xml:space="preserve"><value>Exportálás PDF-be</value></data>
+  <data name="Md_NoHeadingsFound"    xml:space="preserve"><value>Nem találhatók fejlécek.</value></data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Előnézet inicializálása…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>A WebView2 futtatókörnyezet nem található</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>A Markdown előnézet Microsoft Edge WebView2 Runtime-ot igényel. Töltse le a microsoft.com/edge/webview2 oldalról.</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Vázlat frissítése (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>Nincs aktív Markdown fájl.</value></data>
+</root>

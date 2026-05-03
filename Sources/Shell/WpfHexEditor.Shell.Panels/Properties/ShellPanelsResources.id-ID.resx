@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="BookmarksPanel_RefreshToolTip" xml:space="preserve"><value>Perbarui bookmark</value></data>
+  <data name="BookmarksPanel_ClearAllToolTip" xml:space="preserve"><value>Hapus semua bookmark</value></data>
+  <data name="BookmarksPanel_EmptyCount" xml:space="preserve"><value>0 bookmark</value></data>
+  <data name="BookmarksPanel_OffsetHeader" xml:space="preserve"><value>Offset</value></data>
+  <data name="BookmarksPanel_DescriptionHeader" xml:space="preserve"><value>Deskripsi</value></data>
+  <data name="BookmarksPanel_CategoryHeader" xml:space="preserve"><value>Kategori</value></data>
+  <data name="BookmarksPanel_EmptyMessage" xml:space="preserve"><value>Tidak ada bookmark. Tekan Ctrl+F2 untuk mengaktifkan/menonaktifkan bookmark di editor aktif.</value></data>
+  <data name="ErrorPanel_ScopeEntireSolution" xml:space="preserve"><value>Seluruh solusi</value></data>
+  <data name="ErrorPanel_ScopeCurrentProject" xml:space="preserve"><value>Proyek saat ini</value></data>
+  <data name="ErrorPanel_ScopeCurrentDocument" xml:space="preserve"><value>Dokumen saat ini</value></data>
+  <data name="ErrorPanel_ScopeOpenDocuments" xml:space="preserve"><value>Dokumen terbuka</value></data>
+  <data name="ErrorPanel_ScopeChangedDocuments" xml:space="preserve"><value>Dokumen yang dimodifikasi</value></data>
+  <data name="ErrorPanel_OverflowButtonToolTip" xml:space="preserve"><value>Opsi lainnya</value></data>
+  <data name="ErrorPanel_ShowErrorsMenu" xml:space="preserve"><value>Tampilkan kesalahan</value></data>
+  <data name="ErrorPanel_ShowWarningsMenu" xml:space="preserve"><value>Tampilkan peringatan</value></data>
+  <data name="ErrorPanel_ShowMessagesMenu" xml:space="preserve"><value>Tampilkan pesan</value></data>
+  <data name="ErrorPanel_SearchPlaceholder" xml:space="preserve"><value>Cari...</value></data>
+  <data name="ErrorPanel_ErrorToggleToolTip" xml:space="preserve"><value>Tampilkan/sembunyikan kesalahan</value></data>
+  <data name="ErrorPanel_ErrorCountText" xml:space="preserve"><value>0 kesalahan</value></data>
+  <data name="ErrorPanel_WarningToggleToolTip" xml:space="preserve"><value>Tampilkan/sembunyikan peringatan</value></data>
+  <data name="ErrorPanel_WarningCountText" xml:space="preserve"><value>0 peringatan</value></data>
+  <data name="ErrorPanel_MessageToggleToolTip" xml:space="preserve"><value>Tampilkan/sembunyikan pesan</value></data>
+  <data name="ErrorPanel_MessageCountText" xml:space="preserve"><value>0 pesan</value></data>
+  <data name="ErrorPanel_CodeHeader" xml:space="preserve"><value>Code</value></data>
+  <data name="ErrorPanel_DescriptionHeader" xml:space="preserve"><value>Deskripsi</value></data>
+  <data name="ErrorPanel_ProjectHeader" xml:space="preserve"><value>Projet</value></data>
+  <data name="ErrorPanel_FileHeader" xml:space="preserve"><value>Fichier</value></data>
+  <data name="ErrorPanel_OffsetHeader" xml:space="preserve"><value>Offset</value></data>
+  <data name="ErrorPanel_LineColHeader" xml:space="preserve"><value>Ligne:Col</value></data>
+  <data name="PropertiesPanel_ContextLabel" xml:space="preserve"><value>Properti</value></data>
+  <data name="PropertiesPanel_RefreshToolTip" xml:space="preserve"><value>Perbarui properti</value></data>
+  <data name="PropertiesPanel_OverflowToolTip" xml:space="preserve"><value>Opsi lainnya</value></data>
+  <data name="PropertiesPanel_SortAlphabetically" xml:space="preserve"><value>Urutkan secara alfabetis</value></data>
+  <data name="PropertiesPanel_CopyValue" xml:space="preserve"><value>Salin nilai</value></data>
+  <data name="PropertiesPanel_SortToggleToolTip" xml:space="preserve"><value>Urutkan properti secara alfabetis</value></data>
+  <data name="PropertiesPanel_CopyButtonToolTip" xml:space="preserve"><value>Salin nilai properti yang dipilih</value></data>
+  <data name="PropertiesPanel_SearchPlaceholder" xml:space="preserve"><value>Filter properti…</value></data>
+  <data name="PropertiesPanel_OpenFolderToolTip" xml:space="preserve"><value>Buka folder yang berisi di Explorer</value></data>
+  <data name="PropertiesPanel_ThicknessLeft" xml:space="preserve"><value>Kiri</value></data>
+  <data name="PropertiesPanel_ThicknessTop" xml:space="preserve"><value>Atas</value></data>
+  <data name="PropertiesPanel_ThicknessRight" xml:space="preserve"><value>Kanan</value></data>
+  <data name="PropertiesPanel_ThicknessBottom" xml:space="preserve"><value>Bawah</value></data>
+  <data name="PropertiesPanel_ThicknessLLabel" xml:space="preserve"><value>G</value></data>
+  <data name="PropertiesPanel_ThicknessTLabel" xml:space="preserve"><value>H</value></data>
+  <data name="PropertiesPanel_ThicknessRLabel" xml:space="preserve"><value>D</value></data>
+  <data name="PropertiesPanel_ThicknessBLabel" xml:space="preserve"><value>B</value></data>
+  <data name="PropertiesPanel_ContextMenu_CopyValue" xml:space="preserve"><value>Salin nilai</value></data>
+  <data name="PropertiesPanel_ContextMenu_CopyName" xml:space="preserve"><value>Salin nama</value></data>
+  <data name="PropertiesPanel_ResetToDefaultToolTip" xml:space="preserve"><value>Kembalikan ke nilai default</value></data>
+  <data name="SolutionExplorer_ShowAllFilesToolTip" xml:space="preserve"><value>Tampilkan semua file</value></data>
+  <data name="SolutionExplorer_CollapseAllToolTip" xml:space="preserve"><value>Ciutkan semua</value></data>
+  <data name="SolutionExplorer_SyncWithActiveDocToolTip" xml:space="preserve"><value>Sinkronkan dengan dokumen aktif</value></data>
+  <data name="SolutionExplorer_RefreshToolTip" xml:space="preserve"><value>Perbarui</value></data>
+  <data name="SolutionExplorer_SortToolTip" xml:space="preserve"><value>Urutkan</value></data>
+  <data name="SolutionExplorer_SortNone" xml:space="preserve"><value>Tidak ada</value></data>
+  <data name="SolutionExplorer_SortName" xml:space="preserve"><value>Nama</value></data>
+  <data name="SolutionExplorer_SortType" xml:space="preserve"><value>Type</value></data>
+  <data name="SolutionExplorer_SortDateModified" xml:space="preserve"><value>Tanggal dimodifikasi</value></data>
+  <data name="SolutionExplorer_SortSize" xml:space="preserve"><value>Ukuran</value></data>
+  <data name="SolutionExplorer_FilterToolTip" xml:space="preserve"><value>Filter</value></data>
+  <data name="SolutionExplorer_FilterAll" xml:space="preserve"><value>Semua</value></data>
+  <data name="SolutionExplorer_FilterBinary" xml:space="preserve"><value>Biner</value></data>
+  <data name="SolutionExplorer_FilterText" xml:space="preserve"><value>Teks</value></data>
+  <data name="SolutionExplorer_FilterImages" xml:space="preserve"><value>Gambar</value></data>
+  <data name="SolutionExplorer_FilterLanguage" xml:space="preserve"><value>Bahasa</value></data>
+  <data name="SolutionExplorer_SearchPlaceholder" xml:space="preserve"><value>Cari di Solution Explorer (Ctrl+;)</value></data>
+  <data name="SolutionExplorer_SearchModeFileName" xml:space="preserve"><value>Nama file</value></data>
+  <data name="SolutionExplorer_SearchModeNameContent" xml:space="preserve"><value>Nama + Konten</value></data>
+  <data name="SolutionExplorer_SearchModeContentOnly" xml:space="preserve"><value>Konten saja</value></data>
+  <data name="SolutionExplorer_SearchModeRegex" xml:space="preserve"><value>Regex (nama file)</value></data>
+  <data name="SolutionExplorer_SolutionFolderTooltip" xml:space="preserve"><value>Folder solusi (logis)</value></data>
+  <data name="SolutionExplorer_PhysicalFolderTooltip" xml:space="preserve"><value>Folder fisik</value></data>
+  <data name="SolutionExplorer_PropertiesFolderTooltip" xml:space="preserve"><value>Folder properti</value></data>
+  <data name="SolutionExplorer_BuildDirtyIndicator" xml:space="preserve"><value>Proyek memiliki perubahan sejak kompilasi terakhir (Ctrl+Alt+F7 untuk mengkompilasi)</value></data>
+  <data name="SolutionExplorer_UnsavedModifications" xml:space="preserve"><value>Perubahan belum disimpan</value></data>
+  <data name="SolutionExplorer_ExternalFileIndicator" xml:space="preserve"><value>File berada di luar direktori proyek</value></data>
+  <data name="SolutionExplorer_ExternalModIndicator" xml:space="preserve"><value>Dimodifikasi secara eksternal — disarankan untuk memuat ulang</value></data>
+  <data name="SolutionExplorer_LoadingIndicator" xml:space="preserve"><value>Memuat…</value></data>
+  <data name="SolutionExplorer_GoToDefinition" xml:space="preserve"><value>Pergi ke definisi</value></data>
+  <data name="SolutionExplorer_Open" xml:space="preserve"><value>Buka</value></data>
+  <data name="SolutionExplorer_OpenWith" xml:space="preserve"><value>Buka dengan</value></data>
+  <data name="SolutionExplorer_OpenWithHexEditor" xml:space="preserve"><value>Editor heksadesimal</value></data>
+  <data name="SolutionExplorer_Add" xml:space="preserve"><value>Tambah</value></data>
+  <data name="SolutionExplorer_AddNewItem" xml:space="preserve"><value>Tambahkan item baru...</value></data>
+  <data name="SolutionExplorer_AddExistingItem" xml:space="preserve"><value>Tambahkan item yang ada...</value></data>
+  <data name="SolutionExplorer_ImportFormat" xml:space="preserve"><value>Impor format bawaan...</value></data>
+  <data name="SolutionExplorer_ImportSyntax" xml:space="preserve"><value>Impor sintaks bawaan...</value></data>
+  <data name="SolutionExplorer_NewFolder" xml:space="preserve"><value>Folder baru</value></data>
+  <data name="SolutionExplorer_NewSolutionFolder" xml:space="preserve"><value>Folder solusi baru</value></data>
+  <data name="SolutionExplorer_AddExistingFolder" xml:space="preserve"><value>Tambahkan folder yang ada...</value></data>
+  <data name="SolutionExplorer_IncludeInProject" xml:space="preserve"><value>Sertakan dalam proyek</value></data>
+  <data name="SolutionExplorer_SetDefaultTbl" xml:space="preserve"><value>Atur sebagai TBL default</value></data>
+  <data name="SolutionExplorer_ClearDefaultTbl" xml:space="preserve"><value>Hapus TBL default</value></data>
+  <data name="SolutionExplorer_ConvertToTblx" xml:space="preserve"><value>Konversi ke TBLX...</value></data>
+  <data name="SolutionExplorer_ApplyTblToActive" xml:space="preserve"><value>Terapkan ke dokumen aktif</value></data>
+  <data name="SolutionExplorer_ApplyTblToAll" xml:space="preserve"><value>Terapkan ke semua dokumen</value></data>
+  <data name="SolutionExplorer_OpenInExplorer" xml:space="preserve"><value>Buka di File Explorer</value></data>
+  <data name="SolutionExplorer_CopyPath" xml:space="preserve"><value>Salin jalur</value></data>
+  <data name="SolutionExplorer_Copy" xml:space="preserve"><value>Salin</value></data>
+  <data name="SolutionExplorer_Cut" xml:space="preserve"><value>Potong</value></data>
+  <data name="SolutionExplorer_Paste" xml:space="preserve"><value>Tempel</value></data>
+  <data name="SolutionExplorer_Rename" xml:space="preserve"><value>Ganti nama</value></data>
+  <data name="SolutionExplorer_RemoveFromProject" xml:space="preserve"><value>Hapus dari proyek</value></data>
+  <data name="SolutionExplorer_Delete" xml:space="preserve"><value>Hapus</value></data>
+  <data name="SolutionExplorer_ExcludeFromProject" xml:space="preserve"><value>Kecualikan dari proyek</value></data>
+  <data name="SolutionExplorer_ImportIntoProject" xml:space="preserve"><value>Impor ke proyek...</value></data>
+  <data name="SolutionExplorer_ApplyToDisk" xml:space="preserve"><value>Terapkan ke disk</value></data>
+  <data name="SolutionExplorer_DiscardChanges" xml:space="preserve"><value>Batalkan perubahan</value></data>
+  <data name="SolutionExplorer_Build" xml:space="preserve"><value>Build</value></data>
+  <data name="SolutionExplorer_Rebuild" xml:space="preserve"><value>Rebuild</value></data>
+  <data name="SolutionExplorer_Clean" xml:space="preserve"><value>Bersihkan</value></data>
+  <data name="SolutionExplorer_SetAsStartup" xml:space="preserve"><value>Atur sebagai proyek startup</value></data>
+  <data name="SolutionExplorer_AddReference" xml:space="preserve"><value>Tambahkan referensi…</value></data>
+  <data name="SolutionExplorer_RemoveUnusedReferences" xml:space="preserve"><value>Hapus referensi yang tidak digunakan…</value></data>
+  <data name="SolutionExplorer_ManageNugetPackages" xml:space="preserve"><value>Kelola paket NuGet…</value></data>
+  <data name="SolutionExplorer_ManageNugetPackagesSolution" xml:space="preserve"><value>Kelola paket NuGet untuk solusi…</value></data>
+  <data name="SolutionExplorer_Properties" xml:space="preserve"><value>Properti</value></data>
+  <data name="SolutionExplorer_SaveAll" xml:space="preserve"><value>Simpan semua</value></data>
+  <data name="SolutionExplorer_CloseSolution" xml:space="preserve"><value>Tutup solusi</value></data>
+  <data name="WhfmtBrowser_LoadFailureIndicator" xml:space="preserve"><value>Satu atau beberapa format gagal dimuat</value></data>
+  <data name="WhfmtBrowser_OpenInEditorToolTip" xml:space="preserve"><value>Buka di editor struktur</value></data>
+  <data name="WhfmtBrowser_ExportToFileToolTip" xml:space="preserve"><value>Ekspor ke file…</value></data>
+  <data name="WhfmtBrowser_ViewJsonToolTip" xml:space="preserve"><value>Tampilkan JSON</value></data>
+  <data name="WhfmtBrowser_Open" xml:space="preserve"><value>Buka</value></data>
+  <data name="WhfmtBrowser_OpenReadOnly" xml:space="preserve"><value>Buka dalam mode baca saja</value></data>
+  <data name="WhfmtBrowser_ExportToFile" xml:space="preserve"><value>Ekspor ke file…</value></data>
+  <data name="WhfmtBrowser_ViewJson" xml:space="preserve"><value>Tampilkan JSON</value></data>
+  <data name="WhfmtBrowser_CopyPath" xml:space="preserve"><value>Salin jalur</value></data>
+  <data name="WhfmtBrowser_Delete" xml:space="preserve"><value>Hapus</value></data>
+  <data name="WhfmtBrowser_RevealInExplorer" xml:space="preserve"><value>Tampilkan di Explorer</value></data>
+  <data name="WhfmtBrowser_DuplicateFormat" xml:space="preserve"><value>Duplikasi format…</value></data>
+  <data name="WhfmtBrowser_EditInCodeEditor" xml:space="preserve"><value>Edit di editor kode</value></data>
+  <data name="WhfmtCatalog_NameHeader" xml:space="preserve"><value>Nama</value></data>
+  <data name="WhfmtCatalog_CategoryHeader" xml:space="preserve"><value>Kategori</value></data>
+  <data name="WhfmtCatalog_ExtensionsHeader" xml:space="preserve"><value>Ekstensi</value></data>
+  <data name="WhfmtCatalog_VersionHeader" xml:space="preserve"><value>Version</value></data>
+  <data name="WhfmtCatalog_QualityHeader" xml:space="preserve"><value>Kualitas</value></data>
+  <data name="WhfmtCatalog_AuthorHeader" xml:space="preserve"><value>Auteur</value></data>
+  <data name="WhfmtCatalog_SourceHeader" xml:space="preserve"><value>Sumber</value></data>
+  <data name="WhfmtCatalog_Open" xml:space="preserve"><value>Buka</value></data>
+  <data name="WhfmtCatalog_OpenReadOnly" xml:space="preserve"><value>Buka dalam mode baca saja</value></data>
+  <data name="WhfmtCatalog_ExportToFile" xml:space="preserve"><value>Ekspor ke file…</value></data>
+  <data name="WhfmtCatalog_ViewJson" xml:space="preserve"><value>Tampilkan JSON</value></data>
+  <data name="WhfmtCatalog_RevealInExplorer" xml:space="preserve"><value>Tampilkan di Explorer</value></data>
+  <data name="WhfmtCatalog_ErrorText" xml:space="preserve"><value>Kesalahan</value></data>
+  <data name="WhfmtDetail_EmptyPlaceholder" xml:space="preserve"><value>Pilih format untuk melihat detail.</value></data>
+  <data name="WhfmtDetail_OpenInEditorToolTip" xml:space="preserve"><value>Buka di editor struktur</value></data>
+  <data name="WhfmtDetail_ExportToFileToolTip" xml:space="preserve"><value>Ekspor ke file…</value></data>
+  <data name="WhfmtDetail_ViewRawJsonToolTip" xml:space="preserve"><value>Tampilkan JSON mentah</value></data>
+  <data name="WhfmtDetail_RetryLoadToolTip" xml:space="preserve"><value>Coba muat ulang format ini</value></data>
+  <data name="WhfmtDetail_ExcludeFromCatalogToolTip" xml:space="preserve"><value>Kecualikan format ini dari katalog</value></data>
+  <data name="WhfmtDetail_FormatLoadedSuccessfully" xml:space="preserve"><value>Format berhasil dimuat</value></data>
+  <data name="WhfmtDetail_FormatLoadFailed" xml:space="preserve"><value>Gagal memuat format</value></data>
+  <data name="WhfmtDetail_OverviewTab" xml:space="preserve"><value>Pratinjau</value></data>
+  <data name="WhfmtDetail_VersionLabel" xml:space="preserve"><value>Version</value></data>
+  <data name="WhfmtDetail_AuthorLabel" xml:space="preserve"><value>Auteur</value></data>
+  <data name="WhfmtDetail_CategoryLabel" xml:space="preserve"><value>Kategori</value></data>
+  <data name="WhfmtDetail_PlatformLabel" xml:space="preserve"><value>Platform</value></data>
+  <data name="WhfmtDetail_EditorLabel" xml:space="preserve"><value>Editor</value></data>
+  <data name="WhfmtDetail_DiffLabel" xml:space="preserve"><value>Diff</value></data>
+  <data name="WhfmtDetail_StatusLabel" xml:space="preserve"><value>Status</value></data>
+  <data name="WhfmtDetail_ExtensionsLabel" xml:space="preserve"><value>Ekstensi</value></data>
+  <data name="WhfmtDetail_QualityScoreLabel" xml:space="preserve"><value>Skor kualitas</value></data>
+  <data name="WhfmtDetail_DetectionLabel" xml:space="preserve"><value>Deteksi</value></data>
+  <data name="WhfmtDetail_BlocksLabel" xml:space="preserve"><value>Blok</value></data>
+  <data name="WhfmtDetail_LoadErrorTitle" xml:space="preserve"><value>Kesalahan pemuatan</value></data>
+  <data name="WhfmtDetail_ReferencesTab" xml:space="preserve"><value>Referensi</value></data>
+  <data name="WhfmtDetail_SpecificationsLabel" xml:space="preserve"><value>Spesifikasi</value></data>
+  <data name="WhfmtDetail_WebLinksLabel" xml:space="preserve"><value>Tautan web</value></data>
+  <data name="WhfmtDetail_AssertionsTab" xml:space="preserve"><value>Assertions</value></data>
+  <data name="WhfmtDetail_AIHintsTab" xml:space="preserve"><value>Petunjuk AI</value></data>
+  <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Konteks analisis</value></data>
+  <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Kerentanan yang diketahui</value></data>
+  <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <!-- Whfmt add/delete format dialogs -->
+  <data name="Whfmt_AddFormatTitle" xml:space="preserve"><value>Tambahkan definisi format</value></data>
+  <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>Definisi Whfmt (*.whfmt)|*.whfmt</value></data>
+  <data name="Whfmt_AddFormatError" xml:space="preserve"><value>Tambahkan format</value></data>
+  <data name="Whfmt_DeleteFormatTitle" xml:space="preserve"><value>Hapus format</value></data>
+  <data name="WhfmtCatalog_Tooltip_OpenSelected" xml:space="preserve"><value>Buka pilihan</value></data>
+  <data name="WhfmtCatalog_Tooltip_ExportSelected" xml:space="preserve"><value>Ekspor pilihan ke file…</value></data>
+  <data name="WhfmtCatalog_Tooltip_AddFormat" xml:space="preserve"><value>Tambahkan file format…</value></data>
+  <data name="WhfmtCatalog_Tooltip_Refresh" xml:space="preserve"><value>Perbarui katalog (F5)</value></data>
+  <data name="WhfmtCatalog_LayoutTooltip" xml:space="preserve"><value>Posisi panel detail</value></data>
+  <data name="WhfmtCatalog_LayoutRight" xml:space="preserve"><value>Detail di kanan</value></data>
+  <data name="WhfmtCatalog_LayoutLeft" xml:space="preserve"><value>Detail di kiri</value></data>
+  <data name="WhfmtCatalog_LayoutBottom" xml:space="preserve"><value>Detail di bawah</value></data>
+  <data name="WhfmtCatalog_LayoutTop" xml:space="preserve"><value>Detail di atas</value></data>
+</root>

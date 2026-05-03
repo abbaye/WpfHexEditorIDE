@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="MdSb_ViewLabel"     xml:space="preserve"><value>Chế độ xem</value></data>
+  <data name="MdSb_ViewTooltip"   xml:space="preserve"><value>Chế độ hiển thị hiện tại</value></data>
+  <data name="MdSb_WordsLabel"    xml:space="preserve"><value>Từ</value></data>
+  <data name="MdSb_WordsTooltip"  xml:space="preserve"><value>Số từ xấp xỉ</value></data>
+  <data name="MdSb_LinesLabel"    xml:space="preserve"><value>Dòng</value></data>
+  <data name="MdSb_LinesTooltip"  xml:space="preserve"><value>Tổng số dòng</value></data>
+  <data name="MdSb_ReadLabel"     xml:space="preserve"><value>Đọc</value></data>
+  <data name="MdSb_ReadTooltip"   xml:space="preserve"><value>Thời gian đọc ước tính (200 từ/phút)</value></data>
+  <data name="MdSb_ZoomLabel"     xml:space="preserve"><value>Zoom</value></data>
+  <data name="MdSb_ZoomTooltip"   xml:space="preserve"><value>Zoom xem trước (Ctrl+cuộn)</value></data>
+  <data name="MdTb_ViewLabel"        xml:space="preserve"><value>Xem</value></data>
+  <data name="MdTb_ViewTooltip"      xml:space="preserve"><value>Chế độ hiển thị (Ctrl+1/2/3)</value></data>
+  <data name="MdTb_LayoutLabel"      xml:space="preserve"><value>Bố cục</value></data>
+  <data name="MdTb_LayoutTooltip"    xml:space="preserve"><value>Bố cục phân đôi (Ctrl+Shift+L)</value></data>
+  <data name="MdTb_WrapLabel"        xml:space="preserve"><value>Xuống dòng</value></data>
+  <data name="MdTb_WrapTooltip"      xml:space="preserve"><value>Tự động xuống dòng (Alt+Z)</value></data>
+  <data name="MdTb_RefreshLabel"     xml:space="preserve"><value>Làm mới</value></data>
+  <data name="MdTb_RefreshTooltip"   xml:space="preserve"><value>Làm mới xem trước (F9)</value></data>
+  <data name="MdTb_InsertLabel"      xml:space="preserve"><value>Chèn</value></data>
+  <data name="MdTb_InsertTooltip"    xml:space="preserve"><value>Chèn phần tử Markdown</value></data>
+  <data name="MdTb_FormatLabel"      xml:space="preserve"><value>Định dạng</value></data>
+  <data name="MdTb_FormatTooltip"    xml:space="preserve"><value>Định dạng văn bản đã chọn</value></data>
+  <data name="MdTb_FullscreenLabel"  xml:space="preserve"><value>Toàn màn hình</value></data>
+  <data name="MdTb_FullscreenTooltip" xml:space="preserve"><value>Bật/tắt xem trước toàn màn hình</value></data>
+  <data name="MdView_SourceOnly"  xml:space="preserve"><value>Chỉ nguồn</value></data>
+  <data name="MdView_Split"       xml:space="preserve"><value>Phân đôi</value></data>
+  <data name="MdView_PreviewOnly" xml:space="preserve"><value>Chỉ xem trước</value></data>
+  <data name="MdLayout_PreviewRight"  xml:space="preserve"><value>Xem trước bên phải</value></data>
+  <data name="MdLayout_PreviewLeft"   xml:space="preserve"><value>Xem trước bên trái</value></data>
+  <data name="MdLayout_PreviewBottom" xml:space="preserve"><value>Xem trước phía dưới</value></data>
+  <data name="MdLayout_PreviewTop"    xml:space="preserve"><value>Xem trước phía trên</value></data>
+  <data name="MdInsert_Table"          xml:space="preserve"><value>Bảng</value></data>
+  <data name="MdInsert_CodeBlock"      xml:space="preserve"><value>Khối mã</value></data>
+  <data name="MdInsert_Image"          xml:space="preserve"><value>Ảnh</value></data>
+  <data name="MdInsert_HorizontalRule" xml:space="preserve"><value>Đường kẻ ngang</value></data>
+  <data name="MdInsert_TableOfContents" xml:space="preserve"><value>Mục lục</value></data>
+  <data name="MdFmt_Bold"          xml:space="preserve"><value>In đậm</value></data>
+  <data name="MdFmt_Italic"        xml:space="preserve"><value>In nghiêng</value></data>
+  <data name="MdFmt_Strikethrough" xml:space="preserve"><value>Gạch ngang</value></data>
+  <data name="MdFmt_InlineCode"    xml:space="preserve"><value>Mã nội tuyến</value></data>
+  <data name="MdCtx_GroupFormat"    xml:space="preserve"><value>ĐỊNH DẠNG</value></data>
+  <data name="MdCtx_GroupInsert"    xml:space="preserve"><value>CHÈN</value></data>
+  <data name="MdCtx_GroupExport"    xml:space="preserve"><value>XUẤT</value></data>
+  <data name="MdCtx_GroupView"      xml:space="preserve"><value>XEM</value></data>
+  <data name="MdCtx_Bold"           xml:space="preserve"><value>In đậm</value></data>
+  <data name="MdCtx_Italic"         xml:space="preserve"><value>In nghiêng</value></data>
+  <data name="MdCtx_Strikethrough"  xml:space="preserve"><value>Gạch ngang</value></data>
+  <data name="MdCtx_InlineCode"     xml:space="preserve"><value>Mã nội tuyến</value></data>
+  <data name="MdCtx_Table"          xml:space="preserve"><value>Bảng</value></data>
+  <data name="MdCtx_CodeBlock"      xml:space="preserve"><value>Khối mã</value></data>
+  <data name="MdCtx_Link"           xml:space="preserve"><value>Liên kết</value></data>
+  <data name="MdCtx_Image"          xml:space="preserve"><value>Ảnh</value></data>
+  <data name="MdCtx_HorizontalRule" xml:space="preserve"><value>Đường kẻ ngang</value></data>
+  <data name="MdCtx_WordWrap"       xml:space="preserve"><value>Tự động xuống dòng&#9;Alt+Z</value></data>
+  <data name="MdCtx_ExportHtml"     xml:space="preserve"><value>Xuất thành HTML...</value></data>
+  <data name="MdCtx_ExportPdf"      xml:space="preserve"><value>Xuất thành PDF...</value></data>
+  <data name="MdPrev_SourceOnly"     xml:space="preserve"><value>Chỉ nguồn</value></data>
+  <data name="MdPrev_SplitView"      xml:space="preserve"><value>Chế độ xem phân đôi</value></data>
+  <data name="MdPrev_PreviewOnly"    xml:space="preserve"><value>Chỉ xem trước</value></data>
+  <data name="MdPrev_Fullscreen"     xml:space="preserve"><value>Toàn màn hình</value></data>
+  <data name="MdPrev_ExitFullscreen" xml:space="preserve"><value>Thoát toàn màn hình</value></data>
+  <data name="MdPrev_RefreshPreview" xml:space="preserve"><value>Làm mới xem trước</value></data>
+  <data name="MdPrev_CycleLayout"    xml:space="preserve"><value>Thay đổi bố cục</value></data>
+  <data name="MdPrev_ZoomIn"         xml:space="preserve"><value>Phóng to</value></data>
+  <data name="MdPrev_ZoomOut"        xml:space="preserve"><value>Thu nhỏ</value></data>
+  <data name="MdPrev_ResetZoom"      xml:space="preserve"><value>Đặt lại zoom</value></data>
+  <data name="MdPrev_Copy"           xml:space="preserve"><value>Sao chép</value></data>
+  <data name="MdDlg_ExportHtmlTitle" xml:space="preserve"><value>Xuất thành HTML</value></data>
+  <data name="MdDlg_ExportPdfTitle"  xml:space="preserve"><value>Xuất thành PDF</value></data>
+  <data name="Md_NoHeadingsFound"    xml:space="preserve"><value>Không tìm thấy tiêu đề nào.</value></data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Đang khởi tạo xem trước…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>Không tìm thấy runtime WebView2</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Xem trước Markdown cần Microsoft Edge WebView2 Runtime. Tải xuống tại microsoft.com/edge/webview2.</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Làm mới phác thảo (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>Không có tệp Markdown đang hoạt động.</value></data>
+</root>

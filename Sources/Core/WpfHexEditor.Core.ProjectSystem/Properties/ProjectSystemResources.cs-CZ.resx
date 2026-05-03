@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>Název projektu nesmí být prázdný.</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>Ověření</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>Nelze přejmenovat projekt:</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>Nelze vytvořit výstupní složku:</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>Převést TBL</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>Výstupní cesta je shodná se zdrojem. Zvolte jiný adresář.</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>Odebrat referenci</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>Žádná nepoužívaná reference sestavení nenalezena.</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>Odebrat nepoužívané reference</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>Odstranit následující nepoužívané reference sestavení?</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>Vyberte soubor(y) k přidání</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>Všechny soubory (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>Vyberte nadřízenou složku nového projektu</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>Vyberte složku nového souboru</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>Vyberte nadřízenou složku nového řešení</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>Vyberte výstupní složku pro převedený soubor TBLX</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>Přidat referenci projektu</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>Soubory projektu (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|Všechny soubory (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>Ajouter une référence d'assembly</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>Soubory sestavení (*.dll;*.exe)|*.dll;*.exe|Všechny soubory (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>Vybrat výstupní adresář</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>Vybrat ikonu</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>Icônes (*.ico)|*.ico|Všechny soubory (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>Vybrat projekt k referencování</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>Projekty C# (*.csproj)|*.csproj|Všechny projekty (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>Reference projektu</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>Sestavení</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>Analytory</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>Tento typ projektu nepodporuje správu referencí.</value>
+  </data>
+  <data name="PS_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PS_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="PS_Add" xml:space="preserve"><value>Přidat</value></data>
+  <data name="PS_Browse" xml:space="preserve"><value>Procházet…</value></data>
+  <data name="PS_Remove" xml:space="preserve"><value>Odstranit</value></data>
+  <data name="PS_Save" xml:space="preserve"><value>Uložit</value></data>
+  <data name="PS_AddNewItemTitle" xml:space="preserve"><value>Přidat novou položku</value></data>
+  <data name="PS_TemplateLabel" xml:space="preserve"><value>Šablona:</value></data>
+  <data name="PS_NameLabel" xml:space="preserve"><value>Nom :</value></data>
+  <data name="PS_FolderLabel" xml:space="preserve"><value>Dossier :</value></data>
+  <data name="PS_AddExistingItemTitle" xml:space="preserve"><value>Přidat existující položku</value></data>
+  <data name="PS_FilesLabel" xml:space="preserve"><value>Soubor(y):</value></data>
+  <data name="PS_RemoveFileTooltip" xml:space="preserve"><value>Odebrat tento soubor z výběru</value></data>
+  <data name="PS_DetectedTypeLabel" xml:space="preserve"><value>Type détecté :</value></data>
+  <data name="PS_ConvertTblTitle" xml:space="preserve"><value>Převést TBL na TBLX</value></data>
+  <data name="PS_ConversionSection" xml:space="preserve"><value>Převod</value></data>
+  <data name="PS_SourceLabel" xml:space="preserve"><value>Source :</value></data>
+  <data name="PS_TargetLabel" xml:space="preserve"><value>Cible :</value></data>
+  <data name="PS_GameMetadataSection" xml:space="preserve"><value>Metadata hry (volitelné)</value></data>
+  <data name="PS_RomDetectedLabel" xml:space="preserve"><value>ROM détectée :</value></data>
+  <data name="PS_AutoFill" xml:space="preserve"><value>Automatické vyplnění</value></data>
+  <data name="PS_GameTitleLabel" xml:space="preserve"><value>Titre du jeu :</value></data>
+  <data name="PS_PlatformLabel" xml:space="preserve"><value>Plateforme :</value></data>
+  <data name="PS_RegionLabel" xml:space="preserve"><value>Région :</value></data>
+  <data name="PS_AuthorLabel" xml:space="preserve"><value>Auteur :</value></data>
+  <data name="PS_YearLabel" xml:space="preserve"><value>Année :</value></data>
+  <data name="PS_NewFileTitle" xml:space="preserve"><value>Nový soubor</value></data>
+  <data name="PS_SortLabel" xml:space="preserve"><value>Tri :</value></data>
+  <data name="PS_SortName" xml:space="preserve"><value>Název</value></data>
+  <data name="PS_SortCategory" xml:space="preserve"><value>Kategorie</value></data>
+  <data name="PS_SortExtension" xml:space="preserve"><value>Přípona</value></data>
+  <data name="PS_GridView" xml:space="preserve"><value>Pohled mřížka</value></data>
+  <data name="PS_ListView" xml:space="preserve"><value>Pohled seznam</value></data>
+  <data name="PS_SearchTemplates" xml:space="preserve"><value>Hledat šablony…</value></data>
+  <data name="PS_BrowseForFolder" xml:space="preserve"><value>Procházet složku</value></data>
+  <data name="PS_CreateInMemory" xml:space="preserve"><value>Créer le document en mémoire ; choisir l'emplacement au premier Ctrl+S</value></data>
+  <data name="PS_NewProjectTitle" xml:space="preserve"><value>Nový projekt</value></data>
+  <data name="PS_NewSolutionTitle" xml:space="preserve"><value>Nové řešení</value></data>
+  <data name="PS_LocationLabel" xml:space="preserve"><value>Emplacement :</value></data>
+  <data name="PS_WillCreateLabel" xml:space="preserve"><value>Créera :</value></data>
+  <data name="PS_ProjectPropertiesTitle" xml:space="preserve"><value>Vlastnosti projektu</value></data>
+  <data name="PS_ApplicationTab" xml:space="preserve"><value>Aplikace</value></data>
+  <data name="PS_BuildTab" xml:space="preserve"><value>Sestavení</value></data>
+  <data name="PS_ItemsTab" xml:space="preserve"><value>Položky</value></data>
+  <data name="PS_ReferencesTab" xml:space="preserve"><value>Reference</value></data>
+  <data name="PS_ProjectFileLabel" xml:space="preserve"><value>Soubor projektu:</value></data>
+  <data name="PS_DirectoryLabel" xml:space="preserve"><value>Répertoire :</value></data>
+  <data name="PS_FilterSections" xml:space="preserve"><value>Filtrovat sekce</value></data>
+  <data name="PP_NavApplication" xml:space="preserve"><value>Aplikace</value></data>
+  <data name="PP_NavGeneral" xml:space="preserve"><value>Obecné</value></data>
+  <data name="PP_ProjectName" xml:space="preserve"><value>Název projektu</value></data>
+  <data name="PP_ProjectNameDesc" xml:space="preserve"><value>Logický název používaný v Průzkumníku řešení.</value></data>
+  <data name="PP_AssemblyName" xml:space="preserve"><value>Nom d'assembly</value></data>
+  <data name="PP_AssemblyNameDesc" xml:space="preserve"><value>Název kompilovaného výstupního souboru (bez přípony).</value></data>
+  <data name="PP_DefaultNamespace" xml:space="preserve"><value>Výchozí jmenný prostor</value></data>
+  <data name="PP_DefaultNamespaceDesc" xml:space="preserve"><value>Kořenový jmenný prostor používaný pro nové soubory.</value></data>
+  <data name="PP_TargetFramework" xml:space="preserve"><value>Cílový framework</value></data>
+  <data name="PP_TargetFrameworkDesc" xml:space="preserve"><value>Verze .NET runtime na kterou tento projekt cílí.</value></data>
+  <data name="PP_OutputType" xml:space="preserve"><value>Typ výstupu</value></data>
+  <data name="PP_OutputTypeDesc" xml:space="preserve"><value>Určuje zda projekt vytváří .exe, .dll nebo WinExe.</value></data>
+  <data name="PP_OutputTypeLibrary" xml:space="preserve"><value>Knihovna tříd</value></data>
+  <data name="PP_OutputTypeConsole" xml:space="preserve"><value>Konzulová aplikace</value></data>
+  <data name="PP_OutputTypeWinApp" xml:space="preserve"><value>Aplikace Windows</value></data>
+  <data name="PP_ProjectFile" xml:space="preserve"><value>Soubor projektu</value></data>
+  <data name="PP_Directory" xml:space="preserve"><value>Adresář</value></data>
+  <data name="PP_ProjectType" xml:space="preserve"><value>Typ projektu</value></data>
+  <data name="PP_NavBuild" xml:space="preserve"><value>Sestavení</value></data>
+  <data name="PP_Configuration" xml:space="preserve"><value>Konfigurace</value></data>
+  <data name="PP_ConfigurationDesc" xml:space="preserve"><value>Aktivní profil sestavení (Debug = symboly, Release = optimalizovaný).</value></data>
+  <data name="PP_Platform" xml:space="preserve"><value>Platforma</value></data>
+  <data name="PP_PlatformDesc" xml:space="preserve"><value>Cílová architektura zkompilovaného binárního souboru.</value></data>
+  <data name="PP_OutputPath" xml:space="preserve"><value>Výstupní cesta</value></data>
+  <data name="PP_OutputPathDesc" xml:space="preserve"><value>Výstupní adresář relativní ke kořenu projektu.</value></data>
+  <data name="PP_OptimizeCode" xml:space="preserve"><value>Optimalizovat kód</value></data>
+  <data name="PP_OptimizeCodeDesc" xml:space="preserve"><value>Aktivuje optimalizace kompilátoru (konvenčně vypnuto v Debug).</value></data>
+  <data name="PP_WarningsAsErrors" xml:space="preserve"><value>Považovat varování za chyby</value></data>
+  <data name="PP_NavDependencies" xml:space="preserve"><value>Závislosti</value></data>
+  <data name="PP_DependenciesDesc" xml:space="preserve"><value>Reference projektů a balíčky NuGet deklarované v tomto projektu.</value></data>
+  <data name="PP_ColName" xml:space="preserve"><value>Název</value></data>
+  <data name="PP_ColType" xml:space="preserve"><value>Typ</value></data>
+  <data name="PP_NavGlobalUsings" xml:space="preserve"><value>Globální direktivy using</value></data>
+  <data name="PP_GlobalUsingsDesc" xml:space="preserve"><value>Implicitní direktivy using deklarované v projektu (ImplicitUsings).</value></data>
+  <data name="PP_ColNamespace" xml:space="preserve"><value>Jmenný prostor</value></data>
+  <data name="PP_NavItems" xml:space="preserve"><value>Položky</value></data>
+  <data name="PP_ColPath" xml:space="preserve"><value>Cesta</value></data>
+  <data name="PP_NavReferences" xml:space="preserve"><value>Reference</value></data>
+  <data name="PP_AddNuGet" xml:space="preserve"><value>+ NuGet…</value></data>
+  <data name="PP_AddProject" xml:space="preserve"><value>+ Projet…</value></data>
+  <data name="PP_NavWin32Resources" xml:space="preserve"><value>Prostředky Win32</value></data>
+  <data name="PP_AppIcon" xml:space="preserve"><value>Icône de l'application</value></data>
+  <data name="PP_AppIconDesc" xml:space="preserve"><value>Soubor .ico vložený do sestavení jako prostředek Win32.</value></data>
+  <data name="PP_AppManifest" xml:space="preserve"><value>Manifeste de l'application</value></data>
+  <data name="PP_ManifestDefault" xml:space="preserve"><value>Výchozí nastavení</value></data>
+  <data name="PP_ManifestCreate" xml:space="preserve"><value>Vytvořit nový manifest</value></data>
+  <data name="PP_ManifestNone" xml:space="preserve"><value>Žádný manifest</value></data>
+  <data name="PP_ManifestDesc" xml:space="preserve"><value>Soubor app.manifest, který řídí úroveň UAC a DPI.</value></data>
+  <data name="PP_NavPackage" xml:space="preserve"><value>Balíček</value></data>
+  <data name="PP_PackageDesc" xml:space="preserve"><value>Metadata NuGet generovaná při publikování balíčku.</value></data>
+  <data name="PP_PackageId" xml:space="preserve"><value>ID balíčku</value></data>
+  <data name="PP_PackageIdDesc" xml:space="preserve"><value>Jedinečný identifikátor balíčku na NuGet.org.</value></data>
+  <data name="PP_VersionLabel" xml:space="preserve"><value>Verze</value></data>
+  <data name="PP_AuthorsLabel" xml:space="preserve"><value>Autoři</value></data>
+  <data name="PP_DescriptionLabel" xml:space="preserve"><value>Popis</value></data>
+  <data name="PP_NavDebug" xml:space="preserve"><value>Ladění</value></data>
+  <data name="PP_DebugDesc" xml:space="preserve"><value>Konfigurace spouštěcího profilu.</value></data>
+  <data name="PP_LaunchProfile" xml:space="preserve"><value>Spouštěcí profil</value></data>
+  <data name="PP_LaunchProfileDesc" xml:space="preserve"><value>Profil definovaný v launchSettings.json.</value></data>
+  <data name="PP_CommandLineArgs" xml:space="preserve"><value>Argumenty příkazového řádku</value></data>
+  <data name="PP_WorkingDirectory" xml:space="preserve"><value>Pracovní adresář</value></data>
+  <data name="PS_PackageSourceLabel" xml:space="preserve"><value>Source du package :</value></data>
+  <data name="PS_IncludePrerelease" xml:space="preserve"><value>Zahrnout předběžné verze</value></data>
+  <data name="PS_NuGetBrowseTab" xml:space="preserve"><value>Procházet</value></data>
+  <data name="PS_NuGetInstalledTab" xml:space="preserve"><value>Nainstalované</value></data>
+  <data name="PS_NuGetUpdatesTab" xml:space="preserve"><value>Aktualizace</value></data>
+  <data name="PS_NuGetLoadMore" xml:space="preserve"><value>Načíst více…</value></data>
+  <data name="PS_SelectPackageHint" xml:space="preserve"><value>Vyberte balíček pro zobrazení podrobností.</value></data>
+  <data name="PS_NuGetConsolidateTab" xml:space="preserve"><value>Sloučit</value></data>
+  <data name="PS_ProjectsLabel" xml:space="preserve"><value>Projekty</value></data>
+  <data name="PS_VersionLabel" xml:space="preserve"><value>Version :</value></data>
+  <data name="PS_AddProjectRef" xml:space="preserve"><value>Přidat referenci projektu…</value></data>
+  <data name="PS_AddAssemblyRef" xml:space="preserve"><value>Ajouter une référence d'assembly…</value></data>
+  <data name="PS_RemoveUnused" xml:space="preserve"><value>Odebrat nepoužívané…</value></data>
+  <data name="PS_SearchReferences" xml:space="preserve"><value>Hledat reference…</value></data>
+  <data name="PS_Close" xml:space="preserve">
+    <value>Zavřít</value>
+  </data>
+  <data name="PS_Convert" xml:space="preserve">
+    <value>Převést</value>
+  </data>
+  <data name="PS_Install" xml:space="preserve">
+    <value>Nainstalovat</value>
+  </data>
+  <data name="PS_Update" xml:space="preserve">
+    <value>Aktualizovat</value>
+  </data>
+  <data name="PS_Uninstall" xml:space="preserve">
+    <value>Odinstalovat</value>
+  </data>
+  <data name="PS_CopyOptionsSection" xml:space="preserve">
+    <value>Možnosti kopírování</value>
+  </data>
+  <data name="PS_KeepOriginalLocation" xml:space="preserve">
+    <value>Zachovat původní umístění (pouze reference)</value>
+  </data>
+  <data name="PS_CopyIntoProject" xml:space="preserve">
+    <value>Kopírovat do projektu</value>
+  </data>
+  <data name="PS_DestinationFolder" xml:space="preserve">
+    <value>Cílová složka</value>
+  </data>
+  <data name="PS_PhysicalSubfolder" xml:space="preserve">
+    <value>Fyzická podsložka</value>
+  </data>
+  <data name="PS_KeepInPlace" xml:space="preserve">
+    <value>Ponechat na místě</value>
+  </data>
+  <data name="PS_NewFolderTooltip" xml:space="preserve">
+    <value>Nová fyzická složka ve vybraném adresáři</value>
+  </data>
+  <data name="PS_ConfirmNewFolder" xml:space="preserve">
+    <value>Potvrdit novou složku</value>
+  </data>
+  <data name="PS_PreviewSection" xml:space="preserve">
+    <value>Náhled</value>
+  </data>
+  <data name="PS_DestinationLabel" xml:space="preserve">
+    <value>Cíl:</value>
+  </data>
+  <data name="PS_AutoFillTooltip" xml:space="preserve">
+    <value>Předvyplnit platformu, region a název z vybrané ROM</value>
+  </data>
+  <data name="PS_OutputSection" xml:space="preserve">
+    <value>Výstup</value>
+  </data>
+  <data name="PS_SameFolderAsSource" xml:space="preserve">
+    <value>Stejná složka jako zdroj</value>
+  </data>
+  <data name="PS_CustomFolder" xml:space="preserve">
+    <value>Vlastní složka</value>
+  </data>
+  <data name="PS_AddConvertedToProject" xml:space="preserve">
+    <value>Přidat převedený soubor do projektu</value>
+  </data>
+  <data name="PS_OpenAfterConversion" xml:space="preserve">
+    <value>Otevřít v editoru TBL po převodu</value>
+  </data>
+  <data name="PS_AddToProject" xml:space="preserve">
+    <value>Přidat do projektu:</value>
+  </data>
+  <data name="PS_CreateInMemoryTooltip" xml:space="preserve">
+    <value>Vytvořit dokument v paměti; zvolit umístění při prvním Ctrl+S</value>
+  </data>
+  <data name="PS_PackageDescription" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="PS_PackageDownloads" xml:space="preserve">
+    <value>Stahování:</value>
+  </data>
+  <data name="PS_PackagesLabel" xml:space="preserve">
+    <value> balíček/balíčků</value>
+  </data>
+  <data name="PS_InstalledVersion" xml:space="preserve">
+    <value>Nainstalované: v</value>
+  </data>
+  <data name="PP_ReferencesLabel" xml:space="preserve">
+    <value>Reference projektů a balíčků:</value>
+  </data>
+  <data name="PP_Save" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+  <data name="PP_FilterSections" xml:space="preserve">
+    <value>Filtrovat sekce</value>
+  </data>
+  <data name="PP_TypeColumn" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="PP_PathColumn" xml:space="preserve">
+    <value>Cesta</value>
+  </data>
+  <data name="PP_ValueColumn" xml:space="preserve">
+    <value>Hodnota</value>
+  </data>
+  <data name="PP_NamespaceColumn" xml:space="preserve">
+    <value>Jmenný prostor</value>
+  </data>
+  <data name="PP_EnvVars" xml:space="preserve">
+    <value>Proměnné prostředí</value>
+  </data>
+  <data name="PP_NavCodeAnalysis" xml:space="preserve">
+    <value>Analýza kódu</value>
+  </data>
+  <data name="PP_EnableCodeAnalysis" xml:space="preserve">
+    <value>Povolit analýzu kódu při sestavení</value>
+  </data>
+  <data name="PP_EnableCodeAnalysisDesc" xml:space="preserve">
+    <value>Aktivuje Roslyn analytory při každém sestavení.</value>
+  </data>
+  <data name="PP_ReleaseOnlyAnalysis" xml:space="preserve">
+    <value>Povolit pouze pro konfiguraci Release</value>
+  </data>
+  <data name="PP_CodeAnalysisDesc" xml:space="preserve">
+    <value>Nastavení statické analýzy kódu.</value>
+  </data>
+  <data name="PP_ChangesSaved" xml:space="preserve">
+    <value>✓ Změny uloženy</value>
+  </data>
+  <data name="PP_AppManifestDesc" xml:space="preserve">
+    <value>Soubor app.manifest který řídí úroveň spuštění UAC a DPI.</value>
+  </data>
+  <data name="NG_TipSearch" xml:space="preserve"><value>Hledat</value></data>
+</root>

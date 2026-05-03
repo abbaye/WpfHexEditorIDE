@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="MdSb_ViewLabel"     xml:space="preserve"><value>Pohled</value></data>
+  <data name="MdSb_ViewTooltip"   xml:space="preserve"><value>Aktuální režim zobrazení</value></data>
+  <data name="MdSb_WordsLabel"    xml:space="preserve"><value>Slova</value></data>
+  <data name="MdSb_WordsTooltip"  xml:space="preserve"><value>Přibližný počet slov</value></data>
+  <data name="MdSb_LinesLabel"    xml:space="preserve"><value>Řádky</value></data>
+  <data name="MdSb_LinesTooltip"  xml:space="preserve"><value>Celkový počet řádků</value></data>
+  <data name="MdSb_ReadLabel"     xml:space="preserve"><value>Čtení</value></data>
+  <data name="MdSb_ReadTooltip"   xml:space="preserve"><value>Odhadovaný čas čtení (200 slov/min)</value></data>
+  <data name="MdSb_ZoomLabel"     xml:space="preserve"><value>Zoom</value></data>
+  <data name="MdSb_ZoomTooltip"   xml:space="preserve"><value>Zoom náhledu (Ctrl+kolečko)</value></data>
+  <data name="MdTb_ViewLabel"        xml:space="preserve"><value>Pohled</value></data>
+  <data name="MdTb_ViewTooltip"      xml:space="preserve"><value>Režim zobrazení (Ctrl+1/2/3)</value></data>
+  <data name="MdTb_LayoutLabel"      xml:space="preserve"><value>Rozvržení</value></data>
+  <data name="MdTb_LayoutTooltip"    xml:space="preserve"><value>Rozdělené rozvržení (Ctrl+Shift+L)</value></data>
+  <data name="MdTb_WrapLabel"        xml:space="preserve"><value>Zalamování</value></data>
+  <data name="MdTb_WrapTooltip"      xml:space="preserve"><value>Zalamování řádků (Alt+Z)</value></data>
+  <data name="MdTb_RefreshLabel"     xml:space="preserve"><value>Obnovit</value></data>
+  <data name="MdTb_RefreshTooltip"   xml:space="preserve"><value>Obnovit náhled (F9)</value></data>
+  <data name="MdTb_InsertLabel"      xml:space="preserve"><value>Vložit</value></data>
+  <data name="MdTb_InsertTooltip"    xml:space="preserve"><value>Vložit prvek Markdown</value></data>
+  <data name="MdTb_FormatLabel"      xml:space="preserve"><value>Formátovat</value></data>
+  <data name="MdTb_FormatTooltip"    xml:space="preserve"><value>Formátovat vybraný text</value></data>
+  <data name="MdTb_FullscreenLabel"  xml:space="preserve"><value>Celá obrazovka</value></data>
+  <data name="MdTb_FullscreenTooltip" xml:space="preserve"><value>Přepnout náhled na celou obrazovku</value></data>
+  <data name="MdView_SourceOnly"  xml:space="preserve"><value>Pouze zdroj</value></data>
+  <data name="MdView_Split"       xml:space="preserve"><value>Rozděleno</value></data>
+  <data name="MdView_PreviewOnly" xml:space="preserve"><value>Pouze náhled</value></data>
+  <data name="MdLayout_PreviewRight"  xml:space="preserve"><value>Náhled vpravo</value></data>
+  <data name="MdLayout_PreviewLeft"   xml:space="preserve"><value>Náhled vlevo</value></data>
+  <data name="MdLayout_PreviewBottom" xml:space="preserve"><value>Náhled dole</value></data>
+  <data name="MdLayout_PreviewTop"    xml:space="preserve"><value>Náhled nahoře</value></data>
+  <data name="MdInsert_Table"          xml:space="preserve"><value>Tabulka</value></data>
+  <data name="MdInsert_CodeBlock"      xml:space="preserve"><value>Blok kódu</value></data>
+  <data name="MdInsert_Image"          xml:space="preserve"><value>Obrázek</value></data>
+  <data name="MdInsert_HorizontalRule" xml:space="preserve"><value>Vodorovná čára</value></data>
+  <data name="MdInsert_TableOfContents" xml:space="preserve"><value>Obsah</value></data>
+  <data name="MdFmt_Bold"          xml:space="preserve"><value>Tučné</value></data>
+  <data name="MdFmt_Italic"        xml:space="preserve"><value>Kurzíva</value></data>
+  <data name="MdFmt_Strikethrough" xml:space="preserve"><value>Přeškrtnuté</value></data>
+  <data name="MdFmt_InlineCode"    xml:space="preserve"><value>Kód v textu</value></data>
+  <data name="MdCtx_GroupFormat"    xml:space="preserve"><value>FORMÁTOVAT</value></data>
+  <data name="MdCtx_GroupInsert"    xml:space="preserve"><value>VLOŽIT</value></data>
+  <data name="MdCtx_GroupExport"    xml:space="preserve"><value>EXPORTOVAT</value></data>
+  <data name="MdCtx_GroupView"      xml:space="preserve"><value>ZOBRAZIT</value></data>
+  <data name="MdCtx_Bold"           xml:space="preserve"><value>Tučné</value></data>
+  <data name="MdCtx_Italic"         xml:space="preserve"><value>Kurzíva</value></data>
+  <data name="MdCtx_Strikethrough"  xml:space="preserve"><value>Přeškrtnuté</value></data>
+  <data name="MdCtx_InlineCode"     xml:space="preserve"><value>Kód v textu</value></data>
+  <data name="MdCtx_Table"          xml:space="preserve"><value>Tabulka</value></data>
+  <data name="MdCtx_CodeBlock"      xml:space="preserve"><value>Blok kódu</value></data>
+  <data name="MdCtx_Link"           xml:space="preserve"><value>Odkaz</value></data>
+  <data name="MdCtx_Image"          xml:space="preserve"><value>Obrázek</value></data>
+  <data name="MdCtx_HorizontalRule" xml:space="preserve"><value>Vodorovná čára</value></data>
+  <data name="MdCtx_WordWrap"       xml:space="preserve"><value>Zalamování řádků&#9;Alt+Z</value></data>
+  <data name="MdCtx_ExportHtml"     xml:space="preserve"><value>Exportovat jako HTML...</value></data>
+  <data name="MdCtx_ExportPdf"      xml:space="preserve"><value>Exportovat jako PDF...</value></data>
+  <data name="MdPrev_SourceOnly"     xml:space="preserve"><value>Pouze zdroj</value></data>
+  <data name="MdPrev_SplitView"      xml:space="preserve"><value>Rozdělené zobrazení</value></data>
+  <data name="MdPrev_PreviewOnly"    xml:space="preserve"><value>Pouze náhled</value></data>
+  <data name="MdPrev_Fullscreen"     xml:space="preserve"><value>Celá obrazovka</value></data>
+  <data name="MdPrev_ExitFullscreen" xml:space="preserve"><value>Opustit celou obrazovku</value></data>
+  <data name="MdPrev_RefreshPreview" xml:space="preserve"><value>Obnovit náhled</value></data>
+  <data name="MdPrev_CycleLayout"    xml:space="preserve"><value>Změnit rozvržení</value></data>
+  <data name="MdPrev_ZoomIn"         xml:space="preserve"><value>Přiblížit</value></data>
+  <data name="MdPrev_ZoomOut"        xml:space="preserve"><value>Oddálit</value></data>
+  <data name="MdPrev_ResetZoom"      xml:space="preserve"><value>Obnovit zoom</value></data>
+  <data name="MdPrev_Copy"           xml:space="preserve"><value>Kopírovat</value></data>
+  <data name="MdDlg_ExportHtmlTitle" xml:space="preserve"><value>Exportovat jako HTML</value></data>
+  <data name="MdDlg_ExportPdfTitle"  xml:space="preserve"><value>Exportovat jako PDF</value></data>
+  <data name="Md_NoHeadingsFound"    xml:space="preserve"><value>Nenalezeny žádné nadpisy.</value></data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Inicializace náhledu…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>Runtime WebView2 nebyl nalezen</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Náhled Markdown vyžaduje Microsoft Edge WebView2 Runtime. Stáhněte jej z microsoft.com/edge/webview2.</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Obnovit osnovu (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>Žádný aktivní soubor Markdown.</value></data>
+</root>

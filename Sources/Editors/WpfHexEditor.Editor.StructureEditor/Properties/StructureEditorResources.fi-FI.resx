@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.fi-FI.resx
+    Description : fi-FI translations for the Structure Editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>Vahvuus</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>Pakollinen</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Lisää lohko</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Lisää</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Peruuta</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Metatiedot</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Tunnistus</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Lohkot</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Muuttujat</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Lisäasetukset</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Laatu</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Testi</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Tallenna (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Vahvista (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Kumoa (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Tee uudelleen (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Vaihda reaaliaikainen koodinäkymä</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Lisää lohko (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Monista lohko (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Tallentamattomat muutokset</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Suodata lohkoja nimellä</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Lisää lohko...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Monista</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Poista</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Siirrä ylös</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Siirrä alas</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Kopioi JSON-muodossa</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Liitä lohko</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Valitse lohko muokataksesi sen ominaisuuksia,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>tai paina Ctrl+N / napsauta hiiren oikealla lisätäksesi uuden lohkon.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Hex-allekirjoitus</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Hex-tavut ilman välilyöntejä, esim. 89504E47 PNG:lle</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Allekirjoitus</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>Allekirjoitukset v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Vastaavuustila</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Hex-arvo</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Tunniste</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ Lisää allekirjoitus</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Entropiaindeksi</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Vähimmäisentropia</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Enimmäisentropia</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Vähimmäispisteet</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Pisteiden kynnysarvo</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Sisältökuviot (tekstimuodot)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Regex-kuvio</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Lisää kuvio</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>Yleinen</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Muodon nimi</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Muodon luettava nimi (esim. 'ZIP-arkisto', 'PNG-kuva')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Versio</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Tämän määrittelyn versio (esim. '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Tekijä</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Tämän määrittelytiedoston tekijä</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Luokka</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Luokka (määritetään automaattisesti kansiorakenteesta: Arkistot, Kuvat, Ääni, Video, jne.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Diff-tila</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Suositeltava diff-algoritmi DiffViewerille</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Suositeltava editori</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>Suositeltavan editoritehtaan tunnus tähän muotoon vastaaville tiedostoille</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Kuvaus</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Tekstimuoto (avautuu oletuksena koodieditorissa)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Tiedostopäätteet</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Lisää pääte</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME-tyypit</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ Lisää MIME-tyyppi</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Ohjelmistot</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Lisää ohjelmisto</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Lasketut mittarit</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Lohkokattavuus</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Täydellisyyspisteet</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Tyyppien jakauma</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Lohkot</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Syvyys</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Muuttujat</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Säännöt</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Metatiedot</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Dokumentaatiotaso</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Viimeksi päivitetty</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Muoto: VVVV-KK-PP (täytetään automaattisesti tallennettaessa)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Ensisijainen muoto (top 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Automaattisesti hienostutettu (rikastettu skriptillä — vain luku)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Testaa muoto tiedostolla</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Polku testattavaan binääritiedostoon</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Selaa…</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Valitse testattava binääritiedosto</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Suorita testi</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Kopioi tulokset leikepöydälle (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Valitse tiedosto ja napsauta ▶ Suorita testi testataksesi nykyistä muotomäärittelyä.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Tila</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Lohkon nimi</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Tyyppi</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Pit.</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Raaka (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Jäsennetty arvo</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Huomio</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Varoitus</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Virhe</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Ohitettu</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Lohkotulkille käytettävissä olevat alkumuuttujat (esim. silmukkalaskurit, lasketut offsetit).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Suodata muuttujia nimellä</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Muuttujan nimi</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Tyyppi</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Alkuarvo</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Kuvaus</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Lisää muuttuja</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Väitteet</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:nimi equals 0 or calc:lauseke</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Totuusarvolauseke — Ctrl+Space funktioille ja muuttujille</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Tarkistussummat</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Versiointi (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Tuonnit ($ref-koostumus)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = muodon nimi (tai structs/Nimi), as = alias käytettäväksi structRef-lohkoissa.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Muotoviittaus, esim. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>structRef-alias, esim. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Lisää tuonti</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Forensiikka</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Navigointikirjanmerkit</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>muuttujaNimi</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Muuttuja, joka sisältää tavuoffsetin — Ctrl+Space ehdotuksille</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Lisää kirjanmerkki</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Tarkastimen asettelu</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Vientipohjat</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Lisää pohja</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>AI-vihjeet</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Binäärikenttä, jolla on kiinteä tai muuttuva offset ja pituus.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Taikabytit, jotka tunnistavat muodon tietystä offsetista.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Lukee muuttuvapituisen tai symbolisen arvon nimettyyn muuttujaan.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Jäsentää lohkoja ehdollisesti kenttäarvon tai muuttujan perusteella.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Toistaa lohkorungon niin kauan kuin ehto on tosi.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Muokkaa muuttujaa (kasvata, vähennä, asetaMuuttuja).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Laskee matemaattisen lausekkeen ja tallentaa tuloksen.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Jäsentää taulukon, jossa on kiinteä määrä jäsennettyjä merkintöjä.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Valitsee varianttijoukosta erotinmuuttujan perusteella.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Upottaa ulkoisen rakennemäärittelyn viittauksena.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Luo navigointiannotaation osoitetulle offsetille.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} virhe(ttä)</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} varoitus(ta)</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>Raaka JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Käytä</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Peruuta</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Rakennemuokkain</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Visuaalinen editori .whfmt-rakennemäärittelytiedostoille. Muokkaa lohkoja, tyyppejä, offseteja, pituuksia ja värejä DataGridissä.</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Pituus:</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Vahvista (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Lisää lohko (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Vaihda reaaliaikainen koodinäkymä</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Asettelu</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Koodinäkymän asettelu</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Koodi oikealla</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Koodi vasemmalla</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Koodi alhaalla</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Koodi ylhäällä</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Muoto</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Välilehti</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Lohkot</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Vahvistus</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Nimi</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Tyyppi</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Väri</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Läpinäkyvyys</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Kuvaus</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Piilotettu</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Tavujärjestys</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Lohkotyyppi</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Toiminto</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Muuttuja</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Arvo</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Laskenta</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Lauseke</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Tallenna nimellä</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Sijainti</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Offset</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Offset kohteesta</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Lisätty offset</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Pituus</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Arvotyyppi</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Taulukko</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Määrä</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Merkinnän koko</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Indeksimuuttuja</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Värisykli</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Merkintäkentät näytetään lapsina puussa.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Unioni</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Erotinmuuttuja</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Variantit</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Sisäkkäinen rakenne</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Rakenne-viittaus</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Osoittimen sijainti</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Kohde ja tallennus</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Kohdemuuttuja</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Tunniste</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Sijainti ja koko</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Tallennus</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Kartoitettu tallennus</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Arvokartoitus</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Bittikentät</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Nimi</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Bitit</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Kunnes</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Enimmäispituus</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Vähimmäisarvo</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Enimmäisarvo</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Kuvio (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Virheilmoitus</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Muuttujan nimi</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Ryhmä</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Ryhmä merkitsee visuaalisesti lapsikentät värillisellä kerroksella. Se ei kuluta tavuja.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Lapset näytetään lohkopuussa — käytä puuta lisätäksesi/järjestääksesi lapsilohkoja.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Lapsikentät näytetään lohkopuussa.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Raakadatavy öhyke</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Merkitsee raakatavalohkon värikerroksella. Arvoa ei pureta.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Ehto</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Haaran tunnisteet</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>Tosi-tunniste</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>Epätosi-tunniste</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Then/Else-lohkot näytetään lapsina puussa.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Silmukkaehto</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Rajat</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Enimmäistoistot</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Runkolohkot näytetään lapsina puussa.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Muutettavan muuttujan nimi — kirjoita nähdäksesi ehdotukset (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Asetettava arvo / lisättävä tai vähennettävä määrä — hyväksyy var:nimi</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Matemaattinen lauseke muuttujilla ja funktioilla — Ctrl+Space automaattiseen täydennykseen</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Muuttujan nimi, johon laskettu tulos tallennetaan — Ctrl+Space ehdotuksille</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Tiedoston offset, josta taulukko alkaa — Ctrl+Space automaattiseen täydennykseen</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Muuttuja, jota käytetään perusoffsetina tälle taulukolle</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Merkintöjen määrä — Ctrl+Space muuttujaehdotuksille</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Kunkin merkinnän koko tavuina — Ctrl+Space muuttujaehdotuksille</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Silmukkaindeksimuuttujan nimi (esim. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Lisää väri</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Muuttuja, joka ohjaa variantinvalintaa — Ctrl+Space ehdotuksille</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Muodon nimi tai suhteellinen polku .whfmt-tiedostoon</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Selaa…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Tiedoston offset, josta osoittimen arvo luetaan — Ctrl+Space automaattiseen täydennykseen</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Perusoffsetina käytettävän muuttujan nimi</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>Osoittimen arvon koko tavuina (esim. 4 uint32:lle) — tai var:nimi</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Muuttuja, joka vastaanottaa osoittimen ratkaistun osoitteen</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Muuttuja, johon tallennetaan osoittimen raaka-arvo</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Annotointitunniste, joka näkyy hex-näkymässä</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space automaattiseen täydennykseen — kokonaisluku, var:nimi, calc:lauseke, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Muuttujan nimi, jonka arvo on perusoffset — Ctrl+Space ehdotuksille</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>Lisätavut, jotka lisätään OffsetFrom-arvoon</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space automaattiseen täydennykseen — kokonaisluku, var:nimi, calc:lauseke</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Muuttujan nimi, johon jäsennetty arvo tallennetaan — Ctrl+Space ehdotuksille</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>Muuttujan nimi ValueMap-käännetylle arvolle — Ctrl+Space ehdotuksille</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>raaka=Näyttö (esim. 0=Harmaasävy)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ Lisää ValueMap-merkintä</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Bittialue esim. 7-6 tai yksittäinen bitti esim. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Lisää bittikenttä</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Vartija (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Hex-kuvio tai var:nimi, johon lukeminen pysäytyy. Korvaa Pituuden, kun asetettu.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Turvaraja (tavuina), jos Until-kuviota ei löydy. 0 = tulkin oletus (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until inklusiivinen (sisällytä kuviotavut kentän pituuteen)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Vahvistussäännöt</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Tämän metatietolohkon lukeman muuttujan nimi</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Kiinteä kokonaisluku tai var:nimi — Ctrl+Space ehdotuksille</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Turvaraja — kokonaisluku</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Muuttuja, joka vastaanottaa nykyisen iteraatioindeksin (pohja 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Muuttuja, johon tallennetaan iteraatioiden määrä silmukan jälkeen — Ctrl+Space ehdotuksille</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Muokkaa tätä lohkoa raakana JSON-muodossa</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Lisää väite</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Lisää tarkistussumma</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Pohjan nimi</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Rakenteen nimi (C-rakenne)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Vain hex-numerot (esim. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Näytä:</value></data>
+</root>

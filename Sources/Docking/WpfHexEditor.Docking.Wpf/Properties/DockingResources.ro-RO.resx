@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Docking_TabSettings_Title" xml:space="preserve">
+    <value>Opțiuni file document</value>
+  </data>
+  <data name="Docking_TabSettings_TabStripPlacement" xml:space="preserve">
+    <value>Poziția barei de file</value>
+  </data>
+  <data name="Docking_TabSettings_Top" xml:space="preserve">
+    <value>Sus (implicit)</value>
+  </data>
+  <data name="Docking_TabSettings_Left" xml:space="preserve">
+    <value>Stânga</value>
+  </data>
+  <data name="Docking_TabSettings_Right" xml:space="preserve">
+    <value>Dreapta</value>
+  </data>
+  <data name="Docking_TabSettings_ColorBy" xml:space="preserve">
+    <value>Colorează filele document după</value>
+  </data>
+  <data name="Docking_TabSettings_NoColorization" xml:space="preserve">
+    <value>Fără colorare</value>
+  </data>
+  <data name="Docking_TabSettings_FileExtension" xml:space="preserve">
+    <value>Extensie fișier</value>
+  </data>
+  <data name="Docking_TabSettings_Project" xml:space="preserve">
+    <value>Proiect</value>
+  </data>
+  <data name="Docking_TabSettings_RegexRules" xml:space="preserve">
+    <value>Reguli regex</value>
+  </data>
+  <data name="Docking_TabSettings_RegexFirstMatch" xml:space="preserve">
+    <value>Reguli regex — prima potrivire câștigă:</value>
+  </data>
+  <data name="Docking_TabSettings_PatternColumn" xml:space="preserve">
+    <value>Model (regex)</value>
+  </data>
+  <data name="Docking_TabSettings_ColorColumn" xml:space="preserve">
+    <value>Culoare</value>
+  </data>
+  <data name="Docking_TabSettings_HexColorTooltip" xml:space="preserve">
+    <value>Introduceți o culoare hex: #RRGGBB sau #AARRGGBB</value>
+  </data>
+  <data name="Docking_TabSettings_PressDelete" xml:space="preserve">
+    <value>Apăsați Delete pentru a șterge rândul selectat.</value>
+  </data>
+  <data name="Docking_TabSettings_TabRows" xml:space="preserve">
+    <value>Rânduri de file</value>
+  </data>
+  <data name="Docking_TabSettings_ShowMultipleRows" xml:space="preserve">
+    <value>Afișare file pe mai multe rânduri</value>
+  </data>
+  <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve">
+    <value>Comutare rânduri cu rotița</value>
+  </data>
+
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve">
+    <value>Maximizare</value>
+  </data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve">
+    <value>Restaurare</value>
+  </data>
+  <data name="Dock_LSP_Connecting" xml:space="preserve">
+    <value>Server de limbaj: conectare în curs…</value>
+  </data>
+  <data name="Dock_LSP_Ready" xml:space="preserve">
+    <value>Server de limbaj: gata</value>
+  </data>
+  <data name="Dock_LSP_Error" xml:space="preserve">
+    <value>Server de limbaj: eroare</value>
+  </data>
+  <data name="Dock_AutoHide_Show" xml:space="preserve">
+    <value>Afișare</value>
+  </data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve">
+    <value>Flotant</value>
+  </data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve">
+    <value>Închidere</value>
+  </data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve">
+    <value>Andocare</value>
+  </data>
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve">
+    <value>Colorează filele document după</value>
+  </data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve">
+    <value>Opțiuni…</value>
+  </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>Afișare file pe mai multe rânduri</value>
+  </data>
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>Grup nou de file vertical</value>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>Grup nou de file orizontal</value>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>Închide grupul de file</value>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>Flotant</value>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>Andocare ca document cu file</value>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>Andocare ca fereastră instrument</value>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>Ascundere</value>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>Închide tot</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>Închide tot în afară de acesta</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>Închide tot în afară de cele fixate</value>
+  </data>
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>Deschideți un document pentru a începe</value>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+</root>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.UnitTesting
+    File        : UnitTestingResources.fr-CA.resx
+    Description : French-Canadian (fr-CA) translations for the Unit Testing plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="UnitTest_NoTestProjects" xml:space="preserve">
+    <value>V aktu&#225;ln&#237;m &#345;e&#353;en&#237; nebyl nalezen &#382;&#225;dn&#253; testovac&#237; projekt</value>
+  </data>
+  <data name="UnitTest_RunCancelled" xml:space="preserve">
+    <value>Spu&#353;t&#283;n&#237; zru&#353;eno</value>
+  </data>
+  <data name="UnitTest_RunFailed" xml:space="preserve">
+    <value>Spu&#353;t&#283;n&#237; selhalo &#8212; viz panel v&#253;stupu</value>
+  </data>
+  <data name="UnitTest_Ready" xml:space="preserve">
+    <value>P&#345;ipraveno</value>
+  </data>
+  <data name="UnitTest_OpenInCodeEditor" xml:space="preserve">
+    <value>Otev&#345;&#237;t v editoru k&#243;du</value>
+  </data>
+  <data name="UnitTest_OpenInHexEditor" xml:space="preserve">
+    <value>Otev&#345;&#237;t v hex editoru</value>
+  </data>
+
+  <data name="UT_RunAllButton" xml:space="preserve">
+    <value>Spustit v&#353;echny testy</value>
+  </data>
+  <data name="UT_RunAllLabel" xml:space="preserve">
+    <value>Spustit v&#353;e</value>
+  </data>
+  <data name="UT_RunFailedButton" xml:space="preserve">
+    <value>Spustit ne&#250;sp&#283;&#353;n&#233; testy</value>
+  </data>
+  <data name="UT_RunFailedLabel" xml:space="preserve">
+    <value>Spustit ne&#250;sp&#283;&#353;n&#233;</value>
+  </data>
+  <data name="UT_RefreshButton" xml:space="preserve">
+    <value>Obnovit (znovu spustit v&#353;e)</value>
+  </data>
+  <data name="UT_StopButton" xml:space="preserve">
+    <value>Zastavit testy</value>
+  </data>
+  <data name="UT_ClearButton" xml:space="preserve">
+    <value>Vy&#269;istit v&#253;sledky</value>
+  </data>
+  <data name="UT_FilterAllTooltip" xml:space="preserve">
+    <value>Zobrazit v&#353;echny testy</value>
+  </data>
+  <data name="UT_FilterPassedTooltip" xml:space="preserve">
+    <value>Zobrazit pouze &#250;sp&#283;&#353;n&#233; testy</value>
+  </data>
+  <data name="UT_FilterFailedTooltip" xml:space="preserve">
+    <value>Zobrazit pouze ne&#250;sp&#283;&#353;n&#233; testy</value>
+  </data>
+  <data name="UT_FilterSkippedTooltip" xml:space="preserve">
+    <value>Zobrazit pouze p&#345;esko&#269;en&#233; testy</value>
+  </data>
+  <data name="UT_CollapseAllButton" xml:space="preserve">
+    <value>Sbalit v&#353;e</value>
+  </data>
+  <data name="UT_ExpandAllButton" xml:space="preserve">
+    <value>Rozbalit v&#353;e</value>
+  </data>
+  <data name="UT_LayoutButton" xml:space="preserve">
+    <value>Rozlo&#382;en&#237; podokna detailu</value>
+  </data>
+  <data name="UT_SettingsButton" xml:space="preserve">
+    <value>Nastaven&#237; jednotkov&#253;ch test&#367;</value>
+  </data>
+  <data name="UT_LayoutTopBottom" xml:space="preserve">
+    <value>Naho&#345;e / dole</value>
+  </data>
+  <data name="UT_LayoutLeftRight" xml:space="preserve">
+    <value>Vlevo / vpravo</value>
+  </data>
+  <data name="UT_AutoRunOption" xml:space="preserve">
+    <value>Automaticky spustit p&#345;i sestaven&#237;</value>
+  </data>
+  <data name="UT_AutoExpandOption" xml:space="preserve">
+    <value>Automaticky rozbalit detail p&#345;i selh&#225;n&#237;</value>
+  </data>
+  <data name="UT_RatioBarOption" xml:space="preserve">
+    <value>Zobrazit pruhov&#253; pom&#283;r</value>
+  </data>
+  <data name="UT_SearchPlaceholder" xml:space="preserve">
+    <value>Hledat (Ctrl+I)&#8230;</value>
+  </data>
+  <data name="UT_ClearSearchButton" xml:space="preserve">
+    <value>Vy&#269;istit hled&#225;n&#237;</value>
+  </data>
+  <data name="UT_AddSearchFilter" xml:space="preserve">
+    <value>P&#345;idat filtr hled&#225;n&#237;</value>
+  </data>
+  <data name="UT_FilterState" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="UT_FilterFullName" xml:space="preserve">
+    <value>&#218;pln&#253; n&#225;zev</value>
+  </data>
+  <data name="UT_FilterClass" xml:space="preserve">
+    <value>T&#345;&#237;da</value>
+  </data>
+  <data name="UT_FilterProject" xml:space="preserve">
+    <value>Projekt</value>
+  </data>
+  <data name="UT_FilterError" xml:space="preserve">
+    <value>Chybov&#225; zpr&#225;va</value>
+  </data>
+  <data name="UT_FilterNamespace" xml:space="preserve">
+    <value>Obor n&#225;zv&#367;</value>
+  </data>
+  <data name="UT_TestColumn" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="UT_DurationColumn" xml:space="preserve">
+    <value>Doba trv&#225;n&#237;</value>
+  </data>
+  <data name="UT_CharacteristicsColumn" xml:space="preserve">
+    <value>Charakteristiky</value>
+  </data>
+  <data name="UT_ErrorMessageColumn" xml:space="preserve">
+    <value>Chybov&#225; zpr&#225;va</value>
+  </data>
+  <data name="UT_RunThisMenu" xml:space="preserve">
+    <value>Spustit tento test</value>
+  </data>
+  <data name="UT_CopyNameMenu" xml:space="preserve">
+    <value>Kop&#237;rovat n&#225;zev testu</value>
+  </data>
+  <data name="UT_CopyStackMenu" xml:space="preserve">
+    <value>Kop&#237;rovat z&#225;sobn&#237;k vol&#225;n&#237;</value>
+  </data>
+  <data name="UT_GroupSummaryLabel" xml:space="preserve">
+    <value>Souhrn skupiny</value>
+  </data>
+  <data name="UT_TestsInGroupLabel" xml:space="preserve">
+    <value>Testy ve skupin&#283;: </value>
+  </data>
+  <data name="UT_TotalDurationLabel" xml:space="preserve">
+    <value>Celkov&#225; doba: </value>
+  </data>
+  <data name="UT_ResultsLabel" xml:space="preserve">
+    <value>V&#253;sledky</value>
+  </data>
+  <data name="UT_PassedLabel" xml:space="preserve">
+    <value>&#218;sp&#283;&#353;n&#233;</value>
+  </data>
+  <data name="UT_FailedLabel" xml:space="preserve">
+    <value>Ne&#250;sp&#283;&#353;n&#233;</value>
+  </data>
+  <data name="UT_TestDetailLabel" xml:space="preserve">
+    <value>Detail testu</value>
+  </data>
+  <data name="UT_SourceLabel" xml:space="preserve">
+    <value>Zdroj: </value>
+  </data>
+  <data name="UT_DurationLabel" xml:space="preserve">
+    <value>Doba trv&#225;n&#237;: </value>
+  </data>
+  <data name="UT_RunButton" xml:space="preserve">
+    <value>Spustit</value>
+  </data>
+</root>

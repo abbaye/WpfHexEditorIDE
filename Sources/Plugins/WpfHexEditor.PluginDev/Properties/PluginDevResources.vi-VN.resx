@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.PluginDev
+    File        : Properties/PluginDevResources.vi-VN.resx
+    Description : PluginDev-specific UI strings — Vietnamese (Vietnam) satellite.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- NewPluginWizardWindow -->
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>Dự án tiện ích mới</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Chọn thư mục đầu ra cho dự án plugin</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>Quyền hạn</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>Chế độ cô lập</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>Ưu tiên tải (10–90) :</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>Tiếp theo ></value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>Tạo và mở</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>Plugin đã tạo</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>Lỗi</value>
+  </data>
+
+  <!-- PluginPackagePublisherDialog -->
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>Xuất bản gói tiện ích</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>Ký gói trước khi xuất bản</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Duyệt…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>Mở thư mục đầu ra trong trình khám phá</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>Đóng gói</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>Đóng</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>Chọn thư mục đầu ra</value>
+  </data>
+
+  <!-- PluginDevLogPanel -->
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>Xuất nhật ký phát triển tiện ích</value>
+  </data>
+
+  <!-- PluginMarketplacePanel -->
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>Duyệt</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>Đã cài đặt</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>Cập nhật tất cả</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>Cập nhật</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>Chợ tiện ích</value>
+  </data>
+
+  <!-- PluginDevToolbar -->
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>Tiện ích :</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>Cấu hình :</value>
+  </data>
+
+  <!-- PanelPluginTemplate -->
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>Sẵn sàng</value>
+  </data>
+
+  <!-- PluginMarketplacePanel toolbar and column headers -->
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>Làm mới</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>Tên</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>Tác giả</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>Phiên bản</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>Đánh giá</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>Lượt tải</value>
+  </data>
+
+</root>

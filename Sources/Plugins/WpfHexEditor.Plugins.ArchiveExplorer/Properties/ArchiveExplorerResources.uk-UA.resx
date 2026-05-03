@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.ArchiveExplorer
+    File        : ArchiveExplorerResources.uk-UA.resx
+    Description : Ukrainian (Ukraine) translations for the Archive Explorer plugin.
+-->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="ArchiveExplorer_PluginName" xml:space="preserve"><value>Провідник архівів</value></data>
+  <data name="ArchiveExplorer_OpenArchive" xml:space="preserve"><value>Відкрити архів</value></data>
+  <data name="ArchiveExplorer_SelectExtractFolder" xml:space="preserve"><value>Вибрати типову папку розпакування</value></data>
+  <data name="AE_ExtractAll" xml:space="preserve"><value>Розпакувати все…</value></data>
+  <data name="AE_ExtractSelected" xml:space="preserve"><value>Розпакувати вибране…</value></data>
+  <data name="AE_Preview" xml:space="preserve"><value>Перегляд</value></data>
+  <data name="AE_OpenRawInHex" xml:space="preserve"><value>Відкрити необроблені дані в Hex</value></data>
+  <data name="AE_OpenArchive" xml:space="preserve"><value>Відкрити архів…</value></data>
+  <data name="AE_RefreshArchive" xml:space="preserve"><value>Оновити архів</value></data>
+  <data name="AE_NavigateUp" xml:space="preserve"><value>Повернутися (вийти з вкладеного архіву)</value></data>
+  <data name="AE_MoreOptions" xml:space="preserve"><value>Більше параметрів</value></data>
+  <data name="AE_ExtractAllTooltip" xml:space="preserve"><value>Розпакувати все…</value></data>
+  <data name="AE_ExtractSelectedTooltip" xml:space="preserve"><value>Розпакувати вибране…</value></data>
+  <data name="AE_PreviewTooltip" xml:space="preserve"><value>Перегляд запису</value></data>
+  <data name="AE_OpenRawInHexTooltip" xml:space="preserve"><value>Відкрити необроблені байти в редакторі Hex</value></data>
+  <data name="AE_FilterEntries" xml:space="preserve"><value>Фільтрувати записи…</value></data>
+  <data name="AE_ClearFilter" xml:space="preserve"><value>Очистити фільтр</value></data>
+  <data name="AE_Loading" xml:space="preserve"><value>Завантаження…</value></data>
+  <data name="AE_DrillIntoArchive" xml:space="preserve"><value>Переглянути архів</value></data>
+  <data name="AE_CopyPath" xml:space="preserve"><value>Копіювати шлях</value></data>
+  <data name="AE_Properties" xml:space="preserve"><value>Властивості…</value></data>
+  <data name="AE_DropArchiveHere" xml:space="preserve"><value>Перетягніть архів сюди</value></data>
+  <data name="AE_ClickOpenToolbar" xml:space="preserve"><value>або натисніть «Відкрити» на панелі інструментів</value></data>
+  <data name="AE_BehaviourSection" xml:space="preserve"><value>Поведінка</value></data>
+  <data name="AE_AutoShowPanel" xml:space="preserve"><value>Автоматично показувати панель при відкритті архівного файлу</value></data>
+  <data name="AE_ShowCompressionBadge" xml:space="preserve"><value>Показувати значок коефіцієнта стиснення в дереві</value></data>
+  <data name="AE_ShowFormatBadge" xml:space="preserve"><value>Показувати значок виявлення формату (whfmt)</value></data>
+  <data name="AE_PreviewSection" xml:space="preserve"><value>Перегляд</value></data>
+  <data name="AE_MaxPreviewSize" xml:space="preserve"><value>Макс. розмір перегляду (КБ) :</value></data>
+  <data name="AE_ExtractionSection" xml:space="preserve"><value>Розпакування</value></data>
+  <data name="AE_MaxFormatDetectionSize" xml:space="preserve"><value>Макс. розмір для виявлення формату (КБ) :</value></data>
+  <data name="AE_DefaultExtractFolder" xml:space="preserve"><value>Типова папка розпакування :</value></data>
+  <data name="AE_Browse" xml:space="preserve"><value>Огляд…</value></data>
+  <data name="AE_EntryPropertiesTitle" xml:space="preserve"><value>Властивості запису</value></data>
+  <data name="AE_FullPath" xml:space="preserve"><value>Повний шлях :</value></data>
+  <data name="AE_Size" xml:space="preserve"><value>Розмір :</value></data>
+  <data name="AE_Compressed" xml:space="preserve"><value>Стиснено :</value></data>
+  <data name="AE_Ratio" xml:space="preserve"><value>Коефіцієнт :</value></data>
+  <data name="AE_Method" xml:space="preserve"><value>Метод :</value></data>
+  <data name="AE_LastModified" xml:space="preserve"><value>Остання зміна :</value></data>
+  <data name="AE_Crc32" xml:space="preserve"><value>CRC32 :</value></data>
+  <data name="AE_Close" xml:space="preserve"><value>Закрити</value></data>
+</root>

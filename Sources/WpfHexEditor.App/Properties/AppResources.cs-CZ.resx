@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="App_MinimizeToolTip" xml:space="preserve"><value>Minimalizovat</value></data>
+  <data name="App_MaximizeToolTip" xml:space="preserve"><value>Maximalizovat</value></data>
+  <data name="App_CloseToolTip" xml:space="preserve"><value>Zav&#345;&#237;t</value></data>
+  <data name="App_NotificationsToolTip" xml:space="preserve"><value>Ozn&#225;men&#237;</value></data>
+  <data name="App_CustomizeLayoutToolTip" xml:space="preserve"><value>P&#345;izp&#367;sobit rozlo&#382;en&#237; (Ctrl+Shift+L)</value></data>
+  <data name="App_CommandPaletteToolTip" xml:space="preserve"><value>Paleta p&#345;&#237;kaz&#367; (Ctrl+Shift+P)</value></data>
+  <data name="App_WelcomePageToolTip" xml:space="preserve"><value>&#218;vodn&#237; str&#225;nka</value></data>
+
+  <data name="App_Menu_File" xml:space="preserve"><value>_Soubor</value></data>
+  <data name="App_Menu_New" xml:space="preserve"><value>_Nov&#253;</value></data>
+  <data name="App_Menu_NewSolution" xml:space="preserve"><value>_&#344;e&#353;en&#237;...</value></data>
+  <data name="App_Menu_NewProject" xml:space="preserve"><value>_Projekt...</value></data>
+  <data name="App_Menu_NewFile" xml:space="preserve"><value>_Soubor...</value></data>
+  <data name="App_Menu_Open" xml:space="preserve"><value>_Otev&#345;&#237;t</value></data>
+  <data name="App_Menu_OpenSolutionProject" xml:space="preserve"><value>_&#344;e&#353;en&#237;/Projekt...</value></data>
+  <data name="App_Menu_OpenFolder" xml:space="preserve"><value>_Slo&#382;ka...</value></data>
+  <data name="App_Menu_OpenFile" xml:space="preserve"><value>_Soubor...</value></data>
+  <data name="App_Menu_Close" xml:space="preserve"><value>_Zav&#345;&#237;t</value></data>
+  <data name="App_Menu_CloseAllDocuments" xml:space="preserve"><value>Zav&#345;&#237;t _v&#353;echny dokumenty</value></data>
+  <data name="App_Menu_CloseSolution" xml:space="preserve"><value>Zav&#345;&#237;t _&#345;e&#353;en&#237;</value></data>
+  <data name="App_Menu_Save" xml:space="preserve"><value>_Ulo&#382;it</value></data>
+  <data name="App_Menu_SaveAll" xml:space="preserve"><value>Ulo&#382;it _v&#353;e</value></data>
+  <data name="App_Menu_WriteToDisk" xml:space="preserve"><value>_Zapsat na disk</value></data>
+  <data name="App_Menu_Workspace" xml:space="preserve"><value>_Pracovn&#237; plocha</value></data>
+  <data name="App_Menu_NewWorkspace" xml:space="preserve"><value>_Nov&#225; pracovn&#237; plocha&#8230;</value></data>
+  <data name="App_Menu_OpenWorkspace" xml:space="preserve"><value>_Otev&#345;&#237;t pracovn&#237; plochu&#8230;</value></data>
+  <data name="App_Menu_SaveWorkspace" xml:space="preserve"><value>_Ulo&#382;it pracovn&#237; plochu</value></data>
+  <data name="App_Menu_SaveWorkspaceAs" xml:space="preserve"><value>Ulo&#382;it pracovn&#237; plochu _jako&#8230;</value></data>
+  <data name="App_Menu_CloseWorkspace" xml:space="preserve"><value>Za_v&#345;&#237;t pracovn&#237; plochu</value></data>
+  <data name="App_Menu_RecentSolutions" xml:space="preserve"><value>_Posledn&#237; &#345;e&#353;en&#237;</value></data>
+  <data name="App_Menu_RecentFiles" xml:space="preserve"><value>_Posledn&#237; soubory</value></data>
+  <data name="App_Menu_Exit" xml:space="preserve"><value>_Ukon&#269;it</value></data>
+
+  <data name="App_Menu_Edit" xml:space="preserve"><value>_&#218;pravy</value></data>
+  <data name="App_Menu_Cut" xml:space="preserve"><value>_Vyjmout</value></data>
+  <data name="App_Menu_Copy" xml:space="preserve"><value>_Kop&#237;rovat</value></data>
+  <data name="App_Menu_Paste" xml:space="preserve"><value>_Vlo&#382;it</value></data>
+  <data name="App_Menu_Delete" xml:space="preserve"><value>_Smazat</value></data>
+  <data name="App_Menu_SelectAll" xml:space="preserve"><value>Vybrat _v&#353;e</value></data>
+  <data name="App_Menu_Find" xml:space="preserve"><value>_Naj&#237;t...</value></data>
+  <data name="App_Menu_AdvancedFindReplace" xml:space="preserve"><value>_Pokro&#269;il&#233; hled&#225;n&#237;/nahrazen&#237;...</value></data>
+  <data name="App_Menu_FindNext" xml:space="preserve"><value>Naj&#237;t _dal&#353;&#237;</value></data>
+  <data name="App_Menu_FindPrevious" xml:space="preserve"><value>Naj&#237;t _p&#345;edchoz&#237;</value></data>
+  <data name="App_Menu_GoToOffset" xml:space="preserve"><value>_P&#345;ej&#237;t na offset&#8230;</value></data>
+  <data name="App_Menu_FormatDocument" xml:space="preserve"><value>Form&#225;tovat _dokument</value></data>
+  <data name="App_Menu_FormatSelection" xml:space="preserve"><value>Form&#225;tovat _v&#253;b&#283;r</value></data>
+
+  <data name="App_Menu_View" xml:space="preserve"><value>_Zobrazen&#237;</value></data>
+  <data name="App_Menu_Project" xml:space="preserve"><value>_Projekt</value></data>
+  <data name="App_Menu_AddNewItem" xml:space="preserve"><value>P&#345;idat _nov&#253; prvek...</value></data>
+  <data name="App_Menu_AddExistingItem" xml:space="preserve"><value>P&#345;idat _existuj&#237;c&#237; prvek...</value></data>
+  <data name="App_Menu_AddNewProject" xml:space="preserve"><value>P&#345;idat nov&#253; _projekt...</value></data>
+  <data name="App_Menu_Properties" xml:space="preserve"><value>_Vlastnosti...</value></data>
+  <data name="App_Menu_Build" xml:space="preserve"><value>_Sestavit</value></data>
+  <data name="App_Menu_BuildSolution" xml:space="preserve"><value>Sestavit _&#345;e&#353;en&#237;</value></data>
+  <data name="App_Menu_BuildProject" xml:space="preserve"><value>Sestavit _projekt</value></data>
+  <data name="App_Menu_RebuildSolution" xml:space="preserve"><value>_Znovu sestavit &#345;e&#353;en&#237;</value></data>
+  <data name="App_Menu_RebuildProject" xml:space="preserve"><value>Znovu sestavit _projekt</value></data>
+  <data name="App_Menu_CleanSolution" xml:space="preserve"><value>_Vy&#269;istit &#345;e&#353;en&#237;</value></data>
+  <data name="App_Menu_CleanProject" xml:space="preserve"><value>Vy&#269;istit _projekt</value></data>
+  <data name="App_Menu_CancelBuild" xml:space="preserve"><value>_Zru&#353;it sestaven&#237;</value></data>
+  <data name="App_Menu_ConfigurationManager" xml:space="preserve"><value>_Spr&#225;vce konfigurac&#237;...</value></data>
+  <data name="App_Menu_Debug" xml:space="preserve"><value>_Ladit</value></data>
+
+  <data name="App_Menu_Window" xml:space="preserve"><value>_Okno</value></data>
+  <data name="App_Menu_CloseDocument" xml:space="preserve"><value>_Zav&#345;&#237;t dokument</value></data>
+  <data name="App_Menu_CloseAllButThis" xml:space="preserve"><value>Zav&#345;&#237;t v&#353;e _krom&#283; tohoto</value></data>
+  <data name="App_Menu_CloseAllDocuments2" xml:space="preserve"><value>Zav&#345;&#237;t _v&#353;echny dokumenty</value></data>
+  <data name="App_Menu_NextDocument" xml:space="preserve"><value>_Dal&#353;&#237; dokument</value></data>
+  <data name="App_Menu_PreviousDocument" xml:space="preserve"><value>_P&#345;edchoz&#237; dokument</value></data>
+  <data name="App_Menu_FullScreen" xml:space="preserve"><value>_Cel&#225; obrazovka</value></data>
+  <data name="App_Menu_TabGroups" xml:space="preserve"><value>Skupiny _karet</value></data>
+  <data name="App_Menu_NewVerticalTabGroup" xml:space="preserve"><value>Nov&#225; _vertik&#225;ln&#237; skupina karet</value></data>
+  <data name="App_Menu_NewHorizontalTabGroup" xml:space="preserve"><value>Nov&#225; _horizont&#225;ln&#237; skupina karet</value></data>
+  <data name="App_Menu_MoveToNextTabGroup" xml:space="preserve"><value>P&#345;esunout do _dal&#353;&#237; skupiny karet</value></data>
+  <data name="App_Menu_MoveToPreviousTabGroup" xml:space="preserve"><value>P&#345;esunout do _p&#345;edchoz&#237; skupiny karet</value></data>
+  <data name="App_Menu_CloseTabGroup" xml:space="preserve"><value>_Zav&#345;&#237;t skupinu karet</value></data>
+  <data name="App_Menu_CloseAllTabGroups" xml:space="preserve"><value>Zav&#345;&#237;t _v&#353;echny skupiny karet</value></data>
+  <data name="App_Menu_Layout" xml:space="preserve"><value>_Rozlo&#382;en&#237;</value></data>
+  <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Ulo&#382;it rozlo&#382;en&#237;</value></data>
+  <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Na&#269;&#237;st rozlo&#382;en&#237;</value></data>
+  <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Obnovit rozlo&#382;en&#237;</value></data>
+  <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>P&#345;epnout _z&#225;mek rozlo&#382;en&#237;</value></data>
+
+  <data name="App_Menu_Tools" xml:space="preserve"><value>_N&#225;stroje</value></data>
+  <data name="App_Menu_Terminal" xml:space="preserve"><value>_Termin&#225;l</value></data>
+  <data name="App_Menu_Options" xml:space="preserve"><value>_Mo&#382;nosti...</value></data>
+  <data name="App_Menu_Extensions" xml:space="preserve"><value>_Roz&#353;&#237;&#345;en&#237;</value></data>
+  <data name="App_Menu_ExtensionManager" xml:space="preserve"><value>_Spr&#225;vce roz&#353;&#237;&#345;en&#237;</value></data>
+  <data name="App_Menu_ExtensionsMonitor" xml:space="preserve"><value>_Monitor roz&#353;&#237;&#345;en&#237;</value></data>
+  <data name="App_Menu_ExtensionMarketplace" xml:space="preserve"><value>_Marketplace roz&#353;&#237;&#345;en&#237;</value></data>
+  <data name="App_Menu_InstallFromFile" xml:space="preserve"><value>_Instalovat ze souboru...</value></data>
+  <data name="App_Menu_RefreshAllExtensions" xml:space="preserve"><value>_Obnovit v&#353;echna roz&#353;&#237;&#345;en&#237;</value></data>
+  <data name="App_Menu_ExtensionDevWatch" xml:space="preserve"><value>Sledov&#225;n&#237; _Dev roz&#353;&#237;&#345;en&#237;...</value></data>
+  <data name="App_Menu_ExtensionSystemSettings" xml:space="preserve"><value>_Syst&#233;mov&#225; nastaven&#237; roz&#353;&#237;&#345;en&#237;...</value></data>
+  <data name="App_Menu_Theme" xml:space="preserve"><value>_T&#233;ma</value></data>
+  <data name="App_Menu_ThemeDark" xml:space="preserve"><value>_Tmav&#233;</value></data>
+  <data name="App_Menu_ThemeVS2022Dark" xml:space="preserve"><value>VS2022 Tmav_&#233;</value></data>
+  <data name="App_Menu_ThemeVisualStudio" xml:space="preserve"><value>_Visual Studio</value></data>
+  <data name="App_Menu_ThemeDarkGlass" xml:space="preserve"><value>Tmav&#233; _sklo</value></data>
+  <data name="App_Menu_ThemeCyberpunk" xml:space="preserve"><value>_Cyberpunk</value></data>
+  <data name="App_Menu_ThemeSynthwave" xml:space="preserve"><value>Synthwave '8_4</value></data>
+  <data name="App_Menu_ThemeMatrix" xml:space="preserve"><value>Matri_x / Termin&#225;l</value></data>
+  <data name="App_Menu_ThemeNord" xml:space="preserve"><value>_Nord</value></data>
+  <data name="App_Menu_ThemeDracula" xml:space="preserve"><value>Dr_acula</value></data>
+  <data name="App_Menu_ThemeGruvbox" xml:space="preserve"><value>Gruvbo_x Dark</value></data>
+  <data name="App_Menu_ThemeCatppuccinMocha" xml:space="preserve"><value>Catppuccin _Mocha</value></data>
+  <data name="App_Menu_ThemeTokyoNight" xml:space="preserve"><value>Tokyo _Night</value></data>
+  <data name="App_Menu_ThemeLight" xml:space="preserve"><value>_Sv&#283;tl&#233;</value></data>
+  <data name="App_Menu_ThemeOffice" xml:space="preserve"><value>_Office</value></data>
+  <data name="App_Menu_ThemeCatppuccinLatte" xml:space="preserve"><value>Catppuccin _Latte</value></data>
+  <data name="App_Menu_ThemeMinimal" xml:space="preserve"><value>_Minim&#225;ln&#237;</value></data>
+  <data name="App_Menu_ThemeForest" xml:space="preserve"><value>_Les</value></data>
+  <data name="App_Menu_ThemeHighContrast" xml:space="preserve"><value>_Vysok&#253; kontrast</value></data>
+
+  <data name="App_Menu_Image" xml:space="preserve"><value>_Obr&#225;zek</value></data>
+  <data name="App_Menu_RotateRight" xml:space="preserve"><value>Oto&#269;it _doprava</value></data>
+  <data name="App_Menu_RotateLeft" xml:space="preserve"><value>Oto&#269;it _doleva</value></data>
+  <data name="App_Menu_FlipHorizontal" xml:space="preserve"><value>P&#345;ev&#233;st _horizont&#225;ln&#283;</value></data>
+  <data name="App_Menu_FlipVertical" xml:space="preserve"><value>P&#345;ev&#233;st _vertik&#225;ln&#283;</value></data>
+  <data name="App_Menu_CropMode" xml:space="preserve"><value>Re&#382;im _o&#345;ez&#225;n&#237;</value></data>
+  <data name="App_Menu_Resize" xml:space="preserve"><value>_Zm&#283;nit velikost...</value></data>
+  <data name="App_Menu_Export" xml:space="preserve"><value>_Exportovat...</value></data>
+  <data name="App_Menu_ResetImage" xml:space="preserve"><value>Obnovit _p&#367;vodn&#237; obr&#225;zek</value></data>
+
+  <data name="App_OptionsEditJsonToolTip" xml:space="preserve"><value>Upravit u&#382;ivatelsk&#225; nastaven&#237; v JSON</value></data>
+  <data name="App_OptionsAppliesToLabel" xml:space="preserve"><value>Vztahuje se na:</value></data>
+  <data name="App_OptionsUserInstallation" xml:space="preserve"><value>U&#382;ivatel (instalace)</value></data>
+  <data name="App_OptionsFilterLabel" xml:space="preserve"><value>Filtr:</value></data>
+  <data name="App_OptionsSearchPlaceholder" xml:space="preserve"><value>Hledat nastaven&#237; (Ctrl+F)&#8230;</value></data>
+  <data name="App_OptionsClearToolTip" xml:space="preserve"><value>Vymazat (Esc)</value></data>
+  <data name="App_OptionsNoResults" xml:space="preserve"><value>&#381;&#225;dn&#225; nastaven&#237; nenalezena.</value></data>
+
+  <data name="App_PasteConflict_Title" xml:space="preserve"><value>Soubor ji&#382; existuje</value></data>
+  <data name="App_PasteConflict_Rename" xml:space="preserve"><value>P&#345;ejmenovat</value></data>
+  <data name="App_PasteConflict_Skip" xml:space="preserve"><value>P&#345;esko&#269;it</value></data>
+  <data name="App_PasteConflict_CancelAll" xml:space="preserve"><value>Zru&#353;it v&#353;e</value></data>
+  <data name="App_PasteConflict_AlreadyExists1" xml:space="preserve"><value>Soubor s n&#225;zvem</value></data>
+  <data name="App_PasteConflict_AlreadyExists2" xml:space="preserve"><value>ji&#382; existuje v c&#237;lov&#233; slo&#382;ce.</value></data>
+  <data name="App_PasteConflict_Instructions" xml:space="preserve"><value>Zadejte nov&#253; n&#225;zev pro p&#345;ejmenov&#225;n&#237; vkl&#225;dan&#233;ho souboru, nebo zvolte akci n&#237;&#382;e.</value></data>
+  <data name="App_PasteConflict_NewNameLabel" xml:space="preserve"><value>Nov&#253; n&#225;zev:</value></data>
+
+  <data name="App_SaveChanges_Title" xml:space="preserve"><value>Ulo&#382;it zm&#283;ny</value></data>
+  <data name="App_SaveChanges_SelectAll" xml:space="preserve"><value>Vybrat v&#353;e</value></data>
+  <data name="App_SaveChanges_Save" xml:space="preserve"><value>Ulo&#382;it</value></data>
+  <data name="App_SaveChanges_DontSave" xml:space="preserve"><value>Neukl&#225;dat</value></data>
+  <data name="App_SaveChanges_Cancel" xml:space="preserve"><value>Storno</value></data>
+
+  <data name="App_GoToOffset_Title" xml:space="preserve"><value>P&#345;ej&#237;t na offset</value></data>
+  <data name="App_GoToOffset_EnterOffset" xml:space="preserve"><value>Zadejte offset:</value></data>
+  <data name="App_GoToOffset_Hexadecimal" xml:space="preserve"><value>Hexadecim&#225;ln&#237; (0x&#8230;)</value></data>
+  <data name="App_GoToOffset_Decimal" xml:space="preserve"><value>Desítkov&#253;</value></data>
+  <data name="App_GoToOffset_Go" xml:space="preserve"><value>P&#345;ej&#237;t</value></data>
+  <data name="App_GoToOffset_Cancel" xml:space="preserve"><value>Storno</value></data>
+
+  <data name="App_ImportFormat_Title" xml:space="preserve"><value>Importovat vestav&#283;nou definici form&#225;tu</value></data>
+  <data name="App_ImportFormat_VersionLabel" xml:space="preserve"><value>Verze:</value></data>
+  <data name="App_ImportFormat_AuthorLabel" xml:space="preserve"><value>Autor:</value></data>
+  <data name="App_ImportFormat_ExtensionsLabel" xml:space="preserve"><value>P&#345;&#237;pony</value></data>
+  <data name="App_ImportFormat_QualityLabel" xml:space="preserve"><value>Kvalita</value></data>
+  <data name="App_ImportFormat_PreviewLabel" xml:space="preserve"><value>N&#225;hled</value></data>
+  <data name="App_ImportFormat_DestinationFolder" xml:space="preserve"><value>_C&#237;lov&#225; slo&#382;ka:</value></data>
+  <data name="App_ImportFormat_Import" xml:space="preserve"><value>_Importovat</value></data>
+  <data name="App_ImportFormat_Cancel" xml:space="preserve"><value>Storno</value></data>
+
+  <data name="App_ImportSyntax_Title" xml:space="preserve"><value>Importovat vestav&#283;nou definici syntaxe</value></data>
+  <data name="App_ImportSyntax_ShowPreview" xml:space="preserve"><value>Zobrazit n&#225;hled</value></data>
+  <data name="App_ImportSyntax_ExtensionsLabel" xml:space="preserve"><value>P&#345;&#237;pony</value></data>
+  <data name="App_ImportSyntax_DestinationFolder" xml:space="preserve"><value>_C&#237;lov&#225; slo&#382;ka:</value></data>
+  <data name="App_ImportSyntax_Import" xml:space="preserve"><value>_Importovat</value></data>
+  <data name="App_ImportSyntax_Cancel" xml:space="preserve"><value>Storno</value></data>
+
+  <data name="App_PanelWelcome" xml:space="preserve"><value>V&#237;tejte</value></data>
+  <data name="App_PanelSolutionExplorer" xml:space="preserve"><value>Pr&#367;zkumn&#237;k &#345;e&#353;en&#237;</value></data>
+  <data name="App_PanelErrorList" xml:space="preserve"><value>Seznam chyb</value></data>
+  <data name="App_PanelExtensionsMonitor" xml:space="preserve"><value>Monitor roz&#353;&#237;&#345;en&#237;</value></data>
+  <data name="App_PanelOutput" xml:space="preserve"><value>V&#253;stup</value></data>
+  <data name="App_ExportFormatDefinitionTitle" xml:space="preserve"><value>Exportovat definici form&#225;tu</value></data>
+  <data name="App_FormatUpgradeRequired" xml:space="preserve"><value>Vy&#382;adov&#225;n upgrade form&#225;tu</value></data>
+  <data name="App_FormatUpgrade" xml:space="preserve"><value>Upgrade form&#225;tu</value></data>
+  <data name="App_ConvertTbl" xml:space="preserve"><value>Konvertovat TBL</value></data>
+  <data name="App_RemoveFromProject" xml:space="preserve"><value>Odebrat z projektu</value></data>
+  <data name="App_RemoveFromProjectMessage" xml:space="preserve"><value>Odebrat '{0}' z projektu?\n(Soubor na disku nebude smaz&#225;n.)</value></data>
+  <data name="App_DeleteFile" xml:space="preserve"><value>Smazat soubor</value></data>
+  <data name="App_DeleteFileMessage" xml:space="preserve"><value>Smazat '{0}' a p&#345;esunout do ko&#353;e?</value></data>
+  <data name="App_RemoveFolder" xml:space="preserve"><value>Odebrat slo&#382;ku</value></data>
+  <data name="App_RemoveSolutionFolder" xml:space="preserve"><value>Odebrat slo&#382;ku &#345;e&#353;en&#237;</value></data>
+  <data name="App_SelectImportFolder" xml:space="preserve"><value>Vybrat slo&#382;ku k importu</value></data>
+  <data name="App_OpenSolutionProject" xml:space="preserve"><value>Otev&#345;&#237;t &#345;e&#353;en&#237; nebo projekt</value></data>
+  <data name="App_OpenFolder" xml:space="preserve"><value>Otev&#345;&#237;t slo&#382;ku</value></data>
+  <data name="App_FailedCreateSolution" xml:space="preserve"><value>Nepoda&#345;ilo se vytvo&#345;it &#345;e&#353;en&#237;:\n{0}</value></data>
+  <data name="App_FailedOpenSolution" xml:space="preserve"><value>Nepoda&#345;ilo se otev&#345;&#237;t &#345;e&#353;en&#237;:\n{0}</value></data>
+  <data name="App_RenameTitle" xml:space="preserve"><value>P&#345;ejmenovat</value></data>
+
+  <!-- DockItem titles -->
+  <data name="App_DockTitle_ExtensionManager" xml:space="preserve"><value>Spr&#225;vce roz&#353;&#237;&#345;en&#237;</value></data>
+  <data name="App_DockTitle_ExtensionsMonitor" xml:space="preserve"><value>Monitor roz&#353;&#237;&#345;en&#237;</value></data>
+  <data name="App_DockTitle_ExtensionMarketplace" xml:space="preserve"><value>Marketplace roz&#353;&#237;&#345;en&#237;</value></data>
+  <data name="App_DockTitle_Terminal" xml:space="preserve"><value>Termin&#225;l</value></data>
+  <data name="App_DockTitle_SettingsJson" xml:space="preserve"><value>settings.json</value></data>
+  <data name="App_DockTitle_Properties" xml:space="preserve"><value>{0} &#8212; Vlastnosti</value></data>
+  <data name="App_DockTitle_NuGet" xml:space="preserve"><value>NuGet &#8212; {0}</value></data>
+  <data name="App_DockTitle_NuGetSolution" xml:space="preserve"><value>NuGet &#8212; {0} (&#344;e&#353;en&#237;)</value></data>
+  <data name="App_DockTitle_References" xml:space="preserve"><value>Reference &#8212; {0}</value></data>
+  <data name="App_DockTitle_ReadOnly" xml:space="preserve"><value>WpfHexEditor &#8212; {0} [form&#225;t pouze ke&#269;ten&#237; v{1}]</value></data>
+
+  <!-- Context menus -->
+  <data name="App_ContextMenu_None" xml:space="preserve"><value>(&#382;&#225;dn&#233;)</value></data>
+  <data name="App_ContextMenu_CompareWithActive" xml:space="preserve"><value>Porovnat s aktivn&#237;m editorem</value></data>
+  <data name="App_ContextMenu_CompareWithAnother" xml:space="preserve"><value>Porovnat s jin&#253;m souborem&#8230;</value></data>
+  <data name="App_JumpList_RecentProjects" xml:space="preserve"><value>Posledn&#237; projekty</value></data>
+  <data name="App_JumpList_RecentFiles" xml:space="preserve"><value>Posledn&#237; soubory</value></data>
+
+  <!-- Workspace dialogs -->
+  <data name="App_Workspace_NewTitle" xml:space="preserve"><value>Nov&#225; pracovn&#237; plocha</value></data>
+  <data name="App_Workspace_NewFailed" xml:space="preserve"><value>Nepoda&#345;ilo se vytvo&#345;it pracovn&#237; plochu:{0}{1}</value></data>
+  <data name="App_Workspace_OpenTitle" xml:space="preserve"><value>Otev&#345;&#237;t pracovn&#237; plochu</value></data>
+  <data name="App_Workspace_OpenFailed" xml:space="preserve"><value>Nepoda&#345;ilo se otev&#345;&#237;t pracovn&#237; plochu:{0}{1}</value></data>
+  <data name="App_Workspace_SaveFailed" xml:space="preserve"><value>Nepoda&#345;ilo se ulo&#382;it pracovn&#237; plochu:{0}{1}</value></data>
+  <data name="App_Workspace_SaveAsTitle" xml:space="preserve"><value>Ulo&#382;it pracovn&#237; plochu jako</value></data>
+  <data name="App_Workspace_CloseTitle" xml:space="preserve"><value>Zav&#345;&#237;t pracovn&#237; plochu</value></data>
+  <data name="App_Workspace_CloseSavePrompt" xml:space="preserve"><value>Ulo&#382;it pracovn&#237; plochu '{0}' p&#345;ed zav&#345;en&#237;m?</value></data>
+
+  <!-- Debugger dialogs -->
+  <data name="App_Debug_AttachTitle" xml:space="preserve"><value>P&#345;ipojit k procesu</value></data>
+  <data name="App_Debug_AttachNotAvailable" xml:space="preserve"><value>Ladic&#237; slu&#382;ba nen&#237; k dispozici.</value></data>
+  <data name="App_Debug_AttachPidPrompt" xml:space="preserve"><value>Zadejte identifik&#225;tor procesu (PID), ke kter&#233;mu se p&#345;ipojujete:</value></data>
+  <data name="App_Debug_StartTitle" xml:space="preserve"><value>Spustit lad&#283;n&#237;</value></data>
+  <data name="App_Debug_NoStartupProject" xml:space="preserve"><value>Nebyl nastaven spou&#353;t&#283;c&#237; projekt. Nastavte jej p&#345;ed lad&#283;n&#237;m.</value></data>
+  <data name="App_Debug_BuildFailed" xml:space="preserve"><value>Sestaven&#237; selhalo. Opravte chyby p&#345;ed lad&#283;n&#237;m.</value></data>
+  <data name="App_Debug_ExeNotFound" xml:space="preserve"><value>Nelze naj&#237;t program k lad&#283;n&#237;:{0}{1}{0}{0}Projekt byl sestaven, ale v&#253;stupn&#237; spustiteln&#253; soubor nebyl nalezen.</value></data>
+
+  <!-- TBL import -->
+  <data name="App_TblImport_Failed" xml:space="preserve"><value>Nepoda&#345;ilo se na&#269;&#237;st soubor TBL:{0}{1}</value></data>
+
+  <!-- Extensions -->
+  <data name="App_Extensions_SelectOutputDir" xml:space="preserve"><value>Vybrat v&#253;stupn&#237; adres&#225;&#345; roz&#353;&#237;&#345;en&#237;</value></data>
+
+  <!-- Solution Convert dialogs -->
+  <data name="App_Convert_Title" xml:space="preserve"><value>Konvertovat form&#225;t &#345;e&#353;en&#237;</value></data>
+  <data name="App_Convert_NoSolution" xml:space="preserve"><value>Momentáln&#283; nen&#237; otev&#345;eno &#382;&#225;dn&#233; &#345;e&#353;en&#237;.</value></data>
+  <data name="App_Convert_NotSln" xml:space="preserve"><value>Aktu&#225;ln&#237; &#345;e&#353;en&#237; nen&#237; soubor .sln.</value></data>
+  <data name="App_Convert_NotSlnx" xml:space="preserve"><value>Aktu&#225;ln&#237; &#345;e&#353;en&#237; nen&#237; soubor .slnx.</value></data>
+  <data name="App_Convert_AlreadyWhsln" xml:space="preserve"><value>Aktu&#225;ln&#237; &#345;e&#353;en&#237; je ji&#382; soubor .whsln.</value></data>
+  <data name="App_Convert_Confirm" xml:space="preserve"><value>Konvertovat &#187;{0}&#171; &#8594; &#187;{1}&#171;?{2}{2}P&#367;vodn&#237; soubor bude zachov&#225;n.</value></data>
+  <data name="App_Convert_NoLoader" xml:space="preserve"><value>Pro form&#225;t {0} nen&#237; registrov&#225;n &#382;&#225;dn&#253; loader. Ujist&#283;te se, &#382;e je aktivn&#237; plugin VS Solution Loader.</value></data>
+  <data name="App_Convert_NoLoaderSimple" xml:space="preserve"><value>Pro form&#225;t {0} nen&#237; registrov&#225;n &#382;&#225;dn&#253; loader.</value></data>
+  <data name="App_Convert_Success" xml:space="preserve"><value>Konvertov&#225;no na &#187;{0}&#171;.{1}{1}Otev&#345;&#237;t konvertovan&#233; &#345;e&#353;en&#237; nyn&#237;?</value></data>
+  <data name="App_Convert_Failed" xml:space="preserve"><value>Konverze selhala:{0}{1}</value></data>
+
+  <!-- Compare dialog -->
+  <data name="App_Compare_SelectFile" xml:space="preserve"><value>Vybrat soubor k porovn&#225;n&#237;</value></data>
+
+  <!-- Document/Editor labels -->
+  <data name="App_Editor_HexEditor" xml:space="preserve"><value>Hex editor</value></data>
+  <data name="App_Editor_Encodings" xml:space="preserve"><value>K&#243;dov&#225;n&#237;</value></data>
+  <data name="App_Editor_ProjectTables" xml:space="preserve"><value>Tabulky projektu</value></data>
+  <data name="App_Editor_FileNotFound" xml:space="preserve"><value>Soubor nenalezen:{0}{1}</value></data>
+  <data name="App_Editor_NewDocumentText" xml:space="preserve"><value>Toto je dokument: {0}{1}{1}Upravte tento text...</value></data>
+  <data name="App_Editor_RefreshPrefix" xml:space="preserve"><value>Obnovov&#225;n&#237;: </value></data>
+
+  <!-- LSP / navigation messages -->
+  <data name="App_LSP_TryOpenFile" xml:space="preserve"><value>Zkuste p&#345;&#237;mo otev&#345;&#237;t deklaruj&#237;c&#237; soubor nebo se ujist&#283;te, &#382;e b&#283;&#382;&#237; server LSP.</value></data>
+  <data name="App_LSP_LoadAssembly" xml:space="preserve"><value>Na&#269;t&#283;te sestavení v prohl&#237;&#382;e&#269;i sestaven&#237; pro p&#345;&#237;stup k dekompilovan&#233;mu zdroji.</value></data>
+
+  <!-- Breadcrumb "not found" labels -->
+  <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve"><value>Projekt nenalezen.</value></data>
+  <data name="App_Breadcrumb_SolutionNotLoaded" xml:space="preserve"><value>&#344;e&#353;en&#237; nena&#269;teno.</value></data>
+
+  <!-- Debugger service messages -->
+  <data name="App_Debugger_AdapterNotFound" xml:space="preserve"><value>Ladic&#237; adapt&#233;r (netcoredbg) nebyl nalezen.{0}Nainstalujte jej nebo nastavte cestu v Mo&#382;nosti &#8594; Ladicí program.</value></data>
+  <data name="App_Debugger_AdapterMissing" xml:space="preserve"><value>Nainstalujte vhodn&#253; plugin adapt&#233;ru nebo konfigurujte vlastn&#237; adapt&#233;r.</value></data>
+  <data name="App_Debugger_Title" xml:space="preserve"><value>Ladicí program</value></data>
+
+  <!-- Toolbar tooltips -->
+  <data name="App_Toolbar_New" xml:space="preserve"><value>Nov&#253;&#8230;</value></data>
+  <data name="App_Toolbar_Open" xml:space="preserve"><value>Otev&#345;&#237;t&#8230;</value></data>
+  <data name="App_Toolbar_Save" xml:space="preserve"><value>Ulo&#382;it (Ctrl+S)</value></data>
+  <data name="App_Toolbar_SaveAll" xml:space="preserve"><value>Ulo&#382;it v&#353;e (Ctrl+Shift+S)</value></data>
+  <data name="App_Toolbar_Cut" xml:space="preserve"><value>Vyjmout (Ctrl+X)</value></data>
+  <data name="App_Toolbar_Copy" xml:space="preserve"><value>Kop&#237;rovat (Ctrl+C)</value></data>
+  <data name="App_Toolbar_Paste" xml:space="preserve"><value>Vlo&#382;it (Ctrl+V)</value></data>
+  <data name="App_Toolbar_Find" xml:space="preserve"><value>Naj&#237;t&#8230; (Ctrl+F)</value></data>
+  <data name="App_Toolbar_FindNext" xml:space="preserve"><value>Dal&#353;&#237; (F3)</value></data>
+  <data name="App_Toolbar_FindPrevious" xml:space="preserve"><value>P&#345;edchoz&#237; (Shift+F3)</value></data>
+  <data name="App_Toolbar_SolutionExplorer" xml:space="preserve"><value>Pr&#367;zkumn&#237;k &#345;e&#353;en&#237; (Ctrl+Alt+L)</value></data>
+  <data name="App_Toolbar_ParsedFields" xml:space="preserve"><value>Parsovan&#225; pole</value></data>
+  <data name="App_Toolbar_Properties" xml:space="preserve"><value>Vlastnosti (F4)</value></data>
+  <data name="App_Toolbar_Output" xml:space="preserve"><value>V&#253;stup</value></data>
+  <data name="App_Toolbar_CharacterTable" xml:space="preserve"><value>Tabulka znak&#367;</value></data>
+  <data name="App_Toolbar_ActiveCharTable" xml:space="preserve"><value>Aktivn&#237; tabulka znak&#367;</value></data>
+  <data name="App_Toolbar_BuildConfig" xml:space="preserve"><value>Konfigurace sestaven&#237;</value></data>
+  <data name="App_Toolbar_TargetPlatform" xml:space="preserve"><value>C&#237;lov&#225; platforma</value></data>
+  <data name="App_Toolbar_StartupProject" xml:space="preserve"><value>Spou&#353;t&#283;c&#237; projekt &#8212; spu&#353;t&#283;n p&#345;es &#9654; Spustit (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_StartNoDebug" xml:space="preserve"><value>Spustit bez lad&#283;n&#237; (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_BuildSolution" xml:space="preserve"><value>Sestavit &#345;e&#353;en&#237; (Ctrl+Shift+B)</value></data>
+  <data name="App_Toolbar_RebuildSolution" xml:space="preserve"><value>Znovu sestavit &#345;e&#353;en&#237;</value></data>
+  <data name="App_Toolbar_CleanSolution" xml:space="preserve"><value>Vy&#269;istit &#345;e&#353;en&#237;</value></data>
+  <data name="App_Toolbar_CancelBuild" xml:space="preserve"><value>Zru&#353;it sestaven&#237;</value></data>
+  <data name="App_Toolbar_Continue" xml:space="preserve"><value>Pokra&#269;ovat (F5)</value></data>
+  <data name="App_Toolbar_Pause" xml:space="preserve"><value>Pozastavit</value></data>
+  <data name="App_Toolbar_StopDebugging" xml:space="preserve"><value>Zastavit lad&#283;n&#237; (Shift+F5)</value></data>
+  <data name="App_Toolbar_StepOver" xml:space="preserve"><value>Krok p&#345;es (F10)</value></data>
+  <data name="App_Toolbar_StepInto" xml:space="preserve"><value>Krok dovnit&#345; (F11)</value></data>
+  <data name="App_Toolbar_StepOut" xml:space="preserve"><value>Krok ven (Shift+F11)</value></data>
+  <data name="App_Toolbar_Dismiss" xml:space="preserve"><value>Zav&#345;&#237;t</value></data>
+  <data name="App_Toolbar_CancelOperation" xml:space="preserve"><value>Zru&#353;it operaci</value></data>
+  <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>Kliknut&#237;m zm&#283;n&#237;te v&#283;tev</value></data>
+  <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>Nezaregistrovan&#233; zm&#283;ny</value></data>
+  <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>K dispozici aktualizace plugin&#367; &#8212; kliknut&#237;m otev&#345;ete Marketplace</value></data>
+
+  <!-- Shell / project / misc -->
+  <data name="App_Error" xml:space="preserve"><value>Chyba</value></data>
+  <data name="App_SaveAs" xml:space="preserve"><value>Ulo&#382;it jako</value></data>
+  <data name="App_AddExistingItem" xml:space="preserve"><value>P&#345;idat existuj&#237;c&#237; prvek</value></data>
+  <data name="App_PanelOptions" xml:space="preserve"><value>Mo&#382;nosti</value></data>
+  <data name="App_PanelFormatCatalog" xml:space="preserve"><value>Katalog form&#225;t&#367;</value></data>
+  <data name="App_SelectEntropyFile" xml:space="preserve"><value>Vybrat soubor pro anal&#253;zu entropie</value></data>
+  <data name="App_RemoveFolderMessage" xml:space="preserve"><value>Odebrat slo&#382;ku &#187;{0}&#171; z projektu?{1}Prvky uvnit&#345; z&#367;stanou v ko&#345;enu projektu. Fyzick&#253; adres&#225;&#345; nebude smaz&#225;n.</value></data>
+  <data name="App_RemoveSolutionFolderMessage" xml:space="preserve"><value>Odebrat slo&#382;ku &#345;e&#353;en&#237; &#187;{0}&#171;?{1}Projekty uvnit&#345; z&#367;stanou v ko&#345;enu &#345;e&#353;en&#237;.</value></data>
+  <data name="App_ImportIntoProject" xml:space="preserve"><value>Importovat do projektu</value></data>
+  <data name="App_ImportIntoProjectMessage" xml:space="preserve"><value>Zkop&#237;rovat &#187;{0}&#171; do adres&#225;&#345;e projektu?{1}{2}{1}P&#367;vodn&#237; soubor nebude smaz&#225;n.</value></data>
+  <data name="App_FailedCreateProject" xml:space="preserve"><value>Nepoda&#345;ilo se vytvo&#345;it projekt:{0}{1}</value></data>
+  <data name="App_FailedCreateFile" xml:space="preserve"><value>Nepoda&#345;ilo se vytvo&#345;it soubor:{0}{1}</value></data>
+  <data name="App_FailedLoadLayout" xml:space="preserve"><value>Nepoda&#345;ilo se na&#269;&#237;st rozlo&#382;en&#237;:{0}{1}</value></data>
+  <data name="App_FailedWriteTblx" xml:space="preserve"><value>Nepoda&#345;ilo se zapsat soubor TBLX:{0}{1}</value></data>
+  <data name="App_CompareWithHead" xml:space="preserve"><value>Porovnat s HEAD</value></data>
+  <data name="App_CompareWithHeadNoRepo" xml:space="preserve"><value>Pro tento soubor nebyl nalezen &#382;&#225;dn&#253; git reposit&#225;&#345;.</value></data>
+  <data name="App_CompareWithHeadNoVersion" xml:space="preserve"><value>Nelze z&#237;skat verzi HEAD z gitu.</value></data>
+  <data name="App_UpgradeMessagePattern" xml:space="preserve"><value>N&#225;sleduj&#237;c&#237; soubory pou&#382;&#237;vaj&#237; star&#253; form&#225;t (v{0}), kter&#253; bude upgradov&#225;n na v{1}:{2}{2}  &#8226; {3}{2}{2}Pro ka&#382;d&#253; soubor bude vytvo&#345;ena z&#225;loha (.v{0}.bak).{2}{2}Upgradovat nyn&#237;?</value></data>
+  <data name="App_UpgradeFailedMessage" xml:space="preserve"><value>Upgrade selhal: {0}</value></data>
+  <data name="App_InfoBar_Disable" xml:space="preserve"><value>Deaktivovat</value></data>
+  <data name="App_InfoBar_Restart" xml:space="preserve"><value>Restartovat</value></data>
+  <data name="App_InfoBar_Ignore" xml:space="preserve"><value>Ignorovat</value></data>
+  <data name="App_InfoBar_Reload" xml:space="preserve"><value>Znovu na&#269;&#237;st</value></data>
+  <data name="App_InfoBar_KeepEdits" xml:space="preserve"><value>Zachovat m&#233; &#250;pravy</value></data>
+
+  <!-- ── Options panel strings ─────────────────────────────────────────── -->
+  <data name="App_Options_ClearAll" xml:space="preserve"><value>Vymazat v&#353;e</value></data>
+  <data name="App_Options_ResetToDefaults" xml:space="preserve"><value>Obnovit v&#253;choz&#237;</value></data>
+  <data name="App_Options_ClearHistory" xml:space="preserve"><value>Vymazat historii</value></data>
+  <data name="App_Options_Save" xml:space="preserve"><value>Ulo&#382;it</value></data>
+  <data name="App_Options_Browse" xml:space="preserve"><value>Proch&#225;zet&#8230;</value></data>
+  <data name="App_Options_SavedComparisons" xml:space="preserve"><value>ulo&#382;en&#253;ch porovn&#225;n&#237;</value></data>
+  <data name="App_Options_ShowMinimap" xml:space="preserve"><value>Zobrazit minimapu</value></data>
+  <data name="App_Options_HighlightCharDiff" xml:space="preserve"><value>Zv&#253;raznit rozd&#237;ly na &#250;rovni znak&#367; v zm&#283;n&#283;n&#253;ch &#345;&#225;dc&#237;ch (&#8804; 500 znak&#367;)</value></data>
+  <data name="App_Options_CollapseIdentical" xml:space="preserve"><value>Sbalit shodn&#233; oblasti</value></data>
+  <data name="App_Options_StopAtEntry" xml:space="preserve"><value>Zastavit na vstupn&#237;m bod&#283; programu (Main)</value></data>
+  <data name="App_Options_ShowReturnValues" xml:space="preserve"><value>Zobrazit n&#225;vratov&#233; hodnoty v Lok&#225;ln&#237;ch prom&#283;nn&#253;ch po ka&#382;d&#233;m kroku</value></data>
+  <data name="App_Options_HighlightBreakpoints" xml:space="preserve"><value>Zv&#253;raznit &#345;&#225;dky bod&#367; p&#345;eru&#353;en&#237; v editoru (&#269;erven&#225;/oran&#382;ov&#225;/&#353;ed&#225; barva)</value></data>
+  <data name="App_Options_AutoImportBreakpoints" xml:space="preserve"><value>Automaticky importovat body p&#345;eru&#353;en&#237; VS p&#345;i prvn&#237;m otev&#345;en&#237; &#345;e&#353;en&#237;</value></data>
+  <data name="App_Options_AutoExportBreakpoints" xml:space="preserve"><value>Automaticky exportovat body p&#345;eru&#353;en&#237; do XML VS p&#345;i ukl&#225;d&#225;n&#237;</value></data>
+  <data name="App_Options_DetectExternalChanges" xml:space="preserve"><value>Detekovat zm&#283;ny soubor&#367; mimo IDE</value></data>
+  <data name="App_Options_AutoReload" xml:space="preserve"><value>Automaticky znovu na&#269;&#237;st zm&#283;n&#283;n&#233; soubory bez potvrzen&#237;</value></data>
+  <data name="App_Options_EnableDockAnimations" xml:space="preserve"><value>Povolit animace dok&#367;</value></data>
+  <data name="App_Options_WrapTabs" xml:space="preserve"><value>Rozd&#283;lit karty na v&#237;ce &#345;&#225;dk&#367;</value></data>
+  <data name="App_Options_ScrollTabRows" xml:space="preserve"><value>Posouvat &#345;&#225;dky karet kole&#269;kem my&#353;i</value></data>
+  <data name="App_Options_EnableTabPreview" xml:space="preserve"><value>Povolit n&#225;hled karet p&#345;i naje&#269;ten&#237;</value></data>
+  <data name="App_Options_ShowFilenameFooter" xml:space="preserve"><value>Zobrazit n&#225;zev souboru v z&#225;pat&#237;</value></data>
+  <data name="App_Options_RestoreSolution" xml:space="preserve"><value>Obnovit &#345;e&#353;en&#237;</value></data>
+  <data name="App_Options_RestoreTabs" xml:space="preserve"><value>Obnovit otev&#345;en&#233; karty editoru</value></data>
+  <data name="App_Options_RestoreTheme" xml:space="preserve"><value>Obnovit t&#233;ma</value></data>
+  <data name="App_Options_PromptSaveWorkspace" xml:space="preserve"><value>Zeptat se na ulo&#382;en&#237; pracovn&#237; plochy p&#345;ed zav&#345;en&#237;m</value></data>
+  <data name="App_Options_EnableTabPreviewHover" xml:space="preserve"><value>Povolit n&#225;hled karet p&#345;i naje&#269;ten&#237;</value></data>
+  <data name="App_Options_ShowFileNameBelowPreview" xml:space="preserve"><value>Zobrazit n&#225;zev souboru pod n&#225;hledem</value></data>
+  <data name="App_Options_KbCategory" xml:space="preserve"><value>Kategorie</value></data>
+  <data name="App_Options_KbCommand" xml:space="preserve"><value>P&#345;&#237;kaz</value></data>
+  <data name="App_Options_KbDefault" xml:space="preserve"><value>V&#253;choz&#237;</value></data>
+  <data name="App_Options_KbShortcut" xml:space="preserve"><value>Zkratka</value></data>
+  <data name="App_Options_LspEnabled" xml:space="preserve"><value>Povoleno</value></data>
+  <data name="App_Options_LspLanguageId" xml:space="preserve"><value>ID jazyka</value></data>
+  <data name="App_Options_LspExtensions" xml:space="preserve"><value>P&#345;&#237;pony</value></data>
+  <data name="App_Options_LspExecutable" xml:space="preserve"><value>Spustiteln&#253; soubor</value></data>
+  <data name="App_Options_LspArguments" xml:space="preserve"><value>Argumenty</value></data>
+  <data name="App_Options_LspSource" xml:space="preserve"><value>Zdroj</value></data>
+  <data name="App_Options_AllSettings" xml:space="preserve"><value>V&#353;echna nastaven&#237;</value></data>
+  <data name="App_Options_ResetOverrides" xml:space="preserve"><value>Resetovat p&#345;epsan&#225;</value></data>
+  <data name="App_Options_ResetAllOverrides" xml:space="preserve"><value>Resetovat v&#353;echna p&#345;epsan&#225;</value></data>
+  <data name="App_Options_DockedPanel" xml:space="preserve"><value>Ukotven&#253; panel (v&#253;choz&#237;)</value></data>
+  <data name="App_Options_InlinePopup" xml:space="preserve"><value>Vlo&#382;en&#233; vyskakovac&#237; okno</value></data>
+  <data name="App_Options_CommandsDefault" xml:space="preserve"><value>P&#345;&#237;kazy (v&#253;choz&#237;)</value></data>
+  <data name="App_Options_LspNotActive" xml:space="preserve"><value>LSP neaktivn&#237;</value></data>
+  <data name="App_Options_LspTypeToSearch" xml:space="preserve"><value>Zadejte pro hled&#225;n&#237; symbol&#367; pracovn&#237;ho prostoru</value></data>
+  <data name="App_Options_LspSearching" xml:space="preserve"><value>Hled&#225;n&#237;&#8230;</value></data>
+
+  <data name="App_Lsp_CppNotInstalled" xml:space="preserve"><value>Server LSP C/C++ nen&#237; nainstalov&#225;n</value></data>
+  <data name="App_Lsp_ClangdReady" xml:space="preserve"><value>clangd p&#345;ipraven</value></data>
+  <data name="App_Lsp_ClangdFailed" xml:space="preserve"><value>Sta&#382;en&#237; clangd selhalo</value></data>
+  <!-- Welcome Panel -->
+  <data name="App_Welcome_ChangelogUnavailable" xml:space="preserve"><value>Protokol zm&#283;n nedostupn&#253; &#8212; zkontrolujte p&#345;ipojen&#237;.</value></data>
+  <data name="App_Welcome_VersionDev" xml:space="preserve"><value>V&#253;vojov&#225; verze</value></data>
+  <!-- View Menu Organizer -->
+  <data name="App_ViewMenu_OrganizeBy" xml:space="preserve"><value>Uspo&#345;&#225;dat _podle&#8230;</value></data>
+  <data name="App_ViewMenu_Flat" xml:space="preserve"><value>_Plo&#353;n&#233; (klasick&#233;)</value></data>
+  <data name="App_ViewMenu_Categorized" xml:space="preserve"><value>Podle _kategorie</value></data>
+  <data name="App_ViewMenu_ByDockSide" xml:space="preserve"><value>Podle strany _dokovan&#237;</value></data>
+  <data name="App_ViewMenu_PinToViewMenu" xml:space="preserve"><value>_P&#345;ipnout do nab&#237;dky Zobrazen&#237;</value></data>
+  <data name="App_ViewMenu_UnpinFromViewMenu" xml:space="preserve"><value>_Odepnout z nab&#237;dky Zobrazen&#237;</value></data>
+  <!-- Document InfoBar -->
+  <data name="App_InfoBar_HexEditor" xml:space="preserve"><value>Hex editor</value></data>
+  <!-- Notification Center -->
+  <data name="App_Notifications_Title" xml:space="preserve"><value>Ozn&#225;men&#237;</value></data>
+  <data name="App_Notifications_Empty" xml:space="preserve"><value>&#381;&#225;dn&#225; ozn&#225;men&#237;</value></data>
+  <data name="App_Notifications_ClearAll" xml:space="preserve"><value>Vymazat v&#353;e</value></data>
+  <!-- Source Files Page -->
+  <data name="App_SourceFiles_SelectFolder" xml:space="preserve"><value>Vybrat zdrojovou slo&#382;ku</value></data>
+  <!-- Configuration Properties Page -->
+  <data name="App_ConfigPage_BuildAll" xml:space="preserve"><value>Sestavit v&#353;e</value></data>
+  <data name="App_ConfigPage_DeployAll" xml:space="preserve"><value>Nasadit v&#353;e</value></data>
+  <!-- Startup Projects Page -->
+  <data name="App_StartupProjects_CurrentSelection" xml:space="preserve"><value>Aktu&#225;ln&#237; v&#253;b&#283;r</value></data>
+  <data name="App_StartupProjects_SingleProject" xml:space="preserve"><value>Jeden spou&#353;t&#283;c&#237; projekt:</value></data>
+  <data name="App_StartupProjects_MultipleProjects" xml:space="preserve"><value>V&#237;ce spou&#353;t&#283;c&#237;ch projekt&#367;:</value></data>
+  <data name="App_StartupProjects_LaunchProfiles" xml:space="preserve"><value>Profily spu&#353;t&#283;n&#237;</value></data>
+  <!-- Options Pages -->
+  <data name="App_Options_SelectDebugAdapter" xml:space="preserve"><value>Vybrat spustiteln&#253; soubor ladic&#237;ho adapt&#233;ru</value></data>
+  <data name="App_Options_SelectLspExecutable" xml:space="preserve"><value>Vybrat spustiteln&#253; soubor serveru LSP</value></data>
+  <!-- LSP Status -->
+  <data name="App_Lsp_ErrorTitle" xml:space="preserve"><value>Chyba LSP</value></data>
+
+  <!-- Options combo items — View Menu sort order -->
+  <data name="App_ViewMenu_SortAlphabetical"      xml:space="preserve"><value>Abecedne</value></data>
+  <data name="App_ViewMenu_SortByFrequency"       xml:space="preserve"><value>Podle frekvence</value></data>
+  <data name="App_ViewMenu_SortCustom"            xml:space="preserve"><value>Vlastn&#237;</value></data>
+
+  <!-- Options combo items — Tabs placement -->
+  <data name="App_Tabs_PositionTop"               xml:space="preserve"><value>Naho&#345;e</value></data>
+  <data name="App_Tabs_PositionLeft"              xml:space="preserve"><value>Vlevo</value></data>
+  <data name="App_Tabs_PositionRight"             xml:space="preserve"><value>Vpravo</value></data>
+  <data name="App_Tabs_PositionNone"              xml:space="preserve"><value>&#381;&#225;dn&#233;</value></data>
+
+  <!-- Options combo items — Tabs color mode (group by) -->
+  <data name="App_Tabs_GroupByProject"            xml:space="preserve"><value>Podle projektu</value></data>
+  <data name="App_Tabs_GroupByExtension"          xml:space="preserve"><value>Podle p&#345;&#237;pony souboru</value></data>
+  <data name="App_Tabs_GroupByRegex"              xml:space="preserve"><value>Podle pravidla regex</value></data>
+
+  <!-- Options combo items — Docking shadow/highlight mode -->
+  <data name="App_Docking_ShadowNone"             xml:space="preserve"><value>&#381;&#225;dn&#233;</value></data>
+  <data name="App_Docking_ShadowTopBar"           xml:space="preserve"><value>Horn&#237; li&#353;ta</value></data>
+  <data name="App_Docking_ShadowFullBorder"       xml:space="preserve"><value>Cel&#225; hranice</value></data>
+  <data name="App_Docking_ShadowGlow"             xml:space="preserve"><value>Z&#225;&#345;</value></data>
+
+  <!-- Options combo items — Docking corner radius scope -->
+  <data name="App_Docking_CornerNormal"           xml:space="preserve"><value>Norm&#225;ln&#237; (ostr&#233; rohy)</value></data>
+  <data name="App_Docking_CornerRoundedContent"   xml:space="preserve"><value>Zaoblen&#233; &#8212; pouze oblast obsahu</value></data>
+  <data name="App_Docking_CornerRoundedFull"      xml:space="preserve"><value>Zaoblen&#233; &#8212; cel&#253; r&#225;m panelu</value></data>
+
+  <!-- Options combo items — Comparison view mode -->
+  <data name="App_Comparison_ModeSideBySide"      xml:space="preserve"><value>Vedle sebe</value></data>
+  <data name="App_Comparison_ModeInline"          xml:space="preserve"><value>Vlo&#382;en&#233;</value></data>
+  <data name="App_Comparison_ModeHexText"         xml:space="preserve"><value>HexText</value></data>
+
+  <!-- Options combo items — Code Editor minimap side -->
+  <data name="App_CodeEditor_MinimapRight"        xml:space="preserve"><value>Vpravo</value></data>
+  <data name="App_CodeEditor_MinimapLeft"         xml:space="preserve"><value>Vlevo</value></data>
+
+  <!-- Options combo items — Code Editor minimap vertical size -->
+  <data name="App_CodeEditor_MinimapProportional" xml:space="preserve"><value>Proporcion&#225;ln&#237;</value></data>
+  <data name="App_CodeEditor_MinimapFill"         xml:space="preserve"><value>Vyplnit</value></data>
+  <data name="App_CodeEditor_MinimapFit"          xml:space="preserve"><value>Zarovnat</value></data>
+
+  <!-- GoToOffsetDialog validation messages -->
+  <data name="App_GoTo_EnterOffset" xml:space="preserve"><value>Pros&#237;m zadejte offset.</value></data>
+  <data name="App_GoTo_InvalidHex" xml:space="preserve"><value>Neplatn&#225; hexadecim&#225;ln&#237; hodnota.</value></data>
+  <data name="App_GoTo_InvalidDecimal" xml:space="preserve"><value>Neplatn&#225; des&#237;tkov&#225; hodnota.</value></data>
+  <data name="App_GoTo_OffsetNonNegative" xml:space="preserve"><value>Offset mus&#237; b&#253;t nez&#225;porn&#253;.</value></data>
+
+  <!-- PasteConflictDialog validation messages -->
+  <data name="App_PasteConflict_EnterFileName" xml:space="preserve"><value>Pros&#237;m zadejte n&#225;zev souboru.</value></data>
+  <data name="App_PasteConflict_InvalidChars" xml:space="preserve"><value>N&#225;zev obsahuje neplatn&#233; znaky.</value></data>
+  <data name="APP_QuickActionsSection" xml:space="preserve"><value>RYCHLÉ AKCE</value></data>
+  <data name="APP_NewFileButton" xml:space="preserve"><value>Nový soubor</value></data>
+  <data name="APP_OpenFileButton" xml:space="preserve"><value>Otevřít soubor…</value></data>
+  <data name="APP_OpenProjectButton" xml:space="preserve"><value>Otevřít projekt / řešení…</value></data>
+  <data name="APP_OptionsButton" xml:space="preserve"><value>Možnosti</value></data>
+  <data name="APP_RecentSection" xml:space="preserve"><value>NEDÁVNÉ</value></data>
+  <data name="APP_NoRecentFiles" xml:space="preserve"><value>Žádné nedávné soubory</value></data>
+  <data name="APP_RecentProjectsSection" xml:space="preserve"><value>NEDÁVNÉ PROJEKTY</value></data>
+  <data name="APP_NoRecentProjects" xml:space="preserve"><value>Žádné nedávné projekty</value></data>
+  <data name="APP_ResourcesSection" xml:space="preserve"><value>ZDROJE</value></data>
+  <data name="APP_GitHubLink" xml:space="preserve"><value>Repozitář GitHub ↗</value></data>
+  <data name="APP_WikiLink" xml:space="preserve"><value>Wiki ↗</value></data>
+  <data name="APP_ReportIssueLink" xml:space="preserve"><value>Nahlásit problém ↗</value></data>
+  <data name="APP_WhatsNewSection" xml:space="preserve"><value>CO JE NOVÉHO</value></data>
+  <data name="APP_LoadingChangelog" xml:space="preserve"><value>Načítání changelogu…</value></data>
+  <data name="APP_ChangelogNotAvailable" xml:space="preserve"><value>Changelog není k dispozici.</value></data>
+  <data name="APP_GitHubButton" xml:space="preserve"><value>GitHub</value></data>
+  <data name="APP_WikiButton" xml:space="preserve"><value>Wiki</value></data>
+  <data name="APP_ReportIssueButton" xml:space="preserve"><value>Nahlásit problém</value></data>
+  <data name="APP_FullChangelogButton" xml:space="preserve"><value>Celý changelog</value></data>
+  <data name="APP_Dismiss" xml:space="preserve"><value>Zavřít</value></data>
+  <data name="APP_ViewIn" xml:space="preserve"><value>Zobrazit v:</value></data>
+  <data name="APP_UnsavedChanges" xml:space="preserve"><value>Neuložené změny</value></data>
+  <data name="APP_ReadOnly" xml:space="preserve"><value>Pouze pro čtení</value></data>
+  <data name="APP_ExtensionSystem" xml:space="preserve"><value>SYSTÉM ROZŠÍŘENÍ</value></data>
+  <data name="APP_SlowBadge" xml:space="preserve"><value>POMALÉ</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>Kopírovat</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>Vybrat vše</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>Uložit výstup jako...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>Kopírovat vše</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>Vymazat vše</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>Přepnout zalamování řádků</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>Přepnout automatické posouvání</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>Najít</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>Průzkumník</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>Spustit</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>Sestavit</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>Přestavět</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>Vyčistit</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>Zastavit</value></data>
+  <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>Vestavěné tabulky</value></data>
+  <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>Výchozí (ASCII)</value></data>
+  <data name="APP_InstallEllipsis" xml:space="preserve"><value>Instalovat...</value></data>
+  <data name="APP_DBG_StartDebugging" xml:space="preserve"><value>_Spustit ladění</value></data>
+  <data name="APP_DBG_StartWithoutDebugging" xml:space="preserve"><value>Spustit _bez ladění</value></data>
+  <data name="APP_DBG_StopDebugging" xml:space="preserve"><value>_Zastavit ladění</value></data>
+  <data name="APP_DBG_Restart" xml:space="preserve"><value>_Restartovat</value></data>
+  <data name="APP_DBG_Continue" xml:space="preserve"><value>_Pokračovat</value></data>
+  <data name="APP_DBG_Pause" xml:space="preserve"><value>_Pozastavit</value></data>
+  <data name="APP_DBG_AttachToProcess" xml:space="preserve"><value>_Připojit k procesu…</value></data>
+  <data name="APP_DBG_StepOver" xml:space="preserve"><value>Krok _přes</value></data>
+  <data name="APP_DBG_StepInto" xml:space="preserve"><value>Krok _do</value></data>
+  <data name="APP_DBG_StepOut" xml:space="preserve"><value>Krok _ven</value></data>
+  <data name="APP_DBG_ToggleBreakpoint" xml:space="preserve"><value>Přepnout _zarážku</value></data>
+  <data name="APP_DBG_DeleteAllBreakpoints" xml:space="preserve"><value>_Smazat všechny zarážky</value></data>
+  <data name="APP_DBG_ShowBreakpoints" xml:space="preserve"><value>Zobrazit _zarážky</value></data>
+  <data name="APP_DBG_ShowCallStack" xml:space="preserve"><value>Zobrazit _zásobník volání</value></data>
+  <data name="APP_DBG_ShowLocals" xml:space="preserve"><value>Zobrazit _lokální proměnné</value></data>
+  <data name="APP_DBG_ShowWatch" xml:space="preserve"><value>Zobrazit _sledování</value></data>
+  <data name="APP_VM_CommandPalette" xml:space="preserve"><value>_Paleta příkazů</value></data>
+  <data name="APP_VM_SolutionExplorer" xml:space="preserve"><value>_Průzkumník řešení</value></data>
+  <data name="APP_VM_Properties" xml:space="preserve"><value>_Vlastnosti</value></data>
+  <data name="APP_VM_Output" xml:space="preserve"><value>_Výstup</value></data>
+  <data name="APP_VM_ErrorList" xml:space="preserve"><value>_Seznam chyb</value></data>
+  <data name="APP_VM_Terminal" xml:space="preserve"><value>_Terminál</value></data>
+  <data name="APP_VM_MarkdownOutline" xml:space="preserve"><value>_Osnova Markdown</value></data>
+  <data name="APP_VM_CompareFiles" xml:space="preserve"><value>_Porovnat soubory…</value></data>
+  <data name="APP_VM_FormatBrowser" xml:space="preserve"><value>_Prohlížeč formátů</value></data>
+  <data name="APP_VM_FormatCatalog" xml:space="preserve"><value>_Katalog formátů</value></data>
+  <data name="APP_VM_EntropyAnalysis" xml:space="preserve"><value>_Analýza entropie…</value></data>
+  <data name="APP_VM_TipMarkdown" xml:space="preserve"><value>Zobrazit panel osnovy Markdown (navigátor nadpisů)</value></data>
+  <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Procházet a spravovat vestavěné a uživatelské definice formátů .whfmt</value></data>
+  <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Otevřít záložku Katalog formátů (všechny formáty v tříditelné mřížce)</value></data>
+  <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyzovat entropii a distribuci bajtů aktivního souboru</value></data>
+</root>

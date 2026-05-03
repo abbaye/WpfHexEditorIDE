@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.DataInspector
+    File        : DataInspectorResources.fr-CA.resx
+    Description : French (Canada) localized UI strings for the Data Inspector plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>Datantarkastaja</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>Data-analyysi</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>Datantarkastaja</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>_Datantarkastaja</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>Ei näytettävää dataa</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Yhteensä</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Maks</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Entropia</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>bittiä/tavu</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>tavua</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>Ei valittuja tavuja — valitse tavuja Hex-editorissa.</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>Aktiivinen näkymä</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>Koko tiedosto</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>Valinta</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>Frekvenssi</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>Entropia</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>Ei dataa</value>
+  </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Kategoria:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>Kaikki</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Kokonaisluku</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>Liukuluku</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Päivämäärä/Aika</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Verkko</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Väri</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>Perus</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>Bitit</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>Kaikki formaatit</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>Lisää asetuksia</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Näytä akselin nimikkeet</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Näytä ruudukkoviivat</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Näytä tilastot</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Frekvenssijakauma</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Entropia (liukuva ikkuna)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Lähennä</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Loitonna</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Palauta zoom</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Päivitä kaavio</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Kopioi kaavion kuva</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Asettelu</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Vasemmalla</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Oikealla</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Ylhäällä</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Alhaalla</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Laajuus:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Aktiivinen näkymä</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Valinta</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>Koko tiedosto</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Frekvenssi</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Asettelu:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Kaavion sijainti suhteessa tulkintaluetteloon</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Analysoidaan tiedostoa...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Tulkinnat: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>Ei dataa</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Automaattinen päivitys valintamuutoksella</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Oletustavu­järjestys: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Näytä tavukaavion paneeli</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Kaavion sijainti:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Merkkijonon esikatselun enimmäistavut:</value></data>
+</root>

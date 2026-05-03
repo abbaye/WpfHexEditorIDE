@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.ParsedFields
+    File        : ParsedFieldsResources.uk-UA.resx
+    Description : Ukrainian (Ukraine) UI strings for the Parsed Fields plugin.
+-->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="ParsedFields_Error_InvalidOffset" xml:space="preserve"><value>Недійсний offset. Використовуйте hex (0x1A2B) або десяткове (6699).</value></data>
+  <data name="ParsedFields_Label_AutoMode" xml:space="preserve"><value>Авто</value></data>
+  <data name="ParsedFields_Error_FieldNotEditable" xml:space="preserve"><value>Це поле не можна редагувати.</value></data>
+  <data name="ParsedFields_Error_InvalidValue" xml:space="preserve"><value>Недійсне значення для цього типу поля.</value></data>
+  <data name="ParsedFields_Dialog_ExportError" xml:space="preserve"><value>Помилка експорту</value></data>
+  <data name="ParsedFields_Dialog_ExportComplete" xml:space="preserve"><value>Експорт завершено</value></data>
+  <data name="ParsedFields_Dialog_Copied" xml:space="preserve"><value>Скопійовано</value></data>
+  <data name="ParsedFields_Dialog_FieldNotFound" xml:space="preserve"><value>Поле не знайдено</value></data>
+  <data name="ParsedFields_Dialog_FindSimilar" xml:space="preserve"><value>Знайти схожі</value></data>
+  <data name="ParsedFields_Dialog_FeatureUnavailable" xml:space="preserve"><value>Функція недоступна</value></data>
+  <data name="ParsedFields_Confirm_DeleteField" xml:space="preserve"><value>Видалити це поле?</value></data>
+  <data name="ParsedFields_Confirm_DeleteAll" xml:space="preserve"><value>Видалити всі поля?</value></data>
+  <data name="ParsedFields_DataInspectorNotConnected" xml:space="preserve"><value>Функція інспектора даних ще не підключена до цієї панелі.</value></data>
+  <data name="ParsedFields_PluginName" xml:space="preserve"><value>Проаналізовані поля</value></data>
+  <data name="ParsedFields_JumpToOffset" xml:space="preserve"><value>Перейти до offset</value></data>
+  <data name="ParsedFields_JumpToOffset_Label" xml:space="preserve"><value>Offset (hex 0x… або десяткове) :</value></data>
+  <data name="ParsedFields_JumpToOffset_Placeholder" xml:space="preserve"><value>0x</value></data>
+  <data name="ParsedFields_Dialog_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="ParsedFields_Error_InvalidInput" xml:space="preserve"><value>Недійсне введення</value></data>
+  <data name="PF_RefreshLabel" xml:space="preserve"><value>Оновити значення полів (F5)</value></data>
+  <data name="PF_ValidFieldsBadge" xml:space="preserve"><value>Дійсні поля</value></data>
+  <data name="PF_InvalidFieldsBadge" xml:space="preserve"><value>Поля з помилками перевірки — натисніть для навігації</value></data>
+  <data name="PF_ShowBookmarkedToggle" xml:space="preserve"><value>Показати лише закладки</value></data>
+  <data name="PF_MoreOptionsButton" xml:space="preserve"><value>Більше параметрів</value></data>
+  <data name="PF_SourceDocumentMenu" xml:space="preserve"><value>Вихідний документ...</value></data>
+  <data name="PF_ActionsMenu" xml:space="preserve"><value>Дії з полями...</value></data>
+  <data name="PF_ExportMenu" xml:space="preserve"><value>Експорт...</value></data>
+  <data name="PF_SearchPlaceholder" xml:space="preserve"><value>Пошук полів...</value></data>
+  <data name="PF_ClearSearchButton" xml:space="preserve"><value>Очистити пошук</value></data>
+  <data name="PF_RegexOption" xml:space="preserve"><value>Regex</value></data>
+  <data name="PF_CaseSensitiveOption" xml:space="preserve"><value>З урахуванням регістру</value></data>
+  <data name="PF_InLabel" xml:space="preserve"><value>У:</value></data>
+  <data name="PF_AllFieldsFilter" xml:space="preserve"><value>Усі поля</value></data>
+  <data name="PF_NameOnlyFilter" xml:space="preserve"><value>Лише ім'я</value></data>
+  <data name="PF_ValueOnlyFilter" xml:space="preserve"><value>Лише значення</value></data>
+  <data name="PF_DescriptionFilter" xml:space="preserve"><value>Опис</value></data>
+  <data name="PF_TypeLabel" xml:space="preserve"><value>Тип:</value></data>
+  <data name="PF_AllTypesFilter" xml:space="preserve"><value>Усі типи</value></data>
+  <data name="PF_IntegersFilter" xml:space="preserve"><value>Цілі числа</value></data>
+  <data name="PF_StringsFilter" xml:space="preserve"><value>Рядки</value></data>
+  <data name="PF_BytesFilter" xml:space="preserve"><value>Байти</value></data>
+  <data name="PF_FormatLabel" xml:space="preserve"><value>Формат:</value></data>
+  <data name="PF_SpecificationsHeader" xml:space="preserve"><value>Специфікації</value></data>
+  <data name="PF_WebLinksHeader" xml:space="preserve"><value>Веб-посилання</value></data>
+  <data name="PF_ReferencesButton" xml:space="preserve"><value>Посилання та специфікації формату</value></data>
+  <data name="PF_AiAnalysisHeader" xml:space="preserve"><value>Аналіз ШІ</value></data>
+  <data name="PF_CopyAiPromptButton" xml:space="preserve"><value>Копіювати запит до ШІ</value></data>
+  <data name="PF_AnalysisContextSection" xml:space="preserve"><value>Контекст аналізу</value></data>
+  <data name="PF_VulnerabilitiesSection" xml:space="preserve"><value>Відомі вразливості</value></data>
+  <data name="PF_InspectionsSection" xml:space="preserve"><value>Рекомендовані перевірки</value></data>
+  <data name="PF_CopyChecklistButton" xml:space="preserve"><value>Копіювати контрольний список</value></data>
+  <data name="PF_ForensicContextSection" xml:space="preserve"><value>Криміналістичний контекст</value></data>
+  <data name="PF_KeyInsightsTitle" xml:space="preserve"><value>Ключові висновки</value></data>
+  <data name="PF_CoverageText" xml:space="preserve"><value>0% проаналізовано</value></data>
+  <data name="PF_ValueLabel" xml:space="preserve"><value>Значення: </value></data>
+  <data name="PF_HexTooltip" xml:space="preserve"><value>Шістнадцятковий</value></data>
+  <data name="PF_DecimalTooltip" xml:space="preserve"><value>Десятковий</value></data>
+  <data name="PF_BinaryTooltip" xml:space="preserve"><value>Двійковий</value></data>
+  <data name="PF_EditMenuItem" xml:space="preserve"><value>Редагувати</value></data>
+  <data name="PF_CopyValueMenuItem" xml:space="preserve"><value>Копіювати значення</value></data>
+  <data name="PF_CopyDetailsMenuItem" xml:space="preserve"><value>Копіювати деталі</value></data>
+  <data name="PF_NavigateMenuItem" xml:space="preserve"><value>Перейти до поля</value></data>
+  <data name="PF_BookmarkMenuItem" xml:space="preserve"><value>Закладка</value></data>
+  <data name="PF_SearchMatchTooltip" xml:space="preserve"><value>Збіг із пошуком</value></data>
+  <data name="PF_BookmarkedTooltip" xml:space="preserve"><value>Закладено</value></data>
+  <data name="PF_ExportAsText" xml:space="preserve"><value>Як текст (.txt)</value></data>
+  <data name="PF_ExportAsJson" xml:space="preserve"><value>Як JSON (.json)</value></data>
+  <data name="PF_ExportAsCsv" xml:space="preserve"><value>Як CSV (.csv)</value></data>
+  <data name="PF_ExportAsXml" xml:space="preserve"><value>Як XML (.xml)</value></data>
+  <data name="PF_ExportAsHtml" xml:space="preserve"><value>Як HTML (.html)</value></data>
+  <data name="PF_ExportAsMarkdown" xml:space="preserve"><value>Як Markdown (.md)</value></data>
+  <data name="PF_CopyAsDisplayed" xml:space="preserve"><value>Як відображається</value></data>
+  <data name="PF_CopyAsHex" xml:space="preserve"><value>Як Hex</value></data>
+  <data name="PF_CopyAsDecimal" xml:space="preserve"><value>Як десяткове</value></data>
+  <data name="PF_CopyAsBinary" xml:space="preserve"><value>Як двійкове</value></data>
+  <data name="PF_FindSimilarMenuItem" xml:space="preserve"><value>Знайти схожі значення...</value></data>
+  <data name="PF_ShowInInspectorMenuItem" xml:space="preserve"><value>Показати в інспекторі даних</value></data>
+  <data name="PF_ExportAllMenu" xml:space="preserve"><value>Експортувати всі поля...</value></data>
+  <data name="PF_NoFieldsPlaceholder" xml:space="preserve"><value>Полів ще не проаналізовано.
+Відкрийте файл, щоб побачити його структуру.</value></data>
+  <data name="PF_EntriesLabel" xml:space="preserve"><value>записів</value></data>
+  <data name="PF_SortByNameAsc" xml:space="preserve"><value>Сортування: Ім'я А-Я</value></data>
+  <data name="PF_SortByNameDesc" xml:space="preserve"><value>Сортування: Ім'я Я-А</value></data>
+  <data name="PF_SortByType" xml:space="preserve"><value>Сортування: Тип</value></data>
+  <data name="PF_SortBySize" xml:space="preserve"><value>Сортування: Розмір</value></data>
+  <data name="PF_FormatterMixed" xml:space="preserve"><value>Змішаний (Smart)</value></data>
+  <data name="PF_FormatterHex" xml:space="preserve"><value>Шістнадцятковий</value></data>
+  <data name="PF_FormatterDec" xml:space="preserve"><value>Десятковий</value></data>
+  <data name="PF_FormatterString" xml:space="preserve"><value>Рядок</value></data>
+  <data name="PF_FieldCountLabel" xml:space="preserve"><value>полів</value></data>
+  <data name="PF_ExpandAllMenuItem" xml:space="preserve"><value>Розгорнути всі групи</value></data>
+  <data name="PF_CollapseAllMenuItem" xml:space="preserve"><value>Згорнути всі групи</value></data>
+  <data name="PF_ForensicAlertsTitle" xml:space="preserve"><value>Криміналістичні сповіщення</value></data>
+  <data name="PF_GroupValidationWarning" xml:space="preserve"><value>Ця група містить поля з помилками перевірки</value></data>
+  <data name="PF_CopyOffsetMenuItem" xml:space="preserve"><value>Копіювати offset</value></data>
+  <data name="PF_JumpToOffsetMenuItem" xml:space="preserve"><value>Перейти до offset...</value></data>
+  <data name="PF_SortByOffset" xml:space="preserve"><value>Сортування: Offset</value></data>
+  <data name="PF_EditValueMenuItem" xml:space="preserve"><value>Редагувати значення...</value></data>
+  <data name="PF_ToggleBookmarkMenuItem" xml:space="preserve"><value>Перемкнути закладку</value></data>
+  <data name="PF_ExportFieldsTooltip" xml:space="preserve"><value>Експортувати проаналізовані поля у файл або буфер обміну</value></data>
+  <data name="PF_SourceDocTooltip" xml:space="preserve"><value>Вибрати вихідний документ для аналізу</value></data>
+  <data name="PF_FieldActionsTooltip" xml:space="preserve"><value>Дії з полями (редагувати, копіювати, навігація, закладка...)</value></data>
+  <data name="PF_SortFieldsTooltip" xml:space="preserve"><value>Сортувати поля</value></data>
+  <data name="PF_FormatTooltip" xml:space="preserve"><value>Вибрати формат відображення значень</value></data>
+  <data name="PF_CollapseFormatTooltip" xml:space="preserve"><value>Згорнути інформацію про формат</value></data>
+  <data name="PF_CopyAsCSharpBytes" xml:space="preserve"><value>Як байти C#</value></data>
+  <data name="PF_CopyAsPythonBytes" xml:space="preserve"><value>Як байти Python</value></data>
+  <data name="PF_AutoButton" xml:space="preserve"><value>Авто ▾</value></data>
+  <data name="PF_ExportButton" xml:space="preserve"><value>Експорт ▾</value></data>
+  <data name="PF_ActionsButton" xml:space="preserve"><value>Дії ▾</value></data>
+  <data name="PF_ForensicAlerts" xml:space="preserve"><value>&#xE7BA;  Криміналістичні сповіщення</value></data>
+</root>

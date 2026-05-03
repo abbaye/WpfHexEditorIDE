@@ -1,0 +1,1953 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- French (Canada) -->
+  <data name="AppendByteConfirmationString" xml:space="preserve">
+    <value>Ați ajuns la sfârșitul fișierului. Doriți să adăugați un octet? Această operație nu poate fi anulată dacă continuați.</value>
+  </data>
+  <data name="BookmarksString" xml:space="preserve">
+    <value>Marcaje</value>
+  </data>
+  <data name="ByteActionString" xml:space="preserve">
+    <value>Acțiune octet</value>
+  </data>
+  <data name="ByteString" xml:space="preserve">
+    <value>Octet</value>
+  </data>
+  <data name="CancelLongProcessString" xml:space="preserve">
+    <value>Anulare proces lung</value>
+  </data>
+  <data name="CancelLongProcessToolTipString" xml:space="preserve">
+    <value>Clic pentru a anula procesul lung.</value>
+  </data>
+  <data name="CancelString" xml:space="preserve">
+    <value>Anulare</value>
+  </data>
+  <data name="ClearBookMarkString" xml:space="preserve">
+    <value>Ștergere marcaj</value>
+  </data>
+  <data name="ClearString" xml:space="preserve">
+    <value>Ștergere</value>
+  </data>
+  <data name="ClickToGoAtPositionString" xml:space="preserve">
+    <value>Faceți clic pentru a merge la poziție.</value>
+  </data>
+  <data name="CloseString" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="CopyAsASCIIString" xml:space="preserve">
+    <value>Copiere ca ASCII</value>
+  </data>
+  <data name="CopyAsDecimalString" xml:space="preserve">
+    <value>Copiere ca zecimal</value>
+  </data>
+  <data name="CopyAsHexadecimalString" xml:space="preserve">
+    <value>Copiere ca hexadecimal</value>
+  </data>
+  <data name="CopyAsTBLString" xml:space="preserve">
+    <value>Șir TBL (fișier de caractere încărcat)</value>
+  </data>
+  <data name="CopySelectionAsString" xml:space="preserve">
+    <value>Copiere selecție ca...</value>
+  </data>
+  <data name="CountOfString" xml:space="preserve">
+    <value>Nombre de</value>
+  </data>
+  <data name="DefaultTBLString" xml:space="preserve">
+    <value>TBL implicit</value>
+  </data>
+  <data name="DeleteString" xml:space="preserve">
+    <value>Ștergere</value>
+  </data>
+  <data name="DescriptionString" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="EndTagString" xml:space="preserve">
+    <value>&lt;fin&gt;</value>
+  </data>
+  <data name="EnterHexValueMsgString" xml:space="preserve">
+    <value>Introduceți o valoare hexadecimală...</value>
+  </data>
+  <data name="FileDroppingConfirmationString" xml:space="preserve">
+    <value>Voulez-vous fermer le fichier actuel et ouvrir : </value>
+  </data>
+  <data name="FillSelectionAloneString" xml:space="preserve">
+    <value>Umplere selecție cu un octet</value>
+  </data>
+  <data name="FillSelectionString" xml:space="preserve">
+    <value>Umplere selecție cu un octet...</value>
+  </data>
+  <data name="FindAllString" xml:space="preserve">
+    <value>Tout trouver</value>
+  </data>
+  <data name="FindAndReplaceString" xml:space="preserve">
+    <value>Căutare și înlocuire</value>
+  </data>
+  <data name="FindByteString" xml:space="preserve">
+    <value>Octet de căutat</value>
+  </data>
+  <data name="FindFirstString" xml:space="preserve">
+    <value>Trouver le premier</value>
+  </data>
+  <data name="FindLastString" xml:space="preserve">
+    <value>Trouver le dernier</value>
+  </data>
+  <data name="FindNextString" xml:space="preserve">
+    <value>Trouver le suivant</value>
+  </data>
+  <data name="FindSelectionString" xml:space="preserve">
+    <value>Găsire toate aparițiile selecției</value>
+  </data>
+  <data name="FindString" xml:space="preserve">
+    <value>Căutare</value>
+  </data>
+  <data name="FindWhatString" xml:space="preserve">
+    <value>Căutare:</value>
+  </data>
+  <data name="FirstByteString" xml:space="preserve">
+    <value>Premier octet</value>
+  </data>
+  <data name="HexString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="KBTagString" xml:space="preserve">
+    <value>Ko</value>
+  </data>
+  <data name="LengthString" xml:space="preserve">
+    <value>Longueur</value>
+  </data>
+  <data name="LineStatusBarTagString" xml:space="preserve">
+    <value>Ln</value>
+  </data>
+  <data name="LineTagString" xml:space="preserve">
+    <value>&lt;ln&gt;</value>
+  </data>
+  <data name="LongString" xml:space="preserve">
+    <value>Long</value>
+  </data>
+  <data name="MBTagString" xml:space="preserve">
+    <value>Mo</value>
+  </data>
+  <data name="OkString" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PasteExtendByteConfirmationString" xml:space="preserve">
+    <value>L'opération de collage a atteint la fin du fichier. Voulez-vous étendre le fichier pour terminer l'opération ? Cette opération ne peut pas être annulée si vous continuez.</value>
+  </data>
+  <data name="PasteFromClipboardString" xml:space="preserve">
+    <value>Coller depuis le presse-papiers</value>
+  </data>
+  <data name="PasteNotInsertString" xml:space="preserve">
+    <value>Lipire fără inserare</value>
+  </data>
+  <data name="PositionString" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="ReplaceAllString" xml:space="preserve">
+    <value>Tout remplacer</value>
+  </data>
+  <data name="ReplaceByByteString" xml:space="preserve">
+    <value>Înlocuire cu un octet</value>
+  </data>
+  <data name="ReplaceNextString" xml:space="preserve">
+    <value>Înlocuire următorul</value>
+  </data>
+  <data name="ReplaceSelectionString" xml:space="preserve">
+    <value>Înlocuire octet în selecție...</value>
+  </data>
+  <data name="ReplaceString" xml:space="preserve">
+    <value>Înlocuire</value>
+  </data>
+  <data name="ReplaceWithByteString" xml:space="preserve">
+    <value>Înlocuire cu un octet</value>
+  </data>
+  <data name="ReplaceWithString" xml:space="preserve">
+    <value>Înlocuire cu:</value>
+  </data>
+  <data name="ReplaceInSelectionOnlyString" xml:space="preserve">
+    <value>Înlocuire numai în selecție</value>
+  </data>
+  <data name="ShowConfirmationString" xml:space="preserve">
+    <value>Afișare dialog de confirmare</value>
+  </data>
+  <data name="PreviewString" xml:space="preserve">
+    <value>Previzualizare:</value>
+  </data>
+  <data name="ValidationInvalidHexString" xml:space="preserve">
+    <value>Valoare hexadecimală invalidă</value>
+  </data>
+  <data name="ValidationRequiredString" xml:space="preserve">
+    <value>Valeur requise</value>
+  </data>
+  <data name="OccurrencesFoundString" xml:space="preserve">
+    <value>{0} apariții găsite</value>
+  </data>
+  <data name="ReplacementCompleteString" xml:space="preserve">
+    <value>{0} apariții înlocuite</value>
+  </data>
+  <data name="NoOccurrencesFoundString" xml:space="preserve">
+    <value>Nicio apariție găsită</value>
+  </data>
+  <data name="InSelectionString" xml:space="preserve">
+    <value>în selecție</value>
+  </data>
+  <data name="InFileString" xml:space="preserve">
+    <value>dans le fichier</value>
+  </data>
+  <data name="SelectAllString" xml:space="preserve">
+    <value>Selectare totală</value>
+  </data>
+  <data name="SetBookMarkString" xml:space="preserve">
+    <value>Definire semn de carte</value>
+  </data>
+  <data name="TBLString" xml:space="preserve">
+    <value>TBL</value>
+  </data>
+  <data name="ThisStringAreNotHexString" xml:space="preserve">
+    <value>Acest șir nu este hexadecimal</value>
+  </data>
+  <data name="UndoString" xml:space="preserve">
+    <value>Anulare</value>
+  </data>
+  <data name="ValueString" xml:space="preserve">
+    <value>Valeur</value>
+  </data>
+  <data name="WritingErrorExeptionString" xml:space="preserve">
+    <value>A apărut o eroare la scriere.</value>
+  </data>
+  <data name="HighLightSettingString" xml:space="preserve">
+    <value>Evidențiere toate datele găsite</value>
+  </data>
+  <data name="ReplaceTrimSettingString" xml:space="preserve">
+    <value>Trunchiere date la lungimea de căutare la înlocuire</value>
+  </data>
+  <data name="ZoomResetString" xml:space="preserve">
+    <value>Resetare zoom la 100%</value>
+  </data>
+  <data name="ZoomString" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>Imposibil de convertit acest șir în long</value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>Fișierul este blocat. Doriți să îl deschideți în modul doar citire?</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>Octets</value>
+  </data>
+  <data name="SearchCommandCenterString" xml:space="preserve">
+    <value>CENTRE DE COMMANDE DE RECHERCHE</value>
+  </data>
+  <data name="SearchTextModeString" xml:space="preserve">
+    <value>Texte</value>
+  </data>
+  <data name="SearchHexModeString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="SearchRegexModeString" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="SearchWildcardModeString" xml:space="preserve">
+    <value>Caracter generic</value>
+  </data>
+  <data name="SearchPreviousString" xml:space="preserve">
+    <value>Anterior</value>
+  </data>
+  <data name="SearchNextString" xml:space="preserve">
+    <value>Suivant</value>
+  </data>
+  <data name="SearchFindAllString" xml:space="preserve">
+    <value>Tout trouver</value>
+  </data>
+  <data name="SearchMatchesString" xml:space="preserve">
+    <value>correspondances</value>
+  </data>
+  <data name="SearchInString" xml:space="preserve">
+    <value>dans</value>
+  </data>
+  <data name="SearchNoMatchesString" xml:space="preserve">
+    <value>Nicio corespondență găsită</value>
+  </data>
+  <data name="SearchV2BadgeString" xml:space="preserve">
+    <value>99 % PLUS RAPIDE AVEC V2</value>
+  </data>
+  <data name="ClearSearchString" xml:space="preserve">
+    <value>Ștergere</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>Palette de commandes</value>
+  </data>
+  <data name="PerformanceDashboardString" xml:space="preserve">
+    <value>Tableau de bord de performance</value>
+  </data>
+  <data name="ThemeDarkGlassString" xml:space="preserve">
+    <value>Verre sombre</value>
+  </data>
+  <data name="ThemeLightString" xml:space="preserve">
+    <value>Clair</value>
+  </data>
+  <data name="ThemeCyberpunkString" xml:space="preserve">
+    <value>Cyberpunk</value>
+  </data>
+  <data name="ThemeMinimalString" xml:space="preserve">
+    <value>Minimaliste</value>
+  </data>
+  <data name="CopyAsCSharpCodeString" xml:space="preserve">
+    <value>Copiere ca cod C#</value>
+  </data>
+  <data name="CopyAsCCodeString" xml:space="preserve">
+    <value>Copiere ca cod C</value>
+  </data>
+  <data name="CopyAsFormattedViewString" xml:space="preserve">
+    <value>Copiere în vedere formatată</value>
+  </data>
+  <data name="CopyString" xml:space="preserve">
+    <value>Copiere</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Lipire</value>
+  </data>
+  <data name="FillWithByteString" xml:space="preserve">
+    <value>Remplir avec un octet...</value>
+  </data>
+  <data name="ReplaceByteMenuString" xml:space="preserve">
+    <value>Înlocuire octet...</value>
+  </data>
+  <data name="ReverseSelectionString" xml:space="preserve">
+    <value>Inversare selecție</value>
+  </data>
+  <data name="InvertSelectionString" xml:space="preserve">
+    <value>Inverser les octets</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Mesaj de stare</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Taille du fichier</value>
+  </data>
+  <data name="SelectionInfoString" xml:space="preserve">
+    <value>Informații selecție</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Mod editare</value>
+  </data>
+  <data name="BytesPerLineString" xml:space="preserve">
+    <value>Octets par ligne</value>
+  </data>
+  <data name="RefreshTimeString" xml:space="preserve">
+    <value>Timp de reîmprospătare</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Pregătit</value>
+  </data>
+  <data name="NoSelectionString" xml:space="preserve">
+    <value>Nicio selecție</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Mod: Suprascriere</value>
+  </data>
+  <data name="FindAndReplaceDialogTitle" xml:space="preserve">
+    <value>Căutare și înlocuire</value>
+  </data>
+  <data name="FindGroupHeader" xml:space="preserve">
+    <value>Căutare</value>
+  </data>
+  <data name="ReplaceGroupHeader" xml:space="preserve">
+    <value>Înlocuire</value>
+  </data>
+  <data name="ResultsGroupHeader" xml:space="preserve">
+    <value>Rezultate</value>
+  </data>
+  <data name="FindTextLabel" xml:space="preserve">
+    <value>Căutare:</value>
+  </data>
+  <data name="ReplaceTextLabel" xml:space="preserve">
+    <value>Înlocuire cu:</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Anterior</value>
+  </data>
+  <data name="FindNextButton" xml:space="preserve">
+    <value>Suivant</value>
+  </data>
+  <data name="FindAllButton" xml:space="preserve">
+    <value>Tout trouver</value>
+  </data>
+  <data name="ReplaceButton" xml:space="preserve">
+    <value>Înlocuire</value>
+  </data>
+  <data name="ReplaceAllButton" xml:space="preserve">
+    <value>Tout remplacer</value>
+  </data>
+  <data name="CaseSensitiveCheckbox" xml:space="preserve">
+    <value>Respecter la casse</value>
+  </data>
+  <data name="WholeWordCheckbox" xml:space="preserve">
+    <value>Mot entier</value>
+  </data>
+  <data name="UseRegexCheckbox" xml:space="preserve">
+    <value>Utilizare expresii regulate</value>
+  </data>
+  <data name="SearchInSelectionCheckbox" xml:space="preserve">
+    <value>Căutare numai în selecție</value>
+  </data>
+  <data name="HighlightAllCheckbox" xml:space="preserve">
+    <value>Evidențiere toate corespondențele</value>
+  </data>
+  <data name="CloseDialogButton" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="NoResultsFound" xml:space="preserve">
+    <value>Niciun rezultat găsit</value>
+  </data>
+  <data name="MatchesFoundFormat" xml:space="preserve">
+    <value>{0} corespondențe găsite</value>
+  </data>
+  <data name="ReplacedFormat" xml:space="preserve">
+    <value>{0} înlocuite</value>
+  </data>
+  <data name="SearchPanelTitle" xml:space="preserve">
+    <value>Căutare</value>
+  </data>
+  <data name="SearchFindLabel" xml:space="preserve">
+    <value>Căutare:</value>
+  </data>
+  <data name="SearchModePlaceholder" xml:space="preserve">
+    <value>Introduceți textul de căutare...</value>
+  </data>
+  <data name="TextModeLabel" xml:space="preserve">
+    <value>Texte</value>
+  </data>
+  <data name="HexModeLabel" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="RegexModeLabel" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WildcardModeLabel" xml:space="preserve">
+    <value>Caracter generic</value>
+  </data>
+  <data name="MatchCaseLabel" xml:space="preserve">
+    <value>Respecter la casse</value>
+  </data>
+  <data name="WholeWordLabel" xml:space="preserve">
+    <value>Mot entier</value>
+  </data>
+  <data name="SearchOptionsLabel" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="SearchResultsLabel" xml:space="preserve">
+    <value>Rezultate</value>
+  </data>
+  <data name="CurrentMatchLabel" xml:space="preserve">
+    <value>Correspondance actuelle</value>
+  </data>
+  <data name="TotalMatchesLabel" xml:space="preserve">
+    <value>Total de correspondances</value>
+  </data>
+  <data name="QuickSearchTooltip" xml:space="preserve">
+    <value>Căutare rapidă (Ctrl+F)</value>
+  </data>
+  <data name="PreviousMatchTooltip" xml:space="preserve">
+    <value>Corespondența anterioară (Shift+F3)</value>
+  </data>
+  <data name="NextMatchTooltip" xml:space="preserve">
+    <value>Correspondance suivante (F3)</value>
+  </data>
+  <data name="CloseSearchTooltip" xml:space="preserve">
+    <value>Fermer la recherche (Esc)</value>
+  </data>
+  <data name="SearchOptionsTooltip" xml:space="preserve">
+    <value>Options de recherche</value>
+  </data>
+  <data name="StatusSearching" xml:space="preserve">
+    <value>Căutare în curs...</value>
+  </data>
+  <data name="StatusSearchComplete" xml:space="preserve">
+    <value>Căutare finalizată</value>
+  </data>
+  <data name="StatusFoundMatchesFormat" xml:space="preserve">
+    <value>{0} corespondențe găsite în {1} ms</value>
+  </data>
+  <data name="StatusMatchFoundAtFormat" xml:space="preserve">
+    <value>Corespondență găsită la poziția 0x{0:X8}</value>
+  </data>
+  <data name="StatusNoMoreMatches" xml:space="preserve">
+    <value>Nicio altă corespondență găsită</value>
+  </data>
+  <data name="StatusReachedEndOfFile" xml:space="preserve">
+    <value>Fin du fichier atteinte</value>
+  </data>
+  <data name="StatusReachedStartOfFile" xml:space="preserve">
+    <value>Început de fișier atins</value>
+  </data>
+  <data name="StatusReplacing" xml:space="preserve">
+    <value>Înlocuire în curs...</value>
+  </data>
+  <data name="StatusReplaceComplete" xml:space="preserve">
+    <value>Înlocuire finalizată</value>
+  </data>
+  <data name="StatusReplacedFormat" xml:space="preserve">
+    <value>{0} apariții înlocuite</value>
+  </data>
+  <data name="StatusInvalidSearchPattern" xml:space="preserve">
+    <value>Motif de recherche invalide</value>
+  </data>
+  <data name="StatusInvalidRegex" xml:space="preserve">
+    <value>Expresie regulată invalidă</value>
+  </data>
+  <data name="StatusSearchCancelled" xml:space="preserve">
+    <value>Căutare anulată</value>
+  </data>
+  <data name="StatusReplaceCancelled" xml:space="preserve">
+    <value>Înlocuire anulată</value>
+  </data>
+  <data name="StatusCancelling" xml:space="preserve">
+    <value>Anulare...</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Erreur : {0}</value>
+  </data>
+  <data name="StatusFoundMatchesWithSpeedFormat" xml:space="preserve">
+    <value>{0} corespondențe găsite în {1} ms ({2:F2} MB/s)</value>
+  </data>
+  <data name="StatusMatchFoundAtWrappedFormat" xml:space="preserve">
+    <value>Corespondență găsită la poziția 0x{0:X8} (în buclă)</value>
+  </data>
+  <data name="StatusNoPreviousMatches" xml:space="preserve">
+    <value>Nicio corespondență anterioară găsită</value>
+  </data>
+  <data name="StatusMatchOfTotalFormat" xml:space="preserve">
+    <value>Corespondența {0} din {1} la poziția 0x{2:X8}</value>
+  </data>
+  <data name="StatusReplacedAtFormat" xml:space="preserve">
+    <value>Înlocuit la poziția 0x{0:X8} (Total: {1})</value>
+  </data>
+  <data name="StatusReplaceError" xml:space="preserve">
+    <value>Erreur de remplacement : {0}</value>
+  </data>
+  <data name="StatusNoMatchesToReplace" xml:space="preserve">
+    <value>Nicio corespondență de înlocuit</value>
+  </data>
+  <data name="StatusInvalidReplacementPattern" xml:space="preserve">
+    <value>Motif de remplacement invalide</value>
+  </data>
+  <data name="StatusReplacedOccurrencesFormat" xml:space="preserve">
+    <value>{0} apariție(ă) înlocuită(e). Total înlocuiri: {1}</value>
+  </data>
+  <data name="StatusReplaceAllError" xml:space="preserve">
+    <value>Erreur de tout remplacer : {0}</value>
+  </data>
+  <data name="StatusNoMoreBookmarksAfter" xml:space="preserve">
+    <value>Niciun alt semn de carte după poziția curentă</value>
+  </data>
+  <data name="StatusNoMoreBookmarksBefore" xml:space="preserve">
+    <value>Niciun alt semn de carte înainte de poziția curentă</value>
+  </data>
+  <data name="BookmarkSetFormat" xml:space="preserve">
+    <value>Semn de carte definit la 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkClearedFormat" xml:space="preserve">
+    <value>Semn de carte șters la 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkNavigatedFormat" xml:space="preserve">
+    <value>Navigare la semnul de carte la 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkAllCleared" xml:space="preserve">
+    <value>Toate semnele de carte șterse</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Copiere selecție</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Decupare selecție</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Inserare octet...</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Ștergere octet</value>
+  </data>
+  <data name="DeleteSelectionString" xml:space="preserve">
+    <value>Ștergere selecție</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Mergi la offset...</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Proprietăți</value>
+  </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Anulare</value>
+  </data>
+  <data name="ProgressMessageFileOpenedSuccessfully" xml:space="preserve">
+    <value>Fișier deschis cu succes</value>
+  </data>
+  <data name="ProgressMessageFileSavedSuccessfully" xml:space="preserve">
+    <value>Fișier salvat cu succes</value>
+  </data>
+  <data name="ProgressMessageFindingMatches" xml:space="preserve">
+    <value>Căutare corespondențe...</value>
+  </data>
+  <data name="ProgressMessageFoundMatchesFormat" xml:space="preserve">
+    <value>{0} corespondențe găsite</value>
+  </data>
+  <data name="ProgressMessageLoadingFileData" xml:space="preserve">
+    <value>Încărcare date fișier...</value>
+  </data>
+  <data name="ProgressMessageOpeningFileStream" xml:space="preserve">
+    <value>Deschidere flux fișier...</value>
+  </data>
+  <data name="ProgressMessagePreparingToSave" xml:space="preserve">
+    <value>Pregătire salvare...</value>
+  </data>
+  <data name="ProgressMessageReplacedFormat" xml:space="preserve">
+    <value>{0} apariții înlocuite</value>
+  </data>
+  <data name="ProgressMessageReplacingFormat" xml:space="preserve">
+    <value>{0} correspondances trouvées. Remplacement...</value>
+  </data>
+  <data name="ProgressMessageSearchingFoundFormat" xml:space="preserve">
+    <value>Căutare... {0} găsite</value>
+  </data>
+  <data name="ProgressMessageStartingSearch" xml:space="preserve">
+    <value>Pornire căutare...</value>
+  </data>
+  <data name="ProgressTitleOpeningFile" xml:space="preserve">
+    <value>Ouverture du fichier</value>
+  </data>
+  <data name="ProgressTitleReplacing" xml:space="preserve">
+    <value>Înlocuire</value>
+  </data>
+  <data name="ProgressTitleSavingFile" xml:space="preserve">
+    <value>Salvare fișier</value>
+  </data>
+  <data name="ProgressTitleSearching" xml:space="preserve">
+    <value>Căutare</value>
+  </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>Umplere selecție cu o valoare de octet specifică</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>Înlocuire toate aparițiile unui octet cu altul</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>Inversare ordine octeți în selecție (conversie endianness)</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>Inverser tous les bits de chaque octet (XOR avec 0xFF)</value>
+  </data>
+
+  <!-- TBL Editor Localizations -->
+  <data name="TblEditor_Title" xml:space="preserve">
+    <value>Editor tabel caractere TBL</value>
+    <comment>TBL Editor - Title</comment>
+  </data>
+  <data name="TblEditor_NoTblLoaded" xml:space="preserve">
+    <value>Niciun fișier TBL încărcat. Vă rugăm să încărcați mai întâi un fișier TBL.</value>
+    <comment>TBL Editor - NoTblLoaded</comment>
+  </data>
+  <data name="TblEditor_UnsavedChanges" xml:space="preserve">
+    <value>Aveți modificări nesalvate. Doriți să salvați înainte de a închide?</value>
+    <comment>TBL Editor - UnsavedChanges</comment>
+  </data>
+  <data name="TblEditor_ConfirmDelete" xml:space="preserve">
+    <value>Ștergeți {0} intrări?</value>
+    <comment>TBL Editor - ConfirmDelete</comment>
+  </data>
+  <data name="TblEditor_ErrorSaving" xml:space="preserve">
+    <value>Erreur lors de l'enregistrement du TBL: {0}</value>
+    <comment>TBL Editor - ErrorSaving</comment>
+  </data>
+  <data name="TblEditor_SavedSuccessfully" xml:space="preserve">
+    <value>TBL salvat cu succes</value>
+    <comment>TBL Editor - SavedSuccessfully</comment>
+  </data>
+  <data name="TblEditor_NoConflicts" xml:space="preserve">
+    <value>Niciun conflict detectat!</value>
+    <comment>TBL Editor - NoConflicts</comment>
+  </data>
+  <data name="TblEditor_ConflictsDetected" xml:space="preserve">
+    <value>{0} conflicte detectate</value>
+    <comment>TBL Editor - ConflictsDetected</comment>
+  </data>
+  <data name="TblEditor_PrefixConflict" xml:space="preserve">
+    <value>Intrarea '{0}' este un prefix pentru {1} intrări mai lungi</value>
+    <comment>TBL Editor - PrefixConflict</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry" xml:space="preserve">
+    <value>Intrare duplicată '{0}'</value>
+    <comment>TBL Editor - DuplicateEntry</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveShorter" xml:space="preserve">
+    <value>Ștergeți intrarea mai scurtă sau utilizați valori de octeți diferite</value>
+    <comment>TBL Editor - Suggestion RemoveShorter</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveDuplicate" xml:space="preserve">
+    <value>Ștergeți duplicatul sau fuzionați valorile</value>
+    <comment>TBL Editor - Suggestion RemoveDuplicate</comment>
+  </data>
+  <data name="TblEditor_AddEntry" xml:space="preserve">
+    <value>Adăugare intrare</value>
+    <comment>TBL Editor - AddEntry</comment>
+  </data>
+  <data name="TblEditor_DeleteEntry" xml:space="preserve">
+    <value>Ștergere intrare</value>
+    <comment>TBL Editor - DeleteEntry</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry_Button" xml:space="preserve">
+    <value>Dupliquer</value>
+    <comment>TBL Editor - DuplicateEntry Button</comment>
+  </data>
+  <data name="TblEditor_Save" xml:space="preserve">
+    <value>Salvare</value>
+    <comment>TBL Editor - Save</comment>
+  </data>
+  <data name="TblEditor_SaveAs" xml:space="preserve">
+    <value>Salvare ca</value>
+    <comment>TBL Editor - SaveAs</comment>
+  </data>
+  <data name="TblEditor_Validate" xml:space="preserve">
+    <value>Valider</value>
+    <comment>TBL Editor - Validate</comment>
+  </data>
+  <data name="TblEditor_Undo" xml:space="preserve">
+    <value>Annuler ({0})</value>
+    <comment>TBL Editor - Undo</comment>
+  </data>
+  <data name="TblEditor_Redo" xml:space="preserve">
+    <value>Refacere ({0})</value>
+    <comment>TBL Editor - Redo</comment>
+  </data>
+  <data name="TblEditor_Search" xml:space="preserve">
+    <value>Căutare după valoare hexadecimală sau caracter</value>
+    <comment>TBL Editor - Search</comment>
+  </data>
+  <data name="TblEditor_FilterByType" xml:space="preserve">
+    <value>Type:</value>
+    <comment>TBL Editor - FilterByType</comment>
+  </data>
+  <data name="TblEditor_ConflictsOnly" xml:space="preserve">
+    <value>⚠ Conflits uniquement</value>
+    <comment>TBL Editor - ConflictsOnly</comment>
+  </data>
+  <data name="TblEditor_ClearFilters" xml:space="preserve">
+    <value>Ștergere</value>
+    <comment>TBL Editor - ClearFilters</comment>
+  </data>
+  <data name="TblEditor_EntriesCount" xml:space="preserve">
+    <value>{0} intrări</value>
+    <comment>TBL Editor - EntriesCount</comment>
+  </data>
+  <data name="TblEditor_HexValue" xml:space="preserve">
+    <value>Valoare hexadecimală</value>
+    <comment>TBL Editor - HexValue</comment>
+  </data>
+  <data name="TblEditor_Character" xml:space="preserve">
+    <value>Caracter(e)</value>
+    <comment>TBL Editor - Character</comment>
+  </data>
+  <data name="TblEditor_Type" xml:space="preserve">
+    <value>Type</value>
+    <comment>TBL Editor - Type</comment>
+  </data>
+  <data name="TblEditor_Bytes" xml:space="preserve">
+    <value>Octets</value>
+    <comment>TBL Editor - Bytes</comment>
+  </data>
+  <data name="TblEditor_Details" xml:space="preserve">
+    <value>Detalii</value>
+    <comment>TBL Editor - Details</comment>
+  </data>
+  <data name="TblEditor_Statistics" xml:space="preserve">
+    <value>Statistiques</value>
+    <comment>TBL Editor - Statistics</comment>
+  </data>
+  <data name="TblEditor_Advanced" xml:space="preserve">
+    <value>Avansat</value>
+    <comment>TBL Editor - Advanced</comment>
+  </data>
+  <data name="TblEditor_Modified" xml:space="preserve">
+    <value>● Modificat</value>
+    <comment>TBL Editor - Modified</comment>
+  </data>
+
+<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+    <value>Afișare numere de linie (temporar)</value>
+  </data>
+<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+    <value>Această funcționalitate nu este disponibilă în V2</value>
+  </data>
+<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+    <value>Afișare tooltip octet</value>
+  </data>
+
+
+
+<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+    <value>Permitere inserare oriunde</value>
+  </data>
+<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+    <value>Autoriser suppression d'octet</value>
+  </data>
+<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+    <value>Autoriser extension du fichier</value>
+  </data>
+<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+    <value>Adăugarea necesită confirmare</value>
+  </data>
+
+<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+    <value>Înlocuire</value>
+  </data>
+
+
+
+
+
+
+
+
+
+<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+    <value>Permitere glisare fișier</value>
+  </data>
+<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+    <value>Confirmare glisare fișier</value>
+  </data>
+<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+    <value>Permitere glisare text</value>
+  </data>
+
+<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+    <value>Selectare automată același octet (dublu-clic)</value>
+  </data>
+<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+    <value>Autoriser navigation par clic sur marqueur</value>
+  </data>
+<data name="HexSettings_Highlight_Color" xml:space="preserve">
+    <value>Couleur de surlignage automatique :</value>
+  </data>
+<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+    <value>Activare căutare paralelă</value>
+  </data>
+<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+    <value>Utilizare căutare cu caractere generice (??)</value>
+  </data>
+<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+    <value>Evidențiere toate rezultatele</value>
+  </data>
+
+<data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+    <value>Autoriser compte d'octets</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+    <value>Deplasare octet la stânga:</value>
+  </data>
+
+
+<data name="HexSettings_Title" xml:space="preserve">
+    <value>SETĂRI EDITOR HEX</value>
+  </data>
+<data name="HexSettings_Display_Title" xml:space="preserve">
+    <value>📺 Options d'affichage</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>Afișare numere de linie (placeholder)</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+    <value>Această funcționalitate nu este disponibilă în V2</value>
+  </data>
+<data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+    <value>Afișare tooltip octet</value>
+  </data>
+<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+    <value>Octets par ligne :</value>
+  </data>
+<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+    <value>Scară zoom:</value>
+  </data>
+<data name="HexSettings_Editing_Title" xml:space="preserve">
+    <value>✏️ Opțiuni editare</value>
+  </data>
+<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+    <value>Mode lecture seule</value>
+  </data>
+<data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+    <value>Permitere inserare oriunde</value>
+  </data>
+<data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+    <value>Permettre la suppression d'octet</value>
+  </data>
+<data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+    <value>Permettre l'extension du fichier</value>
+  </data>
+<data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+    <value>Adăugarea necesită confirmare</value>
+  </data>
+<data name="HexSettings_Editing_EditMode" xml:space="preserve">
+    <value>Mod editare:</value>
+  </data>
+
+<data name="HexSettings_Editing_Insert" xml:space="preserve">
+    <value>Inserare</value>
+  </data>
+<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
+    <value>Mode curseur :</value>
+  </data>
+<data name="HexSettings_Clipboard_Title" xml:space="preserve">
+    <value>📋 Options du presse-papiers</value>
+  </data>
+<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
+    <value>Mod copiere implicit:</value>
+  </data>
+<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+    <value>Șir hexadecimal</value>
+  </data>
+<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+    <value>Tableau d'octets</value>
+  </data>
+<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+    <value>Code C#</value>
+  </data>
+<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+    <value>Code VB</value>
+  </data>
+<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+    <value>Code C</value>
+  </data>
+<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+    <value>Code Java</value>
+  </data>
+<data name="HexSettings_DragDrop_Title" xml:space="preserve">
+    <value>📎 Opțiuni glisare-depunere</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+    <value>Permitere glisare fișier</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+    <value>Confirmare glisare fișier</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+    <value>Permitere glisare text</value>
+  </data>
+<data name="HexSettings_Highlight_Title" xml:space="preserve">
+    <value>🎨 Evidențiere și selecție</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+    <value>Evidențiere automată octetul selectat</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+    <value>Selectare automată același octet (dublu-clic)</value>
+  </data>
+<data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+    <value>Permettre la navigation par clic sur marqueur</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+    <value>Couleur de surbrillance automatique :</value>
+  </data>
+<data name="HexSettings_Search_Title" xml:space="preserve">
+    <value>🔍 Options de recherche</value>
+  </data>
+<data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+    <value>Activare căutare paralelă</value>
+  </data>
+<data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+    <value>Utiliser la recherche par joker (??)</value>
+  </data>
+
+<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+    <value>Limită rezultate căutare:</value>
+  </data>
+<data name="HexSettings_Statistics_Title" xml:space="preserve">
+    <value>📊 Statistiques</value>
+  </data>
+<data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+    <value>Permettre le comptage d'octets</value>
+  </data>
+<data name="HexSettings_Advanced_Title" xml:space="preserve">
+    <value>⚙️ Opțiuni avansate</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+    <value>Deplasare octet la stânga:</value>
+  </data>
+<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+    <value>Salvare stare curentă</value>
+  </data>
+<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+    <value>Încărcare stare salvată</value>
+  </data>
+<data name="HexSettings_ResetButton" xml:space="preserve">
+    <value>🔄 Resetare totală la implicit</value>
+  </data>
+<data name="HexSettings_StatusBar_Title" xml:space="preserve">
+    <value>Bară de stare</value>
+  </data>
+<data name="HexSettings_Colors_Title" xml:space="preserve">
+    <value>Couleurs</value>
+  </data>
+<data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
+    <value>Markere defilare</value>
+    <comment>Hex editor settings - Scroll Markers category header</comment>
+  </data>
+<data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Afișare markere semne de carte</value>
+    <comment>Hex editor settings - Toggle bookmark markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowModifiedMarkers" xml:space="preserve">
+    <value>Afișare markere octeți modificați</value>
+    <comment>Hex editor settings - Toggle modified byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
+    <value>Afișare markere octeți inserați</value>
+    <comment>Hex editor settings - Toggle inserted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
+    <value>Afișare markere octeți șterși</value>
+    <comment>Hex editor settings - Toggle deleted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Afișare markere rezultate căutare</value>
+    <comment>Hex editor settings - Toggle search result markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_Behavior_Title" xml:space="preserve">
+    <value>Comportement</value>
+  </data>
+<data name="HexSettings_Data_Title" xml:space="preserve">
+    <value>Date</value>
+  </data>
+<data name="HexSettings_Visual_Title" xml:space="preserve">
+    <value>Visuel</value>
+  </data>
+<data name="HexSettings_Keyboard_Title" xml:space="preserve">
+    <value>Clavier</value>
+  </data>
+<data name="HexSettings_TBL_Title" xml:space="preserve">
+    <value>Table de caracteres</value>
+  </data>
+<data name="HexSettings_SaveButton" xml:space="preserve"><value>Salvare stare</value></data>
+<data name="HexSettings_LoadButton" xml:space="preserve"><value>Încărcare stare</value></data>
+  <data name="HexSettings_BarChart_Title" xml:space="preserve">
+    <value>📈 Bar Chart</value>
+    <comment>Hex editor settings - Bar Chart category header</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelVisibility" xml:space="preserve">
+    <value>Panel Visibility</value>
+    <comment>Bar Chart - Show/hide the bar chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_BarColor" xml:space="preserve">
+    <value>Bar Color</value>
+    <comment>Bar Chart - Color of the frequency bars</comment>
+  </data>
+  <data name="HexSettings_BarChart_BackgroundColor" xml:space="preserve">
+    <value>Background Color</value>
+    <comment>Bar Chart - Background color of the chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_TextColor" xml:space="preserve">
+    <value>Text Color</value>
+    <comment>Bar Chart - Color for labels and statistics text</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelHeight" xml:space="preserve">
+    <value>Panel Height</value>
+    <comment>Bar Chart - Height of the chart panel in pixels</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowAxisLabels" xml:space="preserve">
+    <value>Show Axis Labels</value>
+    <comment>Bar Chart - Display byte value labels (00-FF)</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowGridLines" xml:space="preserve">
+    <value>Show Grid Lines</value>
+    <comment>Bar Chart - Display horizontal reference grid lines</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowStatistics" xml:space="preserve">
+    <value>Afișare statistici</value>
+    <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
+  </data>
+
+  <!-- ByteValueTooltip labels -->
+  <data name="ByteTooltip_NoData" xml:space="preserve"><value>Nicio dată</value></data>
+  <data name="ByteTooltip_Signed" xml:space="preserve"><value>Cu semn</value></data>
+  <data name="ByteTooltip_Binary" xml:space="preserve"><value>Binar</value></data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve"><value>(neimprimabil)</value></data>
+  <data name="ByteTooltip_Octal" xml:space="preserve"><value>Octal</value></data>
+
+  <!-- HexEditor status messages -->
+  <data name="StatusText_OperationCancelled" xml:space="preserve"><value>Operație anulată</value></data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve"><value>Fișierul există deja</value></data>
+  <data name="StatusText_Ready" xml:space="preserve"><value>Pregătit</value></data>
+  <data name="StatusText_FileSaved" xml:space="preserve"><value>Fișier salvat</value></data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve"><value>Marcatorii de căutare au fost șterși.</value></data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve"><value>Toate modificările au fost șterse</value></data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve"><value>TBL închis, utilizare ASCII</value></data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve"><value>Nicio selecție de inversat</value></data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve"><value>Selecția este goală</value></data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve"><value>Nicio selecție de inversat bit cu bit</value></data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve"><value>Nicio selecție de căutat</value></data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve"><value>Nu s-au găsit rezultate.</value></data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve"><value>Dimensiune: -</value></data>
+  <data name="StatusBar_NoSelection" xml:space="preserve"><value>Nicio selecție</value></data>
+  <data name="StatusBar_PositionZero" xml:space="preserve"><value>Poziție: 0</value></data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve"><value>Mod: Suprascriere</value></data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve"><value>Octeți/Linie: 16</value></data>
+
+  <!-- Search Module -->
+  <data name="Search_NoMatches" xml:space="preserve">
+    <value>Niciun rezultat</value>
+  </data>
+  <data name="Search_Error_Title" xml:space="preserve">
+    <value>Eroare de căutare</value>
+  </data>
+  <data name="Search_Error_Label" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="Search_Error_NoTBLLoaded" xml:space="preserve">
+    <value>Niciun TBL încărcat. Nu se poate căuta text TBL.</value>
+  </data>
+  <data name="Search_Error_TBLRequired" xml:space="preserve">
+    <value>TBL necesar</value>
+  </data>
+  <data name="Search_Error_NoTBLForReplacement" xml:space="preserve">
+    <value>Niciun TBL încărcat. Nu se pot codifica octeții de înlocuire în modul TBL TEXT.</value>
+  </data>
+  <data name="Search_Replace_Title" xml:space="preserve">
+    <value>Eroare de înlocuire</value>
+  </data>
+  <data name="Search_ReplaceAll_Title" xml:space="preserve">
+    <value>Înlocuire tot</value>
+  </data>
+  <data name="Search_ExportDialog_Filter" xml:space="preserve">
+    <value>Fișiere CSV (*.csv)|*.csv|Fișiere text (*.txt)|*.txt|Fișiere JSON (*.json)|*.json</value>
+  </data>
+  <data name="Search_ExportTBL_Title" xml:space="preserve">
+    <value>Exportare fișier TBL</value>
+  </data>
+  <data name="Search_TBLFileDialog_Filter" xml:space="preserve">
+    <value>Fișiere TBL (*.tbl)|*.tbl|Toate fișierele (*.*)|*.*</value>
+  </data>
+  <data name="Search_ExportTBL_Success" xml:space="preserve">
+    <value>Exportare reușită</value>
+  </data>
+  <data name="Search_ExportTBL_Error" xml:space="preserve">
+    <value>Erreur d'exportation</value>
+  </data>
+  <data name="Search_EncodingApplied_Title" xml:space="preserve">
+    <value>Codificare aplicată</value>
+  </data>
+  <data name="Search_EncodingApplied_Message" xml:space="preserve">
+    <value>Codificare aplicată! Puteți utiliza acum modul TBL TEXT.</value>
+  </data>
+  <data name="Search_LoadTBL_Title" xml:space="preserve">
+    <value>Selectare fișier TBL (Tabel caractere)</value>
+  </data>
+  <data name="Search_TBLLoaded_Title" xml:space="preserve">
+    <value>TBL încărcat</value>
+  </data>
+  <data name="Search_ErrorLoadingTBL_Title" xml:space="preserve">
+    <value>Eroare de încărcare TBL</value>
+  </data>
+  <data name="Search_CloseTBL_Title" xml:space="preserve">
+    <value>Închidere TBL</value>
+  </data>
+  <!-- IPS Patcher -->
+  <data name="IPS_Error_NoFileOpen" xml:space="preserve">
+    <value>Vă rugăm să deschideți mai întâi un fișier ROM înainte de a aplica un patch.</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen_Title" xml:space="preserve">
+    <value>Niciun fișier deschis</value>
+  </data>
+  <data name="IPS_ApplyPatch_Title" xml:space="preserve">
+    <value>Selectare fișier patch IPS</value>
+  </data>
+  <data name="IPS_FileDialog_Filter" xml:space="preserve">
+    <value>Fișiere patch IPS (*.ips)|*.ips|Toate fișierele (*.*)|*.*</value>
+  </data>
+  <data name="IPS_Error_InvalidFile" xml:space="preserve">
+    <value>Fișierul selectat nu este un patch IPS valid.</value>
+  </data>
+  <data name="IPS_Error_InvalidFile_Title" xml:space="preserve">
+    <value>Fișier IPS invalid</value>
+  </data>
+  <data name="IPS_ApplyPatch_Confirm_Title" xml:space="preserve">
+    <value>Aplicare patch IPS</value>
+  </data>
+  <data name="IPS_ApplyPatch_SaveReminder" xml:space="preserve">
+    <value>Nu uitați să salvați fișierul!</value>
+  </data>
+  <data name="IPS_ApplyPatch_Success_Title" xml:space="preserve">
+    <value>Patch aplicat</value>
+  </data>
+  <data name="IPS_ApplyPatch_Error_Title" xml:space="preserve">
+    <value>Patch eșuat</value>
+  </data>
+  <data name="IPS_CreatePatch_NoFileOpen" xml:space="preserve">
+    <value>Vă rugăm să deschideți mai întâi un fișier ROM modificat.</value>
+  </data>
+  <data name="IPS_CreatePatch_SelectOriginal_Title" xml:space="preserve">
+    <value>Selectare fișier ROM original (nemodificat)</value>
+  </data>
+  <data name="IPS_ROMFileDialog_Filter" xml:space="preserve">
+    <value>Fișiere ROM|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|Toate fișierele (*.*)|*.*</value>
+  </data>
+  <data name="IPS_CreatePatch_SaveDialog_Title" xml:space="preserve">
+    <value>Salvare patch IPS ca</value>
+  </data>
+  <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
+    <value>Patch creat</value>
+  </data>
+  <!-- Undo/Redo history popup -->
+  <data name="UndoHistory_Undo" xml:space="preserve">
+    <value>Anulare</value>
+  </data>
+  <data name="UndoHistory_Redo" xml:space="preserve">
+    <value>Refacere</value>
+  </data>
+  <data name="UndoHistory_Action" xml:space="preserve">
+    <value>acțiune</value>
+  </data>
+  <data name="UndoHistory_Actions" xml:space="preserve">
+    <value>acțiuni</value>
+  </data>
+
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>Setări editor hexazecimal</value>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>Salvare stare</value>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>Încărcare stare</value>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>Resetare valori implicite</value>
+  </data>
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>Nicio operație de anulat</value>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>Nicio operație de refăcut</value>
+  </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Căutare relativă...</value>
+  </data>
+  <data name="RelativeSearchString" xml:space="preserve">
+    <value>Căutare relativă - Descoperire codificare</value>
+  </data>
+  <data name="RelativeSearchKnownTextString" xml:space="preserve">
+    <value>Text cunoscut:</value>
+  </data>
+  <data name="RelativeSearchSearchButtonString" xml:space="preserve">
+    <value>Căutare</value>
+  </data>
+  <data name="RelativeSearchUseParallelString" xml:space="preserve">
+    <value>Utilizare căutare paralelă</value>
+  </data>
+  <data name="RelativeSearchMinMatchesString" xml:space="preserve">
+    <value>Corespondențe min.:</value>
+  </data>
+  <data name="RelativeSearchMaxProposalsString" xml:space="preserve">
+    <value>Propuneri max.:</value>
+  </data>
+  <data name="RelativeSearchTblLoadedString" xml:space="preserve">
+    <value>TBL încărcat: {0} intrări (utilizat pentru validare)</value>
+  </data>
+  <data name="RelativeSearchNoTblString" xml:space="preserve">
+    <value>Niciun TBL încărcat (propuneri punctate independent)</value>
+  </data>
+  <data name="RelativeSearchProposalsHeaderString" xml:space="preserve">
+    <value>Propuneri de codificare</value>
+  </data>
+  <data name="RelativeSearchOffsetColumnString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="RelativeSearchScoreColumnString" xml:space="preserve">
+    <value>Scor</value>
+  </data>
+  <data name="RelativeSearchMatchesColumnString" xml:space="preserve">
+    <value>Corespondențe</value>
+  </data>
+  <data name="RelativeSearchSampleColumnString" xml:space="preserve">
+    <value>Texte d'exemple</value>
+  </data>
+  <data name="RelativeSearchPreviewHeaderString" xml:space="preserve">
+    <value>Previzualizare (text decodat)</value>
+  </data>
+  <data name="RelativeSearchMatchPositionsString" xml:space="preserve">
+    <value>Corespondențe la:</value>
+  </data>
+  <data name="RelativeSearchExportTblString" xml:space="preserve">
+    <value>Exportare în TBL</value>
+  </data>
+  <data name="RelativeSearchNavigateString" xml:space="preserve">
+    <value>Navigare la corespondență</value>
+  </data>
+  <data name="RelativeSearchSearchingString" xml:space="preserve">
+    <value>Căutare 256 deplasări de codificare...</value>
+  </data>
+  <data name="RelativeSearchFoundProposalsString" xml:space="preserve">
+    <value>{0} propuneri găsite în {1} ms</value>
+  </data>
+  <data name="RelativeSearchFoundWithValidationString" xml:space="preserve">
+    <value>{0} propuneri găsite în {1} ms (prima corespondență validată de TBL încărcat!)</value>
+  </data>
+  <data name="RelativeSearchSearchingWithTblString" xml:space="preserve">
+    <value>Căutare 256 deplasări (validare față de {0} intrări TBL)...</value>
+  </data>
+  <data name="RelativeSearchCancelledString" xml:space="preserve">
+    <value>Căutare anulată</value>
+  </data>
+  <data name="RelativeSearchNoProposalsString" xml:space="preserve">
+    <value>Nu s-au găsit propuneri de codificare. Încercați un text de căutare diferit.</value>
+  </data>
+  <data name="RelativeSearchNoFileOpenString" xml:space="preserve">
+    <value>Niciun fișier deschis</value>
+  </data>
+  <data name="RelativeSearchKnownTextTooltipString" xml:space="preserve">
+    <value>Introduceți text despre care știți că apare în ROM (ex.: "World", "Start", "Hero")</value>
+  </data>
+  <data name="RelativeSearchExportTooltipString" xml:space="preserve">
+    <value>Salvare propunere de codificare selectată ca fișier TBL</value>
+  </data>
+  <data name="TblConflict_Title" xml:space="preserve">
+    <value>Raport analiză conflicte TBL</value>
+  </data>
+  <data name="TblConflict_TotalConflicts" xml:space="preserve">
+    <value>Total conflicte:</value>
+  </data>
+  <data name="TblConflict_Errors" xml:space="preserve">
+    <value>Erori:</value>
+  </data>
+  <data name="TblConflict_Warnings" xml:space="preserve">
+    <value>Avertizări:</value>
+  </data>
+  <data name="TblConflict_Info" xml:space="preserve">
+    <value>Info:</value>
+  </data>
+  <data name="TblConflict_Description" xml:space="preserve">
+    <value>Description :</value>
+  </data>
+  <data name="TblConflict_Suggestion" xml:space="preserve">
+    <value>Rezoluție sugerată:</value>
+  </data>
+  <data name="TblConflict_ConflictingEntries" xml:space="preserve">
+    <value>Intrări conflictuale:</value>
+  </data>
+  <data name="TblTemplate_Title" xml:space="preserve">
+    <value>Șabloane TBL</value>
+  </data>
+  <data name="TblTemplate_Categories" xml:space="preserve">
+    <value>Categorii</value>
+  </data>
+  <data name="TblTemplate_AvailableTemplates" xml:space="preserve">
+    <value>Șabloane disponibile</value>
+  </data>
+  <data name="TblTemplate_Preview" xml:space="preserve">
+    <value>Previzualizare</value>
+  </data>
+  <data name="TblTemplate_LoadTemplate" xml:space="preserve">
+    <value>Încărcare șablon</value>
+  </data>
+  <data name="TblTemplate_MergeWithCurrent" xml:space="preserve">
+    <value>Fuzionare cu cel curent</value>
+  </data>
+  <data name="TblTemplate_BuiltIn" xml:space="preserve">
+    <value>Încorporat</value>
+  </data>
+  <data name="PatternAnalysis_Title" xml:space="preserve">
+    <value>Analiză modele</value>
+  </data>
+  <data name="PatternAnalysis_Entropy" xml:space="preserve">
+    <value>Entropie</value>
+  </data>
+  <data name="PatternAnalysis_ByteDistribution" xml:space="preserve">
+    <value>Distribuție octeți</value>
+  </data>
+  <data name="PatternAnalysis_DetectedPatterns" xml:space="preserve">
+    <value>Modele detectate</value>
+  </data>
+  <data name="PatternAnalysis_NoPatternsDetected" xml:space="preserve">
+    <value>Niciun model detectat</value>
+  </data>
+  <data name="PatternAnalysis_Anomalies" xml:space="preserve">
+    <value>Anomalii</value>
+  </data>
+  <data name="PatternAnalysis_NoAnomalies" xml:space="preserve">
+    <value>Nicio anomalie detectată</value>
+  </data>
+  <data name="PatternAnalysis_BitsPerByte" xml:space="preserve">
+    <value>biți/octet</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropy" xml:space="preserve">
+    <value>Entropie ridicată detectată</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropyDesc" xml:space="preserve">
+    <value>Datele par a fi comprimate sau criptate</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropy" xml:space="preserve">
+    <value>Entropie foarte scăzută detectată</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropyDesc" xml:space="preserve">
+    <value>Datele conțin mulți octeți repetiți sau similari</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDistribution" xml:space="preserve">
+    <value>Distribuție de octeți deformată</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDesc" xml:space="preserve">
+    <value>O valoare de octet apare mai mult de 20% din timp</value>
+  </data>
+  <data name="PatternAnalysis_NullBytes" xml:space="preserve">
+    <value>Octeți NULL (0x00)</value>
+  </data>
+  <data name="PatternAnalysis_RepeatedSequence" xml:space="preserve">
+    <value>Secvență repetată</value>
+  </data>
+  <data name="PatternAnalysis_AsciiText" xml:space="preserve">
+    <value>Text ASCII detectat</value>
+  </data>
+  <data name="FileStats_Title" xml:space="preserve">
+    <value>Statistici fișier</value>
+  </data>
+  <data name="FileStats_OverallHealth" xml:space="preserve">
+    <value>Sănătate generală</value>
+  </data>
+  <data name="FileStats_HealthyStructure" xml:space="preserve">
+    <value>Structura fișierului este validă și sănătoasă</value>
+  </data>
+  <data name="FileStats_Structure" xml:space="preserve">
+    <value>Structură</value>
+  </data>
+  <data name="FileStats_Valid" xml:space="preserve">
+    <value>Valid</value>
+  </data>
+  <data name="FileStats_Invalid" xml:space="preserve">
+    <value>Invalid</value>
+  </data>
+  <data name="FileStats_Checksums" xml:space="preserve">
+    <value>Sume de control</value>
+  </data>
+  <data name="FileStats_AllPass" xml:space="preserve">
+    <value>Toate reușite</value>
+  </data>
+  <data name="FileStats_SomeFailed" xml:space="preserve">
+    <value>Unele sume de control au eșuat</value>
+  </data>
+  <data name="FileStats_Compression" xml:space="preserve">
+    <value>Compresie</value>
+  </data>
+  <data name="FileStats_Ratio" xml:space="preserve">
+    <value>Raport:</value>
+  </data>
+  <data name="FileStats_SubOptimalCompression" xml:space="preserve">
+    <value>Compresie suboptimală</value>
+  </data>
+  <data name="FileStats_EntropyAnalysis" xml:space="preserve">
+    <value>Analiză entropie</value>
+  </data>
+  <data name="FileStats_Level" xml:space="preserve">
+    <value>Nivel:</value>
+  </data>
+  <data name="FileStats_CompressedOrEncrypted" xml:space="preserve">
+    <value>Datele sunt probabil comprimate sau criptate</value>
+  </data>
+  <data name="FileStats_DetectedIssues" xml:space="preserve">
+    <value>Probleme detectate</value>
+  </data>
+  <data name="FileStats_NoIssues" xml:space="preserve">
+    <value>Nicio problemă detectată</value>
+  </data>
+  <data name="FileStats_FileInformation" xml:space="preserve">
+    <value>Informații fișier</value>
+  </data>
+  <data name="FileStats_Size" xml:space="preserve">
+    <value>Dimensiune:</value>
+  </data>
+  <data name="FileStats_Fields" xml:space="preserve">
+    <value>Câmpuri:</value>
+  </data>
+  <data name="FileStats_Format" xml:space="preserve">
+    <value>Format:</value>
+  </data>
+  <data name="FileStats_Unknown" xml:space="preserve">
+    <value>Necunoscut</value>
+  </data>
+  <data name="ArchiveStructure_Title" xml:space="preserve">
+    <value>Structura arhivei</value>
+  </data>
+  <data name="ArchiveStructure_NoArchive" xml:space="preserve">
+    <value>Nicio arhivă încărcată</value>
+  </data>
+  <data name="ArchiveStructure_Extract" xml:space="preserve">
+    <value>Extragere...</value>
+  </data>
+  <data name="ArchiveStructure_ViewDetails" xml:space="preserve">
+    <value>Afișare detalii</value>
+  </data>
+  <data name="ArchiveStructure_ExpandAll" xml:space="preserve">
+    <value>Expandare tot</value>
+  </data>
+  <data name="ArchiveStructure_CollapseAll" xml:space="preserve">
+    <value>Restrângere tot</value>
+  </data>
+  <data name="ArchiveStructure_Files" xml:space="preserve">
+    <value>fișiere</value>
+  </data>
+  <data name="ArchiveStructure_Folders" xml:space="preserve">
+    <value>dosare</value>
+  </data>
+  <data name="ArchiveStructure_TotalSize" xml:space="preserve">
+    <value>Dimensiune totală:</value>
+  </data>
+  <data name="ArchiveStructure_CompressionRatio" xml:space="preserve">
+    <value>Raport:</value>
+  </data>
+  <data name="ArchiveStructure_ExtractFunctionality" xml:space="preserve">
+    <value>Funcționalitate extragere - de implementat cu biblioteca de arhive</value>
+  </data>
+  <data name="ArchiveStructure_ExtractTitle" xml:space="preserve">
+    <value>Extragere</value>
+  </data>
+  <data name="ArchiveStructure_DetailsTitle" xml:space="preserve">
+    <value>Detalii</value>
+  </data>
+  <data name="ArchiveStructure_DetailName" xml:space="preserve">
+    <value>Nume:</value>
+  </data>
+  <data name="ArchiveStructure_DetailType" xml:space="preserve">
+    <value>Tip:</value>
+  </data>
+  <data name="ArchiveStructure_DetailFolder" xml:space="preserve">
+    <value>Dosar</value>
+  </data>
+  <data name="ArchiveStructure_DetailFile" xml:space="preserve">
+    <value>Fișier</value>
+  </data>
+  <data name="ArchiveStructure_DetailCompressed" xml:space="preserve">
+    <value>Comprimat:</value>
+  </data>
+  <data name="ArchiveStructure_DetailCRC" xml:space="preserve">
+    <value>CRC:</value>
+  </data>
+  <data name="ArchiveStructure_DetailMethod" xml:space="preserve">
+    <value>Metodă:</value>
+  </data>
+  <data name="FileComparison_Title" xml:space="preserve">
+    <value>Comparare fișiere</value>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>Selectare fișiere de comparat</value>
+  </data>
+  <data name="FileComparison_LoadFile1" xml:space="preserve">
+    <value>Încărcare fișier 1...</value>
+  </data>
+  <data name="FileComparison_LoadFile2" xml:space="preserve">
+    <value>Încărcare fișier 2...</value>
+  </data>
+  <data name="FileComparison_File1" xml:space="preserve">
+    <value>Fișier 1</value>
+  </data>
+  <data name="FileComparison_File2" xml:space="preserve">
+    <value>Fișier 2</value>
+  </data>
+  <data name="FileComparison_Matching" xml:space="preserve">
+    <value>Corespondente:</value>
+  </data>
+  <data name="FileComparison_Added" xml:space="preserve">
+    <value>Adăugate:</value>
+  </data>
+  <data name="FileComparison_Modified" xml:space="preserve">
+    <value>Modificate:</value>
+  </data>
+  <data name="FileComparison_Removed" xml:space="preserve">
+    <value>Șterse:</value>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>Selectare fișier 1 de comparat</value>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>Selectare fișier 2 de comparat</value>
+  </data>
+  <data name="FileComparison_AllFiles" xml:space="preserve">
+    <value>Toate fișierele (*.*)|*.*</value>
+  </data>
+  <data name="FileComparison_ErrorLoading" xml:space="preserve">
+    <value>Eroare la încărcarea fișierului: {0}</value>
+  </data>
+  <data name="FileComparison_Error" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>Selectați ambele fișiere de comparat</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>Comparare {0} ↔ {1}</value>
+  </data>
+  <data name="CustomTemplate_Title" xml:space="preserve">
+    <value>Șabloane</value>
+  </data>
+  <data name="CustomTemplate_NewTemplate" xml:space="preserve">
+    <value>Șablon nou</value>
+  </data>
+  <data name="CustomTemplate_DeleteTemplate" xml:space="preserve">
+    <value>Ștergere șablon</value>
+  </data>
+  <data name="CustomTemplate_EditorTitle" xml:space="preserve">
+    <value>Editor șabloane</value>
+  </data>
+  <data name="CustomTemplate_Name" xml:space="preserve">
+    <value>Nume:</value>
+  </data>
+  <data name="CustomTemplate_Description" xml:space="preserve">
+    <value>Description :</value>
+  </data>
+  <data name="CustomTemplate_Extensions" xml:space="preserve">
+    <value>Extensions :</value>
+  </data>
+  <data name="CustomTemplate_ExtensionsTooltip" xml:space="preserve">
+    <value>Separate prin virgulă, ex.: .bin,.dat</value>
+  </data>
+  <data name="CustomTemplate_SaveTemplate" xml:space="preserve">
+    <value>Salvare șablon</value>
+  </data>
+  <data name="CustomTemplate_FormatBlocks" xml:space="preserve">
+    <value>Blocuri format</value>
+  </data>
+  <data name="CustomTemplate_AddBlock" xml:space="preserve">
+    <value>Adăugare bloc</value>
+  </data>
+  <data name="CustomTemplate_RemoveBlock" xml:space="preserve">
+    <value>Ștergere bloc</value>
+  </data>
+  <data name="CustomTemplate_ApplyToFile" xml:space="preserve">
+    <value>Aplicare la fișierul curent</value>
+  </data>
+  <data name="CustomTemplate_ApplyDescription" xml:space="preserve">
+    <value>Aplicați acest șablon pentru a analiza fișierul încărcat în editorul hexazecimal.</value>
+  </data>
+  <data name="CustomTemplate_ApplyButton" xml:space="preserve">
+    <value>Aplicare șablon la fișier</value>
+  </data>
+  <data name="CustomTemplate_ExportImport" xml:space="preserve">
+    <value>Exportare/Importare</value>
+  </data>
+  <data name="CustomTemplate_ExportJSON" xml:space="preserve">
+    <value>Exportare în JSON</value>
+  </data>
+  <data name="CustomTemplate_ImportJSON" xml:space="preserve">
+    <value>Importare din JSON</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateSelected" xml:space="preserve">
+    <value>Niciun șablon selectat pentru salvare.</value>
+  </data>
+  <data name="CustomTemplate_SavedSuccessfully" xml:space="preserve">
+    <value>Șablonul '{0}' a fost salvat cu succes!</value>
+  </data>
+  <data name="CustomTemplate_ErrorSaving" xml:space="preserve">
+    <value>Eroare la salvarea șablonului: {0}</value>
+  </data>
+  <data name="CustomTemplate_SelectOrCreate" xml:space="preserve">
+    <value>Selectați sau creați mai întâi un șablon.</value>
+  </data>
+  <data name="CustomTemplate_AddBlockTitle" xml:space="preserve">
+    <value>Adăugare bloc</value>
+  </data>
+  <data name="CustomTemplate_DeleteConfirm" xml:space="preserve">
+    <value>Ștergeți șablonul '{0}'?</value>
+  </data>
+  <data name="CustomTemplate_ConfirmDelete" xml:space="preserve">
+    <value>Confirmare ștergere</value>
+  </data>
+  <data name="CustomTemplate_ErrorDeleting" xml:space="preserve">
+    <value>Eroare la ștergerea fișierului: {0}</value>
+  </data>
+  <data name="CustomTemplate_DeleteError" xml:space="preserve">
+    <value>Eroare ștergere</value>
+  </data>
+  <data name="CustomTemplate_ApplyingTemplate" xml:space="preserve">
+    <value>Application du modèle '{0}' au fichier actuel.
+
+Cela analysera {1} blocs selon votre définition de modèle.
+
+Remarque : L'intégration complète avec HexEditor nécessite de se connecter au modèle de vue principal.</value>
+  </data>
+  <data name="CustomTemplate_ApplyTitle" xml:space="preserve">
+    <value>Aplicare șablon</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateToApply" xml:space="preserve">
+    <value>Niciun șablon selectat pentru aplicare.</value>
+  </data>
+  <data name="CustomTemplate_ExportTitle" xml:space="preserve">
+    <value>Exportare șablon în JSON</value>
+  </data>
+  <data name="CustomTemplate_JSONFiles" xml:space="preserve">
+    <value>Fișiere JSON (*.json)|*.json</value>
+  </data>
+  <data name="CustomTemplate_ExportedTo" xml:space="preserve">
+    <value>Șablon exportat în:
+{0}</value>
+  </data>
+  <data name="CustomTemplate_ExportSuccess" xml:space="preserve">
+    <value>Exportare reușită</value>
+  </data>
+  <data name="CustomTemplate_ErrorExporting" xml:space="preserve">
+    <value>Eroare la exportarea șablonului: {0}</value>
+  </data>
+  <data name="CustomTemplate_ExportError" xml:space="preserve">
+    <value>Erreur d'exportation</value>
+  </data>
+  <data name="CustomTemplate_ImportTitle" xml:space="preserve">
+    <value>Importare șablon din JSON</value>
+  </data>
+  <data name="CustomTemplate_ImportedSuccessfully" xml:space="preserve">
+    <value>Șablonul '{0}' a fost importat cu succes!</value>
+  </data>
+  <data name="CustomTemplate_ImportSuccess" xml:space="preserve">
+    <value>Importare reușită</value>
+  </data>
+  <data name="CustomTemplate_ErrorImporting" xml:space="preserve">
+    <value>Eroare la importarea șablonului: {0}</value>
+  </data>
+  <data name="CustomTemplate_ImportError" xml:space="preserve">
+    <value>Eroare de importare</value>
+  </data>
+  <data name="CustomTemplate_ColumnName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="CustomTemplate_ColumnOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="CustomTemplate_ColumnLength" xml:space="preserve">
+    <value>Longueur</value>
+  </data>
+  <data name="CustomTemplate_ColumnType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="CustomTemplate_ColumnColor" xml:space="preserve">
+    <value>Couleur</value>
+  </data>
+  <data name="CustomTemplate_ColumnDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="CopyAsAutoString" xml:space="preserve">
+    <value>Copiere (auto)</value>
+  </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>Căutare ciclică</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Codificare:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Hexazecimal</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Zecimal</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>Salt la poziție</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>Position</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 sau zecimal</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Joker (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Trunchiere înlocuire la lungimea căutării</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Suivant</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Anterior</value></data>
+  <data name="HE_SearchDialogTitle" xml:space="preserve">
+    <value>Find / Replace</value>
+  </data>
+  <data name="HE_SearchModeTooltip" xml:space="preserve">
+    <value>Search mode</value>
+  </data>
+  <data name="HE_CaseSensitiveTooltip" xml:space="preserve">
+    <value>Match case (Alt+C)</value>
+  </data>
+  <data name="HE_WildcardTooltip" xml:space="preserve">
+    <value>Use wildcards ?? (Alt+E)</value>
+  </data>
+  <data name="HE_LoopSearch" xml:space="preserve">
+    <value>Loop</value>
+  </data>
+  <data name="HE_FindLabel" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="HE_ReplaceLabel" xml:space="preserve">
+    <value>Replace:</value>
+  </data>
+  <data name="HE_EncodingLabel" xml:space="preserve">
+    <value>Encoding:</value>
+  </data>
+  <data name="HE_MaxLabel" xml:space="preserve">
+    <value>Max:</value>
+  </data>
+  <data name="HE_StopButton" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="HE_PrevButton" xml:space="preserve">
+    <value>Prev.</value>
+  </data>
+  <data name="HE_NextButton" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="HE_FindAllButton" xml:space="preserve">
+    <value>Find All</value>
+  </data>
+  <data name="HE_ReplaceButton" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="HE_ReplaceAllButton" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="HE_ResultsLabel" xml:space="preserve">
+    <value>Results (</value>
+  </data>
+  <data name="HE_ExportButton" xml:space="preserve">
+    <value>Export ▾</value>
+  </data>
+  <data name="HE_OffsetHexColumn" xml:space="preserve">
+    <value>Offset (Hex)</value>
+  </data>
+  <data name="HE_OffsetDecColumn" xml:space="preserve">
+    <value>Offset (Dec)</value>
+  </data>
+  <data name="HE_PreviewColumn" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="HE_LengthColumn" xml:space="preserve">
+    <value>Len.</value>
+  </data>
+  <data name="HE_OccColumn" xml:space="preserve">
+    <value>Occ.</value>
+  </data>
+  <data name="HE_PrintPctColumn" xml:space="preserve">
+    <value>% Print.</value>
+  </data>
+  <data name="HE_ActionsColumn" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="HE_ExportTblButton" xml:space="preserve">
+    <value>Export TBL</value>
+  </data>
+  <data name="HE_ApplyButton" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="HE_SizeLabel" xml:space="preserve">
+    <value>Size: </value>
+  </data>
+  <data name="HE_BytesLabel" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="HE_LoadTblButton" xml:space="preserve">
+    <value>Load TBL...</value>
+  </data>
+  <data name="HE_LoadTblTooltip" xml:space="preserve">
+    <value>Load a TBL file (ROM character table)</value>
+  </data>
+  <data name="HE_TblLabel" xml:space="preserve">
+    <value>TBL: </value>
+  </data>
+  <data name="HE_CloseTblTooltip" xml:space="preserve">
+    <value>Close TBL file</value>
+  </data>
+  <data name="HE_ShowReplaceTooltip" xml:space="preserve">
+    <value>Show / hide replace (Ctrl+H)</value>
+  </data>
+  <data name="HE_SearchPlaceholder" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="HE_PrevResultTooltip" xml:space="preserve">
+    <value>Previous result (Shift+Enter)</value>
+  </data>
+  <data name="HE_NextResultTooltip" xml:space="preserve">
+    <value>Next result (Enter)</value>
+  </data>
+  <data name="HE_AdvancedSearchTooltip" xml:space="preserve">
+    <value>Advanced search (Ctrl+Shift+F)</value>
+  </data>
+  <data name="HE_CloseSearchTooltip" xml:space="preserve">
+    <value>Close (Esc)</value>
+  </data>
+  <data name="HE_ReplacePlaceholder" xml:space="preserve">
+    <value>Replace...</value>
+  </data>
+  <data name="HE_ReplaceOneTooltip" xml:space="preserve">
+    <value>Replace (Alt+R)</value>
+  </data>
+  <data name="HE_ReplaceAllTooltip" xml:space="preserve">
+    <value>Replace All (Alt+A)</value>
+  </data>
+  <data name="HE_HexModeTooltip" xml:space="preserve">
+    <value>Hexadecimal mode (Alt+H)</value>
+  </data>
+  <data name="HE_MoveBarTooltip" xml:space="preserve">
+    <value>Move search bar</value>
+  </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>Comparare fișier cu…</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>Comparare selecție la stânga…</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>Niciun fișier TBL încărcat</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>TEXT</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>JOKER</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TEXT TBL</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIV</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Format fișier detectat</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Scor de încredere detecție</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Încredere detecție: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Format</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Schimbare format detectat</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Căutare toate aparițiile cu suprapunere progres</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>Offset</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>Rezultate</value>
+  </data>
+</root>

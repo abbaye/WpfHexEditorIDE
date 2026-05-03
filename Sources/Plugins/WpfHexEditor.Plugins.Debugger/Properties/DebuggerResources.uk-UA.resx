@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Точки зупинки</value></data>
+  <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Стек викликів</value></data>
+  <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Локальні змінні</value></data>
+  <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Спостереження</value></data>
+  <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Консоль налагодження</value></data>
+  <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>У файлі не знайдено дійсних точок зупинки.</value></data>
+  <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Конфігурація запуску (.whdbg)</value></data>
+  <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Файл не завантажено. Спочатку натисніть «Відкрити».</value></data>
+  <data name="Debugger_ServiceNotAvailable" xml:space="preserve"><value>IDebuggerService недоступний.</value></data>
+  <data name="Debugger_NoConfigLoaded" xml:space="preserve"><value>Конфігурацію не завантажено.</value></data>
+  <data name="Debugger_NoConfigsArray" xml:space="preserve"><value>У файлі .whdbg не знайдено масив 'configurations'.</value></data>
+  <data name="Debugger_NoMatchingConfig" xml:space="preserve"><value>Відповідну конфігурацію не знайдено.</value></data>
+  <data name="Debugger_ImportBreakpoints" xml:space="preserve"><value>Імпортувати точки зупинки з VS XML</value></data>
+  <data name="Debugger_ExportBreakpoints" xml:space="preserve"><value>Експортувати точки зупинки у VS XML</value></data>
+  <data name="Debugger_Menu_Continue" xml:space="preserve"><value>_Продовжити</value></data>
+  <data name="Debugger_Menu_StepOver" xml:space="preserve"><value>_Крок через</value></data>
+  <data name="Debugger_Menu_StepInto" xml:space="preserve"><value>_Крок у</value></data>
+  <data name="DBG_EnableAll" xml:space="preserve"><value>Увімкнути всі</value></data>
+  <data name="DBG_DisableAll" xml:space="preserve"><value>Вимкнути всі</value></data>
+  <data name="DBG_DeleteAll" xml:space="preserve"><value>Видалити всі</value></data>
+  <data name="DBG_EditCondition" xml:space="preserve"><value>Змінити умову…</value></data>
+  <data name="DBG_ImportBreakpoints" xml:space="preserve"><value>Імпортувати з VS XML…</value></data>
+  <data name="DBG_ExportBreakpoints" xml:space="preserve"><value>Експортувати всі у VS XML…</value></data>
+  <data name="DBG_GroupNone" xml:space="preserve"><value>Немає</value></data>
+  <data name="DBG_GroupFile" xml:space="preserve"><value>Файл</value></data>
+  <data name="DBG_GroupType" xml:space="preserve"><value>Тип</value></data>
+  <data name="DBG_GroupEnabled" xml:space="preserve"><value>Увімкнено/Вимкнено</value></data>
+  <data name="DBG_GroupProject" xml:space="preserve"><value>Проєкт</value></data>
+  <data name="DBG_DetailRight" xml:space="preserve"><value>Деталі: Праворуч</value></data>
+  <data name="DBG_DetailBottom" xml:space="preserve"><value>Деталі: Знизу</value></data>
+  <data name="DBG_DetailHidden" xml:space="preserve"><value>Деталі: Приховано</value></data>
+  <data name="DBG_SearchPlaceholder" xml:space="preserve"><value>Пошук точок зупинки...</value></data>
+  <data name="DBG_EnableAllTooltip" xml:space="preserve"><value>Увімкнути всі точки зупинки</value></data>
+  <data name="DBG_DisableAllTooltip" xml:space="preserve"><value>Вимкнути всі точки зупинки</value></data>
+  <data name="DBG_DeleteAllTooltip" xml:space="preserve"><value>Видалити всі точки зупинки</value></data>
+  <data name="DBG_EditConditionTooltip" xml:space="preserve"><value>Змінити умову вибраної точки зупинки</value></data>
+  <data name="DBG_ImportTooltip" xml:space="preserve"><value>Імпортувати точки зупинки з файлу XML Visual Studio</value></data>
+  <data name="DBG_ExportTooltip" xml:space="preserve"><value>Експортувати всі точки зупинки у файл XML Visual Studio</value></data>
+  <data name="DBG_GroupLabel" xml:space="preserve"><value>Група:</value></data>
+  <data name="DBG_LayoutTooltip" xml:space="preserve"><value>Розташування панелі деталей</value></data>
+  <data name="DBG_LocationColumn" xml:space="preserve"><value>Розташування</value></data>
+  <data name="DBG_ConditionColumn" xml:space="preserve"><value>Умова</value></data>
+  <data name="DBG_HitsColumn" xml:space="preserve"><value>Спрацювань</value></data>
+  <data name="DBG_GoToSourceMenu" xml:space="preserve"><value>Перейти до джерела</value></data>
+  <data name="DBG_EditConditionMenu" xml:space="preserve"><value>Змінити умову…</value></data>
+  <data name="DBG_ToggleEnabledMenu" xml:space="preserve"><value>Перемкнути стан</value></data>
+  <data name="DBG_CopyLocationMenu" xml:space="preserve"><value>Копіювати розташування</value></data>
+  <data name="DBG_DeleteMenu" xml:space="preserve"><value>Видалити</value></data>
+  <data name="DBG_EnableGroupMenu" xml:space="preserve"><value>Увімкнути групу</value></data>
+  <data name="DBG_DisableGroupMenu" xml:space="preserve"><value>Вимкнути групу</value></data>
+  <data name="DBG_DeleteGroupMenu" xml:space="preserve"><value>Видалити групу</value></data>
+  <data name="DBG_UnverifiedBadge" xml:space="preserve"><value>Не перевірено</value></data>
+  <data name="DBG_UnverifiedTooltip" xml:space="preserve"><value>Цю точку зупинки не вдалося перевірити в поточному місці.</value></data>
+  <data name="DBG_EnabledField" xml:space="preserve"><value>Увімкнено</value></data>
+  <data name="DBG_TypeField" xml:space="preserve"><value>Тип</value></data>
+  <data name="DBG_VerifiedField" xml:space="preserve"><value>Перевірено</value></data>
+  <data name="DBG_ConditionField" xml:space="preserve"><value>Умова</value></data>
+  <data name="DBG_GoToSourceText" xml:space="preserve"><value>Перейти до джерела</value></data>
+  <data name="DBG_EditText" xml:space="preserve"><value>Редагувати…</value></data>
+  <data name="DBG_DeleteText" xml:space="preserve"><value>Видалити</value></data>
+  <data name="DBG_HitsLabel" xml:space="preserve"><value>Спрацювань: </value></data>
+  <data name="DBG_MoreOptionsTooltip" xml:space="preserve"><value>Більше параметрів</value></data>
+  <data name="DBG_AddWatch" xml:space="preserve"><value>Додати спостереження</value></data>
+  <data name="DBG_ColValue" xml:space="preserve"><value>Значення</value></data>
+  <data name="DBG_ColType" xml:space="preserve"><value>Тип</value></data>
+  <data name="DBG_ColName" xml:space="preserve"><value>Ім'я</value></data>
+  <data name="DBG_ColFile" xml:space="preserve"><value>Файл</value></data>
+</root>

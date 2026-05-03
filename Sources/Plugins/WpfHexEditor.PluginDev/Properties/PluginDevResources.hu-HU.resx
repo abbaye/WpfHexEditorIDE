@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.PluginDev
+    File        : Properties/PluginDevResources.hu-HU.resx
+    Description : PluginDev-specific UI strings — Hungarian (Hungary) satellite.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- NewPluginWizardWindow -->
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>Új bővítményprojekt</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Válassza ki a plugin projekt kimeneti könyvtárát</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>Engedélyek</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>Elkülönítési mód</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>Betöltési prioritás (10–90):</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>Következő &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>Létrehozás és megnyitás</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>Plugin létrehozva</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>Hiba</value>
+  </data>
+
+  <!-- PluginPackagePublisherDialog -->
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>Bővítménycsomag közzététele</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>Csomag aláírása közzététel előtt</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Tallózás…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>Kimeneti mappa megnyitása a fájlkezelőben</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>Csomagolás</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>Bezárás</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>Kimeneti könyvtár kiválasztása</value>
+  </data>
+
+  <!-- PluginDevLogPanel -->
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>Bővítményfejlesztési napló exportálása</value>
+  </data>
+
+  <!-- PluginMarketplacePanel -->
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>Keresés</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>Tallózás</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>Telepítve</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>Összes frissítése</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>Frissítések</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>Bővítmény-piactér</value>
+  </data>
+
+  <!-- PluginDevToolbar -->
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>Bővítmény:</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>Konfig:</value>
+  </data>
+
+  <!-- PanelPluginTemplate -->
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>Kész</value>
+  </data>
+
+  <!-- PluginMarketplacePanel toolbar and column headers -->
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>Frissítés</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>Név</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>Szerző</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>Értékelés</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>Letöltések</value>
+  </data>
+
+</root>

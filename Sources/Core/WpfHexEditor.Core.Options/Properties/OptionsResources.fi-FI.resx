@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="EnvGeneral_AppearanceSection" xml:space="preserve"><value>ULKOASU</value></data>
+  <data name="EnvGeneral_ColorThemeLabel" xml:space="preserve"><value>Väriteema:</value></data>
+  <data name="EnvGeneral_ThemePreviewNote" xml:space="preserve"><value>Esikatselu otetaan käyttöön välittömästi.</value></data>
+  <data name="EnvGeneral_LanguageSection" xml:space="preserve"><value>KIELI</value></data>
+  <data name="EnvGeneral_IdeLanguageLabel" xml:space="preserve"><value>IDE-kieli:</value></data>
+  <data name="EnvGeneral_LanguageRestartNote" xml:space="preserve"><value>Uuden kielen täysi käyttöönotto vaatii uudelleenkäynnistyksen.</value></data>
+  <!-- MARKETPLACE OPTIONS PAGE -->
+  <data name="Mkt_GitHubSection" xml:space="preserve"><value>GITHUB API</value></data>
+  <data name="Mkt_PatDescription" xml:space="preserve"><value>Personal Access Token (PAT) — nostaa GitHub-nopeusrajan 60:stä 5 000 pyyntöön/tunti. Jätä tyhjäksi anonyymille käytölle.</value></data>
+  <data name="Mkt_PatWarning" xml:space="preserve"><value>Tunnus tallennetaan selkotekstinä asetustiedostoon. Älä käytä kirjoitusoikeuksia sisältävää tunnusta.</value></data>
+  <data name="Mkt_AutoUpdateSection" xml:space="preserve"><value>AUTOMAATTISET PÄIVITYKSET</value></data>
+  <data name="Mkt_AutoUpdate" xml:space="preserve"><value>Tarkista liitännäispäivitykset automaattisesti käynnistyksessä</value></data>
+  <data name="Mkt_UpdateIntervalLabel" xml:space="preserve"><value>Päivitystarkistuksen väli (tuntia):</value></data>
+  <data name="Mkt_UpdateIntervalNote" xml:space="preserve"><value>Vähimmäisväli: 1 tunti.</value></data>
+  <!-- OUTPUT OPTIONS PAGE -->
+  <data name="Output_Section" xml:space="preserve"><value>LOKITASON VÄRIT</value></data>
+  <data name="Output_Note" xml:space="preserve"><value>Mukauta kullekin lokitasolle käytetty väri Tuloste-paneelissa. INFO perii aktiivisen teeman edustavärin eikä sitä voi muuttaa.</value></data>
+  <data name="Output_WarnLabel" xml:space="preserve"><value>Varoitus (WARN):</value></data>
+  <data name="Output_ErrorLabel" xml:space="preserve"><value>Virhe (ERROR):</value></data>
+  <data name="Output_DebugLabel" xml:space="preserve"><value>Virheenkorjaus (DEBUG):</value></data>
+  <data name="Output_SuccessLabel" xml:space="preserve"><value>Onnistui (OK):</value></data>
+  <data name="Output_ResetColors" xml:space="preserve"><value>Palauta oletusvärit</value></data>
+  <!-- PLUGIN DEV LOADER OPTIONS PAGE -->
+  <data name="PluginDev_Section" xml:space="preserve"><value>LIITÄNNÄISKEHITTÄJÄN LATAAJA</value></data>
+  <data name="PluginDev_Enable" xml:space="preserve"><value>Ota liitännäiskehittäjän lataaja käyttöön (Tarkkailutila saatavilla Liitännäishallinnassa)</value></data>
+  <data name="PluginDev_DebounceSection" xml:space="preserve"><value>DEBOUNCE</value></data>
+  <data name="PluginDev_DebounceNote" xml:space="preserve"><value>Viive ennen kuuman uudelleenlatauksen käynnistymistä tiedoston muutoksen jälkeen (ms):</value></data>
+  <data name="PluginDev_DebounceDefault" xml:space="preserve"><value>ms  (oletus: 500)</value></data>
+  <data name="PluginDev_WatchedSection" xml:space="preserve"><value>TARKKAILLUT KANSIOT</value></data>
+  <data name="PluginDev_WatchedNote" xml:space="preserve"><value>Lisätarkkailukansiot (puolipisteellä erotettu). Näissä kansioissa olevat liitännäiset ladataan kuumana uudelleen DLL:n muuttuessa.</value></data>
+  <data name="PluginDev_Browse" xml:space="preserve"><value>Selaa…</value></data>
+  <data name="PluginDev_Example" xml:space="preserve"><value>Esimerkki: C:\MyPlugin\bin\Debug\net8.0-windows;D:\AnotherPlugin\bin\Debug\net8.0-windows</value></data>
+  <!-- PLUGIN SYSTEM OPTIONS PAGE -->
+  <data name="Plugin_GeneralSection" xml:space="preserve"><value>YLEINEN</value></data>
+  <data name="Plugin_AutoLoad" xml:space="preserve"><value>Lataa kaikki löydetyt liitännäiset automaattisesti käynnistyksessä</value></data>
+  <data name="Plugin_PluginsDirNote" xml:space="preserve"><value>Lisäliitännäishakemisto (jätä tyhjäksi käyttääksesi %AppData%\WpfHexEditor\Plugins):</value></data>
+  <data name="Plugin_Browse" xml:space="preserve"><value>Selaa…</value></data>
+  <data name="Plugin_WatchdogSection" xml:space="preserve"><value>VALVONTA</value></data>
+  <data name="Plugin_EnableWatchdog" xml:space="preserve"><value>Ota liitännäisvalvonta käyttöön (tarkkailee kutsuaikakatkosia)</value></data>
+  <data name="Plugin_WatchdogTimeoutLabel" xml:space="preserve"><value>Valvonnan aikakatko (sekuntia):</value></data>
+  <data name="Plugin_DiagnosticsSection" xml:space="preserve"><value>DIAGNOSTIIKKA &amp; NÄYTTEENOTTO</value></data>
+  <data name="Plugin_DiagSamplingLabel" xml:space="preserve"><value>Diagnostiikan näytteenottoväli (sekuntia):</value></data>
+  <data name="Plugin_DiagNote" xml:space="preserve"><value>Ohjaa Liitännäismonitori-CPU/Muisti-kaavion päivitystaajuutta.</value></data>
+  <data name="Plugin_SlowDetectionSection" xml:space="preserve"><value>HITAAN LIITÄNNÄISEN TUNNISTUS</value></data>
+  <data name="Plugin_MonitorIntervalLabel" xml:space="preserve"><value>Seurantaväli (sekuntia):</value></data>
+  <data name="Plugin_ResponseTimeLabel" xml:space="preserve"><value>Vasteajan kynnysarvo (ms):</value></data>
+  <data name="Plugin_CpuThresholdLabel" xml:space="preserve"><value>CPU-kynnysarvo (%):</value></data>
+  <data name="Plugin_MemoryAlertSection" xml:space="preserve"><value>MUISTIHÄLYTYSTEN KYNNYSARVOT</value></data>
+  <data name="Plugin_EnableMemoryAlerts" xml:space="preserve"><value>Ota muistinkäyttöhälytykset ja -merkinnät käyttöön</value></data>
+  <data name="Plugin_ShowColorGradation" xml:space="preserve"><value>Näytä väriporrastus monitoreissa (vihreä/keltainen/oranssi/punainen)</value></data>
+  <data name="Plugin_MemWarningLabel" xml:space="preserve"><value>⚠️ Varoituskynnys (keltainen):</value></data>
+  <data name="Plugin_MemHighLabel" xml:space="preserve"><value>🟠 Korkea kynnys (oranssi):</value></data>
+  <data name="Plugin_MemCriticalLabel" xml:space="preserve"><value>🔴 Kriittinen kynnys (punainen):</value></data>
+  <data name="Plugin_MB" xml:space="preserve"><value> Mt</value></data>
+  <data name="Plugin_MemThresholdNote" xml:space="preserve"><value>Huom: Kynnysarvojen tulee olla nousevassa järjestyksessä (Varoitus &lt; Korkea &lt; Kriittinen).</value></data>
+  <data name="Plugin_MemColorSection" xml:space="preserve"><value>MUISTIHÄLYTYSTEN VÄRIT</value></data>
+  <data name="Plugin_MemColorNote" xml:space="preserve"><value>Mukauta merkintävärit kullekin muistikynnystasolla.</value></data>
+  <data name="Plugin_MemNormalColor" xml:space="preserve"><value>🟢 Normaali kynnys:</value></data>
+  <data name="Plugin_MemWarningColor" xml:space="preserve"><value>🟡 Varoituskynnys:</value></data>
+  <data name="Plugin_MemHighColor" xml:space="preserve"><value>🟠 Korkea kynnys:</value></data>
+  <data name="Plugin_MemCriticalColor" xml:space="preserve"><value>🔴 Kriittinen kynnys:</value></data>
+  <data name="Plugin_ResetColors" xml:space="preserve"><value>Palauta oletusvärit</value></data>
+  <!-- SOLUTION EXPLORER OPTIONS PAGE -->
+  <data name="SolExp_NavigationSection" xml:space="preserve"><value>NAVIGOINTI</value></data>
+  <data name="SolExp_TrackActive" xml:space="preserve"><value>Korosta aktiivinen asiakirja puussa automaattisesti</value></data>
+  <data name="SolExp_PersistCollapse" xml:space="preserve"><value>Muista laajennettu/tiivistetty tila istuntojen välillä</value></data>
+  <data name="SolExp_NotificationsSection" xml:space="preserve"><value>ILMOITUKSET</value></data>
+  <data name="SolExp_ShowNotifications" xml:space="preserve"><value>Näytä tilannekohtaiset ilmoitukset (ulkoiset muutokset, liittämisristiriidat…)</value></data>
+  <data name="SolExp_DefaultsSection" xml:space="preserve"><value>OLETUKSET RATKAISUA AVATTAESSA</value></data>
+  <data name="SolExp_DefaultSortLabel" xml:space="preserve"><value>Oletuslajittelu:</value></data>
+  <data name="SolExp_SortNone" xml:space="preserve"><value>Ei mitään</value></data>
+  <data name="SolExp_SortName" xml:space="preserve"><value>Nimi</value></data>
+  <data name="SolExp_SortType" xml:space="preserve"><value>Tyyppi</value></data>
+  <data name="SolExp_SortDateModified" xml:space="preserve"><value>Muutospäivä</value></data>
+  <data name="SolExp_SortSize" xml:space="preserve"><value>Koko</value></data>
+  <data name="SolExp_DefaultFilterLabel" xml:space="preserve"><value>Oletussuodatin:</value></data>
+  <data name="SolExp_FilterAll" xml:space="preserve"><value>Kaikki</value></data>
+  <data name="SolExp_FilterBinary" xml:space="preserve"><value>Binääri</value></data>
+  <data name="SolExp_FilterText" xml:space="preserve"><value>Teksti</value></data>
+  <data name="SolExp_FilterImage" xml:space="preserve"><value>Kuva</value></data>
+  <data name="SolExp_FilterLanguage" xml:space="preserve"><value>Kieli</value></data>
+  <!-- TAB GROUPS OPTIONS PAGE -->
+  <data name="TabGroups_SplitSection" xml:space="preserve"><value>JAKO-TOIMINTA</value></data>
+  <data name="TabGroups_EnforceEqualSize" xml:space="preserve"><value>Pakota yhtäläinen ruutukoko jaossa (50 / 50)</value></data>
+  <data name="TabGroups_MinWidthLabel" xml:space="preserve"><value>Ruudun vähimmäisleveys (px):</value></data>
+  <data name="TabGroups_MinHeightLabel" xml:space="preserve"><value>Ruudun vähimmäiskorkeus (px):</value></data>
+  <data name="TabGroups_VisualSection" xml:space="preserve"><value>VISUAALINEN</value></data>
+  <data name="TabGroups_ShowGroupBadge" xml:space="preserve"><value>Näytä 'Ryhmä N' -merkintä välilehtipalkissa kun useita ryhmiä on avoinna</value></data>
+  <data name="TabGroups_PersistSection" xml:space="preserve"><value>SÄILYVYYS</value></data>
+  <data name="TabGroups_PersistLayout" xml:space="preserve"><value>Sisällytä välilehtiryhmien asettelu työtilan tallennuksiin</value></data>
+  <!-- TEXT EDITOR OPTIONS PAGE -->
+  <data name="TextOpt_FontSection" xml:space="preserve"><value>FONTTI</value></data>
+  <data name="TextOpt_FontFamilyLabel" xml:space="preserve"><value>Fonttiperhe:</value></data>
+  <data name="TextOpt_FontSizeLabel" xml:space="preserve"><value>Fonttikoko (pt):</value></data>
+  <data name="TextOpt_IndentSection" xml:space="preserve"><value>SISENNYS</value></data>
+  <data name="TextOpt_IndentSizeLabel" xml:space="preserve"><value>Sisennyksen koko:</value></data>
+  <data name="TextOpt_UseSpaces" xml:space="preserve"><value>Lisää välilyönnit sarainmerkkien sijaan</value></data>
+  <data name="TextOpt_FeaturesSection" xml:space="preserve"><value>OMINAISUUDET</value></data>
+  <data name="TextOpt_ShowLineNumbers" xml:space="preserve"><value>Näytä rivinumerot</value></data>
+  <data name="TextOpt_ShowRefreshRate" xml:space="preserve"><value>Näytä päivitystaajuus tilapalkissa (renderöintiruudun aika)</value></data>
+  <data name="TextOpt_WordWrap" xml:space="preserve"><value>Tekstin rivitys (Alt+Z)</value></data>
+  <data name="TextOpt_ClickableLinks" xml:space="preserve"><value>Ota Ctrl+Napsautus käyttöön web-linkkien avaamiseen (http/https)</value></data>
+  <data name="TextOpt_ClickableEmails" xml:space="preserve"><value>Ota Ctrl+Napsautus käyttöön sähköpostin kirjoittamiseen</value></data>
+  <data name="TextOpt_DefaultZoomLabel" xml:space="preserve"><value>Oletuszoom (%):</value></data>
+  <data name="TextOpt_MouseWheelLabel" xml:space="preserve"><value>Hiiren rullan nopeus:</value></data>
+  <data name="TextOpt_ChangesetSection" xml:space="preserve"><value>MUUTOSJOUKKO (.WHCHG)</value></data>
+  <data name="TextOpt_TrackEdits" xml:space="preserve"><value>Seuraa muokkauksia .whchg-tiedostossa (vaatii Seurattu-tallennustilan)</value></data>
+  <data name="TextOpt_SyntaxSection" xml:space="preserve"><value>SYNTAKSIVÄRIEN OHITUKSET</value></data>
+  <data name="TextOpt_SyntaxNote" xml:space="preserve"><value>Ota väri käyttöön ohittaaksesi aktiivisen teeman oletusarvon.</value></data>
+  <data name="TextOpt_Background" xml:space="preserve"><value>Tausta:</value></data>
+  <data name="TextOpt_Foreground" xml:space="preserve"><value>Etuala:</value></data>
+  <data name="TextOpt_Keyword" xml:space="preserve"><value>Avainsana:</value></data>
+  <data name="TextOpt_String" xml:space="preserve"><value>Merkkijono:</value></data>
+  <data name="TextOpt_Comment" xml:space="preserve"><value>Kommentti:</value></data>
+  <data name="TextOpt_Number" xml:space="preserve"><value>Luku:</value></data>
+  <data name="TextOpt_Type" xml:space="preserve"><value>Tyyppi:</value></data>
+  <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Esikäsittelijä:</value></data>
+  <data name="TextOpt_Operator" xml:space="preserve"><value>Operaattori:</value></data>
+  <data name="TextOpt_Identifier" xml:space="preserve"><value>Tunniste:</value></data>
+
+  <!-- Options categories -->
+  <data name="Opt_Category_Environment"      xml:space="preserve"><value>Ympäristö</value></data>
+  <data name="Opt_Category_HexEditor"        xml:space="preserve"><value>Hex-editori</value></data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>Ratkaisunhallinta</value></data>
+  <data name="Opt_Category_CodeEditor"       xml:space="preserve"><value>Koodieditori</value></data>
+  <data name="Opt_Category_TextEditor"       xml:space="preserve"><value>Tekstieditori</value></data>
+  <data name="Opt_Category_PluginSystem"     xml:space="preserve"><value>Liitännäisjärjestelmä</value></data>
+  <data name="Opt_Category_BuildRun"         xml:space="preserve"><value>Koonti ja suoritus</value></data>
+  <data name="Opt_Category_Debugger"         xml:space="preserve"><value>Virheenkorjain</value></data>
+  <data name="Opt_Category_Extensions"       xml:space="preserve"><value>Laajennukset</value></data>
+  <data name="Opt_Category_FormatEditor"     xml:space="preserve"><value>Muotoeditori (.whfmt)</value></data>
+  <data name="Opt_Category_Tools"            xml:space="preserve"><value>Työkalut</value></data>
+
+  <!-- Options page names -->
+  <data name="Opt_Page_General"              xml:space="preserve"><value>Yleinen</value></data>
+  <data name="Opt_Page_Save"                 xml:space="preserve"><value>Tallennus</value></data>
+  <data name="Opt_Page_Output"               xml:space="preserve"><value>Tuloste</value></data>
+  <data name="Opt_Page_TabGroups"            xml:space="preserve"><value>Välilehtiryhmät</value></data>
+  <data name="Opt_Page_KeyboardShortcuts"    xml:space="preserve"><value>Pikanäppäimet</value></data>
+  <data name="Opt_Page_Documents"            xml:space="preserve"><value>Asiakirjat</value></data>
+  <data name="Opt_Page_Workspace"            xml:space="preserve"><value>Työtila</value></data>
+  <data name="Opt_Page_Tabs"                 xml:space="preserve"><value>Välilehdet</value></data>
+  <data name="Opt_Page_Layout"               xml:space="preserve"><value>Asettelu</value></data>
+  <data name="Opt_Page_Docking"              xml:space="preserve"><value>Kiinnitys</value></data>
+  <data name="Opt_Page_ViewMenu"             xml:space="preserve"><value>Näytä-valikko</value></data>
+  <data name="Opt_Page_Display"              xml:space="preserve"><value>Näyttö</value></data>
+  <data name="Opt_Page_Editing"              xml:space="preserve"><value>Muokkaus</value></data>
+  <data name="Opt_Page_StatusBar"            xml:space="preserve"><value>Tilapalkki</value></data>
+  <data name="Opt_Page_Behavior"             xml:space="preserve"><value>Toiminta</value></data>
+  <data name="Opt_Page_AppearanceColors"     xml:space="preserve"><value>Ulkoasu ja värit</value></data>
+  <data name="Opt_Page_InlineHints"          xml:space="preserve"><value>Rivinsisäiset vihjeet</value></data>
+  <data name="Opt_Page_Navigation"           xml:space="preserve"><value>Navigointi</value></data>
+  <data name="Opt_Page_Formatting"           xml:space="preserve"><value>Muotoilu</value></data>
+  <data name="Opt_Page_Features"             xml:space="preserve"><value>Ominaisuudet</value></data>
+  <data name="Opt_Page_LanguageServers"      xml:space="preserve"><value>Kielipalvelimet</value></data>
+  <data name="Opt_Page_Markdown"             xml:space="preserve"><value>Markdown</value></data>
+  <data name="Opt_Page_Development"          xml:space="preserve"><value>Kehitys</value></data>
+  <data name="Opt_Page_Migration"            xml:space="preserve"><value>Siirtyminen</value></data>
+  <data name="Opt_Page_EventBus"             xml:space="preserve"><value>Tapahtumaväylä</value></data>
+  <data name="Opt_Page_Compiler"             xml:space="preserve"><value>Kääntäjä</value></data>
+  <data name="Opt_Page_Breakpoints"          xml:space="preserve"><value>Keskeytyskohat</value></data>
+  <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
+  <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Muotojenselain</value></data>
+  <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Vertaa tiedostoja</value></data>
+  <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Komentopaletti</value></data>
+
+  <!-- Plugin System Options Page — folder picker dialog -->
+  <data name="Opt_Plugin_SelectExtDir"       xml:space="preserve"><value>Valitse lisälaajennusten hakemisto</value></data>
+
+  <!-- Plugin Dev Loader Options Page — folder picker dialog -->
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve"><value>Valitse laajennuksen tulosthakemisto</value></data>
+
+  <!-- Whfmt Explorer Options Page — view mode combo -->
+  <data name="Opt_ViewMode_Tree"             xml:space="preserve"><value>Puu</value></data>
+  <data name="Opt_ViewMode_Flat"             xml:space="preserve"><value>Tasainen</value></data>
+
+  <!-- Structure Editor Options Page — panel position combo -->
+  <data name="Opt_Position_Right"            xml:space="preserve"><value>Oikea</value></data>
+  <data name="Opt_Position_Left"             xml:space="preserve"><value>Vasen</value></data>
+  <data name="Opt_Position_Bottom"           xml:space="preserve"><value>Alaosa</value></data>
+  <data name="Opt_Position_Top"              xml:space="preserve"><value>Yläosa</value></data>
+
+  <!-- Structure Editor Options Page — endianness combo -->
+  <data name="Opt_Endian_Little"             xml:space="preserve"><value>pienentavuinen</value></data>
+  <data name="Opt_Endian_Big"                xml:space="preserve"><value>suurtavuinen</value></data>
+
+  <!-- Code Editor Formatting Page — indentation levels combo -->
+  <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 taso (4 välilyöntiä juuressa)</value></data>
+  <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 tasoa (8 välilyöntiä juuressa) — VS-oletus</value></data>
+  <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 tasoa (12 välilyöntiä juuressa)</value></data>
+
+  <!-- Markdown Editor Options Page — layout combo -->
+  <data name="Opt_MdLayout_PreviewRight"     xml:space="preserve"><value>Esikatselu oikealla</value></data>
+  <data name="Opt_MdLayout_PreviewBottom"    xml:space="preserve"><value>Esikatselu alhaalla</value></data>
+  <data name="Opt_MdLayout_EditorOnly"       xml:space="preserve"><value>Vain editori</value></data>
+  <data name="Opt_MdLayout_PreviewOnly"      xml:space="preserve"><value>Vain esikatselu</value></data>
+  <data name="Opt_Preview_Label"             xml:space="preserve"><value>Esikatselu</value></data>
+  <data name="BuildCompiler_CSharpSection" xml:space="preserve">
+    <value>C# / .NET OLETUKSET</value>
+  </data>
+  <data name="BuildCompiler_NullableCheck" xml:space="preserve">
+    <value>Käsittele nullable-varoitukset virheinä (C# 8+)</value>
+  </data>
+  <data name="BuildCompiler_ImplicitUsings" xml:space="preserve">
+    <value>Ota implisiittiset using-lauseet käyttöön (C# 10+)</value>
+  </data>
+  <data name="BuildCompiler_GenerateDocs" xml:space="preserve">
+    <value>Luo XML-dokumentaatiotiedosto</value>
+  </data>
+  <data name="BuildCompiler_WarningsSection" xml:space="preserve">
+    <value>VAROITUKSET</value>
+  </data>
+  <data name="BuildCompiler_WarnLevelLabel" xml:space="preserve">
+    <value>Oletusvaroitustaso (0–9):</value>
+  </data>
+  <data name="BuildRun_GeneralSection" xml:space="preserve">
+    <value>YLEINEN</value>
+  </data>
+  <data name="BuildRun_SaveBeforeBuild" xml:space="preserve">
+    <value>Tallenna kaikki muutokset ennen koontia</value>
+  </data>
+  <data name="BuildRun_VerbosityLabel" xml:space="preserve">
+    <value>Koontilähdön tarkkuus:</value>
+  </data>
+  <data name="BuildRun_VerbQuiet" xml:space="preserve">
+    <value>Hiljainen</value>
+  </data>
+  <data name="BuildRun_VerbMinimal" xml:space="preserve">
+    <value>Minimaalinen</value>
+  </data>
+  <data name="BuildRun_VerbNormal" xml:space="preserve">
+    <value>Normaali</value>
+  </data>
+  <data name="BuildRun_VerbDetailed" xml:space="preserve">
+    <value>Yksityiskohtainen</value>
+  </data>
+  <data name="BuildRun_VerbDiagnostic" xml:space="preserve">
+    <value>Diagnostinen</value>
+  </data>
+  <data name="BuildRun_RunInProcess" xml:space="preserve">
+    <value>Suorita MSBuild samassa prosessissa (nopeampi, suositeltava)</value>
+  </data>
+  <data name="BuildRun_MaxParallelLabel" xml:space="preserve">
+    <value>Rinnakkaisten koontien enimmäismäärä:</value>
+  </data>
+  <data name="BuildRun_OutputSection" xml:space="preserve">
+    <value>TULOSTEIKKUNA</value>
+  </data>
+  <data name="BuildRun_ShowOnStart" xml:space="preserve">
+    <value>Näytä tulosteikkuna koonin käynnistyessä</value>
+  </data>
+  <data name="BuildRun_ShowOnError" xml:space="preserve">
+    <value>Näytä tulosteikkuna koontivirheen sattuessa</value>
+  </data>
+  <data name="BuildRun_RunSection" xml:space="preserve">
+    <value>SUORITA</value>
+  </data>
+  <data name="BuildRun_OnRunBuildErrorLabel" xml:space="preserve">
+    <value>Suoritettaessa, jos koonteja tapahtuu virheitä:</value>
+  </data>
+  <data name="BuildRun_DoNotLaunch" xml:space="preserve">
+    <value>Älä käynnistä</value>
+  </data>
+  <data name="BuildRun_Launch" xml:space="preserve">
+    <value>Käynnistä</value>
+  </data>
+  <data name="BuildRun_ShowOutputOnRun" xml:space="preserve">
+    <value>Näytä tulosteikkuna suorituksen käynnistyessä</value>
+  </data>
+  <data name="CodeInlineHints_Section" xml:space="preserve">
+    <value>RIVINSISÄISET VIHJEET</value>
+  </data>
+  <data name="CodeInlineHints_EnableHints" xml:space="preserve">
+    <value>Ota rivinsisäiset vihjeet käyttöön (näytä rivinsisäiset viittauslaskurit määrittelyjen yläpuolella)</value>
+  </data>
+  <data name="CodeInlineHints_SourceLabel" xml:space="preserve">
+    <value>Viittauslähde:</value>
+  </data>
+  <data name="CodeInlineHints_SourceAuto" xml:space="preserve">
+    <value>Automaattinen (Roslyn jos saatavilla, regex varalla)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRoslyn" xml:space="preserve">
+    <value>Vain Roslyn (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRegex" xml:space="preserve">
+    <value>Regex aina</value>
+  </data>
+  <data name="CodeInlineHints_RoslynSection" xml:space="preserve">
+    <value>ROSLYN-SEMANTTISET VIHJEET (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_RoslynNote" xml:space="preserve">
+    <value>Näytä päätelty tyyppi ja paluutyyppi rivinsisäisesti kun Roslyn on aktiivinen kieliasiakas.</value>
+  </data>
+  <data name="CodeInlineHints_ShowVarType" xml:space="preserve">
+    <value>Näytä päätelty tyyppi var-ilmoituksille (esim. var x = … → : List&amp;lt;int&amp;gt;)</value>
+  </data>
+  <data name="CodeInlineHints_ShowLambdaReturn" xml:space="preserve">
+    <value>Näytä paluutyyppi lambda-lausekkeille (esim. x =&amp;gt; x * 2 → int)</value>
+  </data>
+  <data name="CodeInlineHints_KindsSection" xml:space="preserve">
+    <value>NÄYTÄ VIHJEET SEURAAVILLE SYMBOLITYYPEILLE:</value>
+  </data>
+  <data name="CodeInlineHints_KindsNote" xml:space="preserve">
+    <value>Poista tyyppi käytöstä piilottaaksesi sen viittauslaskurivihjeet säilyttäen rivinsisäiset vihjeet aktiivisina muille.</value>
+  </data>
+  <data name="CodeInlineHints_TypesGroup" xml:space="preserve">
+    <value>Tyypit</value>
+  </data>
+  <data name="CodeInlineHints_Class" xml:space="preserve">
+    <value>Luokka</value>
+  </data>
+  <data name="CodeInlineHints_Interface" xml:space="preserve">
+    <value>Rajapinta</value>
+  </data>
+  <data name="CodeInlineHints_Struct" xml:space="preserve">
+    <value>Rakenne</value>
+  </data>
+  <data name="CodeInlineHints_Enum" xml:space="preserve">
+    <value>Luettelo</value>
+  </data>
+  <data name="CodeInlineHints_Record" xml:space="preserve">
+    <value>Tietue</value>
+  </data>
+  <data name="CodeInlineHints_Delegate" xml:space="preserve">
+    <value>Delegaatti</value>
+  </data>
+  <data name="CodeInlineHints_MembersGroup" xml:space="preserve">
+    <value>Jäsenet</value>
+  </data>
+  <data name="CodeInlineHints_Method" xml:space="preserve">
+    <value>Metodi</value>
+  </data>
+  <data name="CodeInlineHints_Constructor" xml:space="preserve">
+    <value>Konstruktori</value>
+  </data>
+  <data name="CodeInlineHints_Property" xml:space="preserve">
+    <value>Ominaisuus</value>
+  </data>
+  <data name="CodeInlineHints_Field" xml:space="preserve">
+    <value>Kenttä</value>
+  </data>
+  <data name="CodeInlineHints_Event" xml:space="preserve">
+    <value>Tapahtuma</value>
+  </data>
+  <data name="CodeInlineHints_OtherGroup" xml:space="preserve">
+    <value>Muu</value>
+  </data>
+  <data name="CodeInlineHints_LocalVar" xml:space="preserve">
+    <value>Paikallinen muuttuja</value>
+  </data>
+  <data name="CodeInlineHints_Parameter" xml:space="preserve">
+    <value>Parametri</value>
+  </data>
+  <data name="CodeInlineHints_TypeParam" xml:space="preserve">
+    <value>Tyyppiparametri</value>
+  </data>
+  <data name="CodeInlineHints_Namespace" xml:space="preserve">
+    <value>Nimiavaruus</value>
+  </data>
+  <data name="CodeInlineHints_SelectAll" xml:space="preserve">
+    <value>Valitse kaikki</value>
+  </data>
+  <data name="CodeInlineHints_ClearAll" xml:space="preserve">
+    <value>Tyhjennä kaikki</value>
+  </data>
+  <data name="CodeOpt_FontSection" xml:space="preserve">
+    <value>FONTTI</value>
+  </data>
+  <data name="CodeOpt_FontFamilyLabel" xml:space="preserve">
+    <value>Fonttiperhe:</value>
+  </data>
+  <data name="CodeOpt_FontSizeLabel" xml:space="preserve">
+    <value>Fonttikoko (pt):</value>
+  </data>
+  <data name="CodeOpt_IndentSection" xml:space="preserve">
+    <value>SISENNYS</value>
+  </data>
+  <data name="CodeOpt_IndentSizeLabel" xml:space="preserve">
+    <value>Sisennyksen koko:</value>
+  </data>
+  <data name="CodeOpt_UseSpaces" xml:space="preserve">
+    <value>Lisää välilyönnit sarainmerkkien sijaan</value>
+  </data>
+  <data name="CodeOpt_FeaturesSection" xml:space="preserve">
+    <value>OMINAISUUDET</value>
+  </data>
+  <data name="CodeOpt_ShowLineNumbers" xml:space="preserve">
+    <value>Näytä rivinumerot</value>
+  </data>
+  <data name="CodeOpt_HighlightCurrentLine" xml:space="preserve">
+    <value>Korosta nykyinen rivi</value>
+  </data>
+  <data name="CodeOpt_CtrlClickLinks" xml:space="preserve">
+    <value>Ota Ctrl+Napsautus käyttöön määritykseen siirtymiseen / linkkien avaamiseen</value>
+  </data>
+  <data name="CodeOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>Oletuszoom (%):</value>
+  </data>
+  <data name="CodeOpt_MouseWheelLabel" xml:space="preserve">
+    <value>Hiiren rullan nopeus:</value>
+  </data>
+  <data name="CodeOpt_ChangesetSection" xml:space="preserve">
+    <value>MUUTOSJOUKKO (.WHCHG)</value>
+  </data>
+  <data name="CodeOpt_TrackEdits" xml:space="preserve">
+    <value>Seuraa muokkauksia .whchg-tiedostossa (vaatii Seurattu-tallennustilan)</value>
+  </data>
+  <data name="CodeOpt_SyntaxSection" xml:space="preserve">
+    <value>SYNTAKSIVÄRIEN OHITUKSET</value>
+  </data>
+  <data name="CodeOpt_SyntaxNote" xml:space="preserve">
+    <value>Ota väri käyttöön ohittaaksesi aktiivisen teeman oletusarvon.</value>
+  </data>
+  <data name="CodeOpt_Background" xml:space="preserve">
+    <value>Tausta:</value>
+  </data>
+  <data name="CodeOpt_Foreground" xml:space="preserve">
+    <value>Etuala:</value>
+  </data>
+  <data name="CodeOpt_Keyword" xml:space="preserve">
+    <value>Avainsana:</value>
+  </data>
+  <data name="CodeOpt_String" xml:space="preserve">
+    <value>Merkkijono:</value>
+  </data>
+  <data name="CodeOpt_Comment" xml:space="preserve">
+    <value>Kommentti:</value>
+  </data>
+  <data name="CodeOpt_Number" xml:space="preserve">
+    <value>Luku:</value>
+  </data>
+  <data name="CodeOpt_Type" xml:space="preserve">
+    <value>Tyyppi:</value>
+  </data>
+  <data name="CodeOpt_Preprocessor" xml:space="preserve">
+    <value>Esikäsittelijä:</value>
+  </data>
+  <data name="CodeOpt_Operator" xml:space="preserve">
+    <value>Operaattori:</value>
+  </data>
+  <data name="CodeOpt_Identifier" xml:space="preserve">
+    <value>Tunniste:</value>
+  </data>
+  <data name="CodeOpt_ResetColors" xml:space="preserve">
+    <value>Palauta teeman oletusvärit</value>
+  </data>
+  <data name="EnvSave_SaveModeSection" xml:space="preserve">
+    <value>Tallennustila</value>
+  </data>
+  <data name="EnvSave_DirectMode" xml:space="preserve">
+    <value>Suora tila</value>
+  </data>
+  <data name="EnvSave_TrackedMode" xml:space="preserve">
+    <value>Seurattu tila</value>
+  </data>
+  <data name="EnvSave_AutoSaveSection" xml:space="preserve">
+    <value>Automaattinen tallennus</value>
+  </data>
+  <data name="EnvSave_AutoSerialize" xml:space="preserve">
+    <value>Ota automaattinen tallennus käyttöön</value>
+  </data>
+  <data name="EnvSave_IntervalLabel" xml:space="preserve">
+    <value>Väli (sekuntia)</value>
+  </data>
+  <data name="EnvSave_StandaloneSection" xml:space="preserve">
+    <value>Erillinen tila</value>
+  </data>
+  <data name="EnvSave_StandaloneNote" xml:space="preserve">
+    <value>Erillisessä tilassa kukin editori hallitsee itse tallennustapaa.</value>
+  </data>
+  <data name="EnvSave_HexEditorDirect" xml:space="preserve">
+    <value>Hex-editori: Suora tila</value>
+  </data>
+  <data name="EnvSave_CodeEditorDirect" xml:space="preserve">
+    <value>Koodieditori: Suora tila</value>
+  </data>
+  <data name="EnvSave_TextEditorDirect" xml:space="preserve">
+    <value>Tekstieditori: Suora tila</value>
+  </data>
+  <data name="EnvSave_TblEditorDirect" xml:space="preserve">
+    <value>TBL-editori: Suora tila</value>
+  </data>
+  <data name="EnvSave_ImageViewerDirect" xml:space="preserve">
+    <value>Kuvankatseluohjelma: Suora tila</value>
+  </data>
+  <data name="EnvSave_SaveAsNote" xml:space="preserve">
+    <value>"Tallenna nimellä" vaatii uuden polun valitsemisen.</value>
+  </data>
+  <data name="HexBehavior_Section" xml:space="preserve">
+    <value>Hex-editorin toiminta</value>
+  </data>
+  <data name="HexBehavior_AllowAutoHighLight" xml:space="preserve">
+    <value>Ota automaattinen korostus käyttöön</value>
+  </data>
+  <data name="HexBehavior_AllowAutoSelectDoubleClick" xml:space="preserve">
+    <value>Automaattinen valinta kaksoisnapsautuksella</value>
+  </data>
+  <data name="HexBehavior_AllowContextMenu" xml:space="preserve">
+    <value>Ota pikavalikko käyttöön</value>
+  </data>
+  <data name="HexBehavior_AllowDeleteByte" xml:space="preserve">
+    <value>Salli tavun poistaminen</value>
+  </data>
+  <data name="HexBehavior_AllowExtend" xml:space="preserve">
+    <value>Salli laajentaminen</value>
+  </data>
+  <data name="HexBehavior_FileDroppingConfirmation" xml:space="preserve">
+    <value>Vahvistus tiedostoa pudotettaessa</value>
+  </data>
+  <data name="HexBehavior_PreloadModeLabel" xml:space="preserve">
+    <value>Esilataustila</value>
+  </data>
+  <data name="HexDisplay_DisplaySection" xml:space="preserve">
+    <value>Näyttöasetukset</value>
+  </data>
+  <data name="HexDisplay_BytesPerLineLabel" xml:space="preserve">
+    <value>Tavua rivillä</value>
+  </data>
+  <data name="HexDisplay_ShowOffset" xml:space="preserve">
+    <value>Näytä offset</value>
+  </data>
+  <data name="HexDisplay_ShowAscii" xml:space="preserve">
+    <value>Näytä ASCII-sarake</value>
+  </data>
+  <data name="HexDisplay_MouseWheelLabel" xml:space="preserve">
+    <value>Hiiren rulla</value>
+  </data>
+  <data name="HexDisplay_ByteTooltipLabel" xml:space="preserve">
+    <value>Tavun työkaluvinkki</value>
+  </data>
+  <data name="HexDisplay_FormatSection" xml:space="preserve">
+    <value>Muoto</value>
+  </data>
+  <data name="HexDisplay_ValueFormatLabel" xml:space="preserve">
+    <value>Arvomuoto</value>
+  </data>
+  <data name="HexDisplay_OffsetFormatLabel" xml:space="preserve">
+    <value>Offsetmuoto</value>
+  </data>
+  <data name="HexDisplay_ByteGroupingLabel" xml:space="preserve">
+    <value>Tavuryhmittely</value>
+  </data>
+  <data name="HexDisplay_SpacerPositionLabel" xml:space="preserve">
+    <value>Välikappaleen sijainti</value>
+  </data>
+  <data name="HexDisplay_ScrollMarkersSection" xml:space="preserve">
+    <value>Vieritysmerkit</value>
+  </data>
+  <data name="HexDisplay_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Näytä kirjanmerkitmerkit</value>
+  </data>
+  <data name="HexDisplay_ShowModifiedMarkers" xml:space="preserve">
+    <value>Näytä muutosmerkit</value>
+  </data>
+  <data name="HexDisplay_ShowInsertedMarkers" xml:space="preserve">
+    <value>Näytä lisäysmerkit</value>
+  </data>
+  <data name="HexDisplay_ShowDeletedMarkers" xml:space="preserve">
+    <value>Näytä poistomarkit</value>
+  </data>
+  <data name="HexDisplay_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Näytä hakutulosmerkit</value>
+  </data>
+  <data name="HexDisplay_ColumnRowSection" xml:space="preserve">
+    <value>Sarake- ja rivikorostus</value>
+  </data>
+  <data name="HexDisplay_ShowColumnHighlight" xml:space="preserve">
+    <value>Näytä sarakekorostus</value>
+  </data>
+  <data name="HexDisplay_ShowAsciiColumnHighlight" xml:space="preserve">
+    <value>Näytä ASCII-sarakekorostus</value>
+  </data>
+  <data name="HexDisplay_ShowRowHighlight" xml:space="preserve">
+    <value>Näytä rivikorostus</value>
+  </data>
+  <data name="HexEdit_EditingSection" xml:space="preserve">
+    <value>Muokkausasetukset</value>
+  </data>
+  <data name="HexEdit_DefaultEditModeLabel" xml:space="preserve">
+    <value>Oletusmuokkaustila</value>
+  </data>
+  <data name="HexEdit_MouseWheelLabel" xml:space="preserve">
+    <value>Hiiren rulla</value>
+  </data>
+  <data name="HexEdit_AllowZoom" xml:space="preserve">
+    <value>Salli zoom</value>
+  </data>
+  <data name="HexEdit_AllowFileDrop" xml:space="preserve">
+    <value>Salli tiedoston pudotus</value>
+  </data>
+  <data name="HexEdit_DataSection" xml:space="preserve">
+    <value>Data-asetukset</value>
+  </data>
+  <data name="HexEdit_ByteSizeLabel" xml:space="preserve">
+    <value>Tavun koko</value>
+  </data>
+  <data name="HexEdit_ByteOrderLabel" xml:space="preserve">
+    <value>Tavujärjestys</value>
+  </data>
+  <data name="HexEdit_DefaultCopyFormatLabel" xml:space="preserve">
+    <value>Oletuskopiointimuoto</value>
+  </data>
+  <data name="HexEdit_SpacerVisualLabel" xml:space="preserve">
+    <value>Välikappaleen ulkoasu</value>
+  </data>
+  <data name="HexStatus_Section" xml:space="preserve">
+    <value>Tilapalkki</value>
+  </data>
+  <data name="HexStatus_ShowStatusMessage" xml:space="preserve">
+    <value>Näytä tilaviesti</value>
+  </data>
+  <data name="HexStatus_ShowFileSize" xml:space="preserve">
+    <value>Näytä tiedostokoko</value>
+  </data>
+  <data name="HexStatus_ShowSelection" xml:space="preserve">
+    <value>Näytä valinta</value>
+  </data>
+  <data name="HexStatus_ShowPosition" xml:space="preserve">
+    <value>Näytä sijainti</value>
+  </data>
+  <data name="HexStatus_ShowEditMode" xml:space="preserve">
+    <value>Näytä muokkaustila</value>
+  </data>
+  <data name="HexStatus_ShowBytesPerLine" xml:space="preserve">
+    <value>Näytä tavua rivillä</value>
+  </data>
+  <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
+    <value>Näytä päivitystaajuus</value>
+  </data>
+</root>

@@ -73,4 +73,18 @@ public interface IMenuAdapter
     /// </summary>
     IReadOnlyDictionary<string, MenuItemDescriptor> GetAllToolsMenuItems()
         => new Dictionary<string, MenuItemDescriptor>();
+
+    /// <summary>
+    /// Raised when an Edit-parented menu item is added or removed.
+    /// MainWindow subscribes to trigger a rebuild of the plugin section of the Edit menu.
+    /// Default implementation is a no-op for backward compatibility.
+    /// </summary>
+    event Action? EditItemsChanged { add { } remove { } }
+
+    /// <summary>
+    /// Returns only the Edit-parented menu item descriptors (intercepted for dynamic organization).
+    /// Default implementation returns an empty dictionary for backward compatibility.
+    /// </summary>
+    IReadOnlyDictionary<string, MenuItemDescriptor> GetAllEditMenuItems()
+        => new Dictionary<string, MenuItemDescriptor>();
 }

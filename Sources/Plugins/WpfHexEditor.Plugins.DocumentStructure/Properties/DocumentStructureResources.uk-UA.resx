@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.DocumentStructure
+    File        : DocumentStructureResources.uk-UA.resx
+    Description : Ukrainian (Ukraine) translations for the Document Structure plugin.
+-->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="DocStructure_PluginName" xml:space="preserve"><value>Структура документа</value></data>
+  <data name="DS_NavigateToMenu" xml:space="preserve"><value>Перейти до</value></data>
+  <data name="DS_CopyNameMenu" xml:space="preserve"><value>Копіювати ім'я</value></data>
+  <data name="DS_CopyQualifiedMenu" xml:space="preserve"><value>Копіювати повне ім'я</value></data>
+  <data name="DS_ExpandAllMenu" xml:space="preserve"><value>Розгорнути все</value></data>
+  <data name="DS_CollapseAllMenu" xml:space="preserve"><value>Згорнути все</value></data>
+  <data name="DS_RefreshTooltip" xml:space="preserve"><value>Оновити</value></data>
+  <data name="DS_TreeViewTooltip" xml:space="preserve"><value>Деревоподібний вигляд</value></data>
+  <data name="DS_CollapseAllTooltip" xml:space="preserve"><value>Згорнути все</value></data>
+  <data name="DS_PinDocumentTooltip" xml:space="preserve"><value>Закріпити документ (зберегти структуру під час навігації)</value></data>
+  <data name="DS_SyncCursorTooltip" xml:space="preserve"><value>Синхронізувати з курсором редактора</value></data>
+  <data name="DS_SortOrderTooltip" xml:space="preserve"><value>Порядок сортування</value></data>
+  <data name="DS_SourceOrderOption" xml:space="preserve"><value>Порядок у джерелі</value></data>
+  <data name="DS_AlphabeticalOption" xml:space="preserve"><value>За алфавітом</value></data>
+  <data name="DS_ByKindOption" xml:space="preserve"><value>За типом</value></data>
+  <data name="DS_MaxDepthTooltip" xml:space="preserve"><value>Макс. глибина дерева</value></data>
+  <data name="DS_InfiniteDepth" xml:space="preserve"><value>∞ Глибина</value></data>
+  <data name="DS_Depth2" xml:space="preserve"><value>2 рівні</value></data>
+  <data name="DS_Depth3" xml:space="preserve"><value>3 рівні</value></data>
+  <data name="DS_Depth5" xml:space="preserve"><value>5 рівнів</value></data>
+  <data name="DS_Depth10" xml:space="preserve"><value>10 рівнів</value></data>
+  <data name="DS_MoreOptionsTooltip" xml:space="preserve"><value>Більше параметрів</value></data>
+  <data name="DS_NoDocumentText" xml:space="preserve"><value>Відкрийте документ для перегляду його структури</value></data>
+  <data name="DS_FilterPlaceholder" xml:space="preserve"><value>Фільтрувати символи…</value></data>
+</root>
