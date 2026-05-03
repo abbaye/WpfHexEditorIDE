@@ -41,7 +41,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     public static readonly DependencyProperty ViewModeProperty =
         DependencyProperty.Register(
             nameof(ViewMode), typeof(DocumentViewMode), typeof(DocumentEditorHost),
-            new PropertyMetadata(DocumentViewMode.Split, OnViewModeChanged));
+            new PropertyMetadata(DocumentViewMode.TextOnly, OnViewModeChanged));
 
     public static readonly DependencyProperty IsForensicModeProperty =
         DependencyProperty.Register(
