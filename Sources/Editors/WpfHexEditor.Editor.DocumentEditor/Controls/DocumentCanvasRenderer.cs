@@ -1543,11 +1543,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _isDragging   = true;
         CaptureMouse();
 
-        PopToolbarRequested?.Invoke(this, new PopToolbarRequestedArgs(
-            new Rect(pt.X, pt.Y - 36, 0, 0), block));
-
         _caretVisible = true;
-        _blinkTimer?.Start();   // ensure blinking even if GotFocus fires after mouse handling
+        _blinkTimer?.Start();
         RefreshCaretVisual();
         InvalidateVisual();
         e.Handled = true;
@@ -1608,9 +1605,21 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void OnLostFocus(object sender, RoutedEventArgs e)
     {
+        // Ignore transient focus loss to a Popup (e.g. pop-toolbar) — the caret must keep blinking.
+        var newFocus = Keyboard.FocusedElement as DependencyObject;
+        if (newFocus is not null)
+        {
+            var parent = newFocus;
+            while (parent is not null)
+            {
+                if (parent is System.Windows.Controls.Primitives.Popup) return;
+                parent = VisualTreeHelper.GetParent(parent) ?? LogicalTreeHelper.GetParent(parent);
+            }
+        }
+
         _blinkTimer?.Stop();
         _caretVisible = false;
-        RefreshCaretVisual(); // clear the caret rectangle
+        RefreshCaretVisual();
     }
 
     private void OnPreviewKeyDown(object sender, KeyEventArgs e)
