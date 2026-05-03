@@ -43,7 +43,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>   <!-- Row 0: inputs -->
-            <RowDefinition Height="3"/>      <!-- Row 1: progress bar -->
+            <RowDefinition Height="Auto"/>   <!-- Row 1: progress bar -->
             <RowDefinition Height="*"/>      <!-- Row 2: results -->
             <RowDefinition Height="22"/>     <!-- Row 3: status bar -->
         </Grid.RowDefinitions>
@@ -122,10 +122,10 @@
         <!-- ── Row 1: Indeterminate progress bar (visible during search) ── -->
         <ProgressBar x:Name="SearchProgress"
                      Grid.Row="1"
+                     Height="4"
                      IsIndeterminate="True"
                      Visibility="Collapsed"
                      Foreground="{DynamicResource DockAccentBrush}"
-                     Background="Transparent"
                      BorderThickness="0"/>
 
         <!-- ── Row 2: Results list ──────────────────────────────── -->
