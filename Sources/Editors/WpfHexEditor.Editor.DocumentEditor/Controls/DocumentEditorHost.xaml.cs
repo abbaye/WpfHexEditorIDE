@@ -26,6 +26,7 @@ using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 using WpfHexEditor.Editor.DocumentEditor.ViewModels;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.Editor.DocumentEditor.Properties;
+using WpfHexEditor.Core.Events.IDEEvents;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -289,10 +290,23 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
                 return;
             }
 
-            // A lazy plugin may be activating right now (fire-and-forget Task.Run in PluginActivationService).
-            // Poll up to 3 s in 200 ms steps so the loader gets a chance to register before we throw.
+            // If no loader is available yet, publish FileOpenedEvent to trigger lazy plugin activation
+            // (PluginActivationService subscribes to this event and activates plugins with matching
+            // fileExtension triggers). FileOpenedEvent may not have been published yet when OpenAsync
+            // starts because MainWindow publishes it after the editor tab is created.
             if (_ideContext is not null && loaders.FirstOrDefault(l => l.CanLoad(filePath)) is null)
             {
+                var ext = System.IO.Path.GetExtension(filePath);
+                OutputMessage?.Invoke(this, $"[DocEditor] no loader for '{ext}' — publishing FileOpenedEvent to trigger lazy activation");
+                _ideContext.IDEEvents.Publish(new FileOpenedEvent
+                {
+                    Source        = "DocumentEditorHost",
+                    FilePath      = filePath,
+                    FileExtension = ext,
+                    FileSize      = File.Exists(filePath) ? new FileInfo(filePath).Length : 0L,
+                });
+
+                // Poll up to 3 s in 200 ms steps — plugin activation is async (Task.Run).
                 const int maxWaitMs = 3000;
                 const int stepMs    = 200;
                 int waited = 0;
@@ -303,7 +317,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
                     loaders = _ideContext.ExtensionRegistry.GetExtensions<IDocumentLoader>();
                     if (loaders.FirstOrDefault(l => l.CanLoad(filePath)) is not null)
                     {
-                        OutputMessage?.Invoke(this, $"[DocEditor] loader appeared after {waited} ms wait");
+                        OutputMessage?.Invoke(this, $"[DocEditor] loader appeared after {waited} ms");
                         break;
                     }
                 }
