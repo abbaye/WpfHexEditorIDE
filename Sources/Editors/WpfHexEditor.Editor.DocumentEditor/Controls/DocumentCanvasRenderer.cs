@@ -65,6 +65,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// <summary>Raised when caret or selection moves so the host can refresh format toggle states.</summary>
     public event EventHandler? SelectionFormatChanged;
 
+    /// <summary>Raised when the vertical scroll offset changes; args carry (currentPage, totalPages).</summary>
+    public event EventHandler<(int Current, int Total)>? PageChanged;
+
     // ── Fields ────────────────────────────────────────────────────────────────
 
     // Model
@@ -343,7 +346,23 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _scrollOwner?.InvalidateScrollInfo();
         InvalidateVisual();
         RefreshCaretVisual();
+        FirePageChanged();
     }
+
+    private int GetCurrentPage()
+    {
+        // Find the first page whose bottom edge is below the current viewport top.
+        double viewTop = _offset.Y;
+        for (int i = 0; i < _pageStarts.Count; i++)
+        {
+            double nextStart = i + 1 < _pageStarts.Count ? _pageStarts[i + 1] : double.MaxValue;
+            if (nextStart > viewTop) return i + 1;
+        }
+        return _pageCount;
+    }
+
+    private void FirePageChanged() =>
+        PageChanged?.Invoke(this, (GetCurrentPage(), _pageCount));
 
     public Rect MakeVisible(Visual visual, Rect rectangle) => rectangle;
 
@@ -1026,6 +1045,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         UpdateScrollExtent();
         InvalidateVisual();
+        FirePageChanged();
     }
 
     /// <summary>
@@ -1060,6 +1080,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         UpdateScrollExtentDraft();
         InvalidateVisual();
+        FirePageChanged();
     }
 
     private void UpdateScrollExtentDraft()

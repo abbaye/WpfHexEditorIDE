@@ -488,10 +488,14 @@ public sealed class DocumentMutator(DocumentModel model)
     {
         if (para.Children.Count == 0)
         {
-            // No run children yet — split flat text into up to 3 runs so only the
-            // selected range gets the attribute; the rest inherits no attribute.
             SplitFlatBlockIntoRuns(para, fromChar, toChar);
             // Fall through to the run-loop below
+        }
+        else
+        {
+            // Split any existing runs that straddle fromChar or toChar so that
+            // the attribute is applied only to the exact selected characters.
+            SplitRunsAtBoundaries(para, fromChar, toChar);
         }
 
         var cursor = 0;
@@ -499,10 +503,8 @@ public sealed class DocumentMutator(DocumentModel model)
         {
             var runLen = run.Text.Length;
             var runEnd = cursor + runLen;
-
             if (runEnd > fromChar && cursor < toChar)
                 run.Attributes[attribute] = value;
-
             cursor = runEnd;
         }
     }
@@ -514,6 +516,10 @@ public sealed class DocumentMutator(DocumentModel model)
         {
             SplitFlatBlockIntoRuns(para, fromChar, toChar);
         }
+        else
+        {
+            SplitRunsAtBoundaries(para, fromChar, toChar);
+        }
 
         var cursor = 0;
         foreach (var run in para.Children)
@@ -523,6 +529,46 @@ public sealed class DocumentMutator(DocumentModel model)
             if (runEnd > fromChar && cursor < toChar)
                 run.Attributes.Remove(attribute);
             cursor = runEnd;
+        }
+    }
+
+    /// <summary>
+    /// Splits any runs in <paramref name="para"/> that straddle <paramref name="fromChar"/>
+    /// or <paramref name="toChar"/> so that formatting can be applied to the exact range.
+    /// Runs that fall entirely before/inside/after the range are left intact.
+    /// </summary>
+    private static void SplitRunsAtBoundaries(DocumentBlock para, int fromChar, int toChar)
+    {
+        // We may need to split at two boundaries: fromChar and toChar.
+        // Process fromChar first (lower offset), then toChar.
+        foreach (var boundary in new[] { fromChar, toChar })
+        {
+            int cursor = 0;
+            for (int i = 0; i < para.Children.Count; i++)
+            {
+                var run    = para.Children[i];
+                int runEnd = cursor + run.Text.Length;
+
+                if (boundary > cursor && boundary < runEnd)
+                {
+                    // Split this run at the boundary
+                    int localOff = boundary - cursor;
+                    var head = new DocumentBlock { Kind = run.Kind, Text = run.Text[..localOff] };
+                    var tail = new DocumentBlock { Kind = run.Kind, Text = run.Text[localOff..] };
+                    foreach (var kv in run.Attributes)
+                    {
+                        head.Attributes[kv.Key] = kv.Value;
+                        tail.Attributes[kv.Key] = kv.Value;
+                    }
+                    para.Children.RemoveAt(i);
+                    para.Children.Insert(i,     head);
+                    para.Children.Insert(i + 1, tail);
+                    break; // list mutated — restart outer loop for next boundary
+                }
+
+                cursor = runEnd;
+                if (cursor >= boundary) break; // boundary is between runs — nothing to split
+            }
         }
     }
 

@@ -164,11 +164,31 @@ public partial class DocumentStatusBar : UserControl
         WordCountText = string.Format(DocumentEditorResources.DocStatusBar_WordCountPattern, words);
     }
 
+    private int _totalPageCount = 1;
+
     public void UpdatePageCount(DocumentModel model)
     {
         int sections = model.Blocks.Count(b => b.Kind == "section");
-        int pages    = sections > 0 ? sections : Math.Max(1, model.Blocks.Count / 30);
-        PageText = string.Format(DocumentEditorResources.DocStatusBar_PagePattern, pages);
+        _totalPageCount = sections > 0 ? sections : Math.Max(1, model.Blocks.Count / 30);
+        SetPageText(1, _totalPageCount);
+    }
+
+    /// <summary>Updates the current/total page display after scroll.</summary>
+    public void UpdateCurrentPage(int currentPage, int totalPages)
+    {
+        _totalPageCount = totalPages;
+        SetPageText(currentPage, totalPages);
+    }
+
+    private void SetPageText(int current, int total)
+    {
+        // Pattern is "Page 1 / {0}" in resx — replace the hardcoded "1" with current.
+        var raw = string.Format(DocumentEditorResources.DocStatusBar_PagePattern, total);
+        // Replace the first digit sequence before "/" with the real current page.
+        var sep = raw.IndexOf('/');
+        PageText = sep > 0
+            ? $"Page {current} / {total}"
+            : raw;
     }
 
     public void UpdateForensicCount(DocumentModel model)

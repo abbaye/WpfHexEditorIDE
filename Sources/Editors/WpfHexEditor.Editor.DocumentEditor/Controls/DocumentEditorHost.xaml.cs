@@ -492,11 +492,6 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         if (PART_OutlineModeBtn is not null) PART_OutlineModeBtn.IsChecked = mode == DocumentRenderMode.Outline;
     }
 
-    // ── Group 0: Undo / Redo ─────────────────────────────────────────────────
-
-    private void OnUndoClicked(object sender, RoutedEventArgs e) => Undo();
-    private void OnRedoClicked(object sender, RoutedEventArgs e) => Redo();
-
     // ── Phase 14/15: Text + paragraph formatting toolbar handlers ─────────────
 
     private void OnBoldClicked(object sender, RoutedEventArgs e)          => ApplyFormat("bold");
@@ -1029,16 +1024,11 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         ApplyViewMode(ViewMode);
         _ = PopulateFontFamilyDropdownAsync();
         PART_TextPane.PART_Renderer.SelectionFormatChanged += OnSelectionFormatChanged;
-        CanUndoChanged += (_, _) => UpdateUndoRedoButtons();
-        CanRedoChanged += (_, _) => UpdateUndoRedoButtons();
-        UpdateUndoRedoButtons();
+        PART_TextPane.PART_Renderer.PageChanged += OnRendererPageChanged;
     }
 
-    private void UpdateUndoRedoButtons()
-    {
-        if (PART_UndoBtn is not null) PART_UndoBtn.IsEnabled = CanUndo;
-        if (PART_RedoBtn is not null) PART_RedoBtn.IsEnabled = CanRedo;
-    }
+    private void OnRendererPageChanged(object? sender, (int Current, int Total) e) =>
+        PART_StatusBar.UpdateCurrentPage(e.Current, e.Total);
 
     private void OnSelectionFormatChanged(object? sender, EventArgs e)
     {
