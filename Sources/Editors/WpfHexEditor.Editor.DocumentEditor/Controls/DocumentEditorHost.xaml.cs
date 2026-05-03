@@ -169,14 +169,14 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     public string UndoDescription => _vm?.Model.UndoEngine.PeekUndoDescription ?? "Undo";
     public string RedoDescription => _vm?.Model.UndoEngine.PeekRedoDescription ?? "Redo";
 
-    public ICommand? UndoCommand      => null;
-    public ICommand? RedoCommand      => null;
-    public ICommand? SaveCommand      => null;
-    public ICommand? CopyCommand      => null;
-    public ICommand? CutCommand       => null;
-    public ICommand? PasteCommand     => null;
-    public ICommand? DeleteCommand    => null;
-    public ICommand? SelectAllCommand => null;
+    public ICommand? UndoCommand      => new RelayCmd(Undo,      () => _vm?.Model.UndoEngine.CanUndo == true);
+    public ICommand? RedoCommand      => new RelayCmd(Redo,      () => _vm?.Model.UndoEngine.CanRedo == true);
+    public ICommand? SaveCommand      => new RelayCmd(Save,      () => _vm?.Model.IsDirty == true);
+    public ICommand? CopyCommand      => new RelayCmd(Copy,      () => true);
+    public ICommand? CutCommand       => new RelayCmd(Cut,       () => !IsReadOnly);
+    public ICommand? PasteCommand     => new RelayCmd(Paste,     () => !IsReadOnly);
+    public ICommand? DeleteCommand    => new RelayCmd(Delete,    () => !IsReadOnly);
+    public ICommand? SelectAllCommand => new RelayCmd(SelectAll, () => true);
 
     public event EventHandler?         ModifiedChanged;
     public event EventHandler?         CanUndoChanged;
@@ -197,7 +197,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     public void Paste()     { if (!IsReadOnly) PART_TextPane.PART_Renderer.PasteAtCaret(); }
     public void Delete()    { if (!IsReadOnly) PART_TextPane.PART_Renderer.DeleteAtCaret(forward: true); }
     public void SelectAll() => PART_TextPane.PART_Renderer.SelectAll();
-    public void Close()     { _loadCts.Cancel(); _syncService?.Dispose(); }
+    public void Close()     { _loadCts.Cancel(); _loadCts.Dispose(); _syncService?.Dispose(); }
     public void CancelOperation() { _loadCts.Cancel(); }
 
     public async Task SaveAsync(CancellationToken ct = default)
@@ -256,6 +256,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     public async Task OpenAsync(string filePath, CancellationToken ct = default)
     {
         _loadCts.Cancel();
+        _loadCts.Dispose();
         _loadCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
         var linked = _loadCts.Token;
 
@@ -971,5 +972,16 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         // Do NOT cancel _loadCts here — docking system unloads/reloads during tab switches.
+    }
+
+    private sealed class RelayCmd(Action execute, Func<bool> canExecute) : ICommand
+    {
+        public bool CanExecute(object? _) => canExecute();
+        public void Execute(object? _)    => execute();
+        public event EventHandler? CanExecuteChanged
+        {
+            add    => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
     }
 }

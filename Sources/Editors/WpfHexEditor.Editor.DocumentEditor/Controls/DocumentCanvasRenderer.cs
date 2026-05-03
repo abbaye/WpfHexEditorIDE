@@ -162,6 +162,13 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _blinkTimer.Tick += (_, _) => { _caretVisible = !_caretVisible; RefreshCaretVisual(); };
     }
 
+    protected override void OnVisualParentChanged(DependencyObject oldParent)
+    {
+        base.OnVisualParentChanged(oldParent);
+        if (VisualParent is null)
+            _blinkTimer?.Stop();
+    }
+
     // ── Public API ───────────────────────────────────────────────────────────
 
     /// <summary>Currently selected block (null when nothing is selected).</summary>
@@ -766,20 +773,23 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                         using var zip = ZipFile.OpenRead(captFilePath);
                         var entry     = zip.GetEntry(captEntryName);
                         if (entry is null) throw new FileNotFoundException(captEntryName);
-                        var ms = new MemoryStream();
-                        using (var s = entry.Open()) s.CopyTo(ms);
-                        ms.Position = 0;
-
-                        var img = new BitmapImage();
-                        img.BeginInit();
-                        img.StreamSource = ms;
-                        img.CacheOption  = BitmapCacheOption.OnLoad;
-                        img.EndInit();
-                        img.Freeze();
+                        BitmapImage img;
+                        using (var ms = new MemoryStream())
+                        {
+                            using (var s = entry.Open()) s.CopyTo(ms);
+                            ms.Position = 0;
+                            img = new BitmapImage();
+                            img.BeginInit();
+                            img.StreamSource = ms;
+                            img.CacheOption  = BitmapCacheOption.OnLoad;
+                            img.EndInit();
+                            img.Freeze();
+                        }
 
                         Dispatcher.InvokeAsync(() =>
                         {
-                            _imageCache![captKey] = img;
+                            if (_imageCache is null) return;
+                            _imageCache[captKey] = img;
                             _imageCache.Remove(captKey + "\0loading");
                             InvalidateVisual();
                         });
@@ -788,8 +798,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                     {
                         Dispatcher.InvokeAsync(() =>
                         {
-                            _imageCache?.Remove(captKey + "\0loading");
-                            _imageCache![captKey + "\0error"] = null;
+                            if (_imageCache is null) return;
+                            _imageCache.Remove(captKey + "\0loading");
+                            _imageCache[captKey + "\0error"] = null;
                             InvalidateVisual();
                         });
                     }
@@ -827,16 +838,20 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 {
                     try
                     {
-                        var ms  = new MemoryStream(captBytes);
-                        var img = new BitmapImage();
-                        img.BeginInit();
-                        img.StreamSource = ms;
-                        img.CacheOption  = BitmapCacheOption.OnLoad;
-                        img.EndInit();
-                        img.Freeze();
+                        BitmapImage img;
+                        using (var ms = new MemoryStream(captBytes))
+                        {
+                            img = new BitmapImage();
+                            img.BeginInit();
+                            img.StreamSource = ms;
+                            img.CacheOption  = BitmapCacheOption.OnLoad;
+                            img.EndInit();
+                            img.Freeze();
+                        }
                         Dispatcher.InvokeAsync(() =>
                         {
-                            _imageCache![captKey] = img;
+                            if (_imageCache is null) return;
+                            _imageCache[captKey] = img;
                             _imageCache.Remove(captKey + "\0loading");
                             InvalidateVisual();
                         });
@@ -845,8 +860,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                     {
                         Dispatcher.InvokeAsync(() =>
                         {
-                            _imageCache?.Remove(captKey + "\0loading");
-                            _imageCache![captKey + "\0error"] = null;
+                            if (_imageCache is null) return;
+                            _imageCache.Remove(captKey + "\0loading");
+                            _imageCache[captKey + "\0error"] = null;
                             InvalidateVisual();
                         });
                     }
