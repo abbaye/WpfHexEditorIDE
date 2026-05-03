@@ -102,12 +102,18 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private Brush? _pageNumFg, _tableBorderBrush, _imageFg;
     private Brush? _textSelBrush, _caretBrush, _findHighlightBrush;
     private Pen?   _pageCardPen, _pageBreakPen, _blockHoverPen, _tableGridPen;
+    // Cached per-style brushes/pens (avoid per-render allocations)
+    private Brush? _codeBgBrush, _errorBgBrush, _shadowBrush;
+    private Pen?   _h1RulePen, _h2RulePen, _pageBorderPen;
+    // Pre-built shadow brushes for DrawPageShadow (i=1..4, alpha = 0.08*i*255)
+    private readonly Brush?[] _pageShadowBrushes = new Brush?[5]; // index 1-4
 
     // Phase 19 — find results
     private IReadOnlyList<DocumentSearchMatch>? _findResults;
     private int _findCursor;
 
-    // Phase 20 — image cache
+    // Phase 20 — image cache (capped LRU via insertion-order Dictionary, max 64 real bitmaps)
+    private const int ImageCacheMaxEntries = 64;
     private Dictionary<string, BitmapImage?>? _imageCache;
 
     // ── Phase 12: Cursor + TextSelection ─────────────────────────────────────
@@ -561,13 +567,23 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         dc.DrawText(ft, new Point(20, vh / 2 - ft.Height / 2));
     }
 
-    private void DrawPageBorder(DrawingContext dc, Rect page)
+    private string? _pageBorderColorKey;
+
+    private Pen GetPageBorderPen()
     {
+        var key = $"{_pageSettings.BorderColor}:{_pageSettings.BorderWidthPx}";
+        if (_pageBorderPen is not null && _pageBorderColorKey == key)
+            return _pageBorderPen;
         var color = System.Windows.Media.ColorConverter.ConvertFromString(_pageSettings.BorderColor);
         var borderColor = color is System.Windows.Media.Color c ? c : Colors.Black;
-        var pen = new Pen(new SolidColorBrush(borderColor), _pageSettings.BorderWidthPx);
-        pen.Freeze();
+        _pageBorderPen = new Pen(new SolidColorBrush(borderColor), _pageSettings.BorderWidthPx);
+        _pageBorderPen.Freeze();
+        _pageBorderColorKey = key;
+        return _pageBorderPen;
+    }
 
+    private void DrawPageBorder(DrawingContext dc, Rect page)
+    {
         double pad = _pageSettings.BorderPaddingPx;
         var borderRect = new Rect(
             page.X + pad, page.Y + pad,
@@ -575,26 +591,19 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         if (_pageSettings.BorderStyle == DocumentPageBorderStyle.Shadow)
         {
-            // Shadow: outer rectangle slightly offset
-            var shadowBrush = new SolidColorBrush(Color.FromArgb(80, 0, 0, 0));
-            shadowBrush.Freeze();
-            dc.DrawRectangle(shadowBrush, null,
+            dc.DrawRectangle(_shadowBrush, null,
                 new Rect(borderRect.X + 3, borderRect.Y + 3, borderRect.Width, borderRect.Height));
         }
-        dc.DrawRectangle(null, pen, borderRect);
+        dc.DrawRectangle(null, GetPageBorderPen(), borderRect);
     }
 
     private void DrawPageShadow(DrawingContext dc, Rect page)
     {
-        // Cheap shadow: several offset semi-transparent rects
+        // Cheap shadow: several offset semi-transparent rects (brushes pre-cached)
         for (int i = 4; i >= 1; i--)
         {
             double expand = i * 2.0;
-            double opacity = 0.08 * i;
-            var shadowBrush = new SolidColorBrush(Color.FromArgb(
-                (byte)(opacity * 255), 0, 0, 0));
-            shadowBrush.Freeze();
-            dc.DrawRectangle(shadowBrush, null,
+            dc.DrawRectangle(_pageShadowBrushes[i], null,
                 new Rect(page.X - expand + 2, page.Y + 2 + i,
                          page.Width + expand * 2, page.Height + expand));
         }
@@ -654,10 +663,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         }
         else if (style == "code")
         {
-            // Monospace background pill
-            var codeBg = new SolidColorBrush(Color.FromArgb(30, 128, 128, 128));
-            codeBg.Freeze();
-            dc.DrawRoundedRectangle(codeBg, null, new Rect(x - 4, y - 2, maxW + 8, rb.Height + 4), 3, 3);
+            // Monospace background pill (cached brush)
+            EnsureBrushCache();
+            dc.DrawRoundedRectangle(_codeBgBrush, null, new Rect(x - 4, y - 2, maxW + 8, rb.Height + 4), 3, 3);
         }
 
         // ── Alignment offset ─────────────────────────────────────────────
@@ -887,6 +895,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                         Dispatcher.InvokeAsync(() =>
                         {
                             if (_imageCache is null) return;
+                            EvictImageCacheIfNeeded();
                             _imageCache[captKey] = img;
                             _imageCache.Remove(captKey + "\0loading");
                             InvalidateVisual();
@@ -944,10 +953,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void DrawImageErrorPlaceholder(DrawingContext dc, RenderBlock rb, double x, double y, double maxW)
     {
-        var rect   = new Rect(x, y, Math.Min(maxW, 260), 48);
-        var errorBg = new SolidColorBrush(Color.FromRgb(255, 235, 235));
-        errorBg.Freeze();
-        dc.DrawRoundedRectangle(errorBg, _tableGridPen!, rect, 4, 4);
+        var rect = new Rect(x, y, Math.Min(maxW, 260), 48);
+        EnsureBrushCache();
+        dc.DrawRoundedRectangle(_errorBgBrush, _tableGridPen!, rect, 4, 4);
         var en    = rb.Block.Attributes.TryGetValue("zipEntryName", out var ev) ? ev?.ToString() : null;
         string label = en is not null
             ? $"  Failed: {System.IO.Path.GetFileName(en)}  (click to retry)"
@@ -1145,16 +1153,20 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     // ── GlyphRun pipeline ─────────────────────────────────────────────────────
 
+    private double _cachedPixelsPerDip = 0;
+
     private double GetPixelsPerDip()
     {
+        if (_cachedPixelsPerDip > 0) return _cachedPixelsPerDip;
         try
         {
             var mainWindow = Application.Current?.MainWindow;
             if (mainWindow is not null)
-                return VisualTreeHelper.GetDpi(mainWindow).PixelsPerDip;
+                _cachedPixelsPerDip = VisualTreeHelper.GetDpi(mainWindow).PixelsPerDip;
         }
         catch { }
-        return 1.0;
+        if (_cachedPixelsPerDip <= 0) _cachedPixelsPerDip = 1.0;
+        return _cachedPixelsPerDip;
     }
 
     /// <summary>
@@ -1274,24 +1286,20 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 }
             }
 
-            // H1: full-width rule below first line
-            if (isHeading && headingLevel == 1 && li == 0 && _fgDimBrush is not null)
+            // H1: full-width rule below first line (cached pen)
+            if (isHeading && headingLevel == 1 && li == 0 && _h1RulePen is not null)
             {
                 double ruleY = y + line.LineHeight + 3;
                 double ruleW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
-                var pen = new Pen(_fgDimBrush, 0.5);
-                pen.Freeze();
-                dc.DrawLine(pen, new Point(originX, ruleY), new Point(originX + ruleW, ruleY));
+                dc.DrawLine(_h1RulePen, new Point(originX, ruleY), new Point(originX + ruleW, ruleY));
             }
 
-            // H2: 30%-width rule below first line
-            if (isHeading && headingLevel == 2 && li == 0 && _fgDimBrush is not null)
+            // H2: 30%-width rule below first line (cached pen)
+            if (isHeading && headingLevel == 2 && li == 0 && _h2RulePen is not null)
             {
                 double ruleY = y + line.LineHeight + 2;
                 double ruleW = Math.Max(1, (_pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight) * 0.3);
-                var pen = new Pen(_fgDimBrush, 0.5);
-                pen.Freeze();
-                dc.DrawLine(pen, new Point(originX, ruleY), new Point(originX + ruleW, ruleY));
+                dc.DrawLine(_h2RulePen, new Point(originX, ruleY), new Point(originX + ruleW, ruleY));
             }
 
             y += line.LineHeight;
@@ -1340,6 +1348,22 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 if (run.Attributes.TryGetValue("fontFamily", out var ffv) &&
                     ffv is string ff && !string.IsNullOrEmpty(ff))
                     ft.SetFontFamily(new FontFamily(ff), pos, len);
+
+                // color — per-run foreground (was silently dropped before)
+                if (run.Attributes.TryGetValue("color", out var cv) && cv is string cs2)
+                {
+                    try
+                    {
+                        var converted = System.Windows.Media.ColorConverter.ConvertFromString(cs2);
+                        if (converted is Color rc)
+                        {
+                            var brush = new SolidColorBrush(rc);
+                            brush.Freeze();
+                            ft.SetForegroundBrush(brush, pos, len);
+                        }
+                    }
+                    catch { }
+                }
 
                 pos += len;
             }
@@ -1407,6 +1431,21 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private void InvalidateBrushCache()
     {
         _canvasBg = null;
+    }
+
+    // Evict oldest real-bitmap entries when cache exceeds cap (sentinels excluded from count)
+    private void EvictImageCacheIfNeeded()
+    {
+        if (_imageCache is null) return;
+        var realKeys = _imageCache
+            .Where(kv => kv.Value is not null)
+            .Select(kv => kv.Key)
+            .ToList();
+        while (realKeys.Count >= ImageCacheMaxEntries)
+        {
+            _imageCache.Remove(realKeys[0]);
+            realKeys.RemoveAt(0);
+        }
     }
 
     private void EnsureBrushCache()
@@ -1481,6 +1520,25 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         // Phase 19 — find highlight (yellow, like Word Ctrl+F)
         _findHighlightBrush = new SolidColorBrush(Color.FromArgb(120, 255, 215, 0));
         ((SolidColorBrush)_findHighlightBrush).Freeze();
+
+        // Per-style cached brushes/pens
+        _codeBgBrush = new SolidColorBrush(Color.FromArgb(30, 128, 128, 128));
+        ((SolidColorBrush)_codeBgBrush).Freeze();
+        _errorBgBrush = new SolidColorBrush(Color.FromRgb(255, 235, 235));
+        ((SolidColorBrush)_errorBgBrush).Freeze();
+        _shadowBrush = new SolidColorBrush(Color.FromArgb(80, 0, 0, 0));
+        ((SolidColorBrush)_shadowBrush).Freeze();
+        _h1RulePen = new Pen(_fgDimBrush, 0.5);
+        _h1RulePen.Freeze();
+        _h2RulePen = new Pen(_fgDimBrush, 0.5);
+        _h2RulePen.Freeze();
+        for (int i = 1; i <= 4; i++)
+        {
+            var b = new SolidColorBrush(Color.FromArgb((byte)(0.08 * i * 255), 0, 0, 0));
+            b.Freeze();
+            _pageShadowBrushes[i] = b;
+        }
+        _pageBorderPen = null; // rebuilt when settings change; see DrawPageBorder
     }
 
     private Brush GetBrush(string key, Color fallbackColor)
@@ -2291,6 +2349,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs e)
     {
+        _cachedPixelsPerDip = 0; // invalidate on window resize (DPI may have changed)
         RecalcPageGeometry(e.NewSize.Width);
         if (_model is not null) RebuildLayout();
         else InvalidateVisual();
