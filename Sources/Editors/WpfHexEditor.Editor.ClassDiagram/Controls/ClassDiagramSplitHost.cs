@@ -363,7 +363,7 @@ public sealed class ClassDiagramSplitHost : Grid,
         try { return Clipboard.ContainsText() && Clipboard.GetText().TrimStart().StartsWith("// classdiagram-clip"); }
         catch { return false; }
     });
-    public ICommand? DeleteCommand    => new RelayCommand(() => { foreach (var id in _canvas.SelectedIds.ToList()) { var n = _document.Classes.FirstOrDefault(c => c.Id == id); if (n is not null) _canvas.DeleteSelectedNode(); } });
+    public ICommand? DeleteCommand    => new RelayCommand(() => { foreach (var id in _canvas.SelectedIds.ToList()) { var n = _document.Classes.FirstOrDefault(c => c.Id == id); if (n is not null) _canvas.DeleteNode(n); } });
     public ICommand? SelectAllCommand => new RelayCommand(() => _canvas.SelectAll());
 
     public void Undo()
@@ -1584,7 +1584,7 @@ public sealed class ClassDiagramSplitHost : Grid,
         foreach (var id in _canvas.SelectedIds.ToList())
         {
             var node = _document.Classes.FirstOrDefault(n => n.Id == id);
-            if (node is not null) _canvas.DeleteSelectedNode();
+            if (node is not null) _canvas.DeleteNode(node);
         }
         if (_canvas.Document is not null) _document = _canvas.Document;
         SyncDslPane();

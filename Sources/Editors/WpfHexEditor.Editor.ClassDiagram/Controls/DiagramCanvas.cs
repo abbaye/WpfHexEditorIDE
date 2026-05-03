@@ -253,7 +253,26 @@ public sealed class DiagramCanvas : Canvas
     public void DeleteSelectedNode()
     {
         if (_primarySelected is not null)
-            DeleteNode(_primarySelected);
+            DeleteNode_Internal(_primarySelected);
+    }
+
+    /// <summary>Deletes a specific node by reference (with undo entry). No-op when node is not in the document.</summary>
+    public void DeleteNode(ClassNode node) => DeleteNode_Internal(node);
+
+    // Redirect private method to avoid ambiguity with the new public overload
+    private void DeleteNode_Internal(ClassNode node)
+    {
+        if (_doc is null) return;
+        var doc         = _doc;
+        var removedRels = doc.Relationships.Where(r => r.SourceId == node.Id || r.TargetId == node.Id).ToList();
+        doc.Classes.Remove(node);
+        doc.Relationships.RemoveAll(r => r.SourceId == node.Id || r.TargetId == node.Id);
+        if (_selectedNode == node) ClearSelection();
+        _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id);
+        _undoManager?.Push(new SingleClassDiagramUndoEntry(
+            Description: $"Delete {node.Name}",
+            UndoAction: () => { doc.Classes.Add(node); foreach (var r in removedRels) doc.Relationships.Add(r); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); },
+            RedoAction: () => { doc.Classes.Remove(node); foreach (var r in removedRels) doc.Relationships.Remove(r); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); }));
     }
 
     /// <summary>Returns all currently selected node IDs.</summary>
@@ -805,8 +824,9 @@ public sealed class DiagramCanvas : Canvas
             // Double-click → navigate to source
             if (e.ClickCount == 2)
             {
-                var member = _layer.HitTestMember(pt, node);
-                NavigateToMemberRequested?.Invoke(this, (node, member ?? node.Members.FirstOrDefault()!));
+                var member = _layer.HitTestMember(pt, node) ?? node.Members.FirstOrDefault();
+                if (member is not null)
+                    NavigateToMemberRequested?.Invoke(this, (node, member));
                 e.Handled = true;
                 return;
             }
@@ -1324,7 +1344,11 @@ public sealed class DiagramCanvas : Canvas
             : $"{node.Namespace}.{node.Name}";
         menu.Items.Add(MakeItem("\uE16C", "Copy Full Name",     () => Clipboard.SetText(fullName)));
         menu.Items.Add(new Separator());
-        menu.Items.Add(MakeItem("\uE7C5", "Navigate to Source", () => NavigateToMemberRequested?.Invoke(this, (node, node.Members.FirstOrDefault()!))));
+        menu.Items.Add(MakeItem("\uE7C5", "Navigate to Source", () =>
+        {
+            var first = node.Members.FirstOrDefault();
+            if (first is not null) NavigateToMemberRequested?.Invoke(this, (node, first));
+        }));
         menu.Items.Add(MakeItem("\uE721", "Find References",    () => FindReferencesRequested?.Invoke(this, node)));
         menu.Items.Add(new Separator());
 
@@ -1348,7 +1372,7 @@ public sealed class DiagramCanvas : Canvas
         menu.Items.Add(MakeItem("\uE790", "Change Color…",  () => ChangeNodeColorRequested?.Invoke(this, node)));
         menu.Items.Add(new Separator());
         menu.Items.Add(MakeItem("\uE9D9", "Show Metrics",   () => ShowMetricsRequested?.Invoke(this, node)));
-        menu.Items.Add(MakeItem("\uE74D", "Delete",          () => DeleteNode(node)));
+        menu.Items.Add(MakeItem("\uE74D", "Delete",          () => DeleteNode_Internal(node)));
         return menu;
     }
 
@@ -1453,21 +1477,6 @@ public sealed class DiagramCanvas : Canvas
     }
 
     // ── Delete / change helpers ───────────────────────────────────────────────
-
-    private void DeleteNode(ClassNode node)
-    {
-        if (_doc is null) return;
-        var doc        = _doc;   // capture current doc — live-sync may swap _doc later
-        var removedRels = doc.Relationships.Where(r => r.SourceId == node.Id || r.TargetId == node.Id).ToList();
-        doc.Classes.Remove(node);
-        doc.Relationships.RemoveAll(r => r.SourceId == node.Id || r.TargetId == node.Id);
-        if (_selectedNode == node) ClearSelection();
-        _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id);
-        _undoManager?.Push(new SingleClassDiagramUndoEntry(
-            Description: $"Delete {node.Name}",
-            UndoAction: () => { doc.Classes.Add(node); foreach (var r in removedRels) doc.Relationships.Add(r); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); },
-            RedoAction: () => { doc.Classes.Remove(node); foreach (var r in removedRels) doc.Relationships.Remove(r); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); }));
-    }
 
     private void DeleteRelationship(ClassRelationship rel)
     {
