@@ -113,6 +113,26 @@
                     </Style>
                 </DockPanel.Resources>
 
+                <!-- Group 0 — Undo / Redo -->
+                <Button x:Name="PART_UndoBtn"
+                        Style="{StaticResource DocViewToggleStyle}"
+                        DockPanel.Dock="Left"
+                        ToolTip="Undo (Ctrl+Z)"
+                        Click="OnUndoClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7A7;" FontSize="14" VerticalAlignment="Center"/>
+                </Button>
+
+                <Button x:Name="PART_RedoBtn"
+                        Style="{StaticResource DocViewToggleStyle}"
+                        DockPanel.Dock="Left"
+                        Margin="2,0,0,0"
+                        ToolTip="Redo (Ctrl+Y)"
+                        Click="OnRedoClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7A6;" FontSize="14" VerticalAlignment="Center"/>
+                </Button>
+
+                <Separator Style="{StaticResource DocToolbarSeparatorStyle}" DockPanel.Dock="Left"/>
+
                 <!-- Group 1 — View mode (radio-like toggles) -->
                 <ToggleButton x:Name="PART_TextModeBtn"
                               Style="{StaticResource DocViewToggleStyle}"
