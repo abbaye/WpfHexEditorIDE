@@ -104,6 +104,28 @@ public partial class DocumentTextPane : UserControl
     public void ShowLoading(string message = "Loading…") => PART_Renderer.ShowLoading(message);
     public void ShowError(string message)                 => PART_Renderer.ShowError(message);
 
+    public void ShowQuickSearch(WpfHexEditor.Editor.Core.ISearchTarget target)
+    {
+        if (PART_QuickSearchBar.Visibility == Visibility.Visible)
+        {
+            PART_QuickSearchBar.FocusSearchInput();
+            return;
+        }
+        PART_QuickSearchBar.BindToTarget(target);
+        PART_QuickSearchBar.OnCloseRequested -= OnSearchBarClose;
+        PART_QuickSearchBar.OnCloseRequested += OnSearchBarClose;
+        PART_QuickSearchBar.Visibility = Visibility.Visible;
+        PART_QuickSearchBar.EnsureDefaultPosition(PART_SearchCanvas);
+        PART_QuickSearchBar.FocusSearchInput();
+    }
+
+    public void HideQuickSearch()
+    {
+        PART_QuickSearchBar.Visibility = Visibility.Collapsed;
+    }
+
+    private void OnSearchBarClose(object? sender, EventArgs e) => HideQuickSearch();
+
     // ── Renderer event forwarding ────────────────────────────────────────────
 
     private void OnRendererSelectedBlockChanged(object? sender, DocumentBlock? block) =>

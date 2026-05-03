@@ -75,7 +75,6 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private BinaryMapSyncService?    _syncService;
     private DocumentMutator?         _mutator;
     private DocumentHexHighlightManager? _hexHighlightMgr;
-    private DocumentFindReplaceDialog?   _findDialog;
     private CancellationTokenSource  _loadCts = new();
     private string?                  _pendingFilePath;
     private string                   _currentFileExtension = string.Empty;
@@ -678,20 +677,9 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void OpenFindDialog(bool showReplace)
     {
         if (_vm?.Model is null) return;
-
-        if (_findDialog is null || !_findDialog.IsLoaded)
-        {
-            var vm     = new ViewModels.DocumentSearchViewModel(_vm.Model, PART_TextPane.PART_Renderer);
-            _findDialog = new DocumentFindReplaceDialog(vm)
-            {
-                Owner = Window.GetWindow(this),
-            };
-            _findDialog.Closed += (_, _) => _findDialog = null;
-        }
-
-        _findDialog.ShowReplacePanel = showReplace;
-        _findDialog.Show();
-        _findDialog.Activate();
+        var searchVm = new ViewModels.DocumentSearchViewModel(_vm.Model, PART_TextPane.PART_Renderer);
+        var target   = new ViewModels.DocumentSearchTarget(searchVm);
+        PART_TextPane.ShowQuickSearch(target);
     }
 
     private void SetPaneVisibility(bool text, bool structure, bool hex)

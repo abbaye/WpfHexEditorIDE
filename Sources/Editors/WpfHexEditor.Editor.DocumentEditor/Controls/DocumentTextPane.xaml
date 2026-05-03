@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
              xmlns:local="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Controls"
+             xmlns:coreViews="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
              Background="{DynamicResource DE_PageCanvasBackground}"
              Foreground="{DynamicResource DE_TextPaneForeground}">
     <UserControl.Resources>
@@ -43,5 +44,16 @@
                 SelectedBlockChanged="OnRendererSelectedBlockChanged"
                 PopToolbarRequested="OnRendererPopToolbarRequested"/>
         </ScrollViewer>
+
+        <!-- QuickSearchBar overlay (same pattern as HexEditor) -->
+        <Canvas x:Name="PART_SearchCanvas"
+                Grid.Column="1"
+                Panel.ZIndex="10"
+                IsHitTestVisible="False">
+            <coreViews:QuickSearchBar x:Name="PART_QuickSearchBar"
+                                      Width="520"
+                                      Visibility="Collapsed"
+                                      IsHitTestVisible="True"/>
+        </Canvas>
     </Grid>
 </UserControl>
