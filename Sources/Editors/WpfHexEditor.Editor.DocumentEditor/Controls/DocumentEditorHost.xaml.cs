@@ -518,8 +518,41 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         if (e.Key != System.Windows.Input.Key.Return || PART_FontFamilyDropdown is null) return;
         var family = PART_FontFamilyDropdown.Text?.Trim();
         if (!string.IsNullOrWhiteSpace(family))
-            ApplyRunFormat("fontFamily", family);
+        {
+            if (IsFontFamilyValid(family))
+            {
+                ApplyRunFormat("fontFamily", family);
+                SetFontDropdownError(false);
+            }
+            else
+            {
+                SetFontDropdownError(true);
+            }
+        }
         e.Handled = true;
+    }
+
+    private void OnFontFamilyLostFocus(object sender, RoutedEventArgs e)
+    {
+        if (PART_FontFamilyDropdown is null) return;
+        var family = PART_FontFamilyDropdown.Text?.Trim();
+        if (string.IsNullOrWhiteSpace(family)) { SetFontDropdownError(false); return; }
+        SetFontDropdownError(!IsFontFamilyValid(family));
+    }
+
+    private static bool IsFontFamilyValid(string name) =>
+        Fonts.SystemFontFamilies.Any(f =>
+            string.Equals(f.Source, name, StringComparison.OrdinalIgnoreCase));
+
+    private void SetFontDropdownError(bool isError)
+    {
+        if (PART_FontFamilyDropdown is null) return;
+        PART_FontFamilyDropdown.BorderBrush = isError
+            ? System.Windows.Media.Brushes.Red
+            : null;    // null → inherits theme brush
+        PART_FontFamilyDropdown.ToolTip = isError
+            ? "Unknown font family"
+            : "Font family";
     }
 
     // ── Wave F: Font size ─────────────────────────────────────────────────────
