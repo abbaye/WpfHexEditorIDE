@@ -1419,8 +1419,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         // Phase 12 — cursor + selection (WYSIWYG: black caret, blue selection on white)
         _textSelBrush       = new SolidColorBrush(Color.FromArgb(80, 66, 133, 244));
         ((SolidColorBrush)_textSelBrush).Freeze();
-        _caretBrush         = new SolidColorBrush(Color.FromRgb(20, 20, 20));
-        ((SolidColorBrush)_caretBrush).Freeze();
+        // Use theme foreground for caret; fall back to white so it's visible on dark themes
+        _caretBrush = (TryFindResource("DE_TextPaneForeground") as Brush)
+                      ?? new SolidColorBrush(Colors.White);
+        if (_caretBrush.CanFreeze) _caretBrush.Freeze();
 
         // Phase 19 — find highlight (yellow, like Word Ctrl+F)
         _findHighlightBrush = new SolidColorBrush(Color.FromArgb(120, 255, 215, 0));

@@ -74,16 +74,17 @@ public partial class WorkspaceFindReplacePanel : UserControl
         ReplaceAllBtn.IsEnabled = false;
         StatusText.Text         = "Searching…";
 
+        bool useRegex     = RegexCheck.IsChecked     == true;
+        bool matchCase    = MatchCaseCheck.IsChecked  == true;
+        bool wholeWord    = WholeWordCheck.IsChecked  == true;
+        var  ct           = _cts.Token;
+
         try
         {
             var results = await Task.Run(
                 () => WorkspaceFindReplaceService.SearchAsync(
-                    pattern,
-                    RegexCheck.IsChecked   == true,
-                    MatchCaseCheck.IsChecked == true,
-                    WholeWordCheck.IsChecked == true,
-                    _cts.Token),
-                _cts.Token);
+                    pattern, useRegex, matchCase, wholeWord, ct),
+                ct);
 
             foreach (var r in results)
                 _rows.Add(new WorkspaceResultRow
@@ -132,6 +133,11 @@ public partial class WorkspaceFindReplacePanel : UserControl
         _cts?.Cancel();
         _cts = new CancellationTokenSource();
 
+        bool useRegex2  = RegexCheck.IsChecked     == true;
+        bool matchCase2 = MatchCaseCheck.IsChecked  == true;
+        bool wholeWord2 = WholeWordCheck.IsChecked  == true;
+        var  ct2        = _cts.Token;
+
         FindAllBtn.IsEnabled    = false;
         ReplaceAllBtn.IsEnabled = false;
         StatusText.Text         = "Replacing…";
@@ -141,11 +147,8 @@ public partial class WorkspaceFindReplacePanel : UserControl
             var changed = await Task.Run(
                 () => WorkspaceFindReplaceService.ReplaceAllAsync(
                     pattern, replacement,
-                    RegexCheck.IsChecked    == true,
-                    MatchCaseCheck.IsChecked  == true,
-                    WholeWordCheck.IsChecked  == true,
-                    _cts.Token),
-                _cts.Token);
+                    useRegex2, matchCase2, wholeWord2, ct2),
+                ct2);
 
             int total = changed.Sum(c => c.Count);
             StatusText.Text = total == 0

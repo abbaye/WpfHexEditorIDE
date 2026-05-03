@@ -9,6 +9,34 @@
             <ResourceDictionary.MergedDictionaries>
                 <svc:ShellPanelsLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="WFR_ActionButton" TargetType="Button">
+                <Setter Property="Background"   Value="{DynamicResource InfoBar_ButtonBackgroundBrush}"/>
+                <Setter Property="Foreground"   Value="{DynamicResource InfoBar_ButtonForegroundBrush}"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Cursor"       Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="3"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource InfoBar_ButtonHoverBackgroundBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.4"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -43,6 +71,7 @@
                        KeyDown="OnFindBoxKeyDown"/>
             <Button    x:Name="FindAllBtn"
                        Grid.Row="0" Grid.Column="2"
+                       Style="{StaticResource WFR_ActionButton}"
                        Content="{StaticResource WorkspaceFindReplace_FindAll}"
                        Padding="8,2" Margin="4,0,0,0" FontSize="11"
                        Click="OnFindAllClick"/>
@@ -55,6 +84,7 @@
                        FontSize="11" Padding="3,2"/>
             <Button    x:Name="ReplaceAllBtn"
                        Grid.Row="2" Grid.Column="2"
+                       Style="{StaticResource WFR_ActionButton}"
                        Content="{StaticResource WorkspaceFindReplace_ReplaceAll}"
                        Padding="8,2" Margin="4,0,0,0" FontSize="11"
                        Click="OnReplaceAllClick"/>
@@ -71,6 +101,7 @@
                           Content="{StaticResource WorkspaceFindReplace_OptionWholeWord}"
                           Margin="0,0,10,0" FontSize="11"/>
                 <Button   x:Name="ClearBtn"
+                          Style="{StaticResource WFR_ActionButton}"
                           Content="&#x2715;" ToolTip="Clear results"
                           Padding="5,0" FontSize="11" Click="OnClearClick"/>
             </StackPanel>
