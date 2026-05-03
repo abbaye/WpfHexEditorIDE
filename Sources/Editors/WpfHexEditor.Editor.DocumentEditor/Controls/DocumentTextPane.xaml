@@ -31,7 +31,7 @@
                       x:Name="PART_ScrollViewer"
                       Background="{DynamicResource DE_PageCanvasBackground}"
                       VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
                       CanContentScroll="True">
             <ScrollViewer.LayoutTransform>
                 <ScaleTransform x:Name="PART_ZoomTransform" ScaleX="1" ScaleY="1"/>
