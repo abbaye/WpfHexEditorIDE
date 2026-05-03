@@ -669,7 +669,9 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         if ((Keyboard.Modifiers & ModifierKeys.Control) == 0) return;
 
         if (e.Key == Key.F)  { OpenFindDialog(showReplace: false); e.Handled = true; }
-        if (e.Key == Key.H)  { OpenFindDialog(showReplace: true);  e.Handled = true; }
+        // Ctrl+H = find/replace in document; Ctrl+Shift+H is workspace-wide (handled by MainWindow)
+        if (e.Key == Key.H && (Keyboard.Modifiers & ModifierKeys.Shift) == 0)
+            { OpenFindDialog(showReplace: true); e.Handled = true; }
         if (e.Key == Key.S)  { Save(); e.Handled = true; }
     }
 
@@ -677,17 +679,19 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     {
         if (_vm?.Model is null) return;
 
-        if (_findDialog is null)
+        if (_findDialog is null || !_findDialog.IsLoaded)
         {
             var vm     = new ViewModels.DocumentSearchViewModel(_vm.Model, PART_TextPane.PART_Renderer);
             _findDialog = new DocumentFindReplaceDialog(vm)
             {
                 Owner = Window.GetWindow(this),
             };
+            _findDialog.Closed += (_, _) => _findDialog = null;
         }
 
         _findDialog.ShowReplacePanel = showReplace;
         _findDialog.Show();
+        _findDialog.Activate();
     }
 
     private void SetPaneVisibility(bool text, bool structure, bool hex)
@@ -707,6 +711,25 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_HexCol.Width       = hex       ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
         PART_Splitter1Col.Width = (text && (structure || hex)) ? new GridLength(4) : new GridLength(0);
         PART_Splitter2Col.Width = (structure && hex)           ? new GridLength(4) : new GridLength(0);
+    }
+
+    private void OnSplitter1DragDelta(object sender, DragDeltaEventArgs e)
+    {
+        // GridSplitter is in col 1 — it resizes col 0 (text) and col 2 (struct).
+        // When HexPane is in col 4 and StructCol=0, we must manually redistribute
+        // the delta between TextCol and HexCol.
+        if (PART_StructCol.Width.Value > 0) return; // full layout: let GridSplitter handle it
+
+        double total = PART_TextCol.ActualWidth + PART_HexCol.ActualWidth;
+        if (total <= 0) return;
+
+        double newText = Math.Max(100, PART_TextCol.ActualWidth + e.HorizontalChange);
+        double newHex  = Math.Max(100, total - newText);
+        newText = total - newHex;
+
+        PART_TextCol.Width = new GridLength(newText, GridUnitType.Pixel);
+        PART_HexCol.Width  = new GridLength(newHex,  GridUnitType.Pixel);
+        e.Handled = true;
     }
 
     private static void OnIsForensicModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
