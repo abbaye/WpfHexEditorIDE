@@ -10,7 +10,9 @@
 // ==========================================================
 
 using System.IO;
+using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -503,10 +505,20 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void OnFontFamilyChanged(object sender, SelectionChangedEventArgs e)
     {
         if (_suppressFontDropdown) return;
-        if (PART_FontFamilyDropdown?.SelectedItem is not ComboBoxItem item) return;
-        var family = item.Tag?.ToString();
-        if (!string.IsNullOrEmpty(family))
+        if (PART_FontFamilyDropdown is null) return;
+        var family = PART_FontFamilyDropdown.SelectedItem as string
+                  ?? PART_FontFamilyDropdown.Text;
+        if (!string.IsNullOrWhiteSpace(family))
+            ApplyRunFormat("fontFamily", family.Trim());
+    }
+
+    private void OnFontFamilyKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key != System.Windows.Input.Key.Return || PART_FontFamilyDropdown is null) return;
+        var family = PART_FontFamilyDropdown.Text?.Trim();
+        if (!string.IsNullOrWhiteSpace(family))
             ApplyRunFormat("fontFamily", family);
+        e.Handled = true;
     }
 
     // ── Wave F: Font size ─────────────────────────────────────────────────────
@@ -604,13 +616,21 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     {
         if (PART_StyleDropdown?.SelectedItem is not ComboBoxItem item) return;
         var style = item.Content?.ToString() ?? "Normal";
-        if (style == "Normal")       ApplyBlockAttribute("style", null);
+        if (style == "Normal")
+        {
+            ApplyBlockAttribute("style", null);
+            ApplyBlockAttribute("level", null);
+        }
         else if (style.StartsWith("H") && int.TryParse(style[1..], out int lvl))
         {
             ApplyBlockAttribute("style", "heading");
             ApplyBlockAttribute("level", lvl.ToString());
         }
-        else                         ApplyBlockAttribute("style", style.ToLowerInvariant());
+        else
+        {
+            ApplyBlockAttribute("style", style.ToLowerInvariant());
+            ApplyBlockAttribute("level", null);
+        }
     }
 
     private void ApplyBlockAttribute(string attribute, object? value)
@@ -938,6 +958,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
         model.UndoEngine.StateChanged += (_, _) =>
         {
+            model.IsDirty = !model.UndoEngine.IsAtSavePoint;
             CanUndoChanged?.Invoke(this, EventArgs.Empty);
             CanRedoChanged?.Invoke(this, EventArgs.Empty);
         };
@@ -967,6 +988,26 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         ApplyViewMode(ViewMode);
+        PopulateFontFamilyDropdown();
+    }
+
+    private void PopulateFontFamilyDropdown()
+    {
+        if (PART_FontFamilyDropdown is null) return;
+        _suppressFontDropdown = true;
+        try
+        {
+            PART_FontFamilyDropdown.Items.Clear();
+            foreach (var name in Fonts.SystemFontFamilies
+                                      .Select(f => f.Source)
+                                      .OrderBy(s => s, StringComparer.OrdinalIgnoreCase))
+                PART_FontFamilyDropdown.Items.Add(name);
+            PART_FontFamilyDropdown.Text = "Georgia";
+        }
+        finally
+        {
+            _suppressFontDropdown = false;
+        }
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)

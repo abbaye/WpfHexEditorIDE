@@ -103,6 +103,15 @@
                 BorderBrush="{DynamicResource DE_ToolbarBorderBrush}"
                 BorderThickness="0,0,0,1">
             <DockPanel Margin="4,2" LastChildFill="False">
+                <DockPanel.Resources>
+                    <!-- Toolbar buttons must not steal focus from the document renderer -->
+                    <Style TargetType="Button"       BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="Focusable" Value="False"/>
+                    </Style>
+                    <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                        <Setter Property="Focusable" Value="False"/>
+                    </Style>
+                </DockPanel.Resources>
 
                 <!-- Group 1 — View mode (radio-like toggles) -->
                 <ToggleButton x:Name="PART_TextModeBtn"
@@ -191,6 +200,7 @@
                               Style="{StaticResource DocViewToggleStyle}"
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
+                              Focusable="False"
                               ToolTip="{DynamicResource DocEditorHost_TooltipBold}"
                               Click="OnBoldClicked">
                     <TextBlock FontFamily="Segoe UI" Text="B" FontSize="13" FontWeight="Bold" VerticalAlignment="Center"/>
@@ -200,6 +210,7 @@
                               Style="{StaticResource DocViewToggleStyle}"
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
+                              Focusable="False"
                               ToolTip="{DynamicResource DocEditorHost_TooltipItalic}"
                               Click="OnItalicClicked">
                     <TextBlock FontFamily="Segoe UI" Text="I" FontSize="13" FontStyle="Italic" VerticalAlignment="Center"/>
@@ -209,6 +220,7 @@
                               Style="{StaticResource DocViewToggleStyle}"
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
+                              Focusable="False"
                               ToolTip="{DynamicResource DocEditorHost_TooltipUnderline}"
                               Click="OnUnderlineClicked">
                     <TextBlock FontFamily="Segoe UI" Text="U" FontSize="13"
@@ -219,6 +231,7 @@
                               Style="{StaticResource DocViewToggleStyle}"
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
+                              Focusable="False"
                               ToolTip="{DynamicResource DocEditorHost_TooltipStrikethrough}"
                               Click="OnStrikethroughClicked">
                     <TextBlock FontFamily="Segoe UI" Text="S" FontSize="13"
@@ -230,17 +243,22 @@
                 <!-- Group 5b — Font family (Wave F) -->
                 <ComboBox x:Name="PART_FontFamilyDropdown"
                           DockPanel.Dock="Left"
-                          Width="110"
+                          Width="130"
                           Height="22"
                           FontSize="11"
                           Margin="2,0"
+                          IsEditable="True"
                           ToolTip="Font family"
-                          SelectionChanged="OnFontFamilyChanged">
-                    <ComboBoxItem Content="Georgia"      Tag="Georgia"/>
-                    <ComboBoxItem Content="Segoe UI"     Tag="Segoe UI"     IsSelected="True"/>
-                    <ComboBoxItem Content="Arial"        Tag="Arial"/>
-                    <ComboBoxItem Content="Courier New"  Tag="Courier New"/>
-                    <ComboBoxItem Content="Times New Roman" Tag="Times New Roman"/>
+                          SelectionChanged="OnFontFamilyChanged"
+                          KeyDown="OnFontFamilyKeyDown">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}"
+                                       FontFamily="{Binding}"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
                 </ComboBox>
 
                 <!-- Group 5c — Font size (Wave F) -->
@@ -275,6 +293,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
+                        Focusable="False"
                         ToolTip="Text color"
                         Click="OnTextColorBtnClicked">
                     <Grid Width="18" Height="18">
@@ -332,6 +351,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
+                        Focusable="False"
                         ToolTip="{DynamicResource DocEditorHost_TooltipAlignLeft}"
                         Click="OnAlignLeftClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E4;" FontSize="13"/>
@@ -341,6 +361,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
+                        Focusable="False"
                         ToolTip="{DynamicResource DocEditorHost_TooltipAlignCenter}"
                         Click="OnAlignCenterClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E3;" FontSize="13"/>
@@ -350,6 +371,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
+                        Focusable="False"
                         ToolTip="{DynamicResource DocEditorHost_TooltipAlignRight}"
                         Click="OnAlignRightClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E2;" FontSize="13"/>
@@ -360,6 +382,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
+                        Focusable="False"
                         ToolTip="{DynamicResource DocEditorHost_TooltipParaStyles}"
                         Click="OnStylesBtnClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8EC;" FontSize="13"/>
