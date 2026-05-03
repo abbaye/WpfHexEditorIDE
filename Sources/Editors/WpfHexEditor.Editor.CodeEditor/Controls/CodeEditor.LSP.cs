@@ -292,6 +292,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
+        /// Sets the active debug-value provider so <see cref="Layers.DebugValueHintsLayer"/>
+        /// can render inline variable values while the debugger is paused.
+        /// Pass <see langword="null"/> to clear the overlay when the session resumes or stops.
+        /// </summary>
+        public void SetDebugValueProvider(WpfHexEditor.Editor.Core.Debugging.IDebugValueProvider? provider)
+            => _debugValueHintsLayer.SetDebugValueProvider(provider);
+
+        /// <summary>
         /// Injects the document manager for workspace-wide edit application (ILspAwareEditor).
         /// </summary>
         public void SetDocumentManager(IDocumentManager manager)
