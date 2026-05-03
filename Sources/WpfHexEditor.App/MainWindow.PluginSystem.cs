@@ -24,6 +24,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using WpfHexEditor.App.Dialogs;
 using WpfHexEditor.App.Properties;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.SDK.Events;
@@ -1049,8 +1050,41 @@ public partial class MainWindow
             return;
         }
 
-        OutputLogger.PluginInfo("[HotReload] Hot-reload is managed by Watch Mode. " +
-            "Enable Watch Mode on a plugin via Plugin Manager → Watch Mode, or use Plugin Dev Watch.");
+        var loaded = _pluginHost.GetAllPlugins()
+            .Where(p => p.State == WpfHexEditor.SDK.Models.PluginState.Loaded)
+            .ToList();
+
+        if (loaded.Count == 0)
+        {
+            MessageBox.Show("No loaded plugins found.", "Hot-Reload Plugin",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        // Build a selection dialog via a simple ComboBox window
+        var dlg = new PluginHotReloadDialog(loaded.Select(p => (p.Manifest.Id, p.Manifest.Name)).ToList())
+        {
+            Owner = this
+        };
+
+        if (dlg.ShowDialog() != true || dlg.SelectedPluginId is null) return;
+
+        var pluginId = dlg.SelectedPluginId;
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                OutputLogger.PluginInfo($"[HotReload] Reloading '{pluginId}'…");
+                await _pluginHost.ReloadPluginAsync(pluginId, CancellationToken.None).ConfigureAwait(false);
+                await Dispatcher.InvokeAsync(() =>
+                    OutputLogger.PluginInfo($"[HotReload] '{pluginId}' reloaded successfully."));
+            }
+            catch (Exception ex)
+            {
+                await Dispatcher.InvokeAsync(() =>
+                    OutputLogger.PluginWarn($"[HotReload] Failed to reload '{pluginId}': {ex.Message}"));
+            }
+        });
     }
 
     // --- LSP state indicator -------------------------------------------
