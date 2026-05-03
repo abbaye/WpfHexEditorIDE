@@ -1548,6 +1548,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             new Rect(pt.X, pt.Y - 36, 0, 0), block));
 
         _caretVisible = true;
+        RefreshCaretVisual();
         InvalidateVisual();
         e.Handled = true;
     }
