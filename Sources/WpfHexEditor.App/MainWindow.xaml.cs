@@ -200,8 +200,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private ErrorPanel? _errorPanel;
     private WpfHexEditor.Shell.Panels.Panels.BookmarksPanel? _bookmarksPanel;
     private const string ErrorPanelContentId         = "panel-errors";
-    private const string FindReferencesPanelContentId  = "panel-find-references";
+    private const string FindReferencesPanelContentId        = "panel-find-references";
     private WpfHexEditor.Editor.CodeEditor.Controls.FindReferencesPanel? _findReferencesPanel;
+    private const string WorkspaceFindReplacePanelContentId  = "panel-workspace-find-replace";
+    private WpfHexEditor.Shell.Panels.Panels.WorkspaceFindReplacePanel? _workspaceFindReplacePanel;
     private const string OptionsContentId       = "panel-options";
     private const string MarkdownOutlinePanelContentId   = "panel-md-outline";
 
@@ -1533,7 +1535,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             "panel-output"             => CreateOutputContent(),
             "panel-properties"         => CreatePropertiesContent(),
             ErrorPanelContentId          => CreateErrorPanelContent(),
-            FindReferencesPanelContentId => CreateFindReferencesPanelContent(),
+            FindReferencesPanelContentId        => CreateFindReferencesPanelContent(),
+            WorkspaceFindReplacePanelContentId  => CreateWorkspaceFindReplacePanelContent(),
 
             OptionsContentId               => CreateOptionsContent(),
             BookmarksPanelContentId        => CreateBookmarksPanelContent(),
@@ -2377,6 +2380,32 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private UIElement CreateFindReferencesPanelContent()
         => EnsureFindReferencesPanelInstance();
+
+    // ── Workspace Find & Replace panel ────────────────────────────────────────
+
+    private UIElement CreateWorkspaceFindReplacePanelContent()
+    {
+        if (_workspaceFindReplacePanel is null)
+        {
+            _workspaceFindReplacePanel = new WpfHexEditor.Shell.Panels.Panels.WorkspaceFindReplacePanel();
+            _workspaceFindReplacePanel.NavigationRequested += OnWorkspaceFindReplaceNavigation;
+        }
+        return _workspaceFindReplacePanel;
+    }
+
+    private void OnWorkspaceFindReplaceNavigation(
+        object? sender,
+        WpfHexEditor.Shell.Panels.Panels.WorkspaceNavigationRequest req)
+    {
+        // Reuse the error-list navigation path — synthesize a DiagnosticEntry.
+        OnOpenInTextEditorRequested(sender, new DiagnosticEntry(
+            Severity: DiagnosticSeverity.Message,
+            Code:     "",
+            Description: "",
+            FilePath: req.FilePath,
+            Line:     req.Line,
+            Column:   req.Column));
+    }
 
     // ── Call Hierarchy panel ───────────────────────────────────────────────────
 
@@ -6788,6 +6817,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         ShowOrCreatePanel("Bookmarks", BookmarksPanelContentId, DockDirection.Bottom);
         _bookmarksPanel?.Refresh();
+    }
+
+    private void ShowOrCreateWorkspaceFindReplacePanel(string? query = null)
+    {
+        ShowOrCreatePanel("Find & Replace in Solution", WorkspaceFindReplacePanelContentId, DockDirection.Bottom);
+        if (_workspaceFindReplacePanel is not null)
+            _ = _workspaceFindReplacePanel.ActivateWithQueryAsync(query);
     }
 
     private void OnShowMarkdownOutline(object sender, RoutedEventArgs e)

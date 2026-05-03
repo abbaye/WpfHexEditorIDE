@@ -47,11 +47,12 @@ public static class CommandIds
         public const string Paste            = "Edit.Paste";
         public const string Delete           = "Edit.Delete";
         public const string SelectAll        = "Edit.SelectAll";
-        public const string Find             = "Edit.Find";
-        public const string AdvancedSearch   = "Edit.AdvancedSearch";
-        public const string FindNext         = "Edit.FindNext";
-        public const string FindPrevious     = "Edit.FindPrevious";
-        public const string GoToOffset       = "Edit.GoToOffset";
+        public const string Find                  = "Edit.Find";
+        public const string AdvancedSearch        = "Edit.AdvancedSearch";
+        public const string FindNext              = "Edit.FindNext";
+        public const string FindPrevious          = "Edit.FindPrevious";
+        public const string GoToOffset            = "Edit.GoToOffset";
+        public const string WorkspaceFindReplace  = "Edit.WorkspaceFindReplace";
     }
 
     public static class View

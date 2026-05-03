@@ -277,4 +277,25 @@
   <data name="Whfmt_AddFormatError" xml:space="preserve"><value>Add Format</value></data>
   <data name="Whfmt_DeleteFormatTitle" xml:space="preserve"><value>Delete Format</value></data>
 
+  <data name="WorkspaceFindReplace_Title" xml:space="preserve"><value>Find &amp; Replace in Solution</value></data>
+  <data name="WorkspaceFindReplace_FindLabel" xml:space="preserve"><value>Find:</value></data>
+  <data name="WorkspaceFindReplace_ReplaceLabel" xml:space="preserve"><value>Replace:</value></data>
+  <data name="WorkspaceFindReplace_FindAll" xml:space="preserve"><value>Find All</value></data>
+  <data name="WorkspaceFindReplace_ReplaceAll" xml:space="preserve"><value>Replace All</value></data>
+  <data name="WorkspaceFindReplace_OptionRegex" xml:space="preserve"><value>Regex</value></data>
+  <data name="WorkspaceFindReplace_OptionMatchCase" xml:space="preserve"><value>Match case</value></data>
+  <data name="WorkspaceFindReplace_OptionWholeWord" xml:space="preserve"><value>Whole word</value></data>
+  <data name="WorkspaceFindReplace_StatusReady" xml:space="preserve"><value>Ready.</value></data>
+  <data name="WorkspaceFindReplace_StatusSearching" xml:space="preserve"><value>Searching…</value></data>
+  <data name="WorkspaceFindReplace_StatusReplacing" xml:space="preserve"><value>Replacing…</value></data>
+  <data name="WorkspaceFindReplace_StatusNoMatches" xml:space="preserve"><value>No matches found.</value></data>
+  <data name="WorkspaceFindReplace_StatusMatches" xml:space="preserve"><value>{0} match(es) in {1} file(s).</value></data>
+  <data name="WorkspaceFindReplace_StatusNoReplacements" xml:space="preserve"><value>No replacements made.</value></data>
+  <data name="WorkspaceFindReplace_StatusReplaced" xml:space="preserve"><value>Replaced {0} occurrence(s) in {1} file(s).</value></data>
+  <data name="WorkspaceFindReplace_ConfirmTitle" xml:space="preserve"><value>Replace All — Solution-wide</value></data>
+  <data name="WorkspaceFindReplace_ConfirmMessage" xml:space="preserve"><value>Replace all occurrences of "{0}" with "{1}" across the entire solution? This will modify files on disk.</value></data>
+  <data name="WorkspaceFindReplace_ColFile" xml:space="preserve"><value>File</value></data>
+  <data name="WorkspaceFindReplace_ColLine" xml:space="preserve"><value>Line</value></data>
+  <data name="WorkspaceFindReplace_ColCol" xml:space="preserve"><value>Col</value></data>
+  <data name="WorkspaceFindReplace_ColPreview" xml:space="preserve"><value>Preview</value></data>
 </root>

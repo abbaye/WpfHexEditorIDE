@@ -140,6 +140,9 @@ public partial class MainWindow
             () => FindPreviousCommand.Execute(null, this));
         Reg(CommandIds.Edit.GoToOffset,    "Go to Offset…",          "Edit",    "Ctrl+G",         "\uE8AD",
             () => GoToOffsetCommand.Execute(null, this));
+        Reg(CommandIds.Edit.WorkspaceFindReplace, "Find & Replace in Solution", "Edit", "Ctrl+Shift+H", "",
+            () => ShowOrCreateWorkspaceFindReplacePanel());
+
 
         // ── View ────────────────────────────────────────────────────────────
         Reg(CommandIds.View.CommandPalette,  "Command Palette",      "View",    "Ctrl+Shift+P",   "\uE721",
