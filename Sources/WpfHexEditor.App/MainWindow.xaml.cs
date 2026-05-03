@@ -121,6 +121,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         "CustomizeLayout", typeof(MainWindow),
         new InputGestureCollection { new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Shift) });
 
+    public static readonly RoutedCommand WorkspaceFindReplaceCommand = new RoutedCommand(
+        "WorkspaceFindReplace", typeof(MainWindow),
+        new InputGestureCollection { new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift) });
+
     // --- Constants -----------------------------------------------------
     private static readonly string LayoutFilePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -6818,6 +6822,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         ShowOrCreatePanel("Bookmarks", BookmarksPanelContentId, DockDirection.Bottom);
         _bookmarksPanel?.Refresh();
     }
+
+    private void OnWorkspaceFindReplace(object sender, ExecutedRoutedEventArgs e)
+        => ShowOrCreateWorkspaceFindReplacePanel();
 
     private void ShowOrCreateWorkspaceFindReplacePanel(string? query = null)
     {

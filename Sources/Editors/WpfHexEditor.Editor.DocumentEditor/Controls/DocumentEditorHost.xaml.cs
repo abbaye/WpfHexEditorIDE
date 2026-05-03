@@ -701,23 +701,41 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_Splitter2Col.Width = (structure && hex)           ? new GridLength(4) : new GridLength(0);
     }
 
+    // Track pixel widths across drag deltas (ActualWidth is stale inside DragDelta)
+    private double _splitter1TextPx = double.NaN;
+    private double _splitter1HexPx  = double.NaN;
+
     private void OnSplitter1DragDelta(object sender, DragDeltaEventArgs e)
     {
-        // GridSplitter is in col 1 — it resizes col 0 (text) and col 2 (struct).
-        // When HexPane is in col 4 and StructCol=0, we must manually redistribute
-        // the delta between TextCol and HexCol.
-        if (PART_StructCol.Width.Value > 0) return; // full layout: let GridSplitter handle it
+        // GridSplitter is in col 1: natively resizes col 0 (text) and col 2 (struct).
+        // In Split mode (struct=0) we take over: redistribute delta between text and hex,
+        // and reset struct col back to 0 to undo what GridSplitter just did.
+        if (PART_StructCol.Width.Value > 0) return; // three-pane: let GridSplitter handle
 
-        double total = PART_TextCol.ActualWidth + PART_HexCol.ActualWidth;
-        if (total <= 0) return;
+        // Initialise on first delta of each drag sequence
+        if (double.IsNaN(_splitter1TextPx))
+        {
+            _splitter1TextPx = PART_TextCol.ActualWidth;
+            _splitter1HexPx  = PART_HexCol.ActualWidth;
+        }
 
-        double newText = Math.Max(100, PART_TextCol.ActualWidth + e.HorizontalChange);
-        double newHex  = Math.Max(100, total - newText);
-        newText = total - newHex;
+        _splitter1TextPx += e.HorizontalChange;
+        _splitter1HexPx  -= e.HorizontalChange;
 
-        PART_TextCol.Width = new GridLength(newText, GridUnitType.Pixel);
-        PART_HexCol.Width  = new GridLength(newHex,  GridUnitType.Pixel);
+        const double minW = 100;
+        if (_splitter1TextPx < minW) { _splitter1HexPx -= (minW - _splitter1TextPx); _splitter1TextPx = minW; }
+        if (_splitter1HexPx  < minW) { _splitter1TextPx -= (minW - _splitter1HexPx); _splitter1HexPx  = minW; }
+
+        PART_TextCol.Width   = new GridLength(_splitter1TextPx, GridUnitType.Pixel);
+        PART_StructCol.Width = new GridLength(0);   // undo GridSplitter's expansion of col 2
+        PART_HexCol.Width    = new GridLength(_splitter1HexPx,  GridUnitType.Pixel);
         e.Handled = true;
+    }
+
+    private void OnSplitter1DragCompleted(object sender, DragCompletedEventArgs e)
+    {
+        _splitter1TextPx = double.NaN;
+        _splitter1HexPx  = double.NaN;
     }
 
     private static void OnIsForensicModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

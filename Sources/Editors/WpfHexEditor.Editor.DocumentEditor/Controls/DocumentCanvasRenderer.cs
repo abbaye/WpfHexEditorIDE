@@ -1923,7 +1923,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         using var dc = _caretVisual.RenderOpen();
 
-        if (_caretBrush is null || !_caretVisible || !_selection.IsEmpty || !IsKeyboardFocused) return;
+        if (_caretBrush is null || !_caretVisible || !_selection.IsEmpty || !IsFocused) return;
         if (_caret.BlockIndex < 0 || _caret.BlockIndex >= _blocks.Count) return;
 
         EnsureBrushCache();

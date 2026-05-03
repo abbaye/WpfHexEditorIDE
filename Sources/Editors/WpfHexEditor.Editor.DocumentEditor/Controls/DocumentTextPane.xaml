@@ -48,8 +48,7 @@
         <!-- QuickSearchBar overlay (same pattern as HexEditor) -->
         <Canvas x:Name="PART_SearchCanvas"
                 Grid.Column="1"
-                Panel.ZIndex="10"
-                IsHitTestVisible="False">
+                Panel.ZIndex="10">
             <coreViews:QuickSearchBar x:Name="PART_QuickSearchBar"
                                       Width="520"
                                       Visibility="Collapsed"

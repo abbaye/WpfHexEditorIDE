@@ -592,7 +592,8 @@
                           Width="4"
                           HorizontalAlignment="Stretch"
                           Background="{DynamicResource DockBorderBrush}"
-                          DragDelta="OnSplitter1DragDelta"/>
+                          DragDelta="OnSplitter1DragDelta"
+                          DragCompleted="OnSplitter1DragCompleted"/>
 
             <!-- Structure pane (col 2) — hidden unless Structure mode -->
             <local:DocumentStructurePane x:Name="PART_StructurePane"
