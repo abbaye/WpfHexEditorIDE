@@ -206,4 +206,13 @@
   <data name="DBG_ColType" xml:space="preserve"><value>형식</value></data>
   <data name="DBG_ColName" xml:space="preserve"><value>이름</value></data>
   <data name="DBG_ColFile" xml:space="preserve"><value>파일</value></data>
+  <data name="Debugger_ImmediatePanelTitle" xml:space="preserve">
+    <value>직접 실행</value>
+  </data>
+  <data name="Debugger_ModulesPanelTitle" xml:space="preserve">
+    <value>모듈</value>
+  </data>
+  <data name="Debugger_TasksPanelTitle" xml:space="preserve">
+    <value>작업</value>
+  </data>
 </root>

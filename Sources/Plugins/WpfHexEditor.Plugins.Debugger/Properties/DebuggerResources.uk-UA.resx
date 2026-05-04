@@ -83,4 +83,13 @@
   <data name="DBG_ColType" xml:space="preserve"><value>Тип</value></data>
   <data name="DBG_ColName" xml:space="preserve"><value>Ім'я</value></data>
   <data name="DBG_ColFile" xml:space="preserve"><value>Файл</value></data>
+  <data name="Debugger_ImmediatePanelTitle" xml:space="preserve">
+    <value>Негайне виконання</value>
+  </data>
+  <data name="Debugger_ModulesPanelTitle" xml:space="preserve">
+    <value>Модулі</value>
+  </data>
+  <data name="Debugger_TasksPanelTitle" xml:space="preserve">
+    <value>Завдання</value>
+  </data>
 </root>

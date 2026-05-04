@@ -1,0 +1,57 @@
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.ModulesPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Debugger.ViewModels">
+
+    <DockPanel Background="{DynamicResource PanelBackground}">
+
+        <!-- Filter bar -->
+        <Grid DockPanel.Dock="Top" Margin="4,4,4,2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0"
+                     Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                     Background="{DynamicResource PanelBackground}"
+                     Foreground="{DynamicResource PanelForeground}"
+                     BorderBrush="{DynamicResource PopupBorder}"
+                     x:Name="FilterBox"/>
+            <Button Grid.Column="1" Content="&#xE72C;" FontFamily="Segoe MDL2 Assets"
+                    Margin="2,0,0,0" Padding="4,0"
+                    Background="Transparent" BorderThickness="0"
+                    ToolTip="Refresh" Click="OnRefreshClick"/>
+        </Grid>
+
+        <!-- Module list -->
+        <ListView ItemsSource="{Binding Modules}"
+                  Background="{DynamicResource PanelBackground}"
+                  Foreground="{DynamicResource PanelForeground}"
+                  BorderThickness="0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name"          Width="180" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="Version"       Width="80"  DisplayMemberBinding="{Binding Version}"/>
+                    <GridViewColumn Header="Symbol Status" Width="120" DisplayMemberBinding="{Binding SymbolStatus}"/>
+                    <GridViewColumn Header="Optimized"     Width="70">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsOptimized, Mode=OneWay}" IsEnabled="False"
+                                          HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="User Code"     Width="70">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsUserCode, Mode=OneWay}" IsEnabled="False"
+                                          HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Path"          Width="300" DisplayMemberBinding="{Binding Path}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</UserControl>

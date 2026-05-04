@@ -28,8 +28,11 @@ public sealed class AutosPanelViewModel : ViewModelBase
     {
         System.Windows.Application.Current?.Dispatcher.Invoke(() =>
         {
+            var prev = Variables.ToDictionary(n => n.Name, n => n.Value);
             Variables.Clear();
             foreach (var v in vars)
+            {
+                var changed = prev.TryGetValue(v.Name, out var old) && old != v.Value;
                 Variables.Add(new VariableNode
                 {
                     Name               = v.Name,
@@ -37,7 +40,9 @@ public sealed class AutosPanelViewModel : ViewModelBase
                     Type               = v.Type,
                     VariablesReference = v.VariablesReference,
                     ScopeReference     = scopeRef,
+                    IsChanged          = changed,
                 });
+            }
         });
     }
 

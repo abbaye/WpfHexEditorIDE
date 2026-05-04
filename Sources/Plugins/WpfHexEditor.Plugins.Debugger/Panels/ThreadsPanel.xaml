@@ -8,6 +8,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <dbgSvc:DebuggerLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -19,6 +20,19 @@
                     Style="{DynamicResource ToolbarButtonStyle}">
                 <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
             </Button>
+            <Separator/>
+            <Button Command="{Binding FreezeCommand}"
+                    CommandParameter="{Binding SelectedThread}"
+                    ToolTip="Freeze Thread"
+                    Style="{DynamicResource ToolbarButtonStyle}">
+                <TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+            </Button>
+            <Button Command="{Binding ThawCommand}"
+                    CommandParameter="{Binding SelectedThread}"
+                    ToolTip="Thaw Thread"
+                    Style="{DynamicResource ToolbarButtonStyle}">
+                <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+            </Button>
         </ToolBar>
 
         <!-- Thread list -->
@@ -29,10 +43,28 @@
                   VirtualizingPanel.IsVirtualizing="True">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="ID" Width="40" DisplayMemberBinding="{Binding Id}" />
-                    <GridViewColumn Header="{DynamicResource DBG_ColName}" Width="300" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="ID"   Width="40"  DisplayMemberBinding="{Binding Id}" />
+                    <GridViewColumn Header="&#x2744;" Width="24">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="&#x2744;" Visibility="{Binding IsFrozen, Converter={StaticResource BoolToVis}}"
+                                           HorizontalAlignment="Center" Foreground="{DynamicResource DebuggerValueForeground}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="{DynamicResource DBG_ColName}" Width="280" DisplayMemberBinding="{Binding Name}" />
                 </GridView>
             </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsFrozen}" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource DB_AsyncBoundaryBrush}"/>
+                            <Setter Property="FontStyle"  Value="Italic"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
         </ListView>
     </DockPanel>
 </UserControl>

@@ -206,4 +206,13 @@
   <data name="DBG_ColType" xml:space="preserve"><value>Tipo</value></data>
   <data name="DBG_ColName" xml:space="preserve"><value>Nome</value></data>
   <data name="DBG_ColFile" xml:space="preserve"><value>File</value></data>
+  <data name="Debugger_ImmediatePanelTitle" xml:space="preserve">
+    <value>Finestra immediata</value>
+  </data>
+  <data name="Debugger_ModulesPanelTitle" xml:space="preserve">
+    <value>Moduli</value>
+  </data>
+  <data name="Debugger_TasksPanelTitle" xml:space="preserve">
+    <value>Attività</value>
+  </data>
 </root>

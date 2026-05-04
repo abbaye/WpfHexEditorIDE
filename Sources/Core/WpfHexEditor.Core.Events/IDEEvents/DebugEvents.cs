@@ -110,3 +110,9 @@ public sealed record RunToCursorRequestedEvent : IDEEventBase;
 /// The Debugger plugin subscribes and opens AttachToProcessDialog.
 /// </summary>
 public sealed record AttachToProcessRequestedEvent : IDEEventBase;
+
+/// <summary>
+/// Published by the App layer "Set Next Statement" shortcut (Ctrl+Shift+F10).
+/// The App layer subscribes to itself to call SetNextStatementAsync with the active caret line.
+/// </summary>
+public sealed record SetNextStatementRequestedEvent : IDEEventBase;

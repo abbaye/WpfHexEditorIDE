@@ -173,4 +173,13 @@
   <data name="DBG_ColType" xml:space="preserve"><value>Type</value></data>
   <data name="DBG_ColName" xml:space="preserve"><value>Nom</value></data>
   <data name="DBG_ColFile" xml:space="preserve"><value>Fichier</value></data>
+  <data name="Debugger_ImmediatePanelTitle" xml:space="preserve">
+    <value>Exécution immédiate</value>
+  </data>
+  <data name="Debugger_ModulesPanelTitle" xml:space="preserve">
+    <value>Modules</value>
+  </data>
+  <data name="Debugger_TasksPanelTitle" xml:space="preserve">
+    <value>Tâches</value>
+  </data>
 </root>

@@ -84,6 +84,9 @@ public interface IDapClient : IAsyncDisposable
     /// <summary>Configure which exception filters trigger a stop.</summary>
     Task SetExceptionBreakpointsAsync(SetExceptionBreakpointsArgs args, CancellationToken ct = default);
 
+    /// <summary>Retrieve loaded modules (DLLs / EXEs). Returns empty list if adapter lacks support.</summary>
+    Task<ModulesBody> GetModulesAsync(ModulesArgs? args = null, CancellationToken ct = default);
+
     // ── Inbound events ────────────────────────────────────────────────────────
 
     /// <summary>Raised when the adapter sends a "stopped" event (breakpoint/step/exception).</summary>

@@ -34,6 +34,15 @@
   <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
     <value>Exception Settings</value>
   </data>
+  <data name="Debugger_ImmediatePanelTitle" xml:space="preserve">
+    <value>Immediate</value>
+  </data>
+  <data name="Debugger_ModulesPanelTitle" xml:space="preserve">
+    <value>Modules</value>
+  </data>
+  <data name="Debugger_TasksPanelTitle" xml:space="preserve">
+    <value>Tasks</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve">
     <value>Watch</value>
   </data>

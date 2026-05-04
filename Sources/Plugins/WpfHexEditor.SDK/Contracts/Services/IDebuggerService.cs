@@ -75,6 +75,18 @@ public sealed record DebugVariableInfo(
 );
 
 /// <summary>
+/// Loaded module (DLL/EXE) snapshot visible to plugins.
+/// </summary>
+public sealed record DebugModuleInfo(
+    string  Name,
+    string? Path,
+    string? Version,
+    string? SymbolStatus,
+    bool    IsOptimized,
+    bool    IsUserCode
+);
+
+/// <summary>
 /// IDE debugger lifecycle state (mirrors Core.Debugger.DebugSessionState).
 /// Duplicated to avoid SDK depending on Core.Debugger directly.
 /// </summary>
@@ -198,6 +210,12 @@ public interface IDebuggerService
     Task RunToCursorAsync(string filePath, int line1);
 
     /// <summary>
+    /// Move the instruction pointer to the given file/line without executing intervening code.
+    /// Uses DAP gotoTargets + goto request. No-op when adapter doesn't support goto.
+    /// </summary>
+    Task SetNextStatementAsync(string filePath, int line1);
+
+    /// <summary>
     /// Get the exception filter list supported by the active adapter (or a built-in default set).
     /// Returns empty list when no session active or adapter does not support exception filters.
     /// </summary>
@@ -208,6 +226,21 @@ public interface IDebuggerService
     /// Persisted in the session; re-applied on next LaunchAsync/AttachAsync.
     /// </summary>
     Task SetExceptionFiltersAsync(IReadOnlyList<ExceptionFilterInfo> filters);
+
+    /// <summary>Get all loaded modules/assemblies in the current debug session.</summary>
+    Task<IReadOnlyList<DebugModuleInfo>> GetModulesAsync();
+
+    /// <summary>
+    /// Freeze a thread so it does not execute during continue/step operations.
+    /// Best-effort: no-op if the debug adapter does not support per-thread freeze.
+    /// </summary>
+    Task FreezeThreadAsync(int threadId) => Task.CompletedTask;
+
+    /// <summary>Thaw a previously frozen thread. No-op if not supported.</summary>
+    Task ThawThreadAsync(int threadId) => Task.CompletedTask;
+
+    /// <summary>Returns true if the given thread is currently frozen (local tracking only).</summary>
+    bool IsThreadFrozen(int threadId) => false;
 
     // ── Adapter registry ───────────────────────────────────────────────────
 

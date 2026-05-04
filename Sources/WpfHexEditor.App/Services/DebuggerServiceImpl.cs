@@ -341,6 +341,19 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         client.Stopped += OnNextStop;
     }
 
+    public async Task SetNextStatementAsync(string filePath, int line1)
+    {
+        if (_client is null || !_session.IsPaused) return;
+        try
+        {
+            var body = await _client.GotoTargetsAsync(
+                new GotoTargetsArgs(new SourceDto(null, filePath), line1));
+            if (body?.Targets is { Length: > 0 } targets)
+                await _client.GotoAsync(new GotoArgs(_session.ActiveThreadId, targets[0].Id));
+        }
+        catch { /* adapter may not support goto — silently no-op */ }
+    }
+
     // ── IDebuggerService — exception filters ─────────────────────────────────
 
     private readonly List<ExceptionFilterInfo> _exceptionFilters =
@@ -358,6 +371,45 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         if (_client is null) return;
         var activeFilters = filters.Where(f => f.IsEnabled).Select(f => f.Filter).ToArray();
         await _client.SetExceptionBreakpointsAsync(new SetExceptionBreakpointsArgs(activeFilters));
+    }
+
+    private readonly HashSet<int> _frozenThreadIds = [];
+
+    public async Task FreezeThreadAsync(int threadId)
+    {
+        lock (_lock) { _frozenThreadIds.Add(threadId); }
+        // Best-effort: send a pause request scoped to the thread if client supports it.
+        // Standard DAP pause does not have a threadId but some adapters respect it in args.
+        if (_client is not null)
+        {
+            try { await _client.PauseAsync(new WpfHexEditor.Core.Debugger.Protocol.PauseArgs(threadId)); }
+            catch { /* adapter may not support per-thread pause */ }
+        }
+    }
+
+    public Task ThawThreadAsync(int threadId)
+    {
+        lock (_lock) { _frozenThreadIds.Remove(threadId); }
+        return Task.CompletedTask;
+    }
+
+    public bool IsThreadFrozen(int threadId)
+    {
+        lock (_lock) { return _frozenThreadIds.Contains(threadId); }
+    }
+
+    public async Task<IReadOnlyList<DebugModuleInfo>> GetModulesAsync()
+    {
+        if (_client is null) return [];
+        var body = await _client.GetModulesAsync();
+        return body.Modules.Select(m => new DebugModuleInfo(
+            m.Name,
+            m.Path,
+            m.Version,
+            m.SymbolStatus,
+            m.IsOptimized  ?? false,
+            m.IsUserCode   ?? true
+        )).ToList();
     }
 
     // ── IDebuggerService — breakpoints ────────────────────────────────────────

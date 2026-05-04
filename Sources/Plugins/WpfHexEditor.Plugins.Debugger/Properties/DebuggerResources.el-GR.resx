@@ -173,4 +173,13 @@
   <data name="DBG_ColType" xml:space="preserve"><value>Τύπος</value></data>
   <data name="DBG_ColName" xml:space="preserve"><value>Όνομα</value></data>
   <data name="DBG_ColFile" xml:space="preserve"><value>Αρχείο</value></data>
+  <data name="Debugger_ImmediatePanelTitle" xml:space="preserve">
+    <value>Άμεσο παράθυρο</value>
+  </data>
+  <data name="Debugger_ModulesPanelTitle" xml:space="preserve">
+    <value>Λειτουργικές μονάδες</value>
+  </data>
+  <data name="Debugger_TasksPanelTitle" xml:space="preserve">
+    <value>Εργασίες</value>
+  </data>
 </root>

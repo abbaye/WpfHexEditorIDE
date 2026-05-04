@@ -43,10 +43,18 @@
         </ListView.View>
         <ListView.ItemContainerStyle>
             <Style TargetType="ListViewItem">
+                <!-- Async boundary: top border as visual separator -->
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Padding"         Value="0,1,0,1"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Id}" Value="0">
                         <Setter Property="Foreground" Value="{DynamicResource DB_CallStackActiveBrush}" />
                         <Setter Property="FontWeight" Value="SemiBold" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsAsyncBoundary}" Value="True">
+                        <Setter Property="BorderThickness" Value="0,2,0,0"/>
+                        <Setter Property="BorderBrush"     Value="{DynamicResource DB_AsyncBoundaryBrush}"/>
+                        <Setter Property="Padding"         Value="0,4,0,1"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

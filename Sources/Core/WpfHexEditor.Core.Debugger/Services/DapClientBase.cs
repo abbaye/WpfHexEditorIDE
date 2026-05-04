@@ -264,6 +264,20 @@ public abstract class DapClientBase : IDapClient
         SetExceptionBreakpointsArgs args, CancellationToken ct = default)
         => await SendRequestAsync("setExceptionBreakpoints", args, ct);
 
+    public virtual async Task<ModulesBody> GetModulesAsync(
+        ModulesArgs? args = null, CancellationToken ct = default)
+    {
+        try
+        {
+            var resp = await SendRequestAsync("modules", args ?? new ModulesArgs(), ct);
+            return ParseBody<ModulesBody>(resp);
+        }
+        catch
+        {
+            return new ModulesBody([], null);
+        }
+    }
+
     // ── Dispose ───────────────────────────────────────────────────────────────
 
     public virtual async ValueTask DisposeAsync()

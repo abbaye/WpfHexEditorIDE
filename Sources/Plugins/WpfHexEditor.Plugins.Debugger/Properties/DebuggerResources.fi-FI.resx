@@ -173,4 +173,13 @@
   <data name="DBG_ColType" xml:space="preserve"><value>Tyyppi</value></data>
   <data name="DBG_ColName" xml:space="preserve"><value>Nimi</value></data>
   <data name="DBG_ColFile" xml:space="preserve"><value>Tiedosto</value></data>
+  <data name="Debugger_ImmediatePanelTitle" xml:space="preserve">
+    <value>Välitön ikkuna</value>
+  </data>
+  <data name="Debugger_ModulesPanelTitle" xml:space="preserve">
+    <value>Moduulit</value>
+  </data>
+  <data name="Debugger_TasksPanelTitle" xml:space="preserve">
+    <value>Tehtävät</value>
+  </data>
 </root>

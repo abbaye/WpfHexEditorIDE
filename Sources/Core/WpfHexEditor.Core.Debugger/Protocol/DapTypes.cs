@@ -244,3 +244,27 @@ public record ThreadDto(
     [property: JsonPropertyName("id")]                 int    Id,
     [property: JsonPropertyName("name")]               string Name
 );
+
+// ── Modules request / response ────────────────────────────────────────────────
+
+public record ModulesArgs(
+    [property: JsonPropertyName("startModule")] int StartModule = 0,
+    [property: JsonPropertyName("moduleCount")] int ModuleCount = 100
+);
+
+public record ModulesBody(
+    [property: JsonPropertyName("modules")]     ModuleDto[] Modules,
+    [property: JsonPropertyName("totalModules")] int?       TotalModules = null
+);
+
+public record ModuleDto(
+    [property: JsonPropertyName("id")]              object  Id,
+    [property: JsonPropertyName("name")]            string  Name,
+    [property: JsonPropertyName("path")]            string? Path          = null,
+    [property: JsonPropertyName("isOptimized")]     bool?   IsOptimized   = null,
+    [property: JsonPropertyName("isUserCode")]      bool?   IsUserCode    = null,
+    [property: JsonPropertyName("version")]         string? Version       = null,
+    [property: JsonPropertyName("symbolStatus")]    string? SymbolStatus  = null,
+    [property: JsonPropertyName("symbolFilePath")]  string? SymbolFilePath= null,
+    [property: JsonPropertyName("addressRange")]    string? AddressRange  = null
+);

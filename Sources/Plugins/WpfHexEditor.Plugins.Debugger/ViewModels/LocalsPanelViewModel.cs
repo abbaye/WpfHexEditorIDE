@@ -17,6 +17,7 @@ public sealed class VariableNode : ViewModelBase
     private bool   _isExpanded;
     private string _value = string.Empty;
     private bool   _isEditing;
+    private bool   _isChanged;
 
     public string  Name               { get; init; } = string.Empty;
     public string? Type               { get; init; }
@@ -35,6 +36,13 @@ public sealed class VariableNode : ViewModelBase
     {
         get => _isEditing;
         set { _isEditing = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>True when the value changed since the last pause (highlights in red like VS).</summary>
+    public bool IsChanged
+    {
+        get => _isChanged;
+        set { _isChanged = value; OnPropertyChanged(); }
     }
 
     public ObservableCollection<VariableNode> Children { get; } = [];
@@ -63,8 +71,11 @@ public sealed class LocalsPanelViewModel : ViewModelBase
         _scopeReference = scopeRef;
         System.Windows.Application.Current?.Dispatcher.Invoke(() =>
         {
+            var prev = Variables.ToDictionary(n => n.Name, n => n.Value);
             Variables.Clear();
             foreach (var v in vars)
+            {
+                var changed = prev.TryGetValue(v.Name, out var old) && old != v.Value;
                 Variables.Add(new VariableNode
                 {
                     Name               = v.Name,
@@ -72,7 +83,9 @@ public sealed class LocalsPanelViewModel : ViewModelBase
                     Type               = v.Type,
                     VariablesReference = v.VariablesReference,
                     ScopeReference     = scopeRef,
+                    IsChanged          = changed,
                 });
+            }
         });
     }
 

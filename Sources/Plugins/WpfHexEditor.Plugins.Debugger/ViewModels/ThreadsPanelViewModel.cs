@@ -31,11 +31,15 @@ public sealed class ThreadsPanelViewModel : ViewModelBase
     }
 
     public ICommand RefreshCommand { get; }
+    public ICommand FreezeCommand  { get; }
+    public ICommand ThawCommand    { get; }
 
     public ThreadsPanelViewModel(IDebuggerService debugger)
     {
         _debugger      = debugger;
         RefreshCommand = new RelayCommand(_ => _ = RefreshAsync());
+        FreezeCommand  = new RelayCommand(p => { if (p is ThreadItem t) _ = FreezeAsync(t); });
+        ThawCommand    = new RelayCommand(p => { if (p is ThreadItem t) _ = ThawAsync(t); });
     }
 
     public async Task RefreshAsync()
@@ -45,16 +49,36 @@ public sealed class ThreadsPanelViewModel : ViewModelBase
         {
             Threads.Clear();
             foreach (var t in threads)
-                Threads.Add(new ThreadItem(t.Id, t.Name));
+                Threads.Add(new ThreadItem(t.Id, t.Name, _debugger.IsThreadFrozen(t.Id)));
         });
     }
 
     public void Clear() =>
         System.Windows.Application.Current?.Dispatcher.Invoke(Threads.Clear);
+
+    private async Task FreezeAsync(ThreadItem item)
+    {
+        await _debugger.FreezeThreadAsync(item.Id);
+        item.IsFrozen = true;
+    }
+
+    private async Task ThawAsync(ThreadItem item)
+    {
+        await _debugger.ThawThreadAsync(item.Id);
+        item.IsFrozen = false;
+    }
 }
 
-public sealed class ThreadItem(int id, string name)
+public sealed class ThreadItem(int id, string name, bool isFrozen = false) : WpfHexEditor.Core.ViewModels.ViewModelBase
 {
+    private bool _isFrozen = isFrozen;
+
     public int    Id   { get; } = id;
     public string Name { get; } = name;
+
+    public bool IsFrozen
+    {
+        get => _isFrozen;
+        set { _isFrozen = value; OnPropertyChanged(); }
+    }
 }

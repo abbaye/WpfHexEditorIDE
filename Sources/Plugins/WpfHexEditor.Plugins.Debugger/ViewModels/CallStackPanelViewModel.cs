@@ -14,14 +14,35 @@ using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Plugins.Debugger.ViewModels;
 
+/// <summary>
+/// Wrapper around a DAP stack frame with async grouping annotation.
+/// </summary>
+public sealed class CallStackFrameItem
+{
+    public DebugFrameInfo Frame { get; init; } = null!;
+
+    // Forwarded shortcuts for XAML bindings
+    public int     Id       => Frame.Id;
+    public string  Name     => Frame.Name;
+    public string? FilePath => Frame.FilePath;
+    public int     Line     => Frame.Line;
+
+    /// <summary>
+    /// True when this frame is the start of an async continuation group
+    /// (preceded by a compiler-generated MoveNext / DisplayClass boundary).
+    /// The XAML inserts a visual separator above it.
+    /// </summary>
+    public bool IsAsyncBoundary { get; init; }
+}
+
 public sealed class CallStackPanelViewModel : ViewModelBase
 {
     private readonly IIDEHostContext _context;
-    private DebugFrameInfo? _selectedFrame;
+    private CallStackFrameItem? _selectedFrame;
 
-    public ObservableCollection<DebugFrameInfo> Frames { get; } = [];
+    public ObservableCollection<CallStackFrameItem> Frames { get; } = [];
 
-    public DebugFrameInfo? SelectedFrame
+    public CallStackFrameItem? SelectedFrame
     {
         get => _selectedFrame;
         set
@@ -37,7 +58,7 @@ public sealed class CallStackPanelViewModel : ViewModelBase
     public CallStackPanelViewModel(IDebuggerService debugger, IIDEHostContext context)
     {
         _context        = context;
-        NavigateCommand = new RelayCommand(async p => await NavigateToFrameAsync(p as DebugFrameInfo));
+        NavigateCommand = new RelayCommand(async p => await NavigateToFrameAsync(p as CallStackFrameItem));
     }
 
     public void SetFrames(IReadOnlyList<DebugFrameInfo> frames)
@@ -45,17 +66,29 @@ public sealed class CallStackPanelViewModel : ViewModelBase
         System.Windows.Application.Current?.Dispatcher.Invoke(() =>
         {
             Frames.Clear();
-            foreach (var f in frames) Frames.Add(f);
+            for (int i = 0; i < frames.Count; i++)
+            {
+                var boundary = i > 0 && IsAsyncBoundaryBetween(frames[i - 1], frames[i]);
+                Frames.Add(new CallStackFrameItem { Frame = frames[i], IsAsyncBoundary = boundary });
+            }
         });
     }
 
-    private async Task NavigateToFrameAsync(DebugFrameInfo? frame)
+    private static bool IsAsyncBoundaryBetween(DebugFrameInfo prev, DebugFrameInfo _)
     {
-        if (frame?.FilePath is null || frame.Line <= 0) return;
+        // Compiler-generated frame names signal async/await boundaries
+        var n = prev.Name;
+        return n.Contains("MoveNext",      StringComparison.Ordinal)
+            || n.Contains("<>c__DisplayClass", StringComparison.Ordinal)
+            || n.Contains("__StateMachine",    StringComparison.Ordinal);
+    }
+
+    private async Task NavigateToFrameAsync(CallStackFrameItem? item)
+    {
+        if (item?.FilePath is null || item.Line <= 0) return;
         await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
         {
-            _context.DocumentHost.OpenDocument(frame.FilePath);
-            // NavigateTo will be handled by the document open event + EditorFocused
+            _context.DocumentHost.OpenDocument(item.FilePath);
         });
     }
 
