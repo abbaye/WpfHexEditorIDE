@@ -182,4 +182,8 @@
   <data name="Debugger_TasksPanelTitle" xml:space="preserve">
     <value>Sarcini</value>
   </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>Dezasamblare</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>Memorie</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>Registre</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>Urmărire paralelă</value></data>
 </root>

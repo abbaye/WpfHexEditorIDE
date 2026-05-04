@@ -1587,5 +1587,26 @@ namespace WpfHexEditor.Editor.DocumentEditor.Properties {
         internal static string DocMiniMap_SliderMouseOver {
             get { return ResourceManager.GetString("DocMiniMap_SliderMouseOver", resourceCulture); }
         }
+        internal static string DocStats_Title {
+            get { return ResourceManager.GetString("DocStats_Title", resourceCulture); }
+        }
+        internal static string DocStats_WordCount {
+            get { return ResourceManager.GetString("DocStats_WordCount", resourceCulture); }
+        }
+        internal static string DocStats_CharCount {
+            get { return ResourceManager.GetString("DocStats_CharCount", resourceCulture); }
+        }
+        internal static string DocStats_CharNoSpaceCount {
+            get { return ResourceManager.GetString("DocStats_CharNoSpaceCount", resourceCulture); }
+        }
+        internal static string DocStats_BlockCount {
+            get { return ResourceManager.GetString("DocStats_BlockCount", resourceCulture); }
+        }
+        internal static string DocStats_LineCount {
+            get { return ResourceManager.GetString("DocStats_LineCount", resourceCulture); }
+        }
+        internal static string DocStats_Close {
+            get { return ResourceManager.GetString("DocStats_Close", resourceCulture); }
+        }
     }
 }

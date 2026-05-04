@@ -264,6 +264,34 @@ public abstract class DapClientBase : IDapClient
         SetExceptionBreakpointsArgs args, CancellationToken ct = default)
         => await SendRequestAsync("setExceptionBreakpoints", args, ct);
 
+    public virtual async Task<DisassembleBody> DisassembleAsync(
+        DisassembleArgs args, CancellationToken ct = default)
+    {
+        try
+        {
+            var resp = await SendRequestAsync("disassemble", args, ct);
+            return ParseBody<DisassembleBody>(resp);
+        }
+        catch { return new DisassembleBody([]); }
+    }
+
+    public virtual async Task<ReadMemoryBody?> ReadMemoryAsync(
+        ReadMemoryArgs args, CancellationToken ct = default)
+    {
+        try
+        {
+            var resp = await SendRequestAsync("readMemory", args, ct);
+            return ParseBody<ReadMemoryBody>(resp);
+        }
+        catch { return null; }
+    }
+
+    public virtual async Task WriteMemoryAsync(WriteMemoryArgs args, CancellationToken ct = default)
+    {
+        try { await SendRequestAsync("writeMemory", args, ct); }
+        catch { /* adapter may not support */ }
+    }
+
     public virtual async Task<ModulesBody> GetModulesAsync(
         ModulesArgs? args = null, CancellationToken ct = default)
     {

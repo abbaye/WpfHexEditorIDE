@@ -1,0 +1,39 @@
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.RegistersPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Debugger.ViewModels">
+
+    <ListView ItemsSource="{Binding Registers}"
+              Background="{DynamicResource PanelBackground}"
+              Foreground="{DynamicResource PanelForeground}"
+              FontFamily="Cascadia Code, Consolas, Courier New"
+              FontSize="12"
+              BorderThickness="0"
+              VirtualizingPanel.IsVirtualizing="True">
+        <ListView.View>
+            <GridView>
+                <GridViewColumn Header="Register" Width="120" DisplayMemberBinding="{Binding Name}"/>
+                <GridViewColumn Header="Value"    Width="200">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type vm:RegisterItem}">
+                            <TextBlock Text="{Binding Value}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{DynamicResource PanelForeground}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsChanged}" Value="True">
+                                                <Setter Property="Foreground" Value="{DynamicResource DB_LocalChangedBrush}"/>
+                                                <Setter Property="FontWeight"  Value="Bold"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn Header="Type"     Width="80"  DisplayMemberBinding="{Binding Type}"/>
+            </GridView>
+        </ListView.View>
+    </ListView>
+</UserControl>

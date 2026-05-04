@@ -87,6 +87,15 @@ public interface IDapClient : IAsyncDisposable
     /// <summary>Retrieve loaded modules (DLLs / EXEs). Returns empty list if adapter lacks support.</summary>
     Task<ModulesBody> GetModulesAsync(ModulesArgs? args = null, CancellationToken ct = default);
 
+    /// <summary>Disassemble memory around a given address. Returns empty if not supported.</summary>
+    Task<DisassembleBody> DisassembleAsync(DisassembleArgs args, CancellationToken ct = default);
+
+    /// <summary>Read raw memory bytes from the debuggee. Returns null body if not supported.</summary>
+    Task<ReadMemoryBody?> ReadMemoryAsync(ReadMemoryArgs args, CancellationToken ct = default);
+
+    /// <summary>Write raw memory bytes to the debuggee. No-op if not supported.</summary>
+    Task WriteMemoryAsync(WriteMemoryArgs args, CancellationToken ct = default);
+
     // ── Inbound events ────────────────────────────────────────────────────────
 
     /// <summary>Raised when the adapter sends a "stopped" event (breakpoint/step/exception).</summary>

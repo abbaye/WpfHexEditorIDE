@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StringExtractor_PluginName" xml:space="preserve"><value>Извлечение строк</value></data>
+  <data name="StringExtractor_PanelTitle" xml:space="preserve"><value>Извлечение строк</value></data>
+  <data name="StringExtractor_MenuItem" xml:space="preserve"><value>Извлечение строк(_S)</value></data>
+  <data name="StringExtractor_ColOffset" xml:space="preserve"><value>Смещение</value></data>
+  <data name="StringExtractor_ColLength" xml:space="preserve"><value>Длина</value></data>
+  <data name="StringExtractor_ColEncoding" xml:space="preserve"><value>Кодировка</value></data>
+  <data name="StringExtractor_ColValue" xml:space="preserve"><value>Значение</value></data>
+  <data name="StringExtractor_MinLength" xml:space="preserve"><value>Мин. длина:</value></data>
+  <data name="StringExtractor_FilterPlaceholder" xml:space="preserve"><value>Фильтр строк...</value></data>
+  <data name="StringExtractor_ExtractButton" xml:space="preserve"><value>Извлечь</value></data>
+  <data name="StringExtractor_ExportButton" xml:space="preserve"><value>Экспорт</value></data>
+  <data name="StringExtractor_CopyButton" xml:space="preserve"><value>Копировать</value></data>
+  <data name="StringExtractor_NoFile" xml:space="preserve"><value>Файл не открыт — откройте бинарный файл для извлечения строк.</value></data>
+  <data name="StringExtractor_NoResults" xml:space="preserve"><value>Строки, соответствующие текущим критериям, не найдены.</value></data>
+  <data name="StringExtractor_Extracting" xml:space="preserve"><value>Извлечение строк…</value></data>
+  <data name="StringExtractor_ResultCount" xml:space="preserve"><value>Найдено строк: {0}</value></data>
+  <data name="StringExtractor_FilteredCount" xml:space="preserve"><value>{0} из {1} строк</value></data>
+  <data name="StringExtractor_Enc_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="StringExtractor_Enc_UTF8" xml:space="preserve"><value>UTF-8</value></data>
+  <data name="StringExtractor_Enc_UTF16LE" xml:space="preserve"><value>UTF-16 LE</value></data>
+  <data name="StringExtractor_Enc_UTF16BE" xml:space="preserve"><value>UTF-16 BE</value></data>
+  <data name="StringExtractor_ExportTitle" xml:space="preserve"><value>Экспорт строк</value></data>
+  <data name="StringExtractor_ExportFilter" xml:space="preserve"><value>Файлы CSV (*.csv)|*.csv|Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*</value></data>
+  <data name="StringExtractor_ExportSuccess" xml:space="preserve"><value>Экспортировано строк: {0} в {1}</value></data>
+  <data name="StringExtractor_NavigateTo" xml:space="preserve"><value>Перейти к смещению</value></data>
+  <data name="StringExtractor_CopyValue" xml:space="preserve"><value>Копировать значение</value></data>
+  <data name="StringExtractor_CopyOffset" xml:space="preserve"><value>Копировать смещение</value></data>
+  <data name="StringExtractor_Tooltip_Extract" xml:space="preserve"><value>Сканировать файл и извлечь все печатные строки</value></data>
+  <data name="StringExtractor_Tooltip_Export" xml:space="preserve"><value>Экспортировать результаты в CSV или TXT</value></data>
+  <data name="StringExtractor_Tooltip_MinLength" xml:space="preserve"><value>Минимальное количество последовательных печатных символов</value></data>
+</root>

@@ -182,4 +182,8 @@
   <data name="Debugger_TasksPanelTitle" xml:space="preserve">
     <value>Tehtävät</value>
   </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>Purku</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>Muisti</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>Rekisterit</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>Rinnakkainen tarkkailu</value></data>
 </root>

@@ -182,4 +182,8 @@
   <data name="Debugger_TasksPanelTitle" xml:space="preserve">
     <value>Opgaver</value>
   </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>Adskillelse</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>Hukommelse</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>Registre</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>Parallel overvågning</value></data>
 </root>

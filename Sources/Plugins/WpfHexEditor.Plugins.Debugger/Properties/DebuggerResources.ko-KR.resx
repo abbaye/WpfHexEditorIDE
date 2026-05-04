@@ -215,4 +215,8 @@
   <data name="Debugger_TasksPanelTitle" xml:space="preserve">
     <value>작업</value>
   </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>디스어셈블리</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>메모리</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>레지스터</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>병렬 조사식</value></data>
 </root>

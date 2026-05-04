@@ -211,4 +211,11 @@
   <data name="DocMiniMap_SliderMouseOver" xml:space="preserve">
     <value>Afficher le curseur de viewport au survol</value>
   </data>
+  <data name="DocStats_Title"             xml:space="preserve"><value>Statistiques du document</value></data>
+  <data name="DocStats_WordCount"         xml:space="preserve"><value>Mots</value></data>
+  <data name="DocStats_CharCount"         xml:space="preserve"><value>Caractères</value></data>
+  <data name="DocStats_CharNoSpaceCount"  xml:space="preserve"><value>Caractères (sans espaces)</value></data>
+  <data name="DocStats_BlockCount"        xml:space="preserve"><value>Blocs (paragraphes)</value></data>
+  <data name="DocStats_LineCount"         xml:space="preserve"><value>Lignes</value></data>
+  <data name="DocStats_Close"             xml:space="preserve"><value>Fermer</value></data>
 </root>

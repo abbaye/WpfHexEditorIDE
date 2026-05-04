@@ -182,4 +182,8 @@
   <data name="Debugger_TasksPanelTitle" xml:space="preserve">
     <value>Úlohy</value>
   </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>Dekompilace</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>Paměť</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>Registry</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>Paralelní sledování</value></data>
 </root>

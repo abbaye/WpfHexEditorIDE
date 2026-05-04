@@ -215,4 +215,8 @@
   <data name="Debugger_TasksPanelTitle" xml:space="preserve">
     <value>Attività</value>
   </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>Disassembly</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>Memoria</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>Registri</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>Controllo parallelo</value></data>
 </root>

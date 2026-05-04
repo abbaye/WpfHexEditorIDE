@@ -699,6 +699,14 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             return;
         }
 
+        // ── Indent level (Ctrl+]/[ sets "indentLevel" attribute) ─────────────
+        if (rb.Block.Attributes.TryGetValue("indentLevel", out var indentVal) && indentVal is int indentLv && indentLv > 0)
+        {
+            double indentOffset = indentLv * 24.0;
+            x    += indentOffset;
+            maxW -= indentOffset;
+        }
+
         // ── Style-based rendering (quote / code) ──────────────────────────
         var style = rb.Block.Attributes.GetValueOrDefault("style") as string ?? string.Empty;
 
@@ -2594,6 +2602,50 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         if (_mutator is null || _blocks.Count == 0) return;
         var block = _blocks[_selectedIndex >= 0 ? _selectedIndex : _caret.BlockIndex].Block;
         _mutator.SetBlockAttribute(block, attribute, value);
+        InvalidateVisual();
+        Focus();
+        Keyboard.Focus(this);
+    }
+
+    /// <summary>Increases the indent level of the caret block by 1 (max 8).</summary>
+    public void IncreaseIndent()
+    {
+        if (_mutator is null || _blocks.Count == 0) return;
+        int bi    = _caret.BlockIndex >= 0 ? _caret.BlockIndex : (_selectedIndex >= 0 ? _selectedIndex : 0);
+        var block = _blocks[bi].Block;
+        int cur   = block.Attributes.TryGetValue("indentLevel", out var v) && v is int iv ? iv : 0;
+        _mutator.SetBlockAttribute(block, "indentLevel", Math.Min(8, cur + 1));
+        MarkBlockDirty(bi);
+        InvalidateVisual();
+        Focus();
+        Keyboard.Focus(this);
+    }
+
+    /// <summary>
+    /// Moves the caret to block <paramref name="blockIndex"/>, char offset 0,
+    /// collapses selection, and scrolls the viewport to make it visible.
+    /// </summary>
+    public void NavigateToBlockIndex(int blockIndex)
+    {
+        if (_blocks.Count == 0) return;
+        int bi = Math.Clamp(blockIndex, 0, _blocks.Count - 1);
+        CommitCaret(new TextCaret(bi, 0, 0), extend: false, vertical: false);
+        _selectedIndex = bi;
+        SelectedBlockChanged?.Invoke(this, _blocks[bi].Block);
+        Focus();
+        Keyboard.Focus(this);
+    }
+
+    /// <summary>Decreases the indent level of the caret block by 1 (min 0).</summary>
+    public void DecreaseIndent()
+    {
+        if (_mutator is null || _blocks.Count == 0) return;
+        int bi    = _caret.BlockIndex >= 0 ? _caret.BlockIndex : (_selectedIndex >= 0 ? _selectedIndex : 0);
+        var block = _blocks[bi].Block;
+        int cur   = block.Attributes.TryGetValue("indentLevel", out var v) && v is int iv ? iv : 0;
+        if (cur <= 0) return;
+        _mutator.SetBlockAttribute(block, "indentLevel", cur - 1);
+        MarkBlockDirty(bi);
         InvalidateVisual();
         Focus();
         Keyboard.Focus(this);

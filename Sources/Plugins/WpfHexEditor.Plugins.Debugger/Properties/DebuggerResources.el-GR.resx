@@ -182,4 +182,8 @@
   <data name="Debugger_TasksPanelTitle" xml:space="preserve">
     <value>Εργασίες</value>
   </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>Αποσυναρμολόγηση</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>Μνήμη</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>Καταχωρητές</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>Παράλληλη παρακολούθηση</value></data>
 </root>

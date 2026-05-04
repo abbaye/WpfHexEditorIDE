@@ -2912,5 +2912,185 @@ namespace WpfHexEditor.Core.Options.Properties {
                 return ResourceManager.GetString("TextOpt_WordWrap", resourceCulture);
             }
         }
+
+        internal static string Opt_Category_DocumentEditor {
+            get {
+                return ResourceManager.GetString("Opt_Category_DocumentEditor", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_AppearanceSection {
+            get {
+                return ResourceManager.GetString("DocOpt_AppearanceSection", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_SyncSection {
+            get {
+                return ResourceManager.GetString("DocOpt_SyncSection", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_HoverSection {
+            get {
+                return ResourceManager.GetString("DocOpt_HoverSection", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_AutoSaveSection {
+            get {
+                return ResourceManager.GetString("DocOpt_AutoSaveSection", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_EditingSection {
+            get {
+                return ResourceManager.GetString("DocOpt_EditingSection", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ColorsSection {
+            get {
+                return ResourceManager.GetString("DocOpt_ColorsSection", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_FontSizeLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_FontSizeLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ViewModeLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_ViewModeLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_RenderModeLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_RenderModeLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ShowScrollMarkers {
+            get {
+                return ResourceManager.GetString("DocOpt_ShowScrollMarkers", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ShowMiniMap {
+            get {
+                return ResourceManager.GetString("DocOpt_ShowMiniMap", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ShowForensicGutter {
+            get {
+                return ResourceManager.GetString("DocOpt_ShowForensicGutter", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ViewMode_TextOnly {
+            get {
+                return ResourceManager.GetString("DocOpt_ViewMode_TextOnly", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ViewMode_Structure {
+            get {
+                return ResourceManager.GetString("DocOpt_ViewMode_Structure", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ViewMode_Focus {
+            get {
+                return ResourceManager.GetString("DocOpt_ViewMode_Focus", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_RenderMode_Page {
+            get {
+                return ResourceManager.GetString("DocOpt_RenderMode_Page", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_RenderMode_Draft {
+            get {
+                return ResourceManager.GetString("DocOpt_RenderMode_Draft", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_RenderMode_Outline {
+            get {
+                return ResourceManager.GetString("DocOpt_RenderMode_Outline", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_SyncThrottleLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_SyncThrottleLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_SyncTextToHex {
+            get {
+                return ResourceManager.GetString("DocOpt_SyncTextToHex", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_SyncHexToText {
+            get {
+                return ResourceManager.GetString("DocOpt_SyncHexToText", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ShowBlockHoverTooltip {
+            get {
+                return ResourceManager.GetString("DocOpt_ShowBlockHoverTooltip", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_HoverDelayLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_HoverDelayLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_AutoSaveEnabled {
+            get {
+                return ResourceManager.GetString("DocOpt_AutoSaveEnabled", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_AutoSaveIntervalLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_AutoSaveIntervalLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_IndentWidthLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_IndentWidthLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_BlockHighlightColor {
+            get {
+                return ResourceManager.GetString("DocOpt_BlockHighlightColor", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_SelectedBlockColor {
+            get {
+                return ResourceManager.GetString("DocOpt_SelectedBlockColor", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ForensicAlertColor {
+            get {
+                return ResourceManager.GetString("DocOpt_ForensicAlertColor", resourceCulture);
+            }
+        }
     }
 }

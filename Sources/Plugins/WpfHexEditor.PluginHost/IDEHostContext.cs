@@ -122,6 +122,9 @@ public sealed class IDEHostContext : IIDEHostContext
     public ITabGroupService? TabGroups { get; init; }
 
     /// <inheritdoc />
+    public WpfHexEditor.SDK.Contracts.Services.IDebugVisualizerRegistry? DebugVisualizers { get; init; }
+
+    /// <inheritdoc />
     /// Resolved lazily from <see cref="ExtensionRegistry"/> — set by UnitTesting plugin on init.
     public ITestRunnerService? TestRunner
         => ExtensionRegistry.GetExtensions<ITestRunnerService>().FirstOrDefault();

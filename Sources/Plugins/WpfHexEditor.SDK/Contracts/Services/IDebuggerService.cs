@@ -43,7 +43,8 @@ public sealed record DebugFrameInfo(
     string  Name,
     string? FilePath,
     int     Line,
-    int     Column
+    int     Column,
+    string? InstructionPointerReference = null
 );
 
 /// <summary>
@@ -72,6 +73,18 @@ public sealed record DebugVariableInfo(
     string  Value,
     string? Type,
     int     VariablesReference
+);
+
+/// <summary>
+/// A single disassembled machine instruction visible to plugins.
+/// </summary>
+public sealed record DisassembledInstruction(
+    string  Address,
+    string  Instruction,
+    string? Symbol           = null,
+    string? InstructionBytes = null,
+    string? SourceFile       = null,
+    int     SourceLine       = 0
 );
 
 /// <summary>
@@ -194,6 +207,12 @@ public interface IDebuggerService
     /// <summary>Get variables in a scope by variablesReference (0 = locals).</summary>
     Task<IReadOnlyList<DebugVariableInfo>> GetVariablesAsync(int variablesReference);
 
+    /// <summary>
+    /// Get the register variables for the current frame.
+    /// Returns an empty list if the adapter does not expose a Registers scope.
+    /// </summary>
+    Task<IReadOnlyList<DebugVariableInfo>> GetRegistersAsync();
+
     /// <summary>Evaluate an expression in the current frame context.</summary>
     Task<string> EvaluateAsync(string expression, int? frameId = null);
 
@@ -241,6 +260,17 @@ public interface IDebuggerService
 
     /// <summary>Returns true if the given thread is currently frozen (local tracking only).</summary>
     bool IsThreadFrozen(int threadId) => false;
+
+    // ── Disassembly / Memory ───────────────────────────────────────────────────
+
+    /// <summary>Disassemble at the given memory reference (hex address or DAP symbol).</summary>
+    Task<IReadOnlyList<DisassembledInstruction>> DisassembleAsync(string memRef, int count);
+
+    /// <summary>Read raw memory. Returns null if the adapter does not support readMemory.</summary>
+    Task<byte[]?> ReadMemoryAsync(string memRef, int byteCount, int offset = 0);
+
+    /// <summary>Write raw memory. No-op if not supported.</summary>
+    Task WriteMemoryAsync(string memRef, byte[] data, int offset = 0);
 
     // ── Adapter registry ───────────────────────────────────────────────────
 

@@ -644,4 +644,15 @@
   <data name="DocMiniMap_SliderMouseOver" xml:space="preserve">
     <value>Show Viewport Slider on Hover</value>
   </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       DOCUMENT STATISTICS DIALOG
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="DocStats_Title"             xml:space="preserve"><value>Document Statistics</value></data>
+  <data name="DocStats_WordCount"         xml:space="preserve"><value>Words</value></data>
+  <data name="DocStats_CharCount"         xml:space="preserve"><value>Characters</value></data>
+  <data name="DocStats_CharNoSpaceCount"  xml:space="preserve"><value>Characters (no spaces)</value></data>
+  <data name="DocStats_BlockCount"        xml:space="preserve"><value>Blocks (paragraphs)</value></data>
+  <data name="DocStats_LineCount"         xml:space="preserve"><value>Lines</value></data>
+  <data name="DocStats_Close"             xml:space="preserve"><value>Close</value></data>
 </root>

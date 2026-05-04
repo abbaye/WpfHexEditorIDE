@@ -182,4 +182,8 @@
   <data name="Debugger_TasksPanelTitle" xml:space="preserve">
     <value>Tugas</value>
   </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>Disassembly</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>Memori</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>Register</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>Pantauan Paralel</value></data>
 </root>

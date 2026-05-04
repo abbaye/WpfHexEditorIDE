@@ -1,0 +1,66 @@
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.DisassemblyPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Debugger.ViewModels">
+
+    <DockPanel Background="{DynamicResource PanelBackground}">
+
+        <!-- Address bar + navigation -->
+        <ToolBar DockPanel.Dock="Top" Background="{DynamicResource ToolbarBackground}">
+            <Button Content="&#xE76B;" FontFamily="Segoe MDL2 Assets" ToolTip="Previous page"
+                    Command="{Binding PrevPageCommand}" Style="{DynamicResource ToolbarButtonStyle}"/>
+            <Button Content="&#xE76C;" FontFamily="Segoe MDL2 Assets" ToolTip="Next page"
+                    Command="{Binding NextPageCommand}" Style="{DynamicResource ToolbarButtonStyle}"/>
+            <Separator/>
+            <TextBox Width="180"
+                     Text="{Binding AddressInput, UpdateSourceTrigger=PropertyChanged}"
+                     Background="{DynamicResource PanelBackground}"
+                     Foreground="{DynamicResource PanelForeground}"
+                     BorderBrush="{DynamicResource PopupBorder}"
+                     KeyDown="OnAddressKeyDown"
+                     ToolTip="Memory address / symbol"/>
+            <Button Content="&#xE721;" FontFamily="Segoe MDL2 Assets" ToolTip="Go"
+                    Command="{Binding GoCommand}" Style="{DynamicResource ToolbarButtonStyle}"/>
+        </ToolBar>
+
+        <!-- Instruction listing -->
+        <ListView x:Name="InstrList"
+                  ItemsSource="{Binding Lines}"
+                  Background="{DynamicResource PanelBackground}"
+                  Foreground="{DynamicResource PanelForeground}"
+                  FontFamily="Cascadia Code, Consolas, Courier New"
+                  FontSize="12"
+                  BorderThickness="0"
+                  VirtualizingPanel.IsVirtualizing="True">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Address"  Width="120" DisplayMemberBinding="{Binding Address}"/>
+                    <GridViewColumn Header="Bytes"    Width="120" DisplayMemberBinding="{Binding InstructionBytes}"/>
+                    <GridViewColumn Header="Symbol"   Width="140" DisplayMemberBinding="{Binding Symbol}"/>
+                    <GridViewColumn Header="Instruction" Width="300" DisplayMemberBinding="{Binding Instruction}"/>
+                    <GridViewColumn Header="Source"   Width="180">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="{Binding SourceFile}"/>
+                                    <Run Text=":"/>
+                                    <Run Text="{Binding SourceLine}"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCurrentIP}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource DB_CallStackActiveBrush}"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+    </DockPanel>
+</UserControl>

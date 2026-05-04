@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StringExtractor_PluginName" xml:space="preserve"><value>Extracteur de chaînes</value></data>
+  <data name="StringExtractor_PanelTitle" xml:space="preserve"><value>Extracteur de chaînes</value></data>
+  <data name="StringExtractor_MenuItem" xml:space="preserve"><value>_Extracteur de chaînes</value></data>
+  <data name="StringExtractor_ColOffset" xml:space="preserve"><value>Décalage</value></data>
+  <data name="StringExtractor_ColLength" xml:space="preserve"><value>Longueur</value></data>
+  <data name="StringExtractor_ColEncoding" xml:space="preserve"><value>Encodage</value></data>
+  <data name="StringExtractor_ColValue" xml:space="preserve"><value>Valeur</value></data>
+  <data name="StringExtractor_MinLength" xml:space="preserve"><value>Long. min. :</value></data>
+  <data name="StringExtractor_FilterPlaceholder" xml:space="preserve"><value>Filtrer les chaînes...</value></data>
+  <data name="StringExtractor_ExtractButton" xml:space="preserve"><value>Extraire</value></data>
+  <data name="StringExtractor_ExportButton" xml:space="preserve"><value>Exporter</value></data>
+  <data name="StringExtractor_CopyButton" xml:space="preserve"><value>Copier</value></data>
+  <data name="StringExtractor_NoFile" xml:space="preserve"><value>Aucun fichier ouvert — ouvrez un fichier binaire pour extraire les chaînes.</value></data>
+  <data name="StringExtractor_NoResults" xml:space="preserve"><value>Aucune chaîne trouvée avec les critères actuels.</value></data>
+  <data name="StringExtractor_Extracting" xml:space="preserve"><value>Extraction des chaînes…</value></data>
+  <data name="StringExtractor_ResultCount" xml:space="preserve"><value>{0} chaînes trouvées</value></data>
+  <data name="StringExtractor_FilteredCount" xml:space="preserve"><value>{0} sur {1} chaînes</value></data>
+  <data name="StringExtractor_Enc_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="StringExtractor_Enc_UTF8" xml:space="preserve"><value>UTF-8</value></data>
+  <data name="StringExtractor_Enc_UTF16LE" xml:space="preserve"><value>UTF-16 LE</value></data>
+  <data name="StringExtractor_Enc_UTF16BE" xml:space="preserve"><value>UTF-16 BE</value></data>
+  <data name="StringExtractor_ExportTitle" xml:space="preserve"><value>Exporter les chaînes</value></data>
+  <data name="StringExtractor_ExportFilter" xml:space="preserve"><value>Fichiers CSV (*.csv)|*.csv|Fichiers texte (*.txt)|*.txt|Tous les fichiers (*.*)|*.*</value></data>
+  <data name="StringExtractor_ExportSuccess" xml:space="preserve"><value>{0} chaînes exportées vers {1}</value></data>
+  <data name="StringExtractor_NavigateTo" xml:space="preserve"><value>Naviguer vers le décalage</value></data>
+  <data name="StringExtractor_CopyValue" xml:space="preserve"><value>Copier la valeur</value></data>
+  <data name="StringExtractor_CopyOffset" xml:space="preserve"><value>Copier le décalage</value></data>
+  <data name="StringExtractor_Tooltip_Extract" xml:space="preserve"><value>Scanner le fichier et extraire toutes les chaînes imprimables</value></data>
+  <data name="StringExtractor_Tooltip_Export" xml:space="preserve"><value>Exporter les résultats en CSV ou TXT</value></data>
+  <data name="StringExtractor_Tooltip_MinLength" xml:space="preserve"><value>Nombre minimum de caractères imprimables consécutifs</value></data>
+</root>

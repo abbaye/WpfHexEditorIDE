@@ -116,3 +116,21 @@ public sealed record AttachToProcessRequestedEvent : IDEEventBase;
 /// The App layer subscribes to itself to call SetNextStatementAsync with the active caret line.
 /// </summary>
 public sealed record SetNextStatementRequestedEvent : IDEEventBase;
+
+/// <summary>
+/// Published by the Debugger plugin "Add Tracepoint" menu item.
+/// The App layer subscribes, resolves the active caret position, then publishes
+/// <see cref="OpenTracepointDialogRequestedEvent"/> with the file/line.
+/// </summary>
+public sealed record AddTracepointRequestedEvent : IDEEventBase;
+
+/// <summary>
+/// Published by the App layer after resolving the active caret line.
+/// The Debugger plugin subscribes and opens <c>QuickTracepointDialog</c>, then
+/// calls ToggleBreakpointAsync + UpdateBreakpointSettingsAsync on confirmation.
+/// </summary>
+public sealed record OpenTracepointDialogRequestedEvent : IDEEventBase
+{
+    public string FilePath { get; init; } = string.Empty;
+    public int    Line     { get; init; }
+}

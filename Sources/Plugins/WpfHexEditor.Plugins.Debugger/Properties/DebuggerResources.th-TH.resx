@@ -182,4 +182,8 @@
   <data name="Debugger_TasksPanelTitle" xml:space="preserve">
     <value>งาน</value>
   </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>การถอดรหัส</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>หน่วยความจำ</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>รีจิสเตอร์</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>ดูขนาน</value></data>
 </root>

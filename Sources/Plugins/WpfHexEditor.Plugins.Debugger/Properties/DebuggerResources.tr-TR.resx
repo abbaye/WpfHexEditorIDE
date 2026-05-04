@@ -215,4 +215,8 @@
   <data name="Debugger_TasksPanelTitle" xml:space="preserve">
     <value>Görevler</value>
   </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>Ayrıştırma</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>Bellek</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>Yazmaçlar</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>Paralel İzleme</value></data>
 </root>

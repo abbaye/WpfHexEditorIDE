@@ -1,0 +1,35 @@
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.ParallelWatchPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <DockPanel Background="{DynamicResource PanelBackground}">
+
+        <ToolBar DockPanel.Dock="Top" Background="{DynamicResource ToolbarBackground}">
+            <Button Content="+" ToolTip="Add expression"
+                    Command="{Binding AddRowCommand}" Style="{DynamicResource ToolbarButtonStyle}"/>
+            <Button Content="&#xE72C;" FontFamily="Segoe MDL2 Assets" ToolTip="Refresh"
+                    Command="{Binding RefreshCommand}" Style="{DynamicResource ToolbarButtonStyle}"/>
+        </ToolBar>
+
+        <!-- Dynamic GridView generated in code-behind -->
+        <ListView x:Name="Grid"
+                  Background="{DynamicResource PanelBackground}"
+                  Foreground="{DynamicResource PanelForeground}"
+                  BorderThickness="0"
+                  VirtualizingPanel.IsVirtualizing="True">
+            <ListView.View>
+                <GridView x:Name="DynamicGridView">
+                    <GridViewColumn Header="Expression" Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Expression, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="Transparent" BorderThickness="0"
+                                         Foreground="{DynamicResource PanelForeground}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</UserControl>

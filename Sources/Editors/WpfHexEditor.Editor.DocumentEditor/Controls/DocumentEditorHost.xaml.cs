@@ -83,6 +83,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private string                   _currentFileExtension = string.Empty;
     private bool                     _isFocusMode          = false;
     private DocumentScrollMarkerPanel? _scrollMarker;
+    private Services.AutoSaveService? _autoSave;
 
     // ── Constructor ─────────────────────────────────────────────────────────
 
@@ -156,6 +157,12 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     public BinaryMap? BinaryMap => _vm?.Model.BinaryMap;
     public event EventHandler? BinaryMapRebuilt;
+
+    /// <summary>
+    /// Raised when the user requests to jump to a binary offset in the hex editor.
+    /// The long argument is the raw byte offset of the selected block.
+    /// </summary>
+    public event EventHandler<long>? NavigateToOffsetRequested;
 
     // ── IDocumentEditor ─────────────────────────────────────────────────────
 
@@ -723,6 +730,30 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             { OpenFindDialog(showReplace: true); e.Handled = true; }
         if (e.Key == Key.S)  { Save(); e.Handled = true; }
         if (e.Key == Key.F2) { ToggleBookmarkAtCaret(); e.Handled = true; }
+        if (e.Key == Key.W && (Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+            { OpenStatisticsDialog(); e.Handled = true; }
+        if (e.Key == Key.OemCloseBrackets) { PART_TextPane.PART_Renderer.IncreaseIndent(); e.Handled = true; }
+        if (e.Key == Key.OemOpenBrackets)  { PART_TextPane.PART_Renderer.DecreaseIndent(); e.Handled = true; }
+
+        // Block-to-block keyboard navigation
+        int blockCount = PART_TextPane.PART_Renderer.BlockCount;
+        if (blockCount > 0)
+        {
+            if (e.Key == Key.Home)
+                { PART_TextPane.PART_Renderer.NavigateToBlockIndex(0); e.Handled = true; }
+            if (e.Key == Key.End)
+                { PART_TextPane.PART_Renderer.NavigateToBlockIndex(blockCount - 1); e.Handled = true; }
+            if (e.Key == Key.Up)
+            {
+                int cur = PART_TextPane.PART_Renderer.CaretBlockIndex;
+                if (cur > 0) { PART_TextPane.PART_Renderer.NavigateToBlockIndex(cur - 1); e.Handled = true; }
+            }
+            if (e.Key == Key.Down)
+            {
+                int cur = PART_TextPane.PART_Renderer.CaretBlockIndex;
+                if (cur < blockCount - 1) { PART_TextPane.PART_Renderer.NavigateToBlockIndex(cur + 1); e.Handled = true; }
+            }
+        }
     }
 
     private void ToggleBookmarkAtCaret()
@@ -739,6 +770,13 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         var searchVm = new ViewModels.DocumentSearchViewModel(_vm.Model, PART_TextPane.PART_Renderer);
         var target   = new ViewModels.DocumentSearchTarget(searchVm);
         PART_TextPane.ShowQuickSearch(target);
+    }
+
+    private void OpenStatisticsDialog()
+    {
+        if (_vm?.Model is null) return;
+        var dlg = new DocumentStatisticsDialog(_vm.Model.Blocks) { Owner = Window.GetWindow(this) };
+        dlg.ShowDialog();
     }
 
     private void SetPaneVisibility(bool text, bool structure)
@@ -957,6 +995,8 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void OnPopToolbarJumpHex(object? sender, DocumentBlock? block)
     {
         PART_PopToolbar.IsOpen = false;
+        if (block is not null)
+            NavigateToOffsetRequested?.Invoke(this, block.RawOffset);
     }
 
     // ── Status bar ───────────────────────────────────────────────────────────
@@ -1034,6 +1074,16 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         model.BookmarksChanged += (_, _) => UpdateBookmarkScrollMarkers(model);
 
         PART_TextPane.PART_Renderer.DirtyBlocksChanged += (_, _) => UpdateChangeScrollMarkers();
+
+        // Start auto-save (replaces any prior instance from a previous document open)
+        _autoSave?.Dispose();
+        _autoSave = new Services.AutoSaveService(
+            () => _vm?.Model,
+            () => _ideContext?.ExtensionRegistry
+                      .GetExtensions<IDocumentSaver>()
+                      .FirstOrDefault(s => s.CanSave(model.FilePath)),
+            intervalSeconds: 60);
+        _autoSave.Start();
 
         TitleChanged?.Invoke(this, Title);
     }
@@ -1148,6 +1198,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         // Do NOT cancel _loadCts here — docking system unloads/reloads during tab switches.
+        _autoSave?.Stop();
     }
 
     private sealed class RelayCmd(Action execute, Func<bool> canExecute) : ICommand

@@ -256,4 +256,12 @@ public interface IIDEHostContext
     /// Null in sandboxed or non-IDE host contexts.
     /// </summary>
     ITabGroupService? TabGroups => null;
+
+    // -- Debug Visualizers ----------------------------------------------------
+
+    /// <summary>
+    /// Registry for contributing and discovering custom debug variable visualizers.
+    /// Null when the debugger is not loaded.
+    /// </summary>
+    IDebugVisualizerRegistry? DebugVisualizers => null;
 }

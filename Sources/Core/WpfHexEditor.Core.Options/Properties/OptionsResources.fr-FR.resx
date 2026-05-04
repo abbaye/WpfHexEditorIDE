@@ -651,4 +651,38 @@
   <data name="Opt_Preview_Label" xml:space="preserve">
     <value>Aperçu</value>
   </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       DOCUMENT EDITOR — catégorie + page d'options
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="Opt_Category_DocumentEditor"             xml:space="preserve"><value>Éditeur de documents</value></data>
+  <data name="DocOpt_AppearanceSection"                xml:space="preserve"><value>Apparence</value></data>
+  <data name="DocOpt_SyncSection"                      xml:space="preserve"><value>Synchronisation</value></data>
+  <data name="DocOpt_HoverSection"                     xml:space="preserve"><value>Survol</value></data>
+  <data name="DocOpt_AutoSaveSection"                  xml:space="preserve"><value>Sauvegarde automatique</value></data>
+  <data name="DocOpt_EditingSection"                   xml:space="preserve"><value>Édition</value></data>
+  <data name="DocOpt_ColorsSection"                    xml:space="preserve"><value>Couleurs de surbrillance hex</value></data>
+  <data name="DocOpt_FontSizeLabel"                    xml:space="preserve"><value>Taille de police par défaut (pt)</value></data>
+  <data name="DocOpt_ViewModeLabel"                    xml:space="preserve"><value>Mode d'affichage par défaut</value></data>
+  <data name="DocOpt_RenderModeLabel"                  xml:space="preserve"><value>Mode de rendu par défaut</value></data>
+  <data name="DocOpt_ShowScrollMarkers"                xml:space="preserve"><value>Afficher les marqueurs de défilement</value></data>
+  <data name="DocOpt_ShowMiniMap"                      xml:space="preserve"><value>Afficher la mini-carte</value></data>
+  <data name="DocOpt_ShowForensicGutter"               xml:space="preserve"><value>Afficher la gouttière forensique</value></data>
+  <data name="DocOpt_ViewMode_TextOnly"                xml:space="preserve"><value>Texte seulement</value></data>
+  <data name="DocOpt_ViewMode_Structure"               xml:space="preserve"><value>Structure</value></data>
+  <data name="DocOpt_ViewMode_Focus"                   xml:space="preserve"><value>Focus</value></data>
+  <data name="DocOpt_RenderMode_Page"                  xml:space="preserve"><value>Page (paginé)</value></data>
+  <data name="DocOpt_RenderMode_Draft"                 xml:space="preserve"><value>Brouillon (défilement continu)</value></data>
+  <data name="DocOpt_RenderMode_Outline"               xml:space="preserve"><value>Plan</value></data>
+  <data name="DocOpt_SyncThrottleLabel"                xml:space="preserve"><value>Délai de synchronisation (ms)</value></data>
+  <data name="DocOpt_SyncTextToHex"                    xml:space="preserve"><value>Sync. sélection texte → volet hex</value></data>
+  <data name="DocOpt_SyncHexToText"                    xml:space="preserve"><value>Sync. sélection hex → volet texte</value></data>
+  <data name="DocOpt_ShowBlockHoverTooltip"            xml:space="preserve"><value>Afficher l'info-bulle de bloc au survol</value></data>
+  <data name="DocOpt_HoverDelayLabel"                  xml:space="preserve"><value>Délai de survol (ms)</value></data>
+  <data name="DocOpt_AutoSaveEnabled"                  xml:space="preserve"><value>Activer la sauvegarde automatique</value></data>
+  <data name="DocOpt_AutoSaveIntervalLabel"            xml:space="preserve"><value>Intervalle de sauvegarde automatique (secondes)</value></data>
+  <data name="DocOpt_IndentWidthLabel"                 xml:space="preserve"><value>Largeur d'indentation (espaces)</value></data>
+  <data name="DocOpt_BlockHighlightColor"              xml:space="preserve"><value>Survol de bloc</value></data>
+  <data name="DocOpt_SelectedBlockColor"               xml:space="preserve"><value>Bloc sélectionné</value></data>
+  <data name="DocOpt_ForensicAlertColor"               xml:space="preserve"><value>Superposition d'alerte forensique</value></data>
 </root>

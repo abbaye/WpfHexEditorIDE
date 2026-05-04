@@ -1,0 +1,209 @@
+<UserControl x:Class="WpfHexEditor.Plugins.StringExtractor.Views.StringExtractorPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svc="clr-namespace:WpfHexEditor.Plugins.StringExtractor.Services"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.StringExtractor.ViewModels"
+             Background="{DynamicResource PanelBackground}"
+             Foreground="{DynamicResource PanelForeground}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <svc:StringExtractorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ── Toolbar ─────────────────────────────────────────────────────── -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource ToolbarBackground}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="4,3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Extract button -->
+                <Button Grid.Column="0"
+                        x:Name="ExtractButton"
+                        Content="{DynamicResource StringExtractor_ExtractButton}"
+                        ToolTip="{DynamicResource StringExtractor_Tooltip_Extract}"
+                        Style="{DynamicResource ToolbarButtonStyle}"
+                        Padding="8,3"
+                        Margin="0,0,4,0"
+                        Click="OnExtractClick"/>
+
+                <!-- Min length label -->
+                <TextBlock Grid.Column="1"
+                           Text="{DynamicResource StringExtractor_MinLength}"
+                           VerticalAlignment="Center"
+                           Margin="0,0,4,0"
+                           Foreground="{DynamicResource PanelForeground}"/>
+
+                <!-- Min length spinner -->
+                <TextBox Grid.Column="2"
+                         x:Name="MinLengthBox"
+                         Text="4"
+                         Width="40"
+                         VerticalAlignment="Center"
+                         ToolTip="{DynamicResource StringExtractor_Tooltip_MinLength}"
+                         TextAlignment="Center"
+                         Margin="0,0,4,0"
+                         Style="{DynamicResource ToolbarTextBoxStyle}"/>
+
+                <!-- Separator -->
+                <Separator Grid.Column="3" Style="{DynamicResource ToolbarSeparatorStyle}"/>
+
+                <!-- ASCII checkbox -->
+                <CheckBox Grid.Column="4"
+                          x:Name="AsciiCheck"
+                          Content="{DynamicResource StringExtractor_Enc_ASCII}"
+                          IsChecked="True"
+                          VerticalAlignment="Center"
+                          Margin="0,0,6,0"
+                          Foreground="{DynamicResource PanelForeground}"/>
+
+                <!-- UTF-8 checkbox -->
+                <CheckBox Grid.Column="5"
+                          x:Name="Utf8Check"
+                          Content="{DynamicResource StringExtractor_Enc_UTF8}"
+                          IsChecked="True"
+                          VerticalAlignment="Center"
+                          Margin="0,0,6,0"
+                          Foreground="{DynamicResource PanelForeground}"/>
+
+                <!-- UTF-16 LE checkbox -->
+                <CheckBox Grid.Column="6"
+                          x:Name="Utf16LeCheck"
+                          Content="{DynamicResource StringExtractor_Enc_UTF16LE}"
+                          IsChecked="True"
+                          VerticalAlignment="Center"
+                          Foreground="{DynamicResource PanelForeground}"/>
+
+                <!-- Export button (right-aligned) -->
+                <Button Grid.Column="8"
+                        x:Name="ExportButton"
+                        Content="{DynamicResource StringExtractor_ExportButton}"
+                        ToolTip="{DynamicResource StringExtractor_Tooltip_Export}"
+                        Style="{DynamicResource ToolbarButtonStyle}"
+                        Padding="8,3"
+                        Click="OnExportClick"/>
+            </Grid>
+        </Border>
+
+        <!-- ── Filter bar ──────────────────────────────────────────────────── -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource ToolbarBackground}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="6,3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         x:Name="FilterBox"
+                         Style="{DynamicResource SearchBoxStyle}"
+                         TextChanged="OnFilterChanged"/>
+                <!-- Placeholder via adorner pattern in code-behind -->
+            </Grid>
+        </Border>
+
+        <!-- ── Results list ────────────────────────────────────────────────── -->
+        <Grid Grid.Row="2">
+            <!-- Empty-state overlay -->
+            <TextBlock x:Name="EmptyStateText"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource PanelForeground}"
+                       Opacity="0.5"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Margin="20"/>
+
+            <!-- Progress overlay (shown during extraction) -->
+            <Border x:Name="ProgressOverlay"
+                    Background="{DynamicResource PanelBackground}"
+                    Opacity="0.85"
+                    Visibility="Collapsed">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+                    <TextBlock x:Name="ExtractingLabel"
+                               Text="{DynamicResource StringExtractor_Extracting}"
+                               HorizontalAlignment="Center"
+                               Foreground="{DynamicResource PanelForeground}"/>
+                    <ProgressBar x:Name="ExtractionProgress"
+                                 Width="200" Height="6"
+                                 Minimum="0" Maximum="100"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Virtualized results -->
+            <ListView x:Name="ResultsList"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.VirtualizationMode="Recycling"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                      SelectionMode="Single"
+                      MouseDoubleClick="OnResultDoubleClick"
+                      Background="{DynamicResource PanelBackground}"
+                      Foreground="{DynamicResource PanelForeground}"
+                      BorderThickness="0">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="{DynamicResource StringExtractor_NavigateTo}"
+                                  Click="OnNavigateTo"/>
+                        <MenuItem Header="{DynamicResource StringExtractor_CopyValue}"
+                                  Click="OnCopyValue"/>
+                        <MenuItem Header="{DynamicResource StringExtractor_CopyOffset}"
+                                  Click="OnCopyOffset"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="110"
+                                        Header="{DynamicResource StringExtractor_ColOffset}"
+                                        DisplayMemberBinding="{Binding OffsetHex}"/>
+                        <GridViewColumn Width="60"
+                                        Header="{DynamicResource StringExtractor_ColLength}"
+                                        DisplayMemberBinding="{Binding Length}"/>
+                        <GridViewColumn Width="80"
+                                        Header="{DynamicResource StringExtractor_ColEncoding}"
+                                        DisplayMemberBinding="{Binding Encoding}"/>
+                        <GridViewColumn Width="400"
+                                        Header="{DynamicResource StringExtractor_ColValue}"
+                                        DisplayMemberBinding="{Binding Value}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+
+        <!-- ── Status bar ──────────────────────────────────────────────────── -->
+        <Border Grid.Row="3"
+                Background="{DynamicResource StatusBarBackground}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="6,2">
+            <TextBlock x:Name="StatusText"
+                       Foreground="{DynamicResource StatusBarForeground}"
+                       FontSize="11"/>
+        </Border>
+    </Grid>
+</UserControl>

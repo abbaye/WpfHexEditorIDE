@@ -102,6 +102,10 @@ public partial class MainWindow
             // Set Next Statement — plugin publishes, App executes.
             _ideEventBus.Subscribe<SetNextStatementRequestedEvent>(_ =>
                 Dispatcher.InvokeAsync(OnSetNextStatement)),
+
+            // Add Tracepoint — plugin publishes, App resolves caret + shows dialog.
+            _ideEventBus.Subscribe<AddTracepointRequestedEvent>(_ =>
+                Dispatcher.InvokeAsync(OnAddTracepoint)),
         ];
 
         // Wire any editors that were already open from layout restore.
@@ -301,6 +305,32 @@ public partial class MainWindow
 
         int line1 = ce.CursorLine + 1;
         _ = _debuggerService.SetNextStatementAsync(filePath, line1);
+    }
+
+    /// <summary>Add Tracepoint — show QuickTracepointDialog and publish result.</summary>
+    internal void OnAddTracepoint()
+    {
+        if (_debuggerService is null) return;
+
+        var filePath = _documentManager.ActiveDocument?.FilePath;
+        if (string.IsNullOrEmpty(filePath)) return;
+
+        var activeContentId = _documentManager.ActiveDocument?.ContentId;
+        if (string.IsNullOrEmpty(activeContentId)) return;
+        if (!_contentCache.TryGetValue(activeContentId, out var ctrl)) return;
+
+        var ce = GetCodeEditorControl(ctrl as WpfHexEditor.Editor.Core.IDocumentEditor ?? ctrl as object);
+        if (ce is null) return;
+
+        int line1 = ce.CursorLine + 1;
+
+        // QuickTracepointDialog lives in the Debugger plugin assembly.
+        // Publish file/line — the plugin subscribes and opens the dialog.
+        _ideEventBus?.Publish(new OpenTracepointDialogRequestedEvent
+        {
+            FilePath = filePath,
+            Line     = line1,
+        });
     }
 
     /// <summary>Ctrl+Alt+P — Attach to process dialog.</summary>

@@ -65,6 +65,22 @@ internal static class DebuggerResources
     internal static string Debugger_TasksPanelTitle
         => ResourceManager.GetString("Debugger_TasksPanelTitle", _resourceCulture)!;
 
+    /// <summary>Gets the localized panel title for the Disassembly panel.</summary>
+    internal static string Debugger_DisassemblyPanelTitle
+        => ResourceManager.GetString("Debugger_DisassemblyPanelTitle", _resourceCulture)!;
+
+    /// <summary>Gets the localized panel title for the Memory window panel.</summary>
+    internal static string Debugger_MemoryPanelTitle
+        => ResourceManager.GetString("Debugger_MemoryPanelTitle", _resourceCulture)!;
+
+    /// <summary>Gets the localized panel title for the Registers panel.</summary>
+    internal static string Debugger_RegistersPanelTitle
+        => ResourceManager.GetString("Debugger_RegistersPanelTitle", _resourceCulture)!;
+
+    /// <summary>Gets the localized panel title for the Parallel Watch panel.</summary>
+    internal static string Debugger_ParallelWatchPanelTitle
+        => ResourceManager.GetString("Debugger_ParallelWatchPanelTitle", _resourceCulture)!;
+
     /// <summary>Gets the localized panel title for the Watch panel.</summary>
     internal static string Debugger_WatchPanelTitle
         => ResourceManager.GetString("Debugger_WatchPanelTitle", _resourceCulture)!;

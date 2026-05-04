@@ -161,11 +161,12 @@ public record StackTraceBody(
 );
 
 public record StackFrameDto(
-    [property: JsonPropertyName("id")]                 int       Id,
-    [property: JsonPropertyName("name")]               string    Name,
-    [property: JsonPropertyName("source")]             SourceDto? Source,
-    [property: JsonPropertyName("line")]               int       Line,
-    [property: JsonPropertyName("column")]             int       Column
+    [property: JsonPropertyName("id")]                          int       Id,
+    [property: JsonPropertyName("name")]                        string    Name,
+    [property: JsonPropertyName("source")]                      SourceDto? Source,
+    [property: JsonPropertyName("line")]                        int       Line,
+    [property: JsonPropertyName("column")]                      int       Column,
+    [property: JsonPropertyName("instructionPointerReference")] string?   InstructionPointerReference = null
 );
 
 public record SourceDto(
@@ -243,6 +244,52 @@ public record ThreadsBody(
 public record ThreadDto(
     [property: JsonPropertyName("id")]                 int    Id,
     [property: JsonPropertyName("name")]               string Name
+);
+
+// ── Disassembly request / response ───────────────────────────────────────────
+
+public record DisassembleArgs(
+    [property: JsonPropertyName("memoryReference")]  string MemoryReference,
+    [property: JsonPropertyName("instructionCount")] int    InstructionCount,
+    [property: JsonPropertyName("offset")]           int?   Offset                = null,
+    [property: JsonPropertyName("instructionOffset")]int?   InstructionOffset     = null,
+    [property: JsonPropertyName("resolveSymbols")]   bool   ResolveSymbols        = true
+);
+
+public record DisassembleBody(
+    [property: JsonPropertyName("instructions")]     DisassembledInstructionDto[] Instructions
+);
+
+public record DisassembledInstructionDto(
+    [property: JsonPropertyName("address")]          string  Address,
+    [property: JsonPropertyName("instruction")]      string  Instruction,
+    [property: JsonPropertyName("symbol")]           string? Symbol          = null,
+    [property: JsonPropertyName("location")]         SourceDto? Location     = null,
+    [property: JsonPropertyName("line")]             int?    Line             = null,
+    [property: JsonPropertyName("instructionBytes")] string? InstructionBytes = null
+);
+
+// ── ReadMemory request / response ─────────────────────────────────────────────
+
+public record ReadMemoryArgs(
+    [property: JsonPropertyName("memoryReference")] string MemoryReference,
+    [property: JsonPropertyName("count")]           int    Count,
+    [property: JsonPropertyName("offset")]          int?   Offset = null
+);
+
+public record ReadMemoryBody(
+    [property: JsonPropertyName("address")]         string  Address,
+    [property: JsonPropertyName("data")]            string  Data,           // base64
+    [property: JsonPropertyName("unreadableBytes")] int?    UnreadableBytes = null
+);
+
+// ── WriteMemory request / response ────────────────────────────────────────────
+
+public record WriteMemoryArgs(
+    [property: JsonPropertyName("memoryReference")] string MemoryReference,
+    [property: JsonPropertyName("data")]            string Data,            // base64
+    [property: JsonPropertyName("offset")]          int?   Offset         = null,
+    [property: JsonPropertyName("allowPartial")]    bool   AllowPartial   = false
 );
 
 // ── Modules request / response ────────────────────────────────────────────────

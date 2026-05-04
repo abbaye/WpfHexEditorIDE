@@ -32,6 +32,7 @@ public static class OptionsPageStrings
     public static string CategoryExtensions     => OptionsResources.Opt_Category_Extensions;
     public static string CategoryFormatEditor   => OptionsResources.Opt_Category_FormatEditor;
     public static string CategoryTools          => OptionsResources.Opt_Category_Tools;
+    public static string CategoryDocumentEditor => OptionsResources.Opt_Category_DocumentEditor;
 
     // ── Page names ────────────────────────────────────────────────────────────
 

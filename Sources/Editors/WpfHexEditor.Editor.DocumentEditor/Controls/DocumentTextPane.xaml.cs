@@ -90,15 +90,14 @@ public partial class DocumentTextPane : UserControl
     }
 
     /// <summary>
-    /// Applies a text formatting command. Since the canvas renderer is
-    /// block-oriented (not cursor-based), this marks the selected block
-    /// as modified in the undo engine (full editing pending Phase 11).
+    /// Applies a toggle formatting attribute to the current selection.
+    /// Delegates to <see cref="DocumentCanvasRenderer.ApplyFormatToSelection"/>;
+    /// undo is handled by <c>DocumentMutator.ApplyRunAttribute</c> via <c>RunAttributeUndoEntry</c>.
     /// </summary>
     public void ApplyFormat(string format)
     {
         if (_model is null) return;
-        // Phase 11: style-change undo requires a StyleChangeUndoEntry (not yet defined).
-        // TextEditUndoEntry covers text mutations only. Blocked until renderer exposes SelectedBlock + style API.
+        PART_Renderer.ApplyFormatToSelection(format, true);
     }
 
     public void ShowLoading(string message = "Loading…") => PART_Renderer.ShowLoading(message);

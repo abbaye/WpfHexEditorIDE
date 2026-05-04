@@ -1,0 +1,101 @@
+<!--
+// ==========================================================
+// Project: WpfHexEditor.Editor.DocumentEditor
+// File: Controls/DocumentStatisticsDialog.xaml
+// Description:
+//     Modal dialog showing word, character, block, and line counts
+//     for the currently open document. Triggered by Ctrl+Shift+W.
+// ==========================================================
+-->
+<Window x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentStatisticsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
+        Title="{DynamicResource DocStats_Title}"
+        Width="320" SizeToContent="Height"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Background="{DynamicResource DE_ToolbarBackground}"
+        Foreground="{DynamicResource DockMenuForegroundBrush}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <docSvc:DocumentEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <StackPanel Margin="16">
+
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{DynamicResource DocStats_WordCount}"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBlock x:Name="TxtWordCount" Grid.Column="1"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+        </Grid>
+
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{DynamicResource DocStats_CharCount}"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBlock x:Name="TxtCharCount" Grid.Column="1"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+        </Grid>
+
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{DynamicResource DocStats_CharNoSpaceCount}"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBlock x:Name="TxtCharNoSpaceCount" Grid.Column="1"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+        </Grid>
+
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{DynamicResource DocStats_BlockCount}"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBlock x:Name="TxtBlockCount" Grid.Column="1"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+        </Grid>
+
+        <Grid Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{DynamicResource DocStats_LineCount}"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBlock x:Name="TxtLineCount" Grid.Column="1"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+        </Grid>
+
+        <Button x:Name="BtnClose"
+                Content="{DynamicResource DocStats_Close}"
+                HorizontalAlignment="Right"
+                MinWidth="80"
+                Padding="12,4"
+                Click="OnCloseClicked"
+                Background="{DynamicResource DE_ToolbarBackground}"
+                Foreground="{DynamicResource DockMenuForegroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"/>
+
+    </StackPanel>
+</Window>

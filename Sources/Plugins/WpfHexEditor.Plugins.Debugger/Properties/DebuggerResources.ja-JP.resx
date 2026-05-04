@@ -215,4 +215,8 @@
   <data name="Debugger_TasksPanelTitle" xml:space="preserve">
     <value>タスク</value>
   </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>逆アセンブル</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>メモリ</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>レジスタ</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>並列ウォッチ</value></data>
 </root>

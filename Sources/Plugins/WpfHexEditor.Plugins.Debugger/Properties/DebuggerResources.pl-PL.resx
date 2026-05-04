@@ -215,4 +215,8 @@
   <data name="Debugger_TasksPanelTitle" xml:space="preserve">
     <value>Zadania</value>
   </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>Dezasemblacja</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>Pamięć</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>Rejestry</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>Równoległe czuwanie</value></data>
 </root>

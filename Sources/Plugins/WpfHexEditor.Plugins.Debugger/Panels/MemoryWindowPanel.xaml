@@ -1,0 +1,44 @@
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.MemoryWindowPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <DockPanel Background="{DynamicResource PanelBackground}">
+
+        <!-- Address bar -->
+        <ToolBar DockPanel.Dock="Top" Background="{DynamicResource ToolbarBackground}">
+            <Button Content="&#xE76B;" FontFamily="Segoe MDL2 Assets" ToolTip="Previous page"
+                    Command="{Binding PrevPageCommand}" Style="{DynamicResource ToolbarButtonStyle}"/>
+            <Button Content="&#xE76C;" FontFamily="Segoe MDL2 Assets" ToolTip="Next page"
+                    Command="{Binding NextPageCommand}" Style="{DynamicResource ToolbarButtonStyle}"/>
+            <Separator/>
+            <TextBox Width="160"
+                     Text="{Binding AddressInput, UpdateSourceTrigger=PropertyChanged}"
+                     Background="{DynamicResource PanelBackground}"
+                     Foreground="{DynamicResource PanelForeground}"
+                     BorderBrush="{DynamicResource PopupBorder}"
+                     KeyDown="OnAddressKeyDown"
+                     ToolTip="Memory address (e.g. 0x00007FF...)"/>
+            <Button Content="&#xE721;" FontFamily="Segoe MDL2 Assets" ToolTip="Go"
+                    Command="{Binding GoCommand}" Style="{DynamicResource ToolbarButtonStyle}"/>
+            <Button Content="&#xE72C;" FontFamily="Segoe MDL2 Assets" ToolTip="Refresh"
+                    Click="OnRefreshClick" Style="{DynamicResource ToolbarButtonStyle}"/>
+        </ToolBar>
+
+        <!-- Memory rows: Address | 16-byte hex | ASCII -->
+        <ListView ItemsSource="{Binding Rows}"
+                  Background="{DynamicResource PanelBackground}"
+                  Foreground="{DynamicResource PanelForeground}"
+                  FontFamily="Cascadia Code, Consolas, Courier New"
+                  FontSize="12"
+                  BorderThickness="0"
+                  VirtualizingPanel.IsVirtualizing="True">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Address" Width="110" DisplayMemberBinding="{Binding Address}"/>
+                    <GridViewColumn Header="Hex"     Width="380" DisplayMemberBinding="{Binding Hex}"/>
+                    <GridViewColumn Header="ASCII"   Width="130" DisplayMemberBinding="{Binding Ascii}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</UserControl>

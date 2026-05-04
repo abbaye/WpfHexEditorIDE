@@ -413,9 +413,10 @@ public partial class MainWindow
                 LspServers     = lspRegistry,
                 Notifications  = _notificationService,
                 Dialogs        = _dialogService,
-                SyntaxColoring = syntaxColoringService,
-                UIFactory      = uiControlFactory,
-                TabGroups      = tabGroupService,
+                SyntaxColoring   = syntaxColoringService,
+                UIFactory        = uiControlFactory,
+                TabGroups        = tabGroupService,
+                DebugVisualizers = new WpfHexEditor.App.Services.DebugVisualizerRegistry(),
             };
 
             // Attach TabGroupService to the engine (available after DockHost.Layout is set).

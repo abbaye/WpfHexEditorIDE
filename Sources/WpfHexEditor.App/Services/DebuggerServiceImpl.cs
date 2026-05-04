@@ -267,7 +267,8 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         int id = threadId == 0 ? _session.ActiveThreadId : threadId;
         var body = await _client.StackTraceAsync(new StackTraceArgs(id, Levels: 30));
         return body?.StackFrames.Select(f => new DebugFrameInfo(
-            f.Id, f.Name, f.Source?.Path, f.Line, f.Column)).ToList() ?? [];
+            f.Id, f.Name, f.Source?.Path, f.Line, f.Column,
+            f.InstructionPointerReference)).ToList() ?? [];
     }
 
     public Task<IReadOnlyList<DebugFrameInfo>> GetCallStackAsync() =>
@@ -279,6 +280,21 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         var body = await _client.VariablesAsync(new VariablesArgs(variablesReference));
         return body?.Variables.Select(v => new DebugVariableInfo(
             v.Name, v.Value, v.Type, v.VariablesReference)).ToList() ?? [];
+    }
+
+    public async Task<IReadOnlyList<DebugVariableInfo>> GetRegistersAsync()
+    {
+        if (_client is null || !_session.IsPaused) return [];
+        try
+        {
+            var scopes = await _client.ScopesAsync(new ScopesArgs(_session.CurrentFrameId));
+            if (scopes is null) return [];
+            var regScope = scopes.Scopes.FirstOrDefault(s =>
+                s.Name.Equals("Registers", StringComparison.OrdinalIgnoreCase));
+            if (regScope is null) return [];
+            return await GetVariablesAsync(regScope.VariablesReference);
+        }
+        catch { return []; }
     }
 
     public async Task<string> EvaluateAsync(string expression, int? frameId = null)
@@ -371,6 +387,33 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         if (_client is null) return;
         var activeFilters = filters.Where(f => f.IsEnabled).Select(f => f.Filter).ToArray();
         await _client.SetExceptionBreakpointsAsync(new SetExceptionBreakpointsArgs(activeFilters));
+    }
+
+    // ── IDebuggerService — disassembly / memory ───────────────────────────────
+
+    public async Task<IReadOnlyList<DisassembledInstruction>> DisassembleAsync(string memRef, int count)
+    {
+        if (_client is null) return [];
+        var body = await _client.DisassembleAsync(new WpfHexEditor.Core.Debugger.Protocol.DisassembleArgs(memRef, count));
+        return body.Instructions.Select(i => new DisassembledInstruction(
+            i.Address, i.Instruction, i.Symbol, i.InstructionBytes,
+            i.Location?.Path, i.Line ?? 0)).ToList();
+    }
+
+    public async Task<byte[]?> ReadMemoryAsync(string memRef, int byteCount, int offset = 0)
+    {
+        if (_client is null) return null;
+        var body = await _client.ReadMemoryAsync(new WpfHexEditor.Core.Debugger.Protocol.ReadMemoryArgs(memRef, byteCount, offset));
+        if (body is null) return null;
+        try { return Convert.FromBase64String(body.Data); }
+        catch { return null; }
+    }
+
+    public async Task WriteMemoryAsync(string memRef, byte[] data, int offset = 0)
+    {
+        if (_client is null) return;
+        await _client.WriteMemoryAsync(new WpfHexEditor.Core.Debugger.Protocol.WriteMemoryArgs(
+            memRef, Convert.ToBase64String(data), offset));
     }
 
     private readonly HashSet<int> _frozenThreadIds = [];
