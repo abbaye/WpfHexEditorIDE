@@ -2432,6 +2432,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _caret = _caret with { CharOffset = off + text.Length };
         _selection.Anchor = _caret;
         _selection.Focus  = _caret;
+        // Force the caret-position FormattedText cache to rebuild from the
+        // current block.Text on next RefreshCaretVisual; otherwise the caret
+        // tracks stale text under fast key-repeat.
+        _caretFtDirty = true;
+        _caretVisible = true;
+        RefreshCaretVisual();
         InvalidateVisual();
     }
 
@@ -2490,11 +2496,19 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         return map;
     }
 
+    private bool _rebuildPending;
+
     private void OnBlocksChanged(object? sender, EventArgs e)
     {
         _caretFtDirty = true;
         InvalidateBrushCache();
-        Dispatcher.InvokeAsync(RebuildLayout);
+        if (_rebuildPending) return;
+        _rebuildPending = true;
+        Dispatcher.InvokeAsync(() =>
+        {
+            _rebuildPending = false;
+            RebuildLayout();
+        }, System.Windows.Threading.DispatcherPriority.Background);
     }
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs e)
