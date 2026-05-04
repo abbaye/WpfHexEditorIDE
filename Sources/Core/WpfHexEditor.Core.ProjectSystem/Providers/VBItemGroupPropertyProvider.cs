@@ -11,8 +11,9 @@
 //               the item extension is ".vb".
 // ==========================================================
 
-using System.IO;
 using System.Xml.Linq;
+using WpfHexEditor.Core.ProjectSystem.Services;
+using WpfHexEditor.Core.ProjectSystem.Utilities;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Core.ProjectSystem.Providers;
@@ -32,16 +33,24 @@ public sealed class VBItemGroupPropertyProvider
     private string _copyToOutput           = "Do not copy";
     private bool   _generateDocumentation  = false;
 
+    private static class Props
+    {
+        public const string BuildAction      = "Build Action";
+        public const string SubType          = "Sub Type";
+        public const string CopyToOutput     = "Copy to Output";
+        public const string XmlDocumentation = "XML Documentation";
+    }
+
     private static readonly string[] BuildActionValues =
         ["Compile", "Content", "EmbeddedResource", "None", "ApplicationDefinition", "Page", "Resource"];
 
     private static readonly string[] CopyToOutputValues =
         ["Do not copy", "Copy always", "Copy if newer"];
 
-    public VBItemGroupPropertyProvider(string absoluteFilePath)
+    public VBItemGroupPropertyProvider(string absoluteFilePath, IProjectFileLocator? locator = null)
     {
         _absoluteFilePath = absoluteFilePath;
-        _vbprojPath       = FindVbproj(absoluteFilePath);
+        _vbprojPath       = (locator ?? new ProjectFileLocator()).FindNearestVbproj(absoluteFilePath);
         if (_vbprojPath is not null)
             LoadFromProject(_vbprojPath);
     }
@@ -54,7 +63,7 @@ public sealed class VBItemGroupPropertyProvider
         [
             new PropertyEntry
             {
-                Name          = "Build Action",
+                Name          = Props.BuildAction,
                 Value         = _buildAction,
                 Type          = PropertyEntryType.Enum,
                 AllowedValues = BuildActionValues,
@@ -63,7 +72,7 @@ public sealed class VBItemGroupPropertyProvider
             },
             new PropertyEntry
             {
-                Name          = "Sub Type",
+                Name          = Props.SubType,
                 Value         = _subType,
                 Type          = PropertyEntryType.Text,
                 IsReadOnly    = _vbprojPath is null,
@@ -71,7 +80,7 @@ public sealed class VBItemGroupPropertyProvider
             },
             new PropertyEntry
             {
-                Name          = "Copy to Output",
+                Name          = Props.CopyToOutput,
                 Value         = _copyToOutput,
                 Type          = PropertyEntryType.Enum,
                 AllowedValues = CopyToOutputValues,
@@ -80,7 +89,7 @@ public sealed class VBItemGroupPropertyProvider
             },
             new PropertyEntry
             {
-                Name        = "XML Documentation",
+                Name        = Props.XmlDocumentation,
                 Value       = _generateDocumentation,
                 Type        = PropertyEntryType.Boolean,
                 IsReadOnly  = _vbprojPath is null,
@@ -97,27 +106,16 @@ public sealed class VBItemGroupPropertyProvider
         {
             var doc      = XDocument.Load(vbprojPath);
             var ns       = doc.Root?.Name.Namespace ?? XNamespace.None;
-            var relative = GetRelativePath(vbprojPath, _absoluteFilePath);
+            var relative = ProjectFileXmlUtils.GetRelativePath(vbprojPath, _absoluteFilePath);
+            var item     = ProjectFileXmlUtils.FindItemByInclude(doc, ns, relative);
+            if (item is null) return;
 
-            // Find the <Compile> / <Content> / <None> etc. element for this file
-            foreach (var itemGroup in doc.Descendants(ns + "ItemGroup"))
-            {
-                foreach (var item in itemGroup.Elements())
-                {
-                    var include = item.Attribute("Include")?.Value;
-                    if (!string.Equals(NormPath(include), NormPath(relative),
-                                       StringComparison.OrdinalIgnoreCase))
-                        continue;
-
-                    _buildAction           = item.Name.LocalName;
-                    _subType               = item.Element(ns + "SubType")?.Value ?? "";
-                    _copyToOutput          = MapCopyToOutput(item.Element(ns + "CopyToOutputDirectory")?.Value);
-                    _generateDocumentation = string.Equals(
-                        item.Element(ns + "GenerateDocumentationFile")?.Value, "true",
-                        StringComparison.OrdinalIgnoreCase);
-                    return;
-                }
-            }
+            _buildAction           = item.Name.LocalName;
+            _subType               = item.Element(ns + "SubType")?.Value ?? "";
+            _copyToOutput          = MapCopyToOutput(item.Element(ns + "CopyToOutputDirectory")?.Value);
+            _generateDocumentation = string.Equals(
+                item.Element(ns + "GenerateDocumentationFile")?.Value, "true",
+                StringComparison.OrdinalIgnoreCase);
         }
         catch { /* read errors are non-fatal */ }
     }
@@ -133,32 +131,24 @@ public sealed class VBItemGroupPropertyProvider
         {
             var doc      = XDocument.Load(_vbprojPath);
             var ns       = doc.Root?.Name.Namespace ?? XNamespace.None;
-            var relative = GetRelativePath(_vbprojPath, _absoluteFilePath);
-
-            XElement? target = null;
-            foreach (var itemGroup in doc.Descendants(ns + "ItemGroup"))
-                foreach (var item in itemGroup.Elements())
-                    if (string.Equals(NormPath(item.Attribute("Include")?.Value),
-                                      NormPath(relative),
-                                      StringComparison.OrdinalIgnoreCase))
-                    { target = item; break; }
-
+            var relative = ProjectFileXmlUtils.GetRelativePath(_vbprojPath, _absoluteFilePath);
+            var target   = ProjectFileXmlUtils.FindItemByInclude(doc, ns, relative);
             if (target is null) return;
 
             switch (propertyName)
             {
-                case "Build Action":
+                case Props.BuildAction:
                     target.Name = ns + (newValue?.ToString() ?? "Compile");
                     break;
-                case "Sub Type":
-                    SetOrRemove(target, ns + "SubType", newValue?.ToString());
+                case Props.SubType:
+                    ProjectFileXmlUtils.SetOrRemove(target, ns + "SubType", newValue?.ToString());
                     break;
-                case "Copy to Output":
-                    SetOrRemove(target, ns + "CopyToOutputDirectory",
+                case Props.CopyToOutput:
+                    ProjectFileXmlUtils.SetOrRemove(target, ns + "CopyToOutputDirectory",
                         MapCopyToOutputXml(newValue?.ToString()));
                     break;
-                case "XML Documentation":
-                    SetOrRemove(target, ns + "GenerateDocumentationFile",
+                case Props.XmlDocumentation:
+                    ProjectFileXmlUtils.SetOrRemove(target, ns + "GenerateDocumentationFile",
                         newValue is true ? "true" : null);
                     break;
             }
@@ -170,50 +160,17 @@ public sealed class VBItemGroupPropertyProvider
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    private static string? FindVbproj(string filePath)
-    {
-        var dir = Path.GetDirectoryName(filePath);
-        while (dir is not null)
-        {
-            var vbproj = Directory.GetFiles(dir, "*.vbproj").FirstOrDefault();
-            if (vbproj is not null) return vbproj;
-            dir = Path.GetDirectoryName(dir);
-        }
-        return null;
-    }
-
-    private static string GetRelativePath(string vbprojPath, string absoluteFilePath)
-    {
-        var projDir = Path.GetDirectoryName(vbprojPath) ?? "";
-        return Path.GetRelativePath(projDir, absoluteFilePath);
-    }
-
-    private static string NormPath(string? p) =>
-        p?.Replace('/', '\\').TrimStart('\\') ?? "";
-
     private static string MapCopyToOutput(string? xmlValue) => xmlValue switch
     {
-        "Always"    => "Copy always",
+        "Always"         => "Copy always",
         "PreserveNewest" => "Copy if newer",
-        _ => "Do not copy",
+        _                => "Do not copy",
     };
 
     private static string? MapCopyToOutputXml(string? displayValue) => displayValue switch
     {
-        "Copy always"    => "Always",
-        "Copy if newer"  => "PreserveNewest",
-        _ => null,
+        "Copy always"   => "Always",
+        "Copy if newer" => "PreserveNewest",
+        _               => null,
     };
-
-    private static void SetOrRemove(XElement parent, XName name, string? value)
-    {
-        if (string.IsNullOrEmpty(value))
-            parent.Element(name)?.Remove();
-        else
-        {
-            var el = parent.Element(name);
-            if (el is null) parent.Add(new XElement(name, value));
-            else el.Value = value;
-        }
-    }
 }

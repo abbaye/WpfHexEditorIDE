@@ -179,6 +179,7 @@
                    Background="{DynamicResource ERR_BackgroundBrush}">
             <TextBlock x:Name="StatusText"
                        FontSize="11"
+                       Foreground="{DynamicResource ERR_ForegroundBrush}"
                        Text="{StaticResource WorkspaceFindReplace_StatusReady}"
                        VerticalAlignment="Center"/>
         </StatusBar>

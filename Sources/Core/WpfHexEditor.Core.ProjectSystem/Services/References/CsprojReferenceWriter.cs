@@ -16,6 +16,7 @@
 
 using System.IO;
 using System.Xml.Linq;
+using WpfHexEditor.Core.ProjectSystem.Utilities;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Core.ProjectSystem.Services.References;
@@ -36,7 +37,7 @@ public static class CsprojReferenceWriter
     {
         var doc      = XDocument.Load(csprojPath, LoadOptions.PreserveWhitespace);
         var ns       = doc.Root?.Name.Namespace ?? XNamespace.None;
-        var relative = MakeRelativePath(csprojPath, referencedCsprojPath);
+        var relative = ProjectFileXmlUtils.GetRelativePath(csprojPath, referencedCsprojPath);
 
         if (FindProjectReferenceElement(doc, ns, relative) is not null) return;
 
@@ -54,7 +55,7 @@ public static class CsprojReferenceWriter
     {
         var doc      = XDocument.Load(csprojPath, LoadOptions.PreserveWhitespace);
         var ns       = doc.Root?.Name.Namespace ?? XNamespace.None;
-        var relative = MakeRelativePath(csprojPath, referencedCsprojPath);
+        var relative = ProjectFileXmlUtils.GetRelativePath(csprojPath, referencedCsprojPath);
 
         var element = FindProjectReferenceElement(doc, ns, relative);
         if (element is null) return;
@@ -132,9 +133,4 @@ public static class CsprojReferenceWriter
             parent.Remove();
     }
 
-    private static string MakeRelativePath(string fromFile, string toFile)
-    {
-        var fromDir = Path.GetDirectoryName(fromFile) ?? string.Empty;
-        return Path.GetRelativePath(fromDir, toFile).Replace('/', Path.DirectorySeparatorChar);
-    }
 }

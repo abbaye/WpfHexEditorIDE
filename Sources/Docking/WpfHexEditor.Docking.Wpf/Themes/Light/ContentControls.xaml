@@ -229,21 +229,21 @@
         <Setter Property="MinWidth" Value="17"/>
         <Setter Property="Template">
             <Setter.Value>
-                <!-- Vertical template: track 12→17px on hover, arrows fade in -->
+                <!-- Vertical template: track 12→17px on hover, arrows slide in from 0→17px -->
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
                     <Border SnapsToDevicePixels="True" Background="Transparent">
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="17"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
-                                <RowDefinition Height="17"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <RepeatButton x:Name="PART_LineUpButton"
                                           Grid.Row="0"
                                           Style="{StaticResource DockScrollBarArrowButtonStyle}"
                                           Command="ScrollBar.LineUpCommand"
                                           Tag="M 4,10 L 8.5,3 L 13,10 Z"
-                                          Opacity="0"/>
+                                          Height="0" MinHeight="0"/>
                             <Border x:Name="TrackBorder"
                                     Grid.Row="1"
                                     Width="12"
@@ -268,7 +268,7 @@
                                           Style="{StaticResource DockScrollBarArrowButtonStyle}"
                                           Command="ScrollBar.LineDownCommand"
                                           Tag="M 4,3 L 8.5,10 L 13,3 Z"
-                                          Opacity="0"/>
+                                          Height="0" MinHeight="0"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -281,11 +281,15 @@
                                         <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
                                     </DoubleAnimation>
                                     <DoubleAnimation Storyboard.TargetName="PART_LineUpButton"
-                                                     Storyboard.TargetProperty="Opacity"
-                                                     To="1" Duration="0:0:0.15"/>
+                                                     Storyboard.TargetProperty="Height"
+                                                     To="17" Duration="0:0:0.15">
+                                        <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
                                     <DoubleAnimation Storyboard.TargetName="PART_LineDownButton"
-                                                     Storyboard.TargetProperty="Opacity"
-                                                     To="1" Duration="0:0:0.15"/>
+                                                     Storyboard.TargetProperty="Height"
+                                                     To="17" Duration="0:0:0.15">
+                                        <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -298,11 +302,15 @@
                                         <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
                                     </DoubleAnimation>
                                     <DoubleAnimation Storyboard.TargetName="PART_LineUpButton"
-                                                     Storyboard.TargetProperty="Opacity"
-                                                     To="0" Duration="0:0:0.20"/>
+                                                     Storyboard.TargetProperty="Height"
+                                                     To="0" Duration="0:0:0.20">
+                                        <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
                                     <DoubleAnimation Storyboard.TargetName="PART_LineDownButton"
-                                                     Storyboard.TargetProperty="Opacity"
-                                                     To="0" Duration="0:0:0.20"/>
+                                                     Storyboard.TargetProperty="Height"
+                                                     To="0" Duration="0:0:0.20">
+                                        <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
