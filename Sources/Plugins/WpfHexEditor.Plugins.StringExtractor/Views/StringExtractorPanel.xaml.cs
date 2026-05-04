@@ -29,44 +29,38 @@ public sealed partial class StringExtractorPanel : UserControl
         InitializeComponent();
         DataContext = _vm;
 
-        _vm.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName is nameof(StringExtractorViewModel.IsExtracting))
-                UpdateProgressOverlay();
-            else if (e.PropertyName is nameof(StringExtractorViewModel.Progress))
-                ExtractionProgress.Value = _vm.Progress;
-            else if (e.PropertyName is nameof(StringExtractorViewModel.StatusText))
-                StatusText.Text = _vm.StatusText;
-            else if (e.PropertyName is nameof(StringExtractorViewModel.HasResults)
-                                    or nameof(StringExtractorViewModel.HasFile))
-                UpdateEmptyState();
-            else if (e.PropertyName is nameof(StringExtractorViewModel.Results))
-                ResultsList.ItemsSource = _vm.Results;
-        };
+        // Wire up bindings that can't be expressed in pure XAML (imperative UI state).
+        _vm.PropertyChanged += OnVmPropertyChanged;
+        Unloaded            += (_, _) => _vm.PropertyChanged -= OnVmPropertyChanged;
 
         UpdateEmptyState();
     }
 
-    // ── Public API (called by plugin) ─────────────────────────────────────────
+    private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(StringExtractorViewModel.IsExtracting))
+        {
+            ProgressOverlay.Visibility = _vm.IsExtracting ? Visibility.Visible : Visibility.Collapsed;
+            UpdateEmptyState();
+        }
+        else if (e.PropertyName is nameof(StringExtractorViewModel.HasResults)
+                                or nameof(StringExtractorViewModel.HasFile))
+        {
+            UpdateEmptyState();
+        }
+    }
 
-    /// <summary>
-    /// Wires IDE navigation. Call once in InitializeAsync; safe to skip in standalone mode.
-    /// </summary>
     public void SetContext(IIDEHostContext context)
     {
         _context = context;
         _vm.SetNavigateCallback(offset => context.HexEditor.SetSelection(offset, offset));
     }
 
-    /// <summary>Called when a new file is opened; clears stale results.</summary>
     public void OnFileOpened()
     {
         _vm.Clear();
         _vm.HasFile = _context?.HexEditor.IsActive ?? false;
-        UpdateEmptyState();
     }
-
-    // ── Toolbar event handlers ────────────────────────────────────────────────
 
     private async void OnExtractClick(object sender, RoutedEventArgs e)
     {
@@ -74,15 +68,19 @@ public sealed partial class StringExtractorPanel : UserControl
 
         SyncOptions();
 
-        // Read the entire file buffer.
         var fileSize = _context.HexEditor.FileSize;
         if (fileSize <= 0) return;
 
-        // Cap at 512 MB to prevent OOM on giant files.
+        // ReadBytes.length is int — cap at int.MaxValue (2 GB) to avoid overflow.
         const long MaxBytes = 512L * 1024 * 1024;
         long readLen = Math.Min(fileSize, MaxBytes);
-        var  data    = _context.HexEditor.ReadBytes(0, (int)readLen);
+        if (readLen > int.MaxValue)
+        {
+            _context.Output.Error("StringExtractor: file too large (max 2 GB).");
+            return;
+        }
 
+        var data = _context.HexEditor.ReadBytes(0, (int)readLen);
         await _vm.ExtractAsync(data);
     }
 
@@ -118,8 +116,6 @@ public sealed partial class StringExtractorPanel : UserControl
     private void OnFilterChanged(object sender, TextChangedEventArgs e)
         => _vm.FilterText = FilterBox.Text;
 
-    // ── List interaction ──────────────────────────────────────────────────────
-
     private void OnResultDoubleClick(object sender, MouseButtonEventArgs e)
         => NavigateToSelected();
 
@@ -141,8 +137,6 @@ public sealed partial class StringExtractorPanel : UserControl
     private void NavigateToSelected()
         => _vm.NavigateTo(ResultsList.SelectedItem as ExtractedString);
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
     private void SyncOptions()
     {
         if (int.TryParse(MinLengthBox.Text, out int min) && min >= 1)
@@ -152,14 +146,13 @@ public sealed partial class StringExtractorPanel : UserControl
         _vm.Options.ScanUtf16Le = Utf16LeCheck.IsChecked ?? true;
     }
 
-    private void UpdateProgressOverlay()
-        => ProgressOverlay.Visibility = _vm.IsExtracting ? Visibility.Visible : Visibility.Collapsed;
-
     private void UpdateEmptyState()
     {
-        if (_vm.IsExtracting)           { EmptyStateText.Visibility = Visibility.Collapsed; return; }
-        if (_vm.HasResults)             { EmptyStateText.Visibility = Visibility.Collapsed; return; }
-
+        if (_vm.IsExtracting || _vm.HasResults)
+        {
+            EmptyStateText.Visibility = Visibility.Collapsed;
+            return;
+        }
         EmptyStateText.Visibility = Visibility.Visible;
         EmptyStateText.Text = !_vm.HasFile
             ? StringExtractorResources.StringExtractor_NoFile

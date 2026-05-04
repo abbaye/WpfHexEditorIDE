@@ -4,9 +4,6 @@
 // Description: Core extraction logic — scans raw bytes for printable string
 //              sequences in ASCII, UTF-8, UTF-16 LE/BE encodings.
 //              No IDE dependency; safe for standalone use.
-// Architecture Notes:
-//     Returns IAsyncEnumerable<ExtractedString> for memory-efficient streaming
-//     over large files. Caller cancels via CancellationToken.
 // ==========================================================
 
 using System.Text;
@@ -16,57 +13,48 @@ namespace WpfHexEditor.Plugins.StringExtractor.Services;
 
 internal sealed class StringExtractorService
 {
-    // Printable ASCII range: 0x20 (space) to 0x7E (~), plus tab (0x09) and newline (0x0A/0x0D).
+    // Printable ASCII range: 0x20–0x7E plus tab/LF/CR accepted as run-extenders.
     private static bool IsAsciiPrintable(byte b)
         => b is >= 0x20 and <= 0x7E or 0x09 or 0x0A or 0x0D;
 
     /// <summary>
     /// Extracts all printable strings from <paramref name="data"/> according to
-    /// <paramref name="options"/>. Runs synchronously on the provided buffer;
-    /// the async enumerable boundary keeps the API composable with UI tasks.
+    /// <paramref name="options"/>. Returns a sorted, deduplicated list.
+    /// Runs on a background thread; use <c>Task.Run</c> at the call site.
     /// </summary>
-    public async IAsyncEnumerable<ExtractedString> ExtractAsync(
-        byte[]                   data,
-        StringExtractionOptions  options,
-        IProgress<double>?       progress    = null,
-        [System.Runtime.CompilerServices.EnumeratorCancellation]
-        CancellationToken        ct          = default)
+    public Task<IReadOnlyList<ExtractedString>> ExtractAsync(
+        byte[]                  data,
+        StringExtractionOptions options,
+        IProgress<double>?      progress = null,
+        CancellationToken       ct       = default)
+        => Task.Run(() => Extract(data, options, progress, ct), ct);
+
+    private static IReadOnlyList<ExtractedString> Extract(
+        byte[]                  data,
+        StringExtractionOptions options,
+        IProgress<double>?      progress,
+        CancellationToken       ct)
     {
-        if (data.Length == 0) yield break;
+        if (data.Length == 0) return [];
 
         var results = new List<ExtractedString>();
 
-        if (options.ScanAscii)
-            ScanAscii(data, options.MinLength, results);
+        if (options.ScanAscii)   ScanAscii(data, options.MinLength, results);
+        if (options.ScanUtf8)    ScanUtf8(data, options.MinLength, results);
+        if (options.ScanUtf16Le) ScanUtf16(data, options.MinLength, bigEndian: false, results);
+        if (options.ScanUtf16Be) ScanUtf16(data, options.MinLength, bigEndian: true, results);
 
-        if (options.ScanUtf8)
-            ScanUtf8(data, options.MinLength, results);
+        ct.ThrowIfCancellationRequested();
 
-        if (options.ScanUtf16Le)
-            ScanUtf16(data, options.MinLength, bigEndian: false, results);
-
-        if (options.ScanUtf16Be)
-            ScanUtf16(data, options.MinLength, bigEndian: true, results);
-
-        // Deduplicate by (offset, encoding) and sort by offset.
+        // Deduplicate by (offset, encoding) — different encodings at the same offset are kept.
         var seen    = new HashSet<(long, string)>();
         var ordered = results
             .Where(r => seen.Add((r.Offset, r.Encoding)))
             .OrderBy(r => r.Offset)
             .ToList();
 
-        double total = ordered.Count;
-        for (int i = 0; i < ordered.Count; i++)
-        {
-            ct.ThrowIfCancellationRequested();
-            progress?.Report(i / total);
-            yield return ordered[i];
-            // Yield control every 500 items so the UI remains responsive.
-            if (i % 500 == 0)
-                await Task.Yield();
-        }
-
         progress?.Report(1.0);
+        return ordered;
     }
 
     private static void ScanAscii(byte[] data, int minLen, List<ExtractedString> results)
@@ -81,13 +69,7 @@ internal sealed class StringExtractorService
             }
             else if (start >= 0)
             {
-                int len = i - start;
-                if (len >= minLen)
-                {
-                    var value = Encoding.ASCII.GetString(data, start, len).TrimEnd('\r', '\n');
-                    if (!string.IsNullOrWhiteSpace(value))
-                        results.Add(new ExtractedString(start, len, "ASCII", value));
-                }
+                FlushRun(data, start, i - start, minLen, Encoding.ASCII, "ASCII", results);
                 start = -1;
             }
         }
@@ -95,15 +77,14 @@ internal sealed class StringExtractorService
 
     private static void ScanUtf8(byte[] data, int minLen, List<ExtractedString> results)
     {
-        // Use a sliding window: try to decode UTF-8 sequences, accumulate printable chars.
         var decoder = Encoding.UTF8.GetDecoder();
-        var charBuf = new char[data.Length];
+        // Fixed-size buffer: UTF-8 sequences are at most 4 bytes → at most 4 chars.
+        var charBuf = new char[16];
         int start   = -1;
         int i       = 0;
 
         while (i < data.Length)
         {
-            // Determine sequence length from lead byte.
             int seqLen = GetUtf8SequenceLength(data[i]);
             if (seqLen < 1 || i + seqLen > data.Length)
             {
@@ -115,7 +96,7 @@ internal sealed class StringExtractorService
 
             try
             {
-                int charCount = decoder.GetChars(data, i, seqLen, charBuf, 0);
+                int charCount    = decoder.GetChars(data, i, seqLen, charBuf, 0);
                 bool allPrintable = true;
                 for (int c = 0; c < charCount; c++)
                 {
@@ -137,6 +118,7 @@ internal sealed class StringExtractorService
             }
             catch
             {
+                // Malformed UTF-8 — reset decoder state and skip byte to resync.
                 FlushUtf8Run(data, start, i, minLen, results);
                 start = -1;
                 i++;
@@ -157,13 +139,13 @@ internal sealed class StringExtractorService
             if (!string.IsNullOrWhiteSpace(value) && value.Length >= minLen)
                 results.Add(new ExtractedString(start, len, "UTF-8", value));
         }
-        catch { /* malformed — skip */ }
+        catch { /* malformed sequence — skip */ }
     }
 
     private static int GetUtf8SequenceLength(byte b) => b switch
     {
         < 0x80 => 1,
-        < 0xC0 => 0,  // continuation byte — invalid as lead
+        < 0xC0 => 0,  // continuation byte as lead is invalid
         < 0xE0 => 2,
         < 0xF0 => 3,
         < 0xF8 => 4,
@@ -174,9 +156,9 @@ internal sealed class StringExtractorService
     {
         if (data.Length < 2) return;
 
-        var encoding   = bigEndian ? Encoding.BigEndianUnicode : Encoding.Unicode;
+        var encoding     = bigEndian ? Encoding.BigEndianUnicode : Encoding.Unicode;
         var encodingName = bigEndian ? "UTF-16 BE" : "UTF-16 LE";
-        int start      = -1;
+        int start        = -1;
 
         for (int i = 0; i + 1 < data.Length; i += 2)
         {
@@ -191,14 +173,7 @@ internal sealed class StringExtractorService
             }
             else if (start >= 0)
             {
-                int byteLen = i - start;
-                int charLen = byteLen / 2;
-                if (charLen >= minLen)
-                {
-                    var value = encoding.GetString(data, start, byteLen).TrimEnd('\r', '\n');
-                    if (!string.IsNullOrWhiteSpace(value))
-                        results.Add(new ExtractedString(start, byteLen, encodingName, value));
-                }
+                FlushRun(data, start, i - start, minLen, encoding, encodingName, results);
                 start = -1;
             }
         }
@@ -206,13 +181,17 @@ internal sealed class StringExtractorService
         if (start >= 0)
         {
             int byteLen = data.Length - start - (data.Length - start) % 2;
-            int charLen = byteLen / 2;
-            if (charLen >= minLen)
-            {
-                var value = encoding.GetString(data, start, byteLen).TrimEnd('\r', '\n');
-                if (!string.IsNullOrWhiteSpace(value))
-                    results.Add(new ExtractedString(start, byteLen, encodingName, value));
-            }
+            FlushRun(data, start, byteLen, byteLen / 2, encoding, encodingName, results);
         }
+    }
+
+    // Shared flush helper for ASCII and UTF-16 runs.
+    private static void FlushRun(byte[] data, int start, int byteLen, int minCharLen,
+                                  Encoding enc, string encName, List<ExtractedString> results)
+    {
+        if (start < 0 || byteLen <= 0) return;
+        var value = enc.GetString(data, start, byteLen).TrimEnd('\r', '\n');
+        if (!string.IsNullOrWhiteSpace(value) && value.Length >= minCharLen)
+            results.Add(new ExtractedString(start, byteLen, encName, value));
     }
 }

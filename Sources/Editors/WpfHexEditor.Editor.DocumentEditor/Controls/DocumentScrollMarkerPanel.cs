@@ -50,6 +50,8 @@ internal sealed class DocumentScrollMarkerPanel : FrameworkElement
     private int              _caretBlock     = -1;
     private int              _totalBlocks    = 1;
 
+    private (int block, double normalizedEntropy)[] _entropyBlocks = [];
+
     // ── Constructor ──────────────────────────────────────────────────────────
 
     public DocumentScrollMarkerPanel()
@@ -94,12 +96,26 @@ internal sealed class DocumentScrollMarkerPanel : FrameworkElement
         InvalidateVisual();
     }
 
+    /// <summary>
+    /// Updates entropy ticks using a green-to-red gradient based on normalized entropy.
+    /// Call with an empty enumerable to clear entropy marks.
+    /// </summary>
+    /// <param name="blocks">Sequence of (blockIndex, entropy 0.0–8.0) pairs.</param>
+    /// <param name="totalBlocks">Total number of blocks in the file.</param>
+    public void UpdateEntropyMarkers(IEnumerable<(int block, double entropy)> blocks, int totalBlocks)
+    {
+        _entropyBlocks = blocks.Select(b => (b.block, b.entropy / 8.0)).ToArray();
+        _totalBlocks   = Math.Max(1, totalBlocks);
+        InvalidateVisual();
+    }
+
     public void ClearAll()
     {
         _searchBlocks   = [];
         _changeBlocks   = [];
         _forensicBlocks = [];
         _bookmarkBlocks = [];
+        _entropyBlocks  = [];
         _caretBlock     = -1;
         InvalidateVisual();
     }
@@ -116,7 +132,11 @@ internal sealed class DocumentScrollMarkerPanel : FrameworkElement
         double trackLeft = ActualWidth - TrackRestWidth;
         double tickX     = trackLeft + (TrackRestWidth - TickWidth) / 2.0;
 
-        // Z-order: change → search → forensic → bookmark → caret (topmost)
+        // Z-order: entropy → change → search → forensic → bookmark → caret (topmost)
+
+        foreach (var (b, norm) in _entropyBlocks)
+            dc.DrawRectangle(EntropyBrush(norm), null,
+                new Rect(tickX, Y(b, drawableH), TickWidth, TickHeight));
 
         foreach (int b in _changeBlocks)
             dc.DrawRectangle(s_changeTick, null,
@@ -149,5 +169,28 @@ internal sealed class DocumentScrollMarkerPanel : FrameworkElement
         var b = new SolidColorBrush(color);
         b.Freeze();
         return b;
+    }
+
+    // 64-step LUT: green (low entropy) → red (high entropy), alpha=160.
+    private static readonly Brush[] s_entropyLut = BuildEntropyLut();
+
+    private static Brush[] BuildEntropyLut()
+    {
+        const int Steps = 64;
+        var lut = new Brush[Steps];
+        for (int i = 0; i < Steps; i++)
+        {
+            double t = (double)i / (Steps - 1);
+            byte r = (byte)(t * 244);
+            byte g = (byte)((1.0 - t) * 200 + 56);
+            lut[i] = MakeFrozenBrush(Color.FromArgb(160, r, g, 60));
+        }
+        return lut;
+    }
+
+    private static Brush EntropyBrush(double normalizedEntropy)
+    {
+        int idx = (int)(Math.Clamp(normalizedEntropy, 0.0, 1.0) * (s_entropyLut.Length - 1));
+        return s_entropyLut[idx];
     }
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="EntropyVisualizer_PluginName"    xml:space="preserve"><value>Entropie-Visualisierer</value></data>
+  <data name="EntropyVisualizer_PanelTitle"    xml:space="preserve"><value>Entropie</value></data>
+  <data name="EntropyVisualizer_MenuItem"      xml:space="preserve"><value>Entropie-Visualisierer</value></data>
+  <data name="EntropyVisualizer_AnalyzeButton" xml:space="preserve"><value>Analysieren</value></data>
+  <data name="EntropyVisualizer_CancelButton"  xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="EntropyVisualizer_Tooltip_Analyze"   xml:space="preserve"><value>Shannon-Entropie der geoffneten Datei berechnen</value></data>
+  <data name="EntropyVisualizer_Tooltip_ChunkSize" xml:space="preserve"><value>Blockgrosse in Bytes pro Entropie-Messung (Standard: 256)</value></data>
+  <data name="EntropyVisualizer_Tooltip_Navigate"  xml:space="preserve"><value>Klicken Sie auf den Graphen um zu diesem Offset zu navigieren</value></data>
+  <data name="EntropyVisualizer_ChunkSizeLabel"    xml:space="preserve"><value>Block:</value></data>
+  <data name="EntropyVisualizer_Analyzing"     xml:space="preserve"><value>Analysiere...</value></data>
+  <data name="EntropyVisualizer_NoFile"        xml:space="preserve"><value>Offnen Sie eine Datei um deren Entropie zu visualisieren.</value></data>
+  <data name="EntropyVisualizer_NoResults"     xml:space="preserve"><value>Klicken Sie auf Analysieren um die Entropie zu berechnen.</value></data>
+  <data name="EntropyVisualizer_StatusReady"   xml:space="preserve"><value>Bereit</value></data>
+  <data name="EntropyVisualizer_StatusChunks"  xml:space="preserve"><value>{0} Blocke analysiert</value></data>
+  <data name="EntropyVisualizer_StatusOffset"  xml:space="preserve"><value>Offset: {0}  Entropie: {1:F2} Bits</value></data>
+  <data name="EntropyVisualizer_LegendLow"     xml:space="preserve"><value>Niedrig (Klartext)</value></data>
+  <data name="EntropyVisualizer_LegendHigh"    xml:space="preserve"><value>Hoch (verschlusselt / komprimiert)</value></data>
+  <data name="EntropyVisualizer_AnnotationHigh"       xml:space="preserve"><value>Hohe Entropie</value></data>
+  <data name="EntropyVisualizer_AnnotationCompressed" xml:space="preserve"><value>Komprimiert / verschlusselt</value></data>
+  <data name="EntropyVisualizer_CtxNavigateTo"  xml:space="preserve"><value>Zum Offset navigieren</value></data>
+  <data name="EntropyVisualizer_CtxCopyOffset"  xml:space="preserve"><value>Offset kopieren</value></data>
+  <data name="EntropyVisualizer_CtxCopyEntropy" xml:space="preserve"><value>Entropiewert kopieren</value></data>
+</root>

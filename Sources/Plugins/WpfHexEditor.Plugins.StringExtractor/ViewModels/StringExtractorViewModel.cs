@@ -5,12 +5,12 @@
 //              Drives extraction, filtering, status, and navigation.
 // Architecture Notes:
 //     Standalone-safe: _navigateTo is null when no IDE context is available.
-//     All commands guard against null state; no crashes in standalone mode.
 // ==========================================================
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Data;
 using WpfHexEditor.Plugins.StringExtractor.Models;
 using WpfHexEditor.Plugins.StringExtractor.Services;
 
@@ -18,25 +18,31 @@ namespace WpfHexEditor.Plugins.StringExtractor.ViewModels;
 
 internal sealed class StringExtractorViewModel : INotifyPropertyChanged
 {
-    private readonly StringExtractorService         _service    = new();
-    private readonly List<ExtractedString>          _allResults = [];
-    private Action<long>?                           _navigateTo;
-    private CancellationTokenSource?                _extractCts;
+    private readonly StringExtractorService           _service    = new();
+    private readonly ObservableCollection<ExtractedString> _allResults = [];
+    private Action<long>?                             _navigateTo;
+    private CancellationTokenSource?                  _extractCts;
+    private System.Windows.Threading.DispatcherTimer? _filterDebounce;
 
-    // ── Bindable state ────────────────────────────────────────────────────────
+    // ICollectionView used by the ListView — avoids re-creating ObservableCollection on each filter.
+    private readonly ListCollectionView _resultsView;
+    public ICollectionView Results => _resultsView;
 
-    private ObservableCollection<ExtractedString> _results = [];
-    public  ObservableCollection<ExtractedString>  Results
+    public StringExtractorViewModel()
     {
-        get => _results;
-        private set { _results = value; OnPropertyChanged(); }
+        _resultsView = (ListCollectionView)CollectionViewSource.GetDefaultView(_allResults);
     }
 
     private string _filterText = string.Empty;
     public  string  FilterText
     {
         get => _filterText;
-        set { _filterText = value; OnPropertyChanged(); ApplyFilter(); }
+        set
+        {
+            _filterText = value;
+            OnPropertyChanged();
+            ScheduleFilter();
+        }
     }
 
     private string _statusText = string.Empty;
@@ -62,12 +68,8 @@ internal sealed class StringExtractorViewModel : INotifyPropertyChanged
 
     public bool IsIdle => !_isExtracting;
 
-    private bool _hasResults;
-    public  bool  HasResults
-    {
-        get => _hasResults;
-        private set { _hasResults = value; OnPropertyChanged(); }
-    }
+    // HasResults is derived — no backing field needed.
+    public bool HasResults => _resultsView.Count > 0;
 
     private bool _hasFile;
     public  bool  HasFile
@@ -76,14 +78,9 @@ internal sealed class StringExtractorViewModel : INotifyPropertyChanged
         set { _hasFile = value; OnPropertyChanged(); }
     }
 
-    // ── Options ───────────────────────────────────────────────────────────────
-
     public StringExtractionOptions Options { get; } = new();
 
-    // ── Commands ──────────────────────────────────────────────────────────────
-
-    public void SetNavigateCallback(Action<long>? navigateTo)
-        => _navigateTo = navigateTo;
+    public void SetNavigateCallback(Action<long>? navigateTo) => _navigateTo = navigateTo;
 
     public void NavigateTo(ExtractedString? item)
     {
@@ -98,7 +95,7 @@ internal sealed class StringExtractorViewModel : INotifyPropertyChanged
         var ct = _extractCts.Token;
 
         _allResults.Clear();
-        Results      = [];
+        _resultsView.Filter = null;
         IsExtracting = true;
         Progress     = 0;
         StatusText   = Properties.StringExtractorResources.StringExtractor_Extracting;
@@ -106,10 +103,13 @@ internal sealed class StringExtractorViewModel : INotifyPropertyChanged
         try
         {
             var progress = new Progress<double>(p => Progress = p * 100);
-            await foreach (var s in _service.ExtractAsync(data, Options, progress, ct))
+            var results  = await _service.ExtractAsync(data, Options, progress, ct);
+
+            foreach (var s in results)
                 _allResults.Add(s);
 
             ApplyFilter();
+            OnPropertyChanged(nameof(HasResults));
             StatusText = string.Format(
                 Properties.StringExtractorResources.StringExtractor_ResultCount,
                 _allResults.Count);
@@ -129,47 +129,65 @@ internal sealed class StringExtractorViewModel : INotifyPropertyChanged
     {
         _extractCts?.Cancel();
         _allResults.Clear();
-        Results      = [];
-        FilterText   = string.Empty;
+        _filterText  = string.Empty;
+        OnPropertyChanged(nameof(FilterText));
         HasFile      = false;
-        HasResults   = false;
         StatusText   = string.Empty;
         IsExtracting = false;
+        _resultsView.Filter = null;
+        OnPropertyChanged(nameof(HasResults));
     }
 
-    private void ApplyFilter()
-    {
-        var filter   = _filterText.Trim();
-        var filtered = string.IsNullOrEmpty(filter)
-            ? _allResults
-            : _allResults.Where(s => s.Value.Contains(filter, StringComparison.OrdinalIgnoreCase)
-                                  || s.OffsetHex.Contains(filter, StringComparison.OrdinalIgnoreCase)
-                                  || s.Encoding.Contains(filter, StringComparison.OrdinalIgnoreCase))
-                         .ToList();
-
-        Results    = new ObservableCollection<ExtractedString>(filtered);
-        HasResults = Results.Count > 0;
-
-        StatusText = string.IsNullOrEmpty(filter)
-            ? string.Format(Properties.StringExtractorResources.StringExtractor_ResultCount, _allResults.Count)
-            : string.Format(Properties.StringExtractorResources.StringExtractor_FilteredCount, filtered.Count, _allResults.Count);
-    }
-
-    // ── Export ────────────────────────────────────────────────────────────────
+    // ── Export (file I/O) ─────────────────────────────────────────────────────
 
     public void ExportToCsv(string path)
     {
         using var w = new System.IO.StreamWriter(path, append: false, System.Text.Encoding.UTF8);
         w.WriteLine("Offset,Length,Encoding,Value");
-        foreach (var s in Results)
+        foreach (ExtractedString s in _resultsView)
             w.WriteLine($"{s.OffsetHex},{s.Length},{s.Encoding},\"{s.Value.Replace("\"", "\"\"")}\"");
     }
 
     public void ExportToTxt(string path)
     {
         using var w = new System.IO.StreamWriter(path, append: false, System.Text.Encoding.UTF8);
-        foreach (var s in Results)
+        foreach (ExtractedString s in _resultsView)
             w.WriteLine($"{s.OffsetHex}  [{s.Encoding}]  {s.Value}");
+    }
+
+    // ── Filter ────────────────────────────────────────────────────────────────
+
+    private void ScheduleFilter()
+    {
+        _filterDebounce?.Stop();
+        _filterDebounce = new System.Windows.Threading.DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(250)
+        };
+        _filterDebounce.Tick += (_, _) => { _filterDebounce.Stop(); ApplyFilter(); };
+        _filterDebounce.Start();
+    }
+
+    private void ApplyFilter()
+    {
+        var filter = _filterText.Trim();
+
+        _resultsView.Filter = string.IsNullOrEmpty(filter)
+            ? null
+            : (object obj) =>
+            {
+                var s = (ExtractedString)obj;
+                return s.Value.Contains(filter, StringComparison.OrdinalIgnoreCase)
+                    || s.OffsetHex.Contains(filter, StringComparison.OrdinalIgnoreCase)
+                    || s.Encoding.Contains(filter, StringComparison.OrdinalIgnoreCase);
+            };
+
+        OnPropertyChanged(nameof(HasResults));
+
+        StatusText = string.IsNullOrEmpty(filter)
+            ? string.Format(Properties.StringExtractorResources.StringExtractor_ResultCount, _allResults.Count)
+            : string.Format(Properties.StringExtractorResources.StringExtractor_FilteredCount,
+                            _resultsView.Count, _allResults.Count);
     }
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
