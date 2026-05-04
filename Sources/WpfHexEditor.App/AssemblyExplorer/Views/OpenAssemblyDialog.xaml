@@ -23,6 +23,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:core="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
     xmlns:local="clr-namespace:WpfHexEditor.App.AssemblyExplorer.Views"
+    xmlns:aeSvc="clr-namespace:WpfHexEditor.App.AssemblyExplorer.Services"
     Title="{DynamicResource AsmExplorer_OpenAssemblyTitle}"
     Width="620" Height="520"
     MinWidth="480" MinHeight="400"
@@ -35,6 +36,10 @@
 
     <Grid>
         <Grid.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <aeSvc:AssemblyExplorerLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
             <!-- Themed button: respects Background/Foreground, accent-highlight on hover -->
             <Style TargetType="Button">
                 <Setter Property="Template">
@@ -65,6 +70,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            </ResourceDictionary>
         </Grid.Resources>
 
         <Grid.RowDefinitions>
