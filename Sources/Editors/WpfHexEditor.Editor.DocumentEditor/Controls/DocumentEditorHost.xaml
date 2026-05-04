@@ -265,7 +265,7 @@
                 <!-- Group 5c — Font size (Wave F) -->
                 <ComboBox x:Name="PART_FontSizeDropdown"
                           DockPanel.Dock="Left"
-                          Width="42"
+                          Width="56"
                           Height="22"
                           FontSize="11"
                           Margin="2,0"
