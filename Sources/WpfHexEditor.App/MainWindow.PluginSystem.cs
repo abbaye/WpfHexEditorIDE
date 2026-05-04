@@ -71,6 +71,7 @@ public partial class MainWindow
     private WpfHexEditor.App.Services.LspFirstRunService?          _lspFirstRunService;
     private WpfHexEditor.App.Services.DebuggerServiceImpl?      _debuggerService;
     private WpfHexEditor.App.Debug.DebugModule?                 _debugModule;
+    private WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule? _assemblyExplorerModule;
     private WpfHexEditor.App.Services.ScriptingServiceImpl?     _scriptingService;
     private readonly FocusContextService _focusContextService = new();
 
@@ -474,6 +475,12 @@ public partial class MainWindow
             // initial layout build alongside core IDE panels.
             _debugModule = new WpfHexEditor.App.Debug.DebugModule();
             _debugModule.Initialize(hostContext);
+
+            // AssemblyExplorer module — formerly WpfHexEditor.Plugins.AssemblyExplorer (ADR-011).
+            // InitializeAsync schedules session restore on the background scheduler;
+            // the synchronous portion (panel + menu registration) completes inline.
+            _assemblyExplorerModule = new WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule();
+            await _assemblyExplorerModule.InitializeAsync(hostContext).ConfigureAwait(true);
 
             _pluginHost = new WpfPluginHost(hostContext, uiRegistry, permissionService, Dispatcher,
                 logger:      msg => OutputLogger.PluginInfo(msg),
@@ -1284,6 +1291,8 @@ public partial class MainWindow
         _roslynLoadCts = null;
         _lspBridgeService?.Dispose();
         _lspBridgeService = null;
+        _assemblyExplorerModule?.Shutdown();
+        _assemblyExplorerModule = null;
         _debugModule?.Shutdown();
         _debugModule = null;
         if (_debuggerService is not null)

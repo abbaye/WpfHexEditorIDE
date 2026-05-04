@@ -133,8 +133,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.LSPToo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.SynalysisGrammar", "Plugins\WpfHexEditor.Plugins.SynalysisGrammar\WpfHexEditor.Plugins.SynalysisGrammar.csproj", "{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.AssemblyExplorer", "Plugins\WpfHexEditor.Plugins.AssemblyExplorer\WpfHexEditor.Plugins.AssemblyExplorer.csproj", "{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Plugins.ArchiveExplorer", "Plugins\WpfHexEditor.Plugins.ArchiveExplorer\WpfHexEditor.Plugins.ArchiveExplorer.csproj", "{AE100001-AE00-AE00-AE00-AE0000000001}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.DiagnosticTools", "Plugins\WpfHexEditor.Plugins.DiagnosticTools\WpfHexEditor.Plugins.DiagnosticTools.csproj", "{CF43A321-2644-60C4-0A2C-B90C689A3CD5}"
@@ -207,7 +205,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Benchmarks", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.PluginHost.Tests", "Tests\WpfHexEditor.PluginHost.Tests\WpfHexEditor.PluginHost.Tests.csproj", "{4BBBABF1-EC76-4BDF-BA2D-8B70437A306F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.AssemblyExplorer.Tests", "Tests\WpfHexEditor.Plugins.AssemblyExplorer.Tests\WpfHexEditor.Plugins.AssemblyExplorer.Tests.csproj", "{3A20F793-E761-4F5C-9C2D-78197273DB85}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.App.AssemblyExplorer.Tests", "Tests\WpfHexEditor.App.AssemblyExplorer.Tests\WpfHexEditor.App.AssemblyExplorer.Tests.csproj", "{3A20F793-E761-4F5C-9C2D-78197273DB85}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Editor.CodeEditor.Tests", "Tests\WpfHexEditor.Editor.CodeEditor.Tests\WpfHexEditor.Editor.CodeEditor.Tests.csproj", "{ED089212-AF8F-4049-9447-24687D67B025}"
 EndProject
@@ -921,18 +919,6 @@ Global
 		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Release|x64.Build.0 = Release|Any CPU
 		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Release|x86.ActiveCfg = Release|Any CPU
 		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901}.Release|x86.Build.0 = Release|Any CPU
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Debug|x64.Build.0 = Debug|Any CPU
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Debug|x86.Build.0 = Debug|Any CPU
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Release|x64.ActiveCfg = Release|Any CPU
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Release|x64.Build.0 = Release|Any CPU
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Release|x86.ActiveCfg = Release|Any CPU
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890}.Release|x86.Build.0 = Release|Any CPU
 		{AE100001-AE00-AE00-AE00-AE0000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AE100001-AE00-AE00-AE00-AE0000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE100001-AE00-AE00-AE00-AE0000000001}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -1512,7 +1498,6 @@ Global
 		{F7A8B9C0-D1E2-F3A4-B5C6-D7E8F9A0B1C2} = {97E00D62-D6F1-44E5-881F-3727FE8CDD1E}
 		{A1B2C3D4-E5F6-7890-ABCD-EF1234567891} = {97E00D62-D6F1-44E5-881F-3727FE8CDD1E}
 		{B2C3D4E5-F6A7-8901-BCDE-FA2345678901} = {97E00D62-D6F1-44E5-881F-3727FE8CDD1E}
-		{C1A2B3D4-E5F6-7890-ABCD-EF1234567890} = {97E00D62-D6F1-44E5-881F-3727FE8CDD1E}
 		{AE100001-AE00-AE00-AE00-AE0000000001} = {97E00D62-D6F1-44E5-881F-3727FE8CDD1E}
 		{CF43A321-2644-60C4-0A2C-B90C689A3CD5} = {97E00D62-D6F1-44E5-881F-3727FE8CDD1E}
 		{7041CC6B-23DF-4363-B599-13F2567FA326} = {AD6546B8-31D6-4732-8E50-4490C2C5E889}
