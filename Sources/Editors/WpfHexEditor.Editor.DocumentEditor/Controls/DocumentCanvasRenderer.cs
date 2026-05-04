@@ -1645,6 +1645,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         Focus();
         Keyboard.Focus(this);
         var pt  = e.GetPosition(this);
+
+        // Empty document: seed an empty paragraph so the user can place a caret
+        // and start typing / pasting immediately.
+        if (_model is not null && _model.Blocks.Count == 0 && _mutator is not null && !_isReadOnly)
+            EnsureFirstParagraph();
+
         int idx = HitTestBlock(pt);
         if (idx < 0 || idx >= _blocks.Count) { _selectedIndex = -1; return; }
 
@@ -2414,7 +2420,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void InsertTextAtCaret(string text)
     {
-        if (_mutator is null || _blocks.Count == 0) return;
+        if (_mutator is null) return;
+        if (_blocks.Count == 0) EnsureFirstParagraph();
+        if (_blocks.Count == 0) return;
         int bi  = _caret.BlockIndex;
         var block = _blocks[bi].Block;
         int flatLen = GetFlatText(bi).Length;
@@ -2504,6 +2512,21 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// <summary>Injects the mutator used for all text/block edits (Phase 12+).</summary>
     public void SetMutator(DocumentEditor.Core.Editing.DocumentMutator mutator) =>
         _mutator = mutator;
+
+    /// <summary>
+    /// Seeds an empty paragraph when the document has no blocks, so the caret can be
+    /// placed and the user can type / paste immediately. Caller is responsible for
+    /// having checked <c>_mutator is not null</c> and that editing is allowed.
+    /// </summary>
+    private void EnsureFirstParagraph()
+    {
+        if (_mutator is null || _model is null || _model.Blocks.Count > 0) return;
+        _mutator.InsertParagraphAfter(-1);
+        RebuildLayout();
+        _caret = new TextCaret(0, 0, 0);
+        _selection.Anchor = _caret;
+        _selection.Focus  = _caret;
+    }
 
     // ── Phase 14: Inline formatting ───────────────────────────────────────────
 
