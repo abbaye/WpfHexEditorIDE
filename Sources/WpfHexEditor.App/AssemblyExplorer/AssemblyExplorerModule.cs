@@ -22,6 +22,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using WpfHexEditor.Core.AssemblyAnalysis.Languages;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using WpfHexEditor.Core.Events.IDEEvents;
@@ -98,16 +99,30 @@ internal sealed class AssemblyExplorerModule
     /// First-use activation. Builds the decompiler backend, the 3 panels and
     /// their ViewModels, and registers them with the docking adapter. Also
     /// schedules the session restore in the background. Idempotent.
+    ///
+    /// Async-with-pump-yield pattern: the original WpfPluginHost called the
+    /// plugin's InitializeAsync via <c>await dispatcher.InvokeAsync(...)</c>
+    /// from a Task.Run continuation, which let the WPF message pump keep
+    /// painting between expensive WPF/XAML allocations. Calling EnsureActivated
+    /// synchronously from a RelayCommand instead blocks the pump for the full
+    /// 3-panel build (~hundreds of ms on slow startups + a possible JIT spike
+    /// for ICSharpCode.Decompiler), so the IDE looks frozen. Dispatcher yields
+    /// between heavy steps mirror the plugin-host pump dance and unblock paint.
     /// </summary>
-    private void EnsureActivated()
+    private async void EnsureActivated()
     {
         if (_activated || _context is null || _analysisEngine is null || _isShutdown) return;
         _activated = true;
 
         var context = _context;
-        var decompiler = new DecompilerService(_analysisEngine);
-        var backend    = BuildDecompilerBackend(decompiler);
+        var dispatcher = System.Windows.Application.Current.Dispatcher;
 
+        // Decompiler backend ctor can JIT a sizeable Roslyn graph the first time.
+        // Move it off the UI thread so the pump keeps painting.
+        var decompiler = new DecompilerService(_analysisEngine);
+        var backend = await Task.Run(() => BuildDecompilerBackend(decompiler)).ConfigureAwait(true);
+
+        // Build + register the main panel, then yield so the pump can paint.
         _panel = new AssemblyExplorerPanel(
             _analysisEngine, backend, decompiler,
             context.HexEditor, context.DocumentHost, context.Output,
@@ -124,6 +139,7 @@ internal sealed class AssemblyExplorerModule
                 CanClose        = true,
                 PreferredWidth  = 280
             });
+        await dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
 
         _searchPanel = new AssemblySearchPanel(_panel.ViewModel);
         _searchPanel.SetContext(context);
@@ -137,6 +153,7 @@ internal sealed class AssemblyExplorerModule
                 CanClose        = true,
                 PreferredHeight = 200
             });
+        await dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
 
         _diffPanel = new AssemblyDiffPanel(_panel.ViewModel);
         _diffPanel.SetContext(context);
@@ -150,6 +167,7 @@ internal sealed class AssemblyExplorerModule
                 CanClose        = true,
                 PreferredHeight = 250
             });
+        await dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
 
         _panel.SetDiffPanel(_diffPanel, () => context.UIRegistry.ShowPanel(DiffPanelUiId));
         _panel.SetSolutionManager(context.SolutionManager);
