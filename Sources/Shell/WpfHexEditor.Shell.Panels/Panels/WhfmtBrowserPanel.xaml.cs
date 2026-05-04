@@ -23,6 +23,7 @@ using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Shell.Panels.Services;
 using WpfHexEditor.Shell.Panels.Properties;
 using WpfHexEditor.Shell.Panels.ViewModels;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Shell.Panels.Panels;
 
@@ -260,9 +261,9 @@ public partial class WhfmtBrowserPanel : UserControl,
         var item = GetSelectedFormatItem();
         if (item is null || item.Source != FormatSource.User) return;
 
-        var result = MessageBox.Show(Window.GetWindow(this),
+        var result = IdeMessageBox.Show(
             $"Delete format '{item.Name}'?", ShellPanelsResources.Whfmt_DeleteFormatTitle,
-            MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxButton.YesNo, MessageBoxImage.Warning, Window.GetWindow(this));
         if (result == MessageBoxResult.Yes)
             item.DeleteCommand.Execute(null);
     }
@@ -343,8 +344,8 @@ public partial class WhfmtBrowserPanel : UserControl,
             {
                 var err = _vm.AddFormatFromPath(dlg.FileName);
                 if (err is not null)
-                    MessageBox.Show(Window.GetWindow(this), err, ShellPanelsResources.Whfmt_AddFormatError,
-                                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                    IdeMessageBox.Show(err, ShellPanelsResources.Whfmt_AddFormatError,
+                                    MessageBoxButton.OK, MessageBoxImage.Warning, Window.GetWindow(this));
             }
             return;
         }

@@ -21,6 +21,7 @@ using System.Windows.Controls;
 using WpfHexEditor.HexEditor.Commands;
 using WpfHexEditor.HexEditor.ViewModels;
 using WpfHexEditor.HexBox;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.HexEditor.Dialog
 {
@@ -137,7 +138,7 @@ namespace WpfHexEditor.HexEditor.Dialog
                              $"0x{ViewModel.ByteValue:X2}\n\n" +
                              $"{fillText}?";
 
-                var result = MessageBox.Show(
+                var result = IdeMessageBox.Show(
                     message,
                     title,
                     MessageBoxButton.YesNo,

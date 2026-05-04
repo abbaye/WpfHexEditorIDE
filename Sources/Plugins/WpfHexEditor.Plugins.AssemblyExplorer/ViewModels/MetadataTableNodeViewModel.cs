@@ -23,6 +23,7 @@ using System.Windows.Media;
 using Microsoft.Win32;
 using WpfHexEditor.Core.AssemblyAnalysis;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 
@@ -130,7 +131,7 @@ public sealed class MetadataTableNodeViewModel : AssemblyNodeViewModel
         }
         catch (Exception ex)
         {
-            System.Windows.MessageBox.Show(
+            IdeMessageBox.Show(
                 $"Export failed:\n{ex.Message}",
                 "CSV Export",
                 System.Windows.MessageBoxButton.OK,

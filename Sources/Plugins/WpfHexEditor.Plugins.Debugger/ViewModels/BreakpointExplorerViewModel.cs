@@ -25,6 +25,7 @@ using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Plugins.Debugger.ViewModels;
 
@@ -298,7 +299,7 @@ public sealed class BreakpointExplorerViewModel : ViewModelBase
         var imported = VsBreakpointXmlService.ImportFromXml(dlg.FileName);
         if (imported.Count == 0)
         {
-            MessageBox.Show(DebuggerResources.Debugger_NoValidBreakpoints, "Import", MessageBoxButton.OK, MessageBoxImage.Information);
+            IdeMessageBox.Show(DebuggerResources.Debugger_NoValidBreakpoints, "Import", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
@@ -319,7 +320,7 @@ public sealed class BreakpointExplorerViewModel : ViewModelBase
             added++;
         }
 
-        MessageBox.Show(
+        IdeMessageBox.Show(
             $"Imported {added} breakpoint{(added != 1 ? "s" : "")}" +
             (skipped > 0 ? $" ({skipped} duplicate{(skipped != 1 ? "s" : "")} skipped)" : "") + ".",
             "Import Complete", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -336,7 +337,7 @@ public sealed class BreakpointExplorerViewModel : ViewModelBase
         if (dlg.ShowDialog() != true) return;
 
         VsBreakpointXmlService.ExportToXml(dlg.FileName, _debugger.Breakpoints);
-        MessageBox.Show(
+        IdeMessageBox.Show(
             $"Exported {_debugger.Breakpoints.Count} breakpoint{(_debugger.Breakpoints.Count != 1 ? "s" : "")}.",
             "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
     }

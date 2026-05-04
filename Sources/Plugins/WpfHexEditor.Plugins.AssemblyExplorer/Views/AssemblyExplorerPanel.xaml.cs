@@ -31,6 +31,7 @@ using WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.UI;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.Views;
 
@@ -390,7 +391,7 @@ public partial class AssemblyExplorerPanel : UserControl
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
+            IdeMessageBox.Show(
                 $"Could not add file to project:\n{ex.Message}",
                 "Extract to Project",
                 MessageBoxButton.OK,

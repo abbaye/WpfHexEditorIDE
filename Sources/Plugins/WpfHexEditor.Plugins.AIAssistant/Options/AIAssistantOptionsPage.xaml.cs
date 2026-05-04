@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Plugins.AIAssistant.Api;
 using WpfHexEditor.Plugins.AIAssistant.Properties;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Plugins.AIAssistant.Options;
 
@@ -232,7 +233,7 @@ public partial class AIAssistantOptionsPage : UserControl
 
             if (provider is null)
             {
-                MessageBox.Show(
+                IdeMessageBox.Show(
                     string.Format(AIAssistantResources.AIAssistant_Error_ProviderNotRegistered, providerId),
                     AIAssistantResources.AIAssistant_ConnectionTest_Title,
                     MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -242,7 +243,7 @@ public partial class AIAssistantOptionsPage : UserControl
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
             var success = await provider.TestConnectionAsync(cts.Token);
 
-            MessageBox.Show(
+            IdeMessageBox.Show(
                 success
                     ? string.Format(AIAssistantResources.AIAssistant_ConnectionTest_Success, provider.DisplayName)
                     : string.Format(AIAssistantResources.AIAssistant_ConnectionTest_Failure, provider.DisplayName),
@@ -252,21 +253,21 @@ public partial class AIAssistantOptionsPage : UserControl
         }
         catch (OperationCanceledException)
         {
-            MessageBox.Show(
+            IdeMessageBox.Show(
                 AIAssistantResources.AIAssistant_Error_Timeout,
                 AIAssistantResources.AIAssistant_ConnectionTest_Title,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (HttpRequestException ex)
         {
-            MessageBox.Show(
+            IdeMessageBox.Show(
                 string.Format(AIAssistantResources.AIAssistant_Error_NetworkError, ex.Message),
                 AIAssistantResources.AIAssistant_ConnectionTest_Title,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
+            IdeMessageBox.Show(
                 string.Format(AIAssistantResources.AIAssistant_Error_Generic, ex.Message),
                 AIAssistantResources.AIAssistant_ConnectionTest_Title,
                 MessageBoxButton.OK, MessageBoxImage.Error);

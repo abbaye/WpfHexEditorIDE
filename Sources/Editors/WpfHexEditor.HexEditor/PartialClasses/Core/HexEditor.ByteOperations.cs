@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.Models;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.HexEditor
 {
@@ -462,7 +463,7 @@ namespace WpfHexEditor.HexEditor
         /// <example>
         /// long[] positions = new long[] { 0x100, 0x200, 0x300 };
         /// int count = hexEditor.RestoreOriginalBytes(positions);
-        /// MessageBox.Show($"Restored {count} bytes");
+        /// IdeMessageBox.Show($"Restored {count} bytes");
         /// </example>
         public int RestoreOriginalBytes(long[] positions)
         {
@@ -547,7 +548,7 @@ namespace WpfHexEditor.HexEditor
         ///     int count = hexEditor.RestoreOriginalBytesInRange(
         ///         hexEditor.SelectionStart,
         ///         hexEditor.SelectionStop);
-        ///     MessageBox.Show($"Restored {count} bytes in selection");
+        ///     IdeMessageBox.Show($"Restored {count} bytes in selection");
         /// }
         /// </example>
         public int RestoreOriginalBytesInRange(long startPosition, long stopPosition)
@@ -586,11 +587,11 @@ namespace WpfHexEditor.HexEditor
         /// <returns>Number of modifications removed</returns>
         /// <example>
         /// // Clear all modifications
-        /// if (MessageBox.Show("Restore all modifications?", "Confirm",
+        /// if (IdeMessageBox.Show("Restore all modifications?", "Confirm",
         ///     MessageBoxButton.YesNo) == MessageBoxResult.Yes)
         /// {
         ///     int count = hexEditor.RestoreAllModifications();
-        ///     MessageBox.Show($"Restored {count} modifications");
+        ///     IdeMessageBox.Show($"Restored {count} modifications");
         /// }
         /// </example>
         public int RestoreAllModifications()

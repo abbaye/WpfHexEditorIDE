@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Core.Debugger.Models;
 using WpfHexEditor.Editor.Core.Views;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Plugins.Debugger.Dialogs;
 
@@ -227,7 +228,7 @@ public partial class BreakpointConditionDialog : ThemedDialog
 
     private void OnLogHintClicked(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show(
+        IdeMessageBox.Show(
             "Supported interpolations:\n" +
             "  $FUNCTION  — method or property name\n" +
             "  $ADDRESS   — instruction address\n" +

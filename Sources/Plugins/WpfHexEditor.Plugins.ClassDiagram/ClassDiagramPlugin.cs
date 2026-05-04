@@ -52,6 +52,7 @@ using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Plugins.ClassDiagram;
 
@@ -1070,7 +1071,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         if (_options.SolutionMaxFilesPromptThreshold > 0
             && totalFiles > _options.SolutionMaxFilesPromptThreshold)
         {
-            var answer = MessageBox.Show(
+            var answer = IdeMessageBox.Show(
                 $"The solution contains {totalFiles} source files ({filtered.Count} projects).\n\n" +
                 $"Generating the diagram may take a moment for large solutions.\n\n" +
                 "[Yes]  Continue\n[No]   Cancel",
@@ -1379,7 +1380,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         if (_options.SolutionMaxFilesPromptThreshold > 0
             && sourceFiles.Count > _options.SolutionMaxFilesPromptThreshold)
         {
-            var answer = MessageBox.Show(
+            var answer = IdeMessageBox.Show(
                 $"The project '{projectName}' contains {sourceFiles.Count} source files.\n\n" +
                 "Generating the diagram may take a moment.\n\n" +
                 "[Yes]  Continue\n[No]   Cancel",
@@ -1558,7 +1559,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                     : [csharpFilePath];
                 break;
             case PartialClassScopeMode.AskWhenAmbiguous when siblings.Length > 1:
-                var result = System.Windows.MessageBox.Show(
+                var result = IdeMessageBox.Show(
                     $"Found {siblings.Length} files starting with '{baseName}'.\n\n" +
                     "[Yes]  Include all sibling files (merges partial classes)\n" +
                     "[No]   Analyze only the active file\n" +

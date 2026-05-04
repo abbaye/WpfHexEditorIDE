@@ -13,6 +13,7 @@
 using System.Windows;
 using System.Windows.Forms;
 using WpfHexEditor.Core.WorkspaceTemplates.ViewModels;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Core.WorkspaceTemplates.Views;
 
@@ -100,7 +101,7 @@ public sealed partial class NewProjectDialog : Window
         }
         catch (Exception ex)
         {
-            System.Windows.MessageBox.Show(
+            IdeMessageBox.Show(
                 $"Failed to create project:\n{ex.Message}",
                 "New Project",
                 MessageBoxButton.OK,

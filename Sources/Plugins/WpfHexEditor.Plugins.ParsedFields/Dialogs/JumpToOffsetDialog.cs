@@ -12,6 +12,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Plugins.ParsedFields.Properties;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Plugins.ParsedFields.Dialogs;
 
@@ -65,7 +66,7 @@ internal sealed class JumpToOffsetDialog : Window
             if (TryParseOffset(_offsetBox.Text.Trim(), out _))
                 DialogResult = true;
             else
-                MessageBox.Show(ParsedFieldsResources.ParsedFields_Error_InvalidOffset,
+                IdeMessageBox.Show(ParsedFieldsResources.ParsedFields_Error_InvalidOffset,
                     ParsedFieldsResources.ParsedFields_Error_InvalidInput, MessageBoxButton.OK, MessageBoxImage.Warning);
         };
 

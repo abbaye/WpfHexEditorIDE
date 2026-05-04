@@ -67,6 +67,7 @@ public partial class MainWindow
     private WpfHexEditor.App.Services.LspDiagnosticsAdapter?       _lspDiagnosticsAdapter;
     private WpfHexEditor.App.Services.NotificationServiceImpl?     _notificationService;
     private WpfHexEditor.App.StatusBar.NotificationBellAdapter?    _notificationBellAdapter;
+    private readonly WpfHexEditor.App.Services.DialogServiceImpl   _dialogService = new();
     private WpfHexEditor.App.Services.LspFirstRunService?          _lspFirstRunService;
     private WpfHexEditor.App.Services.DebuggerServiceImpl?      _debuggerService;
     private WpfHexEditor.App.Services.ScriptingServiceImpl?     _scriptingService;
@@ -329,7 +330,8 @@ public partial class MainWindow
             // Debugger service — created here so it can be exposed via IDEHostContext.Debugger.
             _debuggerService = new WpfHexEditor.App.Services.DebuggerServiceImpl(
                 _ideEventBus,
-                WpfHexEditor.Core.Options.AppSettingsService.Instance.Current);
+                WpfHexEditor.Core.Options.AppSettingsService.Instance.Current,
+                dialogs: _dialogService);
 
             // Scripting service — best-effort: depends on Roslyn (Core.Scripting); must not block IDE startup.
             // Pattern: same as LSP registry (lines above) — failure is logged, service stays null.
@@ -410,6 +412,7 @@ public partial class MainWindow
             {
                 LspServers     = lspRegistry,
                 Notifications  = _notificationService,
+                Dialogs        = _dialogService,
                 SyntaxColoring = syntaxColoringService,
                 UIFactory      = uiControlFactory,
                 TabGroups      = tabGroupService,
@@ -1056,7 +1059,7 @@ public partial class MainWindow
 
         if (loaded.Count == 0)
         {
-            MessageBox.Show("No loaded plugins found.", "Hot-Reload Plugin",
+            _dialogService.Show("No loaded plugins found.", "Hot-Reload Plugin",
                             MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }

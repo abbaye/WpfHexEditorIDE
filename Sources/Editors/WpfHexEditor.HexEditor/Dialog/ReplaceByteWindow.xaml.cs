@@ -23,6 +23,7 @@ using WpfHexEditor.HexEditor.Commands;
 using WpfHexEditor.Core.Properties;
 using WpfHexEditor.HexEditor.ViewModels;
 using WpfHexEditor.HexBox;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.HexEditor.Dialog
 {
@@ -226,7 +227,7 @@ namespace WpfHexEditor.HexEditor.Dialog
                              $"{scope}\n\n" +
                              $"{replaceText}?";
 
-                var result = MessageBox.Show(
+                var result = IdeMessageBox.Show(
                     message,
                     title,
                     MessageBoxButton.YesNo,

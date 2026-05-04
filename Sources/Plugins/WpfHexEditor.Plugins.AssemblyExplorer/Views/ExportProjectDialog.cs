@@ -22,6 +22,7 @@ using System.Windows.Media;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 using WpfHexEditor.Plugins.AssemblyExplorer.Properties;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.Views;
 
@@ -177,7 +178,7 @@ public sealed class ExportProjectDialog : Window
         var outputDir = _pathBox.Text.Trim();
         if (string.IsNullOrWhiteSpace(outputDir))
         {
-            MessageBox.Show(AssemblyExplorerResources.AsmExplorer_Export_NoFolderSelected, Title,
+            IdeMessageBox.Show(AssemblyExplorerResources.AsmExplorer_Export_NoFolderSelected, Title,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }

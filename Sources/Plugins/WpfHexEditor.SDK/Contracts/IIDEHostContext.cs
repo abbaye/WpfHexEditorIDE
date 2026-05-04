@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Dialogs;
 using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Editor.Core.Notifications;
 using WpfHexEditor.Core.Events;
@@ -213,6 +214,14 @@ public interface IIDEHostContext
     /// and first-run prompts. Never null after IDE v0.8.
     /// </summary>
     INotificationService? Notifications => null;
+
+    // -- Dialog Service -------------------------------------------------------
+
+    /// <summary>
+    /// Themed modal dialog service. Replaces <c>System.Windows.MessageBox</c> with
+    /// host-integrated, theme-aware dialogs.  Never null after IDE v0.9.
+    /// </summary>
+    IDialogService? Dialogs => null;
 
     // -- Syntax Coloring ------------------------------------------------------
 

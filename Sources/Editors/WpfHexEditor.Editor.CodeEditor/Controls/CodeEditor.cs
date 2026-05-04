@@ -38,6 +38,7 @@ using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Selection;
 using WpfHexEditor.Editor.CodeEditor.Input;
 using WpfHexEditor.Editor.CodeEditor.MultiCaret;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -4231,7 +4232,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             catch (System.Text.Json.JsonException ex)
             {
-                MessageBox.Show(string.Format(CodeEditorResources.CodeEditor_FormatJsonError, ex.Message),
+                IdeMessageBox.Show(string.Format(CodeEditorResources.CodeEditor_FormatJsonError, ex.Message),
                     CodeEditorResources.CodeEditor_FormatJsonErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
@@ -4246,14 +4247,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 using var _ = System.Text.Json.JsonDocument.Parse(text,
                     new System.Text.Json.JsonDocumentOptions { AllowTrailingCommas = true });
                 StatusMessage?.Invoke(this, CodeEditorResources.CodeEditor_ValidateJsonSuccess);
-                MessageBox.Show(CodeEditorResources.CodeEditor_ValidateJsonSuccess, CodeEditorResources.CodeEditor_ValidateJsonTitle,
+                IdeMessageBox.Show(CodeEditorResources.CodeEditor_ValidateJsonSuccess, CodeEditorResources.CodeEditor_ValidateJsonTitle,
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (System.Text.Json.JsonException ex)
             {
                 var msg = string.Format(CodeEditorResources.CodeEditor_ValidateJsonError, ex.Message);
                 StatusMessage?.Invoke(this, msg);
-                MessageBox.Show(msg, CodeEditorResources.CodeEditor_ValidateJsonErrorTitle,
+                IdeMessageBox.Show(msg, CodeEditorResources.CodeEditor_ValidateJsonErrorTitle,
                     MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }

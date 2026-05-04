@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfHexEditor.Shell.Panels.Properties;
+using WpfHexEditor.Editor.Core.Dialogs;
 #pragma warning disable IDE0060
 
 namespace WpfHexEditor.Shell.Panels.Panels;
@@ -129,7 +130,7 @@ public partial class WorkspaceFindReplacePanel : UserControl
         var replacement = ReplaceBox.Text;
         if (string.IsNullOrWhiteSpace(pattern)) return;
 
-        var confirm = MessageBox.Show(
+        var confirm = IdeMessageBox.Show(
             string.Format(ShellPanelsResources.WorkspaceFindReplace_ConfirmMessage, pattern, replacement),
             ShellPanelsResources.WorkspaceFindReplace_ConfirmTitle,
             MessageBoxButton.YesNo,

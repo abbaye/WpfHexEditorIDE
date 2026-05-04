@@ -14,6 +14,7 @@
 using System.IO;
 using System.Windows;
 using WpfHexEditor.App.Properties;
+using WpfHexEditor.Editor.Core.Dialogs;
 using WpfHexEditor.Core.Debugger.Adapters;
 using WpfHexEditor.Core.Debugger.Models;
 using WpfHexEditor.Core.Debugger.Protocol;
@@ -34,6 +35,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
     private readonly IIDEEventBus            _eventBus;
     private readonly AppSettings             _settings;
     private readonly IDebugAdapterRegistry   _adapterRegistry;
+    private readonly IDialogService          _dialogs;
     private readonly object                  _lock = new();
 
     private IDapClient?      _client;
@@ -86,11 +88,12 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             DependsOnBpKey:   b.DependsOnBpKey
         )).ToList();
 
-    public DebuggerServiceImpl(IIDEEventBus eventBus, AppSettings settings, IDebugAdapterRegistry? adapterRegistry = null)
+    public DebuggerServiceImpl(IIDEEventBus eventBus, AppSettings settings, IDebugAdapterRegistry? adapterRegistry = null, IDialogService? dialogs = null)
     {
         _eventBus        = eventBus;
         _settings        = settings;
         _adapterRegistry = adapterRegistry ?? new DebugAdapterRegistry();
+        _dialogs         = dialogs ?? new DialogServiceImpl();
         _persistence     = new BreakpointPersistenceManager(settings);
         lock (_lock) { _breakpoints.AddRange(_persistence.Load()); }
         RegisterBuiltInAdapters();
@@ -166,7 +169,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         {
             await CleanupClientAsync();
             UpdateSession(DebugSession.Empty);
-            MessageBox.Show($"Failed to start debug session:\n{ex.Message}", "Debugger",
+            _dialogs.Show($"Failed to start debug session:\n{ex.Message}", "Debugger",
                             MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -210,7 +213,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         {
             await CleanupClientAsync();
             UpdateSession(DebugSession.Empty);
-            MessageBox.Show($"Failed to attach to process {pid}:\n{ex.Message}", "Debugger",
+            _dialogs.Show($"Failed to attach to process {pid}:\n{ex.Message}", "Debugger",
                             MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -507,7 +510,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             var adapterPath = DebugAdapterLocator.Locate(_settings.Debugger.NetCoreDbgPath);
             if (adapterPath is null)
             {
-                MessageBox.Show(
+                _dialogs.Show(
                     string.Format(AppResources.App_Debugger_AdapterNotFound, Environment.NewLine),
                     AppResources.App_Debugger_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return null;
@@ -526,7 +529,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         if (registeredClient is not null)
             return registeredClient;
 
-        MessageBox.Show(
+        _dialogs.Show(
             $"No debug adapter registered for language '{config.LanguageId}'.{Environment.NewLine}" +
             AppResources.App_Debugger_AdapterMissing,
             AppResources.App_Debugger_Title, MessageBoxButton.OK, MessageBoxImage.Warning);

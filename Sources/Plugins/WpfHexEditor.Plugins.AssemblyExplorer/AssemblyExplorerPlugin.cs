@@ -41,6 +41,7 @@ using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Events;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer;
 
@@ -446,7 +447,7 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
                 IconGlyph  = "\uE9D2",
                 ToolTip    = "Navigate to a metadata token — coming in a future release",
                 Command    = new RelayCommand(
-                    _ => MessageBox.Show(
+                    _ => IdeMessageBox.Show(
                         "Go to Metadata Token — Coming in a future release.",
                         AssemblyExplorerResources.AsmExplorer_PluginName,
                         MessageBoxButton.OK,

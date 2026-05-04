@@ -27,6 +27,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Core.ProjectSystem.Properties;
 using WpfHexEditor.Core.ProjectSystem.Services.References;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Core.ProjectSystem.Documents.References;
 
@@ -303,7 +304,7 @@ public sealed class ReferenceManagerViewModel : ViewModelBase
             ? $"Remove reference '{toRemove[0].Name}'?"
             : $"Remove {toRemove.Count} selected references?";
 
-        if (MessageBox.Show(msg, ProjectSystemResources.Dialog_RemoveReferenceTitle, MessageBoxButton.OKCancel,
+        if (IdeMessageBox.Show(msg, ProjectSystemResources.Dialog_RemoveReferenceTitle, MessageBoxButton.OKCancel,
                 MessageBoxImage.Question) != MessageBoxResult.OK) return;
 
         foreach (var entry in toRemove)
@@ -348,13 +349,13 @@ public sealed class ReferenceManagerViewModel : ViewModelBase
 
         if (unused.Count == 0)
         {
-            MessageBox.Show(ProjectSystemResources.Message_NoUnusedReferences, ProjectSystemResources.Dialog_RemoveUnusedReferencesTitle,
+            IdeMessageBox.Show(ProjectSystemResources.Message_NoUnusedReferences, ProjectSystemResources.Dialog_RemoveUnusedReferencesTitle,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
         var names = string.Join("\n  â€¢ ", unused.Select(a => a.Name));
-        if (MessageBox.Show($"{ProjectSystemResources.Confirm_RemoveUnusedReferences}\n\n  \u2022 {names}",
+        if (IdeMessageBox.Show($"{ProjectSystemResources.Confirm_RemoveUnusedReferences}\n\n  \u2022 {names}",
                 ProjectSystemResources.Dialog_RemoveUnusedReferencesTitle, MessageBoxButton.OKCancel,
                 MessageBoxImage.Question) != MessageBoxResult.OK) return;
 

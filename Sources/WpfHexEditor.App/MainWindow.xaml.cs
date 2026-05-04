@@ -1024,9 +1024,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var msg = string.Format(AppResources.App_UpgradeMessagePattern,
                 e.FromVersion, e.ToVersion, "\n", fileList);
 
-            var result = MessageBox.Show(this, msg, AppResources.App_FormatUpgradeRequired,
-                MessageBoxButton.YesNo, MessageBoxImage.Information,
-                MessageBoxResult.Yes);
+            var result = _dialogService.Show(msg, AppResources.App_FormatUpgradeRequired,
+                MessageBoxButton.YesNo, MessageBoxImage.Information);
 
             if (result == MessageBoxResult.Yes)
             {
@@ -1037,7 +1036,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, string.Format(AppResources.App_UpgradeFailedMessage, ex.Message), AppResources.App_FormatUpgrade,
+                    _dialogService.Show(string.Format(AppResources.App_UpgradeFailedMessage, ex.Message), AppResources.App_FormatUpgrade,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -3675,7 +3674,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var importResult = importSvc.ImportFromFile(dlg.SourcePath);
         if (!importResult.Success)
         {
-            MessageBox.Show(
+            _dialogService.Show(
                 string.Format(AppResources.App_TblImport_Failed, "\n", string.Join('\n', importResult.Errors)),
                 AppResources.App_ConvertTbl, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
@@ -3712,7 +3711,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            MessageBox.Show(string.Format(AppResources.App_FailedWriteTblx, "\n", ex.Message),
+            _dialogService.Show(string.Format(AppResources.App_FailedWriteTblx, "\n", ex.Message),
                 AppResources.App_ConvertTbl, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -3906,7 +3905,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (e.Project is null) return;
 
-        var result = MessageBox.Show(
+        var result = _dialogService.Show(
             string.Format(AppResources.App_RemoveFromProjectMessage, e.Item.Name, "\n"),
             AppResources.App_RemoveFromProject,
             MessageBoxButton.YesNo,
@@ -3925,7 +3924,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var path = e.Item.AbsolutePath;
         if (!File.Exists(path)) return;
 
-        var result = MessageBox.Show(
+        var result = _dialogService.Show(
             string.Format(AppResources.App_DeleteFileMessage, e.Item.Name, "\n"),
             AppResources.App_DeleteFile,
             MessageBoxButton.YesNo,
@@ -4039,7 +4038,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnSEFolderDeleteRequested(object? sender, FolderDeleteEventArgs e)
     {
-        var result = MessageBox.Show(
+        var result = _dialogService.Show(
             string.Format(AppResources.App_RemoveFolderMessage, e.Folder.Name, "\n"),
             AppResources.App_RemoveFolder,
             MessageBoxButton.YesNo,
@@ -4081,7 +4080,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnSESolutionFolderDeleteRequested(object? sender, SolutionFolderDeleteRequestedEventArgs e)
     {
-        var result = MessageBox.Show(
+        var result = _dialogService.Show(
             string.Format(AppResources.App_RemoveSolutionFolderMessage, e.Folder.Name, "\n"),
             AppResources.App_RemoveSolutionFolder,
             MessageBoxButton.YesNo,
@@ -4406,7 +4405,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var projDir  = Path.GetDirectoryName(e.Project.ProjectFilePath) ?? string.Empty;
         var fileName = Path.GetFileName(e.Item.AbsolutePath);
-        var result   = MessageBox.Show(
+        var result   = _dialogService.Show(
             string.Format(AppResources.App_ImportIntoProjectMessage, fileName, "\n", projDir),
             AppResources.App_ImportIntoProject,
             MessageBoxButton.YesNo,
@@ -5193,7 +5192,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to create solution: {ex.Message}");
-            MessageBox.Show(string.Format(AppResources.App_FailedCreateSolution, ex.Message), AppResources.App_Error,
+            _dialogService.Show(string.Format(AppResources.App_FailedCreateSolution, ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5251,7 +5250,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to scaffold .NET project: {ex.Message}");
-            MessageBox.Show(string.Format(AppResources.App_FailedCreateProject, "\n", ex.Message), AppResources.App_Error,
+            _dialogService.Show(string.Format(AppResources.App_FailedCreateProject, "\n", ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5271,7 +5270,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to create solution/project: {ex.Message}");
-            MessageBox.Show(string.Format(AppResources.App_FailedCreateSolution, ex.Message), AppResources.App_Error,
+            _dialogService.Show(string.Format(AppResources.App_FailedCreateSolution, ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5288,7 +5287,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to create project: {ex.Message}");
-            MessageBox.Show(string.Format(AppResources.App_FailedCreateProject, "\n", ex.Message), AppResources.App_Error,
+            _dialogService.Show(string.Format(AppResources.App_FailedCreateProject, "\n", ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5427,7 +5426,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             catch (Exception ex)
             {
                 OutputLogger.Error($"Failed to create file: {ex.Message}");
-                MessageBox.Show(string.Format(AppResources.App_FailedCreateFile, "\n", ex.Message), AppResources.App_Error,
+                _dialogService.Show(string.Format(AppResources.App_FailedCreateFile, "\n", ex.Message), AppResources.App_Error,
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -5625,7 +5624,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to open solution: {ex.Message}");
-            MessageBox.Show(string.Format(AppResources.App_FailedOpenSolution, ex.Message), AppResources.App_Error,
+            _dialogService.Show(string.Format(AppResources.App_FailedOpenSolution, ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -6740,7 +6739,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var repoRoot = git.GetRepoRoot(activePath);
         if (repoRoot is null)
         {
-            MessageBox.Show(AppResources.App_CompareWithHeadNoRepo, AppResources.App_CompareWithHead,
+            _dialogService.Show(AppResources.App_CompareWithHeadNoRepo, AppResources.App_CompareWithHead,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -6748,7 +6747,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var tempPath = await git.ExtractRefVersionAsync(repoRoot, "HEAD", activePath);
         if (tempPath is null)
         {
-            MessageBox.Show(AppResources.App_CompareWithHeadNoVersion, AppResources.App_CompareWithHead,
+            _dialogService.Show(AppResources.App_CompareWithHeadNoVersion, AppResources.App_CompareWithHead,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -6994,7 +6993,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to load layout: {ex.Message}");
-            MessageBox.Show(string.Format(AppResources.App_FailedLoadLayout, "\n", ex.Message), AppResources.App_Error,
+            _dialogService.Show(string.Format(AppResources.App_FailedLoadLayout, "\n", ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.UI;
 using WpfHexEditor.PluginHost.Properties;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.PluginHost.UI;
 
@@ -216,7 +217,7 @@ public sealed partial class PluginManagerControl : UserControl, IEditorToolbarCo
     {
         var vm = GetSelectedItemVm();
         if (vm is null) return;
-        var result = System.Windows.MessageBox.Show(
+        var result = IdeMessageBox.Show(
             $"Uninstall '{vm.Name}'?\nThis action cannot be undone.",
             PluginHostResources.PluginHost_UninstallPlugin,
             System.Windows.MessageBoxButton.YesNo,
@@ -243,7 +244,7 @@ public sealed partial class PluginManagerControl : UserControl, IEditorToolbarCo
     {
         var vm = GetSelectedItemVm();
         if (vm is null) return;
-        var result = System.Windows.MessageBox.Show(
+        var result = IdeMessageBox.Show(
             $"Uninstall '{vm.Name}'?\nThis action cannot be undone.",
             PluginHostResources.PluginHost_UninstallPlugin,
             System.Windows.MessageBoxButton.YesNo,

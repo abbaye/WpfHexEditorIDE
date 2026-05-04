@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using WpfHexEditor.Core.Models;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.HexEditor
 {
@@ -191,7 +192,7 @@ namespace WpfHexEditor.HexEditor
             var provider = GetByteProvider();
             if (provider == null || provider.Length == 0)
             {
-                System.Windows.MessageBox.Show(
+                IdeMessageBox.Show(
                     "No file or stream loaded. Please open a file first.",
                     "Advanced Search",
                     System.Windows.MessageBoxButton.OK,

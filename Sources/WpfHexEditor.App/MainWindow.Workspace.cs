@@ -87,7 +87,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, string.Format(AppResources.App_Workspace_NewFailed, "\n", ex.Message),
+            _dialogService.Show(string.Format(AppResources.App_Workspace_NewFailed, "\n", ex.Message),
                 AppResources.App_Workspace_NewTitle, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -110,7 +110,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, string.Format(AppResources.App_Workspace_OpenFailed, "\n", ex.Message),
+            _dialogService.Show(string.Format(AppResources.App_Workspace_OpenFailed, "\n", ex.Message),
                 AppResources.App_Workspace_OpenTitle, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -130,7 +130,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, string.Format(AppResources.App_Workspace_SaveFailed, "\n", ex.Message),
+            _dialogService.Show(string.Format(AppResources.App_Workspace_SaveFailed, "\n", ex.Message),
                 AppResources.App_Workspace_NewTitle, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -155,7 +155,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, string.Format(AppResources.App_Workspace_SaveFailed, "\n", ex.Message),
+            _dialogService.Show(string.Format(AppResources.App_Workspace_SaveFailed, "\n", ex.Message),
                 AppResources.App_Workspace_SaveAsTitle, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -167,8 +167,7 @@ public partial class MainWindow
         var prefs = WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.Workspace;
         if (prefs.PromptSaveOnClose)
         {
-            var result = MessageBox.Show(this,
-                string.Format(AppResources.App_Workspace_CloseSavePrompt, _workspaceManager.CurrentName),
+            var result = _dialogService.Show(string.Format(AppResources.App_Workspace_CloseSavePrompt, _workspaceManager.CurrentName),
                 AppResources.App_Workspace_CloseTitle,
                 MessageBoxButton.YesNoCancel,
                 MessageBoxImage.Question);

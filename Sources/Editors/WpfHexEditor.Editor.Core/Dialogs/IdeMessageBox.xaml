@@ -1,0 +1,95 @@
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+
+    Themed replacement for System.Windows.MessageBox.
+    All brushes are DynamicResource — reacts to Dark / Light / High Contrast switches.
+-->
+
+<ec:ThemedDialog x:Class="WpfHexEditor.Editor.Core.Dialogs.IdeMessageBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views"
+        SizeToContent="WidthAndHeight"
+        MinWidth="320" MaxWidth="560"
+        Background="{DynamicResource DockWindowBackgroundBrush}">
+
+    <StackPanel Margin="20,16,20,16">
+
+        <!-- Icon + Message row -->
+        <Grid Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Severity icon (Segoe MDL2 Assets glyph) -->
+            <TextBlock x:Name="IconGlyph"
+                       Grid.Column="0"
+                       FontFamily="Segoe MDL2 Assets"
+                       FontSize="28"
+                       VerticalAlignment="Top"
+                       Margin="0,0,14,0"
+                       Visibility="Collapsed" />
+
+            <!-- Message body -->
+            <TextBlock x:Name="MessageText"
+                       Grid.Column="1"
+                       FontSize="13"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center"
+                       MaxWidth="480" />
+        </Grid>
+
+        <!-- Button row — populated in code-behind based on MessageBoxButton -->
+        <StackPanel x:Name="ButtonPanel"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <StackPanel.Resources>
+                <!-- Minimal VS-style button style (no DialogStyles.xaml dependency) -->
+                <Style TargetType="Button">
+                    <Setter Property="Padding"          Value="12,5" />
+                    <Setter Property="MinWidth"         Value="88" />
+                    <Setter Property="Margin"           Value="8,0,0,0" />
+                    <Setter Property="Cursor"           Value="Hand" />
+                    <Setter Property="Foreground"       Value="{DynamicResource DockMenuForegroundBrush}" />
+                    <Setter Property="Background"       Value="{DynamicResource DockBackgroundBrush}" />
+                    <Setter Property="BorderBrush"      Value="{DynamicResource DockBorderBrush}" />
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="Root"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="1">
+                                    <Border x:Name="Overlay" Background="Transparent">
+                                        <ContentPresenter HorizontalAlignment="Center"
+                                                          VerticalAlignment="Center"
+                                                          Margin="{TemplateBinding Padding}"
+                                                          RecognizesAccessKey="True" />
+                                    </Border>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Overlay" Property="Background"  Value="#20FFFFFF" />
+                                        <Setter TargetName="Root"    Property="BorderBrush" Value="#A070D0" />
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="Overlay" Property="Background" Value="#40FFFFFF" />
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0.45" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </StackPanel.Resources>
+        </StackPanel>
+
+    </StackPanel>
+</ec:ThemedDialog>

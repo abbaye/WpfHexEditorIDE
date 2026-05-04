@@ -16,6 +16,7 @@
 // ==========================================================
 
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Dialogs;
 using WpfHexEditor.Editor.Core.Notifications;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Interfaces;
@@ -107,6 +108,9 @@ public sealed class IDEHostContext : IIDEHostContext
 
     /// <inheritdoc />
     public INotificationService? Notifications { get; init; }
+
+    /// <inheritdoc />
+    public IDialogService? Dialogs { get; init; }
 
     /// <inheritdoc />
     public ISyntaxColoringService? SyntaxColoring { get; init; }

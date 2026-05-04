@@ -17,6 +17,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using Microsoft.Win32;
 using WpfHexEditor.PluginDev.Properties;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.PluginDev.Panels;
 
@@ -82,7 +83,7 @@ public sealed partial class PluginDevLogPanel : UserControl
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
+                IdeMessageBox.Show(
                     $"Export failed: {ex.Message}",
                     "Plugin Dev Log",
                     MessageBoxButton.OK,
