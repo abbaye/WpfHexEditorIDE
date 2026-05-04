@@ -10,6 +10,11 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Lokale variabler</value></data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Overvågning</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Fejlretningskonsol</value></data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Tråde</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Parallelle stakke</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Opdater trådliste</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Opdater parallelle stakke</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Hver boks repræsenterer en tråds kaldsstak</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>Ingen gyldige breakpoints fundet i filen.</value></data>
   <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Startkonfiguration (.whdbg)</value></data>
   <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Ingen fil indlæst. Klik Åbn først.</value></data>

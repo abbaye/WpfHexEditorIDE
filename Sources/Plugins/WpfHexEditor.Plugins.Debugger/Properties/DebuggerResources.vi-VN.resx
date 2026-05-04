@@ -10,6 +10,11 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Biến cục bộ</value></data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Theo dõi</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Bảng điều khiển gỡ lỗi</value></data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Luồng</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Ngăn xếp song song</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Làm mới danh sách luồng</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Làm mới ngăn xếp song song</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Mỗi hộp đại diện cho ngăn xếp cuộc gọi của một luồng</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>Không tìm thấy điểm dừng hợp lệ nào trong tệp.</value></data>
   <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Cấu hình khởi chạy (.whdbg)</value></data>
   <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Chưa tải tệp nào. Vui lòng nhấp Mở trước.</value></data>

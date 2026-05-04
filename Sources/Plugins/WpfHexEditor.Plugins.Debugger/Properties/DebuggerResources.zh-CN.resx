@@ -19,6 +19,11 @@
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve">
     <value>调试控制台</value>
   </data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>线程</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>并行堆栈</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>刷新线程列表</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>刷新并行堆栈</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>每个框代表一个线程的调用堆栈</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve">
     <value>文件中未找到有效断点。</value>
   </data>

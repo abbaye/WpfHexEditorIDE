@@ -251,13 +251,24 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
 
     // ── IDebuggerService — inspection ─────────────────────────────────────────
 
-    public async Task<IReadOnlyList<DebugFrameInfo>> GetCallStackAsync()
+    public async Task<IReadOnlyList<DebugThreadInfo>> GetThreadsAsync()
     {
         if (_client is null || !_session.IsPaused) return [];
-        var body = await _client.StackTraceAsync(new StackTraceArgs(_session.ActiveThreadId, Levels: 30));
+        var body = await _client.ThreadsAsync();
+        return body?.Threads.Select(t => new DebugThreadInfo(t.Id, t.Name)).ToList() ?? [];
+    }
+
+    public async Task<IReadOnlyList<DebugFrameInfo>> GetCallStackForThreadAsync(int threadId)
+    {
+        if (_client is null || !_session.IsPaused) return [];
+        int id = threadId == 0 ? _session.ActiveThreadId : threadId;
+        var body = await _client.StackTraceAsync(new StackTraceArgs(id, Levels: 30));
         return body?.StackFrames.Select(f => new DebugFrameInfo(
             f.Id, f.Name, f.Source?.Path, f.Line, f.Column)).ToList() ?? [];
     }
+
+    public Task<IReadOnlyList<DebugFrameInfo>> GetCallStackAsync() =>
+        GetCallStackForThreadAsync(0);
 
     public async Task<IReadOnlyList<DebugVariableInfo>> GetVariablesAsync(int variablesReference)
     {

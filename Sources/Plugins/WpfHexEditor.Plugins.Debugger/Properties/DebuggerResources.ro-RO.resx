@@ -10,6 +10,11 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Variabile locale</value></data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Inspecție</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Consolă depanare</value></data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Fire de execuție</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Stive paralele</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Reîmprospătare listă fire</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Reîmprospătare stive paralele</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Fiecare casetă reprezintă stiva de apeluri a unui fir</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>Niciun punct de întrerupere valid găsit în fișier.</value></data>
   <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Configurație lansare (.whdbg)</value></data>
   <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Niciun fișier încărcat. Faceți clic pe Deschidere mai întâi.</value></data>

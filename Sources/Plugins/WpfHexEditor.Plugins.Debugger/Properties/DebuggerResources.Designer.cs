@@ -53,6 +53,14 @@ internal static class DebuggerResources
     internal static string Debugger_ConsolePanelTitle
         => ResourceManager.GetString("Debugger_ConsolePanelTitle", _resourceCulture)!;
 
+    /// <summary>Gets the localized panel title for the Threads panel.</summary>
+    internal static string Debugger_ThreadsPanelTitle
+        => ResourceManager.GetString("Debugger_ThreadsPanelTitle", _resourceCulture)!;
+
+    /// <summary>Gets the localized panel title for the Parallel Stacks panel.</summary>
+    internal static string Debugger_ParallelStacksPanelTitle
+        => ResourceManager.GetString("Debugger_ParallelStacksPanelTitle", _resourceCulture)!;
+
     /// <summary>Gets the localized message shown when no valid breakpoints are found during import.</summary>
     internal static string Debugger_NoValidBreakpoints
         => ResourceManager.GetString("Debugger_NoValidBreakpoints", _resourceCulture)!;

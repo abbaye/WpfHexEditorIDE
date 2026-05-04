@@ -19,6 +19,11 @@
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve">
     <value>Konsola debugowania</value>
   </data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Wątki</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Stosy równoległe</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Odśwież listę wątków</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Odśwież stosy równoległe</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Każde pole reprezentuje stos wywołań wątku</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve">
     <value>Nie znaleziono prawidłowych punktów przerwania w pliku.</value>
   </data>

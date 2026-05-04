@@ -210,18 +210,21 @@ public static class OoXmlSchemaEngine
         // Serialize attributes back to XML
         SerializeAttributes(block, schema, element, ns, nsMap);
 
-        // Text content
-        if (!string.IsNullOrEmpty(rule.TextElement))
+        // Text content — only when no children own the text (children serialize their own text)
+        if (block.Children.Count == 0)
         {
-            var textPath  = rule.TextElement.Split('/');
-            var textParent = element;
-            foreach (var step in textPath.SkipLast(1))
-                textParent = GetOrAddChild(textParent, ns + LocalName(step));
-            textParent.Add(new XElement(ns + LocalName(textPath.Last()), block.Text));
-        }
-        else if (string.IsNullOrEmpty(rule.TextElement) && block.Children.Count == 0)
-        {
-            element.Value = block.Text;
+            if (!string.IsNullOrEmpty(rule.TextElement))
+            {
+                var textPath   = rule.TextElement.Split('/');
+                var textParent = element;
+                foreach (var step in textPath.SkipLast(1))
+                    textParent = GetOrAddChild(textParent, ns + LocalName(step));
+                textParent.Add(new XElement(ns + LocalName(textPath.Last()), block.Text));
+            }
+            else
+            {
+                element.Value = block.Text;
+            }
         }
 
         // Children

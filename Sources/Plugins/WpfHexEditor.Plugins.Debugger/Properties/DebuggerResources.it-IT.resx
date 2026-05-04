@@ -19,6 +19,11 @@
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve">
     <value>Console di debug</value>
   </data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Thread</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Stack paralleli</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Aggiorna l'elenco dei thread</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Aggiorna gli stack paralleli</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Ogni riquadro rappresenta lo stack di chiamate di un thread</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve">
     <value>Nessun punto di interruzione valido trovato nel file.</value>
   </data>

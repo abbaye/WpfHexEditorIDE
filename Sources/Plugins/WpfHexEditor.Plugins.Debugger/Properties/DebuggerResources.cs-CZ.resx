@@ -10,6 +10,11 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Místní proměnné</value></data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Hlídání</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Konzole ladění</value></data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Vlákna</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Paralelní zásobníky</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Obnovit seznam vláken</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Obnovit paralelní zásobníky</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Každý rámeček představuje zásobník volání vlákna</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>Žádná platná zarážka nenalezena v souboruichier.</value></data>
   <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Konfigurace spuštění (.whdbg)</value></data>
   <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Žádný soubor není načten. Nejprve klikněte na Otevřít.</value></data>

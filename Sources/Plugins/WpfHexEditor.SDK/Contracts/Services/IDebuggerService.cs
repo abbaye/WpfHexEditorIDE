@@ -47,6 +47,14 @@ public sealed record DebugFrameInfo(
 );
 
 /// <summary>
+/// Thread snapshot visible to plugins.
+/// </summary>
+public sealed record DebugThreadInfo(
+    int    Id,
+    string Name
+);
+
+/// <summary>
 /// Variable snapshot visible to plugins.
 /// </summary>
 public sealed record DebugVariableInfo(
@@ -151,6 +159,12 @@ public interface IDebuggerService
     Task PauseAsync();
 
     // ── Inspection ─────────────────────────────────────────────────────────
+
+    /// <summary>Get all active threads (only valid when paused).</summary>
+    Task<IReadOnlyList<DebugThreadInfo>> GetThreadsAsync();
+
+    /// <summary>Get the call stack frames for a specific thread (0 = active thread).</summary>
+    Task<IReadOnlyList<DebugFrameInfo>> GetCallStackForThreadAsync(int threadId);
 
     /// <summary>Get the current call stack frames (only valid when paused).</summary>
     Task<IReadOnlyList<DebugFrameInfo>> GetCallStackAsync();

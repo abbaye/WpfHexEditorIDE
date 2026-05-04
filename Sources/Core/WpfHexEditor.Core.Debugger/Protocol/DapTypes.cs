@@ -179,3 +179,14 @@ public record ThreadEventBody(
     [property: JsonPropertyName("threadId")]           int    ThreadId,
     [property: JsonPropertyName("reason")]             string Reason
 );
+
+// ── Threads request / response ────────────────────────────────────────────────
+
+public record ThreadsBody(
+    [property: JsonPropertyName("threads")]            ThreadDto[] Threads
+);
+
+public record ThreadDto(
+    [property: JsonPropertyName("id")]                 int    Id,
+    [property: JsonPropertyName("name")]               string Name
+);

@@ -57,6 +57,9 @@ public interface IDapClient : IAsyncDisposable
 
     // ── Inspection ────────────────────────────────────────────────────────────
 
+    /// <summary>Get all active threads.</summary>
+    Task<ThreadsBody?> ThreadsAsync(CancellationToken ct = default);
+
     /// <summary>Get the call stack for a given thread.</summary>
     Task<StackTraceBody?> StackTraceAsync(StackTraceArgs args, CancellationToken ct = default);
 

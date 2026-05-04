@@ -209,6 +209,12 @@ public abstract class DapClientBase : IDapClient
     public virtual async Task PauseAsync(PauseArgs args, CancellationToken ct = default) =>
         await SendRequestAsync("pause", args, ct);
 
+    public virtual async Task<ThreadsBody?> ThreadsAsync(CancellationToken ct = default)
+    {
+        var resp = await SendRequestAsync("threads", null, ct);
+        return ParseBody<ThreadsBody>(resp);
+    }
+
     public virtual async Task<StackTraceBody?> StackTraceAsync(
         StackTraceArgs args, CancellationToken ct = default)
     {

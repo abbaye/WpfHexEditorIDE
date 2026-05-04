@@ -10,6 +10,11 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Локальні змінні</value></data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Спостереження</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Консоль налагодження</value></data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Потоки</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Паралельні стеки</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Оновити список потоків</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Оновити паралельні стеки</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Кожен блок представляє стек викликів потоку</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>У файлі не знайдено дійсних точок зупинки.</value></data>
   <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Конфігурація запуску (.whdbg)</value></data>
   <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Файл не завантажено. Спочатку натисніть «Відкрити».</value></data>

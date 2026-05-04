@@ -10,6 +10,11 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Paikalliset muuttujat</value></data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Tarkkailu</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Virheenkorjauskonsoli</value></data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Säikeet</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Rinnakkaiset pinot</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Päivitä säieluettelo</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Päivitä rinnakkaiset pinot</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Jokainen ruutu edustaa säikeen kutsupinoa</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>Tiedostossa ei ole kelvollisia katkaisukohtia.</value></data>
   <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Käynnistysmääritys (.whdbg)</value></data>
   <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Ei ladattua tiedostoa. Napsauta ensin Avaa.</value></data>

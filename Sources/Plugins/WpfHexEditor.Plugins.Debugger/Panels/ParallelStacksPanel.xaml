@@ -1,0 +1,46 @@
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.ParallelStacksPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dbgSvc="clr-namespace:WpfHexEditor.Plugins.Debugger.Services">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <dbgSvc:DebuggerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel>
+        <!-- Toolbar -->
+        <ToolBar DockPanel.Dock="Top" Background="{DynamicResource ToolbarBackground}">
+            <Button Command="{Binding RefreshCommand}"
+                    ToolTip="{DynamicResource DBG_ParallelStacksRefreshTooltip}"
+                    Style="{DynamicResource ToolbarButtonStyle}">
+                <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+            </Button>
+            <Separator/>
+            <TextBlock VerticalAlignment="Center"
+                       Foreground="{DynamicResource PanelForeground}"
+                       FontSize="11"
+                       Text="{DynamicResource DBG_ParallelStacksHint}"
+                       Margin="4,0"/>
+        </ToolBar>
+
+        <!-- Busy indicator -->
+        <ProgressBar DockPanel.Dock="Top"
+                     IsIndeterminate="True"
+                     Height="2"
+                     Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+        <!-- Scrollable canvas drawn by code-behind -->
+        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      Background="{DynamicResource PanelBackground}">
+            <Canvas x:Name="StacksCanvas"
+                    Background="Transparent"
+                    MinWidth="400" MinHeight="300"/>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

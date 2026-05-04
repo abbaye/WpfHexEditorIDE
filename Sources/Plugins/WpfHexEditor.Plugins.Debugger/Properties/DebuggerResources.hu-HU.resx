@@ -10,6 +10,11 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Helyi változók</value></data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Figyelő</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Hibakeresési konzol</value></data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Szálak</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Párhuzamos vermek</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Szállista frissítése</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Párhuzamos vermek frissítése</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Minden doboz egy szál hívási veremét jelöli</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>Nem található érvényes töréspont a fájlban.</value></data>
   <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Indítási konfiguráció (.whdbg)</value></data>
   <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Nincs betöltött fájl. Kattintson először a Megnyitás gombra.</value></data>

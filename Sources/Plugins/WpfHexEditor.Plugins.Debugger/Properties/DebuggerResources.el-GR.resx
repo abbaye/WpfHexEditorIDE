@@ -10,6 +10,11 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Τοπικές μεταβλητές</value></data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Παρακολούθηση</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Κονσόλα αποσφαλμάτωσης</value></data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Νήματα</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Παράλληλες στοίβες</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Ανανέωση λίστας νημάτων</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Ανανέωση παράλληλων στοιβών</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Κάθε πλαίσιο αντιπροσωπεύει τη στοίβα κλήσεων ενός νήματος</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>Δεν βρέθηκαν έγκυρα σημεία διακοπής στο αρχείο.</value></data>
   <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Διαμόρφωση εκκίνησης (.whdbg)</value></data>
   <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Κανένα αρχείο δεν είναι φορτωμένο. Κάντε κλικ στο Άνοιγμα πρώτα.</value></data>

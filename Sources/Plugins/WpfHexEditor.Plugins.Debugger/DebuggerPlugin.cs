@@ -53,6 +53,8 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
     private WatchesPanelViewModel?        _watchVm;
     private DebugConsolePanelViewModel?   _consoleVm;
     private DebugSessionManagerViewModel? _sessionMgrVm;
+    private ThreadsPanelViewModel?        _threadsVm;
+    private ParallelStacksPanelViewModel? _parallelStacksVm;
 
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
     {
@@ -66,12 +68,14 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         }
 
         // Create view-models
-        _bpVm         = new BreakpointExplorerViewModel(_debugger, context);
-        _csVm         = new CallStackPanelViewModel(_debugger, context);
-        _locVm        = new LocalsPanelViewModel(_debugger);
-        _watchVm      = new WatchesPanelViewModel(_debugger);
-        _consoleVm    = new DebugConsolePanelViewModel();
-        _sessionMgrVm = new DebugSessionManagerViewModel();
+        _bpVm             = new BreakpointExplorerViewModel(_debugger, context);
+        _csVm             = new CallStackPanelViewModel(_debugger, context);
+        _locVm            = new LocalsPanelViewModel(_debugger);
+        _watchVm          = new WatchesPanelViewModel(_debugger);
+        _consoleVm        = new DebugConsolePanelViewModel();
+        _sessionMgrVm     = new DebugSessionManagerViewModel();
+        _threadsVm        = new ThreadsPanelViewModel(_debugger);
+        _parallelStacksVm = new ParallelStacksPanelViewModel(_debugger);
 
         // Wire IDE events — store tokens for disposal in ShutdownAsync
         _subs.Add(context.IDEEvents.Subscribe<DebugSessionPausedEvent>(OnPaused));
@@ -102,6 +106,12 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         ui.RegisterPanel("panel-dbg-console", consolePanel, Id,
             new PanelDescriptor { Title = DebuggerResources.Debugger_ConsolePanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
 
+        ui.RegisterPanel("panel-dbg-threads", new ThreadsPanel { DataContext = _threadsVm }, Id,
+            new PanelDescriptor { Title = DebuggerResources.Debugger_ThreadsPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
+
+        ui.RegisterPanel("panel-dbg-parallel-stacks", new ParallelStacksPanel { DataContext = _parallelStacksVm }, Id,
+            new PanelDescriptor { Title = DebuggerResources.Debugger_ParallelStacksPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
+
         // Launch configuration editor panel
         ui.RegisterPanel("panel-dbg-launch-config",
             new Panels.LaunchConfigEditorPanel(context.DocumentHost, _debugger), Id,
@@ -118,6 +128,8 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         ui.RegisterMenuItem($"{Id}.Menu.ShowCs",     Id, new MenuItemDescriptor { Header = "Show _Call Stack",       ParentPath = "Debug", Group = "Panels", IconGlyph = "\uE81E", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-callstack")) });
         ui.RegisterMenuItem($"{Id}.Menu.ShowLocals", Id, new MenuItemDescriptor { Header = "Show _Locals",           ParentPath = "Debug", Group = "Panels", IconGlyph = "\uE943", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-locals")) });
         ui.RegisterMenuItem($"{Id}.Menu.ShowWatch",  Id, new MenuItemDescriptor { Header = "Show _Watch",            ParentPath = "Debug", Group = "Panels", IconGlyph = "\uE7B3", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-watch")) });
+        ui.RegisterMenuItem($"{Id}.Menu.ShowThreads", Id, new MenuItemDescriptor { Header = "Show _Threads",          ParentPath = "Debug", Group = "Panels", IconGlyph = "\uE734", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-threads")) });
+        ui.RegisterMenuItem($"{Id}.Menu.ShowParallelStacks", Id, new MenuItemDescriptor { Header = "Show _Parallel Stacks", ParentPath = "Debug", Group = "Panels", IconGlyph = "\uE81E", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-parallel-stacks")) });
 
         // Register terminal commands.
         context.Terminal.RegisterCommand(new DebugBpListCommand(_debugger));
@@ -139,11 +151,13 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
 
             if (frames.Count > 0)
             {
-                var topFrame = frames[0];
-                var locals   = await _debugger.GetVariablesAsync(0);
+                var locals = await _debugger.GetVariablesAsync(0);
                 _locVm?.SetVariables(locals);
                 await _watchVm!.RefreshAsync(_debugger);
             }
+
+            await _threadsVm!.RefreshAsync();
+            await _parallelStacksVm!.RefreshAsync();
         });
     }
 
@@ -203,6 +217,8 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
             _sessionMgrVm?.RemoveSession(e.SessionId);
             _csVm?.SetFrames([]);
             _locVm?.SetVariables([]);
+            _threadsVm?.Clear();
+            _parallelStacksVm?.Clear();
         });
     }
 

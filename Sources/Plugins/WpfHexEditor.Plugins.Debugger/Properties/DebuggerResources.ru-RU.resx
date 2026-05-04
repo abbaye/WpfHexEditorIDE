@@ -19,6 +19,11 @@
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve">
     <value>Консоль отладки</value>
   </data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Потоки</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Параллельные стеки</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Обновить список потоков</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Обновить параллельные стеки</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Каждый блок представляет стек вызовов потока</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve">
     <value>Допустимые точки останова в файле не найдены.</value>
   </data>

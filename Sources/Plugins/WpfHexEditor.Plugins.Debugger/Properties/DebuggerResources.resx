@@ -34,6 +34,21 @@
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve">
     <value>Debug Console</value>
   </data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve">
+    <value>Threads</value>
+  </data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve">
+    <value>Parallel Stacks</value>
+  </data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve">
+    <value>Refresh thread list</value>
+  </data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve">
+    <value>Refresh parallel stacks</value>
+  </data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve">
+    <value>Each box represents a thread call stack</value>
+  </data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve">
     <value>No valid breakpoints found in the file.</value>
   </data>

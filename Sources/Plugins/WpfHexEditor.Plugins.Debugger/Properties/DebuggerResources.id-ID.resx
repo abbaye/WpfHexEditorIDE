@@ -10,6 +10,11 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Variables locales</value></data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Espion</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Console de débogage</value></data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Thread</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Tumpukan Paralel</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Segarkan daftar thread</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Segarkan tumpukan paralel</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Setiap kotak mewakili tumpukan panggilan thread</value></data>
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>Aucun point d&#8217;arr&#234;t valide trouv&#233; dans le fichier.</value></data>
   <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Configuration de lancement (.whdbg)</value></data>
   <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Aucun fichier chargé. Cliquez d'abord sur Ouvrir.</value></data>
