@@ -1743,7 +1743,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void OnLostFocus(object sender, RoutedEventArgs e)
     {
-        // Ignore transient focus loss to a Popup (e.g. pop-toolbar) — the caret must keep blinking.
+        // Keep blinking when focus moves to a toolbar button or any other element
+        // that is a descendant of our host UserControl (e.g. font dropdown, Bold button)
+        // or to a Popup (e.g. pop-toolbar).
         var newFocus = Keyboard.FocusedElement as DependencyObject;
         if (newFocus is not null)
         {
@@ -1751,6 +1753,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             while (parent is not null)
             {
                 if (parent is System.Windows.Controls.Primitives.Popup) return;
+                // Stay live when focus moves to the host (toolbar lives there)
+                if (parent is DocumentEditorHost) return;
                 parent = VisualTreeHelper.GetParent(parent) ?? LogicalTreeHelper.GetParent(parent);
             }
         }
@@ -2071,6 +2075,14 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             if (fromChar >= toChar) continue;
 
             double blockScreenY = PageCanvasPad + rb.Y - _offset.Y;
+
+            // Use glyph-line metrics for accurate highlight geometry when available
+            if (rb.GlyphLines is { Count: > 0 })
+            {
+                DrawGlyphLineSelection(dc, rb.GlyphLines, contentX, blockScreenY, fromChar, toChar);
+                continue;
+            }
+
             var ft = rb.FormattedLines is { Count: > 0 }
                 ? rb.FormattedLines[0]
                 : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
@@ -2080,6 +2092,64 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                                                 fromChar, toChar - fromChar);
             if (geo is null) continue;
             dc.DrawGeometry(_textSelBrush, null, geo);
+        }
+    }
+
+    /// <summary>
+    /// Draws selection highlight over glyph-rendered lines by computing X extents
+    /// from per-glyph advance widths. More accurate than FormattedText.BuildHighlightGeometry
+    /// because it uses the same metrics as the actual rendered glyphs.
+    /// </summary>
+    private void DrawGlyphLineSelection(DrawingContext dc,
+                                        IReadOnlyList<InlineVisualLine> glyphLines,
+                                        double originX, double originY,
+                                        int fromChar, int toChar)
+    {
+        if (_textSelBrush is null) return;
+
+        double lineY = originY;
+        foreach (var line in glyphLines)
+        {
+            double lineH = line.LineHeight;
+
+            // Skip lines completely outside the selection range
+            if (line.CharEnd <= fromChar || line.CharStart >= toChar)
+            {
+                lineY += lineH;
+                continue;
+            }
+
+            // Compute X start and X end of the selected region within this line
+            double xStart = 0, xEnd = 0;
+            bool   startSet = false;
+
+            foreach (var seg in line.Segments)
+            {
+                int segStart = seg.CharStart;
+                int segEnd   = segStart + seg.AdvanceWidths.Count;
+
+                double segX = originX + seg.OffsetX;
+
+                double cx = segX;
+                for (int gi = 0; gi < seg.AdvanceWidths.Count; gi++)
+                {
+                    int charIdx = segStart + gi;
+                    double adv = seg.AdvanceWidths[gi];
+
+                    if (charIdx >= fromChar && charIdx < toChar)
+                    {
+                        if (!startSet) { xStart = cx; startSet = true; }
+                        xEnd = cx + adv;
+                    }
+                    cx += adv;
+                }
+            }
+
+            if (startSet && xEnd > xStart)
+                dc.DrawRectangle(_textSelBrush, null,
+                    new Rect(xStart, lineY, xEnd - xStart, lineH));
+
+            lineY += lineH;
         }
     }
 
@@ -2439,6 +2509,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         }
         InvalidateVisual();
         SelectionFormatChanged?.Invoke(this, EventArgs.Empty);
+        // Reclaim keyboard focus so the caret keeps blinking after toolbar interactions
+        Focus();
+        Keyboard.Focus(this);
     }
 
     /// <summary>Returns which formatting attributes are present on all selected runs.</summary>
@@ -2497,6 +2570,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var block = _blocks[_selectedIndex >= 0 ? _selectedIndex : _caret.BlockIndex].Block;
         _mutator.SetBlockAttribute(block, attribute, value);
         InvalidateVisual();
+        Focus();
+        Keyboard.Focus(this);
     }
 
     /// <summary>Copies the current text selection to the clipboard.</summary>

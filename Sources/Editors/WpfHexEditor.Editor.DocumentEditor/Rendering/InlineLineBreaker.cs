@@ -43,6 +43,8 @@ internal static class InlineLineBreaker
         var lines   = new List<InlineVisualLine>();
         var pending = new List<PendingSegment>(); // segments accumulated on current line
         double lineX = 0;                         // current X pen position on the line
+        int    lineCharStart = 0;                 // block-relative char index of line start
+        int    blockCharPos  = 0;                 // running block-relative char cursor
 
         // Metrics for the current line (updated per segment)
         double lineAscent  = 0;
@@ -61,6 +63,7 @@ internal static class InlineLineBreaker
 
             var placed = ImmutableArray.CreateBuilder<PlacedSegment>(pending.Count);
             double x = 0;
+            int lineCharEnd = lineCharStart;
             foreach (var ps in pending)
             {
                 var gt   = ps.Seg.GlyphTypeface;
@@ -78,15 +81,19 @@ internal static class InlineLineBreaker
                     underline:           ps.Seg.Underline,
                     strikethrough:       ps.Seg.Strikethrough,
                     underlineOffset:     uOff,
-                    strikethroughOffset: sOff));
+                    strikethroughOffset: sOff,
+                    charStart:           ps.CharStart));
 
                 x += ps.TotalWidth;
+                lineCharEnd = ps.CharStart + ps.CharCount;
             }
 
-            lines.Add(new InlineVisualLine(placed.MoveToImmutable(), ascent, descent, leading));
+            lines.Add(new InlineVisualLine(placed.MoveToImmutable(), ascent, descent, leading,
+                                           lineCharStart, lineCharEnd));
             pending.Clear();
-            lineX      = 0;
-            lineAscent = lineDescent = lineLeading = 0;
+            lineX         = 0;
+            lineCharStart = lineCharEnd;
+            lineAscent    = lineDescent = lineLeading = 0;
         }
 
         void UpdateLineMetrics(InlineSegment seg)
@@ -115,8 +122,11 @@ internal static class InlineLineBreaker
             int i = 0;
             while (i < seg.Text.Length)
             {
+                int tokenCharStart = blockCharPos + i;
+
                 // Collect a "word" token (non-space run) + optional trailing spaces
                 var (glyphs, advances, tokenW, nextI) = MeasureToken(seg, i, gt, size);
+                int tokenCharCount = nextI - i;
                 i = nextI;
 
                 // Handle explicit newline embedded in token
@@ -133,7 +143,7 @@ internal static class InlineLineBreaker
                     // Force-split: chunk glyph-by-glyph
                     var splitLines = ForceSplit(seg, glyphs, advances, maxWidth, pixelsPerDip,
                                                 ref lineX, ref lineAscent, ref lineDescent, ref lineLeading,
-                                                pending);
+                                                pending, ref lineCharStart, tokenCharStart);
                     foreach (var sl in splitLines)
                         lines.Add(sl);
                     continue;
@@ -145,9 +155,11 @@ internal static class InlineLineBreaker
 
                 // Accumulate token onto current line
                 UpdateLineMetrics(seg);
-                pending.Add(new PendingSegment(seg, glyphs, advances, tokenW));
+                pending.Add(new PendingSegment(seg, glyphs, advances, tokenW, tokenCharStart, tokenCharCount));
                 lineX += tokenW;
             }
+
+            blockCharPos += seg.Text.Length;
         }
 
         // Flush last line
@@ -241,7 +253,9 @@ internal static class InlineLineBreaker
         ref double      lineAscent,
         ref double      lineDescent,
         ref double      lineLeading,
-        List<PendingSegment> pending)
+        List<PendingSegment> pending,
+        ref int         lineCharStart,
+        int             tokenCharStart)
     {
         var   gt       = seg.GlyphTypeface;
         double ascent   = gt.Baseline              * seg.Size;
@@ -251,6 +265,7 @@ internal static class InlineLineBreaker
         var chunkGlyphs   = new List<ushort>();
         var chunkAdvances = new List<double>();
         double chunkW     = 0;
+        int    chunkCharStart = tokenCharStart;
 
         var result = new List<InlineVisualLine>();
 
@@ -262,15 +277,20 @@ internal static class InlineLineBreaker
                 // Emit a full line for the chunk so far
                 double uOff = -gt.UnderlinePosition     * seg.Size;
                 double sOff =  gt.StrikethroughPosition * seg.Size;
+                int chunkCount = chunkGlyphs.Count;
                 var ps = new PlacedSegment(
                     offsetX: 0, glyphTypeface: gt, emSize: seg.Size,
                     glyphIndices: new List<ushort>(chunkGlyphs),
                     advanceWidths: new List<double>(chunkAdvances),
                     width: chunkW, foreground: seg.Foreground,
                     underline: seg.Underline, strikethrough: seg.Strikethrough,
-                    underlineOffset: uOff, strikethroughOffset: sOff);
+                    underlineOffset: uOff, strikethroughOffset: sOff,
+                    charStart: chunkCharStart);
                 result.Add(new InlineVisualLine(ImmutableArray.Create(ps),
-                                          Math.Max(MinLineHeight, ascent), descent, leading));
+                                          Math.Max(MinLineHeight, ascent), descent, leading,
+                                          lineCharStart, chunkCharStart + chunkCount));
+                lineCharStart = chunkCharStart + chunkCount;
+                chunkCharStart = lineCharStart;
                 chunkGlyphs.Clear();
                 chunkAdvances.Clear();
                 chunkW = 0;
@@ -287,7 +307,8 @@ internal static class InlineLineBreaker
             if (ascent > lineAscent)  lineAscent  = ascent;
             if (descent > lineDescent) lineDescent = descent;
             if (leading > lineLeading) lineLeading = leading;
-            pending.Add(new PendingSegment(seg, chunkGlyphs, chunkAdvances, chunkW));
+            pending.Add(new PendingSegment(seg, chunkGlyphs, chunkAdvances, chunkW,
+                                           chunkCharStart, chunkGlyphs.Count));
             lineX += chunkW;
         }
 
@@ -300,11 +321,15 @@ internal static class InlineLineBreaker
         InlineSegment seg,
         List<ushort>  glyphs,
         List<double>  advances,
-        double        totalWidth)
+        double        totalWidth,
+        int           charStart  = 0,
+        int           charCount  = 0)
     {
         public readonly InlineSegment Seg        = seg;
         public readonly List<ushort>  Glyphs     = glyphs;
         public readonly List<double>  Advances   = advances;
         public readonly double        TotalWidth = totalWidth;
+        public readonly int           CharStart  = charStart;
+        public readonly int           CharCount  = charCount;
     }
 }
