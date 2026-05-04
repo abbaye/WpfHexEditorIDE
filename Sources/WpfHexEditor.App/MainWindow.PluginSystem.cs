@@ -482,6 +482,16 @@ public partial class MainWindow
             _assemblyExplorerModule = new WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule();
             await _assemblyExplorerModule.InitializeAsync(hostContext).ConfigureAwait(true);
 
+            OptionsPageRegistry.RegisterDynamic(
+                "Assembly Explorer",
+                "General",
+                () =>
+                {
+                    var page = new WpfHexEditor.App.AssemblyExplorer.Options.AssemblyExplorerOptionsPage();
+                    page.Load();
+                    return page;
+                });
+
             _pluginHost = new WpfPluginHost(hostContext, uiRegistry, permissionService, Dispatcher,
                 logger:      msg => OutputLogger.PluginInfo(msg),
                 errorLogger: msg => OutputLogger.PluginError(msg));

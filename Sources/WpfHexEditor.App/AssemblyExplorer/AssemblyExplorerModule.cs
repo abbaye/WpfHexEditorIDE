@@ -60,6 +60,7 @@ internal sealed class AssemblyExplorerModule
     private AssemblyHexSyncService?  _hexSyncService;
     private IDisposable?             _subProjectItemAdded;
     private IDisposable?             _subOpenAssembly;
+    private volatile bool            _isShutdown;
 
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
     {
@@ -126,10 +127,9 @@ internal sealed class AssemblyExplorerModule
         context.Terminal.RegisterCommand(new AsmSearchCommand());
         context.Terminal.RegisterCommand(new AsmCloseCommand(_panel));
 
-        _panel.ViewModel.AssemblyLoaded        += OnAssemblyLoaded;
-        _panel.ViewModel.AssemblyUnloaded      += OnAssemblyUnloaded;
-        _panel.ViewModel.AssemblyCleared       += OnAssemblyCleared;
-        _panel.ViewModel.WorkspaceStatsChanged += OnWorkspaceStatsChanged;
+        _panel.ViewModel.AssemblyLoaded   += OnAssemblyLoaded;
+        _panel.ViewModel.AssemblyUnloaded += OnAssemblyUnloaded;
+        _panel.ViewModel.AssemblyCleared  += OnAssemblyCleared;
 
         _hexSyncService = new AssemblyHexSyncService(context.HexEditor, _panel.ViewModel);
 
@@ -138,18 +138,35 @@ internal sealed class AssemblyExplorerModule
         // Restore previous workspace in the background — must complete before
         // wiring auto-analysis subscriptions, otherwise IDE document-tab
         // restoration would inject unintended assemblies during the restore window.
-        _ = RestoreLastSessionAsync().ContinueWith(_ =>
+        // Faults in the restore are logged, not propagated; auto-analysis is
+        // still wired so the user can keep working with a fresh workspace.
+        // The _isShutdown guard prevents wiring handlers into a torn-down module
+        // if the user quits before the restore finishes.
+        _ = Task.Run(async () =>
         {
+            try
+            {
+                await RestoreLastSessionAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                context.Output.Write("AssemblyExplorer", $"Session restore failed: {ex.Message}");
+            }
+
+            if (_isShutdown) return;
+
             context.HexEditor.FileOpened          += OnFileOpened;
             context.HexEditor.ActiveEditorChanged += OnActiveEditorChanged;
             _subProjectItemAdded = context.IDEEvents.Subscribe<ProjectItemAddedEvent>(OnProjectItemAdded);
-        }, TaskScheduler.Default);
+        });
 
         return Task.CompletedTask;
     }
 
     public void Shutdown()
     {
+        _isShutdown = true;
+
         if (_panel?.ViewModel is not null)
             PersistCurrentSession(_panel.ViewModel.GetWorkspaceFilePaths());
 
@@ -161,10 +178,9 @@ internal sealed class AssemblyExplorerModule
 
         if (_panel?.ViewModel is not null)
         {
-            _panel.ViewModel.AssemblyLoaded        -= OnAssemblyLoaded;
-            _panel.ViewModel.AssemblyUnloaded      -= OnAssemblyUnloaded;
-            _panel.ViewModel.AssemblyCleared       -= OnAssemblyCleared;
-            _panel.ViewModel.WorkspaceStatsChanged -= OnWorkspaceStatsChanged;
+            _panel.ViewModel.AssemblyLoaded   -= OnAssemblyLoaded;
+            _panel.ViewModel.AssemblyUnloaded -= OnAssemblyUnloaded;
+            _panel.ViewModel.AssemblyCleared  -= OnAssemblyCleared;
         }
 
         _subProjectItemAdded?.Dispose();
@@ -280,11 +296,6 @@ internal sealed class AssemblyExplorerModule
             PersistCurrentSession(_panel.ViewModel.GetWorkspaceFilePaths());
     }
 
-    private void OnWorkspaceStatsChanged(object? sender, EventArgs e)
-    {
-        // Reserved for future workspace-changed event publication.
-    }
-
     private void RegisterMenuItems(IIDEHostContext context)
     {
         context.UIRegistry.RegisterMenuItem(
@@ -352,10 +363,4 @@ internal sealed class AssemblyExplorerModule
             });
     }
 
-    public FrameworkElement CreateOptionsPage()
-    {
-        var page = new AssemblyExplorerOptionsPage();
-        page.Load();
-        return page;
-    }
 }
