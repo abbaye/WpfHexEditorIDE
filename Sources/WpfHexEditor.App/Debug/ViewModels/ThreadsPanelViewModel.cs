@@ -30,16 +30,24 @@ public sealed class ThreadsPanelViewModel : ViewModelBase
         }
     }
 
-    public ICommand RefreshCommand { get; }
-    public ICommand FreezeCommand  { get; }
-    public ICommand ThawCommand    { get; }
+    public ICommand RefreshCommand    { get; }
+    public ICommand FreezeCommand     { get; }
+    public ICommand ThawCommand       { get; }
+    public ICommand SwitchToCommand   { get; }
+    public ICommand CopyThreadCommand { get; }
 
     public ThreadsPanelViewModel(IDebuggerService debugger)
     {
-        _debugger      = debugger;
-        RefreshCommand = new RelayCommand(_ => _ = RefreshAsync());
-        FreezeCommand  = new RelayCommand(p => { if (p is ThreadItem t) _ = FreezeAsync(t); });
-        ThawCommand    = new RelayCommand(p => { if (p is ThreadItem t) _ = ThawAsync(t); });
+        _debugger         = debugger;
+        RefreshCommand    = new RelayCommand(_ => _ = RefreshAsync());
+        FreezeCommand     = new RelayCommand(p => { if (p is ThreadItem t) _ = FreezeAsync(t); });
+        ThawCommand       = new RelayCommand(p => { if (p is ThreadItem t) _ = ThawAsync(t); });
+        SwitchToCommand   = new RelayCommand(p => { if (p is ThreadItem t) SelectedThread = t; });
+        CopyThreadCommand = new RelayCommand(p =>
+        {
+            if (p is ThreadItem t)
+                System.Windows.Clipboard.SetText($"{t.Id}\t{t.Name}{(t.IsFrozen ? " (frozen)" : string.Empty)}");
+        });
     }
 
     public async Task RefreshAsync()

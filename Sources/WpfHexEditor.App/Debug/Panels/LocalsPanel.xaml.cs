@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using WpfHexEditor.App.Debug.ViewModels;
 
@@ -7,7 +8,13 @@ namespace WpfHexEditor.App.Debug.Panels;
 
 public partial class LocalsPanel : UserControl
 {
-    public LocalsPanel() => InitializeComponent();
+    public LocalsPanel()
+    {
+        InitializeComponent();
+        InputBindings.Add(new KeyBinding(ApplicationCommands.Find,
+            new KeyGesture(Key.F, ModifierKeys.Control)));
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, (_, _) => SearchBox.Focus()));
+    }
 
     private void OnValueClick(object sender, MouseButtonEventArgs e)
     {
@@ -48,5 +55,14 @@ public partial class LocalsPanel : UserControl
     {
         if (sender is TextBox tb && tb.DataContext is VariableNode node)
             node.IsEditing = false;
+    }
+
+    private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (DataContext is not LocalsPanelViewModel vm) return;
+        var view = CollectionViewSource.GetDefaultView(vm.Variables);
+        var query = SearchBox.Text;
+        view.Filter = string.IsNullOrEmpty(query) ? null
+            : o => o is VariableNode n && (n.Name?.Contains(query, System.StringComparison.OrdinalIgnoreCase) ?? false);
     }
 }

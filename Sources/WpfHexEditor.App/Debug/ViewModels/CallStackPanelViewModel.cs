@@ -53,13 +53,30 @@ public sealed class CallStackPanelViewModel : ViewModelBase
         }
     }
 
-    public ICommand NavigateCommand { get; }
+    public ICommand NavigateCommand   { get; }
+    public ICommand CopyFrameCommand  { get; }
+    public ICommand CopyAllCommand    { get; }
+    public ICommand GoToSourceCommand { get; }
 
     public CallStackPanelViewModel(IDebuggerService debugger, IIDEHostContext context)
     {
-        _context        = context;
-        NavigateCommand = new RelayCommand(async p => await NavigateToFrameAsync(p as CallStackFrameItem));
+        _context          = context;
+        NavigateCommand   = new RelayCommand(async p => await NavigateToFrameAsync(p as CallStackFrameItem));
+        GoToSourceCommand = new RelayCommand(async p => await NavigateToFrameAsync(p as CallStackFrameItem));
+        CopyFrameCommand  = new RelayCommand(p =>
+        {
+            if (p is CallStackFrameItem f)
+                System.Windows.Clipboard.SetText(FormatFrame(f));
+        });
+        CopyAllCommand    = new RelayCommand(_ =>
+        {
+            if (Frames.Count == 0) return;
+            System.Windows.Clipboard.SetText(string.Join(Environment.NewLine, Frames.Select(FormatFrame)));
+        });
     }
+
+    private static string FormatFrame(CallStackFrameItem f)
+        => $"{f.Id}\t{f.Name}\t{f.FilePath}:{f.Line}";
 
     public void SetFrames(IReadOnlyList<DebugFrameInfo> frames)
     {

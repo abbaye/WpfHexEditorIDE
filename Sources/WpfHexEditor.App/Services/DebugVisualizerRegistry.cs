@@ -15,7 +15,7 @@ namespace WpfHexEditor.App.Services;
 internal sealed class DebugVisualizerRegistry : IDebugVisualizerRegistry
 {
     private readonly List<IDebugVisualizer> _visualizers = [];
-    private readonly Lock _lock = new();
+    private readonly object _lock = new();
 
     public void Register(IDebugVisualizer visualizer)
     {

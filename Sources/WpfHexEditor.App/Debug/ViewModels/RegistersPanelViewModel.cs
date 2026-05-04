@@ -9,7 +9,9 @@
 // ==========================================================
 
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.App.Debug.ViewModels;
@@ -38,12 +40,29 @@ public sealed class RegisterItem : ViewModelBase
 public sealed class RegistersPanelViewModel : ViewModelBase
 {
     private readonly IDebuggerService _debugger;
+    private bool _hexDisplay = true;
 
     public ObservableCollection<RegisterItem> Registers { get; } = [];
+
+    public bool HexDisplay
+    {
+        get => _hexDisplay;
+        set { _hexDisplay = value; OnPropertyChanged(); }
+    }
+
+    public ICommand RefreshCommand     { get; }
+    public ICommand CopyValueCommand   { get; }
+    public ICommand CopyNameCommand    { get; }
+    public ICommand ToggleHexCommand   { get; }
 
     public RegistersPanelViewModel(IDebuggerService debugger)
     {
         _debugger = debugger;
+
+        RefreshCommand   = new RelayCommand(async _ => await RefreshAsync());
+        CopyValueCommand = new RelayCommand(p => { if (p is RegisterItem r && !string.IsNullOrEmpty(r.Value)) System.Windows.Clipboard.SetText(r.Value); });
+        CopyNameCommand  = new RelayCommand(p => { if (p is RegisterItem r && !string.IsNullOrEmpty(r.Name))  System.Windows.Clipboard.SetText(r.Name); });
+        ToggleHexCommand = new RelayCommand(_ => HexDisplay = !HexDisplay);
     }
 
     public async Task RefreshAsync()

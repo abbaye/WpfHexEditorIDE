@@ -8,7 +8,9 @@
 // ==========================================================
 
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.App.Debug.ViewModels;
@@ -27,9 +29,18 @@ public sealed class TasksPanelViewModel : ViewModelBase
 
     public ObservableCollection<TaskItem> Tasks { get; } = [];
 
+    public ICommand RefreshCommand { get; }
+    public ICommand CopyTaskCommand { get; }
+
     public TasksPanelViewModel(IDebuggerService debugger)
     {
-        _debugger = debugger;
+        _debugger       = debugger;
+        RefreshCommand  = new RelayCommand(_ => _ = RefreshAsync());
+        CopyTaskCommand = new RelayCommand(p =>
+        {
+            if (p is TaskItem t)
+                System.Windows.Clipboard.SetText($"{t.Id}\t{t.Name}\t{t.Status}\t{t.Type}");
+        });
     }
 
     public async Task RefreshAsync()

@@ -21,7 +21,7 @@
             <Button Content="&#xE721;" FontFamily="Segoe MDL2 Assets" ToolTip="Go"
                     Command="{Binding GoCommand}" Style="{DynamicResource ToolbarButtonStyle}"/>
             <Button Content="&#xE72C;" FontFamily="Segoe MDL2 Assets" ToolTip="Refresh"
-                    Click="OnRefreshClick" Style="{DynamicResource ToolbarButtonStyle}"/>
+                    Command="{Binding RefreshCommand}" Style="{DynamicResource ToolbarButtonStyle}"/>
         </ToolBar>
 
         <!-- Memory rows: Address | 16-byte hex | ASCII -->
@@ -32,6 +32,25 @@
                   FontSize="12"
                   BorderThickness="0"
                   VirtualizingPanel.IsVirtualizing="True">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy _Address"
+                              Command="{Binding PlacementTarget.DataContext.CopyAddressCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,          RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="Copy _Hex"
+                              Command="{Binding PlacementTarget.DataContext.CopyHexCommand,     RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,          RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="Copy A_SCII"
+                              Command="{Binding PlacementTarget.DataContext.CopyAsciiCommand,   RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,          RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="Copy _Row" InputGestureText="Ctrl+C"
+                              Command="{Binding PlacementTarget.DataContext.CopyRowCommand,     RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,          RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <Separator/>
+                    <MenuItem Header="Re_fresh" InputGestureText="F5"
+                              Command="{Binding PlacementTarget.DataContext.RefreshCommand,     RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Address" Width="110" DisplayMemberBinding="{Binding Address}"/>

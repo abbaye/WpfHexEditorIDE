@@ -43,9 +43,14 @@ public sealed class DisassemblyPanelViewModel : ViewModelBase
         set { _addressInput = value; OnPropertyChanged(); }
     }
 
-    public ICommand GoCommand      { get; }
-    public ICommand NextPageCommand { get; }
-    public ICommand PrevPageCommand { get; }
+    public ICommand GoCommand                { get; }
+    public ICommand NextPageCommand          { get; }
+    public ICommand PrevPageCommand          { get; }
+    public ICommand CopyAddressCommand       { get; }
+    public ICommand CopyLineCommand          { get; }
+    public ICommand RunToCursorCommand       { get; }
+    public ICommand SetNextStatementCommand  { get; }
+    public ICommand RefreshCommand           { get; }
 
     public DisassemblyPanelViewModel(IDebuggerService debugger)
     {
@@ -53,6 +58,28 @@ public sealed class DisassemblyPanelViewModel : ViewModelBase
         GoCommand       = new RelayCommand(_ => _ = GoToAddressAsync());
         NextPageCommand = new RelayCommand(_ => _ = PageAsync(+DefaultInstructionCount));
         PrevPageCommand = new RelayCommand(_ => _ = PageAsync(-DefaultInstructionCount));
+        RefreshCommand  = new RelayCommand(_ => _ = LoadAsync(_currentMemRef, 0, DefaultInstructionCount, _currentMemRef));
+
+        CopyAddressCommand = new RelayCommand(p =>
+        {
+            if (p is DisassemblyLine l && !string.IsNullOrEmpty(l.Address))
+                System.Windows.Clipboard.SetText(l.Address);
+        });
+        CopyLineCommand = new RelayCommand(p =>
+        {
+            if (p is DisassemblyLine l)
+                System.Windows.Clipboard.SetText($"{l.Address}\t{l.InstructionBytes}\t{l.Instruction}");
+        });
+        RunToCursorCommand = new RelayCommand(async p =>
+        {
+            if (p is DisassemblyLine l && !string.IsNullOrEmpty(l.SourceFile) && l.SourceLine > 0)
+                await _debugger.RunToCursorAsync(l.SourceFile, l.SourceLine);
+        });
+        SetNextStatementCommand = new RelayCommand(async p =>
+        {
+            if (p is DisassemblyLine l && !string.IsNullOrEmpty(l.SourceFile) && l.SourceLine > 0)
+                await _debugger.SetNextStatementAsync(l.SourceFile, l.SourceLine);
+        });
     }
 
     /// <summary>Refresh disassembly centered on current IP (call after each pause).</summary>

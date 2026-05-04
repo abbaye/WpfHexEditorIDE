@@ -8,7 +8,11 @@
 // ==========================================================
 
 using System.Collections.ObjectModel;
+using System.Windows.Input;
+using WpfHexEditor.Core.Events;
+using WpfHexEditor.Core.Events.IDEEvents;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.App.Debug.ViewModels;
@@ -16,12 +20,28 @@ namespace WpfHexEditor.App.Debug.ViewModels;
 public sealed class AutosPanelViewModel : ViewModelBase
 {
     private readonly IDebuggerService _debugger;
+    private readonly IIDEEventBus?    _events;
 
     public ObservableCollection<VariableNode> Variables { get; } = [];
 
-    public AutosPanelViewModel(IDebuggerService debugger)
+    public ICommand CopyValueCommand      { get; }
+    public ICommand CopyExpressionCommand { get; }
+    public ICommand AddToWatchCommand     { get; }
+    public ICommand EditValueCommand      { get; }
+
+    public AutosPanelViewModel(IDebuggerService debugger, IIDEEventBus? events = null)
     {
         _debugger = debugger;
+        _events   = events;
+
+        CopyValueCommand      = new RelayCommand(p => { if (p is VariableNode n && !string.IsNullOrEmpty(n.Value)) System.Windows.Clipboard.SetText(n.Value); });
+        CopyExpressionCommand = new RelayCommand(p => { if (p is VariableNode n && !string.IsNullOrEmpty(n.Name))  System.Windows.Clipboard.SetText(n.Name); });
+        EditValueCommand      = new RelayCommand(p => { if (p is VariableNode n) n.IsEditing = true; });
+        AddToWatchCommand     = new RelayCommand(p =>
+        {
+            if (p is VariableNode n && _events is not null)
+                _events.Publish(new AddWatchRequestedEvent { Expression = n.Name });
+        });
     }
 
     public void SetVariables(IReadOnlyList<DebugVariableInfo> vars, int scopeRef = 0)

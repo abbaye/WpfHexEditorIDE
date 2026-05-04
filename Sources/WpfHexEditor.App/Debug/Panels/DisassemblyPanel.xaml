@@ -32,6 +32,26 @@
                   FontSize="12"
                   BorderThickness="0"
                   VirtualizingPanel.IsVirtualizing="True">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="_Run to Cursor"        InputGestureText="Ctrl+F10"
+                              Command="{Binding PlacementTarget.DataContext.RunToCursorCommand,      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,               RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="Set _Next Statement"   InputGestureText="Ctrl+Shift+F10"
+                              Command="{Binding PlacementTarget.DataContext.SetNextStatementCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,               RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <Separator/>
+                    <MenuItem Header="Copy _Address"
+                              Command="{Binding PlacementTarget.DataContext.CopyAddressCommand,      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,               RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="_Copy Line"            InputGestureText="Ctrl+C"
+                              Command="{Binding PlacementTarget.DataContext.CopyLineCommand,         RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,               RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <Separator/>
+                    <MenuItem Header="Re_fresh"              InputGestureText="F5"
+                              Command="{Binding PlacementTarget.DataContext.RefreshCommand,          RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Address"  Width="120" DisplayMemberBinding="{Binding Address}"/>

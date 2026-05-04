@@ -134,3 +134,22 @@ public sealed record OpenTracepointDialogRequestedEvent : IDEEventBase
     public string FilePath { get; init; } = string.Empty;
     public int    Line     { get; init; }
 }
+
+/// <summary>
+/// Published by Locals/Autos/Variables panels when the user picks "Add to Watch".
+/// The Watches panel subscribes and appends the expression to its rows.
+/// </summary>
+public sealed record AddWatchRequestedEvent : IDEEventBase
+{
+    public string Expression { get; init; } = string.Empty;
+}
+
+/// <summary>
+/// Published by debugger panels when the user picks "Go to Source" / "Go to Disassembly"
+/// for a stack frame, thread, or task. The App layer opens the editor at file/line.
+/// </summary>
+public sealed record GoToSourceRequestedEvent : IDEEventBase
+{
+    public string FilePath { get; init; } = string.Empty;
+    public int    Line     { get; init; }
+}

@@ -3,19 +3,26 @@
 // File: Debug/DebugModule.cs
 // Description:
 //     Internal module that wires the Integrated Debugger into the IDE.
-//     Registers 17 debug panels, contributes Debug menu, exposes 5 terminal
-//     commands, and subscribes to IDE events to keep panels up-to-date.
+//     Owns 17 debug ViewModels and exposes their corresponding panels via
+//     GetPanel(contentId) for the lazy MainWindow.BuildContentForItem switch.
+//     Subscribes to IDE events (paused / output / open BP settings / …),
+//     registers terminal commands, and registers the built-in debug
+//     visualizers. The Debug menu items themselves live in
+//     MainWindow.DebugMenu.cs (DebugMenuOrganizer) — this module no longer
+//     touches IUIRegistry/RegisterPanel/RegisterMenuItem.
 //
 //     Replaces the former WpfHexEditor.Plugins.Debugger plugin (ADR-010).
-//     Hosted directly by MainWindow.PluginSystem after DebuggerServiceImpl
-//     is created and before the plugin loader runs.
 // Architecture:
-//     App layer — consumes IIDEHostContext like a plugin would, so the
-//     module remains portable if it is ever re-extracted into a plugin.
+//     App layer — consumes the SDK contract types it actually needs
+//     (IDebuggerService, IIDEEventBus, IDocumentHostService, …) but does
+//     NOT register UI elements through the SDK plugin path. The SDK is a
+//     communication contract for plugins; core modules dock their panels
+//     through MainWindow's BuildContentForItem like SolutionExplorer does.
 // ==========================================================
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,19 +34,33 @@ using WpfHexEditor.App.Debug.Commands;
 using WpfHexEditor.App.Debug.Dialogs;
 using WpfHexEditor.App.Debug.Panels;
 using WpfHexEditor.App.Debug.ViewModels;
-using WpfHexEditor.SDK.Commands;
-using WpfHexEditor.SDK.Contracts;
-using WpfHexEditor.SDK.Contracts.Services;
-using WpfHexEditor.SDK.Descriptors;
-using WpfHexEditor.SDK.Models;
 using WpfHexEditor.App.Debug.Properties;
 using WpfHexEditor.App.Debug.Visualizers;
+using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.App.Debug;
 
 internal sealed class DebugModule
 {
-    private const string ModuleId = "WpfHexEditor.App.Debug";
+    // ── Panel ContentIds (consumed by MainWindow.BuildContentForItem) ─────
+    public const string ContentIdBreakpoints     = "panel-dbg-breakpoints";
+    public const string ContentIdCallStack       = "panel-dbg-callstack";
+    public const string ContentIdLocals          = "panel-dbg-locals";
+    public const string ContentIdAutos           = "panel-dbg-autos";
+    public const string ContentIdExceptions      = "panel-dbg-exceptions";
+    public const string ContentIdImmediate       = "panel-dbg-immediate";
+    public const string ContentIdModules         = "panel-dbg-modules";
+    public const string ContentIdTasks           = "panel-dbg-tasks";
+    public const string ContentIdDisassembly     = "panel-dbg-disassembly";
+    public const string ContentIdMemory          = "panel-dbg-memory";
+    public const string ContentIdRegisters       = "panel-dbg-registers";
+    public const string ContentIdParallelWatch   = "panel-dbg-parallel-watch";
+    public const string ContentIdWatch           = "panel-dbg-watch";
+    public const string ContentIdConsole         = "panel-dbg-console";
+    public const string ContentIdThreads         = "panel-dbg-threads";
+    public const string ContentIdParallelStacks  = "panel-dbg-parallel-stacks";
+    public const string ContentIdLaunchConfig    = "panel-dbg-launch-config";
 
     private IIDEHostContext?  _context;
     private IDebuggerService? _debugger;
@@ -63,6 +84,34 @@ internal sealed class DebugModule
     private ThreadsPanelViewModel?           _threadsVm;
     private ParallelStacksPanelViewModel?    _parallelStacksVm;
 
+    // Lazy-built panels (instantiated on first GetPanel(contentId) call from
+    // MainWindow.BuildContentForItem — never up front).
+    private BreakpointExplorerPanel?     _bpPanel;
+    private CallStackPanel?              _csPanel;
+    private LocalsPanel?                 _locPanel;
+    private AutosPanel?                  _autosPanel;
+    private ExceptionSettingsPanel?      _exceptionPanel;
+    private ImmediateWindowPanel?        _immediatePanel;
+    private ModulesPanel?                _modulesPanel;
+    private TasksPanel?                  _tasksPanel;
+    private DisassemblyPanel?            _disassemblyPanel;
+    private MemoryWindowPanel?           _memoryPanel;
+    private RegistersPanel?              _registersPanel;
+    private ParallelWatchPanel?          _parallelWatchPanel;
+    private WatchesPanel?                _watchPanel;
+    private DebugConsolePanel?           _consolePanel;
+    private ThreadsPanel?                _threadsPanel;
+    private ParallelStacksPanel?         _parallelStacksPanel;
+    private LaunchConfigEditorPanel?     _launchConfigPanel;
+
+    public bool IsEnabled => _debugger is not null;
+
+    /// <summary>
+    /// Light-weight initialisation. Wires IDE event subscriptions, terminal
+    /// commands, and debug visualizers. Does NOT instantiate any panel —
+    /// panels are built lazily by GetPanel(contentId) when MainWindow's
+    /// docking layout asks for the corresponding ContentId.
+    /// </summary>
     public void Initialize(IIDEHostContext context)
     {
         _context  = context;
@@ -74,10 +123,12 @@ internal sealed class DebugModule
             return;
         }
 
+        // ViewModels are cheap (no XAML); allocate up-front so event handlers
+        // can push state into them even before any panel is materialised.
         _bpVm             = new BreakpointExplorerViewModel(_debugger, context);
         _csVm             = new CallStackPanelViewModel(_debugger, context);
-        _locVm            = new LocalsPanelViewModel(_debugger);
-        _autosVm          = new AutosPanelViewModel(_debugger);
+        _locVm            = new LocalsPanelViewModel(_debugger, context.IDEEvents);
+        _autosVm          = new AutosPanelViewModel(_debugger, context.IDEEvents);
         _exceptionVm      = new ExceptionSettingsPanelViewModel(_debugger);
         _immediateVm      = new ImmediateWindowViewModel(_debugger);
         _modulesVm        = new ModulesPanelViewModel(_debugger);
@@ -99,121 +150,73 @@ internal sealed class DebugModule
         _subs.Add(context.IDEEvents.Subscribe<OpenBreakpointSettingsRequestedEvent>(OnOpenBpSettings));
         _subs.Add(context.IDEEvents.Subscribe<AttachToProcessRequestedEvent>(OnAttachToProcessRequested));
         _subs.Add(context.IDEEvents.Subscribe<OpenTracepointDialogRequestedEvent>(OnOpenTracepointDialog));
+        _subs.Add(context.IDEEvents.Subscribe<AddWatchRequestedEvent>(e =>
+            Application.Current?.Dispatcher.Invoke(() => _watchVm?.AddWatch(e.Expression))));
+        _subs.Add(context.IDEEvents.Subscribe<GoToSourceRequestedEvent>(e =>
+            Application.Current?.Dispatcher.Invoke(() => context.DocumentHost.OpenDocument(e.FilePath))));
 
-        var ui = context.UIRegistry;
-
-        // Wrap the 17 sequential RegisterPanel calls so the docking adapter
-        // coalesces them into a single RebuildVisualTree at the end. Without
-        // this, every RegisterPanel rebuilds the entire dock tree (incl. open
-        // editors) — registering 17 panels in a row freezes the IDE for
-        // several seconds at startup. Mirrors the SuspendRebuild() the plugin
-        // host wraps around LoadAllAsync (MainWindow.PluginSystem:548).
-        ui.BeginBulkRegistration();
-        try
-        {
-
-        var bpPanel = new BreakpointExplorerPanel { DataContext = _bpVm };
-        bpPanel.UIFactory = context.UIFactory;
-        ui.RegisterPanel("panel-dbg-breakpoints", bpPanel, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_BreakpointsPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
-
-        ui.RegisterPanel("panel-dbg-callstack", new CallStackPanel { DataContext = _csVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_CallStackPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
-
-        ui.RegisterPanel("panel-dbg-locals", new LocalsPanel { DataContext = _locVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_LocalsPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
-
-        ui.RegisterPanel("panel-dbg-autos", new AutosPanel { DataContext = _autosVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_AutosPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
-
-        ui.RegisterPanel("panel-dbg-exceptions", new ExceptionSettingsPanel { DataContext = _exceptionVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_ExceptionsPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = true });
-
-        ui.RegisterPanel("panel-dbg-immediate", new ImmediateWindowPanel { DataContext = _immediateVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_ImmediatePanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
-
-        ui.RegisterPanel("panel-dbg-modules", new ModulesPanel { DataContext = _modulesVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_ModulesPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = true });
-
-        ui.RegisterPanel("panel-dbg-tasks", new TasksPanel { DataContext = _tasksVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_TasksPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = true });
-
-        ui.RegisterPanel("panel-dbg-disassembly", new DisassemblyPanel { DataContext = _disassemblyVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_DisassemblyPanelTitle, DefaultDockSide = "Center", DefaultAutoHide = true });
-
-        ui.RegisterPanel("panel-dbg-memory", new MemoryWindowPanel { DataContext = _memoryVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_MemoryPanelTitle, DefaultDockSide = "Center", DefaultAutoHide = true });
-
-        ui.RegisterPanel("panel-dbg-registers", new RegistersPanel { DataContext = _registersVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_RegistersPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = true });
-
-        ui.RegisterPanel("panel-dbg-parallel-watch", new ParallelWatchPanel { DataContext = _parallelWatchVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_ParallelWatchPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = true });
-
-        ui.RegisterPanel("panel-dbg-watch", new WatchesPanel { DataContext = _watchVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_WatchPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
-
-        var consolePanel = new DebugConsolePanel { DataContext = _consoleVm };
-        consolePanel.SetSessionManager(_sessionMgrVm);
-        ui.RegisterPanel("panel-dbg-console", consolePanel, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_ConsolePanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
-
-        ui.RegisterPanel("panel-dbg-threads", new ThreadsPanel { DataContext = _threadsVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_ThreadsPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
-
-        ui.RegisterPanel("panel-dbg-parallel-stacks", new ParallelStacksPanel { DataContext = _parallelStacksVm }, ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_ParallelStacksPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
-
-        ui.RegisterPanel("panel-dbg-launch-config",
-            new LaunchConfigEditorPanel(context.DocumentHost, _debugger), ModuleId,
-            new PanelDescriptor { Title = DebuggerResources.Debugger_LaunchConfigTitle, DefaultDockSide = "Bottom", DefaultAutoHide = true });
-
-        }
-        finally
-        {
-            ui.EndBulkRegistration();
-        }
-
-        ui.RegisterMenuItem($"{ModuleId}.Menu.Continue",   ModuleId, new MenuItemDescriptor { Header = DebuggerResources.Debugger_Menu_Continue, ParentPath = "Debug", GestureText = "F5",            Group = "Session",     IconGlyph = "", Command = new RelayCommand(_ => _ = _debugger?.ContinueAsync()) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.StepOver",   ModuleId, new MenuItemDescriptor { Header = DebuggerResources.Debugger_Menu_StepOver,  ParentPath = "Debug", GestureText = "F10",           Group = "Stepping",    IconGlyph = "", Command = new RelayCommand(_ => _ = _debugger?.StepOverAsync()) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.StepInto",   ModuleId, new MenuItemDescriptor { Header = DebuggerResources.Debugger_Menu_StepInto,  ParentPath = "Debug", GestureText = "F11",           Group = "Stepping",    IconGlyph = "", Command = new RelayCommand(_ => _ = _debugger?.StepIntoAsync()) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.StepOut",    ModuleId, new MenuItemDescriptor { Header = "Step Ou_t",              ParentPath = "Debug", GestureText = "Shift+F11",     Group = "Stepping",    IconGlyph = "", Command = new RelayCommand(_ => _ = _debugger?.StepOutAsync()) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.RunToCursor",      ModuleId, new MenuItemDescriptor { Header = "_Run to Cursor",          ParentPath = "Debug", GestureText = "Ctrl+F10",       Group = "Stepping",    IconGlyph = "", Command = new RelayCommand(_ => context.IDEEvents.Publish(new RunToCursorRequestedEvent())) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.SetNextStatement", ModuleId, new MenuItemDescriptor { Header = "Set _Next Statement",    ParentPath = "Debug", GestureText = "Ctrl+Shift+F10", Group = "Stepping",    IconGlyph = "", Command = new RelayCommand(_ => context.IDEEvents.Publish(new SetNextStatementRequestedEvent())) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ClearBps",       ModuleId, new MenuItemDescriptor { Header = "Delete _All Breakpoints", ParentPath = "Debug", GestureText = "Ctrl+Shift+F9", Group = "Breakpoints", IconGlyph = "", Command = new RelayCommand(_ => _ = _debugger?.ClearAllBreakpointsAsync()) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.AddTracepoint",  ModuleId, new MenuItemDescriptor { Header = "Add _Tracepoint…",  ParentPath = "Debug", Group = "Breakpoints", IconGlyph = "", Command = new RelayCommand(_ => context.IDEEvents.Publish(new AddTracepointRequestedEvent())) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.AttachProc", ModuleId, new MenuItemDescriptor { Header = "_Attach to Process…",    ParentPath = "Debug", GestureText = "Ctrl+Alt+P",    Group = "Session",     IconGlyph = "", Command = new RelayCommand(_ =>
-        {
-            if (_debugger is null) return;
-            var pid = AttachToProcessDialog.Show(Application.Current.MainWindow);
-            if (pid > 0) _ = _debugger.AttachAsync(pid);
-        }) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowBps",    ModuleId, new MenuItemDescriptor { Header = "Show _Breakpoints",      ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-breakpoints")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowCs",     ModuleId, new MenuItemDescriptor { Header = "Show _Call Stack",       ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-callstack")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowLocals", ModuleId, new MenuItemDescriptor { Header = "Show _Locals",           ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-locals")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowAutos",  ModuleId, new MenuItemDescriptor { Header = "Show _Autos",            ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-autos")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowWatch",      ModuleId, new MenuItemDescriptor { Header = "Show _Watch",                ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-watch")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowExceptions", ModuleId, new MenuItemDescriptor { Header = "Show _Exception Settings",   ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-exceptions")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowThreads", ModuleId, new MenuItemDescriptor { Header = "Show _Threads",          ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-threads")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowParallelStacks", ModuleId, new MenuItemDescriptor { Header = "Show _Parallel Stacks",  ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-parallel-stacks")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowImmediate",      ModuleId, new MenuItemDescriptor { Header = "Show I_mmediate Window", ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-immediate")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowModules", ModuleId, new MenuItemDescriptor { Header = "Show _Modules",     ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-modules")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowTasks",       ModuleId, new MenuItemDescriptor { Header = "Show _Tasks",       ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-tasks")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowDisassembly", ModuleId, new MenuItemDescriptor { Header = "Show Disasse_mbly", ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-disassembly")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowMemory",    ModuleId, new MenuItemDescriptor { Header = "Show _Memory",    ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-memory")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowRegisters", ModuleId, new MenuItemDescriptor { Header = "Show _Registers", ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-registers")) });
-        ui.RegisterMenuItem($"{ModuleId}.Menu.ShowParallelWatch", ModuleId, new MenuItemDescriptor { Header = "Show Parallel _Watch", ParentPath = "Debug", Group = "Panels", IconGlyph = "", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-parallel-watch")) });
-
+        // Built-in debug visualizers — registered on the SDK extensibility
+        // registry so plugins can also add visualizers.
         context.DebugVisualizers?.Register(new CollectionVisualizer());
         context.DebugVisualizers?.Register(new StringVisualizer());
         context.DebugVisualizers?.Register(new DateTimeVisualizer());
 
+        // Terminal commands (consumed by user via the integrated terminal).
         context.Terminal.RegisterCommand(new DebugBpListCommand(_debugger));
         context.Terminal.RegisterCommand(new DebugBpSetCommand(_debugger));
         context.Terminal.RegisterCommand(new DebugBpClearCommand(_debugger));
         context.Terminal.RegisterCommand(new DebugLocalsCommand(_debugger));
         context.Terminal.RegisterCommand(new DebugWatchCommand());
     }
+
+    /// <summary>
+    /// Returns the panel for a Debug ContentId, building it lazily on the
+    /// first call. Used by MainWindow.BuildContentForItem when the docking
+    /// layout asks for the panel's content. Returns null when called for an
+    /// unknown ContentId or when the module is disabled (no IDebuggerService).
+    /// </summary>
+    public UIElement? GetPanel(string contentId)
+    {
+        if (_debugger is null || _context is null) return null;
+
+        return contentId switch
+        {
+            ContentIdBreakpoints    => _bpPanel ??= BuildBreakpointsPanel(),
+            ContentIdCallStack      => _csPanel ??= new CallStackPanel { DataContext = _csVm },
+            ContentIdLocals         => _locPanel ??= new LocalsPanel { DataContext = _locVm },
+            ContentIdAutos          => _autosPanel ??= new AutosPanel { DataContext = _autosVm },
+            ContentIdExceptions     => _exceptionPanel ??= new ExceptionSettingsPanel { DataContext = _exceptionVm },
+            ContentIdImmediate      => _immediatePanel ??= new ImmediateWindowPanel { DataContext = _immediateVm },
+            ContentIdModules        => _modulesPanel ??= new ModulesPanel { DataContext = _modulesVm },
+            ContentIdTasks          => _tasksPanel ??= new TasksPanel { DataContext = _tasksVm },
+            ContentIdDisassembly    => _disassemblyPanel ??= new DisassemblyPanel { DataContext = _disassemblyVm },
+            ContentIdMemory         => _memoryPanel ??= new MemoryWindowPanel { DataContext = _memoryVm },
+            ContentIdRegisters      => _registersPanel ??= new RegistersPanel { DataContext = _registersVm },
+            ContentIdParallelWatch  => _parallelWatchPanel ??= new ParallelWatchPanel { DataContext = _parallelWatchVm },
+            ContentIdWatch          => _watchPanel ??= new WatchesPanel { DataContext = _watchVm },
+            ContentIdConsole        => _consolePanel ??= BuildConsolePanel(),
+            ContentIdThreads        => _threadsPanel ??= new ThreadsPanel { DataContext = _threadsVm },
+            ContentIdParallelStacks => _parallelStacksPanel ??= new ParallelStacksPanel { DataContext = _parallelStacksVm },
+            ContentIdLaunchConfig   => _launchConfigPanel ??= new LaunchConfigEditorPanel(_context.DocumentHost, _debugger),
+            _ => null
+        };
+    }
+
+    private BreakpointExplorerPanel BuildBreakpointsPanel()
+    {
+        var p = new BreakpointExplorerPanel { DataContext = _bpVm };
+        p.UIFactory = _context!.UIFactory;
+        return p;
+    }
+
+    private DebugConsolePanel BuildConsolePanel()
+    {
+        var p = new DebugConsolePanel { DataContext = _consoleVm };
+        p.SetSessionManager(_sessionMgrVm);
+        return p;
+    }
+
+    // ── IDE event handlers ────────────────────────────────────────────────
 
     private void OnPaused(DebugSessionPausedEvent e)
     {
@@ -291,7 +294,7 @@ internal sealed class DebugModule
     private void OnSessionStarted(DebugSessionStartedEvent e)
     {
         Application.Current?.Dispatcher.Invoke(() =>
-            _sessionMgrVm?.AddSession(e.SessionId, System.IO.Path.GetFileName(e.ProjectPath), "csharp"));
+            _sessionMgrVm?.AddSession(e.SessionId, Path.GetFileName(e.ProjectPath), "csharp"));
     }
 
     private void OnEnded(DebugSessionEndedEvent e)

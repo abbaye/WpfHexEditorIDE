@@ -46,13 +46,33 @@ public sealed class WatchesPanelViewModel : ViewModelBase
 {
     public ObservableCollection<WatchRow> Rows { get; } = [new WatchRow { Expression = "" }]; // trailing empty row
 
-    public ICommand AddCommand    { get; }
-    public ICommand RemoveCommand { get; }
+    public ICommand AddCommand     { get; }
+    public ICommand RemoveCommand  { get; }
+    public ICommand ClearCommand   { get; }
+    public ICommand CopyCommand    { get; }
 
     public WatchesPanelViewModel(IDebuggerService _)
     {
         AddCommand    = new RelayCommand(_ => Rows.Insert(Rows.Count - 1, new WatchRow { Expression = "" }));
         RemoveCommand = new RelayCommand(p => { if (p is WatchRow row) Rows.Remove(row); });
+        ClearCommand  = new RelayCommand(_ =>
+        {
+            Rows.Clear();
+            Rows.Add(new WatchRow { Expression = "" });
+        });
+        CopyCommand   = new RelayCommand(p =>
+        {
+            if (p is WatchRow row && !string.IsNullOrEmpty(row.Value))
+                System.Windows.Clipboard.SetText(row.Value);
+        });
+    }
+
+    /// <summary>Append a new watch expression (used by Add to Watch from Locals/Autos).</summary>
+    public void AddWatch(string expression)
+    {
+        if (string.IsNullOrWhiteSpace(expression)) return;
+        if (Rows.Any(r => r.Expression == expression)) return;
+        Rows.Insert(Rows.Count - 1, new WatchRow { Expression = expression });
     }
 
     public async Task RefreshAsync(IDebuggerService debugger)

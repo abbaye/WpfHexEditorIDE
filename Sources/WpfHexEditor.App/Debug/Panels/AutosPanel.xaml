@@ -7,61 +7,93 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     </UserControl.Resources>
 
-    <TreeView x:Name="VarTree"
-              ItemsSource="{Binding Variables}"
-              Background="{DynamicResource PanelBackground}"
-              Foreground="{DynamicResource PanelForeground}">
-        <TreeView.ItemTemplate>
-            <HierarchicalDataTemplate DataType="{x:Type vm:VariableNode}"
-                                      ItemsSource="{Binding Children}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="160" />
-                        <ColumnDefinition Width="200" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="SemiBold" />
+    <DockPanel Background="{DynamicResource PanelBackground}">
 
-                    <TextBlock Grid.Column="1" Text="{Binding Value}"
-                               MouseLeftButtonDown="OnValueClick">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="{DynamicResource PanelForeground}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsChanged}" Value="True">
-                                        <Setter Property="Foreground" Value="{DynamicResource DB_LocalChangedBrush}"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsEditing}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <TextBox Grid.Column="1"
-                             KeyDown="OnEditKeyDown"
-                             LostFocus="OnEditLostFocus"
-                             IsVisibleChanged="OnEditVisibleChanged"
-                             Background="{DynamicResource PanelBackground}"
-                             Foreground="{DynamicResource PanelForeground}"
-                             BorderThickness="0">
-                        <TextBox.Style>
-                            <Style TargetType="TextBox">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsEditing}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Setter Property="Text" Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
+        <ToolBar DockPanel.Dock="Top" Background="{DynamicResource ToolbarBackground}">
+            <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                       VerticalAlignment="Center" Margin="2,0,4,0"
+                       Foreground="{DynamicResource PanelForeground}"/>
+            <TextBox x:Name="SearchBox" Width="180"
+                     Background="{DynamicResource PanelBackground}"
+                     Foreground="{DynamicResource PanelForeground}"
+                     BorderBrush="{DynamicResource PopupBorder}"
+                     ToolTip="Filter variables by name"
+                     TextChanged="OnSearchTextChanged"/>
+        </ToolBar>
 
-                    <TextBlock Grid.Column="2" Text="{Binding Type}"
-                               Foreground="{DynamicResource PanelForeground}" Opacity="0.6" />
-                </Grid>
-            </HierarchicalDataTemplate>
-        </TreeView.ItemTemplate>
-    </TreeView>
+        <TreeView x:Name="VarTree"
+                  ItemsSource="{Binding Variables}"
+                  Background="{DynamicResource PanelBackground}"
+                  Foreground="{DynamicResource PanelForeground}">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type vm:VariableNode}"
+                                          ItemsSource="{Binding Children}">
+                    <Grid Tag="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=TreeView}}">
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="_Edit Value" InputGestureText="F2"
+                                          Command="{Binding PlacementTarget.Tag.EditValueCommand,    RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                          CommandParameter="{Binding}"/>
+                                <MenuItem Header="Add to _Watch"
+                                          Command="{Binding PlacementTarget.Tag.AddToWatchCommand,   RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                          CommandParameter="{Binding}"/>
+                                <Separator/>
+                                <MenuItem Header="Copy _Value" InputGestureText="Ctrl+C"
+                                          Command="{Binding PlacementTarget.Tag.CopyValueCommand,    RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                          CommandParameter="{Binding}"/>
+                                <MenuItem Header="Copy E_xpression"
+                                          Command="{Binding PlacementTarget.Tag.CopyExpressionCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                          CommandParameter="{Binding}"/>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160" />
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="SemiBold" />
+
+                        <TextBlock Grid.Column="1" Text="{Binding Value}"
+                                   MouseLeftButtonDown="OnValueClick">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{DynamicResource PanelForeground}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChanged}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource DB_LocalChangedBrush}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBox Grid.Column="1"
+                                 KeyDown="OnEditKeyDown"
+                                 LostFocus="OnEditLostFocus"
+                                 IsVisibleChanged="OnEditVisibleChanged"
+                                 Background="{DynamicResource PanelBackground}"
+                                 Foreground="{DynamicResource PanelForeground}"
+                                 BorderThickness="0">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="Text" Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+                        <TextBlock Grid.Column="2" Text="{Binding Type}"
+                                   Foreground="{DynamicResource PanelForeground}" Opacity="0.6" />
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+    </DockPanel>
 </UserControl>

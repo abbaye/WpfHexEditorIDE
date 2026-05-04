@@ -18,6 +18,19 @@
               Background="{DynamicResource PanelBackground}"
               Foreground="{DynamicResource PanelForeground}"
               VirtualizingPanel.IsVirtualizing="True">
+        <ListView.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="_Go to Source"  InputGestureText="Enter"
+                          Command="{Binding PlacementTarget.DataContext.GoToSourceCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                          CommandParameter="{Binding PlacementTarget.SelectedItem,         RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                <Separator/>
+                <MenuItem Header="_Copy Frame"    InputGestureText="Ctrl+C"
+                          Command="{Binding PlacementTarget.DataContext.CopyFrameCommand,  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                          CommandParameter="{Binding PlacementTarget.SelectedItem,         RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                <MenuItem Header="Copy Call _Stack"
+                          Command="{Binding PlacementTarget.DataContext.CopyAllCommand,    RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+            </ContextMenu>
+        </ListView.ContextMenu>
         <ListView.View>
             <GridView>
                 <GridViewColumn Header="#" Width="30">

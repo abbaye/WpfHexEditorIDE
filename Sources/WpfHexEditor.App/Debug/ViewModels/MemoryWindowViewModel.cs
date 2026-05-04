@@ -39,9 +39,14 @@ public sealed class MemoryWindowViewModel : ViewModelBase
         set { _addressInput = value; OnPropertyChanged(); }
     }
 
-    public ICommand GoCommand      { get; }
-    public ICommand NextPageCommand { get; }
-    public ICommand PrevPageCommand { get; }
+    public ICommand GoCommand          { get; }
+    public ICommand NextPageCommand    { get; }
+    public ICommand PrevPageCommand    { get; }
+    public ICommand RefreshCommand     { get; }
+    public ICommand CopyAddressCommand { get; }
+    public ICommand CopyHexCommand     { get; }
+    public ICommand CopyAsciiCommand   { get; }
+    public ICommand CopyRowCommand     { get; }
 
     public MemoryWindowViewModel(IDebuggerService debugger)
     {
@@ -49,6 +54,12 @@ public sealed class MemoryWindowViewModel : ViewModelBase
         GoCommand       = new RelayCommand(_ => _ = GoToAddressAsync());
         NextPageCommand = new RelayCommand(_ => _ = PageAsync(+DefaultRows * BytesPerRow));
         PrevPageCommand = new RelayCommand(_ => _ = PageAsync(-DefaultRows * BytesPerRow));
+        RefreshCommand  = new RelayCommand(_ => _ = RefreshAsync());
+
+        CopyAddressCommand = new RelayCommand(p => { if (p is MemoryRow r) System.Windows.Clipboard.SetText(r.Address); });
+        CopyHexCommand     = new RelayCommand(p => { if (p is MemoryRow r) System.Windows.Clipboard.SetText(r.Hex);     });
+        CopyAsciiCommand   = new RelayCommand(p => { if (p is MemoryRow r) System.Windows.Clipboard.SetText(r.Ascii);   });
+        CopyRowCommand     = new RelayCommand(p => { if (p is MemoryRow r) System.Windows.Clipboard.SetText($"{r.Address}  {r.Hex}  {r.Ascii}"); });
     }
 
     public async Task RefreshAsync(string? memRef = null)

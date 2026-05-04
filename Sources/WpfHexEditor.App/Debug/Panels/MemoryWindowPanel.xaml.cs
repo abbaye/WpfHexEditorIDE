@@ -23,7 +23,4 @@ public partial class MemoryWindowPanel : UserControl
         if (e.Key == Key.Enter)
             Vm?.GoCommand.Execute(null);
     }
-
-    private void OnRefreshClick(object sender, System.Windows.RoutedEventArgs e)
-        => _ = Vm?.RefreshAsync();
 }
