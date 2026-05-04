@@ -893,4 +893,14 @@
   <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Browse and manage built-in and user .whfmt format definitions</value></data>
   <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Open the Format Catalog document tab (all formats in a sortable grid)</value></data>
   <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyse entropy and byte distribution of the active file</value></data>
+  <data name="Debugger_RemoteConnect" xml:space="preserve"><value>Connetti al debugger remoto...</value></data>
+  <data name="Debugger_RemoteConnecting" xml:space="preserve"><value>Connessione al debugger remoto...</value></data>
+  <data name="Debugger_RemoteConnectFailed" xml:space="preserve"><value>Connessione all'adattatore di debug remoto non riuscita.</value></data>
+  <data name="Debugger_EditContinueApplied" xml:space="preserve"><value>Modifica e continua applicato.</value></data>
+  <data name="Debugger_HotReloadApplied" xml:space="preserve"><value>Hot Reload applicato.</value></data>
+  <data name="Debugger_HotReloadNotSupported" xml:space="preserve"><value>Hot Reload non supportato da questo runtime.</value></data>
+  <data name="Debugger_SymbolServerResolving" xml:space="preserve"><value>Risoluzione simboli...</value></data>
+  <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Risoluzione simboli completata.</value></data>
+  <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Punti di interruzione dati</value></data>
+  <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Aggiungi punto di interruzione dati</value></data>
 </root>

@@ -589,4 +589,14 @@
   <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Browse and manage built-in and user .whfmt format definitions</value></data>
   <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Open the Format Catalog document tab (all formats in a sortable grid)</value></data>
   <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyse entropy and byte distribution of the active file</value></data>
+  <data name="Debugger_RemoteConnect" xml:space="preserve"><value>Conectati-va la debuggerul de la distanta...</value></data>
+  <data name="Debugger_RemoteConnecting" xml:space="preserve"><value>Conectare...</value></data>
+  <data name="Debugger_RemoteConnectFailed" xml:space="preserve"><value>Conectarea la adaptorul de depanare la distanta a esuat.</value></data>
+  <data name="Debugger_EditContinueApplied" xml:space="preserve"><value>Editare si continuare aplicate.</value></data>
+  <data name="Debugger_HotReloadApplied" xml:space="preserve"><value>Reincarcare rapida aplicata.</value></data>
+  <data name="Debugger_HotReloadNotSupported" xml:space="preserve"><value>Reincarcarea rapida nu este acceptata de acest runtime.</value></data>
+  <data name="Debugger_SymbolServerResolving" xml:space="preserve"><value>Se rezolva simbolurile...</value></data>
+  <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Rezolvarea simbolurilor finalizata.</value></data>
+  <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Puncte de intrerupere a datelor</value></data>
+  <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Adaugati punct de intrerupere a datelor</value></data>
 </root>

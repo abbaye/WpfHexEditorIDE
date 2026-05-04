@@ -36,6 +36,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
     private readonly AppSettings             _settings;
     private readonly IDebugAdapterRegistry   _adapterRegistry;
     private readonly IDialogService          _dialogs;
+    private readonly SymbolServerClient      _symbolClient;
     private readonly object                  _lock = new();
 
     private IDapClient?      _client;
@@ -92,9 +93,11 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
     {
         _eventBus        = eventBus;
         _settings        = settings;
-        _adapterRegistry = adapterRegistry ?? new DebugAdapterRegistry();
-        _dialogs         = dialogs ?? new DialogServiceImpl();
-        _persistence     = new BreakpointPersistenceManager(settings);
+        _adapterRegistry  = adapterRegistry ?? new DebugAdapterRegistry();
+        _dialogs          = dialogs ?? new DialogServiceImpl();
+        _persistence      = new BreakpointPersistenceManager(settings);
+        _symbolClient     = new SymbolServerClient(
+            string.IsNullOrWhiteSpace(settings.Debugger.SymbolCachePath) ? null : settings.Debugger.SymbolCachePath);
         lock (_lock) { _breakpoints.AddRange(_persistence.Load()); }
         RegisterBuiltInAdapters();
     }
@@ -170,6 +173,78 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             await CleanupClientAsync();
             UpdateSession(DebugSession.Empty);
             _dialogs.Show($"Failed to start debug session:\n{ex.Message}", "Debugger",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    /// <summary>
+    /// Attach to a remote debug adapter over TCP or SSH tunnel.
+    /// </summary>
+    public async Task LaunchRemoteAsync(RemoteDebugConfig config, CancellationToken ct = default)
+    {
+        if (_session.IsActive) await StopSessionAsync();
+
+        lock (_lock)
+        {
+            for (int i = 0; i < _breakpoints.Count; i++)
+                _breakpoints[i] = _breakpoints[i] with { HitCount = 0 };
+        }
+
+        UpdateSession(_session with { State = DebugSessionState.Launching });
+
+        try
+        {
+            IDapClient client;
+
+            if (config.Transport == RemoteDebugTransport.Ssh)
+            {
+                var ssh = new SshTunnelDapClient();
+                await ssh.ConnectAsync(
+                    sshUser:          config.SshUser,
+                    sshHost:          config.Host,
+                    sshPort:          config.SshPort,
+                    remoteAdapterHost: config.RemoteAdapterHost,
+                    remoteAdapterPort: config.AdapterPort,
+                    localTunnelPort:  config.LocalTunnelPort,
+                    sshKeyPath:       config.SshKeyPath,
+                    ct:               ct);
+                client = ssh;
+            }
+            else
+            {
+                var tcp = new TcpDapClient();
+                await tcp.ConnectAsync(config.Host, config.AdapterPort, ct);
+                client = tcp;
+            }
+
+            _client = client;
+            WireClientEvents(_client);
+
+            await _client.InitializeAsync(new InitializeRequestArgs("WpfHexEditor"));
+            await SyncAllBreakpointsAsync(_client);
+            await _client.AttachAsync(new AttachRequestArgs(null));
+            await _client.ConfigurationDoneAsync();
+
+            var sessionId = Guid.NewGuid().ToString("N");
+            UpdateSession(new DebugSession
+            {
+                SessionId   = sessionId,
+                State       = DebugSessionState.Running,
+                ProjectPath = string.Empty,
+            });
+
+            _eventBus.Publish(new DebugSessionStartedEvent
+            {
+                SessionId   = sessionId,
+                ProjectPath = $"remote:{config.Host}:{config.AdapterPort}",
+                Source      = nameof(DebuggerServiceImpl)
+            });
+        }
+        catch (Exception ex)
+        {
+            await CleanupClientAsync();
+            UpdateSession(DebugSession.Empty);
+            _dialogs.Show($"Failed to connect to remote debug adapter:\n{ex.Message}", "Debugger",
                             MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -416,6 +491,72 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             memRef, Convert.ToBase64String(data), offset));
     }
 
+    // ── Edit & Continue / Hot Reload ──────────────────────────────────────────
+
+    public async Task RestartFrameAsync(int frameId, CancellationToken ct = default)
+    {
+        if (_client is null || !_session.IsPaused) return;
+        await _client.RestartFrameAsync(
+            new WpfHexEditor.Core.Debugger.Protocol.RestartFrameArgs(frameId), ct);
+    }
+
+    public Task ApplyHotReloadAsync(
+        Type[] updatedTypes, byte[] metadataDelta, byte[] ilDelta, byte[] pdbDelta,
+        CancellationToken ct = default)
+    {
+        // Uses .NET 6+ MetadataUpdater — silently skips if runtime does not support it.
+        if (!System.Reflection.Metadata.MetadataUpdater.IsSupported)
+            return Task.CompletedTask;
+        foreach (var type in updatedTypes)
+        {
+            try
+            {
+                var assembly = type.Assembly;
+                System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(
+                    assembly, metadataDelta, ilDelta, pdbDelta);
+            }
+            catch { /* delta may not apply cleanly; best effort */ }
+        }
+        return Task.CompletedTask;
+    }
+
+    // ── Data breakpoints ──────────────────────────────────────────────────────
+
+    private readonly List<SDK.Contracts.Services.DataBreakpointInfo> _dataBreakpoints = [];
+
+    public IReadOnlyList<SDK.Contracts.Services.DataBreakpointInfo> DataBreakpoints
+    {
+        get { lock (_lock) return _dataBreakpoints.ToList(); }
+    }
+
+    public async Task<SDK.Contracts.Services.DataBreakpointInfo?> GetDataBreakpointInfoAsync(
+        string name, int? variablesReference = null, CancellationToken ct = default)
+    {
+        if (_client is null) return null;
+        var body = await _client.DataBreakpointInfoAsync(
+            new WpfHexEditor.Core.Debugger.Protocol.DataBreakpointInfoArgs(name, variablesReference), ct);
+        if (body?.DataId is null) return null;
+        return new SDK.Contracts.Services.DataBreakpointInfo(body.DataId, body.Description);
+    }
+
+    public async Task SetDataBreakpointsAsync(
+        IReadOnlyList<SDK.Contracts.Services.DataBreakpointInfo> breakpoints,
+        CancellationToken ct = default)
+    {
+        lock (_lock)
+        {
+            _dataBreakpoints.Clear();
+            _dataBreakpoints.AddRange(breakpoints);
+        }
+        if (_client is null) return;
+        var dtos = breakpoints
+            .Select(b => new WpfHexEditor.Core.Debugger.Protocol.DataBreakpointDto(
+                b.DataId, b.AccessType, b.Condition, b.HitCondition))
+            .ToArray();
+        await _client.SetDataBreakpointsAsync(
+            new WpfHexEditor.Core.Debugger.Protocol.SetDataBreakpointsArgs(dtos), ct);
+    }
+
     private readonly HashSet<int> _frozenThreadIds = [];
 
     public async Task FreezeThreadAsync(int threadId)
@@ -453,6 +594,34 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             m.IsOptimized  ?? false,
             m.IsUserCode   ?? true
         )).ToList();
+    }
+
+    // ── Symbol server ──────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Try to resolve PDB symbols for every loaded module that has a known symbol path.
+    /// Downloads missing PDBs from the configured symbol server URLs and stores them in the cache.
+    /// No-op when symbol server support is disabled in settings.
+    /// </summary>
+    public async Task ResolveSymbolsAsync(CancellationToken ct = default)
+    {
+        if (!_settings.Debugger.SymbolServerEnabled) return;
+        if (_client is null) return;
+
+        var body = await _client.GetModulesAsync();
+        var servers = _settings.Debugger.SymbolServerUrls;
+
+        foreach (var module in body.Modules)
+        {
+            if (string.IsNullOrEmpty(module.Path)) continue;
+            var pdbName    = Path.GetFileNameWithoutExtension(module.Path) + ".pdb";
+            // Use module id as signature if no better key; adapters may expose GUID/age via symbolFilePath.
+            var signature  = module.SymbolFilePath is not null
+                ? Path.GetFileName(Path.GetDirectoryName(module.SymbolFilePath) ?? string.Empty)
+                : module.Id?.ToString() ?? "0";
+            if (string.IsNullOrEmpty(signature)) continue;
+            await _symbolClient.ResolveAsync(pdbName, signature, servers, ct);
+        }
     }
 
     // ── IDebuggerService — breakpoints ────────────────────────────────────────
@@ -908,5 +1077,6 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         await StopSessionAsync();
+        _symbolClient.Dispose();
     }
 }

@@ -306,6 +306,34 @@ public abstract class DapClientBase : IDapClient
         }
     }
 
+    public virtual async Task RestartFrameAsync(RestartFrameArgs args, CancellationToken ct = default)
+    {
+        try { await SendRequestAsync("restartFrame", args, ct); }
+        catch { /* adapter may not support restartFrame */ }
+    }
+
+    public virtual async Task<DataBreakpointInfoBody?> DataBreakpointInfoAsync(
+        DataBreakpointInfoArgs args, CancellationToken ct = default)
+    {
+        try
+        {
+            var resp = await SendRequestAsync("dataBreakpointInfo", args, ct);
+            return ParseBody<DataBreakpointInfoBody>(resp);
+        }
+        catch { return null; }
+    }
+
+    public virtual async Task<SetDataBreakpointsBody?> SetDataBreakpointsAsync(
+        SetDataBreakpointsArgs args, CancellationToken ct = default)
+    {
+        try
+        {
+            var resp = await SendRequestAsync("setDataBreakpoints", args, ct);
+            return ParseBody<SetDataBreakpointsBody>(resp);
+        }
+        catch { return null; }
+    }
+
     // ── Dispose ───────────────────────────────────────────────────────────────
 
     public virtual async ValueTask DisposeAsync()

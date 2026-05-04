@@ -549,4 +549,14 @@
   <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Procházet a spravovat vestavěné a uživatelské definice formátů .whfmt</value></data>
   <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Otevřít záložku Katalog formátů (všechny formáty v tříditelné mřížce)</value></data>
   <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyzovat entropii a distribuci bajtů aktivního souboru</value></data>
+  <data name="Debugger_RemoteConnect" xml:space="preserve"><value>Pripojit ke vzdalenemu ladicmu programu...</value></data>
+  <data name="Debugger_RemoteConnecting" xml:space="preserve"><value>Probiha pripojovani...</value></data>
+  <data name="Debugger_RemoteConnectFailed" xml:space="preserve"><value>Nepodarilo se pripojit ke vzdalenemu ladicmu adapteru.</value></data>
+  <data name="Debugger_EditContinueApplied" xml:space="preserve"><value>Upravit a pokracovat bylo pouzito.</value></data>
+  <data name="Debugger_HotReloadApplied" xml:space="preserve"><value>Opetne nacteni za behu bylo pouzito.</value></data>
+  <data name="Debugger_HotReloadNotSupported" xml:space="preserve"><value>Opetne nacteni za behu neni timto modulem runtime podporovano.</value></data>
+  <data name="Debugger_SymbolServerResolving" xml:space="preserve"><value>Probiha preklad symbolu...</value></data>
+  <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Preklad symbolu byl dokoncen.</value></data>
+  <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Datove zarazky</value></data>
+  <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Pridat datovou zarazku</value></data>
 </root>

@@ -96,6 +96,24 @@ public interface IDapClient : IAsyncDisposable
     /// <summary>Write raw memory bytes to the debuggee. No-op if not supported.</summary>
     Task WriteMemoryAsync(WriteMemoryArgs args, CancellationToken ct = default);
 
+    /// <summary>
+    /// Restart the execution of the given stack frame (Edit &amp; Continue).
+    /// No-op if the adapter does not support restartFrame.
+    /// </summary>
+    Task RestartFrameAsync(RestartFrameArgs args, CancellationToken ct = default);
+
+    /// <summary>
+    /// Get data breakpoint info for a variable (needed before calling SetDataBreakpointsAsync).
+    /// Returns null body if not supported.
+    /// </summary>
+    Task<DataBreakpointInfoBody?> DataBreakpointInfoAsync(DataBreakpointInfoArgs args, CancellationToken ct = default);
+
+    /// <summary>
+    /// Set the list of data breakpoints (memory watchpoints).
+    /// Returns null body if not supported.
+    /// </summary>
+    Task<SetDataBreakpointsBody?> SetDataBreakpointsAsync(SetDataBreakpointsArgs args, CancellationToken ct = default);
+
     // ── Inbound events ────────────────────────────────────────────────────────
 
     /// <summary>Raised when the adapter sends a "stopped" event (breakpoint/step/exception).</summary>

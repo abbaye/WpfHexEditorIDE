@@ -589,4 +589,14 @@
   <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Gennemse og administrér indbyggede og brugerdefinerede .whfmt-formatdefinitioner</value></data>
   <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Åbn Formatkatalog-dokumentfane (alle formater i et sorterbart gitter)</value></data>
   <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analysér entropi og bytedistribution for den aktive fil</value></data>
+  <data name="Debugger_RemoteConnect" xml:space="preserve"><value>Opret forbindelse til fjerndebugger...</value></data>
+  <data name="Debugger_RemoteConnecting" xml:space="preserve"><value>Opretter forbindelse...</value></data>
+  <data name="Debugger_RemoteConnectFailed" xml:space="preserve"><value>Kunne ikke oprette forbindelse til fjernfejlfindingsadapteren.</value></data>
+  <data name="Debugger_EditContinueApplied" xml:space="preserve"><value>Rediger og fortsaet er anvendt.</value></data>
+  <data name="Debugger_HotReloadApplied" xml:space="preserve"><value>Hot Reload er anvendt.</value></data>
+  <data name="Debugger_HotReloadNotSupported" xml:space="preserve"><value>Hot Reload understoettes ikke af denne runtime.</value></data>
+  <data name="Debugger_SymbolServerResolving" xml:space="preserve"><value>Loser symboler...</value></data>
+  <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symboloplosning fuldfort.</value></data>
+  <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Dataafbrudspunkter</value></data>
+  <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Tilfoej dataafbrudspunkt</value></data>
 </root>

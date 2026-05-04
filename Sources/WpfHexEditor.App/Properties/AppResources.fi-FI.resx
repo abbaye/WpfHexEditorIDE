@@ -589,4 +589,14 @@
   <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Browse and manage built-in and user .whfmt format definitions</value></data>
   <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Open the Format Catalog document tab (all formats in a sortable grid)</value></data>
   <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyse entropy and byte distribution of the active file</value></data>
+  <data name="Debugger_RemoteConnect" xml:space="preserve"><value>Yhdista etavirheenkorjaajaan...</value></data>
+  <data name="Debugger_RemoteConnecting" xml:space="preserve"><value>Yhdistetaan etavirheenkorjaajaan...</value></data>
+  <data name="Debugger_RemoteConnectFailed" xml:space="preserve"><value>Etavirheenkorjaussovittimeen yhdistaminen epaonnistui.</value></data>
+  <data name="Debugger_EditContinueApplied" xml:space="preserve"><value>Muokkaa ja jatka otettu kayttoon.</value></data>
+  <data name="Debugger_HotReloadApplied" xml:space="preserve"><value>Kuuma lataus otettu kayttoon.</value></data>
+  <data name="Debugger_HotReloadNotSupported" xml:space="preserve"><value>Tama ajonaikainen ymparisto ei tue kuumaa latausta.</value></data>
+  <data name="Debugger_SymbolServerResolving" xml:space="preserve"><value>Selvitetaan symboleja...</value></data>
+  <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbolien selvittaminen valmis.</value></data>
+  <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Datakatkaisupisteet</value></data>
+  <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Lisaa datakatkaisupiste</value></data>
 </root>

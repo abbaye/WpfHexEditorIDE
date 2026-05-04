@@ -315,3 +315,40 @@ public record ModuleDto(
     [property: JsonPropertyName("symbolFilePath")]  string? SymbolFilePath= null,
     [property: JsonPropertyName("addressRange")]    string? AddressRange  = null
 );
+
+// ── RestartFrame request ──────────────────────────────────────────────────────
+
+public record RestartFrameArgs(
+    [property: JsonPropertyName("frameId")] int FrameId
+);
+
+// ── Data breakpoints ──────────────────────────────────────────────────────────
+
+public enum DataBreakpointAccessType { Read, Write, ReadWrite }
+
+public record DataBreakpointInfoArgs(
+    [property: JsonPropertyName("name")]                string  Name,
+    [property: JsonPropertyName("variablesReference")]  int?    VariablesReference = null
+);
+
+public record DataBreakpointInfoBody(
+    [property: JsonPropertyName("dataId")]              string? DataId,
+    [property: JsonPropertyName("description")]         string  Description,
+    [property: JsonPropertyName("accessTypes")]         string[]? AccessTypes = null,
+    [property: JsonPropertyName("canPersist")]          bool?   CanPersist    = null
+);
+
+public record DataBreakpointDto(
+    [property: JsonPropertyName("dataId")]              string  DataId,
+    [property: JsonPropertyName("accessType")]          string? AccessType   = null,
+    [property: JsonPropertyName("condition")]           string? Condition    = null,
+    [property: JsonPropertyName("hitCondition")]        string? HitCondition = null
+);
+
+public record SetDataBreakpointsArgs(
+    [property: JsonPropertyName("breakpoints")] DataBreakpointDto[] Breakpoints
+);
+
+public record SetDataBreakpointsBody(
+    [property: JsonPropertyName("breakpoints")] BreakpointDto[] Breakpoints
+);

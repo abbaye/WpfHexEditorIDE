@@ -66,6 +66,17 @@ public sealed record ExceptionFilterInfo(
 );
 
 /// <summary>
+/// A data breakpoint (memory watchpoint) visible to plugins.
+/// </summary>
+public sealed record DataBreakpointInfo(
+    string  DataId,
+    string  Description,
+    string? AccessType   = null,
+    string? Condition    = null,
+    string? HitCondition = null
+);
+
+/// <summary>
 /// Variable snapshot visible to plugins.
 /// </summary>
 public sealed record DebugVariableInfo(
@@ -133,6 +144,15 @@ public interface IDebuggerService
 
     /// <summary>Launch a new debug session using the given configuration.</summary>
     Task LaunchAsync(WpfHexEditor.Core.Debugger.Models.DebugLaunchConfig config);
+
+    /// <summary>
+    /// Attach to a remote debug adapter over TCP or SSH tunnel.
+    /// Creates a <c>TcpDapClient</c> or <c>SshTunnelDapClient</c> per
+    /// <see cref="WpfHexEditor.Core.Debugger.Models.RemoteDebugConfig.Transport"/>
+    /// and runs the DAP initialize/attach handshake.
+    /// </summary>
+    Task LaunchRemoteAsync(WpfHexEditor.Core.Debugger.Models.RemoteDebugConfig config, CancellationToken ct = default)
+        => Task.CompletedTask;
 
     /// <summary>Stop the active debug session. No-op when idle.</summary>
     Task StopSessionAsync();
@@ -273,6 +293,51 @@ public interface IDebuggerService
     Task WriteMemoryAsync(string memRef, byte[] data, int offset = 0);
 
     // ── Adapter registry ───────────────────────────────────────────────────
+
+    // ── Symbol server ──────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Resolve PDB symbols for all loaded modules using the configured symbol servers.
+    /// No-op when symbol support is disabled in settings.
+    /// </summary>
+    Task ResolveSymbolsAsync(CancellationToken ct = default) => Task.CompletedTask;
+
+    // ── Edit & Continue / Hot Reload ───────────────────────────────────────────
+
+    /// <summary>
+    /// Restart the given stack frame from its beginning (Edit &amp; Continue).
+    /// Best-effort: no-op if the adapter does not support restartFrame.
+    /// </summary>
+    Task RestartFrameAsync(int frameId, CancellationToken ct = default) => Task.CompletedTask;
+
+    /// <summary>
+    /// Apply hot-reload delta metadata to the running process.
+    /// Uses <c>System.Reflection.Metadata.MetadataUpdater.ApplyUpdate</c>.
+    /// No-op if the runtime does not support hot reload.
+    /// </summary>
+    Task ApplyHotReloadAsync(Type[] updatedTypes, byte[] metadataDelta, byte[] ilDelta, byte[] pdbDelta, CancellationToken ct = default)
+        => Task.CompletedTask;
+
+    // ── Data breakpoints ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Get data breakpoint metadata for a variable by name/reference.
+    /// Returns null if not supported.
+    /// </summary>
+    Task<DataBreakpointInfo?> GetDataBreakpointInfoAsync(string name, int? variablesReference = null, CancellationToken ct = default)
+        => Task.FromResult<DataBreakpointInfo?>(null);
+
+    /// <summary>
+    /// Set the active data breakpoints (memory watchpoints).
+    /// Replaces the previous list. Pass empty list to clear all.
+    /// </summary>
+    Task SetDataBreakpointsAsync(IReadOnlyList<DataBreakpointInfo> breakpoints, CancellationToken ct = default)
+        => Task.CompletedTask;
+
+    /// <summary>Current data breakpoints (memory watchpoints).</summary>
+    IReadOnlyList<DataBreakpointInfo> DataBreakpoints => [];
+
+    // ── Adapter registry ───────────────────────────────────────────────────────
 
     /// <summary>
     /// Register a custom debug adapter factory for a language ID.
