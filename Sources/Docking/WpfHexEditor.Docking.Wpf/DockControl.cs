@@ -1318,10 +1318,11 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             CornerRadius        = new CornerRadius(r),
             IsHitTestVisible    = false,
             SnapsToDevicePixels = true,
+            UseLayoutRounding   = true,
         };
         overlayBorder.SetResourceReference(Border.BorderBrushProperty, "DockTabActiveBrush");
 
-        var outer = new Grid { Margin = new Thickness(2) };
+        var outer = new Grid { Margin = new Thickness(2), UseLayoutRounding = true };
         outer.Children.Add(grid);          // z=0
         outer.Children.Add(overlayBorder); // z=1
 
@@ -1334,6 +1335,11 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             const double gapH = 2.0;
             const double bt   = 1.0;
 
+            // Anti-vibration cache: only rebuild Clip when geometry actually changes.
+            // Sub-pixel oscillations during DPI rounding caused flicker on first render.
+            double lastW = -1, lastH = -1, lastGapX = -1, lastGapW = -1;
+            bool retryQueued = false;
+
             void UpdateOverlay()
             {
                 double tabH = tabStrip.ActualHeight;
@@ -1342,38 +1348,64 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
                 overlayBorder.Margin = new Thickness(0, tabH, 0, 0);
 
-                if (w <= 0 || h <= 0) { overlayBorder.Clip = null; return; }
-
-                // Overlay origin is at (0, tabH) in outer coords; clip rect is relative to overlay.
-                var contentArea = new RectangleGeometry(new Rect(0, 0, w, h));
-
-                int selIdx = host.SelectedIndex;
-                if (selIdx >= 0 &&
-                    host.ItemContainerGenerator.ContainerFromIndex(selIdx) is FrameworkElement activeTab)
+                // Outer not measured yet — keep previous clip; retry later.
+                if (w <= 0 || h <= 0)
                 {
-                    // Translate tab position to overlay coordinates (subtract tabH from Y).
-                    var pos   = activeTab.TranslatePoint(new Point(0, 0), outer);
-                    double gapX = Math.Max(0, pos.X);
-                    double gapW = activeTab.ActualWidth;
-                    if (gapW > 0)
+                    if (!retryQueued)
                     {
-                        double gX = gapX + bt;
-                        double gW = Math.Max(0, gapW - bt * 2);
-                        // Gap at y=0 (top of overlay = separator between tab strip and content).
-                        var gap = new RectangleGeometry(new Rect(gX, -gapH, gW, gapH * 2));
-                        overlayBorder.Clip = new CombinedGeometry(GeometryCombineMode.Exclude, contentArea, gap);
-                        return;
+                        retryQueued = true;
+                        outer.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                            new Action(() => { retryQueued = false; UpdateOverlay(); }));
                     }
+                    return;
                 }
 
-                overlayBorder.Clip = contentArea;
+                int selIdx = host.SelectedIndex;
+                FrameworkElement? activeTab = selIdx >= 0
+                    ? host.ItemContainerGenerator.ContainerFromIndex(selIdx) as FrameworkElement
+                    : null;
+
+                // Container not generated yet (startup race) — defer instead of falling
+                // back to a gapless clip that would freeze visible until the next layout pass.
+                if (activeTab is null || activeTab.ActualWidth <= 0)
+                {
+                    if (!retryQueued)
+                    {
+                        retryQueued = true;
+                        outer.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                            new Action(() => { retryQueued = false; UpdateOverlay(); }));
+                    }
+                    return;
+                }
+
+                // Translate tab position to overlay coordinates (subtract tabH from Y).
+                var pos     = activeTab.TranslatePoint(new Point(0, 0), outer);
+                double gapX = Math.Max(0, pos.X);
+                double gapW = activeTab.ActualWidth;
+
+                // Skip rebuild when nothing meaningful changed (>0.5 px = sub-pixel noise).
+                if (Math.Abs(w - lastW) < 0.5 && Math.Abs(h - lastH) < 0.5 &&
+                    Math.Abs(gapX - lastGapX) < 0.5 && Math.Abs(gapW - lastGapW) < 0.5)
+                    return;
+
+                lastW = w; lastH = h; lastGapX = gapX; lastGapW = gapW;
+
+                var contentArea = new RectangleGeometry(new Rect(0, 0, w, h));
+                double gX = gapX + bt;
+                double gW = Math.Max(0, gapW - bt * 2);
+                // Gap at y=0 (top of overlay = separator between tab strip and content).
+                var gap = new RectangleGeometry(new Rect(gX, -gapH, gW, gapH * 2));
+                overlayBorder.Clip = new CombinedGeometry(GeometryCombineMode.Exclude, contentArea, gap);
             }
 
             tabStrip.SizeChanged      += (_, _) => UpdateOverlay();
             outer.SizeChanged         += (_, _) => UpdateOverlay();
-            host.SelectionChanged     += (_, _) => UpdateOverlay();
+            host.SelectionChanged     += (_, _) => { lastGapX = -1; UpdateOverlay(); };
             host.LayoutUpdated        += (_, _) => UpdateOverlay();
-            UpdateOverlay();
+
+            // First pass on Loaded priority so ItemContainerGenerator has run.
+            outer.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                new Action(UpdateOverlay));
         };
 
         outer.AddHandler(
@@ -1486,10 +1518,11 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             CornerRadius        = new CornerRadius(r),
             IsHitTestVisible    = false,
             SnapsToDevicePixels = true,
+            UseLayoutRounding   = true,
         };
         overlayBorder.SetResourceReference(Border.BorderBrushProperty, "DockTabActiveBrush");
 
-        var outer = new Grid { Margin = new Thickness(2) };
+        var outer = new Grid { Margin = new Thickness(2), UseLayoutRounding = true };
         outer.Children.Add(layout);        // z=0
         outer.Children.Add(overlayBorder); // z=1
 
@@ -1504,6 +1537,9 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             const double gapH = 2.0;
             const double bt   = 1.0;
 
+            double lastW = -1, lastH = -1, lastGapX = -1, lastGapW = -1;
+            bool retryQueued = false;
+
             void UpdateOverlay()
             {
                 double tabH = tabStrip.ActualHeight;
@@ -1512,35 +1548,57 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
                 overlayBorder.Margin = new Thickness(0, 0, 0, tabH);
 
-                if (w <= 0 || h <= 0) { overlayBorder.Clip = null; return; }
-
-                var contentArea = new RectangleGeometry(new Rect(0, 0, w, h));
-
-                int selIdx = tabControl.SelectedIndex;
-                if (selIdx >= 0 &&
-                    tabControl.ItemContainerGenerator.ContainerFromIndex(selIdx) is FrameworkElement activeTab)
+                if (w <= 0 || h <= 0)
                 {
-                    var pos  = activeTab.TranslatePoint(new Point(0, 0), outer);
-                    double gapX = Math.Max(0, pos.X);
-                    double gapW = activeTab.ActualWidth;
-                    if (gapW > 0)
+                    if (!retryQueued)
                     {
-                        double gX = gapX + bt;
-                        double gW = Math.Max(0, gapW - bt * 2);
-                        var gap = new RectangleGeometry(new Rect(gX, h - gapH, gW, gapH * 2));
-                        overlayBorder.Clip = new CombinedGeometry(GeometryCombineMode.Exclude, contentArea, gap);
-                        return;
+                        retryQueued = true;
+                        outer.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                            new Action(() => { retryQueued = false; UpdateOverlay(); }));
                     }
+                    return;
                 }
 
-                overlayBorder.Clip = contentArea;
+                int selIdx = tabControl.SelectedIndex;
+                FrameworkElement? activeTab = selIdx >= 0
+                    ? tabControl.ItemContainerGenerator.ContainerFromIndex(selIdx) as FrameworkElement
+                    : null;
+
+                if (activeTab is null || activeTab.ActualWidth <= 0)
+                {
+                    if (!retryQueued)
+                    {
+                        retryQueued = true;
+                        outer.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                            new Action(() => { retryQueued = false; UpdateOverlay(); }));
+                    }
+                    return;
+                }
+
+                var pos     = activeTab.TranslatePoint(new Point(0, 0), outer);
+                double gapX = Math.Max(0, pos.X);
+                double gapW = activeTab.ActualWidth;
+
+                if (Math.Abs(w - lastW) < 0.5 && Math.Abs(h - lastH) < 0.5 &&
+                    Math.Abs(gapX - lastGapX) < 0.5 && Math.Abs(gapW - lastGapW) < 0.5)
+                    return;
+
+                lastW = w; lastH = h; lastGapX = gapX; lastGapW = gapW;
+
+                var contentArea = new RectangleGeometry(new Rect(0, 0, w, h));
+                double gX = gapX + bt;
+                double gW = Math.Max(0, gapW - bt * 2);
+                var gap = new RectangleGeometry(new Rect(gX, h - gapH, gW, gapH * 2));
+                overlayBorder.Clip = new CombinedGeometry(GeometryCombineMode.Exclude, contentArea, gap);
             }
 
             tabStrip.SizeChanged        += (_, _) => UpdateOverlay();
             outer.SizeChanged           += (_, _) => UpdateOverlay();
-            tabControl.SelectionChanged += (_, _) => UpdateOverlay();
+            tabControl.SelectionChanged += (_, _) => { lastGapX = -1; UpdateOverlay(); };
             tabControl.LayoutUpdated    += (_, _) => UpdateOverlay();
-            UpdateOverlay();
+
+            outer.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                new Action(UpdateOverlay));
         };
 
         outer.AddHandler(
