@@ -29,7 +29,7 @@
                     </GridViewColumn>
                     <GridViewColumn Header="Exception" Width="220"
                                     DisplayMemberBinding="{Binding Label}"/>
-                    <GridViewColumn Header="Condition" Width="*">
+                    <GridViewColumn Header="Condition" Width="400">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type vm:ExceptionFilterItem}">
                                 <TextBox Text="{Binding Condition, UpdateSourceTrigger=LostFocus}"
