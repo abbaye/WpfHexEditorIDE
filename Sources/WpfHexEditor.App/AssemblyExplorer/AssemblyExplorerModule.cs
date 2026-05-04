@@ -122,51 +122,62 @@ internal sealed class AssemblyExplorerModule
         var decompiler = new DecompilerService(_analysisEngine);
         var backend = await Task.Run(() => BuildDecompilerBackend(decompiler)).ConfigureAwait(true);
 
-        // Build + register the main panel, then yield so the pump can paint.
-        _panel = new AssemblyExplorerPanel(
-            _analysisEngine, backend, decompiler,
-            context.HexEditor, context.DocumentHost, context.Output,
-            context.EventBus, context.UIRegistry, ModuleId);
-        _panel.SetContext(context);
+        // Wrap the 3 RegisterPanel calls so the docking adapter coalesces three
+        // RebuildVisualTree() calls into a single one — registering panels one
+        // at a time would otherwise rebuild the entire dock tree (incl. open
+        // editors) three times in a row, causing a multi-second freeze on the
+        // UI thread. Mirrors the SuspendRebuild()/ResumeRebuild() dance the
+        // plugin host does around LoadAllAsync (MainWindow.PluginSystem:548).
+        context.UIRegistry.BeginBulkRegistration();
+        try
+        {
+            _panel = new AssemblyExplorerPanel(
+                _analysisEngine, backend, decompiler,
+                context.HexEditor, context.DocumentHost, context.Output,
+                context.EventBus, context.UIRegistry, ModuleId);
+            _panel.SetContext(context);
 
-        context.UIRegistry.RegisterPanel(
-            PanelUiId, _panel, ModuleId,
-            new PanelDescriptor
-            {
-                Title           = AssemblyExplorerResources.AsmExplorer_PanelTitle,
-                DefaultDockSide = "Left",
-                DefaultAutoHide = false,
-                CanClose        = true,
-                PreferredWidth  = 280
-            });
-        await dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+            context.UIRegistry.RegisterPanel(
+                PanelUiId, _panel, ModuleId,
+                new PanelDescriptor
+                {
+                    Title           = AssemblyExplorerResources.AsmExplorer_PanelTitle,
+                    DefaultDockSide = "Left",
+                    DefaultAutoHide = false,
+                    CanClose        = true,
+                    PreferredWidth  = 280
+                });
 
-        _searchPanel = new AssemblySearchPanel(_panel.ViewModel);
-        _searchPanel.SetContext(context);
-        context.UIRegistry.RegisterPanel(
-            SearchPanelUiId, _searchPanel, ModuleId,
-            new PanelDescriptor
-            {
-                Title           = AssemblyExplorerResources.AsmExplorer_SearchPanelTitle,
-                DefaultDockSide = "Bottom",
-                DefaultAutoHide = true,
-                CanClose        = true,
-                PreferredHeight = 200
-            });
-        await dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+            _searchPanel = new AssemblySearchPanel(_panel.ViewModel);
+            _searchPanel.SetContext(context);
+            context.UIRegistry.RegisterPanel(
+                SearchPanelUiId, _searchPanel, ModuleId,
+                new PanelDescriptor
+                {
+                    Title           = AssemblyExplorerResources.AsmExplorer_SearchPanelTitle,
+                    DefaultDockSide = "Bottom",
+                    DefaultAutoHide = true,
+                    CanClose        = true,
+                    PreferredHeight = 200
+                });
 
-        _diffPanel = new AssemblyDiffPanel(_panel.ViewModel);
-        _diffPanel.SetContext(context);
-        context.UIRegistry.RegisterPanel(
-            DiffPanelUiId, _diffPanel, ModuleId,
-            new PanelDescriptor
-            {
-                Title           = AssemblyExplorerResources.AsmExplorer_DiffPanelTitle,
-                DefaultDockSide = "Bottom",
-                DefaultAutoHide = true,
-                CanClose        = true,
-                PreferredHeight = 250
-            });
+            _diffPanel = new AssemblyDiffPanel(_panel.ViewModel);
+            _diffPanel.SetContext(context);
+            context.UIRegistry.RegisterPanel(
+                DiffPanelUiId, _diffPanel, ModuleId,
+                new PanelDescriptor
+                {
+                    Title           = AssemblyExplorerResources.AsmExplorer_DiffPanelTitle,
+                    DefaultDockSide = "Bottom",
+                    DefaultAutoHide = true,
+                    CanClose        = true,
+                    PreferredHeight = 250
+                });
+        }
+        finally
+        {
+            context.UIRegistry.EndBulkRegistration();
+        }
         await dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
 
         _panel.SetDiffPanel(_diffPanel, () => context.UIRegistry.ShowPanel(DiffPanelUiId));

@@ -102,6 +102,16 @@ internal sealed class DebugModule
 
         var ui = context.UIRegistry;
 
+        // Wrap the 17 sequential RegisterPanel calls so the docking adapter
+        // coalesces them into a single RebuildVisualTree at the end. Without
+        // this, every RegisterPanel rebuilds the entire dock tree (incl. open
+        // editors) — registering 17 panels in a row freezes the IDE for
+        // several seconds at startup. Mirrors the SuspendRebuild() the plugin
+        // host wraps around LoadAllAsync (MainWindow.PluginSystem:548).
+        ui.BeginBulkRegistration();
+        try
+        {
+
         var bpPanel = new BreakpointExplorerPanel { DataContext = _bpVm };
         bpPanel.UIFactory = context.UIFactory;
         ui.RegisterPanel("panel-dbg-breakpoints", bpPanel, ModuleId,
@@ -157,6 +167,12 @@ internal sealed class DebugModule
         ui.RegisterPanel("panel-dbg-launch-config",
             new LaunchConfigEditorPanel(context.DocumentHost, _debugger), ModuleId,
             new PanelDescriptor { Title = DebuggerResources.Debugger_LaunchConfigTitle, DefaultDockSide = "Bottom", DefaultAutoHide = true });
+
+        }
+        finally
+        {
+            ui.EndBulkRegistration();
+        }
 
         ui.RegisterMenuItem($"{ModuleId}.Menu.Continue",   ModuleId, new MenuItemDescriptor { Header = DebuggerResources.Debugger_Menu_Continue, ParentPath = "Debug", GestureText = "F5",            Group = "Session",     IconGlyph = "", Command = new RelayCommand(_ => _ = _debugger?.ContinueAsync()) });
         ui.RegisterMenuItem($"{ModuleId}.Menu.StepOver",   ModuleId, new MenuItemDescriptor { Header = DebuggerResources.Debugger_Menu_StepOver,  ParentPath = "Debug", GestureText = "F10",           Group = "Stepping",    IconGlyph = "", Command = new RelayCommand(_ => _ = _debugger?.StepOverAsync()) });

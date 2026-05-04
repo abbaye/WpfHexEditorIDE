@@ -90,6 +90,12 @@ public sealed class DockingAdapter : IDockingAdapter
     /// </summary>
     public void SuspendRebuild() => _rebuildSuspended = true;
 
+    /// <inheritdoc />
+    public void BeginBulkRegistration() => SuspendRebuild();
+
+    /// <inheritdoc />
+    public void EndBulkRegistration() => ResumeRebuild();
+
     /// <summary>
     /// Re-enables visual tree rebuilds and performs a single rebuild to apply all
     /// pending layout changes accumulated since <see cref="SuspendRebuild"/> was called.
