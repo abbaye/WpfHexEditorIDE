@@ -494,10 +494,10 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     // ── Phase 14/15: Text + paragraph formatting toolbar handlers ─────────────
 
-    private void OnBoldClicked(object sender, RoutedEventArgs e)          => ApplyFormat("bold");
-    private void OnItalicClicked(object sender, RoutedEventArgs e)        => ApplyFormat("italic");
-    private void OnUnderlineClicked(object sender, RoutedEventArgs e)     => ApplyFormat("underline");
-    private void OnStrikethroughClicked(object sender, RoutedEventArgs e) => ApplyFormat("strikethrough");
+    private void OnBoldClicked(object sender, RoutedEventArgs e)          => ApplyFormatToggle("bold",          sender);
+    private void OnItalicClicked(object sender, RoutedEventArgs e)        => ApplyFormatToggle("italic",        sender);
+    private void OnUnderlineClicked(object sender, RoutedEventArgs e)     => ApplyFormatToggle("underline",     sender);
+    private void OnStrikethroughClicked(object sender, RoutedEventArgs e) => ApplyFormatToggle("strikethrough", sender);
 
     // ── Wave F: Font family ───────────────────────────────────────────────────
 
@@ -677,6 +677,13 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     {
         if (IsReadOnly || _mutator is null) return;
         PART_TextPane.PART_Renderer.ApplyFormatToSelection(format, true);
+    }
+
+    private void ApplyFormatToggle(string attribute, object sender)
+    {
+        if (IsReadOnly || _mutator is null) return;
+        bool active = sender is System.Windows.Controls.Primitives.ToggleButton tb && tb.IsChecked == true;
+        PART_TextPane.PART_Renderer.ApplyFormatToSelection(attribute, active);
     }
 
     // ── View mode toolbar handlers ────────────────────────────────────────────

@@ -27,6 +27,7 @@ using WpfHexEditor.Editor.DocumentEditor.Core.Forensic;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 using WpfHexEditor.Editor.DocumentEditor.Rendering;
+using WpfHexEditor.Editor.DocumentEditor.Services;
 using WpfHexEditor.Editor.DocumentEditor.ViewModels;
 using RenderMode = WpfHexEditor.Editor.DocumentEditor.Core.Options.DocumentRenderMode;
 
@@ -118,9 +119,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private IReadOnlyList<DocumentSearchMatch>? _findResults;
     private int _findCursor;
 
-    // Phase 20 — image cache (capped LRU via insertion-order Dictionary, max 64 real bitmaps)
+    // Phase 20 — image cache: true LRU, capacity covers 64 real bitmaps + loading/error sentinels
     private const int ImageCacheMaxEntries = 64;
-    private Dictionary<string, BitmapImage?>? _imageCache;
+    private LruCache<string, BitmapImage?>? _imageCache;
 
     // ── Phase 12: Cursor + TextSelection ─────────────────────────────────────
 
@@ -803,7 +804,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// <summary>Renders an image block — uses cached BitmapImage or triggers async decode from ZIP or binary data.</summary>
     private void DrawImageBlock(DrawingContext dc, RenderBlock rb, double x, double y, double maxW)
     {
-        _imageCache ??= [];
+        _imageCache ??= new LruCache<string, BitmapImage?>(ImageCacheMaxEntries * 3);
 
         // ── Branch 1: ZIP entry (DOCX / ODT) ──────────────────────────────────
         var entryName = rb.Block.Attributes.TryGetValue("zipEntryName", out var ev) ? ev?.ToString() : null;
@@ -828,7 +829,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             var sentinelKey = cacheKey + "\0loading";
             if (!_imageCache.ContainsKey(sentinelKey))
             {
-                _imageCache[sentinelKey] = null;
+                _imageCache.Add(sentinelKey, null);
                 var captFilePath  = filePath;
                 var captEntryName = entryName;
                 var captKey       = cacheKey;
@@ -855,7 +856,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                         Dispatcher.InvokeAsync(() =>
                         {
                             if (_imageCache is null) return;
-                            _imageCache[captKey] = img;
+                            _imageCache.Add(captKey, img);
                             _imageCache.Remove(captKey + "\0loading");
                             InvalidateVisual();
                         });
@@ -866,7 +867,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                         {
                             if (_imageCache is null) return;
                             _imageCache.Remove(captKey + "\0loading");
-                            _imageCache[captKey + "\0error"] = null;
+                            _imageCache.Add(captKey + "\0error", null);
                             InvalidateVisual();
                         });
                     }
@@ -897,7 +898,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
             if (!_imageCache.ContainsKey(sentinelKey))
             {
-                _imageCache[sentinelKey] = null;
+                _imageCache.Add(sentinelKey, null);
                 var captBytes = binaryBytes;
                 var captKey   = cacheKey;
                 Task.Run(() =>
@@ -917,8 +918,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                         Dispatcher.InvokeAsync(() =>
                         {
                             if (_imageCache is null) return;
-                            EvictImageCacheIfNeeded();
-                            _imageCache[captKey] = img;
+                            _imageCache.Add(captKey, img);
                             _imageCache.Remove(captKey + "\0loading");
                             InvalidateVisual();
                         });
@@ -929,7 +929,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                         {
                             if (_imageCache is null) return;
                             _imageCache.Remove(captKey + "\0loading");
-                            _imageCache[captKey + "\0error"] = null;
+                            _imageCache.Add(captKey + "\0error", null);
                             InvalidateVisual();
                         });
                     }
@@ -1457,21 +1457,6 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _canvasBg = null;
     }
 
-    // Evict oldest real-bitmap entries when cache exceeds cap (sentinels excluded from count)
-    private void EvictImageCacheIfNeeded()
-    {
-        if (_imageCache is null) return;
-        var realKeys = _imageCache
-            .Where(kv => kv.Value is not null)
-            .Select(kv => kv.Key)
-            .ToList();
-        while (realKeys.Count >= ImageCacheMaxEntries)
-        {
-            _imageCache.Remove(realKeys[0]);
-            realKeys.RemoveAt(0);
-        }
-    }
-
     private void EnsureBrushCache()
     {
         if (_canvasBg is not null) return;
@@ -1681,7 +1666,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         CaptureMouse();
 
         _caretVisible = true;
-        _blinkTimer?.Start();
+        if (_blinkTimer is { IsEnabled: false }) _blinkTimer.Start();
         RefreshCaretVisual();
         InvalidateVisual();
         e.Handled = true;
@@ -1737,7 +1722,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private void OnGotFocus(object sender, RoutedEventArgs e)
     {
         _caretVisible = true;
-        _blinkTimer?.Start();
+        if (_blinkTimer is { IsEnabled: false }) _blinkTimer.Start();
         RefreshCaretVisual();
     }
 
@@ -2163,9 +2148,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         using var dc = _caretVisual.RenderOpen();
 
-        // Use timer-running as focus proxy: timer only runs while we have logical focus
         if (_caretBrush is null || !_caretVisible || !_selection.IsEmpty) return;
-        if (_blinkTimer is null || !_blinkTimer.IsEnabled) return;
         if (_caret.BlockIndex < 0 || _caret.BlockIndex >= _blocks.Count) return;
 
         EnsureBrushCache();
@@ -2488,30 +2471,36 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public void ApplyFormatToSelection(string attribute, object value)
     {
         if (_selection.IsEmpty || _mutator is null) return;
+
+        bool remove = value is false;
+
+        void Apply(DocumentBlock block, int from, int to)
+        {
+            if (remove) _mutator.RemoveRunAttribute(block, from, to, attribute);
+            else        _mutator.ApplyRunAttribute(block, from, to, attribute, value);
+        }
+
         var (start, end) = _selection.Ordered;
         if (start.BlockIndex == end.BlockIndex)
         {
-            _mutator.ApplyRunAttribute(
-                _blocks[start.BlockIndex].Block,
-                start.CharOffset, end.CharOffset, attribute, value);
+            Apply(_blocks[start.BlockIndex].Block, start.CharOffset, end.CharOffset);
         }
         else
         {
-            // Tail of first block
-            _mutator.ApplyRunAttribute(_blocks[start.BlockIndex].Block,
-                start.CharOffset, GetFlatText(start.BlockIndex).Length, attribute, value);
-            // Full middle blocks
+            Apply(_blocks[start.BlockIndex].Block,
+                  start.CharOffset, GetFlatText(start.BlockIndex).Length);
             for (int bi = start.BlockIndex + 1; bi < end.BlockIndex; bi++)
-                _mutator.ApplyRunAttribute(_blocks[bi].Block, 0, GetFlatText(bi).Length, attribute, value);
-            // Head of last block
-            _mutator.ApplyRunAttribute(_blocks[end.BlockIndex].Block,
-                0, end.CharOffset, attribute, value);
+                Apply(_blocks[bi].Block, 0, GetFlatText(bi).Length);
+            Apply(_blocks[end.BlockIndex].Block, 0, end.CharOffset);
         }
         InvalidateVisual();
         SelectionFormatChanged?.Invoke(this, EventArgs.Empty);
         // Reclaim keyboard focus so the caret keeps blinking after toolbar interactions
         Focus();
         Keyboard.Focus(this);
+        _caretVisible = true;
+        if (_blinkTimer is { IsEnabled: false }) _blinkTimer.Start();
+        RefreshCaretVisual();
     }
 
     /// <summary>Returns which formatting attributes are present on all selected runs.</summary>
