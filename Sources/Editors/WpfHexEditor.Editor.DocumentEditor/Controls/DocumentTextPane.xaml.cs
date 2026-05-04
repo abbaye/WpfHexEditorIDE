@@ -51,10 +51,12 @@ public partial class DocumentTextPane : UserControl
 
     // ── Public Properties ────────────────────────────────────────────────────
 
-    public DocumentBlock?          SelectedBlock  => PART_Renderer.SelectedBlock;
+    public DocumentBlock?          SelectedBlock    => PART_Renderer.SelectedBlock;
+    public int                     BlockCount       => PART_Renderer.BlockCount;
+    public int                     CaretBlockIndex  => PART_Renderer.CaretBlockIndex;
 
     /// <summary>Direct access to the renderer for PageSettings wiring.</summary>
-    public DocumentCanvasRenderer  Renderer       => PART_Renderer;
+    public DocumentCanvasRenderer  Renderer         => PART_Renderer;
 
     public DocumentPageSettings PageSettings
     {
@@ -70,9 +72,11 @@ public partial class DocumentTextPane : UserControl
         PART_Renderer.BindModel(model);
     }
 
-    public void ScrollToOffset(long offset) => PART_Renderer.ScrollToOffset(offset);
-
-    public void ScrollToBlock(DocumentBlock block) => PART_Renderer.ScrollToBlock(block);
+    public void ScrollToOffset(long offset)          => PART_Renderer.ScrollToOffset(offset);
+    public void ScrollToBlock(DocumentBlock block)   => PART_Renderer.ScrollToBlock(block);
+    public void IncreaseIndent()                     => PART_Renderer.IncreaseIndent();
+    public void DecreaseIndent()                     => PART_Renderer.DecreaseIndent();
+    public void NavigateToBlockIndex(int blockIndex) => PART_Renderer.NavigateToBlockIndex(blockIndex);
 
     public void SetForensicMode(bool enabled)
     {

@@ -52,8 +52,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private const double PageHeightPx   = 1122.0; // 297mm × (96 / 25.4)
     private const double PageGapPx      = 24.0;   // Dark canvas gap between page cards
 
-    private const string BodyFontFamily = "Georgia";
-    private const string UIFontFamily   = "Segoe UI";
+    private const string BodyFontFamily  = "Georgia";
+    private const string UIFontFamily    = "Segoe UI";
+    private const string IndentLevelKey  = "indentLevel";
 
     // ── Events ────────────────────────────────────────────────────────────────
 
@@ -700,7 +701,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         }
 
         // ── Indent level (Ctrl+]/[ sets "indentLevel" attribute) ─────────────
-        if (rb.Block.Attributes.TryGetValue("indentLevel", out var indentVal) && indentVal is int indentLv && indentLv > 0)
+        if (rb.Block.Attributes.TryGetValue(IndentLevelKey, out var indentVal) && indentVal is int indentLv && indentLv > 0)
         {
             double indentOffset = indentLv * 24.0;
             x    += indentOffset;
@@ -2608,13 +2609,20 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     }
 
     /// <summary>Increases the indent level of the caret block by 1 (max 8).</summary>
-    public void IncreaseIndent()
+    public void IncreaseIndent() => AdjustIndent(+1);
+
+    /// <summary>Decreases the indent level of the caret block by 1 (min 0).</summary>
+    public void DecreaseIndent() => AdjustIndent(-1);
+
+    private void AdjustIndent(int delta)
     {
         if (_mutator is null || _blocks.Count == 0) return;
         int bi    = _caret.BlockIndex >= 0 ? _caret.BlockIndex : (_selectedIndex >= 0 ? _selectedIndex : 0);
         var block = _blocks[bi].Block;
-        int cur   = block.Attributes.TryGetValue("indentLevel", out var v) && v is int iv ? iv : 0;
-        _mutator.SetBlockAttribute(block, "indentLevel", Math.Min(8, cur + 1));
+        int cur   = block.Attributes.TryGetValue(IndentLevelKey, out var v) && v is int iv ? iv : 0;
+        int next  = Math.Clamp(cur + delta, 0, 8);
+        if (next == cur) return;
+        _mutator.SetBlockAttribute(block, IndentLevelKey, next);
         MarkBlockDirty(bi);
         InvalidateVisual();
         Focus();
@@ -2632,21 +2640,6 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         CommitCaret(new TextCaret(bi, 0, 0), extend: false, vertical: false);
         _selectedIndex = bi;
         SelectedBlockChanged?.Invoke(this, _blocks[bi].Block);
-        Focus();
-        Keyboard.Focus(this);
-    }
-
-    /// <summary>Decreases the indent level of the caret block by 1 (min 0).</summary>
-    public void DecreaseIndent()
-    {
-        if (_mutator is null || _blocks.Count == 0) return;
-        int bi    = _caret.BlockIndex >= 0 ? _caret.BlockIndex : (_selectedIndex >= 0 ? _selectedIndex : 0);
-        var block = _blocks[bi].Block;
-        int cur   = block.Attributes.TryGetValue("indentLevel", out var v) && v is int iv ? iv : 0;
-        if (cur <= 0) return;
-        _mutator.SetBlockAttribute(block, "indentLevel", cur - 1);
-        MarkBlockDirty(bi);
-        InvalidateVisual();
         Focus();
         Keyboard.Focus(this);
     }

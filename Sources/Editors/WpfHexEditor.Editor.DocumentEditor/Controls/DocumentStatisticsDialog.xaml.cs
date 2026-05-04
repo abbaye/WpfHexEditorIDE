@@ -22,61 +22,42 @@ public partial class DocumentStatisticsDialog : Window
 
     private void PopulateStats(ObservableCollection<DocumentBlock> blocks)
     {
-        int wordCount       = 0;
-        int charCount       = 0;
-        int charNoSpace     = 0;
-        int lineCount       = 0;
+        int wordCount   = 0;
+        int charCount   = 0;
+        int charNoSpace = 0;
+        int lineCount   = 0;
 
         foreach (var block in blocks)
         {
-            var text = block.Text;
-            charCount   += text.Length;
-            charNoSpace += CountNonWhitespace(text);
-            wordCount   += CountWords(text);
-            lineCount   += CountLines(text);
+            var (w, cns, lc) = CountTextStats(block.Text);
+            charCount   += block.Text.Length;
+            charNoSpace += cns;
+            wordCount   += w;
+            lineCount   += lc;
         }
 
-        TxtWordCount.Text       = wordCount.ToString("N0");
-        TxtCharCount.Text       = charCount.ToString("N0");
+        TxtWordCount.Text        = wordCount.ToString("N0");
+        TxtCharCount.Text        = charCount.ToString("N0");
         TxtCharNoSpaceCount.Text = charNoSpace.ToString("N0");
-        TxtBlockCount.Text      = blocks.Count.ToString("N0");
-        TxtLineCount.Text       = lineCount.ToString("N0");
+        TxtBlockCount.Text       = blocks.Count.ToString("N0");
+        TxtLineCount.Text        = lineCount.ToString("N0");
     }
 
-    private static int CountWords(string text)
+    private static (int words, int charsNoSpace, int lines) CountTextStats(string text)
     {
+        int words = 0, charsNoSpace = 0, lines = text.Length > 0 ? 1 : 0;
         bool inWord = false;
-        int count   = 0;
         foreach (char c in text)
         {
-            if (char.IsWhiteSpace(c))
+            if (c == '\n') { lines++; inWord = false; }
+            if (char.IsWhiteSpace(c)) { inWord = false; }
+            else
             {
-                inWord = false;
-            }
-            else if (!inWord)
-            {
-                inWord = true;
-                count++;
+                charsNoSpace++;
+                if (!inWord) { inWord = true; words++; }
             }
         }
-        return count;
-    }
-
-    private static int CountNonWhitespace(string text)
-    {
-        int count = 0;
-        foreach (char c in text)
-            if (!char.IsWhiteSpace(c)) count++;
-        return count;
-    }
-
-    private static int CountLines(string text)
-    {
-        if (text.Length == 0) return 1;
-        int count = 1;
-        foreach (char c in text)
-            if (c == '\n') count++;
-        return count;
+        return (words, charsNoSpace, lines);
     }
 
     private void OnCloseClicked(object sender, RoutedEventArgs e) => Close();

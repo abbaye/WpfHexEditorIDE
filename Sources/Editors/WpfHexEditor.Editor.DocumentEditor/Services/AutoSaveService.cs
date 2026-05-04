@@ -25,7 +25,9 @@ internal sealed class AutoSaveService : IDisposable
     private readonly DispatcherTimer _timer;
     private readonly Func<DocumentModel?>  _getModel;
     private readonly Func<IDocumentSaver?> _getSaver;
+    private readonly string _autosaveDir = Path.Combine(Path.GetTempPath(), "WpfHexEditor", "autosave");
 
+    private bool _dirCreated;
     private bool _disposed;
 
     public AutoSaveService(
@@ -59,11 +61,10 @@ internal sealed class AutoSaveService : IDisposable
         var saver = _getSaver();
         if (saver is null || !saver.CanSave(model.FilePath)) return;
 
-        var dir  = Path.Combine(Path.GetTempPath(), "WpfHexEditor", "autosave");
-        Directory.CreateDirectory(dir);
+        if (!_dirCreated) { Directory.CreateDirectory(_autosaveDir); _dirCreated = true; }
 
-        var fileName   = Path.GetFileName(model.FilePath);
-        var autoSavePath = Path.Combine(dir, fileName + ".autosave");
+        var fileName     = Path.GetFileName(model.FilePath);
+        var autoSavePath = Path.Combine(_autosaveDir, fileName + ".autosave");
 
         try
         {

@@ -732,26 +732,25 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         if (e.Key == Key.F2) { ToggleBookmarkAtCaret(); e.Handled = true; }
         if (e.Key == Key.W && (Keyboard.Modifiers & ModifierKeys.Shift) != 0)
             { OpenStatisticsDialog(); e.Handled = true; }
-        if (e.Key == Key.OemCloseBrackets) { PART_TextPane.PART_Renderer.IncreaseIndent(); e.Handled = true; }
-        if (e.Key == Key.OemOpenBrackets)  { PART_TextPane.PART_Renderer.DecreaseIndent(); e.Handled = true; }
+        if (e.Key == Key.OemCloseBrackets) { PART_TextPane.IncreaseIndent(); e.Handled = true; }
+        if (e.Key == Key.OemOpenBrackets)  { PART_TextPane.DecreaseIndent(); e.Handled = true; }
 
-        // Block-to-block keyboard navigation
-        int blockCount = PART_TextPane.PART_Renderer.BlockCount;
+        int blockCount = PART_TextPane.BlockCount;
         if (blockCount > 0)
         {
             if (e.Key == Key.Home)
-                { PART_TextPane.PART_Renderer.NavigateToBlockIndex(0); e.Handled = true; }
+                { PART_TextPane.NavigateToBlockIndex(0); e.Handled = true; }
             if (e.Key == Key.End)
-                { PART_TextPane.PART_Renderer.NavigateToBlockIndex(blockCount - 1); e.Handled = true; }
+                { PART_TextPane.NavigateToBlockIndex(blockCount - 1); e.Handled = true; }
             if (e.Key == Key.Up)
             {
-                int cur = PART_TextPane.PART_Renderer.CaretBlockIndex;
-                if (cur > 0) { PART_TextPane.PART_Renderer.NavigateToBlockIndex(cur - 1); e.Handled = true; }
+                int cur = PART_TextPane.CaretBlockIndex;
+                if (cur > 0) { PART_TextPane.NavigateToBlockIndex(cur - 1); e.Handled = true; }
             }
             if (e.Key == Key.Down)
             {
-                int cur = PART_TextPane.PART_Renderer.CaretBlockIndex;
-                if (cur < blockCount - 1) { PART_TextPane.PART_Renderer.NavigateToBlockIndex(cur + 1); e.Handled = true; }
+                int cur = PART_TextPane.CaretBlockIndex;
+                if (cur < blockCount - 1) { PART_TextPane.NavigateToBlockIndex(cur + 1); e.Handled = true; }
             }
         }
     }
@@ -759,7 +758,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void ToggleBookmarkAtCaret()
     {
         if (_vm?.Model is null) return;
-        int bi = PART_TextPane.PART_Renderer.CaretBlockIndex;
+        int bi = PART_TextPane.CaretBlockIndex;
         if (bi < 0) return;
         _vm.Model.ToggleBookmark(bi);
     }
@@ -1081,7 +1080,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             () => _vm?.Model,
             () => _ideContext?.ExtensionRegistry
                       .GetExtensions<IDocumentSaver>()
-                      .FirstOrDefault(s => s.CanSave(model.FilePath)),
+                      .FirstOrDefault(s => s.CanSave(_vm?.Model?.FilePath ?? string.Empty)),
             intervalSeconds: 60);
         _autoSave.Start();
 

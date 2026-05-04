@@ -118,30 +118,16 @@ public sealed partial class DocumentEditorOptionsPage : UserControl, IOptionsPag
 
     // ── Control handlers ─────────────────────────────────────────────────────
 
-    private void OnCheckChanged(object sender, RoutedEventArgs e)
+    private void RaiseChanged()
     {
         if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
     }
 
-    private void OnComboChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void OnTextLostFocus(object sender, RoutedEventArgs e)
-    {
-        if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void OnColorCheckChanged(object sender, RoutedEventArgs e)
-    {
-        if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void OnColorPickerChanged(object sender, Color e)
-    {
-        if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
-    }
+    private void OnCheckChanged(object sender, RoutedEventArgs e)          => RaiseChanged();
+    private void OnComboChanged(object sender, SelectionChangedEventArgs e) => RaiseChanged();
+    private void OnTextLostFocus(object sender, RoutedEventArgs e)          => RaiseChanged();
+    private void OnColorCheckChanged(object sender, RoutedEventArgs e)      => RaiseChanged();
+    private void OnColorPickerChanged(object sender, Color e)               => RaiseChanged();
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
