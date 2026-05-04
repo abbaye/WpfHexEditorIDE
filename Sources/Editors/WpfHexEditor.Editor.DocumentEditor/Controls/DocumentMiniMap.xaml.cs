@@ -9,9 +9,12 @@
 // ==========================================================
 
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
+using WpfHexEditor.Editor.DocumentEditor.Properties;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -26,16 +29,80 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
     private double         _scrollExtent;    // total document canvas height
     private double         _viewportHeight;  // visible area height
 
+    // ── Context-menu state ────────────────────────────────────────────────────
+    private bool _renderBlocks = true;   // show block-type colored strips vs uniform dots
+    private bool _sliderAlways = true;   // viewport rect always visible vs mouse-over only
+
     /// <summary>Raised when the user clicks/drags to request a scroll offset (0–1 normalised).</summary>
     public event EventHandler<double>? ScrollRequested;
 
     public DocumentMiniMap()
     {
         InitializeComponent();
-        SizeChanged   += (_, _) => Redraw();
-        MouseDown     += OnMouseDown;
-        MouseMove     += OnMouseMove;
+        Loaded            += (_, _) => UpdateViewportRect();
+        SizeChanged       += (_, _) => { Redraw(); UpdateViewportRect(); };
+        MouseDown         += OnMouseDown;
+        MouseMove         += OnMouseMove;
+        MouseEnter        += (_, _) => { if (!_sliderAlways) PART_Viewport.Visibility = Visibility.Visible; };
+        MouseLeave        += (_, _) => { if (!_sliderAlways) PART_Viewport.Visibility = Visibility.Hidden; };
         MouseLeftButtonUp += (_, _) => ReleaseMouseCapture();
+        MouseRightButtonUp+= OnRightClick;
+        InitializeContextMenu();
+    }
+
+    // ── Context menu ─────────────────────────────────────────────────────────
+
+    private MenuItem? _miShow;
+    private MenuItem? _miBlocks;
+    private MenuItem? _miSliderAlways;
+    private MenuItem? _miSliderHover;
+
+    private void InitializeContextMenu()
+    {
+        var cm = new ContextMenu();
+
+        _miShow = new MenuItem { Header = DocumentEditorResources.DocMiniMap_ShowMiniMap, IsCheckable = true, IsChecked = true };
+        _miShow.Click += (_, _) => { Visibility = _miShow.IsChecked ? Visibility.Visible : Visibility.Collapsed; };
+
+        _miBlocks = new MenuItem { Header = DocumentEditorResources.DocMiniMap_RenderBlocks, IsCheckable = true, IsChecked = true };
+        _miBlocks.Click += (_, _) => { _renderBlocks = _miBlocks.IsChecked; Redraw(); };
+
+        _miSliderAlways = new MenuItem { Header = DocumentEditorResources.DocMiniMap_SliderAlways, IsCheckable = true, IsChecked = true };
+        _miSliderHover  = new MenuItem { Header = DocumentEditorResources.DocMiniMap_SliderMouseOver, IsCheckable = true };
+
+        _miSliderAlways.Click += (_, _) =>
+        {
+            _sliderAlways = true;
+            _miSliderAlways.IsChecked = true;
+            _miSliderHover!.IsChecked  = false;
+            UpdateViewportRect();
+        };
+        _miSliderHover.Click += (_, _) =>
+        {
+            _sliderAlways = false;
+            _miSliderHover.IsChecked  = true;
+            _miSliderAlways!.IsChecked = false;
+            PART_Viewport.Visibility = IsMouseOver ? Visibility.Visible : Visibility.Hidden;
+        };
+
+        cm.Items.Add(_miShow);
+        cm.Items.Add(new Separator());
+        cm.Items.Add(_miBlocks);
+        cm.Items.Add(new Separator());
+        cm.Items.Add(_miSliderAlways);
+        cm.Items.Add(_miSliderHover);
+
+        ContextMenu = cm;
+    }
+
+    private void OnRightClick(object sender, MouseButtonEventArgs e)
+    {
+        if (ContextMenu is not null)
+        {
+            ContextMenu.PlacementTarget = this;
+            ContextMenu.IsOpen = true;
+            e.Handled = true;
+        }
     }
 
     // ── Public API ───────────────────────────────────────────────────────────
@@ -126,13 +193,14 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
             return;
         }
 
-        double scale       = ActualHeight / _scrollExtent;
-        double top         = _scrollOffset   * scale;
-        double vpH         = Math.Max(4, _viewportHeight * scale);
+        double scale = ActualHeight / _scrollExtent;
+        double top   = _scrollOffset * scale;
+        double vpH   = Math.Max(4, _viewportHeight * scale);
 
         top = Math.Clamp(top, 0, ActualHeight - vpH);
 
-        PART_Viewport.Visibility = Visibility.Visible;
+        bool show = _sliderAlways || IsMouseOver;
+        PART_Viewport.Visibility = show ? Visibility.Visible : Visibility.Hidden;
         PART_Viewport.Margin     = new Thickness(0, top, 0, 0);
         PART_Viewport.Height     = vpH;
     }

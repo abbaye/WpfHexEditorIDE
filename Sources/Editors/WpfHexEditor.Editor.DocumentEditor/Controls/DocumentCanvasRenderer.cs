@@ -166,7 +166,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         MouseUp       += OnMouseUp;
         SizeChanged   += OnSizeChanged;
         GotFocus          += OnGotFocus;
-        LostFocus         += OnLostFocus;
+        LostKeyboardFocus += OnLostFocus;
         PreviewKeyDown    += OnPreviewKeyDown;
         PreviewTextInput  += OnPreviewTextInput;
 
@@ -1726,22 +1726,18 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         RefreshCaretVisual();
     }
 
-    private void OnLostFocus(object sender, RoutedEventArgs e)
+    private void OnLostFocus(object sender, KeyboardFocusChangedEventArgs e)
     {
-        // Keep blinking when focus moves to a toolbar button or any other element
-        // that is a descendant of our host UserControl (e.g. font dropdown, Bold button)
-        // or to a Popup (e.g. pop-toolbar).
-        var newFocus = Keyboard.FocusedElement as DependencyObject;
+        // Keep blinking while focus stays within the same top-level window
+        // (toolbar buttons, font dropdown, Bold/Italic toggles — all still "our" window).
+        // Only stop when focus genuinely leaves our window (another app, dialog, etc).
+        var newFocus = e.NewFocus as DependencyObject ?? Keyboard.FocusedElement as DependencyObject;
         if (newFocus is not null)
         {
-            var parent = newFocus;
-            while (parent is not null)
-            {
-                if (parent is System.Windows.Controls.Primitives.Popup) return;
-                // Stay live when focus moves to the host (toolbar lives there)
-                if (parent is DocumentEditorHost) return;
-                parent = VisualTreeHelper.GetParent(parent) ?? LogicalTreeHelper.GetParent(parent);
-            }
+            var thisWindow = Window.GetWindow(this);
+            var thatWindow = newFocus is Window w ? w : Window.GetWindow(newFocus);
+            if (thisWindow is not null && ReferenceEquals(thisWindow, thatWindow))
+                return; // Focus stayed inside our window — keep blink timer running
         }
 
         _blinkTimer?.Stop();
