@@ -222,12 +222,35 @@ internal sealed class AssemblyExplorerModule
             .Concat(opts.LastSessionAssemblyPath is not null ? [opts.LastSessionAssemblyPath] : [])
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .Where(File.Exists)
+            .Where(p => !IsHostAssembly(p))
             .ToList();
 
         if (paths.Count == 0 || _panel is null) return;
 
         var tasks = paths.Select(p => _panel.ViewModel.LoadAssemblyAsync(p)).ToArray();
         await Task.WhenAll(tasks);
+    }
+
+    // ADR-011 follow-up: never auto-analyse the IDE's own binaries on session
+    // restore. Loading WpfHexEditor.App.dll (or any sibling DLL in the host's
+    // bin folder) builds a tens-of-thousands-of-types tree synchronously on
+    // the UI thread, which freezes the IDE for several seconds at best and
+    // hangs it at worst. The user can still drag the DLL onto the panel
+    // explicitly if they really want to inspect it.
+    private static readonly string _hostBinDirectory =
+        AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+    private static bool IsHostAssembly(string path)
+    {
+        try
+        {
+            var full = Path.GetFullPath(path);
+            return full.StartsWith(_hostBinDirectory, StringComparison.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static void PersistCurrentSession(IReadOnlyList<string> filePaths)
@@ -251,6 +274,7 @@ internal sealed class AssemblyExplorerModule
         if (string.IsNullOrEmpty(evt.FilePath)) return;
         if (!ManagedExtensions.Contains(Path.GetExtension(evt.FilePath))) return;
         if (!AssemblyExplorerOptions.Instance.AutoAnalyzeOnFileOpen) return;
+        if (IsHostAssembly(evt.FilePath)) return;
         if (_panel?.ViewModel.IsAssemblyLoaded(evt.FilePath) ?? false) return;
         if (!(_analysisEngine?.HasManagedMetadata(evt.FilePath) ?? false)) return;
 
@@ -261,8 +285,8 @@ internal sealed class AssemblyExplorerModule
     {
         if (!AssemblyExplorerOptions.Instance.AutoAnalyzeOnFileOpen) return;
         var path = _context?.HexEditor.CurrentFilePath;
-        if (!string.IsNullOrEmpty(path)
-            && !(_panel?.ViewModel.IsAssemblyLoaded(path) ?? false)
+        if (string.IsNullOrEmpty(path) || IsHostAssembly(path)) return;
+        if (!(_panel?.ViewModel.IsAssemblyLoaded(path) ?? false)
             && (_analysisEngine?.HasManagedMetadata(path) ?? false))
             _ = _panel?.ViewModel.LoadAssemblyAsync(path);
     }
@@ -270,7 +294,7 @@ internal sealed class AssemblyExplorerModule
     private void OnActiveEditorChanged(object? sender, EventArgs e)
     {
         var path = _context?.HexEditor.CurrentFilePath;
-        if (string.IsNullOrEmpty(path) || _panel is null) return;
+        if (string.IsNullOrEmpty(path) || _panel is null || IsHostAssembly(path)) return;
         if (!_panel.ViewModel.IsAssemblyLoaded(path)
             && (_analysisEngine?.HasManagedMetadata(path) ?? false))
             _ = _panel.ViewModel.LoadAssemblyAsync(path);
