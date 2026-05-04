@@ -146,7 +146,7 @@ public interface IDebuggerService
     Task LaunchAsync(WpfHexEditor.Core.Debugger.Models.DebugLaunchConfig config);
 
     /// <summary>Attach to a running local process by PID.</summary>
-    Task AttachAsync(int pid) => Task.CompletedTask;
+    Task AttachAsync(int pid, CancellationToken ct = default) => Task.CompletedTask;
 
     /// <summary>
     /// Attach to a remote debug adapter over TCP or SSH tunnel.

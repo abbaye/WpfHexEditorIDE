@@ -207,27 +207,25 @@ internal sealed class DebugModule
             var frames = await _debugger.GetCallStackAsync();
             _csVm?.SetFrames(frames);
 
-            if (frames.Count > 0)
-            {
-                var locals = await _debugger.GetVariablesAsync(0);
-                _locVm?.SetVariables(locals);
-                _autosVm?.SetVariables(locals);
-                await _watchVm!.RefreshAsync(_debugger);
-            }
+            if (frames.Count == 0) return;
 
-            await _threadsVm!.RefreshAsync();
-            await _parallelStacksVm!.RefreshAsync();
-            await (_modulesVm?.RefreshAsync() ?? Task.CompletedTask);
-            await (_tasksVm?.RefreshAsync()   ?? Task.CompletedTask);
-            await (_registersVm?.RefreshAsync()     ?? Task.CompletedTask);
-            await (_parallelWatchVm?.RefreshAsync() ?? Task.CompletedTask);
+            var locals = await _debugger.GetVariablesAsync(0);
+            _locVm?.SetVariables(locals);
+            _autosVm?.SetVariables(locals);
 
-            if (_disassemblyVm is not null && frames.Count > 0)
-            {
-                var ipRef = frames[0].InstructionPointerReference;
-                if (!string.IsNullOrEmpty(ipRef))
-                    await _disassemblyVm.RefreshAtCurrentIPAsync(ipRef);
-            }
+            // Independent refreshes — fan out to minimize pause-to-UI latency.
+            await Task.WhenAll(
+                _watchVm!.RefreshAsync(_debugger),
+                _threadsVm!.RefreshAsync(),
+                _parallelStacksVm!.RefreshAsync(),
+                _modulesVm?.RefreshAsync()       ?? Task.CompletedTask,
+                _tasksVm?.RefreshAsync()         ?? Task.CompletedTask,
+                _registersVm?.RefreshAsync()     ?? Task.CompletedTask,
+                _parallelWatchVm?.RefreshAsync() ?? Task.CompletedTask);
+
+            var ipRef = frames[0].InstructionPointerReference;
+            if (_disassemblyVm is not null && !string.IsNullOrEmpty(ipRef))
+                await _disassemblyVm.RefreshAtCurrentIPAsync(ipRef);
         });
     }
 

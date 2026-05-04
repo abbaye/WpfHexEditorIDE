@@ -210,7 +210,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
     }
 
     /// <summary>Attach to a running .NET process by PID.</summary>
-    public async Task AttachAsync(int pid)
+    public async Task AttachAsync(int pid, CancellationToken ct = default)
     {
         if (_session.IsActive) await StopSessionAsync();
 
@@ -400,7 +400,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
                 if (temp is not null) _breakpoints.Remove(temp);
             }
             _ = SyncBreakpointsForFileAsync(client, filePath);
-            OnBreakpointsChanged();
+            BreakpointsChanged?.Invoke(this, EventArgs.Empty);
         }
         client.Stopped += OnNextStop;
     }
