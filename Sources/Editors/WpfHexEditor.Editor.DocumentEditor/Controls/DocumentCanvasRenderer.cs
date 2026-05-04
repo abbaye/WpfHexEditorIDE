@@ -120,7 +120,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     // Phase 19 — find results
     private IReadOnlyList<DocumentSearchMatch>? _findResults;
-    private int _findCursor;
+    private int                                 _findCursor;
+    private IReadOnlyList<int>                  _searchBlockIndicesCache = [];
 
     // Phase 20 — image cache: true LRU, capacity covers 64 real bitmaps + loading/error sentinels
     private const int ImageCacheMaxEntries = 64;
@@ -198,14 +199,11 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// <summary>0-based index of the block currently hosting the caret (-1 when no caret).</summary>
     public int CaretBlockIndex => _caret.BlockIndex;
 
-    /// <summary>Snapshot of blocks modified since the last <see cref="ClearDirtyBlocks"/> call.</summary>
-    public IReadOnlyList<int> DirtyBlockIndices => [.. _dirtyBlockIndices];
+    /// <summary>Block indices modified since the last <see cref="ClearDirtyBlocks"/> call.</summary>
+    public IReadOnlyCollection<int> DirtyBlockIndices => _dirtyBlockIndices;
 
-    /// <summary>Block indices that have at least one active search hit.</summary>
-    public IReadOnlyList<int> SearchBlockIndices =>
-        _findResults is null || _findResults.Count == 0
-            ? []
-            : _findResults.Select(r => r.BlockIndex).Distinct().ToList();
+    /// <summary>Block indices that have at least one active search hit (cached, updated in <see cref="SetFindResults"/>).</summary>
+    public IReadOnlyList<int> SearchBlockIndices => _searchBlockIndicesCache;
 
     /// <summary>Clears the dirty-block set (call after a successful save).</summary>
     public void ClearDirtyBlocks()
@@ -2666,17 +2664,20 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     // ── Phase 19: Find & Replace highlight support ────────────────────────────
 
+    /// <summary>Raised after find results change so the host can update scroll markers.</summary>
+    public event EventHandler? FindResultsChanged;
+
     /// <summary>
     /// Called by <see cref="DocumentSearchViewModel"/> to push find highlights to the renderer.
     /// Active cursor match renders at full opacity; others at 50%.
     /// </summary>
-    /// <summary>Raised after find results change so the host can update scroll markers.</summary>
-    public event EventHandler? FindResultsChanged;
-
     public void SetFindResults(IReadOnlyList<DocumentSearchMatch> results, int activeCursor)
     {
         _findResults = results;
         _findCursor  = activeCursor;
+        _searchBlockIndicesCache = results.Count == 0
+            ? []
+            : results.Select(r => r.BlockIndex).Distinct().ToList();
         InvalidateVisual();
         FindResultsChanged?.Invoke(this, EventArgs.Empty);
     }

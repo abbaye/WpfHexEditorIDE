@@ -98,3 +98,15 @@ public sealed record OpenBreakpointSettingsRequestedEvent : IDEEventBase
     public string FilePath { get; init; } = string.Empty;
     public int    Line     { get; init; }
 }
+
+/// <summary>
+/// Published by the Debugger plugin "Run to Cursor" menu item.
+/// The App layer subscribes and calls RunToCursorAsync with the active editor's caret line.
+/// </summary>
+public sealed record RunToCursorRequestedEvent : IDEEventBase;
+
+/// <summary>
+/// Published by the App layer "Attach to Process" keyboard shortcut (Ctrl+Alt+P).
+/// The Debugger plugin subscribes and opens AttachToProcessDialog.
+/// </summary>
+public sealed record AttachToProcessRequestedEvent : IDEEventBase;

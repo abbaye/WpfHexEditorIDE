@@ -13,6 +13,12 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
     <value>Variables locales</value>
   </data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Automático</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Configuración de excepciones</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve">
     <value>Inspección</value>
   </data>

@@ -8,6 +8,12 @@
   <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Breakpoints</value></data>
   <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Kaldstak</value></data>
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Lokale variabler</value></data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Automatisk</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Undtagelsesindstillinger</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Overvågning</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Fejlretningskonsol</value></data>
   <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Tråde</value></data>

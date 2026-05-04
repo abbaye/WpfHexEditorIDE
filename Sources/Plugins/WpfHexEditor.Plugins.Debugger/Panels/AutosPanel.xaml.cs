@@ -5,9 +5,9 @@ using WpfHexEditor.Plugins.Debugger.ViewModels;
 
 namespace WpfHexEditor.Plugins.Debugger.Panels;
 
-public partial class LocalsPanel : UserControl
+public partial class AutosPanel : UserControl
 {
-    public LocalsPanel() => InitializeComponent();
+    public AutosPanel() => InitializeComponent();
 
     private void OnValueClick(object sender, MouseButtonEventArgs e)
     {
@@ -32,7 +32,7 @@ public partial class LocalsPanel : UserControl
 
         if (e.Key == Key.Enter)
         {
-            var vm = DataContext as LocalsPanelViewModel;
+            var vm = DataContext as AutosPanelViewModel;
             _ = vm?.SetValueAsync(node, tb.Text);
             node.IsEditing = false;
             e.Handled = true;

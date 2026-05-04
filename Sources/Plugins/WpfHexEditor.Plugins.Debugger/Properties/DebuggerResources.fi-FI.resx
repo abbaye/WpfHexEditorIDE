@@ -8,6 +8,12 @@
   <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Katkaisukohdat</value></data>
   <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Kutsupino</value></data>
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Paikalliset muuttujat</value></data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Automaattinen</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Poikkeusasetukset</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Tarkkailu</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Virheenkorjauskonsoli</value></data>
   <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Säikeet</value></data>

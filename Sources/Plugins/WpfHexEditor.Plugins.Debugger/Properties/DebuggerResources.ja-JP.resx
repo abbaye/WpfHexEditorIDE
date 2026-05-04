@@ -13,6 +13,12 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
     <value>ローカル変数</value>
   </data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>例外設定</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve">
     <value>ウォッチ</value>
   </data>

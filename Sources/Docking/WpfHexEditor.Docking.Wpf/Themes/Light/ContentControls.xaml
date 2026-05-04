@@ -153,16 +153,16 @@
         <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
     </Style>
 
-    <!-- ═══ Themed ScrollBar (VS2026-style: expand + arrows on hover) ═══════════ -->
+    <!-- ═══ Themed ScrollBar (VS Code-style: thin track, expands + thumb widens on hover) ═══ -->
 
-    <!-- Thumb: rounded pill with hover/drag color feedback -->
+    <!-- Thumb: rounded pill — Margin controls thin/wide appearance via animation on parent -->
     <Style x:Key="DockScrollBarThumbStyle" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
-                    <Border x:Name="Bd" CornerRadius="5" Margin="2" Background="{DynamicResource ScrollBarThumbBrush}"/>
+                    <Border x:Name="Bd" CornerRadius="4" Background="{DynamicResource ScrollBarThumbBrush}"/>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ScrollBarThumbHoverBrush}"/>
@@ -190,22 +190,19 @@
         </Setter>
     </Style>
 
-    <!-- Arrow buttons: appear on hover, hidden at rest -->
+    <!-- Arrow buttons: shown at full size, glyph always visible -->
     <Style x:Key="DockScrollBarArrowButtonStyle" TargetType="{x:Type RepeatButton}">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Focusable" Value="False"/>
-        <Setter Property="Width"  Value="17"/>
-        <Setter Property="Height" Value="17"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RepeatButton}">
-                    <Border x:Name="Bg" Background="Transparent">
+                    <Border Background="Transparent">
                         <Path x:Name="Arrow"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
                               Fill="{DynamicResource ScrollBarThumbBrush}"
-                              Opacity="0"
                               Data="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"/>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -221,96 +218,86 @@
         </Setter>
     </Style>
 
-    <!-- Implicit ScrollBar style — applies to all ScrollBars in scope -->
+    <!-- Implicit ScrollBar style — VS Code style: thin track that expands on hover -->
     <Style TargetType="{x:Type ScrollBar}">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="Width"    Value="17"/>
-        <Setter Property="MinWidth" Value="17"/>
+        <Setter Property="SnapsToDevicePixels"   Value="True"/>
+        <Setter Property="Width"    Value="12"/>
+        <Setter Property="MinWidth" Value="12"/>
         <Setter Property="Template">
             <Setter.Value>
-                <!-- Vertical template: track 12→17px on hover, arrows slide in from 0→17px -->
+                <!-- Vertical: full height track, thumb margin shrinks on hover to look wider -->
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
-                    <Border SnapsToDevicePixels="True" Background="Transparent">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <RepeatButton x:Name="PART_LineUpButton"
-                                          Grid.Row="0"
-                                          Style="{StaticResource DockScrollBarArrowButtonStyle}"
-                                          Command="ScrollBar.LineUpCommand"
-                                          Tag="M 4,10 L 8.5,3 L 13,10 Z"
-                                          Height="0" MinHeight="0"/>
-                            <Border x:Name="TrackBorder"
-                                    Grid.Row="1"
-                                    Width="12"
-                                    HorizontalAlignment="Right"
-                                    Background="{DynamicResource ScrollBarBrush}">
-                                <Track x:Name="PART_Track" IsDirectionReversed="True">
-                                    <Track.DecreaseRepeatButton>
-                                        <RepeatButton Style="{StaticResource DockScrollBarPageButtonStyle}"
-                                                      Command="ScrollBar.PageUpCommand"/>
-                                    </Track.DecreaseRepeatButton>
-                                    <Track.IncreaseRepeatButton>
-                                        <RepeatButton Style="{StaticResource DockScrollBarPageButtonStyle}"
-                                                      Command="ScrollBar.PageDownCommand"/>
-                                    </Track.IncreaseRepeatButton>
-                                    <Track.Thumb>
-                                        <Thumb Style="{StaticResource DockScrollBarThumbStyle}"/>
-                                    </Track.Thumb>
-                                </Track>
-                            </Border>
-                            <RepeatButton x:Name="PART_LineDownButton"
-                                          Grid.Row="2"
-                                          Style="{StaticResource DockScrollBarArrowButtonStyle}"
-                                          Command="ScrollBar.LineDownCommand"
-                                          Tag="M 4,3 L 8.5,10 L 13,3 Z"
-                                          Height="0" MinHeight="0"/>
-                        </Grid>
-                    </Border>
+                    <Grid x:Name="Root" Width="12" SnapsToDevicePixels="True"
+                          Background="{DynamicResource ScrollBarBrush}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="0"/>
+                        </Grid.RowDefinitions>
+
+                        <RepeatButton x:Name="PART_LineUpButton"
+                                      Grid.Row="0"
+                                      Style="{StaticResource DockScrollBarArrowButtonStyle}"
+                                      Command="ScrollBar.LineUpCommand"
+                                      Tag="M 4,10 L 8.5,3 L 13,10 Z"
+                                      Focusable="False"/>
+
+                        <Track x:Name="PART_Track"
+                               Grid.Row="1"
+                               IsDirectionReversed="True">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Style="{StaticResource DockScrollBarPageButtonStyle}"
+                                              Command="ScrollBar.PageUpCommand"/>
+                            </Track.DecreaseRepeatButton>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Style="{StaticResource DockScrollBarPageButtonStyle}"
+                                              Command="ScrollBar.PageDownCommand"/>
+                            </Track.IncreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb x:Name="PART_Thumb"
+                                       Style="{StaticResource DockScrollBarThumbStyle}"
+                                       Margin="4,2"/>
+                            </Track.Thumb>
+                        </Track>
+
+                        <RepeatButton x:Name="PART_LineDownButton"
+                                      Grid.Row="2"
+                                      Style="{StaticResource DockScrollBarArrowButtonStyle}"
+                                      Command="ScrollBar.LineDownCommand"
+                                      Tag="M 4,3 L 8.5,10 L 13,3 Z"
+                                      Focusable="False"/>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <EventTrigger RoutedEvent="MouseEnter">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetName="TrackBorder"
+                                    <DoubleAnimation Storyboard.TargetName="Root"
                                                      Storyboard.TargetProperty="Width"
                                                      To="17" Duration="0:0:0.15">
                                         <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
                                     </DoubleAnimation>
-                                    <DoubleAnimation Storyboard.TargetName="PART_LineUpButton"
-                                                     Storyboard.TargetProperty="Height"
-                                                     To="17" Duration="0:0:0.15">
-                                        <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                    <DoubleAnimation Storyboard.TargetName="PART_LineDownButton"
-                                                     Storyboard.TargetProperty="Height"
-                                                     To="17" Duration="0:0:0.15">
-                                        <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
+                                    <ThicknessAnimation Storyboard.TargetName="PART_Thumb"
+                                                        Storyboard.TargetProperty="Margin"
+                                                        To="1,2" Duration="0:0:0.15">
+                                        <ThicknessAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></ThicknessAnimation.EasingFunction>
+                                    </ThicknessAnimation>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
                         <EventTrigger RoutedEvent="MouseLeave">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetName="TrackBorder"
+                                    <DoubleAnimation Storyboard.TargetName="Root"
                                                      Storyboard.TargetProperty="Width"
                                                      To="12" Duration="0:0:0.20">
                                         <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
                                     </DoubleAnimation>
-                                    <DoubleAnimation Storyboard.TargetName="PART_LineUpButton"
-                                                     Storyboard.TargetProperty="Height"
-                                                     To="0" Duration="0:0:0.20">
-                                        <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                    <DoubleAnimation Storyboard.TargetName="PART_LineDownButton"
-                                                     Storyboard.TargetProperty="Height"
-                                                     To="0" Duration="0:0:0.20">
-                                        <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
+                                    <ThicknessAnimation Storyboard.TargetName="PART_Thumb"
+                                                        Storyboard.TargetProperty="Margin"
+                                                        To="4,2" Duration="0:0:0.20">
+                                        <ThicknessAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></ThicknessAnimation.EasingFunction>
+                                    </ThicknessAnimation>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -321,85 +308,83 @@
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Horizontal">
                 <Setter Property="Width"     Value="Auto"/>
-                <Setter Property="Height"    Value="17"/>
                 <Setter Property="MinWidth"  Value="0"/>
-                <Setter Property="MinHeight" Value="17"/>
+                <Setter Property="Height"    Value="12"/>
+                <Setter Property="MinHeight" Value="12"/>
                 <Setter Property="Template">
                     <Setter.Value>
-                        <!-- Horizontal template: track 12→17px on hover, arrows fade in -->
+                        <!-- Horizontal: full width track, thumb margin shrinks vertically on hover -->
                         <ControlTemplate TargetType="{x:Type ScrollBar}">
-                            <Border SnapsToDevicePixels="True" Background="Transparent">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="17"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="17"/>
-                                    </Grid.ColumnDefinitions>
-                                    <RepeatButton x:Name="PART_LineLeftButton"
-                                                  Grid.Column="0"
-                                                  Style="{StaticResource DockScrollBarArrowButtonStyle}"
-                                                  Command="ScrollBar.LineLeftCommand"
-                                                  Tag="M 10,4 L 3,8.5 L 10,13 Z"
-                                                  Opacity="0"/>
-                                    <Border x:Name="TrackBorder"
-                                            Grid.Column="1"
-                                            Height="12"
-                                            VerticalAlignment="Bottom"
-                                            Background="{DynamicResource ScrollBarBrush}">
-                                        <Track x:Name="PART_Track" IsDirectionReversed="False">
-                                            <Track.DecreaseRepeatButton>
-                                                <RepeatButton Style="{StaticResource DockScrollBarPageButtonStyle}"
-                                                              Command="ScrollBar.PageLeftCommand"/>
-                                            </Track.DecreaseRepeatButton>
-                                            <Track.IncreaseRepeatButton>
-                                                <RepeatButton Style="{StaticResource DockScrollBarPageButtonStyle}"
-                                                              Command="ScrollBar.PageRightCommand"/>
-                                            </Track.IncreaseRepeatButton>
-                                            <Track.Thumb>
-                                                <Thumb Style="{StaticResource DockScrollBarThumbStyle}"/>
-                                            </Track.Thumb>
-                                        </Track>
-                                    </Border>
-                                    <RepeatButton x:Name="PART_LineRightButton"
-                                                  Grid.Column="2"
-                                                  Style="{StaticResource DockScrollBarArrowButtonStyle}"
-                                                  Command="ScrollBar.LineRightCommand"
-                                                  Tag="M 3,4 L 10,8.5 L 3,13 Z"
-                                                  Opacity="0"/>
-                                </Grid>
-                            </Border>
+                            <Grid x:Name="Root" Height="12" SnapsToDevicePixels="True"
+                                  Background="{DynamicResource ScrollBarBrush}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="0"/>
+                                </Grid.ColumnDefinitions>
+
+                                <RepeatButton x:Name="PART_LineLeftButton"
+                                              Grid.Column="0"
+                                              Style="{StaticResource DockScrollBarArrowButtonStyle}"
+                                              Command="ScrollBar.LineLeftCommand"
+                                              Tag="M 10,4 L 3,8.5 L 10,13 Z"
+                                              Focusable="False"/>
+
+                                <Track x:Name="PART_Track"
+                                       Grid.Column="1"
+                                       IsDirectionReversed="False">
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton Style="{StaticResource DockScrollBarPageButtonStyle}"
+                                                      Command="ScrollBar.PageLeftCommand"/>
+                                    </Track.DecreaseRepeatButton>
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton Style="{StaticResource DockScrollBarPageButtonStyle}"
+                                                      Command="ScrollBar.PageRightCommand"/>
+                                    </Track.IncreaseRepeatButton>
+                                    <Track.Thumb>
+                                        <Thumb x:Name="PART_Thumb"
+                                               Style="{StaticResource DockScrollBarThumbStyle}"
+                                               Margin="2,4"/>
+                                    </Track.Thumb>
+                                </Track>
+
+                                <RepeatButton x:Name="PART_LineRightButton"
+                                              Grid.Column="2"
+                                              Style="{StaticResource DockScrollBarArrowButtonStyle}"
+                                              Command="ScrollBar.LineRightCommand"
+                                              Tag="M 3,4 L 10,8.5 L 3,13 Z"
+                                              Focusable="False"/>
+                            </Grid>
                             <ControlTemplate.Triggers>
                                 <EventTrigger RoutedEvent="MouseEnter">
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="TrackBorder"
+                                            <DoubleAnimation Storyboard.TargetName="Root"
                                                              Storyboard.TargetProperty="Height"
                                                              To="17" Duration="0:0:0.15">
                                                 <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetName="PART_LineLeftButton"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="1" Duration="0:0:0.15"/>
-                                            <DoubleAnimation Storyboard.TargetName="PART_LineRightButton"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="1" Duration="0:0:0.15"/>
+                                            <ThicknessAnimation Storyboard.TargetName="PART_Thumb"
+                                                                Storyboard.TargetProperty="Margin"
+                                                                To="2,1" Duration="0:0:0.15">
+                                                <ThicknessAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></ThicknessAnimation.EasingFunction>
+                                            </ThicknessAnimation>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
                                 <EventTrigger RoutedEvent="MouseLeave">
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="TrackBorder"
+                                            <DoubleAnimation Storyboard.TargetName="Root"
                                                              Storyboard.TargetProperty="Height"
                                                              To="12" Duration="0:0:0.20">
                                                 <DoubleAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetName="PART_LineLeftButton"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0" Duration="0:0:0.20"/>
-                                            <DoubleAnimation Storyboard.TargetName="PART_LineRightButton"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0" Duration="0:0:0.20"/>
+                                            <ThicknessAnimation Storyboard.TargetName="PART_Thumb"
+                                                                Storyboard.TargetProperty="Margin"
+                                                                To="2,4" Duration="0:0:0.20">
+                                                <ThicknessAnimation.EasingFunction><QuinticEase EasingMode="EaseOut"/></ThicknessAnimation.EasingFunction>
+                                            </ThicknessAnimation>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>

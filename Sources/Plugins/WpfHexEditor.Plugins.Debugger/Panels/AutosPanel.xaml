@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.LocalsPanel"
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.AutosPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Debugger.ViewModels">
@@ -22,7 +22,6 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="SemiBold" />
 
-                    <!-- Value cell: TextBlock shown normally, TextBox on edit -->
                     <TextBlock Grid.Column="1" Text="{Binding Value}"
                                Foreground="{DynamicResource DB_LocalChangedBrush}"
                                MouseLeftButtonDown="OnValueClick">
@@ -37,8 +36,6 @@
                         </TextBlock.Style>
                     </TextBlock>
                     <TextBox Grid.Column="1"
-                             x:Name="EditBox"
-                             Tag="{Binding}"
                              KeyDown="OnEditKeyDown"
                              LostFocus="OnEditLostFocus"
                              IsVisibleChanged="OnEditVisibleChanged"

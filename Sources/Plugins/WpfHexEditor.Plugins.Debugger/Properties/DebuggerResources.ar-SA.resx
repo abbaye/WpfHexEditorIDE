@@ -13,6 +13,12 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
     <value>المتغيرات المحلية</value>
   </data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>تلقائي</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>إعدادات الاستثناءات</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve">
     <value>المراقبة</value>
   </data>

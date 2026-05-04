@@ -629,4 +629,19 @@
     <value>Intense Quote</value>
   </data>
 
+  <data name="DocMiniMap_MenuTitle" xml:space="preserve">
+    <value>MiniMap</value>
+  </data>
+  <data name="DocMiniMap_ShowMiniMap" xml:space="preserve">
+    <value>Show MiniMap</value>
+  </data>
+  <data name="DocMiniMap_RenderBlocks" xml:space="preserve">
+    <value>Render as Blocks</value>
+  </data>
+  <data name="DocMiniMap_SliderAlways" xml:space="preserve">
+    <value>Always Show Viewport Slider</value>
+  </data>
+  <data name="DocMiniMap_SliderMouseOver" xml:space="preserve">
+    <value>Show Viewport Slider on Hover</value>
+  </data>
 </root>

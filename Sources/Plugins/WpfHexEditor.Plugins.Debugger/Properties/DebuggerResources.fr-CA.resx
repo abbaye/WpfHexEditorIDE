@@ -8,6 +8,12 @@
   <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Points d'arrêt</value></data>
   <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Pile d'appels</value></data>
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Variables locales</value></data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Automatique</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Paramètres d'exception</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Espion</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Console de débogage</value></data>
   <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Threads</value></data>

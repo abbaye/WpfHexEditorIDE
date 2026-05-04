@@ -55,6 +55,16 @@ public sealed record DebugThreadInfo(
 );
 
 /// <summary>
+/// Exception filter configuration for the Exception Settings panel.
+/// </summary>
+public sealed record ExceptionFilterInfo(
+    string  Filter,
+    string  Label,
+    bool    IsEnabled,
+    string? Condition = null
+);
+
+/// <summary>
 /// Variable snapshot visible to plugins.
 /// </summary>
 public sealed record DebugVariableInfo(
@@ -174,6 +184,30 @@ public interface IDebuggerService
 
     /// <summary>Evaluate an expression in the current frame context.</summary>
     Task<string> EvaluateAsync(string expression, int? frameId = null);
+
+    /// <summary>
+    /// Set a variable's value in the given scope (variablesReference).
+    /// Returns the new value string, or null if the adapter does not support setVariable.
+    /// </summary>
+    Task<string?> SetVariableAsync(int variablesReference, string name, string newValue);
+
+    /// <summary>
+    /// Run to the given file/line (set a temporary breakpoint + continue, or use gotoTargets/goto if supported).
+    /// No-op when no session is active.
+    /// </summary>
+    Task RunToCursorAsync(string filePath, int line1);
+
+    /// <summary>
+    /// Get the exception filter list supported by the active adapter (or a built-in default set).
+    /// Returns empty list when no session active or adapter does not support exception filters.
+    /// </summary>
+    IReadOnlyList<ExceptionFilterInfo> ExceptionFilters { get; }
+
+    /// <summary>
+    /// Apply the given exception filter settings to the active debug session.
+    /// Persisted in the session; re-applied on next LaunchAsync/AttachAsync.
+    /// </summary>
+    Task SetExceptionFiltersAsync(IReadOnlyList<ExceptionFilterInfo> filters);
 
     // ── Adapter registry ───────────────────────────────────────────────────
 

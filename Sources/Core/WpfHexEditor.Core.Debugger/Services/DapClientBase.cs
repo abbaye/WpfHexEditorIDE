@@ -243,6 +243,27 @@ public abstract class DapClientBase : IDapClient
         return ParseBody<EvaluateBody>(resp);
     }
 
+    public virtual async Task<SetVariableBody?> SetVariableAsync(
+        SetVariableArgs args, CancellationToken ct = default)
+    {
+        var resp = await SendRequestAsync("setVariable", args, ct);
+        return ParseBody<SetVariableBody>(resp);
+    }
+
+    public virtual async Task<GotoTargetsBody?> GotoTargetsAsync(
+        GotoTargetsArgs args, CancellationToken ct = default)
+    {
+        var resp = await SendRequestAsync("gotoTargets", args, ct);
+        return ParseBody<GotoTargetsBody>(resp);
+    }
+
+    public virtual async Task GotoAsync(GotoArgs args, CancellationToken ct = default)
+        => await SendRequestAsync("goto", args, ct);
+
+    public virtual async Task SetExceptionBreakpointsAsync(
+        SetExceptionBreakpointsArgs args, CancellationToken ct = default)
+        => await SendRequestAsync("setExceptionBreakpoints", args, ct);
+
     // ── Dispose ───────────────────────────────────────────────────────────────
 
     public virtual async ValueTask DisposeAsync()

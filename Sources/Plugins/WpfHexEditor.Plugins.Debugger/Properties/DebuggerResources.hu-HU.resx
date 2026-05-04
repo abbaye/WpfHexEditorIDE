@@ -8,6 +8,12 @@
   <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Töréspontok</value></data>
   <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Hívási verem</value></data>
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Helyi változók</value></data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Automatikus</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Kivételbeállítások</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Figyelő</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Hibakeresési konzol</value></data>
   <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Szálak</value></data>

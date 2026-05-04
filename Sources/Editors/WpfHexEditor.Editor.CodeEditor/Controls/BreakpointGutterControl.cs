@@ -56,6 +56,23 @@ public interface IBreakpointSource
 }
 
 /// <summary>
+/// Optional interface injected by the App layer to evaluate debug hover expressions.
+/// CodeEditor calls this interface when the user hovers over a token during a debug session.
+/// Implemented in the App layer — zero compile-time dependency on IDebuggerService from CodeEditor.
+/// </summary>
+public interface IDebugHoverProvider
+{
+    /// <summary>
+    /// Evaluates the given token/expression in the current debug frame.
+    /// Returns formatted result string, or null if not in a debug session or evaluation failed.
+    /// </summary>
+    Task<string?> EvaluateTokenAsync(string token, CancellationToken ct = default);
+
+    /// <summary>True when a debug session is currently paused (hover should be attempted).</summary>
+    bool IsSessionPaused { get; }
+}
+
+/// <summary>
 /// Renders breakpoint markers in the left gutter of the CodeEditor.
 /// Positioned at x=0 with a fixed width of <see cref="GutterWidth"/> pixels.
 /// </summary>

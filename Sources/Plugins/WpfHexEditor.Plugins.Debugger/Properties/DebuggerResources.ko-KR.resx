@@ -13,6 +13,12 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
     <value>지역 변수</value>
   </data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>자동</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>예외 설정</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve">
     <value>조사식</value>
   </data>

@@ -43,12 +43,12 @@ internal sealed class DocumentScrollMarkerPanel : FrameworkElement
 
     // ── State ────────────────────────────────────────────────────────────────
 
-    private IReadOnlyList<int> _searchBlocks   = [];
-    private IReadOnlyList<int> _changeBlocks   = [];
-    private IReadOnlyList<int> _forensicBlocks = [];
-    private IReadOnlyList<int> _bookmarkBlocks = [];
-    private int                _caretBlock     = -1;
-    private int                _totalBlocks    = 1;
+    private IEnumerable<int> _searchBlocks   = [];
+    private IEnumerable<int> _changeBlocks   = [];
+    private IEnumerable<int> _forensicBlocks = [];
+    private IEnumerable<int> _bookmarkBlocks = [];
+    private int              _caretBlock     = -1;
+    private int              _totalBlocks    = 1;
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
@@ -59,28 +59,28 @@ internal sealed class DocumentScrollMarkerPanel : FrameworkElement
 
     // ── Public API ───────────────────────────────────────────────────────────
 
-    public void UpdateSearchMarkers(IReadOnlyList<int> blockIndices, int totalBlocks)
+    public void UpdateSearchMarkers(IEnumerable<int> blockIndices, int totalBlocks)
     {
         _searchBlocks = blockIndices;
         _totalBlocks  = Math.Max(1, totalBlocks);
         InvalidateVisual();
     }
 
-    public void UpdateChangeMarkers(IReadOnlyList<int> blockIndices, int totalBlocks)
+    public void UpdateChangeMarkers(IEnumerable<int> blockIndices, int totalBlocks)
     {
         _changeBlocks = blockIndices;
         _totalBlocks  = Math.Max(1, totalBlocks);
         InvalidateVisual();
     }
 
-    public void UpdateForensicMarkers(IReadOnlyList<int> blockIndices, int totalBlocks)
+    public void UpdateForensicMarkers(IEnumerable<int> blockIndices, int totalBlocks)
     {
         _forensicBlocks = blockIndices;
         _totalBlocks    = Math.Max(1, totalBlocks);
         InvalidateVisual();
     }
 
-    public void UpdateBookmarkMarkers(IReadOnlyList<int> blockIndices, int totalBlocks)
+    public void UpdateBookmarkMarkers(IEnumerable<int> blockIndices, int totalBlocks)
     {
         _bookmarkBlocks = blockIndices;
         _totalBlocks    = Math.Max(1, totalBlocks);

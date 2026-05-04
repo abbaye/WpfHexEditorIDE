@@ -1571,5 +1571,21 @@ namespace WpfHexEditor.Editor.DocumentEditor.Properties {
                 return ResourceManager.GetString("DocTb_TextView", resourceCulture);
             }
         }
+
+        internal static string DocMiniMap_MenuTitle {
+            get { return ResourceManager.GetString("DocMiniMap_MenuTitle", resourceCulture); }
+        }
+        internal static string DocMiniMap_ShowMiniMap {
+            get { return ResourceManager.GetString("DocMiniMap_ShowMiniMap", resourceCulture); }
+        }
+        internal static string DocMiniMap_RenderBlocks {
+            get { return ResourceManager.GetString("DocMiniMap_RenderBlocks", resourceCulture); }
+        }
+        internal static string DocMiniMap_SliderAlways {
+            get { return ResourceManager.GetString("DocMiniMap_SliderAlways", resourceCulture); }
+        }
+        internal static string DocMiniMap_SliderMouseOver {
+            get { return ResourceManager.GetString("DocMiniMap_SliderMouseOver", resourceCulture); }
+        }
     }
 }

@@ -8,6 +8,12 @@
   <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Σημεία διακοπής</value></data>
   <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Στοίβα κλήσεων</value></data>
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Τοπικές μεταβλητές</value></data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Αυτόματα</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Ρυθμίσεις εξαιρέσεων</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Παρακολούθηση</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Κονσόλα αποσφαλμάτωσης</value></data>
   <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Νήματα</value></data>

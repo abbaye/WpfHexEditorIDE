@@ -119,6 +119,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private int _bpHoverLine = -1;
         private System.Windows.Threading.DispatcherTimer? _bpHoverTimer;
 
+        // ── Debug Data Tip hover ──────────────────────────────────────────────
+
+        private IDebugHoverProvider? _debugHoverProvider;
+        private System.Windows.Threading.DispatcherTimer? _debugHoverTimer;
+        private string? _debugHoverToken;
+        private Point   _debugHoverPixel;
+        private Controls.DataTipPopup? _dataTipPopup;
+
+        /// <summary>
+        /// Injects the App-layer debug hover evaluator. Set to null when session ends.
+        /// CodeEditor never references IDebuggerService directly — zero dependency maintained.
+        /// </summary>
+        public IDebugHoverProvider? DebugHoverProvider
+        {
+            get => _debugHoverProvider;
+            set => _debugHoverProvider = value;
+        }
+
         internal void HandleBreakpointHover(int hoverLine0)
         {
             if (!ShowBreakpointLineHighlight || _bpSource is null || string.IsNullOrEmpty(_currentFilePath))
@@ -187,6 +205,70 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Use the popup's own grace timer rather than immediate close,
             // so the user has time to move the mouse into the popup.
             _bpHoverPopup?.OnEditorMouseLeft();
+        }
+
+        // ── Debug Data Tip implementation ─────────────────────────────────────
+
+        private TextPosition _lastDebugHoverPos = new(-1, -1);
+
+        private void HandleDebugHover(TextPosition hoverPos, Point pixelPos)
+        {
+            if (_debugHoverProvider is null || _document is null) return;
+            if (_dataTipPopup?.IsMouseOverPopup == true) return;
+            if (hoverPos == _lastDebugHoverPos) return;
+
+            _lastDebugHoverPos = hoverPos;
+            _debugHoverPixel   = pixelPos;
+
+            var lineText = hoverPos.Line >= 0 && hoverPos.Line < _document.Lines.Count
+                ? _document.Lines[hoverPos.Line].Text ?? string.Empty
+                : string.Empty;
+            var (word, _) = GetWordAt(lineText, hoverPos.Column);
+
+            if (string.IsNullOrWhiteSpace(word))
+            {
+                DismissDataTip();
+                return;
+            }
+
+            if (word == _debugHoverToken) return; // same token, popup already open or pending
+            _debugHoverToken = word;
+
+            _debugHoverTimer?.Stop();
+            _debugHoverTimer ??= new System.Windows.Threading.DispatcherTimer();
+            _debugHoverTimer.Interval = TimeSpan.FromMilliseconds(350);
+            _debugHoverTimer.Tick -= OnDebugHoverTimerTick;
+            _debugHoverTimer.Tick += OnDebugHoverTimerTick;
+            _debugHoverTimer.Start();
+        }
+
+        private async void OnDebugHoverTimerTick(object? sender, EventArgs e)
+        {
+            _debugHoverTimer?.Stop();
+            if (_debugHoverProvider is null || !_debugHoverProvider.IsSessionPaused) return;
+            var token = _debugHoverToken;
+            if (string.IsNullOrWhiteSpace(token)) return;
+
+            var result = await _debugHoverProvider.EvaluateTokenAsync(token);
+            if (result is null) return;
+
+            _dataTipPopup ??= new Controls.DataTipPopup();
+            _dataTipPopup.MouseLeave -= OnDataTipMouseLeave;
+            _dataTipPopup.MouseLeave += OnDataTipMouseLeave;
+
+            var anchorRect = new Rect(_debugHoverPixel.X, _debugHoverPixel.Y - _lineHeight, 0, _lineHeight);
+            _dataTipPopup.Show(this, token, result, anchorRect);
+        }
+
+        private void OnDataTipMouseLeave(object sender, System.Windows.Input.MouseEventArgs e) =>
+            DismissDataTip();
+
+        internal void DismissDataTip()
+        {
+            _debugHoverTimer?.Stop();
+            _debugHoverToken = null;
+            _lastDebugHoverPos = new(-1, -1);
+            _dataTipPopup?.Hide();
         }
 
         // ─────────────────────────────────────────────────────────────────────────

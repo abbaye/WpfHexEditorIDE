@@ -13,6 +13,12 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
     <value>局部变量</value>
   </data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>自动</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>异常设置</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve">
     <value>监视</value>
   </data>

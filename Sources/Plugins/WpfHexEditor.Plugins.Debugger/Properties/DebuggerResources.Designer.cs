@@ -45,6 +45,14 @@ internal static class DebuggerResources
     internal static string Debugger_LocalsPanelTitle
         => ResourceManager.GetString("Debugger_LocalsPanelTitle", _resourceCulture)!;
 
+    /// <summary>Gets the localized panel title for the Autos panel.</summary>
+    internal static string Debugger_AutosPanelTitle
+        => ResourceManager.GetString("Debugger_AutosPanelTitle", _resourceCulture)!;
+
+    /// <summary>Gets the localized panel title for the Exception Settings panel.</summary>
+    internal static string Debugger_ExceptionsPanelTitle
+        => ResourceManager.GetString("Debugger_ExceptionsPanelTitle", _resourceCulture)!;
+
     /// <summary>Gets the localized panel title for the Watch panel.</summary>
     internal static string Debugger_WatchPanelTitle
         => ResourceManager.GetString("Debugger_WatchPanelTitle", _resourceCulture)!;

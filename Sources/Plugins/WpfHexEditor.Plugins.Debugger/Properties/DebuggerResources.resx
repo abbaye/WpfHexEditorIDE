@@ -28,6 +28,12 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
     <value>Locals</value>
   </data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Autos</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Exception Settings</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve">
     <value>Watch</value>
   </data>

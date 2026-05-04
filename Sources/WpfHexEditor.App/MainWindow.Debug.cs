@@ -94,6 +94,10 @@ public partial class MainWindow
                     UpdateDbgStatusBar(null);
                     _debugHoverAdapter?.SetPaused(false);
                 })),
+
+            // Run to cursor — plugin publishes, App executes with active editor's caret.
+            _ideEventBus.Subscribe<RunToCursorRequestedEvent>(_ =>
+                Dispatcher.InvokeAsync(OnRunToCursor)),
         ];
 
         // Wire any editors that were already open from layout restore.
@@ -118,6 +122,7 @@ public partial class MainWindow
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => _ = _debuggerService?.StepOverAsync()),     Key.F10, ModifierKeys.None));
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => _ = _debuggerService?.StepIntoAsync()),     Key.F11, ModifierKeys.None));
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => _ = _debuggerService?.StepOutAsync()),      Key.F11, ModifierKeys.Shift));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => OnRunToCursor()),                    Key.F10, ModifierKeys.Control));
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => OnAttachToProcess()),                Key.P,   ModifierKeys.Control | ModifierKeys.Alt));
     }
 
@@ -255,6 +260,25 @@ public partial class MainWindow
         _ = _debuggerService.ToggleBreakpointAsync(filePath, line1);
     }
 
+    /// <summary>Ctrl+F10 — Run to cursor (caret line in active CodeEditor).</summary>
+    internal void OnRunToCursor()
+    {
+        if (_debuggerService is null || !_debuggerService.IsPaused) return;
+
+        var filePath = _documentManager.ActiveDocument?.FilePath;
+        if (string.IsNullOrEmpty(filePath)) return;
+
+        var activeContentId = _documentManager.ActiveDocument?.ContentId;
+        if (string.IsNullOrEmpty(activeContentId)) return;
+        if (!_contentCache.TryGetValue(activeContentId, out var ctrl)) return;
+
+        var ce = GetCodeEditorControl(ctrl as WpfHexEditor.Editor.Core.IDocumentEditor ?? ctrl as object);
+        if (ce is null) return;
+
+        int line1 = ce.CursorLine + 1;
+        _ = _debuggerService.RunToCursorAsync(filePath, line1);
+    }
+
     /// <summary>Ctrl+Alt+P — Attach to process dialog.</summary>
     internal void OnAttachToProcess(object? sender = null, RoutedEventArgs? e = null)
     {
@@ -265,14 +289,9 @@ public partial class MainWindow
             return;
         }
 
-        // Full AttachToProcessDialog is contributed by the Debugger plugin.
-        // Fallback: prompt for PID via simple input.
-        var input = Microsoft.VisualBasic.Interaction.InputBox(
-            AppResources.App_Debug_AttachPidPrompt,
-            AppResources.App_Debug_AttachTitle, "");
-
-        if (int.TryParse(input, out var pid) && pid > 0)
-            _ = _debuggerService.AttachAsync(pid);
+        // Delegate to AttachToProcessDialog contributed by the Debugger plugin.
+        // The plugin subscribes to AttachToProcessRequestedEvent and opens the dialog.
+        _ideEventBus?.Publish(new AttachToProcessRequestedEvent());
     }
 
     // ── Launch helpers ────────────────────────────────────────────────────────

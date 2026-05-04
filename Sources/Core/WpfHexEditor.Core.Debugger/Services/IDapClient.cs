@@ -72,6 +72,18 @@ public interface IDapClient : IAsyncDisposable
     /// <summary>Evaluate an expression in the context of a frame.</summary>
     Task<EvaluateBody?> EvaluateAsync(EvaluateArgs args, CancellationToken ct = default);
 
+    /// <summary>Set the value of a named variable in a given scope.</summary>
+    Task<SetVariableBody?> SetVariableAsync(SetVariableArgs args, CancellationToken ct = default);
+
+    /// <summary>Get goto targets for a given source line (supports Run to Cursor).</summary>
+    Task<GotoTargetsBody?> GotoTargetsAsync(GotoTargetsArgs args, CancellationToken ct = default);
+
+    /// <summary>Move execution to a specific goto target.</summary>
+    Task GotoAsync(GotoArgs args, CancellationToken ct = default);
+
+    /// <summary>Configure which exception filters trigger a stop.</summary>
+    Task SetExceptionBreakpointsAsync(SetExceptionBreakpointsArgs args, CancellationToken ct = default);
+
     // ── Inbound events ────────────────────────────────────────────────────────
 
     /// <summary>Raised when the adapter sends a "stopped" event (breakpoint/step/exception).</summary>

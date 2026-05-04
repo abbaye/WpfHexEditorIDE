@@ -13,6 +13,12 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
     <value>Yerel Değişkenler</value>
   </data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Otomatik</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Özel durum ayarları</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve">
     <value>İzle</value>
   </data>

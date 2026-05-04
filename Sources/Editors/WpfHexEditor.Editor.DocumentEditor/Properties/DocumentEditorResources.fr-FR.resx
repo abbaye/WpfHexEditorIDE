@@ -196,4 +196,19 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Vue texte</value>
   </data>
+  <data name="DocMiniMap_MenuTitle" xml:space="preserve">
+    <value>MiniCarte</value>
+  </data>
+  <data name="DocMiniMap_ShowMiniMap" xml:space="preserve">
+    <value>Afficher la MiniCarte</value>
+  </data>
+  <data name="DocMiniMap_RenderBlocks" xml:space="preserve">
+    <value>Rendu en blocs</value>
+  </data>
+  <data name="DocMiniMap_SliderAlways" xml:space="preserve">
+    <value>Toujours afficher le curseur de viewport</value>
+  </data>
+  <data name="DocMiniMap_SliderMouseOver" xml:space="preserve">
+    <value>Afficher le curseur de viewport au survol</value>
+  </data>
 </root>

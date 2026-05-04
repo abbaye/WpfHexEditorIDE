@@ -8,6 +8,12 @@
   <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Puncte de întrerupere</value></data>
   <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Stivă de apeluri</value></data>
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Variabile locale</value></data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Automat</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Setări excepții</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Inspecție</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Consolă depanare</value></data>
   <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Fire de execuție</value></data>

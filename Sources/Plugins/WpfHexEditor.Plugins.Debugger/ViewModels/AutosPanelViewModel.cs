@@ -1,66 +1,31 @@
-﻿// ==========================================================
+// ==========================================================
 // Project: WpfHexEditor.Plugins.Debugger
-// File: ViewModels/LocalsPanelViewModel.cs
-// Description: VM for the Locals panel â€” variable tree.
+// File: ViewModels/AutosPanelViewModel.cs
+// Description:
+//     VM for the Autos panel — shows variables relevant to the current execution line
+//     (locals from scope 0, same as Locals but semantically scoped to "autos").
+// Architecture: reuses VariableNode from LocalsPanelViewModel, no duplication.
 // ==========================================================
 
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.Plugins.Debugger.ViewModels;
 
-public sealed class VariableNode : ViewModelBase
-{
-    private bool   _isExpanded;
-    private string _value = string.Empty;
-    private bool   _isEditing;
-
-    public string  Name               { get; init; } = string.Empty;
-    public string? Type               { get; init; }
-    public int     VariablesReference { get; init; }
-    public int     ScopeReference     { get; init; }
-    public bool    HasChildren        => VariablesReference > 0;
-
-    public string Value
-    {
-        get => _value;
-        set { _value = value; OnPropertyChanged(); }
-    }
-
-    /// <summary>True when the value TextBox is in edit mode.</summary>
-    public bool IsEditing
-    {
-        get => _isEditing;
-        set { _isEditing = value; OnPropertyChanged(); }
-    }
-
-    public ObservableCollection<VariableNode> Children { get; } = [];
-
-    public bool IsExpanded
-    {
-        get => _isExpanded;
-        set { _isExpanded = value; OnPropertyChanged(); }
-    }
-}
-
-public sealed class LocalsPanelViewModel : ViewModelBase
+public sealed class AutosPanelViewModel : ViewModelBase
 {
     private readonly IDebuggerService _debugger;
-    private int _scopeReference;
 
     public ObservableCollection<VariableNode> Variables { get; } = [];
 
-    public LocalsPanelViewModel(IDebuggerService debugger)
+    public AutosPanelViewModel(IDebuggerService debugger)
     {
         _debugger = debugger;
     }
 
     public void SetVariables(IReadOnlyList<DebugVariableInfo> vars, int scopeRef = 0)
     {
-        _scopeReference = scopeRef;
         System.Windows.Application.Current?.Dispatcher.Invoke(() =>
         {
             Variables.Clear();

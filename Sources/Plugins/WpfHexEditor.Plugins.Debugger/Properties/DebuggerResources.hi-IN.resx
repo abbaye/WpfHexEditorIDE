@@ -13,6 +13,12 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
     <value>स्थानीय चर</value>
   </data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>स्वतः</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>अपवाद सेटिंग्स</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve">
     <value>वॉच</value>
   </data>

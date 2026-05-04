@@ -230,8 +230,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             File.Replace(tmp, _vm.Model.FilePath, backup);
             _vm.Model.UndoEngine.MarkSaved();
             _hexHighlightMgr?.Clear();
-            PART_TextPane.PART_Renderer.ClearDirtyBlocks();
-            _scrollMarker?.UpdateChangeMarkers([], PART_TextPane.PART_Renderer.BlockCount);
+            PART_TextPane.PART_Renderer.ClearDirtyBlocks(); // fires DirtyBlocksChanged → UpdateChangeScrollMarkers
 
             var fileName = System.IO.Path.GetFileName(_vm.Model.FilePath);
             StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_SavedStatus, fileName));
@@ -1026,10 +1025,11 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         };
 
         model.ForensicAlertsChanged += (_, _) =>
-        {
-            Dispatcher.InvokeAsync(() => PART_StatusBar.UpdateForensicCount(model));
-            UpdateForensicScrollMarkers(model);
-        };
+            Dispatcher.InvokeAsync(() =>
+            {
+                PART_StatusBar.UpdateForensicCount(model);
+                UpdateForensicScrollMarkers(model);
+            });
 
         model.BookmarksChanged += (_, _) => UpdateBookmarkScrollMarkers(model);
 
@@ -1092,11 +1092,12 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     {
         if (_scrollMarker is null) return;
         var r = PART_TextPane.PART_Renderer;
-        var blocks = model.Blocks;
+        var blockIndex = new Dictionary<DocumentBlock, int>(model.Blocks.Count);
+        for (int i = 0; i < model.Blocks.Count; i++)
+            blockIndex[model.Blocks[i]] = i;
         var indices = model.ForensicAlerts
-            .Where(a => a.Block is not null)
-            .Select(a => blocks.IndexOf(a.Block!))
-            .Where(i => i >= 0)
+            .Where(a => a.Block is not null && blockIndex.TryGetValue(a.Block!, out _))
+            .Select(a => blockIndex[a.Block!])
             .Distinct()
             .ToList();
         _scrollMarker.UpdateForensicMarkers(indices, r.BlockCount);

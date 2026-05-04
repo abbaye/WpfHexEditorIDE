@@ -87,6 +87,54 @@ public record DisconnectArgs(
     [property: JsonPropertyName("terminateDebuggee")] bool TerminateDebuggee = true
 );
 
+public record SetVariableArgs(
+    [property: JsonPropertyName("variablesReference")] int    VariablesReference,
+    [property: JsonPropertyName("name")]               string Name,
+    [property: JsonPropertyName("value")]              string Value
+);
+
+public record GotoTargetsArgs(
+    [property: JsonPropertyName("source")]             SourceDto Source,
+    [property: JsonPropertyName("line")]               int       Line
+);
+
+public record GotoTargetsBody(
+    [property: JsonPropertyName("targets")]            GotoTargetDto[] Targets
+);
+
+public record GotoTargetDto(
+    [property: JsonPropertyName("id")]                 int    Id,
+    [property: JsonPropertyName("label")]              string Label,
+    [property: JsonPropertyName("line")]               int    Line
+);
+
+public record GotoArgs(
+    [property: JsonPropertyName("threadId")]           int ThreadId,
+    [property: JsonPropertyName("targetId")]           int TargetId
+);
+
+public record SetExceptionBreakpointsArgs(
+    [property: JsonPropertyName("filters")]            string[]                  Filters,
+    [property: JsonPropertyName("filterOptions")]      ExceptionFilterOptionsDto[]? FilterOptions = null
+);
+
+public record ExceptionFilterOptionsDto(
+    [property: JsonPropertyName("filterId")]           string  FilterId,
+    [property: JsonPropertyName("condition")]          string? Condition = null
+);
+
+public record ExceptionBreakpointsBody(
+    [property: JsonPropertyName("exceptionBreakpointFilters")] ExceptionFilterDto[] Filters
+);
+
+public record ExceptionFilterDto(
+    [property: JsonPropertyName("filter")]             string  Filter,
+    [property: JsonPropertyName("label")]              string  Label,
+    [property: JsonPropertyName("description")]        string? Description = null,
+    [property: JsonPropertyName("default")]            bool    Default     = false,
+    [property: JsonPropertyName("supportsCondition")]  bool    SupportsCondition = false
+);
+
 // ── Response bodies ──────────────────────────────────────────────────────────
 
 public record CapabilitiesBody(
@@ -152,6 +200,12 @@ public record EvaluateBody(
     [property: JsonPropertyName("result")]             string  Result,
     [property: JsonPropertyName("type")]               string? Type,
     [property: JsonPropertyName("variablesReference")] int     VariablesReference
+);
+
+public record SetVariableBody(
+    [property: JsonPropertyName("value")]              string  Value,
+    [property: JsonPropertyName("type")]               string? Type = null,
+    [property: JsonPropertyName("variablesReference")] int     VariablesReference = 0
 );
 
 // ── Event bodies ─────────────────────────────────────────────────────────────

@@ -8,6 +8,12 @@
   <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Điểm dừng</value></data>
   <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Ngăn xếp lời gọi</value></data>
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Biến cục bộ</value></data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Tự động</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Cài đặt ngoại lệ</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Theo dõi</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Bảng điều khiển gỡ lỗi</value></data>
   <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Luồng</value></data>

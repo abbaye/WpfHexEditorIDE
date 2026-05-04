@@ -288,6 +288,78 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         return body?.Result ?? "<null>";
     }
 
+    public async Task<string?> SetVariableAsync(int variablesReference, string name, string newValue)
+    {
+        if (_client is null || !_session.IsPaused) return null;
+        try
+        {
+            var body = await _client.SetVariableAsync(new SetVariableArgs(variablesReference, name, newValue));
+            return body?.Value;
+        }
+        catch { return null; }
+    }
+
+    public async Task RunToCursorAsync(string filePath, int line1)
+    {
+        if (_client is null || !_session.IsPaused) return;
+
+        // Strategy: add a temporary one-shot breakpoint, continue, remove it on the next Stopped event.
+        var tempKey = $"{filePath}:{line1}:temp";
+        lock (_lock)
+        {
+            if (_breakpoints.Any(b => string.Equals(b.FilePath, filePath, StringComparison.OrdinalIgnoreCase) && b.Line == line1))
+                return; // user already has a BP there — just continue
+
+            _breakpoints.Add(new BreakpointLocation
+            {
+                FilePath  = filePath,
+                Line      = line1,
+                Condition = string.Empty,
+                IsEnabled = true,
+                DisableOnceHit = true, // one-shot semantic handled by OnStopped cleanup
+            });
+        }
+
+        var client = _client;
+        await SyncBreakpointsForFileAsync(client, filePath);
+        await ContinueAsync();
+
+        // Subscribe to remove the temp BP once execution stops at or past it.
+        void OnNextStop(object? s, StoppedEventBody e)
+        {
+            client.Stopped -= OnNextStop;
+            lock (_lock)
+            {
+                var temp = _breakpoints.FirstOrDefault(b =>
+                    string.Equals(b.FilePath, filePath, StringComparison.OrdinalIgnoreCase)
+                    && b.Line == line1 && b.DisableOnceHit);
+                if (temp is not null) _breakpoints.Remove(temp);
+            }
+            _ = SyncBreakpointsForFileAsync(client, filePath);
+            OnBreakpointsChanged();
+        }
+        client.Stopped += OnNextStop;
+    }
+
+    // ── IDebuggerService — exception filters ─────────────────────────────────
+
+    private readonly List<ExceptionFilterInfo> _exceptionFilters =
+    [
+        new("all",     "All Exceptions",      IsEnabled: false),
+        new("user-unhandled", "User-Unhandled", IsEnabled: true),
+    ];
+
+    public IReadOnlyList<ExceptionFilterInfo> ExceptionFilters => _exceptionFilters;
+
+    public async Task SetExceptionFiltersAsync(IReadOnlyList<ExceptionFilterInfo> filters)
+    {
+        lock (_lock) { _exceptionFilters.Clear(); _exceptionFilters.AddRange(filters); }
+
+        if (_client is null) return;
+        var activeFilters = filters.Where(f => f.IsEnabled).Select(f => f.Filter).ToArray();
+        await _client.SetExceptionBreakpointsAsync(new SetExceptionBreakpointsArgs(activeFilters));
+    }
+
     // ── IDebuggerService — breakpoints ────────────────────────────────────────
 
     public async Task<bool> ToggleBreakpointAsync(string filePath, int line, string? condition = null)

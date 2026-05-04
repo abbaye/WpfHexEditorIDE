@@ -1,0 +1,46 @@
+<UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.ExceptionSettingsPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Debugger.ViewModels">
+
+    <DockPanel>
+        <!-- Toolbar -->
+        <ToolBar DockPanel.Dock="Top" Background="{DynamicResource ToolbarBackground}">
+            <Button Command="{Binding ApplyCommand}"
+                    ToolTip="Apply exception filter changes"
+                    Style="{DynamicResource ToolbarButtonStyle}">
+                <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+            </Button>
+        </ToolBar>
+
+        <!-- Filter list -->
+        <ListView ItemsSource="{Binding Filters}"
+                  Background="{DynamicResource PanelBackground}"
+                  Foreground="{DynamicResource PanelForeground}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="28">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type vm:ExceptionFilterItem}">
+                                <CheckBox IsChecked="{Binding IsEnabled, Mode=TwoWay}"
+                                          HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Exception" Width="220"
+                                    DisplayMemberBinding="{Binding Label}"/>
+                    <GridViewColumn Header="Condition" Width="*">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type vm:ExceptionFilterItem}">
+                                <TextBox Text="{Binding Condition, UpdateSourceTrigger=LostFocus}"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Foreground="{DynamicResource PanelForeground}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</UserControl>

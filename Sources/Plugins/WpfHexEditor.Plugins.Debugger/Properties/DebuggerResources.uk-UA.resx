@@ -8,6 +8,12 @@
   <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Точки зупинки</value></data>
   <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Стек викликів</value></data>
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Локальні змінні</value></data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Автоматично</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Параметри винятків</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Спостереження</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Консоль налагодження</value></data>
   <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Потоки</value></data>

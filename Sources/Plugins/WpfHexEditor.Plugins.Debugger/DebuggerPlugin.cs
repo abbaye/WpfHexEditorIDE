@@ -47,9 +47,11 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
     private readonly List<IDisposable> _subs = [];
 
     // Panel view-models
-    private BreakpointExplorerViewModel?  _bpVm;
-    private CallStackPanelViewModel?      _csVm;
-    private LocalsPanelViewModel?         _locVm;
+    private BreakpointExplorerViewModel?        _bpVm;
+    private CallStackPanelViewModel?            _csVm;
+    private LocalsPanelViewModel?               _locVm;
+    private AutosPanelViewModel?                _autosVm;
+    private ExceptionSettingsPanelViewModel?    _exceptionVm;
     private WatchesPanelViewModel?        _watchVm;
     private DebugConsolePanelViewModel?   _consoleVm;
     private DebugSessionManagerViewModel? _sessionMgrVm;
@@ -71,6 +73,8 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         _bpVm             = new BreakpointExplorerViewModel(_debugger, context);
         _csVm             = new CallStackPanelViewModel(_debugger, context);
         _locVm            = new LocalsPanelViewModel(_debugger);
+        _autosVm          = new AutosPanelViewModel(_debugger);
+        _exceptionVm      = new ExceptionSettingsPanelViewModel(_debugger);
         _watchVm          = new WatchesPanelViewModel(_debugger);
         _consoleVm        = new DebugConsolePanelViewModel();
         _sessionMgrVm     = new DebugSessionManagerViewModel();
@@ -83,6 +87,7 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         _subs.Add(context.IDEEvents.Subscribe<DebugSessionEndedEvent>(OnEnded));
         _subs.Add(context.IDEEvents.Subscribe<DebugOutputReceivedEvent>(OnOutput));
         _subs.Add(context.IDEEvents.Subscribe<OpenBreakpointSettingsRequestedEvent>(OnOpenBpSettings));
+        _subs.Add(context.IDEEvents.Subscribe<AttachToProcessRequestedEvent>(OnAttachToProcessRequested));
 
         // Register panels
         var ui = context.UIRegistry;
@@ -97,6 +102,12 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
 
         ui.RegisterPanel("panel-dbg-locals", new LocalsPanel { DataContext = _locVm }, Id,
             new PanelDescriptor { Title = DebuggerResources.Debugger_LocalsPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
+
+        ui.RegisterPanel("panel-dbg-autos", new AutosPanel { DataContext = _autosVm }, Id,
+            new PanelDescriptor { Title = DebuggerResources.Debugger_AutosPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
+
+        ui.RegisterPanel("panel-dbg-exceptions", new ExceptionSettingsPanel { DataContext = _exceptionVm }, Id,
+            new PanelDescriptor { Title = DebuggerResources.Debugger_ExceptionsPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = true });
 
         ui.RegisterPanel("panel-dbg-watch", new WatchesPanel { DataContext = _watchVm }, Id,
             new PanelDescriptor { Title = DebuggerResources.Debugger_WatchPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
@@ -123,11 +134,20 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         ui.RegisterMenuItem($"{Id}.Menu.StepOver",   Id, new MenuItemDescriptor { Header = DebuggerResources.Debugger_Menu_StepOver,  ParentPath = "Debug", GestureText = "F10",           Group = "Stepping",    IconGlyph = "\uE7EE", Command = new RelayCommand(_ => _ = _debugger?.StepOverAsync()) });
         ui.RegisterMenuItem($"{Id}.Menu.StepInto",   Id, new MenuItemDescriptor { Header = DebuggerResources.Debugger_Menu_StepInto,  ParentPath = "Debug", GestureText = "F11",           Group = "Stepping",    IconGlyph = "\uE70D", Command = new RelayCommand(_ => _ = _debugger?.StepIntoAsync()) });
         ui.RegisterMenuItem($"{Id}.Menu.StepOut",    Id, new MenuItemDescriptor { Header = "Step Ou_t",              ParentPath = "Debug", GestureText = "Shift+F11",     Group = "Stepping",    IconGlyph = "\uE70E", Command = new RelayCommand(_ => _ = _debugger?.StepOutAsync()) });
-        ui.RegisterMenuItem($"{Id}.Menu.ClearBps",   Id, new MenuItemDescriptor { Header = "Delete _All Breakpoints",ParentPath = "Debug", GestureText = "Ctrl+Shift+F9", Group = "Breakpoints", IconGlyph = "\uE74D", Command = new RelayCommand(_ => _ = _debugger?.ClearAllBreakpointsAsync()) });
+        ui.RegisterMenuItem($"{Id}.Menu.RunToCursor", Id, new MenuItemDescriptor { Header = "_Run to Cursor",         ParentPath = "Debug", GestureText = "Ctrl+F10",      Group = "Stepping",    IconGlyph = "\uE7FC", Command = new RelayCommand(_ => context.IDEEvents.Publish(new WpfHexEditor.Core.Events.IDEEvents.RunToCursorRequestedEvent())) });
+        ui.RegisterMenuItem($"{Id}.Menu.ClearBps",   Id, new MenuItemDescriptor { Header = "Delete _All Breakpoints", ParentPath = "Debug", GestureText = "Ctrl+Shift+F9", Group = "Breakpoints", IconGlyph = "\uE74D", Command = new RelayCommand(_ => _ = _debugger?.ClearAllBreakpointsAsync()) });
+        ui.RegisterMenuItem($"{Id}.Menu.AttachProc", Id, new MenuItemDescriptor { Header = "_Attach to Process\u2026",    ParentPath = "Debug", GestureText = "Ctrl+Alt+P",    Group = "Session",     IconGlyph = "\uE77B", Command = new RelayCommand(_ =>
+        {
+            if (_debugger is null) return;
+            var pid = Dialogs.AttachToProcessDialog.Show(Application.Current.MainWindow);
+            if (pid > 0) _ = _debugger.AttachAsync(pid);
+        }) });
         ui.RegisterMenuItem($"{Id}.Menu.ShowBps",    Id, new MenuItemDescriptor { Header = "Show _Breakpoints",      ParentPath = "Debug", Group = "Panels", IconGlyph = "\uEBE8", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-breakpoints")) });
         ui.RegisterMenuItem($"{Id}.Menu.ShowCs",     Id, new MenuItemDescriptor { Header = "Show _Call Stack",       ParentPath = "Debug", Group = "Panels", IconGlyph = "\uE81E", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-callstack")) });
         ui.RegisterMenuItem($"{Id}.Menu.ShowLocals", Id, new MenuItemDescriptor { Header = "Show _Locals",           ParentPath = "Debug", Group = "Panels", IconGlyph = "\uE943", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-locals")) });
-        ui.RegisterMenuItem($"{Id}.Menu.ShowWatch",  Id, new MenuItemDescriptor { Header = "Show _Watch",            ParentPath = "Debug", Group = "Panels", IconGlyph = "\uE7B3", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-watch")) });
+        ui.RegisterMenuItem($"{Id}.Menu.ShowAutos",  Id, new MenuItemDescriptor { Header = "Show _Autos",            ParentPath = "Debug", Group = "Panels", IconGlyph = "\uE943", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-autos")) });
+        ui.RegisterMenuItem($"{Id}.Menu.ShowWatch",      Id, new MenuItemDescriptor { Header = "Show _Watch",                ParentPath = "Debug", Group = "Panels", IconGlyph = "\uE7B3", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-watch")) });
+        ui.RegisterMenuItem($"{Id}.Menu.ShowExceptions", Id, new MenuItemDescriptor { Header = "Show _Exception Settings",   ParentPath = "Debug", Group = "Panels", IconGlyph = "\uEA39", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-exceptions")) });
         ui.RegisterMenuItem($"{Id}.Menu.ShowThreads", Id, new MenuItemDescriptor { Header = "Show _Threads",          ParentPath = "Debug", Group = "Panels", IconGlyph = "\uE734", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-threads")) });
         ui.RegisterMenuItem($"{Id}.Menu.ShowParallelStacks", Id, new MenuItemDescriptor { Header = "Show _Parallel Stacks", ParentPath = "Debug", Group = "Panels", IconGlyph = "\uE81E", Command = new RelayCommand(_ => ui.ShowPanel("panel-dbg-parallel-stacks")) });
 
@@ -153,6 +173,7 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
             {
                 var locals = await _debugger.GetVariablesAsync(0);
                 _locVm?.SetVariables(locals);
+                _autosVm?.SetVariables(locals);
                 await _watchVm!.RefreshAsync(_debugger);
             }
 
@@ -217,8 +238,19 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
             _sessionMgrVm?.RemoveSession(e.SessionId);
             _csVm?.SetFrames([]);
             _locVm?.SetVariables([]);
+            _autosVm?.SetVariables([]);
             _threadsVm?.Clear();
             _parallelStacksVm?.Clear();
+        });
+    }
+
+    private void OnAttachToProcessRequested(AttachToProcessRequestedEvent e)
+    {
+        if (_debugger is null) return;
+        Application.Current?.Dispatcher.Invoke(() =>
+        {
+            var pid = Dialogs.AttachToProcessDialog.Show(Application.Current.MainWindow);
+            if (pid > 0) _ = _debugger.AttachAsync(pid);
         });
     }
 

@@ -8,6 +8,12 @@
   <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Zarážky</value></data>
   <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Zásobník volání</value></data>
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Místní proměnné</value></data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Automatický</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Nastavení výjimek</value>
+  </data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Hlídání</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Konzole ladění</value></data>
   <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Vlákna</value></data>
