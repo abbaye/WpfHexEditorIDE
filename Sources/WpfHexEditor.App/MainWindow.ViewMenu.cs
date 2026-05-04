@@ -204,6 +204,21 @@ public partial class MainWindow
             HeaderResourceKey: "APP_VM_FormatCatalog",
             ToolTipResourceKey: "APP_VM_TipFormatCatalog"));
 
+        // Assembly Explorer (core IDE module — formerly the AssemblyExplorer plugin, ADR-011)
+        _viewMenuOrganizer.RegisterBuiltInEntry(new ViewMenuEntry(
+            Id:                CommandIds.AssemblyExplorer.ShowPanel,
+            Header:            "_Assembly Explorer",
+            GestureText:       null,
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => OnShowAssemblyExplorer()),
+            CommandParameter:  null,
+            Group:             "Core IDE",
+            Category:          ViewMenuClassifier.CoreIDE,
+            DockSide:          "Left",
+            ToolTip:           "Explore .NET and native PE assemblies (types, members, decompilation, metadata).",
+            IsBuiltIn:         true,
+            HeaderResourceKey: null));
+
         // Analysis
         _viewMenuOrganizer.RegisterBuiltInEntry(new ViewMenuEntry(
             Id:                CommandIds.View.EntropyAnalysis,

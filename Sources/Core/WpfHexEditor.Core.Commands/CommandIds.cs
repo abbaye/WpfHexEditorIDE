@@ -146,6 +146,14 @@ public static class CommandIds
         public const string Close   = "Workspace.Close";
     }
 
+    public static class AssemblyExplorer
+    {
+        public const string ShowPanel       = "View.AssemblyExplorer";
+        public const string AnalyzeAssembly = "Tools.AnalyzeAssembly";
+        public const string SearchAssemblies = "Tools.SearchInAssemblies";
+        public const string GoToToken       = "Edit.GoToMetadataToken";
+    }
+
     public static class Editor
     {
         public const string FindAllReferences  = "Editor.FindAllReferences";
