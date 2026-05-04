@@ -234,7 +234,12 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             await using (var fs = File.Create(tmp))
                 await saver.SaveAsync(_vm.Model, fs, ct);
 
-            File.Replace(tmp, _vm.Model.FilePath, backup);
+            // File.Replace requires the destination to exist; on first save / Save As
+            // the target file does not yet exist, so fall back to a plain move.
+            if (File.Exists(_vm.Model.FilePath))
+                File.Replace(tmp, _vm.Model.FilePath, backup);
+            else
+                File.Move(tmp, _vm.Model.FilePath);
             _vm.Model.UndoEngine.MarkSaved();
             _hexHighlightMgr?.Clear();
             PART_TextPane.PART_Renderer.ClearDirtyBlocks(); // fires DirtyBlocksChanged → UpdateChangeScrollMarkers

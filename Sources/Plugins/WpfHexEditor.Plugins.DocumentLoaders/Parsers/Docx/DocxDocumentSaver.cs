@@ -34,33 +34,37 @@ public sealed class DocxDocumentSaver : IDocumentSaver
     public async Task SaveAsync(DocumentModel model, Stream output, CancellationToken ct = default)
     {
         var schema = LoadSchema("DOCX.whfmt");
+        bool hasOriginal = !string.IsNullOrEmpty(model.FilePath) && File.Exists(model.FilePath);
 
-        // Read original file as ZIP
-        if (!File.Exists(model.FilePath))
-            throw new FileNotFoundException("Original DOCX file not found.", model.FilePath);
+        using var outputMs = new MemoryStream();
 
-        byte[] originalBytes = await File.ReadAllBytesAsync(model.FilePath, ct);
-        using var originalMs = new MemoryStream(originalBytes);
-        using var outputMs   = new MemoryStream();
-
-        using (var originalZip = new ZipArchive(originalMs, ZipArchiveMode.Read, leaveOpen: true))
-        using (var outputZip   = new ZipArchive(outputMs,   ZipArchiveMode.Create, leaveOpen: true))
+        using (var outputZip = new ZipArchive(outputMs, ZipArchiveMode.Create, leaveOpen: true))
         {
             const string documentEntry = "word/document.xml";
 
-            foreach (var entry in originalZip.Entries)
+            if (hasOriginal)
             {
-                if (entry.FullName.Equals(documentEntry, StringComparison.OrdinalIgnoreCase))
-                    continue; // replaced below
+                byte[] originalBytes = await File.ReadAllBytesAsync(model.FilePath, ct);
+                using var originalMs = new MemoryStream(originalBytes);
+                using var originalZip = new ZipArchive(originalMs, ZipArchiveMode.Read, leaveOpen: true);
 
-                var newEntry = outputZip.CreateEntry(entry.FullName, CompressionLevel.Optimal);
-                newEntry.LastWriteTime = entry.LastWriteTime;
-                await using var src = entry.Open();
-                await using var dst = newEntry.Open();
-                await src.CopyToAsync(dst, ct);
+                foreach (var entry in originalZip.Entries)
+                {
+                    if (entry.FullName.Equals(documentEntry, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    var newEntry = outputZip.CreateEntry(entry.FullName, CompressionLevel.Optimal);
+                    newEntry.LastWriteTime = entry.LastWriteTime;
+                    await using var src = entry.Open();
+                    await using var dst = newEntry.Open();
+                    await src.CopyToAsync(dst, ct);
+                }
+            }
+            else
+            {
+                WriteMinimalDocxScaffold(outputZip);
             }
 
-            // Rebuild document.xml from model blocks
             string newXml = schema is not null
                 ? OoXmlSchemaEngine.SerializeBlocks(model.Blocks, schema).ToString(SaveOptions.DisableFormatting)
                 : FallbackSerialize(model);
@@ -73,6 +77,45 @@ public sealed class DocxDocumentSaver : IDocumentSaver
 
         outputMs.Position = 0;
         await outputMs.CopyToAsync(output, ct);
+    }
+
+    /// <summary>
+    /// Writes the minimum set of OOXML package parts a fresh DOCX needs
+    /// (Content Types, package rels, document rels) so Word can open the
+    /// file when there is no source archive to copy from.
+    /// </summary>
+    private static void WriteMinimalDocxScaffold(ZipArchive zip)
+    {
+        const string contentTypesXml = """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+              <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+              <Default Extension="xml" ContentType="application/xml"/>
+              <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+            </Types>
+            """;
+        const string packageRelsXml = """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+              <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+            </Relationships>
+            """;
+        const string documentRelsXml = """
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>
+            """;
+
+        WriteEntry(zip, "[Content_Types].xml",          contentTypesXml);
+        WriteEntry(zip, "_rels/.rels",                  packageRelsXml);
+        WriteEntry(zip, "word/_rels/document.xml.rels", documentRelsXml);
+    }
+
+    private static void WriteEntry(ZipArchive zip, string path, string content)
+    {
+        var entry = zip.CreateEntry(path, CompressionLevel.Optimal);
+        using var s = entry.Open();
+        using var w = new StreamWriter(s);
+        w.Write(content);
     }
 
     private static DocumentSchemaDefinition? LoadSchema(string fileName)
