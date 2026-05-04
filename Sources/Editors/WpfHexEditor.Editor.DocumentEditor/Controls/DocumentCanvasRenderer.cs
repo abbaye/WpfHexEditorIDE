@@ -86,6 +86,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private int    _selectedIndex = -1;
     private bool   _forensicMode  = false;
 
+    // Dirty-block tracking for scroll markers (block indices modified since last save)
+    private readonly HashSet<int> _dirtyBlockIndices = [];
+
     // Layout cache
     private double       _totalHeight = 0;
     private double       _pageWidth   = 0;
@@ -188,6 +191,31 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public DocumentBlock? SelectedBlock =>
         _selectedIndex >= 0 && _selectedIndex < _blocks.Count
             ? _blocks[_selectedIndex].Block : null;
+
+    /// <summary>Total number of blocks in the current layout.</summary>
+    public int BlockCount => _blocks.Count;
+
+    /// <summary>0-based index of the block currently hosting the caret (-1 when no caret).</summary>
+    public int CaretBlockIndex => _caret.BlockIndex;
+
+    /// <summary>Snapshot of blocks modified since the last <see cref="ClearDirtyBlocks"/> call.</summary>
+    public IReadOnlyList<int> DirtyBlockIndices => [.. _dirtyBlockIndices];
+
+    /// <summary>Block indices that have at least one active search hit.</summary>
+    public IReadOnlyList<int> SearchBlockIndices =>
+        _findResults is null || _findResults.Count == 0
+            ? []
+            : _findResults.Select(r => r.BlockIndex).Distinct().ToList();
+
+    /// <summary>Clears the dirty-block set (call after a successful save).</summary>
+    public void ClearDirtyBlocks()
+    {
+        _dirtyBlockIndices.Clear();
+        DirtyBlocksChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>Raised whenever a block is marked dirty or the dirty set is cleared.</summary>
+    public event EventHandler? DirtyBlocksChanged;
 
     /// <summary>Binds the renderer to a document model and triggers layout.</summary>
     public void BindModel(DocumentModel model)
@@ -2341,11 +2369,13 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         if (start.BlockIndex == end.BlockIndex)
         {
+            MarkBlockDirty(start.BlockIndex);
             var block = _blocks[start.BlockIndex].Block;
             _mutator.DeleteText(block, start.CharOffset, end.CharOffset - start.CharOffset);
         }
         else
         {
+            for (int bi = start.BlockIndex; bi <= end.BlockIndex; bi++) MarkBlockDirty(bi);
             DeleteMultiBlockSelection(start, end);
         }
 
@@ -2382,6 +2412,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var block = _blocks[bi].Block;
         int flatLen = GetFlatText(bi).Length;
         int off = Math.Clamp(_caret.CharOffset, 0, flatLen);
+        MarkBlockDirty(bi);
         _mutator.InsertText(block, off, text);
         _caret = _caret with { CharOffset = off + text.Length };
         _selection.Anchor = _caret;
@@ -2394,6 +2425,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         if (_mutator is null || _blocks.Count == 0) return;
         int bi  = _caret.BlockIndex;
         int off = Math.Clamp(_caret.CharOffset, 0, GetFlatText(bi).Length);
+        MarkBlockDirty(bi);
         _mutator.SplitBlock(bi, off);
         // Caret moves to start of newly created block
         _caret = new TextCaret(bi + 1, 0, 0);
@@ -2418,6 +2450,14 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             if (bi < end.BlockIndex) sb.Append(Environment.NewLine);
         }
         return sb.ToString();
+    }
+
+    // ── Dirty tracking helper ────────────────────────────────────────────────
+
+    private void MarkBlockDirty(int blockIndex)
+    {
+        if (_dirtyBlockIndices.Add(blockIndex))
+            DirtyBlocksChanged?.Invoke(this, EventArgs.Empty);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -2479,10 +2519,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var (start, end) = _selection.Ordered;
         if (start.BlockIndex == end.BlockIndex)
         {
+            MarkBlockDirty(start.BlockIndex);
             Apply(_blocks[start.BlockIndex].Block, start.CharOffset, end.CharOffset);
         }
         else
         {
+            for (int bi = start.BlockIndex; bi <= end.BlockIndex; bi++) MarkBlockDirty(bi);
             Apply(_blocks[start.BlockIndex].Block,
                   start.CharOffset, GetFlatText(start.BlockIndex).Length);
             for (int bi = start.BlockIndex + 1; bi < end.BlockIndex; bi++)
@@ -2596,6 +2638,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         int bi   = _caret.BlockIndex;
         int off  = _caret.CharOffset;
         var block = _blocks[bi].Block;
+        MarkBlockDirty(bi);
 
         if (forward)
         {
@@ -2627,11 +2670,15 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// Called by <see cref="DocumentSearchViewModel"/> to push find highlights to the renderer.
     /// Active cursor match renders at full opacity; others at 50%.
     /// </summary>
+    /// <summary>Raised after find results change so the host can update scroll markers.</summary>
+    public event EventHandler? FindResultsChanged;
+
     public void SetFindResults(IReadOnlyList<DocumentSearchMatch> results, int activeCursor)
     {
         _findResults = results;
         _findCursor  = activeCursor;
         InvalidateVisual();
+        FindResultsChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void DrawFindHighlights(DrawingContext dc, double contentX, double contentW)

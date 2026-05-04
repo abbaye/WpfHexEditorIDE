@@ -82,6 +82,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private string?                  _pendingFilePath;
     private string                   _currentFileExtension = string.Empty;
     private bool                     _isFocusMode          = false;
+    private DocumentScrollMarkerPanel? _scrollMarker;
 
     // ── Constructor ─────────────────────────────────────────────────────────
 
@@ -229,6 +230,8 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             File.Replace(tmp, _vm.Model.FilePath, backup);
             _vm.Model.UndoEngine.MarkSaved();
             _hexHighlightMgr?.Clear();
+            PART_TextPane.PART_Renderer.ClearDirtyBlocks();
+            _scrollMarker?.UpdateChangeMarkers([], PART_TextPane.PART_Renderer.BlockCount);
 
             var fileName = System.IO.Path.GetFileName(_vm.Model.FilePath);
             StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_SavedStatus, fileName));
@@ -720,6 +723,15 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         if (e.Key == Key.H && (Keyboard.Modifiers & ModifierKeys.Shift) == 0)
             { OpenFindDialog(showReplace: true); e.Handled = true; }
         if (e.Key == Key.S)  { Save(); e.Handled = true; }
+        if (e.Key == Key.F2) { ToggleBookmarkAtCaret(); e.Handled = true; }
+    }
+
+    private void ToggleBookmarkAtCaret()
+    {
+        if (_vm?.Model is null) return;
+        int bi = PART_TextPane.PART_Renderer.CaretBlockIndex;
+        if (bi < 0) return;
+        _vm.Model.ToggleBookmark(bi);
     }
 
     private void OpenFindDialog(bool showReplace)
@@ -1014,7 +1026,14 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         };
 
         model.ForensicAlertsChanged += (_, _) =>
+        {
             Dispatcher.InvokeAsync(() => PART_StatusBar.UpdateForensicCount(model));
+            UpdateForensicScrollMarkers(model);
+        };
+
+        model.BookmarksChanged += (_, _) => UpdateBookmarkScrollMarkers(model);
+
+        PART_TextPane.PART_Renderer.DirtyBlocksChanged += (_, _) => UpdateChangeScrollMarkers();
 
         TitleChanged?.Invoke(this, Title);
     }
@@ -1031,7 +1050,12 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         ApplyViewMode(ViewMode);
         _ = PopulateFontFamilyDropdownAsync();
         PART_TextPane.PART_Renderer.SelectionFormatChanged += OnSelectionFormatChanged;
-        PART_TextPane.PART_Renderer.PageChanged += OnRendererPageChanged;
+        PART_TextPane.PART_Renderer.PageChanged            += OnRendererPageChanged;
+        PART_TextPane.PART_Renderer.FindResultsChanged     += (_, _) => UpdateSearchScrollMarkers();
+
+        // Scroll marker panel — created once, injected into PART_ScrollMarkerHost (added in Wave 5)
+        _scrollMarker = new DocumentScrollMarkerPanel();
+        PART_ScrollMarkerHost.Child = _scrollMarker;
     }
 
     private void OnRendererPageChanged(object? sender, (int Current, int Total) e)
@@ -1039,12 +1063,50 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_StatusBar.UpdateCurrentPage(e.Current, e.Total);
         var r = PART_TextPane.PART_Renderer;
         PART_MiniMap.UpdateScroll(r.VerticalOffset, r.ExtentHeight, r.ViewportHeight);
+        _scrollMarker?.UpdateCaretMarker(r.CaretBlockIndex, r.BlockCount);
     }
 
     private void OnMiniMapScrollRequested(object? sender, double normalised)
     {
         var r = PART_TextPane.PART_Renderer;
         r.SetVerticalOffset(normalised * Math.Max(0, r.ExtentHeight - r.ViewportHeight));
+    }
+
+    // ── Scroll marker update helpers ─────────────────────────────────────────
+
+    internal void UpdateSearchScrollMarkers()
+    {
+        if (_scrollMarker is null) return;
+        var r = PART_TextPane.PART_Renderer;
+        _scrollMarker.UpdateSearchMarkers(r.SearchBlockIndices, r.BlockCount);
+    }
+
+    private void UpdateChangeScrollMarkers()
+    {
+        if (_scrollMarker is null) return;
+        var r = PART_TextPane.PART_Renderer;
+        _scrollMarker.UpdateChangeMarkers(r.DirtyBlockIndices, r.BlockCount);
+    }
+
+    private void UpdateForensicScrollMarkers(DocumentModel model)
+    {
+        if (_scrollMarker is null) return;
+        var r = PART_TextPane.PART_Renderer;
+        var blocks = model.Blocks;
+        var indices = model.ForensicAlerts
+            .Where(a => a.Block is not null)
+            .Select(a => blocks.IndexOf(a.Block!))
+            .Where(i => i >= 0)
+            .Distinct()
+            .ToList();
+        _scrollMarker.UpdateForensicMarkers(indices, r.BlockCount);
+    }
+
+    private void UpdateBookmarkScrollMarkers(DocumentModel model)
+    {
+        if (_scrollMarker is null) return;
+        var r = PART_TextPane.PART_Renderer;
+        _scrollMarker.UpdateBookmarkMarkers([.. model.Bookmarks], r.BlockCount);
     }
 
     private void OnSelectionFormatChanged(object? sender, EventArgs e)

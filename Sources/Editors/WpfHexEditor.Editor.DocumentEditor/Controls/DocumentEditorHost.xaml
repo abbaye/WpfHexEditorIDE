@@ -592,6 +592,17 @@
                                    Grid.Column="3"
                                    ScrollRequested="OnMiniMapScrollRequested"/>
 
+            <!-- Scroll-marker overlay — floats over the right edge of the text pane (col 0),
+                 aligned to the vertical scrollbar track (17px wide). Click-through. -->
+            <Border x:Name="PART_ScrollMarkerHost"
+                    Grid.Column="0"
+                    Width="17"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Stretch"
+                    IsHitTestVisible="False"
+                    Panel.ZIndex="20"
+                    Background="Transparent"/>
+
             <!-- Pop-toolbar popup (anchored to content grid) -->
             <Popup x:Name="PART_PopToolbar"
                    AllowsTransparency="True"
