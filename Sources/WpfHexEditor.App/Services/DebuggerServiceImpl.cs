@@ -119,7 +119,6 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
     /// <summary>Launch a new debug session for the given configuration.</summary>
     public async Task LaunchAsync(DebugLaunchConfig config)
     {
-        // Route attach requests through the existing AttachAsync path.
         if (config.Request.Equals("attach", StringComparison.OrdinalIgnoreCase)
             && config.ProcessId.HasValue)
         {
@@ -128,44 +127,25 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         }
 
         if (_session.IsActive) await StopSessionAsync();
-
-        // Reset hit counts for the new session.
-        lock (_lock)
-        {
-            for (int i = 0; i < _breakpoints.Count; i++)
-                _breakpoints[i] = _breakpoints[i] with { HitCount = 0 };
-        }
-
+        ResetHitCounts();
         UpdateSession(_session with { State = DebugSessionState.Launching });
 
         try
         {
             _client = await CreateAdapterAsync(config);
-            if (_client is null)
-            {
-                UpdateSession(DebugSession.Empty);
-                return;
-            }
-            WireClientEvents(_client);
+            if (_client is null) { UpdateSession(DebugSession.Empty); return; }
 
+            WireClientEvents(_client);
             await _client.InitializeAsync(new InitializeRequestArgs("WpfHexEditor"));
             await SyncAllBreakpointsAsync(_client);
             await _client.LaunchAsync(BuildLaunchArgs(config));
             await _client.ConfigurationDoneAsync();
 
-            var sessionId = Guid.NewGuid().ToString("N");
-            UpdateSession(new DebugSession
+            await FinishSessionStartAsync(new DebugSession
             {
-                SessionId   = sessionId,
+                SessionId   = Guid.NewGuid().ToString("N"),
                 State       = DebugSessionState.Running,
                 ProjectPath = config.ProjectPath,
-            });
-
-            _eventBus.Publish(new DebugSessionStartedEvent
-            {
-                SessionId   = sessionId,
-                ProjectPath = config.ProjectPath,
-                Source      = nameof(DebuggerServiceImpl)
             });
         }
         catch (Exception ex)
@@ -177,25 +157,15 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         }
     }
 
-    /// <summary>
-    /// Attach to a remote debug adapter over TCP or SSH tunnel.
-    /// </summary>
+    /// <summary>Attach to a remote debug adapter over TCP or SSH tunnel.</summary>
     public async Task LaunchRemoteAsync(RemoteDebugConfig config, CancellationToken ct = default)
     {
         if (_session.IsActive) await StopSessionAsync();
-
-        lock (_lock)
-        {
-            for (int i = 0; i < _breakpoints.Count; i++)
-                _breakpoints[i] = _breakpoints[i] with { HitCount = 0 };
-        }
-
+        ResetHitCounts();
         UpdateSession(_session with { State = DebugSessionState.Launching });
 
         try
         {
-            IDapClient client;
-
             if (config.Transport == RemoteDebugTransport.Ssh)
             {
                 var ssh = new SshTunnelDapClient();
@@ -208,36 +178,26 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
                     localTunnelPort:  config.LocalTunnelPort,
                     sshKeyPath:       config.SshKeyPath,
                     ct:               ct);
-                client = ssh;
+                _client = ssh;
             }
             else
             {
                 var tcp = new TcpDapClient();
                 await tcp.ConnectAsync(config.Host, config.AdapterPort, ct);
-                client = tcp;
+                _client = tcp;
             }
 
-            _client = client;
             WireClientEvents(_client);
-
             await _client.InitializeAsync(new InitializeRequestArgs("WpfHexEditor"));
             await SyncAllBreakpointsAsync(_client);
-            await _client.AttachAsync(new AttachRequestArgs(null));
+            await _client.AttachAsync(new AttachRequestArgs(0));
             await _client.ConfigurationDoneAsync();
 
-            var sessionId = Guid.NewGuid().ToString("N");
-            UpdateSession(new DebugSession
+            await FinishSessionStartAsync(new DebugSession
             {
-                SessionId   = sessionId,
+                SessionId   = Guid.NewGuid().ToString("N"),
                 State       = DebugSessionState.Running,
-                ProjectPath = string.Empty,
-            });
-
-            _eventBus.Publish(new DebugSessionStartedEvent
-            {
-                SessionId   = sessionId,
                 ProjectPath = $"remote:{config.Host}:{config.AdapterPort}",
-                Source      = nameof(DebuggerServiceImpl)
             });
         }
         catch (Exception ex)
@@ -263,25 +223,16 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         {
             _client = await NetCoreDapAdapter.CreateAsync(adapterPath);
             WireClientEvents(_client);
-
             await _client.InitializeAsync(new InitializeRequestArgs("WpfHexEditor"));
             await SyncAllBreakpointsAsync(_client);
             await _client.AttachAsync(new AttachRequestArgs(pid));
             await _client.ConfigurationDoneAsync();
 
-            var sessionId = Guid.NewGuid().ToString("N");
-            UpdateSession(new DebugSession
+            await FinishSessionStartAsync(new DebugSession
             {
-                SessionId  = sessionId,
-                State      = DebugSessionState.Running,
-                ProcessId  = pid,
-            });
-
-            _eventBus.Publish(new DebugSessionStartedEvent
-            {
-                SessionId = sessionId,
+                SessionId = Guid.NewGuid().ToString("N"),
+                State     = DebugSessionState.Running,
                 ProcessId = pid,
-                Source    = nameof(DebuggerServiceImpl)
             });
         }
         catch (Exception ex)
@@ -291,6 +242,28 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             _dialogs.Show($"Failed to attach to process {pid}:\n{ex.Message}", "Debugger",
                             MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    private void ResetHitCounts()
+    {
+        lock (_lock)
+        {
+            for (int i = 0; i < _breakpoints.Count; i++)
+                _breakpoints[i] = _breakpoints[i] with { HitCount = 0 };
+        }
+    }
+
+    private Task FinishSessionStartAsync(DebugSession session)
+    {
+        UpdateSession(session);
+        _eventBus.Publish(new DebugSessionStartedEvent
+        {
+            SessionId   = session.SessionId,
+            ProjectPath = session.ProjectPath,
+            ProcessId   = session.ProcessId,
+            Source      = nameof(DebuggerServiceImpl)
+        });
+        return Task.CompletedTask;
     }
 
     // ── IDebuggerService — execution ──────────────────────────────────────────
@@ -608,20 +581,25 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         if (!_settings.Debugger.SymbolServerEnabled) return;
         if (_client is null) return;
 
-        var body = await _client.GetModulesAsync();
+        var body    = await _client.GetModulesAsync();
         var servers = _settings.Debugger.SymbolServerUrls;
 
-        foreach (var module in body.Modules)
-        {
-            if (string.IsNullOrEmpty(module.Path)) continue;
-            var pdbName    = Path.GetFileNameWithoutExtension(module.Path) + ".pdb";
-            // Use module id as signature if no better key; adapters may expose GUID/age via symbolFilePath.
-            var signature  = module.SymbolFilePath is not null
-                ? Path.GetFileName(Path.GetDirectoryName(module.SymbolFilePath) ?? string.Empty)
-                : module.Id?.ToString() ?? "0";
-            if (string.IsNullOrEmpty(signature)) continue;
-            await _symbolClient.ResolveAsync(pdbName, signature, servers, ct);
-        }
+        var tasks = body.Modules
+            .Where(m => !string.IsNullOrEmpty(m.Path))
+            .Select(m =>
+            {
+                var pdbName   = Path.GetFileNameWithoutExtension(m.Path) + ".pdb";
+                // Prefer the directory component of symbolFilePath (contains GUID+age);
+                // fall back to module Id only when it's a meaningful non-empty string.
+                var signature = m.SymbolFilePath is not null
+                    ? Path.GetFileName(Path.GetDirectoryName(m.SymbolFilePath) ?? string.Empty)
+                    : m.Id?.ToString();
+                return (pdbName, signature);
+            })
+            .Where(t => !string.IsNullOrEmpty(t.signature))
+            .Select(t => _symbolClient.ResolveAsync(t.pdbName, t.signature!, servers, ct));
+
+        await Task.WhenAll(tasks);
     }
 
     // ── IDebuggerService — breakpoints ────────────────────────────────────────

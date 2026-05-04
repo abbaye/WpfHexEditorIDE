@@ -65,6 +65,8 @@ public sealed class SymbolServerClient : IDisposable
     private static string BuildSymbolUrl(string serverUrl, string pdbFileName, string pdbSignature)
         => $"{serverUrl.TrimEnd('/')}/{pdbFileName}/{pdbSignature}/{pdbFileName}";
 
+    private const long MaxPdbBytes = 512 * 1024 * 1024; // 512 MB guard
+
     private async Task<string?> TryDownloadAsync(
         string url, string localPath, CancellationToken ct)
     {
@@ -72,6 +74,10 @@ public sealed class SymbolServerClient : IDisposable
         {
             using var resp = await _http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, ct);
             if (!resp.IsSuccessStatusCode)
+                return null;
+
+            // Reject oversized responses before streaming to disk.
+            if (resp.Content.Headers.ContentLength > MaxPdbBytes)
                 return null;
 
             Directory.CreateDirectory(Path.GetDirectoryName(localPath)!);

@@ -10,6 +10,7 @@
 // ==========================================================
 
 using System.Diagnostics;
+using System.Net.Sockets;
 using WpfHexEditor.Core.Debugger.Protocol;
 
 namespace WpfHexEditor.Core.Debugger.Services;
@@ -79,8 +80,7 @@ public sealed class SshTunnelDapClient : IDapClient
         };
         _sshProcess.Start();
 
-        // Give SSH time to establish the local tunnel before connecting the TCP client.
-        await Task.Delay(1200, ct);
+        await WaitForPortAsync("127.0.0.1", localTunnelPort, ct);
 
         _inner = new TcpDapClient();
         await _inner.ConnectAsync("127.0.0.1", localTunnelPort, ct);
@@ -170,6 +170,29 @@ public sealed class SshTunnelDapClient : IDapClient
 
     public Task<SetDataBreakpointsBody?> SetDataBreakpointsAsync(SetDataBreakpointsArgs args, CancellationToken ct = default)
         => Inner.SetDataBreakpointsAsync(args, ct);
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    // Polls until the local tunnel port accepts TCP connections (ssh -L is ready).
+    private static async Task WaitForPortAsync(string host, int port, CancellationToken ct)
+    {
+        const int maxWaitMs   = 10_000;
+        const int intervalMs  = 80;
+        var       deadline    = Environment.TickCount64 + maxWaitMs;
+
+        while (Environment.TickCount64 < deadline)
+        {
+            ct.ThrowIfCancellationRequested();
+            try
+            {
+                using var probe = new TcpClient();
+                await probe.ConnectAsync(host, port, ct);
+                return;
+            }
+            catch (SocketException) { /* not ready yet */ }
+            await Task.Delay(intervalMs, ct);
+        }
+    }
 
     // ── Dispose ───────────────────────────────────────────────────────────────
 
