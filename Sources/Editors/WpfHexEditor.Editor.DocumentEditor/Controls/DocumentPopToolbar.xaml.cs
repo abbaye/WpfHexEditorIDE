@@ -23,7 +23,7 @@ public partial class DocumentPopToolbar : UserControl
 {
     // ── Events ────────────────────────────────────────────────────────────────
 
-    /// <summary>Raised when the user clicks a format button (bold/italic/underline).</summary>
+    /// <summary>Raised when the user clicks a format button (bold/italic/underline/bullet/numbered).</summary>
     public event EventHandler<string>? FormatRequested;
 
     /// <summary>Raised when the user clicks "Copy text".</summary>
@@ -56,9 +56,11 @@ public partial class DocumentPopToolbar : UserControl
 
     // ── Click handlers ────────────────────────────────────────────────────────
 
-    private void OnBoldClicked(object sender, RoutedEventArgs e)      => FormatRequested?.Invoke(this, "bold");
-    private void OnItalicClicked(object sender, RoutedEventArgs e)    => FormatRequested?.Invoke(this, "italic");
-    private void OnUnderlineClicked(object sender, RoutedEventArgs e) => FormatRequested?.Invoke(this, "underline");
+    private void OnBoldClicked(object sender, RoutedEventArgs e)          => FormatRequested?.Invoke(this, "bold");
+    private void OnItalicClicked(object sender, RoutedEventArgs e)        => FormatRequested?.Invoke(this, "italic");
+    private void OnUnderlineClicked(object sender, RoutedEventArgs e)     => FormatRequested?.Invoke(this, "underline");
+    private void OnBulletListClicked(object sender, RoutedEventArgs e)    => FormatRequested?.Invoke(this, "bullet-list");
+    private void OnNumberedListClicked(object sender, RoutedEventArgs e)  => FormatRequested?.Invoke(this, "numbered-list");
 
     private void OnCopyTextClicked(object sender, RoutedEventArgs e)  => CopyTextRequested?.Invoke(this, _contextBlock);
     private void OnCopyHexClicked(object sender, RoutedEventArgs e)   => CopyHexRequested?.Invoke(this, _contextBlock);

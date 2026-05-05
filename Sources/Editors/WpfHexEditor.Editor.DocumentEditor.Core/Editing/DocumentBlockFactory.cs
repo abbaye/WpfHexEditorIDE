@@ -69,6 +69,20 @@ public static class DocumentBlockFactory
         return row;
     }
 
+    /// <summary>Creates a new list-item block at the given level (0-based) with bullet or numbered style.</summary>
+    public static DocumentBlock NewListItem(string text = "", int level = 0, string listStyle = "bullet") => new()
+    {
+        Kind      = "list-item",
+        Text      = text,
+        RawOffset = -1,
+        RawLength = 0,
+        Attributes =
+        {
+            ["listLevel"] = level,
+            ["listStyle"] = listStyle
+        }
+    };
+
     /// <summary>
     /// Clones an existing block's text and attributes into a new block with
     /// <c>RawOffset = -1</c>. Used by SplitBlock to produce the second half.

@@ -402,6 +402,86 @@ public sealed class DocumentMutator(DocumentModel model)
         model.NotifyBlocksChanged();
     }
 
+    // ── List operations ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Inserts a new list-item block after the block at <paramref name="blockIndex"/>,
+    /// inheriting the same listLevel and listStyle. Returns the new block.
+    /// </summary>
+    public DocumentBlock InsertListItemAfter(int blockIndex)
+    {
+        var source   = model.Blocks[blockIndex];
+        int level    = source.Attributes.TryGetValue("listLevel", out var lv) && lv is int li ? li : 0;
+        string style = source.Attributes.TryGetValue("listStyle", out var ls) && ls is string s ? s : "bullet";
+        var newBlock = DocumentBlockFactory.NewListItem(string.Empty, level, style);
+        var insertAt = Math.Min(blockIndex + 1, model.Blocks.Count);
+        model.Blocks.Insert(insertAt, newBlock);
+
+        model.UndoEngine.Push(new BlockInsertUndoEntry { Model = model, Block = newBlock, BlockIndex = insertAt });
+        BlockMutated?.Invoke(this, new BlockMutatedArgs(newBlock, BlockMutationKind.Inserted));
+        model.NotifyBlocksChanged();
+        return newBlock;
+    }
+
+    /// <summary>
+    /// Toggles a block between list-item (with <paramref name="listStyle"/>) and paragraph.
+    /// When toggling off (already the requested style), converts back to paragraph.
+    /// </summary>
+    public void ToggleListStyle(int blockIndex, string listStyle)
+    {
+        if (blockIndex < 0 || blockIndex >= model.Blocks.Count) return;
+        var block     = model.Blocks[blockIndex];
+        bool isList   = block.Kind == "list-item";
+        bool sameStyle = isList && block.Attributes.TryGetValue("listStyle", out var ls) && ls as string == listStyle;
+
+        var before = TakeAttributeSnapshot(block);
+        if (sameStyle)
+        {
+            // Toggle off → convert to paragraph
+            // Create replacement: same text/children, kind=paragraph, no list attrs
+            var para = new DocumentBlock
+            {
+                Kind      = "paragraph",
+                Text      = block.Text,
+                RawOffset = -1,
+                RawLength = 0
+            };
+            foreach (var kv in block.Attributes)
+                if (kv.Key != "listLevel" && kv.Key != "listStyle")
+                    para.Attributes[kv.Key] = kv.Value;
+            foreach (var c in block.Children) para.Children.Add(c);
+            model.Blocks[blockIndex] = para;
+        }
+        else
+        {
+            // Convert to list-item (or change style)
+            var item = new DocumentBlock
+            {
+                Kind      = "list-item",
+                Text      = block.Text,
+                RawOffset = -1,
+                RawLength = 0
+            };
+            foreach (var kv in block.Attributes)
+                if (kv.Key != "listLevel" && kv.Key != "listStyle")
+                    item.Attributes[kv.Key] = kv.Value;
+            item.Attributes["listLevel"] = isList && block.Attributes.TryGetValue("listLevel", out var l) && l is int lv ? lv : 0;
+            item.Attributes["listStyle"] = listStyle;
+            foreach (var c in block.Children) item.Children.Add(c);
+            model.Blocks[blockIndex] = item;
+        }
+
+        var after = TakeAttributeSnapshot(model.Blocks[blockIndex]);
+        model.UndoEngine.Push(new RunAttributeUndoEntry
+        {
+            AttributeName   = "listStyle",
+            BeforeSnapshots = [before],
+            AfterSnapshots  = [after]
+        });
+        BlockMutated?.Invoke(this, new BlockMutatedArgs(model.Blocks[blockIndex], BlockMutationKind.AttributeChanged));
+        model.NotifyBlocksChanged();
+    }
+
     // ── Undo / Redo application ───────────────────────────────────────────────
 
     /// <summary>

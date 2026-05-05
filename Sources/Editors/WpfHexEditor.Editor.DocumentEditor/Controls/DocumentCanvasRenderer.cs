@@ -54,7 +54,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private const string BodyFontFamily  = "Georgia";
     private const string UIFontFamily    = "Segoe UI";
-    private const string IndentLevelKey  = "indentLevel";
+    private const string IndentLevelKey   = "indentLevel";
+    private const double ListIndentPerLevel = 24.0;
+    private const double ListBulletSize     = 5.0;
 
     // ── Events ────────────────────────────────────────────────────────────────
 
@@ -904,6 +906,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         double x    = _pageLeft + _pageSettings.MarginLeft;
         double maxW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
 
+        if (rb.Block.Kind == "list-item")
+        {
+            DrawListItem(dc, rb, x, y, maxW);
+            return;
+        }
+
         if (rb.Block.Kind == "table")
         {
             DrawTable(dc, rb, x, y, maxW);
@@ -982,6 +990,67 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             foreach (var ft in rb.FormattedLines)
             {
                 dc.DrawText(ft, new Point(drawX, lineY));
+                lineY += ft.Height + 2;
+            }
+        }
+    }
+
+    private void DrawListItem(DrawingContext dc, RenderBlock rb, double x, double y, double maxW)
+    {
+        int    level     = rb.Block.Attributes.TryGetValue("listLevel", out var lv) && lv is int li ? li : 0;
+        string style     = rb.Block.Attributes.TryGetValue("listStyle", out var ls) && ls is string s ? s : "bullet";
+        double indentW   = (level + 1) * ListIndentPerLevel;
+        double textX     = x + indentW;
+        double bulletCX  = x + indentW - ListIndentPerLevel * 0.5; // center of bullet column
+        double midY      = y + (rb.GlyphLines is { Count: > 0 } ? rb.GlyphLines[0].LineHeight / 2 : (_baseFontSize + 4) / 2);
+
+        EnsureBrushCache();
+        var fgBrush = _fgBrush ?? Brushes.WhiteSmoke;
+
+        if (style == "numbered")
+        {
+            // Count preceding consecutive list-items at the same level to derive the ordinal.
+            int ordinal = 1;
+            int bi = -1;
+            for (int i = 0; i < _blocks.Count; i++) { if (_blocks[i].Block == rb.Block) { bi = i; break; } }
+            for (int i = bi - 1; i >= 0; i--)
+            {
+                var prev = _blocks[i].Block;
+                if (prev.Kind != "list-item") break;
+                int prevLevel = prev.Attributes.TryGetValue("listLevel", out var pl) && pl is int pli ? pli : 0;
+                if (prevLevel != level) break;
+                ordinal++;
+            }
+            var ft = new FormattedText($"{ordinal}.", CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight, _bodyFace!, _baseFontSize - 1, fgBrush, GetPixelsPerDip());
+            dc.DrawText(ft, new Point(bulletCX - ft.Width / 2, y));
+        }
+        else
+        {
+            // Bullet — style varies by nesting level (●  ○  ■)
+            double r = ListBulletSize / 2;
+            switch (level % 3)
+            {
+                case 0: dc.DrawEllipse(fgBrush, null, new Point(bulletCX, midY), r, r); break;
+                case 1: dc.DrawEllipse(null, new Pen(fgBrush, 1.0), new Point(bulletCX, midY), r, r); break;
+                case 2:
+                    dc.DrawRectangle(fgBrush, null,
+                        new Rect(bulletCX - r + 1, midY - r + 1, r * 2 - 2, r * 2 - 2));
+                    break;
+            }
+        }
+
+        // Draw text to the right of the bullet column
+        if (rb.GlyphLines is { Count: > 0 })
+        {
+            DrawVisualLines(dc, rb.GlyphLines, textX, y, false, 1);
+        }
+        else if (rb.FormattedLines is { Count: > 0 })
+        {
+            double lineY = y;
+            foreach (var ft in rb.FormattedLines)
+            {
+                dc.DrawText(ft, new Point(textX, lineY));
                 lineY += ft.Height + 2;
             }
         }
@@ -1431,6 +1500,19 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 var ftLines = BuildInlineFormattedText(block, effW);
                 return new RenderBlock(block, y, h, 0, spaceAfter, ftLines, false, 0, severity,
                     glyphLines, indL, indR, indFL);
+            }
+
+            case "list-item":
+            {
+                int level      = block.Attributes.TryGetValue("listLevel", out var lv) && lv is int li ? li : 0;
+                double indentW = (level + 1) * ListIndentPerLevel;
+                double effW    = Math.Max(40, maxW - indentW);
+                var glyphLines = BuildGlyphLines(block, effW);
+                double h       = glyphLines.Count > 0
+                    ? glyphLines.Sum(vl => vl.LineHeight)
+                    : _baseFontSize + 4;
+                var ftLines = BuildInlineFormattedText(block, effW);
+                return new RenderBlock(block, y, h, 0, 3, ftLines, false, 0, severity, glyphLines, indentW, 0, 0);
             }
 
             case "table":
@@ -2156,7 +2238,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             case Key.Y when ctrl:  _mutator?.TryRedo();      e.Handled = true; break;
             case Key.Back:         DeleteAtCaret(forward: false); e.Handled = true; break;
             case Key.Delete:       DeleteAtCaret(forward: true);  e.Handled = true; break;
-            case Key.Return:       SplitBlockAtCaret();       e.Handled = true; break;
+            case Key.Return:       SplitBlockAtCaret();           e.Handled = true; break;
+            case Key.Tab when !shift && IsCaretOnListItem():  AdjustListLevel(+1); e.Handled = true; break;
+            case Key.Tab when shift  && IsCaretOnListItem():  AdjustListLevel(-1); e.Handled = true; break;
         case Key.Escape:
             if (!_selection.IsEmpty)
             {
@@ -3032,11 +3116,30 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private void SplitBlockAtCaret()
     {
         if (_mutator is null || _blocks.Count == 0) return;
-        int bi  = _caret.BlockIndex;
-        int off = Math.Clamp(_caret.CharOffset, 0, GetFlatText(bi).Length);
+        int bi    = _caret.BlockIndex;
+        var block = _blocks[bi].Block;
+        int off   = Math.Clamp(_caret.CharOffset, 0, GetFlatText(bi).Length);
+
+        // Enter on an empty list-item → exit the list (convert to paragraph)
+        if (block.Kind == "list-item" && string.IsNullOrEmpty(block.Text) && block.Children.Count == 0)
+        {
+            _mutator.ToggleListStyle(bi, block.Attributes.TryGetValue("listStyle", out var ls) && ls is string s ? s : "bullet");
+            _caret = new TextCaret(bi, 0, 0);
+            _selection.Anchor = _caret;
+            _selection.Focus  = _caret;
+            _rebuildPending = false;
+            RebuildLayout();
+            RefreshCaretVisual();
+            NotifyCaretBlockChangedIfNeeded();
+            NotifyCaretMoved();
+            return;
+        }
+
         MarkBlockDirty(bi);
         _mutator.SplitBlock(bi, off);
-        // Caret moves to start of newly created block
+
+        // After split: if the parent was a list-item, the second block inherits kind via CloneWithText.
+        // InsertListItemAfter is not needed — SplitBlock already copies kind+attrs.
         _caret = new TextCaret(bi + 1, 0, 0);
         _selection.Anchor = _caret;
         _selection.Focus  = _caret;
@@ -3238,6 +3341,58 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         InvalidateVisual();
         Focus();
         Keyboard.Focus(this);
+    }
+
+    // ── List helpers ──────────────────────────────────────────────────────────
+
+    private bool IsCaretOnListItem()
+    {
+        int bi = _caret.BlockIndex;
+        return bi >= 0 && bi < _blocks.Count && _blocks[bi].Block.Kind == "list-item";
+    }
+
+    private void AdjustListLevel(int delta)
+    {
+        if (_mutator is null || _blocks.Count == 0) return;
+        int bi    = _caret.BlockIndex;
+        var block = _blocks[bi].Block;
+        if (block.Kind != "list-item") return;
+        int cur   = block.Attributes.TryGetValue("listLevel", out var v) && v is int lv ? lv : 0;
+        int next  = Math.Clamp(cur + delta, 0, 8);
+        if (next == cur) return;
+        _mutator.SetBlockAttribute(block, "listLevel", next);
+        MarkBlockDirty(bi);
+        _rebuildPending = false;
+        RebuildLayout();
+        RefreshCaretVisual();
+    }
+
+    /// <summary>Toggles the caret block between bullet list-item and paragraph.</summary>
+    public void ToggleBulletList()
+    {
+        if (_mutator is null || _blocks.Count == 0) return;
+        int bi = _caret.BlockIndex >= 0 ? _caret.BlockIndex : (_selectedIndex >= 0 ? _selectedIndex : 0);
+        _mutator.ToggleListStyle(bi, "bullet");
+        MarkBlockDirty(bi);
+        _rebuildPending = false;
+        RebuildLayout();
+        RefreshCaretVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        Focus(); Keyboard.Focus(this);
+    }
+
+    /// <summary>Toggles the caret block between numbered list-item and paragraph.</summary>
+    public void ToggleNumberedList()
+    {
+        if (_mutator is null || _blocks.Count == 0) return;
+        int bi = _caret.BlockIndex >= 0 ? _caret.BlockIndex : (_selectedIndex >= 0 ? _selectedIndex : 0);
+        _mutator.ToggleListStyle(bi, "numbered");
+        MarkBlockDirty(bi);
+        _rebuildPending = false;
+        RebuildLayout();
+        RefreshCaretVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        Focus(); Keyboard.Focus(this);
     }
 
     /// <summary>Increases the indent level of the caret block by 1 (max 8).</summary>

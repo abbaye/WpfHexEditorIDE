@@ -87,6 +87,23 @@
 
             <Separator Style="{StaticResource PopSepStyle}"/>
 
+            <!-- Group 1b: List -->
+            <Button x:Name="PART_BulletListBtn"
+                    Style="{StaticResource PopBtnStyle}"
+                    ToolTip="{DynamicResource DocPopToolbar_TooltipBulletList}"
+                    Click="OnBulletListClicked">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8FD;" FontSize="13"/>
+            </Button>
+
+            <Button x:Name="PART_NumberedListBtn"
+                    Style="{StaticResource PopBtnStyle}"
+                    ToolTip="{DynamicResource DocPopToolbar_TooltipNumberedList}"
+                    Click="OnNumberedListClicked">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8FC;" FontSize="13"/>
+            </Button>
+
+            <Separator Style="{StaticResource PopSepStyle}"/>
+
             <!-- Group 2: Copy -->
             <Button x:Name="PART_CopyTextBtn"
                     Style="{StaticResource PopBtnStyle}"

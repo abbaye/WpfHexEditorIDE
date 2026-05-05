@@ -132,8 +132,19 @@ public partial class DocumentTextPane : UserControl
     public void ApplyFormat(string format)
     {
         if (_model is null) return;
-        PART_Renderer.ApplyFormatToSelection(format, true);
+        switch (format)
+        {
+            case "bullet-list":   PART_Renderer.ToggleBulletList();   break;
+            case "numbered-list": PART_Renderer.ToggleNumberedList(); break;
+            default:              PART_Renderer.ApplyFormatToSelection(format, true); break;
+        }
     }
+
+    /// <summary>Toggles the caret block as a bullet list item.</summary>
+    public void ToggleBulletList()   => PART_Renderer.ToggleBulletList();
+
+    /// <summary>Toggles the caret block as a numbered list item.</summary>
+    public void ToggleNumberedList() => PART_Renderer.ToggleNumberedList();
 
     public void ShowLoading(string message = "Loading…") => PART_Renderer.ShowLoading(message);
     public void ShowError(string message)                 => PART_Renderer.ShowError(message);
