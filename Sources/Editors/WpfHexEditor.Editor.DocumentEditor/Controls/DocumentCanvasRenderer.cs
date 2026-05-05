@@ -166,10 +166,13 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         AddVisualChild(_caretVisual);
 
-        MouseMove     += OnMouseMove;
-        MouseLeave    += OnMouseLeave;
-        MouseDown     += OnMouseDown;
-        MouseUp       += OnMouseUp;
+        // Use Preview variants so our handlers fire before WPF's built-in drag-detection
+        // routing, which would otherwise suppress MouseMove events during selection drag
+        // when AllowDrop = true.
+        PreviewMouseMove += OnMouseMove;
+        MouseLeave       += OnMouseLeave;
+        PreviewMouseDown += OnMouseDown;
+        PreviewMouseUp   += OnMouseUp;
         SizeChanged   += OnSizeChanged;
         GotFocus          += OnGotFocus;
         LostKeyboardFocus += OnLostFocus;
