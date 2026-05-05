@@ -1190,21 +1190,34 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (moduleItems.Count == 0) return;
 
-        // RebuildVisualTree re-invokes ContentFactory for every item — modules are now ready.
+        // RebuildVisualTree re-invokes ContentFactory — modules are ready this time.
         DockHost.RebuildVisualTree();
 
-        // Tabs that were not the active item in their group got LazyContentPlaceholder instead
-        // of the real panel. Force each one active briefly to trigger OnSelectionChanged →
-        // ContentFactory, then restore the original active item.
-        foreach (var item in moduleItems)
+        // Non-active tabs receive LazyContentPlaceholder and only resolve on first selection.
+        // Cycle SelectedIndex on each DockTabControl that owns a module item so
+        // OnSelectionChanged fires for every placeholder tab without visible flicker.
+        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, (Action)(() =>
         {
-            if (item.Owner is not { } group) continue;
-            if (group.ActiveItem == item) continue;
+            foreach (var tabControl in FindVisualChildren<WpfHexEditor.Docking.Wpf.DockTabControl>(DockHost))
+            {
+                var items = tabControl.Items.OfType<System.Windows.Controls.TabItem>().ToList();
+                int originalIndex = tabControl.SelectedIndex;
 
-            var prev = group.ActiveItem;
-            group.ActiveItem = item;
-            group.ActiveItem = prev;
-        }
+                for (int i = 0; i < items.Count; i++)
+                {
+                    if (items[i].Tag is not DockItem di) continue;
+                    if (!moduleItems.Contains(di)) continue;
+                    // Content is either a LazyContentPlaceholder (private) or our transparent Border.
+                    if (items[i].Content is System.Windows.Controls.UserControl) continue; // already real
+
+                    // Select the module tab to trigger OnSelectionChanged → ContentFactory.
+                    tabControl.SelectedIndex = i;
+                }
+
+                // Restore original selection.
+                tabControl.SelectedIndex = originalIndex;
+            }
+        }));
     }
 
     /// <summary>
