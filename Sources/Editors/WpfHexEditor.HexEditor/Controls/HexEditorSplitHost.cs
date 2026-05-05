@@ -279,13 +279,20 @@ namespace WpfHexEditor.HexEditor.Controls
 
         private void UpdateFocusBorders()
         {
+            // Focus borders are only meaningful when both panes are visible.
+            if (_secondaryEditor == null)
+            {
+                _primaryFocusBorder.BorderBrush   = Brushes.Transparent;
+                _secondaryFocusBorder.BorderBrush = Brushes.Transparent;
+                return;
+            }
+
             var active   = TryFindResource("CE_FocusBorder") as Brush
                          ?? TryFindResource("DockTabActiveBorderBrush") as Brush
                          ?? Brushes.DodgerBlue;
-            var inactive = Brushes.Transparent;
 
-            _primaryFocusBorder.BorderBrush   = ReferenceEquals(_activeEditor, _primaryEditor)   ? active : inactive;
-            _secondaryFocusBorder.BorderBrush = ReferenceEquals(_activeEditor, _secondaryEditor) ? active : inactive;
+            _primaryFocusBorder.BorderBrush   = ReferenceEquals(_activeEditor, _primaryEditor)   ? active : Brushes.Transparent;
+            _secondaryFocusBorder.BorderBrush = ReferenceEquals(_activeEditor, _secondaryEditor) ? active : Brushes.Transparent;
         }
 
         // ── IDocumentEditor — State ──────────────────────────────────────────
