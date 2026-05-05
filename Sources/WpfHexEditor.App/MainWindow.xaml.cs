@@ -1183,14 +1183,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (_layout is null) return;
 
-        bool hasPlaceholders = _layout.GetAllItems().Any(item =>
-            item.ContentId.StartsWith("panel-dbg-") ||
-            WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId));
+        var deferredIds = _layout.GetAllItems()
+            .Where(item => item.ContentId.StartsWith("panel-dbg-") ||
+                           WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId))
+            .Select(item => item.ContentId)
+            .ToList();
 
-        if (!hasPlaceholders) return;
+        if (deferredIds.Count == 0) return;
 
-        // EagerContentKey was set on each deferred item by GetOrDeferModulePanel.
-        // RebuildVisualTree now calls ContentFactory for all items — active or not.
+        // Evict the placeholder Border from the content cache so ContentFactory
+        // runs again for each deferred item on the next RebuildVisualTree.
+        foreach (var id in deferredIds)
+            DockHost.InvalidateContent(id);
+
         DockHost.RebuildVisualTree();
     }
 
