@@ -336,9 +336,14 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         get
         {
             if (_caret.BlockIndex < 0 || _caret.BlockIndex >= _blocks.Count) return -1;
+            var rb = _blocks[_caret.BlockIndex];
+            if (rb.GlyphLines is { Count: > 0 })
+            {
+                var (gx, _, _) = GetCaretXYFromGlyphLines(rb.GlyphLines, _caret.CharOffset);
+                return rb.IndentLeft + gx;
+            }
             var text = GetFlatText(_caret.BlockIndex);
             if (string.IsNullOrEmpty(text) || _caret.CharOffset <= 0) return 0;
-            var rb = _blocks[_caret.BlockIndex];
             double contentW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
             var ft = (rb.FormattedLines is { Count: > 0 })
                 ? rb.FormattedLines[0]
@@ -525,7 +530,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public double ViewportWidth  => _viewport.Width;
     public double ViewportHeight => _viewport.Height;
     public double HorizontalOffset => _offset.X;
-    public double VerticalOffset   => _offset.Y;
+    public double VerticalOffset     => _offset.Y;
+    public static double PageCanvasPadding => PageCanvasPad;
     public ScrollViewer? ScrollOwner { get => _scrollOwner; set => _scrollOwner = value; }
 
     public void LineUp()      => SetVerticalOffset(_offset.Y - 20);
@@ -2329,7 +2335,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     /// <summary>
     /// Returns the char offset in the block nearest to the given canvas point.
-    /// Uses a simple linear probe across char positions.
+    /// For glyph-rendered blocks uses GlyphLines advance widths (same metrics as rendering).
+    /// Falls back to FormattedText for blocks without GlyphLines.
     /// </summary>
     private int GetCharOffsetAtPoint(int blockIdx, Point canvasPt)
     {
@@ -2338,38 +2345,33 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var text = GetFlatText(blockIdx);
         if (string.IsNullOrEmpty(text)) return 0;
 
-        double originX = _pageLeft + _pageSettings.MarginLeft;
+        double originX = _pageLeft + _pageSettings.MarginLeft + rb.IndentLeft;
         double originY = PageCanvasPad + rb.Y - _offset.Y;
         double relX    = canvasPt.X - originX;
+        double relY    = canvasPt.Y - originY;
 
+        // Prefer GlyphLines — they use the exact same advance widths as the rendered text,
+        // so hit positions match what the user sees pixel-for-pixel.
+        if (rb.GlyphLines is { Count: > 0 })
+            return GetCharOffsetFromGlyphLines(rb.GlyphLines, relX, relY, text.Length);
+
+        // Fallback: FormattedText binary search (plain/table/image blocks).
+        double contentW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
         var ft = rb.FormattedLines is { Count: > 0 }
             ? rb.FormattedLines[0]
             : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
-                                _fgBrush ?? Brushes.Gray,
-                                Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight));
-
-        // For wrapped text, chars on later visual lines have Bounds.Left ≈ 0 again, so a
-        // simple Left-based binary search gives wrong results across line breaks.
-        // Correct approach: determine which visual line was clicked (by Y), then binary-search
-        // within that line's char range using Bounds.Left.
-        double relY = canvasPt.Y - originY;
+                                _fgBrush ?? Brushes.Gray, contentW);
 
         var vlines = GetVisualLines(blockIdx);
         VisualLine targetLine = vlines.Count > 0 ? vlines[^1] : new VisualLine(0, text.Length, 0, _baseFontSize + 2);
-
         if (vlines.Count > 0)
         {
             foreach (var vl in vlines)
             {
-                if (relY <= vl.Top + vl.Height)
-                {
-                    targetLine = vl;
-                    break;
-                }
+                if (relY <= vl.Top + vl.Height) { targetLine = vl; break; }
             }
         }
 
-        // Binary search within [targetLine.Start, targetLine.End] on Bounds.Left
         int lo = targetLine.Start, hi = targetLine.End;
         while (lo < hi)
         {
@@ -2379,12 +2381,6 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             if (geo.Bounds.Left <= relX) lo = mid + 1;
             else hi = mid;
         }
-
-        // The binary search above lands on the first char whose left edge is
-        // greater than relX, i.e. we are positioned to the LEFT of that char.
-        // Snap to whichever side of the previous glyph the click is closest
-        // to so the caret behaves the way Word / VS users expect (clicking on
-        // the right half of a char puts the caret after it).
         if (lo > targetLine.Start && lo <= targetLine.End)
         {
             var prevGeo = ft.BuildHighlightGeometry(new Point(0, 0), lo - 1, 1);
@@ -2395,6 +2391,74 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             }
         }
         return Math.Clamp(lo, 0, text.Length);
+    }
+
+    /// <summary>
+    /// Returns (contentX, lineTopY, lineHeight) for a caret at <paramref name="charOffset"/>
+    /// within the block's GlyphLines. All values are block-content-relative (no canvas offset).
+    /// </summary>
+    private static (double X, double Y, double H) GetCaretXYFromGlyphLines(
+        IReadOnlyList<Rendering.InlineVisualLine> glyphLines, int charOffset)
+    {
+        double lineTopY = 0;
+        foreach (var line in glyphLines)
+        {
+            if (charOffset <= line.CharEnd || line == glyphLines[^1])
+            {
+                // Walk segments to find the X position of charOffset.
+                double x = 0;
+                foreach (var seg in line.Segments)
+                {
+                    if (charOffset <= seg.CharStart)
+                        break; // caret is before this segment
+                    double segRight = seg.OffsetX;
+                    int charsInSeg  = Math.Min(seg.AdvanceWidths.Count, charOffset - seg.CharStart);
+                    for (int i = 0; i < charsInSeg; i++)
+                        segRight += seg.AdvanceWidths[i];
+                    x = segRight;
+                }
+                return (x, lineTopY, line.LineHeight);
+            }
+            lineTopY += line.LineHeight;
+        }
+        return (0, 0, glyphLines.Count > 0 ? glyphLines[0].LineHeight : 0);
+    }
+
+    /// <summary>
+    /// Hit-tests a click (relX, relY relative to block content origin) against GlyphLines.
+    /// Uses per-glyph advance widths — identical metrics to what DrawVisualLines renders.
+    /// </summary>
+    private static int GetCharOffsetFromGlyphLines(
+        IReadOnlyList<Rendering.InlineVisualLine> glyphLines, double relX, double relY, int textLen)
+    {
+        // Find which visual line the click lands on (Y axis).
+        double lineTopY = 0;
+        Rendering.InlineVisualLine? targetLine = glyphLines[^1];
+        foreach (var line in glyphLines)
+        {
+            if (relY <= lineTopY + line.LineHeight) { targetLine = line; break; }
+            lineTopY += line.LineHeight;
+        }
+
+        // Walk segments — seg.OffsetX is the absolute content-relative X of the segment start.
+        // Advances accumulate within the segment starting from seg.OffsetX.
+        foreach (var seg in targetLine.Segments)
+        {
+            double x = seg.OffsetX;
+            for (int i = 0; i < seg.AdvanceWidths.Count; i++)
+            {
+                double adv = seg.AdvanceWidths[i];
+                // Snap to midpoint: click on right half → caret after glyph.
+                if (relX < x + adv / 2)
+                    return Math.Clamp(seg.CharStart + i, 0, textLen);
+                if (relX < x + adv)
+                    return Math.Clamp(seg.CharStart + i + 1, 0, textLen);
+                x += adv;
+            }
+        }
+
+        // Click is past the last glyph on the line.
+        return Math.Clamp(targetLine.CharEnd, 0, textLen);
     }
 
     /// <summary>Returns the canvas point (top-left) of the caret insertion position.</summary>
@@ -2556,22 +2620,33 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var text = GetFlatText(_caret.BlockIndex);
         if (!string.IsNullOrEmpty(text))
         {
-            var ft = (!_caretFtDirty && rb.FormattedLines is { Count: > 0 })
-                ? rb.FormattedLines[0]
-                : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
-                                    _fgBrush ?? Brushes.Gray, contentW);
-
-            int probeChar = Math.Clamp(
-                _caret.CharOffset > 0 ? _caret.CharOffset - 1 : 0,
-                0, text.Length - 1);
-            var geo = ft.BuildHighlightGeometry(new Point(0, 0), probeChar, 1);
-
-            if (geo is not null && !geo.Bounds.IsEmpty)
+            // Use GlyphLines when available — same metrics as rendering, so caret X is pixel-accurate.
+            if (rb.GlyphLines is { Count: > 0 })
             {
-                caretY = blockScreenY + geo.Bounds.Top;
-                caretH = geo.Bounds.Height;
-                if (_caret.CharOffset > 0)
-                    caretX = contentX + geo.Bounds.Right;
+                var (gx, gy, gh) = GetCaretXYFromGlyphLines(rb.GlyphLines, _caret.CharOffset);
+                caretX = contentX + rb.IndentLeft + gx;
+                caretY = blockScreenY + gy;
+                caretH = gh > 0 ? gh : caretH;
+            }
+            else
+            {
+                var ft = (!_caretFtDirty && rb.FormattedLines is { Count: > 0 })
+                    ? rb.FormattedLines[0]
+                    : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
+                                        _fgBrush ?? Brushes.Gray, contentW);
+
+                int probeChar = Math.Clamp(
+                    _caret.CharOffset > 0 ? _caret.CharOffset - 1 : 0,
+                    0, text.Length - 1);
+                var geo = ft.BuildHighlightGeometry(new Point(0, 0), probeChar, 1);
+
+                if (geo is not null && !geo.Bounds.IsEmpty)
+                {
+                    caretY = blockScreenY + geo.Bounds.Top;
+                    caretH = geo.Bounds.Height;
+                    if (_caret.CharOffset > 0)
+                        caretX = contentX + geo.Bounds.Right;
+                }
             }
         }
 
@@ -2945,6 +3020,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         RebuildLayout();
         _caretVisible = true;
         RefreshCaretVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        NotifyCaretMoved();
     }
 
     private void SplitBlockAtCaret()
@@ -2961,6 +3038,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _rebuildPending = false;
         RebuildLayout();
         RefreshCaretVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        NotifyCaretMoved();
     }
 
     // ── Phase 12 public clipboard (Phase 13 fills in DeleteSelectionIfAny) ────
@@ -3224,7 +3303,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public void DeleteAtCaret(bool forward)
     {
         if (_isReadOnly || _mutator is null || _blocks.Count == 0) return;
-        if (!_selection.IsEmpty) { DeleteSelectionIfAny(); _rebuildPending = false; RebuildLayout(); RefreshCaretVisual(); return; }
+        if (!_selection.IsEmpty) { DeleteSelectionIfAny(); _rebuildPending = false; RebuildLayout(); RefreshCaretVisual(); NotifyCaretBlockChangedIfNeeded(); NotifyCaretMoved(); return; }
 
         int bi   = _caret.BlockIndex;
         int off  = _caret.CharOffset;
@@ -3246,6 +3325,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _rebuildPending = false;
         RebuildLayout();
         RefreshCaretVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        NotifyCaretMoved();
     }
 
     /// <summary>Selects all text in the document.</summary>

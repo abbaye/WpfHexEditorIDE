@@ -84,40 +84,63 @@ internal sealed class DocumentVerticalRuler : FrameworkElement
 
         dc.DrawRectangle(_bg, null, new Rect(0, 0, w, h));
 
-        // Top + bottom margin zones (top of first page only — fine for the static-ruler approximation).
-        double mTop    = PS.MarginTop    * Zoom;
-        double mBottom = PS.MarginBottom * Zoom;
-        dc.DrawRectangle(_marginZone, null, new Rect(0, 0,            w, mTop));
-        dc.DrawRectangle(_marginZone, null, new Rect(0, h - mBottom,  w, mBottom));
+        // Page content starts at PageCanvasPad in renderer canvas space.
+        // Ruler Y = 0 corresponds to renderer viewport top = scrollOffset.
+        // So page top in ruler space = PageCanvasPad - scrollOffset (may be negative when scrolled).
+        double scrollY   = _renderer.VerticalOffset * Zoom;
+        double pageTopY  = DocumentCanvasRenderer.PageCanvasPadding * Zoom - scrollY;
+        double mTop      = PS.MarginTop    * Zoom;
+        double mBottom   = PS.MarginBottom * Zoom;
+        double pageH     = (PS.MarginTop + PS.ContentHeight + PS.MarginBottom) * Zoom;
 
-        DrawGraduations(dc, w, h);
+        // Top margin zone (header band)
+        double topMarginRulerY = pageTopY;
+        if (topMarginRulerY < h && topMarginRulerY + mTop > 0)
+            dc.DrawRectangle(_marginZone, null, new Rect(0, Math.Max(0, topMarginRulerY),
+                w, Math.Min(mTop, h - Math.Max(0, topMarginRulerY))));
+
+        // Bottom margin zone (footer band)
+        double botMarginRulerY = pageTopY + pageH - mBottom;
+        if (botMarginRulerY < h && botMarginRulerY + mBottom > 0)
+            dc.DrawRectangle(_marginZone, null, new Rect(0, Math.Max(0, botMarginRulerY),
+                w, Math.Min(mBottom, h - Math.Max(0, botMarginRulerY))));
+
+        DrawGraduations(dc, w, h, pageTopY + mTop);
     }
 
-    private void DrawGraduations(DrawingContext dc, double w, double h)
+    // pageContentY0: ruler-local Y where page content (unit 0) begins.
+    private void DrawGraduations(DrawingContext dc, double w, double h, double pageContentY0)
     {
-        double pxPerUnit = (UseMetric ? PxPerCm : PxPerInch) * Zoom;
+        double pxPerUnit  = (UseMetric ? PxPerCm : PxPerInch) * Zoom;
         double minorEvery = UseMetric ? 0.5 : 0.125;
-        double y = 0;
-        int    i = 0;
-        while (y <= h)
+
+        // Start from the first unit that is visible (may be negative offset).
+        int startUnit = (int)Math.Floor(-pageContentY0 / pxPerUnit);
+        startUnit     = Math.Max(0, startUnit);
+
+        for (int i = startUnit; ; i++)
         {
-            dc.DrawLine(_tickPen, new Point(w - TickHeightMajor, y), new Point(w, y));
-            if (i > 0)
+            double y = pageContentY0 + i * pxPerUnit;
+            if (y > h) break;
+            if (y >= 0)
             {
-                var ft = new FormattedText(i.ToString(CultureInfo.CurrentCulture),
-                    CultureInfo.CurrentCulture, FlowDirection.LeftToRight, _typeface,
-                    LabelFontSize, _fg ?? Brushes.Gray, 1.0);
-                dc.DrawText(ft, new Point((w - ft.Width) / 2, y - ft.Height / 2));
+                dc.DrawLine(_tickPen, new Point(w - TickHeightMajor, y), new Point(w, y));
+                if (i > 0)
+                {
+                    var ft = new FormattedText(i.ToString(CultureInfo.CurrentCulture),
+                        CultureInfo.CurrentCulture, FlowDirection.LeftToRight, _typeface,
+                        LabelFontSize, _fg ?? Brushes.Gray, 1.0);
+                    dc.DrawText(ft, new Point((w - ft.Width) / 2, y - ft.Height / 2));
+                }
             }
 
             for (double m = minorEvery; m < 1.0; m += minorEvery)
             {
                 double ym = y + m * pxPerUnit;
                 if (ym > h) break;
-                dc.DrawLine(_tickPen, new Point(w - TickHeightMinor, ym), new Point(w, ym));
+                if (ym >= 0)
+                    dc.DrawLine(_tickPen, new Point(w - TickHeightMinor, ym), new Point(w, ym));
             }
-            y += 1.0 * pxPerUnit;
-            i++;
         }
     }
 
