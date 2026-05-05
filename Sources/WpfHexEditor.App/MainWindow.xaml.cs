@@ -1176,19 +1176,65 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (_assemblyExplorerModule is null || _layout is null) return;
 
-        bool needsRebuild = false;
         foreach (var item in _layout.GetAllItems())
         {
             if (_assemblyExplorerModule.IsKnownContentId(item.ContentId))
+                ReplaceTabContent(item, _assemblyExplorerModule.GetPanel(item.ContentId));
+        }
+    }
+
+    /// <summary>
+    /// Returns the real AssemblyExplorer panel if the module is ready, otherwise returns a
+    /// transparent placeholder and re-renders the tab once the module is initialised.
+    /// This handles the race where BuildContentForItem is called during layout restore
+    /// before InitializePluginSystemAsync has wired _assemblyExplorerModule.
+    /// </summary>
+    private UIElement GetOrDeferAssemblyExplorerPanel(DockItem item)
+    {
+        if (_assemblyExplorerModule is not null)
+            return _assemblyExplorerModule.GetPanel(item.ContentId) ?? CreateDocumentContent(item);
+
+        // Module not ready yet — return a transparent placeholder and schedule a re-render.
+        var placeholder = new System.Windows.Controls.Border { Background = System.Windows.Media.Brushes.Transparent };
+        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (Action)(() =>
+        {
+            if (_assemblyExplorerModule is null) return;
+            // Find the TabItem that holds this DockItem and replace its Content.
+            ReplaceTabContent(item, _assemblyExplorerModule.GetPanel(item.ContentId));
+        }));
+        return placeholder;
+    }
+
+    /// <summary>
+    /// Walks the visual tree of DockHost to find the TabItem whose Tag == item
+    /// and replaces its Content with the new element.
+    /// </summary>
+    private void ReplaceTabContent(DockItem item, UIElement? content)
+    {
+        if (content is null) return;
+        foreach (var tabControl in FindVisualChildren<System.Windows.Controls.TabControl>(DockHost))
+        {
+            foreach (var tab in tabControl.Items.OfType<System.Windows.Controls.TabItem>())
             {
-                // Clear the materialized key so DockTabControl re-invokes ContentFactory.
-                item.Metadata.Remove("_materialized");
-                needsRebuild = true;
+                if (tab.Tag == item)
+                {
+                    tab.Content = content;
+                    return;
+                }
             }
         }
+    }
 
-        if (needsRebuild)
-            DockHost.RebuildVisualTree();
+    private static IEnumerable<T> FindVisualChildren<T>(System.Windows.DependencyObject parent) where T : System.Windows.DependencyObject
+    {
+        var count = System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent);
+        for (int i = 0; i < count; i++)
+        {
+            var child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
+            if (child is T t) yield return t;
+            foreach (var grandchild in FindVisualChildren<T>(child))
+                yield return grandchild;
+        }
     }
 
     // Layout pruning logic moved to Services.LayoutPersistenceService (Phase 4 refactoring)
@@ -1592,8 +1638,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             FormatBrowserContentId         => CreateFormatBrowserContent(),
             FormatCatalogDocContentId      => CreateFormatCatalogContent(),
             _ when item.ContentId.StartsWith("panel-dbg-")          => _debugModule?.GetPanel(item.ContentId) ?? CreateDocumentContent(item),
-            _ when _assemblyExplorerModule is not null && _assemblyExplorerModule.IsKnownContentId(item.ContentId)
-                                                                    => _assemblyExplorerModule.GetPanel(item.ContentId) ?? CreateDocumentContent(item),
+            _ when WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId)
+                                                                    => GetOrDeferAssemblyExplorerPanel(item),
             _ when item.ContentId.StartsWith("doc-class-diagram-") => CreateClassDiagramGhostContent(item),
             _ when item.ContentId.StartsWith("doc-new-text-")   => CreateEmptyTextEditorContent(item),
             _ when item.ContentId.StartsWith("doc-new-code-")  => CreateEmptyCodeEditorContent(item),

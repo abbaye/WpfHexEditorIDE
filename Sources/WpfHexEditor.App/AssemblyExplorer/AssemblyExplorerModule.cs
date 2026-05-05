@@ -119,10 +119,17 @@ internal sealed class AssemblyExplorerModule
     }
 
     /// <summary>
-    /// Returns true if the AssemblyExplorer panel should be brought up
-    /// (e.g. View > Assembly Explorer menu click) for the given ContentId.
+    /// Instance check — returns true for AssemblyExplorer ContentIds.
     /// </summary>
     public bool IsKnownContentId(string contentId)
+        => contentId == ContentIdMain || contentId == ContentIdSearch || contentId == ContentIdDiff;
+
+    /// <summary>
+    /// Static check usable before the module instance is constructed.
+    /// Allows BuildContentForItem to recognise AssemblyExplorer ContentIds
+    /// even when <see cref="AssemblyExplorerModule"/> is not yet initialised.
+    /// </summary>
+    public static bool IsKnownContentIdStatic(string contentId)
         => contentId == ContentIdMain || contentId == ContentIdSearch || contentId == ContentIdDiff;
 
     /// <summary>
