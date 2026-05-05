@@ -1183,12 +1183,28 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (_layout is null) return;
 
-        bool hasPlaceholders = _layout.GetAllItems().Any(item =>
-            item.ContentId.StartsWith("panel-dbg-") ||
-            WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId));
+        var moduleItems = _layout.GetAllItems()
+            .Where(item => item.ContentId.StartsWith("panel-dbg-") ||
+                           WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId))
+            .ToList();
 
-        if (hasPlaceholders)
-            DockHost.RebuildVisualTree();
+        if (moduleItems.Count == 0) return;
+
+        // RebuildVisualTree re-invokes ContentFactory for every item — modules are now ready.
+        DockHost.RebuildVisualTree();
+
+        // Tabs that were not the active item in their group got LazyContentPlaceholder instead
+        // of the real panel. Force each one active briefly to trigger OnSelectionChanged →
+        // ContentFactory, then restore the original active item.
+        foreach (var item in moduleItems)
+        {
+            if (item.Owner is not { } group) continue;
+            if (group.ActiveItem == item) continue;
+
+            var prev = group.ActiveItem;
+            group.ActiveItem = item;
+            group.ActiveItem = prev;
+        }
     }
 
     /// <summary>
