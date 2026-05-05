@@ -1172,13 +1172,21 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// CreateDocumentContent fallback during layout load (before _assemblyExplorerModule
     /// was initialized). Called once from InitializePluginSystemAsync after the module is ready.
     /// </summary>
-    private void RefreshAssemblyExplorerPanels()
+    /// <summary>
+    /// Replaces any transparent placeholder tabs that were created during layout restore
+    /// (before DebugModule / AssemblyExplorerModule were initialised) with the real panels.
+    /// Called once from InitializePluginSystemAsync after both modules are ready.
+    /// </summary>
+    private void RefreshModulePanels()
     {
-        if (_assemblyExplorerModule is null || _layout is null) return;
+        if (_layout is null) return;
 
         foreach (var item in _layout.GetAllItems())
         {
-            if (_assemblyExplorerModule.IsKnownContentId(item.ContentId))
+            if (_debugModule is not null && item.ContentId.StartsWith("panel-dbg-"))
+                ReplaceTabContent(item, _debugModule.GetPanel(item.ContentId));
+            else if (_assemblyExplorerModule is not null
+                  && WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId))
                 ReplaceTabContent(item, _assemblyExplorerModule.GetPanel(item.ContentId));
         }
     }
@@ -1189,18 +1197,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// This handles the race where BuildContentForItem is called during layout restore
     /// before InitializePluginSystemAsync has wired _assemblyExplorerModule.
     /// </summary>
-    private UIElement GetOrDeferAssemblyExplorerPanel(DockItem item)
+    /// <summary>
+    /// Returns the real panel if the module is ready (moduleReady() == true), otherwise
+    /// returns a transparent placeholder and schedules a Dispatcher callback that replaces
+    /// the tab content once the module becomes available. Covers both DebugModule and
+    /// AssemblyExplorerModule, which are initialised after the layout restore.
+    /// </summary>
+    private UIElement GetOrDeferModulePanel(DockItem item, Func<UIElement?> getPanel, Func<bool> moduleReady)
     {
-        if (_assemblyExplorerModule is not null)
-            return _assemblyExplorerModule.GetPanel(item.ContentId) ?? CreateDocumentContent(item);
+        if (moduleReady())
+            return getPanel() ?? CreateDocumentContent(item);
 
-        // Module not ready yet — return a transparent placeholder and schedule a re-render.
         var placeholder = new System.Windows.Controls.Border { Background = System.Windows.Media.Brushes.Transparent };
         Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (Action)(() =>
         {
-            if (_assemblyExplorerModule is null) return;
-            // Find the TabItem that holds this DockItem and replace its Content.
-            ReplaceTabContent(item, _assemblyExplorerModule.GetPanel(item.ContentId));
+            if (!moduleReady()) return;
+            ReplaceTabContent(item, getPanel());
         }));
         return placeholder;
     }
@@ -1627,9 +1639,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             MarkdownOutlinePanelContentId  => CreateMarkdownOutlinePanelContent(),
             FormatBrowserContentId         => CreateFormatBrowserContent(),
             FormatCatalogDocContentId      => CreateFormatCatalogContent(),
-            _ when item.ContentId.StartsWith("panel-dbg-")          => _debugModule?.GetPanel(item.ContentId) ?? CreateDocumentContent(item),
+            _ when item.ContentId.StartsWith("panel-dbg-")
+                                                                    => GetOrDeferModulePanel(item, () => _debugModule?.GetPanel(item.ContentId), () => _debugModule is not null),
             _ when WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId)
-                                                                    => GetOrDeferAssemblyExplorerPanel(item),
+                                                                    => GetOrDeferModulePanel(item, () => _assemblyExplorerModule?.GetPanel(item.ContentId), () => _assemblyExplorerModule is not null),
             _ when item.ContentId.StartsWith("doc-class-diagram-") => CreateClassDiagramGhostContent(item),
             _ when item.ContentId.StartsWith("doc-new-text-")   => CreateEmptyTextEditorContent(item),
             _ when item.ContentId.StartsWith("doc-new-code-")  => CreateEmptyCodeEditorContent(item),

@@ -484,11 +484,10 @@ public partial class MainWindow
             _assemblyExplorerModule = new WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule();
             await _assemblyExplorerModule.InitializeAsync(hostContext).ConfigureAwait(true);
 
-            // If the saved layout contained AssemblyExplorer panels, they were rendered as
-            // the CreateDocumentContent fallback because _assemblyExplorerModule was null
-            // at LoadSavedLayoutOrDefault time. Force a visual rebuild now that the module
-            // is ready so ContentFactory can return the real panels.
-            RefreshAssemblyExplorerPanels();
+            // Both modules are now ready. Any panel-dbg-* or AssemblyExplorer panels that were
+            // rendered as a CreateDocumentContent placeholder during layout restore (because the
+            // modules were null at that time) are replaced with the real panels now.
+            RefreshModulePanels();
 
             OptionsPageRegistry.RegisterDynamic(
                 "Assembly Explorer",

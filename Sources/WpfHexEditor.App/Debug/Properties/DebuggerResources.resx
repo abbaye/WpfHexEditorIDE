@@ -345,4 +345,12 @@
   <data name="DBG_CopyLine"           xml:space="preserve"><value>Copy Line</value></data>
   <data name="DBG_RefreshTooltip"     xml:space="preserve"><value>Refresh (F5)</value></data>
   <data name="DBG_FilterTooltip"      xml:space="preserve"><value>Filter variables by name</value></data>
+  <data name="DBG_CS_SearchPlaceholder"  xml:space="preserve"><value>Search (Ctrl+E)</value></data>
+  <data name="DBG_CS_ShowAllThreads"     xml:space="preserve"><value>Show All Threads</value></data>
+  <data name="DBG_CS_ShowExternalCode"   xml:space="preserve"><value>Show External Code</value></data>
+  <data name="DBG_CS_NavBack"            xml:space="preserve"><value>Navigate Back</value></data>
+  <data name="DBG_CS_NavForward"         xml:space="preserve"><value>Navigate Forward</value></data>
+  <data name="DBG_CS_ColLang"            xml:space="preserve"><value>Lang</value></data>
+  <data name="DBG_CS_RunToFrame"         xml:space="preserve"><value>Run to Frame</value></data>
+  <data name="DBG_CS_SwitchToFrame"      xml:space="preserve"><value>Switch to Frame</value></data>
 </root>
