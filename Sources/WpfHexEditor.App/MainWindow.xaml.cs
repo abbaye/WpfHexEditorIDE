@@ -1122,9 +1122,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var layout = Services.LayoutPersistenceService.LoadFromDisk();
         if (layout is not null)
         {
-            RestoreWindowState(layout);
             Services.LayoutPersistenceService.PruneStaleDocumentItems(layout);
             Services.LayoutPersistenceService.PruneDuplicateDocumentItems(layout);
+
+            if (!Services.LayoutPersistenceService.IsLayoutHealthy(layout, out var reason))
+            {
+                Services.LayoutPersistenceService.BackupLayoutFile();
+                OutputLogger.Warn(
+                    $"[Layout] Saved layout was reset — {reason} " +
+                    $"A backup was saved alongside {Services.LayoutPersistenceService.LayoutFilePath}.");
+                LoadDefaultLayoutFromResource(restoreWindowState: true);
+                return;
+            }
+
+            RestoreWindowState(layout);
             ApplyLayout(layout);
             EnsureErrorPanel();
             _layoutWasRestoredFromFile = true;
@@ -2475,12 +2486,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _ = _compareFileLaunchService?.LaunchAsync(e.FilePath) ?? Task.CompletedTask;
         };
 
+        // Wrap in a HexEditorSplitHost so the inline split-toggle button opens an
+        // intra-tab synchronized second pane (shared ByteProvider, independent
+        // scroll/selection), matching CodeEditor's behaviour.
+        var splitHost = new WpfHexEditor.HexEditor.Controls.HexEditorSplitHost(hexEditor);
+
         // -- Phase 12: in-memory new document --------------------------
         if (isNewFile)
         {
             hexEditor.OpenNew(displayName ?? "New1.bin");
             OutputLogger.Info($"New in-memory document: {displayName}");
-            return hexEditor;
+            return splitHost;
         }
 
         // -- File-backed document ---------------------------------------
@@ -2493,7 +2509,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             File.WriteAllBytes(tempFile, data);
             hexEditor.OpenFile(tempFile);
             OutputLogger.Debug($"New hex document created (temp: {tempFile})");
-            return hexEditor;
+            return splitHost;
         }
 
         if (File.Exists(filePath))
@@ -2518,7 +2534,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             hexEditor.ApplyThemeFromResources();
 
             OutputLogger.Info($"Opened: {filePath}");
-            return hexEditor;
+            return splitHost;
         }
 
         OutputLogger.Error($"File not found: {filePath}");
@@ -3037,11 +3053,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Unwraps the actual editor element from a <see cref="WrapWithInfoBar"/> Grid wrapper,
-    /// or returns <paramref name="content"/> directly when it is not a wrapper.
+    /// Unwraps the actual editor element from a wrapper layer.
+    /// Recognised wrappers:
+    ///   • <see cref="WrapWithInfoBar"/> Grid (Tag = inner editor)
+    ///   • <see cref="WpfHexEditor.HexEditor.Controls.HexEditorSplitHost"/> (PrimaryEditor)
+    /// Returns <paramref name="content"/> directly when it is not a known wrapper.
     /// </summary>
     private static UIElement UnwrapEditor(UIElement content)
-        => content is Grid { Tag: UIElement inner } ? inner : content;
+    {
+        if (content is Grid { Tag: UIElement inner } gridWrapper)
+            content = inner;
+        if (content is WpfHexEditor.HexEditor.Controls.HexEditorSplitHost splitHost)
+            return splitHost.PrimaryEditor;
+        return content;
+    }
 
     private static UIElement CreateDocumentContent(DockItem item) =>
         new TextBox

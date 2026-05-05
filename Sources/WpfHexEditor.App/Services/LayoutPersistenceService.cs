@@ -10,6 +10,7 @@
 //////////////////////////////////////////////
 
 using System.IO;
+using System.Linq;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Docking.Core.Serialization;
@@ -82,6 +83,51 @@ internal static class LayoutPersistenceService
         {
             OutputLogger.Error($"Failed to load layout from {filePath}: {ex.Message}");
             return null;
+        }
+    }
+
+    /// <summary>
+    /// Maximum number of dock items a persisted layout may contain before it is
+    /// considered potentially corrupt or incompatible. Layouts exceeding this
+    /// threshold are rejected at load time so the IDE falls back gracefully.
+    /// </summary>
+    public const int MaxLayoutItems = 60;
+
+    /// <summary>
+    /// Returns true if the layout is within acceptable complexity bounds.
+    /// When false, <paramref name="reason"/> describes the problem.
+    /// </summary>
+    public static bool IsLayoutHealthy(DockLayoutRoot layout, out string reason)
+    {
+        var totalItems = layout.GetAllItems().Count();
+        if (totalItems > MaxLayoutItems)
+        {
+            reason = $"layout contains {totalItems} items (limit: {MaxLayoutItems}). " +
+                     "It may be from an older version or a configuration that is no longer supported.";
+            return false;
+        }
+
+        reason = string.Empty;
+        return true;
+    }
+
+    /// <summary>
+    /// Creates a timestamped backup of the layout file next to the original.
+    /// Safe to call even if the file does not exist.
+    /// </summary>
+    public static void BackupLayoutFile()
+    {
+        if (!File.Exists(LayoutFilePath)) return;
+        try
+        {
+            var stamp  = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            var backup = Path.ChangeExtension(LayoutFilePath, $".{stamp}.bak.json");
+            File.Copy(LayoutFilePath, backup, overwrite: true);
+            OutputLogger.Info($"Layout backup created: {backup}");
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Failed to create layout backup: {ex.Message}");
         }
     }
 
