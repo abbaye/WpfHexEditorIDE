@@ -155,6 +155,10 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
     private System.Windows.Shapes.Rectangle? _hoverBand;
     private double _cachedW, _cachedH;
     private int    _cachedBlockCount;
+    // Total drawn content height in minimap pixels (totalLines * lineH).
+    // Used by RedrawOverlay to scale the viewport rect to the block image, not
+    // to the full scroll extent (which includes page padding/gaps).
+    private double _contentPixelHeight;
 
     private void Redraw()
     {
@@ -222,6 +226,7 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
         // never so dense that individual lines disappear (min 1.4 dip).
         double rawScale = h / Math.Max(1, lines.Count);
         double lineH    = Math.Clamp(rawScale, 1.4, 4.0);
+        _contentPixelHeight = lines.Count * lineH;
         double rowFill  = Math.Max(0.8, lineH * 0.55);
         double indent   = 4;
         double maxW     = w - indent * 2;
@@ -293,7 +298,14 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
             return;
         }
 
-        double scale = h / _scrollExtent;
+        // Map scroll positions to minimap pixels using the actual drawn content height,
+        // not the full minimap height. The block strips cover _contentPixelHeight pixels
+        // (which may be less than h when lineH is clamped); the full scroll extent
+        // includes page padding and inter-page gaps beyond the text content. Using
+        // _contentPixelHeight / _scrollExtent as the scale correctly sizes the viewport
+        // rect relative to what the block strips represent.
+        double contentH = _contentPixelHeight > 0 ? _contentPixelHeight : h;
+        double scale = contentH / _scrollExtent;
         double vpH   = Math.Max(8, _viewportHeight * scale);
         double top   = Math.Clamp(_scrollOffset * scale, 0, h - vpH);
 
