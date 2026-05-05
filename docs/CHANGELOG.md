@@ -6,6 +6,53 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.6.5.110] — 2026-05-05 — DocumentEditor Glyph-Accurate Caret, Ruler Scroll-Tracking, Debug Module Integration
+
+### ✨ Added
+
+- **DocumentEditor: glyph-accurate hit-test** — new `GetCharOffsetFromGlyphLines` static helper uses `PlacedSegment.AdvanceWidths` and `InlineVisualLine.CharStart/CharEnd` from the GlyphRun pipeline (same pipeline as `DrawVisualLines`) to map a screen point to a document character offset; eliminates the class of misalignment caused by the previously used `FormattedText` path which wraps at different column positions than `GlyphTypeface`-backed rendering
+- **DocumentEditor: glyph-accurate caret positioning** — new `GetCaretXYFromGlyphLines` static helper derives the caret beam X, Y, and height from `PlacedSegment.AdvanceWidths`; `RefreshCaretVisual` and `CaretContentX` both use this path when GlyphLines are available; `FormattedText` path retained as fallback for table/image blocks with no GlyphLines
+- **DocumentEditor: `PageCanvasPadding` public static accessor** — `DocumentCanvasRenderer.PageCanvasPadding` exposes the canvas-space top padding constant so dependent controls (vertical ruler, minimap) can compute scroll-relative geometry without internal coupling
+- **`DebugModule` + `DebugVisualizerRegistry`** — Debugger functionality merged from `WpfHexEditor.Plugins.Debugger` into `WpfHexEditor.App/Debug` as a first-class core module (`DebugModule`); `IDebugAdapterRegistry` and `IDebugVisualizerRegistry` SDK extension points preserved; debug panels (Locals, Autos, Watch, Call Stack, Threads, Tasks, Registers, Memory, Disassembly) pre-register shells at startup for immediate docking restore
+- **VS-style Call Stack toolbar** — search field, navigate backward/forward (←/→), Show All Threads, Show External Code toggles wired in `CallStackPanelViewModel`
+
+### 🔧 Changed
+
+- **DocumentEditor: synchronous `RebuildLayout` in all edit paths** — `InsertTextAtCaret`, `SplitBlockAtCaret`, and `DeleteAtCaret` now call `RebuildLayout()` synchronously (instead of posting at `Render` priority) before `RefreshCaretVisual`; eliminates the one-frame stale layout that caused a visible offset between the typed character and the caret position
+- **DocumentEditor: `SetVerticalOffset` fires `PageGeometryChanged`** — vertical scroll now notifies all `PageGeometryChanged` subscribers (rulers, minimap viewport) in addition to the existing `PageChanged` event; ruler was previously not redrawn on scroll
+- **DocumentEditor: ruler graduation anchored to scroll offset** — `DrawGraduations` now receives `pageContentY0 = PageCanvasPadding × zoom − scrollOffset × zoom`; unit-0 of the scale always aligns with the first content line regardless of scroll position; margin zones clip correctly to the visible viewport
+- **DocumentEditor: caret notifications from all mouse paths** — `OnMouseDown` and `OnMouseUp` (pending-collapse resolution) now call `NotifyCaretBlockChangedIfNeeded` and `NotifyCaretMoved`; horizontal ruler indent markers and any `CaretMoved` subscriber now update on paragraph click, not only on keyboard edits
+- **`DebugModule` panel restore** — debug panel shells are pre-built at registration time (not deferred until first dock) so the docking engine can restore their layout positions from `layout.json` on startup; `EagerContentKey` set for all nine debug panel types
+
+### 🐛 Fixed
+
+- **Caret / insert position mismatch** — characters typed at a wrapped line were inserted at the wrong offset because `GetCharOffsetAtPoint` used `FormattedText` geometry (different wrap width from GlyphRun); fixed by routing all hit-testing through `GetCharOffsetFromGlyphLines`
+- **Vertical ruler not tracking document scroll** — ruler was anchored to `VerticalOffset = 0` because `SetVerticalOffset` did not fire `PageGeometryChanged`; ruler subscription was not triggered on scroll; both issues fixed
+- **Ruler indent markers frozen on paragraph click** — `OnMouseDown` and edit-path operations did not call caret-moved notifications; horizontal ruler indent markers only updated when `CommitCaret` was reached via keyboard; fixed by adding both `Notify*` calls in all caret-setting paths
+- **Document opens dirty** — `UndoEngine.MarkSaved()` and `model.IsDirty = false` now called in `BindModel` so a freshly opened document does not show the unsaved indicator
+- **`GetCaretX` ArgumentOutOfRangeException** — guard added when `_caretOffset` exceeds the current block's text length after a deletion; caret clamped to `[0, textLen]`
+- **Minimap viewport rect disproportionate** — viewport rectangle in `DocumentMiniMapControl` was computed using pre-zoom metrics; fixed to use the same scaled content height as the renderer
+- **`AssemblyExplorer` blank panel on restore** — dual-cache bug where `DockControl._displayContent` kept serving a stale placeholder after `_contentCache` was cleared; both caches now invalidated together
+- **Module panel restore dual-cache** — clearing only `DockControl._contentCache` left `_displayContent` serving the stale placeholder on next activation; both caches must be cleared on `EagerContentKey` miss
+
+---
+
+## [0.6.5.16] — 2026-05-04 — HexEditor Split View, DocEditor Rulers, Options Localization, Docking Auto-Reset
+
+### ✨ Added
+
+- **HexEditor Split View (#229)** — `HexEditorSplitHost` wraps two `HexEditor` instances sharing the same `ByteProvider`; inline split toggle at top of scrollbar; independent scroll, selection, and caret per pane; focus borders in split mode only; status bar hidden on secondary pane; `ByteProvider.DataChanged` propagates modify/insert/delete to the peer pane; breadcrumb bar, format detection blocks, undo/redo, and custom background overlays all synced to secondary; standalone-safe (`HexEditorSplitHost` used in `Sample.HexEditor`); `IDocumentEditor` undo/redo always delegated to primary pane (shared `UndoEngine`); options toggle `ShowSplitToggleButton`; layout persistence
+- **DocEditor Page Rulers** — interactive horizontal and vertical rulers tracking zoom level, caret position, and page geometry; drag-to-resize top and bottom page margins; `LayoutTransform`-based zoom with snap-to-pixel in `GlyphRunRenderer`; minimap viewport rect fix (pre-zoom metrics); drag-to-move Word/VS-style selection; stale `FormattedText` eviction on `MarkBlockDirty`
+- **Code/Text Editor Options Localization** — 4 new `OptionsResources` keys (`CodeEditor_Tab_Formatting`, `CodeEditor_HighlightCurrentLine`, `TextEditor_WordWrap`, `TextEditor_HighlightCurrentLine`) across 29 locales; `CodeEditorFormattingPage` and `TextEditorOptionsPage` fully converted to DynamicResource; `ErrorPanelOptionsPage` added
+- **Docking Layout Auto-Reset** — corrupt or oversized saved layouts detected and discarded on startup instead of crashing; layout persistence save/restore on close/load wired in `MainWindow`
+
+### 🐛 Fixed
+
+- **HexEditor `ByteProvider.DataChanged`** — now propagates all mutation types (modify / insert / delete) to the peer pane in split view; previous implementation only forwarded modification events
+- **DocEditor ruler zoom alignment** — ruler horizontal origin computed via `TranslatePoint` from renderer canvas to ruler control; handles margin, padding, and container offsets correctly at all zoom levels
+
+---
+
 ## [0.6.5.15] — 2026-05-01 — NuGet Wave, 790+ Formats, 27-Language Localization, WpfDocking 0.9.7
 
 ### ✨ Added

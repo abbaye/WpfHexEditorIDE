@@ -22,7 +22,7 @@
 
 ### Partial Class Decomposition
 
-`MainWindow` is split into 5 files, each owning a distinct concern:
+`MainWindow` is split into 6 files, each owning a distinct concern:
 
 | File | Concern |
 |------|---------|
@@ -31,6 +31,7 @@
 | `MainWindow.Build.cs` | Build system wiring, configurations, startup project, build commands |
 | `MainWindow.FileChangeBar.cs` | External file-change detection and reload pipeline |
 | `MainWindow.PluginSystem.cs` | Plugin discovery/load, service adapter wiring, IDE EventBus, Plugin Manager tab |
+| `MainWindow.Commands.cs` | `IIDECommand` registration, keyboard gesture bindings, Tools menu entries |
 
 ### Service Adapter Pattern
 
@@ -49,6 +50,15 @@ Every IDE subsystem is exposed to plugins through a typed adapter implementing a
 | `TerminalServiceImpl` | `ITerminalService` | Terminal sessions |
 | `SolutionExplorerServiceImpl` | `ISolutionExplorerService` | Solution tree navigation |
 
+### Core App Modules
+
+Built-in functionality that was previously external plugins but is now integrated directly into the App project as first-class modules:
+
+| Module | Folder | Description |
+|--------|--------|-------------|
+| `DebugModule` | `Debug/` | DAP-based integrated debugger — nine panels (Locals, Autos, Watch, Call Stack, Threads, Tasks, Registers, Memory, Disassembly); `IDebugAdapterRegistry` + `IDebugVisualizerRegistry` extension points preserved for SDK plugins; VS-style Call Stack toolbar (search, navigate ←/→, Show All Threads, Show External Code) |
+| `AssemblyExplorerModule` | `AssemblyExplorer/` | .NET PE tree, C# / VB.NET decompilation, ILSpy backend, CFG canvas, assembly diff, ECMA-335 token→offset, hex sync; lazy activation (Dormant until first open) |
+
 ### Null / Stub Services
 
 `NullCodeEditorService` and `NullParsedFieldService` are no-op implementations returned when no relevant editor is active, preventing null-reference errors in plugin code.
@@ -65,7 +75,21 @@ WpfHexEditor.App/
 ├── MainWindow.Build.cs                     — Build system
 ├── MainWindow.FileChangeBar.cs             — File monitor
 ├── MainWindow.PluginSystem.cs              — Plugin system
+├── MainWindow.Commands.cs                  — IIDECommand registry, keyboard gestures, Tools menu
 ├── OutputLogger.cs                         — Static logging facade → OutputPanel
+│
+├── Debug/                                  — DebugModule (core, not a plugin)
+│   ├── DebugModule.cs                      — Module registration + panel shell pre-build
+│   ├── Panels/                             — Locals, Autos, Watch, CallStack, Threads, Tasks,
+│   │                                         Registers, Memory, Disassembly XAML panels
+│   └── ViewModels/                         — Panel ViewModels (DAP-wired)
+│
+├── AssemblyExplorer/                       — AssemblyExplorerModule (core, not a plugin)
+│   ├── AssemblyExplorerModule.cs           — Module registration + lazy activation
+│   └── ...                                 — Views, ViewModels, Services
+│
+├── Services/
+│   └── DebugVisualizerRegistry.cs          — IDebugVisualizerRegistry implementation
 │
 ├── Build/
 │   ├── BuildErrorListAdapter.cs            — Routes build diagnostics → ErrorPanel
@@ -121,6 +145,9 @@ MainWindow.OnLoaded()
   ├─ Restore docking layout from %AppData%\WpfHexEditor\layout.json
   ├─ Create all singleton panels (SolutionExplorer, Output, Errors, Terminal, …)
   ├─ InitDocumentManager() — subscribe to title/dirty events
+  ├─ RegisterCoreModules()
+  │    ├─ DebugModule.Register() — pre-build 9 debug panel shells; wire IDebugAdapterRegistry
+  │    └─ AssemblyExplorerModule.Register() — register Dormant; activate on first open
   ├─ InitializePluginSystemAsync()
   │    ├─ Build all service adapters
   │    ├─ Assemble IDEHostContext
@@ -183,6 +210,16 @@ Build command (F6 / Ctrl+Shift+B)
 | `panel-errors` | Error List |
 | `panel-terminal` | Integrated Terminal |
 | `plugin-manager` | Plugin Manager document tab |
+| `panel-debug-locals` | Locals debug panel |
+| `panel-debug-autos` | Autos debug panel |
+| `panel-debug-watch` | Watch debug panel |
+| `panel-debug-callstack` | Call Stack debug panel |
+| `panel-debug-threads` | Threads debug panel |
+| `panel-debug-tasks` | Tasks debug panel |
+| `panel-debug-registers` | Registers debug panel |
+| `panel-debug-memory` | Memory Window debug panel |
+| `panel-debug-disassembly` | Disassembly debug panel |
+| `panel-assembly-explorer` | Assembly Explorer panel |
 | `doc-{uuid}` | Any open document |
 | `doc-projprops-{name}` | Solution/project property pages |
 | `doc-nuget-solution-{name}` | Solution-level NuGet manager |
@@ -203,12 +240,14 @@ Build command (F6 / Ctrl+Shift+B)
 | Project | Role |
 |---------|------|
 | `WpfHexEditor.Shell` | Docking engine + 8 themes |
-| `WpfHexEditor.Editor.Core` | `IDocumentEditor`, `DocumentManager` |
+| `WpfHexEditor.Editor.Core` | `IDocumentEditor`, `DocumentManager`, `UndoEngine`, `IDialogService` |
 | `WpfHexEditor.PluginHost` | Plugin discovery + loading |
 | `WpfHexEditor.BuildSystem` | Build orchestration engine |
 | `WpfHexEditor.ProjectSystem` | Solution / project model |
 | `WpfHexEditor.Panels.IDE` | Solution Explorer, Properties panels |
 | `WpfHexEditor.Terminal` | Integrated terminal |
+| `WpfHexEditor.Core.LSP.Client` | JSON-RPC LSP client engine |
+| `WpfHexEditor.Core.Roslyn` | In-process Roslyn language client |
 | All 14 Editor modules | Pluggable editor controls |
 
 ---
