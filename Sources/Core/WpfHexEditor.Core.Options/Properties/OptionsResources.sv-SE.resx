@@ -651,4 +651,5 @@
   <data name="Opt_Preview_Label" xml:space="preserve">
     <value>Förhandsvisning</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Visa växlingsknapp för delad vy</value></data>
 </root>

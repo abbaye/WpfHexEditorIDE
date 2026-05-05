@@ -182,6 +182,9 @@ public sealed class EditorSettingsService
         hex.ShowAsciiColumnHighlight = d.ShowAsciiColumnHighlight;
         hex.ShowRowHighlight         = d.ShowRowHighlight;
 
+        // Split view toggle
+        hex.IsSplitToggleVisible          = d.ShowSplitToggleButton;
+
         // Breadcrumb bar
         hex.ShowBreadcrumbBar             = d.ShowBreadcrumbBar;
         hex.BreadcrumbOffsetFormat        = (WpfHexEditor.HexEditor.Controls.BreadcrumbOffsetFormat)d.BreadcrumbOffsetFormat;

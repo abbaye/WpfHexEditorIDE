@@ -52,6 +52,9 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
             CheckShowColumnHighlight.IsChecked      = s.HexEditorDefaults.ShowColumnHighlight;
             CheckShowAsciiColumnHighlight.IsChecked = s.HexEditorDefaults.ShowAsciiColumnHighlight;
             CheckShowRowHighlight.IsChecked         = s.HexEditorDefaults.ShowRowHighlight;
+
+            // Split view toggle
+            CheckShowSplitToggleButton.IsChecked    = s.HexEditorDefaults.ShowSplitToggleButton;
         }
         finally { _loading = false; }
     }
@@ -87,6 +90,8 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
         s.HexEditorDefaults.ShowColumnHighlight      = CheckShowColumnHighlight.IsChecked      == true;
         s.HexEditorDefaults.ShowAsciiColumnHighlight = CheckShowAsciiColumnHighlight.IsChecked == true;
         s.HexEditorDefaults.ShowRowHighlight         = CheckShowRowHighlight.IsChecked         == true;
+
+        s.HexEditorDefaults.ShowSplitToggleButton    = CheckShowSplitToggleButton.IsChecked    == true;
     }
 
     // -- Control handlers -------------------------------------------------

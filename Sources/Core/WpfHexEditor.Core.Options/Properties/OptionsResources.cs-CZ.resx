@@ -345,4 +345,5 @@
   <data name="HexStatus_ShowEditMode" xml:space="preserve"><value>Zobrazit režim úprav</value></data>
   <data name="HexStatus_ShowBytesPerLine" xml:space="preserve"><value>Zobrazit bajty na řádek</value></data>
   <data name="HexStatus_ShowRefreshRate" xml:space="preserve"><value>Zobrazit frekvenci obnovení</value></data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Zobrazit tlačítko rozděleného zobrazení</value></data>
 </root>

@@ -25,6 +25,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using WpfHexEditor.Core.Events;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.HexEditor.Controls
@@ -39,22 +40,34 @@ namespace WpfHexEditor.HexEditor.Controls
     {
         private const double SplitterHeight = 4.0;
 
-        private readonly HexEditor    _primaryEditor;
-        private          HexEditor    _secondaryEditor; // lazily created on first split
-        private readonly GridSplitter _splitter;
-        private readonly Border       _primaryFocusBorder;
-        private readonly Border       _secondaryFocusBorder;
+        private readonly HexEditor _primaryEditor;
+        private          HexEditor _secondaryEditor; // lazily created on first split
+        private GridSplitter       _splitter        = null!;
+        private Border             _primaryFocusBorder   = null!;
+        private Border             _secondaryFocusBorder = null!;
 
-        private readonly RowDefinition _primaryRow;
-        private readonly RowDefinition _splitterRow;
-        private readonly RowDefinition _secondaryRow;
+        private RowDefinition _primaryRow   = null!;
+        private RowDefinition _splitterRow  = null!;
+        private RowDefinition _secondaryRow = null!;
 
         // The pane that most recently received focus — IDocumentEditor delegates here.
         private HexEditor _activeEditor;
 
-        // ── Constructor ──────────────────────────────────────────────────────
+        // ── Constructors ─────────────────────────────────────────────────────
 
-        public HexEditorSplitHost()
+        /// <summary>Wraps a fresh <see cref="HexEditor"/> instance.</summary>
+        public HexEditorSplitHost() : this(new HexEditor()) { }
+
+        /// <summary>Wraps an existing <see cref="HexEditor"/> as the primary pane.</summary>
+        public HexEditorSplitHost(HexEditor primaryEditor)
+        {
+            if (primaryEditor == null) throw new ArgumentNullException(nameof(primaryEditor));
+            _primaryEditor = primaryEditor;
+            _primaryEditor.IsSplitToggleVisible = true;
+            BuildLayout();
+        }
+
+        private void BuildLayout()
         {
             // Row layout:
             //  Row 0 = primary HexEditor (star)
@@ -69,10 +82,7 @@ namespace WpfHexEditor.HexEditor.Controls
             RowDefinitions.Add(_secondaryRow);
 
             // -- Primary editor (Row 0, wrapped in a focus border) ----------------
-            _primaryEditor = new HexEditor
-            {
-                IsSplitToggleVisible = true,
-            };
+            // _primaryEditor was assigned in the constructor.
             _primaryEditor.SplitRequested += OnPrimarySplitRequested;
 
             _primaryFocusBorder = new Border
@@ -160,6 +170,7 @@ namespace WpfHexEditor.HexEditor.Controls
                 _secondaryEditor = new HexEditor
                 {
                     IsSplitToggleVisible = false, // toggle lives only on the primary
+                    ShowStatusBar        = false,  // status bar belongs to the primary pane only
                 };
                 _secondaryEditor.GotFocus += OnSecondaryGotFocus;
                 WireEditorEvents(_secondaryEditor);
@@ -167,6 +178,14 @@ namespace WpfHexEditor.HexEditor.Controls
             }
 
             _secondaryEditor.AttachToProvider(provider);
+
+            // Propagate custom background blocks (whfmt format detection overlays, bookmarks, etc.)
+            SyncCustomBackgroundBlocks();
+            _primaryEditor.CustomBackgroundBlockChanged += OnPrimaryBlocksChanged;
+
+            // When a byte is edited in either pane, refresh the other pane so both stay in sync.
+            _primaryEditor.ByteModified += OnPrimaryByteModified;
+            _secondaryEditor.ByteModified += OnSecondaryByteModified;
 
             double currentHeight = _primaryRow.ActualHeight;
             double half = Math.Max(80, currentHeight / 2);
@@ -187,8 +206,12 @@ namespace WpfHexEditor.HexEditor.Controls
             _splitter.Visibility = Visibility.Collapsed;
             _secondaryFocusBorder.Visibility = Visibility.Collapsed;
 
+            _primaryEditor.CustomBackgroundBlockChanged -= OnPrimaryBlocksChanged;
+            _primaryEditor.ByteModified                -= OnPrimaryByteModified;
+
             if (_secondaryEditor != null)
             {
+                _secondaryEditor.ByteModified -= OnSecondaryByteModified;
                 UnwireEditorEvents(_secondaryEditor);
                 _secondaryEditor.GotFocus -= OnSecondaryGotFocus;
                 _secondaryEditor.DetachFromProvider();
@@ -200,6 +223,36 @@ namespace WpfHexEditor.HexEditor.Controls
             _activeEditor = _primaryEditor;
             UpdateFocusBorders();
             _primaryEditor.Focus();
+        }
+
+        // ── Secondary pane sync ──────────────────────────────────────────────
+
+        // Called by the primary editor's ByteModified event so the secondary viewport
+        // repaints when the user edits bytes in the primary (or vice-versa).
+        private void OnPrimaryByteModified(object sender, Core.Events.ByteModifiedEventArgs e)
+        {
+            if (_secondaryEditor == null) return;
+            // The secondary shares the same ByteProvider; its ViewModel already has the
+            // updated data — just trigger a visual refresh.
+            _secondaryEditor.RefreshView(refreshData: true);
+        }
+
+        private void OnSecondaryByteModified(object sender, Core.Events.ByteModifiedEventArgs e)
+        {
+            _primaryEditor.RefreshView(refreshData: true);
+        }
+
+        private void SyncCustomBackgroundBlocks()
+        {
+            if (_secondaryEditor == null) return;
+            _secondaryEditor.ClearCustomBackgroundBlock();
+            foreach (var block in _primaryEditor.CustomBackgroundService.GetAllBlocks())
+                _secondaryEditor.AddCustomBackgroundBlock(block);
+        }
+
+        private void OnPrimaryBlocksChanged(object sender, Core.Events.CustomBackgroundBlockEventArgs e)
+        {
+            SyncCustomBackgroundBlocks();
         }
 
         // ── Focus tracking ───────────────────────────────────────────────────
@@ -231,8 +284,10 @@ namespace WpfHexEditor.HexEditor.Controls
         // ── IDocumentEditor — State ──────────────────────────────────────────
 
         bool IDocumentEditor.IsDirty => ((IDocumentEditor)_primaryEditor).IsDirty;
-        bool IDocumentEditor.CanUndo => _activeEditor.CanUndo;
-        bool IDocumentEditor.CanRedo => _activeEditor.CanRedo;
+        // Undo/Redo state and commands always route through the primary editor where the
+        // shared UndoEngine (DocumentManager) or ByteProvider undo stack is attached.
+        bool IDocumentEditor.CanUndo => ((IDocumentEditor)_primaryEditor).CanUndo;
+        bool IDocumentEditor.CanRedo => ((IDocumentEditor)_primaryEditor).CanRedo;
 
         bool IDocumentEditor.IsReadOnly
         {
@@ -250,8 +305,8 @@ namespace WpfHexEditor.HexEditor.Controls
 
         // ── IDocumentEditor — Commands (delegate to active pane) ─────────────
 
-        ICommand IDocumentEditor.UndoCommand      => ((IDocumentEditor)_activeEditor).UndoCommand;
-        ICommand IDocumentEditor.RedoCommand      => ((IDocumentEditor)_activeEditor).RedoCommand;
+        ICommand IDocumentEditor.UndoCommand      => ((IDocumentEditor)_primaryEditor).UndoCommand;
+        ICommand IDocumentEditor.RedoCommand      => ((IDocumentEditor)_primaryEditor).RedoCommand;
         ICommand IDocumentEditor.SaveCommand      => ((IDocumentEditor)_primaryEditor).SaveCommand;
         ICommand IDocumentEditor.CopyCommand      => ((IDocumentEditor)_activeEditor).CopyCommand;
         ICommand IDocumentEditor.CutCommand       => ((IDocumentEditor)_activeEditor).CutCommand;
@@ -261,8 +316,8 @@ namespace WpfHexEditor.HexEditor.Controls
 
         // ── IDocumentEditor — Methods ────────────────────────────────────────
 
-        void IDocumentEditor.Undo()      => _activeEditor.Undo();
-        void IDocumentEditor.Redo()      => _activeEditor.Redo();
+        void IDocumentEditor.Undo()      => _primaryEditor.Undo();
+        void IDocumentEditor.Redo()      => _primaryEditor.Redo();
         void IDocumentEditor.Save()      => ((IDocumentEditor)_primaryEditor).Save();
         Task IDocumentEditor.SaveAsync(CancellationToken ct)
             => ((IDocumentEditor)_primaryEditor).SaveAsync(ct);

@@ -651,4 +651,5 @@
   <data name="Opt_Preview_Label" xml:space="preserve">
     <value>पूर्वावलोकन</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>विभाजित दृश्य टॉगल बटन दिखाएं</value></data>
 </root>

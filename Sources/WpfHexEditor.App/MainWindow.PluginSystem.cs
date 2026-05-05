@@ -73,6 +73,7 @@ public partial class MainWindow
     private WpfHexEditor.App.Debug.DebugModule?                 _debugModule;
     private WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule? _assemblyExplorerModule;
     private WpfHexEditor.App.Services.ScriptingServiceImpl?     _scriptingService;
+    private WpfHexEditor.App.Services.TabGroupService?          _tabGroupService;
     private readonly FocusContextService _focusContextService = new();
 
     // Service adapters (lazily set in InitializePluginSystemAsync after layout is ready)
@@ -385,6 +386,7 @@ public partial class MainWindow
             var uiControlFactory      = new WpfHexEditor.App.Services.UIControlFactory(syntaxColoringService);
 
             var tabGroupService = new WpfHexEditor.App.Services.TabGroupService(DockHost);
+            _tabGroupService = tabGroupService;
 
             var hostContext = new IDEHostContext(
                 documentHost:        _documentHostService,
@@ -477,10 +479,16 @@ public partial class MainWindow
             _debugModule.Initialize(hostContext);
 
             // AssemblyExplorer module — formerly WpfHexEditor.Plugins.AssemblyExplorer (ADR-011).
-            // InitializeAsync schedules session restore on the background scheduler;
-            // the synchronous portion (panel + menu registration) completes inline.
+            // Lazy activation: InitializeAsync only registers menus + light event subscriptions.
+            // Panels/ViewModels/decompiler backend are built in EnsureActivated on first use.
             _assemblyExplorerModule = new WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule();
             await _assemblyExplorerModule.InitializeAsync(hostContext).ConfigureAwait(true);
+
+            // If the saved layout contained AssemblyExplorer panels, they were rendered as
+            // the CreateDocumentContent fallback because _assemblyExplorerModule was null
+            // at LoadSavedLayoutOrDefault time. Force a visual rebuild now that the module
+            // is ready so ContentFactory can return the real panels.
+            RefreshAssemblyExplorerPanels();
 
             OptionsPageRegistry.RegisterDynamic(
                 "Assembly Explorer",

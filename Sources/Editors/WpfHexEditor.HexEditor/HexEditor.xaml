@@ -421,7 +421,7 @@
                                       PreviewKeyDown="Content_KeyDown"/>
             </ScrollViewer>
 
-            <!-- Vertical scrollbar -->
+            <!-- Vertical scrollbar — top margin reserves space for the split-toggle button. -->
             <ScrollBar Grid.Column="1"
                        x:Name="VerticalScroll"
                        Orientation="Vertical"
@@ -430,7 +430,8 @@
                        Maximum="1000"
                        ViewportSize="20"
                        SmallChange="1"
-                       LargeChange="10"/>
+                       LargeChange="10"
+                       Margin="0,22,0,0"/>
 
             <!-- Scroll markers overlay (V1 compatible) -->
             <controls:ScrollMarkerPanel Grid.Column="1"
@@ -438,7 +439,51 @@
                                          Panel.ZIndex="1"
                                          Width="18"
                                          HorizontalAlignment="Right"
-                                         Margin="0,18,0,18"/>
+                                         Margin="0,40,0,18"/>
+
+            <!-- Split-view toggle — sits above the scrollbar in its column.
+                 Visibility wired by IsSplitToggleVisible DP; click raises SplitRequested. -->
+            <ToggleButton x:Name="SplitToggleButton"
+                          Grid.Column="1"
+                          Width="18" Height="18"
+                          Margin="0,2,0,0"
+                          Padding="0"
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Center"
+                          FontFamily="Segoe MDL2 Assets"
+                          FontSize="10"
+                          Content="&#xE7F4;"
+                          ToolTip="{DynamicResource HexEditor_SplitView_Tooltip}"
+                          Cursor="Hand"
+                          Panel.ZIndex="3"
+                          Foreground="{DynamicResource ScrollBarThumbBrush}"
+                          Visibility="Visible"
+                          Click="SplitToggleButton_Click">
+                <ToggleButton.Template>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="0"
+                                CornerRadius="2">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              TextElement.Foreground="{TemplateBinding Foreground}"
+                                              TextElement.FontFamily="{TemplateBinding FontFamily}"
+                                              TextElement.FontSize="{TemplateBinding FontSize}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ScrollBarBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ScrollBarThumbBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource HeaderBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </ToggleButton.Template>
+            </ToggleButton>
 
             <!-- Progress overlay for long-running operations -->
             <controls:ProgressOverlay x:Name="ProgressOverlay"
@@ -452,27 +497,6 @@
                                              Grid.Column="0"
                                              IsHitTestVisible="False"
                                              Panel.ZIndex="2"/>
-
-            <!-- Split-view toggle — sits at the top of the scrollbar column.
-                 Visibility wired by HostWantsSplitToggle DP; click raises SplitRequested. -->
-            <ToggleButton x:Name="SplitToggleButton"
-                          Grid.Column="1"
-                          Width="18" Height="18"
-                          Margin="0,0,0,0"
-                          Padding="0"
-                          VerticalAlignment="Top"
-                          HorizontalAlignment="Center"
-                          FontFamily="Segoe MDL2 Assets"
-                          FontSize="10"
-                          Content="&#xE7F4;"
-                          ToolTip="{DynamicResource HexEditor_SplitView_Tooltip}"
-                          Background="Transparent"
-                          BorderThickness="0"
-                          Cursor="Hand"
-                          Panel.ZIndex="3"
-                          Foreground="{DynamicResource HeaderTextBrush}"
-                          Visibility="Collapsed"
-                          Click="SplitToggleButton_Click"/>
 
             <!-- Canvas overlay — allows the QuickSearchBar to be dragged anywhere.
                  No Background (null) so empty areas let clicks through; the bar

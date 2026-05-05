@@ -633,4 +633,5 @@
   <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
     <value>Vis opdateringshastighed</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Vis knap til opdelt visning</value></data>
 </root>

@@ -651,4 +651,5 @@
   <data name="Opt_Preview_Label" xml:space="preserve">
     <value>미리 보기</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>분할 보기 전환 버튼 표시</value></data>
 </root>

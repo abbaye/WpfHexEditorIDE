@@ -651,4 +651,5 @@
   <data name="Opt_Preview_Label" xml:space="preserve">
     <value>Vorschau</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Schaltfläche zum Teilen anzeigen</value></data>
 </root>

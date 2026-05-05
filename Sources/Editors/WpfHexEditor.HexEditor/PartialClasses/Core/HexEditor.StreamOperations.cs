@@ -101,8 +101,9 @@ namespace WpfHexEditor.HexEditor
                 IsModified = false;
                 IsFileOrStreamLoaded = true;  // FIX: Update read-only DP for settings panel
 
-                // Subscribe to property changes
+                // Subscribe to property changes + byte modifications
                 _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+                _viewModel.ByteModified   += ViewModel_ByteModified;
 
                 // Calculate initial visible lines
                 Dispatcher.BeginInvoke(new Action(() =>
@@ -205,8 +206,9 @@ namespace WpfHexEditor.HexEditor
                 IsModified = false;
                 IsFileOrStreamLoaded = true;  // FIX: Update read-only DP for settings panel
 
-                // Subscribe to property changes
+                // Subscribe to property changes + byte modifications
                 _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+                _viewModel.ByteModified   += ViewModel_ByteModified;
 
                 // Calculate initial visible lines
                 Dispatcher.BeginInvoke(new Action(() =>

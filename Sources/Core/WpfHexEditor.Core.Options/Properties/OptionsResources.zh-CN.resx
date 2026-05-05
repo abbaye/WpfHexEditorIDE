@@ -651,4 +651,5 @@
   <data name="Opt_Preview_Label" xml:space="preserve">
     <value>预览</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>显示拆分视图切换按钮</value></data>
 </root>

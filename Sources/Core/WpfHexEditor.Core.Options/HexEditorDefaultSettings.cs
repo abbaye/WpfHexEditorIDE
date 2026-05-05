@@ -143,6 +143,15 @@ public sealed class HexEditorDefaultSettings
     /// <summary>Show the active-row (line) highlight behind the cursor row.</summary>
     public bool ShowRowHighlight { get; set; } = true;
 
+    // -- Split View -------------------------------------------------------
+
+    /// <summary>
+    /// Show the small split-view toggle button at the top of the vertical scrollbar.
+    /// Click raises <c>HexEditor.SplitRequested</c> for hosts (e.g. <c>HexEditorSplitHost</c>)
+    /// to open or close a synchronized second pane.
+    /// </summary>
+    public bool ShowSplitToggleButton { get; set; } = true;
+
     // -- Breadcrumb Bar ---------------------------------------------------
 
     /// <summary>Show the breadcrumb bar above the hex viewport.</summary>

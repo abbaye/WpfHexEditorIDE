@@ -608,4 +608,5 @@
   <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
     <value>Показувати частоту оновлення</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Показати кнопку розділеного перегляду</value></data>
 </root>

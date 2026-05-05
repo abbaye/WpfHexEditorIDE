@@ -486,10 +486,10 @@
                 <ColumnDefinition Width="Auto"/> <!-- Settings Panel -->
             </Grid.ColumnDefinitions>
 
-            <!-- HexEditor Control -->
-            <hexEditor:HexEditor x:Name="HexEditorControl"
-                                Grid.Column="0"
-                                Margin="4"/>
+            <!-- HexEditor Control — wrapped in split host so the inline split toggle works standalone -->
+            <hexControls:HexEditorSplitHost x:Name="HexEditorSplitHostControl"
+                                            Grid.Column="0"
+                                            Margin="4"/>
 
             <!-- Settings Panel (Slide-in from right) -->
             <hexControls:HexEditorSettings x:Name="HexEditorSettingsPanel"

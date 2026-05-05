@@ -633,4 +633,5 @@
   <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
     <value>แสดงอัตราการรีเฟรช</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>แสดงปุ่มสลับมุมมองแบบแยก</value></data>
 </root>

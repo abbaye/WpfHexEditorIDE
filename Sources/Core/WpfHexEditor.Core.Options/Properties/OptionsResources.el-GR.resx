@@ -633,4 +633,5 @@
   <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
     <value>Εμφάνιση ρυθμού ανανέωσης</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Εμφάνιση κουμπιού διαχωρισμού προβολής</value></data>
 </root>

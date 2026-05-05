@@ -633,4 +633,5 @@
   <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
     <value>Näytä päivitystaajuus</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Näytä jaetun näkymän vaihtopainike</value></data>
 </root>

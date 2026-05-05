@@ -16,12 +16,23 @@
 using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using WpfHexEditor.Core.Events;
 using WpfHexEditor.HexEditor.ViewModels;
 
 namespace WpfHexEditor.HexEditor
 {
     public partial class HexEditor
     {
+        // ── ViewModel byte-modified relay ────────────────────────────────────
+
+        /// <summary>
+        /// Forwards <see cref="HexEditorViewModel.ByteModified"/> to the public
+        /// <see cref="HexEditor.ByteModified"/> event so consumers (shared UndoEngine
+        /// bridge, plugins, scrollbar markers) can react to byte edits.
+        /// </summary>
+        private void ViewModel_ByteModified(object sender, ByteModifiedEventArgs e)
+            => OnByteModified(e);
+
         // ── Split-toggle button DPs + event ──────────────────────────────────
 
         /// <summary>
@@ -31,7 +42,7 @@ namespace WpfHexEditor.HexEditor
         /// </summary>
         public static readonly DependencyProperty IsSplitToggleVisibleProperty =
             DependencyProperty.Register(nameof(IsSplitToggleVisible), typeof(bool), typeof(HexEditor),
-                new PropertyMetadata(false, OnIsSplitToggleVisibleChanged));
+                new PropertyMetadata(true, OnIsSplitToggleVisibleChanged));
 
         public bool IsSplitToggleVisible
         {
@@ -107,6 +118,7 @@ namespace WpfHexEditor.HexEditor
                 if (_viewModel != null)
                 {
                     _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                    _viewModel.ByteModified   -= ViewModel_ByteModified;
                     _viewModel = null;
                 }
 
@@ -135,6 +147,7 @@ namespace WpfHexEditor.HexEditor
                 IsFileOrStreamLoaded = true;
 
                 _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+                _viewModel.ByteModified   += ViewModel_ByteModified;
 
                 Dispatcher.BeginInvoke(new Action(UpdateVisibleLines),
                     System.Windows.Threading.DispatcherPriority.ApplicationIdle);
@@ -161,6 +174,7 @@ namespace WpfHexEditor.HexEditor
             if (_viewModel != null)
             {
                 _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                _viewModel.ByteModified   -= ViewModel_ByteModified;
                 // Note: no _viewModel.Close() — shared provider must stay open.
                 _viewModel = null;
             }

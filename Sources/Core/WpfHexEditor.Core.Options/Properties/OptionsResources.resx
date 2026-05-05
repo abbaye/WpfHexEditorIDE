@@ -527,4 +527,5 @@
   <data name="DocOpt_BlockHighlightColor"              xml:space="preserve"><value>Block hover highlight</value></data>
   <data name="DocOpt_SelectedBlockColor"               xml:space="preserve"><value>Selected block</value></data>
   <data name="DocOpt_ForensicAlertColor"               xml:space="preserve"><value>Forensic alert overlay</value></data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Show split view toggle button</value></data>
 </root>

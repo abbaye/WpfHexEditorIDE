@@ -112,6 +112,60 @@ internal static class LayoutPersistenceService
     }
 
     /// <summary>
+    /// Removes all document tabs (doc-file-*, doc-hex-*, doc-proj-*, etc.) from the layout
+    /// to reduce complexity while preserving panel positions (Solution Explorer, Output, etc.).
+    /// Used as a recovery step when a layout exceeds <see cref="MaxLayoutItems"/>.
+    /// </summary>
+    public static int PruneAllDocumentItems(DockLayoutRoot layout)
+    {
+        var pruned = new List<string>();
+
+        PruneAllDocsFromNode(layout.RootNode, pruned);
+        PruneDocsFromList(layout.FloatingItems, pruned);
+        PruneDocsFromList(layout.AutoHideItems, pruned);
+        PruneDocsFromList(layout.HiddenItems,   pruned);
+
+        if (pruned.Count > 0)
+            OutputLogger.Info($"Layout recovery: removed {pruned.Count} document tab(s) to restore healthy complexity.");
+
+        return pruned.Count;
+    }
+
+    private static void PruneAllDocsFromNode(DockNode node, List<string> pruned)
+    {
+        switch (node)
+        {
+            case DockGroupNode group:
+                foreach (var item in group.Items.ToList())
+                {
+                    if (IsDocumentItem(item))
+                    {
+                        group.RemoveItem(item);
+                        pruned.Add(item.Title ?? item.ContentId);
+                    }
+                }
+                break;
+
+            case DockSplitNode split:
+                foreach (var child in split.Children)
+                    PruneAllDocsFromNode(child, pruned);
+                break;
+        }
+    }
+
+    private static void PruneDocsFromList(List<DockItem> items, List<string> pruned)
+    {
+        for (int i = items.Count - 1; i >= 0; i--)
+        {
+            if (IsDocumentItem(items[i]))
+            {
+                pruned.Add(items[i].Title ?? items[i].ContentId);
+                items.RemoveAt(i);
+            }
+        }
+    }
+
+    /// <summary>
     /// Creates a timestamped backup of the layout file next to the original.
     /// Safe to call even if the file does not exist.
     /// </summary>

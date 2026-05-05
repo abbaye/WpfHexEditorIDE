@@ -5,7 +5,7 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 
 > **Legend:** 🔧 In Progress · 🔜 Planned · ✅ Done (see CHANGELOG)
 >
-> 📅 *Last revised: 2026-05-01*
+> 📅 *Last revised: 2026-05-04*
 
 ---
 
@@ -258,6 +258,64 @@ This section presents VS-level concepts for the IDE, focusing only on features *
 | #191 | **Core Source Analysis (Roslyn)** | C# incremental Roslyn parser replacing regex-based `SourceOutlineEngine`; VB.NET / F# parser support; cross-language symbol resolution; semantic model for LSP providers; `#if` / `#pragma` conditional compilation region handling. |
 | #192 | **F# Full Language Support** | `FSharp.whfmt` syntax definition (keywords, computation expressions `async { }` / `seq { }` / `task { }`, active patterns, discriminated union arms, F# operators `\|>` / `>>` / `<-`); `LanguageRegistry` registration for `.fs` / `.fsx` / `.fsi`; `LspServerRegistry` auto-detect `fsautocomplete` (Ionide) with PATH check + install hint; Assembly Explorer F# decompilation language mapping; `DocumentManager` extension map update. See **DevPlan #9**. |
 | #193 | **VB.NET Full Language Support** | `VBNet.whfmt` syntax definition (VB.NET keywords, `End Class` / `End Sub` / `End Function` block detection, `#Region` / `#End Region` named folding, `'` line comments, `'''` XML-doc comments, `&H` / `&B` / `&O` number literals, attribute `<…>` patterns); `LanguageRegistry` registration for `.vb`; OmniSharp `vbnet` language ID registration; Assembly Explorer VB.NET language mapping. See **DevPlan #9**. |
+
+---
+
+## 🔜 Planned — HexEditor Control (Internal — Low-Level)
+
+Features internal to the `WPFHexaEditor` control itself — engine, ByteProvider, rendering, selection, in-buffer manipulation. Not panels or plugins.
+
+| Feature # | Title | Description |
+|-----------|-------|-------------|
+| #194 | **Streaming ByteProvider for files >4 GB** | Switch large-file path to `MemoryMappedFile` with sliding 64 KB views; lift the current ~2 GB ceiling; lazy materialization of edit deltas. Enables forensic disk image analysis without saturating RAM. |
+| #195 | **Copy-on-write virtual edits** | Replace whole-buffer mutation with `Dictionary<long, byte>` overlay merged on read. Allows multi-GB files to be edited paying only for actual changes; foundation for true streaming edits. |
+| #196 | **Undo/Redo branching tree** | Replace linear undo stack with a DAG of edit states; preserves alternative branches when the user undoes then makes new edits. Exposed via `IUndoEngine` extension; visualized in existing history dropdown. |
+| #197 | **Insert / Delete bytes (true)** | Real shift-the-rest insertion and deletion (currently overwrite-only). Requires `IByteProvider` to support gap-buffer / piece-table semantics so multi-GB files don't recopy. Foundation for ROM patching, exploit dev, container repair. |
+| #198 | **Atomic save (`file.tmp` + rename)** | Audit + harden `ByteProvider.Save` to write to a sibling tempfile then `MoveFileEx(REPLACE_EXISTING)`; eliminates partial-write corruption on crash/poweroff. |
+| #199 | **External file change detection** | `FileSystemWatcher` integration; detect when the open file is modified by another process; prompt user reload / merge / keep-mine; coalesce rapid events with 250 ms debounce. |
+| #200 | **GlyphRun caching for hex cells** | Cache one frozen `GlyphRun` per byte value (256 entries) instead of formatting on every render pass; major scroll performance gain. Same approach for ASCII column. |
+| #201 | **Dirty-rectangle rendering** | Replace global `InvalidateVisual()` with line-level invalidation; only redraw lines whose bytes changed. Cuts redraw cost dramatically on selection-only and caret-only updates. |
+| #202 | **DataInspector throttle during inertia scroll** | Suppress inspector recompute during high-velocity scroll (>200 lines/s); resume on scroll-stop. Eliminates input-lag during fast navigation in big files. |
+| #203 | **Pixel-perfect cell alignment** | Snap each hex cell origin to integer device pixels; eliminate sub-pixel glyph blur on non-HiDPI screens. Wire `UseLayoutRounding=true` and verify with `RenderOptions.SetEdgeMode`. |
+| #204 | **Rectangular / column selection (Alt+drag)** | Block-rectangle selection across rows; copy/fill/XOR operates on the rect. Mirrors the `TextEditor` rect-select that already shipped (Editor.Core ADR). High-impact for structured-binary work. |
+| #205 | **Multi-range selection (Ctrl+click)** | Maintain a list of disjoint selected ranges; copy/fill/replace/XOR fan out across all ranges. Compatible with existing `SelectionStart/Stop` via a `SelectionRanges` collection. |
+| #206 | **Insert / Overwrite caret toggle (Insert key)** | Standard text-editor toggle missing in most hex editors; status-bar indicator; respects #197 insert mode when ON. |
+| #207 | **Bit-level cursor (sub-nibble)** | Extend the existing nibble caret to single-bit positioning (Shift+Arrow toggles bits). Enables direct flag-byte editing without external calculator. |
+| #208 | **Regex / hex-pattern search** | Pattern syntax `\x4D\x5A.{2}\x90` (yara-like); already partial via `SearchEngine` — promote to first-class `Find` dialog with capture groups and replace. |
+| #209 | **Fill with repeated pattern** | Fill range with multi-byte pattern (`0xDEADBEEF`) instead of single byte; existing `FillBytes` extension. |
+| #210 | **Bitwise ops on selection** | XOR / AND / OR / NOT against repeated key or rolling key; in-place; undo-aware (single `UndoGroup`). Useful for plain-XOR cipher peeling. |
+| #211 | **Endianness swap on selection** | Swap 16/32/64-bit words in place over a selection; preserves caret; single undo entry. |
+| #212 | **Hash / checksum live panel for selection** | Real-time CRC16/32, MD5, SHA-1/256/512, BLAKE3, Adler32 over the active selection; updates on selection change with debounce. Surfaces existing hash backends. |
+| #213 | **Sparse-file aware editing** | Detect sparse / NTFS-compressed source files; preserve hole layout on save (`FSCTL_SET_SPARSE` / `FSCTL_SET_ZERO_DATA`). |
+| #214 | **Raw volume / disk access** | `\\.\PhysicalDriveN` and `\\.\C:` open paths with elevated-permission gate; read-only by default; locked behind explicit `IPermissionService.RequireElevation()` consent. |
+
+---
+
+## 🔜 Planned — HexEditor Control (Internal — High-Level UX)
+
+| Feature # | Title | Description |
+|-----------|-------|-------------|
+| #215 | **Configurable columns (show/hide/reorder)** | Toggle visibility of offset / hex / ASCII / custom-encoding columns; drag-to-reorder; persisted per editor instance. Add UTF-16 LE/BE, EBCDIC, custom codepage panes. |
+| #216 | **Dynamic bytes-per-row** | Replace fixed `BytePerLine=16` with `auto` (snap to 8/16/24/32 based on viewport width) and `fluid` (fill viewport, no snap). Wired through the existing `BytePerLine` DP. |
+| #217 | **Range highlighting (persistent)** | Color a `[start,end]` range with a custom brush that survives scroll; distinct from bookmarks (point markers) and search hits (transient). API: `AddHighlight(range, brush, label)`. |
+| #218 | **Inline annotations** | Per-line gutter icon with hover tooltip ("PE header signature"); attached to a `[start,end]` range; persisted in workspace; collaborative-friendly. |
+| #219 | **Vertical mini-map** | Compressed full-file overview pane on the right (à-la VS Code text minimap, but byte-density colored by entropy / change / search density); click to jump. Reuses the entropy LUT from the EntropyVisualizer plugin. |
+| #220 | **Configurable ruler header** | Render offset row in hex / dec / oct; alignment 0/4/8/16; user-toggleable group separators. |
+| #221 | **Smart `Ctrl+G` goto parser** | Parse `0x100`, `1024`, `+0x10` (relative), `-1` (from EOF), `RVA:0x4000`, `Section:.text+0x10`, `Symbol:main` (debugger join). Replaces today's int-only parser. |
+| #222 | **Structural breadcrumb bar** | When the active file is parsed via `whfmt`, show "PE.OptionalHeader.DataDirectories[2]" at top of the editor; click each segment to jump. Reuses existing `BreadcrumbBar` widget. |
+| #223 | **Back / Forward navigation history** | Browser-style `Alt+Left` / `Alt+Right`; stack of visited offsets bounded to 100 entries; survives scroll, not just goto. |
+| #224 | **Smooth scroll animation** | 60 fps animated transition on PageDown / Home / End / programmatic `ScrollToOffset`; respects `Reduced motion` accessibility setting. |
+| #225 | **Type-aware editing** | When the caret sits on a parsed `uint32` field, typing `42` writes `2A 00 00 00` and live-previews the diff in a popover; Esc cancels. Requires #222 structural awareness. |
+| #226 | **Inline structural validation** | Edits that break a parsed checksum / CRC / structure are highlighted red with a tooltip explaining which constraint failed; non-blocking (the edit applies, but the warning persists). |
+| #227 | **Modification templates** | Apply named templates ("PE relocation", "PNG IHDR width=N") to a selection; templates ship from `whfmt` and from a user folder; preview-then-apply. |
+| #228 | **Live edit preview popover** | Mini-bubble over the cursor while typing a new byte: shows the proposed value + decoded interpretations (int/float/string/etc.) before commit. |
+| #229 | **Split view (horizontal / vertical)** | Two synchronized hex panes over the same buffer; independent scroll / selection; great for header-vs-payload comparison. Reuses the docking split engine. |
+| #230 | **Locked / pinned panes** | Freeze one half of a split at a fixed offset while the other scrolls; useful for keeping a header table visible while exploring later regions. |
+| #231 | **Ghost overlay for visual diff** | Render a second buffer in transparent overlay on top of the current one; quick visual binary diff without leaving the editor. |
+| #232 | **Smart paste auto-detection** | Detect clipboard format on paste: `0x41 0x42`, `4142`, `AB`, base64, hex-with-spaces, C array literal — convert and paste in one action. Status-bar hint shows detected source format. |
+| #233 | **Screen reader (UIA) support** | Announce caret movements ("byte 0x4D 'M' at offset 0x100, in section .text"); selection range readout; expose hex cells as UIA `DataItem` controls. |
+| #234 | **High-contrast WCAG AA palette** | Dedicated theme tokens with verified AA contrast ratios; activated automatically when Windows `HighContrast` is on; documented per-token contrast measurements. |
+| #235 | **Complete keyboard-only navigation** | Audit & close every gap: all context-menu actions reachable via keyboard, focus visuals on all interactive cells, custom shortcut tab to jump caret to status bar / breadcrumb / inspector. |
 
 ---
 

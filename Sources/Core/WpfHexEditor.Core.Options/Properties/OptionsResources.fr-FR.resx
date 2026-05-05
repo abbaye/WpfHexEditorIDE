@@ -685,4 +685,5 @@
   <data name="DocOpt_BlockHighlightColor"              xml:space="preserve"><value>Survol de bloc</value></data>
   <data name="DocOpt_SelectedBlockColor"               xml:space="preserve"><value>Bloc sélectionné</value></data>
   <data name="DocOpt_ForensicAlertColor"               xml:space="preserve"><value>Superposition d'alerte forensique</value></data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Afficher le bouton de division</value></data>
 </root>

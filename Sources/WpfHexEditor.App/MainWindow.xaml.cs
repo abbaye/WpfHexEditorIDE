@@ -1128,11 +1128,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (!Services.LayoutPersistenceService.IsLayoutHealthy(layout, out var reason))
             {
                 Services.LayoutPersistenceService.BackupLayoutFile();
+                var pruned = Services.LayoutPersistenceService.PruneAllDocumentItems(layout);
                 OutputLogger.Warn(
-                    $"[Layout] Saved layout was reset — {reason} " +
-                    $"A backup was saved alongside {Services.LayoutPersistenceService.LayoutFilePath}.");
-                LoadDefaultLayoutFromResource(restoreWindowState: true);
-                return;
+                    $"[Layout] Saved layout was too large ({reason}); {pruned} document tab(s) removed. " +
+                    $"Panel positions are preserved. Backup saved alongside {Services.LayoutPersistenceService.LayoutFilePath}.");
             }
 
             RestoreWindowState(layout);
@@ -1159,6 +1158,30 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (layout.WindowState is 2)
             WindowState = WindowState.Maximized;
+    }
+
+    /// <summary>
+    /// Rebuilds dock content for any AssemblyExplorer panels that were rendered as a
+    /// CreateDocumentContent fallback during layout load (before _assemblyExplorerModule
+    /// was initialized). Called once from InitializePluginSystemAsync after the module is ready.
+    /// </summary>
+    private void RefreshAssemblyExplorerPanels()
+    {
+        if (_assemblyExplorerModule is null || _layout is null) return;
+
+        bool needsRebuild = false;
+        foreach (var item in _layout.GetAllItems())
+        {
+            if (_assemblyExplorerModule.IsKnownContentId(item.ContentId))
+            {
+                // Clear the materialized key so DockTabControl re-invokes ContentFactory.
+                item.Metadata.Remove("_materialized");
+                needsRebuild = true;
+            }
+        }
+
+        if (needsRebuild)
+            DockHost.RebuildVisualTree();
     }
 
     // Layout pruning logic moved to Services.LayoutPersistenceService (Phase 4 refactoring)
