@@ -763,6 +763,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             () => new WpfHexEditor.App.Options.ViewMenuOptionsPage(),
             "\uE700");
 
+        // Register Error List options page (default visibility toggles)
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
+            CategoryEnvironment, PageErrorList,
+            () => new WpfHexEditor.App.Options.ErrorPanelOptionsPage(),
+            "",
+            ["error", "warning", "message", "error list", "diagnostics"]);
+
         // Plugin system — fire-and-forget after layout is ready
         _ = InitializePluginSystemAsync();
     }

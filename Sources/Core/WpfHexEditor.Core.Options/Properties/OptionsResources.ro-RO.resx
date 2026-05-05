@@ -168,6 +168,7 @@
   <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Explorator formate</value></data>
   <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Comparare fișiere</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Listă de erori</value></data>
   <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Paletă de comenzi</value></data>
 
   <!-- Plugin System Options Page — folder picker dialog -->
@@ -193,6 +194,11 @@
   <!-- Code Editor Formatting Page — indentation levels combo -->
   <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 nivel (4 spații la rădăcină)</value></data>
   <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 niveluri (8 spații la rădăcină) — implicit VS</value></data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Limbă</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Resetare suprascrieri</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Resetare toate suprascrierile</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Aceste setări înlocuiesc valorile implicite ale limbajului .whfmt.
+Lăsați casetele de selectare în starea nedeterminată (—) pentru a moșteni regulile limbajului.</value></data>
   <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 niveluri (12 spații la rădăcină)</value></data>
 
   <!-- Markdown Editor Options Page — layout combo -->

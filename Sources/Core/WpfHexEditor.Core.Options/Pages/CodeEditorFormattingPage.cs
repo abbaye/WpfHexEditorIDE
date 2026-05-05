@@ -111,7 +111,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
 
         var langLabel = new TextBlock
         {
-            Text              = "Language",
+            Text              = OptionsResources.Opt_Fmt_Language,
             FontSize          = 11,
             FontWeight        = FontWeights.SemiBold,
             VerticalAlignment = VerticalAlignment.Center,
@@ -136,7 +136,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
 
         _resetButton = new Button
         {
-            Content           = "Reset overrides",
+            Content           = OptionsResources.Opt_Fmt_ResetOverrides,
             FontSize          = 11,
             Padding           = new Thickness(10, 3, 10, 3),
             VerticalAlignment = VerticalAlignment.Center,
@@ -147,7 +147,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
 
         _resetAllButton = new Button
         {
-            Content           = "Reset all overrides",
+            Content           = OptionsResources.Opt_Fmt_ResetAllOverrides,
             FontSize          = 11,
             Padding           = new Thickness(10, 3, 10, 3),
             VerticalAlignment = VerticalAlignment.Center,
@@ -189,7 +189,7 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
         // Subtitle
         var subtitle = new TextBlock
         {
-            Text         = "These settings override the language .whfmt defaults.\nLeave checkboxes at their indeterminate state (â€”) to inherit the language rules.",
+            Text         = OptionsResources.Opt_Fmt_Subtitle,
             TextWrapping = TextWrapping.Wrap,
             FontSize     = 11,
             Opacity      = 0.65,

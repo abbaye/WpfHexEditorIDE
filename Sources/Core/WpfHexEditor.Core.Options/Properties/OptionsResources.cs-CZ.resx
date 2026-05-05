@@ -168,6 +168,7 @@
   <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Průzkumník formátů</value></data>
   <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Porovnání souborů</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Seznam chyb</value></data>
   <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Paleta příkazů</value></data>
 
   <!-- Plugin System Options Page — folder picker dialog -->
@@ -193,6 +194,11 @@
   <!-- Code Editor Formatting Page — indentation levels combo -->
   <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 úroveň (4 mezery v kořenu)</value></data>
   <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 úrovně (8 mezer v kořenu) — výchozí VS</value></data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Jazyk</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Resetovat přepsání</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Resetovat všechna přepsání</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Tato nastavení přepisují výchozí hodnoty jazyka .whfmt.
+Nechte zaškrtávací políčka v neurčitém stavu (—), abyste zdědili jazyková pravidla.</value></data>
   <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 úrovně (12 mezer v kořenu)</value></data>
 
   <!-- Markdown Editor Options Page — layout combo -->

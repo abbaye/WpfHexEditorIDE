@@ -164,6 +164,7 @@
   <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>형식 탐색기</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>파일 비교</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>오류 목록</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>명령 팔레트</value></data>
   <data name="BuildCompiler_CSharpSection" xml:space="preserve">
     <value>C# / .NET 기본값</value>
@@ -633,6 +634,11 @@
   <data name="Opt_IndentLevel_2" xml:space="preserve">
     <value>레벨 2</value>
   </data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>언어</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>재정의 초기화</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>모든 재정의 초기화</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>이 설정은 언어 .whfmt 기본값을 재정의합니다.
+확인란을 불확정 상태 (—)로 두면 언어 규칙을 상속합니다.</value></data>
   <data name="Opt_IndentLevel_3" xml:space="preserve">
     <value>레벨 3</value>
   </data>

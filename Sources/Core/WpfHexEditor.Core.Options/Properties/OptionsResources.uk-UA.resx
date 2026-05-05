@@ -157,6 +157,7 @@
   <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Провідник форматів</value></data>
   <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Порівняння файлів</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Список помилок</value></data>
   <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Палітра команд</value></data>
   <data name="Opt_Plugin_SelectExtDir"       xml:space="preserve"><value>Вибрати теку додаткових розширень</value></data>
   <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve"><value>Вибрати вихідну теку розширення</value></data>
@@ -170,6 +171,11 @@
   <data name="Opt_Endian_Big"                xml:space="preserve"><value>старший байт першим</value></data>
   <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 рівень (4 пробіли в корені)</value></data>
   <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 рівні (8 пробілів у корені) — за замовчуванням VS</value></data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Мова</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Скинути перевизначення</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Скинути всі перевизначення</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Ці налаштування замінюють стандартні значення мови .whfmt.
+Залиште прапорці в невизначеному стані (—), щоб успадкувати мовні правила.</value></data>
   <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 рівні (12 пробілів у корені)</value></data>
   <data name="Opt_MdLayout_PreviewRight"     xml:space="preserve"><value>Перегляд праворуч</value></data>
   <data name="Opt_MdLayout_PreviewBottom"    xml:space="preserve"><value>Перегляд знизу</value></data>

@@ -1616,6 +1616,42 @@ namespace WpfHexEditor.Core.Options.Properties {
                 return ResourceManager.GetString("Opt_IndentLevel_3", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Language.
+        /// </summary>
+        internal static string Opt_Fmt_Language {
+            get {
+                return ResourceManager.GetString("Opt_Fmt_Language", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reset overrides.
+        /// </summary>
+        internal static string Opt_Fmt_ResetOverrides {
+            get {
+                return ResourceManager.GetString("Opt_Fmt_ResetOverrides", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reset all overrides.
+        /// </summary>
+        internal static string Opt_Fmt_ResetAllOverrides {
+            get {
+                return ResourceManager.GetString("Opt_Fmt_ResetAllOverrides", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à These settings override the language .whfmt defaults.
+        /// </summary>
+        internal static string Opt_Fmt_Subtitle {
+            get {
+                return ResourceManager.GetString("Opt_Fmt_Subtitle", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Recherche une chaîne localisée semblable à EditorOnly.
@@ -1659,6 +1695,15 @@ namespace WpfHexEditor.Core.Options.Properties {
         internal static string Opt_NotYetImplemented {
             get {
                 return ResourceManager.GetString("Opt_NotYetImplemented", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This feature will be available in a future version.
+        /// </summary>
+        internal static string Opt_ComingSoon {
+            get {
+                return ResourceManager.GetString("Opt_ComingSoon", resourceCulture);
             }
         }
         
@@ -1761,6 +1806,15 @@ namespace WpfHexEditor.Core.Options.Properties {
             }
         }
         
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Error List.
+        /// </summary>
+        internal static string Opt_Page_ErrorList {
+            get {
+                return ResourceManager.GetString("Opt_Page_ErrorList", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Event Bus.
         /// </summary>

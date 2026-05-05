@@ -164,6 +164,7 @@
   <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>Explorateur de formats</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>Comparer des fichiers</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Liste d'erreurs</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>Palette de commandes</value></data>
   <data name="BuildCompiler_CSharpSection" xml:space="preserve">
     <value>VALEURS PAR DÉFAUT C# / .NET</value>
@@ -633,6 +634,11 @@
   <data name="Opt_IndentLevel_2" xml:space="preserve">
     <value>Niveau 2</value>
   </data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Langage</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Réinitialiser les remplacements</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Réinitialiser tous les remplacements</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Ces paramètres remplacent les valeurs par défaut du langage .whfmt.
+Laissez les cases dans leur état indéterminé (—) pour hériter des règles du langage.</value></data>
   <data name="Opt_IndentLevel_3" xml:space="preserve">
     <value>Niveau 3</value>
   </data>

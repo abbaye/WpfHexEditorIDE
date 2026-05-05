@@ -164,6 +164,7 @@
   <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>Indelingsverkenner</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>Bestanden vergelijken</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Foutenlijst</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>Opdrachtenpalet</value></data>
   <data name="BuildCompiler_CSharpSection" xml:space="preserve">
     <value>C# / .NET-STANDAARDEN</value>
@@ -633,6 +634,11 @@
   <data name="Opt_IndentLevel_2" xml:space="preserve">
     <value>Niveau 2</value>
   </data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Taal</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Overschrijvingen resetten</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Alle overschrijvingen resetten</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Deze instellingen overschrijven de taalstandaarden van .whfmt.
+Laat de selectievakjes in onbepaalde toestand (—) om taalregels te erven.</value></data>
   <data name="Opt_IndentLevel_3" xml:space="preserve">
     <value>Niveau 3</value>
   </data>

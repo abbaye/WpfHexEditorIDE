@@ -168,6 +168,7 @@
   <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Formatstifinder</value></data>
   <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Sammenlign filer</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Fejlliste</value></data>
   <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Kommandopalet</value></data>
 
   <!-- Plugin System Options Page — folder picker dialog -->
@@ -193,6 +194,11 @@
   <!-- Code Editor Formatting Page — indentation levels combo -->
   <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 niveau (4 mellemrum ved roden)</value></data>
   <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 niveauer (8 mellemrum ved roden) — VS standard</value></data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Sprog</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Nulstil tilsidesættelser</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Nulstil alle tilsidesættelser</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Disse indstillinger tilsidesætter sprogets .whfmt-standarder.
+Lad afkrydsningsfelterne være i ubestemt tilstand (—) for at arve sprogreglerne.</value></data>
   <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 niveauer (12 mellemrum ved roden)</value></data>
 
   <!-- Markdown Editor Options Page — layout combo -->

@@ -2982,15 +2982,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void MarkBlockDirty(int blockIndex)
     {
-        // Evict stale FormattedText and visual-line cache immediately so that
-        // GetCharOffsetAtPoint / GetVisualLines / ComputePreferredX all rebuild
-        // from the updated block text without waiting for the next layout pass.
-        if (blockIndex >= 0 && blockIndex < _blocks.Count)
-        {
-            var rb = _blocks[blockIndex];
-            rb.FormattedLines?.Clear();
-            _visualLineCache.Remove(blockIndex);
-        }
+        // Evict the visual-line cache so navigation helpers rebuild on next access.
+        // Do NOT clear FormattedLines here — OnRender uses them to draw text and
+        // clearing them would blank the block until the next layout pass.
+        _visualLineCache.Remove(blockIndex);
 
         if (_dirtyBlockIndices.Add(blockIndex))
             DirtyBlocksChanged?.Invoke(this, EventArgs.Empty);

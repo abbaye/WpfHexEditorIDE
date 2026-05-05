@@ -180,11 +180,18 @@
         <CheckBox x:Name="CheckChangeset"
                   Content="{DynamicResource TextOpt_TrackEdits}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                  Margin="0,0,0,8"
+                  Margin="0,0,0,4"
                   IsEnabled="False"
                   ToolTip="{DynamicResource Opt_NotYetImplemented}"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
+
+        <TextBlock Text="{DynamicResource Opt_ComingSoon}"
+                   FontSize="11"
+                   FontStyle="Italic"
+                   Opacity="0.55"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="20,0,0,8"/>
 
         <Separator Margin="0,12,0,12"
                    Background="{DynamicResource DockBorderBrush}"/>
