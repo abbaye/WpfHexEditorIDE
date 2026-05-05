@@ -1539,6 +1539,14 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
             double lastW = -1, lastH = -1, lastGapX = -1, lastGapW = -1;
             bool retryQueued = false;
+            int  retryCount  = 0;
+            // Bound the auto-retry chain. UpdateOverlay re-arms itself when the
+            // visual tree is not yet measured (ActualWidth/Height==0). Without a
+            // ceiling, a tab that never reaches a measurable state floods the
+            // dispatcher with re-queued BeginInvoke calls — combined with the
+            // tabControl.LayoutUpdated handler below this turns into a runaway
+            // loop that freezes the IDE on dock operations.
+            const int MaxRetries = 16;
 
             void UpdateOverlay()
             {
@@ -1550,9 +1558,10 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
                 if (w <= 0 || h <= 0)
                 {
-                    if (!retryQueued)
+                    if (!retryQueued && retryCount < MaxRetries)
                     {
                         retryQueued = true;
+                        retryCount++;
                         outer.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
                             new Action(() => { retryQueued = false; UpdateOverlay(); }));
                     }
@@ -1566,14 +1575,19 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
                 if (activeTab is null || activeTab.ActualWidth <= 0)
                 {
-                    if (!retryQueued)
+                    if (!retryQueued && retryCount < MaxRetries)
                     {
                         retryQueued = true;
+                        retryCount++;
                         outer.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
                             new Action(() => { retryQueued = false; UpdateOverlay(); }));
                     }
                     return;
                 }
+
+                // Reset retry budget once the overlay reaches a measurable state
+                // so subsequent layout transitions get their own fresh window.
+                retryCount = 0;
 
                 var pos     = activeTab.TranslatePoint(new Point(0, 0), outer);
                 double gapX = Math.Max(0, pos.X);
