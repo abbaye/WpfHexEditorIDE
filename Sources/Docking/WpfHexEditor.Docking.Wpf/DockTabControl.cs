@@ -163,7 +163,15 @@ public class DockTabControl : TabControl
     // Tracks DockItems whose plugin panel has already been created at least once.
     // "Already materialized" flag is stored in DockItem.Metadata so it survives
     // dock/undock, group moves, and Bind() rebuilds across any DockTabControl instance.
-    private const string MaterializedKey = "_materialized";
+    private const string MaterializedKey  = "_materialized";
+
+    /// <summary>
+    /// When present in DockItem.Metadata, ContentFactory is always invoked immediately
+    /// even if the tab is not the active item (bypasses LazyContentPlaceholder).
+    /// Used for core IDE module panels (panel-dbg-*, AssemblyExplorer) that must
+    /// be pre-built so they are ready when the user switches to them.
+    /// </summary>
+    public const string EagerContentKey = "_eagerContent";
 
     private int  _dragOriginalModelIndex = -1;
     private int  _currentInsertionIdx    = -1;
@@ -328,7 +336,7 @@ public class DockTabControl : TabControl
                 deferPluginContent = true;    // first load only
             }
         }
-        else if (isActive)
+        else if (isActive || item.Metadata.ContainsKey(EagerContentKey))
         {
             tabContent = contentFactory.Invoke(item);
         }

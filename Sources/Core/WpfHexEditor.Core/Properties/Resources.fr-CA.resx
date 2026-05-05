@@ -1950,4 +1950,8 @@ Remarque : L'intégration complète avec HexEditor nécessite de se connecter au
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Résultats</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Diviser</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Ouvrir ou fermer un second panneau hex synchronisé</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Fermer la division</value></data>
 </root>

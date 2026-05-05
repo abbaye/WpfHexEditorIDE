@@ -1968,4 +1968,8 @@
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>परिणाम</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>विभाजित</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>एक सिंक्रनाइज़ हेक्स पैनल खोलें या बंद करें</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>विभाजन बंद करें</value></data>
 </root>

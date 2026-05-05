@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
              xmlns:local="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Controls"
+             xmlns:coreViews="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
              Background="{DynamicResource DE_PageCanvasBackground}"
              Foreground="{DynamicResource DE_TextPaneForeground}">
     <UserControl.Resources>
@@ -13,26 +14,44 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <!-- Horizontal ruler (hidden in Draft / Outline modes via code-behind) -->
+            <RowDefinition x:Name="PART_RulerRow" Height="22"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <!-- Forensic gutter (16px, hidden unless forensic mode) -->
             <ColumnDefinition x:Name="PART_GutterCol" Width="0"/>
+            <!-- Vertical ruler (18px, hidden in Draft / Outline) -->
+            <ColumnDefinition x:Name="PART_VRulerCol" Width="18"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <!-- Horizontal ruler — spans gutter + vertical ruler + content -->
+        <local:DocumentHorizontalRuler x:Name="PART_HRuler"
+                                       Grid.Row="0"
+                                       Grid.Column="0" Grid.ColumnSpan="3"/>
+
+        <!-- Vertical ruler — left edge of content area -->
+        <local:DocumentVerticalRuler x:Name="PART_VRuler"
+                                     Grid.Row="1" Grid.Column="1"/>
+
         <!-- Forensic gutter strip -->
         <Canvas x:Name="PART_ForensicGutter"
-                Grid.Column="0"
+                Grid.Row="1" Grid.Column="0"
                 Width="16"
                 ClipToBounds="True"
                 Visibility="Collapsed"/>
 
         <!-- ── Canvas renderer inside a ScrollViewer (IScrollInfo) ─── -->
-        <ScrollViewer Grid.Column="1"
+        <ScrollViewer Grid.Row="1" Grid.Column="2"
                       x:Name="PART_ScrollViewer"
                       Background="{DynamicResource DE_PageCanvasBackground}"
                       VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Auto"
-                      CanContentScroll="True">
+                      HorizontalScrollBarVisibility="Disabled"
+                      CanContentScroll="True"
+                      Focusable="False"
+                      IsTabStop="False">
             <ScrollViewer.LayoutTransform>
                 <ScaleTransform x:Name="PART_ZoomTransform" ScaleX="1" ScaleY="1"/>
             </ScrollViewer.LayoutTransform>
@@ -43,5 +62,15 @@
                 SelectedBlockChanged="OnRendererSelectedBlockChanged"
                 PopToolbarRequested="OnRendererPopToolbarRequested"/>
         </ScrollViewer>
+
+        <!-- QuickSearchBar overlay (same pattern as HexEditor) -->
+        <Canvas x:Name="PART_SearchCanvas"
+                Grid.Row="1" Grid.Column="2"
+                Panel.ZIndex="10">
+            <coreViews:QuickSearchBar x:Name="PART_QuickSearchBar"
+                                      Width="520"
+                                      Visibility="Collapsed"
+                                      IsHitTestVisible="True"/>
+        </Canvas>
     </Grid>
 </UserControl>

@@ -164,6 +164,7 @@
   <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>Formatutforskare</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>Jämför filer</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Fellista</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>Kommandopalett</value></data>
   <data name="BuildCompiler_CSharpSection" xml:space="preserve">
     <value>C# / .NET-STANDARDER</value>
@@ -633,6 +634,11 @@
   <data name="Opt_IndentLevel_2" xml:space="preserve">
     <value>Nivå 2</value>
   </data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Språk</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Återställ åsidosättningar</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Återställ alla åsidosättningar</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Dessa inställningar åsidosätter språkets .whfmt-standarder.
+Låt kryssrutorna vara i obestämt läge (—) för att ärva språkreglerna.</value></data>
   <data name="Opt_IndentLevel_3" xml:space="preserve">
     <value>Nivå 3</value>
   </data>
@@ -651,4 +657,5 @@
   <data name="Opt_Preview_Label" xml:space="preserve">
     <value>Förhandsvisning</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Visa växlingsknapp för delad vy</value></data>
 </root>

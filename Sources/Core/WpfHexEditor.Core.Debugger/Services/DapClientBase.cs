@@ -209,6 +209,12 @@ public abstract class DapClientBase : IDapClient
     public virtual async Task PauseAsync(PauseArgs args, CancellationToken ct = default) =>
         await SendRequestAsync("pause", args, ct);
 
+    public virtual async Task<ThreadsBody?> ThreadsAsync(CancellationToken ct = default)
+    {
+        var resp = await SendRequestAsync("threads", null, ct);
+        return ParseBody<ThreadsBody>(resp);
+    }
+
     public virtual async Task<StackTraceBody?> StackTraceAsync(
         StackTraceArgs args, CancellationToken ct = default)
     {
@@ -235,6 +241,97 @@ public abstract class DapClientBase : IDapClient
     {
         var resp = await SendRequestAsync("evaluate", args, ct);
         return ParseBody<EvaluateBody>(resp);
+    }
+
+    public virtual async Task<SetVariableBody?> SetVariableAsync(
+        SetVariableArgs args, CancellationToken ct = default)
+    {
+        var resp = await SendRequestAsync("setVariable", args, ct);
+        return ParseBody<SetVariableBody>(resp);
+    }
+
+    public virtual async Task<GotoTargetsBody?> GotoTargetsAsync(
+        GotoTargetsArgs args, CancellationToken ct = default)
+    {
+        var resp = await SendRequestAsync("gotoTargets", args, ct);
+        return ParseBody<GotoTargetsBody>(resp);
+    }
+
+    public virtual async Task GotoAsync(GotoArgs args, CancellationToken ct = default)
+        => await SendRequestAsync("goto", args, ct);
+
+    public virtual async Task SetExceptionBreakpointsAsync(
+        SetExceptionBreakpointsArgs args, CancellationToken ct = default)
+        => await SendRequestAsync("setExceptionBreakpoints", args, ct);
+
+    public virtual async Task<DisassembleBody> DisassembleAsync(
+        DisassembleArgs args, CancellationToken ct = default)
+    {
+        try
+        {
+            var resp = await SendRequestAsync("disassemble", args, ct);
+            return ParseBody<DisassembleBody>(resp);
+        }
+        catch { return new DisassembleBody([]); }
+    }
+
+    public virtual async Task<ReadMemoryBody?> ReadMemoryAsync(
+        ReadMemoryArgs args, CancellationToken ct = default)
+    {
+        try
+        {
+            var resp = await SendRequestAsync("readMemory", args, ct);
+            return ParseBody<ReadMemoryBody>(resp);
+        }
+        catch { return null; }
+    }
+
+    public virtual async Task WriteMemoryAsync(WriteMemoryArgs args, CancellationToken ct = default)
+    {
+        try { await SendRequestAsync("writeMemory", args, ct); }
+        catch { /* adapter may not support */ }
+    }
+
+    public virtual async Task<ModulesBody> GetModulesAsync(
+        ModulesArgs? args = null, CancellationToken ct = default)
+    {
+        try
+        {
+            var resp = await SendRequestAsync("modules", args ?? new ModulesArgs(), ct);
+            return ParseBody<ModulesBody>(resp);
+        }
+        catch
+        {
+            return new ModulesBody([], null);
+        }
+    }
+
+    public virtual async Task RestartFrameAsync(RestartFrameArgs args, CancellationToken ct = default)
+    {
+        try { await SendRequestAsync("restartFrame", args, ct); }
+        catch { /* adapter may not support restartFrame */ }
+    }
+
+    public virtual async Task<DataBreakpointInfoBody?> DataBreakpointInfoAsync(
+        DataBreakpointInfoArgs args, CancellationToken ct = default)
+    {
+        try
+        {
+            var resp = await SendRequestAsync("dataBreakpointInfo", args, ct);
+            return ParseBody<DataBreakpointInfoBody>(resp);
+        }
+        catch { return null; }
+    }
+
+    public virtual async Task<SetDataBreakpointsBody?> SetDataBreakpointsAsync(
+        SetDataBreakpointsArgs args, CancellationToken ct = default)
+    {
+        try
+        {
+            var resp = await SendRequestAsync("setDataBreakpoints", args, ct);
+            return ParseBody<SetDataBreakpointsBody>(resp);
+        }
+        catch { return null; }
     }
 
     // ── Dispose ───────────────────────────────────────────────────────────────

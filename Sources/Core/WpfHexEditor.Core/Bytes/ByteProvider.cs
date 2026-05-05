@@ -142,12 +142,20 @@ namespace WpfHexEditor.Core.Bytes
         public event EventHandler ChangesCleared;
 
         /// <summary>
+        /// Fired after any mutation (modify, insert, delete) so secondary viewers sharing
+        /// this provider can refresh without polling.
+        /// </summary>
+        public event EventHandler DataChanged;
+
+        /// <summary>
         /// Raise the ChangesCleared event.
         /// </summary>
         private void OnChangesCleared()
         {
             ChangesCleared?.Invoke(this, EventArgs.Empty);
         }
+
+        private void OnDataChanged() => DataChanged?.Invoke(this, EventArgs.Empty);
 
         #endregion
 
@@ -265,6 +273,7 @@ namespace WpfHexEditor.Core.Bytes
 
             ModifyByteInternal(virtualPosition, value);
             InvalidateCaches();
+            OnDataChanged();
         }
 
         /// <summary>
@@ -405,6 +414,7 @@ namespace WpfHexEditor.Core.Bytes
 
             _editsManager.InsertBytes(physicalPos.Value, bytes);
             InvalidateCaches();
+            OnDataChanged();
         }
 
         /// <summary>
@@ -504,6 +514,8 @@ namespace WpfHexEditor.Core.Bytes
             {
                 _batchDirty = true; // Mark for end-of-batch invalidation
             }
+
+            OnDataChanged();
         }
 
         /// <summary>
@@ -580,6 +592,8 @@ namespace WpfHexEditor.Core.Bytes
             {
                 _batchDirty = true;
             }
+
+            OnDataChanged();
         }
 
         #endregion

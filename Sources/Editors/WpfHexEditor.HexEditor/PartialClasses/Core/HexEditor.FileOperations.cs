@@ -257,8 +257,9 @@ namespace WpfHexEditor.HexEditor
                 IsModified = false;
                 IsFileOrStreamLoaded = true;  // FIX: Update read-only DP for settings panel
 
-                // Subscribe to property changes
+                // Subscribe to property changes + byte modifications
                 _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+                _viewModel.ByteModified   += ViewModel_ByteModified;
 
                 // Calculate initial visible lines AFTER the control is fully loaded AND layout is complete
                 // Use ApplicationIdle priority to ensure BaseGrid.RowDefinitions[2].ActualHeight is set
@@ -495,6 +496,7 @@ namespace WpfHexEditor.HexEditor
                 if (_viewModel != null)
                 {
                     _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                    _viewModel.ByteModified   -= ViewModel_ByteModified;
                     _viewModel.Close();
                     _viewModel = null;
                 }

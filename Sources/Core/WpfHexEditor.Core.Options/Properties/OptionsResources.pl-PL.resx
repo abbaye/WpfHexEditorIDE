@@ -164,6 +164,7 @@
   <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>Eksplorator formatów</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>Porównaj pliki</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Lista błędów</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>Paleta poleceń</value></data>
   <data name="BuildCompiler_CSharpSection" xml:space="preserve">
     <value>WARTOŚCI DOMYŚLNE C# / .NET</value>
@@ -633,6 +634,11 @@
   <data name="Opt_IndentLevel_2" xml:space="preserve">
     <value>Poziom 2</value>
   </data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Język</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Zresetuj przesłonięcia</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Zresetuj wszystkie przesłonięcia</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Te ustawienia zastępują domyślne wartości języka .whfmt.
+Pozostaw pola wyboru w stanie nieokreślonym (—), aby dziedziczyć reguły językowe.</value></data>
   <data name="Opt_IndentLevel_3" xml:space="preserve">
     <value>Poziom 3</value>
   </data>
@@ -651,4 +657,5 @@
   <data name="Opt_Preview_Label" xml:space="preserve">
     <value>Podgląd</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Pokaż przycisk widoku podzielonego</value></data>
 </root>

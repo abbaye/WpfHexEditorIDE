@@ -164,6 +164,7 @@
   <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>形式エクスプローラー</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>ファイルの比較</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>エラー一覧</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>コマンド パレット</value></data>
   <data name="BuildCompiler_CSharpSection" xml:space="preserve">
     <value>C# / .NET の既定値</value>
@@ -633,6 +634,11 @@
   <data name="Opt_IndentLevel_2" xml:space="preserve">
     <value>レベル 2</value>
   </data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>言語</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>オーバーライドをリセット</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>すべてのオーバーライドをリセット</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>これらの設定は言語 .whfmt のデフォルトを上書きします。
+チェックボックスを不確定状態 (—) のままにすると言語ルールを継承します。</value></data>
   <data name="Opt_IndentLevel_3" xml:space="preserve">
     <value>レベル 3</value>
   </data>
@@ -651,4 +657,5 @@
   <data name="Opt_Preview_Label" xml:space="preserve">
     <value>プレビュー</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>分割ビュー切替ボタンを表示</value></data>
 </root>

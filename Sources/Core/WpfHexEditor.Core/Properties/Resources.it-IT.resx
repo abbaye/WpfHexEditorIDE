@@ -1968,4 +1968,8 @@ Nota: L'integrazione completa con HexEditor richiede la connessione al modello d
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Risultati</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Dividi</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Apri o chiudi un secondo pannello hex sincronizzato</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Chiudi divisione</value></data>
 </root>

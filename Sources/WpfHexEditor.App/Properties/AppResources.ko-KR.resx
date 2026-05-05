@@ -893,4 +893,14 @@
   <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Browse and manage built-in and user .whfmt format definitions</value></data>
   <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Open the Format Catalog document tab (all formats in a sortable grid)</value></data>
   <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyse entropy and byte distribution of the active file</value></data>
+  <data name="Debugger_RemoteConnect" xml:space="preserve"><value>Connect to Remote Debugger...</value></data>
+  <data name="Debugger_RemoteConnecting" xml:space="preserve"><value>Connecting to remote debugger...</value></data>
+  <data name="Debugger_RemoteConnectFailed" xml:space="preserve"><value>Failed to connect to remote debug adapter.</value></data>
+  <data name="Debugger_EditContinueApplied" xml:space="preserve"><value>Edit and Continue applied.</value></data>
+  <data name="Debugger_HotReloadApplied" xml:space="preserve"><value>Hot Reload applied.</value></data>
+  <data name="Debugger_HotReloadNotSupported" xml:space="preserve"><value>Hot Reload not supported by this runtime.</value></data>
+  <data name="Debugger_SymbolServerResolving" xml:space="preserve"><value>Resolving symbols...</value></data>
+  <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbol resolution complete.</value></data>
+  <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Data Breakpoints</value></data>
+  <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Add Data Breakpoint</value></data>
 </root>

@@ -2120,4 +2120,8 @@
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Results</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Split</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Open or close a synchronized second hex pane</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Close split</value></data>
 </root>

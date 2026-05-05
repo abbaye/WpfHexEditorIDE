@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Input;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Core.ProjectSystem.Properties;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Core.ProjectSystem.Dialogs;
 
@@ -212,7 +213,7 @@ public partial class ConvertTblDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
             try { Directory.CreateDirectory(_targetFolder); }
             catch
             {
-                System.Windows.MessageBox.Show(
+                IdeMessageBox.Show(
                     $"{ProjectSystemResources.Error_CannotCreateOutputFolder}\n{_targetFolder}",
                     ProjectSystemResources.Dialog_ConvertTblTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -223,7 +224,7 @@ public partial class ConvertTblDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
         var target = TargetPath;
         if (string.Equals(target, _sourcePath, StringComparison.OrdinalIgnoreCase))
         {
-            System.Windows.MessageBox.Show(
+            IdeMessageBox.Show(
                 ProjectSystemResources.Error_OutputPathIdenticalToSource,
                 ProjectSystemResources.Dialog_ConvertTblTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;

@@ -42,13 +42,22 @@ internal sealed class InlineVisualLine
     /// <summary>Logical width (sum of segment advances).</summary>
     public double Width { get; }
 
-    public InlineVisualLine(ImmutableArray<PlacedSegment> segments, double ascent, double descent, double leading)
+    /// <summary>Block-relative char index of the first character on this line.</summary>
+    public int CharStart { get; }
+
+    /// <summary>Block-relative char index one past the last character on this line.</summary>
+    public int CharEnd { get; }
+
+    public InlineVisualLine(ImmutableArray<PlacedSegment> segments, double ascent, double descent, double leading,
+                            int charStart = 0, int charEnd = 0)
     {
-        Segments = segments;
-        Ascent   = ascent;
-        Descent  = descent;
-        Leading  = leading;
-        Width    = segments.IsDefaultOrEmpty ? 0 : segments.Sum(s => s.Width);
+        Segments  = segments;
+        Ascent    = ascent;
+        Descent   = descent;
+        Leading   = leading;
+        Width     = segments.IsDefaultOrEmpty ? 0 : segments.Sum(s => s.Width);
+        CharStart = charStart;
+        CharEnd   = charEnd;
     }
 }
 
@@ -69,6 +78,8 @@ internal sealed class PlacedSegment
     public Color           Foreground     { get; }
     public bool            Underline      { get; }
     public bool            Strikethrough  { get; }
+    /// <summary>Block-relative char index of the first character in this segment.</summary>
+    public int             CharStart      { get; }
 
     /// <summary>Underline offset below baseline (positive = below, font units scaled to pixels).</summary>
     public double UnderlineOffset     { get; }
@@ -86,7 +97,8 @@ internal sealed class PlacedSegment
         bool           underline,
         bool           strikethrough,
         double         underlineOffset,
-        double         strikethroughOffset)
+        double         strikethroughOffset,
+        int            charStart = 0)
     {
         OffsetX             = offsetX;
         GlyphTypeface       = glyphTypeface;
@@ -99,6 +111,7 @@ internal sealed class PlacedSegment
         Strikethrough       = strikethrough;
         UnderlineOffset     = underlineOffset;
         StrikethroughOffset = strikethroughOffset;
+        CharStart           = charStart;
     }
 
     /// <summary>

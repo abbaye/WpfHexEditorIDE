@@ -10,7 +10,10 @@
 // ==========================================================
 
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -26,6 +29,7 @@ using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 using WpfHexEditor.Editor.DocumentEditor.ViewModels;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.Editor.DocumentEditor.Properties;
+using WpfHexEditor.Core.Events.IDEEvents;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -40,7 +44,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     public static readonly DependencyProperty ViewModeProperty =
         DependencyProperty.Register(
             nameof(ViewMode), typeof(DocumentViewMode), typeof(DocumentEditorHost),
-            new PropertyMetadata(DocumentViewMode.Split, OnViewModeChanged));
+            new PropertyMetadata(DocumentViewMode.TextOnly, OnViewModeChanged));
 
     public static readonly DependencyProperty IsForensicModeProperty =
         DependencyProperty.Register(
@@ -74,11 +78,12 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private BinaryMapSyncService?    _syncService;
     private DocumentMutator?         _mutator;
     private DocumentHexHighlightManager? _hexHighlightMgr;
-    private DocumentFindReplaceDialog?   _findDialog;
     private CancellationTokenSource  _loadCts = new();
     private string?                  _pendingFilePath;
     private string                   _currentFileExtension = string.Empty;
     private bool                     _isFocusMode          = false;
+    private DocumentScrollMarkerPanel? _scrollMarker;
+    private Services.AutoSaveService? _autoSave;
 
     // ── Constructor ─────────────────────────────────────────────────────────
 
@@ -86,9 +91,20 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     {
         _ideContext = ideContext;
         InitializeComponent();
-        Loaded      += OnLoaded;
-        Unloaded    += OnUnloaded;
-        PreviewKeyDown += OnHostPreviewKeyDown;
+        Loaded            += OnLoaded;
+        Unloaded          += OnUnloaded;
+        PreviewKeyDown    += OnHostPreviewKeyDown;
+        PreviewMouseWheel += OnHostPreviewMouseWheel;
+    }
+
+    private void OnHostPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+    {
+        if ((Keyboard.Modifiers & ModifierKeys.Control) == 0) return;
+        // Ctrl+wheel — zoom in / out and consume the event so the ScrollViewer
+        // does not also scroll the document.
+        double step = e.Delta > 0 ? +0.1 : -0.1;
+        ZoomLevel = Math.Clamp(Math.Round(ZoomLevel + step, 1), 0.5, 2.0);
+        e.Handled = true;
     }
 
     // ── Context injection (deferred) ────────────────────────────────────────
@@ -152,6 +168,12 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     public BinaryMap? BinaryMap => _vm?.Model.BinaryMap;
     public event EventHandler? BinaryMapRebuilt;
+
+    /// <summary>
+    /// Raised when the user requests to jump to a binary offset in the hex editor.
+    /// The long argument is the raw byte offset of the selected block.
+    /// </summary>
+    public event EventHandler<long>? NavigateToOffsetRequested;
 
     // ── IDocumentEditor ─────────────────────────────────────────────────────
 
@@ -223,9 +245,15 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             await using (var fs = File.Create(tmp))
                 await saver.SaveAsync(_vm.Model, fs, ct);
 
-            File.Replace(tmp, _vm.Model.FilePath, backup);
+            // File.Replace requires the destination to exist; on first save / Save As
+            // the target file does not yet exist, so fall back to a plain move.
+            if (File.Exists(_vm.Model.FilePath))
+                File.Replace(tmp, _vm.Model.FilePath, backup);
+            else
+                File.Move(tmp, _vm.Model.FilePath);
             _vm.Model.UndoEngine.MarkSaved();
             _hexHighlightMgr?.Clear();
+            PART_TextPane.PART_Renderer.ClearDirtyBlocks(); // fires DirtyBlocksChanged → UpdateChangeScrollMarkers
 
             var fileName = System.IO.Path.GetFileName(_vm.Model.FilePath);
             StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_SavedStatus, fileName));
@@ -289,6 +317,39 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
                 return;
             }
 
+            // If no loader is available yet, publish FileOpenedEvent to trigger lazy plugin activation
+            // (PluginActivationService subscribes to this event and activates plugins with matching
+            // fileExtension triggers). FileOpenedEvent may not have been published yet when OpenAsync
+            // starts because MainWindow publishes it after the editor tab is created.
+            if (_ideContext is not null && loaders.FirstOrDefault(l => l.CanLoad(filePath)) is null)
+            {
+                var ext = System.IO.Path.GetExtension(filePath);
+                OutputMessage?.Invoke(this, $"[DocEditor] no loader for '{ext}' — publishing FileOpenedEvent to trigger lazy activation");
+                _ideContext.IDEEvents.Publish(new FileOpenedEvent
+                {
+                    Source        = "DocumentEditorHost",
+                    FilePath      = filePath,
+                    FileExtension = ext,
+                    FileSize      = File.Exists(filePath) ? new FileInfo(filePath).Length : 0L,
+                });
+
+                // Poll up to 3 s in 200 ms steps — plugin activation is async (Task.Run).
+                const int maxWaitMs = 3000;
+                const int stepMs    = 200;
+                int waited = 0;
+                while (waited < maxWaitMs)
+                {
+                    await Task.Delay(stepMs, linked).ConfigureAwait(false);
+                    waited += stepMs;
+                    loaders = _ideContext.ExtensionRegistry.GetExtensions<IDocumentLoader>();
+                    if (loaders.FirstOrDefault(l => l.CanLoad(filePath)) is not null)
+                    {
+                        OutputMessage?.Invoke(this, $"[DocEditor] loader appeared after {waited} ms");
+                        break;
+                    }
+                }
+            }
+
             var loader = loaders.FirstOrDefault(l => l.CanLoad(filePath))
                          ?? throw new NotSupportedException(
                              $"No document loader registered for '{System.IO.Path.GetExtension(filePath)}'.");
@@ -315,7 +376,6 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             await Dispatcher.InvokeAsync(() =>
             {
                 PART_TextPane.ShowError(ex.Message);
-                PART_HexPane.LoadFile(filePath);
             });
             TitleChanged?.Invoke(this, fileName + " ⚠");
         }
@@ -342,58 +402,47 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     private void ApplyViewMode(DocumentViewMode mode)
     {
-        // Exit focus mode first if switching away
         if (_isFocusMode && mode != DocumentViewMode.Focus)
             ExitFocusMode();
 
         switch (mode)
         {
-            case DocumentViewMode.Full:
-                SetPaneVisibility(text: true, structure: true, hex: true);
-                break;
             case DocumentViewMode.Focus:
                 EnterFocusMode();
                 break;
+            case DocumentViewMode.Structure:
+                SetPaneVisibility(text: true, structure: true);
+                break;
             default:
-                SetPaneVisibility(
-                    text:      mode is DocumentViewMode.TextOnly or DocumentViewMode.Split or DocumentViewMode.Structure,
-                    structure: mode == DocumentViewMode.Structure,
-                    hex:       mode is DocumentViewMode.Split or DocumentViewMode.HexOnly);
+                SetPaneVisibility(text: true, structure: false);
                 break;
         }
 
         if (PART_TextModeBtn   is not null) PART_TextModeBtn.IsChecked   = mode == DocumentViewMode.TextOnly;
-        if (PART_SplitModeBtn  is not null) PART_SplitModeBtn.IsChecked  = mode == DocumentViewMode.Split;
-        if (PART_HexModeBtn    is not null) PART_HexModeBtn.IsChecked    = mode == DocumentViewMode.HexOnly;
         if (PART_StructModeBtn is not null) PART_StructModeBtn.IsChecked = mode == DocumentViewMode.Structure;
-        if (PART_FullModeBtn   is not null) PART_FullModeBtn.IsChecked   = mode == DocumentViewMode.Full;
         if (PART_FocusModeBtn  is not null) PART_FocusModeBtn.IsChecked  = mode == DocumentViewMode.Focus;
 
         var readOnlySuffix = IsReadOnly ? DocumentEditorResources.DocEditorHost_ReadOnlySuffix : string.Empty;
         PART_StatusBar.ViewModeText = mode switch
         {
-            DocumentViewMode.TextOnly  => DocumentEditorResources.DocEditorHost_ViewModeText      + readOnlySuffix,
-            DocumentViewMode.Split     => DocumentEditorResources.DocEditorHost_ViewModeSplit      + readOnlySuffix,
-            DocumentViewMode.HexOnly   => DocumentEditorResources.DocEditorHost_ViewModeHex       + readOnlySuffix,
             DocumentViewMode.Structure => DocumentEditorResources.DocEditorHost_ViewModeStructure + readOnlySuffix,
-            DocumentViewMode.Full      => DocumentEditorResources.DocEditorHost_ViewModeFull      + readOnlySuffix,
             DocumentViewMode.Focus     => DocumentEditorResources.DocEditorHost_ViewModeFocus     + readOnlySuffix,
-            _                          => DocumentEditorResources.DocEditorHost_ViewModeSplit     + readOnlySuffix
+            _                          => DocumentEditorResources.DocEditorHost_ViewModeText      + readOnlySuffix
         };
     }
 
     private void EnterFocusMode()
     {
         _isFocusMode = true;
-        SetPaneVisibility(text: true, structure: false, hex: false);
+        SetPaneVisibility(text: true, structure: false);
         // Hide chrome rows: toolbar (row 0), breadcrumb (row 1), minimap (row 3), statusbar (row 4)
         // These are accessed via RowDefinitions on the root Grid
         if (FindName("PART_ToolbarRow") is RowDefinition toolbar)
             toolbar.Height = new GridLength(0);
         if (FindName("PART_BreadcrumbRow") is RowDefinition breadcrumb)
             breadcrumb.Height = new GridLength(0);
-        if (FindName("PART_MiniMapRow") is RowDefinition minimap)
-            minimap.Height = new GridLength(0);
+        if (FindName("PART_MiniMapCol") is ColumnDefinition mmCol)
+            mmCol.Width = new GridLength(0);
         if (FindName("PART_StatusBarRow") is RowDefinition statusbar)
             statusbar.Height = new GridLength(0);
         PART_TextPane.Margin = new Thickness(80, 40, 80, 40);
@@ -407,8 +456,8 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             toolbar.Height = GridLength.Auto;
         if (FindName("PART_BreadcrumbRow") is RowDefinition breadcrumb)
             breadcrumb.Height = GridLength.Auto;
-        if (FindName("PART_MiniMapRow") is RowDefinition minimap)
-            minimap.Height = GridLength.Auto;
+        if (FindName("PART_MiniMapCol") is ColumnDefinition mmCol)
+            mmCol.Width = new GridLength(80);
         if (FindName("PART_StatusBarRow") is RowDefinition statusbar)
             statusbar.Height = GridLength.Auto;
     }
@@ -447,19 +496,22 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
                 renderer.ShowPageShadows = true;
                 renderer.PageMargin      = new Thickness(40);
                 // Restore text pane if coming from Outline
-                SetPaneVisibility(text: true, structure: false, hex: ViewMode == DocumentViewMode.Split);
+                SetPaneVisibility(text: true, structure: false);
+                PART_TextPane.SetRulersVisible(true);
                 break;
 
             case DocumentRenderMode.Draft:
                 renderer.ShowPageShadows = false;
                 renderer.PageMargin      = new Thickness(8, 4, 8, 4);
                 // Restore text pane if coming from Outline
-                SetPaneVisibility(text: true, structure: false, hex: ViewMode == DocumentViewMode.Split);
+                SetPaneVisibility(text: true, structure: false);
+                PART_TextPane.SetRulersVisible(false);
                 break;
 
             case DocumentRenderMode.Outline:
                 // Show text pane (renderer draws outline mode inline, structure pane is optional)
-                SetPaneVisibility(text: true, structure: false, hex: false);
+                SetPaneVisibility(text: true, structure: false);
+                PART_TextPane.SetRulersVisible(false);
                 break;
         }
 
@@ -470,10 +522,10 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     // ── Phase 14/15: Text + paragraph formatting toolbar handlers ─────────────
 
-    private void OnBoldClicked(object sender, RoutedEventArgs e)          => ApplyFormat("bold");
-    private void OnItalicClicked(object sender, RoutedEventArgs e)        => ApplyFormat("italic");
-    private void OnUnderlineClicked(object sender, RoutedEventArgs e)     => ApplyFormat("underline");
-    private void OnStrikethroughClicked(object sender, RoutedEventArgs e) => ApplyFormat("strikethrough");
+    private void OnBoldClicked(object sender, RoutedEventArgs e)          => ApplyFormatToggle("bold",          sender);
+    private void OnItalicClicked(object sender, RoutedEventArgs e)        => ApplyFormatToggle("italic",        sender);
+    private void OnUnderlineClicked(object sender, RoutedEventArgs e)     => ApplyFormatToggle("underline",     sender);
+    private void OnStrikethroughClicked(object sender, RoutedEventArgs e) => ApplyFormatToggle("strikethrough", sender);
 
     // ── Wave F: Font family ───────────────────────────────────────────────────
 
@@ -482,10 +534,53 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void OnFontFamilyChanged(object sender, SelectionChangedEventArgs e)
     {
         if (_suppressFontDropdown) return;
-        if (PART_FontFamilyDropdown?.SelectedItem is not ComboBoxItem item) return;
-        var family = item.Tag?.ToString();
-        if (!string.IsNullOrEmpty(family))
-            ApplyRunFormat("fontFamily", family);
+        if (PART_FontFamilyDropdown is null) return;
+        var family = PART_FontFamilyDropdown.SelectedItem as string
+                  ?? PART_FontFamilyDropdown.Text;
+        if (!string.IsNullOrWhiteSpace(family))
+            ApplyRunFormat("fontFamily", family.Trim());
+    }
+
+    private void OnFontFamilyKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key != System.Windows.Input.Key.Return || PART_FontFamilyDropdown is null) return;
+        var family = PART_FontFamilyDropdown.Text?.Trim();
+        if (!string.IsNullOrWhiteSpace(family))
+        {
+            if (IsFontFamilyValid(family))
+            {
+                ApplyRunFormat("fontFamily", family);
+                SetFontDropdownError(false);
+            }
+            else
+            {
+                SetFontDropdownError(true);
+            }
+        }
+        e.Handled = true;
+    }
+
+    private void OnFontFamilyLostFocus(object sender, RoutedEventArgs e)
+    {
+        if (PART_FontFamilyDropdown is null) return;
+        var family = PART_FontFamilyDropdown.Text?.Trim();
+        if (string.IsNullOrWhiteSpace(family)) { SetFontDropdownError(false); return; }
+        SetFontDropdownError(!IsFontFamilyValid(family));
+    }
+
+    private static bool IsFontFamilyValid(string name) =>
+        Fonts.SystemFontFamilies.Any(f =>
+            string.Equals(f.Source, name, StringComparison.OrdinalIgnoreCase));
+
+    private void SetFontDropdownError(bool isError)
+    {
+        if (PART_FontFamilyDropdown is null) return;
+        PART_FontFamilyDropdown.BorderBrush = isError
+            ? System.Windows.Media.Brushes.Red
+            : null;    // null → inherits theme brush
+        PART_FontFamilyDropdown.ToolTip = isError
+            ? "Unknown font family"
+            : "Font family";
     }
 
     // ── Wave F: Font size ─────────────────────────────────────────────────────
@@ -583,13 +678,21 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     {
         if (PART_StyleDropdown?.SelectedItem is not ComboBoxItem item) return;
         var style = item.Content?.ToString() ?? "Normal";
-        if (style == "Normal")       ApplyBlockAttribute("style", null);
+        if (style == "Normal")
+        {
+            ApplyBlockAttribute("style", null);
+            ApplyBlockAttribute("level", null);
+        }
         else if (style.StartsWith("H") && int.TryParse(style[1..], out int lvl))
         {
             ApplyBlockAttribute("style", "heading");
             ApplyBlockAttribute("level", lvl.ToString());
         }
-        else                         ApplyBlockAttribute("style", style.ToLowerInvariant());
+        else
+        {
+            ApplyBlockAttribute("style", style.ToLowerInvariant());
+            ApplyBlockAttribute("level", null);
+        }
     }
 
     private void ApplyBlockAttribute(string attribute, object? value)
@@ -604,9 +707,15 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_TextPane.PART_Renderer.ApplyFormatToSelection(format, true);
     }
 
+    private void ApplyFormatToggle(string attribute, object sender)
+    {
+        if (IsReadOnly || _mutator is null) return;
+        bool active = sender is System.Windows.Controls.Primitives.ToggleButton tb && tb.IsChecked == true;
+        PART_TextPane.PART_Renderer.ApplyFormatToSelection(attribute, active);
+    }
+
     // ── View mode toolbar handlers ────────────────────────────────────────────
 
-    private void OnFullModeClicked(object sender, RoutedEventArgs e)    => ViewMode = DocumentViewMode.Full;
     private void OnFocusModeClicked(object sender, RoutedEventArgs e)   => ViewMode = DocumentViewMode.Focus;
     private void OnPageModeClicked(object sender, RoutedEventArgs e)    => RenderMode = DocumentRenderMode.Page;
     private void OnDraftModeClicked(object sender, RoutedEventArgs e)   => RenderMode = DocumentRenderMode.Draft;
@@ -635,41 +744,70 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         if ((Keyboard.Modifiers & ModifierKeys.Control) == 0) return;
 
         if (e.Key == Key.F)  { OpenFindDialog(showReplace: false); e.Handled = true; }
-        if (e.Key == Key.H)  { OpenFindDialog(showReplace: true);  e.Handled = true; }
+        // Ctrl+H = find/replace in document; Ctrl+Shift+H is workspace-wide (handled by MainWindow)
+        if (e.Key == Key.H && (Keyboard.Modifiers & ModifierKeys.Shift) == 0)
+            { OpenFindDialog(showReplace: true); e.Handled = true; }
         if (e.Key == Key.S)  { Save(); e.Handled = true; }
+        if (e.Key == Key.F2) { ToggleBookmarkAtCaret(); e.Handled = true; }
+        if (e.Key == Key.W && (Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+            { OpenStatisticsDialog(); e.Handled = true; }
+        if (e.Key == Key.OemCloseBrackets) { PART_TextPane.IncreaseIndent(); e.Handled = true; }
+        if (e.Key == Key.OemOpenBrackets)  { PART_TextPane.DecreaseIndent(); e.Handled = true; }
+
+        int blockCount = PART_TextPane.BlockCount;
+        if (blockCount > 0)
+        {
+            if (e.Key == Key.Home)
+                { PART_TextPane.NavigateToBlockIndex(0); e.Handled = true; }
+            if (e.Key == Key.End)
+                { PART_TextPane.NavigateToBlockIndex(blockCount - 1); e.Handled = true; }
+            if (e.Key == Key.Up)
+            {
+                int cur = PART_TextPane.CaretBlockIndex;
+                if (cur > 0) { PART_TextPane.NavigateToBlockIndex(cur - 1); e.Handled = true; }
+            }
+            if (e.Key == Key.Down)
+            {
+                int cur = PART_TextPane.CaretBlockIndex;
+                if (cur < blockCount - 1) { PART_TextPane.NavigateToBlockIndex(cur + 1); e.Handled = true; }
+            }
+        }
+    }
+
+    private void ToggleBookmarkAtCaret()
+    {
+        if (_vm?.Model is null) return;
+        int bi = PART_TextPane.CaretBlockIndex;
+        if (bi < 0) return;
+        _vm.Model.ToggleBookmark(bi);
     }
 
     private void OpenFindDialog(bool showReplace)
     {
         if (_vm?.Model is null) return;
-
-        if (_findDialog is null)
-        {
-            var vm     = new ViewModels.DocumentSearchViewModel(_vm.Model, PART_TextPane.PART_Renderer);
-            _findDialog = new DocumentFindReplaceDialog(vm)
-            {
-                Owner = Window.GetWindow(this),
-            };
-        }
-
-        _findDialog.ShowReplacePanel = showReplace;
-        _findDialog.Show();
+        var searchVm = new ViewModels.DocumentSearchViewModel(_vm.Model, PART_TextPane.PART_Renderer);
+        var target   = new ViewModels.DocumentSearchTarget(searchVm);
+        PART_TextPane.ShowQuickSearch(target);
     }
 
-    private void SetPaneVisibility(bool text, bool structure, bool hex)
+    private void OpenStatisticsDialog()
     {
-        PART_TextPane.Visibility      = text      ? Visibility.Visible   : Visibility.Collapsed;
-        PART_Splitter1.Visibility     = text && (structure || hex) ? Visibility.Visible : Visibility.Collapsed;
-        PART_StructurePane.Visibility = structure ? Visibility.Visible   : Visibility.Collapsed;
-        PART_HexPane.Visibility       = hex       ? Visibility.Visible   : Visibility.Collapsed;
-        PART_Splitter2.Visibility     = hex && structure ? Visibility.Visible : Visibility.Collapsed;
+        if (_vm?.Model is null) return;
+        var dlg = new DocumentStatisticsDialog(_vm.Model.Blocks) { Owner = Window.GetWindow(this) };
+        dlg.ShowDialog();
+    }
 
-        Grid.SetColumn(PART_HexPane, 4);
+    private void SetPaneVisibility(bool text, bool structure)
+    {
+        PART_TextPane.Visibility      = text      ? Visibility.Visible : Visibility.Collapsed;
+        PART_StructurePane.Visibility = structure ? Visibility.Visible : Visibility.Collapsed;
+        PART_Splitter1.Visibility     = text && structure ? Visibility.Visible : Visibility.Collapsed;
+
+        PART_TextCol.MinWidth   = text      ? 100 : 0;
+        PART_StructCol.MinWidth = structure ? 100 : 0;
         PART_TextCol.Width      = text      ? new GridLength(2, GridUnitType.Star) : new GridLength(0);
         PART_StructCol.Width    = structure ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
-        PART_HexCol.Width       = hex       ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
-        PART_Splitter1Col.Width = (text && (structure || hex)) ? new GridLength(4) : new GridLength(0);
-        PART_Splitter2Col.Width = (structure && hex)           ? new GridLength(4) : new GridLength(0);
+        PART_Splitter1Col.Width = text && structure ? new GridLength(4) : new GridLength(0);
     }
 
     private static void OnIsForensicModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -705,8 +843,6 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     // ── Toolbar handlers ─────────────────────────────────────────────────────
 
     private void OnTextModeClicked(object sender, RoutedEventArgs e)      => ViewMode = DocumentViewMode.TextOnly;
-    private void OnSplitModeClicked(object sender, RoutedEventArgs e)     => ViewMode = DocumentViewMode.Split;
-    private void OnHexModeClicked(object sender, RoutedEventArgs e)       => ViewMode = DocumentViewMode.HexOnly;
     private void OnStructureModeClicked(object sender, RoutedEventArgs e) => ViewMode = DocumentViewMode.Structure;
     private void OnForensicModeClicked(object sender, RoutedEventArgs e)  => IsForensicMode = PART_ForensicBtn.IsChecked == true;
     private void OnSaveClicked(object sender, RoutedEventArgs e)          => Save();
@@ -876,9 +1012,9 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     private void OnPopToolbarJumpHex(object? sender, DocumentBlock? block)
     {
-        if (block is not null)
-            PART_HexPane.ScrollToBlock(block);
         PART_PopToolbar.IsOpen = false;
+        if (block is not null)
+            NavigateToOffsetRequested?.Invoke(this, block.RawOffset);
     }
 
     // ── Status bar ───────────────────────────────────────────────────────────
@@ -905,12 +1041,12 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
         PART_TextPane.BindModel(model);
         PART_StructurePane.BindModel(model);
-        PART_HexPane.BindModel(model);
         PART_MiniMap.BindModel(model);
         PART_StatusBar.BindModel(model, _currentFileExtension);
 
-        // Pass mutator to renderer (Phase 12+)
+        // Pass mutator to renderer (Phase 12+) and to the page rulers.
         PART_TextPane.PART_Renderer.SetMutator(_mutator);
+        PART_TextPane.SetMutator(_mutator);
 
         // Apply page settings declared by the document (overrides A4 default)
         if (model.PageSettings is { } ps)
@@ -920,12 +1056,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_TextPane.SetZoom(ZoomLevel);
         PART_TextPane.PART_Renderer.IsReadOnly = IsReadOnly;
 
-        // Wire hex highlight manager
-        _hexHighlightMgr = new DocumentHexHighlightManager(PART_HexPane);
         _mutator.BlockMutated += OnBlockMutated;
-
-        _syncService = new BinaryMapSyncService(model);
-        _syncService.Wire(PART_TextPane, PART_HexPane);
 
         ApplyViewMode(ViewMode);
         ApplyRenderMode(RenderMode);
@@ -938,6 +1069,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
         model.UndoEngine.StateChanged += (_, _) =>
         {
+            model.IsDirty = !model.UndoEngine.IsAtSavePoint;
             CanUndoChanged?.Invoke(this, EventArgs.Empty);
             CanRedoChanged?.Invoke(this, EventArgs.Empty);
         };
@@ -952,7 +1084,30 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         };
 
         model.ForensicAlertsChanged += (_, _) =>
-            Dispatcher.InvokeAsync(() => PART_StatusBar.UpdateForensicCount(model));
+            Dispatcher.InvokeAsync(() =>
+            {
+                PART_StatusBar.UpdateForensicCount(model);
+                UpdateForensicScrollMarkers(model);
+            });
+
+        model.BookmarksChanged += (_, _) => UpdateBookmarkScrollMarkers(model);
+
+        PART_TextPane.PART_Renderer.DirtyBlocksChanged += (_, _) => UpdateChangeScrollMarkers();
+
+        // Start auto-save (replaces any prior instance from a previous document open)
+        _autoSave?.Dispose();
+        _autoSave = new Services.AutoSaveService(
+            () => _vm?.Model,
+            () => _ideContext?.ExtensionRegistry
+                      .GetExtensions<IDocumentSaver>()
+                      .FirstOrDefault(s => s.CanSave(_vm?.Model?.FilePath ?? string.Empty)),
+            intervalSeconds: 60);
+        _autoSave.Start();
+
+        // Ensure the document starts clean regardless of any undo entries that
+        // may have been pushed during loading or initial layout.
+        model.UndoEngine.MarkSaved();
+        model.IsDirty = false;
 
         TitleChanged?.Invoke(this, Title);
     }
@@ -967,11 +1122,111 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         ApplyViewMode(ViewMode);
+        _ = PopulateFontFamilyDropdownAsync();
+        PART_TextPane.PART_Renderer.SelectionFormatChanged += OnSelectionFormatChanged;
+        PART_TextPane.PART_Renderer.PageChanged            += OnRendererPageChanged;
+        PART_TextPane.PART_Renderer.FindResultsChanged     += (_, _) => UpdateSearchScrollMarkers();
+
+        // Scroll marker panel — created once, injected into PART_ScrollMarkerHost (added in Wave 5)
+        _scrollMarker = new DocumentScrollMarkerPanel();
+        PART_ScrollMarkerHost.Child = _scrollMarker;
+    }
+
+    private void OnRendererPageChanged(object? sender, (int Current, int Total) e)
+    {
+        PART_StatusBar.UpdateCurrentPage(e.Current, e.Total);
+        var r = PART_TextPane.PART_Renderer;
+        PART_MiniMap.UpdateScroll(r.VerticalOffset, r.ExtentHeight, r.ViewportHeight);
+        _scrollMarker?.UpdateCaretMarker(r.CaretBlockIndex, r.BlockCount);
+    }
+
+    private void OnMiniMapScrollRequested(object? sender, double normalised)
+    {
+        var r = PART_TextPane.PART_Renderer;
+        // Center the viewport around the click so the user lands on the
+        // cursor position rather than scrolling it to the top edge.
+        double scrollable = Math.Max(0, r.ExtentHeight - r.ViewportHeight);
+        double target     = normalised * r.ExtentHeight - r.ViewportHeight / 2.0;
+        r.SetVerticalOffset(Math.Clamp(target, 0, scrollable));
+    }
+
+    // ── Scroll marker update helpers ─────────────────────────────────────────
+
+    internal void UpdateSearchScrollMarkers()
+    {
+        if (_scrollMarker is null) return;
+        var r = PART_TextPane.PART_Renderer;
+        _scrollMarker.UpdateSearchMarkers(r.SearchBlockIndices, r.BlockCount);
+    }
+
+    private void UpdateChangeScrollMarkers()
+    {
+        if (_scrollMarker is null) return;
+        var r = PART_TextPane.PART_Renderer;
+        _scrollMarker.UpdateChangeMarkers(r.DirtyBlockIndices, r.BlockCount);
+    }
+
+    private void UpdateForensicScrollMarkers(DocumentModel model)
+    {
+        if (_scrollMarker is null) return;
+        var r = PART_TextPane.PART_Renderer;
+        var blockIndex = new Dictionary<DocumentBlock, int>(model.Blocks.Count);
+        for (int i = 0; i < model.Blocks.Count; i++)
+            blockIndex[model.Blocks[i]] = i;
+        var indices = model.ForensicAlerts
+            .Where(a => a.Block is not null && blockIndex.TryGetValue(a.Block!, out _))
+            .Select(a => blockIndex[a.Block!])
+            .Distinct()
+            .ToList();
+        _scrollMarker.UpdateForensicMarkers(indices, r.BlockCount);
+    }
+
+    private void UpdateBookmarkScrollMarkers(DocumentModel model)
+    {
+        if (_scrollMarker is null) return;
+        var r = PART_TextPane.PART_Renderer;
+        _scrollMarker.UpdateBookmarkMarkers([.. model.Bookmarks], r.BlockCount);
+    }
+
+    private void OnSelectionFormatChanged(object? sender, EventArgs e)
+    {
+        var attrs = PART_TextPane.PART_Renderer.GetSelectionAttributes();
+        if (PART_BoldBtn          is not null) PART_BoldBtn.IsChecked          = attrs.Contains("bold");
+        if (PART_ItalicBtn        is not null) PART_ItalicBtn.IsChecked        = attrs.Contains("italic");
+        if (PART_UnderlineBtn     is not null) PART_UnderlineBtn.IsChecked     = attrs.Contains("underline");
+        if (PART_StrikethroughBtn is not null) PART_StrikethroughBtn.IsChecked = attrs.Contains("strikethrough");
+    }
+
+    private async Task PopulateFontFamilyDropdownAsync()
+    {
+        if (PART_FontFamilyDropdown is null) return;
+
+        // Collect font names off the UI thread to avoid freezing on 200+ system fonts
+        var names = await Task.Run(() =>
+            Fonts.SystemFontFamilies
+                 .Select(f => f.Source)
+                 .OrderBy(s => s, StringComparer.OrdinalIgnoreCase)
+                 .ToList());
+
+        if (PART_FontFamilyDropdown is null) return;
+        _suppressFontDropdown = true;
+        try
+        {
+            PART_FontFamilyDropdown.Items.Clear();
+            foreach (var name in names)
+                PART_FontFamilyDropdown.Items.Add(name);
+            PART_FontFamilyDropdown.Text = "Georgia";
+        }
+        finally
+        {
+            _suppressFontDropdown = false;
+        }
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         // Do NOT cancel _loadCts here — docking system unloads/reloads during tab switches.
+        _autoSave?.Stop();
     }
 
     private sealed class RelayCmd(Action execute, Func<bool> canExecute) : ICommand

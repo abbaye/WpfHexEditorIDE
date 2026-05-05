@@ -47,11 +47,12 @@ public static class CommandIds
         public const string Paste            = "Edit.Paste";
         public const string Delete           = "Edit.Delete";
         public const string SelectAll        = "Edit.SelectAll";
-        public const string Find             = "Edit.Find";
-        public const string AdvancedSearch   = "Edit.AdvancedSearch";
-        public const string FindNext         = "Edit.FindNext";
-        public const string FindPrevious     = "Edit.FindPrevious";
-        public const string GoToOffset       = "Edit.GoToOffset";
+        public const string Find                  = "Edit.Find";
+        public const string AdvancedSearch        = "Edit.AdvancedSearch";
+        public const string FindNext              = "Edit.FindNext";
+        public const string FindPrevious          = "Edit.FindPrevious";
+        public const string GoToOffset            = "Edit.GoToOffset";
+        public const string WorkspaceFindReplace  = "Edit.WorkspaceFindReplace";
     }
 
     public static class View
@@ -143,6 +144,14 @@ public static class CommandIds
         public const string Save    = "Workspace.Save";
         public const string SaveAs  = "Workspace.SaveAs";
         public const string Close   = "Workspace.Close";
+    }
+
+    public static class AssemblyExplorer
+    {
+        public const string ShowPanel       = "View.AssemblyExplorer";
+        public const string AnalyzeAssembly = "Tools.AnalyzeAssembly";
+        public const string SearchAssemblies = "Tools.SearchInAssemblies";
+        public const string GoToToken       = "Edit.GoToMetadataToken";
     }
 
     public static class Editor

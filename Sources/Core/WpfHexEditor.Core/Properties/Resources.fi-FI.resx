@@ -1945,4 +1945,8 @@ Huomio: Täysi integraatio HexEditoriin vaatii yhteyden pääkäyttöliittymäma
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Tulokset</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Jaa</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Avaa tai sulje synkronoitu toinen hex-ruutu</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Sulje jako</value></data>
 </root>

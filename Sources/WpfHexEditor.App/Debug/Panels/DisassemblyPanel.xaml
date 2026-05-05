@@ -1,0 +1,96 @@
+<UserControl x:Class="WpfHexEditor.App.Debug.Panels.DisassemblyPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.App.Debug.ViewModels"
+             xmlns:dbgSvc="clr-namespace:WpfHexEditor.App.Debug.Services">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <dbgSvc:DebuggerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel Background="{DynamicResource DockBackgroundBrush}">
+
+        <Border DockPanel.Dock="Top" Style="{DynamicResource PanelToolbarStyle}">
+            <StackPanel Orientation="Horizontal" Margin="4,0" VerticalAlignment="Center">
+                <Button Command="{Binding PrevPageCommand}"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Content="&#xE76B;"/>
+                <Button Command="{Binding NextPageCommand}"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Content="&#xE76C;"/>
+                <Rectangle Width="1" Height="16" Margin="6,0"
+                           Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
+                <TextBox Width="180" VerticalAlignment="Center"
+                         Style="{DynamicResource PanelSearchBoxStyle}"
+                         Text="{Binding AddressInput, UpdateSourceTrigger=PropertyChanged}"
+                         KeyDown="OnAddressKeyDown"/>
+                <Button Command="{Binding GoCommand}"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Content="&#xE721;"/>
+            </StackPanel>
+        </Border>
+
+        <ListView x:Name="InstrList"
+                  ItemsSource="{Binding Lines}"
+                  Background="{DynamicResource DockBackgroundBrush}"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  FontFamily="Cascadia Code, Consolas, Courier New"
+                  FontSize="12"
+                  BorderThickness="0"
+                  VirtualizingPanel.IsVirtualizing="True">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{DynamicResource DBG_RunToCursor}"      InputGestureText="Ctrl+F10"
+                              Command="{Binding PlacementTarget.DataContext.RunToCursorCommand,      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,               RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="{DynamicResource DBG_SetNextStatement}" InputGestureText="Ctrl+Shift+F10"
+                              Command="{Binding PlacementTarget.DataContext.SetNextStatementCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,               RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <Separator/>
+                    <MenuItem Header="{DynamicResource DBG_CopyAddress}"
+                              Command="{Binding PlacementTarget.DataContext.CopyAddressCommand,      RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,               RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="{DynamicResource DBG_CopyLine}"         InputGestureText="Ctrl+C"
+                              Command="{Binding PlacementTarget.DataContext.CopyLineCommand,         RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,               RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <Separator/>
+                    <MenuItem Header="{DynamicResource DBG_Refresh}"          InputGestureText="F5"
+                              Command="{Binding PlacementTarget.DataContext.RefreshCommand,          RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Address"  Width="120" DisplayMemberBinding="{Binding Address}"/>
+                    <GridViewColumn Header="Bytes"    Width="120" DisplayMemberBinding="{Binding InstructionBytes}"/>
+                    <GridViewColumn Header="Symbol"   Width="140" DisplayMemberBinding="{Binding Symbol}"/>
+                    <GridViewColumn Header="Instruction" Width="300" DisplayMemberBinding="{Binding Instruction}"/>
+                    <GridViewColumn Header="Source"   Width="180">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="{Binding SourceFile}"/>
+                                    <Run Text=":"/>
+                                    <Run Text="{Binding SourceLine}"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCurrentIP}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource DB_CallStackActiveBrush}"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+    </DockPanel>
+</UserControl>

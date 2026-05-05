@@ -57,6 +57,9 @@ public interface IDapClient : IAsyncDisposable
 
     // ── Inspection ────────────────────────────────────────────────────────────
 
+    /// <summary>Get all active threads.</summary>
+    Task<ThreadsBody?> ThreadsAsync(CancellationToken ct = default);
+
     /// <summary>Get the call stack for a given thread.</summary>
     Task<StackTraceBody?> StackTraceAsync(StackTraceArgs args, CancellationToken ct = default);
 
@@ -68,6 +71,48 @@ public interface IDapClient : IAsyncDisposable
 
     /// <summary>Evaluate an expression in the context of a frame.</summary>
     Task<EvaluateBody?> EvaluateAsync(EvaluateArgs args, CancellationToken ct = default);
+
+    /// <summary>Set the value of a named variable in a given scope.</summary>
+    Task<SetVariableBody?> SetVariableAsync(SetVariableArgs args, CancellationToken ct = default);
+
+    /// <summary>Get goto targets for a given source line (supports Run to Cursor).</summary>
+    Task<GotoTargetsBody?> GotoTargetsAsync(GotoTargetsArgs args, CancellationToken ct = default);
+
+    /// <summary>Move execution to a specific goto target.</summary>
+    Task GotoAsync(GotoArgs args, CancellationToken ct = default);
+
+    /// <summary>Configure which exception filters trigger a stop.</summary>
+    Task SetExceptionBreakpointsAsync(SetExceptionBreakpointsArgs args, CancellationToken ct = default);
+
+    /// <summary>Retrieve loaded modules (DLLs / EXEs). Returns empty list if adapter lacks support.</summary>
+    Task<ModulesBody> GetModulesAsync(ModulesArgs? args = null, CancellationToken ct = default);
+
+    /// <summary>Disassemble memory around a given address. Returns empty if not supported.</summary>
+    Task<DisassembleBody> DisassembleAsync(DisassembleArgs args, CancellationToken ct = default);
+
+    /// <summary>Read raw memory bytes from the debuggee. Returns null body if not supported.</summary>
+    Task<ReadMemoryBody?> ReadMemoryAsync(ReadMemoryArgs args, CancellationToken ct = default);
+
+    /// <summary>Write raw memory bytes to the debuggee. No-op if not supported.</summary>
+    Task WriteMemoryAsync(WriteMemoryArgs args, CancellationToken ct = default);
+
+    /// <summary>
+    /// Restart the execution of the given stack frame (Edit &amp; Continue).
+    /// No-op if the adapter does not support restartFrame.
+    /// </summary>
+    Task RestartFrameAsync(RestartFrameArgs args, CancellationToken ct = default);
+
+    /// <summary>
+    /// Get data breakpoint info for a variable (needed before calling SetDataBreakpointsAsync).
+    /// Returns null body if not supported.
+    /// </summary>
+    Task<DataBreakpointInfoBody?> DataBreakpointInfoAsync(DataBreakpointInfoArgs args, CancellationToken ct = default);
+
+    /// <summary>
+    /// Set the list of data breakpoints (memory watchpoints).
+    /// Returns null body if not supported.
+    /// </summary>
+    Task<SetDataBreakpointsBody?> SetDataBreakpointsAsync(SetDataBreakpointsArgs args, CancellationToken ct = default);
 
     // ── Inbound events ────────────────────────────────────────────────────────
 

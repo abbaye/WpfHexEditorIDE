@@ -893,4 +893,14 @@
   <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Browse and manage built-in and user .whfmt format definitions</value></data>
   <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Open the Format Catalog document tab (all formats in a sortable grid)</value></data>
   <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyse entropy and byte distribution of the active file</value></data>
+  <data name="Debugger_RemoteConnect" xml:space="preserve"><value>Verbinding maken met externe debugger...</value></data>
+  <data name="Debugger_RemoteConnecting" xml:space="preserve"><value>Verbinding wordt tot stand gebracht...</value></data>
+  <data name="Debugger_RemoteConnectFailed" xml:space="preserve"><value>Verbinding met externe foutopsporingsadapter mislukt.</value></data>
+  <data name="Debugger_EditContinueApplied" xml:space="preserve"><value>Bewerken en doorgaan toegepast.</value></data>
+  <data name="Debugger_HotReloadApplied" xml:space="preserve"><value>Hot Reload toegepast.</value></data>
+  <data name="Debugger_HotReloadNotSupported" xml:space="preserve"><value>Hot Reload wordt niet ondersteund door deze runtime.</value></data>
+  <data name="Debugger_SymbolServerResolving" xml:space="preserve"><value>Symbolen worden omgezet...</value></data>
+  <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbolenomzetting voltooid.</value></data>
+  <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Gegevensonderbrekingspunten</value></data>
+  <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Gegevensonderbrekingspunt toevoegen</value></data>
 </root>

@@ -2023,4 +2023,8 @@
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Результаты</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Разделить</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Открыть или закрыть синхронизированную вторую hex-панель</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Закрыть разделение</value></data>
 </root>

@@ -1968,4 +1968,8 @@
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>결과</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>분할</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>동기화된 두 번째 Hex 창 열기/닫기</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>분할 닫기</value></data>
 </root>

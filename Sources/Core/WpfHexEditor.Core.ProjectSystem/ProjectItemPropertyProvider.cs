@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using System.IO;
+using WpfHexEditor.Core.ProjectSystem.Providers;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Core.ProjectSystem;
@@ -73,6 +74,14 @@ public sealed class ProjectItemPropertyProvider : IPropertyProvider
 
             if (cfgEntries.Count > 0)
                 groups.Add(new PropertyGroup { Name = "Editor config", Entries = cfgEntries });
+        }
+
+        // -- VB.NET item group (for .vb files) --------------------------------
+        if (string.Equals(Path.GetExtension(_item.AbsolutePath), ".vb",
+                          StringComparison.OrdinalIgnoreCase))
+        {
+            var vbProvider = new VBItemGroupPropertyProvider(_item.AbsolutePath);
+            groups.Add(vbProvider.BuildGroup());
         }
 
         return groups;

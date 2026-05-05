@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StringExtractor_PluginName" xml:space="preserve"><value>Extractor de cadenas</value></data>
+  <data name="StringExtractor_PanelTitle" xml:space="preserve"><value>Extractor de cadenas</value></data>
+  <data name="StringExtractor_MenuItem" xml:space="preserve"><value>_Extractor de cadenas</value></data>
+  <data name="StringExtractor_ColOffset" xml:space="preserve"><value>Desplazamiento</value></data>
+  <data name="StringExtractor_ColLength" xml:space="preserve"><value>Longitud</value></data>
+  <data name="StringExtractor_ColEncoding" xml:space="preserve"><value>Codificación</value></data>
+  <data name="StringExtractor_ColValue" xml:space="preserve"><value>Valor</value></data>
+  <data name="StringExtractor_MinLength" xml:space="preserve"><value>Long. mín.:</value></data>
+  <data name="StringExtractor_FilterPlaceholder" xml:space="preserve"><value>Filtrar cadenas...</value></data>
+  <data name="StringExtractor_ExtractButton" xml:space="preserve"><value>Extraer</value></data>
+  <data name="StringExtractor_ExportButton" xml:space="preserve"><value>Exportar</value></data>
+  <data name="StringExtractor_CopyButton" xml:space="preserve"><value>Copiar</value></data>
+  <data name="StringExtractor_NoFile" xml:space="preserve"><value>Ningún archivo abierto — abra un archivo binario para extraer cadenas.</value></data>
+  <data name="StringExtractor_NoResults" xml:space="preserve"><value>No se encontraron cadenas con los criterios actuales.</value></data>
+  <data name="StringExtractor_Extracting" xml:space="preserve"><value>Extrayendo cadenas…</value></data>
+  <data name="StringExtractor_ResultCount" xml:space="preserve"><value>{0} cadenas encontradas</value></data>
+  <data name="StringExtractor_FilteredCount" xml:space="preserve"><value>{0} de {1} cadenas</value></data>
+  <data name="StringExtractor_Enc_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="StringExtractor_Enc_UTF8" xml:space="preserve"><value>UTF-8</value></data>
+  <data name="StringExtractor_Enc_UTF16LE" xml:space="preserve"><value>UTF-16 LE</value></data>
+  <data name="StringExtractor_Enc_UTF16BE" xml:space="preserve"><value>UTF-16 BE</value></data>
+  <data name="StringExtractor_ExportTitle" xml:space="preserve"><value>Exportar cadenas</value></data>
+  <data name="StringExtractor_ExportFilter" xml:space="preserve"><value>Archivos CSV (*.csv)|*.csv|Archivos de texto (*.txt)|*.txt|Todos los archivos (*.*)|*.*</value></data>
+  <data name="StringExtractor_ExportSuccess" xml:space="preserve"><value>{0} cadenas exportadas a {1}</value></data>
+  <data name="StringExtractor_NavigateTo" xml:space="preserve"><value>Navegar al desplazamiento</value></data>
+  <data name="StringExtractor_CopyValue" xml:space="preserve"><value>Copiar valor</value></data>
+  <data name="StringExtractor_CopyOffset" xml:space="preserve"><value>Copiar desplazamiento</value></data>
+  <data name="StringExtractor_Tooltip_Extract" xml:space="preserve"><value>Escanear el archivo y extraer todas las cadenas imprimibles</value></data>
+  <data name="StringExtractor_Tooltip_Export" xml:space="preserve"><value>Exportar resultados a CSV o TXT</value></data>
+  <data name="StringExtractor_Tooltip_MinLength" xml:space="preserve"><value>Número mínimo de caracteres imprimibles consecutivos</value></data>
+</root>

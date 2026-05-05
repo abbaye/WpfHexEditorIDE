@@ -22,6 +22,7 @@ using System.Windows;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Core.ProjectSystem.Properties;
 using WpfHexEditor.Core.ProjectSystem.Services;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Core.ProjectSystem.Dialogs;
 
@@ -123,7 +124,7 @@ public partial class ProjectPropertiesDialog : WpfHexEditor.Editor.Core.Views.Th
         var newName = TbName.Text.Trim();
         if (string.IsNullOrWhiteSpace(newName))
         {
-            MessageBox.Show(ProjectSystemResources.Validation_ProjectNameEmpty, ProjectSystemResources.Dialog_ValidationTitle,
+            IdeMessageBox.Show(ProjectSystemResources.Validation_ProjectNameEmpty, ProjectSystemResources.Dialog_ValidationTitle,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -137,7 +138,7 @@ public partial class ProjectPropertiesDialog : WpfHexEditor.Editor.Core.Views.Th
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{ProjectSystemResources.Error_RenameProjectFailed}\n{ex.Message}", ProjectSystemResources.Dialog_ErrorTitle,
+                IdeMessageBox.Show($"{ProjectSystemResources.Error_RenameProjectFailed}\n{ex.Message}", ProjectSystemResources.Dialog_ErrorTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }

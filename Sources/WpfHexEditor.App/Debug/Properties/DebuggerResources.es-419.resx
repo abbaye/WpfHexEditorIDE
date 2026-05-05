@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve">
+    <value>Puntos de interrupción</value>
+  </data>
+  <data name="Debugger_CallStackPanelTitle" xml:space="preserve">
+    <value>Pila de llamadas</value>
+  </data>
+  <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
+    <value>Variables locales</value>
+  </data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Automático</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Configuración de excepciones</value>
+  </data>
+  <data name="Debugger_WatchPanelTitle" xml:space="preserve">
+    <value>Inspección</value>
+  </data>
+  <data name="Debugger_ConsolePanelTitle" xml:space="preserve">
+    <value>Consola de depuración</value>
+  </data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Subprocesos</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Pilas paralelas</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Actualizar lista de subprocesos</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Actualizar pilas paralelas</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Cada cuadro representa la pila de llamadas de un subproceso</value></data>
+  <data name="Debugger_NoValidBreakpoints" xml:space="preserve">
+    <value>No se encontraron puntos de interrupción válidos en el archivo.</value>
+  </data>
+  <data name="Debugger_LaunchConfigTitle" xml:space="preserve">
+    <value>Configuración de inicio (.whdbg)</value>
+  </data>
+  <data name="Debugger_NoFileLoaded" xml:space="preserve">
+    <value>No hay archivo cargado. Haga clic en Abrir primero.</value>
+  </data>
+  <data name="Debugger_ServiceNotAvailable" xml:space="preserve">
+    <value>IDebuggerService no disponible.</value>
+  </data>
+  <data name="Debugger_NoConfigLoaded" xml:space="preserve">
+    <value>No hay configuración cargada.</value>
+  </data>
+  <data name="Debugger_NoConfigsArray" xml:space="preserve">
+    <value>No se encontró la matriz 'configurations' en el archivo .whdbg.</value>
+  </data>
+  <data name="Debugger_NoMatchingConfig" xml:space="preserve">
+    <value>No se encontró ninguna configuración coincidente.</value>
+  </data>
+  <data name="Debugger_ImportBreakpoints" xml:space="preserve">
+    <value>Importar puntos de interrupción desde VS XML</value>
+  </data>
+  <data name="Debugger_ExportBreakpoints" xml:space="preserve">
+    <value>Exportar puntos de interrupción a VS XML</value>
+  </data>
+  <data name="Debugger_Menu_Continue" xml:space="preserve">
+    <value>_Continuar</value>
+  </data>
+  <data name="Debugger_Menu_StepOver" xml:space="preserve">
+    <value>_Paso a paso por procedimientos</value>
+  </data>
+  <data name="Debugger_Menu_StepInto" xml:space="preserve">
+    <value>_Ir a</value>
+  </data>
+  <data name="DBG_EnableAll" xml:space="preserve">
+    <value>Enable All</value>
+  </data>
+  <data name="DBG_DisableAll" xml:space="preserve">
+    <value>Disable All</value>
+  </data>
+  <data name="DBG_DeleteAll" xml:space="preserve">
+    <value>Delete All</value>
+  </data>
+  <data name="DBG_EditCondition" xml:space="preserve">
+    <value>Edit Condition…</value>
+  </data>
+  <data name="DBG_ImportBreakpoints" xml:space="preserve">
+    <value>Import from VS XML…</value>
+  </data>
+  <data name="DBG_ExportBreakpoints" xml:space="preserve">
+    <value>Export All to VS XML…</value>
+  </data>
+  <data name="DBG_GroupNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="DBG_GroupFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="DBG_GroupType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_GroupEnabled" xml:space="preserve">
+    <value>Enabled/Disabled</value>
+  </data>
+  <data name="DBG_GroupProject" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="DBG_DetailRight" xml:space="preserve">
+    <value>Detail: Right</value>
+  </data>
+  <data name="DBG_DetailBottom" xml:space="preserve">
+    <value>Detail: Bottom</value>
+  </data>
+  <data name="DBG_DetailHidden" xml:space="preserve">
+    <value>Detail: Hidden</value>
+  </data>
+  <data name="DBG_SearchPlaceholder" xml:space="preserve">
+    <value>Search breakpoints...</value>
+  </data>
+  <data name="DBG_EnableAllTooltip" xml:space="preserve">
+    <value>Enable all breakpoints</value>
+  </data>
+  <data name="DBG_DisableAllTooltip" xml:space="preserve">
+    <value>Disable all breakpoints</value>
+  </data>
+  <data name="DBG_DeleteAllTooltip" xml:space="preserve">
+    <value>Delete all breakpoints</value>
+  </data>
+  <data name="DBG_EditConditionTooltip" xml:space="preserve">
+    <value>Edit condition of selected breakpoint</value>
+  </data>
+  <data name="DBG_ImportTooltip" xml:space="preserve">
+    <value>Import breakpoints from Visual Studio XML file</value>
+  </data>
+  <data name="DBG_ExportTooltip" xml:space="preserve">
+    <value>Export all breakpoints to Visual Studio XML file</value>
+  </data>
+  <data name="DBG_GroupLabel" xml:space="preserve">
+    <value>Group:</value>
+  </data>
+  <data name="DBG_LayoutTooltip" xml:space="preserve">
+    <value>Detail panel layout</value>
+  </data>
+  <data name="DBG_LocationColumn" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="DBG_ConditionColumn" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="DBG_HitsColumn" xml:space="preserve">
+    <value>Hits</value>
+  </data>
+  <data name="DBG_GoToSourceMenu" xml:space="preserve">
+    <value>Go to Source</value>
+  </data>
+  <data name="DBG_EditConditionMenu" xml:space="preserve">
+    <value>Edit Condition…</value>
+  </data>
+  <data name="DBG_ToggleEnabledMenu" xml:space="preserve">
+    <value>Toggle Enabled</value>
+  </data>
+  <data name="DBG_CopyLocationMenu" xml:space="preserve">
+    <value>Copy Location</value>
+  </data>
+  <data name="DBG_DeleteMenu" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DBG_EnableGroupMenu" xml:space="preserve">
+    <value>Enable Group</value>
+  </data>
+  <data name="DBG_DisableGroupMenu" xml:space="preserve">
+    <value>Disable Group</value>
+  </data>
+  <data name="DBG_DeleteGroupMenu" xml:space="preserve">
+    <value>Delete Group</value>
+  </data>
+  <data name="DBG_UnverifiedBadge" xml:space="preserve">
+    <value>Unverified</value>
+  </data>
+  <data name="DBG_UnverifiedTooltip" xml:space="preserve">
+    <value>This breakpoint could not be verified at the current location.</value>
+  </data>
+  <data name="DBG_EnabledField" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="DBG_TypeField" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_VerifiedField" xml:space="preserve">
+    <value>Verified</value>
+  </data>
+  <data name="DBG_ConditionField" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="DBG_GoToSourceText" xml:space="preserve">
+    <value>Go To Source</value>
+  </data>
+  <data name="DBG_EditText" xml:space="preserve">
+    <value>Edit…</value>
+  </data>
+  <data name="DBG_DeleteText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DBG_HitsLabel" xml:space="preserve">
+    <value>Hits: </value>
+  </data>
+  <data name="DBG_MoreOptionsTooltip" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="DBG_AddWatch" xml:space="preserve"><value>Agregar inspección</value></data>
+  <data name="DBG_ColValue" xml:space="preserve"><value>Valor</value></data>
+  <data name="DBG_ColType" xml:space="preserve"><value>Tipo</value></data>
+  <data name="DBG_ColName" xml:space="preserve"><value>Nombre</value></data>
+  <data name="DBG_ColFile" xml:space="preserve"><value>Archivo</value></data>
+  <data name="Debugger_ImmediatePanelTitle" xml:space="preserve">
+    <value>Ventana Inmediata</value>
+  </data>
+  <data name="Debugger_ModulesPanelTitle" xml:space="preserve">
+    <value>Módulos</value>
+  </data>
+  <data name="Debugger_TasksPanelTitle" xml:space="preserve">
+    <value>Tareas</value>
+  </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>Desensamblado</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>Memoria</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>Registros</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>Inspección paralela</value></data>
+  <data name="DBG_Refresh" xml:space="preserve"><value>Actualizar</value></data>
+  <data name="DBG_Add" xml:space="preserve"><value>Agregar</value></data>
+  <data name="DBG_Remove" xml:space="preserve"><value>Quitar</value></data>
+  <data name="DBG_Clear" xml:space="preserve"><value>Borrar</value></data>
+  <data name="DBG_ClearAll" xml:space="preserve"><value>Borrar todo</value></data>
+  <data name="DBG_Copy" xml:space="preserve"><value>Copiar</value></data>
+  <data name="DBG_EditValue" xml:space="preserve"><value>Editar valor</value></data>
+  <data name="DBG_FilterPlaceholder" xml:space="preserve"><value>Filtrar…</value></data>
+  <data name="DBG_AddToWatch" xml:space="preserve"><value>Agregar a inspección</value></data>
+  <data name="DBG_CopyValue" xml:space="preserve"><value>Copiar valor</value></data>
+  <data name="DBG_CopyName" xml:space="preserve"><value>Copiar nombre</value></data>
+  <data name="DBG_CopyExpression" xml:space="preserve"><value>Copiar expresión</value></data>
+  <data name="DBG_CopyFrame" xml:space="preserve"><value>Copiar marco</value></data>
+  <data name="DBG_CopyCallStack" xml:space="preserve"><value>Copiar pila de llamadas</value></data>
+  <data name="DBG_GoToSource" xml:space="preserve"><value>Ir al origen</value></data>
+  <data name="DBG_ToggleHexDecimal" xml:space="preserve"><value>Cambiar hex/decimal</value></data>
+  <data name="DBG_ShowAsHex" xml:space="preserve"><value>Mostrar valores en hex</value></data>
+  <data name="DBG_RunToCursor" xml:space="preserve"><value>Ejecutar hasta cursor</value></data>
+  <data name="DBG_SetNextStatement" xml:space="preserve"><value>Establecer siguiente instrucción</value></data>
+  <data name="DBG_SwitchToThread" xml:space="preserve"><value>Cambiar al subproceso</value></data>
+  <data name="DBG_Freeze" xml:space="preserve"><value>Congelar</value></data>
+  <data name="DBG_Thaw" xml:space="preserve"><value>Descongelar</value></data>
+  <data name="DBG_CopyThreadInfo" xml:space="preserve"><value>Copiar información del subproceso</value></data>
+  <data name="DBG_CopyTaskInfo" xml:space="preserve"><value>Copiar información de tarea</value></data>
+  <data name="DBG_CopyAddress" xml:space="preserve"><value>Copiar dirección</value></data>
+  <data name="DBG_CopyHex" xml:space="preserve"><value>Copiar hex</value></data>
+  <data name="DBG_CopyAscii" xml:space="preserve"><value>Copiar ASCII</value></data>
+  <data name="DBG_CopyRow" xml:space="preserve"><value>Copiar fila</value></data>
+  <data name="DBG_CopyLine" xml:space="preserve"><value>Copiar línea</value></data>
+  <data name="DBG_RefreshTooltip" xml:space="preserve"><value>Actualizar (F5)</value></data>
+  <data name="DBG_FilterTooltip" xml:space="preserve"><value>Filtrar variables por nombre</value></data>
+</root>

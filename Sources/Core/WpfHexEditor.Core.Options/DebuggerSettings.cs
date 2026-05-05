@@ -58,4 +58,25 @@ public sealed class DebuggerSettings
 
     /// <summary>When true, the entire source line is highlighted when a breakpoint is hit.</summary>
     public bool BreakpointLineHighlightEnabled { get; set; } = true;
+
+    // ── Symbol servers ────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Ordered list of symbol server URLs.
+    /// First entry that has the matching PDB wins.
+    /// Default: Microsoft public symbol server.
+    /// </summary>
+    public List<string> SymbolServerUrls { get; set; } =
+    [
+        "https://msdl.microsoft.com/download/symbols"
+    ];
+
+    /// <summary>
+    /// Local symbol cache directory.
+    /// Empty = %TEMP%\WpfHexEditorSymbols.
+    /// </summary>
+    public string SymbolCachePath { get; set; } = string.Empty;
+
+    /// <summary>When false, symbol server lookups are disabled entirely.</summary>
+    public bool SymbolServerEnabled { get; set; } = true;
 }

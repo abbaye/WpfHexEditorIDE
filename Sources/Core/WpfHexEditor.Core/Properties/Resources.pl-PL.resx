@@ -2004,4 +2004,8 @@ Uwaga: Pełna integracja z HexEditor wymaga połączenia z głównym modelem wid
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Wyniki</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Podziel</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Otwórz lub zamknij zsynchronizowany drugi panel hex</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Zamknij podział</value></data>
 </root>

@@ -16,6 +16,7 @@ using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.PluginHost.Properties;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.PluginHost.UI;
 
@@ -227,7 +228,7 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(
+                IdeMessageBox.Show(
                     $"Cannot enable Watch Mode:\n{ex.Message}",
                     "Watch Mode", System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Warning);
@@ -437,7 +438,7 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Installation failed:\n{ex.Message}",
+            IdeMessageBox.Show($"Installation failed:\n{ex.Message}",
                 "Plugin Install Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         finally { IsInstalling = false; }

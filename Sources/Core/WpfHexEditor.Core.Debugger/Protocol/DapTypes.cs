@@ -87,6 +87,54 @@ public record DisconnectArgs(
     [property: JsonPropertyName("terminateDebuggee")] bool TerminateDebuggee = true
 );
 
+public record SetVariableArgs(
+    [property: JsonPropertyName("variablesReference")] int    VariablesReference,
+    [property: JsonPropertyName("name")]               string Name,
+    [property: JsonPropertyName("value")]              string Value
+);
+
+public record GotoTargetsArgs(
+    [property: JsonPropertyName("source")]             SourceDto Source,
+    [property: JsonPropertyName("line")]               int       Line
+);
+
+public record GotoTargetsBody(
+    [property: JsonPropertyName("targets")]            GotoTargetDto[] Targets
+);
+
+public record GotoTargetDto(
+    [property: JsonPropertyName("id")]                 int    Id,
+    [property: JsonPropertyName("label")]              string Label,
+    [property: JsonPropertyName("line")]               int    Line
+);
+
+public record GotoArgs(
+    [property: JsonPropertyName("threadId")]           int ThreadId,
+    [property: JsonPropertyName("targetId")]           int TargetId
+);
+
+public record SetExceptionBreakpointsArgs(
+    [property: JsonPropertyName("filters")]            string[]                  Filters,
+    [property: JsonPropertyName("filterOptions")]      ExceptionFilterOptionsDto[]? FilterOptions = null
+);
+
+public record ExceptionFilterOptionsDto(
+    [property: JsonPropertyName("filterId")]           string  FilterId,
+    [property: JsonPropertyName("condition")]          string? Condition = null
+);
+
+public record ExceptionBreakpointsBody(
+    [property: JsonPropertyName("exceptionBreakpointFilters")] ExceptionFilterDto[] Filters
+);
+
+public record ExceptionFilterDto(
+    [property: JsonPropertyName("filter")]             string  Filter,
+    [property: JsonPropertyName("label")]              string  Label,
+    [property: JsonPropertyName("description")]        string? Description = null,
+    [property: JsonPropertyName("default")]            bool    Default     = false,
+    [property: JsonPropertyName("supportsCondition")]  bool    SupportsCondition = false
+);
+
 // ── Response bodies ──────────────────────────────────────────────────────────
 
 public record CapabilitiesBody(
@@ -113,11 +161,12 @@ public record StackTraceBody(
 );
 
 public record StackFrameDto(
-    [property: JsonPropertyName("id")]                 int       Id,
-    [property: JsonPropertyName("name")]               string    Name,
-    [property: JsonPropertyName("source")]             SourceDto? Source,
-    [property: JsonPropertyName("line")]               int       Line,
-    [property: JsonPropertyName("column")]             int       Column
+    [property: JsonPropertyName("id")]                          int       Id,
+    [property: JsonPropertyName("name")]                        string    Name,
+    [property: JsonPropertyName("source")]                      SourceDto? Source,
+    [property: JsonPropertyName("line")]                        int       Line,
+    [property: JsonPropertyName("column")]                      int       Column,
+    [property: JsonPropertyName("instructionPointerReference")] string?   InstructionPointerReference = null
 );
 
 public record SourceDto(
@@ -154,6 +203,12 @@ public record EvaluateBody(
     [property: JsonPropertyName("variablesReference")] int     VariablesReference
 );
 
+public record SetVariableBody(
+    [property: JsonPropertyName("value")]              string  Value,
+    [property: JsonPropertyName("type")]               string? Type = null,
+    [property: JsonPropertyName("variablesReference")] int     VariablesReference = 0
+);
+
 // ── Event bodies ─────────────────────────────────────────────────────────────
 
 public record StoppedEventBody(
@@ -178,4 +233,122 @@ public record ExitedEventBody(
 public record ThreadEventBody(
     [property: JsonPropertyName("threadId")]           int    ThreadId,
     [property: JsonPropertyName("reason")]             string Reason
+);
+
+// ── Threads request / response ────────────────────────────────────────────────
+
+public record ThreadsBody(
+    [property: JsonPropertyName("threads")]            ThreadDto[] Threads
+);
+
+public record ThreadDto(
+    [property: JsonPropertyName("id")]                 int    Id,
+    [property: JsonPropertyName("name")]               string Name
+);
+
+// ── Disassembly request / response ───────────────────────────────────────────
+
+public record DisassembleArgs(
+    [property: JsonPropertyName("memoryReference")]  string MemoryReference,
+    [property: JsonPropertyName("instructionCount")] int    InstructionCount,
+    [property: JsonPropertyName("offset")]           int?   Offset                = null,
+    [property: JsonPropertyName("instructionOffset")]int?   InstructionOffset     = null,
+    [property: JsonPropertyName("resolveSymbols")]   bool   ResolveSymbols        = true
+);
+
+public record DisassembleBody(
+    [property: JsonPropertyName("instructions")]     DisassembledInstructionDto[] Instructions
+);
+
+public record DisassembledInstructionDto(
+    [property: JsonPropertyName("address")]          string  Address,
+    [property: JsonPropertyName("instruction")]      string  Instruction,
+    [property: JsonPropertyName("symbol")]           string? Symbol          = null,
+    [property: JsonPropertyName("location")]         SourceDto? Location     = null,
+    [property: JsonPropertyName("line")]             int?    Line             = null,
+    [property: JsonPropertyName("instructionBytes")] string? InstructionBytes = null
+);
+
+// ── ReadMemory request / response ─────────────────────────────────────────────
+
+public record ReadMemoryArgs(
+    [property: JsonPropertyName("memoryReference")] string MemoryReference,
+    [property: JsonPropertyName("count")]           int    Count,
+    [property: JsonPropertyName("offset")]          int?   Offset = null
+);
+
+public record ReadMemoryBody(
+    [property: JsonPropertyName("address")]         string  Address,
+    [property: JsonPropertyName("data")]            string  Data,           // base64
+    [property: JsonPropertyName("unreadableBytes")] int?    UnreadableBytes = null
+);
+
+// ── WriteMemory request / response ────────────────────────────────────────────
+
+public record WriteMemoryArgs(
+    [property: JsonPropertyName("memoryReference")] string MemoryReference,
+    [property: JsonPropertyName("data")]            string Data,            // base64
+    [property: JsonPropertyName("offset")]          int?   Offset         = null,
+    [property: JsonPropertyName("allowPartial")]    bool   AllowPartial   = false
+);
+
+// ── Modules request / response ────────────────────────────────────────────────
+
+public record ModulesArgs(
+    [property: JsonPropertyName("startModule")] int StartModule = 0,
+    [property: JsonPropertyName("moduleCount")] int ModuleCount = 100
+);
+
+public record ModulesBody(
+    [property: JsonPropertyName("modules")]     ModuleDto[] Modules,
+    [property: JsonPropertyName("totalModules")] int?       TotalModules = null
+);
+
+public record ModuleDto(
+    [property: JsonPropertyName("id")]              object  Id,
+    [property: JsonPropertyName("name")]            string  Name,
+    [property: JsonPropertyName("path")]            string? Path          = null,
+    [property: JsonPropertyName("isOptimized")]     bool?   IsOptimized   = null,
+    [property: JsonPropertyName("isUserCode")]      bool?   IsUserCode    = null,
+    [property: JsonPropertyName("version")]         string? Version       = null,
+    [property: JsonPropertyName("symbolStatus")]    string? SymbolStatus  = null,
+    [property: JsonPropertyName("symbolFilePath")]  string? SymbolFilePath= null,
+    [property: JsonPropertyName("addressRange")]    string? AddressRange  = null
+);
+
+// ── RestartFrame request ──────────────────────────────────────────────────────
+
+public record RestartFrameArgs(
+    [property: JsonPropertyName("frameId")] int FrameId
+);
+
+// ── Data breakpoints ──────────────────────────────────────────────────────────
+
+public enum DataBreakpointAccessType { Read, Write, ReadWrite }
+
+public record DataBreakpointInfoArgs(
+    [property: JsonPropertyName("name")]                string  Name,
+    [property: JsonPropertyName("variablesReference")]  int?    VariablesReference = null
+);
+
+public record DataBreakpointInfoBody(
+    [property: JsonPropertyName("dataId")]              string? DataId,
+    [property: JsonPropertyName("description")]         string  Description,
+    [property: JsonPropertyName("accessTypes")]         string[]? AccessTypes = null,
+    [property: JsonPropertyName("canPersist")]          bool?   CanPersist    = null
+);
+
+public record DataBreakpointDto(
+    [property: JsonPropertyName("dataId")]              string  DataId,
+    [property: JsonPropertyName("accessType")]          string? AccessType   = null,
+    [property: JsonPropertyName("condition")]           string? Condition    = null,
+    [property: JsonPropertyName("hitCondition")]        string? HitCondition = null
+);
+
+public record SetDataBreakpointsArgs(
+    [property: JsonPropertyName("breakpoints")] DataBreakpointDto[] Breakpoints
+);
+
+public record SetDataBreakpointsBody(
+    [property: JsonPropertyName("breakpoints")] BreakpointDto[] Breakpoints
 );

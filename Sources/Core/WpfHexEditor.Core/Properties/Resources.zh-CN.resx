@@ -2023,4 +2023,8 @@
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>结果</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>拆分</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>打开或关闭同步的第二个 Hex 面板</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>关闭拆分</value></data>
 </root>

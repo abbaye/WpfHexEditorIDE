@@ -91,6 +91,9 @@
   <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>بيانات تعريف المستند</value></data>
   <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>تصدير المستند</value></data>
   <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>حفظ</value></data>
+  <data name="DocEditorHost_FontFamilyToolTip" xml:space="preserve"><value>خط الكتابة</value></data>
+  <data name="DocEditorHost_FontSizeToolTip" xml:space="preserve"><value>حجم الخط</value></data>
+  <data name="DocEditorHost_TextColorToolTip" xml:space="preserve"><value>لون النص</value></data>
   <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>العنوان</value></data>
   <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>المؤلف</value></data>
   <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>التنسيق</value></data>

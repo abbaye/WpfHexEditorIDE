@@ -236,16 +236,20 @@ internal sealed class RtfStructureBuilder
     {
         if (block is null) return;
         int newLen = (int)(endOffset - block.RawOffset);
-        if (newLen > block.RawLength)
+        if (newLen <= block.RawLength) return;
+
+        var updated = new DocumentBlock
         {
-            block = new DocumentBlock
-            {
-                Kind      = block.Kind,
-                Text      = block.Text,
-                RawOffset = block.RawOffset,
-                RawLength = newLen
-            };
-        }
+            Kind      = block.Kind,
+            Text      = block.Text,
+            RawOffset = block.RawOffset,
+            RawLength = newLen
+        };
+        foreach (var (k, v) in block.Attributes)
+            updated.Attributes[k] = v;
+        foreach (var child in block.Children)
+            updated.Children.Add(child);
+        block = updated;
     }
 
     private static void AppendSymbolText(

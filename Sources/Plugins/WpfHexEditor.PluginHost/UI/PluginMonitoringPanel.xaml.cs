@@ -34,6 +34,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexEditor.PluginHost.UI;
 using WpfHexEditor.SDK.UI;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.PluginHost.UI;
 
@@ -618,7 +619,7 @@ public partial class PluginMonitoringPanel : UserControl
 
     private void OnRequestUninstall(PluginMonitorRow row)
     {
-        var result = MessageBox.Show(
+        var result = IdeMessageBox.Show(
             $"Uninstall \"{row.Name}\"?\n\nThis will remove the plugin files from disk and cannot be undone.",
             "Uninstall Plugin",
             MessageBoxButton.YesNo,

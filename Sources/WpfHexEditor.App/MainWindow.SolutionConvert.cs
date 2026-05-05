@@ -33,8 +33,7 @@ public partial class MainWindow
         var currentPath = _solutionManager.CurrentSolution?.FilePath;
         if (currentPath is null)
         {
-            MessageBox.Show(this,
-                AppResources.App_Convert_NoSolution,
+            _dialogService.Show(AppResources.App_Convert_NoSolution,
                 AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
@@ -44,8 +43,7 @@ public partial class MainWindow
 
         if (toSlnx && ext != ".sln")
         {
-            MessageBox.Show(this,
-                AppResources.App_Convert_NotSln,
+            _dialogService.Show(AppResources.App_Convert_NotSln,
                 AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
@@ -53,8 +51,7 @@ public partial class MainWindow
 
         if (!toSlnx && ext != ".slnx")
         {
-            MessageBox.Show(this,
-                AppResources.App_Convert_NotSlnx,
+            _dialogService.Show(AppResources.App_Convert_NotSlnx,
                 AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
@@ -64,8 +61,7 @@ public partial class MainWindow
         var sourceName = Path.GetFileName(currentPath);
         var targetName = Path.GetFileNameWithoutExtension(currentPath) + targetExt;
 
-        var confirm = MessageBox.Show(this,
-            string.Format(AppResources.App_Convert_Confirm, sourceName, targetName, Environment.NewLine),
+        var confirm = _dialogService.Show(string.Format(AppResources.App_Convert_Confirm, sourceName, targetName, Environment.NewLine),
             AppResources.App_Convert_Title,
             MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
@@ -79,8 +75,7 @@ public partial class MainWindow
 
         if (loader is null)
         {
-            MessageBox.Show(this,
-                string.Format(AppResources.App_Convert_NoLoader, targetExt),
+            _dialogService.Show(string.Format(AppResources.App_Convert_NoLoader, targetExt),
                 AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
@@ -106,8 +101,7 @@ public partial class MainWindow
 
             OutputLogger.Info($"[Convert] Solution converted: {newPath}");
 
-            var openResult = MessageBox.Show(this,
-                string.Format(AppResources.App_Convert_Success, targetName, Environment.NewLine),
+            var openResult = _dialogService.Show(string.Format(AppResources.App_Convert_Success, targetName, Environment.NewLine),
                 AppResources.App_Convert_Title,
                 MessageBoxButton.YesNo, MessageBoxImage.Information);
 
@@ -117,8 +111,7 @@ public partial class MainWindow
         catch (Exception ex)
         {
             OutputLogger.Error($"[Convert] Conversion failed: {ex.Message}");
-            MessageBox.Show(this,
-                string.Format(AppResources.App_Convert_Failed, Environment.NewLine, ex.Message),
+            _dialogService.Show(string.Format(AppResources.App_Convert_Failed, Environment.NewLine, ex.Message),
                 AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
@@ -138,8 +131,7 @@ public partial class MainWindow
         var currentPath = _solutionManager.CurrentSolution?.FilePath;
         if (currentPath is null)
         {
-            MessageBox.Show(this,
-                AppResources.App_Convert_NoSolution,
+            _dialogService.Show(AppResources.App_Convert_NoSolution,
                 AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
@@ -148,8 +140,7 @@ public partial class MainWindow
         var ext = Path.GetExtension(currentPath).ToLowerInvariant();
         if (ext == ".whsln")
         {
-            MessageBox.Show(this,
-                AppResources.App_Convert_AlreadyWhsln,
+            _dialogService.Show(AppResources.App_Convert_AlreadyWhsln,
                 AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
@@ -160,8 +151,7 @@ public partial class MainWindow
         var solutionDir = Path.GetDirectoryName(currentPath)!;
         var newPath = Path.Combine(solutionDir, targetName);
 
-        var confirm = MessageBox.Show(this,
-            string.Format(AppResources.App_Convert_Confirm, sourceName, targetName, Environment.NewLine),
+        var confirm = _dialogService.Show(string.Format(AppResources.App_Convert_Confirm, sourceName, targetName, Environment.NewLine),
             AppResources.App_Convert_Title,
             MessageBoxButton.OKCancel, MessageBoxImage.Question);
         if (confirm != MessageBoxResult.OK) return;
@@ -173,8 +163,7 @@ public partial class MainWindow
 
         if (sourceLoader is null)
         {
-            MessageBox.Show(this,
-                string.Format(AppResources.App_Convert_NoLoaderSimple, ext),
+            _dialogService.Show(string.Format(AppResources.App_Convert_NoLoaderSimple, ext),
                 AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
@@ -187,8 +176,7 @@ public partial class MainWindow
 
             OutputLogger.Info($"[Convert] Solution converted: {newPath}");
 
-            var openResult = MessageBox.Show(this,
-                string.Format(AppResources.App_Convert_Success, targetName, Environment.NewLine),
+            var openResult = _dialogService.Show(string.Format(AppResources.App_Convert_Success, targetName, Environment.NewLine),
                 AppResources.App_Convert_Title,
                 MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (openResult == MessageBoxResult.Yes)
@@ -197,8 +185,7 @@ public partial class MainWindow
         catch (Exception ex)
         {
             OutputLogger.Error($"[Convert] Conversion failed: {ex.Message}");
-            MessageBox.Show(this,
-                string.Format(AppResources.App_Convert_Failed, Environment.NewLine, ex.Message),
+            _dialogService.Show(string.Format(AppResources.App_Convert_Failed, Environment.NewLine, ex.Message),
                 AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }

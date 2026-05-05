@@ -1968,4 +1968,8 @@ Nota: A integração completa com o HexEditor requer ligação ao modelo de vist
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Resultados</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Dividir</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Abrir ou fechar um segundo painel hex sincronizado</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Fechar divisão</value></data>
 </root>

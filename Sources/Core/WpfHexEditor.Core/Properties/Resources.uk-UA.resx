@@ -1930,4 +1930,8 @@
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Результати</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Розділити</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Відкрити або закрити синхронізовану другу hex-панель</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Закрити розділення</value></data>
 </root>

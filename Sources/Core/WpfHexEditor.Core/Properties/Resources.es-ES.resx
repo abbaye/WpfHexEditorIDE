@@ -2033,4 +2033,8 @@ Nota: La integración completa con HexEditor requiere conectarse al modelo de vi
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Resultados</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Dividir</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Abrir o cerrar un segundo panel hex sincronizado</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Cerrar división</value></data>
 </root>

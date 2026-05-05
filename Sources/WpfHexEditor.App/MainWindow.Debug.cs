@@ -35,6 +35,9 @@ public partial class MainWindow
     // Shared breakpoint source adapter — injected into every CodeEditor gutter.
     private BreakpointSourceAdapter? _bpSourceAdapter;
 
+    // Shared debug hover adapter — injected into every CodeEditor for Data Tips.
+    private DebugHoverAdapter? _debugHoverAdapter;
+
     // IDisposable subscriptions for debug events (disposed on shutdown).
     private IDisposable[]? _debugSubs;
 
@@ -51,7 +54,8 @@ public partial class MainWindow
     {
         if (_debuggerService is null || _ideEventBus is null) return;
 
-        _bpSourceAdapter = new BreakpointSourceAdapter(_debuggerService);
+        _bpSourceAdapter   = new BreakpointSourceAdapter(_debuggerService);
+        _debugHoverAdapter = new DebugHoverAdapter(_debuggerService);
 
         // When breakpoints change, refresh all open CodeEditor gutters.
         _bpChangedHandler = (_, _) => Dispatcher.InvokeAsync(RefreshAllBreakpointGutters);
@@ -63,27 +67,45 @@ public partial class MainWindow
             _ideEventBus.Subscribe<DebugSessionPausedEvent>(e =>
                 Dispatcher.InvokeAsync(() => OnDebugSessionPaused(e))),
 
-            // Session started → show debug toolbar.
+            // Session started → show debug toolbar, enable Data Tips.
             _ideEventBus.Subscribe<DebugSessionStartedEvent>(_ =>
-                Dispatcher.InvokeAsync(() => UpdateDebugToolbarState(isActive: true, isPaused: false))),
+                Dispatcher.InvokeAsync(() =>
+                {
+                    UpdateDebugToolbarState(isActive: true, isPaused: false);
+                    SetDebugHoverProviderOnAllEditors(_debugHoverAdapter);
+                })),
 
-            // Resume → update toolbar state + clear status / execution line.
+            // Resume → update toolbar state + clear status / execution line, disable Data Tips.
             _ideEventBus.Subscribe<DebugSessionResumedEvent>(_ =>
                 Dispatcher.InvokeAsync(() =>
                 {
                     UpdateDebugToolbarState(isActive: true, isPaused: false);
                     ClearAllExecutionLines();
                     UpdateDbgStatusBar(null);
+                    _debugHoverAdapter?.SetPaused(false);
                 })),
 
-            // End → hide toolbar + clear everything.
+            // End → hide toolbar + clear everything, disable Data Tips.
             _ideEventBus.Subscribe<DebugSessionEndedEvent>(_ =>
                 Dispatcher.InvokeAsync(() =>
                 {
                     UpdateDebugToolbarState(isActive: false, isPaused: false);
                     ClearAllExecutionLines();
                     UpdateDbgStatusBar(null);
+                    _debugHoverAdapter?.SetPaused(false);
                 })),
+
+            // Run to cursor — plugin publishes, App executes with active editor's caret.
+            _ideEventBus.Subscribe<RunToCursorRequestedEvent>(_ =>
+                Dispatcher.InvokeAsync(OnRunToCursor)),
+
+            // Set Next Statement — plugin publishes, App executes.
+            _ideEventBus.Subscribe<SetNextStatementRequestedEvent>(_ =>
+                Dispatcher.InvokeAsync(OnSetNextStatement)),
+
+            // Add Tracepoint — plugin publishes, App resolves caret + shows dialog.
+            _ideEventBus.Subscribe<AddTracepointRequestedEvent>(_ =>
+                Dispatcher.InvokeAsync(OnAddTracepoint)),
         ];
 
         // Wire any editors that were already open from layout restore.
@@ -108,6 +130,8 @@ public partial class MainWindow
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => _ = _debuggerService?.StepOverAsync()),     Key.F10, ModifierKeys.None));
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => _ = _debuggerService?.StepIntoAsync()),     Key.F11, ModifierKeys.None));
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => _ = _debuggerService?.StepOutAsync()),      Key.F11, ModifierKeys.Shift));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => OnRunToCursor()),                    Key.F10, ModifierKeys.Control));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => OnSetNextStatement()),               Key.F10, ModifierKeys.Control | ModifierKeys.Shift));
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => OnAttachToProcess()),                Key.P,   ModifierKeys.Control | ModifierKeys.Alt));
     }
 
@@ -124,8 +148,15 @@ public partial class MainWindow
         {
             ce.SetBreakpointSource(_bpSourceAdapter);
             WireBreakpointSettingsHandler(ce);
+            ce.DebugHoverProvider = _debugHoverAdapter;
             ce.InvalidateVisual();
         }
+    }
+
+    private void SetDebugHoverProviderOnAllEditors(IDebugHoverProvider? provider)
+    {
+        foreach (var ce in GetAllCodeEditors())
+            ce.DebugHoverProvider = provider;
     }
 
     /// <summary>
@@ -138,6 +169,7 @@ public partial class MainWindow
         var ce = GetCodeEditorControl(editor);
         if (ce is null) return;
         ce.SetBreakpointSource(_bpSourceAdapter);
+        ce.DebugHoverProvider = _debugHoverAdapter;
         WireBreakpointSettingsHandler(ce);
     }
 
@@ -180,6 +212,7 @@ public partial class MainWindow
             }
         }
 
+        _debugHoverAdapter?.SetPaused(true);
         UpdateDebugToolbarState(isActive: true, isPaused: true);
         UpdateDbgStatusBar(e);
     }
@@ -236,24 +269,83 @@ public partial class MainWindow
         _ = _debuggerService.ToggleBreakpointAsync(filePath, line1);
     }
 
+    /// <summary>Ctrl+F10 — Run to cursor (caret line in active CodeEditor).</summary>
+    internal void OnRunToCursor()
+    {
+        if (_debuggerService is null || !_debuggerService.IsPaused) return;
+
+        var filePath = _documentManager.ActiveDocument?.FilePath;
+        if (string.IsNullOrEmpty(filePath)) return;
+
+        var activeContentId = _documentManager.ActiveDocument?.ContentId;
+        if (string.IsNullOrEmpty(activeContentId)) return;
+        if (!_contentCache.TryGetValue(activeContentId, out var ctrl)) return;
+
+        var ce = GetCodeEditorControl(ctrl as WpfHexEditor.Editor.Core.IDocumentEditor ?? ctrl as object);
+        if (ce is null) return;
+
+        int line1 = ce.CursorLine + 1;
+        _ = _debuggerService.RunToCursorAsync(filePath, line1);
+    }
+
+    /// <summary>Ctrl+Shift+F10 — Set Next Statement (move IP to caret).</summary>
+    internal void OnSetNextStatement()
+    {
+        if (_debuggerService is null || !_debuggerService.IsPaused) return;
+
+        var filePath = _documentManager.ActiveDocument?.FilePath;
+        if (string.IsNullOrEmpty(filePath)) return;
+
+        var activeContentId = _documentManager.ActiveDocument?.ContentId;
+        if (string.IsNullOrEmpty(activeContentId)) return;
+        if (!_contentCache.TryGetValue(activeContentId, out var ctrl)) return;
+
+        var ce = GetCodeEditorControl(ctrl as WpfHexEditor.Editor.Core.IDocumentEditor ?? ctrl as object);
+        if (ce is null) return;
+
+        int line1 = ce.CursorLine + 1;
+        _ = _debuggerService.SetNextStatementAsync(filePath, line1);
+    }
+
+    /// <summary>Add Tracepoint — show QuickTracepointDialog and publish result.</summary>
+    internal void OnAddTracepoint()
+    {
+        if (_debuggerService is null) return;
+
+        var filePath = _documentManager.ActiveDocument?.FilePath;
+        if (string.IsNullOrEmpty(filePath)) return;
+
+        var activeContentId = _documentManager.ActiveDocument?.ContentId;
+        if (string.IsNullOrEmpty(activeContentId)) return;
+        if (!_contentCache.TryGetValue(activeContentId, out var ctrl)) return;
+
+        var ce = GetCodeEditorControl(ctrl as WpfHexEditor.Editor.Core.IDocumentEditor ?? ctrl as object);
+        if (ce is null) return;
+
+        int line1 = ce.CursorLine + 1;
+
+        // QuickTracepointDialog lives in the Debugger plugin assembly.
+        // Publish file/line — the plugin subscribes and opens the dialog.
+        _ideEventBus?.Publish(new OpenTracepointDialogRequestedEvent
+        {
+            FilePath = filePath,
+            Line     = line1,
+        });
+    }
+
     /// <summary>Ctrl+Alt+P — Attach to process dialog.</summary>
     internal void OnAttachToProcess(object? sender = null, RoutedEventArgs? e = null)
     {
         if (_debuggerService is null)
         {
-            MessageBox.Show(AppResources.App_Debug_AttachNotAvailable, AppResources.App_Debug_AttachTitle,
+            _dialogService.Show(AppResources.App_Debug_AttachNotAvailable, AppResources.App_Debug_AttachTitle,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
-        // Full AttachToProcessDialog is contributed by the Debugger plugin.
-        // Fallback: prompt for PID via simple input.
-        var input = Microsoft.VisualBasic.Interaction.InputBox(
-            AppResources.App_Debug_AttachPidPrompt,
-            AppResources.App_Debug_AttachTitle, "");
-
-        if (int.TryParse(input, out var pid) && pid > 0)
-            _ = _debuggerService.AttachAsync(pid);
+        // Delegate to AttachToProcessDialog contributed by the Debugger plugin.
+        // The plugin subscribes to AttachToProcessRequestedEvent and opens the dialog.
+        _ideEventBus?.Publish(new AttachToProcessRequestedEvent());
     }
 
     // ── Launch helpers ────────────────────────────────────────────────────────
@@ -263,7 +355,7 @@ public partial class MainWindow
         var startupProject = _solutionManager.CurrentSolution?.StartupProject;
         if (startupProject is null)
         {
-            MessageBox.Show(AppResources.App_Debug_NoStartupProject, AppResources.App_Debug_StartTitle,
+            _dialogService.Show(AppResources.App_Debug_NoStartupProject, AppResources.App_Debug_StartTitle,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -277,7 +369,7 @@ public partial class MainWindow
             _buildErrorListAdapter?.SetDiagnostics(buildResult.Errors.Concat(buildResult.Warnings));
             if (!buildResult.IsSuccess)
             {
-                MessageBox.Show(AppResources.App_Debug_BuildFailed, AppResources.App_Debug_StartTitle,
+                _dialogService.Show(AppResources.App_Debug_BuildFailed, AppResources.App_Debug_StartTitle,
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -306,7 +398,7 @@ public partial class MainWindow
 
         if (!File.Exists(programPath))
         {
-            MessageBox.Show(
+            _dialogService.Show(
                 string.Format(AppResources.App_Debug_ExeNotFound, "\n", programPath),
                 AppResources.App_Debug_StartTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
@@ -443,8 +535,9 @@ public partial class MainWindow
 
         if (_bpChangedHandler is not null && _debuggerService is not null)
             _debuggerService.BreakpointsChanged -= _bpChangedHandler;
-        _bpChangedHandler = null;
-        _bpSourceAdapter  = null;
+        _bpChangedHandler  = null;
+        _bpSourceAdapter   = null;
+        _debugHoverAdapter = null;
     }
 
     // ── BreakpointSourceAdapter ───────────────────────────────────────────────
@@ -502,5 +595,37 @@ public partial class MainWindow
                 .Where(b => string.Equals(b.FilePath, filePath, StringComparison.OrdinalIgnoreCase))
                 .Select(b => b.Line)
                 .ToList();
+    }
+
+    // ── DebugHoverAdapter ─────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Bridges the CodeEditor's IDebugHoverProvider to IDebuggerService.
+    /// Evaluates hover expressions via DAP — no compile-time dep from CodeEditor to Core.Debugger.
+    /// </summary>
+    private sealed class DebugHoverAdapter : IDebugHoverProvider
+    {
+        private readonly WpfHexEditor.SDK.Contracts.Services.IDebuggerService _svc;
+        private volatile bool _isPaused;
+
+        public DebugHoverAdapter(WpfHexEditor.SDK.Contracts.Services.IDebuggerService svc)
+            => _svc = svc;
+
+        public bool IsSessionPaused => _isPaused;
+
+        public void SetPaused(bool paused) => _isPaused = paused;
+
+        public async Task<string?> EvaluateTokenAsync(string token, CancellationToken ct = default)
+        {
+            if (!_isPaused || string.IsNullOrWhiteSpace(token)) return null;
+            try
+            {
+                return await _svc.EvaluateAsync(token);
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

@@ -280,7 +280,10 @@
       "underline": { "wrap": "\\ul {text}\\ulnone " },
       "strikethrough": { "wrap": "\\strike {text}\\strike0 " },
       "fontSize": { "prefix": "\\fs{halfPoints} ", "transform": "pointsToHalfPoints" },
-      "align": { "left": "\\ql", "center": "\\qc", "right": "\\qr", "justify": "\\qj" }
+      "align": { "left": "\\ql", "center": "\\qc", "right": "\\qr", "justify": "\\qj" },
+      "indent":          { "wrap": "\\li{value} {text}", "transform": "pointsToTwips" },
+      "indentRight":     { "wrap": "\\ri{value} {text}", "transform": "pointsToTwips" },
+      "indentFirstLine": { "wrap": "\\fi{value} {text}", "transform": "pointsToTwips" }
     }
   }
 }

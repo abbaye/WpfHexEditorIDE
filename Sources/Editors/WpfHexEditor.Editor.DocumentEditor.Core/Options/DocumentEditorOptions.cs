@@ -60,7 +60,29 @@ public sealed class DocumentEditorOptions
     // ──────────────────────────────── Layout ──────────────────────────────────
 
     /// <summary>Default view mode when opening a document.</summary>
-    public DocumentViewMode DefaultViewMode { get; set; } = DocumentViewMode.Split;
+    public DocumentViewMode DefaultViewMode { get; set; } = DocumentViewMode.TextOnly;
+
+    /// <summary>Default render mode (Page / Draft / Outline) when opening a document.</summary>
+    public DocumentRenderMode DefaultRenderMode { get; set; } = DocumentRenderMode.Page;
+
+    /// <summary>Show the scroll marker panel over the vertical scrollbar.</summary>
+    public bool ShowScrollMarkers { get; set; } = true;
+
+    /// <summary>Show the binary mini-map strip alongside the scrollbar.</summary>
+    public bool ShowMiniMap { get; set; } = true;
+
+    // ──────────────────────────────── Editing ─────────────────────────────────
+
+    /// <summary>Number of spaces per indent level in the document text pane.</summary>
+    public int DefaultIndentWidth { get; set; } = 4;
+
+    // ──────────────────────────────── Auto-save ───────────────────────────────
+
+    /// <summary>Enable periodic auto-save to a temp file.</summary>
+    public bool AutoSaveEnabled { get; set; } = true;
+
+    /// <summary>Auto-save interval in seconds (minimum 30, default 60).</summary>
+    public int AutoSaveIntervalSeconds { get; set; } = 60;
 }
 
 /// <summary>
@@ -70,14 +92,8 @@ public enum DocumentViewMode
 {
     /// <summary>Rich-text pane only.</summary>
     TextOnly,
-    /// <summary>Rich-text + Hex panes side-by-side.</summary>
-    Split,
-    /// <summary>Hex pane only (raw binary view).</summary>
-    HexOnly,
     /// <summary>Rich-text + Structure tree panes.</summary>
     Structure,
-    /// <summary>All three panes: text + structure + hex (3-column).</summary>
-    Full,
     /// <summary>Zen/focus mode: chrome hidden, text centred with generous margins.</summary>
     Focus
 }

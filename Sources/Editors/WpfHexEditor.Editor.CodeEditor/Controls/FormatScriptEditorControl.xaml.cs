@@ -19,6 +19,7 @@ using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Editor.CodeEditor.Models;
 using WpfHexEditor.Editor.CodeEditor.Properties;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -149,7 +150,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_LoadFormatsError, ex.Message),
+                IdeMessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_LoadFormatsError, ex.Message),
                     CodeEditorResources.FormatScriptEditor_LoadFormatsErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -251,7 +252,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_FormatJsonError, ex.Message),
+                IdeMessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_FormatJsonError, ex.Message),
                     CodeEditorResources.FormatScriptEditor_FormatJsonErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -305,7 +306,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_LoadFileError, ex.Message),
+                IdeMessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_LoadFileError, ex.Message),
                     CodeEditorResources.FormatScriptEditor_LoadFileErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -325,7 +326,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_LoadEmbeddedError, ex.Message),
+                IdeMessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_LoadEmbeddedError, ex.Message),
                     CodeEditorResources.FormatScriptEditor_LoadEmbeddedErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -358,12 +359,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 File.WriteAllText(_currentFilePath, content);
                 _isModified = false;
                 FileNameText.Text = Path.GetFileName(_currentFilePath);
-                MessageBox.Show(CodeEditorResources.FormatScriptEditor_SaveSuccessMessage, CodeEditorResources.FormatScriptEditor_SaveSuccessTitle,
+                IdeMessageBox.Show(CodeEditorResources.FormatScriptEditor_SaveSuccessMessage, CodeEditorResources.FormatScriptEditor_SaveSuccessTitle,
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_SaveFailedMessage, ex.Message),
+                IdeMessageBox.Show(string.Format(CodeEditorResources.FormatScriptEditor_SaveFailedMessage, ex.Message),
                     CodeEditorResources.FormatScriptEditor_SaveFailedTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -372,7 +373,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             if (_isModified)
             {
-                var result = MessageBox.Show(
+                var result = IdeMessageBox.Show(
                     CodeEditorResources.FormatScriptEditor_SaveChangesMessage,
                     CodeEditorResources.FormatScriptEditor_SaveChangesTitle,
                     MessageBoxButton.YesNoCancel,

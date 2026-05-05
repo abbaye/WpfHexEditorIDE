@@ -164,6 +164,7 @@
   <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>प्रारूप एक्सप्लोरर</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>फ़ाइलें तुलना करें</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>त्रुटि सूची</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>कमांड पैलेट</value></data>
   <data name="BuildCompiler_CSharpSection" xml:space="preserve">
     <value>C# / .NET डिफ़ॉल्ट</value>
@@ -633,6 +634,11 @@
   <data name="Opt_IndentLevel_2" xml:space="preserve">
     <value>स्तर 2</value>
   </data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>भाषा</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>ओवरराइड रीसेट करें</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>सभी ओवरराइड रीसेट करें</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>ये सेटिंग्स भाषा .whfmt डिफ़ॉल्ट को ओवरराइड करती हैं।
+भाषा नियमों को इनहेरिट करने के लिए चेकबॉक्स को अनिर्धारित अवस्था (—) में छोड़ें।</value></data>
   <data name="Opt_IndentLevel_3" xml:space="preserve">
     <value>स्तर 3</value>
   </data>
@@ -651,4 +657,5 @@
   <data name="Opt_Preview_Label" xml:space="preserve">
     <value>पूर्वावलोकन</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>विभाजित दृश्य टॉगल बटन दिखाएं</value></data>
 </root>

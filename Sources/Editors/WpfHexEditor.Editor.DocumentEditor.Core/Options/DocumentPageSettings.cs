@@ -139,6 +139,45 @@ public sealed class DocumentPageSettings
         return Math.Max(10, (ContentWidth - totalGap) / ColumnCount);
     }
 
+    /// <summary>
+    /// Returns a copy with the supplied margins overridden (others unchanged).
+    /// Used by the rulers when the user drags a margin handle.
+    /// </summary>
+    public DocumentPageSettings WithMargins(
+        double? left   = null, double? right  = null,
+        double? top    = null, double? bottom = null,
+        double? gutter = null) => new()
+    {
+        PageSize         = PageSize,
+        Orientation      = Orientation,
+        CustomWidth      = CustomWidth,
+        CustomHeight     = CustomHeight,
+        MarginTop        = top    ?? MarginTop,
+        MarginBottom     = bottom ?? MarginBottom,
+        MarginLeft       = left   ?? MarginLeft,
+        MarginRight      = right  ?? MarginRight,
+        MarginGutter     = gutter ?? MarginGutter,
+        MirrorMargins    = MirrorMargins,
+        ColumnCount             = ColumnCount,
+        EqualColumnWidths       = EqualColumnWidths,
+        ColumnGapPx             = ColumnGapPx,
+        ShowColumnSeparatorLine = ShowColumnSeparatorLine,
+        HeaderEnabled            = HeaderEnabled,
+        HeaderHeightPx           = HeaderHeightPx,
+        HeaderMarginPx           = HeaderMarginPx,
+        HeaderDifferentFirstPage = HeaderDifferentFirstPage,
+        HeaderSameLeftRight      = HeaderSameLeftRight,
+        FooterEnabled            = FooterEnabled,
+        FooterHeightPx           = FooterHeightPx,
+        FooterMarginPx           = FooterMarginPx,
+        FooterDifferentFirstPage = FooterDifferentFirstPage,
+        FooterSameLeftRight      = FooterSameLeftRight,
+        BorderStyle              = BorderStyle,
+        BorderColor              = BorderColor,
+        BorderWidthPx            = BorderWidthPx,
+        BorderPaddingPx          = BorderPaddingPx
+    };
+
     // ── Factory helpers ───────────────────────────────────────────────────────
 
     /// <summary>Converts twips (1/1440 inch) to pixels at 96 dpi.</summary>

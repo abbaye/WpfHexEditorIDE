@@ -26,7 +26,7 @@ public static class DocumentSchemaReader
     };
 
     /// <summary>
-    /// Parses the <c>documentSchema</c> section from a .whfmt file.
+    /// Parses the <c>documentSchema</c> section from a .whfmt file on disk.
     /// Returns <see langword="null"/> when the file does not contain
     /// a <c>documentSchema</c> key or cannot be parsed.
     /// </summary>
@@ -37,15 +37,7 @@ public static class DocumentSchemaReader
         try
         {
             var text = File.ReadAllText(whfmtPath);
-            var root = JsonNode.Parse(text, null, new JsonDocumentOptions
-            {
-                CommentHandling = JsonCommentHandling.Skip
-            });
-
-            var schemaNode = root?["documentSchema"];
-            if (schemaNode is null) return null;
-
-            return schemaNode.Deserialize<DocumentSchemaDefinition>(_opts);
+            return ParseDocumentSchema(text, whfmtPath);
         }
         catch (Exception ex)
         {
@@ -53,6 +45,37 @@ public static class DocumentSchemaReader
                 $"[DocumentSchemaReader] Failed to read '{whfmtPath}': {ex.Message}");
             return null;
         }
+    }
+
+    /// <summary>
+    /// Parses the <c>documentSchema</c> section from raw .whfmt JSON content.
+    /// Use this overload when the .whfmt is available as an embedded resource string.
+    /// </summary>
+    public static DocumentSchemaDefinition? ReadFromJson(string whfmtJson, string sourceName = "<embedded>")
+    {
+        try
+        {
+            return ParseDocumentSchema(whfmtJson, sourceName);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(
+                $"[DocumentSchemaReader] Failed to parse '{sourceName}': {ex.Message}");
+            return null;
+        }
+    }
+
+    private static DocumentSchemaDefinition? ParseDocumentSchema(string json, string sourceName)
+    {
+        var root = JsonNode.Parse(json, null, new JsonDocumentOptions
+        {
+            CommentHandling = JsonCommentHandling.Skip
+        });
+
+        var schemaNode = root?["documentSchema"];
+        if (schemaNode is null) return null;
+
+        return schemaNode.Deserialize<DocumentSchemaDefinition>(_opts);
     }
 
     /// <summary>

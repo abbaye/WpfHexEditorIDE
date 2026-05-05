@@ -1950,4 +1950,8 @@ Poznámka: Plná integrace s HexEditorem vyžaduje připojení k hlavnímu model
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Výsledky</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Rozdělit</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Otevřít nebo zavřít synchronizovaný druhý hex panel</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Zavřít rozdělení</value></data>
 </root>

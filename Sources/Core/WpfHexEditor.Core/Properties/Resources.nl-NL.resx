@@ -1968,4 +1968,8 @@ Opmerking: Volledige integratie met HexEditor vereist verbinding met het hoofdwe
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Resultaten</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Splitsen</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Open of sluit een gesynchroniseerd tweede hex-paneel</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Splitsing sluiten</value></data>
 </root>

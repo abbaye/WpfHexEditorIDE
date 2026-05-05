@@ -1968,4 +1968,8 @@ Obs: Fullständig integration med HexEditor kräver anslutning till huvudvymodel
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Resultat</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Dela</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Öppna eller stäng en synkroniserad andra hex-ruta</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Stäng delning</value></data>
 </root>

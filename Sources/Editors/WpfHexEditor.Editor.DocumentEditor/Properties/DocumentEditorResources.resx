@@ -350,6 +350,15 @@
   <data name="DocEditorHost_SaveToolTip" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="DocEditorHost_FontFamilyToolTip" xml:space="preserve">
+    <value>Font family</value>
+  </data>
+  <data name="DocEditorHost_FontSizeToolTip" xml:space="preserve">
+    <value>Font size</value>
+  </data>
+  <data name="DocEditorHost_TextColorToolTip" xml:space="preserve">
+    <value>Text color</value>
+  </data>
   <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve">
     <value>Title</value>
   </data>
@@ -629,4 +638,58 @@
     <value>Intense Quote</value>
   </data>
 
+  <data name="DocMiniMap_MenuTitle" xml:space="preserve">
+    <value>MiniMap</value>
+  </data>
+  <data name="DocMiniMap_ShowMiniMap" xml:space="preserve">
+    <value>Show MiniMap</value>
+  </data>
+  <data name="DocMiniMap_RenderBlocks" xml:space="preserve">
+    <value>Render as Blocks</value>
+  </data>
+  <data name="DocMiniMap_SliderAlways" xml:space="preserve">
+    <value>Always Show Viewport Slider</value>
+  </data>
+  <data name="DocMiniMap_SliderMouseOver" xml:space="preserve">
+    <value>Show Viewport Slider on Hover</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       DOCUMENT STATISTICS DIALOG
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="DocStats_Title"             xml:space="preserve"><value>Document Statistics</value></data>
+  <data name="DocStats_WordCount"         xml:space="preserve"><value>Words</value></data>
+  <data name="DocStats_CharCount"         xml:space="preserve"><value>Characters</value></data>
+  <data name="DocStats_CharNoSpaceCount"  xml:space="preserve"><value>Characters (no spaces)</value></data>
+  <data name="DocStats_BlockCount"        xml:space="preserve"><value>Blocks (paragraphs)</value></data>
+  <data name="DocStats_LineCount"         xml:space="preserve"><value>Lines</value></data>
+  <data name="DocStats_Close"             xml:space="preserve"><value>Close</value></data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CANVAS CONTEXT MENU
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="DocCanvas_Cut"        xml:space="preserve"><value>Cut</value></data>
+  <data name="DocCanvas_Copy"       xml:space="preserve"><value>Copy</value></data>
+  <data name="DocCanvas_Paste"      xml:space="preserve"><value>Paste</value></data>
+  <data name="DocCanvas_Delete"     xml:space="preserve"><value>Delete</value></data>
+  <data name="DocCanvas_SelectAll"  xml:space="preserve"><value>Select All</value></data>
+  <data name="DocCanvas_Undo"       xml:space="preserve"><value>Undo</value></data>
+  <data name="DocCanvas_Redo"       xml:space="preserve"><value>Redo</value></data>
+  <data name="DocCanvas_Bold"       xml:space="preserve"><value>Bold</value></data>
+  <data name="DocCanvas_Italic"     xml:space="preserve"><value>Italic</value></data>
+  <data name="DocCanvas_Underline"  xml:space="preserve"><value>Underline</value></data>
+  <data name="DocCanvas_Strike"     xml:space="preserve"><value>Strikethrough</value></data>
+  <data name="DocCanvas_Format"     xml:space="preserve"><value>Format</value></data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PAGE RULERS (horizontal + vertical)
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="Ruler_FirstLineIndent" xml:space="preserve"><value>First-line indent — drag to set</value></data>
+  <data name="Ruler_HangingIndent"   xml:space="preserve"><value>Hanging indent — drag to set</value></data>
+  <data name="Ruler_LeftIndent"      xml:space="preserve"><value>Left indent — drag to set</value></data>
+  <data name="Ruler_RightIndent"     xml:space="preserve"><value>Right indent — drag to set</value></data>
+  <data name="Ruler_MarginLeft"      xml:space="preserve"><value>Left margin — drag to adjust</value></data>
+  <data name="Ruler_MarginRight"     xml:space="preserve"><value>Right margin — drag to adjust</value></data>
+  <data name="Ruler_MarginTop"       xml:space="preserve"><value>Top margin — drag to adjust</value></data>
+  <data name="Ruler_MarginBottom"    xml:space="preserve"><value>Bottom margin — drag to adjust</value></data>
 </root>

@@ -41,7 +41,7 @@ public partial class DocumentEditorHost : IStatusBarContributor, IEditorToolbarC
         _sbBlockCount = new StatusBarItem { Label = DocumentEditorResources.DocSb_BlocksLabel,    Value = "0 blocks",   IsVisible = true };
         _sbSelection  = new StatusBarItem { Label = DocumentEditorResources.DocSb_SelectionLabel, Value = string.Empty, IsVisible = false };
         _sbAlerts     = new StatusBarItem { Label = DocumentEditorResources.DocSb_AlertsLabel,    Value = string.Empty, IsVisible = false };
-        _sbViewMode   = new StatusBarItem { Label = DocumentEditorResources.DocSb_ViewLabel,      Value = "Split",      IsVisible = true };
+        _sbViewMode   = new StatusBarItem { Label = DocumentEditorResources.DocSb_ViewLabel,      Value = "Text",       IsVisible = true };
 
         return [_sbFormat, _sbVersion, _sbBlockCount, _sbSelection, _sbAlerts, _sbViewMode];
     }
@@ -110,21 +110,6 @@ public partial class DocumentEditorHost : IStatusBarContributor, IEditorToolbarC
                 Tooltip  = DocumentEditorResources.DocTb_TextView,
                 IsToggle = true,
                 Command  = new RelayAction(() => ViewMode = DocumentViewMode.TextOnly)
-            },
-            new EditorToolbarItem
-            {
-                Icon     = "\uE7C4",
-                Tooltip  = DocumentEditorResources.DocTb_SplitView,
-                IsToggle = true,
-                IsChecked = true,
-                Command  = new RelayAction(() => ViewMode = DocumentViewMode.Split)
-            },
-            new EditorToolbarItem
-            {
-                Icon     = "\uE8F4",
-                Tooltip  = DocumentEditorResources.DocTb_HexView,
-                IsToggle = true,
-                Command  = new RelayAction(() => ViewMode = DocumentViewMode.HexOnly)
             },
             new EditorToolbarItem
             {

@@ -1616,6 +1616,42 @@ namespace WpfHexEditor.Core.Options.Properties {
                 return ResourceManager.GetString("Opt_IndentLevel_3", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Language.
+        /// </summary>
+        internal static string Opt_Fmt_Language {
+            get {
+                return ResourceManager.GetString("Opt_Fmt_Language", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reset overrides.
+        /// </summary>
+        internal static string Opt_Fmt_ResetOverrides {
+            get {
+                return ResourceManager.GetString("Opt_Fmt_ResetOverrides", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reset all overrides.
+        /// </summary>
+        internal static string Opt_Fmt_ResetAllOverrides {
+            get {
+                return ResourceManager.GetString("Opt_Fmt_ResetAllOverrides", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à These settings override the language .whfmt defaults.
+        /// </summary>
+        internal static string Opt_Fmt_Subtitle {
+            get {
+                return ResourceManager.GetString("Opt_Fmt_Subtitle", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Recherche une chaîne localisée semblable à EditorOnly.
@@ -1659,6 +1695,15 @@ namespace WpfHexEditor.Core.Options.Properties {
         internal static string Opt_NotYetImplemented {
             get {
                 return ResourceManager.GetString("Opt_NotYetImplemented", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This feature will be available in a future version.
+        /// </summary>
+        internal static string Opt_ComingSoon {
+            get {
+                return ResourceManager.GetString("Opt_ComingSoon", resourceCulture);
             }
         }
         
@@ -1761,6 +1806,15 @@ namespace WpfHexEditor.Core.Options.Properties {
             }
         }
         
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Error List.
+        /// </summary>
+        internal static string Opt_Page_ErrorList {
+            get {
+                return ResourceManager.GetString("Opt_Page_ErrorList", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Event Bus.
         /// </summary>
@@ -2910,6 +2964,186 @@ namespace WpfHexEditor.Core.Options.Properties {
         internal static string TextOpt_WordWrap {
             get {
                 return ResourceManager.GetString("TextOpt_WordWrap", resourceCulture);
+            }
+        }
+
+        internal static string Opt_Category_DocumentEditor {
+            get {
+                return ResourceManager.GetString("Opt_Category_DocumentEditor", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_AppearanceSection {
+            get {
+                return ResourceManager.GetString("DocOpt_AppearanceSection", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_SyncSection {
+            get {
+                return ResourceManager.GetString("DocOpt_SyncSection", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_HoverSection {
+            get {
+                return ResourceManager.GetString("DocOpt_HoverSection", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_AutoSaveSection {
+            get {
+                return ResourceManager.GetString("DocOpt_AutoSaveSection", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_EditingSection {
+            get {
+                return ResourceManager.GetString("DocOpt_EditingSection", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ColorsSection {
+            get {
+                return ResourceManager.GetString("DocOpt_ColorsSection", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_FontSizeLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_FontSizeLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ViewModeLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_ViewModeLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_RenderModeLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_RenderModeLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ShowScrollMarkers {
+            get {
+                return ResourceManager.GetString("DocOpt_ShowScrollMarkers", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ShowMiniMap {
+            get {
+                return ResourceManager.GetString("DocOpt_ShowMiniMap", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ShowForensicGutter {
+            get {
+                return ResourceManager.GetString("DocOpt_ShowForensicGutter", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ViewMode_TextOnly {
+            get {
+                return ResourceManager.GetString("DocOpt_ViewMode_TextOnly", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ViewMode_Structure {
+            get {
+                return ResourceManager.GetString("DocOpt_ViewMode_Structure", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ViewMode_Focus {
+            get {
+                return ResourceManager.GetString("DocOpt_ViewMode_Focus", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_RenderMode_Page {
+            get {
+                return ResourceManager.GetString("DocOpt_RenderMode_Page", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_RenderMode_Draft {
+            get {
+                return ResourceManager.GetString("DocOpt_RenderMode_Draft", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_RenderMode_Outline {
+            get {
+                return ResourceManager.GetString("DocOpt_RenderMode_Outline", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_SyncThrottleLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_SyncThrottleLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_SyncTextToHex {
+            get {
+                return ResourceManager.GetString("DocOpt_SyncTextToHex", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_SyncHexToText {
+            get {
+                return ResourceManager.GetString("DocOpt_SyncHexToText", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ShowBlockHoverTooltip {
+            get {
+                return ResourceManager.GetString("DocOpt_ShowBlockHoverTooltip", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_HoverDelayLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_HoverDelayLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_AutoSaveEnabled {
+            get {
+                return ResourceManager.GetString("DocOpt_AutoSaveEnabled", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_AutoSaveIntervalLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_AutoSaveIntervalLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_IndentWidthLabel {
+            get {
+                return ResourceManager.GetString("DocOpt_IndentWidthLabel", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_BlockHighlightColor {
+            get {
+                return ResourceManager.GetString("DocOpt_BlockHighlightColor", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_SelectedBlockColor {
+            get {
+                return ResourceManager.GetString("DocOpt_SelectedBlockColor", resourceCulture);
+            }
+        }
+
+        internal static string DocOpt_ForensicAlertColor {
+            get {
+                return ResourceManager.GetString("DocOpt_ForensicAlertColor", resourceCulture);
             }
         }
     }

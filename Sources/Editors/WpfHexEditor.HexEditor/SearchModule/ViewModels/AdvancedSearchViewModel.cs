@@ -34,6 +34,7 @@ using WpfHexEditor.Core.Search.Models;
 using WpfHexEditor.Core.Search.Services;
 using WpfHexEditor.Core.Properties;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.HexEditor.Search.ViewModels
 {
@@ -803,7 +804,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             catch (Exception ex)
             {
                 // Error handling
-                System.Windows.MessageBox.Show($"{Resources.Search_Error_Title}: {ex.Message}", Resources.Search_Error_Label,
+                IdeMessageBox.Show($"{Resources.Search_Error_Title}: {ex.Message}", Resources.Search_Error_Label,
                     System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
             finally
@@ -824,7 +825,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 // TBL TEXT mode
                 if (!IsTblLoaded)
                 {
-                    System.Windows.MessageBox.Show(Resources.Search_Error_NoTBLLoaded, Resources.Search_Error_TBLRequired,
+                    IdeMessageBox.Show(Resources.Search_Error_NoTBLLoaded, Resources.Search_Error_TBLRequired,
                         System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
                     return;
                 }
@@ -1022,7 +1023,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                         // TBL replacement: encode text via TblStream character table
                         if (!IsTblLoaded || _tblStream == null)
                         {
-                            System.Windows.MessageBox.Show(
+                            IdeMessageBox.Show(
                                 Resources.Search_Error_NoTBLForReplacement,
                                 Resources.Search_Error_TBLRequired,
                                 System.Windows.MessageBoxButton.OK,
@@ -1037,7 +1038,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(
+                IdeMessageBox.Show(
                     $"Invalid replacement value: {ex.Message}",
                     Resources.Search_Replace_Title,
                     System.Windows.MessageBoxButton.OK,
@@ -1071,7 +1072,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(
+                IdeMessageBox.Show(
                     $"Replace error: {ex.Message}", Resources.Search_Error_Label,
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Error);
@@ -1087,7 +1088,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             if (replaceBytes == null) return;
 
             var count = StandardResults.Count;
-            var confirm = System.Windows.MessageBox.Show(
+            var confirm = IdeMessageBox.Show(
                 $"Replace all {count:N0} occurrence(s)?",
                 Resources.Search_ReplaceAll_Title,
                 System.Windows.MessageBoxButton.YesNo,
@@ -1118,7 +1119,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(
+                IdeMessageBox.Show(
                     $"Replace All error: {ex.Message}", Resources.Search_Error_Label,
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Error);
@@ -1208,7 +1209,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             try
             {
                 newTbl.SaveAs(saveDialog.FileName);
-                System.Windows.MessageBox.Show(
+                IdeMessageBox.Show(
                     $"TBL exported successfully!\n{saveDialog.FileName}\nEntries: {newTbl.Length}",
                     Resources.Search_ExportTBL_Success,
                     System.Windows.MessageBoxButton.OK,
@@ -1216,7 +1217,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(
+                IdeMessageBox.Show(
                     $"Failed to export TBL:\n{ex.Message}",
                     Resources.Search_ExportTBL_Error,
                     System.Windows.MessageBoxButton.OK,
@@ -1231,7 +1232,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             var newTbl = _relativeEngine.ExportToTbl(proposal);
             TblLoadRequested?.Invoke(this, newTbl);
 
-            System.Windows.MessageBox.Show($"Encoding applied!\nOffset: {proposal.Offset}\n{Resources.Search_EncodingApplied_Message}",
+            IdeMessageBox.Show($"Encoding applied!\nOffset: {proposal.Offset}\n{Resources.Search_EncodingApplied_Message}",
                 Resources.Search_EncodingApplied_Title, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
         }
 
@@ -1257,7 +1258,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                     OnPropertyChanged(nameof(IsTblLoaded));
                     OnPropertyChanged(nameof(TblInfo));
 
-                    System.Windows.MessageBox.Show(
+                    IdeMessageBox.Show(
                         $"TBL loaded successfully!\n\n{tbl.FileName}\nEntries: {tbl.Length}\n\nYou can now use TBL TEXT mode.",
                         Resources.Search_TBLLoaded_Title,
                         System.Windows.MessageBoxButton.OK,
@@ -1265,7 +1266,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show(
+                    IdeMessageBox.Show(
                         $"Failed to load TBL file:\n{ex.Message}",
                         Resources.Search_ErrorLoadingTBL_Title,
                         System.Windows.MessageBoxButton.OK,
@@ -1278,7 +1279,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
         {
             if (!IsTblLoaded) return;
 
-            var result = System.Windows.MessageBox.Show(
+            var result = IdeMessageBox.Show(
                 "Close the current TBL file?\n\nTBL TEXT mode will be disabled.",
                 Resources.Search_CloseTBL_Title,
                 System.Windows.MessageBoxButton.YesNo,

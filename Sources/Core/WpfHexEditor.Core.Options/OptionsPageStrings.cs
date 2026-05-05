@@ -32,6 +32,7 @@ public static class OptionsPageStrings
     public static string CategoryExtensions     => OptionsResources.Opt_Category_Extensions;
     public static string CategoryFormatEditor   => OptionsResources.Opt_Category_FormatEditor;
     public static string CategoryTools          => OptionsResources.Opt_Category_Tools;
+    public static string CategoryDocumentEditor => OptionsResources.Opt_Category_DocumentEditor;
 
     // ── Page names ────────────────────────────────────────────────────────────
 
@@ -66,4 +67,5 @@ public static class OptionsPageStrings
     public static string PageFormatExplorer     => OptionsResources.Opt_Page_FormatExplorer;
     public static string PageCompareFiles       => OptionsResources.Opt_Page_CompareFiles;
     public static string PageCommandPalette     => OptionsResources.Opt_Page_CommandPalette;
+    public static string PageErrorList          => OptionsResources.Opt_Page_ErrorList;
 }

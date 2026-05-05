@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StringExtractor_PluginName" xml:space="preserve"><value>مستخرج السلاسل</value></data>
+  <data name="StringExtractor_PanelTitle" xml:space="preserve"><value>مستخرج السلاسل</value></data>
+  <data name="StringExtractor_MenuItem" xml:space="preserve"><value>مستخرج السلاسل</value></data>
+  <data name="StringExtractor_ColOffset" xml:space="preserve"><value>الإزاحة</value></data>
+  <data name="StringExtractor_ColLength" xml:space="preserve"><value>الطول</value></data>
+  <data name="StringExtractor_ColEncoding" xml:space="preserve"><value>الترميز</value></data>
+  <data name="StringExtractor_ColValue" xml:space="preserve"><value>القيمة</value></data>
+  <data name="StringExtractor_MinLength" xml:space="preserve"><value>الحد الأدنى للطول:</value></data>
+  <data name="StringExtractor_FilterPlaceholder" xml:space="preserve"><value>تصفية السلاسل...</value></data>
+  <data name="StringExtractor_ExtractButton" xml:space="preserve"><value>استخراج</value></data>
+  <data name="StringExtractor_ExportButton" xml:space="preserve"><value>تصدير</value></data>
+  <data name="StringExtractor_CopyButton" xml:space="preserve"><value>نسخ</value></data>
+  <data name="StringExtractor_NoFile" xml:space="preserve"><value>لا يوجد ملف مفتوح — افتح ملفاً ثنائياً لاستخراج السلاسل.</value></data>
+  <data name="StringExtractor_NoResults" xml:space="preserve"><value>لم يتم العثور على سلاسل تطابق المعايير الحالية.</value></data>
+  <data name="StringExtractor_Extracting" xml:space="preserve"><value>جارٍ استخراج السلاسل…</value></data>
+  <data name="StringExtractor_ResultCount" xml:space="preserve"><value>تم العثور على {0} سلسلة</value></data>
+  <data name="StringExtractor_FilteredCount" xml:space="preserve"><value>{0} من {1} سلسلة</value></data>
+  <data name="StringExtractor_Enc_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="StringExtractor_Enc_UTF8" xml:space="preserve"><value>UTF-8</value></data>
+  <data name="StringExtractor_Enc_UTF16LE" xml:space="preserve"><value>UTF-16 LE</value></data>
+  <data name="StringExtractor_Enc_UTF16BE" xml:space="preserve"><value>UTF-16 BE</value></data>
+  <data name="StringExtractor_ExportTitle" xml:space="preserve"><value>تصدير السلاسل</value></data>
+  <data name="StringExtractor_ExportFilter" xml:space="preserve"><value>ملفات CSV (*.csv)|*.csv|ملفات نصية (*.txt)|*.txt|جميع الملفات (*.*)|*.*</value></data>
+  <data name="StringExtractor_ExportSuccess" xml:space="preserve"><value>تم تصدير {0} سلسلة إلى {1}</value></data>
+  <data name="StringExtractor_NavigateTo" xml:space="preserve"><value>الانتقال إلى الإزاحة</value></data>
+  <data name="StringExtractor_CopyValue" xml:space="preserve"><value>نسخ القيمة</value></data>
+  <data name="StringExtractor_CopyOffset" xml:space="preserve"><value>نسخ الإزاحة</value></data>
+  <data name="StringExtractor_Tooltip_Extract" xml:space="preserve"><value>مسح الملف واستخراج جميع السلاسل القابلة للطباعة</value></data>
+  <data name="StringExtractor_Tooltip_Export" xml:space="preserve"><value>تصدير النتائج إلى CSV أو TXT</value></data>
+  <data name="StringExtractor_Tooltip_MinLength" xml:space="preserve"><value>الحد الأدنى لعدد الأحرف القابلة للطباعة المتتالية</value></data>
+</root>

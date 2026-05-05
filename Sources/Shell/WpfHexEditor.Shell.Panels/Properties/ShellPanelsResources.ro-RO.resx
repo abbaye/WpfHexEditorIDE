@@ -192,4 +192,75 @@
   <data name="WhfmtCatalog_LayoutLeft" xml:space="preserve"><value>Detalii la stânga</value></data>
   <data name="WhfmtCatalog_LayoutBottom" xml:space="preserve"><value>Detalii jos</value></data>
   <data name="WhfmtCatalog_LayoutTop" xml:space="preserve"><value>Detalii sus</value></data>
+  <data name="WorkspaceFindReplace_Title" xml:space="preserve">
+    <value>Găsire și înlocuire în soluție</value>
+  </data>
+  <data name="WorkspaceFindReplace_FindLabel" xml:space="preserve">
+    <value>Găsire:</value>
+  </data>
+  <data name="WorkspaceFindReplace_ReplaceLabel" xml:space="preserve">
+    <value>Înlocuire:</value>
+  </data>
+  <data name="WorkspaceFindReplace_FindAll" xml:space="preserve">
+    <value>Găsire tot</value>
+  </data>
+  <data name="WorkspaceFindReplace_ReplaceAll" xml:space="preserve">
+    <value>Înlocuire tot</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionRegex" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionMatchCase" xml:space="preserve">
+    <value>Potrivire majuscule</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionWholeWord" xml:space="preserve">
+    <value>Cuvânt întreg</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReady" xml:space="preserve">
+    <value>Gata.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusSearching" xml:space="preserve">
+    <value>Se caută…</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReplacing" xml:space="preserve">
+    <value>Se înlocuieşte…</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusNoMatches" xml:space="preserve">
+    <value>Niciun rezultat găsit.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusMatches" xml:space="preserve">
+    <value>{0} rezultat(e) în {1} fișier(e).</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusNoReplacements" xml:space="preserve">
+    <value>Nicio înlocuire efectuată.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReplaced" xml:space="preserve">
+    <value>{0} apariție/apariții înlocuită/înlocuite în {1} fișier(e).</value>
+  </data>
+  <data name="WorkspaceFindReplace_ConfirmTitle" xml:space="preserve">
+    <value>Înlocuire tot — la nivel de soluție</value>
+  </data>
+  <data name="WorkspaceFindReplace_ConfirmMessage" xml:space="preserve">
+    <value>Înlocuiți toate aparițiile „{0}“ cu „{1}“ în întreaga soluție? Aceasta va modifica fișierele de pe disc.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColFile" xml:space="preserve">
+    <value>Fișier</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColLine" xml:space="preserve">
+    <value>Linie</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColCol" xml:space="preserve">
+    <value>Col.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColPreview" xml:space="preserve">
+    <value>Previzualizare</value>
+  </data>
+  <data name="WorkspaceFindReplace_Cancel" xml:space="preserve"><value>Anulare</value></data>
+  <data name="WorkspaceFindReplace_ClearResults" xml:space="preserve"><value>Ștergere rezultate</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenFile" xml:space="preserve"><value>Deschide fişier</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenAtLine" xml:space="preserve"><value>Deschide fişier la linie</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPath" xml:space="preserve"><value>Copiază calea</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPreview" xml:space="preserve"><value>Copiază textul de previzualizare</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeRow" xml:space="preserve"><value>Excludeți acest rezultat</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeFile" xml:space="preserve"><value>Excludeți toate rezultatele din acest fişier</value></data>
 </root>

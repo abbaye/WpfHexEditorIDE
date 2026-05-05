@@ -732,7 +732,8 @@
     <SolidColorBrush x:Key="DB_CallStackActiveBrush"         Color="#9ECE6A" />
     <SolidColorBrush x:Key="DB_WatchErrorBrush"              Color="#F7768E" />
     <SolidColorBrush x:Key="DB_LocalChangedBrush"            Color="#BB9AF7" />
-    <SolidColorBrush x:Key="DB_ConsoleStdoutBrush"           Color="#C0CAF5" />
+        <SolidColorBrush x:Key="DB_AsyncBoundaryBrush"          Color="#7AA2F7" />
+<SolidColorBrush x:Key="DB_ConsoleStdoutBrush"           Color="#C0CAF5" />
     <SolidColorBrush x:Key="DB_ConsoleStderrBrush"           Color="#F7768E" />
     <SolidColorBrush x:Key="DB_ConsoleDebugBrush"            Color="#414868" />
     <SolidColorBrush x:Key="DB_ToolbarBackgroundBrush"       Color="#24283B" />

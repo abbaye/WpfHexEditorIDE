@@ -164,6 +164,7 @@
   <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>Explorador de formatos</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>Comparar archivos</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Lista de errores</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>Paleta de comandos</value></data>
   <data name="BuildCompiler_CSharpSection" xml:space="preserve">
     <value>VALORES PREDETERMINADOS DE C# / .NET</value>
@@ -633,6 +634,11 @@
   <data name="Opt_IndentLevel_2" xml:space="preserve">
     <value>Nivel 2</value>
   </data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Idioma</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Restablecer anulaciones</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Restablecer todas las anulaciones</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Estos ajustes reemplazan los valores predeterminados del lenguaje .whfmt.
+Deje las casillas en estado indeterminado (—) para heredar las reglas del lenguaje.</value></data>
   <data name="Opt_IndentLevel_3" xml:space="preserve">
     <value>Nivel 3</value>
   </data>
@@ -651,4 +657,5 @@
   <data name="Opt_Preview_Label" xml:space="preserve">
     <value>Vista previa</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Mostrar botón de vista dividida</value></data>
 </root>

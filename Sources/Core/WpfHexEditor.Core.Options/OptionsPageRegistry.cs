@@ -81,6 +81,11 @@ public static class OptionsPageRegistry
         new(() => CategoryExtensions, () => PageMarketplace, () => new MarketplaceOptionsPage(), "🔌",
             ["marketplace", "install", "update", "package", "gallery", "extension", "download"]),
 
+        // Document Editor
+        new(() => CategoryDocumentEditor, () => PageGeneral, () => new DocumentEditorOptionsPage(), "📄",
+            ["document", "docx", "rtf", "odt", "autosave", "auto save", "minimap", "scroll markers",
+             "forensic", "indent", "sync", "hover", "render", "view mode", "font"]),
+
         // Format Editor (.whfmt)
         new(() => CategoryFormatEditor, () => PageGeneral, () => new StructureEditorOptionsPage(), "📋",
             ["whfmt", "block", "validation", "code preview", "structure", "format definition",

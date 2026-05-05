@@ -168,6 +168,7 @@
   <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Formátumkezelő</value></data>
   <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Fájlok összehasonlítása</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Hibalista</value></data>
   <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Parancspaletta</value></data>
 
   <!-- Plugin System Options Page — folder picker dialog -->
@@ -193,6 +194,11 @@
   <!-- Code Editor Formatting Page — indentation levels combo -->
   <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 szint (4 szóköz a gyökérnél)</value></data>
   <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 szint (8 szóköz a gyökérnél) — VS alapértelmezés</value></data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Nyelv</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Felülírások visszaállítása</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Összes felülírás visszaállítása</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Ezek a beállítások felülírják a nyelv .whfmt alapértékeit.
+Hagyja a jelölőnégyzeteket meghatározatlan állapotban (—) a nyelvi szabályok örökléséhez.</value></data>
   <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 szint (12 szóköz a gyökérnél)</value></data>
 
   <!-- Markdown Editor Options Page — layout combo -->
@@ -633,4 +639,5 @@
   <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
     <value>Frissítési ráta megjelenítése</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Osztott nézet váltógomb megjelenítése</value></data>
 </root>

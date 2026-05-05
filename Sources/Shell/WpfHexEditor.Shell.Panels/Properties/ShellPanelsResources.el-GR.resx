@@ -192,4 +192,75 @@
   <data name="WhfmtCatalog_LayoutLeft" xml:space="preserve"><value>Λεπτομέρειες αριστερά</value></data>
   <data name="WhfmtCatalog_LayoutBottom" xml:space="preserve"><value>Λεπτομέρειες κάτω</value></data>
   <data name="WhfmtCatalog_LayoutTop" xml:space="preserve"><value>Λεπτομέρειες πάνω</value></data>
+  <data name="WorkspaceFindReplace_Title" xml:space="preserve">
+    <value>Εύρεση και αντικατάσταση στη λύση</value>
+  </data>
+  <data name="WorkspaceFindReplace_FindLabel" xml:space="preserve">
+    <value>Εύρεση:</value>
+  </data>
+  <data name="WorkspaceFindReplace_ReplaceLabel" xml:space="preserve">
+    <value>Αντικατάσταση:</value>
+  </data>
+  <data name="WorkspaceFindReplace_FindAll" xml:space="preserve">
+    <value>Εύρεση όλων</value>
+  </data>
+  <data name="WorkspaceFindReplace_ReplaceAll" xml:space="preserve">
+    <value>Αντικατάσταση όλων</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionRegex" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionMatchCase" xml:space="preserve">
+    <value>Διάκριση πεζών/κεφαλαίων</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionWholeWord" xml:space="preserve">
+    <value>Ολόκληρη λέξη</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReady" xml:space="preserve">
+    <value>Έτοιμο.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusSearching" xml:space="preserve">
+    <value>Αναζήτηση…</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReplacing" xml:space="preserve">
+    <value>Αντικατάσταση…</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusNoMatches" xml:space="preserve">
+    <value>Δεν βρέθηκαν αποτελέσματα.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusMatches" xml:space="preserve">
+    <value>{0} αποτέλεσμα/τα σε {1} αρχείο/α.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusNoReplacements" xml:space="preserve">
+    <value>Δεν έγιναν αντικαταστάσεις.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReplaced" xml:space="preserve">
+    <value>Αντικαταστάθηκαν {0} εμφανίσεις σε {1} αρχείο/α.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ConfirmTitle" xml:space="preserve">
+    <value>Αντικατάσταση όλων — Λύση</value>
+  </data>
+  <data name="WorkspaceFindReplace_ConfirmMessage" xml:space="preserve">
+    <value>Αντικατάσταση όλων των εμφανίσεων του "{0}" με "{1}" σε ολόκληρη τη λύση; Αυτό θα τροποποιήσει αρχεία στο δίσκο.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColFile" xml:space="preserve">
+    <value>Αρχείο</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColLine" xml:space="preserve">
+    <value>Γραμμή</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColCol" xml:space="preserve">
+    <value>Στήλ.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColPreview" xml:space="preserve">
+    <value>Προεπισκόπηση</value>
+  </data>
+  <data name="WorkspaceFindReplace_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+  <data name="WorkspaceFindReplace_ClearResults" xml:space="preserve"><value>Εκκαθάριση αποτελεσμάτων</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenFile" xml:space="preserve"><value>Ανοιγμα αρχείου</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenAtLine" xml:space="preserve"><value>Ανοιγμα αρχείου στη γραμμή</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPath" xml:space="preserve"><value>Αντιγραφή διαδρομής</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPreview" xml:space="preserve"><value>Αντιγραφή κειμένου προεπισκόπησης</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeRow" xml:space="preserve"><value>Εξαίρεση αυτού του αποτελέσματος</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeFile" xml:space="preserve"><value>Εξαίρεση όλων των αποτελεσμάτων από αυτό το αρχείο</value></data>
 </root>

@@ -169,6 +169,8 @@ public static class OoXmlSchemaEngine
         transform switch
         {
             "halfPointsToPoints" when int.TryParse(value, out var hp) => (object)(hp / 2.0),
+            // 1 point = 20 twips; OOXML stores indent / margin / right / firstLine values in twips
+            "twipsToPoints"      when int.TryParse(value, out var tw) => (object)(tw / 20.0),
             _ => value
         };
 
@@ -186,12 +188,27 @@ public static class OoXmlSchemaEngine
             ? primary
             : XNamespace.None;
 
-        var root = new XElement(ns + GetBodyElementName(schema));
+        XElement contentParent;
+        XElement root;
+
+        if (schema.Engine == "ooxml")
+        {
+            // OOXML structure: <w:document><w:body>...blocks...</w:body></w:document>
+            root = new XElement(ns + "document",
+                new XAttribute(XNamespace.Xmlns + (string.IsNullOrEmpty(schema.NamespacePrefix) ? "w" : schema.NamespacePrefix), ns.NamespaceName));
+            contentParent = new XElement(ns + "body");
+            root.Add(contentParent);
+        }
+        else
+        {
+            root          = new XElement(ns + GetBodyElementName(schema));
+            contentParent = root;
+        }
 
         foreach (var block in blocks)
         {
             var element = SerializeBlock(block, schema, ns, nsMap);
-            if (element is not null) root.Add(element);
+            if (element is not null) contentParent.Add(element);
         }
 
         return new XDocument(new XDeclaration("1.0", "UTF-8", "yes"), root);
@@ -210,18 +227,27 @@ public static class OoXmlSchemaEngine
         // Serialize attributes back to XML
         SerializeAttributes(block, schema, element, ns, nsMap);
 
-        // Text content
-        if (!string.IsNullOrEmpty(rule.TextElement))
+        // Text content — only when no children own the text (children serialize their own text)
+        if (block.Children.Count == 0 && !string.IsNullOrEmpty(block.Text))
         {
-            var textPath  = rule.TextElement.Split('/');
-            var textParent = element;
-            foreach (var step in textPath.SkipLast(1))
-                textParent = GetOrAddChild(textParent, ns + LocalName(step));
-            textParent.Add(new XElement(ns + LocalName(textPath.Last()), block.Text));
-        }
-        else if (string.IsNullOrEmpty(rule.TextElement) && block.Children.Count == 0)
-        {
-            element.Value = block.Text;
+            if (!string.IsNullOrEmpty(rule.TextElement))
+            {
+                var textPath   = rule.TextElement.Split('/');
+                var textParent = element;
+                foreach (var step in textPath.SkipLast(1))
+                    textParent = GetOrAddChild(textParent, ns + LocalName(step));
+                textParent.Add(new XElement(ns + LocalName(textPath.Last()), block.Text));
+            }
+            else if (schema.Engine == "ooxml" && block.Kind == "paragraph")
+            {
+                // OOXML requires text to be wrapped: <w:p><w:r><w:t>text</w:t></w:r></w:p>
+                element.Add(new XElement(ns + "r",
+                    new XElement(ns + "t", block.Text)));
+            }
+            else
+            {
+                element.Value = block.Text;
+            }
         }
 
         // Children
@@ -247,7 +273,8 @@ public static class OoXmlSchemaEngine
             if (!string.IsNullOrEmpty(rule.Parent) && !string.IsNullOrEmpty(rule.XmlElement))
             {
                 var parentEl = GetOrAddChild(element, ns + LocalName(rule.Parent));
-                var attrEl   = new XElement(ns + LocalName(rule.XmlElement));
+                // Fuse attrs on the same target element (e.g. w:ind hosts left/right/firstLine).
+                var attrEl   = GetOrAddChild(parentEl, ns + LocalName(rule.XmlElement));
 
                 if (!string.IsNullOrEmpty(rule.Attr))
                 {
@@ -257,8 +284,6 @@ public static class OoXmlSchemaEngine
 
                 foreach (var extra in rule.Attrs)
                     attrEl.SetAttributeValue(ns + LocalName(extra.Key), extra.Value);
-
-                parentEl.Add(attrEl);
             }
         }
     }
@@ -266,8 +291,10 @@ public static class OoXmlSchemaEngine
     private static string ApplySerializeTransform(string value, string transform) =>
         transform switch
         {
-            "pointsToHalfPoints" when double.TryParse(value, out var pt) =>
-                ((int)(pt * 2)).ToString(),
+            "pointsToHalfPoints" when double.TryParse(value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var pt) =>
+                ((int)(pt * 2)).ToString(System.Globalization.CultureInfo.InvariantCulture),
+            "pointsToTwips" when double.TryParse(value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var pt2) =>
+                ((int)Math.Round(pt2 * 20)).ToString(System.Globalization.CultureInfo.InvariantCulture),
             _ => value
         };
 

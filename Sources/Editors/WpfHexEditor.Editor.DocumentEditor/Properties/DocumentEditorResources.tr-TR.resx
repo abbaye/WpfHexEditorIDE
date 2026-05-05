@@ -91,6 +91,9 @@
   <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Belge meta verileri</value></data>
   <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Belgeyi dışa aktar</value></data>
   <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Kaydet</value></data>
+  <data name="DocEditorHost_FontFamilyToolTip" xml:space="preserve"><value>Yazı tipi</value></data>
+  <data name="DocEditorHost_FontSizeToolTip" xml:space="preserve"><value>Yazı tipi boyutu</value></data>
+  <data name="DocEditorHost_TextColorToolTip" xml:space="preserve"><value>Metin rengi</value></data>
   <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Başlık</value></data>
   <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Yazar</value></data>
   <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Biçim</value></data>

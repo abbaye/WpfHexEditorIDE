@@ -248,6 +248,12 @@ public sealed class UIRegistry : IUIRegistry
     /// <inheritdoc />
     public Point? GetCommandPaletteAnchor() => CommandPaletteAnchorProvider?.Invoke();
 
+    /// <inheritdoc />
+    public void BeginBulkRegistration() => _dockingAdapter.BeginBulkRegistration();
+
+    /// <inheritdoc />
+    public void EndBulkRegistration() => _dockingAdapter.EndBulkRegistration();
+
     // -- Bulk Unregister (also removes contributor) ----------------------------
 
     /// <inheritdoc />

@@ -121,6 +121,24 @@ public sealed class DocumentModel : INotifyPropertyChanged
         set => SetField(ref _isDirty, value);
     }
 
+    // ──────────────────────────────── Bookmarks ───────────────────────────────
+
+    /// <summary>Set of bookmarked block indices (0-based, order preserved by insertion).</summary>
+    public ObservableCollection<int> Bookmarks { get; } = [];
+
+    /// <summary>
+    /// Toggles a bookmark on <paramref name="blockIndex"/>.
+    /// Adds if absent; removes if present. Raises <see cref="BookmarksChanged"/>.
+    /// </summary>
+    public void ToggleBookmark(int blockIndex)
+    {
+        if (Bookmarks.Contains(blockIndex))
+            Bookmarks.Remove(blockIndex);
+        else
+            Bookmarks.Add(blockIndex);
+        BookmarksChanged?.Invoke(this, EventArgs.Empty);
+    }
+
     // ──────────────────────────────── Events ──────────────────────────────────
 
     /// <summary>Raised when <see cref="Blocks"/> content changes structurally.</summary>
@@ -128,6 +146,9 @@ public sealed class DocumentModel : INotifyPropertyChanged
 
     /// <summary>Raised when <see cref="ForensicAlerts"/> is replaced.</summary>
     public event EventHandler? ForensicAlertsChanged;
+
+    /// <summary>Raised when the <see cref="Bookmarks"/> collection changes.</summary>
+    public event EventHandler? BookmarksChanged;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

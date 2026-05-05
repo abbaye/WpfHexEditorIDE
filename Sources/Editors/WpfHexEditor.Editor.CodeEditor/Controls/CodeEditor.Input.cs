@@ -764,6 +764,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _bpHoverLine = -1;
             _bpHoverPopup?.OnEditorMouseLeft();
 
+            // Dismiss data tip when mouse leaves the editor.
+            DismissDataTip();
+
             // Clear Ctrl+hover state on mouse leave.
             if (_ctrlDown)
             {
@@ -1855,6 +1858,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // Quick Info hover — dispatch after cursor state is settled
                 if (ShowQuickInfo && _hoverQuickInfoService is not null && !_isSelecting)
                     HandleQuickInfoHover(hoverPos, e.GetPosition(this));
+
+                // Debug Data Tip hover — evaluate token when session is paused
+                if (_debugHoverProvider?.IsSessionPaused == true && !_isSelecting)
+                    HandleDebugHover(hoverPos, e.GetPosition(this));
 
                 // End-of-block hint — show popup when cursor is on a region's closing line.
                 HandleEndBlockHintHover(hoverPos.Line);

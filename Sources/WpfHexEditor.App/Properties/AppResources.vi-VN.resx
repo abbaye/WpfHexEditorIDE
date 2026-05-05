@@ -589,4 +589,14 @@
   <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Browse and manage built-in and user .whfmt format definitions</value></data>
   <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Open the Format Catalog document tab (all formats in a sortable grid)</value></data>
   <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyse entropy and byte distribution of the active file</value></data>
+  <data name="Debugger_RemoteConnect" xml:space="preserve"><value>Ket noi voi Trinh go loi Tu xa...</value></data>
+  <data name="Debugger_RemoteConnecting" xml:space="preserve"><value>Dang ket noi...</value></data>
+  <data name="Debugger_RemoteConnectFailed" xml:space="preserve"><value>Ket noi voi bo dieu hop go loi tu xa that bai.</value></data>
+  <data name="Debugger_EditContinueApplied" xml:space="preserve"><value>Chinh sua va tiep tuc da duoc ap dung.</value></data>
+  <data name="Debugger_HotReloadApplied" xml:space="preserve"><value>Tai lai nong da duoc ap dung.</value></data>
+  <data name="Debugger_HotReloadNotSupported" xml:space="preserve"><value>Tai lai nong khong duoc ho tro boi thoi gian chay nay.</value></data>
+  <data name="Debugger_SymbolServerResolving" xml:space="preserve"><value>Dang phan giai bieu tuong...</value></data>
+  <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Phan giai bieu tuong hoan tat.</value></data>
+  <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Diem dung du lieu</value></data>
+  <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Them diem dung du lieu</value></data>
 </root>

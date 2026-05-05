@@ -21,6 +21,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using WpfHexEditor.PluginDev.Properties;
 using WpfHexEditor.PluginDev.Services;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.PluginDev.UI;
 
@@ -224,7 +225,7 @@ public sealed class PluginMarketplacePanel : UserControl
         {
             var progress = new Progress<double>();
             var ok = await _svc.InstallAsync(pkg, progress);
-            MessageBox.Show(
+            IdeMessageBox.Show(
                 ok ? $"'{pkg.Name}' installed successfully." : $"Install failed for '{pkg.Name}'.",
                 PluginDevResources.PluginDev_ExtensionMarketplace,
                 MessageBoxButton.OK,
@@ -232,14 +233,14 @@ public sealed class PluginMarketplacePanel : UserControl
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Install error: {ex.Message}", PluginDevResources.PluginDev_ExtensionMarketplace,
+            IdeMessageBox.Show($"Install error: {ex.Message}", PluginDevResources.PluginDev_ExtensionMarketplace,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
     private async void OnUninstallRequested(MarketplacePackage pkg)
     {
-        var confirm = MessageBox.Show(
+        var confirm = IdeMessageBox.Show(
             $"Uninstall '{pkg.Name}'?", PluginDevResources.PluginDev_ExtensionMarketplace,
             MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -252,7 +253,7 @@ public sealed class PluginMarketplacePanel : UserControl
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Uninstall error: {ex.Message}", PluginDevResources.PluginDev_ExtensionMarketplace,
+            IdeMessageBox.Show($"Uninstall error: {ex.Message}", PluginDevResources.PluginDev_ExtensionMarketplace,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

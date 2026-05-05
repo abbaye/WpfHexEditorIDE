@@ -38,6 +38,7 @@ using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Selection;
 using WpfHexEditor.Editor.CodeEditor.Input;
 using WpfHexEditor.Editor.CodeEditor.MultiCaret;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -259,9 +260,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // ── InlineHints ──────────────────────────────────────────────────────────
         private          int                            _inlineHintsSource   = 0; // 0=Auto, 1=RoslynOnly, 2=RegexAlways
         private readonly Services.InlineHintsService                                                                                              _inlineHintsService  = new();
-        private readonly Layers.LspInlayHintsLayer                                                                                                 _lspInlayHintsLayer  = new();
+        private readonly Layers.LspInlayHintsLayer                                                                                                 _lspInlayHintsLayer      = new();
         private readonly Layers.LspDeclarationHintsLayer                                                                                                   _lspDeclarationHintsLayer    = new();
         private readonly Layers.LspSemanticTokensLayer                                                                                                     _semanticTokensLayer         = new();
+        private readonly Layers.DebugValueHintsLayer                                                                                                       _debugValueHintsLayer        = new();
         private          IReadOnlyDictionary<int, (int Count, string Symbol, string IconGlyph, System.Windows.Media.Brush IconBrush, WpfHexEditor.Editor.Core.InlineHintsSymbolKinds Kind, bool IsRoslyn)> _hintsData = new Dictionary<int, (int, string, string, System.Windows.Media.Brush, WpfHexEditor.Editor.Core.InlineHintsSymbolKinds, bool)>();
         private          int                                                                                                                   _visibleHintsCount = 0;
         /// <summary>Cumulative hint count before each line: _hintsCumulative[i] = number of visible hints on lines 0..i-1.</summary>
@@ -2825,6 +2827,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _scrollBarChildren.Add(_lspInlayHintsLayer);
             _scrollBarChildren.Add(_lspDeclarationHintsLayer);
             _scrollBarChildren.Add(_semanticTokensLayer);
+            _scrollBarChildren.Add(_debugValueHintsLayer);
 
             // Caret visual is always last so it composites on top of all content.
             _scrollBarChildren.Add(_caretVisual);
@@ -4229,7 +4232,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             catch (System.Text.Json.JsonException ex)
             {
-                MessageBox.Show(string.Format(CodeEditorResources.CodeEditor_FormatJsonError, ex.Message),
+                IdeMessageBox.Show(string.Format(CodeEditorResources.CodeEditor_FormatJsonError, ex.Message),
                     CodeEditorResources.CodeEditor_FormatJsonErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
@@ -4244,14 +4247,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 using var _ = System.Text.Json.JsonDocument.Parse(text,
                     new System.Text.Json.JsonDocumentOptions { AllowTrailingCommas = true });
                 StatusMessage?.Invoke(this, CodeEditorResources.CodeEditor_ValidateJsonSuccess);
-                MessageBox.Show(CodeEditorResources.CodeEditor_ValidateJsonSuccess, CodeEditorResources.CodeEditor_ValidateJsonTitle,
+                IdeMessageBox.Show(CodeEditorResources.CodeEditor_ValidateJsonSuccess, CodeEditorResources.CodeEditor_ValidateJsonTitle,
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (System.Text.Json.JsonException ex)
             {
                 var msg = string.Format(CodeEditorResources.CodeEditor_ValidateJsonError, ex.Message);
                 StatusMessage?.Invoke(this, msg);
-                MessageBox.Show(msg, CodeEditorResources.CodeEditor_ValidateJsonErrorTitle,
+                IdeMessageBox.Show(msg, CodeEditorResources.CodeEditor_ValidateJsonErrorTitle,
                     MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }

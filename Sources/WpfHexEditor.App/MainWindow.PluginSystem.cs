@@ -24,6 +24,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using WpfHexEditor.App.Dialogs;
 using WpfHexEditor.App.Properties;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.SDK.Events;
@@ -66,9 +67,13 @@ public partial class MainWindow
     private WpfHexEditor.App.Services.LspDiagnosticsAdapter?       _lspDiagnosticsAdapter;
     private WpfHexEditor.App.Services.NotificationServiceImpl?     _notificationService;
     private WpfHexEditor.App.StatusBar.NotificationBellAdapter?    _notificationBellAdapter;
+    private readonly WpfHexEditor.App.Services.DialogServiceImpl   _dialogService = new();
     private WpfHexEditor.App.Services.LspFirstRunService?          _lspFirstRunService;
     private WpfHexEditor.App.Services.DebuggerServiceImpl?      _debuggerService;
+    private WpfHexEditor.App.Debug.DebugModule?                 _debugModule;
+    private WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule? _assemblyExplorerModule;
     private WpfHexEditor.App.Services.ScriptingServiceImpl?     _scriptingService;
+    private WpfHexEditor.App.Services.TabGroupService?          _tabGroupService;
     private readonly FocusContextService _focusContextService = new();
 
     // Service adapters (lazily set in InitializePluginSystemAsync after layout is ready)
@@ -328,7 +333,8 @@ public partial class MainWindow
             // Debugger service — created here so it can be exposed via IDEHostContext.Debugger.
             _debuggerService = new WpfHexEditor.App.Services.DebuggerServiceImpl(
                 _ideEventBus,
-                WpfHexEditor.Core.Options.AppSettingsService.Instance.Current);
+                WpfHexEditor.Core.Options.AppSettingsService.Instance.Current,
+                dialogs: _dialogService);
 
             // Scripting service — best-effort: depends on Roslyn (Core.Scripting); must not block IDE startup.
             // Pattern: same as LSP registry (lines above) — failure is logged, service stays null.
@@ -380,6 +386,7 @@ public partial class MainWindow
             var uiControlFactory      = new WpfHexEditor.App.Services.UIControlFactory(syntaxColoringService);
 
             var tabGroupService = new WpfHexEditor.App.Services.TabGroupService(DockHost);
+            _tabGroupService = tabGroupService;
 
             var hostContext = new IDEHostContext(
                 documentHost:        _documentHostService,
@@ -409,9 +416,11 @@ public partial class MainWindow
             {
                 LspServers     = lspRegistry,
                 Notifications  = _notificationService,
-                SyntaxColoring = syntaxColoringService,
-                UIFactory      = uiControlFactory,
-                TabGroups      = tabGroupService,
+                Dialogs        = _dialogService,
+                SyntaxColoring   = syntaxColoringService,
+                UIFactory        = uiControlFactory,
+                TabGroups        = tabGroupService,
+                DebugVisualizers = new WpfHexEditor.App.Services.DebugVisualizerRegistry(),
             };
 
             // Attach TabGroupService to the engine (available after DockHost.Layout is set).
@@ -462,6 +471,34 @@ public partial class MainWindow
             }
 
             InitDebugIntegration();
+
+            // Debug module — formerly WpfHexEditor.Plugins.Debugger plugin (ADR-010).
+            // Registered before plugin loader so its panels/menus participate in the
+            // initial layout build alongside core IDE panels.
+            _debugModule = new WpfHexEditor.App.Debug.DebugModule();
+            _debugModule.Initialize(hostContext);
+
+            // AssemblyExplorer module — formerly WpfHexEditor.Plugins.AssemblyExplorer (ADR-011).
+            // Lazy activation: InitializeAsync only registers menus + light event subscriptions.
+            // Panels/ViewModels/decompiler backend are built in EnsureActivated on first use.
+            _assemblyExplorerModule = new WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule();
+            await _assemblyExplorerModule.InitializeAsync(hostContext).ConfigureAwait(true);
+
+            // Both modules are now ready. Any panel-dbg-* or AssemblyExplorer panels that were
+            // rendered as a CreateDocumentContent placeholder during layout restore (because the
+            // modules were null at that time) are replaced with the real panels now.
+            RefreshModulePanels();
+
+            OptionsPageRegistry.RegisterDynamic(
+                "Assembly Explorer",
+                "General",
+                () =>
+                {
+                    var page = new WpfHexEditor.App.AssemblyExplorer.Options.AssemblyExplorerOptionsPage();
+                    page.Load();
+                    return page;
+                });
+
             _pluginHost = new WpfPluginHost(hostContext, uiRegistry, permissionService, Dispatcher,
                 logger:      msg => OutputLogger.PluginInfo(msg),
                 errorLogger: msg => OutputLogger.PluginError(msg));
@@ -1049,8 +1086,41 @@ public partial class MainWindow
             return;
         }
 
-        OutputLogger.PluginInfo("[HotReload] Hot-reload is managed by Watch Mode. " +
-            "Enable Watch Mode on a plugin via Plugin Manager → Watch Mode, or use Plugin Dev Watch.");
+        var loaded = _pluginHost.GetAllPlugins()
+            .Where(p => p.State == WpfHexEditor.SDK.Models.PluginState.Loaded)
+            .ToList();
+
+        if (loaded.Count == 0)
+        {
+            _dialogService.Show("No loaded plugins found.", "Hot-Reload Plugin",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        // Build a selection dialog via a simple ComboBox window
+        var dlg = new PluginHotReloadDialog(loaded.Select(p => (p.Manifest.Id, p.Manifest.Name)).ToList())
+        {
+            Owner = this
+        };
+
+        if (dlg.ShowDialog() != true || dlg.SelectedPluginId is null) return;
+
+        var pluginId = dlg.SelectedPluginId;
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                OutputLogger.PluginInfo($"[HotReload] Reloading '{pluginId}'…");
+                await _pluginHost.ReloadPluginAsync(pluginId, CancellationToken.None).ConfigureAwait(false);
+                await Dispatcher.InvokeAsync(() =>
+                    OutputLogger.PluginInfo($"[HotReload] '{pluginId}' reloaded successfully."));
+            }
+            catch (Exception ex)
+            {
+                await Dispatcher.InvokeAsync(() =>
+                    OutputLogger.PluginWarn($"[HotReload] Failed to reload '{pluginId}': {ex.Message}"));
+            }
+        });
     }
 
     // --- LSP state indicator -------------------------------------------
@@ -1238,6 +1308,10 @@ public partial class MainWindow
         _roslynLoadCts = null;
         _lspBridgeService?.Dispose();
         _lspBridgeService = null;
+        _assemblyExplorerModule?.Shutdown();
+        _assemblyExplorerModule = null;
+        _debugModule?.Shutdown();
+        _debugModule = null;
         if (_debuggerService is not null)
         {
             await _debuggerService.DisposeAsync().ConfigureAwait(false);

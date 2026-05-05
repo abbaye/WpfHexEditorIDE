@@ -557,4 +557,75 @@
   <data name="WhfmtCatalog_Tooltip_ExportSelected" xml:space="preserve"><value>Auswahl in Datei exportieren…</value></data>
   <data name="WhfmtCatalog_Tooltip_AddFormat" xml:space="preserve"><value>Formatdatei hinzufügen…</value></data>
   <data name="WhfmtCatalog_Tooltip_Refresh" xml:space="preserve"><value>Katalog aktualisieren (F5)</value></data>
+  <data name="WorkspaceFindReplace_Title" xml:space="preserve">
+    <value>Suchen und Ersetzen in Projektmappe</value>
+  </data>
+  <data name="WorkspaceFindReplace_FindLabel" xml:space="preserve">
+    <value>Suchen:</value>
+  </data>
+  <data name="WorkspaceFindReplace_ReplaceLabel" xml:space="preserve">
+    <value>Ersetzen:</value>
+  </data>
+  <data name="WorkspaceFindReplace_FindAll" xml:space="preserve">
+    <value>Alle suchen</value>
+  </data>
+  <data name="WorkspaceFindReplace_ReplaceAll" xml:space="preserve">
+    <value>Alle ersetzen</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionRegex" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionMatchCase" xml:space="preserve">
+    <value>Groß-/Kleinschreibung</value>
+  </data>
+  <data name="WorkspaceFindReplace_OptionWholeWord" xml:space="preserve">
+    <value>Ganzes Wort</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReady" xml:space="preserve">
+    <value>Bereit.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusSearching" xml:space="preserve">
+    <value>Suche läuft…</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReplacing" xml:space="preserve">
+    <value>Ersetzen läuft…</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusNoMatches" xml:space="preserve">
+    <value>Keine Treffer gefunden.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusMatches" xml:space="preserve">
+    <value>{0} Treffer in {1} Datei(en).</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusNoReplacements" xml:space="preserve">
+    <value>Keine Ersetzungen vorgenommen.</value>
+  </data>
+  <data name="WorkspaceFindReplace_StatusReplaced" xml:space="preserve">
+    <value>{0} Vorkommen in {1} Datei(en) ersetzt.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ConfirmTitle" xml:space="preserve">
+    <value>Alle ersetzen — Projektmappe</value>
+  </data>
+  <data name="WorkspaceFindReplace_ConfirmMessage" xml:space="preserve">
+    <value>Alle Vorkommen von „{0}“ durch „{1}“ in der gesamten Projektmappe ersetzen? Dateien auf dem Datenträger werden geändert.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColFile" xml:space="preserve">
+    <value>Datei</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColLine" xml:space="preserve">
+    <value>Zeile</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColCol" xml:space="preserve">
+    <value>Sp.</value>
+  </data>
+  <data name="WorkspaceFindReplace_ColPreview" xml:space="preserve">
+    <value>Vorschau</value>
+  </data>
+  <data name="WorkspaceFindReplace_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="WorkspaceFindReplace_ClearResults" xml:space="preserve"><value>Ergebnisse löschen</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenFile" xml:space="preserve"><value>Datei öffnen</value></data>
+  <data name="WorkspaceFindReplace_CM_OpenAtLine" xml:space="preserve"><value>Datei an Zeile öffnen</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPath" xml:space="preserve"><value>Pfad kopieren</value></data>
+  <data name="WorkspaceFindReplace_CM_CopyPreview" xml:space="preserve"><value>Vorschautext kopieren</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeRow" xml:space="preserve"><value>Dieses Ergebnis ausschließen</value></data>
+  <data name="WorkspaceFindReplace_CM_ExcludeFile" xml:space="preserve"><value>Alle Ergebnisse dieser Datei ausschließen</value></data>
 </root>

@@ -20,6 +20,7 @@ using System.IO;
 using System.Windows;
 using Microsoft.Win32;
 using WpfHexEditor.Core.RomHacking;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.HexEditor
 {
@@ -32,7 +33,7 @@ namespace WpfHexEditor.HexEditor
         {
             if (!IsFileOrStreamLoaded)
             {
-                MessageBox.Show(
+                IdeMessageBox.Show(
                     WpfHexEditor.Core.Properties.Resources.IPS_Error_NoFileOpen,
                     WpfHexEditor.Core.Properties.Resources.IPS_Error_NoFileOpen_Title,
                     MessageBoxButton.OK,
@@ -56,7 +57,7 @@ namespace WpfHexEditor.HexEditor
             // Validate IPS file
             if (!IPSPatcher.IsValidIPSFile(ipsFilePath))
             {
-                MessageBox.Show(
+                IdeMessageBox.Show(
                     $"{WpfHexEditor.Core.Properties.Resources.IPS_Error_InvalidFile}\n\nFile: {Path.GetFileName(ipsFilePath)}",
                     WpfHexEditor.Core.Properties.Resources.IPS_Error_InvalidFile_Title,
                     MessageBoxButton.OK,
@@ -65,7 +66,7 @@ namespace WpfHexEditor.HexEditor
             }
 
             // Confirm patch application
-            var result = MessageBox.Show(
+            var result = IdeMessageBox.Show(
                 $"Apply IPS patch to current file?\n\n" +
                 $"ROM: {Path.GetFileName(FileName)}\n" +
                 $"Patch: {Path.GetFileName(ipsFilePath)}\n\n" +
@@ -91,7 +92,7 @@ namespace WpfHexEditor.HexEditor
                     OpenMemory(romData);
 
                     // Show success message
-                    MessageBox.Show(
+                    IdeMessageBox.Show(
                         $"IPS patch applied successfully!\n\n" +
                         $"Records Applied: {patchResult.RecordsApplied}/{patchResult.TotalRecords}\n" +
                         $"Original Size: {patchResult.OriginalFileSize:N0} bytes\n" +
@@ -107,7 +108,7 @@ namespace WpfHexEditor.HexEditor
                 }
                 else
                 {
-                    MessageBox.Show(
+                    IdeMessageBox.Show(
                         $"Failed to apply IPS patch:\n\n{patchResult.ErrorMessage}",
                         WpfHexEditor.Core.Properties.Resources.IPS_ApplyPatch_Error_Title,
                         MessageBoxButton.OK,
@@ -116,7 +117,7 @@ namespace WpfHexEditor.HexEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
+                IdeMessageBox.Show(
                     $"Error applying IPS patch:\n\n{ex.Message}",
                     WpfHexEditor.Core.Properties.Resources.IPS_ApplyPatch_Error_Title,
                     MessageBoxButton.OK,
@@ -164,7 +165,7 @@ namespace WpfHexEditor.HexEditor
         {
             if (!IsFileOrStreamLoaded)
             {
-                MessageBox.Show(
+                IdeMessageBox.Show(
                     WpfHexEditor.Core.Properties.Resources.IPS_CreatePatch_NoFileOpen,
                     WpfHexEditor.Core.Properties.Resources.IPS_Error_NoFileOpen_Title,
                     MessageBoxButton.OK,
@@ -207,7 +208,7 @@ namespace WpfHexEditor.HexEditor
                 var patchBytes = IPSPatcher.CreatePatch(originalData, modifiedData);
                 File.WriteAllBytes(outputIpsPath, patchBytes);
 
-                MessageBox.Show(
+                IdeMessageBox.Show(
                     $"IPS patch created successfully!\n\n" +
                     $"Saved to: {Path.GetFileName(outputIpsPath)}\n" +
                     $"Original size: {originalData.Length:N0} bytes\n" +
@@ -219,7 +220,7 @@ namespace WpfHexEditor.HexEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
+                IdeMessageBox.Show(
                     $"Error creating IPS patch:\n\n{ex.Message}",
                     WpfHexEditor.Core.Properties.Resources.IPS_ApplyPatch_Error_Title,
                     MessageBoxButton.OK,

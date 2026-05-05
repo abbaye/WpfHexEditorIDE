@@ -24,6 +24,21 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.*" />
+    <!-- ADR-011: AssemblyExplorer module — VB.NET decompilation backend.
+         ICSharpCode.Decompiler is already transitive via Core.AssemblyAnalysis.
+         CodeConverter pulls Roslyn 4.14.x; Core.Scripting still ships 4.9.2.
+         Pin Scripting.Common to 4.14.0 here so NuGet resolves a single version
+         across the App graph (otherwise NU1107 fires on the diamond dependency). -->
+    <PackageReference Include="ICSharpCode.CodeConverter" Version="10.0.1.923" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" Version="4.14.0" />
+  </ItemGroup>
+
+  <!-- ADR-011: expose internals to the AssemblyExplorer test project (renamed from
+       WpfHexEditor.Plugins.AssemblyExplorer.Tests). -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>WpfHexEditor.App.AssemblyExplorer.Tests</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
   <ItemGroup>
@@ -169,6 +184,36 @@
     <EmbeddedResource Update="Properties\AppResources.resx">
       <SubType>Designer</SubType>
       <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- Debug module (formerly WpfHexEditor.Plugins.Debugger) — see ADR-010 -->
+  <ItemGroup>
+    <Compile Update="Debug\Properties\DebuggerResources.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DebuggerResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Update="Debug\Properties\DebuggerResources.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>DebuggerResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- AssemblyExplorer module (formerly WpfHexEditor.Plugins.AssemblyExplorer) — see ADR-011 -->
+  <ItemGroup>
+    <Compile Update="AssemblyExplorer\Properties\AssemblyExplorerResources.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AssemblyExplorerResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Update="AssemblyExplorer\Properties\AssemblyExplorerResources.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>AssemblyExplorerResources.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>

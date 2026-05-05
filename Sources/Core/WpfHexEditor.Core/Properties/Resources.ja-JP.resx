@@ -1968,4 +1968,8 @@
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>結果</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>分割</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>同期した第 2 の Hex ペインを開閉</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>分割を閉じる</value></data>
 </root>

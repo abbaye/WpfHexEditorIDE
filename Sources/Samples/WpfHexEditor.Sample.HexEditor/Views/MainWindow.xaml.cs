@@ -26,6 +26,9 @@ namespace WpfHexEditor.Sample.HexEditor.Views
     {
         private readonly ModernMainWindowViewModel _viewModel;
 
+        // Convenience accessor so code-behind uses the primary editor inside the split host.
+        private WpfHexEditor.HexEditor.HexEditor HexEditorControl => HexEditorSplitHostControl.PrimaryEditor;
+
         public MainWindow()
         {
             // CRITICAL: Restore culture for this window BEFORE InitializeComponent

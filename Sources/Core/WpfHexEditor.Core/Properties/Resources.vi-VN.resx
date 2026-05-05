@@ -1950,4 +1950,8 @@ Lưu ý : Tích hợp đầy đủ với HexEditor cần kết nối với mô h
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Kết quả</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Tách</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Mở hoặc đóng bảng hex thứ hai được đồng bộ</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Đóng phân tách</value></data>
 </root>

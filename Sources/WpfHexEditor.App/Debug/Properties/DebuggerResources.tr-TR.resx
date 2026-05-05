@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve">
+    <value>Kesme Noktaları</value>
+  </data>
+  <data name="Debugger_CallStackPanelTitle" xml:space="preserve">
+    <value>Çağrı Yığını</value>
+  </data>
+  <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
+    <value>Yerel Değişkenler</value>
+  </data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Otomatik</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Özel durum ayarları</value>
+  </data>
+  <data name="Debugger_WatchPanelTitle" xml:space="preserve">
+    <value>İzle</value>
+  </data>
+  <data name="Debugger_ConsolePanelTitle" xml:space="preserve">
+    <value>Hata Ayıklama Konsolu</value>
+  </data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>İş Parçacıkları</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Paralel Yığınlar</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>İş parçacığı listesini yenile</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Paralel yığınları yenile</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Her kutu bir iş parçacığı çağrı yığınını temsil eder</value></data>
+  <data name="Debugger_NoValidBreakpoints" xml:space="preserve">
+    <value>Dosyada geçerli kesme noktası bulunamadı.</value>
+  </data>
+  <data name="Debugger_LaunchConfigTitle" xml:space="preserve">
+    <value>Başlatma Yapılandırması (.whdbg)</value>
+  </data>
+  <data name="Debugger_NoFileLoaded" xml:space="preserve">
+    <value>Dosya yüklenmedi. Önce Aç'a tıklayın.</value>
+  </data>
+  <data name="Debugger_ServiceNotAvailable" xml:space="preserve">
+    <value>IDebuggerService kullanılamıyor.</value>
+  </data>
+  <data name="Debugger_NoConfigLoaded" xml:space="preserve">
+    <value>Yapılandırma yüklenmedi.</value>
+  </data>
+  <data name="Debugger_NoConfigsArray" xml:space="preserve">
+    <value>'.whdbg' dosyasında 'configurations' dizisi bulunamadı.</value>
+  </data>
+  <data name="Debugger_NoMatchingConfig" xml:space="preserve">
+    <value>Eşleşen yapılandırma bulunamadı.</value>
+  </data>
+  <data name="Debugger_ImportBreakpoints" xml:space="preserve">
+    <value>VS XML'den Kesme Noktalarını İçe Aktar</value>
+  </data>
+  <data name="Debugger_ExportBreakpoints" xml:space="preserve">
+    <value>VS XML'e Kesme Noktalarını Dışa Aktar</value>
+  </data>
+  <data name="Debugger_Menu_Continue" xml:space="preserve">
+    <value>_Devam Et</value>
+  </data>
+  <data name="Debugger_Menu_StepOver" xml:space="preserve">
+    <value>Adımla _At</value>
+  </data>
+  <data name="Debugger_Menu_StepInto" xml:space="preserve">
+    <value>İçine _Gir</value>
+  </data>
+  <data name="DBG_EnableAll" xml:space="preserve">
+    <value>Enable All</value>
+  </data>
+  <data name="DBG_DisableAll" xml:space="preserve">
+    <value>Disable All</value>
+  </data>
+  <data name="DBG_DeleteAll" xml:space="preserve">
+    <value>Delete All</value>
+  </data>
+  <data name="DBG_EditCondition" xml:space="preserve">
+    <value>Edit Condition…</value>
+  </data>
+  <data name="DBG_ImportBreakpoints" xml:space="preserve">
+    <value>Import from VS XML…</value>
+  </data>
+  <data name="DBG_ExportBreakpoints" xml:space="preserve">
+    <value>Export All to VS XML…</value>
+  </data>
+  <data name="DBG_GroupNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="DBG_GroupFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="DBG_GroupType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_GroupEnabled" xml:space="preserve">
+    <value>Enabled/Disabled</value>
+  </data>
+  <data name="DBG_GroupProject" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="DBG_DetailRight" xml:space="preserve">
+    <value>Detail: Right</value>
+  </data>
+  <data name="DBG_DetailBottom" xml:space="preserve">
+    <value>Detail: Bottom</value>
+  </data>
+  <data name="DBG_DetailHidden" xml:space="preserve">
+    <value>Detail: Hidden</value>
+  </data>
+  <data name="DBG_SearchPlaceholder" xml:space="preserve">
+    <value>Search breakpoints...</value>
+  </data>
+  <data name="DBG_EnableAllTooltip" xml:space="preserve">
+    <value>Enable all breakpoints</value>
+  </data>
+  <data name="DBG_DisableAllTooltip" xml:space="preserve">
+    <value>Disable all breakpoints</value>
+  </data>
+  <data name="DBG_DeleteAllTooltip" xml:space="preserve">
+    <value>Delete all breakpoints</value>
+  </data>
+  <data name="DBG_EditConditionTooltip" xml:space="preserve">
+    <value>Edit condition of selected breakpoint</value>
+  </data>
+  <data name="DBG_ImportTooltip" xml:space="preserve">
+    <value>Import breakpoints from Visual Studio XML file</value>
+  </data>
+  <data name="DBG_ExportTooltip" xml:space="preserve">
+    <value>Export all breakpoints to Visual Studio XML file</value>
+  </data>
+  <data name="DBG_GroupLabel" xml:space="preserve">
+    <value>Group:</value>
+  </data>
+  <data name="DBG_LayoutTooltip" xml:space="preserve">
+    <value>Detail panel layout</value>
+  </data>
+  <data name="DBG_LocationColumn" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="DBG_ConditionColumn" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="DBG_HitsColumn" xml:space="preserve">
+    <value>Hits</value>
+  </data>
+  <data name="DBG_GoToSourceMenu" xml:space="preserve">
+    <value>Go to Source</value>
+  </data>
+  <data name="DBG_EditConditionMenu" xml:space="preserve">
+    <value>Edit Condition…</value>
+  </data>
+  <data name="DBG_ToggleEnabledMenu" xml:space="preserve">
+    <value>Toggle Enabled</value>
+  </data>
+  <data name="DBG_CopyLocationMenu" xml:space="preserve">
+    <value>Copy Location</value>
+  </data>
+  <data name="DBG_DeleteMenu" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DBG_EnableGroupMenu" xml:space="preserve">
+    <value>Enable Group</value>
+  </data>
+  <data name="DBG_DisableGroupMenu" xml:space="preserve">
+    <value>Disable Group</value>
+  </data>
+  <data name="DBG_DeleteGroupMenu" xml:space="preserve">
+    <value>Delete Group</value>
+  </data>
+  <data name="DBG_UnverifiedBadge" xml:space="preserve">
+    <value>Unverified</value>
+  </data>
+  <data name="DBG_UnverifiedTooltip" xml:space="preserve">
+    <value>This breakpoint could not be verified at the current location.</value>
+  </data>
+  <data name="DBG_EnabledField" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="DBG_TypeField" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_VerifiedField" xml:space="preserve">
+    <value>Verified</value>
+  </data>
+  <data name="DBG_ConditionField" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="DBG_GoToSourceText" xml:space="preserve">
+    <value>Go To Source</value>
+  </data>
+  <data name="DBG_EditText" xml:space="preserve">
+    <value>Edit…</value>
+  </data>
+  <data name="DBG_DeleteText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DBG_HitsLabel" xml:space="preserve">
+    <value>Hits: </value>
+  </data>
+  <data name="DBG_MoreOptionsTooltip" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="DBG_AddWatch" xml:space="preserve"><value>İzleme Ekle</value></data>
+  <data name="DBG_ColValue" xml:space="preserve"><value>Değer</value></data>
+  <data name="DBG_ColType" xml:space="preserve"><value>Tür</value></data>
+  <data name="DBG_ColName" xml:space="preserve"><value>Ad</value></data>
+  <data name="DBG_ColFile" xml:space="preserve"><value>Dosya</value></data>
+  <data name="Debugger_ImmediatePanelTitle" xml:space="preserve">
+    <value>Anlık pencere</value>
+  </data>
+  <data name="Debugger_ModulesPanelTitle" xml:space="preserve">
+    <value>Modüller</value>
+  </data>
+  <data name="Debugger_TasksPanelTitle" xml:space="preserve">
+    <value>Görevler</value>
+  </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>Ayrıştırma</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>Bellek</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>Yazmaçlar</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>Paralel İzleme</value></data>
+  <data name="DBG_Refresh" xml:space="preserve"><value>Yenile</value></data>
+  <data name="DBG_Add" xml:space="preserve"><value>Ekle</value></data>
+  <data name="DBG_Remove" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="DBG_Clear" xml:space="preserve"><value>Temizle</value></data>
+  <data name="DBG_ClearAll" xml:space="preserve"><value>Tümünü Temizle</value></data>
+  <data name="DBG_Copy" xml:space="preserve"><value>Kopyala</value></data>
+  <data name="DBG_EditValue" xml:space="preserve"><value>Değeri Düzenle</value></data>
+  <data name="DBG_FilterPlaceholder" xml:space="preserve"><value>Filtrele…</value></data>
+  <data name="DBG_AddToWatch" xml:space="preserve"><value>İzlemeye Ekle</value></data>
+  <data name="DBG_CopyValue" xml:space="preserve"><value>Değeri Kopyala</value></data>
+  <data name="DBG_CopyName" xml:space="preserve"><value>Adı Kopyala</value></data>
+  <data name="DBG_CopyExpression" xml:space="preserve"><value>İfadeyi Kopyala</value></data>
+  <data name="DBG_CopyFrame" xml:space="preserve"><value>Çerçeveyi Kopyala</value></data>
+  <data name="DBG_CopyCallStack" xml:space="preserve"><value>Çağrı Yığınını Kopyala</value></data>
+  <data name="DBG_GoToSource" xml:space="preserve"><value>Kaynağa Git</value></data>
+  <data name="DBG_ToggleHexDecimal" xml:space="preserve"><value>Hex/Ondalık</value></data>
+  <data name="DBG_ShowAsHex" xml:space="preserve"><value>Hex olarak göster</value></data>
+  <data name="DBG_RunToCursor" xml:space="preserve"><value>İmlece Çalıştır</value></data>
+  <data name="DBG_SetNextStatement" xml:space="preserve"><value>Sonraki Deyimi Ayarla</value></data>
+  <data name="DBG_SwitchToThread" xml:space="preserve"><value>İş Parçacığına Geç</value></data>
+  <data name="DBG_Freeze" xml:space="preserve"><value>Dondur</value></data>
+  <data name="DBG_Thaw" xml:space="preserve"><value>Çöz</value></data>
+  <data name="DBG_CopyThreadInfo" xml:space="preserve"><value>İş Parçacığı Bilgisini Kopyala</value></data>
+  <data name="DBG_CopyTaskInfo" xml:space="preserve"><value>Görev Bilgisini Kopyala</value></data>
+  <data name="DBG_CopyAddress" xml:space="preserve"><value>Adresi Kopyala</value></data>
+  <data name="DBG_CopyHex" xml:space="preserve"><value>Hex Kopyala</value></data>
+  <data name="DBG_CopyAscii" xml:space="preserve"><value>ASCII Kopyala</value></data>
+  <data name="DBG_CopyRow" xml:space="preserve"><value>Satır Kopyala</value></data>
+  <data name="DBG_CopyLine" xml:space="preserve"><value>Satırı Kopyala</value></data>
+  <data name="DBG_RefreshTooltip" xml:space="preserve"><value>Yenile (F5)</value></data>
+  <data name="DBG_FilterTooltip" xml:space="preserve"><value>Değişkenleri ada göre filtrele</value></data>
+</root>

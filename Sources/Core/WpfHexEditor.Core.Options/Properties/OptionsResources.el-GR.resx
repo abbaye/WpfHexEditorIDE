@@ -168,6 +168,7 @@
   <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
   <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Εξερευνητής μορφών</value></data>
   <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Σύγκριση αρχείων</value></data>
+    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Λίστα σφαλμάτων</value></data>
   <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Παλέτα εντολών</value></data>
 
   <!-- Plugin System Options Page — folder picker dialog -->
@@ -193,6 +194,11 @@
   <!-- Code Editor Formatting Page — indentation levels combo -->
   <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 επίπεδο (4 κενά στη ρίζα)</value></data>
   <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 επίπεδα (8 κενά στη ρίζα) — προεπιλογή VS</value></data>
+<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Γλώσσα</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Επαναφορά παρακάμψεων</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Επαναφορά όλων των παρακάμψεων</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Αυτές οι ρυθμίσεις παρακάμπτουν τις προεπιλογές γλώσσας .whfmt.
+Αφήστε τα πλαίσια σε αδιευκρίνιστη κατάσταση (—) για να κληρονομήσετε τους κανόνες γλώσσας.</value></data>
   <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 επίπεδα (12 κενά στη ρίζα)</value></data>
 
   <!-- Markdown Editor Options Page — layout combo -->
@@ -633,4 +639,5 @@
   <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
     <value>Εμφάνιση ρυθμού ανανέωσης</value>
   </data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Εμφάνιση κουμπιού διαχωρισμού προβολής</value></data>
 </root>

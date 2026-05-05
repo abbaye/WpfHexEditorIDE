@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StringExtractor_PluginName" xml:space="preserve"><value>文字列抽出器</value></data>
+  <data name="StringExtractor_PanelTitle" xml:space="preserve"><value>文字列抽出器</value></data>
+  <data name="StringExtractor_MenuItem" xml:space="preserve"><value>文字列抽出器(_S)</value></data>
+  <data name="StringExtractor_ColOffset" xml:space="preserve"><value>オフセット</value></data>
+  <data name="StringExtractor_ColLength" xml:space="preserve"><value>長さ</value></data>
+  <data name="StringExtractor_ColEncoding" xml:space="preserve"><value>エンコーディング</value></data>
+  <data name="StringExtractor_ColValue" xml:space="preserve"><value>値</value></data>
+  <data name="StringExtractor_MinLength" xml:space="preserve"><value>最小長:</value></data>
+  <data name="StringExtractor_FilterPlaceholder" xml:space="preserve"><value>文字列をフィルタ...</value></data>
+  <data name="StringExtractor_ExtractButton" xml:space="preserve"><value>抽出</value></data>
+  <data name="StringExtractor_ExportButton" xml:space="preserve"><value>エクスポート</value></data>
+  <data name="StringExtractor_CopyButton" xml:space="preserve"><value>コピー</value></data>
+  <data name="StringExtractor_NoFile" xml:space="preserve"><value>ファイルが開かれていません — 文字列を抽出するにはバイナリファイルを開いてください。</value></data>
+  <data name="StringExtractor_NoResults" xml:space="preserve"><value>現在の条件に一致する文字列が見つかりませんでした。</value></data>
+  <data name="StringExtractor_Extracting" xml:space="preserve"><value>文字列を抽出中…</value></data>
+  <data name="StringExtractor_ResultCount" xml:space="preserve"><value>{0} 個の文字列が見つかりました</value></data>
+  <data name="StringExtractor_FilteredCount" xml:space="preserve"><value>{1} 個中 {0} 個の文字列</value></data>
+  <data name="StringExtractor_Enc_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="StringExtractor_Enc_UTF8" xml:space="preserve"><value>UTF-8</value></data>
+  <data name="StringExtractor_Enc_UTF16LE" xml:space="preserve"><value>UTF-16 LE</value></data>
+  <data name="StringExtractor_Enc_UTF16BE" xml:space="preserve"><value>UTF-16 BE</value></data>
+  <data name="StringExtractor_ExportTitle" xml:space="preserve"><value>文字列のエクスポート</value></data>
+  <data name="StringExtractor_ExportFilter" xml:space="preserve"><value>CSV ファイル (*.csv)|*.csv|テキスト ファイル (*.txt)|*.txt|すべてのファイル (*.*)|*.*</value></data>
+  <data name="StringExtractor_ExportSuccess" xml:space="preserve"><value>{0} 個の文字列を {1} にエクスポートしました</value></data>
+  <data name="StringExtractor_NavigateTo" xml:space="preserve"><value>オフセットに移動</value></data>
+  <data name="StringExtractor_CopyValue" xml:space="preserve"><value>値をコピー</value></data>
+  <data name="StringExtractor_CopyOffset" xml:space="preserve"><value>オフセットをコピー</value></data>
+  <data name="StringExtractor_Tooltip_Extract" xml:space="preserve"><value>ファイルをスキャンしてすべての印刷可能な文字列を抽出する</value></data>
+  <data name="StringExtractor_Tooltip_Export" xml:space="preserve"><value>結果を CSV または TXT にエクスポートする</value></data>
+  <data name="StringExtractor_Tooltip_MinLength" xml:space="preserve"><value>連続する印刷可能文字の最小数</value></data>
+</root>

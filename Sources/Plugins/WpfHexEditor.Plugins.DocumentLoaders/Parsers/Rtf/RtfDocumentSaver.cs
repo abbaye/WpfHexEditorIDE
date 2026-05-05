@@ -7,6 +7,7 @@
 //     No hardcoded RTF tokens in C#.
 // ==========================================================
 
+using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Editor.DocumentEditor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Core.Schema;
@@ -24,13 +25,25 @@ public sealed class RtfDocumentSaver : IDocumentSaver
 
     public async Task SaveAsync(DocumentModel model, Stream output, CancellationToken ct = default)
     {
-        var schema  = DocumentSchemaReader.ReadFromWhfmt("RTF.whfmt");
+        var schema  = LoadSchema("RTF.whfmt");
         string rtf  = schema is not null
             ? RtfSchemaEngine.SerializeBlocks(model.Blocks, schema)
             : FallbackSerialize(model);
 
         await using var writer = new StreamWriter(output, leaveOpen: true);
         await writer.WriteAsync(rtf);
+    }
+
+    private static DocumentSchemaDefinition? LoadSchema(string fileName)
+    {
+        var catalog = EmbeddedFormatCatalog.Instance;
+        var key = catalog.GetAll()
+            .Select(e => e.ResourceKey)
+            .FirstOrDefault(k => k is not null &&
+                k.EndsWith(fileName, StringComparison.OrdinalIgnoreCase));
+        if (key is null) return null;
+        try { return DocumentSchemaReader.ReadFromJson(catalog.GetJson(key), fileName); }
+        catch { return null; }
     }
 
     private static string FallbackSerialize(DocumentModel model)

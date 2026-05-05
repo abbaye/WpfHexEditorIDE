@@ -26,6 +26,7 @@ using System.Runtime.CompilerServices;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.CharacterTable;
+using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Services;
 using WpfHexEditor.Core.Models;
 using WpfHexEditor.Core.ViewModels;
@@ -490,9 +491,20 @@ namespace WpfHexEditor.HexEditor.ViewModels
         /// Modify byte at virtual position
         /// ByteProvider V2 handles all byte types (inserted/file/deleted) internally
         /// </summary>
+        /// <summary>
+        /// Raised after a byte modification, deletion, or insertion is committed to the
+        /// underlying ByteProvider. Used by the control to forward to its public
+        /// <c>ByteModified</c> event so consumers (shared UndoEngine bridge, plugins,
+        /// scrollbar markers, etc.) can react.
+        /// </summary>
+        public event EventHandler<ByteModifiedEventArgs>? ByteModified;
+
         public void ModifyByte(VirtualPosition virtualPos, byte newValue)
         {
             if (ReadOnlyMode) return;
+
+            // Capture old value BEFORE modification so subscribers can compute diffs.
+            var (oldValue, _) = _provider.GetByte(virtualPos.Value);
 
             // ByteProvider V2 handles all modifications internally
             _provider.ModifyByte(virtualPos.Value, newValue);
@@ -500,6 +512,9 @@ namespace WpfHexEditor.HexEditor.ViewModels
             // Notify Undo/Redo state changed (ByteProvider handles undo for modifications)
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
+
+            ByteModified?.Invoke(this,
+                new ByteModifiedEventArgs(virtualPos.Value, oldValue, newValue, ByteAction.Modified));
 
             // OPTIMIZATION: Invalidate only the affected line, not the entire cache
             InvalidateLineAtPosition(virtualPos.Value);

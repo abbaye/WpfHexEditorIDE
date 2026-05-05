@@ -90,6 +90,12 @@ public sealed class DockingAdapter : IDockingAdapter
     /// </summary>
     public void SuspendRebuild() => _rebuildSuspended = true;
 
+    /// <inheritdoc />
+    public void BeginBulkRegistration() => SuspendRebuild();
+
+    /// <inheritdoc />
+    public void EndBulkRegistration() => ResumeRebuild();
+
     /// <summary>
     /// Re-enables visual tree rebuilds and performs a single rebuild to apply all
     /// pending layout changes accumulated since <see cref="SuspendRebuild"/> was called.
@@ -100,6 +106,20 @@ public sealed class DockingAdapter : IDockingAdapter
         _rebuildSuspended = false;
         _dockHost.RebuildVisualTree();
     }
+
+    // Core App modules (ADR-010 DebugModule, ADR-011 AssemblyExplorerModule, …) call
+    // RegisterPanel through the same SDK contract as third-party plugins, but their
+    // panels are constructed inline with the App and do NOT need the plugin-loader's
+    // lazy materialization path (PluginLoadingPlaceholder + Background BeginInvoke).
+    // Marking these as "_pluginPanel" caused the placeholder to remain visible when
+    // the layout cache and the lazy-materialize sequence raced (ADR-011 fallout).
+    //
+    // Convention: any uiId in the App's own namespace is a core panel.
+    // - "WpfHexEditor.App.AssemblyExplorer.Panel.*" — ADR-011
+    // - "panel-dbg-*"                              — ADR-010 DebugModule
+    private static bool IsCoreAppPanel(string uiId) =>
+        uiId.StartsWith("WpfHexEditor.App.", StringComparison.Ordinal)
+        || uiId.StartsWith("panel-dbg-",     StringComparison.Ordinal);
 
     /// <inheritdoc />
     public void AddDockablePanel(string uiId, UIElement content, PanelDescriptor descriptor)
@@ -115,7 +135,10 @@ public sealed class DockingAdapter : IDockingAdapter
             // prevent the panel from being closed or hide property changes from plugin updates.
             existing.CanClose = descriptor.CanClose;
             existing.Title    = descriptor.Title;
-            existing.Metadata["_pluginPanel"] = "1";
+            if (!IsCoreAppPanel(uiId))
+                existing.Metadata["_pluginPanel"] = "1";
+            else
+                existing.Metadata.Remove("_pluginPanel");
             _storeContent(uiId, content);
             // Evict the stale placeholder from DockControl's internal cache so ContentFactory
             // is called again on the next rebuild, returning the real plugin UIElement.
@@ -182,7 +205,8 @@ public sealed class DockingAdapter : IDockingAdapter
             Title     = descriptor.Title,
             CanClose  = descriptor.CanClose
         };
-        item.Metadata["_pluginPanel"] = "1";
+        if (!IsCoreAppPanel(uiId))
+            item.Metadata["_pluginPanel"] = "1";
 
         _storeContent(uiId, content);
 

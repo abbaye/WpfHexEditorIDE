@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StringExtractor_PluginName" xml:space="preserve"><value>字符串提取器</value></data>
+  <data name="StringExtractor_PanelTitle" xml:space="preserve"><value>字符串提取器</value></data>
+  <data name="StringExtractor_MenuItem" xml:space="preserve"><value>字符串提取器(_S)</value></data>
+  <data name="StringExtractor_ColOffset" xml:space="preserve"><value>偏移量</value></data>
+  <data name="StringExtractor_ColLength" xml:space="preserve"><value>长度</value></data>
+  <data name="StringExtractor_ColEncoding" xml:space="preserve"><value>编码</value></data>
+  <data name="StringExtractor_ColValue" xml:space="preserve"><value>值</value></data>
+  <data name="StringExtractor_MinLength" xml:space="preserve"><value>最小长度:</value></data>
+  <data name="StringExtractor_FilterPlaceholder" xml:space="preserve"><value>过滤字符串...</value></data>
+  <data name="StringExtractor_ExtractButton" xml:space="preserve"><value>提取</value></data>
+  <data name="StringExtractor_ExportButton" xml:space="preserve"><value>导出</value></data>
+  <data name="StringExtractor_CopyButton" xml:space="preserve"><value>复制</value></data>
+  <data name="StringExtractor_NoFile" xml:space="preserve"><value>未打开文件 — 请打开一个二进制文件以提取字符串。</value></data>
+  <data name="StringExtractor_NoResults" xml:space="preserve"><value>未找到符合当前条件的字符串。</value></data>
+  <data name="StringExtractor_Extracting" xml:space="preserve"><value>正在提取字符串…</value></data>
+  <data name="StringExtractor_ResultCount" xml:space="preserve"><value>找到 {0} 个字符串</value></data>
+  <data name="StringExtractor_FilteredCount" xml:space="preserve"><value>{1} 个字符串中的 {0} 个</value></data>
+  <data name="StringExtractor_Enc_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="StringExtractor_Enc_UTF8" xml:space="preserve"><value>UTF-8</value></data>
+  <data name="StringExtractor_Enc_UTF16LE" xml:space="preserve"><value>UTF-16 LE</value></data>
+  <data name="StringExtractor_Enc_UTF16BE" xml:space="preserve"><value>UTF-16 BE</value></data>
+  <data name="StringExtractor_ExportTitle" xml:space="preserve"><value>导出字符串</value></data>
+  <data name="StringExtractor_ExportFilter" xml:space="preserve"><value>CSV 文件 (*.csv)|*.csv|文本文件 (*.txt)|*.txt|所有文件 (*.*)|*.*</value></data>
+  <data name="StringExtractor_ExportSuccess" xml:space="preserve"><value>已将 {0} 个字符串导出到 {1}</value></data>
+  <data name="StringExtractor_NavigateTo" xml:space="preserve"><value>导航到偏移量</value></data>
+  <data name="StringExtractor_CopyValue" xml:space="preserve"><value>复制值</value></data>
+  <data name="StringExtractor_CopyOffset" xml:space="preserve"><value>复制偏移量</value></data>
+  <data name="StringExtractor_Tooltip_Extract" xml:space="preserve"><value>扫描文件并提取所有可打印字符串</value></data>
+  <data name="StringExtractor_Tooltip_Export" xml:space="preserve"><value>将结果导出为 CSV 或 TXT</value></data>
+  <data name="StringExtractor_Tooltip_MinLength" xml:space="preserve"><value>连续可打印字符的最小数量</value></data>
+</root>

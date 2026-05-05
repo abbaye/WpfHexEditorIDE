@@ -1,0 +1,86 @@
+<UserControl x:Class="WpfHexEditor.App.Debug.Panels.WatchesPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.App.Debug.ViewModels"
+             xmlns:dbgSvc="clr-namespace:WpfHexEditor.App.Debug.Services">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <dbgSvc:DebuggerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{DynamicResource PanelToolbarStyle}">
+            <StackPanel Orientation="Horizontal" Margin="4,0" VerticalAlignment="Center">
+                <Button Command="{Binding AddCommand}"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Content="&#xE710;"
+                        ToolTip="{DynamicResource DBG_AddWatch}"/>
+                <Button Command="{Binding ClearCommand}"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Content="&#xE74D;"
+                        ToolTip="{DynamicResource DBG_ClearAll}"/>
+            </StackPanel>
+        </Border>
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Rows}"
+                  AutoGenerateColumns="False" CanUserAddRows="False"
+                  Background="{DynamicResource DockBackgroundBrush}"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  GridLinesVisibility="Horizontal"
+                  BorderThickness="0">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{DynamicResource DBG_AddWatch}"   InputGestureText="Insert"
+                              Command="{Binding PlacementTarget.DataContext.AddCommand,    RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="{DynamicResource DBG_Remove}"     InputGestureText="Delete"
+                              Command="{Binding PlacementTarget.DataContext.RemoveCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,     RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <Separator/>
+                    <MenuItem Header="{DynamicResource DBG_CopyValue}"  InputGestureText="Ctrl+C"
+                              Command="{Binding PlacementTarget.DataContext.CopyCommand,   RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,     RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <Separator/>
+                    <MenuItem Header="{DynamicResource DBG_ClearAll}"
+                              Command="{Binding PlacementTarget.DataContext.ClearCommand,  RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="{DynamicResource DBG_ColName}" Width="*"
+                                    Binding="{Binding Expression, UpdateSourceTrigger=LostFocus}" />
+                <DataGridTextColumn Header="{DynamicResource DBG_ColValue}" Width="200"
+                                    Binding="{Binding Value}" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasError}" Value="True">
+                                    <Setter Property="Foreground" Value="{DynamicResource DB_WatchErrorBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="{DynamicResource DBG_ColType}" Width="120"
+                                    Binding="{Binding Type}" IsReadOnly="True" />
+                <DataGridTemplateColumn Width="28">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                    Background="Transparent" BorderThickness="0"
+                                    Command="{Binding DataContext.RemoveCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

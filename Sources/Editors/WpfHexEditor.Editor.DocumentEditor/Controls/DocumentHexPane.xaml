@@ -30,9 +30,10 @@
                        FontSize="11"/>
         </Border>
 
-        <!-- Embedded HexEditor -->
+        <!-- Embedded HexEditor — status bar hidden (DocumentStatusBar owns that row) -->
         <hex:HexEditor x:Name="PART_HexEditor"
                        Grid.Row="1"
-                       ReadOnlyMode="True"/>
+                       ReadOnlyMode="True"
+                       ShowStatusBar="False"/>
     </Grid>
 </UserControl>

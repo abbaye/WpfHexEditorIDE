@@ -134,11 +134,29 @@ public static class RtfSchemaEngine
         {
             if (!schema.AttributeSerializationRules.TryGetValue(attr.Key, out var rule))
                 continue;
-            if (!string.IsNullOrEmpty(rule.Wrap))
-                result = rule.Wrap.Replace("{text}", result);
+            if (string.IsNullOrEmpty(rule.Wrap)) continue;
+
+            string wrapped = rule.Wrap.Replace("{text}", result);
+            if (wrapped.Contains("{value}"))
+            {
+                string raw = attr.Value?.ToString() ?? string.Empty;
+                wrapped = wrapped.Replace("{value}", ApplySerializeTransform(raw, rule.Transform));
+            }
+            result = wrapped;
         }
         return result;
     }
+
+    private static string ApplySerializeTransform(string value, string transform) =>
+        transform switch
+        {
+            // RTF stores indent / margin in twips (1 pt = 20 twips).
+            "pointsToTwips" when double.TryParse(value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var pt) =>
+                ((int)Math.Round(pt * 20)).ToString(System.Globalization.CultureInfo.InvariantCulture),
+            "pointsToHalfPoints" when double.TryParse(value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var hp) =>
+                ((int)(hp * 2)).ToString(System.Globalization.CultureInfo.InvariantCulture),
+            _ => value
+        };
 
     private static string SerializeAsPlainParagraph(string text) =>
         $@"\pard\plain {text}\par" + "\n";

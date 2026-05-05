@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Dialogs;
 using WpfHexEditor.Editor.Core.LSP;
 using WpfHexEditor.Editor.Core.Notifications;
 using WpfHexEditor.Core.Events;
@@ -214,6 +215,14 @@ public interface IIDEHostContext
     /// </summary>
     INotificationService? Notifications => null;
 
+    // -- Dialog Service -------------------------------------------------------
+
+    /// <summary>
+    /// Themed modal dialog service. Replaces <c>System.Windows.MessageBox</c> with
+    /// host-integrated, theme-aware dialogs.  Never null after IDE v0.9.
+    /// </summary>
+    IDialogService? Dialogs => null;
+
     // -- Syntax Coloring ------------------------------------------------------
 
     /// <summary>
@@ -247,4 +256,12 @@ public interface IIDEHostContext
     /// Null in sandboxed or non-IDE host contexts.
     /// </summary>
     ITabGroupService? TabGroups => null;
+
+    // -- Debug Visualizers ----------------------------------------------------
+
+    /// <summary>
+    /// Registry for contributing and discovering custom debug variable visualizers.
+    /// Null when the debugger is not loaded.
+    /// </summary>
+    IDebugVisualizerRegistry? DebugVisualizers => null;
 }

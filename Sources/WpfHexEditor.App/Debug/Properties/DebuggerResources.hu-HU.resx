@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Töréspontok</value></data>
+  <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Hívási verem</value></data>
+  <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Helyi változók</value></data>
+  <data name="Debugger_AutosPanelTitle" xml:space="preserve">
+    <value>Automatikus</value>
+  </data>
+  <data name="Debugger_ExceptionsPanelTitle" xml:space="preserve">
+    <value>Kivételbeállítások</value>
+  </data>
+  <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Figyelő</value></data>
+  <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Hibakeresési konzol</value></data>
+  <data name="Debugger_ThreadsPanelTitle" xml:space="preserve"><value>Szálak</value></data>
+  <data name="Debugger_ParallelStacksPanelTitle" xml:space="preserve"><value>Párhuzamos vermek</value></data>
+  <data name="DBG_ThreadsRefreshTooltip" xml:space="preserve"><value>Szállista frissítése</value></data>
+  <data name="DBG_ParallelStacksRefreshTooltip" xml:space="preserve"><value>Párhuzamos vermek frissítése</value></data>
+  <data name="DBG_ParallelStacksHint" xml:space="preserve"><value>Minden doboz egy szál hívási veremét jelöli</value></data>
+  <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>Nem található érvényes töréspont a fájlban.</value></data>
+  <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Indítási konfiguráció (.whdbg)</value></data>
+  <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Nincs betöltött fájl. Kattintson először a Megnyitás gombra.</value></data>
+  <data name="Debugger_ServiceNotAvailable" xml:space="preserve"><value>Az IDebuggerService nem érhető el.</value></data>
+  <data name="Debugger_NoConfigLoaded" xml:space="preserve"><value>Nincs betöltött konfiguráció.</value></data>
+  <data name="Debugger_NoConfigsArray" xml:space="preserve"><value>Nem található 'configurations' tömb a .whdbg fájlban.</value></data>
+  <data name="Debugger_NoMatchingConfig" xml:space="preserve"><value>Nem található megfelelő konfiguráció.</value></data>
+  <data name="Debugger_ImportBreakpoints" xml:space="preserve"><value>Töréspontok importálása VS XML-ből</value></data>
+  <data name="Debugger_ExportBreakpoints" xml:space="preserve"><value>Töréspontok exportálása VS XML-be</value></data>
+  <data name="Debugger_Menu_Continue" xml:space="preserve"><value>_Folytatás</value></data>
+  <data name="Debugger_Menu_StepOver" xml:space="preserve"><value>_Átlépés</value></data>
+  <data name="Debugger_Menu_StepInto" xml:space="preserve"><value>_Belépés</value></data>
+  <data name="DBG_EnableAll" xml:space="preserve">
+    <value>Enable All</value>
+  </data>
+  <data name="DBG_DisableAll" xml:space="preserve">
+    <value>Disable All</value>
+  </data>
+  <data name="DBG_DeleteAll" xml:space="preserve">
+    <value>Delete All</value>
+  </data>
+  <data name="DBG_EditCondition" xml:space="preserve">
+    <value>Edit Condition…</value>
+  </data>
+  <data name="DBG_ImportBreakpoints" xml:space="preserve">
+    <value>Import from VS XML…</value>
+  </data>
+  <data name="DBG_ExportBreakpoints" xml:space="preserve">
+    <value>Export All to VS XML…</value>
+  </data>
+  <data name="DBG_GroupNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="DBG_GroupFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="DBG_GroupType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_GroupEnabled" xml:space="preserve">
+    <value>Enabled/Disabled</value>
+  </data>
+  <data name="DBG_GroupProject" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="DBG_DetailRight" xml:space="preserve">
+    <value>Detail: Right</value>
+  </data>
+  <data name="DBG_DetailBottom" xml:space="preserve">
+    <value>Detail: Bottom</value>
+  </data>
+  <data name="DBG_DetailHidden" xml:space="preserve">
+    <value>Detail: Hidden</value>
+  </data>
+  <data name="DBG_SearchPlaceholder" xml:space="preserve">
+    <value>Search breakpoints...</value>
+  </data>
+  <data name="DBG_EnableAllTooltip" xml:space="preserve">
+    <value>Enable all breakpoints</value>
+  </data>
+  <data name="DBG_DisableAllTooltip" xml:space="preserve">
+    <value>Disable all breakpoints</value>
+  </data>
+  <data name="DBG_DeleteAllTooltip" xml:space="preserve">
+    <value>Delete all breakpoints</value>
+  </data>
+  <data name="DBG_EditConditionTooltip" xml:space="preserve">
+    <value>Edit condition of selected breakpoint</value>
+  </data>
+  <data name="DBG_ImportTooltip" xml:space="preserve">
+    <value>Import breakpoints from Visual Studio XML file</value>
+  </data>
+  <data name="DBG_ExportTooltip" xml:space="preserve">
+    <value>Export all breakpoints to Visual Studio XML file</value>
+  </data>
+  <data name="DBG_GroupLabel" xml:space="preserve">
+    <value>Group:</value>
+  </data>
+  <data name="DBG_LayoutTooltip" xml:space="preserve">
+    <value>Detail panel layout</value>
+  </data>
+  <data name="DBG_LocationColumn" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="DBG_ConditionColumn" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="DBG_HitsColumn" xml:space="preserve">
+    <value>Hits</value>
+  </data>
+  <data name="DBG_GoToSourceMenu" xml:space="preserve">
+    <value>Go to Source</value>
+  </data>
+  <data name="DBG_EditConditionMenu" xml:space="preserve">
+    <value>Edit Condition…</value>
+  </data>
+  <data name="DBG_ToggleEnabledMenu" xml:space="preserve">
+    <value>Toggle Enabled</value>
+  </data>
+  <data name="DBG_CopyLocationMenu" xml:space="preserve">
+    <value>Copy Location</value>
+  </data>
+  <data name="DBG_DeleteMenu" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DBG_EnableGroupMenu" xml:space="preserve">
+    <value>Enable Group</value>
+  </data>
+  <data name="DBG_DisableGroupMenu" xml:space="preserve">
+    <value>Disable Group</value>
+  </data>
+  <data name="DBG_DeleteGroupMenu" xml:space="preserve">
+    <value>Delete Group</value>
+  </data>
+  <data name="DBG_UnverifiedBadge" xml:space="preserve">
+    <value>Unverified</value>
+  </data>
+  <data name="DBG_UnverifiedTooltip" xml:space="preserve">
+    <value>This breakpoint could not be verified at the current location.</value>
+  </data>
+  <data name="DBG_EnabledField" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="DBG_TypeField" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_VerifiedField" xml:space="preserve">
+    <value>Verified</value>
+  </data>
+  <data name="DBG_ConditionField" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="DBG_GoToSourceText" xml:space="preserve">
+    <value>Go To Source</value>
+  </data>
+  <data name="DBG_EditText" xml:space="preserve">
+    <value>Edit…</value>
+  </data>
+  <data name="DBG_DeleteText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DBG_HitsLabel" xml:space="preserve">
+    <value>Hits: </value>
+  </data>
+  <data name="DBG_MoreOptionsTooltip" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="DBG_AddWatch" xml:space="preserve"><value>Figyelő hozzáadása</value></data>
+  <data name="DBG_ColValue" xml:space="preserve"><value>Érték</value></data>
+  <data name="DBG_ColType" xml:space="preserve"><value>Típus</value></data>
+  <data name="DBG_ColName" xml:space="preserve"><value>Név</value></data>
+  <data name="DBG_ColFile" xml:space="preserve"><value>Fájl</value></data>
+  <data name="Debugger_ImmediatePanelTitle" xml:space="preserve">
+    <value>Azonnali ablak</value>
+  </data>
+  <data name="Debugger_ModulesPanelTitle" xml:space="preserve">
+    <value>Modulok</value>
+  </data>
+  <data name="Debugger_TasksPanelTitle" xml:space="preserve">
+    <value>Feladatok</value>
+  </data>
+  <data name="Debugger_DisassemblyPanelTitle" xml:space="preserve"><value>Szétszerelés</value></data>
+  <data name="Debugger_MemoryPanelTitle" xml:space="preserve"><value>Memória</value></data>
+  <data name="Debugger_RegistersPanelTitle" xml:space="preserve"><value>Regiszterek</value></data>
+  <data name="Debugger_ParallelWatchPanelTitle" xml:space="preserve"><value>Párhuzamos figyelés</value></data>
+  <data name="DBG_Refresh" xml:space="preserve"><value>Frissítés</value></data>
+  <data name="DBG_Add" xml:space="preserve"><value>Hozzáadás</value></data>
+  <data name="DBG_Remove" xml:space="preserve"><value>Eltávolítás</value></data>
+  <data name="DBG_Clear" xml:space="preserve"><value>Törlés</value></data>
+  <data name="DBG_ClearAll" xml:space="preserve"><value>Mind törlése</value></data>
+  <data name="DBG_Copy" xml:space="preserve"><value>Másolás</value></data>
+  <data name="DBG_EditValue" xml:space="preserve"><value>Érték szerkesztése</value></data>
+  <data name="DBG_FilterPlaceholder" xml:space="preserve"><value>Szűrő…</value></data>
+  <data name="DBG_AddToWatch" xml:space="preserve"><value>Hozzáadás figyeléshez</value></data>
+  <data name="DBG_CopyValue" xml:space="preserve"><value>Érték másolása</value></data>
+  <data name="DBG_CopyName" xml:space="preserve"><value>Név másolása</value></data>
+  <data name="DBG_CopyExpression" xml:space="preserve"><value>Kifejezés másolása</value></data>
+  <data name="DBG_CopyFrame" xml:space="preserve"><value>Keret másolása</value></data>
+  <data name="DBG_CopyCallStack" xml:space="preserve"><value>Hívási verem másolása</value></data>
+  <data name="DBG_GoToSource" xml:space="preserve"><value>Ugrás a forráshoz</value></data>
+  <data name="DBG_ToggleHexDecimal" xml:space="preserve"><value>Hex/decimális váltása</value></data>
+  <data name="DBG_ShowAsHex" xml:space="preserve"><value>Hex értékek</value></data>
+  <data name="DBG_RunToCursor" xml:space="preserve"><value>Futtatás a kurzorig</value></data>
+  <data name="DBG_SetNextStatement" xml:space="preserve"><value>Következő utasítás beállítása</value></data>
+  <data name="DBG_SwitchToThread" xml:space="preserve"><value>Váltás a szálra</value></data>
+  <data name="DBG_Freeze" xml:space="preserve"><value>Befagyasztás</value></data>
+  <data name="DBG_Thaw" xml:space="preserve"><value>Felolvasztás</value></data>
+  <data name="DBG_CopyThreadInfo" xml:space="preserve"><value>Szál info másolása</value></data>
+  <data name="DBG_CopyTaskInfo" xml:space="preserve"><value>Feladat info másolása</value></data>
+  <data name="DBG_CopyAddress" xml:space="preserve"><value>Cím másolása</value></data>
+  <data name="DBG_CopyHex" xml:space="preserve"><value>Hex másolása</value></data>
+  <data name="DBG_CopyAscii" xml:space="preserve"><value>ASCII másolása</value></data>
+  <data name="DBG_CopyRow" xml:space="preserve"><value>Sor másolása</value></data>
+  <data name="DBG_CopyLine" xml:space="preserve"><value>Sor másolása</value></data>
+  <data name="DBG_RefreshTooltip" xml:space="preserve"><value>Frissítés (F5)</value></data>
+  <data name="DBG_FilterTooltip" xml:space="preserve"><value>Változók szűrése név szerint</value></data>
+</root>

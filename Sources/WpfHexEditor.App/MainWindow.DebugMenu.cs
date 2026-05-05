@@ -245,6 +245,76 @@ public partial class MainWindow
             ToolTip:           null,
             IsBuiltIn:         true,
             HeaderResourceKey: "APP_DBG_ShowWatch"));
+
+        // ── Additional panels (formerly registered by the Debugger plugin via IUIRegistry) ──
+        RegisterShowPanelEntry("Debug.ShowAutos",          "Show _Autos",                  "Autos",           "panel-dbg-autos");
+        RegisterShowPanelEntry("Debug.ShowExceptions",     "Show _Exception Settings",     "Exceptions",      "panel-dbg-exceptions");
+        RegisterShowPanelEntry("Debug.ShowThreads",        "Show _Threads",                "Threads",         "panel-dbg-threads");
+        RegisterShowPanelEntry("Debug.ShowParallelStacks", "Show _Parallel Stacks",        "Parallel Stacks", "panel-dbg-parallel-stacks");
+        RegisterShowPanelEntry("Debug.ShowImmediate",      "Show I_mmediate Window",       "Immediate",       "panel-dbg-immediate");
+        RegisterShowPanelEntry("Debug.ShowModules",        "Show _Modules",                "Modules",         "panel-dbg-modules");
+        RegisterShowPanelEntry("Debug.ShowTasks",          "Show _Tasks",                  "Tasks",           "panel-dbg-tasks");
+        RegisterShowPanelEntry("Debug.ShowDisassembly",    "Show Disasse_mbly",            "Disassembly",     "panel-dbg-disassembly");
+        RegisterShowPanelEntry("Debug.ShowMemory",         "Show _Memory",                 "Memory",          "panel-dbg-memory");
+        RegisterShowPanelEntry("Debug.ShowRegisters",      "Show _Registers",              "Registers",       "panel-dbg-registers");
+        RegisterShowPanelEntry("Debug.ShowParallelWatch",  "Show Parallel _Watch",         "Parallel Watch",  "panel-dbg-parallel-watch");
+        RegisterShowPanelEntry("Debug.ShowConsole",        "Show Debug Co_nsole",          "Debug Console",   "panel-dbg-console");
+        RegisterShowPanelEntry("Debug.ShowLaunchConfig",   "Show _Launch Configuration",   "Launch Config",   "panel-dbg-launch-config");
+
+        // Stepping additions: Run to Cursor + Set Next Statement (publish IDE events; consumed by editors).
+        _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
+            Id:                "Debug.RunToCursor",
+            Header:            "_Run to Cursor",
+            GestureText:       "Ctrl+F10",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => _ideEventBus?.Publish(new WpfHexEditor.Core.Events.IDEEvents.RunToCursorRequestedEvent())),
+            CommandParameter:  null,
+            Group:             "Stepping",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: null));
+
+        _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
+            Id:                "Debug.SetNextStatement",
+            Header:            "Set _Next Statement",
+            GestureText:       "Ctrl+Shift+F10",
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => _ideEventBus?.Publish(new WpfHexEditor.Core.Events.IDEEvents.SetNextStatementRequestedEvent())),
+            CommandParameter:  null,
+            Group:             "Stepping",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: null));
+
+        _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
+            Id:                "Debug.AddTracepoint",
+            Header:            "Add _Tracepoint…",
+            GestureText:       null,
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => _ideEventBus?.Publish(new WpfHexEditor.Core.Events.IDEEvents.AddTracepointRequestedEvent())),
+            CommandParameter:  null,
+            Group:             "Breakpoints",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: null));
+    }
+
+    /// <summary>Helper that registers a "Show X panel" Debug menu entry that uses
+    /// <see cref="ShowOrCreatePanel"/> to dock the panel on first show.</summary>
+    private void RegisterShowPanelEntry(string id, string header, string title, string contentId)
+    {
+        if (_debugMenuOrganizer is null) return;
+        _debugMenuOrganizer.RegisterBuiltInEntry(new DebugMenuEntry(
+            Id:                id,
+            Header:            header,
+            GestureText:       null,
+            IconGlyph:         "",
+            Command:           new RelayCommand(_ => ShowOrCreatePanel(title, contentId, DockDirection.Bottom)),
+            CommandParameter:  null,
+            Group:             "Panels",
+            ToolTip:           null,
+            IsBuiltIn:         true,
+            HeaderResourceKey: null));
     }
 
     private void OnDebugMenuItemsChanged()

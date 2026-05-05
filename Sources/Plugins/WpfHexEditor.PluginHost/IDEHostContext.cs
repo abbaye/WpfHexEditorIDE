@@ -16,6 +16,7 @@
 // ==========================================================
 
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Dialogs;
 using WpfHexEditor.Editor.Core.Notifications;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Interfaces;
@@ -109,6 +110,9 @@ public sealed class IDEHostContext : IIDEHostContext
     public INotificationService? Notifications { get; init; }
 
     /// <inheritdoc />
+    public IDialogService? Dialogs { get; init; }
+
+    /// <inheritdoc />
     public ISyntaxColoringService? SyntaxColoring { get; init; }
 
     /// <inheritdoc />
@@ -116,6 +120,9 @@ public sealed class IDEHostContext : IIDEHostContext
 
     /// <inheritdoc />
     public ITabGroupService? TabGroups { get; init; }
+
+    /// <inheritdoc />
+    public WpfHexEditor.SDK.Contracts.Services.IDebugVisualizerRegistry? DebugVisualizers { get; init; }
 
     /// <inheritdoc />
     /// Resolved lazily from <see cref="ExtensionRegistry"/> — set by UnitTesting plugin on init.

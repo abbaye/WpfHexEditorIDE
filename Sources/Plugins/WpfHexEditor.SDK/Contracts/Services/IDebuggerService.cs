@@ -43,7 +43,37 @@ public sealed record DebugFrameInfo(
     string  Name,
     string? FilePath,
     int     Line,
-    int     Column
+    int     Column,
+    string? InstructionPointerReference = null
+);
+
+/// <summary>
+/// Thread snapshot visible to plugins.
+/// </summary>
+public sealed record DebugThreadInfo(
+    int    Id,
+    string Name
+);
+
+/// <summary>
+/// Exception filter configuration for the Exception Settings panel.
+/// </summary>
+public sealed record ExceptionFilterInfo(
+    string  Filter,
+    string  Label,
+    bool    IsEnabled,
+    string? Condition = null
+);
+
+/// <summary>
+/// A data breakpoint (memory watchpoint) visible to plugins.
+/// </summary>
+public sealed record DataBreakpointInfo(
+    string  DataId,
+    string  Description,
+    string? AccessType   = null,
+    string? Condition    = null,
+    string? HitCondition = null
 );
 
 /// <summary>
@@ -54,6 +84,30 @@ public sealed record DebugVariableInfo(
     string  Value,
     string? Type,
     int     VariablesReference
+);
+
+/// <summary>
+/// A single disassembled machine instruction visible to plugins.
+/// </summary>
+public sealed record DisassembledInstruction(
+    string  Address,
+    string  Instruction,
+    string? Symbol           = null,
+    string? InstructionBytes = null,
+    string? SourceFile       = null,
+    int     SourceLine       = 0
+);
+
+/// <summary>
+/// Loaded module (DLL/EXE) snapshot visible to plugins.
+/// </summary>
+public sealed record DebugModuleInfo(
+    string  Name,
+    string? Path,
+    string? Version,
+    string? SymbolStatus,
+    bool    IsOptimized,
+    bool    IsUserCode
 );
 
 /// <summary>
@@ -90,6 +144,18 @@ public interface IDebuggerService
 
     /// <summary>Launch a new debug session using the given configuration.</summary>
     Task LaunchAsync(WpfHexEditor.Core.Debugger.Models.DebugLaunchConfig config);
+
+    /// <summary>Attach to a running local process by PID.</summary>
+    Task AttachAsync(int pid, CancellationToken ct = default) => Task.CompletedTask;
+
+    /// <summary>
+    /// Attach to a remote debug adapter over TCP or SSH tunnel.
+    /// Creates a <c>TcpDapClient</c> or <c>SshTunnelDapClient</c> per
+    /// <see cref="WpfHexEditor.Core.Debugger.Models.RemoteDebugConfig.Transport"/>
+    /// and runs the DAP initialize/attach handshake.
+    /// </summary>
+    Task LaunchRemoteAsync(WpfHexEditor.Core.Debugger.Models.RemoteDebugConfig config, CancellationToken ct = default)
+        => Task.CompletedTask;
 
     /// <summary>Stop the active debug session. No-op when idle.</summary>
     Task StopSessionAsync();
@@ -152,16 +218,129 @@ public interface IDebuggerService
 
     // ── Inspection ─────────────────────────────────────────────────────────
 
+    /// <summary>Get all active threads (only valid when paused).</summary>
+    Task<IReadOnlyList<DebugThreadInfo>> GetThreadsAsync();
+
+    /// <summary>Get the call stack frames for a specific thread (0 = active thread).</summary>
+    Task<IReadOnlyList<DebugFrameInfo>> GetCallStackForThreadAsync(int threadId);
+
     /// <summary>Get the current call stack frames (only valid when paused).</summary>
     Task<IReadOnlyList<DebugFrameInfo>> GetCallStackAsync();
 
     /// <summary>Get variables in a scope by variablesReference (0 = locals).</summary>
     Task<IReadOnlyList<DebugVariableInfo>> GetVariablesAsync(int variablesReference);
 
+    /// <summary>
+    /// Get the register variables for the current frame.
+    /// Returns an empty list if the adapter does not expose a Registers scope.
+    /// </summary>
+    Task<IReadOnlyList<DebugVariableInfo>> GetRegistersAsync();
+
     /// <summary>Evaluate an expression in the current frame context.</summary>
     Task<string> EvaluateAsync(string expression, int? frameId = null);
 
+    /// <summary>
+    /// Set a variable's value in the given scope (variablesReference).
+    /// Returns the new value string, or null if the adapter does not support setVariable.
+    /// </summary>
+    Task<string?> SetVariableAsync(int variablesReference, string name, string newValue);
+
+    /// <summary>
+    /// Run to the given file/line (set a temporary breakpoint + continue, or use gotoTargets/goto if supported).
+    /// No-op when no session is active.
+    /// </summary>
+    Task RunToCursorAsync(string filePath, int line1);
+
+    /// <summary>
+    /// Move the instruction pointer to the given file/line without executing intervening code.
+    /// Uses DAP gotoTargets + goto request. No-op when adapter doesn't support goto.
+    /// </summary>
+    Task SetNextStatementAsync(string filePath, int line1);
+
+    /// <summary>
+    /// Get the exception filter list supported by the active adapter (or a built-in default set).
+    /// Returns empty list when no session active or adapter does not support exception filters.
+    /// </summary>
+    IReadOnlyList<ExceptionFilterInfo> ExceptionFilters { get; }
+
+    /// <summary>
+    /// Apply the given exception filter settings to the active debug session.
+    /// Persisted in the session; re-applied on next LaunchAsync/AttachAsync.
+    /// </summary>
+    Task SetExceptionFiltersAsync(IReadOnlyList<ExceptionFilterInfo> filters);
+
+    /// <summary>Get all loaded modules/assemblies in the current debug session.</summary>
+    Task<IReadOnlyList<DebugModuleInfo>> GetModulesAsync();
+
+    /// <summary>
+    /// Freeze a thread so it does not execute during continue/step operations.
+    /// Best-effort: no-op if the debug adapter does not support per-thread freeze.
+    /// </summary>
+    Task FreezeThreadAsync(int threadId) => Task.CompletedTask;
+
+    /// <summary>Thaw a previously frozen thread. No-op if not supported.</summary>
+    Task ThawThreadAsync(int threadId) => Task.CompletedTask;
+
+    /// <summary>Returns true if the given thread is currently frozen (local tracking only).</summary>
+    bool IsThreadFrozen(int threadId) => false;
+
+    // ── Disassembly / Memory ───────────────────────────────────────────────────
+
+    /// <summary>Disassemble at the given memory reference (hex address or DAP symbol).</summary>
+    Task<IReadOnlyList<DisassembledInstruction>> DisassembleAsync(string memRef, int count);
+
+    /// <summary>Read raw memory. Returns null if the adapter does not support readMemory.</summary>
+    Task<byte[]?> ReadMemoryAsync(string memRef, int byteCount, int offset = 0);
+
+    /// <summary>Write raw memory. No-op if not supported.</summary>
+    Task WriteMemoryAsync(string memRef, byte[] data, int offset = 0);
+
     // ── Adapter registry ───────────────────────────────────────────────────
+
+    // ── Symbol server ──────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Resolve PDB symbols for all loaded modules using the configured symbol servers.
+    /// No-op when symbol support is disabled in settings.
+    /// </summary>
+    Task ResolveSymbolsAsync(CancellationToken ct = default) => Task.CompletedTask;
+
+    // ── Edit & Continue / Hot Reload ───────────────────────────────────────────
+
+    /// <summary>
+    /// Restart the given stack frame from its beginning (Edit &amp; Continue).
+    /// Best-effort: no-op if the adapter does not support restartFrame.
+    /// </summary>
+    Task RestartFrameAsync(int frameId, CancellationToken ct = default) => Task.CompletedTask;
+
+    /// <summary>
+    /// Apply hot-reload delta metadata to the running process.
+    /// Uses <c>System.Reflection.Metadata.MetadataUpdater.ApplyUpdate</c>.
+    /// No-op if the runtime does not support hot reload.
+    /// </summary>
+    Task ApplyHotReloadAsync(Type[] updatedTypes, byte[] metadataDelta, byte[] ilDelta, byte[] pdbDelta, CancellationToken ct = default)
+        => Task.CompletedTask;
+
+    // ── Data breakpoints ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Get data breakpoint metadata for a variable by name/reference.
+    /// Returns null if not supported.
+    /// </summary>
+    Task<DataBreakpointInfo?> GetDataBreakpointInfoAsync(string name, int? variablesReference = null, CancellationToken ct = default)
+        => Task.FromResult<DataBreakpointInfo?>(null);
+
+    /// <summary>
+    /// Set the active data breakpoints (memory watchpoints).
+    /// Replaces the previous list. Pass empty list to clear all.
+    /// </summary>
+    Task SetDataBreakpointsAsync(IReadOnlyList<DataBreakpointInfo> breakpoints, CancellationToken ct = default)
+        => Task.CompletedTask;
+
+    /// <summary>Current data breakpoints (memory watchpoints).</summary>
+    IReadOnlyList<DataBreakpointInfo> DataBreakpoints => [];
+
+    // ── Adapter registry ───────────────────────────────────────────────────────
 
     /// <summary>
     /// Register a custom debug adapter factory for a language ID.

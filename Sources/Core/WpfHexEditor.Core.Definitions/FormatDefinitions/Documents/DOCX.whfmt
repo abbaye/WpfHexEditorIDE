@@ -335,9 +335,11 @@
           { "xmlElement": "w:hyperlink", "blockKind": "hyperlink", "textSource": "w:r/w:t" }
         ],
         "attributeMappings": [
-          { "xmlPath": "w:pPr/w:pStyle/@w:val", "attribute": "style" },
-          { "xmlPath": "w:pPr/w:jc/@w:val",     "attribute": "align" },
-          { "xmlPath": "w:pPr/w:ind/@w:left",    "attribute": "indent" }
+          { "xmlPath": "w:pPr/w:pStyle/@w:val",      "attribute": "style" },
+          { "xmlPath": "w:pPr/w:jc/@w:val",          "attribute": "align" },
+          { "xmlPath": "w:pPr/w:ind/@w:left",        "attribute": "indent",          "transform": "twipsToPoints" },
+          { "xmlPath": "w:pPr/w:ind/@w:right",       "attribute": "indentRight",     "transform": "twipsToPoints" },
+          { "xmlPath": "w:pPr/w:ind/@w:firstLine",   "attribute": "indentFirstLine", "transform": "twipsToPoints" }
         ]
       },
       {
@@ -376,8 +378,10 @@
       "underline":     { "parent": "w:rPr", "xmlElement": "w:u", "attrs": { "w:val": "single" } },
       "strikethrough": { "parent": "w:rPr", "xmlElement": "w:strike" },
       "fontSize":      { "parent": "w:rPr", "xmlElement": "w:sz", "attr": "w:val", "transform": "pointsToHalfPoints" },
-      "align":         { "parent": "w:pPr", "xmlElement": "w:jc",  "attr": "w:val" },
-      "indent":        { "parent": "w:pPr", "xmlElement": "w:ind", "attr": "w:left" }
+      "align":           { "parent": "w:pPr", "xmlElement": "w:jc",  "attr": "w:val" },
+      "indent":          { "parent": "w:pPr", "xmlElement": "w:ind", "attr": "w:left",      "transform": "pointsToTwips" },
+      "indentRight":     { "parent": "w:pPr", "xmlElement": "w:ind", "attr": "w:right",     "transform": "pointsToTwips" },
+      "indentFirstLine": { "parent": "w:pPr", "xmlElement": "w:ind", "attr": "w:firstLine", "transform": "pointsToTwips" }
     }
   }
 }

@@ -47,14 +47,47 @@ public partial class DocumentTextPane : UserControl
             if (PART_Renderer is System.Windows.Controls.Primitives.IScrollInfo si)
                 si.ScrollOwner = PART_ScrollViewer;
         };
+
+        // Wire rulers
+        Loaded += (_, _) =>
+        {
+            PART_HRuler.Attach(PART_Renderer, _mutator);
+            PART_VRuler.Attach(PART_Renderer);
+        };
+    }
+
+    private WpfHexEditor.Editor.DocumentEditor.Core.Editing.DocumentMutator? _mutator;
+
+    /// <summary>Allows the host to inject the mutator that the rulers use to commit indent edits.</summary>
+    public void SetMutator(WpfHexEditor.Editor.DocumentEditor.Core.Editing.DocumentMutator mutator)
+    {
+        _mutator = mutator;
+        PART_HRuler.Attach(PART_Renderer, _mutator);
+    }
+
+    /// <summary>Hides both rulers (for Draft / Outline modes which have no page concept).</summary>
+    public void SetRulersVisible(bool visible)
+    {
+        PART_RulerRow.Height  = visible ? new System.Windows.GridLength(22) : new System.Windows.GridLength(0);
+        PART_VRulerCol.Width  = visible ? new System.Windows.GridLength(18) : new System.Windows.GridLength(0);
     }
 
     // ── Public Properties ────────────────────────────────────────────────────
 
-    public DocumentBlock?          SelectedBlock  => PART_Renderer.SelectedBlock;
+    public DocumentBlock?          SelectedBlock    => PART_Renderer.SelectedBlock;
+    public int                     BlockCount       => PART_Renderer.BlockCount;
+    public int                     CaretBlockIndex  => PART_Renderer.CaretBlockIndex;
 
     /// <summary>Direct access to the renderer for PageSettings wiring.</summary>
-    public DocumentCanvasRenderer  Renderer       => PART_Renderer;
+    public DocumentCanvasRenderer  Renderer         => PART_Renderer;
+
+    /// <summary>
+    /// Post-zoom scroll values from the ScrollViewer (screen pixels, zoom-adjusted).
+    /// Use these for the minimap viewport rect so its size is correct at any zoom level.
+    /// </summary>
+    public double ScrollViewerVerticalOffset  => PART_ScrollViewer.VerticalOffset;
+    public double ScrollViewerExtentHeight    => PART_ScrollViewer.ExtentHeight;
+    public double ScrollViewerViewportHeight  => PART_ScrollViewer.ViewportHeight;
 
     public DocumentPageSettings PageSettings
     {
@@ -70,9 +103,11 @@ public partial class DocumentTextPane : UserControl
         PART_Renderer.BindModel(model);
     }
 
-    public void ScrollToOffset(long offset) => PART_Renderer.ScrollToOffset(offset);
-
-    public void ScrollToBlock(DocumentBlock block) => PART_Renderer.ScrollToBlock(block);
+    public void ScrollToOffset(long offset)          => PART_Renderer.ScrollToOffset(offset);
+    public void ScrollToBlock(DocumentBlock block)   => PART_Renderer.ScrollToBlock(block);
+    public void IncreaseIndent()                     => PART_Renderer.IncreaseIndent();
+    public void DecreaseIndent()                     => PART_Renderer.DecreaseIndent();
+    public void NavigateToBlockIndex(int blockIndex) => PART_Renderer.NavigateToBlockIndex(blockIndex);
 
     public void SetForensicMode(bool enabled)
     {
@@ -90,19 +125,40 @@ public partial class DocumentTextPane : UserControl
     }
 
     /// <summary>
-    /// Applies a text formatting command. Since the canvas renderer is
-    /// block-oriented (not cursor-based), this marks the selected block
-    /// as modified in the undo engine (full editing pending Phase 11).
+    /// Applies a toggle formatting attribute to the current selection.
+    /// Delegates to <see cref="DocumentCanvasRenderer.ApplyFormatToSelection"/>;
+    /// undo is handled by <c>DocumentMutator.ApplyRunAttribute</c> via <c>RunAttributeUndoEntry</c>.
     /// </summary>
     public void ApplyFormat(string format)
     {
         if (_model is null) return;
-        // Phase 11: style-change undo requires a StyleChangeUndoEntry (not yet defined).
-        // TextEditUndoEntry covers text mutations only. Blocked until renderer exposes SelectedBlock + style API.
+        PART_Renderer.ApplyFormatToSelection(format, true);
     }
 
     public void ShowLoading(string message = "Loading…") => PART_Renderer.ShowLoading(message);
     public void ShowError(string message)                 => PART_Renderer.ShowError(message);
+
+    public void ShowQuickSearch(WpfHexEditor.Editor.Core.ISearchTarget target)
+    {
+        if (PART_QuickSearchBar.Visibility == Visibility.Visible)
+        {
+            PART_QuickSearchBar.FocusSearchInput();
+            return;
+        }
+        PART_QuickSearchBar.BindToTarget(target);
+        PART_QuickSearchBar.OnCloseRequested -= OnSearchBarClose;
+        PART_QuickSearchBar.OnCloseRequested += OnSearchBarClose;
+        PART_QuickSearchBar.Visibility = Visibility.Visible;
+        PART_QuickSearchBar.EnsureDefaultPosition(PART_SearchCanvas);
+        PART_QuickSearchBar.FocusSearchInput();
+    }
+
+    public void HideQuickSearch()
+    {
+        PART_QuickSearchBar.Visibility = Visibility.Collapsed;
+    }
+
+    private void OnSearchBarClose(object? sender, EventArgs e) => HideQuickSearch();
 
     // ── Renderer event forwarding ────────────────────────────────────────────
 

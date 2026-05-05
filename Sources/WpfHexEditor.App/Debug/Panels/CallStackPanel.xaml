@@ -1,0 +1,128 @@
+<UserControl x:Class="WpfHexEditor.App.Debug.Panels.CallStackPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:WpfHexEditor.App.Debug.Converters"
+             xmlns:dbgSvc="clr-namespace:WpfHexEditor.App.Debug.Services">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <dbgSvc:DebuggerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+            <conv:FileNameConverter x:Key="FileNameConverter" />
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel Background="{DynamicResource DockBackgroundBrush}">
+
+        <!-- Toolbar — VS-style: search | nav ← → | separator | show-all-threads | show-external-code -->
+        <Border DockPanel.Dock="Top" Style="{DynamicResource PanelToolbarStyle}">
+            <StackPanel Orientation="Horizontal" Margin="4,0" VerticalAlignment="Center">
+
+                <!-- Search box (Ctrl+E) -->
+                <TextBox Width="160"
+                         Style="{DynamicResource PanelSearchBoxStyle}"
+                         Tag="{DynamicResource DBG_CS_SearchPlaceholder}"
+                         ToolTip="{DynamicResource DBG_CS_SearchPlaceholder}"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- Nav ← → -->
+                <Button Command="{Binding NavBackCommand}"
+                        ToolTip="{DynamicResource DBG_CS_NavBack}"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Content="&#xE76B;" Margin="4,0,0,0"/>
+                <Button Command="{Binding NavForwardCommand}"
+                        ToolTip="{DynamicResource DBG_CS_NavForward}"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Content="&#xE76C;"/>
+
+                <Rectangle Width="1" Height="16" Margin="6,0"
+                           Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
+
+                <!-- Show All Threads toggle -->
+                <ToggleButton IsChecked="{Binding ShowAllThreads}"
+                              ToolTip="{DynamicResource DBG_CS_ShowAllThreads}"
+                              Style="{DynamicResource PanelIconToggleStyle}">
+                    <TextBlock Text="&#xE9D9;" FontFamily="Segoe Fluent Icons,Segoe MDL2 Assets"
+                               FontSize="14" VerticalAlignment="Center"/>
+                </ToggleButton>
+
+                <!-- Show External Code toggle -->
+                <ToggleButton IsChecked="{Binding ShowExternalCode}"
+                              ToolTip="{DynamicResource DBG_CS_ShowExternalCode}"
+                              Style="{DynamicResource PanelIconToggleStyle}" Margin="2,0,0,0">
+                    <TextBlock Text="&#xE7B8;" FontFamily="Segoe Fluent Icons,Segoe MDL2 Assets"
+                               FontSize="14" VerticalAlignment="Center"/>
+                </ToggleButton>
+
+            </StackPanel>
+        </Border>
+
+        <!-- Frame list -->
+        <ListView ItemsSource="{Binding Frames}"
+                  SelectedItem="{Binding SelectedFrame, Mode=TwoWay}"
+                  Background="{DynamicResource DockBackgroundBrush}"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  BorderThickness="0"
+                  VirtualizingPanel.IsVirtualizing="True">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{DynamicResource DBG_GoToSource}"    InputGestureText="Enter"
+                              Command="{Binding PlacementTarget.DataContext.GoToSourceCommand,  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,          RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="{DynamicResource DBG_CS_SwitchToFrame}"
+                              Command="{Binding PlacementTarget.DataContext.SwitchToFrameCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,            RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <Separator/>
+                    <MenuItem Header="{DynamicResource DBG_CopyFrame}"     InputGestureText="Ctrl+C"
+                              Command="{Binding PlacementTarget.DataContext.CopyFrameCommand,   RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem,          RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="{DynamicResource DBG_CopyCallStack}"
+                              Command="{Binding PlacementTarget.DataContext.CopyAllCommand,     RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="#" Width="30">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Id}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="{DynamicResource DBG_ColName}" Width="240"
+                                    DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="{DynamicResource DBG_ColFile}" Width="180">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="{Binding FilePath, Converter={StaticResource FileNameConverter}}" />
+                                    <Run Text=":" />
+                                    <Run Text="{Binding Line}" />
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Padding"         Value="0,1,0,1"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Id}" Value="0">
+                            <Setter Property="Foreground" Value="{DynamicResource DB_CallStackActiveBrush}" />
+                            <Setter Property="FontWeight" Value="SemiBold" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsAsyncBoundary}" Value="True">
+                            <Setter Property="BorderThickness" Value="0,2,0,0"/>
+                            <Setter Property="BorderBrush"     Value="{DynamicResource DB_AsyncBoundaryBrush}"/>
+                            <Setter Property="Padding"         Value="0,4,0,1"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+    </DockPanel>
+</UserControl>

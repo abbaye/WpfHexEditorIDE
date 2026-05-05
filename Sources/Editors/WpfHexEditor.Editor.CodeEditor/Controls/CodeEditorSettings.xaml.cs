@@ -10,6 +10,7 @@ using System.Linq;
 using System.Windows.Controls;
 using WpfHexEditor.Core.Settings;
 using WpfHexEditor.Editor.CodeEditor.Properties;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -96,12 +97,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             if (_codeEditorControl == null)
             {
-                System.Windows.MessageBox.Show(CodeEditorResources.CodeEditorSettings_NoEditorMessage, CodeEditorResources.CodeEditorSettings_NoEditorTitle,
+                IdeMessageBox.Show(CodeEditorResources.CodeEditorSettings_NoEditorMessage, CodeEditorResources.CodeEditorSettings_NoEditorTitle,
                     System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
                 return;
             }
 
-            var result = System.Windows.MessageBox.Show(
+            var result = IdeMessageBox.Show(
                 CodeEditorResources.CodeEditorSettings_ResetConfirmMessage,
                 CodeEditorResources.CodeEditorSettings_ResetConfirmTitle,
                 System.Windows.MessageBoxButton.YesNo,
@@ -134,13 +135,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (saveDialog.ShowDialog() == true)
                 {
                     System.IO.File.WriteAllText(saveDialog.FileName, json);
-                    System.Windows.MessageBox.Show(string.Format(CodeEditorResources.CodeEditorSettings_ExportSuccessMessage, saveDialog.FileName),
+                    IdeMessageBox.Show(string.Format(CodeEditorResources.CodeEditorSettings_ExportSuccessMessage, saveDialog.FileName),
                         CodeEditorResources.CodeEditorSettings_ExportSuccessTitle, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 }
             }
             catch (System.Exception ex)
             {
-                System.Windows.MessageBox.Show(string.Format(CodeEditorResources.CodeEditorSettings_ExportFailedMessage, ex.Message),
+                IdeMessageBox.Show(string.Format(CodeEditorResources.CodeEditorSettings_ExportFailedMessage, ex.Message),
                     CodeEditorResources.CodeEditorSettings_ExportFailedTitle, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
@@ -162,13 +163,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 {
                     var json = System.IO.File.ReadAllText(openDialog.FileName);
                     LoadSettingsJson(json);
-                    System.Windows.MessageBox.Show(string.Format(CodeEditorResources.CodeEditorSettings_ImportSuccessMessage, openDialog.FileName),
+                    IdeMessageBox.Show(string.Format(CodeEditorResources.CodeEditorSettings_ImportSuccessMessage, openDialog.FileName),
                         CodeEditorResources.CodeEditorSettings_ImportSuccessTitle, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 }
             }
             catch (System.Exception ex)
             {
-                System.Windows.MessageBox.Show(string.Format(CodeEditorResources.CodeEditorSettings_ImportFailedMessage, ex.Message),
+                IdeMessageBox.Show(string.Format(CodeEditorResources.CodeEditorSettings_ImportFailedMessage, ex.Message),
                     CodeEditorResources.CodeEditorSettings_ImportFailedTitle, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
@@ -196,7 +197,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
             }
 
-            System.Windows.MessageBox.Show(CodeEditorResources.CodeEditorSettings_ResetCompleteMessage,
+            IdeMessageBox.Show(CodeEditorResources.CodeEditorSettings_ResetCompleteMessage,
                 CodeEditorResources.CodeEditorSettings_ResetCompleteTitle, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
         }
 

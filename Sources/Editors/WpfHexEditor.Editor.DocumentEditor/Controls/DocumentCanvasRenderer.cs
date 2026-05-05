@@ -27,6 +27,7 @@ using WpfHexEditor.Editor.DocumentEditor.Core.Forensic;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 using WpfHexEditor.Editor.DocumentEditor.Rendering;
+using WpfHexEditor.Editor.DocumentEditor.Services;
 using WpfHexEditor.Editor.DocumentEditor.ViewModels;
 using RenderMode = WpfHexEditor.Editor.DocumentEditor.Core.Options.DocumentRenderMode;
 
@@ -51,8 +52,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private const double PageHeightPx   = 1122.0; // 297mm × (96 / 25.4)
     private const double PageGapPx      = 24.0;   // Dark canvas gap between page cards
 
-    private const string BodyFontFamily = "Georgia";
-    private const string UIFontFamily   = "Segoe UI";
+    private const string BodyFontFamily  = "Georgia";
+    private const string UIFontFamily    = "Segoe UI";
+    private const string IndentLevelKey  = "indentLevel";
 
     // ── Events ────────────────────────────────────────────────────────────────
 
@@ -61,6 +63,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     /// <summary>Raised when a block is selected — host should show pop-toolbar.</summary>
     public event EventHandler<PopToolbarRequestedArgs>? PopToolbarRequested;
+
+    /// <summary>Raised when caret or selection moves so the host can refresh format toggle states.</summary>
+    public event EventHandler? SelectionFormatChanged;
+
+    /// <summary>Raised when the vertical scroll offset changes; args carry (currentPage, totalPages).</summary>
+    public event EventHandler<(int Current, int Total)>? PageChanged;
 
     // ── Fields ────────────────────────────────────────────────────────────────
 
@@ -78,6 +86,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private int    _hoverIndex    = -1;
     private int    _selectedIndex = -1;
     private bool   _forensicMode  = false;
+
+    // Dirty-block tracking for scroll markers (block indices modified since last save)
+    private readonly HashSet<int> _dirtyBlockIndices = [];
 
     // Layout cache
     private double       _totalHeight = 0;
@@ -102,13 +113,20 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private Brush? _pageNumFg, _tableBorderBrush, _imageFg;
     private Brush? _textSelBrush, _caretBrush, _findHighlightBrush;
     private Pen?   _pageCardPen, _pageBreakPen, _blockHoverPen, _tableGridPen;
+    // Cached per-style brushes/pens (avoid per-render allocations)
+    private Brush? _codeBgBrush, _errorBgBrush, _shadowBrush;
+    private Pen?   _h1RulePen, _h2RulePen, _pageBorderPen;
+    // Pre-built shadow brushes for DrawPageShadow (i=1..4, alpha = 0.08*i*255)
+    private readonly Brush?[] _pageShadowBrushes = new Brush?[5]; // index 1-4
 
     // Phase 19 — find results
     private IReadOnlyList<DocumentSearchMatch>? _findResults;
-    private int _findCursor;
+    private int                                 _findCursor;
+    private IReadOnlyList<int>                  _searchBlockIndicesCache = [];
 
-    // Phase 20 — image cache
-    private Dictionary<string, BitmapImage?>? _imageCache;
+    // Phase 20 — image cache: true LRU, capacity covers 64 real bitmaps + loading/error sentinels
+    private const int ImageCacheMaxEntries = 64;
+    private LruCache<string, BitmapImage?>? _imageCache;
 
     // ── Phase 12: Cursor + TextSelection ─────────────────────────────────────
 
@@ -144,22 +162,118 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         ClipToBounds  = true;
         Focusable     = true;
         Cursor        = Cursors.IBeam;
+        AllowDrop     = true;
 
         AddVisualChild(_caretVisual);
 
-        MouseMove     += OnMouseMove;
-        MouseLeave    += OnMouseLeave;
-        MouseDown     += OnMouseDown;
-        MouseUp       += OnMouseUp;
+        // Use Preview variants so our handlers fire before WPF's built-in drag-detection
+        // routing, which would otherwise suppress MouseMove events during selection drag
+        // when AllowDrop = true.
+        PreviewMouseMove += OnMouseMove;
+        MouseLeave       += OnMouseLeave;
+        PreviewMouseDown += OnMouseDown;
+        PreviewMouseUp   += OnMouseUp;
         SizeChanged   += OnSizeChanged;
         GotFocus          += OnGotFocus;
-        LostFocus         += OnLostFocus;
+        LostKeyboardFocus += OnLostFocus;
         PreviewKeyDown    += OnPreviewKeyDown;
         PreviewTextInput  += OnPreviewTextInput;
+
+        DragOver += OnDragOver;
+        Drop     += OnDrop;
+
+        ContextMenuOpening += OnContextMenuOpening;
+        ContextMenu        = BuildContextMenu();
 
         // Blink timer: only redraws the 2px caret visual, not the whole page
         _blinkTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
         _blinkTimer.Tick += (_, _) => { _caretVisible = !_caretVisible; RefreshCaretVisual(); };
+    }
+
+    // ── Context menu ─────────────────────────────────────────────────────────
+    private System.Windows.Controls.MenuItem? _miCut, _miCopy, _miPaste, _miDelete, _miSelectAll, _miUndo, _miRedo;
+    private System.Windows.Controls.MenuItem? _miFormat, _miBold, _miItalic, _miUnderline, _miStrike;
+
+    private System.Windows.Controls.ContextMenu BuildContextMenu()
+    {
+        var cm = new System.Windows.Controls.ContextMenu();
+
+        _miUndo      = MakeMenuItem("DocCanvas_Undo",      "Undo",        () => _mutator?.TryUndo(),                "Ctrl+Z");
+        _miRedo      = MakeMenuItem("DocCanvas_Redo",      "Redo",        () => _mutator?.TryRedo(),                "Ctrl+Y");
+        _miCut       = MakeMenuItem("DocCanvas_Cut",       "Cut",         CutSelection,                              "Ctrl+X");
+        _miCopy      = MakeMenuItem("DocCanvas_Copy",      "Copy",        CopySelection,                             "Ctrl+C");
+        _miPaste     = MakeMenuItem("DocCanvas_Paste",     "Paste",       PasteAtCaret,                              "Ctrl+V");
+        _miDelete    = MakeMenuItem("DocCanvas_Delete",    "Delete",      () => DeleteAtCaret(forward: true),        "Del");
+        _miSelectAll = MakeMenuItem("DocCanvas_SelectAll", "Select All",  SelectAll,                                  "Ctrl+A");
+
+        _miBold      = MakeMenuItem("DocCanvas_Bold",      "Bold",          () => ToggleFormatOnSelection("bold"),          "Ctrl+B");
+        _miItalic    = MakeMenuItem("DocCanvas_Italic",    "Italic",        () => ToggleFormatOnSelection("italic"),        "Ctrl+I");
+        _miUnderline = MakeMenuItem("DocCanvas_Underline", "Underline",     () => ToggleFormatOnSelection("underline"),     "Ctrl+U");
+        _miStrike    = MakeMenuItem("DocCanvas_Strike",    "Strikethrough", () => ToggleFormatOnSelection("strikethrough"), "");
+
+        _miFormat = new System.Windows.Controls.MenuItem
+        {
+            Header = TryFindResource("DocCanvas_Format") as string ?? "Format"
+        };
+        _miFormat.Items.Add(_miBold);
+        _miFormat.Items.Add(_miItalic);
+        _miFormat.Items.Add(_miUnderline);
+        _miFormat.Items.Add(_miStrike);
+
+        cm.Items.Add(_miUndo);
+        cm.Items.Add(_miRedo);
+        cm.Items.Add(new System.Windows.Controls.Separator());
+        cm.Items.Add(_miCut);
+        cm.Items.Add(_miCopy);
+        cm.Items.Add(_miPaste);
+        cm.Items.Add(_miDelete);
+        cm.Items.Add(new System.Windows.Controls.Separator());
+        cm.Items.Add(_miFormat);
+        cm.Items.Add(new System.Windows.Controls.Separator());
+        cm.Items.Add(_miSelectAll);
+        return cm;
+    }
+
+    private void ToggleFormatOnSelection(string attr)
+    {
+        if (_isReadOnly || _mutator is null || _selection.IsEmpty) return;
+        ApplyFormatToSelection(attr, true);
+    }
+
+    private System.Windows.Controls.MenuItem MakeMenuItem(string headerKey, string fallback, Action action, string gesture)
+    {
+        var mi = new System.Windows.Controls.MenuItem
+        {
+            Header           = TryFindResource(headerKey) as string ?? fallback,
+            InputGestureText = gesture
+        };
+        mi.Click += (_, _) => action();
+        return mi;
+    }
+
+    private void OnContextMenuOpening(object sender, System.Windows.Controls.ContextMenuEventArgs e)
+    {
+        bool hasSelection = !_selection.IsEmpty;
+        bool hasCaret     = _caret.BlockIndex >= 0;
+        bool editable     = !_isReadOnly && _mutator is not null;
+
+        if (_miUndo      is not null) _miUndo.IsEnabled      = _model?.UndoEngine.CanUndo == true;
+        if (_miRedo      is not null) _miRedo.IsEnabled      = _model?.UndoEngine.CanRedo == true;
+        if (_miCut       is not null) _miCut.IsEnabled       = hasSelection && editable;
+        if (_miCopy      is not null) _miCopy.IsEnabled      = hasSelection;
+        if (_miPaste     is not null) _miPaste.IsEnabled     = hasCaret && editable && System.Windows.Clipboard.ContainsText();
+        if (_miDelete    is not null) _miDelete.IsEnabled    = (hasSelection || hasCaret) && editable;
+        if (_miSelectAll is not null) _miSelectAll.IsEnabled = _model is not null && _model.Blocks.Count > 0;
+
+        bool canFormat = hasSelection && editable;
+        if (_miFormat    is not null) _miFormat.IsEnabled    = canFormat;
+        if (_miBold      is not null) _miBold.IsEnabled      = canFormat;
+        if (_miItalic    is not null) _miItalic.IsEnabled    = canFormat;
+        if (_miUnderline is not null) _miUnderline.IsEnabled = canFormat;
+        if (_miStrike    is not null) _miStrike.IsEnabled    = canFormat;
+
+        Focus();
+        Keyboard.Focus(this);
     }
 
     protected override void OnVisualParentChanged(DependencyObject oldParent)
@@ -175,6 +289,109 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public DocumentBlock? SelectedBlock =>
         _selectedIndex >= 0 && _selectedIndex < _blocks.Count
             ? _blocks[_selectedIndex].Block : null;
+
+    /// <summary>Total number of blocks in the current layout.</summary>
+    public int BlockCount => _blocks.Count;
+
+    /// <summary>0-based index of the block currently hosting the caret (-1 when no caret).</summary>
+    public int CaretBlockIndex => _caret.BlockIndex;
+
+    /// <summary>The block currently hosting the caret (or selected block in fallback). Null when none.</summary>
+    public DocumentBlock? CurrentBlock
+    {
+        get
+        {
+            // _caret.BlockIndex / _selectedIndex are indices into the
+            // RenderBlock list (_blocks), not into _model.Blocks. Resolve
+            // through the RenderBlock so we always return the right block,
+            // even in Outline mode where non-headings are skipped.
+            int bi = _caret.BlockIndex >= 0 ? _caret.BlockIndex : _selectedIndex;
+            if (bi < 0 || bi >= _blocks.Count) return null;
+            return _blocks[bi].Block;
+        }
+    }
+
+    /// <summary>Raised when the caret moves to a different block. Rulers listen to refresh markers.</summary>
+    public event EventHandler? CaretBlockChanged;
+
+    /// <summary>Raised on every caret move (within or across blocks). The horizontal ruler listens to track caret-position marker.</summary>
+    public event EventHandler? CaretMoved;
+
+    /// <summary>Page card width in canvas DIPs (pre-zoom).</summary>
+    public double PageWidth => _pageWidth;
+
+    /// <summary>Horizontal canvas offset of the left edge of the page card (pre-zoom).</summary>
+    public double PageLeftOffset => _pageLeft;
+
+    /// <summary>Current zoom factor applied by the parent ScaleTransform (1.0 = 100%).</summary>
+    public double ZoomFactor => _zoom;
+
+    /// <summary>
+    /// X offset of the caret within the page content area, in pre-zoom canvas DIPs,
+    /// measured from the left edge of the text content (i.e. PageLeftOffset + MarginLeft).
+    /// Returns -1 when there is no active caret.
+    /// </summary>
+    public double CaretContentX
+    {
+        get
+        {
+            if (_caret.BlockIndex < 0 || _caret.BlockIndex >= _blocks.Count) return -1;
+            var rb = _blocks[_caret.BlockIndex];
+            if (rb.GlyphLines is { Count: > 0 })
+            {
+                var (gx, _, _) = GetCaretXYFromGlyphLines(rb.GlyphLines, _caret.CharOffset);
+                return rb.IndentLeft + gx;
+            }
+            var text = GetFlatText(_caret.BlockIndex);
+            if (string.IsNullOrEmpty(text) || _caret.CharOffset <= 0) return 0;
+            double contentW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
+            var ft = (rb.FormattedLines is { Count: > 0 })
+                ? rb.FormattedLines[0]
+                : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
+                                    _fgBrush ?? Brushes.Gray, contentW);
+            return CaretNavHelper.GetCaretX(ft, _caret.CharOffset, text.Length);
+        }
+    }
+
+    /// <summary>
+    /// Raised when page geometry changes (page size, margins, zoom). The horizontal /
+    /// vertical rulers listen so they can recompute markers.
+    /// </summary>
+    public event EventHandler? PageGeometryChanged;
+
+    private int _lastNotifiedCaretBlock = -1;
+    private TextCaret _lastNotifiedCaret;
+    private void NotifyCaretBlockChangedIfNeeded()
+    {
+        int bi = _caret.BlockIndex;
+        if (bi == _lastNotifiedCaretBlock) return;
+        _lastNotifiedCaretBlock = bi;
+        CaretBlockChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void NotifyCaretMoved()
+    {
+        if (_caret.BlockIndex == _lastNotifiedCaret.BlockIndex &&
+            _caret.CharOffset  == _lastNotifiedCaret.CharOffset) return;
+        _lastNotifiedCaret = _caret;
+        CaretMoved?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>Block indices modified since the last <see cref="ClearDirtyBlocks"/> call.</summary>
+    public IReadOnlyCollection<int> DirtyBlockIndices => _dirtyBlockIndices;
+
+    /// <summary>Block indices that have at least one active search hit (cached, updated in <see cref="SetFindResults"/>).</summary>
+    public IReadOnlyList<int> SearchBlockIndices => _searchBlockIndicesCache;
+
+    /// <summary>Clears the dirty-block set (call after a successful save).</summary>
+    public void ClearDirtyBlocks()
+    {
+        _dirtyBlockIndices.Clear();
+        DirtyBlocksChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>Raised whenever a block is marked dirty or the dirty set is cleared.</summary>
+    public event EventHandler? DirtyBlocksChanged;
 
     /// <summary>Binds the renderer to a document model and triggers layout.</summary>
     public void BindModel(DocumentModel model)
@@ -232,7 +449,15 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     }
 
     /// <summary>Sets the zoom level (0.5–2.0). Applied via LayoutTransform by the parent.</summary>
-    public void SetZoom(double zoom) => _zoom = Math.Clamp(zoom, 0.5, 2.0);
+    public void SetZoom(double zoom)
+    {
+        _zoom = Math.Clamp(zoom, 0.5, 2.0);
+        // Defer the geometry-changed notification until after WPF has
+        // re-laid out the renderer at the new zoom — otherwise rulers
+        // read stale _pageWidth / _pageLeft values.
+        Dispatcher.BeginInvoke(() => PageGeometryChanged?.Invoke(this, EventArgs.Empty),
+            System.Windows.Threading.DispatcherPriority.Render);
+    }
 
     /// <summary>
     /// Switches the render mode (Page / Draft / Outline) and triggers a full layout rebuild.
@@ -292,6 +517,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             _pageSettings = value;
             InvalidateBrushCache();
             RebuildLayout();
+            PageGeometryChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -304,7 +530,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public double ViewportWidth  => _viewport.Width;
     public double ViewportHeight => _viewport.Height;
     public double HorizontalOffset => _offset.X;
-    public double VerticalOffset   => _offset.Y;
+    public double VerticalOffset     => _offset.Y;
+    public static double PageCanvasPadding => PageCanvasPad;
     public ScrollViewer? ScrollOwner { get => _scrollOwner; set => _scrollOwner = value; }
 
     public void LineUp()      => SetVerticalOffset(_offset.Y - 20);
@@ -334,7 +561,24 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _scrollOwner?.InvalidateScrollInfo();
         InvalidateVisual();
         RefreshCaretVisual();
+        FirePageChanged();
+        PageGeometryChanged?.Invoke(this, EventArgs.Empty);
     }
+
+    private int GetCurrentPage()
+    {
+        // Find the first page whose bottom edge is below the current viewport top.
+        double viewTop = _offset.Y;
+        for (int i = 0; i < _pageStarts.Count; i++)
+        {
+            double nextStart = i + 1 < _pageStarts.Count ? _pageStarts[i + 1] : double.MaxValue;
+            if (nextStart > viewTop) return i + 1;
+        }
+        return _pageCount;
+    }
+
+    private void FirePageChanged() =>
+        PageChanged?.Invoke(this, (GetCurrentPage(), _pageCount));
 
     public Rect MakeVisible(Visual visual, Rect rectangle) => rectangle;
 
@@ -423,11 +667,39 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
             if (_pageSettings.BorderStyle != DocumentPageBorderStyle.None)
                 DrawPageBorder(dc, pageRect);
+
+            DrawMarginChevrons(dc, pageRect);
         }
 
         DrawBlocksInViewport(dc, vw, vh,
             contentX: _pageLeft + _pageSettings.MarginLeft,
             contentW: Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight));
+    }
+
+    /// <summary>
+    /// Draws the four small grey corner brackets that frame the printable
+    /// content rectangle of a page. Pure cosmetic — independent of the
+    /// page border feature.
+    /// </summary>
+    private void DrawMarginChevrons(DrawingContext dc, Rect pageRect)
+    {
+        const double Len = 12.0;
+        var pen = _pageBreakPen;
+        if (pen is null) return;
+
+        double cl = pageRect.Left  + _pageSettings.MarginLeft;
+        double cr = pageRect.Right - _pageSettings.MarginRight;
+        double ct = pageRect.Top    + _pageSettings.MarginTop;
+        double cb = pageRect.Bottom - _pageSettings.MarginBottom;
+
+        dc.DrawLine(pen, new Point(cl, ct), new Point(cl + Len, ct));
+        dc.DrawLine(pen, new Point(cl, ct), new Point(cl,        ct + Len));
+        dc.DrawLine(pen, new Point(cr, ct), new Point(cr - Len, ct));
+        dc.DrawLine(pen, new Point(cr, ct), new Point(cr,        ct + Len));
+        dc.DrawLine(pen, new Point(cl, cb), new Point(cl + Len, cb));
+        dc.DrawLine(pen, new Point(cl, cb), new Point(cl,        cb - Len));
+        dc.DrawLine(pen, new Point(cr, cb), new Point(cr - Len, cb));
+        dc.DrawLine(pen, new Point(cr, cb), new Point(cr,        cb - Len));
     }
 
     /// <summary>
@@ -561,13 +833,23 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         dc.DrawText(ft, new Point(20, vh / 2 - ft.Height / 2));
     }
 
-    private void DrawPageBorder(DrawingContext dc, Rect page)
+    private string? _pageBorderColorKey;
+
+    private Pen GetPageBorderPen()
     {
+        var key = $"{_pageSettings.BorderColor}:{_pageSettings.BorderWidthPx}";
+        if (_pageBorderPen is not null && _pageBorderColorKey == key)
+            return _pageBorderPen;
         var color = System.Windows.Media.ColorConverter.ConvertFromString(_pageSettings.BorderColor);
         var borderColor = color is System.Windows.Media.Color c ? c : Colors.Black;
-        var pen = new Pen(new SolidColorBrush(borderColor), _pageSettings.BorderWidthPx);
-        pen.Freeze();
+        _pageBorderPen = new Pen(new SolidColorBrush(borderColor), _pageSettings.BorderWidthPx);
+        _pageBorderPen.Freeze();
+        _pageBorderColorKey = key;
+        return _pageBorderPen;
+    }
 
+    private void DrawPageBorder(DrawingContext dc, Rect page)
+    {
         double pad = _pageSettings.BorderPaddingPx;
         var borderRect = new Rect(
             page.X + pad, page.Y + pad,
@@ -575,26 +857,19 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         if (_pageSettings.BorderStyle == DocumentPageBorderStyle.Shadow)
         {
-            // Shadow: outer rectangle slightly offset
-            var shadowBrush = new SolidColorBrush(Color.FromArgb(80, 0, 0, 0));
-            shadowBrush.Freeze();
-            dc.DrawRectangle(shadowBrush, null,
+            dc.DrawRectangle(_shadowBrush, null,
                 new Rect(borderRect.X + 3, borderRect.Y + 3, borderRect.Width, borderRect.Height));
         }
-        dc.DrawRectangle(null, pen, borderRect);
+        dc.DrawRectangle(null, GetPageBorderPen(), borderRect);
     }
 
     private void DrawPageShadow(DrawingContext dc, Rect page)
     {
-        // Cheap shadow: several offset semi-transparent rects
+        // Cheap shadow: several offset semi-transparent rects (brushes pre-cached)
         for (int i = 4; i >= 1; i--)
         {
             double expand = i * 2.0;
-            double opacity = 0.08 * i;
-            var shadowBrush = new SolidColorBrush(Color.FromArgb(
-                (byte)(opacity * 255), 0, 0, 0));
-            shadowBrush.Freeze();
-            dc.DrawRectangle(shadowBrush, null,
+            dc.DrawRectangle(_pageShadowBrushes[i], null,
                 new Rect(page.X - expand + 2, page.Y + 2 + i,
                          page.Width + expand * 2, page.Height + expand));
         }
@@ -641,23 +916,72 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             return;
         }
 
-        // Paragraph / heading / run / default — prefer GlyphRun pipeline
+        // ── Indent level (Ctrl+]/[ sets "indentLevel" attribute) ─────────────
+        if (rb.Block.Attributes.TryGetValue(IndentLevelKey, out var indentVal) && indentVal is int indentLv && indentLv > 0)
+        {
+            double indentOffset = indentLv * 24.0;
+            x    += indentOffset;
+            maxW -= indentOffset;
+        }
+
+        // ── Continuous indents (whfmt-driven: w:ind/@left|right|firstLine) ──
+        // BuildRenderBlock already reduced maxW to fit the wrap; offset x so
+        // glyphs sit at the indented position.
+        if (rb.IndentLeft > 0)  { x += rb.IndentLeft;  maxW -= rb.IndentLeft;  }
+        if (rb.IndentRight > 0) {                       maxW -= rb.IndentRight; }
+
+        // ── Style-based rendering (quote / code) ──────────────────────────
+        var style = rb.Block.Attributes.GetValueOrDefault("style") as string ?? string.Empty;
+
+        if (style == "quote")
+        {
+            // Left accent bar + indentation
+            var barBrush = _fgDimBrush ?? Brushes.Gray;
+            dc.DrawRectangle(barBrush, null, new Rect(x, y, 3, rb.Height));
+            x    += 12;
+            maxW -= 12;
+        }
+        else if (style == "code")
+        {
+            // Monospace background pill (cached brush)
+            EnsureBrushCache();
+            dc.DrawRoundedRectangle(_codeBgBrush, null, new Rect(x - 4, y - 2, maxW + 8, rb.Height + 4), 3, 3);
+        }
+
+        // ── Alignment offset ─────────────────────────────────────────────
+        var align = rb.Block.Attributes.GetValueOrDefault("align") as string ?? "left";
+        double drawX = x;
+        if (rb.GlyphLines is { Count: > 0 } && align != "left")
+        {
+            double lineW = rb.GlyphLines.Count > 0 ? rb.GlyphLines.Max(l => l.Width) : 0;
+            drawX = align == "center" ? x + (maxW - lineW) / 2
+                                       : x + maxW - lineW; // right
+            drawX = Math.Max(x, drawX);
+        }
+        else if (rb.FormattedLines is { Count: > 0 } && align != "left")
+        {
+            double lineW = rb.FormattedLines.Max(ft => ft.Width);
+            drawX = align == "center" ? x + (maxW - lineW) / 2
+                                       : x + maxW - lineW;
+            drawX = Math.Max(x, drawX);
+        }
+
+        // ── Draw ─────────────────────────────────────────────────────────
         if (rb.GlyphLines is { Count: > 0 })
         {
-            bool isHeading = rb.Block.Kind == "heading";
+            bool isHeading = rb.Block.Kind == "heading" || style == "heading";
             int level = isHeading && int.TryParse(
                 rb.Block.Attributes.GetValueOrDefault("level") as string, out int lv) ? lv : 1;
-            DrawVisualLines(dc, rb.GlyphLines, x, y, isHeading, level);
+            DrawVisualLines(dc, rb.GlyphLines, drawX, y, isHeading, level);
             return;
         }
 
-        // Fallback: FormattedText (used when GlyphRun build fails or block is empty)
         if (rb.FormattedLines is { Count: > 0 })
         {
             double lineY = y;
             foreach (var ft in rb.FormattedLines)
             {
-                dc.DrawText(ft, new Point(x, lineY));
+                dc.DrawText(ft, new Point(drawX, lineY));
                 lineY += ft.Height + 2;
             }
         }
@@ -737,7 +1061,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// <summary>Renders an image block — uses cached BitmapImage or triggers async decode from ZIP or binary data.</summary>
     private void DrawImageBlock(DrawingContext dc, RenderBlock rb, double x, double y, double maxW)
     {
-        _imageCache ??= [];
+        _imageCache ??= new LruCache<string, BitmapImage?>(ImageCacheMaxEntries * 3);
 
         // ── Branch 1: ZIP entry (DOCX / ODT) ──────────────────────────────────
         var entryName = rb.Block.Attributes.TryGetValue("zipEntryName", out var ev) ? ev?.ToString() : null;
@@ -762,7 +1086,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             var sentinelKey = cacheKey + "\0loading";
             if (!_imageCache.ContainsKey(sentinelKey))
             {
-                _imageCache[sentinelKey] = null;
+                _imageCache.Add(sentinelKey, null);
                 var captFilePath  = filePath;
                 var captEntryName = entryName;
                 var captKey       = cacheKey;
@@ -789,7 +1113,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                         Dispatcher.InvokeAsync(() =>
                         {
                             if (_imageCache is null) return;
-                            _imageCache[captKey] = img;
+                            _imageCache.Add(captKey, img);
                             _imageCache.Remove(captKey + "\0loading");
                             InvalidateVisual();
                         });
@@ -800,7 +1124,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                         {
                             if (_imageCache is null) return;
                             _imageCache.Remove(captKey + "\0loading");
-                            _imageCache[captKey + "\0error"] = null;
+                            _imageCache.Add(captKey + "\0error", null);
                             InvalidateVisual();
                         });
                     }
@@ -831,7 +1155,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
             if (!_imageCache.ContainsKey(sentinelKey))
             {
-                _imageCache[sentinelKey] = null;
+                _imageCache.Add(sentinelKey, null);
                 var captBytes = binaryBytes;
                 var captKey   = cacheKey;
                 Task.Run(() =>
@@ -851,7 +1175,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                         Dispatcher.InvokeAsync(() =>
                         {
                             if (_imageCache is null) return;
-                            _imageCache[captKey] = img;
+                            _imageCache.Add(captKey, img);
                             _imageCache.Remove(captKey + "\0loading");
                             InvalidateVisual();
                         });
@@ -862,7 +1186,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                         {
                             if (_imageCache is null) return;
                             _imageCache.Remove(captKey + "\0loading");
-                            _imageCache[captKey + "\0error"] = null;
+                            _imageCache.Add(captKey + "\0error", null);
                             InvalidateVisual();
                         });
                     }
@@ -893,6 +1217,27 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         double.TryParse(s, System.Globalization.NumberStyles.Any,
                         System.Globalization.CultureInfo.InvariantCulture, out var d) ? d : 0;
 
+    /// <summary>1 point = 96/72 device-independent pixels at 96 DPI.</summary>
+    private const double PtToDip = 96.0 / 72.0;
+
+    /// <summary>
+    /// Reads a numeric attribute that may have been stored as <see cref="double"/>,
+    /// <see cref="int"/>, or invariant-culture <see cref="string"/> after a whfmt
+    /// transform. Returns 0 when the attribute is absent or unparseable.
+    /// </summary>
+    private static double ReadIndentAttribute(DocumentBlock block, string key)
+    {
+        if (!block.Attributes.TryGetValue(key, out var v) || v is null) return 0;
+        return v switch
+        {
+            double d => d,
+            int    i => i,
+            string s2 when double.TryParse(s2, System.Globalization.NumberStyles.Float,
+                                           System.Globalization.CultureInfo.InvariantCulture, out var d2) => d2,
+            _ => 0
+        };
+    }
+
     private void DrawImagePlaceholder(DrawingContext dc, RenderBlock rb, double x, double y, double maxW)
     {
         var rect = new Rect(x, y, Math.Min(maxW, 260), 48);
@@ -908,10 +1253,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void DrawImageErrorPlaceholder(DrawingContext dc, RenderBlock rb, double x, double y, double maxW)
     {
-        var rect   = new Rect(x, y, Math.Min(maxW, 260), 48);
-        var errorBg = new SolidColorBrush(Color.FromRgb(255, 235, 235));
-        errorBg.Freeze();
-        dc.DrawRoundedRectangle(errorBg, _tableGridPen!, rect, 4, 4);
+        var rect = new Rect(x, y, Math.Min(maxW, 260), 48);
+        EnsureBrushCache();
+        dc.DrawRoundedRectangle(_errorBgBrush, _tableGridPen!, rect, 4, 4);
         var en    = rb.Block.Attributes.TryGetValue("zipEntryName", out var ev) ? ev?.ToString() : null;
         string label = en is not null
             ? $"  Failed: {System.IO.Path.GetFileName(en)}  (click to retry)"
@@ -979,6 +1323,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         UpdateScrollExtent();
         InvalidateVisual();
+        FirePageChanged();
     }
 
     /// <summary>
@@ -1013,6 +1358,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         UpdateScrollExtentDraft();
         InvalidateVisual();
+        FirePageChanged();
     }
 
     private void UpdateScrollExtentDraft()
@@ -1052,12 +1398,39 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             case "paragraph":
             case "run":
             {
-                var glyphLines = BuildGlyphLines(block, maxW);
+                // Style attribute may promote a paragraph to heading-like rendering
+                var pStyle = block.Attributes.GetValueOrDefault("style") as string ?? string.Empty;
+
+                // Indent attributes are stored in points; convert to DIPs (96/72).
+                double indL  = ReadIndentAttribute(block, "indent")          * PtToDip;
+                double indR  = ReadIndentAttribute(block, "indentRight")     * PtToDip;
+                double indFL = ReadIndentAttribute(block, "indentFirstLine") * PtToDip;
+                double effW  = Math.Max(40, maxW - indL - indR);
+
+                if (pStyle == "heading")
+                {
+                    int level  = int.TryParse(
+                        block.Attributes.GetValueOrDefault("level") as string, out int l) ? l : 1;
+                    double fs     = level == 1 ? 22 : level == 2 ? 18 : 15;
+                    double spaceB = level == 1 ? 18 : level == 2 ? 14 : 10;
+                    double spaceA = level == 1 ?  8 : level == 2 ?  6 :  4;
+                    var hGlyphLines = BuildGlyphLines(block, effW);
+                    double hh = hGlyphLines.Count > 0 ? hGlyphLines.Sum(vl => vl.LineHeight) : fs + 4;
+                    if (level == 1) hh += 6;
+                    if (level == 2) hh += 4;
+                    var hFtLines = WrapText(block.Text, _bodyBoldFace!, fs, effW, _fgBrush!);
+                    return new RenderBlock(block, y, hh, spaceB, spaceA, hFtLines, false, 0, severity,
+                        hGlyphLines, indL, indR, indFL);
+                }
+
+                double spaceAfter = pStyle == "quote" ? 6 : pStyle == "code" ? 6 : 4;
+                var glyphLines = BuildGlyphLines(block, effW);
                 double h  = glyphLines.Count > 0
                     ? glyphLines.Sum(vl => vl.LineHeight)
                     : _baseFontSize + 4;
-                var ftLines = BuildInlineFormattedText(block, maxW);
-                return new RenderBlock(block, y, h, 0, 4, ftLines, false, 0, severity, glyphLines);
+                var ftLines = BuildInlineFormattedText(block, effW);
+                return new RenderBlock(block, y, h, 0, spaceAfter, ftLines, false, 0, severity,
+                    glyphLines, indL, indR, indFL);
             }
 
             case "table":
@@ -1091,16 +1464,20 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     // ── GlyphRun pipeline ─────────────────────────────────────────────────────
 
+    private double _cachedPixelsPerDip = 0;
+
     private double GetPixelsPerDip()
     {
+        if (_cachedPixelsPerDip > 0) return _cachedPixelsPerDip;
         try
         {
             var mainWindow = Application.Current?.MainWindow;
             if (mainWindow is not null)
-                return VisualTreeHelper.GetDpi(mainWindow).PixelsPerDip;
+                _cachedPixelsPerDip = VisualTreeHelper.GetDpi(mainWindow).PixelsPerDip;
         }
         catch { }
-        return 1.0;
+        if (_cachedPixelsPerDip <= 0) _cachedPixelsPerDip = 1.0;
+        return _cachedPixelsPerDip;
     }
 
     /// <summary>
@@ -1123,14 +1500,15 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var defaultColor = _fgBrush is SolidColorBrush sb ? sb.Color : Color.FromRgb(20, 20, 20);
         var result = new List<InlineSegment>();
 
-        bool isHeading = block.Kind == "heading";
+        var blockStyle = block.Attributes.GetValueOrDefault("style") as string ?? string.Empty;
+        bool isHeading = block.Kind == "heading" || blockStyle == "heading";
         int headingLevel = isHeading && int.TryParse(
             block.Attributes.GetValueOrDefault("level") as string, out int hl) ? hl : 1;
         double defaultSize = isHeading
             ? (headingLevel == 1 ? 22 : headingLevel == 2 ? 18 : 15)
             : _baseFontSize;
         bool defaultBold = isHeading;
-        string defaultFamily = BodyFontFamily;
+        string defaultFamily = blockStyle == "code" ? "Courier New" : BodyFontFamily;
 
         IEnumerable<DocumentBlock> runs = block.Children.Count > 0
             ? block.Children.Where(c => c.Kind == "run")
@@ -1219,24 +1597,20 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 }
             }
 
-            // H1: full-width rule below first line
-            if (isHeading && headingLevel == 1 && li == 0 && _fgDimBrush is not null)
+            // H1: full-width rule below first line (cached pen)
+            if (isHeading && headingLevel == 1 && li == 0 && _h1RulePen is not null)
             {
                 double ruleY = y + line.LineHeight + 3;
                 double ruleW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
-                var pen = new Pen(_fgDimBrush, 0.5);
-                pen.Freeze();
-                dc.DrawLine(pen, new Point(originX, ruleY), new Point(originX + ruleW, ruleY));
+                dc.DrawLine(_h1RulePen, new Point(originX, ruleY), new Point(originX + ruleW, ruleY));
             }
 
-            // H2: 30%-width rule below first line
-            if (isHeading && headingLevel == 2 && li == 0 && _fgDimBrush is not null)
+            // H2: 30%-width rule below first line (cached pen)
+            if (isHeading && headingLevel == 2 && li == 0 && _h2RulePen is not null)
             {
                 double ruleY = y + line.LineHeight + 2;
                 double ruleW = Math.Max(1, (_pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight) * 0.3);
-                var pen = new Pen(_fgDimBrush, 0.5);
-                pen.Freeze();
-                dc.DrawLine(pen, new Point(originX, ruleY), new Point(originX + ruleW, ruleY));
+                dc.DrawLine(_h2RulePen, new Point(originX, ruleY), new Point(originX + ruleW, ruleY));
             }
 
             y += line.LineHeight;
@@ -1286,6 +1660,22 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                     ffv is string ff && !string.IsNullOrEmpty(ff))
                     ft.SetFontFamily(new FontFamily(ff), pos, len);
 
+                // color — per-run foreground (was silently dropped before)
+                if (run.Attributes.TryGetValue("color", out var cv) && cv is string cs2)
+                {
+                    try
+                    {
+                        var converted = System.Windows.Media.ColorConverter.ConvertFromString(cs2);
+                        if (converted is Color rc)
+                        {
+                            var brush = new SolidColorBrush(rc);
+                            brush.Freeze();
+                            ft.SetForegroundBrush(brush, pos, len);
+                        }
+                    }
+                    catch { }
+                }
+
                 pos += len;
             }
 
@@ -1334,8 +1724,13 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         double available  = viewWidth - PageCanvasPad * 2;
         double nominalW   = _pageSettings.EffectivePageWidth;
-        _pageWidth = Math.Clamp(available, 400, Math.Max(400, nominalW));
-        _pageLeft  = (viewWidth - _pageWidth) / 2;
+        double newWidth   = Math.Clamp(available, 400, Math.Max(400, nominalW));
+        double newLeft    = (viewWidth - newWidth) / 2;
+        bool changed = Math.Abs(newWidth - _pageWidth) > 0.5 || Math.Abs(newLeft - _pageLeft) > 0.5;
+        _pageWidth = newWidth;
+        _pageLeft  = newLeft;
+        if (changed)
+            PageGeometryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateScrollExtent()
@@ -1419,12 +1814,32 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         // Phase 12 — cursor + selection (WYSIWYG: black caret, blue selection on white)
         _textSelBrush       = new SolidColorBrush(Color.FromArgb(80, 66, 133, 244));
         ((SolidColorBrush)_textSelBrush).Freeze();
-        _caretBrush         = new SolidColorBrush(Color.FromRgb(20, 20, 20));
+        // WYSIWYG: page is always white, so caret must always be near-black
+        _caretBrush = new SolidColorBrush(Color.FromRgb(20, 20, 20));
         ((SolidColorBrush)_caretBrush).Freeze();
 
         // Phase 19 — find highlight (yellow, like Word Ctrl+F)
         _findHighlightBrush = new SolidColorBrush(Color.FromArgb(120, 255, 215, 0));
         ((SolidColorBrush)_findHighlightBrush).Freeze();
+
+        // Per-style cached brushes/pens
+        _codeBgBrush = new SolidColorBrush(Color.FromArgb(30, 128, 128, 128));
+        ((SolidColorBrush)_codeBgBrush).Freeze();
+        _errorBgBrush = new SolidColorBrush(Color.FromRgb(255, 235, 235));
+        ((SolidColorBrush)_errorBgBrush).Freeze();
+        _shadowBrush = new SolidColorBrush(Color.FromArgb(80, 0, 0, 0));
+        ((SolidColorBrush)_shadowBrush).Freeze();
+        _h1RulePen = new Pen(_fgDimBrush, 0.5);
+        _h1RulePen.Freeze();
+        _h2RulePen = new Pen(_fgDimBrush, 0.5);
+        _h2RulePen.Freeze();
+        for (int i = 1; i <= 4; i++)
+        {
+            var b = new SolidColorBrush(Color.FromArgb((byte)(0.08 * i * 255), 0, 0, 0));
+            b.Freeze();
+            _pageShadowBrushes[i] = b;
+        }
+        _pageBorderPen = null; // rebuilt when settings change; see DrawPageBorder
     }
 
     private Brush GetBrush(string key, Color fallbackColor)
@@ -1452,6 +1867,30 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private void OnMouseMove(object sender, MouseEventArgs e)
     {
         var pt = e.GetPosition(this);
+
+        // Pending click-on-selection: if the user moves past the drag
+        // threshold, start a real WPF drag-and-drop carrying the selected
+        // text (Word / VS behaviour). On Drop, the receiver removes the
+        // source range and inserts at the drop point.
+        if (_pendingCollapseBlock >= 0 && e.LeftButton == MouseButtonState.Pressed)
+        {
+            var d = pt - _pendingCollapseAt;
+            if (Math.Abs(d.X) + Math.Abs(d.Y) > 4 && !_selection.IsEmpty)
+            {
+                StartSelectionDrag();
+                _pendingCollapseBlock = -1;
+                return;
+            }
+            else if (Math.Abs(d.X) + Math.Abs(d.Y) > 4)
+            {
+                _pendingCollapseBlock = -1;
+                return;
+            }
+            else
+            {
+                return;
+            }
+        }
 
         // Drag-to-select
         if (_isDragging && e.LeftButton == MouseButtonState.Pressed)
@@ -1485,8 +1924,26 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private void OnMouseDown(object sender, MouseButtonEventArgs e)
     {
         Focus();
+        Keyboard.Focus(this);
         var pt  = e.GetPosition(this);
+
+        // Empty document: seed an empty paragraph so the user can place a caret
+        // and start typing / pasting immediately.
+        if (_model is not null && _model.Blocks.Count == 0 && _mutator is not null && !_isReadOnly)
+            EnsureFirstParagraph();
+
         int idx = HitTestBlock(pt);
+
+        // Right-click never moves the caret when it lands inside an existing
+        // selection — the user is invoking the context menu *for* that
+        // selection. When it lands outside, fall through so we move the caret
+        // first; the context menu still opens because we don't set Handled.
+        if (e.ChangedButton == MouseButton.Right && !_selection.IsEmpty &&
+            idx >= 0 && idx < _blocks.Count && IsPointInsideSelection(idx, pt))
+        {
+            return;
+        }
+
         if (idx < 0 || idx >= _blocks.Count) { _selectedIndex = -1; return; }
 
         _selectedIndex = idx;
@@ -1525,6 +1982,21 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             return;
         }
 
+        // Click inside an existing selection (no Shift): defer the caret
+        // collapse until MouseUp so the selection survives if the user
+        // simply clicks-and-releases (and survives a short hover for a
+        // future drag implementation). Shift+Click bypasses this.
+        if (!shift && e.ClickCount == 1 && !_selection.IsEmpty &&
+            IsPointInsideSelection(idx, pt))
+        {
+            _pendingCollapseBlock = idx;
+            _pendingCollapseChar  = charOff;
+            _pendingCollapseAt    = pt;
+            CaptureMouse();
+            e.Handled = true;
+            return;
+        }
+
         // Shift+Click: extend selection (keep anchor)
         if (shift && e.ClickCount == 1)
         {
@@ -1541,13 +2013,19 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _isDragging   = true;
         CaptureMouse();
 
-        PopToolbarRequested?.Invoke(this, new PopToolbarRequestedArgs(
-            new Rect(pt.X, pt.Y - 36, 0, 0), block));
-
         _caretVisible = true;
+        if (_blinkTimer is { IsEnabled: false }) _blinkTimer.Start();
+        RefreshCaretVisual();
         InvalidateVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        NotifyCaretMoved();
         e.Handled = true;
     }
+
+    // Pending-collapse state for click-on-selection deferral.
+    private int    _pendingCollapseBlock = -1;
+    private int    _pendingCollapseChar  = -1;
+    private Point  _pendingCollapseAt;
 
     private void SelectWordAt(int blockIdx, int charOff)
     {
@@ -1591,22 +2069,51 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void OnMouseUp(object sender, MouseButtonEventArgs e)
     {
+        // Resolve a pending click-on-selection: collapse the caret to the
+        // click point now that we know the user did not drag.
+        if (_pendingCollapseBlock >= 0)
+        {
+            _caret = new TextCaret(_pendingCollapseBlock, _pendingCollapseChar,
+                                   ComputePreferredX(_pendingCollapseBlock, _pendingCollapseChar));
+            _selection.Anchor = _caret;
+            _selection.Focus  = _caret;
+            _pendingCollapseBlock = -1;
+            _caretVisible = true;
+            RefreshCaretVisual();
+            InvalidateVisual();
+            NotifyCaretBlockChangedIfNeeded();
+            NotifyCaretMoved();
+        }
+
         _isDragging = false;
         ReleaseMouseCapture();
+        SelectionFormatChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnGotFocus(object sender, RoutedEventArgs e)
     {
         _caretVisible = true;
-        _blinkTimer?.Start();
+        if (_blinkTimer is { IsEnabled: false }) _blinkTimer.Start();
         RefreshCaretVisual();
     }
 
-    private void OnLostFocus(object sender, RoutedEventArgs e)
+    private void OnLostFocus(object sender, KeyboardFocusChangedEventArgs e)
     {
+        // Keep blinking while focus stays within the same top-level window
+        // (toolbar buttons, font dropdown, Bold/Italic toggles — all still "our" window).
+        // Only stop when focus genuinely leaves our window (another app, dialog, etc).
+        var newFocus = e.NewFocus as DependencyObject ?? Keyboard.FocusedElement as DependencyObject;
+        if (newFocus is not null)
+        {
+            var thisWindow = Window.GetWindow(this);
+            var thatWindow = newFocus is Window w ? w : Window.GetWindow(newFocus);
+            if (thisWindow is not null && ReferenceEquals(thisWindow, thatWindow))
+                return; // Focus stayed inside our window — keep blink timer running
+        }
+
         _blinkTimer?.Stop();
         _caretVisible = false;
-        RefreshCaretVisual(); // clear the caret rectangle
+        RefreshCaretVisual();
     }
 
     private void OnPreviewKeyDown(object sender, KeyEventArgs e)
@@ -1660,6 +2167,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             e.Handled = true;  // prevent propagation to IDE shell
             break;
         }
+        if (e.Handled) SelectionFormatChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnPreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -1672,15 +2180,34 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private int HitTestBlock(Point pt)
     {
-        for (int i = 0; i < _blocks.Count; i++)
+        if (_blocks.Count == 0) return -1;
+
+        double blockScreenX = _pageLeft + _pageSettings.MarginLeft - 8;
+        double blockW       = _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight + 16;
+
+        // Fast X rejection: if pt is outside the column strip, nothing will match
+        if (pt.X < blockScreenX || pt.X > blockScreenX + blockW) return -1;
+
+        // Binary search: find the first block whose bottom edge (Y + Height + 4) >= pt.Y
+        // Blocks are sorted by Y, so we binary-search for the first candidate
+        double ptYInCanvas = pt.Y + _offset.Y - PageCanvasPad; // convert to canvas space
+        int lo = 0, hi = _blocks.Count - 1, candidate = -1;
+        while (lo <= hi)
+        {
+            int mid = (lo + hi) >> 1;
+            double midBottom = _blocks[mid].Y + _blocks[mid].Height + 4;
+            if (midBottom < ptYInCanvas)
+                lo = mid + 1;
+            else
+            { candidate = mid; hi = mid - 1; }
+        }
+
+        // Verify the found candidate (and its neighbours) with exact rect check
+        for (int i = Math.Max(0, candidate - 1); i <= Math.Min(_blocks.Count - 1, candidate + 1) && candidate >= 0; i++)
         {
             var rb = _blocks[i];
             if (rb.IsPageBreak) continue;
-
             double blockScreenY = PageCanvasPad + rb.Y - _offset.Y;
-            double blockScreenX = _pageLeft + _pageSettings.MarginLeft - 8;
-            double blockW       = _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight + 16;
-
             var rect = new Rect(blockScreenX, blockScreenY - 4, blockW, rb.Height + 8);
             if (rect.Contains(pt)) return i;
         }
@@ -1768,6 +2295,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// </summary>
     private void CommitCaret(TextCaret newCaret, bool extend, bool vertical)
     {
+        // Track whether the selection state changes so we can avoid the
+        // expensive InvalidateVisual() pass for plain caret navigation.
+        bool wasEmptyBefore = _selection.IsEmpty;
+
         if (!vertical)
         {
             double px = ComputePreferredX(newCaret.BlockIndex, newCaret.CharOffset);
@@ -1779,8 +2310,16 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         else           _selection.Focus  = _caret;
         _caretVisible = true;
         EnsureCaretVisible();
-        InvalidateVisual();
+
+        // Selection-aware invalidation: collapsed-to-collapsed caret moves only
+        // need the cheap caret-layer redraw; selection-affecting moves require
+        // a full invalidate so the highlight rect tracks.
+        bool isEmptyNow = _selection.IsEmpty;
+        if (!wasEmptyBefore || !isEmptyNow)
+            InvalidateVisual();
         RefreshCaretVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        NotifyCaretMoved();
     }
 
     /// <summary>Scrolls the viewport to make the caret's visual line visible (± 16px).</summary>
@@ -1801,7 +2340,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     /// <summary>
     /// Returns the char offset in the block nearest to the given canvas point.
-    /// Uses a simple linear probe across char positions.
+    /// For glyph-rendered blocks uses GlyphLines advance widths (same metrics as rendering).
+    /// Falls back to FormattedText for blocks without GlyphLines.
     /// </summary>
     private int GetCharOffsetAtPoint(int blockIdx, Point canvasPt)
     {
@@ -1810,40 +2350,33 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var text = GetFlatText(blockIdx);
         if (string.IsNullOrEmpty(text)) return 0;
 
-        double originX = _pageLeft + _pageSettings.MarginLeft;
+        double originX = _pageLeft + _pageSettings.MarginLeft + rb.IndentLeft;
         double originY = PageCanvasPad + rb.Y - _offset.Y;
         double relX    = canvasPt.X - originX;
+        double relY    = canvasPt.Y - originY;
 
-        // Use the cached FormattedText (same one used for rendering + navigation) so
-        // character positions agree with what is drawn and with GetVisualLines.
+        // Prefer GlyphLines — they use the exact same advance widths as the rendered text,
+        // so hit positions match what the user sees pixel-for-pixel.
+        if (rb.GlyphLines is { Count: > 0 })
+            return GetCharOffsetFromGlyphLines(rb.GlyphLines, relX, relY, text.Length);
+
+        // Fallback: FormattedText binary search (plain/table/image blocks).
+        double contentW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
         var ft = rb.FormattedLines is { Count: > 0 }
             ? rb.FormattedLines[0]
             : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
-                                _fgBrush ?? Brushes.Gray,
-                                Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight));
-
-        // For wrapped text, chars on later visual lines have Bounds.Left ≈ 0 again, so a
-        // simple Left-based binary search gives wrong results across line breaks.
-        // Correct approach: determine which visual line was clicked (by Y), then binary-search
-        // within that line's char range using Bounds.Left.
-        double relY = canvasPt.Y - originY;
+                                _fgBrush ?? Brushes.Gray, contentW);
 
         var vlines = GetVisualLines(blockIdx);
         VisualLine targetLine = vlines.Count > 0 ? vlines[^1] : new VisualLine(0, text.Length, 0, _baseFontSize + 2);
-
         if (vlines.Count > 0)
         {
             foreach (var vl in vlines)
             {
-                if (relY <= vl.Top + vl.Height)
-                {
-                    targetLine = vl;
-                    break;
-                }
+                if (relY <= vl.Top + vl.Height) { targetLine = vl; break; }
             }
         }
 
-        // Binary search within [targetLine.Start, targetLine.End] on Bounds.Left
         int lo = targetLine.Start, hi = targetLine.End;
         while (lo < hi)
         {
@@ -1853,7 +2386,84 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             if (geo.Bounds.Left <= relX) lo = mid + 1;
             else hi = mid;
         }
+        if (lo > targetLine.Start && lo <= targetLine.End)
+        {
+            var prevGeo = ft.BuildHighlightGeometry(new Point(0, 0), lo - 1, 1);
+            if (prevGeo is not null && !prevGeo.Bounds.IsEmpty)
+            {
+                double mid = (prevGeo.Bounds.Left + prevGeo.Bounds.Right) / 2;
+                if (relX < mid) lo--;
+            }
+        }
         return Math.Clamp(lo, 0, text.Length);
+    }
+
+    /// <summary>
+    /// Returns (contentX, lineTopY, lineHeight) for a caret at <paramref name="charOffset"/>
+    /// within the block's GlyphLines. All values are block-content-relative (no canvas offset).
+    /// </summary>
+    private static (double X, double Y, double H) GetCaretXYFromGlyphLines(
+        IReadOnlyList<Rendering.InlineVisualLine> glyphLines, int charOffset)
+    {
+        double lineTopY = 0;
+        foreach (var line in glyphLines)
+        {
+            if (charOffset <= line.CharEnd || line == glyphLines[^1])
+            {
+                // Walk segments to find the X position of charOffset.
+                double x = 0;
+                foreach (var seg in line.Segments)
+                {
+                    if (charOffset <= seg.CharStart)
+                        break; // caret is before this segment
+                    double segRight = seg.OffsetX;
+                    int charsInSeg  = Math.Min(seg.AdvanceWidths.Count, charOffset - seg.CharStart);
+                    for (int i = 0; i < charsInSeg; i++)
+                        segRight += seg.AdvanceWidths[i];
+                    x = segRight;
+                }
+                return (x, lineTopY, line.LineHeight);
+            }
+            lineTopY += line.LineHeight;
+        }
+        return (0, 0, glyphLines.Count > 0 ? glyphLines[0].LineHeight : 0);
+    }
+
+    /// <summary>
+    /// Hit-tests a click (relX, relY relative to block content origin) against GlyphLines.
+    /// Uses per-glyph advance widths — identical metrics to what DrawVisualLines renders.
+    /// </summary>
+    private static int GetCharOffsetFromGlyphLines(
+        IReadOnlyList<Rendering.InlineVisualLine> glyphLines, double relX, double relY, int textLen)
+    {
+        // Find which visual line the click lands on (Y axis).
+        double lineTopY = 0;
+        Rendering.InlineVisualLine? targetLine = glyphLines[^1];
+        foreach (var line in glyphLines)
+        {
+            if (relY <= lineTopY + line.LineHeight) { targetLine = line; break; }
+            lineTopY += line.LineHeight;
+        }
+
+        // Walk segments — seg.OffsetX is the absolute content-relative X of the segment start.
+        // Advances accumulate within the segment starting from seg.OffsetX.
+        foreach (var seg in targetLine.Segments)
+        {
+            double x = seg.OffsetX;
+            for (int i = 0; i < seg.AdvanceWidths.Count; i++)
+            {
+                double adv = seg.AdvanceWidths[i];
+                // Snap to midpoint: click on right half → caret after glyph.
+                if (relX < x + adv / 2)
+                    return Math.Clamp(seg.CharStart + i, 0, textLen);
+                if (relX < x + adv)
+                    return Math.Clamp(seg.CharStart + i + 1, 0, textLen);
+                x += adv;
+            }
+        }
+
+        // Click is past the last glyph on the line.
+        return Math.Clamp(targetLine.CharEnd, 0, textLen);
     }
 
     /// <summary>Returns the canvas point (top-left) of the caret insertion position.</summary>
@@ -1886,6 +2496,17 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         if (_textSelBrush is null || _selection.IsEmpty) return;
 
+        // Clip the selection to the page content column so any overflow caused
+        // by imperfect wrap or stale layout never bleeds onto the dark canvas.
+        var clip = new RectangleGeometry(new Rect(contentX, 0, contentW, ActualHeight));
+        clip.Freeze();
+        dc.PushClip(clip);
+        try { DrawTextSelectionCore(dc, contentX, contentW); }
+        finally { dc.Pop(); }
+    }
+
+    private void DrawTextSelectionCore(DrawingContext dc, double contentX, double contentW)
+    {
         var (start, end) = _selection.Ordered;
         for (int bi = start.BlockIndex; bi <= end.BlockIndex && bi < _blocks.Count; bi++)
         {
@@ -1900,6 +2521,14 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             if (fromChar >= toChar) continue;
 
             double blockScreenY = PageCanvasPad + rb.Y - _offset.Y;
+
+            // Use glyph-line metrics for accurate highlight geometry when available
+            if (rb.GlyphLines is { Count: > 0 })
+            {
+                DrawGlyphLineSelection(dc, rb.GlyphLines, contentX, blockScreenY, fromChar, toChar);
+                continue;
+            }
+
             var ft = rb.FormattedLines is { Count: > 0 }
                 ? rb.FormattedLines[0]
                 : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
@@ -1909,6 +2538,64 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                                                 fromChar, toChar - fromChar);
             if (geo is null) continue;
             dc.DrawGeometry(_textSelBrush, null, geo);
+        }
+    }
+
+    /// <summary>
+    /// Draws selection highlight over glyph-rendered lines by computing X extents
+    /// from per-glyph advance widths. More accurate than FormattedText.BuildHighlightGeometry
+    /// because it uses the same metrics as the actual rendered glyphs.
+    /// </summary>
+    private void DrawGlyphLineSelection(DrawingContext dc,
+                                        IReadOnlyList<InlineVisualLine> glyphLines,
+                                        double originX, double originY,
+                                        int fromChar, int toChar)
+    {
+        if (_textSelBrush is null) return;
+
+        double lineY = originY;
+        foreach (var line in glyphLines)
+        {
+            double lineH = line.LineHeight;
+
+            // Skip lines completely outside the selection range
+            if (line.CharEnd <= fromChar || line.CharStart >= toChar)
+            {
+                lineY += lineH;
+                continue;
+            }
+
+            // Compute X start and X end of the selected region within this line
+            double xStart = 0, xEnd = 0;
+            bool   startSet = false;
+
+            foreach (var seg in line.Segments)
+            {
+                int segStart = seg.CharStart;
+                int segEnd   = segStart + seg.AdvanceWidths.Count;
+
+                double segX = originX + seg.OffsetX;
+
+                double cx = segX;
+                for (int gi = 0; gi < seg.AdvanceWidths.Count; gi++)
+                {
+                    int charIdx = segStart + gi;
+                    double adv = seg.AdvanceWidths[gi];
+
+                    if (charIdx >= fromChar && charIdx < toChar)
+                    {
+                        if (!startSet) { xStart = cx; startSet = true; }
+                        xEnd = cx + adv;
+                    }
+                    cx += adv;
+                }
+            }
+
+            if (startSet && xEnd > xStart)
+                dc.DrawRectangle(_textSelBrush, null,
+                    new Rect(xStart, lineY, xEnd - xStart, lineH));
+
+            lineY += lineH;
         }
     }
 
@@ -1922,7 +2609,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         using var dc = _caretVisual.RenderOpen();
 
-        if (_caretBrush is null || !_caretVisible || !_selection.IsEmpty || !IsFocused) return;
+        if (_caretBrush is null || !_caretVisible || !_selection.IsEmpty) return;
         if (_caret.BlockIndex < 0 || _caret.BlockIndex >= _blocks.Count) return;
 
         EnsureBrushCache();
@@ -1938,22 +2625,33 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var text = GetFlatText(_caret.BlockIndex);
         if (!string.IsNullOrEmpty(text))
         {
-            var ft = (!_caretFtDirty && rb.FormattedLines is { Count: > 0 })
-                ? rb.FormattedLines[0]
-                : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
-                                    _fgBrush ?? Brushes.Gray, contentW);
-
-            int probeChar = Math.Clamp(
-                _caret.CharOffset > 0 ? _caret.CharOffset - 1 : 0,
-                0, text.Length - 1);
-            var geo = ft.BuildHighlightGeometry(new Point(0, 0), probeChar, 1);
-
-            if (geo is not null && !geo.Bounds.IsEmpty)
+            // Use GlyphLines when available — same metrics as rendering, so caret X is pixel-accurate.
+            if (rb.GlyphLines is { Count: > 0 })
             {
-                caretY = blockScreenY + geo.Bounds.Top;
-                caretH = geo.Bounds.Height;
-                if (_caret.CharOffset > 0)
-                    caretX = contentX + geo.Bounds.Right;
+                var (gx, gy, gh) = GetCaretXYFromGlyphLines(rb.GlyphLines, _caret.CharOffset);
+                caretX = contentX + rb.IndentLeft + gx;
+                caretY = blockScreenY + gy;
+                caretH = gh > 0 ? gh : caretH;
+            }
+            else
+            {
+                var ft = (!_caretFtDirty && rb.FormattedLines is { Count: > 0 })
+                    ? rb.FormattedLines[0]
+                    : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
+                                        _fgBrush ?? Brushes.Gray, contentW);
+
+                int probeChar = Math.Clamp(
+                    _caret.CharOffset > 0 ? _caret.CharOffset - 1 : 0,
+                    0, text.Length - 1);
+                var geo = ft.BuildHighlightGeometry(new Point(0, 0), probeChar, 1);
+
+                if (geo is not null && !geo.Bounds.IsEmpty)
+                {
+                    caretY = blockScreenY + geo.Bounds.Top;
+                    caretH = geo.Bounds.Height;
+                    if (_caret.CharOffset > 0)
+                        caretX = contentX + geo.Bounds.Right;
+                }
             }
         }
 
@@ -2110,6 +2808,157 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private static bool IsWordSeparator(char c) =>
         char.IsWhiteSpace(c) || char.IsPunctuation(c) || char.IsSymbol(c);
 
+    /// <summary>
+    /// Returns true when the click <paramref name="pt"/> falls inside the
+    /// rectangle currently covered by the selection in block <paramref name="idx"/>.
+    /// Used to keep the selection alive when the user right-clicks on it.
+    /// </summary>
+    private bool IsPointInsideSelection(int idx, Point pt)
+    {
+        if (_selection.IsEmpty) return false;
+        var (start, end) = _selection.Ordered;
+        if (idx < start.BlockIndex || idx > end.BlockIndex) return false;
+
+        int charOff = GetCharOffsetAtPoint(idx, pt);
+        if (idx == start.BlockIndex && charOff < start.CharOffset) return false;
+        if (idx == end.BlockIndex   && charOff > end.CharOffset)   return false;
+        return true;
+    }
+
+    // ── Drag-and-drop of the current selection ─────────────────────────────
+    // Internal sentinel format used so we recognise a drop coming from
+    // ourselves (move semantics) versus an external paste-style drop.
+    private const string DragInternalFormat = "WpfHexEditor.DocumentEditor.SelectionDrag";
+    private bool _selfDrag;
+
+    private void StartSelectionDrag()
+    {
+        if (_selection.IsEmpty || _isReadOnly || _mutator is null) return;
+        string text = GetSelectedFlatText();
+        if (string.IsNullOrEmpty(text)) return;
+
+        var data = new DataObject();
+        data.SetData(DataFormats.UnicodeText, text);
+        data.SetData(DragInternalFormat, true);
+
+        // Snapshot the source range so we can delete it on a successful move.
+        var (start, end) = _selection.Ordered;
+        _dragSourceStart = start;
+        _dragSourceEnd   = end;
+
+        _selfDrag = true;
+        try { DragDrop.DoDragDrop(this, data, DragDropEffects.Move | DragDropEffects.Copy); }
+        finally { _selfDrag = false; ReleaseMouseCapture(); }
+    }
+
+    private TextCaret _dragSourceStart, _dragSourceEnd;
+
+    private void OnDragOver(object sender, DragEventArgs e)
+    {
+        if (_isReadOnly || _mutator is null)
+        {
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+            return;
+        }
+        if (!e.Data.GetDataPresent(DataFormats.UnicodeText))
+        {
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+            return;
+        }
+
+        var pt = e.GetPosition(this);
+        int idx = HitTestBlock(pt);
+        if (idx >= 0 && idx < _blocks.Count)
+        {
+            int off = GetCharOffsetAtPoint(idx, pt);
+            _caret = new TextCaret(idx, off, ComputePreferredX(idx, off));
+            _caretVisible = true;
+            RefreshCaretVisual();
+        }
+
+        // Internal drag (move within document) defaults to Move; external
+        // drops (e.g. text from another app) default to Copy. Ctrl forces Copy.
+        bool isSelfDrag    = (bool?)e.Data.GetData(DragInternalFormat) == true;
+        bool ctrlPressed   = (e.KeyStates & DragDropKeyStates.ControlKey) != 0;
+        e.Effects = (isSelfDrag && !ctrlPressed) ? DragDropEffects.Move : DragDropEffects.Copy;
+        e.Handled = true;
+    }
+
+    private void OnDrop(object sender, DragEventArgs e)
+    {
+        if (_isReadOnly || _mutator is null) return;
+        if (!e.Data.GetDataPresent(DataFormats.UnicodeText)) return;
+
+        string text = (string)e.Data.GetData(DataFormats.UnicodeText);
+        if (string.IsNullOrEmpty(text)) return;
+
+        bool isSelfDrag  = (bool?)e.Data.GetData(DragInternalFormat) == true;
+        bool isMove      = isSelfDrag && (e.KeyStates & DragDropKeyStates.ControlKey) == 0;
+
+        var pt = e.GetPosition(this);
+        int idx = HitTestBlock(pt);
+        if (idx < 0 || idx >= _blocks.Count) return;
+        int dropOff = GetCharOffsetAtPoint(idx, pt);
+
+        // For a move, refuse drops that fall inside the source selection
+        // (would be a no-op or a self-overwrite).
+        if (isMove)
+        {
+            var dropCaret = new TextCaret(idx, dropOff, 0);
+            if (CaretIsBetween(dropCaret, _dragSourceStart, _dragSourceEnd))
+            {
+                _selection.Anchor = _selection.Focus = _caret = dropCaret;
+                InvalidateVisual();
+                e.Handled = true;
+                return;
+            }
+        }
+
+        using (_model?.UndoEngine.BeginTransaction(isMove ? "Move text" : "Drop text"))
+        {
+            // Compute the post-delete drop position when both ranges live
+            // in the same block and the drop is after the source.
+            int adjustedDropOff = dropOff;
+            int adjustedDropIdx = idx;
+            if (isMove && idx == _dragSourceEnd.BlockIndex && dropOff > _dragSourceEnd.CharOffset
+                       && idx == _dragSourceStart.BlockIndex)
+            {
+                adjustedDropOff -= (_dragSourceEnd.CharOffset - _dragSourceStart.CharOffset);
+            }
+
+            if (isMove)
+            {
+                _selection.Anchor = _dragSourceStart;
+                _selection.Focus  = _dragSourceEnd;
+                DeleteSelectionIfAny();
+            }
+
+            if (adjustedDropIdx >= 0 && adjustedDropIdx < _blocks.Count)
+            {
+                var targetBlock = _blocks[adjustedDropIdx].Block;
+                _mutator.InsertText(targetBlock, adjustedDropOff, text);
+                _caret = new TextCaret(adjustedDropIdx, adjustedDropOff + text.Length,
+                                       ComputePreferredX(adjustedDropIdx, adjustedDropOff + text.Length));
+                _selection.Anchor = new TextCaret(adjustedDropIdx, adjustedDropOff, 0);
+                _selection.Focus  = _caret;
+            }
+        }
+
+        InvalidateVisual();
+        e.Handled = true;
+    }
+
+    private static bool CaretIsBetween(TextCaret c, TextCaret a, TextCaret b)
+    {
+        // Inclusive on the left, exclusive on the right.
+        if (c.BlockIndex < a.BlockIndex || c.BlockIndex > b.BlockIndex) return false;
+        if (c.BlockIndex == a.BlockIndex && c.CharOffset < a.CharOffset) return false;
+        if (c.BlockIndex == b.BlockIndex && c.CharOffset >= b.CharOffset) return false;
+        return true;
+    }
+
     // ── Phase 13 helpers (stubs expanded in Phase 13) ─────────────────────────
 
     private void DeleteSelectionIfAny()
@@ -2119,11 +2968,13 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         if (start.BlockIndex == end.BlockIndex)
         {
+            MarkBlockDirty(start.BlockIndex);
             var block = _blocks[start.BlockIndex].Block;
             _mutator.DeleteText(block, start.CharOffset, end.CharOffset - start.CharOffset);
         }
         else
         {
+            for (int bi = start.BlockIndex; bi <= end.BlockIndex; bi++) MarkBlockDirty(bi);
             DeleteMultiBlockSelection(start, end);
         }
 
@@ -2155,28 +3006,45 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void InsertTextAtCaret(string text)
     {
-        if (_mutator is null || _blocks.Count == 0) return;
+        if (_mutator is null) return;
+        if (_blocks.Count == 0) EnsureFirstParagraph();
+        if (_blocks.Count == 0) return;
         int bi  = _caret.BlockIndex;
         var block = _blocks[bi].Block;
-        int off = Math.Clamp(_caret.CharOffset, 0, block.Text.Length);
+        int flatLen = GetFlatText(bi).Length;
+        int off = Math.Clamp(_caret.CharOffset, 0, flatLen);
+        MarkBlockDirty(bi);
         _mutator.InsertText(block, off, text);
         _caret = _caret with { CharOffset = off + text.Length };
         _selection.Anchor = _caret;
         _selection.Focus  = _caret;
-        InvalidateVisual();
+        // Rebuild layout synchronously so FormattedLines and GlyphLines reflect the
+        // new text before RefreshCaretVisual computes the caret X and before OnRender
+        // draws the block — eliminates the one-frame lag where stale text is visible.
+        _rebuildPending = false;
+        RebuildLayout();
+        _caretVisible = true;
+        RefreshCaretVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        NotifyCaretMoved();
     }
 
     private void SplitBlockAtCaret()
     {
         if (_mutator is null || _blocks.Count == 0) return;
         int bi  = _caret.BlockIndex;
-        int off = _caret.CharOffset;
+        int off = Math.Clamp(_caret.CharOffset, 0, GetFlatText(bi).Length);
+        MarkBlockDirty(bi);
         _mutator.SplitBlock(bi, off);
         // Caret moves to start of newly created block
         _caret = new TextCaret(bi + 1, 0, 0);
         _selection.Anchor = _caret;
         _selection.Focus  = _caret;
-        InvalidateVisual();
+        _rebuildPending = false;
+        RebuildLayout();
+        RefreshCaretVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        NotifyCaretMoved();
     }
 
     // ── Phase 12 public clipboard (Phase 13 fills in DeleteSelectionIfAny) ────
@@ -2197,6 +3065,14 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         return sb.ToString();
     }
 
+    // ── Dirty tracking helper ────────────────────────────────────────────────
+
+    private void MarkBlockDirty(int blockIndex)
+    {
+        if (_dirtyBlockIndices.Add(blockIndex))
+            DirtyBlocksChanged?.Invoke(this, EventArgs.Empty);
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private Dictionary<DocumentBlock, ForensicSeverity> BuildAlertMap()
@@ -2212,15 +3088,27 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         return map;
     }
 
+    private bool _rebuildPending;
+
     private void OnBlocksChanged(object? sender, EventArgs e)
     {
         _caretFtDirty = true;
         InvalidateBrushCache();
-        Dispatcher.InvokeAsync(RebuildLayout);
+        if (_rebuildPending) return;
+        _rebuildPending = true;
+        // Use Render priority so RebuildLayout fires before OnRender — otherwise
+        // InvalidateVisual (also Render priority, posted slightly after) would
+        // draw stale FormattedLines from the pre-edit layout pass.
+        Dispatcher.InvokeAsync(() =>
+        {
+            _rebuildPending = false;
+            RebuildLayout();
+        }, System.Windows.Threading.DispatcherPriority.Render);
     }
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs e)
     {
+        _cachedPixelsPerDip = 0; // invalidate on window resize (DPI may have changed)
         RecalcPageGeometry(e.NewSize.Width);
         if (_model is not null) RebuildLayout();
         else InvalidateVisual();
@@ -2234,6 +3122,21 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public void SetMutator(DocumentEditor.Core.Editing.DocumentMutator mutator) =>
         _mutator = mutator;
 
+    /// <summary>
+    /// Seeds an empty paragraph when the document has no blocks, so the caret can be
+    /// placed and the user can type / paste immediately. Caller is responsible for
+    /// having checked <c>_mutator is not null</c> and that editing is allowed.
+    /// </summary>
+    private void EnsureFirstParagraph()
+    {
+        if (_mutator is null || _model is null || _model.Blocks.Count > 0) return;
+        _mutator.InsertParagraphAfter(-1);
+        RebuildLayout();
+        _caret = new TextCaret(0, 0, 0);
+        _selection.Anchor = _caret;
+        _selection.Focus  = _caret;
+    }
+
     // ── Phase 14: Inline formatting ───────────────────────────────────────────
 
     /// <summary>
@@ -2243,35 +3146,85 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public void ApplyFormatToSelection(string attribute, object value)
     {
         if (_selection.IsEmpty || _mutator is null) return;
+
+        bool remove = value is false;
+
+        void Apply(DocumentBlock block, int from, int to)
+        {
+            if (remove) _mutator.RemoveRunAttribute(block, from, to, attribute);
+            else        _mutator.ApplyRunAttribute(block, from, to, attribute, value);
+        }
+
         var (start, end) = _selection.Ordered;
         if (start.BlockIndex == end.BlockIndex)
         {
-            _mutator.ApplyRunAttribute(
-                _blocks[start.BlockIndex].Block,
-                start.CharOffset, end.CharOffset, attribute, value);
+            MarkBlockDirty(start.BlockIndex);
+            Apply(_blocks[start.BlockIndex].Block, start.CharOffset, end.CharOffset);
         }
         else
         {
-            // Tail of first block
-            _mutator.ApplyRunAttribute(_blocks[start.BlockIndex].Block,
-                start.CharOffset, GetFlatText(start.BlockIndex).Length, attribute, value);
-            // Full middle blocks
+            for (int bi = start.BlockIndex; bi <= end.BlockIndex; bi++) MarkBlockDirty(bi);
+            Apply(_blocks[start.BlockIndex].Block,
+                  start.CharOffset, GetFlatText(start.BlockIndex).Length);
             for (int bi = start.BlockIndex + 1; bi < end.BlockIndex; bi++)
-                _mutator.ApplyRunAttribute(_blocks[bi].Block, 0, GetFlatText(bi).Length, attribute, value);
-            // Head of last block
-            _mutator.ApplyRunAttribute(_blocks[end.BlockIndex].Block,
-                0, end.CharOffset, attribute, value);
+                Apply(_blocks[bi].Block, 0, GetFlatText(bi).Length);
+            Apply(_blocks[end.BlockIndex].Block, 0, end.CharOffset);
         }
         InvalidateVisual();
+        SelectionFormatChanged?.Invoke(this, EventArgs.Empty);
+        // Reclaim keyboard focus so the caret keeps blinking after toolbar interactions
+        Focus();
+        Keyboard.Focus(this);
+        _caretVisible = true;
+        if (_blinkTimer is { IsEnabled: false }) _blinkTimer.Start();
+        RefreshCaretVisual();
     }
 
     /// <summary>Returns which formatting attributes are present on all selected runs.</summary>
+    /// <summary>
+    /// Returns attributes present on ALL runs (or blocks) covered by the selection —
+    /// i.e., the intersection so that Bold is active only if every selected char is bold.
+    /// </summary>
     public HashSet<string> GetSelectionAttributes()
     {
-        if (_selection.IsEmpty || _blocks.Count == 0) return [];
-        var (start, _) = _selection.Ordered;
-        var block = _blocks[start.BlockIndex].Block;
-        return new HashSet<string>(block.Attributes.Keys);
+        if (_blocks.Count == 0) return [];
+        var (start, end) = _selection.IsEmpty
+            ? (_caret, _caret)
+            : _selection.Ordered;
+
+        HashSet<string>? result = null;
+
+        for (int bi = start.BlockIndex; bi <= end.BlockIndex && bi < _blocks.Count; bi++)
+        {
+            var block = _blocks[bi].Block;
+            int charFrom = bi == start.BlockIndex ? start.CharOffset : 0;
+            int charTo   = bi == end.BlockIndex   ? end.CharOffset   : GetFlatText(bi).Length;
+
+            if (block.Children.Count == 0)
+            {
+                // Flat block — use its own attributes
+                var keys = block.Attributes.Keys.ToHashSet();
+                result = result is null ? keys : result.Intersect(keys).ToHashSet();
+            }
+            else
+            {
+                // Run-based block — find which runs overlap the selection range
+                int pos = 0;
+                foreach (var run in block.Children)
+                {
+                    int runEnd = pos + run.Text.Length;
+                    bool overlaps = pos < charTo && runEnd > charFrom;
+                    if (overlaps)
+                    {
+                        var keys = run.Attributes.Keys.ToHashSet();
+                        result = result is null ? keys : result.Intersect(keys).ToHashSet();
+                    }
+                    pos = runEnd;
+                }
+            }
+        }
+
+        return result ?? [];
     }
 
     // ── Phase 15: Block-level formatting ─────────────────────────────────────
@@ -2283,6 +3236,44 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var block = _blocks[_selectedIndex >= 0 ? _selectedIndex : _caret.BlockIndex].Block;
         _mutator.SetBlockAttribute(block, attribute, value);
         InvalidateVisual();
+        Focus();
+        Keyboard.Focus(this);
+    }
+
+    /// <summary>Increases the indent level of the caret block by 1 (max 8).</summary>
+    public void IncreaseIndent() => AdjustIndent(+1);
+
+    /// <summary>Decreases the indent level of the caret block by 1 (min 0).</summary>
+    public void DecreaseIndent() => AdjustIndent(-1);
+
+    private void AdjustIndent(int delta)
+    {
+        if (_mutator is null || _blocks.Count == 0) return;
+        int bi    = _caret.BlockIndex >= 0 ? _caret.BlockIndex : (_selectedIndex >= 0 ? _selectedIndex : 0);
+        var block = _blocks[bi].Block;
+        int cur   = block.Attributes.TryGetValue(IndentLevelKey, out var v) && v is int iv ? iv : 0;
+        int next  = Math.Clamp(cur + delta, 0, 8);
+        if (next == cur) return;
+        _mutator.SetBlockAttribute(block, IndentLevelKey, next);
+        MarkBlockDirty(bi);
+        InvalidateVisual();
+        Focus();
+        Keyboard.Focus(this);
+    }
+
+    /// <summary>
+    /// Moves the caret to block <paramref name="blockIndex"/>, char offset 0,
+    /// collapses selection, and scrolls the viewport to make it visible.
+    /// </summary>
+    public void NavigateToBlockIndex(int blockIndex)
+    {
+        if (_blocks.Count == 0) return;
+        int bi = Math.Clamp(blockIndex, 0, _blocks.Count - 1);
+        CommitCaret(new TextCaret(bi, 0, 0), extend: false, vertical: false);
+        _selectedIndex = bi;
+        SelectedBlockChanged?.Invoke(this, _blocks[bi].Block);
+        Focus();
+        Keyboard.Focus(this);
     }
 
     /// <summary>Copies the current text selection to the clipboard.</summary>
@@ -2317,11 +3308,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public void DeleteAtCaret(bool forward)
     {
         if (_isReadOnly || _mutator is null || _blocks.Count == 0) return;
-        if (!_selection.IsEmpty) { DeleteSelectionIfAny(); return; }
+        if (!_selection.IsEmpty) { DeleteSelectionIfAny(); _rebuildPending = false; RebuildLayout(); RefreshCaretVisual(); NotifyCaretBlockChangedIfNeeded(); NotifyCaretMoved(); return; }
 
         int bi   = _caret.BlockIndex;
         int off  = _caret.CharOffset;
         var block = _blocks[bi].Block;
+        MarkBlockDirty(bi);
 
         if (forward)
         {
@@ -2335,6 +3327,11 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         }
         _selection.Anchor = _caret;
         _selection.Focus  = _caret;
+        _rebuildPending = false;
+        RebuildLayout();
+        RefreshCaretVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        NotifyCaretMoved();
     }
 
     /// <summary>Selects all text in the document.</summary>
@@ -2349,6 +3346,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     // ── Phase 19: Find & Replace highlight support ────────────────────────────
 
+    /// <summary>Raised after find results change so the host can update scroll markers.</summary>
+    public event EventHandler? FindResultsChanged;
+
     /// <summary>
     /// Called by <see cref="DocumentSearchViewModel"/> to push find highlights to the renderer.
     /// Active cursor match renders at full opacity; others at 50%.
@@ -2357,7 +3357,11 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         _findResults = results;
         _findCursor  = activeCursor;
+        _searchBlockIndicesCache = results.Count == 0
+            ? []
+            : results.Select(r => r.BlockIndex).Distinct().ToList();
         InvalidateVisual();
+        FindResultsChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void DrawFindHighlights(DrawingContext dc, double contentX, double contentW)
@@ -2407,7 +3411,10 @@ internal sealed record RenderBlock(
     bool                       IsPageBreak,
     int                        PageNumber,
     ForensicSeverity?          ForensicSeverity,
-    IReadOnlyList<InlineVisualLine>? GlyphLines = null);
+    IReadOnlyList<InlineVisualLine>? GlyphLines = null,
+    double                     IndentLeft       = 0,
+    double                     IndentRight      = 0,
+    double                     IndentFirstLine  = 0);
 
 // ── Visual-line navigation types ──────────────────────────────────────────────
 
@@ -2485,9 +3492,18 @@ internal static class CaretNavHelper
     internal static double GetCaretX(FormattedText ft, int charOffset, int textLen)
     {
         if (charOffset <= 0 || textLen == 0) return 0;
-        int probe = Math.Clamp(charOffset - 1, 0, textLen - 1);
-        var geo   = ft.BuildHighlightGeometry(new Point(0, 0), probe, 1);
-        return geo is not null && !geo.Bounds.IsEmpty ? geo.Bounds.Right : 0;
+        // ft may have been rebuilt with fewer chars than textLen (e.g. after a drag-move delete),
+        // so clamp probe against both textLen and ft's actual text length.
+        int ftLen = ft.Text?.Length ?? 0;
+        int safe  = Math.Min(textLen, ftLen);
+        if (safe <= 0) return 0;
+        int probe = Math.Clamp(charOffset - 1, 0, safe - 1);
+        try
+        {
+            var geo = ft.BuildHighlightGeometry(new Point(0, 0), probe, 1);
+            return geo is not null && !geo.Bounds.IsEmpty ? geo.Bounds.Right : 0;
+        }
+        catch (ArgumentOutOfRangeException) { return 0; }
     }
 }
 

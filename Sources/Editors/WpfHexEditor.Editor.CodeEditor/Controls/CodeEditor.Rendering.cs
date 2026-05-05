@@ -840,6 +840,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _lspDeclarationHintsLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight, BuildVisibleSourceLines(), _horizontalScrollOffset);
                 if (EnableSemanticHighlighting)
                     _semanticTokensLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight, _horizontalScrollOffset, _lineYLookup, TopMargin);
+                // Debug value layer: always forwarded — layer is no-op when no provider is set.
+                _debugValueHintsLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight, _horizontalScrollOffset);
             }
 
             // Sticky scroll header: refresh only when the true scroll-line changes.

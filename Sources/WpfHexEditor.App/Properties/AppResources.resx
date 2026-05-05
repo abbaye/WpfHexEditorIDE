@@ -1174,4 +1174,16 @@
   <data name="APP_DBG_ShowCallStack"        xml:space="preserve"><value>Show _Call Stack</value></data>
   <data name="APP_DBG_ShowLocals"           xml:space="preserve"><value>Show _Locals</value></data>
   <data name="APP_DBG_ShowWatch"            xml:space="preserve"><value>Show _Watch</value></data>
+
+  <!-- ── Phase 4 — Remote / Edit&Continue / Symbol Server / Data Breakpoints ── -->
+  <data name="Debugger_RemoteConnect"           xml:space="preserve"><value>Connect to Remote Debugger…</value></data>
+  <data name="Debugger_RemoteConnecting"        xml:space="preserve"><value>Connecting to remote debugger…</value></data>
+  <data name="Debugger_RemoteConnectFailed"     xml:space="preserve"><value>Failed to connect to remote debug adapter.</value></data>
+  <data name="Debugger_EditContinueApplied"     xml:space="preserve"><value>Edit &amp; Continue applied.</value></data>
+  <data name="Debugger_HotReloadApplied"        xml:space="preserve"><value>Hot Reload applied.</value></data>
+  <data name="Debugger_HotReloadNotSupported"   xml:space="preserve"><value>Hot Reload is not supported by this runtime.</value></data>
+  <data name="Debugger_SymbolServerResolving"   xml:space="preserve"><value>Resolving symbols…</value></data>
+  <data name="Debugger_SymbolServerDone"        xml:space="preserve"><value>Symbol resolution complete.</value></data>
+  <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Data Breakpoints</value></data>
+  <data name="Debugger_DataBreakpointAdd"       xml:space="preserve"><value>Add Data Breakpoint</value></data>
 </root>

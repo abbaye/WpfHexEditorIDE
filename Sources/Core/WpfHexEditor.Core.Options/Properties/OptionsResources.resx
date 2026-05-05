@@ -429,6 +429,7 @@
   <data name="Opt_Page_FormatExplorer"     xml:space="preserve"><value>Format Explorer</value></data>
   <data name="Opt_Page_CompareFiles"       xml:space="preserve"><value>Compare Files</value></data>
   <data name="Opt_Page_CommandPalette"     xml:space="preserve"><value>Command Palette</value></data>
+  <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Error List</value></data>
 
   <!-- ═══════════════════════════════════════════════════════════════
        PLUGIN SYSTEM OPTIONS PAGE — folder picker dialog
@@ -467,6 +468,12 @@
   <data name="Opt_IndentLevel_2"              xml:space="preserve"><value>2 levels (8 spaces at root) — VS default</value></data>
   <data name="Opt_IndentLevel_3"              xml:space="preserve"><value>3 levels (12 spaces at root)</value></data>
 
+  <!-- ── Code Editor Formatting page ─────────────────────────────────── -->
+  <data name="Opt_Fmt_Language"              xml:space="preserve"><value>Language</value></data>
+  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Reset overrides</value></data>
+  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Reset all overrides</value></data>
+  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>These settings override the language .whfmt defaults.&#x0a;Leave checkboxes at their indeterminate state (—) to inherit the language rules.</value></data>
+
   <!-- ═══════════════════════════════════════════════════════════════
        MARKDOWN EDITOR OPTIONS PAGE — layout combo
        ═══════════════════════════════════════════════════════════════ -->
@@ -477,4 +484,56 @@
   <data name="Opt_Preview_Label"              xml:space="preserve"><value>Preview</value></data>
 
   <data name="Opt_NotYetImplemented" xml:space="preserve"><value>Not yet implemented</value></data>
+  <data name="Opt_ComingSoon"         xml:space="preserve"><value>This feature will be available in a future version.</value></data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       DOCUMENT EDITOR — category
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="Opt_Category_DocumentEditor"             xml:space="preserve"><value>Document Editor</value></data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       DOCUMENT EDITOR OPTIONS PAGE — section headers
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="DocOpt_AppearanceSection"                xml:space="preserve"><value>Appearance</value></data>
+  <data name="DocOpt_SyncSection"                      xml:space="preserve"><value>Synchronisation</value></data>
+  <data name="DocOpt_HoverSection"                     xml:space="preserve"><value>Hover</value></data>
+  <data name="DocOpt_AutoSaveSection"                  xml:space="preserve"><value>Auto-save</value></data>
+  <data name="DocOpt_EditingSection"                   xml:space="preserve"><value>Editing</value></data>
+  <data name="DocOpt_ColorsSection"                    xml:space="preserve"><value>Hex Highlight Colors</value></data>
+
+  <!-- ── Appearance ─────────────────────────────────────────────── -->
+  <data name="DocOpt_FontSizeLabel"                    xml:space="preserve"><value>Default font size (pt)</value></data>
+  <data name="DocOpt_ViewModeLabel"                    xml:space="preserve"><value>Default view mode</value></data>
+  <data name="DocOpt_RenderModeLabel"                  xml:space="preserve"><value>Default render mode</value></data>
+  <data name="DocOpt_ShowScrollMarkers"                xml:space="preserve"><value>Show scroll markers</value></data>
+  <data name="DocOpt_ShowMiniMap"                      xml:space="preserve"><value>Show mini-map</value></data>
+  <data name="DocOpt_ShowForensicGutter"               xml:space="preserve"><value>Show forensic gutter</value></data>
+  <data name="DocOpt_ViewMode_TextOnly"                xml:space="preserve"><value>Text only</value></data>
+  <data name="DocOpt_ViewMode_Structure"               xml:space="preserve"><value>Structure</value></data>
+  <data name="DocOpt_ViewMode_Focus"                   xml:space="preserve"><value>Focus</value></data>
+  <data name="DocOpt_RenderMode_Page"                  xml:space="preserve"><value>Page (paginated)</value></data>
+  <data name="DocOpt_RenderMode_Draft"                 xml:space="preserve"><value>Draft (continuous scroll)</value></data>
+  <data name="DocOpt_RenderMode_Outline"               xml:space="preserve"><value>Outline</value></data>
+
+  <!-- ── Synchronisation ───────────────────────────────────────── -->
+  <data name="DocOpt_SyncThrottleLabel"                xml:space="preserve"><value>Sync throttle (ms)</value></data>
+  <data name="DocOpt_SyncTextToHex"                    xml:space="preserve"><value>Sync text selection → hex pane</value></data>
+  <data name="DocOpt_SyncHexToText"                    xml:space="preserve"><value>Sync hex selection → text pane</value></data>
+
+  <!-- ── Hover ──────────────────────────────────────────────────── -->
+  <data name="DocOpt_ShowBlockHoverTooltip"            xml:space="preserve"><value>Show block hover tooltip</value></data>
+  <data name="DocOpt_HoverDelayLabel"                  xml:space="preserve"><value>Hover delay (ms)</value></data>
+
+  <!-- ── Auto-save ──────────────────────────────────────────────── -->
+  <data name="DocOpt_AutoSaveEnabled"                  xml:space="preserve"><value>Enable auto-save</value></data>
+  <data name="DocOpt_AutoSaveIntervalLabel"            xml:space="preserve"><value>Auto-save interval (seconds)</value></data>
+
+  <!-- ── Editing ────────────────────────────────────────────────── -->
+  <data name="DocOpt_IndentWidthLabel"                 xml:space="preserve"><value>Indent width (spaces)</value></data>
+
+  <!-- ── Hex Highlight Colors ───────────────────────────────────── -->
+  <data name="DocOpt_BlockHighlightColor"              xml:space="preserve"><value>Block hover highlight</value></data>
+  <data name="DocOpt_SelectedBlockColor"               xml:space="preserve"><value>Selected block</value></data>
+  <data name="DocOpt_ForensicAlertColor"               xml:space="preserve"><value>Forensic alert overlay</value></data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Show split view toggle button</value></data>
 </root>

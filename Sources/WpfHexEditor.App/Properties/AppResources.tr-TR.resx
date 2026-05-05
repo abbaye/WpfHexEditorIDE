@@ -893,4 +893,14 @@
   <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Browse and manage built-in and user .whfmt format definitions</value></data>
   <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Open the Format Catalog document tab (all formats in a sortable grid)</value></data>
   <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyse entropy and byte distribution of the active file</value></data>
+  <data name="Debugger_RemoteConnect" xml:space="preserve"><value>Uzak Hata Ayiklayiciya Baglan...</value></data>
+  <data name="Debugger_RemoteConnecting" xml:space="preserve"><value>Uzak hata ayiklayiciya baglaniliyor...</value></data>
+  <data name="Debugger_RemoteConnectFailed" xml:space="preserve"><value>Uzak hata ayiklama bagdastirmasina baglanlamadi.</value></data>
+  <data name="Debugger_EditContinueApplied" xml:space="preserve"><value>Duzenle ve Devam Et uygulandi.</value></data>
+  <data name="Debugger_HotReloadApplied" xml:space="preserve"><value>Etkin Yeniden Yukleme uygulandi.</value></data>
+  <data name="Debugger_HotReloadNotSupported" xml:space="preserve"><value>Etkin Yeniden Yukleme bu calisma zamani tarafindan desteklenmiyor.</value></data>
+  <data name="Debugger_SymbolServerResolving" xml:space="preserve"><value>Semboller cozumleniyor...</value></data>
+  <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Sembol cozumlemesi tamamlandi.</value></data>
+  <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Veri Kesme Noktalari</value></data>
+  <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Veri Kesme Noktasi Ekle</value></data>
 </root>

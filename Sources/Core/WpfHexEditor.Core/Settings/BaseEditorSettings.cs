@@ -21,6 +21,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Core.Settings;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.Core.Settings
 {
@@ -266,7 +267,7 @@ namespace WpfHexEditor.Core.Settings
             {
                 var json = GetSettingsJson();
 
-                MessageBox.Show(
+                IdeMessageBox.Show(
                     $"Settings JSON ready ({json.Length} chars).\n\n" +
                     "Use GetSettingsJson() to retrieve and persist this configuration.",
                     "Settings Saved",
@@ -275,7 +276,7 @@ namespace WpfHexEditor.Core.Settings
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
+                IdeMessageBox.Show(
                     $"Failed to generate settings JSON:\n{ex.Message}",
                     "Error",
                     MessageBoxButton.OK,
@@ -290,7 +291,7 @@ namespace WpfHexEditor.Core.Settings
 
             try
             {
-                MessageBox.Show(
+                IdeMessageBox.Show(
                     "In your application, load the JSON and call LoadSettingsJson(json).",
                     "Load Settings",
                     MessageBoxButton.OK,
@@ -298,7 +299,7 @@ namespace WpfHexEditor.Core.Settings
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
+                IdeMessageBox.Show(
                     $"Failed to load settings:\n{ex.Message}",
                     "Error",
                     MessageBoxButton.OK,
@@ -311,7 +312,7 @@ namespace WpfHexEditor.Core.Settings
             var editor = _getEditorControl();
             if (editor == null) return;
 
-            var result = MessageBox.Show(
+            var result = IdeMessageBox.Show(
                 "Reset all settings to defaults?\n\nThis will reset all properties to their DependencyProperty default values.",
                 "Confirm Reset",
                 MessageBoxButton.YesNo,
@@ -340,7 +341,7 @@ namespace WpfHexEditor.Core.Settings
                         }
                     }
 
-                    MessageBox.Show(
+                    IdeMessageBox.Show(
                         "Settings reset to defaults",
                         "Success",
                         MessageBoxButton.OK,
@@ -348,7 +349,7 @@ namespace WpfHexEditor.Core.Settings
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(
+                    IdeMessageBox.Show(
                         $"Failed to reset settings:\n{ex.Message}",
                         "Error",
                         MessageBoxButton.OK,

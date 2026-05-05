@@ -28,7 +28,7 @@ namespace WpfHexEditor.Core.Roslyn;
 /// Also implements <see cref="IReferenceCountProvider"/> so <c>InlineHintsService</c>
 /// can use semantic reference counts for C#/VB.NET files.
 /// </summary>
-public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, IInlineHintsOptionsClient
+public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, IInlineHintsOptionsClient, IDiagnosticsModeClient
 {
     private readonly Dispatcher _dispatcher;
     private readonly RoslynWorkspaceManager _workspace;
@@ -83,6 +83,10 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, 
 
     /// <inheritdoc/>
     public bool IsFullyLoaded => _fullyLoaded;
+
+    /// <inheritdoc cref="IDiagnosticsModeClient.UsesPullDiagnostics"/>
+    /// Roslyn uses push-mode diagnostics via <see cref="BackgroundAnalysisService.DiagnosticsReady"/>.
+    public bool UsesPullDiagnostics => false;
 
     /// <inheritdoc/>
     public event Action? FullyLoaded;

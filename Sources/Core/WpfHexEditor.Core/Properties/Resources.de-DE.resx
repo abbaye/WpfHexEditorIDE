@@ -1968,4 +1968,8 @@ Hinweis: Vollständige Integration mit HexEditor erfordert Verbindung zum Haupta
   <data name="HE_ResultsHeader" xml:space="preserve">
     <value>Ergebnisse</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Teilen</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Geteilte Ansicht des Hex-Editors öffnen oder schließen</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Teilung schließen</value></data>
 </root>

@@ -27,6 +27,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using WpfHexEditor.PluginDev.Properties;
 using WpfHexEditor.PluginDev.Templates;
+using WpfHexEditor.Editor.Core.Dialogs;
 
 namespace WpfHexEditor.PluginDev.UI;
 
@@ -496,7 +497,7 @@ public sealed class NewPluginWizardWindow : Window
             // Scaffold template-specific source files.
             await template.ScaffoldAsync(projectDir, name, author);
 
-            MessageBox.Show(
+            IdeMessageBox.Show(
                 $"Plugin project created at:\n{projectDir}\n\nOpen the folder to start editing.",
                 PluginDevResources.PluginDev_PluginCreated,
                 MessageBoxButton.OK,
@@ -508,7 +509,7 @@ public sealed class NewPluginWizardWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
+            IdeMessageBox.Show(
                 $"Failed to create plugin project:\n{ex.Message}",
                 PluginDevResources.PluginDev_Error,
                 MessageBoxButton.OK,

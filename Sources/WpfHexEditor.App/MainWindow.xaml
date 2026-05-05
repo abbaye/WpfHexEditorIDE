@@ -2129,6 +2129,7 @@
         <KeyBinding Gesture="Ctrl+G"       Command="{x:Static local:MainWindow.GoToOffsetCommand}" />
         <KeyBinding Gesture="Ctrl+Shift+P" Command="{x:Static local:MainWindow.ShowCommandPaletteCommand}" />
         <KeyBinding Gesture="Ctrl+Shift+L" Command="{x:Static local:MainWindow.CustomizeLayoutCommand}" />
+        <KeyBinding Gesture="Ctrl+Shift+H" Command="{x:Static local:MainWindow.WorkspaceFindReplaceCommand}" />
         <KeyBinding Key="F11"             Command="{x:Static local:MainWindow.ToggleFullScreenCommand}" />
     </Window.InputBindings>
     <Window.CommandBindings>
@@ -2145,6 +2146,7 @@
         <CommandBinding Command="{x:Static local:MainWindow.OpenPluginManagerCommand}"  Executed="OnOpenPluginManager" />
         <CommandBinding Command="{x:Static local:MainWindow.ShowCommandPaletteCommand}" Executed="OnShowCommandPalette" />
         <CommandBinding Command="{x:Static local:MainWindow.CustomizeLayoutCommand}"   Executed="OnCustomizeLayoutCommand" />
-        <CommandBinding Command="{x:Static local:MainWindow.ToggleFullScreenCommand}" Executed="OnToggleFullScreenRoutedCommand" />
+        <CommandBinding Command="{x:Static local:MainWindow.ToggleFullScreenCommand}"       Executed="OnToggleFullScreenRoutedCommand" />
+        <CommandBinding Command="{x:Static local:MainWindow.WorkspaceFindReplaceCommand}"  Executed="OnWorkspaceFindReplace" />
     </Window.CommandBindings>
 </Window>

@@ -167,4 +167,21 @@ public interface IUIRegistry
     /// </summary>
     /// <param name="pluginId">Plugin identifier whose elements to remove.</param>
     void UnregisterAllForPlugin(string pluginId);
+
+    /// <summary>
+    /// Suspends visual-tree rebuilds during a bulk panel registration.
+    /// Each <see cref="RegisterPanel"/> call normally triggers a full
+    /// RebuildVisualTree() on the docking adapter — registering N panels in a
+    /// row therefore costs O(N) full rebuilds. Wrap a batch in
+    /// Begin/EndBulkRegistration to coalesce them into a single rebuild.
+    /// Always pair with <see cref="EndBulkRegistration"/> in a <c>finally</c>.
+    /// Default implementation: no-op (host registries that don't need batching).
+    /// </summary>
+    void BeginBulkRegistration() { }
+
+    /// <summary>
+    /// Resumes rebuilds and performs a single deferred rebuild.
+    /// Default implementation: no-op.
+    /// </summary>
+    void EndBulkRegistration() { }
 }

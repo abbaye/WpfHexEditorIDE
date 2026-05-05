@@ -10,6 +10,7 @@
 //////////////////////////////////////////////
 
 using System.IO;
+using System.Linq;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Docking.Core.Serialization;
@@ -82,6 +83,105 @@ internal static class LayoutPersistenceService
         {
             OutputLogger.Error($"Failed to load layout from {filePath}: {ex.Message}");
             return null;
+        }
+    }
+
+    /// <summary>
+    /// Maximum number of dock items a persisted layout may contain before it is
+    /// considered potentially corrupt or incompatible. Layouts exceeding this
+    /// threshold are rejected at load time so the IDE falls back gracefully.
+    /// </summary>
+    public const int MaxLayoutItems = 60;
+
+    /// <summary>
+    /// Returns true if the layout is within acceptable complexity bounds.
+    /// When false, <paramref name="reason"/> describes the problem.
+    /// </summary>
+    public static bool IsLayoutHealthy(DockLayoutRoot layout, out string reason)
+    {
+        var totalItems = layout.GetAllItems().Count();
+        if (totalItems > MaxLayoutItems)
+        {
+            reason = $"layout contains {totalItems} items (limit: {MaxLayoutItems}). " +
+                     "It may be from an older version or a configuration that is no longer supported.";
+            return false;
+        }
+
+        reason = string.Empty;
+        return true;
+    }
+
+    /// <summary>
+    /// Removes all document tabs (doc-file-*, doc-hex-*, doc-proj-*, etc.) from the layout
+    /// to reduce complexity while preserving panel positions (Solution Explorer, Output, etc.).
+    /// Used as a recovery step when a layout exceeds <see cref="MaxLayoutItems"/>.
+    /// </summary>
+    public static int PruneAllDocumentItems(DockLayoutRoot layout)
+    {
+        var pruned = new List<string>();
+
+        PruneAllDocsFromNode(layout.RootNode, pruned);
+        PruneDocsFromList(layout.FloatingItems, pruned);
+        PruneDocsFromList(layout.AutoHideItems, pruned);
+        PruneDocsFromList(layout.HiddenItems,   pruned);
+
+        if (pruned.Count > 0)
+            OutputLogger.Info($"Layout recovery: removed {pruned.Count} document tab(s) to restore healthy complexity.");
+
+        return pruned.Count;
+    }
+
+    private static void PruneAllDocsFromNode(DockNode node, List<string> pruned)
+    {
+        switch (node)
+        {
+            case DockGroupNode group:
+                foreach (var item in group.Items.ToList())
+                {
+                    if (IsDocumentItem(item))
+                    {
+                        group.RemoveItem(item);
+                        pruned.Add(item.Title ?? item.ContentId);
+                    }
+                }
+                break;
+
+            case DockSplitNode split:
+                foreach (var child in split.Children)
+                    PruneAllDocsFromNode(child, pruned);
+                break;
+        }
+    }
+
+    private static void PruneDocsFromList(List<DockItem> items, List<string> pruned)
+    {
+        for (int i = items.Count - 1; i >= 0; i--)
+        {
+            if (IsDocumentItem(items[i]))
+            {
+                pruned.Add(items[i].Title ?? items[i].ContentId);
+                items.RemoveAt(i);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Creates a timestamped backup of the layout file next to the original.
+    /// Safe to call even if the file does not exist.
+    /// </summary>
+    public static void BackupLayoutFile()
+    {
+        if (!File.Exists(LayoutFilePath)) return;
+        try
+        {
+            var stamp  = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            var backup = Path.ChangeExtension(LayoutFilePath, $".{stamp}.bak.json");
+            File.Copy(LayoutFilePath, backup, overwrite: true);
+            OutputLogger.Info($"Layout backup created: {backup}");
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Failed to create layout backup: {ex.Message}");
         }
     }
 

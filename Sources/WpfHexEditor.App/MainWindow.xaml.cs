@@ -121,6 +121,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         "CustomizeLayout", typeof(MainWindow),
         new InputGestureCollection { new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Shift) });
 
+    public static readonly RoutedCommand WorkspaceFindReplaceCommand = new RoutedCommand(
+        "WorkspaceFindReplace", typeof(MainWindow),
+        new InputGestureCollection { new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift) });
+
     // --- Constants -----------------------------------------------------
     private static readonly string LayoutFilePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -200,8 +204,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private ErrorPanel? _errorPanel;
     private WpfHexEditor.Shell.Panels.Panels.BookmarksPanel? _bookmarksPanel;
     private const string ErrorPanelContentId         = "panel-errors";
-    private const string FindReferencesPanelContentId  = "panel-find-references";
+    private const string FindReferencesPanelContentId        = "panel-find-references";
     private WpfHexEditor.Editor.CodeEditor.Controls.FindReferencesPanel? _findReferencesPanel;
+    private const string WorkspaceFindReplacePanelContentId  = "panel-workspace-find-replace";
+    private WpfHexEditor.Shell.Panels.Panels.WorkspaceFindReplacePanel? _workspaceFindReplacePanel;
     private const string OptionsContentId       = "panel-options";
     private const string MarkdownOutlinePanelContentId   = "panel-md-outline";
 
@@ -757,6 +763,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             () => new WpfHexEditor.App.Options.ViewMenuOptionsPage(),
             "\uE700");
 
+        // Register Error List options page (default visibility toggles)
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
+            CategoryEnvironment, PageErrorList,
+            () => new WpfHexEditor.App.Options.ErrorPanelOptionsPage(),
+            "",
+            ["error", "warning", "message", "error list", "diagnostics"]);
+
         // Plugin system — fire-and-forget after layout is ready
         _ = InitializePluginSystemAsync();
     }
@@ -1018,9 +1031,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var msg = string.Format(AppResources.App_UpgradeMessagePattern,
                 e.FromVersion, e.ToVersion, "\n", fileList);
 
-            var result = MessageBox.Show(this, msg, AppResources.App_FormatUpgradeRequired,
-                MessageBoxButton.YesNo, MessageBoxImage.Information,
-                MessageBoxResult.Yes);
+            var result = _dialogService.Show(msg, AppResources.App_FormatUpgradeRequired,
+                MessageBoxButton.YesNo, MessageBoxImage.Information);
 
             if (result == MessageBoxResult.Yes)
             {
@@ -1031,7 +1043,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, string.Format(AppResources.App_UpgradeFailedMessage, ex.Message), AppResources.App_FormatUpgrade,
+                    _dialogService.Show(string.Format(AppResources.App_UpgradeFailedMessage, ex.Message), AppResources.App_FormatUpgrade,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -1117,9 +1129,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var layout = Services.LayoutPersistenceService.LoadFromDisk();
         if (layout is not null)
         {
-            RestoreWindowState(layout);
             Services.LayoutPersistenceService.PruneStaleDocumentItems(layout);
             Services.LayoutPersistenceService.PruneDuplicateDocumentItems(layout);
+
+            if (!Services.LayoutPersistenceService.IsLayoutHealthy(layout, out var reason))
+            {
+                Services.LayoutPersistenceService.BackupLayoutFile();
+                var pruned = Services.LayoutPersistenceService.PruneAllDocumentItems(layout);
+                OutputLogger.Warn(
+                    $"[Layout] Saved layout was too large ({reason}); {pruned} document tab(s) removed. " +
+                    $"Panel positions are preserved. Backup saved alongside {Services.LayoutPersistenceService.LayoutFilePath}.");
+            }
+
+            RestoreWindowState(layout);
             ApplyLayout(layout);
             EnsureErrorPanel();
             _layoutWasRestoredFromFile = true;
@@ -1143,6 +1165,114 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (layout.WindowState is 2)
             WindowState = WindowState.Maximized;
+    }
+
+    /// <summary>
+    /// Rebuilds dock content for any AssemblyExplorer panels that were rendered as a
+    /// CreateDocumentContent fallback during layout load (before _assemblyExplorerModule
+    /// was initialized). Called once from InitializePluginSystemAsync after the module is ready.
+    /// </summary>
+    /// <summary>
+    /// Called once from InitializePluginSystemAsync after both DebugModule and
+    /// AssemblyExplorerModule are ready. If the saved layout contained any of their
+    /// panels they were rendered as transparent placeholders (modules were null at
+    /// layout-restore time). A single RebuildVisualTree re-invokes ContentFactory
+    /// for every item — this time the modules are ready and return the real panels.
+    /// </summary>
+    /// <summary>
+    /// Wires DataContext on all pre-built debug panel shells and rebuilds
+    /// AssemblyExplorer placeholders. Called from InitializePluginSystemAsync
+    /// after both modules are ready.
+    /// </summary>
+    private void RefreshModulePanels()
+    {
+        // Debug panels: DataContext is wired onto the already-cached panel shells.
+        // Passes _debugPanelShells so the module adopts any shells built before Initialize().
+        // No RebuildVisualTree needed — the instances are already in the visual tree.
+        _debugModule?.WireDataContexts(_debugPanelShells);
+
+        if (_layout is null) return;
+
+        // AssemblyExplorer panels: pre-building is not possible (complex constructor args).
+        // Invalidate ALL known AssemblyExplorer ContentIds present in the layout so that
+        // RebuildVisualTree re-invokes ContentFactory now that the module is ready.
+        // We do not guard on EagerContentKey here — an active tab also gets a Border cached
+        // if the module was null at layout-load time.
+        var asmIds = _layout.GetAllItems()
+            .Where(item => WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId))
+            .Select(item => item.ContentId)
+            .ToList();
+
+        if (asmIds.Count == 0) return;
+
+        foreach (var id in asmIds)
+        {
+            _displayContent.Remove(id);   // MainWindow's own cache — must clear so CreateContentForItem re-invokes BuildContentForItem
+            DockHost.InvalidateContent(id); // DockControl's internal cache
+        }
+
+        DockHost.RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Returns the real panel if the module is ready, otherwise a transparent placeholder.
+    /// Used only for AssemblyExplorer panels which cannot be pre-built without context.
+    /// RefreshModulePanels() invalidates these placeholders and rebuilds after module init.
+    /// </summary>
+    private UIElement GetOrDeferModulePanel(DockItem item, Func<UIElement?> getPanel, Func<bool> moduleReady)
+    {
+        if (moduleReady())
+            return getPanel() ?? CreateDocumentContent(item);
+
+        // Mark the item so the next RebuildVisualTree calls ContentFactory even for non-active tabs.
+        item.Metadata[WpfHexEditor.Shell.DockTabControl.EagerContentKey] = "1";
+        return new System.Windows.Controls.Border { Background = System.Windows.Media.Brushes.Transparent };
+    }
+
+    // ── Debug panel shell factory ────────────────────────────────────────────
+    // Builds the panel UserControl immediately (no DataContext) so DockControl
+    // caches the real instance from the first BuildContentForItem call — same
+    // pattern as SolutionExplorerPanel. DataContext is wired later by
+    // DebugModule.WireDataContexts() after Initialize completes.
+    // _debugModule may be null here (layout loads before plugin init).
+
+    private readonly Dictionary<string, System.Windows.FrameworkElement> _debugPanelShells = new();
+
+    private UIElement GetOrBuildDebugPanelShell(DockItem item)
+    {
+        var id = item.ContentId;
+
+        // If module is already ready (e.g. panel opened via View menu after startup), go direct.
+        if (_debugModule is not null)
+            return _debugModule.GetOrBuildPanelShell(id) ?? _debugModule.GetPanel(id) ?? CreateDocumentContent(item);
+
+        // Module not yet initialized — build shell now so the cache holds the real instance.
+        if (!_debugPanelShells.TryGetValue(id, out var shell))
+        {
+            shell = id switch
+            {
+                WpfHexEditor.App.Debug.DebugModule.ContentIdBreakpoints    => new WpfHexEditor.App.Debug.Panels.BreakpointExplorerPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdCallStack      => new WpfHexEditor.App.Debug.Panels.CallStackPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdLocals         => new WpfHexEditor.App.Debug.Panels.LocalsPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdAutos          => new WpfHexEditor.App.Debug.Panels.AutosPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdExceptions     => new WpfHexEditor.App.Debug.Panels.ExceptionSettingsPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdImmediate      => new WpfHexEditor.App.Debug.Panels.ImmediateWindowPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdModules        => new WpfHexEditor.App.Debug.Panels.ModulesPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdTasks          => new WpfHexEditor.App.Debug.Panels.TasksPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdDisassembly    => new WpfHexEditor.App.Debug.Panels.DisassemblyPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdMemory         => new WpfHexEditor.App.Debug.Panels.MemoryWindowPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdRegisters      => new WpfHexEditor.App.Debug.Panels.RegistersPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdParallelWatch  => new WpfHexEditor.App.Debug.Panels.ParallelWatchPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdWatch          => new WpfHexEditor.App.Debug.Panels.WatchesPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdConsole        => new WpfHexEditor.App.Debug.Panels.DebugConsolePanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdThreads        => new WpfHexEditor.App.Debug.Panels.ThreadsPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdParallelStacks => new WpfHexEditor.App.Debug.Panels.ParallelStacksPanel(),
+                _ => new System.Windows.Controls.Border()
+            };
+            _debugPanelShells[id] = shell;
+        }
+
+        return shell;
     }
 
     // Layout pruning logic moved to Services.LayoutPersistenceService (Phase 4 refactoring)
@@ -1533,7 +1663,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             "panel-output"             => CreateOutputContent(),
             "panel-properties"         => CreatePropertiesContent(),
             ErrorPanelContentId          => CreateErrorPanelContent(),
-            FindReferencesPanelContentId => CreateFindReferencesPanelContent(),
+            FindReferencesPanelContentId        => CreateFindReferencesPanelContent(),
+            WorkspaceFindReplacePanelContentId  => CreateWorkspaceFindReplacePanelContent(),
 
             OptionsContentId               => CreateOptionsContent(),
             BookmarksPanelContentId        => CreateBookmarksPanelContent(),
@@ -1544,6 +1675,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             MarkdownOutlinePanelContentId  => CreateMarkdownOutlinePanelContent(),
             FormatBrowserContentId         => CreateFormatBrowserContent(),
             FormatCatalogDocContentId      => CreateFormatCatalogContent(),
+            _ when item.ContentId.StartsWith("panel-dbg-")
+                                                                    => GetOrBuildDebugPanelShell(item),
+            _ when WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId)
+                                                                    => GetOrDeferModulePanel(item, () => _assemblyExplorerModule?.GetPanel(item.ContentId), () => _assemblyExplorerModule is not null),
             _ when item.ContentId.StartsWith("doc-class-diagram-") => CreateClassDiagramGhostContent(item),
             _ when item.ContentId.StartsWith("doc-new-text-")   => CreateEmptyTextEditorContent(item),
             _ when item.ContentId.StartsWith("doc-new-code-")  => CreateEmptyCodeEditorContent(item),
@@ -2378,6 +2513,32 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private UIElement CreateFindReferencesPanelContent()
         => EnsureFindReferencesPanelInstance();
 
+    // ── Workspace Find & Replace panel ────────────────────────────────────────
+
+    private UIElement CreateWorkspaceFindReplacePanelContent()
+    {
+        if (_workspaceFindReplacePanel is null)
+        {
+            _workspaceFindReplacePanel = new WpfHexEditor.Shell.Panels.Panels.WorkspaceFindReplacePanel();
+            _workspaceFindReplacePanel.NavigationRequested += OnWorkspaceFindReplaceNavigation;
+        }
+        return _workspaceFindReplacePanel;
+    }
+
+    private void OnWorkspaceFindReplaceNavigation(
+        object? sender,
+        WpfHexEditor.Shell.Panels.Panels.WorkspaceNavigationRequest req)
+    {
+        // Reuse the error-list navigation path — synthesize a DiagnosticEntry.
+        OnOpenInTextEditorRequested(sender, new DiagnosticEntry(
+            Severity: DiagnosticSeverity.Message,
+            Code:     "",
+            Description: "",
+            FilePath: req.FilePath,
+            Line:     req.Line,
+            Column:   req.Column));
+    }
+
     // ── Call Hierarchy panel ───────────────────────────────────────────────────
 
     private void OnCallHierarchyDockRequested(
@@ -2440,12 +2601,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _ = _compareFileLaunchService?.LaunchAsync(e.FilePath) ?? Task.CompletedTask;
         };
 
+        // Wrap in a HexEditorSplitHost so the inline split-toggle button opens an
+        // intra-tab synchronized second pane (shared ByteProvider, independent
+        // scroll/selection), matching CodeEditor's behaviour.
+        var splitHost = new WpfHexEditor.HexEditor.Controls.HexEditorSplitHost(hexEditor);
+
         // -- Phase 12: in-memory new document --------------------------
         if (isNewFile)
         {
             hexEditor.OpenNew(displayName ?? "New1.bin");
             OutputLogger.Info($"New in-memory document: {displayName}");
-            return hexEditor;
+            return splitHost;
         }
 
         // -- File-backed document ---------------------------------------
@@ -2458,7 +2624,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             File.WriteAllBytes(tempFile, data);
             hexEditor.OpenFile(tempFile);
             OutputLogger.Debug($"New hex document created (temp: {tempFile})");
-            return hexEditor;
+            return splitHost;
         }
 
         if (File.Exists(filePath))
@@ -2483,7 +2649,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             hexEditor.ApplyThemeFromResources();
 
             OutputLogger.Info($"Opened: {filePath}");
-            return hexEditor;
+            return splitHost;
         }
 
         OutputLogger.Error($"File not found: {filePath}");
@@ -3002,11 +3168,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Unwraps the actual editor element from a <see cref="WrapWithInfoBar"/> Grid wrapper,
-    /// or returns <paramref name="content"/> directly when it is not a wrapper.
+    /// Unwraps the actual editor element from a wrapper layer.
+    /// Recognised wrappers:
+    ///   • <see cref="WrapWithInfoBar"/> Grid (Tag = inner editor)
+    ///   • <see cref="WpfHexEditor.HexEditor.Controls.HexEditorSplitHost"/> (PrimaryEditor)
+    /// Returns <paramref name="content"/> directly when it is not a known wrapper.
     /// </summary>
     private static UIElement UnwrapEditor(UIElement content)
-        => content is Grid { Tag: UIElement inner } ? inner : content;
+    {
+        if (content is Grid { Tag: UIElement inner } gridWrapper)
+            content = inner;
+        if (content is WpfHexEditor.HexEditor.Controls.HexEditorSplitHost splitHost)
+            return splitHost.PrimaryEditor;
+        return content;
+    }
 
     private static UIElement CreateDocumentContent(DockItem item) =>
         new TextBox
@@ -3642,7 +3817,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var importResult = importSvc.ImportFromFile(dlg.SourcePath);
         if (!importResult.Success)
         {
-            MessageBox.Show(
+            _dialogService.Show(
                 string.Format(AppResources.App_TblImport_Failed, "\n", string.Join('\n', importResult.Errors)),
                 AppResources.App_ConvertTbl, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
@@ -3679,7 +3854,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            MessageBox.Show(string.Format(AppResources.App_FailedWriteTblx, "\n", ex.Message),
+            _dialogService.Show(string.Format(AppResources.App_FailedWriteTblx, "\n", ex.Message),
                 AppResources.App_ConvertTbl, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -3873,7 +4048,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (e.Project is null) return;
 
-        var result = MessageBox.Show(
+        var result = _dialogService.Show(
             string.Format(AppResources.App_RemoveFromProjectMessage, e.Item.Name, "\n"),
             AppResources.App_RemoveFromProject,
             MessageBoxButton.YesNo,
@@ -3892,7 +4067,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var path = e.Item.AbsolutePath;
         if (!File.Exists(path)) return;
 
-        var result = MessageBox.Show(
+        var result = _dialogService.Show(
             string.Format(AppResources.App_DeleteFileMessage, e.Item.Name, "\n"),
             AppResources.App_DeleteFile,
             MessageBoxButton.YesNo,
@@ -4006,7 +4181,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnSEFolderDeleteRequested(object? sender, FolderDeleteEventArgs e)
     {
-        var result = MessageBox.Show(
+        var result = _dialogService.Show(
             string.Format(AppResources.App_RemoveFolderMessage, e.Folder.Name, "\n"),
             AppResources.App_RemoveFolder,
             MessageBoxButton.YesNo,
@@ -4048,7 +4223,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnSESolutionFolderDeleteRequested(object? sender, SolutionFolderDeleteRequestedEventArgs e)
     {
-        var result = MessageBox.Show(
+        var result = _dialogService.Show(
             string.Format(AppResources.App_RemoveSolutionFolderMessage, e.Folder.Name, "\n"),
             AppResources.App_RemoveSolutionFolder,
             MessageBoxButton.YesNo,
@@ -4373,7 +4548,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var projDir  = Path.GetDirectoryName(e.Project.ProjectFilePath) ?? string.Empty;
         var fileName = Path.GetFileName(e.Item.AbsolutePath);
-        var result   = MessageBox.Show(
+        var result   = _dialogService.Show(
             string.Format(AppResources.App_ImportIntoProjectMessage, fileName, "\n", projDir),
             AppResources.App_ImportIntoProject,
             MessageBoxButton.YesNo,
@@ -5160,7 +5335,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to create solution: {ex.Message}");
-            MessageBox.Show(string.Format(AppResources.App_FailedCreateSolution, ex.Message), AppResources.App_Error,
+            _dialogService.Show(string.Format(AppResources.App_FailedCreateSolution, ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5218,7 +5393,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to scaffold .NET project: {ex.Message}");
-            MessageBox.Show(string.Format(AppResources.App_FailedCreateProject, "\n", ex.Message), AppResources.App_Error,
+            _dialogService.Show(string.Format(AppResources.App_FailedCreateProject, "\n", ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5238,7 +5413,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to create solution/project: {ex.Message}");
-            MessageBox.Show(string.Format(AppResources.App_FailedCreateSolution, ex.Message), AppResources.App_Error,
+            _dialogService.Show(string.Format(AppResources.App_FailedCreateSolution, ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5255,7 +5430,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to create project: {ex.Message}");
-            MessageBox.Show(string.Format(AppResources.App_FailedCreateProject, "\n", ex.Message), AppResources.App_Error,
+            _dialogService.Show(string.Format(AppResources.App_FailedCreateProject, "\n", ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5394,7 +5569,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             catch (Exception ex)
             {
                 OutputLogger.Error($"Failed to create file: {ex.Message}");
-                MessageBox.Show(string.Format(AppResources.App_FailedCreateFile, "\n", ex.Message), AppResources.App_Error,
+                _dialogService.Show(string.Format(AppResources.App_FailedCreateFile, "\n", ex.Message), AppResources.App_Error,
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -5592,7 +5767,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to open solution: {ex.Message}");
-            MessageBox.Show(string.Format(AppResources.App_FailedOpenSolution, ex.Message), AppResources.App_Error,
+            _dialogService.Show(string.Format(AppResources.App_FailedOpenSolution, ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -6707,7 +6882,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var repoRoot = git.GetRepoRoot(activePath);
         if (repoRoot is null)
         {
-            MessageBox.Show(AppResources.App_CompareWithHeadNoRepo, AppResources.App_CompareWithHead,
+            _dialogService.Show(AppResources.App_CompareWithHeadNoRepo, AppResources.App_CompareWithHead,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -6715,7 +6890,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var tempPath = await git.ExtractRefVersionAsync(repoRoot, "HEAD", activePath);
         if (tempPath is null)
         {
-            MessageBox.Show(AppResources.App_CompareWithHeadNoVersion, AppResources.App_CompareWithHead,
+            _dialogService.Show(AppResources.App_CompareWithHeadNoVersion, AppResources.App_CompareWithHead,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -6788,6 +6963,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         ShowOrCreatePanel("Bookmarks", BookmarksPanelContentId, DockDirection.Bottom);
         _bookmarksPanel?.Refresh();
+    }
+
+    private void OnWorkspaceFindReplace(object sender, ExecutedRoutedEventArgs e)
+        => ShowOrCreateWorkspaceFindReplacePanel();
+
+    private void ShowOrCreateWorkspaceFindReplacePanel(string? query = null)
+    {
+        ShowOrCreatePanel("Find & Replace in Solution", WorkspaceFindReplacePanelContentId, DockDirection.Bottom);
+        if (_workspaceFindReplacePanel is not null)
+            _ = _workspaceFindReplacePanel.ActivateWithQueryAsync(query);
     }
 
     private void OnShowMarkdownOutline(object sender, RoutedEventArgs e)
@@ -6951,7 +7136,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to load layout: {ex.Message}");
-            MessageBox.Show(string.Format(AppResources.App_FailedLoadLayout, "\n", ex.Message), AppResources.App_Error,
+            _dialogService.Show(string.Format(AppResources.App_FailedLoadLayout, "\n", ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

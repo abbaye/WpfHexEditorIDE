@@ -488,9 +488,14 @@ public sealed class DocumentMutator(DocumentModel model)
     {
         if (para.Children.Count == 0)
         {
-            // No run children — apply directly to the block
-            para.Attributes[attribute] = value;
-            return;
+            SplitFlatBlockIntoRuns(para, fromChar, toChar);
+            // Fall through to the run-loop below
+        }
+        else
+        {
+            // Split any existing runs that straddle fromChar or toChar so that
+            // the attribute is applied only to the exact selected characters.
+            SplitRunsAtBoundaries(para, fromChar, toChar);
         }
 
         var cursor = 0;
@@ -498,10 +503,8 @@ public sealed class DocumentMutator(DocumentModel model)
         {
             var runLen = run.Text.Length;
             var runEnd = cursor + runLen;
-
             if (runEnd > fromChar && cursor < toChar)
                 run.Attributes[attribute] = value;
-
             cursor = runEnd;
         }
     }
@@ -511,8 +514,11 @@ public sealed class DocumentMutator(DocumentModel model)
     {
         if (para.Children.Count == 0)
         {
-            para.Attributes.Remove(attribute);
-            return;
+            SplitFlatBlockIntoRuns(para, fromChar, toChar);
+        }
+        else
+        {
+            SplitRunsAtBoundaries(para, fromChar, toChar);
         }
 
         var cursor = 0;
@@ -524,6 +530,77 @@ public sealed class DocumentMutator(DocumentModel model)
                 run.Attributes.Remove(attribute);
             cursor = runEnd;
         }
+    }
+
+    /// <summary>
+    /// Splits any runs in <paramref name="para"/> that straddle <paramref name="fromChar"/>
+    /// or <paramref name="toChar"/> so that formatting can be applied to the exact range.
+    /// Runs that fall entirely before/inside/after the range are left intact.
+    /// </summary>
+    private static void SplitRunsAtBoundaries(DocumentBlock para, int fromChar, int toChar)
+    {
+        // We may need to split at two boundaries: fromChar and toChar.
+        // Process fromChar first (lower offset), then toChar.
+        foreach (var boundary in new[] { fromChar, toChar })
+        {
+            int cursor = 0;
+            for (int i = 0; i < para.Children.Count; i++)
+            {
+                var run    = para.Children[i];
+                int runEnd = cursor + run.Text.Length;
+
+                if (boundary > cursor && boundary < runEnd)
+                {
+                    // Split this run at the boundary
+                    int localOff = boundary - cursor;
+                    var head = new DocumentBlock { Kind = run.Kind, Text = run.Text[..localOff] };
+                    var tail = new DocumentBlock { Kind = run.Kind, Text = run.Text[localOff..] };
+                    foreach (var kv in run.Attributes)
+                    {
+                        head.Attributes[kv.Key] = kv.Value;
+                        tail.Attributes[kv.Key] = kv.Value;
+                    }
+                    para.Children.RemoveAt(i);
+                    para.Children.Insert(i,     head);
+                    para.Children.Insert(i + 1, tail);
+                    break; // list mutated — restart outer loop for next boundary
+                }
+
+                cursor = runEnd;
+                if (cursor >= boundary) break; // boundary is between runs — nothing to split
+            }
+        }
+    }
+
+    /// <summary>
+    /// Converts a flat (no-children) block into 1–3 run children that cover
+    /// [0, fromChar), [fromChar, toChar), [toChar, end).  Empty segments are skipped.
+    /// The block's own Text and Attributes are cleared after splitting.
+    /// </summary>
+    private static void SplitFlatBlockIntoRuns(DocumentBlock para, int fromChar, int toChar)
+    {
+        var text = para.Text ?? string.Empty;
+        int len  = text.Length;
+        fromChar = Math.Clamp(fromChar, 0, len);
+        toChar   = Math.Clamp(toChar,   0, len);
+
+        // Copy block-level attributes to propagate to all runs
+        var baseAttrs = new Dictionary<string, object>(para.Attributes);
+
+        void AddRun(string seg)
+        {
+            var run = new DocumentBlock { Kind = "run", Text = seg };
+            foreach (var kv in baseAttrs) run.Attributes[kv.Key] = kv.Value;
+            para.Children.Add(run);
+        }
+
+        if (fromChar > 0)             AddRun(text[..fromChar]);
+        if (fromChar < toChar)        AddRun(text[fromChar..toChar]);
+        if (toChar   < len)           AddRun(text[toChar..]);
+
+        // The flat text on the block itself is now represented by the runs
+        para.Text = string.Empty;
+        para.Attributes.Clear();
     }
 
     private static IReadOnlyList<AttributeSnapshot> SnapshotChildren(DocumentBlock para)

@@ -91,6 +91,9 @@
   <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>문서 메타데이터</value></data>
   <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>문서 내보내기</value></data>
   <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>저장</value></data>
+  <data name="DocEditorHost_FontFamilyToolTip" xml:space="preserve"><value>글꼴</value></data>
+  <data name="DocEditorHost_FontSizeToolTip" xml:space="preserve"><value>글꼴 크기</value></data>
+  <data name="DocEditorHost_TextColorToolTip" xml:space="preserve"><value>글자 색</value></data>
   <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>제목</value></data>
   <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>작성자</value></data>
   <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>형식</value></data>

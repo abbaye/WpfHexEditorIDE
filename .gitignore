@@ -22,6 +22,14 @@ bld/
 [Oo]bj/
 build_output.txt
 
+# ADR-010: Debugger module is a source folder, not a build output —
+# whitelist its tracked content under WpfHexEditor.App.
+!Sources/WpfHexEditor.App/Debug/
+!Sources/WpfHexEditor.App/Debug/**
+# Re-ignore any bin/obj that MSBuild would generate inside the Debug source folder.
+Sources/WpfHexEditor.App/Debug/[Bb]in/
+Sources/WpfHexEditor.App/Debug/[Oo]bj/
+
 # Visual Studio 2015 cache/options directory
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot

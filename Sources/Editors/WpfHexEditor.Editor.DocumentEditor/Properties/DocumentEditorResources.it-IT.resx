@@ -91,6 +91,9 @@
   <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Metadati documento</value></data>
   <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Esporta documento</value></data>
   <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Salva</value></data>
+  <data name="DocEditorHost_FontFamilyToolTip" xml:space="preserve"><value>Tipo di carattere</value></data>
+  <data name="DocEditorHost_FontSizeToolTip" xml:space="preserve"><value>Dimensione carattere</value></data>
+  <data name="DocEditorHost_TextColorToolTip" xml:space="preserve"><value>Colore del testo</value></data>
   <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Titolo</value></data>
   <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Autore</value></data>
   <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Formato</value></data>

@@ -31,9 +31,10 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
 {
     // ── State ─────────────────────────────────────────────────────────────────
 
-    private readonly StructureEditorViewModel    _vm          = new();
-    private readonly FormatSchemaValidator       _schemaValidator = new();
-    private readonly ViewModels.TestTabViewModel _testVm      = new();
+    private readonly StructureEditorViewModel         _vm          = new();
+    private readonly FormatSchemaValidator            _schemaValidator = new();
+    private readonly ViewModels.TestTabViewModel      _testVm      = new();
+    private readonly ViewModels.BinaryPreviewViewModel _previewVm   = new();
     private string _filePath = string.Empty;
 
     // ── Live code view ────────────────────────────────────────────────────────
@@ -85,8 +86,9 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         BlocksTabCtrl.DataContext    = _vm.Blocks;
         VariablesTabCtrl.DataContext = _vm.Variables;
         V2TabCtrl.DataContext        = _vm;
-        QualityTabCtrl.DataContext   = _vm.QualityMetrics;
-        TestTabCtrl.DataContext      = _testVm;
+        QualityTabCtrl.DataContext       = _vm.QualityMetrics;
+        TestTabCtrl.DataContext          = _testVm;
+        BinaryPreviewTabCtrl.DataContext = _previewVm;
 
         // Dirty + validation tracking
         _vm.DirtyChanged        += OnVmDirtyChanged;
@@ -254,6 +256,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
     public void Close()
     {
         _refreshTimer?.Stop();
+        _previewVm.Detach();
         _codeView.DetachBuffer();
         _liveBuffer = null;
         _vm.Reset();
@@ -279,8 +282,10 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
                 SetStatus($"Loaded — {_vm.Blocks.BlockTree.Count} block(s)");
 
                 // (Re)create the live buffer for the new file path and attach it
+                _previewVm.Detach();
                 _liveBuffer = new LiveWhfmtBuffer(filePath);
                 _codeView.AttachBuffer(_liveBuffer);
+                _previewVm.Attach(_liveBuffer);
                 _codeView.IsReadOnly = true;
                 PushJsonToCodeView();
 

@@ -215,8 +215,7 @@ public class TabOverflowButton : Button
                 Text              = titleText,
                 VerticalAlignment = VerticalAlignment.Center,
                 TextTrimming      = TextTrimming.CharacterEllipsis,
-                MaxWidth          = 300,
-                Margin            = new Thickness(0, 0, 6, 0),
+                Margin            = new Thickness(0, 0, 8, 0),
                 ToolTip           = titleText
             };
 
@@ -228,23 +227,34 @@ public class TabOverflowButton : Button
             {
                 editorBadge = new TextBlock
                 {
-                    Text              = editorDisplayName,
-                    FontStyle         = FontStyles.Italic,
-                    Opacity           = 0.55,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Margin            = new Thickness(8, 0, 6, 0),
-                    TextTrimming      = TextTrimming.CharacterEllipsis,
-                    MaxWidth          = 120
+                    Text                = editorDisplayName,
+                    FontStyle           = FontStyles.Italic,
+                    Opacity             = 0.55,
+                    VerticalAlignment   = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Margin              = new Thickness(4, 0, 8, 0),
+                    TextTrimming        = TextTrimming.CharacterEllipsis
                 };
                 editorBadge.SetResourceReference(ForegroundProperty, "DockMenuForegroundBrush");
             }
 
-            DockPanel.SetDock(closeBox, Dock.Right);
-            if (editorBadge is not null) DockPanel.SetDock(editorBadge, Dock.Right);
-            var headerPanel = new DockPanel { LastChildFill = true, MinWidth = 200, MaxWidth = 480 };
-            headerPanel.Children.Add(closeBox);
-            if (editorBadge is not null) headerPanel.Children.Add(editorBadge);
+            // Grid with 3 columns: title (Star), badge (fixed), close (fixed)
+            // Ensures the editor-badge column is always right-aligned at the same X position
+            // regardless of title length — fixes the misaligned badge column in the overflow menu.
+            var headerPanel = new Grid { MinWidth = 200 };
+            headerPanel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            headerPanel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(editorBadge is not null ? 130 : 0) });
+            headerPanel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(22) });
+
+            Grid.SetColumn(title,    0);
+            Grid.SetColumn(closeBox, 2);
             headerPanel.Children.Add(title);
+            headerPanel.Children.Add(closeBox);
+            if (editorBadge is not null)
+            {
+                Grid.SetColumn(editorBadge, 1);
+                headerPanel.Children.Add(editorBadge);
+            }
 
             var menuItem = new MenuItem
             {

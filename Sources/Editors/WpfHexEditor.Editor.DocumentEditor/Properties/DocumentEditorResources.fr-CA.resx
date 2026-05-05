@@ -91,6 +91,9 @@
   <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Métadonnées du document</value></data>
   <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Exporter le document</value></data>
   <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Enregistrer</value></data>
+  <data name="DocEditorHost_FontFamilyToolTip" xml:space="preserve"><value>Police</value></data>
+  <data name="DocEditorHost_FontSizeToolTip" xml:space="preserve"><value>Taille de police</value></data>
+  <data name="DocEditorHost_TextColorToolTip" xml:space="preserve"><value>Couleur du texte</value></data>
   <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Titre</value></data>
   <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Auteur</value></data>
   <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Format</value></data>
@@ -196,4 +199,50 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Vue texte</value>
   </data>
+  <data name="DocMiniMap_MenuTitle" xml:space="preserve">
+    <value>MiniCarte</value>
+  </data>
+  <data name="DocMiniMap_ShowMiniMap" xml:space="preserve">
+    <value>Afficher la MiniCarte</value>
+  </data>
+  <data name="DocMiniMap_RenderBlocks" xml:space="preserve">
+    <value>Rendu en blocs</value>
+  </data>
+  <data name="DocMiniMap_SliderAlways" xml:space="preserve">
+    <value>Toujours afficher le curseur de viewport</value>
+  </data>
+  <data name="DocMiniMap_SliderMouseOver" xml:space="preserve">
+    <value>Afficher le curseur de viewport au survol</value>
+  </data>
+  <data name="DocStats_Title"             xml:space="preserve"><value>Statistiques du document</value></data>
+  <data name="DocStats_WordCount"         xml:space="preserve"><value>Mots</value></data>
+  <data name="DocStats_CharCount"         xml:space="preserve"><value>Caractères</value></data>
+  <data name="DocStats_CharNoSpaceCount"  xml:space="preserve"><value>Caractères (sans espaces)</value></data>
+  <data name="DocStats_BlockCount"        xml:space="preserve"><value>Blocs (paragraphes)</value></data>
+  <data name="DocStats_LineCount"         xml:space="preserve"><value>Lignes</value></data>
+  <data name="DocStats_Close"             xml:space="preserve"><value>Fermer</value></data>
+
+  <!-- Canvas context menu -->
+  <data name="DocCanvas_Cut"        xml:space="preserve"><value>Couper</value></data>
+  <data name="DocCanvas_Copy"       xml:space="preserve"><value>Copier</value></data>
+  <data name="DocCanvas_Paste"      xml:space="preserve"><value>Coller</value></data>
+  <data name="DocCanvas_Delete"     xml:space="preserve"><value>Supprimer</value></data>
+  <data name="DocCanvas_SelectAll"  xml:space="preserve"><value>Tout sélectionner</value></data>
+  <data name="DocCanvas_Undo"       xml:space="preserve"><value>Annuler</value></data>
+  <data name="DocCanvas_Redo"       xml:space="preserve"><value>Rétablir</value></data>
+  <data name="DocCanvas_Bold"       xml:space="preserve"><value>Gras</value></data>
+  <data name="DocCanvas_Italic"     xml:space="preserve"><value>Italique</value></data>
+  <data name="DocCanvas_Underline"  xml:space="preserve"><value>Souligné</value></data>
+  <data name="DocCanvas_Strike"     xml:space="preserve"><value>Barré</value></data>
+  <data name="DocCanvas_Format"     xml:space="preserve"><value>Mise en forme</value></data>
+
+  <!-- Page rulers -->
+  <data name="Ruler_FirstLineIndent" xml:space="preserve"><value>Retrait de première ligne — glisser pour ajuster</value></data>
+  <data name="Ruler_HangingIndent"   xml:space="preserve"><value>Retrait suspendu — glisser pour ajuster</value></data>
+  <data name="Ruler_LeftIndent"      xml:space="preserve"><value>Retrait gauche — glisser pour ajuster</value></data>
+  <data name="Ruler_RightIndent"     xml:space="preserve"><value>Retrait droit — glisser pour ajuster</value></data>
+  <data name="Ruler_MarginLeft"      xml:space="preserve"><value>Marge gauche — glisser pour ajuster</value></data>
+  <data name="Ruler_MarginRight"     xml:space="preserve"><value>Marge droite — glisser pour ajuster</value></data>
+  <data name="Ruler_MarginTop"       xml:space="preserve"><value>Marge supérieure — glisser pour ajuster</value></data>
+  <data name="Ruler_MarginBottom"    xml:space="preserve"><value>Marge inférieure — glisser pour ajuster</value></data>
 </root>

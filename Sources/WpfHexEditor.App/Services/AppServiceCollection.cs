@@ -17,6 +17,7 @@
 // ==========================================================
 
 using Microsoft.Extensions.DependencyInjection;
+using WpfHexEditor.Editor.Core.Dialogs;
 using WpfHexEditor.PluginHost.Adapters;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
@@ -60,6 +61,9 @@ internal static class AppServiceCollection
 
         // Stateless services that only need AppSettingsService.Instance.
         services.AddSingleton<EditorSettingsService>();
+
+        // Themed dialog service — replaces System.Windows.MessageBox.
+        services.AddSingleton<IDialogService, DialogServiceImpl>();
 
         return services;
     }

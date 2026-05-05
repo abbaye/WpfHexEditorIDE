@@ -14,6 +14,7 @@
 using System.IO;
 using System.Windows;
 using WpfHexEditor.App.Properties;
+using WpfHexEditor.Editor.Core.Dialogs;
 using WpfHexEditor.Core.Debugger.Adapters;
 using WpfHexEditor.Core.Debugger.Models;
 using WpfHexEditor.Core.Debugger.Protocol;
@@ -34,6 +35,8 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
     private readonly IIDEEventBus            _eventBus;
     private readonly AppSettings             _settings;
     private readonly IDebugAdapterRegistry   _adapterRegistry;
+    private readonly IDialogService          _dialogs;
+    private readonly SymbolServerClient      _symbolClient;
     private readonly object                  _lock = new();
 
     private IDapClient?      _client;
@@ -86,12 +89,15 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             DependsOnBpKey:   b.DependsOnBpKey
         )).ToList();
 
-    public DebuggerServiceImpl(IIDEEventBus eventBus, AppSettings settings, IDebugAdapterRegistry? adapterRegistry = null)
+    public DebuggerServiceImpl(IIDEEventBus eventBus, AppSettings settings, IDebugAdapterRegistry? adapterRegistry = null, IDialogService? dialogs = null)
     {
         _eventBus        = eventBus;
         _settings        = settings;
-        _adapterRegistry = adapterRegistry ?? new DebugAdapterRegistry();
-        _persistence     = new BreakpointPersistenceManager(settings);
+        _adapterRegistry  = adapterRegistry ?? new DebugAdapterRegistry();
+        _dialogs          = dialogs ?? new DialogServiceImpl();
+        _persistence      = new BreakpointPersistenceManager(settings);
+        _symbolClient     = new SymbolServerClient(
+            string.IsNullOrWhiteSpace(settings.Debugger.SymbolCachePath) ? null : settings.Debugger.SymbolCachePath);
         lock (_lock) { _breakpoints.AddRange(_persistence.Load()); }
         RegisterBuiltInAdapters();
     }
@@ -113,7 +119,6 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
     /// <summary>Launch a new debug session for the given configuration.</summary>
     public async Task LaunchAsync(DebugLaunchConfig config)
     {
-        // Route attach requests through the existing AttachAsync path.
         if (config.Request.Equals("attach", StringComparison.OrdinalIgnoreCase)
             && config.ProcessId.HasValue)
         {
@@ -122,57 +127,90 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         }
 
         if (_session.IsActive) await StopSessionAsync();
-
-        // Reset hit counts for the new session.
-        lock (_lock)
-        {
-            for (int i = 0; i < _breakpoints.Count; i++)
-                _breakpoints[i] = _breakpoints[i] with { HitCount = 0 };
-        }
-
+        ResetHitCounts();
         UpdateSession(_session with { State = DebugSessionState.Launching });
 
         try
         {
             _client = await CreateAdapterAsync(config);
-            if (_client is null)
-            {
-                UpdateSession(DebugSession.Empty);
-                return;
-            }
-            WireClientEvents(_client);
+            if (_client is null) { UpdateSession(DebugSession.Empty); return; }
 
+            WireClientEvents(_client);
             await _client.InitializeAsync(new InitializeRequestArgs("WpfHexEditor"));
             await SyncAllBreakpointsAsync(_client);
             await _client.LaunchAsync(BuildLaunchArgs(config));
             await _client.ConfigurationDoneAsync();
 
-            var sessionId = Guid.NewGuid().ToString("N");
-            UpdateSession(new DebugSession
+            await FinishSessionStartAsync(new DebugSession
             {
-                SessionId   = sessionId,
+                SessionId   = Guid.NewGuid().ToString("N"),
                 State       = DebugSessionState.Running,
                 ProjectPath = config.ProjectPath,
-            });
-
-            _eventBus.Publish(new DebugSessionStartedEvent
-            {
-                SessionId   = sessionId,
-                ProjectPath = config.ProjectPath,
-                Source      = nameof(DebuggerServiceImpl)
             });
         }
         catch (Exception ex)
         {
             await CleanupClientAsync();
             UpdateSession(DebugSession.Empty);
-            MessageBox.Show($"Failed to start debug session:\n{ex.Message}", "Debugger",
+            _dialogs.Show($"Failed to start debug session:\n{ex.Message}", "Debugger",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    /// <summary>Attach to a remote debug adapter over TCP or SSH tunnel.</summary>
+    public async Task LaunchRemoteAsync(RemoteDebugConfig config, CancellationToken ct = default)
+    {
+        if (_session.IsActive) await StopSessionAsync();
+        ResetHitCounts();
+        UpdateSession(_session with { State = DebugSessionState.Launching });
+
+        try
+        {
+            if (config.Transport == RemoteDebugTransport.Ssh)
+            {
+                var ssh = new SshTunnelDapClient();
+                await ssh.ConnectAsync(
+                    sshUser:          config.SshUser,
+                    sshHost:          config.Host,
+                    sshPort:          config.SshPort,
+                    remoteAdapterHost: config.RemoteAdapterHost,
+                    remoteAdapterPort: config.AdapterPort,
+                    localTunnelPort:  config.LocalTunnelPort,
+                    sshKeyPath:       config.SshKeyPath,
+                    ct:               ct);
+                _client = ssh;
+            }
+            else
+            {
+                var tcp = new TcpDapClient();
+                await tcp.ConnectAsync(config.Host, config.AdapterPort, ct);
+                _client = tcp;
+            }
+
+            WireClientEvents(_client);
+            await _client.InitializeAsync(new InitializeRequestArgs("WpfHexEditor"));
+            await SyncAllBreakpointsAsync(_client);
+            await _client.AttachAsync(new AttachRequestArgs(0));
+            await _client.ConfigurationDoneAsync();
+
+            await FinishSessionStartAsync(new DebugSession
+            {
+                SessionId   = Guid.NewGuid().ToString("N"),
+                State       = DebugSessionState.Running,
+                ProjectPath = $"remote:{config.Host}:{config.AdapterPort}",
+            });
+        }
+        catch (Exception ex)
+        {
+            await CleanupClientAsync();
+            UpdateSession(DebugSession.Empty);
+            _dialogs.Show($"Failed to connect to remote debug adapter:\n{ex.Message}", "Debugger",
                             MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
     /// <summary>Attach to a running .NET process by PID.</summary>
-    public async Task AttachAsync(int pid)
+    public async Task AttachAsync(int pid, CancellationToken ct = default)
     {
         if (_session.IsActive) await StopSessionAsync();
 
@@ -185,34 +223,47 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         {
             _client = await NetCoreDapAdapter.CreateAsync(adapterPath);
             WireClientEvents(_client);
-
             await _client.InitializeAsync(new InitializeRequestArgs("WpfHexEditor"));
             await SyncAllBreakpointsAsync(_client);
             await _client.AttachAsync(new AttachRequestArgs(pid));
             await _client.ConfigurationDoneAsync();
 
-            var sessionId = Guid.NewGuid().ToString("N");
-            UpdateSession(new DebugSession
+            await FinishSessionStartAsync(new DebugSession
             {
-                SessionId  = sessionId,
-                State      = DebugSessionState.Running,
-                ProcessId  = pid,
-            });
-
-            _eventBus.Publish(new DebugSessionStartedEvent
-            {
-                SessionId = sessionId,
+                SessionId = Guid.NewGuid().ToString("N"),
+                State     = DebugSessionState.Running,
                 ProcessId = pid,
-                Source    = nameof(DebuggerServiceImpl)
             });
         }
         catch (Exception ex)
         {
             await CleanupClientAsync();
             UpdateSession(DebugSession.Empty);
-            MessageBox.Show($"Failed to attach to process {pid}:\n{ex.Message}", "Debugger",
+            _dialogs.Show($"Failed to attach to process {pid}:\n{ex.Message}", "Debugger",
                             MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    private void ResetHitCounts()
+    {
+        lock (_lock)
+        {
+            for (int i = 0; i < _breakpoints.Count; i++)
+                _breakpoints[i] = _breakpoints[i] with { HitCount = 0 };
+        }
+    }
+
+    private Task FinishSessionStartAsync(DebugSession session)
+    {
+        UpdateSession(session);
+        _eventBus.Publish(new DebugSessionStartedEvent
+        {
+            SessionId   = session.SessionId,
+            ProjectPath = session.ProjectPath,
+            ProcessId   = session.ProcessId,
+            Source      = nameof(DebuggerServiceImpl)
+        });
+        return Task.CompletedTask;
     }
 
     // ── IDebuggerService — execution ──────────────────────────────────────────
@@ -251,13 +302,25 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
 
     // ── IDebuggerService — inspection ─────────────────────────────────────────
 
-    public async Task<IReadOnlyList<DebugFrameInfo>> GetCallStackAsync()
+    public async Task<IReadOnlyList<DebugThreadInfo>> GetThreadsAsync()
     {
         if (_client is null || !_session.IsPaused) return [];
-        var body = await _client.StackTraceAsync(new StackTraceArgs(_session.ActiveThreadId, Levels: 30));
-        return body?.StackFrames.Select(f => new DebugFrameInfo(
-            f.Id, f.Name, f.Source?.Path, f.Line, f.Column)).ToList() ?? [];
+        var body = await _client.ThreadsAsync();
+        return body?.Threads.Select(t => new DebugThreadInfo(t.Id, t.Name)).ToList() ?? [];
     }
+
+    public async Task<IReadOnlyList<DebugFrameInfo>> GetCallStackForThreadAsync(int threadId)
+    {
+        if (_client is null || !_session.IsPaused) return [];
+        int id = threadId == 0 ? _session.ActiveThreadId : threadId;
+        var body = await _client.StackTraceAsync(new StackTraceArgs(id, Levels: 30));
+        return body?.StackFrames.Select(f => new DebugFrameInfo(
+            f.Id, f.Name, f.Source?.Path, f.Line, f.Column,
+            f.InstructionPointerReference)).ToList() ?? [];
+    }
+
+    public Task<IReadOnlyList<DebugFrameInfo>> GetCallStackAsync() =>
+        GetCallStackForThreadAsync(0);
 
     public async Task<IReadOnlyList<DebugVariableInfo>> GetVariablesAsync(int variablesReference)
     {
@@ -267,11 +330,276 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             v.Name, v.Value, v.Type, v.VariablesReference)).ToList() ?? [];
     }
 
+    public async Task<IReadOnlyList<DebugVariableInfo>> GetRegistersAsync()
+    {
+        if (_client is null || !_session.IsPaused) return [];
+        try
+        {
+            var scopes = await _client.ScopesAsync(new ScopesArgs(_session.CurrentFrameId));
+            if (scopes is null) return [];
+            var regScope = scopes.Scopes.FirstOrDefault(s =>
+                s.Name.Equals("Registers", StringComparison.OrdinalIgnoreCase));
+            if (regScope is null) return [];
+            return await GetVariablesAsync(regScope.VariablesReference);
+        }
+        catch { return []; }
+    }
+
     public async Task<string> EvaluateAsync(string expression, int? frameId = null)
     {
         if (_client is null || !_session.IsPaused) return "<not paused>";
         var body = await _client.EvaluateAsync(new EvaluateArgs(expression, frameId ?? _session.CurrentFrameId));
         return body?.Result ?? "<null>";
+    }
+
+    public async Task<string?> SetVariableAsync(int variablesReference, string name, string newValue)
+    {
+        if (_client is null || !_session.IsPaused) return null;
+        try
+        {
+            var body = await _client.SetVariableAsync(new SetVariableArgs(variablesReference, name, newValue));
+            return body?.Value;
+        }
+        catch { return null; }
+    }
+
+    public async Task RunToCursorAsync(string filePath, int line1)
+    {
+        if (_client is null || !_session.IsPaused) return;
+
+        // Strategy: add a temporary one-shot breakpoint, continue, remove it on the next Stopped event.
+        var tempKey = $"{filePath}:{line1}:temp";
+        lock (_lock)
+        {
+            if (_breakpoints.Any(b => string.Equals(b.FilePath, filePath, StringComparison.OrdinalIgnoreCase) && b.Line == line1))
+                return; // user already has a BP there — just continue
+
+            _breakpoints.Add(new BreakpointLocation
+            {
+                FilePath  = filePath,
+                Line      = line1,
+                Condition = string.Empty,
+                IsEnabled = true,
+                DisableOnceHit = true, // one-shot semantic handled by OnStopped cleanup
+            });
+        }
+
+        var client = _client;
+        await SyncBreakpointsForFileAsync(client, filePath);
+        await ContinueAsync();
+
+        // Subscribe to remove the temp BP once execution stops at or past it.
+        void OnNextStop(object? s, StoppedEventBody e)
+        {
+            client.Stopped -= OnNextStop;
+            lock (_lock)
+            {
+                var temp = _breakpoints.FirstOrDefault(b =>
+                    string.Equals(b.FilePath, filePath, StringComparison.OrdinalIgnoreCase)
+                    && b.Line == line1 && b.DisableOnceHit);
+                if (temp is not null) _breakpoints.Remove(temp);
+            }
+            _ = SyncBreakpointsForFileAsync(client, filePath);
+            BreakpointsChanged?.Invoke(this, EventArgs.Empty);
+        }
+        client.Stopped += OnNextStop;
+    }
+
+    public async Task SetNextStatementAsync(string filePath, int line1)
+    {
+        if (_client is null || !_session.IsPaused) return;
+        try
+        {
+            var body = await _client.GotoTargetsAsync(
+                new GotoTargetsArgs(new SourceDto(null, filePath), line1));
+            if (body?.Targets is { Length: > 0 } targets)
+                await _client.GotoAsync(new GotoArgs(_session.ActiveThreadId, targets[0].Id));
+        }
+        catch { /* adapter may not support goto — silently no-op */ }
+    }
+
+    // ── IDebuggerService — exception filters ─────────────────────────────────
+
+    private readonly List<ExceptionFilterInfo> _exceptionFilters =
+    [
+        new("all",     "All Exceptions",      IsEnabled: false),
+        new("user-unhandled", "User-Unhandled", IsEnabled: true),
+    ];
+
+    public IReadOnlyList<ExceptionFilterInfo> ExceptionFilters => _exceptionFilters;
+
+    public async Task SetExceptionFiltersAsync(IReadOnlyList<ExceptionFilterInfo> filters)
+    {
+        lock (_lock) { _exceptionFilters.Clear(); _exceptionFilters.AddRange(filters); }
+
+        if (_client is null) return;
+        var activeFilters = filters.Where(f => f.IsEnabled).Select(f => f.Filter).ToArray();
+        await _client.SetExceptionBreakpointsAsync(new SetExceptionBreakpointsArgs(activeFilters));
+    }
+
+    // ── IDebuggerService — disassembly / memory ───────────────────────────────
+
+    public async Task<IReadOnlyList<DisassembledInstruction>> DisassembleAsync(string memRef, int count)
+    {
+        if (_client is null) return [];
+        var body = await _client.DisassembleAsync(new WpfHexEditor.Core.Debugger.Protocol.DisassembleArgs(memRef, count));
+        return body.Instructions.Select(i => new DisassembledInstruction(
+            i.Address, i.Instruction, i.Symbol, i.InstructionBytes,
+            i.Location?.Path, i.Line ?? 0)).ToList();
+    }
+
+    public async Task<byte[]?> ReadMemoryAsync(string memRef, int byteCount, int offset = 0)
+    {
+        if (_client is null) return null;
+        var body = await _client.ReadMemoryAsync(new WpfHexEditor.Core.Debugger.Protocol.ReadMemoryArgs(memRef, byteCount, offset));
+        if (body is null) return null;
+        try { return Convert.FromBase64String(body.Data); }
+        catch { return null; }
+    }
+
+    public async Task WriteMemoryAsync(string memRef, byte[] data, int offset = 0)
+    {
+        if (_client is null) return;
+        await _client.WriteMemoryAsync(new WpfHexEditor.Core.Debugger.Protocol.WriteMemoryArgs(
+            memRef, Convert.ToBase64String(data), offset));
+    }
+
+    // ── Edit & Continue / Hot Reload ──────────────────────────────────────────
+
+    public async Task RestartFrameAsync(int frameId, CancellationToken ct = default)
+    {
+        if (_client is null || !_session.IsPaused) return;
+        await _client.RestartFrameAsync(
+            new WpfHexEditor.Core.Debugger.Protocol.RestartFrameArgs(frameId), ct);
+    }
+
+    public Task ApplyHotReloadAsync(
+        Type[] updatedTypes, byte[] metadataDelta, byte[] ilDelta, byte[] pdbDelta,
+        CancellationToken ct = default)
+    {
+        // Uses .NET 6+ MetadataUpdater — silently skips if runtime does not support it.
+        if (!System.Reflection.Metadata.MetadataUpdater.IsSupported)
+            return Task.CompletedTask;
+        foreach (var type in updatedTypes)
+        {
+            try
+            {
+                var assembly = type.Assembly;
+                System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(
+                    assembly, metadataDelta, ilDelta, pdbDelta);
+            }
+            catch { /* delta may not apply cleanly; best effort */ }
+        }
+        return Task.CompletedTask;
+    }
+
+    // ── Data breakpoints ──────────────────────────────────────────────────────
+
+    private readonly List<SDK.Contracts.Services.DataBreakpointInfo> _dataBreakpoints = [];
+
+    public IReadOnlyList<SDK.Contracts.Services.DataBreakpointInfo> DataBreakpoints
+    {
+        get { lock (_lock) return _dataBreakpoints.ToList(); }
+    }
+
+    public async Task<SDK.Contracts.Services.DataBreakpointInfo?> GetDataBreakpointInfoAsync(
+        string name, int? variablesReference = null, CancellationToken ct = default)
+    {
+        if (_client is null) return null;
+        var body = await _client.DataBreakpointInfoAsync(
+            new WpfHexEditor.Core.Debugger.Protocol.DataBreakpointInfoArgs(name, variablesReference), ct);
+        if (body?.DataId is null) return null;
+        return new SDK.Contracts.Services.DataBreakpointInfo(body.DataId, body.Description);
+    }
+
+    public async Task SetDataBreakpointsAsync(
+        IReadOnlyList<SDK.Contracts.Services.DataBreakpointInfo> breakpoints,
+        CancellationToken ct = default)
+    {
+        lock (_lock)
+        {
+            _dataBreakpoints.Clear();
+            _dataBreakpoints.AddRange(breakpoints);
+        }
+        if (_client is null) return;
+        var dtos = breakpoints
+            .Select(b => new WpfHexEditor.Core.Debugger.Protocol.DataBreakpointDto(
+                b.DataId, b.AccessType, b.Condition, b.HitCondition))
+            .ToArray();
+        await _client.SetDataBreakpointsAsync(
+            new WpfHexEditor.Core.Debugger.Protocol.SetDataBreakpointsArgs(dtos), ct);
+    }
+
+    private readonly HashSet<int> _frozenThreadIds = [];
+
+    public async Task FreezeThreadAsync(int threadId)
+    {
+        lock (_lock) { _frozenThreadIds.Add(threadId); }
+        // Best-effort: send a pause request scoped to the thread if client supports it.
+        // Standard DAP pause does not have a threadId but some adapters respect it in args.
+        if (_client is not null)
+        {
+            try { await _client.PauseAsync(new WpfHexEditor.Core.Debugger.Protocol.PauseArgs(threadId)); }
+            catch { /* adapter may not support per-thread pause */ }
+        }
+    }
+
+    public Task ThawThreadAsync(int threadId)
+    {
+        lock (_lock) { _frozenThreadIds.Remove(threadId); }
+        return Task.CompletedTask;
+    }
+
+    public bool IsThreadFrozen(int threadId)
+    {
+        lock (_lock) { return _frozenThreadIds.Contains(threadId); }
+    }
+
+    public async Task<IReadOnlyList<DebugModuleInfo>> GetModulesAsync()
+    {
+        if (_client is null) return [];
+        var body = await _client.GetModulesAsync();
+        return body.Modules.Select(m => new DebugModuleInfo(
+            m.Name,
+            m.Path,
+            m.Version,
+            m.SymbolStatus,
+            m.IsOptimized  ?? false,
+            m.IsUserCode   ?? true
+        )).ToList();
+    }
+
+    // ── Symbol server ──────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Try to resolve PDB symbols for every loaded module that has a known symbol path.
+    /// Downloads missing PDBs from the configured symbol server URLs and stores them in the cache.
+    /// No-op when symbol server support is disabled in settings.
+    /// </summary>
+    public async Task ResolveSymbolsAsync(CancellationToken ct = default)
+    {
+        if (!_settings.Debugger.SymbolServerEnabled) return;
+        if (_client is null) return;
+
+        var body    = await _client.GetModulesAsync();
+        var servers = _settings.Debugger.SymbolServerUrls;
+
+        var tasks = body.Modules
+            .Where(m => !string.IsNullOrEmpty(m.Path))
+            .Select(m =>
+            {
+                var pdbName   = Path.GetFileNameWithoutExtension(m.Path) + ".pdb";
+                // Prefer the directory component of symbolFilePath (contains GUID+age);
+                // fall back to module Id only when it's a meaningful non-empty string.
+                var signature = m.SymbolFilePath is not null
+                    ? Path.GetFileName(Path.GetDirectoryName(m.SymbolFilePath) ?? string.Empty)
+                    : m.Id?.ToString();
+                return (pdbName, signature);
+            })
+            .Where(t => !string.IsNullOrEmpty(t.signature))
+            .Select(t => _symbolClient.ResolveAsync(t.pdbName, t.signature!, servers, ct));
+
+        await Task.WhenAll(tasks);
     }
 
     // ── IDebuggerService — breakpoints ────────────────────────────────────────
@@ -496,7 +824,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
             var adapterPath = DebugAdapterLocator.Locate(_settings.Debugger.NetCoreDbgPath);
             if (adapterPath is null)
             {
-                MessageBox.Show(
+                _dialogs.Show(
                     string.Format(AppResources.App_Debugger_AdapterNotFound, Environment.NewLine),
                     AppResources.App_Debugger_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return null;
@@ -515,7 +843,7 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
         if (registeredClient is not null)
             return registeredClient;
 
-        MessageBox.Show(
+        _dialogs.Show(
             $"No debug adapter registered for language '{config.LanguageId}'.{Environment.NewLine}" +
             AppResources.App_Debugger_AdapterMissing,
             AppResources.App_Debugger_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -727,5 +1055,6 @@ public sealed class DebuggerServiceImpl : IDebuggerService, IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         await StopSessionAsync();
+        _symbolClient.Dispose();
     }
 }

@@ -80,4 +80,20 @@ public interface IDockingAdapter
 
     /// <summary>Returns the number of active document tab groups (minimum 1).</summary>
     int GetTabGroupCount() => 1;
+
+    /// <summary>
+    /// Suspends visual-tree rebuilds during a bulk registration.
+    /// Multiple sequential <see cref="AddDockablePanel"/> calls would otherwise
+    /// trigger a full RebuildVisualTree() each — very expensive when the IDE
+    /// already hosts code editors and other heavy panels.
+    /// Always pair with <see cref="EndBulkRegistration"/> in a <c>finally</c>.
+    /// Default implementation: no-op.
+    /// </summary>
+    void BeginBulkRegistration() { }
+
+    /// <summary>
+    /// Resumes rebuilds and performs a single rebuild to apply pending changes.
+    /// Default implementation: no-op.
+    /// </summary>
+    void EndBulkRegistration() { }
 }

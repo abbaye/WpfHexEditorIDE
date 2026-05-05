@@ -1,0 +1,187 @@
+<UserControl x:Class="WpfHexEditor.Shell.Panels.Panels.WorkspaceFindReplacePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svc="clr-namespace:WpfHexEditor.Shell.Panels.Services"
+             Background="{DynamicResource ERR_BackgroundBrush}"
+             Foreground="{DynamicResource ERR_ForegroundBrush}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <svc:ShellPanelsLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="WFR_ActionButton" TargetType="Button">
+                <Setter Property="Background"      Value="{DynamicResource InfoBar_ButtonBackgroundBrush}"/>
+                <Setter Property="Foreground"      Value="{DynamicResource InfoBar_ButtonForegroundBrush}"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Cursor"          Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="3"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background"
+                                            Value="{DynamicResource InfoBar_ButtonHoverBackgroundBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.4"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>   <!-- Row 0: inputs -->
+            <RowDefinition Height="Auto"/>   <!-- Row 1: progress bar -->
+            <RowDefinition Height="*"/>      <!-- Row 2: results -->
+            <RowDefinition Height="22"/>     <!-- Row 3: status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Row 0: Input area ──────────────────────────────── -->
+        <Grid Grid.Row="0" Margin="4,4,4,2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Find row -->
+            <TextBlock Grid.Row="0" Grid.Column="0"
+                       Text="{StaticResource WorkspaceFindReplace_FindLabel}"
+                       VerticalAlignment="Center" FontSize="11" Margin="0,0,4,0"/>
+            <TextBox   x:Name="FindBox"
+                       Grid.Row="0" Grid.Column="1"
+                       FontSize="11" Padding="3,2"
+                       KeyDown="OnFindBoxKeyDown"/>
+            <!-- Find All / Cancel toggle -->
+            <Button    x:Name="FindAllBtn"
+                       Grid.Row="0" Grid.Column="2"
+                       Style="{StaticResource WFR_ActionButton}"
+                       Content="{StaticResource WorkspaceFindReplace_FindAll}"
+                       Padding="8,2" Margin="4,0,0,0" FontSize="11"
+                       Click="OnFindAllClick"/>
+            <Button    x:Name="CancelBtn"
+                       Grid.Row="0" Grid.Column="2"
+                       Style="{StaticResource WFR_ActionButton}"
+                       Content="{StaticResource WorkspaceFindReplace_Cancel}"
+                       Padding="8,2" Margin="4,0,0,0" FontSize="11"
+                       Visibility="Collapsed"
+                       Click="OnCancelClick"/>
+
+            <!-- Replace row -->
+            <TextBlock Grid.Row="2" Grid.Column="0"
+                       Text="{StaticResource WorkspaceFindReplace_ReplaceLabel}"
+                       VerticalAlignment="Center" FontSize="11" Margin="0,0,4,0"/>
+            <TextBox   x:Name="ReplaceBox"
+                       Grid.Row="2" Grid.Column="1"
+                       FontSize="11" Padding="3,2"/>
+            <Button    x:Name="ReplaceAllBtn"
+                       Grid.Row="2" Grid.Column="2"
+                       Style="{StaticResource WFR_ActionButton}"
+                       Content="{StaticResource WorkspaceFindReplace_ReplaceAll}"
+                       Padding="8,2" Margin="4,0,0,0" FontSize="11"
+                       Click="OnReplaceAllClick"/>
+
+            <!-- Options row -->
+            <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
+                        Orientation="Horizontal">
+                <CheckBox x:Name="RegexCheck"
+                          Content="{StaticResource WorkspaceFindReplace_OptionRegex}"
+                          Margin="0,0,10,0" FontSize="11"/>
+                <CheckBox x:Name="MatchCaseCheck"
+                          Content="{StaticResource WorkspaceFindReplace_OptionMatchCase}"
+                          Margin="0,0,10,0" FontSize="11"/>
+                <CheckBox x:Name="WholeWordCheck"
+                          Content="{StaticResource WorkspaceFindReplace_OptionWholeWord}"
+                          Margin="0,0,10,0" FontSize="11"/>
+                <Button   x:Name="ClearBtn"
+                          Style="{StaticResource WFR_ActionButton}"
+                          Content="&#x2715;" ToolTip="{StaticResource WorkspaceFindReplace_ClearResults}"
+                          Padding="5,0" FontSize="11" Click="OnClearClick"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- ── Row 1: Indeterminate progress bar (visible during search) ── -->
+        <ProgressBar x:Name="SearchProgress"
+                     Grid.Row="1"
+                     Height="4"
+                     IsIndeterminate="True"
+                     Visibility="Collapsed"
+                     Foreground="{DynamicResource DockAccentBrush}"
+                     BorderThickness="0"/>
+
+        <!-- ── Row 2: Results list ──────────────────────────────── -->
+        <ListView x:Name="ResultsList"
+                  Grid.Row="2"
+                  FontSize="11"
+                  BorderThickness="0"
+                  Background="Transparent"
+                  Foreground="{DynamicResource ERR_ForegroundBrush}"
+                  SelectionChanged="OnResultSelected"
+                  MouseDoubleClick="OnResultDoubleClick"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+
+            <!-- ── Context menu ─────────────────────────────────── -->
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{StaticResource WorkspaceFindReplace_CM_OpenFile}"
+                              Click="OnCM_OpenFile"/>
+                    <MenuItem Header="{StaticResource WorkspaceFindReplace_CM_OpenAtLine}"
+                              Click="OnCM_OpenAtLine"/>
+                    <Separator/>
+                    <MenuItem Header="{StaticResource WorkspaceFindReplace_CM_CopyPath}"
+                              Click="OnCM_CopyPath"/>
+                    <MenuItem Header="{StaticResource WorkspaceFindReplace_CM_CopyPreview}"
+                              Click="OnCM_CopyPreview"/>
+                    <Separator/>
+                    <MenuItem Header="{StaticResource WorkspaceFindReplace_CM_ExcludeRow}"
+                              Click="OnCM_ExcludeRow"/>
+                    <MenuItem Header="{StaticResource WorkspaceFindReplace_CM_ExcludeFile}"
+                              Click="OnCM_ExcludeFile"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="{StaticResource WorkspaceFindReplace_ColFile}"    Width="160"
+                                    DisplayMemberBinding="{Binding FileName}"/>
+                    <GridViewColumn Header="{StaticResource WorkspaceFindReplace_ColLine}"    Width="50"
+                                    DisplayMemberBinding="{Binding Line}"/>
+                    <GridViewColumn Header="{StaticResource WorkspaceFindReplace_ColCol}"     Width="40"
+                                    DisplayMemberBinding="{Binding Column}"/>
+                    <GridViewColumn Header="{StaticResource WorkspaceFindReplace_ColPreview}" Width="400"
+                                    DisplayMemberBinding="{Binding Preview}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <!-- ── Row 3: Status bar ────────────────────────────────── -->
+        <StatusBar Grid.Row="3" Padding="4,0"
+                   Background="{DynamicResource ERR_BackgroundBrush}">
+            <TextBlock x:Name="StatusText"
+                       FontSize="11"
+                       Foreground="{DynamicResource ERR_ForegroundBrush}"
+                       Text="{StaticResource WorkspaceFindReplace_StatusReady}"
+                       VerticalAlignment="Center"/>
+        </StatusBar>
+    </Grid>
+</UserControl>

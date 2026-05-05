@@ -98,3 +98,58 @@ public sealed record OpenBreakpointSettingsRequestedEvent : IDEEventBase
     public string FilePath { get; init; } = string.Empty;
     public int    Line     { get; init; }
 }
+
+/// <summary>
+/// Published by the Debugger plugin "Run to Cursor" menu item.
+/// The App layer subscribes and calls RunToCursorAsync with the active editor's caret line.
+/// </summary>
+public sealed record RunToCursorRequestedEvent : IDEEventBase;
+
+/// <summary>
+/// Published by the App layer "Attach to Process" keyboard shortcut (Ctrl+Alt+P).
+/// The Debugger plugin subscribes and opens AttachToProcessDialog.
+/// </summary>
+public sealed record AttachToProcessRequestedEvent : IDEEventBase;
+
+/// <summary>
+/// Published by the App layer "Set Next Statement" shortcut (Ctrl+Shift+F10).
+/// The App layer subscribes to itself to call SetNextStatementAsync with the active caret line.
+/// </summary>
+public sealed record SetNextStatementRequestedEvent : IDEEventBase;
+
+/// <summary>
+/// Published by the Debugger plugin "Add Tracepoint" menu item.
+/// The App layer subscribes, resolves the active caret position, then publishes
+/// <see cref="OpenTracepointDialogRequestedEvent"/> with the file/line.
+/// </summary>
+public sealed record AddTracepointRequestedEvent : IDEEventBase;
+
+/// <summary>
+/// Published by the App layer after resolving the active caret line.
+/// The Debugger plugin subscribes and opens <c>QuickTracepointDialog</c>, then
+/// calls ToggleBreakpointAsync + UpdateBreakpointSettingsAsync on confirmation.
+/// </summary>
+public sealed record OpenTracepointDialogRequestedEvent : IDEEventBase
+{
+    public string FilePath { get; init; } = string.Empty;
+    public int    Line     { get; init; }
+}
+
+/// <summary>
+/// Published by Locals/Autos/Variables panels when the user picks "Add to Watch".
+/// The Watches panel subscribes and appends the expression to its rows.
+/// </summary>
+public sealed record AddWatchRequestedEvent : IDEEventBase
+{
+    public string Expression { get; init; } = string.Empty;
+}
+
+/// <summary>
+/// Published by debugger panels when the user picks "Go to Source" / "Go to Disassembly"
+/// for a stack frame, thread, or task. The App layer opens the editor at file/line.
+/// </summary>
+public sealed record GoToSourceRequestedEvent : IDEEventBase
+{
+    public string FilePath { get; init; } = string.Empty;
+    public int    Line     { get; init; }
+}

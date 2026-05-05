@@ -881,4 +881,8 @@
 <data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
     <value>Χρήση αναζήτησης με μπαλαντέρ (??)</value>
   </data>
+  <!-- HexEditor split view -->
+  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Διαίρεση</value></data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Άνοιγμα ή κλείσιμο ενός συγχρονισμένου δεύτερου παραθύρου hex</value></data>
+  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Κλείσιμο διαίρεσης</value></data>
 </root>
