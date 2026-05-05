@@ -227,6 +227,11 @@
   <data name="DocCanvas_SelectAll"  xml:space="preserve"><value>Tout sélectionner</value></data>
   <data name="DocCanvas_Undo"       xml:space="preserve"><value>Annuler</value></data>
   <data name="DocCanvas_Redo"       xml:space="preserve"><value>Rétablir</value></data>
+  <data name="DocCanvas_Bold"       xml:space="preserve"><value>Gras</value></data>
+  <data name="DocCanvas_Italic"     xml:space="preserve"><value>Italique</value></data>
+  <data name="DocCanvas_Underline"  xml:space="preserve"><value>Souligné</value></data>
+  <data name="DocCanvas_Strike"     xml:space="preserve"><value>Barré</value></data>
+  <data name="DocCanvas_Format"     xml:space="preserve"><value>Mise en forme</value></data>
 
   <!-- Page rulers -->
   <data name="Ruler_FirstLineIndent" xml:space="preserve"><value>Retrait de première ligne — glisser pour ajuster</value></data>

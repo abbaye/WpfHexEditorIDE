@@ -185,6 +185,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     // ── Context menu ─────────────────────────────────────────────────────────
     private System.Windows.Controls.MenuItem? _miCut, _miCopy, _miPaste, _miDelete, _miSelectAll, _miUndo, _miRedo;
+    private System.Windows.Controls.MenuItem? _miFormat, _miBold, _miItalic, _miUnderline, _miStrike;
 
     private System.Windows.Controls.ContextMenu BuildContextMenu()
     {
@@ -198,6 +199,20 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _miDelete    = MakeMenuItem("DocCanvas_Delete",    "Delete",      () => DeleteAtCaret(forward: true),        "Del");
         _miSelectAll = MakeMenuItem("DocCanvas_SelectAll", "Select All",  SelectAll,                                  "Ctrl+A");
 
+        _miBold      = MakeMenuItem("DocCanvas_Bold",      "Bold",          () => ToggleFormatOnSelection("bold"),          "Ctrl+B");
+        _miItalic    = MakeMenuItem("DocCanvas_Italic",    "Italic",        () => ToggleFormatOnSelection("italic"),        "Ctrl+I");
+        _miUnderline = MakeMenuItem("DocCanvas_Underline", "Underline",     () => ToggleFormatOnSelection("underline"),     "Ctrl+U");
+        _miStrike    = MakeMenuItem("DocCanvas_Strike",    "Strikethrough", () => ToggleFormatOnSelection("strikethrough"), "");
+
+        _miFormat = new System.Windows.Controls.MenuItem
+        {
+            Header = TryFindResource("DocCanvas_Format") as string ?? "Format"
+        };
+        _miFormat.Items.Add(_miBold);
+        _miFormat.Items.Add(_miItalic);
+        _miFormat.Items.Add(_miUnderline);
+        _miFormat.Items.Add(_miStrike);
+
         cm.Items.Add(_miUndo);
         cm.Items.Add(_miRedo);
         cm.Items.Add(new System.Windows.Controls.Separator());
@@ -206,8 +221,16 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         cm.Items.Add(_miPaste);
         cm.Items.Add(_miDelete);
         cm.Items.Add(new System.Windows.Controls.Separator());
+        cm.Items.Add(_miFormat);
+        cm.Items.Add(new System.Windows.Controls.Separator());
         cm.Items.Add(_miSelectAll);
         return cm;
+    }
+
+    private void ToggleFormatOnSelection(string attr)
+    {
+        if (_isReadOnly || _mutator is null || _selection.IsEmpty) return;
+        ApplyFormatToSelection(attr, true);
     }
 
     private System.Windows.Controls.MenuItem MakeMenuItem(string headerKey, string fallback, Action action, string gesture)
@@ -234,6 +257,13 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         if (_miPaste     is not null) _miPaste.IsEnabled     = hasCaret && editable && System.Windows.Clipboard.ContainsText();
         if (_miDelete    is not null) _miDelete.IsEnabled    = (hasSelection || hasCaret) && editable;
         if (_miSelectAll is not null) _miSelectAll.IsEnabled = _model is not null && _model.Blocks.Count > 0;
+
+        bool canFormat = hasSelection && editable;
+        if (_miFormat    is not null) _miFormat.IsEnabled    = canFormat;
+        if (_miBold      is not null) _miBold.IsEnabled      = canFormat;
+        if (_miItalic    is not null) _miItalic.IsEnabled    = canFormat;
+        if (_miUnderline is not null) _miUnderline.IsEnabled = canFormat;
+        if (_miStrike    is not null) _miStrike.IsEnabled    = canFormat;
 
         Focus();
         Keyboard.Focus(this);
@@ -1777,6 +1807,28 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         var pt = e.GetPosition(this);
 
+        // Pending click-on-selection: if the user moves past a small drag
+        // threshold, abandon the deferred collapse and start a fresh
+        // drag-to-select from the click point.
+        if (_pendingCollapseBlock >= 0 && e.LeftButton == MouseButtonState.Pressed)
+        {
+            var d = pt - _pendingCollapseAt;
+            if (Math.Abs(d.X) + Math.Abs(d.Y) > 4)
+            {
+                _caret            = new TextCaret(_pendingCollapseBlock, _pendingCollapseChar,
+                                                  ComputePreferredX(_pendingCollapseBlock, _pendingCollapseChar));
+                _selection.Anchor = _caret;
+                _selection.Focus  = _caret;
+                _pendingCollapseBlock = -1;
+                _isDragging = true;
+                // Fall through to the drag-select branch below.
+            }
+            else
+            {
+                return;
+            }
+        }
+
         // Drag-to-select
         if (_isDragging && e.LeftButton == MouseButtonState.Pressed)
         {
@@ -1818,6 +1870,17 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             EnsureFirstParagraph();
 
         int idx = HitTestBlock(pt);
+
+        // Right-click never moves the caret when it lands inside an existing
+        // selection — the user is invoking the context menu *for* that
+        // selection. When it lands outside, fall through so we move the caret
+        // first; the context menu still opens because we don't set Handled.
+        if (e.ChangedButton == MouseButton.Right && !_selection.IsEmpty &&
+            idx >= 0 && idx < _blocks.Count && IsPointInsideSelection(idx, pt))
+        {
+            return;
+        }
+
         if (idx < 0 || idx >= _blocks.Count) { _selectedIndex = -1; return; }
 
         _selectedIndex = idx;
@@ -1856,6 +1919,21 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             return;
         }
 
+        // Click inside an existing selection (no Shift): defer the caret
+        // collapse until MouseUp so the selection survives if the user
+        // simply clicks-and-releases (and survives a short hover for a
+        // future drag implementation). Shift+Click bypasses this.
+        if (!shift && e.ClickCount == 1 && !_selection.IsEmpty &&
+            IsPointInsideSelection(idx, pt))
+        {
+            _pendingCollapseBlock = idx;
+            _pendingCollapseChar  = charOff;
+            _pendingCollapseAt    = pt;
+            CaptureMouse();
+            e.Handled = true;
+            return;
+        }
+
         // Shift+Click: extend selection (keep anchor)
         if (shift && e.ClickCount == 1)
         {
@@ -1878,6 +1956,11 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         InvalidateVisual();
         e.Handled = true;
     }
+
+    // Pending-collapse state for click-on-selection deferral.
+    private int    _pendingCollapseBlock = -1;
+    private int    _pendingCollapseChar  = -1;
+    private Point  _pendingCollapseAt;
 
     private void SelectWordAt(int blockIdx, int charOff)
     {
@@ -1921,6 +2004,20 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void OnMouseUp(object sender, MouseButtonEventArgs e)
     {
+        // Resolve a pending click-on-selection: collapse the caret to the
+        // click point now that we know the user did not drag.
+        if (_pendingCollapseBlock >= 0)
+        {
+            _caret = new TextCaret(_pendingCollapseBlock, _pendingCollapseChar,
+                                   ComputePreferredX(_pendingCollapseBlock, _pendingCollapseChar));
+            _selection.Anchor = _caret;
+            _selection.Focus  = _caret;
+            _pendingCollapseBlock = -1;
+            _caretVisible = true;
+            RefreshCaretVisual();
+            InvalidateVisual();
+        }
+
         _isDragging = false;
         ReleaseMouseCapture();
         SelectionFormatChanged?.Invoke(this, EventArgs.Empty);
@@ -2226,6 +2323,21 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             if (geo is null || geo.Bounds.IsEmpty) { hi = mid; continue; }
             if (geo.Bounds.Left <= relX) lo = mid + 1;
             else hi = mid;
+        }
+
+        // The binary search above lands on the first char whose left edge is
+        // greater than relX, i.e. we are positioned to the LEFT of that char.
+        // Snap to whichever side of the previous glyph the click is closest
+        // to so the caret behaves the way Word / VS users expect (clicking on
+        // the right half of a char puts the caret after it).
+        if (lo > targetLine.Start && lo <= targetLine.End)
+        {
+            var prevGeo = ft.BuildHighlightGeometry(new Point(0, 0), lo - 1, 1);
+            if (prevGeo is not null && !prevGeo.Bounds.IsEmpty)
+            {
+                double mid = (prevGeo.Bounds.Left + prevGeo.Bounds.Right) / 2;
+                if (relX < mid) lo--;
+            }
         }
         return Math.Clamp(lo, 0, text.Length);
     }
@@ -2560,6 +2672,23 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private static bool IsWordSeparator(char c) =>
         char.IsWhiteSpace(c) || char.IsPunctuation(c) || char.IsSymbol(c);
+
+    /// <summary>
+    /// Returns true when the click <paramref name="pt"/> falls inside the
+    /// rectangle currently covered by the selection in block <paramref name="idx"/>.
+    /// Used to keep the selection alive when the user right-clicks on it.
+    /// </summary>
+    private bool IsPointInsideSelection(int idx, Point pt)
+    {
+        if (_selection.IsEmpty) return false;
+        var (start, end) = _selection.Ordered;
+        if (idx < start.BlockIndex || idx > end.BlockIndex) return false;
+
+        int charOff = GetCharOffsetAtPoint(idx, pt);
+        if (idx == start.BlockIndex && charOff < start.CharOffset) return false;
+        if (idx == end.BlockIndex   && charOff > end.CharOffset)   return false;
+        return true;
+    }
 
     // ── Phase 13 helpers (stubs expanded in Phase 13) ─────────────────────────
 

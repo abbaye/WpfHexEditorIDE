@@ -183,8 +183,49 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
         RedrawOverlay();
     }
 
+    /// <summary>
+    /// Approximate column width used to split long block text into visual lines.
+    /// The exact value does not have to match the renderer's wrap; it only
+    /// controls how dense the minimap looks compared to a single body of text.
+    /// </summary>
+    private const int MinimapWrapColumns = 80;
+
     private System.Windows.Controls.Image BuildBlocksImage(List<DocumentBlock> blocks, double w, double h)
     {
+        // Walk every block once and emit (lineLengthChars, blockKind) pairs so we
+        // can pick a uniform vertical scale that matches both very short and very
+        // long documents — same trick CodeEditor's MinimapControl uses.
+        var lines = new List<(int Len, DocumentBlock Block)>(capacity: blocks.Count * 2);
+        foreach (var block in blocks)
+        {
+            if (block.Kind is "page-break") continue;
+            string text = block.Children.Count > 0
+                ? string.Concat(block.Children.Select(c => c.Text))
+                : block.Text;
+            if (string.IsNullOrEmpty(text)) { lines.Add((0, block)); continue; }
+
+            int start = 0;
+            for (int i = 0; i <= text.Length; i++)
+            {
+                bool atEnd  = i == text.Length;
+                bool atNl   = !atEnd && text[i] == '\n';
+                bool atWrap = !atEnd && !atNl && (i - start) >= MinimapWrapColumns;
+                if (!atEnd && !atNl && !atWrap) continue;
+
+                lines.Add((i - start, block));
+                start = atNl ? i + 1 : i;
+            }
+        }
+        if (lines.Count == 0) lines.Add((0, blocks[0]));
+
+        // Per-line height: enough lines to read the document at a glance, but
+        // never so dense that individual lines disappear (min 1.4 dip).
+        double rawScale = h / Math.Max(1, lines.Count);
+        double lineH    = Math.Clamp(rawScale, 1.4, 4.0);
+        double rowFill  = Math.Max(0.8, lineH * 0.55);
+        double indent   = 4;
+        double maxW     = w - indent * 2;
+
         var visual = new DrawingVisual();
         using (var dc = visual.RenderOpen())
         {
@@ -192,19 +233,18 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
                           ?? new SolidColorBrush(Color.FromRgb(22, 22, 22));
             dc.DrawRectangle(bgBrush, null, new Rect(0, 0, w, h));
 
-            double lineH  = Math.Max(1.0, h / Math.Max(blocks.Count, 1));
-            double lineH2 = Math.Max(lineH * 0.6, 0.8);
-            double indent = 4;
-
-            for (int i = 0; i < blocks.Count; i++)
+            double y = 0;
+            foreach (var (len, block) in lines)
             {
-                var block = blocks[i];
-                if (block.Kind is "page-break") continue;
-                double y = i * lineH;
-                double textFrac = Math.Min(GetFlatLength(block) / 80.0, 1.0);
-                double lineW    = Math.Max(2, (w - indent * 2) * textFrac);
-                dc.DrawRectangle(GetKindBrush(block), null,
-                    new Rect(indent, y + (lineH - lineH2) / 2, lineW, lineH2));
+                if (y > h) break;
+                if (len > 0)
+                {
+                    double frac  = Math.Clamp(len / (double)MinimapWrapColumns, 0.05, 1.0);
+                    double lineW = Math.Max(2, maxW * frac);
+                    dc.DrawRectangle(GetKindBrush(block), null,
+                        new Rect(indent, y + (lineH - rowFill) / 2, lineW, rowFill));
+                }
+                y += lineH;
             }
         }
 

@@ -666,6 +666,11 @@
   <data name="DocCanvas_SelectAll"  xml:space="preserve"><value>Select All</value></data>
   <data name="DocCanvas_Undo"       xml:space="preserve"><value>Undo</value></data>
   <data name="DocCanvas_Redo"       xml:space="preserve"><value>Redo</value></data>
+  <data name="DocCanvas_Bold"       xml:space="preserve"><value>Bold</value></data>
+  <data name="DocCanvas_Italic"     xml:space="preserve"><value>Italic</value></data>
+  <data name="DocCanvas_Underline"  xml:space="preserve"><value>Underline</value></data>
+  <data name="DocCanvas_Strike"     xml:space="preserve"><value>Strikethrough</value></data>
+  <data name="DocCanvas_Format"     xml:space="preserve"><value>Format</value></data>
 
   <!-- ═══════════════════════════════════════════════════════════════
        PAGE RULERS (horizontal + vertical)
