@@ -311,6 +311,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// <summary>Raised when the caret moves to a different block. Rulers listen to refresh markers.</summary>
     public event EventHandler? CaretBlockChanged;
 
+    /// <summary>Raised on every caret move (within or across blocks). The horizontal ruler listens to track caret-position marker.</summary>
+    public event EventHandler? CaretMoved;
+
     /// <summary>Page card width in canvas DIPs (pre-zoom).</summary>
     public double PageWidth => _pageWidth;
 
@@ -321,18 +324,49 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public double ZoomFactor => _zoom;
 
     /// <summary>
+    /// X offset of the caret within the page content area, in pre-zoom canvas DIPs,
+    /// measured from the left edge of the text content (i.e. PageLeftOffset + MarginLeft).
+    /// Returns -1 when there is no active caret.
+    /// </summary>
+    public double CaretContentX
+    {
+        get
+        {
+            if (_caret.BlockIndex < 0 || _caret.BlockIndex >= _blocks.Count) return -1;
+            var text = GetFlatText(_caret.BlockIndex);
+            if (string.IsNullOrEmpty(text) || _caret.CharOffset <= 0) return 0;
+            var rb = _blocks[_caret.BlockIndex];
+            double contentW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
+            var ft = (rb.FormattedLines is { Count: > 0 })
+                ? rb.FormattedLines[0]
+                : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
+                                    _fgBrush ?? Brushes.Gray, contentW);
+            return CaretNavHelper.GetCaretX(ft, _caret.CharOffset, text.Length);
+        }
+    }
+
+    /// <summary>
     /// Raised when page geometry changes (page size, margins, zoom). The horizontal /
     /// vertical rulers listen so they can recompute markers.
     /// </summary>
     public event EventHandler? PageGeometryChanged;
 
     private int _lastNotifiedCaretBlock = -1;
+    private TextCaret _lastNotifiedCaret;
     private void NotifyCaretBlockChangedIfNeeded()
     {
         int bi = _caret.BlockIndex;
         if (bi == _lastNotifiedCaretBlock) return;
         _lastNotifiedCaretBlock = bi;
         CaretBlockChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void NotifyCaretMoved()
+    {
+        if (_caret.BlockIndex == _lastNotifiedCaret.BlockIndex &&
+            _caret.CharOffset  == _lastNotifiedCaret.CharOffset) return;
+        _lastNotifiedCaret = _caret;
+        CaretMoved?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>Block indices modified since the last <see cref="ClearDirtyBlocks"/> call.</summary>
@@ -2271,6 +2305,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             InvalidateVisual();
         RefreshCaretVisual();
         NotifyCaretBlockChangedIfNeeded();
+        NotifyCaretMoved();
     }
 
     /// <summary>Scrolls the viewport to make the caret's visual line visible (± 16px).</summary>

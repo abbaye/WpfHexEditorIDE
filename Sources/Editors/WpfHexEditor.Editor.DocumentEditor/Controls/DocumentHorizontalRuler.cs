@@ -87,6 +87,7 @@ internal sealed class DocumentHorizontalRuler : FrameworkElement
         {
             _renderer.PageGeometryChanged -= OnRendererStateChanged;
             _renderer.CaretBlockChanged   -= OnRendererStateChanged;
+            _renderer.CaretMoved          -= OnRendererStateChanged;
         }
         _renderer = renderer;
         _mutator  = mutator;
@@ -94,6 +95,7 @@ internal sealed class DocumentHorizontalRuler : FrameworkElement
         {
             _renderer.PageGeometryChanged += OnRendererStateChanged;
             _renderer.CaretBlockChanged   += OnRendererStateChanged;
+            _renderer.CaretMoved          += OnRendererStateChanged;
         }
         InvalidateVisual();
     }
@@ -108,9 +110,28 @@ internal sealed class DocumentHorizontalRuler : FrameworkElement
 
     private static bool UseMetric => RegionInfo.CurrentRegion.IsMetric;
 
-    /// <summary>Page-content X coordinate of the renderer in ruler-local space.</summary>
-    private double PageLeftX     => _renderer is null ? 0 : _renderer.PageLeftOffset * _renderer.ZoomFactor;
-    private double PageWidthDip  => _renderer is null ? 0 : _renderer.PageWidth      * _renderer.ZoomFactor;
+    /// <summary>
+    /// True page-left X in ruler-local coordinates, computed by transforming the renderer's
+    /// canvas origin through all intermediate transforms (zoom ScaleTransform, scroll offset,
+    /// grid column offsets). This avoids double-multiplying zoom when the VRuler column
+    /// adds an offset that is not part of the renderer's own coordinate system.
+    /// </summary>
+    private double PageLeftX
+    {
+        get
+        {
+            if (_renderer is null) return 0;
+            try
+            {
+                // Transform the page-left point from renderer canvas space to ruler space.
+                var pt = _renderer.TranslatePoint(new Point(_renderer.PageLeftOffset, 0), this);
+                return pt.X;
+            }
+            catch { return _renderer.PageLeftOffset * _renderer.ZoomFactor; }
+        }
+    }
+
+    private double PageWidthDip  => _renderer is null ? 0 : _renderer.PageWidth * _renderer.ZoomFactor;
     private double Zoom          => _renderer?.ZoomFactor ?? 1.0;
 
     private DocumentPageSettings PS => _renderer?.PageSettings ?? DocumentPageSettings.Default;
@@ -183,6 +204,21 @@ internal sealed class DocumentHorizontalRuler : FrameworkElement
     private void DrawIndentMarkers(DrawingContext dc, double contentL, double contentR)
     {
         var block = _renderer?.CurrentBlock;
+        double h = ActualHeight;
+
+        // Caret position marker — thin vertical line through the full ruler height.
+        if (_renderer is not null)
+        {
+            double cx = _renderer.CaretContentX;
+            if (cx >= 0)
+            {
+                double caretRulerX = contentL + cx * Zoom;
+                var caretPen = new Pen(_markerFill ?? Brushes.LightGray, 1.0);
+                caretPen.Freeze();
+                dc.DrawLine(caretPen, new Point(caretRulerX, 0), new Point(caretRulerX, h));
+            }
+        }
+
         if (block is null) return;
 
         double zoom = Zoom;
@@ -194,13 +230,11 @@ internal sealed class DocumentHorizontalRuler : FrameworkElement
         double firstLineX = leftX + indentFirstLine;
         double rightX     = contentR - indentRight;
 
-        double h = ActualHeight;
-        DrawTriangle(dc, firstLineX, top: true,  h, _markerFill, _markerPen);    // ▽
-        DrawTriangle(dc, leftX,      top: false, h, _markerFill, _markerPen);    // △
-        // Small square under the hanging triangle
+        DrawTriangle(dc, firstLineX, top: true,  h, _markerFill, _markerPen);  // ▽ first-line indent
+        DrawTriangle(dc, leftX,      top: false, h, _markerFill, _markerPen);  // △ left indent
         var squareR = new Rect(leftX - 4, h - 4, 8, 3);
         dc.DrawRectangle(_markerFill, _markerPen, squareR);
-        DrawTriangle(dc, rightX,     top: false, h, _markerFill, _markerPen);    // △ right
+        DrawTriangle(dc, rightX,     top: false, h, _markerFill, _markerPen);  // △ right indent
     }
 
     private static void DrawTriangle(DrawingContext dc, double x, bool top, double h, Brush? fill, Pen? pen)
