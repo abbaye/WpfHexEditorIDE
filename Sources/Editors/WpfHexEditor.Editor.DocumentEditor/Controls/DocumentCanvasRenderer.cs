@@ -162,6 +162,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         ClipToBounds  = true;
         Focusable     = true;
         Cursor        = Cursors.IBeam;
+        AllowDrop     = true;
 
         AddVisualChild(_caretVisual);
 
@@ -174,6 +175,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         LostKeyboardFocus += OnLostFocus;
         PreviewKeyDown    += OnPreviewKeyDown;
         PreviewTextInput  += OnPreviewTextInput;
+
+        DragOver += OnDragOver;
+        Drop     += OnDrop;
 
         ContextMenuOpening += OnContextMenuOpening;
         ContextMenu        = BuildContextMenu();
@@ -1807,21 +1811,23 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         var pt = e.GetPosition(this);
 
-        // Pending click-on-selection: if the user moves past a small drag
-        // threshold, abandon the deferred collapse and start a fresh
-        // drag-to-select from the click point.
+        // Pending click-on-selection: if the user moves past the drag
+        // threshold, start a real WPF drag-and-drop carrying the selected
+        // text (Word / VS behaviour). On Drop, the receiver removes the
+        // source range and inserts at the drop point.
         if (_pendingCollapseBlock >= 0 && e.LeftButton == MouseButtonState.Pressed)
         {
             var d = pt - _pendingCollapseAt;
-            if (Math.Abs(d.X) + Math.Abs(d.Y) > 4)
+            if (Math.Abs(d.X) + Math.Abs(d.Y) > 4 && !_selection.IsEmpty)
             {
-                _caret            = new TextCaret(_pendingCollapseBlock, _pendingCollapseChar,
-                                                  ComputePreferredX(_pendingCollapseBlock, _pendingCollapseChar));
-                _selection.Anchor = _caret;
-                _selection.Focus  = _caret;
+                StartSelectionDrag();
                 _pendingCollapseBlock = -1;
-                _isDragging = true;
-                // Fall through to the drag-select branch below.
+                return;
+            }
+            else if (Math.Abs(d.X) + Math.Abs(d.Y) > 4)
+            {
+                _pendingCollapseBlock = -1;
+                return;
             }
             else
             {
@@ -2687,6 +2693,140 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         int charOff = GetCharOffsetAtPoint(idx, pt);
         if (idx == start.BlockIndex && charOff < start.CharOffset) return false;
         if (idx == end.BlockIndex   && charOff > end.CharOffset)   return false;
+        return true;
+    }
+
+    // ── Drag-and-drop of the current selection ─────────────────────────────
+    // Internal sentinel format used so we recognise a drop coming from
+    // ourselves (move semantics) versus an external paste-style drop.
+    private const string DragInternalFormat = "WpfHexEditor.DocumentEditor.SelectionDrag";
+    private bool _selfDrag;
+
+    private void StartSelectionDrag()
+    {
+        if (_selection.IsEmpty || _isReadOnly || _mutator is null) return;
+        string text = GetSelectedFlatText();
+        if (string.IsNullOrEmpty(text)) return;
+
+        var data = new DataObject();
+        data.SetData(DataFormats.UnicodeText, text);
+        data.SetData(DragInternalFormat, true);
+
+        // Snapshot the source range so we can delete it on a successful move.
+        var (start, end) = _selection.Ordered;
+        _dragSourceStart = start;
+        _dragSourceEnd   = end;
+
+        _selfDrag = true;
+        try { DragDrop.DoDragDrop(this, data, DragDropEffects.Move | DragDropEffects.Copy); }
+        finally { _selfDrag = false; ReleaseMouseCapture(); }
+    }
+
+    private TextCaret _dragSourceStart, _dragSourceEnd;
+
+    private void OnDragOver(object sender, DragEventArgs e)
+    {
+        if (_isReadOnly || _mutator is null)
+        {
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+            return;
+        }
+        if (!e.Data.GetDataPresent(DataFormats.UnicodeText))
+        {
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+            return;
+        }
+
+        var pt = e.GetPosition(this);
+        int idx = HitTestBlock(pt);
+        if (idx >= 0 && idx < _blocks.Count)
+        {
+            int off = GetCharOffsetAtPoint(idx, pt);
+            _caret = new TextCaret(idx, off, ComputePreferredX(idx, off));
+            _caretVisible = true;
+            RefreshCaretVisual();
+        }
+
+        // Internal drag (move within document) defaults to Move; external
+        // drops (e.g. text from another app) default to Copy. Ctrl forces Copy.
+        bool isSelfDrag    = (bool?)e.Data.GetData(DragInternalFormat) == true;
+        bool ctrlPressed   = (e.KeyStates & DragDropKeyStates.ControlKey) != 0;
+        e.Effects = (isSelfDrag && !ctrlPressed) ? DragDropEffects.Move : DragDropEffects.Copy;
+        e.Handled = true;
+    }
+
+    private void OnDrop(object sender, DragEventArgs e)
+    {
+        if (_isReadOnly || _mutator is null) return;
+        if (!e.Data.GetDataPresent(DataFormats.UnicodeText)) return;
+
+        string text = (string)e.Data.GetData(DataFormats.UnicodeText);
+        if (string.IsNullOrEmpty(text)) return;
+
+        bool isSelfDrag  = (bool?)e.Data.GetData(DragInternalFormat) == true;
+        bool isMove      = isSelfDrag && (e.KeyStates & DragDropKeyStates.ControlKey) == 0;
+
+        var pt = e.GetPosition(this);
+        int idx = HitTestBlock(pt);
+        if (idx < 0 || idx >= _blocks.Count) return;
+        int dropOff = GetCharOffsetAtPoint(idx, pt);
+
+        // For a move, refuse drops that fall inside the source selection
+        // (would be a no-op or a self-overwrite).
+        if (isMove)
+        {
+            var dropCaret = new TextCaret(idx, dropOff, 0);
+            if (CaretIsBetween(dropCaret, _dragSourceStart, _dragSourceEnd))
+            {
+                _selection.Anchor = _selection.Focus = _caret = dropCaret;
+                InvalidateVisual();
+                e.Handled = true;
+                return;
+            }
+        }
+
+        using (_model?.UndoEngine.BeginTransaction(isMove ? "Move text" : "Drop text"))
+        {
+            // Compute the post-delete drop position when both ranges live
+            // in the same block and the drop is after the source.
+            int adjustedDropOff = dropOff;
+            int adjustedDropIdx = idx;
+            if (isMove && idx == _dragSourceEnd.BlockIndex && dropOff > _dragSourceEnd.CharOffset
+                       && idx == _dragSourceStart.BlockIndex)
+            {
+                adjustedDropOff -= (_dragSourceEnd.CharOffset - _dragSourceStart.CharOffset);
+            }
+
+            if (isMove)
+            {
+                _selection.Anchor = _dragSourceStart;
+                _selection.Focus  = _dragSourceEnd;
+                DeleteSelectionIfAny();
+            }
+
+            if (adjustedDropIdx >= 0 && adjustedDropIdx < _blocks.Count)
+            {
+                var targetBlock = _blocks[adjustedDropIdx].Block;
+                _mutator.InsertText(targetBlock, adjustedDropOff, text);
+                _caret = new TextCaret(adjustedDropIdx, adjustedDropOff + text.Length,
+                                       ComputePreferredX(adjustedDropIdx, adjustedDropOff + text.Length));
+                _selection.Anchor = new TextCaret(adjustedDropIdx, adjustedDropOff, 0);
+                _selection.Focus  = _caret;
+            }
+        }
+
+        InvalidateVisual();
+        e.Handled = true;
+    }
+
+    private static bool CaretIsBetween(TextCaret c, TextCaret a, TextCaret b)
+    {
+        // Inclusive on the left, exclusive on the right.
+        if (c.BlockIndex < a.BlockIndex || c.BlockIndex > b.BlockIndex) return false;
+        if (c.BlockIndex == a.BlockIndex && c.CharOffset < a.CharOffset) return false;
+        if (c.BlockIndex == b.BlockIndex && c.CharOffset >= b.CharOffset) return false;
         return true;
     }
 
