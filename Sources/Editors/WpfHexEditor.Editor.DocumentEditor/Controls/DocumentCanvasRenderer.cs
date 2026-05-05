@@ -562,6 +562,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         InvalidateVisual();
         RefreshCaretVisual();
         FirePageChanged();
+        PageGeometryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private int GetCurrentPage()
@@ -2016,6 +2017,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         if (_blinkTimer is { IsEnabled: false }) _blinkTimer.Start();
         RefreshCaretVisual();
         InvalidateVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        NotifyCaretMoved();
         e.Handled = true;
     }
 
@@ -2078,6 +2081,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             _caretVisible = true;
             RefreshCaretVisual();
             InvalidateVisual();
+            NotifyCaretBlockChangedIfNeeded();
+            NotifyCaretMoved();
         }
 
         _isDragging = false;
