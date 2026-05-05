@@ -91,6 +91,9 @@
   <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>文档元数据</value></data>
   <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>导出文档</value></data>
   <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>保存</value></data>
+  <data name="DocEditorHost_FontFamilyToolTip" xml:space="preserve"><value>字体</value></data>
+  <data name="DocEditorHost_FontSizeToolTip" xml:space="preserve"><value>字号</value></data>
+  <data name="DocEditorHost_TextColorToolTip" xml:space="preserve"><value>文字颜色</value></data>
   <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>标题</value></data>
   <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>作者</value></data>
   <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>格式</value></data>

@@ -91,6 +91,9 @@
   <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Métadonnées du document</value></data>
   <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Exporter le document</value></data>
   <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Simpan</value></data>
+  <data name="DocEditorHost_FontFamilyToolTip" xml:space="preserve"><value>Jenis huruf</value></data>
+  <data name="DocEditorHost_FontSizeToolTip" xml:space="preserve"><value>Ukuran huruf</value></data>
+  <data name="DocEditorHost_TextColorToolTip" xml:space="preserve"><value>Warna teks</value></data>
   <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Titre</value></data>
   <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Auteur</value></data>
   <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Format</value></data>

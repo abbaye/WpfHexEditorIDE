@@ -91,6 +91,9 @@
   <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>दस्तावेज़ मेटाडेटा</value></data>
   <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>दस्तावेज़ निर्यात करें</value></data>
   <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>सहेजें</value></data>
+  <data name="DocEditorHost_FontFamilyToolTip" xml:space="preserve"><value>फ़ॉन्ट परिवार</value></data>
+  <data name="DocEditorHost_FontSizeToolTip" xml:space="preserve"><value>फ़ॉन्ट आकार</value></data>
+  <data name="DocEditorHost_TextColorToolTip" xml:space="preserve"><value>पाठ रंग</value></data>
   <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>शीर्षक</value></data>
   <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>लेखक</value></data>
   <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>प्रारूप</value></data>

@@ -91,6 +91,9 @@
   <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>ドキュメントのメタデータ</value></data>
   <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>ドキュメントをエクスポート</value></data>
   <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>保存</value></data>
+  <data name="DocEditorHost_FontFamilyToolTip" xml:space="preserve"><value>フォントファミリ</value></data>
+  <data name="DocEditorHost_FontSizeToolTip" xml:space="preserve"><value>フォントサイズ</value></data>
+  <data name="DocEditorHost_TextColorToolTip" xml:space="preserve"><value>文字の色</value></data>
   <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>タイトル</value></data>
   <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>作成者</value></data>
   <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>形式</value></data>

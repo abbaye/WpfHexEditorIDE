@@ -350,6 +350,15 @@
   <data name="DocEditorHost_SaveToolTip" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="DocEditorHost_FontFamilyToolTip" xml:space="preserve">
+    <value>Font family</value>
+  </data>
+  <data name="DocEditorHost_FontSizeToolTip" xml:space="preserve">
+    <value>Font size</value>
+  </data>
+  <data name="DocEditorHost_TextColorToolTip" xml:space="preserve">
+    <value>Text color</value>
+  </data>
   <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve">
     <value>Title</value>
   </data>
