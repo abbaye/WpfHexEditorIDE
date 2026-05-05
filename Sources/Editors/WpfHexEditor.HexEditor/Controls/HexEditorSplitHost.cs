@@ -179,13 +179,19 @@ namespace WpfHexEditor.HexEditor.Controls
 
             _secondaryEditor.AttachToProvider(provider);
 
+            // Force initial paint — the secondary viewport may have zero ActualHeight at this
+            // point (not yet measured), so queue the refresh at Loaded/idle priority.
+            _secondaryEditor.Dispatcher.BeginInvoke(
+                new Action(() => _secondaryEditor?.RefreshView(refreshData: true)),
+                System.Windows.Threading.DispatcherPriority.Loaded);
+
             // Propagate custom background blocks (whfmt format detection overlays, bookmarks, etc.)
             SyncCustomBackgroundBlocks();
             _primaryEditor.CustomBackgroundBlockChanged += OnPrimaryBlocksChanged;
 
-            // When a byte is edited in either pane, refresh the other pane so both stay in sync.
-            _primaryEditor.ByteModified += OnPrimaryByteModified;
-            _secondaryEditor.ByteModified += OnSecondaryByteModified;
+            // Subscribe to the shared ByteProvider so ALL mutation types (modify, insert, delete)
+            // trigger a cross-pane repaint. ByteModified alone misses insert/delete paths.
+            provider.DataChanged += OnProviderDataChanged;
 
             double currentHeight = _primaryRow.ActualHeight;
             double half = Math.Max(80, currentHeight / 2);
@@ -207,11 +213,10 @@ namespace WpfHexEditor.HexEditor.Controls
             _secondaryFocusBorder.Visibility = Visibility.Collapsed;
 
             _primaryEditor.CustomBackgroundBlockChanged -= OnPrimaryBlocksChanged;
-            _primaryEditor.ByteModified                -= OnPrimaryByteModified;
+            _primaryEditor.Provider?.DataChanged -= OnProviderDataChanged;
 
             if (_secondaryEditor != null)
             {
-                _secondaryEditor.ByteModified -= OnSecondaryByteModified;
                 UnwireEditorEvents(_secondaryEditor);
                 _secondaryEditor.GotFocus -= OnSecondaryGotFocus;
                 _secondaryEditor.DetachFromProvider();
@@ -229,17 +234,15 @@ namespace WpfHexEditor.HexEditor.Controls
 
         // Called by the primary editor's ByteModified event so the secondary viewport
         // repaints when the user edits bytes in the primary (or vice-versa).
-        private void OnPrimaryByteModified(object sender, Core.Events.ByteModifiedEventArgs e)
+        // Fired by the shared ByteProvider for any mutation (modify, insert, delete).
+        // Refreshes whichever pane did NOT originate the edit — both share the same provider
+        // so the originating pane has already re-rendered; only the peer needs catching up.
+        private void OnProviderDataChanged(object sender, EventArgs e)
         {
-            if (_secondaryEditor == null) return;
-            // The secondary shares the same ByteProvider; its ViewModel already has the
-            // updated data — just trigger a visual refresh.
-            _secondaryEditor.RefreshView(refreshData: true);
-        }
-
-        private void OnSecondaryByteModified(object sender, Core.Events.ByteModifiedEventArgs e)
-        {
+            // We cannot tell which pane triggered the mutation, so refresh both.
+            // RefreshView is cheap when the viewport hasn't scrolled.
             _primaryEditor.RefreshView(refreshData: true);
+            _secondaryEditor?.RefreshView(refreshData: true);
         }
 
         private void SyncCustomBackgroundBlocks()
