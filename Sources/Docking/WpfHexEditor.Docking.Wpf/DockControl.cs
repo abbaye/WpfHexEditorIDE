@@ -1339,6 +1339,8 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             // Sub-pixel oscillations during DPI rounding caused flicker on first render.
             double lastW = -1, lastH = -1, lastGapX = -1, lastGapW = -1;
             bool retryQueued = false;
+            int  retryCount  = 0;
+            const int MaxRetries = 16; // bound the auto-retry chain to avoid dispatcher floods
 
             void UpdateOverlay()
             {
@@ -1351,9 +1353,10 @@ public class DockControl : ContentControl, IDockHost, IDisposable
                 // Outer not measured yet — keep previous clip; retry later.
                 if (w <= 0 || h <= 0)
                 {
-                    if (!retryQueued)
+                    if (!retryQueued && retryCount < MaxRetries)
                     {
                         retryQueued = true;
+                        retryCount++;
                         outer.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
                             new Action(() => { retryQueued = false; UpdateOverlay(); }));
                     }
@@ -1369,14 +1372,19 @@ public class DockControl : ContentControl, IDockHost, IDisposable
                 // back to a gapless clip that would freeze visible until the next layout pass.
                 if (activeTab is null || activeTab.ActualWidth <= 0)
                 {
-                    if (!retryQueued)
+                    if (!retryQueued && retryCount < MaxRetries)
                     {
                         retryQueued = true;
+                        retryCount++;
                         outer.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
                             new Action(() => { retryQueued = false; UpdateOverlay(); }));
                     }
                     return;
                 }
+
+                // Reset retry budget once measurable so future layout transitions
+                // get a fresh window of 16 retries rather than failing silently.
+                retryCount = 0;
 
                 // Translate tab position to overlay coordinates (subtract tabH from Y).
                 var pos     = activeTab.TranslatePoint(new Point(0, 0), outer);
