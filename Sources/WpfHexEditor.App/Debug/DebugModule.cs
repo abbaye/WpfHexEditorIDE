@@ -174,50 +174,100 @@ internal sealed class DebugModule
     }
 
     /// <summary>
-    /// Returns the panel for a Debug ContentId, building it lazily on the
-    /// first call. Used by MainWindow.BuildContentForItem when the docking
-    /// layout asks for the panel's content. Returns null when called for an
-    /// unknown ContentId or when the module is disabled (no IDebuggerService).
+    /// Builds the panel shell for a Debug ContentId immediately, with no DataContext.
+    /// Safe to call before Initialize — returns null only for panels that require
+    /// constructor args (ContentIdLaunchConfig). DataContext is wired by
+    /// WireDataContexts() after Initialize completes.
+    /// Matches the Solution Explorer pattern: panel construction is decoupled from
+    /// service availability so the docking layout can cache the real instance from
+    /// the first BuildContentForItem call.
     /// </summary>
-    public UIElement? GetPanel(string contentId)
+    public UIElement? GetOrBuildPanelShell(string contentId)
     {
-        if (_debugger is null || _context is null) return null;
-
         return contentId switch
         {
-            ContentIdBreakpoints    => _bpPanel ??= BuildBreakpointsPanel(),
-            ContentIdCallStack      => _csPanel ??= new CallStackPanel { DataContext = _csVm },
-            ContentIdLocals         => _locPanel ??= new LocalsPanel { DataContext = _locVm },
-            ContentIdAutos          => _autosPanel ??= new AutosPanel { DataContext = _autosVm },
-            ContentIdExceptions     => _exceptionPanel ??= new ExceptionSettingsPanel { DataContext = _exceptionVm },
-            ContentIdImmediate      => _immediatePanel ??= new ImmediateWindowPanel { DataContext = _immediateVm },
-            ContentIdModules        => _modulesPanel ??= new ModulesPanel { DataContext = _modulesVm },
-            ContentIdTasks          => _tasksPanel ??= new TasksPanel { DataContext = _tasksVm },
-            ContentIdDisassembly    => _disassemblyPanel ??= new DisassemblyPanel { DataContext = _disassemblyVm },
-            ContentIdMemory         => _memoryPanel ??= new MemoryWindowPanel { DataContext = _memoryVm },
-            ContentIdRegisters      => _registersPanel ??= new RegistersPanel { DataContext = _registersVm },
-            ContentIdParallelWatch  => _parallelWatchPanel ??= new ParallelWatchPanel { DataContext = _parallelWatchVm },
-            ContentIdWatch          => _watchPanel ??= new WatchesPanel { DataContext = _watchVm },
-            ContentIdConsole        => _consolePanel ??= BuildConsolePanel(),
-            ContentIdThreads        => _threadsPanel ??= new ThreadsPanel { DataContext = _threadsVm },
-            ContentIdParallelStacks => _parallelStacksPanel ??= new ParallelStacksPanel { DataContext = _parallelStacksVm },
-            ContentIdLaunchConfig   => _launchConfigPanel ??= new LaunchConfigEditorPanel(_context.DocumentHost, _debugger),
+            ContentIdBreakpoints    => _bpPanel    ??= new BreakpointExplorerPanel(),
+            ContentIdCallStack      => _csPanel    ??= new CallStackPanel(),
+            ContentIdLocals         => _locPanel   ??= new LocalsPanel(),
+            ContentIdAutos          => _autosPanel ??= new AutosPanel(),
+            ContentIdExceptions     => _exceptionPanel    ??= new ExceptionSettingsPanel(),
+            ContentIdImmediate      => _immediatePanel    ??= new ImmediateWindowPanel(),
+            ContentIdModules        => _modulesPanel      ??= new ModulesPanel(),
+            ContentIdTasks          => _tasksPanel        ??= new TasksPanel(),
+            ContentIdDisassembly    => _disassemblyPanel  ??= new DisassemblyPanel(),
+            ContentIdMemory         => _memoryPanel       ??= new MemoryWindowPanel(),
+            ContentIdRegisters      => _registersPanel    ??= new RegistersPanel(),
+            ContentIdParallelWatch  => _parallelWatchPanel ??= new ParallelWatchPanel(),
+            ContentIdWatch          => _watchPanel        ??= new WatchesPanel(),
+            ContentIdConsole        => _consolePanel      ??= new DebugConsolePanel(),
+            ContentIdThreads        => _threadsPanel      ??= new ThreadsPanel(),
+            ContentIdParallelStacks => _parallelStacksPanel ??= new ParallelStacksPanel(),
+            // LaunchConfigEditorPanel requires constructor args (IDocumentHostService, IDebuggerService).
+            // It falls back to the deferred path in MainWindow via GetPanel after Initialize.
             _ => null
         };
     }
 
-    private BreakpointExplorerPanel BuildBreakpointsPanel()
+    /// <summary>
+    /// Builds panels that require constructor args (LaunchConfigEditorPanel).
+    /// Called from MainWindow after Initialize() for ContentIds not handled by GetOrBuildPanelShell.
+    /// </summary>
+    public UIElement? GetPanel(string contentId)
     {
-        var p = new BreakpointExplorerPanel { DataContext = _bpVm };
-        p.UIFactory = _context!.UIFactory;
-        return p;
+        if (_debugger is null || _context is null) return null;
+        return contentId == ContentIdLaunchConfig
+            ? _launchConfigPanel ??= new LaunchConfigEditorPanel(_context.DocumentHost, _debugger)
+            : null;
     }
 
-    private DebugConsolePanel BuildConsolePanel()
+    /// <summary>
+    /// Wires DataContext on all pre-built panel shells. If MainWindow built shells before
+    /// Initialize() was called (layout restore race), those shells are adopted here via
+    /// the <paramref name="externalShells"/> dictionary keyed by ContentId.
+    /// Follows the _pendingTerminalPanel pattern from MainWindow.PluginSystem.cs.
+    /// </summary>
+    public void WireDataContexts(IReadOnlyDictionary<string, System.Windows.FrameworkElement>? externalShells = null)
     {
-        var p = new DebugConsolePanel { DataContext = _consoleVm };
-        p.SetSessionManager(_sessionMgrVm);
-        return p;
+        if (_debugger is null || _context is null) return;
+
+        // Adopt any panel shells pre-built by MainWindow before this module was initialized.
+        if (externalShells is not null)
+        {
+            if (externalShells.TryGetValue(ContentIdBreakpoints,   out var s) && s is BreakpointExplorerPanel bp)     _bpPanel    ??= bp;
+            if (externalShells.TryGetValue(ContentIdCallStack,     out s)     && s is CallStackPanel cs)               _csPanel    ??= cs;
+            if (externalShells.TryGetValue(ContentIdLocals,        out s)     && s is LocalsPanel loc)                 _locPanel   ??= loc;
+            if (externalShells.TryGetValue(ContentIdAutos,         out s)     && s is AutosPanel autos)                _autosPanel ??= autos;
+            if (externalShells.TryGetValue(ContentIdExceptions,    out s)     && s is ExceptionSettingsPanel exc)      _exceptionPanel    ??= exc;
+            if (externalShells.TryGetValue(ContentIdImmediate,     out s)     && s is ImmediateWindowPanel imm)        _immediatePanel    ??= imm;
+            if (externalShells.TryGetValue(ContentIdModules,       out s)     && s is ModulesPanel mod)                _modulesPanel      ??= mod;
+            if (externalShells.TryGetValue(ContentIdTasks,         out s)     && s is TasksPanel tsk)                  _tasksPanel        ??= tsk;
+            if (externalShells.TryGetValue(ContentIdDisassembly,   out s)     && s is DisassemblyPanel dis)            _disassemblyPanel  ??= dis;
+            if (externalShells.TryGetValue(ContentIdMemory,        out s)     && s is MemoryWindowPanel mem)           _memoryPanel       ??= mem;
+            if (externalShells.TryGetValue(ContentIdRegisters,     out s)     && s is RegistersPanel reg)              _registersPanel    ??= reg;
+            if (externalShells.TryGetValue(ContentIdParallelWatch, out s)     && s is ParallelWatchPanel pw)           _parallelWatchPanel ??= pw;
+            if (externalShells.TryGetValue(ContentIdWatch,         out s)     && s is WatchesPanel wch)                _watchPanel        ??= wch;
+            if (externalShells.TryGetValue(ContentIdConsole,       out s)     && s is DebugConsolePanel con)           _consolePanel      ??= con;
+            if (externalShells.TryGetValue(ContentIdThreads,       out s)     && s is ThreadsPanel thr)                _threadsPanel      ??= thr;
+            if (externalShells.TryGetValue(ContentIdParallelStacks,out s)     && s is ParallelStacksPanel pst)         _parallelStacksPanel ??= pst;
+        }
+
+        if (_bpPanel    is not null) { _bpPanel.DataContext    = _bpVm;    _bpPanel.UIFactory = _context.UIFactory; }
+        if (_csPanel    is not null)   _csPanel.DataContext    = _csVm;
+        if (_locPanel   is not null)   _locPanel.DataContext   = _locVm;
+        if (_autosPanel is not null)   _autosPanel.DataContext = _autosVm;
+        if (_exceptionPanel   is not null) _exceptionPanel.DataContext   = _exceptionVm;
+        if (_immediatePanel   is not null) _immediatePanel.DataContext   = _immediateVm;
+        if (_modulesPanel     is not null) _modulesPanel.DataContext     = _modulesVm;
+        if (_tasksPanel       is not null) _tasksPanel.DataContext       = _tasksVm;
+        if (_disassemblyPanel is not null) _disassemblyPanel.DataContext = _disassemblyVm;
+        if (_memoryPanel      is not null) _memoryPanel.DataContext      = _memoryVm;
+        if (_registersPanel   is not null) _registersPanel.DataContext   = _registersVm;
+        if (_parallelWatchPanel is not null) _parallelWatchPanel.DataContext = _parallelWatchVm;
+        if (_watchPanel       is not null) _watchPanel.DataContext       = _watchVm;
+        if (_consolePanel     is not null) { _consolePanel.DataContext = _consoleVm; _consolePanel.SetSessionManager(_sessionMgrVm); }
+        if (_threadsPanel     is not null) _threadsPanel.DataContext     = _threadsVm;
+        if (_parallelStacksPanel is not null) _parallelStacksPanel.DataContext = _parallelStacksVm;
+        // _launchConfigPanel: built on-demand in GetPanel (requires constructor args).
     }
 
     // ── IDE event handlers ────────────────────────────────────────────────

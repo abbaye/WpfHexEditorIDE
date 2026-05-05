@@ -1179,21 +1179,32 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// layout-restore time). A single RebuildVisualTree re-invokes ContentFactory
     /// for every item — this time the modules are ready and return the real panels.
     /// </summary>
+    /// <summary>
+    /// Wires DataContext on all pre-built debug panel shells and rebuilds
+    /// AssemblyExplorer placeholders. Called from InitializePluginSystemAsync
+    /// after both modules are ready.
+    /// </summary>
     private void RefreshModulePanels()
     {
+        // Debug panels: DataContext is wired onto the already-cached panel shells.
+        // Passes _debugPanelShells so the module adopts any shells built before Initialize().
+        // No RebuildVisualTree needed — the instances are already in the visual tree.
+        _debugModule?.WireDataContexts(_debugPanelShells);
+
         if (_layout is null) return;
 
-        // Only invalidate items that were deferred (EagerContentKey set by GetOrDeferModulePanel).
-        // Items that already have real content in cache (e.g. active tab on startup) must NOT
-        // be evicted — doing so would destroy their cached panel instance.
-        var placeholderIds = _layout.GetAllItems()
-            .Where(item => item.Metadata.ContainsKey(WpfHexEditor.Shell.DockTabControl.EagerContentKey))
+        // AssemblyExplorer panels: pre-building is not possible (complex constructor args).
+        // Invalidate their placeholder cache entries so the next RebuildVisualTree builds
+        // the real panels now that _assemblyExplorerModule is ready.
+        var asmPlaceholders = _layout.GetAllItems()
+            .Where(item => WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId)
+                        && item.Metadata.ContainsKey(WpfHexEditor.Shell.DockTabControl.EagerContentKey))
             .Select(item => item.ContentId)
             .ToList();
 
-        if (placeholderIds.Count == 0) return;
+        if (asmPlaceholders.Count == 0) return;
 
-        foreach (var id in placeholderIds)
+        foreach (var id in asmPlaceholders)
             DockHost.InvalidateContent(id);
 
         DockHost.RebuildVisualTree();
@@ -1201,8 +1212,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     /// <summary>
     /// Returns the real panel if the module is ready, otherwise a transparent placeholder.
-    /// RefreshModulePanels() is called after both modules initialise and triggers a full
-    /// RebuildVisualTree so all placeholders are replaced atomically.
+    /// Used only for AssemblyExplorer panels which cannot be pre-built without context.
+    /// RefreshModulePanels() invalidates these placeholders and rebuilds after module init.
     /// </summary>
     private UIElement GetOrDeferModulePanel(DockItem item, Func<UIElement?> getPanel, Func<bool> moduleReady)
     {
@@ -1212,6 +1223,52 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Mark the item so the next RebuildVisualTree calls ContentFactory even for non-active tabs.
         item.Metadata[WpfHexEditor.Shell.DockTabControl.EagerContentKey] = "1";
         return new System.Windows.Controls.Border { Background = System.Windows.Media.Brushes.Transparent };
+    }
+
+    // ── Debug panel shell factory ────────────────────────────────────────────
+    // Builds the panel UserControl immediately (no DataContext) so DockControl
+    // caches the real instance from the first BuildContentForItem call — same
+    // pattern as SolutionExplorerPanel. DataContext is wired later by
+    // DebugModule.WireDataContexts() after Initialize completes.
+    // _debugModule may be null here (layout loads before plugin init).
+
+    private readonly Dictionary<string, System.Windows.FrameworkElement> _debugPanelShells = new();
+
+    private UIElement GetOrBuildDebugPanelShell(DockItem item)
+    {
+        var id = item.ContentId;
+
+        // If module is already ready (e.g. panel opened via View menu after startup), go direct.
+        if (_debugModule is not null)
+            return _debugModule.GetOrBuildPanelShell(id) ?? _debugModule.GetPanel(id) ?? CreateDocumentContent(item);
+
+        // Module not yet initialized — build shell now so the cache holds the real instance.
+        if (!_debugPanelShells.TryGetValue(id, out var shell))
+        {
+            shell = id switch
+            {
+                WpfHexEditor.App.Debug.DebugModule.ContentIdBreakpoints    => new WpfHexEditor.App.Debug.Panels.BreakpointExplorerPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdCallStack      => new WpfHexEditor.App.Debug.Panels.CallStackPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdLocals         => new WpfHexEditor.App.Debug.Panels.LocalsPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdAutos          => new WpfHexEditor.App.Debug.Panels.AutosPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdExceptions     => new WpfHexEditor.App.Debug.Panels.ExceptionSettingsPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdImmediate      => new WpfHexEditor.App.Debug.Panels.ImmediateWindowPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdModules        => new WpfHexEditor.App.Debug.Panels.ModulesPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdTasks          => new WpfHexEditor.App.Debug.Panels.TasksPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdDisassembly    => new WpfHexEditor.App.Debug.Panels.DisassemblyPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdMemory         => new WpfHexEditor.App.Debug.Panels.MemoryWindowPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdRegisters      => new WpfHexEditor.App.Debug.Panels.RegistersPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdParallelWatch  => new WpfHexEditor.App.Debug.Panels.ParallelWatchPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdWatch          => new WpfHexEditor.App.Debug.Panels.WatchesPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdConsole        => new WpfHexEditor.App.Debug.Panels.DebugConsolePanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdThreads        => new WpfHexEditor.App.Debug.Panels.ThreadsPanel(),
+                WpfHexEditor.App.Debug.DebugModule.ContentIdParallelStacks => new WpfHexEditor.App.Debug.Panels.ParallelStacksPanel(),
+                _ => new System.Windows.Controls.Border()
+            };
+            _debugPanelShells[id] = shell;
+        }
+
+        return shell;
     }
 
     // Layout pruning logic moved to Services.LayoutPersistenceService (Phase 4 refactoring)
@@ -1615,7 +1672,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             FormatBrowserContentId         => CreateFormatBrowserContent(),
             FormatCatalogDocContentId      => CreateFormatCatalogContent(),
             _ when item.ContentId.StartsWith("panel-dbg-")
-                                                                    => GetOrDeferModulePanel(item, () => _debugModule?.GetPanel(item.ContentId), () => _debugModule is not null),
+                                                                    => GetOrBuildDebugPanelShell(item),
             _ when WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId)
                                                                     => GetOrDeferModulePanel(item, () => _assemblyExplorerModule?.GetPanel(item.ContentId), () => _assemblyExplorerModule is not null),
             _ when item.ContentId.StartsWith("doc-class-diagram-") => CreateClassDiagramGhostContent(item),
