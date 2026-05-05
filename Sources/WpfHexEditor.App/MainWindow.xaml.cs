@@ -1225,17 +1225,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private static IEnumerable<T> FindVisualChildren<T>(System.Windows.DependencyObject parent) where T : System.Windows.DependencyObject
-    {
-        var count = System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent);
-        for (int i = 0; i < count; i++)
-        {
-            var child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
-            if (child is T t) yield return t;
-            foreach (var grandchild in FindVisualChildren<T>(child))
-                yield return grandchild;
-        }
-    }
+
 
     // Layout pruning logic moved to Services.LayoutPersistenceService (Phase 4 refactoring)
 
