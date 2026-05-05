@@ -1194,17 +1194,18 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (_layout is null) return;
 
         // AssemblyExplorer panels: pre-building is not possible (complex constructor args).
-        // Invalidate their placeholder cache entries so the next RebuildVisualTree builds
-        // the real panels now that _assemblyExplorerModule is ready.
-        var asmPlaceholders = _layout.GetAllItems()
-            .Where(item => WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId)
-                        && item.Metadata.ContainsKey(WpfHexEditor.Shell.DockTabControl.EagerContentKey))
+        // Invalidate ALL known AssemblyExplorer ContentIds present in the layout so that
+        // RebuildVisualTree re-invokes ContentFactory now that the module is ready.
+        // We do not guard on EagerContentKey here — an active tab also gets a Border cached
+        // if the module was null at layout-load time.
+        var asmIds = _layout.GetAllItems()
+            .Where(item => WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId))
             .Select(item => item.ContentId)
             .ToList();
 
-        if (asmPlaceholders.Count == 0) return;
+        if (asmIds.Count == 0) return;
 
-        foreach (var id in asmPlaceholders)
+        foreach (var id in asmIds)
             DockHost.InvalidateContent(id);
 
         DockHost.RebuildVisualTree();
