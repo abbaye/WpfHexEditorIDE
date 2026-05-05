@@ -59,8 +59,8 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
         SizeChanged       += (_, _) => Redraw();
         MouseDown         += OnMouseDown;
         MouseMove         += OnMouseMove;
-        MouseEnter        += (_, _) => { _isMouseOver = true;  Redraw(); };
-        MouseLeave        += (_, _) => { _isMouseOver = false; _hoverY = -1; Redraw(); };
+        MouseEnter        += (_, _) => { _isMouseOver = true;  RedrawOverlay(); };
+        MouseLeave        += (_, _) => { _isMouseOver = false; _hoverY = -1; RedrawOverlay(); };
         MouseLeftButtonUp += (_, _) => ReleaseMouseCapture();
         MouseRightButtonUp+= OnRightClick;
         InitializeContextMenu();
@@ -144,23 +144,47 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
         _scrollOffset   = scrollOffset;
         _scrollExtent   = scrollExtent;
         _viewportHeight = viewportHeight;
-        Redraw();
+        // Only the cheap overlay needs to refresh on scroll — block bitmap is unchanged.
+        RedrawOverlay();
     }
 
     // ── Drawing ──────────────────────────────────────────────────────────────
 
+    private System.Windows.Controls.Image? _bgImage;
+    private System.Windows.Shapes.Rectangle? _viewportRect;
+    private System.Windows.Shapes.Rectangle? _hoverBand;
+    private double _cachedW, _cachedH;
+    private int    _cachedBlockCount;
+
     private void Redraw()
     {
-        PART_Canvas.Children.Clear();
         if (_model is null || ActualWidth < 4 || ActualHeight < 4) return;
-
         var blocks = _model.Blocks.ToList();
         int count  = blocks.Count;
-        if (count == 0) return;
+        if (count == 0) { PART_Canvas.Children.Clear(); _bgImage = null; return; }
 
         double w = ActualWidth;
         double h = ActualHeight;
 
+        // Re-rasterise the (expensive) block strips only when geometry changed.
+        bool geometryChanged = _bgImage is null
+                            || Math.Abs(_cachedW - w) > 0.5
+                            || Math.Abs(_cachedH - h) > 0.5
+                            || _cachedBlockCount != count;
+        if (geometryChanged)
+        {
+            PART_Canvas.Children.Clear();
+            _bgImage = BuildBlocksImage(blocks, w, h);
+            PART_Canvas.Children.Add(_bgImage);
+            _viewportRect = null;
+            _hoverBand    = null;
+            _cachedW = w; _cachedH = h; _cachedBlockCount = count;
+        }
+        RedrawOverlay();
+    }
+
+    private System.Windows.Controls.Image BuildBlocksImage(List<DocumentBlock> blocks, double w, double h)
+    {
         var visual = new DrawingVisual();
         using (var dc = visual.RenderOpen())
         {
@@ -168,49 +192,90 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
                           ?? new SolidColorBrush(Color.FromRgb(22, 22, 22));
             dc.DrawRectangle(bgBrush, null, new Rect(0, 0, w, h));
 
-            double lineH  = Math.Max(1.0, h / Math.Max(count, 1));
+            double lineH  = Math.Max(1.0, h / Math.Max(blocks.Count, 1));
             double lineH2 = Math.Max(lineH * 0.6, 0.8);
             double indent = 4;
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < blocks.Count; i++)
             {
                 var block = blocks[i];
                 if (block.Kind is "page-break") continue;
-
                 double y = i * lineH;
                 double textFrac = Math.Min(GetFlatLength(block) / 80.0, 1.0);
                 double lineW    = Math.Max(2, (w - indent * 2) * textFrac);
-
                 dc.DrawRectangle(GetKindBrush(block), null,
                     new Rect(indent, y + (lineH - lineH2) / 2, lineW, lineH2));
             }
-
-            // ── Viewport rectangle (always drawn in DC — same pattern as CodeEditor MinimapControl) ──
-            if (_scrollExtent > 0 && (_sliderAlways || _isMouseOver))
-            {
-                double scale = h / _scrollExtent;
-                double vpH   = Math.Max(8, _viewportHeight * scale);
-                double top   = Math.Clamp(_scrollOffset * scale, 0, h - vpH);
-
-                // Hover band (mouse-over position preview)
-                if (_isMouseOver && _hoverY >= 0)
-                {
-                    double bandTop = Math.Clamp(_hoverY - vpH / 2, 0, h - vpH);
-                    dc.DrawRectangle(HoverBandBrush, null, new Rect(0, bandTop, w, vpH));
-                }
-
-                dc.DrawRectangle(ViewportBrush, ViewportPen, new Rect(0, top, w, vpH));
-            }
         }
 
-        var img = new System.Windows.Controls.Image
+        return new System.Windows.Controls.Image
         {
             Source  = RenderToBitmap(visual, (int)Math.Max(1, w), (int)Math.Max(1, h)),
             Stretch = Stretch.Fill,
             Width   = w,
-            Height  = h
+            Height  = h,
+            IsHitTestVisible = false
         };
-        PART_Canvas.Children.Add(img);
+    }
+
+    private void RedrawOverlay()
+    {
+        if (_bgImage is null) { Redraw(); return; }
+        double w = ActualWidth, h = ActualHeight;
+
+        // Lazy-create overlays once; subsequent updates only mutate properties.
+        if (_viewportRect is null)
+        {
+            _viewportRect = new System.Windows.Shapes.Rectangle
+            {
+                Fill   = ViewportBrush,
+                Stroke = ViewportPen.Brush,
+                StrokeThickness  = ViewportPen.Thickness,
+                IsHitTestVisible = false
+            };
+            PART_Canvas.Children.Add(_viewportRect);
+        }
+        if (_hoverBand is null)
+        {
+            _hoverBand = new System.Windows.Shapes.Rectangle
+            {
+                Fill = HoverBandBrush,
+                IsHitTestVisible = false
+            };
+            PART_Canvas.Children.Add(_hoverBand);
+        }
+
+        bool showSlider = _scrollExtent > 0 && (_sliderAlways || _isMouseOver);
+        if (!showSlider)
+        {
+            _viewportRect.Visibility = Visibility.Collapsed;
+            _hoverBand.Visibility    = Visibility.Collapsed;
+            return;
+        }
+
+        double scale = h / _scrollExtent;
+        double vpH   = Math.Max(8, _viewportHeight * scale);
+        double top   = Math.Clamp(_scrollOffset * scale, 0, h - vpH);
+
+        _viewportRect.Width  = w;
+        _viewportRect.Height = vpH;
+        Canvas.SetLeft(_viewportRect, 0);
+        Canvas.SetTop (_viewportRect, top);
+        _viewportRect.Visibility = Visibility.Visible;
+
+        if (_isMouseOver && _hoverY >= 0)
+        {
+            double bandTop = Math.Clamp(_hoverY - vpH / 2, 0, h - vpH);
+            _hoverBand.Width  = w;
+            _hoverBand.Height = vpH;
+            Canvas.SetLeft(_hoverBand, 0);
+            Canvas.SetTop (_hoverBand, bandTop);
+            _hoverBand.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            _hoverBand.Visibility = Visibility.Collapsed;
+        }
     }
 
     // ── Interaction ──────────────────────────────────────────────────────────
@@ -232,7 +297,7 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
         else
         {
             _hoverY = pos.Y;
-            Redraw();
+            RedrawOverlay();
         }
     }
 

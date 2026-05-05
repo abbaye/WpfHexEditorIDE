@@ -219,6 +219,15 @@
   <data name="DocStats_LineCount"         xml:space="preserve"><value>Lignes</value></data>
   <data name="DocStats_Close"             xml:space="preserve"><value>Fermer</value></data>
 
+  <!-- Canvas context menu -->
+  <data name="DocCanvas_Cut"        xml:space="preserve"><value>Couper</value></data>
+  <data name="DocCanvas_Copy"       xml:space="preserve"><value>Copier</value></data>
+  <data name="DocCanvas_Paste"      xml:space="preserve"><value>Coller</value></data>
+  <data name="DocCanvas_Delete"     xml:space="preserve"><value>Supprimer</value></data>
+  <data name="DocCanvas_SelectAll"  xml:space="preserve"><value>Tout sélectionner</value></data>
+  <data name="DocCanvas_Undo"       xml:space="preserve"><value>Annuler</value></data>
+  <data name="DocCanvas_Redo"       xml:space="preserve"><value>Rétablir</value></data>
+
   <!-- Page rulers -->
   <data name="Ruler_FirstLineIndent" xml:space="preserve"><value>Retrait de première ligne — glisser pour ajuster</value></data>
   <data name="Ruler_HangingIndent"   xml:space="preserve"><value>Retrait suspendu — glisser pour ajuster</value></data>

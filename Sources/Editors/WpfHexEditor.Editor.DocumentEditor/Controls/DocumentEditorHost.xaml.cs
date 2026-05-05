@@ -91,9 +91,20 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     {
         _ideContext = ideContext;
         InitializeComponent();
-        Loaded      += OnLoaded;
-        Unloaded    += OnUnloaded;
-        PreviewKeyDown += OnHostPreviewKeyDown;
+        Loaded            += OnLoaded;
+        Unloaded          += OnUnloaded;
+        PreviewKeyDown    += OnHostPreviewKeyDown;
+        PreviewMouseWheel += OnHostPreviewMouseWheel;
+    }
+
+    private void OnHostPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+    {
+        if ((Keyboard.Modifiers & ModifierKeys.Control) == 0) return;
+        // Ctrl+wheel — zoom in / out and consume the event so the ScrollViewer
+        // does not also scroll the document.
+        double step = e.Delta > 0 ? +0.1 : -0.1;
+        ZoomLevel = Math.Clamp(Math.Round(ZoomLevel + step, 1), 0.5, 2.0);
+        e.Handled = true;
     }
 
     // ── Context injection (deferred) ────────────────────────────────────────

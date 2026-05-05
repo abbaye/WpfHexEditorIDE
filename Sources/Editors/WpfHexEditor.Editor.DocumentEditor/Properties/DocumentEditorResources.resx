@@ -657,6 +657,17 @@
   <data name="DocStats_Close"             xml:space="preserve"><value>Close</value></data>
 
   <!-- ═══════════════════════════════════════════════════════════════
+       CANVAS CONTEXT MENU
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="DocCanvas_Cut"        xml:space="preserve"><value>Cut</value></data>
+  <data name="DocCanvas_Copy"       xml:space="preserve"><value>Copy</value></data>
+  <data name="DocCanvas_Paste"      xml:space="preserve"><value>Paste</value></data>
+  <data name="DocCanvas_Delete"     xml:space="preserve"><value>Delete</value></data>
+  <data name="DocCanvas_SelectAll"  xml:space="preserve"><value>Select All</value></data>
+  <data name="DocCanvas_Undo"       xml:space="preserve"><value>Undo</value></data>
+  <data name="DocCanvas_Redo"       xml:space="preserve"><value>Redo</value></data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
        PAGE RULERS (horizontal + vertical)
        ═══════════════════════════════════════════════════════════════ -->
   <data name="Ruler_FirstLineIndent" xml:space="preserve"><value>First-line indent — drag to set</value></data>

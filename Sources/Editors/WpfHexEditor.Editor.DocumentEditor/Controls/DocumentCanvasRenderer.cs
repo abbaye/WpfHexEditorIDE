@@ -175,9 +175,68 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         PreviewKeyDown    += OnPreviewKeyDown;
         PreviewTextInput  += OnPreviewTextInput;
 
+        ContextMenuOpening += OnContextMenuOpening;
+        ContextMenu        = BuildContextMenu();
+
         // Blink timer: only redraws the 2px caret visual, not the whole page
         _blinkTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
         _blinkTimer.Tick += (_, _) => { _caretVisible = !_caretVisible; RefreshCaretVisual(); };
+    }
+
+    // ── Context menu ─────────────────────────────────────────────────────────
+    private System.Windows.Controls.MenuItem? _miCut, _miCopy, _miPaste, _miDelete, _miSelectAll, _miUndo, _miRedo;
+
+    private System.Windows.Controls.ContextMenu BuildContextMenu()
+    {
+        var cm = new System.Windows.Controls.ContextMenu();
+
+        _miUndo      = MakeMenuItem("DocCanvas_Undo",      "Undo",        () => _mutator?.TryUndo(),                "Ctrl+Z");
+        _miRedo      = MakeMenuItem("DocCanvas_Redo",      "Redo",        () => _mutator?.TryRedo(),                "Ctrl+Y");
+        _miCut       = MakeMenuItem("DocCanvas_Cut",       "Cut",         CutSelection,                              "Ctrl+X");
+        _miCopy      = MakeMenuItem("DocCanvas_Copy",      "Copy",        CopySelection,                             "Ctrl+C");
+        _miPaste     = MakeMenuItem("DocCanvas_Paste",     "Paste",       PasteAtCaret,                              "Ctrl+V");
+        _miDelete    = MakeMenuItem("DocCanvas_Delete",    "Delete",      () => DeleteAtCaret(forward: true),        "Del");
+        _miSelectAll = MakeMenuItem("DocCanvas_SelectAll", "Select All",  SelectAll,                                  "Ctrl+A");
+
+        cm.Items.Add(_miUndo);
+        cm.Items.Add(_miRedo);
+        cm.Items.Add(new System.Windows.Controls.Separator());
+        cm.Items.Add(_miCut);
+        cm.Items.Add(_miCopy);
+        cm.Items.Add(_miPaste);
+        cm.Items.Add(_miDelete);
+        cm.Items.Add(new System.Windows.Controls.Separator());
+        cm.Items.Add(_miSelectAll);
+        return cm;
+    }
+
+    private System.Windows.Controls.MenuItem MakeMenuItem(string headerKey, string fallback, Action action, string gesture)
+    {
+        var mi = new System.Windows.Controls.MenuItem
+        {
+            Header           = TryFindResource(headerKey) as string ?? fallback,
+            InputGestureText = gesture
+        };
+        mi.Click += (_, _) => action();
+        return mi;
+    }
+
+    private void OnContextMenuOpening(object sender, System.Windows.Controls.ContextMenuEventArgs e)
+    {
+        bool hasSelection = !_selection.IsEmpty;
+        bool hasCaret     = _caret.BlockIndex >= 0;
+        bool editable     = !_isReadOnly && _mutator is not null;
+
+        if (_miUndo      is not null) _miUndo.IsEnabled      = _model?.UndoEngine.CanUndo == true;
+        if (_miRedo      is not null) _miRedo.IsEnabled      = _model?.UndoEngine.CanRedo == true;
+        if (_miCut       is not null) _miCut.IsEnabled       = hasSelection && editable;
+        if (_miCopy      is not null) _miCopy.IsEnabled      = hasSelection;
+        if (_miPaste     is not null) _miPaste.IsEnabled     = hasCaret && editable && System.Windows.Clipboard.ContainsText();
+        if (_miDelete    is not null) _miDelete.IsEnabled    = (hasSelection || hasCaret) && editable;
+        if (_miSelectAll is not null) _miSelectAll.IsEnabled = _model is not null && _model.Blocks.Count > 0;
+
+        Focus();
+        Keyboard.Focus(this);
     }
 
     protected override void OnVisualParentChanged(DependencyObject oldParent)
@@ -2072,6 +2131,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// </summary>
     private void CommitCaret(TextCaret newCaret, bool extend, bool vertical)
     {
+        // Track whether the selection state changes so we can avoid the
+        // expensive InvalidateVisual() pass for plain caret navigation.
+        bool wasEmptyBefore = _selection.IsEmpty;
+
         if (!vertical)
         {
             double px = ComputePreferredX(newCaret.BlockIndex, newCaret.CharOffset);
@@ -2083,7 +2146,13 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         else           _selection.Focus  = _caret;
         _caretVisible = true;
         EnsureCaretVisible();
-        InvalidateVisual();
+
+        // Selection-aware invalidation: collapsed-to-collapsed caret moves only
+        // need the cheap caret-layer redraw; selection-affecting moves require
+        // a full invalidate so the highlight rect tracks.
+        bool isEmptyNow = _selection.IsEmpty;
+        if (!wasEmptyBefore || !isEmptyNow)
+            InvalidateVisual();
         RefreshCaretVisual();
         NotifyCaretBlockChangedIfNeeded();
     }
