@@ -83,6 +83,51 @@ public static class DocumentBlockFactory
         }
     };
 
+    /// <summary>Creates a hyperlink block. Rendered as blue underlined text; Ctrl+Click opens the URL.</summary>
+    public static DocumentBlock NewHyperlink(string text, string url) => new()
+    {
+        Kind      = "hyperlink",
+        Text      = text,
+        RawOffset = -1,
+        RawLength = 0,
+        Attributes = { ["href"] = url }
+    };
+
+    /// <summary>Creates a page-break block. Rendered as a dashed rule; forces a new page in paged layout.</summary>
+    public static DocumentBlock NewPageBreak() => new()
+    {
+        Kind      = "page-break",
+        Text      = string.Empty,
+        RawOffset = -1,
+        RawLength = 0
+    };
+
+    /// <summary>
+    /// Creates a header block.
+    /// <paramref name="pageScope"/>: "all" (default), "odd", "even", "first".
+    /// </summary>
+    public static DocumentBlock NewHeader(string text = "", string pageScope = "all") => new()
+    {
+        Kind      = "header",
+        Text      = text,
+        RawOffset = -1,
+        RawLength = 0,
+        Attributes = { ["pageScope"] = pageScope }
+    };
+
+    /// <summary>
+    /// Creates a footer block.
+    /// <paramref name="pageScope"/>: "all" (default), "odd", "even", "first".
+    /// </summary>
+    public static DocumentBlock NewFooter(string text = "", string pageScope = "all") => new()
+    {
+        Kind      = "footer",
+        Text      = text,
+        RawOffset = -1,
+        RawLength = 0,
+        Attributes = { ["pageScope"] = pageScope }
+    };
+
     /// <summary>
     /// Clones an existing block's text and attributes into a new block with
     /// <c>RawOffset = -1</c>. Used by SplitBlock to produce the second half.

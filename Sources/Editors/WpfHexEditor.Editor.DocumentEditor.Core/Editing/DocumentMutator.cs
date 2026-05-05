@@ -482,6 +482,75 @@ public sealed class DocumentMutator(DocumentModel model)
         model.NotifyBlocksChanged();
     }
 
+    // ── Table editing ────────────────────────────────────────────────────────
+
+    /// <summary>Inserts a new empty row after <paramref name="rowIndex"/> in the table block.</summary>
+    public void InsertTableRowAfter(DocumentBlock tableBlock, int rowIndex)
+    {
+        var rows = tableBlock.Children.Where(c => c.Kind == "table-row").ToList();
+        int colCount = rows.Count > 0 ? rows.Max(r => r.Children.Count(c => c.Kind == "table-cell")) : 1;
+        var newRow = DocumentBlockFactory.NewTableRow(Math.Max(1, colCount));
+        int insertAt = Math.Min(rowIndex + 1, tableBlock.Children.Count);
+        tableBlock.Children.Insert(insertAt, newRow);
+        BlockMutated?.Invoke(this, new BlockMutatedArgs(tableBlock, BlockMutationKind.Inserted));
+        model.NotifyBlocksChanged();
+    }
+
+    /// <summary>Deletes the row at <paramref name="rowIndex"/> from the table block.</summary>
+    public void DeleteTableRow(DocumentBlock tableBlock, int rowIndex)
+    {
+        var rows = tableBlock.Children.Where(c => c.Kind == "table-row").ToList();
+        if (rowIndex < 0 || rowIndex >= rows.Count) return;
+        tableBlock.Children.Remove(rows[rowIndex]);
+        BlockMutated?.Invoke(this, new BlockMutatedArgs(tableBlock, BlockMutationKind.Deleted));
+        model.NotifyBlocksChanged();
+    }
+
+    /// <summary>Inserts a new empty column after <paramref name="colIndex"/> in every row of the table.</summary>
+    public void InsertTableColumnAfter(DocumentBlock tableBlock, int colIndex)
+    {
+        foreach (var row in tableBlock.Children.Where(c => c.Kind == "table-row"))
+        {
+            var cells = row.Children.Where(c => c.Kind == "table-cell").ToList();
+            int insertAt = Math.Min(colIndex + 1, cells.Count);
+            row.Children.Insert(insertAt, DocumentBlockFactory.NewTableCell());
+        }
+        BlockMutated?.Invoke(this, new BlockMutatedArgs(tableBlock, BlockMutationKind.Inserted));
+        model.NotifyBlocksChanged();
+    }
+
+    /// <summary>Deletes column <paramref name="colIndex"/> from every row of the table.</summary>
+    public void DeleteTableColumn(DocumentBlock tableBlock, int colIndex)
+    {
+        foreach (var row in tableBlock.Children.Where(c => c.Kind == "table-row"))
+        {
+            var cells = row.Children.Where(c => c.Kind == "table-cell").ToList();
+            if (colIndex >= 0 && colIndex < cells.Count)
+                row.Children.Remove(cells[colIndex]);
+        }
+        BlockMutated?.Invoke(this, new BlockMutatedArgs(tableBlock, BlockMutationKind.Deleted));
+        model.NotifyBlocksChanged();
+    }
+
+    // ── Page break ───────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Inserts a page-break block after <paramref name="blockIndex"/>, followed by a new empty paragraph.
+    /// Ctrl+Enter in the renderer calls this.
+    /// </summary>
+    public void InsertPageBreak(int blockIndex)
+    {
+        if (blockIndex < 0 || blockIndex >= model.Blocks.Count) return;
+        var pb   = DocumentBlockFactory.NewPageBreak();
+        var para = DocumentBlockFactory.NewParagraph();
+        int insertAt = blockIndex + 1;
+        model.Blocks.Insert(insertAt, pb);
+        model.Blocks.Insert(insertAt + 1, para);
+        model.UndoEngine.Push(new BlockInsertUndoEntry { Model = model, Block = pb, BlockIndex = insertAt });
+        BlockMutated?.Invoke(this, new BlockMutatedArgs(pb, BlockMutationKind.Inserted));
+        model.NotifyBlocksChanged();
+    }
+
     // ── Undo / Redo application ───────────────────────────────────────────────
 
     /// <summary>

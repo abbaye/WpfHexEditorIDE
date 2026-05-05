@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Xml.Linq;
 using WpfHexEditor.Editor.DocumentEditor.Core.BinaryMap;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
+using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 
 namespace WpfHexEditor.Plugins.DocumentLoaders.Parsers.Docx;
 
@@ -79,17 +80,58 @@ internal sealed class DocxXmlMapper
         long off = ResolveOffset(pElem, baseOffset);
         int  len = EstimateLength(pElem);
 
-        var para = new DocumentBlock { Kind = "paragraph", RawOffset = off, RawLength = len, Text = string.Empty };
+        var pPr   = pElem.Element(W + "pPr");
+        var numPr = pPr?.Element(W + "numPr");
+        bool isList = false;
+        int listLevel = 0, numId = 0;
+        if (numPr is not null)
+        {
+            var ilvlStr  = numPr.Element(W + "ilvl")?.Attribute(W + "val")?.Value;
+            var numIdStr = numPr.Element(W + "numId")?.Attribute(W + "val")?.Value;
+            listLevel = ilvlStr  is not null && int.TryParse(ilvlStr,  out int lv) ? lv : 0;
+            numId     = numIdStr is not null && int.TryParse(numIdStr, out int ni) ? ni : 0;
+            isList    = numId > 0;
+        }
 
-        var pPr = pElem.Element(W + "pPr");
+        var para = new DocumentBlock
+        {
+            Kind      = isList ? "list-item" : "paragraph",
+            RawOffset = off,
+            RawLength = len,
+            Text      = string.Empty
+        };
+
+        if (isList)
+        {
+            para.Attributes["listLevel"] = listLevel;
+            para.Attributes["listStyle"] = "bullet";
+            para.Attributes["numId"]     = numId;
+        }
+
         if (pPr is not null) ExtractParagraphProps(pPr, para);
 
-        // Runs
-        foreach (var rElem in pElem.Elements(W + "r"))
+        // Runs and inline hyperlinks (w:hyperlink wraps w:r elements)
+        foreach (var child in pElem.Elements())
         {
-            var run = MapRun(rElem, baseOffset, mapBuilder);
-            para.Children.Add(run);
-            para.Text += run.Text;
+            if (child.Name == W + "r")
+            {
+                var run = MapRun(child, baseOffset, mapBuilder);
+                para.Children.Add(run);
+                para.Text += run.Text;
+            }
+            else if (child.Name == W + "hyperlink")
+            {
+                var rId  = child.Attribute(RelNs + "id")?.Value;
+                var url  = rId is not null && _relsMap.TryGetValue(rId, out var u) ? u : null;
+                var text = string.Concat(child.Descendants(W + "t").Select(t => t.Value));
+                var hlBlock = new DocumentBlock
+                {
+                    Kind = "hyperlink", Text = text, RawOffset = -1, RawLength = 0
+                };
+                if (url is not null) hlBlock.Attributes["href"] = url;
+                para.Children.Add(hlBlock);
+                para.Text += text;
+            }
         }
 
         // Inline images (w:drawing at paragraph level or nested inside w:r)
@@ -214,6 +256,18 @@ internal sealed class DocxXmlMapper
 
         var jc = pPr.Element(W + "jc")?.Attribute(W + "val")?.Value;
         if (jc is not null) para.Attributes["alignment"] = jc;
+
+        // Indentation
+        var ind = pPr.Element(W + "ind");
+        if (ind is not null)
+        {
+            var left      = ind.Attribute(W + "left")?.Value;
+            var right     = ind.Attribute(W + "right")?.Value;
+            var firstLine = ind.Attribute(W + "firstLine")?.Value;
+            if (left      is not null && int.TryParse(left,      out int l)) para.Attributes["indent"]          = DocumentPageSettings.TwipsToPx(l);
+            if (right     is not null && int.TryParse(right,     out int r)) para.Attributes["indentRight"]     = DocumentPageSettings.TwipsToPx(r);
+            if (firstLine is not null && int.TryParse(firstLine, out int f)) para.Attributes["indentFirstLine"] = DocumentPageSettings.TwipsToPx(f);
+        }
     }
 
     private static void ExtractRunProps(XElement rPr, DocumentBlock run)

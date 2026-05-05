@@ -100,6 +100,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private List<double> _pageStarts  = [0.0]; // Absolute canvas Y of each page card's top
     private int          _pageCount   = 1;
 
+    // Header/footer blocks separated from body during layout
+    private List<DocumentBlock> _headerBlocks = [];
+    private List<DocumentBlock> _footerBlocks = [];
+
     // IScrollInfo
     private ScrollViewer? _scrollOwner;
     private Vector        _offset;
@@ -195,6 +199,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     // ── Context menu ─────────────────────────────────────────────────────────
     private System.Windows.Controls.MenuItem? _miCut, _miCopy, _miPaste, _miDelete, _miSelectAll, _miUndo, _miRedo;
     private System.Windows.Controls.MenuItem? _miFormat, _miBold, _miItalic, _miUnderline, _miStrike;
+    private System.Windows.Controls.MenuItem? _miTableInsertRow, _miTableDeleteRow, _miTableInsertCol, _miTableDeleteCol, _miTable;
 
     private System.Windows.Controls.ContextMenu BuildContextMenu()
     {
@@ -222,6 +227,21 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _miFormat.Items.Add(_miUnderline);
         _miFormat.Items.Add(_miStrike);
 
+        // Table submenu (shown only when caret is on a table)
+        _miTableInsertRow = MakeMenuItem("DocCanvas_TableInsertRow", "Insert Row Below",  () => TableEditAtCaret(TableEditAction.InsertRow),   "");
+        _miTableDeleteRow = MakeMenuItem("DocCanvas_TableDeleteRow", "Delete Row",         () => TableEditAtCaret(TableEditAction.DeleteRow),   "");
+        _miTableInsertCol = MakeMenuItem("DocCanvas_TableInsertCol", "Insert Column Right",() => TableEditAtCaret(TableEditAction.InsertColumn),"");
+        _miTableDeleteCol = MakeMenuItem("DocCanvas_TableDeleteCol", "Delete Column",      () => TableEditAtCaret(TableEditAction.DeleteColumn),"");
+        _miTable = new System.Windows.Controls.MenuItem
+        {
+            Header = TryFindResource("DocCanvas_Table") as string ?? "Table"
+        };
+        _miTable.Items.Add(_miTableInsertRow);
+        _miTable.Items.Add(_miTableDeleteRow);
+        _miTable.Items.Add(new System.Windows.Controls.Separator());
+        _miTable.Items.Add(_miTableInsertCol);
+        _miTable.Items.Add(_miTableDeleteCol);
+
         cm.Items.Add(_miUndo);
         cm.Items.Add(_miRedo);
         cm.Items.Add(new System.Windows.Controls.Separator());
@@ -231,6 +251,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         cm.Items.Add(_miDelete);
         cm.Items.Add(new System.Windows.Controls.Separator());
         cm.Items.Add(_miFormat);
+        cm.Items.Add(_miTable);
         cm.Items.Add(new System.Windows.Controls.Separator());
         cm.Items.Add(_miSelectAll);
         return cm;
@@ -273,6 +294,15 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         if (_miItalic    is not null) _miItalic.IsEnabled    = canFormat;
         if (_miUnderline is not null) _miUnderline.IsEnabled = canFormat;
         if (_miStrike    is not null) _miStrike.IsEnabled    = canFormat;
+
+        bool isOnTable = hasCaret && _caret.BlockIndex < _blocks.Count &&
+                         _blocks[_caret.BlockIndex].Block.Kind == "table";
+        bool canEditTable = isOnTable && editable;
+        if (_miTable          is not null) _miTable.Visibility          = isOnTable ? Visibility.Visible : Visibility.Collapsed;
+        if (_miTableInsertRow is not null) _miTableInsertRow.IsEnabled  = canEditTable;
+        if (_miTableDeleteRow is not null) _miTableDeleteRow.IsEnabled  = canEditTable;
+        if (_miTableInsertCol is not null) _miTableInsertCol.IsEnabled  = canEditTable;
+        if (_miTableDeleteCol is not null) _miTableDeleteCol.IsEnabled  = canEditTable;
 
         Focus();
         Keyboard.Focus(this);
@@ -642,8 +672,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         // ── 2. Page cards ─────────────────────────────────────────────────
         double pageH = _pageSettings.EffectivePageHeight;
-        foreach (var pageStart in _pageStarts)
+        for (int pageIndex = 0; pageIndex < _pageStarts.Count; pageIndex++)
         {
+            double pageStart = _pageStarts[pageIndex];
             double cardTop = PageCanvasPad + pageStart - _offset.Y;
             if (cardTop + pageH < 0 || cardTop > vh) continue;
 
@@ -653,18 +684,38 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
             if (_pageSettings.HeaderEnabled)
             {
-                double hSep = cardTop + _pageSettings.MarginTop + _pageSettings.HeaderHeightPx;
+                double hSep  = cardTop + _pageSettings.MarginTop + _pageSettings.HeaderHeightPx;
+                double hTextY = cardTop + _pageSettings.MarginTop + (_pageSettings.HeaderHeightPx - _baseFontSize) / 2;
                 dc.DrawLine(_pageBreakPen!,
                     new Point(_pageLeft + _pageSettings.MarginLeft, hSep),
                     new Point(_pageLeft + _pageWidth - _pageSettings.MarginRight, hSep));
+
+                var hBlock = PickHeaderFooterBlock(_headerBlocks, pageIndex, isFirstPage: pageIndex == 0);
+                if (hBlock is not null && !string.IsNullOrEmpty(hBlock.Text))
+                {
+                    double hAreaW = _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight;
+                    var hFt = MakeFormattedText(hBlock.Text, _bodyFace!, _baseFontSize - 1,
+                                                _fgDimBrush ?? _fgBrush!, hAreaW);
+                    dc.DrawText(hFt, new Point(_pageLeft + _pageSettings.MarginLeft, hTextY));
+                }
             }
 
             if (_pageSettings.FooterEnabled)
             {
-                double fSep = cardTop + pageH - _pageSettings.MarginBottom - _pageSettings.FooterHeightPx;
+                double fSep   = cardTop + pageH - _pageSettings.MarginBottom - _pageSettings.FooterHeightPx;
+                double fTextY = fSep + (_pageSettings.FooterHeightPx - _baseFontSize) / 2;
                 dc.DrawLine(_pageBreakPen!,
                     new Point(_pageLeft + _pageSettings.MarginLeft, fSep),
                     new Point(_pageLeft + _pageWidth - _pageSettings.MarginRight, fSep));
+
+                var fBlock = PickHeaderFooterBlock(_footerBlocks, pageIndex, isFirstPage: pageIndex == 0);
+                if (fBlock is not null && !string.IsNullOrEmpty(fBlock.Text))
+                {
+                    double fAreaW = _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight;
+                    var fFt = MakeFormattedText(fBlock.Text, _bodyFace!, _baseFontSize - 1,
+                                                _fgDimBrush ?? _fgBrush!, fAreaW);
+                    dc.DrawText(fFt, new Point(_pageLeft + _pageSettings.MarginLeft, fTextY));
+                }
             }
 
             if (_pageSettings.BorderStyle != DocumentPageBorderStyle.None)
@@ -676,6 +727,28 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         DrawBlocksInViewport(dc, vw, vh,
             contentX: _pageLeft + _pageSettings.MarginLeft,
             contentW: Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight));
+    }
+
+    /// <summary>
+    /// Selects the most appropriate header/footer block for a given page index.
+    /// Priority: exact pageScope match ("first", "odd"/"even") → "all" fallback → null.
+    /// </summary>
+    private static DocumentBlock? PickHeaderFooterBlock(
+        List<DocumentBlock> blocks, int pageIndex, bool isFirstPage)
+    {
+        if (blocks.Count == 0) return null;
+        bool isOdd = pageIndex % 2 == 0; // page 0 = odd (right-hand)
+
+        DocumentBlock? fallback = null;
+        foreach (var b in blocks)
+        {
+            var scope = b.Attributes.TryGetValue("pageScope", out var ps) && ps is string s ? s : "all";
+            if (isFirstPage && scope == "first") return b;
+            if (!isFirstPage && isOdd  && scope == "odd")  return b;
+            if (!isFirstPage && !isOdd && scope == "even") return b;
+            if (scope == "all") fallback = b;
+        }
+        return fallback ?? blocks[0];
     }
 
     /// <summary>
@@ -906,6 +979,14 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         double x    = _pageLeft + _pageSettings.MarginLeft;
         double maxW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
 
+        if (rb.Block.Kind is "header" or "footer") return;
+
+        if (rb.Block.Kind == "page-break")
+        {
+            DrawPageBreakLabel(dc, x, y, maxW);
+            return;
+        }
+
         if (rb.Block.Kind == "list-item")
         {
             DrawListItem(dc, rb, x, y, maxW);
@@ -975,24 +1056,70 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         }
 
         // ── Draw ─────────────────────────────────────────────────────────
+        bool isHyperlink = rb.Block.Kind == "hyperlink";
+
         if (rb.GlyphLines is { Count: > 0 })
         {
             bool isHeading = rb.Block.Kind == "heading" || style == "heading";
             int level = isHeading && int.TryParse(
                 rb.Block.Attributes.GetValueOrDefault("level") as string, out int lv) ? lv : 1;
             DrawVisualLines(dc, rb.GlyphLines, drawX, y, isHeading, level);
+            if (isHyperlink) DrawHyperlinkUnderline(dc, rb.GlyphLines, drawX, y);
             return;
         }
 
         if (rb.FormattedLines is { Count: > 0 })
         {
+            var lineBrush = isHyperlink ? (Brush)new SolidColorBrush(Color.FromRgb(0x00, 0x78, 0xD4)) : (_fgBrush ?? Brushes.Black);
+            if (isHyperlink) ((SolidColorBrush)lineBrush).Freeze();
             double lineY = y;
             foreach (var ft in rb.FormattedLines)
             {
+                if (isHyperlink)
+                {
+                    ft.SetForegroundBrush(lineBrush, 0, ft.Text.Length);
+                    ft.SetTextDecorations(TextDecorations.Underline, 0, ft.Text.Length);
+                }
                 dc.DrawText(ft, new Point(drawX, lineY));
                 lineY += ft.Height + 2;
             }
         }
+    }
+
+    private static void DrawHyperlinkUnderline(DrawingContext dc,
+        IReadOnlyList<InlineVisualLine> lines, double originX, double blockTopY)
+    {
+        var brush = new SolidColorBrush(Color.FromRgb(0x00, 0x78, 0xD4));
+        brush.Freeze();
+        var pen = new Pen(brush, 0.75);
+        pen.Freeze();
+        double y = blockTopY;
+        foreach (var line in lines)
+        {
+            double baselineY = y + line.Ascent;
+            double uY = baselineY + (line.LineHeight - line.Ascent) * 0.5;
+            if (line.Segments.Length > 0)
+            {
+                double lineLeft  = originX + line.Segments[0].OffsetX;
+                double lineRight = originX + line.Segments[^1].OffsetX + line.Segments[^1].Width;
+                dc.DrawLine(pen, new Point(lineLeft, uY), new Point(lineRight, uY));
+            }
+            y += line.LineHeight;
+        }
+    }
+
+    private void DrawPageBreakLabel(DrawingContext dc, double x, double y, double maxW)
+    {
+        if (_pageBreakPen is null || _fgDimBrush is null) return;
+
+        // Dashed rule across the content width with a centred label
+        var dash = new Pen(_pageBreakPen.Brush, 1) { DashStyle = DashStyles.Dash };
+        dash.Freeze();
+        double midY = y + 8;
+        dc.DrawLine(dash, new Point(x, midY), new Point(x + maxW, midY));
+
+        var label = MakeFormattedText("— Page Break —", _uiFace!, 10, _fgDimBrush, maxW);
+        dc.DrawText(label, new Point(x + (maxW - label.Width) / 2, midY - label.Height / 2));
     }
 
     private void DrawListItem(DrawingContext dc, RenderBlock rb, double x, double y, double maxW)
@@ -1357,14 +1484,34 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var    result       = new List<RenderBlock>();
         var    pageStarts   = new List<double> { 0.0 };
         var    alertMap     = BuildAlertMap();
+        var    headers      = new List<DocumentBlock>();
+        var    footers      = new List<DocumentBlock>();
 
         foreach (var block in _model!.Blocks)
         {
-            // Outline mode: skip non-heading blocks in the paged layout too
+            // Pull header/footer blocks out of the body flow
+            if (block.Kind == "header") { headers.Add(block); continue; }
+            if (block.Kind == "footer") { footers.Add(block); continue; }
+
+            // Outline mode: skip non-heading blocks
             if (_renderMode == RenderMode.Outline && block.Kind != "heading")
                 continue;
 
             var rb = BuildRenderBlock(block, 0, maxW, alertMap);
+
+            // Explicit page-break forces a new page
+            if (block.Kind == "page-break")
+            {
+                curPage++;
+                double pbPageOrigin = curPage * (_pageSettings.EffectivePageHeight + PageGapPx);
+                pageStarts.Add(pbPageOrigin);
+                // Render a thin placeholder at the current position for hit-testing
+                var pbPlaced = rb with { Y = yCanvas };
+                result.Add(pbPlaced);
+                yCanvas = pbPageOrigin + _pageSettings.ContentTopY;
+                yOnPage = 0;
+                continue;
+            }
 
             if (yOnPage > 0 && yOnPage + rb.SpaceBefore + rb.Height > pageContentH)
             {
@@ -1386,6 +1533,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _pageStarts      = pageStarts;
         _pageCount       = pageStarts.Count;
         _blocks          = result;
+        _headerBlocks    = headers;
+        _footerBlocks    = footers;
         _totalHeight     = yCanvas;
         _visualLineCache.Clear();
         _caretFtDirty    = false;
@@ -1513,6 +1662,25 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                     : _baseFontSize + 4;
                 var ftLines = BuildInlineFormattedText(block, effW);
                 return new RenderBlock(block, y, h, 0, 3, ftLines, false, 0, severity, glyphLines, indentW, 0, 0);
+            }
+
+            case "page-break":
+                // Zero-height sentinel; layout engine already handled the page skip
+                return new RenderBlock(block, y, 0, 0, 0, null, false, 0, severity);
+
+            case "header":
+            case "footer":
+                // Rendered directly by OnRenderPage — invisible in body flow
+                return new RenderBlock(block, y, 0, 0, 0, null, false, 0, severity);
+
+            case "hyperlink":
+            {
+                var glyphLines = BuildGlyphLines(block, maxW);
+                double h = glyphLines.Count > 0
+                    ? glyphLines.Sum(vl => vl.LineHeight)
+                    : _baseFontSize + 4;
+                var ftLines = BuildInlineFormattedText(block, maxW);
+                return new RenderBlock(block, y, h, 0, 4, ftLines, false, 0, severity, glyphLines);
             }
 
             case "table":
@@ -1993,6 +2161,11 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         int hovered = HitTestBlock(pt);
         if (hovered == _hoverIndex) return;
         _hoverIndex = hovered;
+        // Show hand cursor when hovering a hyperlink with Ctrl held
+        bool isHoveredHyperlink = hovered >= 0 && hovered < _blocks.Count &&
+                                   _blocks[hovered].Block.Kind == "hyperlink" &&
+                                   (Keyboard.Modifiers & ModifierKeys.Control) != 0;
+        Cursor = isHoveredHyperlink ? Cursors.Hand : Cursors.IBeam;
         InvalidateVisual();
     }
 
@@ -2042,6 +2215,18 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 string errKey = $"{fp}|{en}\0error";
                 if (_imageCache.ContainsKey(errKey)) { _imageCache.Remove(errKey); InvalidateVisual(); e.Handled = true; return; }
             }
+        }
+
+        // Ctrl+Click on hyperlink → open URL
+        if (block.Kind == "hyperlink" &&
+            (Keyboard.Modifiers & ModifierKeys.Control) != 0 &&
+            block.Attributes.TryGetValue("href", out var hrefVal) && hrefVal is string href &&
+            !string.IsNullOrWhiteSpace(href))
+        {
+            try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(href) { UseShellExecute = true }); }
+            catch { }
+            e.Handled = true;
+            return;
         }
 
         // Phase 16: double-click on table-cell → inline CellEditorAdorner
@@ -2130,10 +2315,11 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         if (layer is null) return;
 
         double blockScreenY = PageCanvasPad + rb.Y - _offset.Y;
+        double maxW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
         var cellRect = new Rect(
             _pageLeft + _pageSettings.MarginLeft,
             blockScreenY,
-            Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight),
+            maxW,
             rb.Height);
 
         var adorner = new CellEditorAdorner(this, cellRect, rb.Block, _mutator!);
@@ -2147,6 +2333,39 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             InvalidateVisual();
         };
         adorner.EditCancelled += (_, _) => layer.Remove(adorner);
+
+        adorner.TabRequested += (_, forward) =>
+        {
+            layer.Remove(adorner);
+            RebuildLayout();
+            // Navigate to adjacent cell
+            var nextRb = FindAdjacentCell(rb, forward);
+            if (nextRb is not null)
+                OpenCellEditor(nextRb, new Point());
+        };
+    }
+
+    private RenderBlock? FindAdjacentCell(RenderBlock currentCellRb, bool forward)
+    {
+        // Find the parent table block (the table's RenderBlock owns Children with rows/cells)
+        foreach (var rb in _blocks)
+        {
+            if (rb.Block.Kind != "table") continue;
+            var allCells = rb.Block.Children
+                .Where(r => r.Kind == "table-row")
+                .SelectMany(r => r.Children.Where(c => c.Kind == "table-cell"))
+                .ToList();
+            int idx = allCells.IndexOf(currentCellRb.Block);
+            if (idx < 0) continue;
+            int nextIdx = forward ? idx + 1 : idx - 1;
+            if (nextIdx < 0 || nextIdx >= allCells.Count) return null;
+            var nextCell = allCells[nextIdx];
+            // Find the RenderBlock for this table (table renders as single rb, height covers all rows)
+            // We need a RenderBlock for the cell itself — but cells aren't in _blocks directly.
+            // Return a synthetic RenderBlock positioned at the table rb with cell content.
+            return rb with { Block = nextCell };
+        }
+        return null;
     }
 
     private void OnMouseUp(object sender, MouseButtonEventArgs e)
@@ -2238,6 +2457,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             case Key.Y when ctrl:  _mutator?.TryRedo();      e.Handled = true; break;
             case Key.Back:         DeleteAtCaret(forward: false); e.Handled = true; break;
             case Key.Delete:       DeleteAtCaret(forward: true);  e.Handled = true; break;
+            case Key.Return when ctrl: _mutator?.InsertPageBreak(_caret.BlockIndex); e.Handled = true; break;
             case Key.Return:       SplitBlockAtCaret();           e.Handled = true; break;
             case Key.Tab when !shift && IsCaretOnListItem():  AdjustListLevel(+1); e.Handled = true; break;
             case Key.Tab when shift  && IsCaretOnListItem():  AdjustListLevel(-1); e.Handled = true; break;
@@ -3393,6 +3613,35 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         RefreshCaretVisual();
         NotifyCaretBlockChangedIfNeeded();
         Focus(); Keyboard.Focus(this);
+    }
+
+    private enum TableEditAction { InsertRow, DeleteRow, InsertColumn, DeleteColumn }
+
+    private void TableEditAtCaret(TableEditAction action)
+    {
+        if (_mutator is null || _blocks.Count == 0) return;
+        int bi = _caret.BlockIndex;
+        if (bi < 0 || bi >= _blocks.Count) return;
+        var tableBlock = _blocks[bi].Block;
+        if (tableBlock.Kind != "table") return;
+
+        switch (action)
+        {
+            case TableEditAction.InsertRow:
+                _mutator.InsertTableRowAfter(tableBlock, 0);
+                break;
+            case TableEditAction.DeleteRow:
+                _mutator.DeleteTableRow(tableBlock, 0);
+                break;
+            case TableEditAction.InsertColumn:
+                _mutator.InsertTableColumnAfter(tableBlock, 0);
+                break;
+            case TableEditAction.DeleteColumn:
+                _mutator.DeleteTableColumn(tableBlock, 0);
+                break;
+        }
+        RebuildLayout();
+        InvalidateVisual();
     }
 
     /// <summary>Increases the indent level of the caret block by 1 (max 8).</summary>

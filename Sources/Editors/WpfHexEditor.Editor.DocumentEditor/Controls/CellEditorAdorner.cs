@@ -32,6 +32,8 @@ internal sealed class CellEditorAdorner : Adorner
 
     public event EventHandler? EditCommitted;
     public event EventHandler? EditCancelled;
+    /// <summary>Raised when Tab/Shift+Tab is pressed. bool = forward.</summary>
+    public event EventHandler<bool>? TabRequested;
 
     public CellEditorAdorner(
         UIElement         adornedElement,
@@ -77,8 +79,15 @@ internal sealed class CellEditorAdorner : Adorner
 
     private void OnKeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Return)  { Commit();  e.Handled = true; }
-        if (e.Key == Key.Escape)  { Cancel();  e.Handled = true; }
+        if (e.Key == Key.Return) { Commit(); e.Handled = true; }
+        if (e.Key == Key.Escape) { Cancel(); e.Handled = true; }
+        if (e.Key == Key.Tab)
+        {
+            bool forward = (Keyboard.Modifiers & ModifierKeys.Shift) == 0;
+            Commit();
+            TabRequested?.Invoke(this, forward);
+            e.Handled = true;
+        }
     }
 
     private void Commit()
