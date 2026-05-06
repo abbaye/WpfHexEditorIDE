@@ -1,0 +1,195 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/languages.json",
+  "$comment": "Embedded language catalog for WpfHexEditor spell checker. Add entries to %APPDATA%\\WpfHexEditor\\languages.json to extend without recompiling.",
+  "languages": [
+    {
+      "code": "ar-SA",
+      "display": "العربية (السعودية)",
+      "repoPath": "ar",
+      "prefix": "ar",
+      "stopwords": ["في", "من", "إلى", "على", "أن", "هذا", "هذه", "التي", "الذي", "كان", "كانت", "هو", "هي", "لا", "ما", "كل", "قد", "عن", "مع", "أو"]
+    },
+    {
+      "code": "cs-CZ",
+      "display": "Čeština",
+      "repoPath": "cs_CZ",
+      "prefix": "cs_CZ",
+      "stopwords": ["je", "to", "se", "na", "ve", "do", "jako", "ale", "pro", "při", "byl", "byly", "jsou", "jeho", "jejich", "který", "která", "které", "také", "nebo"]
+    },
+    {
+      "code": "da-DK",
+      "display": "Dansk",
+      "repoPath": "da_DK",
+      "prefix": "da_DK",
+      "stopwords": ["er", "og", "det", "en", "at", "til", "på", "som", "med", "for", "ikke", "den", "der", "af", "har", "han", "hun", "vi", "de", "eller"]
+    },
+    {
+      "code": "de-DE",
+      "display": "Deutsch",
+      "repoPath": "de",
+      "prefix": "de_DE_frami",
+      "stopwords": ["ist", "und", "die", "der", "das", "in", "von", "mit", "zu", "auf", "für", "nicht", "auch", "als", "an", "bei", "nach", "durch", "über", "wird"]
+    },
+    {
+      "code": "el-GR",
+      "display": "Ελληνικά",
+      "repoPath": "el_GR",
+      "prefix": "el_GR",
+      "stopwords": ["και", "το", "τα", "της", "τον", "στο", "στη", "από", "για", "που", "είναι", "ότι", "αυτό", "αυτή", "αυτά", "όλα", "έχει", "ήταν", "δεν", "θα"]
+    },
+    {
+      "code": "en-GB",
+      "display": "English (UK)",
+      "repoPath": "en",
+      "prefix": "en_GB",
+      "stopwords": ["the", "is", "are", "was", "and", "for", "that", "with", "this", "have", "from", "they", "will", "been", "which", "their", "said", "each", "she", "also"]
+    },
+    {
+      "code": "en-US",
+      "display": "English (US)",
+      "repoPath": "en",
+      "prefix": "en_US",
+      "stopwords": ["the", "is", "are", "was", "and", "for", "that", "with", "this", "have", "from", "they", "will", "been", "which", "their", "said", "each", "she", "also"]
+    },
+    {
+      "code": "es-ES",
+      "display": "Español (España)",
+      "repoPath": "es",
+      "prefix": "es_ES",
+      "stopwords": ["es", "en", "de", "la", "el", "los", "las", "un", "una", "que", "por", "para", "con", "su", "sus", "son", "pero", "como", "más", "este"]
+    },
+    {
+      "code": "es-MX",
+      "display": "Español (México)",
+      "repoPath": "es",
+      "prefix": "es_MX",
+      "stopwords": ["es", "en", "de", "la", "el", "los", "las", "un", "una", "que", "por", "para", "con", "su", "sus", "son", "pero", "como", "más", "este"]
+    },
+    {
+      "code": "fr-CA",
+      "display": "Français (Canada)",
+      "repoPath": "fr_FR",
+      "prefix": "fr",
+      "stopwords": ["le", "la", "les", "de", "des", "un", "une", "est", "en", "que", "qui", "dans", "pour", "pas", "sur", "avec", "par", "ou", "mais", "son", "sa", "se", "ce", "cet", "cette", "tout", "plus", "au", "aux", "du"]
+    },
+    {
+      "code": "fr-FR",
+      "display": "Français (France)",
+      "repoPath": "fr_FR",
+      "prefix": "fr",
+      "stopwords": ["le", "la", "les", "de", "des", "un", "une", "est", "en", "que", "qui", "dans", "pour", "pas", "sur", "avec", "par", "ou", "mais", "son", "sa", "se", "ce", "cet", "cette", "tout", "plus", "au", "aux", "du"]
+    },
+    {
+      "code": "hi-IN",
+      "display": "हिन्दी",
+      "repoPath": "hi_IN",
+      "prefix": "hi_IN",
+      "stopwords": ["है", "में", "को", "की", "के", "एक", "से", "यह", "हो", "पर", "भी", "कि", "और", "था", "थी", "हैं", "नहीं", "तो", "जो", "वह"]
+    },
+    {
+      "code": "hu-HU",
+      "display": "Magyar",
+      "repoPath": "hu_HU",
+      "prefix": "hu_HU",
+      "stopwords": ["és", "az", "egy", "van", "nem", "is", "de", "hogy", "volt", "ezt", "meg", "ha", "már", "csak", "fel", "el", "ki", "be", "mi", "én"]
+    },
+    {
+      "code": "id-ID",
+      "display": "Bahasa Indonesia",
+      "repoPath": "id",
+      "prefix": "id_ID",
+      "stopwords": ["dan", "di", "yang", "ini", "itu", "dengan", "untuk", "pada", "dari", "oleh", "akan", "tidak", "juga", "bisa", "ada", "telah", "saya", "kita", "mereka", "atau"]
+    },
+    {
+      "code": "it-IT",
+      "display": "Italiano",
+      "repoPath": "it_IT",
+      "prefix": "it_IT",
+      "stopwords": ["è", "in", "di", "la", "il", "le", "un", "una", "per", "che", "con", "del", "della", "dei", "come", "non", "si", "sono", "ma", "anche"]
+    },
+    {
+      "code": "ko-KR",
+      "display": "한국어",
+      "repoPath": "ko_KR",
+      "prefix": "ko_KR",
+      "stopwords": ["이", "가", "은", "는", "을", "를", "의", "에", "에서", "로", "으로", "도", "만", "이다", "있다", "없다", "하다", "되다", "그", "이것"]
+    },
+    {
+      "code": "nl-NL",
+      "display": "Nederlands",
+      "repoPath": "nl_NL",
+      "prefix": "nl_NL",
+      "stopwords": ["de", "het", "een", "van", "in", "is", "en", "op", "te", "dat", "die", "voor", "aan", "met", "zijn", "ook", "niet", "er", "maar", "als"]
+    },
+    {
+      "code": "pl-PL",
+      "display": "Polski",
+      "repoPath": "pl_PL",
+      "prefix": "pl_PL",
+      "stopwords": ["jest", "to", "się", "na", "do", "w", "z", "że", "ale", "jak", "po", "nie", "dla", "są", "był", "która", "który", "które", "przez", "tej"]
+    },
+    {
+      "code": "pt-BR",
+      "display": "Português (Brasil)",
+      "repoPath": "pt_BR",
+      "prefix": "pt_BR",
+      "stopwords": ["de", "em", "que", "um", "uma", "não", "com", "por", "para", "os", "as", "do", "da", "dos", "das", "seu", "sua", "são", "mais", "ou"]
+    },
+    {
+      "code": "pt-PT",
+      "display": "Português (Portugal)",
+      "repoPath": "pt_PT",
+      "prefix": "pt_PT",
+      "stopwords": ["de", "em", "que", "um", "uma", "não", "com", "por", "para", "os", "as", "do", "da", "dos", "das", "seu", "sua", "são", "mais", "ou"]
+    },
+    {
+      "code": "ro-RO",
+      "display": "Română",
+      "repoPath": "ro",
+      "prefix": "ro_RO",
+      "stopwords": ["și", "în", "de", "la", "că", "cu", "pe", "din", "nu", "se", "este", "care", "sau", "mai", "pentru", "prin", "dar", "ca", "sunt", "sa"]
+    },
+    {
+      "code": "ru-RU",
+      "display": "Русский",
+      "repoPath": "ru_RU",
+      "prefix": "ru_RU",
+      "stopwords": ["и", "в", "не", "на", "с", "что", "это", "по", "но", "из", "за", "то", "как", "до", "от", "или", "его", "её", "их", "они"]
+    },
+    {
+      "code": "sv-SE",
+      "display": "Svenska",
+      "repoPath": "sv_SE",
+      "prefix": "sv_SE",
+      "stopwords": ["och", "är", "det", "att", "en", "på", "av", "för", "som", "med", "inte", "han", "hon", "vi", "de", "till", "den", "ett", "eller", "men"]
+    },
+    {
+      "code": "th-TH",
+      "display": "ภาษาไทย",
+      "repoPath": "th_TH",
+      "prefix": "th_TH",
+      "stopwords": ["และ", "ใน", "ที่", "ของ", "จาก", "ให้", "เป็น", "มี", "ได้", "จะ", "ก็", "แต่", "กับ", "นี้", "นั้น", "หรือ", "โดย", "ซึ่ง", "เพื่อ", "ว่า"]
+    },
+    {
+      "code": "tr-TR",
+      "display": "Türkçe",
+      "repoPath": "tr_TR",
+      "prefix": "tr_TR",
+      "stopwords": ["ve", "bir", "bu", "da", "de", "ile", "için", "olan", "olarak", "daha", "ama", "çok", "ya", "gibi", "ise", "her", "ne", "o", "ben", "biz"]
+    },
+    {
+      "code": "uk-UA",
+      "display": "Українська",
+      "repoPath": "uk_UA",
+      "prefix": "uk_UA",
+      "stopwords": ["і", "в", "не", "на", "з", "що", "це", "по", "але", "із", "за", "то", "як", "до", "від", "або", "його", "її", "їх", "вони"]
+    },
+    {
+      "code": "vi-VN",
+      "display": "Tiếng Việt",
+      "repoPath": "vi",
+      "prefix": "vi_VN",
+      "stopwords": ["và", "của", "là", "có", "trong", "được", "cho", "với", "các", "một", "những", "này", "đó", "về", "không", "từ", "theo", "như", "khi", "cũng"]
+    }
+  ]
+}

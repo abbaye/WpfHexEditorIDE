@@ -74,6 +74,9 @@ internal sealed class SpellCheckService : IDisposable
         _renderer.BlocksUpdated += OnBlocksUpdated;
 
         renderer.AddSpellCheckLayer(_layer);
+
+        // Auto-load all installed dictionaries for multi-language support
+        _ = _checker.LoadAllInstalledAsync();
     }
 
     public void Detach()

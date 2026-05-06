@@ -2,10 +2,12 @@
 // Project: WpfHexEditor.Core.SpellCheck
 // File: HunspellSpellChecker.cs
 // Description:
-//     ISpellChecker implementation backed by WeCantSpell.Hunspell.
+//     ISpellChecker backed by WeCantSpell.Hunspell.
+//     Single-language mode: uses one active WordList (LoadAsync).
+//     Multi-language mode: loads all installed dicts; CheckWord accepts
+//     a word if ANY loaded WordList recognises it. This eliminates false
+//     positives in multilingual documents (e.g. FR+EN CV).
 //     WordList is immutable after load — thread-safe for CheckWord/Suggest.
-//     User dictionary words are merged into an in-memory HashSet and
-//     appended to userdict.txt on AddToUserDictionary.
 // ==========================================================
 
 using System.IO;
@@ -17,13 +19,20 @@ public sealed class HunspellSpellChecker : ISpellChecker
 {
     private readonly SpellCheckerSettings _settings;
     private readonly DictionaryManager    _dictManager;
-    private WordList?                     _wordList;
-    private readonly HashSet<string>      _userWords = new(StringComparer.OrdinalIgnoreCase);
-    private string?                       _activeLanguage;
-    private readonly SemaphoreSlim        _loadLock = new(1, 1);
 
-    public bool    IsLoaded       => _wordList is not null;
+    // Single-language state
+    private WordList?  _wordList;
+    private string?    _activeLanguage;
+
+    // Multi-language state — code → WordList
+    private readonly Dictionary<string, WordList> _multiLists = new(StringComparer.OrdinalIgnoreCase);
+
+    private readonly HashSet<string>  _userWords = new(StringComparer.OrdinalIgnoreCase);
+    private readonly SemaphoreSlim    _loadLock  = new(1, 1);
+
+    public bool    IsLoaded       => _wordList is not null || _multiLists.Count > 0;
     public string? ActiveLanguage => _activeLanguage;
+    public bool    MultiLanguageMode { get; set; } = true;
 
     public event EventHandler? DictionaryChanged;
 
@@ -42,8 +51,42 @@ public sealed class HunspellSpellChecker : ISpellChecker
         await _loadLock.WaitAsync(ct);
         try
         {
-            _wordList = await WordList.CreateFromFilesAsync(info.DicPath, info.AffPath, ct);
+            var wl = await WordList.CreateFromFilesAsync(info.DicPath, info.AffPath, ct);
+            _wordList       = wl;
             _activeLanguage = languageCode;
+
+            // Also register in multi-list so switching modes doesn't lose the dict
+            _multiLists[languageCode] = wl;
+        }
+        finally { _loadLock.Release(); }
+
+        DictionaryChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public async Task LoadAllInstalledAsync(CancellationToken ct = default)
+    {
+        var installed = _dictManager.GetAllLanguages().Where(l => l.IsInstalled).ToList();
+        if (installed.Count == 0) return;
+
+        await _loadLock.WaitAsync(ct);
+        try
+        {
+            _multiLists.Clear();
+            foreach (var info in installed)
+            {
+                ct.ThrowIfCancellationRequested();
+                var wl = await WordList.CreateFromFilesAsync(info.DicPath, info.AffPath, ct);
+                _multiLists[info.LanguageCode] = wl;
+            }
+            // Keep primary WordList pointing at first (or existing active) language
+            if (_activeLanguage is not null && _multiLists.TryGetValue(_activeLanguage, out var primary))
+                _wordList = primary;
+            else if (_multiLists.Count > 0)
+            {
+                var first = _multiLists.First();
+                _wordList       = first.Value;
+                _activeLanguage = first.Key;
+            }
         }
         finally { _loadLock.Release(); }
 
@@ -52,13 +95,22 @@ public sealed class HunspellSpellChecker : ISpellChecker
 
     public bool CheckWord(string word)
     {
-        if (_wordList is null) return true;
         if (_userWords.Contains(word)) return true;
+
+        if (MultiLanguageMode && _multiLists.Count > 0)
+        {
+            foreach (var wl in _multiLists.Values)
+                if (wl.Check(word)) return true;
+            return false;
+        }
+
+        if (_wordList is null) return true;
         return _wordList.Check(word);
     }
 
     public IReadOnlyList<string> Suggest(string word, int maxSuggestions = 5)
     {
+        // Suggest from primary WordList only (most relevant)
         if (_wordList is null) return [];
         return [.. _wordList.Suggest(word).Take(maxSuggestions)];
     }

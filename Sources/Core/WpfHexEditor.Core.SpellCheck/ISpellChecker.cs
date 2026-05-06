@@ -3,8 +3,7 @@
 // File: ISpellChecker.cs
 // Description:
 //     SDK-level contract for spell checking.
-//     Implementations (HunspellSpellChecker) live in this same assembly.
-//     Consumers reference WpfHexEditor.Core.SpellCheck via ProjectReference.
+//     Supports single-language and multi-language (all installed) modes.
 // ==========================================================
 
 namespace WpfHexEditor.Core.SpellCheck;
@@ -15,11 +14,20 @@ namespace WpfHexEditor.Core.SpellCheck;
 /// </summary>
 public interface ISpellChecker
 {
-    /// <summary>True when a dictionary is loaded and ready to use.</summary>
+    /// <summary>True when at least one dictionary is loaded and ready.</summary>
     bool IsLoaded { get; }
 
-    /// <summary>BCP-47 language code of the active dictionary (e.g. "fr-CA").</summary>
+    /// <summary>
+    /// BCP-47 language code of the primary active dictionary (e.g. "fr-CA").
+    /// Null when no language is explicitly selected (multi-language mode).
+    /// </summary>
     string? ActiveLanguage { get; }
+
+    /// <summary>
+    /// When true, CheckWord accepts a word if ANY installed dictionary recognises it.
+    /// When false, only the ActiveLanguage dictionary is used.
+    /// </summary>
+    bool MultiLanguageMode { get; set; }
 
     /// <summary>Returns true when the word is spelled correctly.</summary>
     bool CheckWord(string word);
@@ -33,6 +41,12 @@ public interface ISpellChecker
     /// <summary>Loads the dictionary for <paramref name="languageCode"/>. Safe to call multiple times.</summary>
     Task LoadAsync(string languageCode, CancellationToken ct = default);
 
-    /// <summary>Raised when the active dictionary changes (load / unload).</summary>
+    /// <summary>
+    /// Loads ALL installed dictionaries for multi-language mode.
+    /// Replaces any previously loaded set.
+    /// </summary>
+    Task LoadAllInstalledAsync(CancellationToken ct = default);
+
+    /// <summary>Raised when the active dictionary set changes (load / unload).</summary>
     event EventHandler? DictionaryChanged;
 }

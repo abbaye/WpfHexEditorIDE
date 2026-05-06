@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\languages.json"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
   </ItemGroup>
 

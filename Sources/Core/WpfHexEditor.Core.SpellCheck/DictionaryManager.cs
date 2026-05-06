@@ -4,7 +4,8 @@
 // Description:
 //     Manages Hunspell dictionary files (.dic/.aff) stored in
 //     %APPDATA%\WpfHexEditor\Dictionaries\{lang}\
-//     Supports install from local file or URL (LibreOffice mirror).
+//     Language metadata comes from LanguageCatalog (embedded JSON).
+//     Supports install from local file or URL (LibreOffice GitHub mirror).
 // ==========================================================
 
 using System.IO;
@@ -14,40 +15,6 @@ namespace WpfHexEditor.Core.SpellCheck;
 
 public sealed class DictionaryManager
 {
-    // RepoPath = folder under LibreOffice/dictionaries on GitHub master branch
-    // Prefix   = filename stem (without extension) as it actually exists in that folder
-    // Verified against https://github.com/LibreOffice/dictionaries/tree/master/
-    private static readonly Dictionary<string, (string Display, string RepoPath, string Prefix)> KnownLanguages = new()
-    {
-        ["ar-SA"]  = ("العربية (السعودية)",      "ar",    "ar"),
-        ["cs-CZ"]  = ("Čeština",                 "cs_CZ", "cs_CZ"),
-        ["da-DK"]  = ("Dansk",                   "da_DK", "da_DK"),
-        ["de-DE"]  = ("Deutsch",                 "de",    "de_DE_frami"),
-        ["el-GR"]  = ("Ελληνικά",                "el_GR", "el_GR"),
-        ["en-GB"]  = ("English (UK)",            "en",    "en_GB"),
-        ["en-US"]  = ("English (US)",            "en",    "en_US"),
-        ["es-ES"]  = ("Español (España)",        "es",    "es_ES"),
-        ["es-MX"]  = ("Español (México)",        "es",    "es_MX"),
-        ["fr-CA"]  = ("Français (Canada)",       "fr_FR", "fr"),      // LibreOffice only ships fr.dic in fr_FR; no separate fr_CA variant
-        ["fr-FR"]  = ("Français (France)",       "fr_FR", "fr"),
-        ["hi-IN"]  = ("हिन्दी",                  "hi_IN", "hi_IN"),
-        ["hu-HU"]  = ("Magyar",                  "hu_HU", "hu_HU"),
-        ["id-ID"]  = ("Bahasa Indonesia",        "id",    "id_ID"),
-        ["it-IT"]  = ("Italiano",                "it_IT", "it_IT"),
-        ["ko-KR"]  = ("한국어",                  "ko_KR", "ko_KR"),
-        ["nl-NL"]  = ("Nederlands",              "nl_NL", "nl_NL"),
-        ["pl-PL"]  = ("Polski",                  "pl_PL", "pl_PL"),
-        ["pt-BR"]  = ("Português (Brasil)",      "pt_BR", "pt_BR"),
-        ["pt-PT"]  = ("Português (Portugal)",    "pt_PT", "pt_PT"),
-        ["ro-RO"]  = ("Română",                  "ro",    "ro_RO"),
-        ["ru-RU"]  = ("Русский",                 "ru_RU", "ru_RU"),
-        ["sv-SE"]  = ("Svenska",                 "sv_SE", "sv_SE"),
-        ["th-TH"]  = ("ภาษาไทย",                "th_TH", "th_TH"),
-        ["tr-TR"]  = ("Türkçe",                  "tr_TR", "tr_TR"),
-        ["uk-UA"]  = ("Українська",              "uk_UA", "uk_UA"),
-        ["vi-VN"]  = ("Tiếng Việt",              "vi",    "vi_VN"),
-    };
-
     private readonly SpellCheckerSettings _settings;
     private static readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(60) };
 
@@ -55,34 +22,36 @@ public sealed class DictionaryManager
 
     public IReadOnlyList<DictionaryInfo> GetAllLanguages()
     {
-        var result = new List<DictionaryInfo>(KnownLanguages.Count);
-        foreach (var (code, (display, _, prefix)) in KnownLanguages)
+        var result = new List<DictionaryInfo>(LanguageCatalog.Languages.Count);
+        foreach (var entry in LanguageCatalog.Languages)
         {
-            var (dic, aff) = Paths(code, prefix);
-            result.Add(new DictionaryInfo(code, display, File.Exists(dic) && File.Exists(aff), dic, aff));
+            var (dic, aff) = Paths(entry.Code, entry.Prefix);
+            result.Add(new DictionaryInfo(entry.Code, entry.Display, File.Exists(dic) && File.Exists(aff), dic, aff));
         }
         return result;
     }
 
     public DictionaryInfo? GetInfo(string languageCode)
     {
-        if (!KnownLanguages.TryGetValue(languageCode, out var meta)) return null;
-        var (dic, aff) = Paths(languageCode, meta.Prefix);
-        return new DictionaryInfo(languageCode, meta.Display, File.Exists(dic) && File.Exists(aff), dic, aff);
+        var entry = LanguageCatalog.Get(languageCode);
+        if (entry is null) return null;
+        var (dic, aff) = Paths(languageCode, entry.Prefix);
+        return new DictionaryInfo(languageCode, entry.Display, File.Exists(dic) && File.Exists(aff), dic, aff);
     }
 
     public bool IsInstalled(string languageCode)
     {
-        if (!KnownLanguages.TryGetValue(languageCode, out var meta)) return false;
-        var (dic, aff) = Paths(languageCode, meta.Prefix);
+        var entry = LanguageCatalog.Get(languageCode);
+        if (entry is null) return false;
+        var (dic, aff) = Paths(languageCode, entry.Prefix);
         return File.Exists(dic) && File.Exists(aff);
     }
 
     public void InstallFromFile(string dicFilePath, string affFilePath, string languageCode)
     {
-        if (!KnownLanguages.TryGetValue(languageCode, out var meta))
-            throw new ArgumentException($"Unknown language code: {languageCode}");
-        var (dic, aff) = Paths(languageCode, meta.Prefix);
+        var entry = LanguageCatalog.Get(languageCode)
+            ?? throw new ArgumentException($"Unknown language code: {languageCode}");
+        var (dic, aff) = Paths(languageCode, entry.Prefix);
         Directory.CreateDirectory(Path.GetDirectoryName(dic)!);
         File.Copy(dicFilePath, dic, overwrite: true);
         File.Copy(affFilePath, aff, overwrite: true);
@@ -93,30 +62,31 @@ public sealed class DictionaryManager
         IProgress<double>? progress = null,
         CancellationToken ct = default)
     {
-        if (!KnownLanguages.TryGetValue(languageCode, out var meta))
-            throw new ArgumentException($"Unknown language code: {languageCode}");
+        var entry = LanguageCatalog.Get(languageCode)
+            ?? throw new ArgumentException($"Unknown language code: {languageCode}");
 
-        var (dic, aff) = Paths(languageCode, meta.Prefix);
+        var (dic, aff) = Paths(languageCode, entry.Prefix);
         Directory.CreateDirectory(Path.GetDirectoryName(dic)!);
         progress?.Report(-1);
 
         var baseUrl = _settings.MirrorUrl.TrimEnd('/');
-        await DownloadFileAsync($"{baseUrl}/{meta.RepoPath}/{meta.Prefix}.dic", dic, progress, 0.0, 0.5, ct);
-        await DownloadFileAsync($"{baseUrl}/{meta.RepoPath}/{meta.Prefix}.aff", aff, progress, 0.5, 1.0, ct);
+        await DownloadFileAsync($"{baseUrl}/{entry.RepoPath}/{entry.Prefix}.dic", dic, progress, 0.0, 0.5, ct);
+        await DownloadFileAsync($"{baseUrl}/{entry.RepoPath}/{entry.Prefix}.aff", aff, progress, 0.5, 1.0, ct);
         progress?.Report(1.0);
     }
 
     public void Remove(string languageCode)
     {
-        if (!KnownLanguages.TryGetValue(languageCode, out var meta)) return;
-        var (dic, aff) = Paths(languageCode, meta.Prefix);
+        var entry = LanguageCatalog.Get(languageCode);
+        if (entry is null) return;
+        var (dic, aff) = Paths(languageCode, entry.Prefix);
         try { File.Delete(dic); } catch { }
         try { File.Delete(aff); } catch { }
         try { Directory.Delete(Path.GetDirectoryName(dic)!); } catch { }
     }
 
     public static string? GetDisplayName(string languageCode) =>
-        KnownLanguages.TryGetValue(languageCode, out var m) ? m.Display : null;
+        LanguageCatalog.Get(languageCode)?.Display;
 
     private (string Dic, string Aff) Paths(string code, string prefix)
     {
