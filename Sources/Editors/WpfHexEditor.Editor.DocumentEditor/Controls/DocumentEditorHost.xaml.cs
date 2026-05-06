@@ -1232,8 +1232,16 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         }
         else
         {
-            // No dictionary yet — offer to download, same as language-change prompt
-            PostDictionaryInstallNotification(_spellSettings.ActiveLanguage);
+            // On first run, detect the OS UI culture and prefer it over the default en-US.
+            // This way a French-Canadian user sees a "fr-CA dictionary" prompt, not "en-US".
+            var langToOffer = _spellSettings.ActiveLanguage;
+            if (_spellSettings.IsFirstRun)
+            {
+                var sysCulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+                if (DictionaryManager.GetDisplayName(sysCulture) is not null)
+                    langToOffer = sysCulture;
+            }
+            PostDictionaryInstallNotification(langToOffer);
         }
     }
 
@@ -1274,6 +1282,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
                         await _dictManager.InstallFromUrlAsync(languageCode);
                         await _spellChecker!.LoadAsync(languageCode);
                         _spellSettings.ActiveLanguage = languageCode;
+                        _spellSettings.IsFirstRun     = false;
                         _spellSettings.Save();
                         AttachSpellCheckLayer();
                         _spellService?.InvalidateAll();
@@ -1285,7 +1294,13 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
                     () => { _ideContext.Notifications.Dismiss(notifId); return Task.CompletedTask; }),
                 new WpfHexEditor.Editor.Core.Notifications.NotificationAction(
                     neverLabel,
-                    () => { _spellSettings.SuppressLanguagePrompt(languageCode); _ideContext.Notifications.Dismiss(notifId); return Task.CompletedTask; })
+                    () =>
+                    {
+                        _spellSettings.IsFirstRun = false;
+                        _spellSettings.SuppressLanguagePrompt(languageCode);
+                        _ideContext.Notifications.Dismiss(notifId);
+                        return Task.CompletedTask;
+                    })
             ]
         });
     }

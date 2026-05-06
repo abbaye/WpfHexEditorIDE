@@ -28,6 +28,10 @@ public sealed class SpellCheckerSettings
     [JsonPropertyName("isEnabled")]
     public bool IsEnabled { get; set; } = true;
 
+    /// <summary>True until the user explicitly installs or dismisses the first dictionary prompt.</summary>
+    [JsonPropertyName("isFirstRun")]
+    public bool IsFirstRun { get; set; } = true;
+
     [JsonPropertyName("activeLanguage")]
     public string ActiveLanguage { get; set; } = "en-US";
 
