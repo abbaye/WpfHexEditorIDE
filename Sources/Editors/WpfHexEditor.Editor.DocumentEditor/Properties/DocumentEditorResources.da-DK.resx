@@ -282,4 +282,27 @@
   <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Anvend</value></data>
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Annuller</value></data>
+  <!-- SPELL CHECKER -->
+  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Aktivér stavekontrol</value></data>
+  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Ordbøger</value></data>
+  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Sprog</value></data>
+  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Status</value></data>
+  <data name="SpellCheck_Download"            xml:space="preserve"><value>Download</value></data>
+  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Gennemse…</value></data>
+  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Fjern</value></data>
+  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Brugerdefineret ordbog</value></data>
+  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Rediger…</value></data>
+  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Installeret</value></data>
+  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Ikke installeret</value></data>
+  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Ignorer</value></data>
+  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Tilføj til ordbog</value></data>
+  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>Vælg .dic ordbogsfil</value></data>
+  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>Vælg .aff affixfil</value></data>
+  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Download mislykkedes: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Fejl ved download af ordbog</value></data>
+  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Stavekontrols ordbog er tilgængelig</value></data>
+  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Installer {0} ordbog til stavekontrol? (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Installer</value></data>
+  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Ikke nu</value></data>
+  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Spørg ikke igen</value></data>
 </root>

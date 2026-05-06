@@ -282,4 +282,27 @@
   <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Alkalmaz</value></data>
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Mégse</value></data>
+  <!-- SPELL CHECKER -->
+  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Helyesírás-ellenőrzés engedélyezése</value></data>
+  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Szótárak</value></data>
+  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Nyelv</value></data>
+  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Állapot</value></data>
+  <data name="SpellCheck_Download"            xml:space="preserve"><value>Letöltés</value></data>
+  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Tallózás…</value></data>
+  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Eltávolítás</value></data>
+  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Egyéni szótár</value></data>
+  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Szerkesztés…</value></data>
+  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Telepítve</value></data>
+  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Nincs telepítve</value></data>
+  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Mellőzés</value></data>
+  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Hozzáadás a szótárhoz</value></data>
+  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>.dic szótárfájl kiválasztása</value></data>
+  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>.aff végződésfájl kiválasztása</value></data>
+  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>A letöltés meghiúsult: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Szótár letöltési hiba</value></data>
+  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Helyesírás-ellenőrző szótár elérhető</value></data>
+  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Telepíti a {0} szótárt a helyesírás-ellenőrzéshez? (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Telepítés</value></data>
+  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Most nem</value></data>
+  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Ne kérdezzen újra</value></data>
 </root>

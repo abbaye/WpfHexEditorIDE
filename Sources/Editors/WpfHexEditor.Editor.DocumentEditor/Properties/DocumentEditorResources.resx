@@ -789,4 +789,30 @@
   <data name="Ruler_MarginRight"     xml:space="preserve"><value>Right margin — drag to adjust</value></data>
   <data name="Ruler_MarginTop"       xml:space="preserve"><value>Top margin — drag to adjust</value></data>
   <data name="Ruler_MarginBottom"    xml:space="preserve"><value>Bottom margin — drag to adjust</value></data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SPELL CHECKER — Options page + context menu + notifications
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Enable spell checking</value></data>
+  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Dictionaries</value></data>
+  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Language</value></data>
+  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Status</value></data>
+  <data name="SpellCheck_Download"            xml:space="preserve"><value>Download</value></data>
+  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Browse…</value></data>
+  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Remove</value></data>
+  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Custom dictionary</value></data>
+  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Edit…</value></data>
+  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Installed</value></data>
+  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Not installed</value></data>
+  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Ignore</value></data>
+  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Add to dictionary</value></data>
+  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>Select .dic dictionary file</value></data>
+  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>Select .aff affix file</value></data>
+  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Download failed: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Dictionary download error</value></data>
+  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Spell checker dictionary available</value></data>
+  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Install the {0} dictionary for spell checking? (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Install</value></data>
+  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Not now</value></data>
+  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Don't ask again</value></data>
 </root>

@@ -30,6 +30,8 @@ using WpfHexEditor.Editor.DocumentEditor.ViewModels;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.Editor.DocumentEditor.Properties;
 using WpfHexEditor.Core.Events.IDEEvents;
+using WpfHexEditor.Editor.DocumentEditor.SpellCheck;
+using WpfHexEditor.Editor.DocumentEditor.Layers;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -83,7 +85,11 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private string                   _currentFileExtension = string.Empty;
     private bool                     _isFocusMode          = false;
     private DocumentScrollMarkerPanel? _scrollMarker;
-    private Services.AutoSaveService? _autoSave;
+    private Services.AutoSaveService?  _autoSave;
+    private SpellCheckerSettings?      _spellSettings;
+    private DictionaryManager?         _dictManager;
+    private HunspellSpellChecker?      _spellChecker;
+    private SpellCheckService?         _spellService;
 
     // ── Constructor ─────────────────────────────────────────────────────────
 
@@ -1205,7 +1211,81 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         // Scroll marker panel — created once, injected into PART_ScrollMarkerHost (added in Wave 5)
         _scrollMarker = new DocumentScrollMarkerPanel();
         PART_ScrollMarkerHost.Child = _scrollMarker;
+
+        // Spell checker
+        InitSpellChecker();
     }
+
+    private void InitSpellChecker()
+    {
+        _spellSettings = SpellCheckerSettings.Load();
+        _dictManager   = new DictionaryManager(_spellSettings);
+        _spellChecker  = new HunspellSpellChecker(_spellSettings, _dictManager);
+
+        if (_spellSettings.IsEnabled && _dictManager.IsInstalled(_spellSettings.ActiveLanguage))
+        {
+            _ = _spellChecker.LoadAsync(_spellSettings.ActiveLanguage);
+            var layer    = new SpellCheckLayer();
+            _spellService = new SpellCheckService(_spellChecker, layer);
+            _spellService.Attach(PART_TextPane.PART_Renderer);
+            PART_TextPane.PART_Renderer.SpellCheckService = _spellService;
+        }
+    }
+
+    /// <summary>
+    /// Called by the IDE when the UI language changes.
+    /// If a dictionary for the new language is not installed, posts a notification offering to install it.
+    /// </summary>
+    internal void OnUILanguageChanged(string newLanguageCode)
+    {
+        if (_spellSettings is null || _dictManager is null || _ideContext is null) return;
+        if (!_spellSettings.IsEnabled) return;
+        if (_dictManager.IsInstalled(newLanguageCode)) return;
+        if (_spellSettings.IsLanguagePromptSuppressed(newLanguageCode)) return;
+
+        var langName = DictionaryManager.GetDisplayName(newLanguageCode) ?? newLanguageCode;
+        var notifTitle = TryFindResource("SpellCheck_NotifTitle") as string
+                         ?? "Spell checker dictionary available";
+        var notifMsg = (TryFindResource("SpellCheck_NotifMessage") as string
+                        ?? "Install the {0} dictionary for spell checking? (~2 MB)")
+                       .Replace("{0}", langName);
+        var installLabel = TryFindResource("SpellCheck_NotifInstall") as string ?? "Install";
+        var laterLabel   = TryFindResource("SpellCheck_NotifLater")   as string ?? "Not now";
+        var neverLabel   = TryFindResource("SpellCheck_NotifNever")   as string ?? "Don't ask again";
+
+        _ideContext.Notifications.Post(new WpfHexEditor.Editor.Core.Notifications.NotificationItem
+        {
+            Id       = $"spellcheck-install-{newLanguageCode}",
+            Title    = notifTitle,
+            Message  = notifMsg,
+            Severity = WpfHexEditor.Editor.Core.Notifications.NotificationSeverity.Info,
+            Actions  =
+            [
+                new WpfHexEditor.Editor.Core.Notifications.NotificationAction(
+                    installLabel,
+                    async () =>
+                    {
+                        await _dictManager.InstallFromUrlAsync(newLanguageCode);
+                        await _spellChecker!.LoadAsync(newLanguageCode);
+                        _spellSettings.ActiveLanguage = newLanguageCode;
+                        _spellSettings.Save();
+                        _spellService?.InvalidateAll();
+                        _ideContext.Notifications.Dismiss($"spellcheck-install-{newLanguageCode}");
+                    },
+                    IsDefault: true),
+                new WpfHexEditor.Editor.Core.Notifications.NotificationAction(
+                    laterLabel,
+                    () => { _ideContext.Notifications.Dismiss($"spellcheck-install-{newLanguageCode}"); return Task.CompletedTask; }),
+                new WpfHexEditor.Editor.Core.Notifications.NotificationAction(
+                    neverLabel,
+                    () => { _spellSettings.SuppressLanguagePrompt(newLanguageCode); _ideContext.Notifications.Dismiss($"spellcheck-install-{newLanguageCode}"); return Task.CompletedTask; })
+            ]
+        });
+    }
+
+    /// <summary>Exposes spell checker settings and components for the Options page.</summary>
+    internal (SpellCheckerSettings Settings, DictionaryManager DictManager, HunspellSpellChecker Checker)
+        GetSpellCheckerComponents() => (_spellSettings!, _dictManager!, _spellChecker!);
 
     private void OnRendererPageChanged(object? sender, (int Current, int Total) e)
     {

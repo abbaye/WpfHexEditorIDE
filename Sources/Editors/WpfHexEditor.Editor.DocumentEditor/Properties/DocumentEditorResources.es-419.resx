@@ -282,4 +282,27 @@
   <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Aplicar</value></data>
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>Aceptar</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+  <!-- SPELL CHECKER -->
+  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Activar corrección ortográfica</value></data>
+  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Diccionarios</value></data>
+  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Idioma</value></data>
+  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Estado</value></data>
+  <data name="SpellCheck_Download"            xml:space="preserve"><value>Descargar</value></data>
+  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Examinar…</value></data>
+  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Quitar</value></data>
+  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Diccionario personalizado</value></data>
+  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Editar…</value></data>
+  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Instalado</value></data>
+  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>No instalado</value></data>
+  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Ignorar</value></data>
+  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Agregar al diccionario</value></data>
+  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>Seleccionar archivo de diccionario .dic</value></data>
+  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>Seleccionar archivo de afijos .aff</value></data>
+  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Error de descarga: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Error al descargar diccionario</value></data>
+  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Diccionario de corrección disponible</value></data>
+  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>¿Instalar el diccionario {0} para la corrección ortográfica? (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Instalar</value></data>
+  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Ahora no</value></data>
+  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>No preguntar de nuevo</value></data>
 </root>

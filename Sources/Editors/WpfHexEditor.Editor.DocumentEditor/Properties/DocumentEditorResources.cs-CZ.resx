@@ -282,4 +282,27 @@
   <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Použít</value></data>
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <!-- SPELL CHECKER -->
+  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Povolit kontrolu pravopisu</value></data>
+  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Slovníky</value></data>
+  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Jazyk</value></data>
+  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Stav</value></data>
+  <data name="SpellCheck_Download"            xml:space="preserve"><value>Stáhnout</value></data>
+  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Procházet…</value></data>
+  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Odebrat</value></data>
+  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Vlastní slovník</value></data>
+  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Upravit…</value></data>
+  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Nainstalováno</value></data>
+  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Nenainstalováno</value></data>
+  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Ignorovat</value></data>
+  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Přidat do slovníku</value></data>
+  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>Vyberte soubor slovníku .dic</value></data>
+  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>Vyberte soubor přípony .aff</value></data>
+  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Stahování selhalo: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Chyba stahování slovníku</value></data>
+  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Slovník kontroly pravopisu je k dispozici</value></data>
+  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Nainstalovat slovník {0} pro kontrolu pravopisu? (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Instalovat</value></data>
+  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Teď ne</value></data>
+  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Neptat se znovu</value></data>
 </root>

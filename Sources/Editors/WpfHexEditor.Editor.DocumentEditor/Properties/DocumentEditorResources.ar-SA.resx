@@ -282,4 +282,27 @@
   <data name="PageStyleDlg_Apply" xml:space="preserve"><value>تطبيق</value></data>
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>موافق</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <!-- SPELL CHECKER -->
+  <data name="SpellCheck_Enable"              xml:space="preserve"><value>تفعيل التدقيق الإملائي</value></data>
+  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>القواميس</value></data>
+  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>اللغة</value></data>
+  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>الحالة</value></data>
+  <data name="SpellCheck_Download"            xml:space="preserve"><value>تنزيل</value></data>
+  <data name="SpellCheck_Browse"              xml:space="preserve"><value>استعراض…</value></data>
+  <data name="SpellCheck_Remove"              xml:space="preserve"><value>إزالة</value></data>
+  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>قاموس مخصص</value></data>
+  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>تعديل…</value></data>
+  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>مثبت</value></data>
+  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>غير مثبت</value></data>
+  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>تجاهل</value></data>
+  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>إضافة إلى القاموس</value></data>
+  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>اختر ملف القاموس .dic</value></data>
+  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>اختر ملف اللواحق .aff</value></data>
+  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>فشل التنزيل: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>خطأ في تنزيل القاموس</value></data>
+  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>قاموس التدقيق الإملائي متاح</value></data>
+  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>هل تريد تثبيت قاموس {0} للتدقيق الإملائي؟ (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>تثبيت</value></data>
+  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>ليس الآن</value></data>
+  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>لا تسأل مجددًا</value></data>
 </root>

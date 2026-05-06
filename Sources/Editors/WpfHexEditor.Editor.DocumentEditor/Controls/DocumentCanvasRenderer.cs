@@ -156,10 +156,21 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
-    // ── Visual children (caret layer on top of main render) ──────────────────
+    // ── Visual children (caret layer on top of main render, optional spell layer above) ──
 
-    protected override int VisualChildrenCount => 1;
-    protected override Visual GetVisualChild(int index) => _caretVisual;
+    private DrawingVisual? _spellCheckLayer;
+
+    protected override int VisualChildrenCount => _spellCheckLayer is null ? 1 : 2;
+    protected override Visual GetVisualChild(int index) => index == 0 ? _caretVisual : _spellCheckLayer!;
+
+    /// <summary>Registers the spell-check squiggle layer into the visual tree.</summary>
+    public void AddSpellCheckLayer(DrawingVisual layer)
+    {
+        if (_spellCheckLayer is not null)
+            RemoveVisualChild(_spellCheckLayer);
+        _spellCheckLayer = layer;
+        AddVisualChild(_spellCheckLayer);
+    }
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
@@ -198,6 +209,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     // ── Context menu ─────────────────────────────────────────────────────────
     private System.Windows.Controls.MenuItem? _miCut, _miCopy, _miPaste, _miDelete, _miSelectAll, _miUndo, _miRedo;
+    internal SpellCheck.SpellCheckService? SpellCheckService { get; set; }
     private System.Windows.Controls.MenuItem? _miUnderline, _miStrike;
     private System.Windows.Controls.MenuItem? _miParagraph, _miList;
     private System.Windows.Controls.MenuItem? _miSelectBlock, _miInsertPageBreak, _miInsertHyperlink, _miInsertTable;
@@ -375,6 +387,52 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void OnContextMenuOpening(object sender, System.Windows.Controls.ContextMenuEventArgs e)
     {
+        // Remove any previously injected spell items (tagged with "spell")
+        var cm = ContextMenu!;
+        for (int i = cm.Items.Count - 1; i >= 0; i--)
+            if (cm.Items[i] is FrameworkElement fe && fe.Tag as string == "spell")
+                cm.Items.RemoveAt(i);
+
+        // Inject spell suggestions at top if right-click lands on a misspelled word
+        var mousePos = Mouse.GetPosition(this);
+        var spellErr = SpellCheckService?.HitTest(mousePos);
+        if (spellErr is not null && SpellCheckService is not null)
+        {
+            int insertAt = 0;
+            // Word label (greyed)
+            var label = new System.Windows.Controls.MenuItem
+            {
+                Header    = $"✗ \"{spellErr.Source.Word}\"",
+                IsEnabled = false,
+                Tag       = "spell"
+            };
+            cm.Items.Insert(insertAt++, label);
+
+            var checker     = SpellCheckService.Checker;
+            var suggestions = checker.Suggest(spellErr.Source.Word);
+            foreach (var sug in suggestions)
+            {
+                var s = sug; // capture
+                var mi = new System.Windows.Controls.MenuItem { Header = s, Tag = "spell", FontWeight = FontWeights.Bold };
+                mi.Click += (_, _) => ReplaceSpellingError(spellErr.Source, s);
+                cm.Items.Insert(insertAt++, mi);
+            }
+
+            cm.Items.Insert(insertAt++, new System.Windows.Controls.Separator { Tag = "spell" });
+
+            var miIgnore = new System.Windows.Controls.MenuItem { Tag = "spell" };
+            miIgnore.SetResourceReference(System.Windows.Controls.MenuItem.HeaderProperty, "SpellCheck_Ignore");
+            miIgnore.Click += (_, _) => { SpellCheckService.IgnoreWord(spellErr.Source.Word); SpellCheckService.InvalidateAll(); };
+            cm.Items.Insert(insertAt++, miIgnore);
+
+            var miAdd = new System.Windows.Controls.MenuItem { Tag = "spell" };
+            miAdd.SetResourceReference(System.Windows.Controls.MenuItem.HeaderProperty, "SpellCheck_AddToDict");
+            miAdd.Click += (_, _) => { checker.AddToUserDictionary(spellErr.Source.Word); SpellCheckService.InvalidateAll(); };
+            cm.Items.Insert(insertAt++, miAdd);
+
+            cm.Items.Insert(insertAt, new System.Windows.Controls.Separator { Tag = "spell" });
+        }
+
         bool hasSelection = !_selection.IsEmpty;
         bool hasCaret     = _caret.BlockIndex >= 0;
         bool editable     = !_isReadOnly && _mutator is not null;
@@ -670,6 +728,15 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public double VerticalOffset     => _offset.Y;
     public static double PageCanvasPadding => PageCanvasPad;
     public static double PageGapPublic     => PageGapPx;
+
+    /// <summary>All laid-out render blocks (text + geometry) after the last layout pass.</summary>
+    public IReadOnlyList<RenderBlock> LayoutBlocks => _blocks;
+
+    /// <summary>Canvas-space X origin of the page content area.</summary>
+    public double ContentOriginX => _pageLeft + _pageSettings.MarginLeft;
+
+    /// <summary>Raised after every layout rebuild so SpellCheckService can re-analyse.</summary>
+    public event EventHandler? BlocksUpdated;
     public ScrollViewer? ScrollOwner { get => _scrollOwner; set => _scrollOwner = value; }
 
     public void LineUp()      => SetVerticalOffset(_offset.Y - 20);
@@ -1648,6 +1715,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         UpdateScrollExtent();
         InvalidateVisual();
         FirePageChanged();
+        BlocksUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
@@ -1683,6 +1751,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         UpdateScrollExtentDraft();
         InvalidateVisual();
         FirePageChanged();
+        BlocksUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateScrollExtentDraft()
@@ -3848,6 +3917,20 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public void DecreaseIndent() => AdjustIndent(-1);
 
     /// <summary>Inserts a page-break block after the caret block.</summary>
+    /// <summary>Replaces the misspelled word span in the caret block with <paramref name="replacement"/>.</summary>
+    private void ReplaceSpellingError(Core.SpellCheck.SpellCheckResult err, string replacement)
+    {
+        if (_caret.BlockIndex < 0 || _caret.BlockIndex >= _blocks.Count || _mutator is null) return;
+        var rb    = _blocks[_caret.BlockIndex];
+        var text  = rb.Block.Text ?? string.Empty;
+        if (err.CharStart + err.CharLength > text.Length) return;
+        var newText = text[..err.CharStart] + replacement + text[(err.CharStart + err.CharLength)..];
+        _mutator.SetText(rb.Block, newText);
+        SpellCheckService?.InvalidateAll();
+        RebuildLayout();
+        InvalidateVisual();
+    }
+
     public void InsertPageBreak()
     {
         if (_mutator is null) return;

@@ -282,4 +282,27 @@
   <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Käytä</value></data>
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Peruuta</value></data>
+  <!-- SPELL CHECKER -->
+  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Ota oikoluku käyttöön</value></data>
+  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Sanakirjat</value></data>
+  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Kieli</value></data>
+  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Tila</value></data>
+  <data name="SpellCheck_Download"            xml:space="preserve"><value>Lataa</value></data>
+  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Selaa…</value></data>
+  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Poista</value></data>
+  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Mukautettu sanakirja</value></data>
+  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Muokkaa…</value></data>
+  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Asennettu</value></data>
+  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Ei asennettu</value></data>
+  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Ohita</value></data>
+  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Lisää sanakirjaan</value></data>
+  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>Valitse .dic-sanakirjatiedosto</value></data>
+  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>Valitse .aff-päätietiedosto</value></data>
+  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Lataus epäonnistui: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Sanakirjan latausvirhe</value></data>
+  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Oikolukusanakirja saatavilla</value></data>
+  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Asennetaanko {0}-sanakirja oikolukua varten? (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Asenna</value></data>
+  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Ei nyt</value></data>
+  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Älä kysy uudelleen</value></data>
 </root>
