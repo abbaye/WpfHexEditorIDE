@@ -42,6 +42,8 @@ internal sealed class SpellCheckerOptionsViewModel : INotifyPropertyChanged
 
     public void Reload()
     {
+        foreach (var row in Languages)
+            row.PropertyChanged -= OnRowPropertyChanged;
         Languages.Clear();
         var all = _dictManager.GetAllLanguages();
         foreach (var info in all)
@@ -68,6 +70,9 @@ internal sealed class SpellCheckerOptionsViewModel : INotifyPropertyChanged
 
 internal sealed class DictionaryRowViewModel : INotifyPropertyChanged
 {
+    private static readonly Brush InstalledBrush   = new SolidColorBrush(Color.FromRgb(46, 160, 67));
+    private static readonly Brush NotInstalledBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100));
+
     public string LanguageCode  { get; }
     public string DisplayName   { get; }
 
@@ -105,9 +110,7 @@ internal sealed class DictionaryRowViewModel : INotifyPropertyChanged
         ? Application.Current.TryFindResource("SpellCheck_StatusInstalled") as string ?? "Installed"
         : Application.Current.TryFindResource("SpellCheck_StatusNotInstalled") as string ?? "Not installed";
 
-    public Brush StatusColor => IsInstalled
-        ? new SolidColorBrush(Color.FromRgb(46, 160, 67))
-        : new SolidColorBrush(Color.FromRgb(100, 100, 100));
+    public Brush StatusColor => IsInstalled ? InstalledBrush : NotInstalledBrush;
 
     public Visibility ProgressVisible => _isInstalling ? Visibility.Visible : Visibility.Collapsed;
     public Visibility DownloadVisible => IsInstalled   ? Visibility.Collapsed : Visibility.Visible;

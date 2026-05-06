@@ -110,8 +110,8 @@ public sealed class DictionaryManager
     {
         if (!KnownLanguages.TryGetValue(languageCode, out var meta)) return;
         var (dic, aff) = Paths(languageCode, meta.Prefix);
-        if (File.Exists(dic)) File.Delete(dic);
-        if (File.Exists(aff)) File.Delete(aff);
+        try { File.Delete(dic); } catch { }
+        try { File.Delete(aff); } catch { }
         try { Directory.Delete(Path.GetDirectoryName(dic)!); } catch { }
     }
 

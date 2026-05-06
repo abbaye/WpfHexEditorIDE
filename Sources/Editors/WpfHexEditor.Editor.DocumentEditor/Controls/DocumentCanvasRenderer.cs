@@ -3916,7 +3916,6 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// <summary>Decreases the indent level of the caret block by 1 (min 0).</summary>
     public void DecreaseIndent() => AdjustIndent(-1);
 
-    /// <summary>Inserts a page-break block after the caret block.</summary>
     /// <summary>Replaces the misspelled word span in the caret block with <paramref name="replacement"/>.</summary>
     private void ReplaceSpellingError(WpfHexEditor.Core.SpellCheck.SpellCheckResult err, string replacement)
     {

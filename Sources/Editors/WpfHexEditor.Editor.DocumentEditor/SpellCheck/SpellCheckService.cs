@@ -33,15 +33,12 @@ internal sealed class SpellCheckService : IDisposable
     // Cache: blockId → (text snapshot, errors)
     private readonly Dictionary<string, (string Text, List<SpellCheckError> Errors)> _cache = [];
 
-    // Words to ignore for this session (right-click → Ignore)
     private readonly HashSet<string> _ignoredWords = new(StringComparer.OrdinalIgnoreCase);
 
-    // Tokenizer: words only, min 2 chars, no digits, no URLs
     private static readonly Regex WordRx = new(
         @"\b[^\W\d_]{2,}\b",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-    // Skip tokens that look like code identifiers or URLs
     private static readonly Regex SkipRx = new(
         @"https?://|[A-Z][a-z]+[A-Z]|\w+\.\w+",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
@@ -76,7 +73,6 @@ internal sealed class SpellCheckService : IDisposable
         _renderer = renderer;
         _renderer.BlocksUpdated += OnBlocksUpdated;
 
-        // Add the layer to the renderer's visual tree
         renderer.AddSpellCheckLayer(_layer);
     }
 
@@ -98,8 +94,6 @@ internal sealed class SpellCheckService : IDisposable
         ScheduleAnalysis();
     }
 
-    // ── Called from context-menu hit-test ────────────────────────────────
-
     /// <summary>Returns the misspelled word at canvas point <paramref name="pt"/>, or null.</summary>
     public SpellCheckError? HitTest(Point pt)
     {
@@ -111,8 +105,6 @@ internal sealed class SpellCheckService : IDisposable
         }
         return null;
     }
-
-    // ── Internals ─────────────────────────────────────────────────────────
 
     private void OnBlocksUpdated(object? sender, EventArgs e) => ScheduleAnalysis();
 
@@ -155,9 +147,8 @@ internal sealed class SpellCheckService : IDisposable
 
             var text = rb.Block.Text ?? string.Empty;
             if (text.Length == 0) continue;
-            if (text.Length > 5000) text = text[..5000]; // guard
+            if (text.Length > 5000) text = text[..5000];
 
-            // Cache hit
             var blockId = rb.Y.ToString("F0");
             if (_cache.TryGetValue(blockId, out var cached) && cached.Text == text)
             {
@@ -176,7 +167,6 @@ internal sealed class SpellCheckService : IDisposable
                 if (SkipRx.IsMatch(word)) continue;
                 if (_checker.CheckWord(word)) continue;
 
-                // Map char offset to canvas coordinates
                 var (cx, cy, cw, ch) = MapToCanvas(rb, m.Index, m.Length, contentOriX, zoom);
                 if (cw <= 0) continue;
 
@@ -189,7 +179,6 @@ internal sealed class SpellCheckService : IDisposable
             allErrors.AddRange(blockErrors);
         }
 
-        // Marshal to UI thread
         Application.Current?.Dispatcher.BeginInvoke(() =>
         {
             if (!ct.IsCancellationRequested)
@@ -201,7 +190,6 @@ internal sealed class SpellCheckService : IDisposable
         RenderBlock rb, int charStart, int charLen,
         double contentOriX, double zoom)
     {
-        // Use GlyphLines if available (exact metrics)
         if (rb.GlyphLines is { Count: > 0 })
         {
             int    charEnd = charStart + charLen;
@@ -211,14 +199,14 @@ internal sealed class SpellCheckService : IDisposable
 
             foreach (var line in rb.GlyphLines)
             {
-                // Each segment carries its own charStart + AdvanceWidths
                 foreach (var seg in line.Segments)
                 {
+                    double segX = contentOriX + rb.IndentLeft + seg.OffsetX;
+                    double accW = 0;
                     for (int i = 0; i < seg.AdvanceWidths.Count; i++)
                     {
-                        int globalChar = seg.CharStart + i;
-                        double gx = contentOriX + rb.IndentLeft + seg.OffsetX
-                                    + seg.AdvanceWidths.Take(i).Sum();
+                        int    globalChar = seg.CharStart + i;
+                        double gx         = segX + accW;
 
                         if (globalChar == charStart)
                         {
@@ -226,11 +214,9 @@ internal sealed class SpellCheckService : IDisposable
                             lineY = lineTop;
                             lineH = line.LineHeight;
                         }
-                        if (globalChar == charEnd)
-                        {
-                            x1 = gx;
-                            break;
-                        }
+                        if (globalChar == charEnd) { x1 = gx; break; }
+
+                        accW += seg.AdvanceWidths[i];
                     }
                     if (x1 > 0) break;
                 }
@@ -241,7 +227,6 @@ internal sealed class SpellCheckService : IDisposable
                 return (x0, lineY, x1 - x0, lineH > 0 ? lineH : 16);
         }
 
-        // Fallback: FormattedText — return approximate width via char count ratio
         if (rb.FormattedLines is { Count: > 0 })
         {
             var ft = rb.FormattedLines[0];
