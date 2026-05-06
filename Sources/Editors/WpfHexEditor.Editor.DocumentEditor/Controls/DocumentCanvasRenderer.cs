@@ -1223,23 +1223,11 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             dc.DrawRoundedRectangle(_codeBgBrush, null, new Rect(x - 4, y - 2, maxW + 8, rb.Height + 4), 3, 3);
         }
 
-        // ── Alignment offset ─────────────────────────────────────────────
-        var align = rb.Block.Attributes.GetValueOrDefault("align") as string ?? "left";
-        double drawX = x;
-        if (rb.GlyphLines is { Count: > 0 } && align != "left")
-        {
-            double lineW = rb.GlyphLines.Count > 0 ? rb.GlyphLines.Max(l => l.Width) : 0;
-            drawX = align == "center" ? x + (maxW - lineW) / 2
-                                       : x + maxW - lineW; // right
-            drawX = Math.Max(x, drawX);
-        }
-        else if (rb.FormattedLines is { Count: > 0 } && align != "left")
-        {
-            double lineW = rb.FormattedLines.Max(ft => ft.Width);
-            drawX = align == "center" ? x + (maxW - lineW) / 2
-                                       : x + maxW - lineW;
-            drawX = Math.Max(x, drawX);
-        }
+        // ── Alignment ────────────────────────────────────────────────────
+        // OOXML mapper writes "alignment"; legacy inline blocks use "align"
+        var align = rb.Block.Attributes.GetValueOrDefault("alignment") as string
+                 ?? rb.Block.Attributes.GetValueOrDefault("align")     as string
+                 ?? "left";
 
         // ── Draw ─────────────────────────────────────────────────────────
         bool isHyperlink = rb.Block.Kind == "hyperlink";
@@ -1249,9 +1237,17 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             bool isHeading = rb.Block.Kind == "heading" || style == "heading";
             int level = isHeading && int.TryParse(
                 rb.Block.Attributes.GetValueOrDefault("level") as string, out int lv) ? lv : 1;
-            DrawVisualLines(dc, rb.GlyphLines, drawX, y, isHeading, level, rb.LineSpacingMultiplier);
-            if (isHyperlink) DrawHyperlinkUnderline(dc, rb.GlyphLines, drawX, y);
+            DrawVisualLines(dc, rb.GlyphLines, x, y, isHeading, level, rb.LineSpacingMultiplier, align, maxW);
+            if (isHyperlink) DrawHyperlinkUnderline(dc, rb.GlyphLines, x, y);
             return;
+        }
+
+        double drawX = x;
+        if (rb.FormattedLines is { Count: > 0 } && align != "left")
+        {
+            double lineW = rb.FormattedLines.Max(ft => ft.Width);
+            drawX = align == "center" ? x + (maxW - lineW) / 2 : x + maxW - lineW;
+            drawX = Math.Max(x, drawX);
         }
 
         if (rb.FormattedLines is { Count: > 0 })
@@ -2025,8 +2021,22 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         double defaultSize = isHeading
             ? (headingLevel == 1 ? 22 : headingLevel == 2 ? 18 : 15)
             : _baseFontSize;
-        bool defaultBold = isHeading;
+        // Override with paragraph-level font size if present (from pPr/w:rPr via DocxXmlMapper)
+        if (block.Attributes.TryGetValue("fontSize", out var bfs))
+            defaultSize = bfs is double bfd ? bfd : bfs is int bfi ? bfi : defaultSize;
+        bool defaultBold = isHeading
+            || (block.Attributes.TryGetValue("bold", out var bb) && bb is true);
+        bool defaultItalic = block.Attributes.TryGetValue("italic", out var bi) && bi is true;
+        bool defaultUnder  = block.Attributes.TryGetValue("underline", out var bu) && bu is true;
         string defaultFamily = blockStyle == "code" ? "Courier New" : BodyFontFamily;
+        if (block.Attributes.TryGetValue("fontFamily", out var bffv) && bffv is string bff && bff.Length > 0)
+            defaultFamily = bff;
+        // Paragraph-level color override
+        Color? paraColor = null;
+        if (block.Attributes.TryGetValue("color", out var pcv) && pcv is string pcs)
+        {
+            try { if (System.Windows.Media.ColorConverter.ConvertFromString(pcs) is Color pc) paraColor = pc; } catch { }
+        }
 
         IEnumerable<DocumentBlock> runs = block.Children.Count > 0
             ? block.Children.Where(c => c.Kind == "run")
@@ -2037,20 +2047,21 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             var text = run.Text;
             if (string.IsNullOrEmpty(text)) continue;
 
-            bool   bold   = defaultBold || (run.Attributes.TryGetValue("bold",   out var b) && b is true);
-            bool   italic = run.Attributes.TryGetValue("italic",  out var i) && i is true;
-            bool   under  = run.Attributes.TryGetValue("underline", out var u) && u is true;
+            bool   bold   = defaultBold   || (run.Attributes.TryGetValue("bold",      out var b)  && b  is true);
+            bool   italic = defaultItalic || (run.Attributes.TryGetValue("italic",    out var i)  && i  is true);
+            bool   under  = defaultUnder  || (run.Attributes.TryGetValue("underline", out var u)  && u  is true);
             bool   strike = run.Attributes.TryGetValue("strikethrough", out var st) && st is true;
 
             double size = defaultSize;
             if (run.Attributes.TryGetValue("fontSize", out var fs))
-                size = fs is int fi ? fi : fs is double fd ? fd : size;
+                size = fs is double fd ? fd : fs is int fi ? fi : size;
 
             string family = defaultFamily;
             if (run.Attributes.TryGetValue("fontFamily", out var ffv) && ffv is string ff && ff.Length > 0)
                 family = ff;
 
-            Color color = defaultColor;
+            // Run color overrides paragraph color which overrides theme default
+            Color color = paraColor ?? defaultColor;
             if (run.Attributes.TryGetValue("color", out var cv) && cv is string cs)
             {
                 try
@@ -2096,7 +2107,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                                   IReadOnlyList<InlineVisualLine> lines,
                                   double originX, double blockTopY,
                                   bool isHeading = false, int headingLevel = 1,
-                                  double lineSpacingMultiplier = 1.0)
+                                  double lineSpacingMultiplier = 1.0,
+                                  string align = "left", double maxW = 0)
     {
         double ppd = GetPixelsPerDip();
         double y   = blockTopY;
@@ -2104,6 +2116,14 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         for (int li = 0; li < lines.Count; li++)
         {
             var    line      = lines[li];
+            double lineOriX  = originX;
+            if (align != "left" && maxW > 0)
+            {
+                lineOriX = align == "center"
+                    ? originX + (maxW - line.Width) / 2
+                    : originX + maxW - line.Width; // right
+                if (lineOriX < originX) lineOriX = originX;
+            }
             double baselineY = y + line.Ascent;
 
             foreach (var seg in line.Segments)
@@ -2111,7 +2131,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 // Apply per-segment vertical baseline shift (superscript/subscript)
                 double segBaselineY = baselineY + seg.VerticalOffset;
 
-                var absOrigin = new Point(originX + seg.OffsetX, segBaselineY);
+                var absOrigin = new Point(lineOriX + seg.OffsetX, segBaselineY);
                 var run       = seg.BuildGlyphRun(absOrigin, ppd);
 
                 var brush = new SolidColorBrush(seg.Foreground);
@@ -2124,8 +2144,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                     var uPen   = new Pen(brush, 0.75);
                     uPen.Freeze();
                     dc.DrawLine(uPen,
-                        new Point(originX + seg.OffsetX,               uY),
-                        new Point(originX + seg.OffsetX + seg.Width,   uY));
+                        new Point(lineOriX + seg.OffsetX,               uY),
+                        new Point(lineOriX + seg.OffsetX + seg.Width,   uY));
                 }
 
                 if (seg.Strikethrough)
@@ -2134,8 +2154,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                     var sPen   = new Pen(brush, 0.75);
                     sPen.Freeze();
                     dc.DrawLine(sPen,
-                        new Point(originX + seg.OffsetX,               sY),
-                        new Point(originX + seg.OffsetX + seg.Width,   sY));
+                        new Point(lineOriX + seg.OffsetX,               sY),
+                        new Point(lineOriX + seg.OffsetX + seg.Width,   sY));
                 }
             }
 

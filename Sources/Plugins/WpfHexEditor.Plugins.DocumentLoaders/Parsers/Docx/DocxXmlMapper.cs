@@ -283,6 +283,10 @@ internal sealed class DocxXmlMapper
             if (lineRule is not null) para.Attributes["lineSpacingRule"] = lineRule;
         }
 
+        // Paragraph-level run props (w:pPr/w:rPr) — apply as paragraph defaults
+        var pRpr = pPr.Element(W + "rPr");
+        if (pRpr is not null) ExtractRunProps(pRpr, para);
+
         // Tab stops
         var tabs = pPr.Element(W + "tabs");
         if (tabs is not null)
@@ -305,9 +309,11 @@ internal sealed class DocxXmlMapper
         if (rPr.Element(W + "i") is not null) run.Attributes["italic"]    = true;
         if (rPr.Element(W + "u") is not null) run.Attributes["underline"] = true;
 
-        var szCs = rPr.Element(W + "szCs")?.Attribute(W + "val")?.Value;
-        if (szCs is not null && int.TryParse(szCs, out int hpt))
-            run.Attributes["fontSize"] = hpt / 2;
+        // w:sz is the primary size (half-points); w:szCs is for complex scripts — prefer w:sz
+        var szVal = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value
+                 ?? rPr.Element(W + "szCs")?.Attribute(W + "val")?.Value;
+        if (szVal is not null && int.TryParse(szVal, out int hpt))
+            run.Attributes["fontSize"] = hpt / 2.0;
 
         // Font family from w:rFonts (ascii/hAnsi preferred; theme fonts fallback)
         var fonts = rPr.Element(W + "rFonts");
@@ -321,9 +327,10 @@ internal sealed class DocxXmlMapper
         var rStyle = rPr.Element(W + "rStyle")?.Attribute(W + "val")?.Value;
         if (rStyle is not null) run.Attributes["style"] = rStyle;
 
-        // Font color
+        // Font color — OOXML stores as 6-digit hex without #; prefix it for WPF ColorConverter
         var color = rPr.Element(W + "color")?.Attribute(W + "val")?.Value;
-        if (color is not null && color != "auto") run.Attributes["color"] = color;
+        if (color is not null && color != "auto")
+            run.Attributes["color"] = color.StartsWith('#') ? color : $"#{color}";
 
         // Highlight / shading
         var highlight = rPr.Element(W + "highlight")?.Attribute(W + "val")?.Value;

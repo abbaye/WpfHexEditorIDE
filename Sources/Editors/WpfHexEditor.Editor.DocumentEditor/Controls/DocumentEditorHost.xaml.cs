@@ -1231,7 +1231,13 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
                 WpfHexEditor.Core.Options.OptionsPageStrings.CategoryDocumentEditor,
                 WpfHexEditor.Core.Options.OptionsPageStrings.PageSpellChecker,
-                () => new WpfHexEditor.Editor.DocumentEditor.Options.SpellCheckerOptionsPage(),
+                () =>
+                {
+                    var page = new WpfHexEditor.Editor.DocumentEditor.Options.SpellCheckerOptionsPage();
+                    var (s, dm, ch) = GetSpellCheckerComponents();
+                    page.Initialize(s, dm, ch);
+                    return page;
+                },
                 "📄",
                 ["spell", "check", "dictionary", "language", "hunspell", "correction", "squiggle"]);
         }
