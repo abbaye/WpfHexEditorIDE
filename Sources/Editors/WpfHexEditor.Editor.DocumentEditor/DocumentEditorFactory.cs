@@ -14,8 +14,11 @@
 // ==========================================================
 
 using System.IO;
+using WpfHexEditor.Core.Options;
+using WpfHexEditor.Core.SpellCheck;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Controls;
+using WpfHexEditor.Editor.DocumentEditor.Options;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.Editor.DocumentEditor.Core;
 
@@ -76,6 +79,30 @@ public sealed class DocumentEditorFactory : IEditorFactory
             if (wr.TryGetTarget(out var host))
                 host.SetContext(context);
         _pendingHosts.Clear();
+
+        // Register the SpellChecker options page at IDE-ready time so it appears
+        // in Options even when no document is open.  Uses standalone settings/manager
+        // instances; any open DocumentEditorHost re-registers with its own live
+        // components (RegisterDynamic is idempotent — last writer wins).
+        RegisterSpellCheckerOptionsPage(context);
+    }
+
+    private static void RegisterSpellCheckerOptionsPage(IIDEHostContext context)
+    {
+        OptionsPageRegistry.RegisterDynamic(
+            OptionsPageStrings.CategoryDocumentEditor,
+            OptionsPageStrings.PageSpellChecker,
+            () =>
+            {
+                var settings    = SpellCheckerSettings.Load();
+                var dictManager = new DictionaryManager(settings);
+                var checker     = new HunspellSpellChecker(settings, dictManager);
+                var page        = new SpellCheckerOptionsPage();
+                page.Initialize(settings, dictManager, checker, context.DocumentHost);
+                return page;
+            },
+            "📄",
+            ["spell", "check", "dictionary", "language", "hunspell", "correction", "squiggle"]);
     }
 }
 

@@ -87,7 +87,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private bool                     _isFocusMode          = false;
     private DocumentScrollMarkerPanel? _scrollMarker;
     private Services.AutoSaveService?  _autoSave;
-    private static bool                _spellCheckerPageRegistered = false;
+
     private SpellCheckerSettings?      _spellSettings;
     private DictionaryManager?         _dictManager;
     private HunspellSpellChecker?      _spellChecker;
@@ -1224,9 +1224,8 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         _dictManager   = new DictionaryManager(_spellSettings);
         _spellChecker  = new HunspellSpellChecker(_spellSettings, _dictManager);
 
-        // Register the SpellChecker options page once per process lifetime.
-        // Always re-register (RegisterDynamic is idempotent) so the factory captures
-        // the current instance's components even when a second DocumentEditorHost is created.
+        // Re-register with live components so the page uses this host's spell checker
+        // (overrides the standalone instance registered by DocumentEditorFactory at startup).
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
             WpfHexEditor.Core.Options.OptionsPageStrings.CategoryDocumentEditor,
             WpfHexEditor.Core.Options.OptionsPageStrings.PageSpellChecker,
@@ -1239,7 +1238,6 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             },
             "📄",
             ["spell", "check", "dictionary", "language", "hunspell", "correction", "squiggle"]);
-        _spellCheckerPageRegistered = true;
 
         if (!_spellSettings.IsEnabled) return;
 
