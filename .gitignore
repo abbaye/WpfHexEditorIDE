@@ -254,3 +254,6 @@ DevPlans/
 
 # LSP bundled server binaries (run Scripts/Download-LspServers.ps1 after clone)
 tools/lsp/
+
+# GitHub wiki clone (not a submodule)
+WpfHexEditorControl.wiki/
