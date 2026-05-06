@@ -1,0 +1,66 @@
+{
+  "id": "whdf-v1",
+  "name": "WHDF Binary Format",
+  "category": "Sample",
+  "version": "1.0",
+  "description": "WpfHexEditor Demo Format — fictional binary container demonstrating parsed fields, inspector, and navigation.",
+  "extensions": [ ".whdf" ],
+  "detection": {
+    "method": "signature",
+    "offset": 0,
+    "bytes": "57 48 44 46"
+  },
+  "blocks": [
+    { "id": "signature",     "name": "Magic",          "offset": 0,  "length": 4, "type": "bytes",     "color": "#4CAF50" },
+    { "id": "version",       "name": "Version",         "offset": 4,  "length": 2, "type": "uint16_le", "color": "#2196F3" },
+    { "id": "flags",         "name": "Flags",           "offset": 6,  "length": 2, "type": "uint16_le", "color": "#FF9800" },
+    { "id": "timestamp",     "name": "Timestamp",       "offset": 8,  "length": 8, "type": "uint64_le", "color": "#00BCD4" },
+    { "id": "record_count",  "name": "Record Count",    "offset": 16, "length": 4, "type": "uint32_le", "color": "#F44336" },
+    { "id": "payload_offset","name": "Payload Offset",  "offset": 20, "length": 4, "type": "uint32_le", "color": "#607D8B" },
+    { "id": "header_crc",   "name": "Header CRC32",    "offset": 24, "length": 4, "type": "uint32_le", "color": "#795548" },
+    { "id": "meta_length",  "name": "Metadata Length", "offset": 28, "length": 4, "type": "uint32_le", "color": "#009688" }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "id": "identity",
+        "title": "Identity",
+        "expanded": true,
+        "fields": [
+          { "name": "Format",    "field_ref": "signature",     "display": "ascii"   },
+          { "name": "Version",   "field_ref": "version",       "display": "decimal" },
+          { "name": "File Type", "value": "WHDF Binary Container" }
+        ]
+      },
+      {
+        "id": "file_info",
+        "title": "File Info",
+        "expanded": true,
+        "fields": [
+          { "name": "Record Count",   "field_ref": "record_count",   "display": "decimal" },
+          { "name": "Payload Offset", "field_ref": "payload_offset", "display": "hex"     },
+          { "name": "Metadata Size",  "field_ref": "meta_length",    "display": "decimal" }
+        ]
+      },
+      {
+        "id": "flags_group",
+        "title": "Flags",
+        "expanded": false,
+        "fields": [
+          { "name": "Compressed",    "field_ref": "flags", "bit": 0, "display": "boolean" },
+          { "name": "Encrypted",     "field_ref": "flags", "bit": 1, "display": "boolean" },
+          { "name": "Has Index",     "field_ref": "flags", "bit": 2, "display": "boolean" },
+          { "name": "Little Endian", "field_ref": "flags", "bit": 3, "display": "boolean" }
+        ]
+      }
+    ]
+  },
+  "navigation": {
+    "bookmarks": [
+      { "name": "Magic",         "offset": 0,  "length": 4, "color": "#4CAF50" },
+      { "name": "Flags",         "offset": 6,  "length": 2, "color": "#FF9800" },
+      { "name": "Payload Offset","offset": 20, "length": 4, "color": "#607D8B" },
+      { "name": "Header CRC",   "offset": 24, "length": 4, "color": "#795548" }
+    ]
+  }
+}

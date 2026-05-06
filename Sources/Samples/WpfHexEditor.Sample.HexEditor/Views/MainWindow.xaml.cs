@@ -1,311 +1,119 @@
-//////////////////////////////////////////////
-// GNU Affero General Public License v3.0  2026
-// HexEditor V2 - Main Window
-// Modern interface without Ribbon (VS 2026 inspired design)
-// Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
-//////////////////////////////////////////////
+// WpfHexEditor.Sample.HexEditor — MainWindow.xaml.cs
 
 using System;
-using System.ComponentModel;
-using System.Globalization;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using WpfHexEditor.Sample.HexEditor.ViewModels;
-using WpfHexEditor.Sample.HexEditor.Views.Dialogs;
 using Microsoft.Win32;
+using WpfHexEditor.Core.Models;
+using WpfHexEditor.Sample.HexEditor.ViewModels;
 
 namespace WpfHexEditor.Sample.HexEditor.Views
 {
-    /// <summary>
-    /// Main Window - Modern hex editor experience
-    /// Features: Classic menu + toolbar, modern panels, VS 2026 inspired design
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ModernMainWindowViewModel _viewModel;
+        private readonly MainWindowViewModel _vm;
 
-        // Convenience accessor so code-behind uses the primary editor inside the split host.
-        private WpfHexEditor.HexEditor.HexEditor HexEditorControl => HexEditorSplitHostControl.PrimaryEditor;
+        // Convenience accessor to the primary HexEditor inside the split host
+        private WpfHexEditor.HexEditor.HexEditor HexEditor => HexEditorHost.PrimaryEditor;
 
         public MainWindow()
         {
-            // CRITICAL: Restore culture for this window BEFORE InitializeComponent
-            // This ensures the window's resources are loaded with the correct culture
-            var cultureName = WpfHexEditor.Sample.HexEditor.Properties.Settings.Default.PreferredCulture;
-            if (!string.IsNullOrEmpty(cultureName))
-            {
-                try
-                {
-                    var culture = new CultureInfo(cultureName);
-                    Thread.CurrentThread.CurrentCulture = culture;
-                    Thread.CurrentThread.CurrentUICulture = culture;
-                    System.Diagnostics.Debug.WriteLine($"[MainWindow.Constructor] Restored culture to: {culture.Name}");
-                }
-                catch (CultureNotFoundException)
-                {
-                    // Fallback to default
-                }
-            }
-
             InitializeComponent();
 
-            // Initialize ViewModel (reusing existing ModernMainWindowViewModel for compatibility)
-            _viewModel = new ModernMainWindowViewModel();
-            DataContext = _viewModel;
+            _vm = new MainWindowViewModel();
+            DataContext = _vm;
 
-            // Wire up components
-            _viewModel.SetHexEditor(HexEditorControl);
+            _vm.OpenFileRequested += (_, path) => OpenFile(path);
+            _vm.SaveFileRequested += (_, _)    => HexEditor.SubmitChanges();
 
-            // Connect HexEditor to Settings Panel for property bindings
-            HexEditorSettingsPanel.HexEditorControl = HexEditorControl;
-
-            // Wire up file operations
-            _viewModel.FileOpenRequested += OnFileOpenRequested;
-            _viewModel.FileSaveRequested += OnFileSaveRequested;
-
-            // Wire up Bookmarks panel
-            _viewModel.ShowBookmarksRequested += OnShowBookmarksRequested;
-
-            // Wire up theme changes
-            _viewModel.SettingsViewModel.ThemeChanged += OnThemeChanged;
-
-            // Wire up language changes to open Options dialog
-            _viewModel.SettingsViewModel.LanguageChanged += OnLanguageChanged;
-
-            // Sync HexEditor colors with current theme (theme loaded by ThemeManager.Initialize())
-            Services.ThemeManager.SyncHexEditorColors(HexEditorControl);
-
-            // CRITICAL: Subscribe to operation state changes to disable UI during async operations
-            Loaded += MainWindow_Loaded;
-            Closing += MainWindow_Closing;
+            Loaded += OnLoaded;
         }
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            // Subscribe to HexEditor operation state changes
-            if (HexEditorControl != null)
+            // Wire HexEditor to ViewModel
+            _vm.SetHexEditor(HexEditor);
+
+            // Wire HexEditor to Settings panel
+            HexEditorSettings.HexEditorControl = HexEditor;
+
+            // Wire ParsedFieldsPanel once everything is loaded
+            if (HexEditor.ParsedFieldsPanel != null)
+                ParsedFieldsPanel.ViewModel.AttachPanel(HexEditor.ParsedFieldsPanel);
+
+            HexEditor.FileOpened += (_, _) =>
             {
-                HexEditorControl.OperationStateChanged += HexEditor_OperationStateChanged;
-            }
-
-            // Auto-load HexEditor settings from previous session
-            try
-            {
-                var json = Properties.Settings.Default.HexEditorSettings;
-                System.Diagnostics.Debug.WriteLine($"[MainWindow_Loaded] HexEditorSettings JSON length: {json?.Length ?? 0}");
-
-                if (!string.IsNullOrEmpty(json) && HexEditorSettingsPanel != null)
-                {
-                    System.Diagnostics.Debug.WriteLine("[MainWindow_Loaded] Calling LoadSettingsJson...");
-                    HexEditorSettingsPanel.LoadSettingsJson(json);
-                    System.Diagnostics.Debug.WriteLine("[MainWindow_Loaded] LoadSettingsJson completed");
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"[MainWindow_Loaded] Skipping load: json empty={string.IsNullOrEmpty(json)}, panel null={HexEditorSettingsPanel == null}");
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[MainWindow_Loaded] ERROR loading settings: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"  Exception type: {ex.GetType().Name}");
-                System.Diagnostics.Debug.WriteLine($"  Stack trace: {ex.StackTrace}");
-            }
-        }
-
-        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // Save UI state BEFORE auto-saving HexEditor settings
-            _viewModel?.SaveUIState();
-
-            // Auto-save HexEditor settings for next session
-            try
-            {
-                System.Diagnostics.Debug.WriteLine($"[MainWindow_Closing] Starting HexEditor settings save...");
-
-                if (HexEditorSettingsPanel != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[MainWindow_Closing] Calling GetSettingsJson...");
-                    var json = HexEditorSettingsPanel.GetSettingsJson();
-                    System.Diagnostics.Debug.WriteLine($"[MainWindow_Closing] Got JSON ({json?.Length ?? 0} chars)");
-
-                    Properties.Settings.Default.HexEditorSettings = json;
-                    Properties.Settings.Default.Save();
-                    System.Diagnostics.Debug.WriteLine($"[MainWindow_Closing] Settings saved successfully");
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"[MainWindow_Closing] HexEditorSettingsPanel is null!");
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[MainWindow_Closing] ERROR saving settings: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"  Exception type: {ex.GetType().Name}");
-                System.Diagnostics.Debug.WriteLine($"  Stack trace: {ex.StackTrace}");
-            }
-        }
-
-        private void HexEditor_OperationStateChanged(object sender, WpfHexEditor.Core.Events.OperationStateChangedEventArgs e)
-        {
-            // Notify ViewModel to update command states
-            _viewModel?.OnOperationStateChanged(e.IsActive);
-        }
-
-        private void OnLanguageChanged(object sender, string languageCode)
-        {
-            // Open the Options dialog for language selection
-            ShowOptionsDialog();
-        }
-
-        private void ShowOptionsDialog_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            // Event handler for menu item click
-            ShowOptionsDialog();
-        }
-
-        private void ShowOptionsDialog()
-        {
-            // Open the Options dialog (Theme, Language)
-            // Changes happen instantly when user selects from the lists
-            var dialog = new OptionsDialog
-            {
-                Owner = this
+                if (HexEditor.ParsedFieldsPanel != null)
+                    ParsedFieldsPanel.ViewModel.AttachPanel(HexEditor.ParsedFieldsPanel);
             };
-            dialog.ShowDialog();
+
+            HexEditor.FileClosed += (_, _) =>
+            {
+                ParsedFieldsPanel.ViewModel.OnFileClosed();
+            };
         }
 
-        private void OnFileOpenRequested(object sender, string filePath)
+        private void OpenFile(string path)
         {
             try
             {
-                HexEditorControl.FileName = filePath;
+                HexEditor.FileName = path;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    string.Format(Properties.Resources.Message_FileOpenError, ex.Message),
-                    Properties.Resources.Message_ErrorTitle,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "Error opening file", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void OnFileSaveRequested(object sender, EventArgs e)
+        private void BytesPerLine_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (sender is not MenuItem item) return;
+            if (!int.TryParse(item.Tag?.ToString(), out var bpl)) return;
+
+            HexEditor.BytePerLine = bpl;
+
+            Bpl8.IsChecked  = bpl == 8;
+            Bpl16.IsChecked = bpl == 16;
+            Bpl32.IsChecked = bpl == 32;
+            Bpl64.IsChecked = bpl == 64;
+        }
+
+        private void InsertMode_Click(object sender, RoutedEventArgs e)
+        {
+            HexEditor.EditMode = InsertModeToggle.IsChecked == true
+                ? EditMode.Insert
+                : EditMode.Overwrite;
+        }
+
+        private void ReadOnly_Click(object sender, RoutedEventArgs e)
+        {
+            HexEditor.ReadOnlyMode = ReadOnlyToggle.IsChecked == true;
+        }
+
+        private void LoadTbl_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new OpenFileDialog
             {
-                HexEditorControl.SubmitChanges();
-            }
-            catch (Exception ex)
+                Title  = "Select TBL File",
+                Filter = "TBL Files (*.tbl)|*.tbl|All Files (*.*)|*.*"
+            };
+            if (dlg.ShowDialog() == true)
             {
-                MessageBox.Show(
-                    string.Format(Properties.Resources.Message_FileSaveError, ex.Message),
-                    Properties.Resources.Message_ErrorTitle,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                HexEditor.LoadTBLFile(dlg.FileName);
+                CloseTblItem.IsEnabled = true;
             }
         }
 
-        private void OnShowBookmarksRequested(object sender, EventArgs e)
+        private void CloseTbl_Click(object sender, RoutedEventArgs e)
         {
-            var positions = HexEditorControl.GetBookmarks();
-            if (positions == null || positions.Length == 0)
-            {
-                MessageBox.Show("No bookmarks set.", "Bookmarks", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            var lines = string.Join(Environment.NewLine,
-                System.Linq.Enumerable.Select(positions, p => $"0x{p:X8}"));
-
-            MessageBox.Show(lines, $"Bookmarks ({positions.Length})", MessageBoxButton.OK, MessageBoxImage.None);
-        }
-
-        private void OnThemeChanged(object sender, string themeName)
-        {
-            // Theme loading is now handled by ThemeManager
-            // Just sync HexEditor colors with the new theme
-            Services.ThemeManager.SyncHexEditorColors(HexEditorControl);
+            HexEditor.CloseTBL();
+            CloseTblItem.IsEnabled = false;
         }
 
         protected override void OnClosed(EventArgs e)
         {
-            // Cleanup
-            HexEditorControl?.Close();
+            HexEditor?.Close();
             base.OnClosed(e);
         }
-
-        #region TBL Character Table Support
-
-        /// <summary>
-        /// Load a TBL (Character Table) file for custom encoding
-        /// </summary>
-        private void LoadTblMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var openFileDialog = new OpenFileDialog
-            {
-                Title = "Select a TBL file",
-                Filter = "TBL Files (*.tbl)|*.tbl|All Files (*.*)|*.*",
-                CheckFileExists = true,
-                Multiselect = false
-            };
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                // Load the TBL file (HexEditor will update status bar automatically)
-                HexEditorControl.LoadTBLFile(openFileDialog.FileName);
-
-                // Enable the Close TBL menu item
-                CloseTblMenuItem.IsEnabled = true;
-            }
-        }
-
-        /// <summary>
-        /// Close the current TBL file and return to ASCII encoding
-        /// </summary>
-        private void CloseTblMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            // Close the TBL (HexEditor will update status bar automatically)
-            HexEditorControl.CloseTBL();
-
-            // Disable the Close TBL menu item
-            CloseTblMenuItem.IsEnabled = false;
-        }
-
-        /// <summary>
-        /// Opens the Relative Search dialog for ROM encoding discovery
-        /// </summary>
-        private void RelativeSearchMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            // Show the Relative Search dialog (HexEditor API)
-            HexEditorControl.ShowRelativeSearchDialog();
-        }
-
-        /// <summary>
-        /// Opens the Advanced Search dialog with 5 modes (TEXT, HEX, WILDCARD, TBL TEXT, RELATIVE)
-        /// </summary>
-        private void AdvancedSearchMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            // Show the Advanced Search dialog (HexEditor API)
-            // Supports ultra-performant searching with TBL support and encoding discovery
-            HexEditorControl.ShowAdvancedSearchDialog(this);
-        }
-
-        /// <summary>
-        /// Opens the Code Editor Demo window with CodeEditor and Settings Panel
-        /// </summary>
-        private void CodeEditorDemoMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var demoWindow = new CodeEditorDemoWindow
-            {
-                Owner = this
-            };
-            demoWindow.Show();
-        }
-
-        #endregion
     }
 }

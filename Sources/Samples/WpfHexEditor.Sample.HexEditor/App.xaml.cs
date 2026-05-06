@@ -1,48 +1,12 @@
-//////////////////////////////////////////////
-// GNU Affero General Public License v3.0 - 2026
-// Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.6
-//////////////////////////////////////////////
+// WpfHexEditor.Sample.HexEditor — App.xaml.cs
+// Clean sample demonstrating WpfHexEditor integration
 
 using System.Windows;
-using WpfHexEditor.Sample.HexEditor.Services;
-using Props = WpfHexEditor.Sample.HexEditor.Properties;
 
 namespace WpfHexEditor.Sample.HexEditor
 {
     public partial class App : Application
     {
-        public App()
-        {
-            // CRITICAL: Migrate settings BEFORE any initialization
-            MigrateSettings();
-
-            // CRITICAL: Initialize culture BEFORE any WPF initialization
-            // DynamicResourceManager handles culture loading from settings and application-wide culture management
-            DynamicResourceManager.Initialize();
-
-            // Initialize theme system AFTER culture
-            // ThemeManager handles theme loading from settings and application-wide theme management
-            ThemeManager.Initialize();
-        }
-
-        private void MigrateSettings()
-        {
-            var settings = Props.Settings.Default;
-
-            // Check if this is first run or needs migration
-            if (settings.SettingsVersion < 2)
-            {
-                // V1 -> V2 Migration
-                // BytesPerLine and ShowStatusBar were removed from SettingsPanelViewModel
-                // but were never persisted, so no migration needed
-
-                // Mark as migrated
-                settings.SettingsVersion = 2;
-                settings.Save();
-            }
-        }
-
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);

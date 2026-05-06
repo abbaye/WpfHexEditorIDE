@@ -1,0 +1,211 @@
+<UserControl x:Class="WpfHexEditor.Sample.HexEditor.Views.Components.ParsedFieldsPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignWidth="300" d:DesignHeight="600"
+             MinWidth="200">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <DataTemplate x:Key="FieldRowTemplate">
+            <Border Padding="6,4"
+                    BorderThickness="0,0,0,1"
+                    BorderBrush="{DynamicResource SeparatorBrush}"
+                    Background="Transparent">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Field icon -->
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding FieldIcon}"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="11"
+                               VerticalAlignment="Center"
+                               Margin="0,0,6,0"
+                               Foreground="{DynamicResource SubtleForegroundBrush}"/>
+
+                    <!-- Name + value -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Name}"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="{Binding FormattedValue}"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource SubtleForegroundBrush}"
+                                   TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+
+                    <!-- Offset badge -->
+                    <Border Grid.Column="2"
+                            Padding="4,1"
+                            CornerRadius="3"
+                            Background="{DynamicResource PanelBackgroundBrush}"
+                            VerticalAlignment="Center"
+                            Margin="4,0,0,0">
+                        <TextBlock Text="{Binding Offset, StringFormat='0x{0:X}'}"
+                                   FontSize="10"
+                                   FontFamily="Consolas"
+                                   Foreground="{DynamicResource SubtleForegroundBrush}"/>
+                    </Border>
+                </Grid>
+
+                <Border.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding FormattedValue}"/>
+                            <TextBlock Text="{Binding Description}" Foreground="{DynamicResource SubtleForegroundBrush}" MaxWidth="300" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </ToolTip>
+                </Border.ToolTip>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Background="{DynamicResource PanelBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- header -->
+            <RowDefinition Height="Auto"/>  <!-- filter -->
+            <RowDefinition Height="*"/>     <!-- list -->
+            <RowDefinition Height="Auto"/>  <!-- status -->
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Style="{StaticResource PanelHeaderStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Parsed Fields" Style="{StaticResource PanelTitleStyle}"/>
+                    <TextBlock Text="{Binding FormatBadge}"
+                               FontSize="10"
+                               Foreground="{DynamicResource AccentBrush}"
+                               Visibility="{Binding HasFormat, Converter={StaticResource BoolToVis}}"
+                               Margin="0,1,0,0"/>
+                </StackPanel>
+                <Button Grid.Column="1"
+                        Command="{Binding RefreshCommand}"
+                        Style="{StaticResource IconButtonStyle}"
+                        Content="&#xE72C;"
+                        ToolTip="Refresh"/>
+            </Grid>
+        </Border>
+
+        <!-- Filter bar -->
+        <Border Grid.Row="1"
+                Padding="6,4"
+                BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource SeparatorBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0"
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource InputBorderBrush}"
+                        CornerRadius="3"
+                        Background="{DynamicResource InputBackgroundBrush}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="&#xE721;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="10"
+                                   VerticalAlignment="Center"
+                                   Margin="5,0,3,0"
+                                   Foreground="{DynamicResource SubtleForegroundBrush}"/>
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                                 BorderThickness="0"
+                                 Background="Transparent"
+                                 Padding="2,3"
+                                 FontSize="11"/>
+                    </Grid>
+                </Border>
+                <Button Grid.Column="1"
+                        Command="{Binding ClearFilterCommand}"
+                        Content="&#xE711;"
+                        Margin="4,0,0,0"
+                        FontSize="10"
+                        FontFamily="Segoe MDL2 Assets"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="4,2"
+                        ToolTip="Clear filter">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding FilterText}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding FilterText}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Empty state -->
+        <StackPanel Grid.Row="2"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}">
+            <TextBlock Text="&#xE9CE;"
+                       FontFamily="Segoe MDL2 Assets"
+                       FontSize="32"
+                       HorizontalAlignment="Center"
+                       Foreground="{DynamicResource SubtleForegroundBrush}"
+                       Opacity="0.4"
+                       Margin="0,0,0,8"/>
+            <TextBlock Text="{Binding StatusText}"
+                       FontSize="12"
+                       HorizontalAlignment="Center"
+                       Foreground="{DynamicResource SubtleForegroundBrush}"
+                       Opacity="0.7"
+                       TextWrapping="Wrap"
+                       MaxWidth="180"
+                       TextAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Field list -->
+        <ListBox Grid.Row="2"
+                 ItemsSource="{Binding Fields}"
+                 SelectedItem="{Binding SelectedField, Mode=TwoWay}"
+                 ItemTemplate="{StaticResource FieldRowTemplate}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 VirtualizingPanel.IsVirtualizing="True"
+                 VirtualizingPanel.VirtualizationMode="Recycling"
+                 Visibility="{Binding IsNotEmpty, Converter={StaticResource BoolToVis}}"/>
+
+        <!-- Status bar -->
+        <Border Grid.Row="3"
+                Padding="8,3"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource SeparatorBrush}">
+            <TextBlock Text="{Binding StatusText}"
+                       FontSize="10"
+                       Foreground="{DynamicResource SubtleForegroundBrush}"/>
+        </Border>
+    </Grid>
+</UserControl>
