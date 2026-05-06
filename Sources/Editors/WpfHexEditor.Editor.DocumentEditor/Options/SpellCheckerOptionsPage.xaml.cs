@@ -10,7 +10,7 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 using WpfHexEditor.Core.SpellCheck;
 using WpfHexEditor.Editor.Core.Dialogs;
-using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Options;
 
