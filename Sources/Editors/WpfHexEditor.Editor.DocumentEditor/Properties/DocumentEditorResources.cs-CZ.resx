@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Textové zobrazení</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>Odstavec</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>Normální</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>Nadpis 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>Nadpis 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>Nadpis 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>Citát</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>Blok kódu</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>Seznam</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>Seznam s odrážkami  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>Číslovaný seznam  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>Abecední  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>Abecední  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>Římské  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>Římské  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>Bez seznamu</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>Vybrat blok</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>Vložit konec stránky</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>Vložit hypertextový odkaz…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>Vložit tabulku…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>Tabulka</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>Vložit řádek nad</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>Vložit řádek pod</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>Odstranit řádek</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>Vložit sloupec vlevo</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>Vložit sloupec vpravo</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>Odstranit sloupec</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>Seznam s odrážkami (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>Číslovaný seznam (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>Zvětšit odsazení (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>Zmenšit odsazení (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>Zarovnat (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>Vložit tabulku</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>Vložit hypertextový odkaz (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>Vložit konec stránky (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>Styl stránky</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>Vložit hypertextový odkaz</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>Zobrazený text</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>Vložit tabulku</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Řádky</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Sloupce</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>Vložit</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>Styl stránky</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>Stránka</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>Pozadí</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>Záhlaví</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>Zápatí</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>Ohraničení</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>Sloupce</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>Formát papíru</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>Formát</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>Šířka</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>Výška</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>Orientace</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>Na výšku</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>Na šířku</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>Okraje</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>Vlevo</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>Vpravo</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>Nahoře</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>Dole</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>Barva pozadí</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>Povolit záhlaví</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>Povolit zápatí</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>Výška</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>Mezera k obsahu</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>Odlišný obsah na první stránce</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>Stejný obsah na levé a pravé stránce</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>Styl ohraničení</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>Žádné</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>Rámeček</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>Stín</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>Barva</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>Šířka</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>Sloupce</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>Mezera mezi sloupci</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>Zobrazit oddělovač</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Použít</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Zrušit</value></data>
 </root>

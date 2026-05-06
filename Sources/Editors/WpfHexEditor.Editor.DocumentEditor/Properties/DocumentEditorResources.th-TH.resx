@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Vue texte</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>ย่อหน้า</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>ปกติ</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>หัวเรื่อง 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>หัวเรื่อง 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>หัวเรื่อง 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>คำอ้างอิง</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>บล็อกโค้ด</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>รายการ</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>รายการหัวข้อย่อย  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>รายการลำดับเลข  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>ตามตัวอักษร  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>ตามตัวอักษร  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>โรมัน  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>โรมัน  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>ไม่มีรายการ</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>เลือกบล็อก</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>แทรกตัวแบ่งหน้า</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>แทรกไฮเปอร์ลิงก์…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>แทรกตาราง…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>ตาราง</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>แทรกแถวด้านบน</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>แทรกแถวด้านล่าง</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>ลบแถว</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>แทรกคอลัมน์ด้านซ้าย</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>แทรกคอลัมน์ด้านขวา</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>ลบคอลัมน์</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>รายการหัวข้อย่อย (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>รายการลำดับเลข (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>เพิ่มการเยื้อง (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>ลดการเยื้อง (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>จัดตัวอักษร (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>แทรกตาราง</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>แทรกไฮเปอร์ลิงก์ (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>แทรกตัวแบ่งหน้า (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>สไตล์หน้า</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>แทรกไฮเปอร์ลิงก์</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>ข้อความที่แสดง</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>ตกลง</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>แทรกตาราง</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>แถว</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>คอลัมน์</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>แทรก</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>สไตล์หน้า</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>หน้า</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>พื้นหลัง</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>ส่วนหัว</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>ส่วนท้าย</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>ขอบ</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>คอลัมน์</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>รูปแบบกระดาษ</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>รูปแบบ</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>ความกว้าง</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>ความสูง</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>การวางแนว</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>แนวตั้ง</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>แนวนอน</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>ระยะขอบ</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>ซ้าย</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>ขวา</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>บน</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>ล่าง</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>สีพื้นหลัง</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>เปิดใช้ส่วนหัว</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>เปิดใช้ส่วนท้าย</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>ความสูง</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>ระยะห่างถึงเนื้อหา</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>เนื้อหาต่างกันในหน้าแรก</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>เนื้อหาเหมือนกันในหน้าซ้ายและขวา</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>สไตล์ขอบ</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>ไม่มี</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>กล่อง</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>เงา</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>สี</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>ความกว้าง</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>คอลัมน์</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>ช่องว่างระหว่างคอลัมน์</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>แสดงเส้นแบ่ง</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>ใช้งาน</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>ตกลง</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
 </root>

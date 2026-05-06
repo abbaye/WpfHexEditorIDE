@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Szövegnézet</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>Bekezdés</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>Normál</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>1. fejléc</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>2. fejléc</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>3. fejléc</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>Idézet</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>Kódblokk</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>Lista</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>Felsorolásos lista  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>Számozott lista  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>Betűrendes  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>Betűrendes  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>Római  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>Római  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>Nincs lista</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>Blokk kijelölése</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>Oldaltörés beszúrása</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>Hiperhivatkozás beszúrása…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>Táblázat beszúrása…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>Táblázat</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>Sor beszúrása felül</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>Sor beszúrása alul</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>Sor törlése</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>Oszlop beszúrása balra</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>Oszlop beszúrása jobbra</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>Oszlop törlése</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>Felsorolásos lista (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>Számozott lista (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>Behúzás növelése (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>Behúzás csökkentése (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>Sorkizárt (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>Táblázat beszúrása</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>Hiperhivatkozás beszúrása (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>Oldaltörés beszúrása (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>Oldalstílus</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>Hiperhivatkozás beszúrása</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>Megjelenített szöveg</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Mégse</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>Táblázat beszúrása</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Sorok</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Oszlopok</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>Beszúrás</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>Mégse</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>Oldalstílus</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>Oldal</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>Háttér</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>Fejléc</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>Lábléc</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>Szegély</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>Oszlopok</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>Papírméret</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>Formátum</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>Szélesség</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>Magasság</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>Tájolás</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>Álló</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>Fekvő</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>Margók</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>Bal</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>Jobb</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>Felső</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>Alsó</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>Háttérszín</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>Fejléc engedélyezése</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>Lábléc engedélyezése</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>Magasság</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>Távolság a tartalomhoz</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>Eltérő tartalom az első oldalon</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>Azonos tartalom a bal és jobb oldalakon</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>Szegélystílus</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>Nincs</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>Keret</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>Árnyék</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>Szín</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>Szélesség</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>Oszlopok</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>Oszközök közötti rés</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>Elválasztó vonal megjelenítése</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Alkalmaz</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Mégse</value></data>
 </root>

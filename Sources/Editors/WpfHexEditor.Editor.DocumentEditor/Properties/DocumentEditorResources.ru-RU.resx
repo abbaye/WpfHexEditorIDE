@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Текстовый вид</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>Абзац</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>Обычный</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>Заголовок 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>Заголовок 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>Заголовок 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>Цитата</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>Блок кода</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>Список</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>Маркированный список  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>Нумерованный список  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>Алфавитный  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>Алфавитный  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>Римский  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>Римский  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>Без списка</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>Выбрать блок</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>Вставить разрыв страницы</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>Вставить гиперссылку…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>Вставить таблицу…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>Таблица</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>Вставить строку выше</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>Вставить строку ниже</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>Удалить строку</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>Вставить столбец слева</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>Вставить столбец справа</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>Удалить столбец</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>Маркированный список (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>Нумерованный список (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>Увеличить отступ (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>Уменьшить отступ (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>Выровнять по ширине (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>Вставить таблицу</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>Вставить гиперссылку (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>Вставить разрыв страницы (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>Стиль страницы</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>Вставить гиперссылку</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>Отображаемый текст</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>ОК</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>Вставить таблицу</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Строки</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Столбцы</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>Вставить</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>Стиль страницы</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>Страница</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>Фон</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>Верхний колонтитул</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>Нижний колонтитул</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>Граница</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>Столбцы</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>Формат бумаги</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>Формат</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>Ширина</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>Высота</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>Ориентация</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>Книжная</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>Альбомная</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>Поля</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>Левое</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>Правое</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>Верхнее</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>Нижнее</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>Цвет фона</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>Включить верхний колонтитул</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>Включить нижний колонтитул</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>Высота</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>Отступ от содержимого</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>Разное содержимое на первой странице</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>Одинаковое содержимое на левых и правых страницах</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>Стиль границы</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>Нет</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>Рамка</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>Тень</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>Цвет</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>Ширина</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>Столбцы</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>Расстояние между столбцами</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>Показать разделитель</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Применить</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>ОК</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Отмена</value></data>
 </root>

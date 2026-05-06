@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Chế độ xem văn bản</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>Đoạn văn</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>Bình thường</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>Tiêu đề 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>Tiêu đề 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>Tiêu đề 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>Trích dẫn</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>Khối mã</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>Danh sách</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>Danh sách dấu đầu dòng  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>Danh sách đánh số  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>Thứ tự bảng chữ cái  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>Thứ tự bảng chữ cái  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>Số La Mã  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>Số La Mã  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>Không có danh sách</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>Chọn khối</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>Chèn ngắt trang</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>Chèn siêu liên kết…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>Chèn bảng…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>Bảng</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>Chèn hàng phía trên</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>Chèn hàng phía dưới</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>Xóa hàng</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>Chèn cột bên trái</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>Chèn cột bên phải</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>Xóa cột</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>Danh sách dấu đầu dòng (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>Danh sách đánh số (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>Tăng thụt lề (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>Giảm thụt lề (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>Căn đều (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>Chèn bảng</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>Chèn siêu liên kết (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>Chèn ngắt trang (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>Kiểu trang</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>Chèn siêu liên kết</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>Văn bản hiển thị</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>Chèn bảng</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Hàng</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Cột</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>Chèn</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>Kiểu trang</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>Trang</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>Nền</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>Tiêu đề</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>Chân trang</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>Đường viền</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>Cột</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>Định dạng giấy</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>Định dạng</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>Chiều rộng</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>Chiều cao</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>Hướng</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>Dọc</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>Ngang</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>Lề</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>Trái</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>Phải</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>Trên</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>Dưới</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>Màu nền</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>Bật tiêu đề</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>Bật chân trang</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>Chiều cao</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>Khoảng cách đến nội dung</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>Nội dung khác nhau trên trang đầu</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>Nội dung giống nhau trên trang trái và phải</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>Kiểu đường viền</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>Không có</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>Hộp</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>Bóng</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>Màu</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>Chiều rộng</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>Cột</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>Khoảng cách giữa các cột</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>Hiển thị đường phân cách</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Áp dụng</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Hủy</value></data>
 </root>

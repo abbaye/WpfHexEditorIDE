@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>عرض النص</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>فقرة</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>عادي</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>عنوان 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>عنوان 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>عنوان 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>اقتباس</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>كتلة التعليمات البرمجية</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>قائمة</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>قائمة نقطية  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>قائمة مرقمة  1، 2، 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>أبجدية  A، B، C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>أبجدية  a، b، c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>روماني  I، II، III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>روماني  i، ii، iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>بدون قائمة</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>تحديد كتلة</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>إدراج فاصل صفحة</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>إدراج ارتباط تشعبي…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>إدراج جدول…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>جدول</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>إدراج صف فوق</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>إدراج صف أسفل</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>حذف صف</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>إدراج عمود يسار</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>إدراج عمود يمين</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>حذف عمود</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>قائمة نقطية (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>قائمة مرقمة (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>زيادة المسافة البادئة (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>تقليل المسافة البادئة (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>ضبط (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>إدراج جدول</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>إدراج ارتباط تشعبي (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>إدراج فاصل صفحة (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>نمط الصفحة</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>إدراج ارتباط تشعبي</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>نص العرض</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>عنوان URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>موافق</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>إدراج جدول</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>صفوف</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>أعمدة</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>إدراج</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>نمط الصفحة</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>صفحة</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>خلفية</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>رأس الصفحة</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>تذييل الصفحة</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>حدود</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>أعمدة</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>تنسيق الورق</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>تنسيق</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>العرض</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>الارتفاع</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>الاتجاه</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>عمودي</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>أفقي</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>هوامش</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>يسار</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>يمين</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>أعلى</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>أسفل</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>لون الخلفية</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>تمكين رأس الصفحة</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>تمكين تذييل الصفحة</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>الارتفاع</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>المسافة للمحتوى</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>محتوى مختلف في الصفحة الأولى</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>نفس المحتوى في الصفحات اليسرى واليمنى</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>نمط الحدود</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>بدون</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>مربع</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>ظل</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>اللون</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>العرض</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>أعمدة</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>الفجوة بين الأعمدة</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>إظهار خط الفصل</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>تطبيق</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>موافق</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>إلغاء</value></data>
 </root>

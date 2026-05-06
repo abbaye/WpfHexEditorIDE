@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Vista de texto</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>Parágrafo</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>Título 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>Título 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>Título 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>Citação</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>Bloco de código</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>Lista</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>Lista com marcadores  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>Lista numerada  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>Alfabética  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>Alfabética  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>Romana  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>Romana  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>Sem lista</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>Selecionar bloco</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>Inserir quebra de página</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>Inserir hiperligação…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>Inserir tabela…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>Tabela</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>Inserir linha acima</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>Inserir linha abaixo</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>Eliminar linha</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>Inserir coluna à esquerda</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>Inserir coluna à direita</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>Eliminar coluna</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>Lista com marcadores (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>Lista numerada (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>Aumentar avanço (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>Diminuir avanço (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>Justificar (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>Inserir tabela</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>Inserir hiperligação (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>Inserir quebra de página (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>Estilo de página</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>Inserir hiperligação</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>Texto a apresentar</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>Inserir tabela</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Linhas</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Colunas</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>Inserir</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>Estilo de página</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>Página</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>Fundo</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>Cabeçalho</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>Rodapé</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>Contorno</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>Colunas</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>Formato do papel</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>Formato</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>Largura</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>Altura</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>Orientação</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>Vertical</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>Horizontal</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>Margens</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>Esquerda</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>Direita</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>Superior</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>Inferior</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>Cor de fundo</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>Ativar cabeçalho</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>Ativar rodapé</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>Altura</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>Espaçamento para o conteúdo</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>Conteúdo diferente na primeira página</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>Mesmo conteúdo nas páginas esquerda e direita</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>Estilo de contorno</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>Nenhum</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>Caixa</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>Sombra</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>Cor</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>Largura</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>Colunas</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>Espaço entre colunas</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>Mostrar linha separadora</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Aplicar</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Cancelar</value></data>
 </root>

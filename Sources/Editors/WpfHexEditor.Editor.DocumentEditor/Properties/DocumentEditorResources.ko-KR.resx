@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>텍스트 보기</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>단락</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>보통</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>제목 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>제목 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>제목 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>인용</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>코드 블록</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>목록</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>글머리 기호 목록  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>번호 매기기 목록  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>알파벳순  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>알파벳순  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>로마 숫자  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>로마 숫자  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>목록 없음</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>블록 선택</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>페이지 나누기 삽입</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>하이퍼링크 삽입…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>표 삽입…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>표</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>위에 행 삽입</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>아래에 행 삽입</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>행 삭제</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>왼쪽에 열 삽입</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>오른쪽에 열 삽입</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>열 삭제</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>글머리 기호 목록 (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>번호 매기기 목록 (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>들여쓰기 늘리기 (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>들여쓰기 줄이기 (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>양쪽 맞춤 (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>표 삽입</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>하이퍼링크 삽입 (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>페이지 나누기 삽입 (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>페이지 스타일</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>하이퍼링크 삽입</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>표시 텍스트</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>확인</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>취소</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>표 삽입</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>행</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>열</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>삽입</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>취소</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>페이지 스타일</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>페이지</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>배경</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>머리글</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>바닥글</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>테두리</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>열</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>용지 크기</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>형식</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>너비</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>높이</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>방향</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>세로</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>가로</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>여백</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>왼쪽</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>오른쪽</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>위쪽</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>아래쪽</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>배경색</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>머리글 사용</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>바닥글 사용</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>높이</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>콘텐츠까지의 간격</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>첫 페이지의 다른 콘텐츠</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>왼쪽 및 오른쪽 페이지의 동일한 콘텐츠</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>테두리 스타일</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>없음</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>상자</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>그림자</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>색</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>너비</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>열</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>열 사이의 간격</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>구분선 표시</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>적용</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>확인</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>취소</value></data>
 </root>

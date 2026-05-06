@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Metin görünümü</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>Paragraf</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>Başlık 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>Başlık 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>Başlık 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>Alıntı</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>Kod bloğu</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>Liste</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>Madde işaretli liste  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>Numaralı liste  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>Alfabetik  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>Alfabetik  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>Roma  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>Roma  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>Liste yok</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>Blok seç</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>Sayfa sonu ekle</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>Köprü ekle…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>Tablo ekle…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>Tablo</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>Üste satır ekle</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>Alta satır ekle</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>Satır sil</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>Sola sütun ekle</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>Sağa sütun ekle</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>Sütun sil</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>Madde işaretli liste (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>Numaralı liste (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>Girintiyi artır (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>Girintiyi azalt (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>Yasla (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>Tablo ekle</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>Köprü ekle (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>Sayfa sonu ekle (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>Sayfa stili</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>Köprü ekle</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>Görünen metin</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>Tamam</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>Tablo ekle</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Satırlar</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Sütunlar</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>Ekle</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>Sayfa stili</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>Sayfa</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>Arka plan</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>Üst bilgi</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>Alt bilgi</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>Kenarlık</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>Sütunlar</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>Kağıt biçimi</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>Biçim</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>Genişlik</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>Yükseklik</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>Yön</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>Dikey</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>Yatay</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>Kenar boşlukları</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>Sol</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>Sağ</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>Üst</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>Alt</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>Arka plan rengi</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>Üst bilgiyi etkinleştir</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>Alt bilgiyi etkinleştir</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>Yükseklik</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>İçeriğe aralık</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>İlk sayfada farklı içerik</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>Sol ve sağ sayfalarda aynı içerik</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>Kenarlık stili</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>Yok</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>Kutu</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>Gölge</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>Renk</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>Genişlik</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>Sütunlar</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>Sütunlar arasındaki boşluk</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>Ayırıcı çizgiyi göster</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Uygula</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>Tamam</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>İptal</value></data>
 </root>

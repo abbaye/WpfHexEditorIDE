@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>文本视图</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>段落</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>正文</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>标题 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>标题 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>标题 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>引用</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>代码块</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>列表</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>项目符号列表  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>编号列表  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>字母顺序  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>字母顺序  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>罗马数字  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>罗马数字  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>无列表</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>选择块</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>插入分页符</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>插入超链接…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>插入表格…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>表格</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>在上方插入行</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>在下方插入行</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>删除行</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>在左侧插入列</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>在右侧插入列</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>删除列</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>项目符号列表 (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>编号列表 (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>增加缩进 (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>减少缩进 (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>两端对齐 (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>插入表格</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>插入超链接 (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>插入分页符 (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>页面样式</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>插入超链接</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>显示文本</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>确定</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>插入表格</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>行</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>列</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>插入</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>页面样式</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>页面</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>背景</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>页眉</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>页脚</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>边框</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>列</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>纸张格式</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>格式</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>宽度</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>高度</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>方向</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>纵向</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>横向</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>页边距</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>左</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>右</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>上</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>下</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>背景颜色</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>启用页眉</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>启用页脚</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>高度</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>与内容的间距</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>第一页不同内容</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>左右页面相同内容</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>边框样式</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>无</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>方框</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>阴影</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>颜色</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>宽度</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>列</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>列间距</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>显示分隔线</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>应用</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>确定</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>取消</value></data>
 </root>

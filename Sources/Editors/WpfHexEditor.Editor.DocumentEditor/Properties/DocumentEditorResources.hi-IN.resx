@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>पाठ दृश्य</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>अनुच्छेद</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>सामान्य</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>शीर्षक 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>शीर्षक 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>शीर्षक 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>उद्धरण</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>कोड ब्लॉक</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>सूची</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>बुलेट सूची  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>क्रमांकित सूची  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>वर्णमाला  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>वर्णमाला  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>रोमन  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>रोमन  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>कोई सूची नहीं</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>ब्लॉक चुनें</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>पृष्ठ विराम डालें</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>हाइपरलिंक डालें…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>तालिका डालें…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>तालिका</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>ऊपर पंक्ति डालें</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>नीचे पंक्ति डालें</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>पंक्ति हटाएं</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>बाईं ओर कॉलम डालें</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>दाईं ओर कॉलम डालें</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>कॉलम हटाएं</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>बुलेट सूची (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>क्रमांकित सूची (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>इंडेंट बढ़ाएं (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>इंडेंट घटाएं (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>न्यायोचित ठहराएं (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>तालिका डालें</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>हाइपरलिंक डालें (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>पृष्ठ विराम डालें (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>पृष्ठ शैली</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>हाइपरलिंक डालें</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>प्रदर्शन पाठ</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>ठीक है</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>रद्द करें</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>तालिका डालें</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>पंक्तियाँ</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>कॉलम</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>डालें</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>रद्द करें</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>पृष्ठ शैली</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>पृष्ठ</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>पृष्ठभूमि</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>शीर्षलेख</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>पादलेख</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>सीमा</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>कॉलम</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>कागज़ का आकार</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>प्रारूप</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>चौड़ाई</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>ऊंचाई</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>अभिविन्यास</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>ऊर्ध्वाधर</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>क्षैतिज</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>हाशिये</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>बाएं</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>दाएं</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>ऊपर</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>नीचे</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>पृष्ठभूमि रंग</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>शीर्षलेख सक्षम करें</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>पादलेख सक्षम करें</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>ऊंचाई</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>सामग्री के लिए अंतर</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>पहले पृष्ठ पर अलग सामग्री</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>बाएं और दाएं पृष्ठों पर समान सामग्री</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>सीमा शैली</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>कोई नहीं</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>बॉक्स</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>छाया</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>रंग</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>चौड़ाई</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>कॉलम</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>कॉलम के बीच अंतर</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>विभाजक रेखा दिखाएं</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>लागू करें</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>ठीक है</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>रद्द करें</value></data>
 </root>

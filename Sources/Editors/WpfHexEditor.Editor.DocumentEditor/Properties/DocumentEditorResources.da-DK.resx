@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Tekstvisning</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>Afsnit</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>Overskrift 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>Overskrift 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>Overskrift 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>Citat</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>Kodeblok</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>Liste</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>Punktliste  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>Nummereret liste  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>Alfabetisk  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>Alfabetisk  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>Romersk  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>Romersk  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>Ingen liste</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>Vælg blok</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>Indsæt sideskift</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>Indsæt hyperlink…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>Indsæt tabel…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>Tabel</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>Indsæt række ovenfor</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>Indsæt række nedenfor</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>Slet række</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>Indsæt kolonne til venstre</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>Indsæt kolonne til højre</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>Slet kolonne</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>Punktliste (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>Nummereret liste (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>Forøg indrykning (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>Formindsk indrykning (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>Juster (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>Indsæt tabel</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>Indsæt hyperlink (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>Indsæt sideskift (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>Sideformat</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>Indsæt hyperlink</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>Visningstekst</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Annuller</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>Indsæt tabel</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Rækker</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Kolonner</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>Indsæt</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>Annuller</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>Sideformat</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>Side</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>Baggrund</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>Sidehoved</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>Sidefod</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>Kant</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>Kolonner</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>Papirformat</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>Format</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>Bredde</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>Højde</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>Retning</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>Stående</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>Liggende</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>Margener</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>Venstre</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>Højre</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>Top</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>Bund</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>Baggrundsfarve</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>Aktiver sidehoved</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>Aktiver sidefod</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>Højde</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>Afstand til indhold</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>Forskelligt indhold på første side</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>Samme indhold på venstre og højre sider</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>Kantstil</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>Ingen</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>Boks</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>Skygge</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>Farve</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>Bredde</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>Kolonner</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>Afstand mellem kolonner</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>Vis separatorlinje</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Anvend</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Annuller</value></data>
 </root>

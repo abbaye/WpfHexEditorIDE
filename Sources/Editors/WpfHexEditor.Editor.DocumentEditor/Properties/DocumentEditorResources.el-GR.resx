@@ -199,4 +199,87 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Προβολή κειμένου</value>
   </data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>Παράγραφος</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>Κανονικό</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>Επικεφαλίδα 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>Επικεφαλίδα 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>Επικεφαλίδα 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>Απόσπασμα</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>Μπλοκ κώδικα</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>Λίστα</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>Λίστα με κουκκίδες  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>Αριθμημένη λίστα  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>Αλφαβητική  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>Αλφαβητική  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>Ρωμαϊκή  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>Ρωμαϊκή  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>Χωρίς λίστα</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>Επιλογή μπλοκ</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>Εισαγωγή αλλαγής σελίδας</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>Εισαγωγή υπερσύνδεσμου…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>Εισαγωγή πίνακα…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>Πίνακας</value></data>
+  <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>Εισαγωγή γραμμής πάνω</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>Εισαγωγή γραμμής κάτω</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>Διαγραφή γραμμής</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>Εισαγωγή στήλης αριστερά</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>Εισαγωγή στήλης δεξιά</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>Διαγραφή στήλης</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>Λίστα με κουκκίδες (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>Αριθμημένη λίστα (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>Αύξηση εσοχής (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>Μείωση εσοχής (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>Πλήρης στοίχιση (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>Εισαγωγή πίνακα</value></data>
+  <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>Εισαγωγή υπερσύνδεσμου (Ctrl+K)</value></data>
+  <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>Εισαγωγή αλλαγής σελίδας (Ctrl+Enter)</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>Στυλ σελίδας</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>Εισαγωγή υπερσύνδεσμου</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>Κείμενο εμφάνισης</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>ΟΚ</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Άκυρο</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>Εισαγωγή πίνακα</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Γραμμές</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Στήλες</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>Εισαγωγή</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>Άκυρο</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>Στυλ σελίδας</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>Σελίδα</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>Φόντο</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>Κεφαλίδα</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>Υποσέλιδο</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>Περίγραμμα</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>Στήλες</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>Μορφή χαρτιού</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>Μορφή</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>Πλάτος</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>Ύψος</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>Προσανατολισμός</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>Κατακόρυφος</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>Οριζόντιος</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>Περιθώρια</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>Αριστερά</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>Δεξιά</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>Πάνω</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>Κάτω</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>Χρώμα φόντου</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>Ενεργοποίηση κεφαλίδας</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>Ενεργοποίηση υποσέλιδου</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>Ύψος</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>Απόσταση από περιεχόμενο</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>Διαφορετικό περιεχόμενο στην πρώτη σελίδα</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>Ίδιο περιεχόμενο στις αριστερές και δεξιές σελίδες</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>Στυλ περιγράμματος</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>Κανένα</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>Πλαίσιο</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>Σκιά</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>Χρώμα</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>Πλάτος</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>Στήλες</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>Κενό μεταξύ στηλών</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>Εμφάνιση γραμμής διαχωρισμού</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Εφαρμογή</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>ΟΚ</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Άκυρο</value></data>
 </root>
