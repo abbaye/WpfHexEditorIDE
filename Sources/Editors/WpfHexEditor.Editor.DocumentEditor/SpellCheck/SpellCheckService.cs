@@ -35,12 +35,24 @@ internal sealed class SpellCheckService : IDisposable
 
     private readonly HashSet<string> _ignoredWords = new(StringComparer.OrdinalIgnoreCase);
 
+    // Captures words including typographic (') and straight (') apostrophes so
+    // elided forms like "aujourd'hui", "c'est", "j'ai" are one token.
     private static readonly Regex WordRx = new(
-        @"\b[^\W\d_]{2,}\b",
+        @"\b\p{L}+(?:['’]\p{L}+)*\b",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
+    // Tokens to erase from text before word-tokenizing (URLs, emails, domains)
+    private static readonly Regex EraseRx = new(
+        @"https?://\S+"               +  // full URLs
+        @"|www\.\S+"                  +  // www. domains
+        @"|[\w.+-]+@[\w.-]+\.\w{2,}" +  // email addresses
+        @"|\S*\.\S*\.\S*",               // multi-dot tokens (a.b.c paths / domains)
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+    // Per-word skip patterns applied after tokenization
     private static readonly Regex SkipRx = new(
-        @"https?://|[A-Z][a-z]+[A-Z]|\w+\.\w+",
+        @"^[A-ZÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ]{2,}$" +  // ALL-CAPS acronyms: ISO, TI, SQL, API
+        @"|\d",                                             // any token containing a digit
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     public SpellCheckService(ISpellChecker checker, SpellCheckLayer layer)
@@ -170,13 +182,18 @@ internal sealed class SpellCheckService : IDisposable
                 continue;
             }
 
+            // Blank out URLs/emails/domains so their sub-parts aren't tokenized as words.
+            // Replacement with spaces preserves character offsets for coordinate mapping.
+            var checkText = EraseRx.Replace(text, m => new string(' ', m.Length));
+
             var blockErrors = new List<SpellCheckError>();
-            var matches     = WordRx.Matches(text);
+            var matches     = WordRx.Matches(checkText);
 
             foreach (Match m in matches)
             {
                 ct.ThrowIfCancellationRequested();
                 var word = m.Value;
+                if (word.Length > 40) continue;           // rendering artefacts / long URLs
                 if (_ignoredWords.Contains(word)) continue;
                 if (SkipRx.IsMatch(word)) continue;
                 if (_checker.CheckWord(word)) continue;
