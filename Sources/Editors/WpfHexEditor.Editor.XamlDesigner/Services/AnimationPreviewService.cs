@@ -100,6 +100,14 @@ public sealed class AnimationPreviewService
         _active.Seek(_root, time, TimeSeekOrigin.BeginTime);
     }
 
+    /// <summary>Returns the current playback position of the active storyboard, or zero.</summary>
+    public TimeSpan GetCurrentTime()
+    {
+        if (_active is null || _root is null) return TimeSpan.Zero;
+        try { return _active.GetCurrentTime(_root) ?? TimeSpan.Zero; }
+        catch { return TimeSpan.Zero; }
+    }
+
     // ── Private ───────────────────────────────────────────────────────────────
 
     private static Storyboard? TryExtractFirstStoryboard(string xaml)

@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.Editor.XamlDesigner.Services;
 using WpfHexEditor.SDK.Commands;
@@ -35,6 +36,7 @@ public sealed class AnimationTimelinePanelViewModel : ViewModelBase
     private readonly StoryboardSyncService    _syncService     = new();
     private readonly StoryboardExportService  _exportService   = new();
     private AnimationPreviewService?          _previewService;
+    private readonly DispatcherTimer          _clockTimer;
 
     private string   _xamlSource          = string.Empty;
     private bool     _isPlaying;
@@ -45,11 +47,18 @@ public sealed class AnimationTimelinePanelViewModel : ViewModelBase
     private bool     _autoReverse;
     private string   _activeStoryboardName = string.Empty;
     private AnimationTrackViewModel? _selectedTrack;
+    private KeyframeViewModel?       _selectedKeyframe;
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
     public AnimationTimelinePanelViewModel()
     {
+        _clockTimer = new DispatcherTimer(DispatcherPriority.Background)
+        {
+            Interval = TimeSpan.FromMilliseconds(33) // ~30 fps
+        };
+        _clockTimer.Tick += OnClockTick;
+
         PlayCommand    = new RelayCommand(_ => Play(),  _ => !_isPlaying && _previewService is not null);
         PauseCommand   = new RelayCommand(_ => Pause(), _ =>  _isPlaying);
         StopCommand    = new RelayCommand(_ => Stop(),  _ => _previewService is not null);
@@ -108,6 +117,20 @@ public sealed class AnimationTimelinePanelViewModel : ViewModelBase
         get => _selectedTrack;
         set { if (_selectedTrack == value) return; _selectedTrack = value; OnPropertyChanged(); }
     }
+
+    public KeyframeViewModel? SelectedKeyframe
+    {
+        get => _selectedKeyframe;
+        private set
+        {
+            if (_selectedKeyframe == value) return;
+            _selectedKeyframe = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(HasSelectedKeyframe));
+        }
+    }
+
+    public bool HasSelectedKeyframe => _selectedKeyframe is not null;
 
     public int FrameRate
     {
@@ -169,6 +192,11 @@ public sealed class AnimationTimelinePanelViewModel : ViewModelBase
     public ObservableCollection<AnimationTrackViewModel> Tracks          { get; } = new();
     public ObservableCollection<string>                  StoryboardNames { get; } = new();
 
+    // ── Events ────────────────────────────────────────────────────────────────
+
+    /// <summary>Fired after Export; arg is the exported XAML string.</summary>
+    public event EventHandler<string>? ExportCompleted;
+
     // ── Commands ──────────────────────────────────────────────────────────────
 
     public ICommand PlayCommand             { get; }
@@ -186,10 +214,25 @@ public sealed class AnimationTimelinePanelViewModel : ViewModelBase
 
     // ── Public API ────────────────────────────────────────────────────────────
 
-    public void AttachPreviewService(AnimationPreviewService service)
+    public void AttachPreviewService(AnimationPreviewService? service)
     {
+        if (_previewService is not null)
+            _previewService.PlaybackStateChanged -= OnPlaybackStateChanged;
+
         _previewService = service;
-        _previewService.PlaybackStateChanged += OnPlaybackStateChanged;
+
+        if (_previewService is not null)
+            _previewService.PlaybackStateChanged += OnPlaybackStateChanged;
+    }
+
+    public void SelectKeyframe(KeyframeViewModel? kf)
+        => SelectedKeyframe = kf;
+
+    public void UpdateKeyframeEasing(System.Windows.Point p1, System.Windows.Point p2)
+    {
+        if (_selectedKeyframe is null) return;
+        _selectedKeyframe.EasingP1 = p1;
+        _selectedKeyframe.EasingP2 = p2;
     }
 
     public void SetContextElement(string? elementName)
@@ -205,12 +248,14 @@ public sealed class AnimationTimelinePanelViewModel : ViewModelBase
     {
         _previewService?.Play(_xamlSource);
         IsPlaying = true;
+        _clockTimer.Start();
     }
 
     private void Pause()
     {
         _previewService?.Pause();
         IsPlaying = false;
+        _clockTimer.Stop();
     }
 
     private void Stop()
@@ -218,6 +263,7 @@ public sealed class AnimationTimelinePanelViewModel : ViewModelBase
         _previewService?.Stop();
         IsPlaying   = false;
         CurrentTime = TimeSpan.Zero;
+        _clockTimer.Stop();
     }
 
     private void Seek(TimeSpan time)
@@ -228,8 +274,20 @@ public sealed class AnimationTimelinePanelViewModel : ViewModelBase
 
     private void OnPlaybackStateChanged(object? sender, EventArgs e)
     {
-        if (_previewService is not null)
-            IsPlaying = _previewService.IsPlaying;
+        if (_previewService is null) return;
+        IsPlaying = _previewService.IsPlaying;
+        if (!IsPlaying)
+            _clockTimer.Stop();
+    }
+
+    private void OnClockTick(object? sender, EventArgs e)
+    {
+        if (_previewService is null || !_previewService.IsPlaying)
+        {
+            _clockTimer.Stop();
+            return;
+        }
+        CurrentTime = _previewService.GetCurrentTime();
     }
 
     // ── Private: commands ─────────────────────────────────────────────────────
@@ -252,9 +310,10 @@ public sealed class AnimationTimelinePanelViewModel : ViewModelBase
 
     private void ExecuteExport()
     {
-        string name   = string.IsNullOrWhiteSpace(_activeStoryboardName) ? "AnimationStoryboard" : _activeStoryboardName;
-        string xaml   = _exportService.ExportToXaml(Tracks, _duration, name);
+        string name = string.IsNullOrWhiteSpace(_activeStoryboardName) ? "AnimationStoryboard" : _activeStoryboardName;
+        string xaml = _exportService.ExportToXaml(Tracks, _duration, name);
         System.Windows.Clipboard.SetText(xaml);
+        ExportCompleted?.Invoke(this, xaml);
     }
 
     private void ExecuteAddTrack()

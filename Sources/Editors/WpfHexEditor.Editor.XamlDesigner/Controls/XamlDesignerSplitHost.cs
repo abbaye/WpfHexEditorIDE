@@ -117,6 +117,8 @@ public sealed class XamlDesignerSplitHost : Grid,
     // Set by OpenAsync() when a new file is loaded; consumed by the first TriggerPreview()
     // to fit the canvas once at DispatcherPriority.Background (layout fully settled).
     private bool      _fitOnFirstRender;
+    // Hash of the last XAML sent to the canvas — used to short-circuit unchanged renders.
+    private int       _lastPreviewXamlHash;
 
     private readonly ColumnDefinition    _codeColumn     = new() { Width  = new GridLength(1, GridUnitType.Star) };
     private readonly ColumnDefinition    _splitterColumn = new() { Width  = new GridLength(4) };
@@ -209,6 +211,10 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     private readonly AnimationPreviewService _animPreviewService = new();
 
+    // ── Code generation ───────────────────────────────────────────────────────
+
+    private readonly Services.CodeGen.CodeBehindSyncService _codeGenSync = new();
+
     // ── Phase 3 — Zoom toolbar ────────────────────────────────────────────────
 
     private readonly ZoomPanViewModel _zoomVm;
@@ -260,6 +266,110 @@ public sealed class XamlDesignerSplitHost : Grid,
 
     /// <inheritdoc/>
     public event EventHandler? DiagnosticsChanged;
+
+    // ── Code-behind rename cascade ────────────────────────────────────────────
+
+    /// <summary>
+    /// Renames <paramref name="oldName"/> to <paramref name="newName"/> in the companion .xaml.cs
+    /// file using <paramref name="renameService"/>. A no-op when no file path is known.
+    /// </summary>
+    public void TriggerCodeBehindRename(
+        string oldName,
+        string newName,
+        Services.CodeGen.XamlNameRenameService renameService)
+    {
+        if (_filePath is null) return;
+
+        var buffer = new Services.CodeGen.LinkedCodeBehindBuffer(_filePath);
+        if (!buffer.Exists) return;
+
+        // Read, rename, write — synchronous for simplicity (file is small).
+        var existing = System.IO.File.ReadAllText(buffer.FilePath, System.Text.Encoding.UTF8);
+        var updated  = renameService.Rename(existing, oldName, newName);
+        if (!string.Equals(existing, updated, StringComparison.Ordinal))
+            System.IO.File.WriteAllText(buffer.FilePath, updated, System.Text.Encoding.UTF8);
+    }
+
+    // ── ICodeBehindGeneratorService (SDK bridge) ──────────────────────────────
+
+    /// <summary>
+    /// SDK bridge for the code-behind generation service.
+    /// Exposed so the plugin can wire the CodeGenPanel and register it with IExtensionRegistry.
+    /// </summary>
+    public WpfHexEditor.SDK.ExtensionPoints.XamlDesigner.ICodeBehindGeneratorService CodeGenService
+        => _codeGenServiceBridge ??= new CodeGenServiceBridge(_codeGenSync);
+
+    private CodeGenServiceBridge? _codeGenServiceBridge;
+
+    /// <summary>
+    /// Adapter that implements ICodeBehindGeneratorService on top of the internal
+    /// CodeBehindSyncService, mapping XamlCodeModel → SDK-level CodeBehindSummary.
+    /// </summary>
+    private sealed class CodeGenServiceBridge :
+        WpfHexEditor.SDK.ExtensionPoints.XamlDesigner.ICodeBehindGeneratorService,
+        IDisposable
+    {
+        private readonly Services.CodeGen.CodeBehindSyncService _inner;
+
+        public CodeGenServiceBridge(Services.CodeGen.CodeBehindSyncService inner)
+        {
+            _inner = inner;
+            _inner.CodeBehindRegenerated += OnInnerRegen;
+        }
+
+        public void Dispose()
+        {
+            _inner.CodeBehindRegenerated -= OnInnerRegen;
+        }
+
+        public bool IsEnabled
+        {
+            get => _inner.IsEnabled;
+            set => _inner.IsEnabled = value;
+        }
+
+        public WpfHexEditor.SDK.ExtensionPoints.XamlDesigner.CodeBehindSummary? CurrentSummary
+            => ToSummary(_inner.CurrentModel);
+
+        public event EventHandler<WpfHexEditor.SDK.ExtensionPoints.XamlDesigner.CodeBehindRegenEventArgs>?
+            CodeBehindRegenerated;
+
+        public Task<string> GeneratePreviewAsync(string xamlSource, CancellationToken ct = default)
+            => _inner.GeneratePreviewAsync(xamlSource, ct);
+
+        public Task ForceRegenerateAsync(CancellationToken ct = default)
+            => _inner.ForceRegenerateAsync(ct);
+
+        private void OnInnerRegen(object? sender, Services.CodeGen.CodeBehindRegenEventArgs e)
+        {
+            CodeBehindRegenerated?.Invoke(this,
+                new WpfHexEditor.SDK.ExtensionPoints.XamlDesigner.CodeBehindRegenEventArgs
+                {
+                    Summary = ToSummary(e.Model) ??
+                              WpfHexEditor.SDK.ExtensionPoints.XamlDesigner.CodeBehindSummary.Empty,
+                    Success = e.Success,
+                    Error   = e.Error
+                });
+        }
+
+        private static WpfHexEditor.SDK.ExtensionPoints.XamlDesigner.CodeBehindSummary? ToSummary(
+            Models.XamlCodeModel? model)
+        {
+            if (model is null || !model.IsCodeGenEnabled)
+                return null;
+
+            return new WpfHexEditor.SDK.ExtensionPoints.XamlDesigner.CodeBehindSummary(
+                model.Namespace,
+                model.ClassName,
+                model.RootTypeName,
+                model.NamedElements.Select(e =>
+                    new WpfHexEditor.SDK.ExtensionPoints.XamlDesigner.CodeBehindNamedElement(
+                        e.Name, e.WpfTypeName, e.SourceLine)).ToList(),
+                model.EventSinks.Select(s =>
+                    new WpfHexEditor.SDK.ExtensionPoints.XamlDesigner.CodeBehindEventSink(
+                        s.ElementName, s.EventAttributeName, s.HandlerName, s.SourceLine)).ToList());
+        }
+    }
 
     // ── Auto-preview debounce ─────────────────────────────────────────────────
 
@@ -395,6 +505,7 @@ public sealed class XamlDesignerSplitHost : Grid,
 
         _breadcrumbBar = new TemplateBreadcrumbBar();
         _breadcrumbBar.ExitRequested += (_, _) => ExitTemplateEditScope();
+        _breadcrumbBar.ScopeClicked  += (_, depth) => ExitTemplateEditScopeTo(depth);
 
         var headerPanel = new StackPanel { Orientation = Orientation.Vertical };
         headerPanel.Children.Add(_breakpointBar);
@@ -773,6 +884,16 @@ public sealed class XamlDesignerSplitHost : Grid,
     /// <summary>Exposes the animation preview service for Phase 10 panel wiring.</summary>
     public AnimationPreviewService AnimationPreviewService => _animPreviewService;
 
+    /// <summary>
+    /// Sets the design-time DataContext on the rendered canvas root,
+    /// triggering a live re-render with the provided instance.
+    /// </summary>
+    public void SetDesignTimeData(object? instance)
+    {
+        if (_designCanvas.DesignRoot is FrameworkElement root)
+            root.DataContext = instance;
+    }
+
     /// <summary>Exposes the zoom view model for external toolbar binding.</summary>
     public ZoomPanViewModel ZoomViewModel => _zoomVm;
 
@@ -842,6 +963,8 @@ public sealed class XamlDesignerSplitHost : Grid,
 
         // Phase EL: keep the canvas in sync so DiagnosticEntry.FilePath is always current.
         _designCanvas.SourceFilePath = filePath;
+
+        _codeGenSync.Attach(filePath, new Services.CodeGen.LinkedCodeBehindBuffer(filePath));
 
         // Unsubscribe from any previous document before loading a new file.
         if (_codeHost.PrimaryEditor.Document is { } prevDoc)
@@ -948,6 +1071,9 @@ public sealed class XamlDesignerSplitHost : Grid,
     {
         _previewTimer.Stop();
         _animPreviewService.Stop();
+        _codeGenSync.Detach();
+        _codeGenServiceBridge?.Dispose();
+        _codeGenServiceBridge = null;
 
         // Phase EL: clear diagnostics from the ErrorPanel when the document is closed.
         _diagnostics.Clear();
@@ -1097,12 +1223,34 @@ public sealed class XamlDesignerSplitHost : Grid,
         var rawText = _codeHost.PrimaryEditor.Document?.SaveToString() ?? string.Empty;
         _document.SetXaml(rawText);
 
+        _codeGenSync.OnXamlSourceChanged(rawText);
+
         // Phase 9 — strip d:* namespace before rendering.
         string previewText = DesignTimeXamlPreprocessor.HasDesignNamespace(rawText)
             ? _preprocessor.Process(rawText, out _)
             : rawText;
 
-        _designCanvas.XamlSource = previewText;
+        // B3 Hot Reload: short-circuit when nothing changed.
+        int newHash = previewText.GetHashCode(StringComparison.Ordinal);
+        if (newHash == _lastPreviewXamlHash && !_fitOnFirstRender) return;
+
+        // B3 Hot Reload: attempt single-element attribute patch when only one element changed.
+        if (_lastPreviewXamlHash != 0
+            && _syncService.TryGetChangedUid(
+                _designCanvas.XamlSource ?? string.Empty,
+                previewText,
+                out int changedUid,
+                out var attrChanges))
+        {
+            _lastPreviewXamlHash = newHash;
+            _designCanvas.XamlSource = _syncService.PatchElement(
+                _designCanvas.XamlSource ?? previewText, changedUid, attrChanges);
+        }
+        else
+        {
+            _lastPreviewXamlHash = newHash;
+            _designCanvas.XamlSource = previewText;
+        }
 
         // Fit the canvas once after the first render of a new document.
         // DispatcherPriority.Background fires after all layout passes, so
@@ -1247,6 +1395,15 @@ public sealed class XamlDesignerSplitHost : Grid,
         _breadcrumbBar?.Refresh(_templateService.ScopeStack);
 
         if (!_templateService.IsInTemplateScope)
+            _breadcrumbBar?.Refresh(System.Array.Empty<TemplateScopeEntry>());
+    }
+
+    private void ExitTemplateEditScopeTo(int targetDepth)
+    {
+        _templateService.PopScopesTo(targetDepth);
+        if (_templateService.IsInTemplateScope)
+            _breadcrumbBar?.Refresh(_templateService.ScopeStack);
+        else
             _breadcrumbBar?.Refresh(System.Array.Empty<TemplateScopeEntry>());
     }
 

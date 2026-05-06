@@ -51,6 +51,9 @@ public partial class DesignDataPanel : UserControl
 
     public ObservableCollection<DesignDataNodeViewModel> PropertyNodes { get; } = new();
 
+    /// <summary>Fired when the design-time data instance changes. Arg is the new instance (may be null).</summary>
+    public event EventHandler<object?>? DesignDataChanged;
+
     // ── Constructor ───────────────────────────────────────────────────────────
 
     public DesignDataPanel()
@@ -183,6 +186,7 @@ public partial class DesignDataPanel : UserControl
         PopulateJsonTab(_currentInstance);
         PopulateXamlTab(_currentInstance);
         StatusTypeLabel.Text = _currentInstance.GetType().Name;
+        DesignDataChanged?.Invoke(this, _currentInstance);
     }
 
     // ── Private: refresh pipeline ─────────────────────────────────────────────
@@ -208,6 +212,7 @@ public partial class DesignDataPanel : UserControl
         PopulateJsonTab(instance);
         PopulateXamlTab(instance);
         StatusTypeLabel.Text = instance.GetType().Name;
+        DesignDataChanged?.Invoke(this, _currentInstance);
     }
 
     // ── Properties tab ────────────────────────────────────────────────────────

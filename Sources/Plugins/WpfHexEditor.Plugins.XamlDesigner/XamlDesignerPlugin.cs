@@ -80,6 +80,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     private const string BindingPanelUiId       = "WpfHexEditor.Plugins.XamlDesigner.Panel.BindingInspector";
     private const string LiveTreePanelUiId      = "WpfHexEditor.Plugins.XamlDesigner.Panel.LiveVisualTree";
     private const string StatusBarElementId     = "WpfHexEditor.Plugins.XamlDesigner.StatusBar.Element";
+    private const string VsmPanelUiId           = "WpfHexEditor.Plugins.XamlDesigner.Panel.VisualState";
 
     // ── State ─────────────────────────────────────────────────────────────────
 
@@ -93,6 +94,9 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     private DesignHistoryPanel?               _historyPanel;
     private BindingInspectorPanel?            _bindingPanel;
     private LiveVisualTreePanel?              _liveTreePanel;
+    private Panels.CodeGenPanel?              _codeGenPanel;
+    private Panels.VisualStatePanel?          _vsmPanel;
+    private VisualStatePanelViewModel?        _vsmVm;
     private bool                              _isPickModeActive;
     private IIDEHostContext?           _context;
     private XamlDesignerOptionsPage?   _optionsPage;
@@ -125,6 +129,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _historyPanel    = new DesignHistoryPanel();
         _bindingPanel    = new BindingInspectorPanel();
         _liveTreePanel   = new LiveVisualTreePanel();
+        _codeGenPanel    = new Panels.CodeGenPanel();
 
         // Register the XAML Outline panel (left side, auto-hide).
         context.UIRegistry.RegisterPanel(
@@ -252,6 +257,37 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 PreferredWidth  = 240
             });
 
+        // Register the Code Generation panel (right side, auto-hide).
+        context.UIRegistry.RegisterPanel(
+            "WpfHexEditor.Plugins.XamlDesigner.Panel.CodeGen",
+            _codeGenPanel,
+            Id,
+            new PanelDescriptor
+            {
+                Title           = "Code Generation",
+                DefaultDockSide = "Right",
+                DefaultAutoHide = true,
+                CanClose        = true,
+                PreferredWidth  = 300
+            });
+
+        // Register the VisualStateManager panel (left side, auto-hide).
+        _vsmVm    = new VisualStatePanelViewModel();
+        _vsmPanel = new Panels.VisualStatePanel();
+        _vsmPanel.SetViewModel(_vsmVm);
+        context.UIRegistry.RegisterPanel(
+            VsmPanelUiId,
+            _vsmPanel,
+            Id,
+            new PanelDescriptor
+            {
+                Title           = "Visual States",
+                DefaultDockSide = "Left",
+                DefaultAutoHide = true,
+                CanClose        = true,
+                PreferredWidth  = 260
+            });
+
         // Register status bar item (left, order=15).
         _sbElement = new StatusBarItemDescriptor
         {
@@ -319,6 +355,9 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _historyPanel    = null;
         _bindingPanel    = null;
         _liveTreePanel   = null;
+        _codeGenPanel    = null;
+        _vsmPanel        = null;
+        _vsmVm           = null;
         _context         = null;
         _optionsPage     = null;
         _sbElement       = null;
@@ -351,6 +390,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 _historyPanel.ViewModel.Manager = null;
             _bindingPanel?.SetTarget(null);
             _liveTreePanel?.ViewModel.Refresh(null);
+            _codeGenPanel?.Detach();
             UpdateStatusBar(null);
             return;
         }
@@ -396,9 +436,25 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _liveTreePanel?.ViewModel.Refresh(host.Canvas?.DesignRoot);
 
         // Seed Design Data and Animation panels from current XAML source.
-        _designDataPanel?.SetXamlSource(host.Document.RawXaml);
+        if (_designDataPanel is not null)
+        {
+            _designDataPanel.DesignDataChanged -= OnDesignDataChanged;
+            _designDataPanel.DesignDataChanged += OnDesignDataChanged;
+            _designDataPanel.SetXamlSource(host.Document.RawXaml);
+        }
         if (_animationVm is not null)
+        {
+            _animationVm.AttachPreviewService(host.AnimationPreviewService);
             _animationVm.XamlSource = host.Document.RawXaml;
+        }
+
+        // Seed VSM panel and wire preview event.
+        if (_vsmVm is not null)
+        {
+            _vsmVm.StatePreviewRequested -= OnVsmStatePreviewRequested;
+            _vsmVm.StatePreviewRequested += OnVsmStatePreviewRequested;
+            _vsmVm.SetXamlSource(host.Document.RawXaml);
+        }
 
         // C3 — Outline → Canvas: sync XAML outline selection to the canvas.
         if (_outlinePanel is not null)
@@ -411,6 +467,8 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             _outlinePanel.MoveRequested       += OnOutlineMoveRequested;
             _outlinePanel.WrapRequested       -= OnOutlineWrapRequested;
             _outlinePanel.WrapRequested       += OnOutlineWrapRequested;
+            _outlinePanel.RenameCommitted     -= OnOutlineRenameCommitted;
+            _outlinePanel.RenameCommitted     += OnOutlineRenameCommitted;
         }
 
         // Wire new panel events.
@@ -440,6 +498,9 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // Phase EL: inject ErrorPanelService so OnRenderError can push diagnostics to the ErrorList.
         host.ErrorPanelService = _context?.ErrorPanel;
 
+        // Phase CodeGen: wire the CodeGen panel to the active host's generation service.
+        _codeGenPanel?.Attach(host.CodeGenService);
+
         _outlinePanel?.ViewModel?.RebuildTree(host.Document.ParsedRoot);
         UpdateSidePanels(host);
     }
@@ -465,7 +526,19 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             _outlinePanel.DeleteRequested     -= OnOutlineDeleteRequested;
             _outlinePanel.MoveRequested       -= OnOutlineMoveRequested;
             _outlinePanel.WrapRequested       -= OnOutlineWrapRequested;
+            _outlinePanel.RenameCommitted     -= OnOutlineRenameCommitted;
         }
+
+        // Detach animation preview service from outgoing host.
+        _animationVm?.AttachPreviewService(null);
+
+        // Detach VSM panel preview event.
+        if (_vsmVm is not null)
+            _vsmVm.StatePreviewRequested -= OnVsmStatePreviewRequested;
+
+        // Detach design data → canvas sync.
+        if (_designDataPanel is not null)
+            _designDataPanel.DesignDataChanged -= OnDesignDataChanged;
 
         // Detach Live Visual Tree post-render event, reverse-sync, refresh, hover, and navigate events.
         if (_wiredHost.Canvas is { } canvas)
@@ -478,6 +551,9 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             _liveTreePanel.NavigateToXamlRequested -= OnLiveTreeNavigateToXaml;
             _liveTreePanel.PickModeChanged         -= OnLiveTreePickModeChanged;
         }
+
+        // Detach CodeGen panel.
+        _codeGenPanel?.Detach();
 
         // Detach new panel cross-wiring.
         if (_bindingPanel is not null)
@@ -497,6 +573,12 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
         _wiredHost = null;
     }
+
+    private void OnDesignDataChanged(object? sender, object? instance)
+        => _wiredHost?.SetDesignTimeData(instance);
+
+    private void OnVsmStatePreviewRequested(object? sender, string storyboardXaml)
+        => _wiredHost?.AnimationPreviewService.Play(storyboardXaml);
 
     private void OnHistoryPanelJumpRequested(object? sender, JumpToEntryEventArgs e)
         => _wiredHost?.JumpToHistoryEntry(e.UndoCount, e.RedoCount);
@@ -615,6 +697,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _designDataPanel?.SetXamlSource(_wiredHost.Document.RawXaml);
         if (_animationVm is not null)
             _animationVm.XamlSource = _wiredHost.Document.RawXaml;
+        _vsmVm?.SetXamlSource(_wiredHost.Document.RawXaml);
 
         // Trigger debounced resource rescan when XAML changes.
         if (XamlDesignerOptions.Instance.ResourceBrowserAutoRescan)
@@ -672,14 +755,13 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // Live Visual Tree — highlight the node that corresponds to the canvas-selected element.
         _liveTreePanel?.ViewModel.SelectNodeByElement(selectedUi);
 
-        // C3 — Canvas → Outline sync: move the outline selection to match the canvas.
+        // Canvas → Outline sync: select the outline node that matches the canvas selection.
         if (_outlinePanel is not null && selectedUi is not null)
         {
-            var path = dep is System.Windows.FrameworkElement fe && !string.IsNullOrEmpty(fe.Name)
-                ? fe.Name
-                : null;
-            if (!string.IsNullOrEmpty(path))
-                _outlinePanel.ViewModel.SelectNodeByPath(path);
+            var xName = dep is System.Windows.FrameworkElement fe && !string.IsNullOrEmpty(fe.Name)
+                ? fe.Name : null;
+            if (!string.IsNullOrEmpty(xName))
+                _outlinePanel.ViewModel.SelectNodeByName(xName);
         }
 
         // Propagate selected element name to the Animation Timeline (filters tracks by TargetName).
@@ -872,6 +954,38 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     private void OnToolboxDropCompleted(object? sender, WpfHexEditor.Editor.XamlDesigner.Models.ToolboxItem item)
     {
         // Recent usage is tracked by the ViewModel; persist when options are saved.
+    }
+
+    /// <summary>
+    /// Outline panel: inline rename committed → patch x:Name in XAML + cascade rename in code-behind.
+    /// </summary>
+    private void OnOutlineRenameCommitted(
+        object? sender,
+        (WpfHexEditor.Plugins.XamlDesigner.ViewModels.XamlOutlineNode Node, string NewName) e)
+    {
+        if (_wiredHost?.Document is null) return;
+
+        var oldName = e.Node.XName_;
+        var newName = e.NewName;
+        if (string.IsNullOrWhiteSpace(oldName) || string.IsNullOrWhiteSpace(newName) || oldName == newName)
+            return;
+
+        // 1. Patch x:Name in the XAML source (simple replace on x:Name="oldName").
+        var rawXaml   = _wiredHost.Document.RawXaml;
+        var patchedXaml = rawXaml
+            .Replace($"x:Name=\"{oldName}\"", $"x:Name=\"{newName}\"",
+                     System.StringComparison.Ordinal)
+            .Replace($"Name=\"{oldName}\"",   $"Name=\"{newName}\"",
+                     System.StringComparison.Ordinal);
+
+        if (string.Equals(rawXaml, patchedXaml, System.StringComparison.Ordinal))
+            return;
+
+        _wiredHost.Document.SetXaml(patchedXaml);
+
+        // 2. Cascade rename in the companion .xaml.cs (field + all usages).
+        var renameService = new WpfHexEditor.Editor.XamlDesigner.Services.CodeGen.XamlNameRenameService();
+        _wiredHost.TriggerCodeBehindRename(oldName, newName, renameService);
     }
 
     // ── Menu items ────────────────────────────────────────────────────────────

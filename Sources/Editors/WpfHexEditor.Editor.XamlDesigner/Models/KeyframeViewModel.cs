@@ -17,6 +17,7 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.Editor.XamlDesigner.Models;
@@ -30,6 +31,8 @@ public sealed class KeyframeViewModel : ViewModelBase
     private string   _value = string.Empty;
     private string   _easingFunction = "Linear";
     private bool     _isSelected;
+    private Point    _easingP1 = new(0.25, 0.1);
+    private Point    _easingP2 = new(0.25, 1.0);
 
     public TimeSpan Time
     {
@@ -59,6 +62,20 @@ public sealed class KeyframeViewModel : ViewModelBase
     {
         get => _isSelected;
         set { _isSelected = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Bezier control point 1 in normalized 0..1 space (KeySpline format).</summary>
+    public Point EasingP1
+    {
+        get => _easingP1;
+        set { _easingP1 = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Bezier control point 2 in normalized 0..1 space (KeySpline format).</summary>
+    public Point EasingP2
+    {
+        get => _easingP2;
+        set { _easingP2 = value; OnPropertyChanged(); }
     }
 
     public static IReadOnlyList<string> KnownEasingFunctions { get; } =

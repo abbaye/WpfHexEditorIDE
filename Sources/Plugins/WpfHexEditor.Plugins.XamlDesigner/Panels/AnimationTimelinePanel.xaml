@@ -446,6 +446,31 @@
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
             </ScrollViewer>
+
+            <!-- Easing curve editor popup — opens when a keyframe is selected -->
+            <Popup x:Name="EasingPopup"
+                   Grid.Column="2"
+                   IsOpen="{Binding HasSelectedKeyframe}"
+                   Placement="Bottom"
+                   PlacementTarget="{Binding ElementName=LaneScroller}"
+                   StaysOpen="False"
+                   AllowsTransparency="True"
+                   PopupAnimation="Fade">
+                <Border Background="{DynamicResource DockBackgroundBrush}"
+                        BorderBrush="{DynamicResource DockBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="6">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Easing Curve"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   Margin="0,0,0,4"/>
+                        <ctrl:EasingCurveEditor x:Name="EasingEditor"
+                                                Width="200" Height="200"/>
+                    </StackPanel>
+                </Border>
+            </Popup>
         </Grid>
     </Grid>
 </UserControl>

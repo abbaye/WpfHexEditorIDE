@@ -379,6 +379,86 @@ public sealed class DesignToXamlSyncService
         }
     }
 
+    /// <summary>
+    /// Compares two XAML strings and returns <see langword="true"/> when exactly one
+    /// element has changed attributes (structural changes are not detected).
+    /// On success, <paramref name="changedUid"/> is the UID of that element and
+    /// <paramref name="changes"/> is the new attribute map for the changed element.
+    /// </summary>
+    public bool TryGetChangedUid(
+        string oldXaml,
+        string newXaml,
+        out int changedUid,
+        out IReadOnlyDictionary<string, string?> changes)
+    {
+        changedUid = -1;
+        changes    = new Dictionary<string, string?>();
+
+        if (string.IsNullOrWhiteSpace(oldXaml) || string.IsNullOrWhiteSpace(newXaml))
+            return false;
+
+        try
+        {
+            var oldDoc = XDocument.Parse(oldXaml, LoadOptions.None);
+            var newDoc = XDocument.Parse(newXaml, LoadOptions.None);
+
+            var oldElements = FlattenElements(oldDoc.Root).ToList();
+            var newElements = FlattenElements(newDoc.Root).ToList();
+
+            if (oldElements.Count != newElements.Count) return false;
+
+            int  diffCount = 0;
+            int  diffUid   = -1;
+            Dictionary<string, string?> diffChanges = new();
+
+            for (int i = 0; i < oldElements.Count; i++)
+            {
+                var diff = DiffAttributes(oldElements[i], newElements[i]);
+                if (diff.Count == 0) continue;
+                diffCount++;
+                if (diffCount > 1) return false;
+                diffUid     = i;
+                diffChanges = diff;
+            }
+
+            if (diffCount != 1) return false;
+
+            changedUid = diffUid;
+            changes    = diffChanges;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static IEnumerable<XElement> FlattenElements(XElement? root)
+    {
+        if (root is null) yield break;
+        if (!root.Name.LocalName.Contains('.')) yield return root;
+        foreach (var child in root.Elements())
+            foreach (var el in FlattenElements(child))
+                yield return el;
+    }
+
+    private static Dictionary<string, string?> DiffAttributes(XElement oldEl, XElement newEl)
+    {
+        var result = new Dictionary<string, string?>();
+        var oldAttrs = oldEl.Attributes().ToDictionary(a => a.Name.ToString(), a => a.Value);
+        var newAttrs = newEl.Attributes().ToDictionary(a => a.Name.ToString(), a => a.Value);
+
+        foreach (var (key, newVal) in newAttrs)
+        {
+            if (!oldAttrs.TryGetValue(key, out var oldVal) || oldVal != newVal)
+                result[key] = newVal;
+        }
+        foreach (var key in oldAttrs.Keys.Where(k => !newAttrs.ContainsKey(k)))
+            result[key] = null;
+
+        return result;
+    }
+
     // ── Private helpers ───────────────────────────────────────────────────────
 
     /// <summary>

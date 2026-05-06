@@ -34,6 +34,12 @@ public sealed class TemplateBreadcrumbBar : Border
     /// <summary>Fired when the user clicks the "× Exit" button.</summary>
     public event EventHandler? ExitRequested;
 
+    /// <summary>
+    /// Fired when the user clicks a scope label in the breadcrumb trail.
+    /// Arg is the depth to pop to (0 = root / exit all scopes).
+    /// </summary>
+    public event EventHandler<int>? ScopeClicked;
+
     public TemplateBreadcrumbBar()
     {
         var bannerBg = Application.Current?.TryFindResource("XD_TemplateScopeBannerBrush") as Brush
@@ -91,27 +97,37 @@ public sealed class TemplateBreadcrumbBar : Border
 
         for (int i = 0; i < scopeStack.Count; i++)
         {
-            var entry = scopeStack[i];
+            var entry     = scopeStack[i];
+            int targetDepth = i; // clicking scope[i] keeps scopes 0..i (depth = i+1)
 
             if (i > 0)
                 _breadcrumbPanel.Children.Add(MakeSeparator());
 
-            _breadcrumbPanel.Children.Add(MakeLabel(entry.ElementName, isBold: false));
+            var elementLabel = MakeClickableLabel(entry.ElementName, isBold: false);
+            elementLabel.MouseLeftButtonDown += (_, _) => ScopeClicked?.Invoke(this, targetDepth);
+            _breadcrumbPanel.Children.Add(elementLabel);
+
             _breadcrumbPanel.Children.Add(MakeSeparator());
-            _breadcrumbPanel.Children.Add(MakeLabel(entry.TemplateType, isBold: i == scopeStack.Count - 1));
+
+            bool isLast       = i == scopeStack.Count - 1;
+            var templateLabel = MakeClickableLabel(entry.TemplateType, isBold: isLast);
+            if (!isLast)
+                templateLabel.MouseLeftButtonDown += (_, _) => ScopeClicked?.Invoke(this, targetDepth + 1);
+            _breadcrumbPanel.Children.Add(templateLabel);
         }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    private static TextBlock MakeLabel(string text, bool isBold) => new()
+    private static TextBlock MakeClickableLabel(string text, bool isBold) => new()
     {
-        Text       = text,
-        Foreground = Brushes.White,
-        FontSize   = 10,
-        FontWeight = isBold ? FontWeights.Bold : FontWeights.Normal,
+        Text              = text,
+        Foreground        = Brushes.White,
+        FontSize          = 10,
+        FontWeight        = isBold ? FontWeights.Bold : FontWeights.Normal,
         VerticalAlignment = VerticalAlignment.Center,
-        Margin     = new Thickness(2, 0, 2, 0),
+        Margin            = new Thickness(2, 0, 2, 0),
+        Cursor            = Cursors.Hand,
     };
 
     private static TextBlock MakeSeparator() => new()

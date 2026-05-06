@@ -116,6 +116,16 @@ public sealed class TemplateEditingService
     /// <summary>Clears the entire scope stack (Exit template editing).</summary>
     public void ClearScope() => _scopeStack.Clear();
 
+    /// <summary>
+    /// Pops scopes until the stack depth equals <paramref name="targetDepth"/> (0 = clear all).
+    /// Used when the user clicks an ancestor in the breadcrumb bar.
+    /// </summary>
+    public void PopScopesTo(int targetDepth)
+    {
+        while (_scopeStack.Count > targetDepth)
+            _scopeStack.Pop();
+    }
+
     // ── Private helpers ───────────────────────────────────────────────────────
 
     private static XElement? FindElementByUid(XElement? root, int uid)

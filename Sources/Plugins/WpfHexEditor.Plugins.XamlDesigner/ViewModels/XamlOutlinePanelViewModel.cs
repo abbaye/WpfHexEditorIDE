@@ -171,6 +171,23 @@ public sealed class XamlOutlinePanelViewModel : ViewModelBase
             SelectedNode = found;
     }
 
+    /// <summary>
+    /// Navigates the tree to select the node whose x:Name matches <paramref name="xName"/>.
+    /// Used for canvas→outline bidirectional sync.
+    /// </summary>
+    public void SelectNodeByName(string? xName)
+    {
+        if (string.IsNullOrEmpty(xName) || RootNodes.Count == 0) return;
+
+        var found = FindByXName(RootNodes[0], xName);
+        if (found is not null && !ReferenceEquals(found, _selectedNode))
+        {
+            // Expand all ancestors so the node is visible.
+            ExpandToNode(found);
+            SelectedNode = found;
+        }
+    }
+
     // ── INPC ──────────────────────────────────────────────────────────────────
 
 
@@ -236,7 +253,7 @@ public sealed class XamlOutlinePanelViewModel : ViewModelBase
         }
     }
 
-    // ── Private â€” find ────────────────────────────────────────────────────────
+    // ── Private — find ─────────────────────────────────────────────────────────
 
     private static XamlOutlineNode? FindByPath(XamlOutlineNode node, string path)
     {
@@ -249,5 +266,28 @@ public sealed class XamlOutlinePanelViewModel : ViewModelBase
         }
 
         return null;
+    }
+
+    private static XamlOutlineNode? FindByXName(XamlOutlineNode node, string xName)
+    {
+        if (string.Equals(node.XName_, xName, StringComparison.Ordinal)) return node;
+
+        foreach (var child in node.Children)
+        {
+            var found = FindByXName(child, xName);
+            if (found is not null) return found;
+        }
+
+        return null;
+    }
+
+    private static void ExpandToNode(XamlOutlineNode node)
+    {
+        var current = node.Parent;
+        while (current is not null)
+        {
+            current.IsExpanded = true;
+            current = current.Parent;
+        }
     }
 }

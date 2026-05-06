@@ -21,9 +21,11 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using WpfHexEditor.Editor.XamlDesigner.Controls;
 using WpfHexEditor.Editor.XamlDesigner.Models;
 using WpfHexEditor.Plugins.XamlDesigner.ViewModels;
 
@@ -65,15 +67,25 @@ public partial class AnimationTimelinePanel : UserControl
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         if (_vm is null) return;
-        _vm.PropertyChanged -= OnVmPropertyChanged;
-        _vm.PropertyChanged += OnVmPropertyChanged;
+        _vm.PropertyChanged  -= OnVmPropertyChanged;
+        _vm.PropertyChanged  += OnVmPropertyChanged;
+        _vm.ExportCompleted  -= OnExportCompleted;
+        _vm.ExportCompleted  += OnExportCompleted;
+
+        EasingEditor.CurveChanged -= OnEasingCurveChanged;
+        EasingEditor.CurveChanged += OnEasingCurveChanged;
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         // IMPORTANT: do NOT null _vm — panel may be re-loaded after dock/float.
         if (_vm is not null)
+        {
             _vm.PropertyChanged -= OnVmPropertyChanged;
+            _vm.ExportCompleted -= OnExportCompleted;
+        }
+
+        EasingEditor.CurveChanged -= OnEasingCurveChanged;
     }
 
     // ── VM property change ────────────────────────────────────────────────────
@@ -82,6 +94,45 @@ public partial class AnimationTimelinePanel : UserControl
     {
         if (e.PropertyName is nameof(AnimationTimelinePanelViewModel.Tracks))
             RefreshAllLanes();
+        else if (e.PropertyName is nameof(AnimationTimelinePanelViewModel.SelectedKeyframe))
+            SyncEasingEditor();
+    }
+
+    private void SyncEasingEditor()
+    {
+        var kf = _vm?.SelectedKeyframe;
+        if (kf is not null)
+            EasingEditor.SetCurve(kf.EasingP1, kf.EasingP2);
+    }
+
+    private void OnEasingCurveChanged(object? sender, (System.Windows.Point P1, System.Windows.Point P2) e)
+        => _vm?.UpdateKeyframeEasing(e.P1, e.P2);
+
+    private static void OnExportCompleted(object? sender, string xaml)
+    {
+        var win = new Window
+        {
+            Title           = "Exported Storyboard XAML",
+            Width           = 600,
+            Height          = 420,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen,
+            Content         = new ScrollViewer
+            {
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                Content = new TextBox
+                {
+                    Text              = xaml,
+                    IsReadOnly        = true,
+                    FontFamily        = new FontFamily("Consolas"),
+                    FontSize          = 12,
+                    TextWrapping      = TextWrapping.NoWrap,
+                    VerticalScrollBarVisibility   = ScrollBarVisibility.Auto,
+                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                    AcceptsReturn     = true
+                }
+            }
+        };
+        win.Show();
     }
 
     // ── Toolbar handlers ──────────────────────────────────────────────────────
@@ -122,6 +173,7 @@ public partial class AnimationTimelinePanel : UserControl
         var kf  = FindNearestKeyframe(canvas, track, pos.X);
         if (kf is null) return;
 
+        _vm.SelectKeyframe(kf);
         _dragStates[canvas] = new LaneDragState(kf);
         canvas.CaptureMouse();
         e.Handled = true;
