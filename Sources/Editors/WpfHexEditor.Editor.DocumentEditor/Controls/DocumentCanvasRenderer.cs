@@ -657,11 +657,14 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public void SetZoom(double zoom)
     {
         _zoom = Math.Clamp(zoom, 0.5, 2.0);
-        // Defer the geometry-changed notification until after WPF has
-        // re-laid out the renderer at the new zoom — otherwise rulers
-        // read stale _pageWidth / _pageLeft values.
-        Dispatcher.BeginInvoke(() => PageGeometryChanged?.Invoke(this, EventArgs.Empty),
-            System.Windows.Threading.DispatcherPriority.Render);
+        // Defer geometry notification until after WPF re-layout at new zoom.
+        Dispatcher.BeginInvoke(() =>
+        {
+            PageGeometryChanged?.Invoke(this, EventArgs.Empty);
+            // Spell squiggles use canvas-space coordinates — invalidate so they
+            // are recomputed at the new zoom's glyph positions.
+            SpellCheckService?.InvalidateAll();
+        }, System.Windows.Threading.DispatcherPriority.Render);
     }
 
     /// <summary>
@@ -2026,8 +2029,6 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             defaultSize = bfs is double bfd ? bfd : bfs is int bfi ? bfi : defaultSize;
         bool defaultBold = isHeading
             || (block.Attributes.TryGetValue("bold", out var bb) && bb is true);
-        bool defaultItalic = block.Attributes.TryGetValue("italic", out var bi) && bi is true;
-        bool defaultUnder  = block.Attributes.TryGetValue("underline", out var bu) && bu is true;
         string defaultFamily = blockStyle == "code" ? "Courier New" : BodyFontFamily;
         if (block.Attributes.TryGetValue("fontFamily", out var bffv) && bffv is string bff && bff.Length > 0)
             defaultFamily = bff;
@@ -2047,9 +2048,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             var text = run.Text;
             if (string.IsNullOrEmpty(text)) continue;
 
-            bool   bold   = defaultBold   || (run.Attributes.TryGetValue("bold",      out var b)  && b  is true);
-            bool   italic = defaultItalic || (run.Attributes.TryGetValue("italic",    out var i)  && i  is true);
-            bool   under  = defaultUnder  || (run.Attributes.TryGetValue("underline", out var u)  && u  is true);
+            bool   bold   = defaultBold || (run.Attributes.TryGetValue("bold",      out var b) && b is true);
+            bool   italic = run.Attributes.TryGetValue("italic",    out var i) && i is true;
+            bool   under  = run.Attributes.TryGetValue("underline", out var u) && u is true;
             bool   strike = run.Attributes.TryGetValue("strikethrough", out var st) && st is true;
 
             double size = defaultSize;

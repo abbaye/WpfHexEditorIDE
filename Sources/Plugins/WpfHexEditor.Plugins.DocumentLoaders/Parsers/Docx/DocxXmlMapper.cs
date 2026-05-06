@@ -283,9 +283,10 @@ internal sealed class DocxXmlMapper
             if (lineRule is not null) para.Attributes["lineSpacingRule"] = lineRule;
         }
 
-        // Paragraph-level run props (w:pPr/w:rPr) — apply as paragraph defaults
+        // Paragraph-level run props (w:pPr/w:rPr): only inherit font/color defaults,
+        // NOT bold/italic/underline — those are paragraph-mark props, not run defaults.
         var pRpr = pPr.Element(W + "rPr");
-        if (pRpr is not null) ExtractRunProps(pRpr, para);
+        if (pRpr is not null) ExtractRunPropsAsParaDefaults(pRpr, para);
 
         // Tab stops
         var tabs = pPr.Element(W + "tabs");
@@ -342,6 +343,30 @@ internal sealed class DocxXmlMapper
         // Vertical alignment (superscript / subscript)
         var vertAlign = rPr.Element(W + "vertAlign")?.Attribute(W + "val")?.Value;
         if (vertAlign is not null) run.Attributes["vertAlign"] = vertAlign;
+    }
+
+    /// <summary>
+    /// Like <see cref="ExtractRunProps"/> but only propagates font/color/size — not
+    /// bold/italic/underline/strikethrough, which in pPr/w:rPr describe the paragraph
+    /// mark style, not a default for child runs.
+    /// </summary>
+    private static void ExtractRunPropsAsParaDefaults(XElement rPr, DocumentBlock para)
+    {
+        var szVal = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value
+                 ?? rPr.Element(W + "szCs")?.Attribute(W + "val")?.Value;
+        if (szVal is not null && int.TryParse(szVal, out int hpt))
+            para.Attributes["fontSize"] = hpt / 2.0;
+
+        var fonts = rPr.Element(W + "rFonts");
+        if (fonts is not null)
+        {
+            var ff = fonts.Attribute(W + "ascii")?.Value ?? fonts.Attribute(W + "hAnsi")?.Value;
+            if (ff is not null) para.Attributes["fontFamily"] = ff;
+        }
+
+        var color = rPr.Element(W + "color")?.Attribute(W + "val")?.Value;
+        if (color is not null && color != "auto")
+            para.Attributes["color"] = color.StartsWith('#') ? color : $"#{color}";
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

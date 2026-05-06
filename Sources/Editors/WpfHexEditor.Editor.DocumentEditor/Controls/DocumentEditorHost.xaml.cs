@@ -1225,22 +1225,21 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         _spellChecker  = new HunspellSpellChecker(_spellSettings, _dictManager);
 
         // Register the SpellChecker options page once per process lifetime.
-        if (!_spellCheckerPageRegistered)
-        {
-            _spellCheckerPageRegistered = true;
-            WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-                WpfHexEditor.Core.Options.OptionsPageStrings.CategoryDocumentEditor,
-                WpfHexEditor.Core.Options.OptionsPageStrings.PageSpellChecker,
-                () =>
-                {
-                    var page = new WpfHexEditor.Editor.DocumentEditor.Options.SpellCheckerOptionsPage();
-                    var (s, dm, ch) = GetSpellCheckerComponents();
-                    page.Initialize(s, dm, ch);
-                    return page;
-                },
-                "📄",
-                ["spell", "check", "dictionary", "language", "hunspell", "correction", "squiggle"]);
-        }
+        // Always re-register (RegisterDynamic is idempotent) so the factory captures
+        // the current instance's components even when a second DocumentEditorHost is created.
+        WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
+            WpfHexEditor.Core.Options.OptionsPageStrings.CategoryDocumentEditor,
+            WpfHexEditor.Core.Options.OptionsPageStrings.PageSpellChecker,
+            () =>
+            {
+                var page = new WpfHexEditor.Editor.DocumentEditor.Options.SpellCheckerOptionsPage();
+                var (s, dm, ch) = GetSpellCheckerComponents();
+                page.Initialize(s, dm, ch);
+                return page;
+            },
+            "📄",
+            ["spell", "check", "dictionary", "language", "hunspell", "correction", "squiggle"]);
+        _spellCheckerPageRegistered = true;
 
         if (!_spellSettings.IsEnabled) return;
 
