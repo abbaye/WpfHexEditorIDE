@@ -110,7 +110,16 @@ public sealed class HunspellSpellChecker : ISpellChecker
 
     public IReadOnlyList<string> Suggest(string word, int maxSuggestions = 5)
     {
-        // Suggest from primary WordList only (most relevant)
+        if (MultiLanguageMode && _multiLists.Count > 0)
+        {
+            // Union suggestions from all loaded dictionaries, preserving order, dedup
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var all  = new List<string>();
+            foreach (var wl in _multiLists.Values)
+                foreach (var s in wl.Suggest(word))
+                    if (seen.Add(s)) { all.Add(s); if (all.Count >= maxSuggestions * 2) break; }
+            return [.. all.Take(maxSuggestions)];
+        }
         if (_wordList is null) return [];
         return [.. _wordList.Suggest(word).Take(maxSuggestions)];
     }

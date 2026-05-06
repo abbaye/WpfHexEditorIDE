@@ -93,9 +93,19 @@ internal sealed class DocxXmlMapper
             isList    = numId > 0;
         }
 
+        // Detect OOXML heading style before block creation (Kind is init-only)
+        int headingLevel = 0;
+        var rawStyle = pPr?.Element(W + "pStyle")?.Attribute(W + "val")?.Value;
+        if (!isList && rawStyle is not null &&
+            rawStyle.StartsWith("Heading", StringComparison.OrdinalIgnoreCase) &&
+            int.TryParse(rawStyle["Heading".Length..], out int hl))
+        {
+            headingLevel = hl;
+        }
+
         var para = new DocumentBlock
         {
-            Kind      = isList ? "list-item" : "paragraph",
+            Kind      = isList ? "list-item" : headingLevel > 0 ? "heading" : "paragraph",
             RawOffset = off,
             RawLength = len,
             Text      = string.Empty
@@ -107,6 +117,8 @@ internal sealed class DocxXmlMapper
             para.Attributes["listStyle"] = "bullet";
             para.Attributes["numId"]     = numId;
         }
+        if (headingLevel > 0)
+            para.Attributes["level"] = headingLevel;
 
         if (pPr is not null) ExtractParagraphProps(pPr, para);
 
@@ -252,7 +264,13 @@ internal sealed class DocxXmlMapper
     private static void ExtractParagraphProps(XElement pPr, DocumentBlock para)
     {
         var style = pPr.Element(W + "pStyle")?.Attribute(W + "val")?.Value;
-        if (style is not null) para.Attributes["style"] = style;
+        if (style is not null)
+        {
+            // Heading normalization is handled in MapParagraph (Kind is init-only).
+            // Store raw style for non-heading paragraphs.
+            if (!style.StartsWith("Heading", StringComparison.OrdinalIgnoreCase))
+                para.Attributes["style"] = style;
+        }
 
         var jc = pPr.Element(W + "jc")?.Attribute(W + "val")?.Value;
         if (jc is not null) para.Attributes["alignment"] = jc;
@@ -301,6 +319,24 @@ internal sealed class DocxXmlMapper
                 .Select(t => $"{t.Val}:{DocumentPageSettings.TwipsToPx(int.Parse(t.Pos!)):F1}")
                 .ToList();
             if (tabList.Count > 0) para.Attributes["tabStops"] = string.Join(";", tabList);
+        }
+
+        // Paragraph border — bottom rule line (e.g. section headings in résumés)
+        var pBdr   = pPr.Element(W + "pBdr");
+        var bottom = pBdr?.Element(W + "bottom");
+        if (bottom is not null)
+        {
+            var bVal = bottom.Attribute(W + "val")?.Value ?? "single";
+            if (bVal != "none" && bVal != "nil")
+            {
+                var bColor = bottom.Attribute(W + "color")?.Value;
+                para.Attributes["borderBottom"] = bColor is not null && bColor != "auto"
+                    ? "#" + bColor
+                    : "auto";
+                var bSzStr = bottom.Attribute(W + "sz")?.Value;
+                if (bSzStr is not null && int.TryParse(bSzStr, out int bSz))
+                    para.Attributes["borderBottomPt"] = bSz / 8.0;  // eighths of a point
+            }
         }
     }
 

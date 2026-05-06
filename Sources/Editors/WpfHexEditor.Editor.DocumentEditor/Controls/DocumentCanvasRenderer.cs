@@ -404,8 +404,11 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 cm.Items.RemoveAt(i);
 
         // Inject spell suggestions at top if right-click lands on a misspelled word
-        var mousePos = Mouse.GetPosition(this);
-        var spellErr = SpellCheckService?.HitTest(mousePos);
+        // SpellCheckError coordinates are in content space; convert screen mouse pos to match.
+        // Content space = screen - (PageCanvasPad - _offset.Y) for Y, screen + _offset.X for X.
+        var rawMouse  = Mouse.GetPosition(this);
+        var mousePos  = new Point(rawMouse.X + _offset.X, rawMouse.Y - PageCanvasPad + _offset.Y);
+        var spellErr  = SpellCheckService?.HitTest(mousePos);
         if (spellErr is not null && SpellCheckService is not null)
         {
             int insertAt = 0;
@@ -1269,6 +1272,26 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 lineY += ft.Height + 2;
             }
         }
+
+        // Paragraph bottom border (w:pBdr/w:bottom) — drawn below the block
+        if (rb.Block.Attributes.TryGetValue("borderBottom", out var bbObj) && bbObj is string bbColor)
+        {
+            EnsureBrushCache();
+            double pt    = rb.Block.Attributes.TryGetValue("borderBottomPt", out var ptObj) && ptObj is double d ? d : 0.75;
+            double ruleY = y + rb.Height + 1.5;
+            Brush  borderBrush;
+            if (bbColor == "auto" || string.IsNullOrEmpty(bbColor))
+                borderBrush = _fgBrush ?? Brushes.Black;
+            else
+            {
+                try { borderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(bbColor)); }
+                catch { borderBrush = _fgBrush ?? Brushes.Black; }
+                ((SolidColorBrush)borderBrush).Freeze();
+            }
+            var borderPen = new Pen(borderBrush, Math.Max(0.5, pt));
+            borderPen.Freeze();
+            dc.DrawLine(borderPen, new Point(x, ruleY), new Point(x + maxW, ruleY));
+        }
     }
 
     private static void DrawHyperlinkUnderline(DrawingContext dc,
@@ -1810,23 +1833,37 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     }
 
     /// <summary>
-    /// Parses the "tabStops" attribute (format: "120.5;240.0;360.0") into a sorted list of DIP positions.
+    /// Parses the "tabStops" attribute (format: "left:120.5;right:547.0") into a sorted list of TabStop.
     /// </summary>
-    private static IReadOnlyList<double>? ParseTabStops(DocumentBlock block)
+    private static IReadOnlyList<TabStop>? ParseTabStops(DocumentBlock block)
     {
         if (!block.Attributes.TryGetValue("tabStops", out var tsv) || tsv is not string ts || ts.Length == 0)
             return null;
 
-        var result = new List<double>();
+        var result = new List<TabStop>();
         foreach (var part in ts.Split(';', StringSplitOptions.RemoveEmptyEntries))
         {
-            // Accept both "120.5" and "left:120.5" formats
-            var valueStr = part.Contains(':') ? part.Split(':')[^1] : part;
-            if (double.TryParse(valueStr, System.Globalization.NumberStyles.Float,
-                                System.Globalization.CultureInfo.InvariantCulture, out double pos))
-                result.Add(pos);
+            string alignStr = "left";
+            string valueStr = part;
+            if (part.Contains(':'))
+            {
+                var idx = part.IndexOf(':');
+                alignStr = part[..idx].Trim().ToLowerInvariant();
+                valueStr = part[(idx + 1)..];
+            }
+            if (!double.TryParse(valueStr, System.Globalization.NumberStyles.Float,
+                                 System.Globalization.CultureInfo.InvariantCulture, out double pos))
+                continue;
+            var align = alignStr switch
+            {
+                "right"   => TabAlign.Right,
+                "center"  => TabAlign.Center,
+                "decimal" => TabAlign.Decimal,
+                _         => TabAlign.Left,
+            };
+            result.Add(new TabStop(pos, align));
         }
-        result.Sort();
+        result.Sort((a, b) => a.Pos.CompareTo(b.Pos));
         return result.Count > 0 ? result : null;
     }
 
@@ -2001,7 +2038,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// <see cref="InlineLineBreaker"/>. Called from <see cref="BuildRenderBlock"/>.
     /// </summary>
     private IReadOnlyList<InlineVisualLine> BuildGlyphLines(
-        DocumentBlock block, double maxW, IReadOnlyList<double>? tabStops = null)
+        DocumentBlock block, double maxW, IReadOnlyList<TabStop>? tabStops = null)
     {
         var segments = BuildSegments(block);
         if (segments.Count == 0) return [];
@@ -3117,11 +3154,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                         segRight += seg.AdvanceWidths[i];
                     x = segRight;
                 }
-                return (x, lineTopY, line.LineHeight);
+                // Caret height = Ascent + Descent only (exclude leading which is inter-line spacing)
+                return (x, lineTopY, line.Ascent + line.Descent);
             }
             lineTopY += line.LineHeight;
         }
-        return (0, 0, glyphLines.Count > 0 ? glyphLines[0].LineHeight : 0);
+        return (0, 0, glyphLines.Count > 0 ? glyphLines[0].Ascent + glyphLines[0].Descent : 0);
     }
 
     /// <summary>
