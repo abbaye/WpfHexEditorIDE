@@ -85,6 +85,10 @@ internal sealed class PlacedSegment
     public double UnderlineOffset     { get; }
     /// <summary>Strikethrough offset above baseline (positive = above, font units scaled to pixels).</summary>
     public double StrikethroughOffset { get; }
+    /// <summary>
+    /// Vertical baseline shift in pixels. Negative = up (superscript), positive = down (subscript).
+    /// </summary>
+    public double VerticalOffset { get; }
 
     public PlacedSegment(
         double         offsetX,
@@ -98,7 +102,8 @@ internal sealed class PlacedSegment
         bool           strikethrough,
         double         underlineOffset,
         double         strikethroughOffset,
-        int            charStart = 0)
+        int            charStart = 0,
+        double         verticalOffset = 0)
     {
         OffsetX             = offsetX;
         GlyphTypeface       = glyphTypeface;
@@ -112,6 +117,7 @@ internal sealed class PlacedSegment
         UnderlineOffset     = underlineOffset;
         StrikethroughOffset = strikethroughOffset;
         CharStart           = charStart;
+        VerticalOffset      = verticalOffset;
     }
 
     /// <summary>

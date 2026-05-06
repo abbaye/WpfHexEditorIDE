@@ -1023,7 +1023,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             DrawOutlineTriangle(dc, baseX + indent - 16, blockScreenY + rb.Height / 2, level);
 
             if (rb.GlyphLines is { Count: > 0 })
-                DrawVisualLines(dc, rb.GlyphLines, baseX + indent, blockScreenY, isHeading: true, headingLevel: level);
+                DrawVisualLines(dc, rb.GlyphLines, baseX + indent, blockScreenY, isHeading: true, headingLevel: level,
+                    lineSpacingMultiplier: rb.LineSpacingMultiplier);
             else if (rb.FormattedLines is { Count: > 0 })
                 dc.DrawText(rb.FormattedLines[0], new Point(baseX + indent, blockScreenY));
         }
@@ -1248,7 +1249,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             bool isHeading = rb.Block.Kind == "heading" || style == "heading";
             int level = isHeading && int.TryParse(
                 rb.Block.Attributes.GetValueOrDefault("level") as string, out int lv) ? lv : 1;
-            DrawVisualLines(dc, rb.GlyphLines, drawX, y, isHeading, level);
+            DrawVisualLines(dc, rb.GlyphLines, drawX, y, isHeading, level, rb.LineSpacingMultiplier);
             if (isHyperlink) DrawHyperlinkUnderline(dc, rb.GlyphLines, drawX, y);
             return;
         }
@@ -1355,7 +1356,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         // Draw text to the right of the bullet column
         if (rb.GlyphLines is { Count: > 0 })
         {
-            DrawVisualLines(dc, rb.GlyphLines, textX, y, false, 1);
+            DrawVisualLines(dc, rb.GlyphLines, textX, y, false, 1, rb.LineSpacingMultiplier);
         }
         else if (rb.FormattedLines is { Count: > 0 })
         {
@@ -1774,6 +1775,62 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _scrollOwner?.InvalidateScrollInfo();
     }
 
+    /// <summary>
+    /// Reads optional SpaceBefore/SpaceAfter overrides from block attributes.
+    /// Returns <paramref name="defaultBefore"/>/<paramref name="defaultAfter"/> when absent.
+    /// Attribute values are expected in points (pt); stored and used directly in DIPs here
+    /// because doc-level spacing is already at screen resolution.
+    /// </summary>
+    private static (double SpaceBefore, double SpaceAfter) ReadSpacingAttributes(
+        DocumentBlock block, double defaultBefore, double defaultAfter)
+    {
+        double before = defaultBefore;
+        double after  = defaultAfter;
+        if (block.Attributes.TryGetValue("spaceBefore", out var sb) && sb is double spb && spb >= 0)
+            before = spb;
+        if (block.Attributes.TryGetValue("spaceAfter",  out var sa) && sa is double spa && spa >= 0)
+            after  = spa;
+        return (before, after);
+    }
+
+    /// <summary>
+    /// Reads the OOXML lineSpacing value from attributes and converts it to a multiplier.
+    /// OOXML: 240 = single (1.0×), 360 = 1.5×, 480 = double (2.0×).
+    /// Returns 1.0 when the attribute is absent or invalid.
+    /// </summary>
+    private static double ReadLineSpacingMultiplier(DocumentBlock block)
+    {
+        if (!block.Attributes.TryGetValue("lineSpacing", out var lsv)) return 1.0;
+        double raw = lsv switch
+        {
+            int    i => i,
+            double d => d,
+            _        => 0
+        };
+        return raw >= 60 ? raw / 240.0 : 1.0; // guard against garbage values
+    }
+
+    /// <summary>
+    /// Parses the "tabStops" attribute (format: "120.5;240.0;360.0") into a sorted list of DIP positions.
+    /// </summary>
+    private static IReadOnlyList<double>? ParseTabStops(DocumentBlock block)
+    {
+        if (!block.Attributes.TryGetValue("tabStops", out var tsv) || tsv is not string ts || ts.Length == 0)
+            return null;
+
+        var result = new List<double>();
+        foreach (var part in ts.Split(';', StringSplitOptions.RemoveEmptyEntries))
+        {
+            // Accept both "120.5" and "left:120.5" formats
+            var valueStr = part.Contains(':') ? part.Split(':')[^1] : part;
+            if (double.TryParse(valueStr, System.Globalization.NumberStyles.Float,
+                                System.Globalization.CultureInfo.InvariantCulture, out double pos))
+                result.Add(pos);
+        }
+        result.Sort();
+        return result.Count > 0 ? result : null;
+    }
+
     private RenderBlock BuildRenderBlock(
         DocumentBlock block, double y, double maxW,
         Dictionary<DocumentBlock, ForensicSeverity> alertMap)
@@ -1786,18 +1843,22 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             {
                 int level  = int.TryParse(
                     block.Attributes.GetValueOrDefault("level") as string, out int l) ? l : 1;
-                double fs     = level == 1 ? 22 : level == 2 ? 18 : 15;
-                double spaceB = level == 1 ? 18 : level == 2 ? 14 : 10;
-                double spaceA = level == 1 ?  8 : level == 2 ?  6 :  4;
-                var glyphLines = BuildGlyphLines(block, maxW);
+                double fs       = level == 1 ? 22 : level == 2 ? 18 : 15;
+                double defSpB   = level == 1 ? 18 : level == 2 ? 14 : 10;
+                double defSpA   = level == 1 ?  8 : level == 2 ?  6 :  4;
+                var    tabStops = ParseTabStops(block);
+                var glyphLines  = BuildGlyphLines(block, maxW, tabStops);
                 double h  = glyphLines.Count > 0
                     ? glyphLines.Sum(vl => vl.LineHeight)
                     : fs + 4;
-                // Extra space for H1 rule
+                // Extra space for H1/H2 rule
                 if (level == 1) h += 6;
                 if (level == 2) h += 4;
                 var ftLines = WrapText(block.Text, _bodyBoldFace!, fs, maxW, _fgBrush!);
-                return new RenderBlock(block, y, h, spaceB, spaceA, ftLines, false, 0, severity, glyphLines);
+                var (spaceB, spaceA) = ReadSpacingAttributes(block, defSpB, defSpA);
+                double lsm = ReadLineSpacingMultiplier(block);
+                return new RenderBlock(block, y, h, spaceB, spaceA, ftLines, false, 0, severity, glyphLines,
+                    IndentLeft: 0, IndentRight: 0, IndentFirstLine: 0, LineSpacingMultiplier: lsm);
             }
 
             case "paragraph":
@@ -1812,30 +1873,36 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 double indFL = ReadIndentAttribute(block, "indentFirstLine") * PtToDip;
                 double effW  = Math.Max(40, maxW - indL - indR);
 
+                var tabStops = ParseTabStops(block);
+
                 if (pStyle == "heading")
                 {
                     int level  = int.TryParse(
                         block.Attributes.GetValueOrDefault("level") as string, out int l) ? l : 1;
-                    double fs     = level == 1 ? 22 : level == 2 ? 18 : 15;
-                    double spaceB = level == 1 ? 18 : level == 2 ? 14 : 10;
-                    double spaceA = level == 1 ?  8 : level == 2 ?  6 :  4;
-                    var hGlyphLines = BuildGlyphLines(block, effW);
+                    double fs       = level == 1 ? 22 : level == 2 ? 18 : 15;
+                    double defSpB   = level == 1 ? 18 : level == 2 ? 14 : 10;
+                    double defSpA   = level == 1 ?  8 : level == 2 ?  6 :  4;
+                    var hGlyphLines = BuildGlyphLines(block, effW, tabStops);
                     double hh = hGlyphLines.Count > 0 ? hGlyphLines.Sum(vl => vl.LineHeight) : fs + 4;
                     if (level == 1) hh += 6;
                     if (level == 2) hh += 4;
                     var hFtLines = WrapText(block.Text, _bodyBoldFace!, fs, effW, _fgBrush!);
-                    return new RenderBlock(block, y, hh, spaceB, spaceA, hFtLines, false, 0, severity,
-                        hGlyphLines, indL, indR, indFL);
+                    var (hSpB, hSpA) = ReadSpacingAttributes(block, defSpB, defSpA);
+                    double hLsm = ReadLineSpacingMultiplier(block);
+                    return new RenderBlock(block, y, hh, hSpB, hSpA, hFtLines, false, 0, severity,
+                        hGlyphLines, indL, indR, indFL, hLsm);
                 }
 
-                double spaceAfter = pStyle == "quote" ? 6 : pStyle == "code" ? 6 : 4;
-                var glyphLines = BuildGlyphLines(block, effW);
+                double defSpaceAfter = pStyle == "quote" ? 6 : pStyle == "code" ? 6 : 4;
+                var (pSpB, pSpA)     = ReadSpacingAttributes(block, 0, defSpaceAfter);
+                double pLsm          = ReadLineSpacingMultiplier(block);
+                var glyphLines       = BuildGlyphLines(block, effW, tabStops);
                 double h  = glyphLines.Count > 0
                     ? glyphLines.Sum(vl => vl.LineHeight)
                     : _baseFontSize + 4;
                 var ftLines = BuildInlineFormattedText(block, effW);
-                return new RenderBlock(block, y, h, 0, spaceAfter, ftLines, false, 0, severity,
-                    glyphLines, indL, indR, indFL);
+                return new RenderBlock(block, y, h, pSpB, pSpA, ftLines, false, 0, severity,
+                    glyphLines, indL, indR, indFL, pLsm);
             }
 
             case "list-item":
@@ -1843,12 +1910,16 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 int level      = block.Attributes.TryGetValue("listLevel", out var lv) && lv is int li ? li : 0;
                 double indentW = (level + 1) * ListIndentPerLevel;
                 double effW    = Math.Max(40, maxW - indentW);
-                var glyphLines = BuildGlyphLines(block, effW);
+                var tabStops   = ParseTabStops(block);
+                var glyphLines = BuildGlyphLines(block, effW, tabStops);
                 double h       = glyphLines.Count > 0
                     ? glyphLines.Sum(vl => vl.LineHeight)
                     : _baseFontSize + 4;
-                var ftLines = BuildInlineFormattedText(block, effW);
-                return new RenderBlock(block, y, h, 0, 3, ftLines, false, 0, severity, glyphLines, indentW, 0, 0);
+                var ftLines  = BuildInlineFormattedText(block, effW);
+                var (liSpB, liSpA) = ReadSpacingAttributes(block, 0, 3);
+                double liLsm = ReadLineSpacingMultiplier(block);
+                return new RenderBlock(block, y, h, liSpB, liSpA, ftLines, false, 0, severity,
+                    glyphLines, indentW, 0, 0, liLsm);
             }
 
             case "page-break":
@@ -1862,12 +1933,14 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
             case "hyperlink":
             {
-                var glyphLines = BuildGlyphLines(block, maxW);
+                var tabStops   = ParseTabStops(block);
+                var glyphLines = BuildGlyphLines(block, maxW, tabStops);
                 double h = glyphLines.Count > 0
                     ? glyphLines.Sum(vl => vl.LineHeight)
                     : _baseFontSize + 4;
                 var ftLines = BuildInlineFormattedText(block, maxW);
-                return new RenderBlock(block, y, h, 0, 4, ftLines, false, 0, severity, glyphLines);
+                var (hlSpB, hlSpA) = ReadSpacingAttributes(block, 0, 4);
+                return new RenderBlock(block, y, h, hlSpB, hlSpA, ftLines, false, 0, severity, glyphLines);
             }
 
             case "table":
@@ -1887,14 +1960,21 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             default:
             {
                 if (string.IsNullOrEmpty(block.Text))
-                    return new RenderBlock(block, y, 8, 0, 2, null, false, 0, severity);
+                {
+                    var (defSpB, defSpA) = ReadSpacingAttributes(block, 0, 2);
+                    return new RenderBlock(block, y, 8, defSpB, defSpA, null, false, 0, severity);
+                }
 
-                var glyphLines = BuildGlyphLines(block, maxW);
+                var defTabStops   = ParseTabStops(block);
+                var glyphLines    = BuildGlyphLines(block, maxW, defTabStops);
                 double h  = glyphLines.Count > 0
                     ? glyphLines.Sum(vl => vl.LineHeight)
                     : _baseFontSize + 4;
                 var ftLines = WrapText(block.Text, _bodyFace!, _baseFontSize, maxW, _fgBrush!);
-                return new RenderBlock(block, y, h, 0, 2, ftLines, false, 0, severity, glyphLines);
+                var (dSpB, dSpA) = ReadSpacingAttributes(block, 0, 2);
+                double dLsm = ReadLineSpacingMultiplier(block);
+                return new RenderBlock(block, y, h, dSpB, dSpA, ftLines, false, 0, severity, glyphLines,
+                    IndentLeft: 0, IndentRight: 0, IndentFirstLine: 0, LineSpacingMultiplier: dLsm);
             }
         }
     }
@@ -1921,11 +2001,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// Converts a document block into <see cref="InlineVisualLine"/> objects using
     /// <see cref="InlineLineBreaker"/>. Called from <see cref="BuildRenderBlock"/>.
     /// </summary>
-    private IReadOnlyList<InlineVisualLine> BuildGlyphLines(DocumentBlock block, double maxW)
+    private IReadOnlyList<InlineVisualLine> BuildGlyphLines(
+        DocumentBlock block, double maxW, IReadOnlyList<double>? tabStops = null)
     {
         var segments = BuildSegments(block);
         if (segments.Count == 0) return [];
-        return InlineLineBreaker.Break(segments, maxW, GetPixelsPerDip());
+        return InlineLineBreaker.Break(segments, maxW, GetPixelsPerDip(), tabStops);
     }
 
     /// <summary>
@@ -1980,8 +2061,24 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 catch { }
             }
 
+            // superscript / subscript: reduce size by 30%, shift baseline accordingly
+            double vertOffset = 0;
+            if (run.Attributes.TryGetValue("vertAlign", out var va) && va is string vaStr)
+            {
+                if (vaStr == "superscript")
+                {
+                    vertOffset = -size * 0.45; // shift up by ~45% of em (moves baseline up)
+                    size       = size * 0.70;
+                }
+                else if (vaStr == "subscript")
+                {
+                    vertOffset = size * 0.20;  // shift down by ~20% of em
+                    size       = size * 0.70;
+                }
+            }
+
             var gt = GlyphTypefaceCache.Get(family, bold, italic);
-            result.Add(new InlineSegment(text, gt, size, color, under, strike));
+            result.Add(new InlineSegment(text, gt, size, color, under, strike, vertOffset));
         }
 
         return result;
@@ -1991,10 +2088,15 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// Draws <see cref="InlineVisualLine"/> objects at (originX, blockTopY) using DrawGlyphRun.
     /// Underline and strikethrough are drawn as separate lines.
     /// </summary>
+    /// <param name="lineSpacingMultiplier">
+    /// Multiplier applied to each line's height when advancing Y between lines.
+    /// 1.0 = single spacing. Derived from OOXML lineSpacing attribute (240=1×, 480=2×).
+    /// </param>
     private void DrawVisualLines(DrawingContext dc,
                                   IReadOnlyList<InlineVisualLine> lines,
                                   double originX, double blockTopY,
-                                  bool isHeading = false, int headingLevel = 1)
+                                  bool isHeading = false, int headingLevel = 1,
+                                  double lineSpacingMultiplier = 1.0)
     {
         double ppd = GetPixelsPerDip();
         double y   = blockTopY;
@@ -2006,7 +2108,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
             foreach (var seg in line.Segments)
             {
-                var absOrigin = new Point(originX + seg.OffsetX, baselineY);
+                // Apply per-segment vertical baseline shift (superscript/subscript)
+                double segBaselineY = baselineY + seg.VerticalOffset;
+
+                var absOrigin = new Point(originX + seg.OffsetX, segBaselineY);
                 var run       = seg.BuildGlyphRun(absOrigin, ppd);
 
                 var brush = new SolidColorBrush(seg.Foreground);
@@ -2015,7 +2120,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
                 if (seg.Underline)
                 {
-                    double uY  = baselineY + seg.UnderlineOffset;
+                    double uY  = segBaselineY + seg.UnderlineOffset;
                     var uPen   = new Pen(brush, 0.75);
                     uPen.Freeze();
                     dc.DrawLine(uPen,
@@ -2025,7 +2130,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
                 if (seg.Strikethrough)
                 {
-                    double sY  = baselineY - seg.StrikethroughOffset;
+                    double sY  = segBaselineY - seg.StrikethroughOffset;
                     var sPen   = new Pen(brush, 0.75);
                     sPen.Freeze();
                     dc.DrawLine(sPen,
@@ -2050,7 +2155,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 dc.DrawLine(_h2RulePen, new Point(originX, ruleY), new Point(originX + ruleW, ruleY));
             }
 
-            y += line.LineHeight;
+            y += line.LineHeight * lineSpacingMultiplier;
         }
     }
 
@@ -4146,10 +4251,11 @@ internal sealed record RenderBlock(
     bool                       IsPageBreak,
     int                        PageNumber,
     ForensicSeverity?          ForensicSeverity,
-    IReadOnlyList<InlineVisualLine>? GlyphLines = null,
-    double                     IndentLeft       = 0,
-    double                     IndentRight      = 0,
-    double                     IndentFirstLine  = 0);
+    IReadOnlyList<InlineVisualLine>? GlyphLines       = null,
+    double                     IndentLeft             = 0,
+    double                     IndentRight            = 0,
+    double                     IndentFirstLine        = 0,
+    double                     LineSpacingMultiplier  = 1.0);
 
 // ── Visual-line navigation types ──────────────────────────────────────────────
 

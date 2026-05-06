@@ -23,21 +23,28 @@ internal readonly struct InlineSegment
     public readonly Color         Foreground;
     public readonly bool          Underline;
     public readonly bool          Strikethrough;
+    /// <summary>
+    /// Vertical baseline offset in pixels. Negative = up (superscript), positive = down (subscript).
+    /// Zero for normal text.
+    /// </summary>
+    public readonly double        VerticalOffset;
 
     public InlineSegment(
         string        text,
         GlyphTypeface glyphTypeface,
         double        size,
         Color         foreground,
-        bool          underline     = false,
-        bool          strikethrough = false)
+        bool          underline      = false,
+        bool          strikethrough  = false,
+        double        verticalOffset = 0)
     {
-        Text          = text;
-        GlyphTypeface = glyphTypeface;
-        Size          = size;
-        Foreground    = foreground;
-        Underline     = underline;
-        Strikethrough = strikethrough;
+        Text           = text;
+        GlyphTypeface  = glyphTypeface;
+        Size           = size;
+        Foreground     = foreground;
+        Underline      = underline;
+        Strikethrough  = strikethrough;
+        VerticalOffset = verticalOffset;
     }
 
     public bool IsEmpty => string.IsNullOrEmpty(Text);

@@ -32,10 +32,16 @@ internal static class InlineLineBreaker
     /// <param name="segments">Ordered inline segments for one paragraph/block.</param>
     /// <param name="maxWidth">Available content width in WPF DIPs.</param>
     /// <param name="pixelsPerDip">DPI scaling factor (use <c>VisualTreeHelper.GetDpi</c>).</param>
+    /// <param name="tabStops">
+    /// Optional sorted tab-stop positions in DIPs (e.g. 120.5, 240.0).
+    /// When a <c>\t</c> character is encountered the pen advances to the next stop &gt; current X.
+    /// Falls back to <see cref="TabStopWidth"/> if null or exhausted.
+    /// </param>
     public static IReadOnlyList<InlineVisualLine> Break(
         IReadOnlyList<InlineSegment> segments,
         double maxWidth,
-        double pixelsPerDip = 1.0)
+        double pixelsPerDip = 1.0,
+        IReadOnlyList<double>? tabStops = null)
     {
         if (segments.Count == 0 || maxWidth <= 0)
             return [];
@@ -82,7 +88,8 @@ internal static class InlineLineBreaker
                     strikethrough:       ps.Seg.Strikethrough,
                     underlineOffset:     uOff,
                     strikethroughOffset: sOff,
-                    charStart:           ps.CharStart));
+                    charStart:           ps.CharStart,
+                    verticalOffset:      ps.Seg.VerticalOffset));
 
                 x += ps.TotalWidth;
                 lineCharEnd = ps.CharStart + ps.CharCount;
@@ -125,7 +132,7 @@ internal static class InlineLineBreaker
                 int tokenCharStart = blockCharPos + i;
 
                 // Collect a "word" token (non-space run) + optional trailing spaces
-                var (glyphs, advances, tokenW, nextI) = MeasureToken(seg, i, gt, size);
+                var (glyphs, advances, tokenW, nextI) = MeasureToken(seg, i, gt, size, lineX, tabStops);
                 int tokenCharCount = nextI - i;
                 i = nextI;
 
@@ -176,7 +183,8 @@ internal static class InlineLineBreaker
     /// Returns sentinel (empty, empty, -1, start+1) for an explicit newline character.
     /// </summary>
     private static (List<ushort> Glyphs, List<double> Advances, double Width, int NextIndex)
-        MeasureToken(InlineSegment seg, int start, GlyphTypeface gt, double size)
+        MeasureToken(InlineSegment seg, int start, GlyphTypeface gt, double size,
+                     double currentX = 0, IReadOnlyList<double>? tabStops = null)
     {
         var   text    = seg.Text;
         var   glyphs  = new List<ushort>();
@@ -189,9 +197,20 @@ internal static class InlineLineBreaker
 
         if (text[i] == '\t')
         {
-            // Tab → advance to next tab stop (relative to a 0-origin line — caller owns tab stop logic)
+            // Tab → advance to the next tab stop past currentX, or fall back to fixed TabStopWidth.
             ushort spaceGlyph = GetGlyphIndex(gt, ' ');
-            double adv        = TabStopWidth;
+            double adv        = TabStopWidth; // default
+            if (tabStops is { Count: > 0 })
+            {
+                foreach (double stop in tabStops)
+                {
+                    if (stop > currentX + 1.0) // +1 to avoid snapping to the current position
+                    {
+                        adv = stop - currentX;
+                        break;
+                    }
+                }
+            }
             glyphs.Add(spaceGlyph);
             advances.Add(adv);
             return (glyphs, advances, adv, i + 1);
