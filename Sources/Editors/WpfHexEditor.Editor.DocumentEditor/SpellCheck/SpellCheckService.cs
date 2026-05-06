@@ -52,7 +52,8 @@ internal sealed class SpellCheckService : IDisposable
     // Per-word skip patterns applied after tokenization
     private static readonly Regex SkipRx = new(
         @"^[A-ZÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ]{2,}$" +  // ALL-CAPS acronyms: ISO, TI, SQL, API
-        @"|\d",                                             // any token containing a digit
+        @"|\d"                                           +  // any token containing a digit
+        @"|^(.)\1{3,}$",                                   // repeated single char artefacts (wwwww)
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     public SpellCheckService(ISpellChecker checker, SpellCheckLayer layer)
@@ -168,8 +169,16 @@ internal sealed class SpellCheckService : IDisposable
         {
             ct.ThrowIfCancellationRequested();
 
-            // Only check paragraph and list-item text
+            // Only check prose blocks — skip hyperlinks, images, tables, etc.
             if (rb.Block.Kind is not ("paragraph" or "list-item" or "heading")) continue;
+
+            // Skip hyperlink-styled blocks and paragraphs whose only content is hyperlinks
+            if (rb.Block.Attributes.TryGetValue("style", out var styleObj) &&
+                styleObj is string styleStr &&
+                styleStr.Contains("hyperlink", StringComparison.OrdinalIgnoreCase)) continue;
+
+            if (rb.Block.Children.Count > 0 &&
+                rb.Block.Children.All(c => c.Kind == "hyperlink")) continue;
 
             var text = rb.Block.Text ?? string.Empty;
             if (text.Length == 0) continue;
@@ -185,6 +194,9 @@ internal sealed class SpellCheckService : IDisposable
             // Blank out URLs/emails/domains so their sub-parts aren't tokenized as words.
             // Replacement with spaces preserves character offsets for coordinate mapping.
             var checkText = EraseRx.Replace(text, m => new string(' ', m.Length));
+
+            // Skip if nothing remains after erasing (e.g. a line that was only emails/URLs)
+            if (checkText.AsSpan().Trim().IsEmpty) continue;
 
             var blockErrors = new List<SpellCheckError>();
             var matches     = WordRx.Matches(checkText);
