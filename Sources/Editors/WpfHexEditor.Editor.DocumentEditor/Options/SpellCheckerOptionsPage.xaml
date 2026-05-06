@@ -19,6 +19,44 @@
             <ResourceDictionary.MergedDictionaries>
                 <docSvc:DocumentEditorLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="IdeButtonStyle" TargetType="Button">
+                <Setter Property="Background"      Value="{DynamicResource Panel_ToolbarBrush}"/>
+                <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Cursor"          Value="Hand"/>
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Root"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="2">
+                                <Border x:Name="Overlay" Background="Transparent" CornerRadius="2">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"
+                                                      Margin="{TemplateBinding Padding}"
+                                                      RecognizesAccessKey="True"/>
+                                </Border>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Overlay" Property="Background" Value="#20FFFFFF"/>
+                                    <Setter TargetName="Root"    Property="BorderBrush" Value="{DynamicResource DockAccentBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Overlay" Property="Background" Value="#40FFFFFF"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.4"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -148,6 +186,7 @@
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,2">
                                     <!-- Download button (when not installed) -->
                                     <Button Content="{DynamicResource SpellCheck_Download}"
+                                            Style="{StaticResource IdeButtonStyle}"
                                             Padding="6,2"
                                             FontSize="10"
                                             Margin="0,0,4,0"
@@ -156,6 +195,7 @@
                                             Click="OnDownloadClick"/>
                                     <!-- Browse button -->
                                     <Button Content="{DynamicResource SpellCheck_Browse}"
+                                            Style="{StaticResource IdeButtonStyle}"
                                             Padding="6,2"
                                             FontSize="10"
                                             Margin="0,0,4,0"
@@ -163,6 +203,7 @@
                                             Click="OnBrowseClick"/>
                                     <!-- Remove button (when installed) -->
                                     <Button Content="{DynamicResource SpellCheck_Remove}"
+                                            Style="{StaticResource IdeButtonStyle}"
                                             Padding="6,2"
                                             FontSize="10"
                                             Visibility="{Binding RemoveVisible}"
@@ -191,6 +232,7 @@
                        FontSize="11"
                        Margin="0,0,8,0"/>
             <Button Content="{DynamicResource SpellCheck_EditUserDict}"
+                    Style="{StaticResource IdeButtonStyle}"
                     Padding="8,3"
                     FontSize="11"
                     Click="OnEditUserDictClick"/>

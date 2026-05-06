@@ -14,25 +14,26 @@ namespace WpfHexEditor.Core.SpellCheck;
 
 public sealed class DictionaryManager
 {
+    // RepoPath = folder under LibreOffice/dictionaries on GitHub master branch
+    // Prefix   = filename stem (without extension) as it actually exists in that folder
+    // Verified against https://github.com/LibreOffice/dictionaries/tree/master/
     private static readonly Dictionary<string, (string Display, string RepoPath, string Prefix)> KnownLanguages = new()
     {
         ["ar-SA"]  = ("العربية (السعودية)",      "ar",    "ar"),
         ["cs-CZ"]  = ("Čeština",                 "cs_CZ", "cs_CZ"),
         ["da-DK"]  = ("Dansk",                   "da_DK", "da_DK"),
-        ["de-DE"]  = ("Deutsch",                 "de",    "de_DE"),
+        ["de-DE"]  = ("Deutsch",                 "de",    "de_DE_frami"),
         ["el-GR"]  = ("Ελληνικά",                "el_GR", "el_GR"),
         ["en-GB"]  = ("English (UK)",            "en",    "en_GB"),
         ["en-US"]  = ("English (US)",            "en",    "en_US"),
         ["es-ES"]  = ("Español (España)",        "es",    "es_ES"),
-        ["es-419"] = ("Español (Latinoamérica)", "es_ANY","es_ANY"),
-        ["fi-FI"]  = ("Suomi",                   "fi_FI", "fi_FI"),
-        ["fr-CA"]  = ("Français (Canada)",       "fr_FR", "fr_CA"),   // LibreOffice stores fr-CA inside fr_FR folder
-        ["fr-FR"]  = ("Français (France)",       "fr_FR", "fr_FR"),
+        ["es-MX"]  = ("Español (México)",        "es",    "es_MX"),
+        ["fr-CA"]  = ("Français (Canada)",       "fr_FR", "fr"),      // LibreOffice only ships fr.dic in fr_FR; no separate fr_CA variant
+        ["fr-FR"]  = ("Français (France)",       "fr_FR", "fr"),
         ["hi-IN"]  = ("हिन्दी",                  "hi_IN", "hi_IN"),
         ["hu-HU"]  = ("Magyar",                  "hu_HU", "hu_HU"),
         ["id-ID"]  = ("Bahasa Indonesia",        "id",    "id_ID"),
         ["it-IT"]  = ("Italiano",                "it_IT", "it_IT"),
-        ["ja-JP"]  = ("日本語",                  "ja_JP", "ja_JP"),
         ["ko-KR"]  = ("한국어",                  "ko_KR", "ko_KR"),
         ["nl-NL"]  = ("Nederlands",              "nl_NL", "nl_NL"),
         ["pl-PL"]  = ("Polski",                  "pl_PL", "pl_PL"),
@@ -42,10 +43,9 @@ public sealed class DictionaryManager
         ["ru-RU"]  = ("Русский",                 "ru_RU", "ru_RU"),
         ["sv-SE"]  = ("Svenska",                 "sv_SE", "sv_SE"),
         ["th-TH"]  = ("ภาษาไทย",                "th_TH", "th_TH"),
-        ["tr-TR"]  = ("Türkçe",                 "tr_TR", "tr_TR"),
+        ["tr-TR"]  = ("Türkçe",                  "tr_TR", "tr_TR"),
         ["uk-UA"]  = ("Українська",              "uk_UA", "uk_UA"),
-        ["vi-VN"]  = ("Tiếng Việt",              "vi",    "vi_VI"),
-        ["zh-CN"]  = ("中文 (简体)",              "zh_CN", "zh_CN"),
+        ["vi-VN"]  = ("Tiếng Việt",              "vi",    "vi_VN"),
     };
 
     private readonly SpellCheckerSettings _settings;
