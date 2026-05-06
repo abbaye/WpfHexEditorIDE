@@ -41,6 +41,12 @@ public sealed class DocumentEditorFactory : IEditorFactory
     public DocumentEditorFactory(Func<IIDEHostContext?> contextResolver)
     {
         _contextResolver = contextResolver;
+
+        // Register now (at factory construction = startup) so the page is always
+        // present in OptionsPageRegistry.Pages before any OptionsEditorControl opens.
+        // The factory closure captures _contextResolver so DocumentHost is resolved
+        // lazily when the user actually opens the Options page.
+        RegisterSpellCheckerOptionsPage(contextResolver);
     }
 
     /// <inheritdoc/>
@@ -79,18 +85,13 @@ public sealed class DocumentEditorFactory : IEditorFactory
             if (wr.TryGetTarget(out var host))
                 host.SetContext(context);
         _pendingHosts.Clear();
-
-        // Register the SpellChecker options page at IDE-ready time so it appears
-        // in Options even when no document is open.  Uses standalone settings/manager
-        // instances; any open DocumentEditorHost re-registers with its own live
-        // components (RegisterDynamic is idempotent — last writer wins).
-        RegisterSpellCheckerOptionsPage(context);
     }
 
-    private static void RegisterSpellCheckerOptionsPage(IIDEHostContext context)
+    private static void RegisterSpellCheckerOptionsPage(Func<IIDEHostContext?> contextResolver)
     {
         // Use lambda overload so Category/PageName resolve live from resources —
-        // this ensures GroupBy in BuildTree matches the static DocumentEditor pages.
+        // ensuring GroupBy in BuildTree groups with the static DocumentEditor pages.
+        // contextResolver is captured so DocumentHost is resolved lazily at page-open time.
         OptionsPageRegistry.RegisterDynamic(
             () => OptionsPageStrings.CategoryDocumentEditor,
             () => OptionsPageStrings.PageSpellChecker,
@@ -100,7 +101,7 @@ public sealed class DocumentEditorFactory : IEditorFactory
                 var dictManager = new DictionaryManager(settings);
                 var checker     = new HunspellSpellChecker(settings, dictManager);
                 var page        = new SpellCheckerOptionsPage();
-                page.Initialize(settings, dictManager, checker, context.DocumentHost);
+                page.Initialize(settings, dictManager, checker, contextResolver()?.DocumentHost);
                 return page;
             },
             "📄",
