@@ -26,23 +26,7 @@ public partial class AssemblyExplorerOptionsPage : UserControl
 {
     public AssemblyExplorerOptionsPage()
     {
-        // Application.LoadComponent() (called by InitializeComponent()) throws NRE internally
-        // when the plugin is loaded in a custom AssemblyLoadContext and the pack URI resource
-        // can't be resolved. The throw happens inside WPF code BEFORE any catch block runs,
-        // so VS "break when thrown" fires even though the exception would be caught upstream.
-        //
-        // Fix: pre-check via GetResourceStream(), which returns null without throwing when
-        // the resource is unavailable. Skip InitializeComponent() entirely in that case;
-        // Load()'s null guard (if FontSizeSlider is null) handles the empty-control case.
-        var uri = new System.Uri(
-            "/WpfHexEditor.App.AssemblyExplorer;V1.0.0.0;component/options/assemblyexploreroptionspage.xaml",
-            System.UriKind.Relative);
-
-        if (Application.GetResourceStream(uri) is not null)
-        {
-            try { InitializeComponent(); }
-            catch { /* Unexpected BAML failure — fields stay null; Load() guard handles it */ }
-        }
+        InitializeComponent();
     }
 
     // ── Load / Save ───────────────────────────────────────────────────────────
