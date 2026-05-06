@@ -16,7 +16,7 @@
 
   > 🚧 **Active Development** — New features, editors and panels are added regularly. Contributions welcome!
   >
-  > 📅 *Last revised: 2026-05-01*
+  > 📅 *Last revised: 2026-05-05*
 
   <br/>
 
@@ -69,11 +69,11 @@ Every editor is a standalone `IDocumentEditor` plugin — reusable outside the I
 | **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | ~70% | Full binary editor — insert/overwrite modes, 790+ format auto-detection, multi-mode search (hex/text/regex/wildcard/TBL), persistent bookmarks, custom encoding tables, block-level undo/redo with VS-style history dropdown, Go to offset dialog (`Ctrl+G`) |
 | **[Diff / Changeset Viewer](Sources/WpfHexEditor.Editor.DiffViewer/README.md)** | ~65% | File comparison tool — binary, text, and structure diff modes with GlyphRun canvas renderers for high performance, word-level highlighting, overview ruler, Myers/Binary/Semantic algorithms, format field overlay for binary diffs |
 | **[Markdown Editor](Sources/WpfHexEditor.Editor.MarkdownEditor/README.md)** | ~50% | Markdown authoring — live side-by-side preview, mermaid.js diagram rendering, image paste from clipboard, document outline panel, adaptive render debounce, off-thread word count |
-| **[XAML Designer](Sources/WpfHexEditor.Editor.XamlDesigner/README.md)** | ~40% | Visual WPF designer — live canvas with bidirectional XAML↔design sync, move/resize/rotate handles, property inspector (`F4`), alignment guides, snap grid, 4 split layouts, undo/redo, Toolbox panel |
+| **[XAML Designer](Sources/WpfHexEditor.Editor.XamlDesigner/README.md)** | ~50% | Visual WPF designer — live canvas with bidirectional XAML↔design sync, move/resize/rotate handles, property inspector (`F4`), alignment guides, snap grid, 4 split layouts, undo/redo, Toolbox panel, **Visual State Manager panel** (states/transitions), **code-behind generation pipeline** (scanner → generator → merge engine → sync service, `[GeneratedCode]` guard preserves user code, `x:Name` rename propagation) |
 | **[Image Viewer](Sources/WpfHexEditor.Editor.ImageViewer/README.md)** | ~40% | Image preview and editing — zoom/pan, rotate/flip/crop/resize operations, concurrent multi-file open, supports common formats (PNG/JPEG/BMP/GIF/TIFF) |
 | **[Text Editor](Sources/WpfHexEditor.Editor.TextEditor/README.md)** | ~40% | Plain text editor — 26 embedded language definitions with auto-detection, encoding support (UTF-8/UTF-16/ASCII/custom), line numbering, basic search |
 | **[Script Editor](Sources/WpfHexEditor.Editor.ScriptEditor/README.md)** | ~40% | C# scripting environment — split-view editor with C#Script language support, Roslyn-powered SmartComplete with IDE globals injection, execute scripts to automate IDE workflows |
-| **[Document Editor](Sources/WpfHexEditor.Editor.DocumentEditor/README.md)** | ~35% | Rich document editor — WYSIWYG editing for RTF, DOCX, and ODT formats, DrawingContext-based rendering, text formatting toolbar, table support, styles panel, find/replace, page settings, split hex pane for raw inspection |
+| **[Document Editor](Sources/WpfHexEditor.Editor.DocumentEditor/README.md)** | ~50% | Rich document editor — WYSIWYG editing for RTF, DOCX, and ODT formats, DrawingContext-based GlyphRun rendering, text formatting toolbar, **headers/footers**, **page breaks**, **table insert/edit** dialog, **hyperlink insert** dialog, **auto-list** (bullet and numbered), **page settings** dialog (margins, paper size, orientation), rich context menu, find/replace, split hex pane for raw inspection, 27-language localization |
 | **[Entropy Viewer](Sources/WpfHexEditor.Editor.EntropyViewer/README.md)** | ~30% | Binary entropy visualizer — graphical entropy and byte-frequency charts to detect encrypted, compressed, or packed regions at a glance, click-to-navigate to offset |
 | **[Structure Editor](Sources/WpfHexEditor.Editor.StructureEditor/README.md)** | ~30% | Binary template editor — visual editor for `.whfmt` format definitions, block DataGrid with drag-drop reordering, `Ctrl+F` search, validation pipeline, undo/redo, `StructurePopToolbar`, `BlockTypeBadge`, `LiveWhfmtBuffer`, `VariablesTab`, `TestTab` with live binary preview, variable cross-reference validation, expression `SmartComplete`, `ForensicPattern` tolerant converter, options page |
 | **[JSON Editor](Sources/WpfHexEditor.Editor.JsonEditor/README.md)** | ~20% | JSON file viewer — syntax highlighting, auto-detection for `.json` files |
@@ -98,7 +98,7 @@ All controls are **independently reusable** — no IDE required.
 
 | Control | NuGet | Description |
 |---------|-------|-------------|
-| **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WPFHexaEditor?label=WPFHexaEditor)](https://www.nuget.org/packages/WPFHexaEditor/) | Full-featured binary editor — insert/overwrite modes, 790+ format auto-detection, multi-mode search, bookmarks, TBL encoding, block undo/redo, Go to offset (`Ctrl+G`) · [Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Editors/WpfHexEditor.HexEditor/WPFHexaEditor-guide.md) |
+| **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WPFHexaEditor?label=WPFHexaEditor)](https://www.nuget.org/packages/WPFHexaEditor/) | Full-featured binary editor — insert/overwrite modes, 790+ format auto-detection, multi-mode search, bookmarks, TBL encoding, block undo/redo, Go to offset (`Ctrl+G`), **`HexEditorSplitHost`** (synchronized split-view with built-in toolbar toggle), **`HexEditorSettings`** panel · [Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Editors/WpfHexEditor.HexEditor/WPFHexaEditor-guide.md) |
 | **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WpfCodeEditor?label=WpfCodeEditor)](https://www.nuget.org/packages/WpfCodeEditor/) | Advanced source editor — 57+ languages, LSP 3.17, folding, multi-caret, minimap, split view, inline hints · [Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Editors/WpfHexEditor.Editor.CodeEditor/WpfCodeEditor-guide.md) |
 | **[Docking](Sources/Docking/WpfHexEditor.Docking.Wpf/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WpfDocking?label=WpfDocking)](https://www.nuget.org/packages/WpfDocking/) | VS Code-style docking — panels, documents, tab groups, drag-and-drop, 16 themes, layout persistence · [Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Docking/WpfHexEditor.Docking.Wpf/WpfDocking-guide.md) |
 | **[Color Picker](Sources/WpfHexEditor.ColorPicker/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WpfColorPicker?label=WpfColorPicker)](https://www.nuget.org/packages/WpfColorPicker/) | HSV wheel, RGB/HSL sliders, hex input, palettes, eyedropper, opacity support |
@@ -110,7 +110,7 @@ All controls are **independently reusable** — no IDE required.
 
 ```bash
 # Install via .NET CLI
-dotnet add package WPFHexaEditor              # Hex editor control (v3.2.0)
+dotnet add package WPFHexaEditor              # Hex editor control (v3.3.0)
 dotnet add package WpfCodeEditor              # Code editor control (v0.9.8.0)
 dotnet add package WpfDocking                 # Docking framework (v0.9.7.0)
 dotnet add package WpfColorPicker             # Color picker control
@@ -251,7 +251,9 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 | **Document Model** — HexEditor ↔ CodeEditor shared undo engine ✅; remaining: multi-editor collaboration | 🔧 ~55% | #107 |
 | **Plugin Sandbox** — remaining: gRPC migration, hot-reload from sandbox | 🔧 ~40% | #81 |
 | **Structure Editor** — block DataGrid, drag-drop, validation, undo/redo, TestTab, SmartComplete; remaining: live binary sync, complex types | 🔧 ~35% | #172 |
-| **.NET Debugger** — UI complete (menus, toolbar, breakpoints, explorer), remaining: runtime attach and debug launch | 🔧 ~30% | #44, #90 |
+| **.NET Debugger** — UI complete (menus, toolbar, breakpoints, explorer), VS2026 panel audit done; remaining: runtime attach and debug launch | 🔧 ~35% | #44, #90 |
+| **Document Editor** — headers/footers, page breaks, table/hyperlink dialogs, auto-list, page settings, rich context menu, 27-language l10n; remaining: OLE2/RTF fidelity, tracked changes | 🔧 ~50% | #120 |
+| **XAML Designer** — VSM panel, code-behind generation pipeline (scanner/generator/merge/sync, `[GeneratedCode]` guard, rename propagation); remaining: full property binding, control library | 🔧 ~50% | #150 |
 | **Git Integration** — UI in place (changes panel, history, blame gutter, branch picker, stash), not yet integration-tested | 🔧 ~40% | #91 |
 | **IDE Localization** — 27 languages, all panels + menus translated; remaining: remaining code-behind strings | 🔧 ~78% | #100 |
 
@@ -269,6 +271,10 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 
 | Feature | Version |
 |---------|---------|
+| **WPFHexaEditor 3.3.0** — `HexEditorSplitHost` synchronized split-view host with built-in toolbar toggle; `HexEditorSettings` auto-generated settings panel; unified namespace (`xmlns:hex`); doc/guide clarity pass | v0.6.5.110 |
+| **Document Editor waves B–G** — headers/footers, page breaks, table insert/edit dialog, hyperlink insert dialog, auto-list (bullet & numbered), page settings dialog (margins/paper/orientation), rich context menu, 27-language localization | v0.6.5.110 |
+| **XAML Designer code-behind pipeline** — `XamlCodeBehindScanner`, `XamlCodeBehindGenerator`, `CodeBehindMergeEngine`, `CodeBehindSyncService`, `XamlNameRenameService`; `[GeneratedCode]` guard preserves user code; Visual State Manager panel (`VisualStatePanel`), `CodeGenPanel` | v0.6.5.110 |
+| **Debug panels VS2026 readiness** — full audit and conformance pass across all 9 debug panels (Disassembly, ExceptionSettings, ImmediateWindow, MemoryWindow, Modules, ParallelStacks, ParallelWatch, Tasks, Threads) | v0.6.5.110 |
 | **NuGet release wave** — standalone packages: WPFHexaEditor 3.2.0, WpfCodeEditor 0.9.8.0, WpfDocking 0.9.7.0, WpfTerminal 0.9.7.0, ByteProvider 1.1.0, whfmt.FileFormatCatalog 1.1.0; full guide docs bundled; satellite assembly contamination fix; `_BundledProjectDll` isolation pattern | v0.6.5.15 |
 | **IDE Localization** — 77.9% DynamicResource coverage; all panels, menus, context menus, dialogs, and toolbar buttons translated into 27 languages; per-assembly `LocalizedResourceDictionary` pattern | v0.6.5.15 |
 | **WpfDocking 0.9.7.0** — horizontal tab reorder for docked panels, tab-switch triple-fire eliminated (perf), StaticResource toolbar labels fix, full Phase 5+6 localization wired | v0.6.5.15 |
