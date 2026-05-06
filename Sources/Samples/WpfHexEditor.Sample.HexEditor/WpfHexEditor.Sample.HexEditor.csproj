@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
     <ProjectReference Include="..\..\Editors\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
+    <ProjectReference Include="..\..\Controls\WpfHexEditor.ProgressBar\WpfHexEditor.ProgressBar.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -15,25 +15,42 @@ dotnet add package WPFHexaEditor
 
 ```xml
 <Window
-    xmlns:hexe="clr-namespace:WpfHexEditor.HexEditor;assembly=WpfHexEditor.HexEditor">
+    xmlns:hex="clr-namespace:WpfHexEditor.HexEditor;assembly=WpfHexEditor.HexEditor">
 ```
+
+Both `HexEditor` and `HexEditorSplitHost` live in the same assembly — one declaration covers both.
 
 ### 2 — Place the control
 
+**Single editor:**
 ```xml
-<hexe:HexEditor x:Name="HexEdit" />
+<hex:HexEditor x:Name="HexEdit" />
 ```
+
+**With built-in split view:**
+```xml
+<hex:HexEditorSplitHost x:Name="HexEdit" />
+```
+
+The split button is built into the toolbar — the user clicks it to open/close the second pane.  
+Access the underlying editor via `HexEdit.PrimaryEditor`.
 
 ### 3 — Open a file
 
 ```csharp
+// HexEditor
 HexEdit.FileName = @"C:\path\to\file.bin";
+
+// HexEditorSplitHost
+HexEdit.OpenFile(@"C:\path\to\file.bin");
+HexEdit.PrimaryEditor.FileName = @"C:\path\to\file.bin"; // equivalent
 ```
 
 ### 4 — Open a stream
 
 ```csharp
-HexEdit.Stream = File.OpenRead("data.bin");
+HexEdit.Stream = File.OpenRead("data.bin");         // HexEditor
+HexEdit.OpenStream(File.OpenRead("data.bin"));       // HexEditorSplitHost
 ```
 
 ### 5 — Read or modify bytes
@@ -54,12 +71,11 @@ HexEdit.SubmitChanges();          // save to original file
 HexEdit.SubmitChanges("out.bin"); // save to new file
 ```
 
-### Standalone setup (no IDE host)
+### 6 — Resource dictionary (required)
 
-Merge the resource dictionary so themes and brushes resolve correctly:
+Merge once in `App.xaml` so themes and brushes resolve correctly:
 
 ```xml
-<!-- App.xaml -->
 <Application.Resources>
     <ResourceDictionary>
         <ResourceDictionary.MergedDictionaries>
@@ -68,8 +84,6 @@ Merge the resource dictionary so themes and brushes resolve correctly:
     </ResourceDictionary>
 </Application.Resources>
 ```
-
-Context menus use opaque backgrounds by default. No extra theming is needed.
 
 ---
 
@@ -111,7 +125,7 @@ Context menus use opaque backgrounds by default. No extra theming is needed.
 - ParsedFields export templates
 
 ### UI Controls
-- `HexEditorSplitHost` — synchronized split-view host; standalone-safe, no IDE dependency
+- `HexEditorSplitHost` — synchronized split-view host with built-in toolbar toggle
 - `HexEditorSettings` — auto-generated settings panel with live binding and JSON persistence
 - `HexBreadcrumbBar` — visual structure navigator
 - `HexScrollMarkerPanel` — overview of bookmarks, search hits, and changes
@@ -131,7 +145,7 @@ Context menus use opaque backgrounds by default. No extra theming is needed.
 
 ## What's New in 3.3.0
 
-- **New**: `HexEditorSplitHost` — drop-in split-view host wrapping a primary + optional secondary `HexEditor`; synchronized scrolling, mutations, and breadcrumb; standalone-safe (no IDE dependency).
+- **New**: `HexEditorSplitHost` — drop-in split-view host wrapping a primary + optional secondary `HexEditor`; synchronized scrolling, mutations, and breadcrumb.
 - **New**: `HexEditorSettings` — auto-generated settings panel `UserControl`; exposes every `HexEditor` `DependencyProperty` with live binding, color picker, JSON export/import.
 - **New**: `IParsedFieldsPanel` integration API — `ConnectParsedFieldsPanel()` / `DisconnectParsedFieldsPanel()`, `GetByteProvider()`, `FindSelect(position, length)`.
 - **New**: Themed `IdeMessageBox` / `IDialogService` — replaces `MessageBox.Show` with a themed, injectable dialog service.

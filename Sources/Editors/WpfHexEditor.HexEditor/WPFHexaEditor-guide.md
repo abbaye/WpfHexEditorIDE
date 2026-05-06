@@ -40,7 +40,7 @@ Zero external NuGet dependencies. All assemblies are bundled inside the package.
 | Type | Assembly | Purpose |
 |---|---|---|
 | `HexEditor` | HexEditor | Main `UserControl` — all rendering, editing, search, format overlay |
-| `HexEditorSplitHost` | HexEditor | Split-view host (`Grid`-derived); wraps primary + optional secondary `HexEditor` |
+| `HexEditorSplitHost` | HexEditor | Split-view host; wraps primary + optional secondary `HexEditor` with synchronized scrolling |
 | `HexEditorSettings` | HexEditor | Auto-generated settings panel with live binding and JSON persistence |
 | `HexBreadcrumbBar` | HexEditor | Visual structure navigator over detected format fields |
 | `HexScrollMarkerPanel` | HexEditor | Overview panel — bookmarks, search hits, changes |
@@ -405,14 +405,14 @@ string ipAddr    = result.IPv4Address;
 
 ## Level 5: Split View
 
-`HexEditorSplitHost` is a standalone-safe `Grid`-derived host that wraps a primary `HexEditor` and optionally a synchronized secondary pane. It implements `IDocumentEditor` but does **not** inherit `HexEditor` — composition, not inheritance.
+`HexEditorSplitHost` wraps a primary `HexEditor` and optionally a synchronized secondary pane. The split button is built into the primary pane's toolbar. It does **not** inherit `HexEditor` — composition over inheritance.
 
 ### XAML
 
 ```xml
-xmlns:hexControls="clr-namespace:WpfHexEditor.HexEditor.Controls;assembly=WpfHexEditor.HexEditor"
+xmlns:hex="clr-namespace:WpfHexEditor.HexEditor;assembly=WpfHexEditor.HexEditor"
 
-<hexControls:HexEditorSplitHost x:Name="HexEditorHost" />
+<hex:HexEditorSplitHost x:Name="HexEditorHost" />
 ```
 
 ### Access the primary editor
@@ -448,14 +448,6 @@ HexEditorHost.FileClosed  += (s, e) => { /* file closed */ };
 HexEditorHost.TitleChanged += (s, title) => Title = title;
 ```
 
-### Standalone setup
-
-`HexEditorSplitHost` requires no IDE host. Merge the same `Generic.xaml` dictionary as `HexEditor`:
-
-```xml
-<ResourceDictionary Source="pack://application:,,,/WpfHexEditor.HexEditor;component/Resources/Dictionary/Generic.xaml" />
-```
-
 ---
 
 ## Level 6: Settings Panel
@@ -465,9 +457,9 @@ HexEditorHost.TitleChanged += (s, title) => Title = title;
 ### XAML
 
 ```xml
-xmlns:hexControls="clr-namespace:WpfHexEditor.HexEditor.Controls;assembly=WpfHexEditor.HexEditor"
+xmlns:hex="clr-namespace:WpfHexEditor.HexEditor;assembly=WpfHexEditor.HexEditor"
 
-<hexControls:HexEditorSettings x:Name="SettingsPanel" />
+<hex:HexEditorSettings x:Name="SettingsPanel" />
 ```
 
 ### Wire to a HexEditor
