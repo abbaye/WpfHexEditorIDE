@@ -470,19 +470,23 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         {
             if (_caret.BlockIndex < 0 || _caret.BlockIndex >= _blocks.Count) return -1;
             var rb = _blocks[_caret.BlockIndex];
+            double listOff = rb.Block.Kind == "list-item"
+                ? (rb.Block.Attributes.TryGetValue("listLevel", out var lv2) && lv2 is int li2 ? li2 + 1 : 1)
+                  * ListIndentPerLevel
+                : 0.0;
             if (rb.GlyphLines is { Count: > 0 })
             {
                 var (gx, _, _) = GetCaretXYFromGlyphLines(rb.GlyphLines, _caret.CharOffset);
-                return rb.IndentLeft + gx;
+                return rb.IndentLeft + listOff + gx;
             }
             var text = GetFlatText(_caret.BlockIndex);
-            if (string.IsNullOrEmpty(text) || _caret.CharOffset <= 0) return 0;
+            if (string.IsNullOrEmpty(text) || _caret.CharOffset <= 0) return listOff;
             double contentW = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
             var ft = (rb.FormattedLines is { Count: > 0 })
                 ? rb.FormattedLines[0]
                 : MakeFormattedText(text, GetBlockTypeface(rb.Block), GetBlockFontSize(rb.Block),
                                     _fgBrush ?? Brushes.Gray, contentW);
-            return CaretNavHelper.GetCaretX(ft, _caret.CharOffset, text.Length);
+            return listOff + CaretNavHelper.GetCaretX(ft, _caret.CharOffset, text.Length);
         }
     }
 
@@ -3141,7 +3145,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                     caretY = blockScreenY + geo.Bounds.Top;
                     caretH = geo.Bounds.Height;
                     if (_caret.CharOffset > 0)
-                        caretX = contentX + geo.Bounds.Right;
+                        caretX = contentX + listIndentOffset + geo.Bounds.Right;
                 }
             }
         }
