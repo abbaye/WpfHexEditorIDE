@@ -158,7 +158,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     // ── Visual children (caret layer on top of main render, optional spell layer above) ──
 
-    private DrawingVisual? _spellCheckLayer;
+    private DrawingVisual?      _spellCheckLayer;
+    private TranslateTransform? _spellLayerTransform;
 
     protected override int VisualChildrenCount => _spellCheckLayer is null ? 1 : 2;
     protected override Visual GetVisualChild(int index) => index == 0 ? _caretVisual : _spellCheckLayer!;
@@ -168,8 +169,17 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         if (_spellCheckLayer is not null)
             RemoveVisualChild(_spellCheckLayer);
-        _spellCheckLayer = layer;
+        _spellCheckLayer     = layer;
+        _spellLayerTransform = new TranslateTransform(0, PageCanvasPad - _offset.Y);
+        _spellCheckLayer.Transform = _spellLayerTransform;
         AddVisualChild(_spellCheckLayer);
+    }
+
+    private void SyncSpellLayerTransform()
+    {
+        if (_spellLayerTransform is null) return;
+        _spellLayerTransform.X = -_offset.X;
+        _spellLayerTransform.Y = PageCanvasPad - _offset.Y;
     }
 
     // ── Constructor ──────────────────────────────────────────────────────────
@@ -756,6 +766,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         _offset.X = Math.Clamp(offset, 0, Math.Max(0, _extent.Width - _viewport.Width));
         _scrollOwner?.InvalidateScrollInfo();
+        SyncSpellLayerTransform();
         InvalidateVisual();
         RefreshCaretVisual();
     }
@@ -764,6 +775,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         _offset.Y = Math.Clamp(offset, 0, Math.Max(0, _extent.Height - _viewport.Height));
         _scrollOwner?.InvalidateScrollInfo();
+        SyncSpellLayerTransform();
         InvalidateVisual();
         RefreshCaretVisual();
         FirePageChanged();
