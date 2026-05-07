@@ -68,10 +68,8 @@ internal static class AppServiceCollection
         // Themed dialog service — replaces System.Windows.MessageBox.
         services.AddSingleton<IDialogService, DialogServiceImpl>();
 
-        // Core singletons — expose through DI so consumers can inject abstractions
-        // instead of using static Instance accessors directly.
-        services.AddSingleton<IEmbeddedFormatCatalog>(_ => EmbeddedFormatCatalog.Instance);
-        services.AddSingleton(_ => LanguageRegistry.Instance);
+        services.AddSingleton<IEmbeddedFormatCatalog>(EmbeddedFormatCatalog.Instance);
+        services.AddSingleton(LanguageRegistry.Instance);
 
         return services;
     }

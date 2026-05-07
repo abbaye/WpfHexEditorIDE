@@ -22,9 +22,9 @@ public class GroupNameToExpandedConverter : IValueConverter
     {
         if (value is not string groupName) return true;
 
-        string collapsed = parameter as string ?? "Format Metadata";
+        var collapsed = (parameter as string ?? "Format Metadata").AsSpan();
         foreach (var entry in collapsed.Split(','))
-            if (string.Equals(groupName, entry.Trim(), StringComparison.Ordinal))
+            if (collapsed[entry].Trim().Equals(groupName, StringComparison.Ordinal))
                 return false;
 
         return true;
@@ -50,12 +50,12 @@ public class InverseBoolToVisibilityConverter : IValueConverter
         => Binding.DoNothing;
 }
 
-/// <summary>Maps IsAiSectionExpanded bool to Segoe MDL2 chevron glyph.</summary>
+/// <summary>Chevron glyph: down () when expanded, right () when collapsed.</summary>
 public class BoolToChevronConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        => value is true ? "" : ""; // chevron-down : chevron-right
+        => value is true ? "" : ""; // chevron-down : chevron-right
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        => DependencyProperty.UnsetValue;
+        => Binding.DoNothing;
 }
