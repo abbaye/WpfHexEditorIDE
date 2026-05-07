@@ -6,10 +6,14 @@ Unlike naive byte-flippers, `whfmt.Fuzz` understands the *structure* of binary f
 
 - Targets semantically significant fields (magic bytes, size fields, enum values, checksums)
 - Applies format-specific mutation strategies declared in `.whfmt` definitions
+- **Compound mutations** — apply N independent mutations per variant for deeper coverage
+- **Mutation log** — every applied mutation recorded (`MutationLogEntry`: type + field)
 - Optionally recomputes checksums after mutation so parsers see plausible-looking corrupt data
+- **`FuzzSession`** — reproducible multi-generation corpus with `manifest.json` save/load
+- **`FuzzReport`** — field coverage, strategy distribution, and untested fields analysis
 - Weighted random strategy picker ensures coverage of the most dangerous fields first
 
-Powered by **790+ whfmt format definitions** with dedicated `fuzz` blocks for ZIP, PNG, PE/EXE, PDF, MP3, SQLite, and more.
+Powered by **757 binary whfmt format definitions** with dedicated `fuzz` blocks for ZIP, PNG, PE/EXE, PDF, MP3, SQLite, and more.
 
 ---
 
@@ -54,7 +58,8 @@ IReadOnlyList<FuzzVariant> Generate(
     string inputFile,
     int count = 10,
     string? forcedFormat = null,
-    int? seed = null)
+    int? seed = null,
+    int compound = 1)   // NEW: mutations per variant
 
 // From raw bytes — format detected from extension
 IReadOnlyList<FuzzVariant> Generate(
@@ -63,16 +68,56 @@ IReadOnlyList<FuzzVariant> Generate(
     string fileName,
     int count = 10,
     string? forcedFormat = null,
-    int? seed = null)
+    int? seed = null,
+    int compound = 1)
+
+// Async overloads (from file path or stream)
+Task<IReadOnlyList<FuzzVariant>> GenerateAsync(string inputFile, ...)
+Task<IReadOnlyList<FuzzVariant>> GenerateAsync(Stream stream, string fileName, ...)
 ```
 
-| Parameter | Description |
-|---|---|
-| `catalog` | `EmbeddedFormatCatalog.Instance` |
-| `inputFile` / `inputData` | Source file to mutate |
-| `count` | Number of variants to generate |
-| `forcedFormat` | Override auto-detection (e.g. `"ZIP"`, `".zip"`) |
-| `seed` | Fixed seed for reproducible corpus |
+### `FormatFuzzer.GenerateWithReport()`
+
+```csharp
+// Returns variants + coverage report in one call
+(IReadOnlyList<FuzzVariant>, FuzzReport) GenerateWithReport(
+    IEmbeddedFormatCatalog catalog,
+    string inputFile,
+    int count = 10,
+    string? forcedFormat = null,
+    int? seed = null,
+    int compound = 1)
+```
+
+### `FuzzSession` — multi-generation corpus
+
+```csharp
+var session = new FuzzSession(catalog, seed: 42);
+
+// Generate batches iteratively
+session.NextGeneration("sample.png", count: 50);
+session.NextGeneration("sample.png", count: 50, compound: 3);
+
+Console.WriteLine($"Corpus: {session.Corpus.Count} variants");
+
+// Save with manifest.json
+await session.SaveCorpusAsync("corpus/");
+
+// Restore from disk
+var restored = await FuzzSession.LoadCorpusAsync(catalog, "corpus/", seed: 42);
+```
+
+### `FuzzReport` — coverage analysis
+
+| Property | Type | Description |
+|---|---|---|
+| `FormatName` | `string` | Format used for the session |
+| `TotalVariants` | `int` | Total generated |
+| `ErrorCount` | `int` | Failed variants |
+| `FieldCoverage` | `IReadOnlyDictionary<string, int>` | Hits per field |
+| `UntestedFields` | `IReadOnlyList<string>` | Fields never mutated |
+| `StrategyDistribution` | `IReadOnlyDictionary<MutationType, int>` | Hits per strategy |
+| `AverageMutationsPerVariant` | `double` | Compound mutation rate |
 
 ### `FuzzVariant`
 
@@ -81,11 +126,12 @@ IReadOnlyList<FuzzVariant> Generate(
 | `Index` | `int` | Zero-based index in the batch |
 | `OriginalFile` | `string` | Source file name |
 | `FormatName` | `string` | Detected format |
-| `Strategy` | `string` | Mutation type applied |
+| `Strategy` | `string` | Primary mutation type applied |
 | `Field` | `string` | Target field name from the whfmt definition |
 | `Description` | `string` | Why this field is interesting to fuzz |
 | `Data` | `byte[]` | Mutated file bytes |
-| `MutationCount` | `int` | Mutations applied (always 1 in single-mutation corpus) |
+| `MutationCount` | `int` | Total mutations applied (≥1 with compound) |
+| `MutationLog` | `IReadOnlyList<MutationLogEntry>` | Per-mutation type + field |
 | `IsError` | `bool` | True if generation failed |
 | `Error` | `string?` | Error message if `IsError` |
 | `SuggestedFileName` | `string` | e.g. `sample_fuzz0003_BitFlip.png` |
@@ -105,6 +151,9 @@ IReadOnlyList<FuzzVariant> Generate(
 | `RandomBytes` | Overwrite with cryptographically random bytes |
 | `Truncate` | Cut the file at the midpoint of the target field |
 | `Duplicate` | Inline-duplicate the field bytes |
+| `InsertBytes` | Insert random bytes at a random offset |
+| `SliceRepeat` | Repeat a random slice of the file 2–8 times |
+| `NegateField` | Bitwise-NOT all bytes in the target field |
 
 Strategies are selected by **weighted random pick** using weights declared in the `.whfmt` definition. Rate controls per-strategy acceptance probability.
 
@@ -153,11 +202,30 @@ Strategies are selected by **weighted random pick** using weights declared in th
 var variants = FormatFuzzer.Generate(catalog, "test.zip", count: 100, seed: 42);
 ```
 
-### Force format detection
+### Compound mutations (deeper coverage)
 
 ```csharp
-// File has no extension — force format
-var variants = FormatFuzzer.Generate(catalog, rawBytes, "mystery_file", forcedFormat: "SQLite");
+// Apply 3 independent mutations per variant
+var variants = FormatFuzzer.Generate(catalog, "sample.png", count: 50, compound: 3);
+foreach (var v in variants)
+    Console.WriteLine($"  {v.MutationCount} mutations: {string.Join(", ", v.MutationLog.Select(m => m.Mutation))}");
+```
+
+### Coverage-aware generation with report
+
+```csharp
+var (variants, report) = FormatFuzzer.GenerateWithReport(catalog, "sample.zip", count: 200, seed: 42);
+Console.WriteLine($"Untested fields: {string.Join(", ", report.UntestedFields)}");
+```
+
+### Multi-generation session with save/restore
+
+```csharp
+var session = new FuzzSession(catalog, seed: 42);
+session.NextGeneration("sample.zip", count: 50);
+session.NextGeneration("sample.zip", count: 50, compound: 2);
+await session.SaveCorpusAsync("corpus/");
+// corpus/ contains variant files + manifest.json
 ```
 
 ### Save full corpus
@@ -201,10 +269,12 @@ foreach (var s in seeds.Where(v => !v.IsError))
 
 ```
 whfmt.Fuzz
-├── FormatFuzzer       — entry point, strategy picker, mutation engine
-├── FuzzVariant        — immutable result record
-├── MutationType       — enum of 9 mutation strategies
-└── FuzzStrategy       — internal weighted strategy record
+├── FormatFuzzer       — entry point, strategy picker, compound mutation engine
+├── FuzzSession        — multi-generation reproducible corpus with manifest.json
+├── FuzzVariant        — immutable result record with MutationLog
+├── FuzzReport         — field coverage, strategy distribution, untested fields
+├── MutationType       — enum of 12 mutation strategies
+└── MutationLogEntry   — per-mutation type + field record
 ```
 
 Checksum recomputation: CRC32 (poly 0xEDB88320), MD5, SHA1, SHA256 — all built-in, zero external dependencies.

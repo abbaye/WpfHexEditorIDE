@@ -2,6 +2,7 @@
 // Project: whfmt.Analysis
 // File: DiffResult.cs
 // Description: Immutable result model for a semantic format diff.
+//   v1.1: HexDiff inline, ChecksumStatus, StructuralDiff added.
 // ==========================================================
 
 namespace WhfmtAnalysis;
@@ -9,73 +10,88 @@ namespace WhfmtAnalysis;
 /// <summary>Result of a semantic field-level comparison between two binary files.</summary>
 public sealed class DiffResult
 {
-    /// <summary>Path or name of the first file (A).</summary>
-    public string FileA { get; init; } = "";
-
-    /// <summary>Path or name of the second file (B).</summary>
-    public string FileB { get; init; } = "";
-
-    /// <summary>Byte size of file A.</summary>
-    public long SizeA { get; init; }
-
-    /// <summary>Byte size of file B.</summary>
-    public long SizeB { get; init; }
-
-    /// <summary>Detected format name (shared).</summary>
-    public string FormatName { get; set; } = "Unknown";
-
-    /// <summary>Format detected for file A.</summary>
-    public string FormatDetectedA { get; set; } = "Unknown";
-
-    /// <summary>Format detected for file B.</summary>
-    public string FormatDetectedB { get; set; } = "Unknown";
-
-    /// <summary>True when both files were identified as the same format.</summary>
-    public bool FormatsMatch { get; set; }
-
-    /// <summary>Key fields used for comparison (from diff.keyFields).</summary>
-    public List<string> KeyFields { get; set; } = [];
-
-    /// <summary>Fields excluded from comparison (from diff.ignoreFields).</summary>
-    public List<string> IgnoreFields { get; set; } = [];
-
-    /// <summary>Grouping field name (from diff.groupBy), or null.</summary>
-    public string? GroupBy { get; set; }
-
-    /// <summary>All field comparisons — key fields and ignored fields.</summary>
+    public string FileA            { get; init; } = "";
+    public string FileB            { get; init; } = "";
+    public long   SizeA            { get; init; }
+    public long   SizeB            { get; init; }
+    public string FormatName       { get; init; } = "Unknown";
+    public string FormatDetectedA  { get; init; } = "Unknown";
+    public string FormatDetectedB  { get; init; } = "Unknown";
+    public bool   FormatsMatch     { get; init; }
+    public List<string> KeyFields    { get; init; } = [];
+    public List<string> IgnoreFields { get; init; } = [];
+    public string? GroupBy         { get; init; }
     public List<FieldChange> FieldChanges { get; } = [];
+    public long   RawByteDelta     { get; init; }
+    public bool   IsIdentical      { get; init; }
+    public string? Error           { get; init; }
 
-    /// <summary>Raw byte size delta (B.Length - A.Length).</summary>
-    public long RawByteDelta { get; set; }
+    // Analysis-2: checksum validation
+    public List<ChecksumStatus> ChecksumsA { get; } = [];
+    public List<ChecksumStatus> ChecksumsB { get; } = [];
 
-    /// <summary>True when all key fields are equal and sizes match.</summary>
-    public bool IsIdentical { get; set; }
+    // Analysis-3: structural diff
+    public StructuralDiff? StructuralDiff { get; set; }
 
-    /// <summary>Error message if diff could not be completed, otherwise null.</summary>
-    public string? Error { get; set; }
-
-    /// <summary>Number of changed key fields.</summary>
-    public int ChangedCount => FieldChanges.Count(f => !f.IsIgnored && f.IsChanged);
-
-    /// <summary>Number of unchanged key fields.</summary>
+    public int ChangedCount   => FieldChanges.Count(f => !f.IsIgnored && f.IsChanged);
     public int UnchangedCount => FieldChanges.Count(f => !f.IsIgnored && !f.IsChanged);
+    public int CorruptedCountA => ChecksumsA.Count(c => !c.IsValid);
+    public int CorruptedCountB => ChecksumsB.Count(c => !c.IsValid);
 }
 
 /// <summary>Comparison result for a single named field.</summary>
 public sealed class FieldChange
 {
-    /// <summary>Field / variable name from the whfmt definition.</summary>
-    public string FieldName { get; init; } = "";
+    public string FieldName  { get; init; } = "";
+    public string ValueA     { get; init; } = "";
+    public string ValueB     { get; init; } = "";
+    public bool   IsChanged  { get; init; }
+    public bool   IsIgnored  { get; init; }
+    /// <summary>True when a checksum field is structurally valid in A but corrupt in B (or vice-versa).</summary>
+    public bool   IsCorrupted { get; init; }
+    /// <summary>Side-by-side hex comparison, populated when both values are byte arrays.</summary>
+    public HexDiff? HexDiff  { get; init; }
+}
 
-    /// <summary>Value in file A (formatted as string).</summary>
-    public string ValueA { get; init; } = "";
+/// <summary>Side-by-side hex comparison for a single field.</summary>
+public sealed class HexDiff
+{
+    /// <summary>Field offset in the file.</summary>
+    public long   Offset   { get; init; }
+    public byte[] BytesA   { get; init; } = [];
+    public byte[] BytesB   { get; init; } = [];
+    /// <summary>Per-byte difference mask — true where bytes differ.</summary>
+    public bool[] DiffMask { get; init; } = [];
+    /// <summary>Number of bytes that differ.</summary>
+    public int DifferentBytes => DiffMask.Count(d => d);
+}
 
-    /// <summary>Value in file B (formatted as string).</summary>
-    public string ValueB { get; init; } = "";
+/// <summary>Checksum validation result for one checksum entry in a file.</summary>
+public sealed class ChecksumStatus
+{
+    public string Algorithm    { get; init; } = "";
+    public long   StoredOffset { get; init; }
+    public string StoredHex    { get; init; } = "";
+    public string ComputedHex  { get; init; } = "";
+    public bool   IsValid      { get; init; }
+}
 
-    /// <summary>True when values differ between A and B.</summary>
-    public bool IsChanged { get; init; }
+/// <summary>Structural comparison of detected blocks between two files.</summary>
+public sealed class StructuralDiff
+{
+    public IReadOnlyList<StructuralBlock> OnlyInA  { get; init; } = [];
+    public IReadOnlyList<StructuralBlock> OnlyInB  { get; init; } = [];
+    public IReadOnlyList<StructuralBlock> InBoth   { get; init; } = [];
+    public int TotalA => OnlyInA.Count + InBoth.Count;
+    public int TotalB => OnlyInB.Count + InBoth.Count;
+}
 
-    /// <summary>True when this field is in the ignore list — shown but not counted as a change.</summary>
-    public bool IsIgnored { get; init; }
+/// <summary>A detected structural block (chunk, entry, object) within a file.</summary>
+public sealed class StructuralBlock
+{
+    public string Name   { get; init; } = "";
+    public long   Offset { get; init; }
+    public int    Length { get; init; }
+    /// <summary>Short hash of the block's bytes for identity comparison.</summary>
+    public string Hash   { get; init; } = "";
 }

@@ -7,9 +7,12 @@ Instead of comparing raw bytes, `whfmt.Analysis` understands the *structure* of 
 - Groups entries by logical key (e.g. filename inside a ZIP)
 - Ignores noise fields (timestamps, padding, calculated offsets)
 - Surfaces only meaningful structural changes
-- Outputs rich text, JSON, or dark-themed HTML reports
+- Side-by-side **hex diff** per changed field (BytesA / BytesB / DiffMask)
+- **Checksum validation** — detects corrupted checksums (CRC32 / MD5 / SHA1 / SHA256)
+- **Structural diff** — block-level OnlyInA / OnlyInB / InBoth using MD5 hashes
+- Outputs rich text, JSON, CSV, Markdown, or dark-themed HTML reports
 
-Powered by **790+ whfmt format definitions** covering Archives, Images, Executables, Documents, Audio, Databases, and more.
+Powered by **757 binary whfmt format definitions** covering Archives, Images, Executables, Documents, Audio, Databases, and more.
 
 ---
 
@@ -63,6 +66,19 @@ DiffResult Compare(
     byte[] dataB, string nameB)
 ```
 
+### `FormatDiff.CompareAsync()`
+
+```csharp
+// Async from file paths
+Task<DiffResult> CompareAsync(IEmbeddedFormatCatalog catalog, string fileA, string fileB)
+
+// Async from streams
+Task<DiffResult> CompareAsync(
+    IEmbeddedFormatCatalog catalog,
+    Stream streamA, string nameA,
+    Stream streamB, string nameB)
+```
+
 ### `DiffResult`
 
 | Property | Type | Description |
@@ -74,8 +90,8 @@ DiffResult Compare(
 | `ChangedCount` | `int` | Number of changed fields (excl. ignored) |
 | `IsIdentical` | `bool` | True when all key fields match |
 | `RawByteDelta` | `long` | Size difference in bytes |
-| `KeyFields` | `IReadOnlyList<string>` | Fields used for comparison |
-| `IgnoreFields` | `IReadOnlyList<string>` | Fields excluded from diff |
+| `ChecksumsA` / `ChecksumsB` | `IReadOnlyList<ChecksumStatus>` | Per-checksum validation |
+| `StructuralDiff` | `StructuralDiff?` | Block-level diff (OnlyInA/B/InBoth) |
 
 ### `FieldChange`
 
@@ -85,15 +101,23 @@ DiffResult Compare(
 | `ValueA` / `ValueB` | `string` | Hex-formatted values |
 | `IsChanged` | `bool` | True when the values differ |
 | `IsIgnored` | `bool` | True for noise fields (timestamps, etc.) |
+| `IsCorrupted` | `bool` | True when a checksum field is invalid |
+| `HexDiff` | `HexDiff?` | Per-byte diff mask for binary fields |
 
 ### `DiffRenderer`
 
 ```csharp
-// Plain text (console-friendly)
+// Plain text (console-friendly, includes hex diff + checksum + structural sections)
 string text = DiffRenderer.RenderText(result);
 
 // JSON (for tooling / CI pipelines)
 string json = DiffRenderer.RenderJson(result);
+
+// CSV (Field,ValueA,ValueB,IsChanged,IsIgnored,IsCorrupted,DifferentBytes)
+string csv = DiffRenderer.ToCsv(result);
+
+// GitHub Markdown table with emoji status
+string md = DiffRenderer.ToMarkdown(result);
 
 // Dark-themed HTML (for reports)
 string html = DiffRenderer.RenderHtml(result);
@@ -154,7 +178,7 @@ whfmt.Analysis — Semantic Binary Diff
 | **MP3** | mpeg_version, bitrate, sample_rate, id3 tags | - |
 | **SQLite** | page_size, schema_format, user_version | change_counter |
 
-All 790+ catalog formats are supported for raw-byte fallback. Formats with a `diff` block in their .whfmt definition get full semantic key-field comparison.
+All 757 binary catalog formats are supported for raw-byte fallback. Formats with a `diff` block in their .whfmt definition get full semantic key-field comparison.
 
 ---
 
@@ -184,10 +208,12 @@ if (!result.IsIdentical) Environment.Exit(1);
 
 ```
 whfmt.Analysis
-├── FormatDiff         — entry point, format detection, field extraction
-├── DiffResult         — immutable result model
-├── FieldChange        — per-field comparison record
-└── DiffRenderer       — text / JSON / HTML output
+├── FormatDiff         — entry point, format detection, single-pass field extraction
+├── DiffResult         — immutable value-object result model
+├── FieldChange        — per-field comparison (IsCorrupted, HexDiff)
+├── ChecksumStatus     — stored vs computed checksum per entry
+├── StructuralDiff     — block-level OnlyInA / OnlyInB / InBoth
+└── DiffRenderer       — text / JSON / CSV / Markdown / HTML output
 ```
 
 Depends on: `whfmt.FileFormatCatalog 1.3.0+` (zero other dependencies, cross-platform net8.0).

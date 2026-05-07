@@ -7,10 +7,11 @@
 using System.CommandLine;
 using WhfmtCodeGen.Commands;
 
-var rootCmd = new RootCommand("whfmt-codegen — generate strongly-typed C# parsers from .whfmt format definitions.")
+var rootCmd = new RootCommand("whfmt-codegen — generate strongly-typed parsers from .whfmt format definitions.")
 {
     GenerateCommand.Build(),
     ListCommand.Build(),
+    DumpCommand.Build(),
 };
 
 rootCmd.Name = "whfmt-codegen";
