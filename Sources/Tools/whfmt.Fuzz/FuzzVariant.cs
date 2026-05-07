@@ -27,6 +27,23 @@ public enum MutationType
     Truncate,
     /// <summary>Duplicate the target field's bytes inline.</summary>
     Duplicate,
+    /// <summary>Insert N random bytes at the field offset (grows the file).</summary>
+    InsertBytes,
+    /// <summary>Repeat the field's bytes X times in-place (stress-test list parsers).</summary>
+    SliceRepeat,
+    /// <summary>XOR every byte of the field with 0xFF (bitwise complement).</summary>
+    NegateField,
+}
+
+/// <summary>One mutation step applied within a compound variant.</summary>
+public sealed class MutationLogEntry
+{
+    /// <summary>Mutation type applied.</summary>
+    public MutationType Mutation  { get; init; }
+    /// <summary>Target field name.</summary>
+    public string       Field     { get; init; } = "";
+    /// <summary>Description of why this field is interesting.</summary>
+    public string       Description { get; init; } = "";
 }
 
 /// <summary>A single generated mutant file with provenance metadata.</summary>
@@ -41,10 +58,10 @@ public sealed class FuzzVariant
     /// <summary>Detected or forced format name.</summary>
     public string FormatName { get; init; } = "";
 
-    /// <summary>Mutation strategy applied.</summary>
+    /// <summary>Primary mutation strategy applied (first in compound).</summary>
     public string Strategy { get; init; } = "";
 
-    /// <summary>Target field name from the fuzz strategy.</summary>
+    /// <summary>Primary target field name.</summary>
     public string Field { get; init; } = "";
 
     /// <summary>Human-readable description of why this field is interesting to fuzz.</summary>
@@ -53,8 +70,11 @@ public sealed class FuzzVariant
     /// <summary>Mutated file content.</summary>
     public byte[] Data { get; init; } = [];
 
-    /// <summary>Number of mutations applied (1 for single-mutation corpus).</summary>
+    /// <summary>Number of mutations applied (1 for single-mutation, N for compound).</summary>
     public int MutationCount { get; init; }
+
+    /// <summary>Full log of all mutations applied (populated in compound mode).</summary>
+    public IReadOnlyList<MutationLogEntry> MutationLog { get; init; } = [];
 
     /// <summary>Error message if variant could not be generated, otherwise null.</summary>
     public string? Error { get; init; }
