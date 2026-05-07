@@ -77,25 +77,25 @@
                 <!-- Running spinner -->
                 <TextBlock Text="⟳ Analysis running…" Margin="0,0,16,0"
                            VerticalAlignment="Center"
-                           Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}"/>
+                           Visibility="{Binding IsRunning, Mode=OneWay, Converter={StaticResource BoolToVis}}"/>
 
                 <!-- Summary line when done -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
-                            Visibility="{Binding HasReport, Converter={StaticResource BoolToVis}}">
+                            Visibility="{Binding HasReport, Mode=OneWay, Converter={StaticResource BoolToVis}}">
                     <TextBlock Style="{StaticResource TabLabelStyle}">
-                        <Run Text="{Binding TotalFiles, Mode=OneWay, StringFormat={}{0} files}"/>
+                        <Run Text="{Binding TotalFiles,    Mode=OneWay, StringFormat={}{0} files}"/>
                         <Run Text=" · "/>
-                        <Run Text="{Binding TotalLines, Mode=OneWay, StringFormat={}{0:N0} LOC}"/>
+                        <Run Text="{Binding TotalLines,    Mode=OneWay, StringFormat={}{0:N0} LOC}"/>
                         <Run Text=" · "/>
-                        <Run Text="{Binding ProjectCount, Mode=OneWay, StringFormat={}{0} projects}"/>
+                        <Run Text="{Binding ProjectCount,  Mode=OneWay, StringFormat={}{0} projects}"/>
                     </TextBlock>
                     <TextBlock Margin="16,0,0,0" VerticalAlignment="Center"
-                               Text="{Binding TrendingText}"
+                               Text="{Binding TrendingText, Mode=OneWay}"
                                Foreground="{DynamicResource DockAccentBrush}"/>
                 </StackPanel>
 
-                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center"
-                           Visibility="{Binding HasReport, Converter={StaticResource BoolToVis},
+                <TextBlock Text="{Binding StatusText, Mode=OneWay}" VerticalAlignment="Center"
+                           Visibility="{Binding HasReport, Mode=OneWay, Converter={StaticResource BoolToVis},
                                         ConverterParameter=Inverse}"
                            Style="{StaticResource MetricLabel}"/>
             </DockPanel>
@@ -115,33 +115,33 @@
                 <StackPanel>
                     <TextBlock Style="{StaticResource SectionHeader}" Text="SCORE"/>
                     <TextBlock Style="{StaticResource ScoreBig}"
-                               Text="{Binding Score}"
-                               Foreground="{Binding Grade, Converter={StaticResource GradeToColor}}"/>
+                               Text="{Binding Score, Mode=OneWay}"
+                               Foreground="{Binding Grade, Mode=OneWay, Converter={StaticResource GradeToColor}}"/>
                     <TextBlock Style="{StaticResource GradeBig}"
-                               Text="{Binding Grade}"
-                               Foreground="{Binding Grade, Converter={StaticResource GradeToColor}}"/>
-                    <TextBlock Text="{Binding TrendingText}" Margin="0,6,0,0"
+                               Text="{Binding Grade, Mode=OneWay}"
+                               Foreground="{Binding Grade, Mode=OneWay, Converter={StaticResource GradeToColor}}"/>
+                    <TextBlock Text="{Binding TrendingText, Mode=OneWay}" Margin="0,6,0,0"
                                Foreground="{DynamicResource DockAccentBrush}"/>
 
                     <TextBlock Style="{StaticResource SectionHeader}" Text="SUB-SCORES" Margin="0,24,0,4"/>
 
                     <TextBlock Text="Volume"     Style="{StaticResource MetricLabel}"/>
-                    <ProgressBar Value="{Binding VolumeScore,     Converter={StaticResource ScoreToProgress}}"
+                    <ProgressBar Value="{Binding VolumeScore,     Mode=OneWay, Converter={StaticResource ScoreToProgress}}"
                                  Maximum="1" Height="4" Margin="0,2,0,6"/>
                     <TextBlock Text="Complexity" Style="{StaticResource MetricLabel}"/>
-                    <ProgressBar Value="{Binding ComplexityScore, Converter={StaticResource ScoreToProgress}}"
+                    <ProgressBar Value="{Binding ComplexityScore, Mode=OneWay, Converter={StaticResource ScoreToProgress}}"
                                  Maximum="1" Height="4" Margin="0,2,0,6"/>
                     <TextBlock Text="Coupling"   Style="{StaticResource MetricLabel}"/>
-                    <ProgressBar Value="{Binding CouplingScore,   Converter={StaticResource ScoreToProgress}}"
+                    <ProgressBar Value="{Binding CouplingScore,   Mode=OneWay, Converter={StaticResource ScoreToProgress}}"
                                  Maximum="1" Height="4" Margin="0,2,0,6"/>
                     <TextBlock Text="Duplication" Style="{StaticResource MetricLabel}"/>
-                    <ProgressBar Value="{Binding DuplicationScore,Converter={StaticResource ScoreToProgress}}"
+                    <ProgressBar Value="{Binding DuplicationScore, Mode=OneWay, Converter={StaticResource ScoreToProgress}}"
                                  Maximum="1" Height="4" Margin="0,2,0,6"/>
                     <TextBlock Text="Dead Code"  Style="{StaticResource MetricLabel}"/>
-                    <ProgressBar Value="{Binding DeadCodeScore,   Converter={StaticResource ScoreToProgress}}"
+                    <ProgressBar Value="{Binding DeadCodeScore,   Mode=OneWay, Converter={StaticResource ScoreToProgress}}"
                                  Maximum="1" Height="4" Margin="0,2,0,6"/>
                     <TextBlock Text="Conventions" Style="{StaticResource MetricLabel}"/>
-                    <ProgressBar Value="{Binding ConventionScore, Converter={StaticResource ScoreToProgress}}"
+                    <ProgressBar Value="{Binding ConventionScore, Mode=OneWay, Converter={StaticResource ScoreToProgress}}"
                                  Maximum="1" Height="4" Margin="0,2,0,6"/>
                 </StackPanel>
             </Border>
@@ -157,7 +157,7 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource SectionHeader}" Text="BY PROJECT"/>
                             <DataGrid x:Name="ProjectsGrid"
-                                      ItemsSource="{Binding Projects}"
+                                      ItemsSource="{Binding Projects, Mode=OneWay}"
                                       AutoGenerateColumns="False"
                                       IsReadOnly="True"
                                       CanUserReorderColumns="False"
@@ -166,19 +166,19 @@
                                       RowHeaderWidth="0"
                                       Margin="0,0,0,16">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Project" Binding="{Binding ProjectName, Mode=OneWay}" Width="*"/>
-                                    <DataGridTextColumn Header="Files"   Binding="{Binding TotalFiles,              Mode=OneWay}"  Width="60"/>
-                                    <DataGridTextColumn Header="LOC"     Binding="{Binding TotalLines,              Mode=OneWay, StringFormat={}{0:N0}}" Width="80"/>
-                                    <DataGridTextColumn Header="Types"   Binding="{Binding TypeCount,               Mode=OneWay}"   Width="60"/>
+                                    <DataGridTextColumn Header="Project" Binding="{Binding ProjectName,              Mode=OneWay}" Width="*"/>
+                                    <DataGridTextColumn Header="Files"   Binding="{Binding TotalFiles,               Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="LOC"     Binding="{Binding TotalLines,               Mode=OneWay, StringFormat={}{0:N0}}" Width="80"/>
+                                    <DataGridTextColumn Header="Types"   Binding="{Binding TypeCount,                Mode=OneWay}" Width="60"/>
                                     <DataGridTextColumn Header="Avg CC"  Binding="{Binding AvgCyclomaticComplexity, Mode=OneWay, StringFormat={}{0:F1}}" Width="70"/>
-                                    <DataGridTextColumn Header="Score"   Binding="{Binding Score,                   Mode=OneWay}"       Width="60"/>
-                                    <DataGridTextColumn Header="Grade"   Binding="{Binding Grade,                   Mode=OneWay}"       Width="55"/>
+                                    <DataGridTextColumn Header="Score"   Binding="{Binding Score,                   Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="Grade"   Binding="{Binding Grade,                   Mode=OneWay}" Width="55"/>
                                 </DataGrid.Columns>
                             </DataGrid>
 
                             <TextBlock Style="{StaticResource SectionHeader}" Text="TOP 5 WORST FILES"/>
                             <DataGrid x:Name="WorstFilesGrid"
-                                      ItemsSource="{Binding WorstFiles}"
+                                      ItemsSource="{Binding WorstFiles, Mode=OneWay}"
                                       AutoGenerateColumns="False"
                                       IsReadOnly="True"
                                       CanUserReorderColumns="False"
@@ -187,11 +187,11 @@
                                       RowHeaderWidth="0"
                                       MouseDoubleClick="OnGridDoubleClick">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="File"    Binding="{Binding FileName,    Mode=OneWay}"    Width="*"/>
+                                    <DataGridTextColumn Header="File"    Binding="{Binding FileName,    Mode=OneWay}" Width="*"/>
                                     <DataGridTextColumn Header="Project" Binding="{Binding ProjectName, Mode=OneWay}" Width="140"/>
-                                    <DataGridTextColumn Header="LOC"     Binding="{Binding TotalLines,  Mode=OneWay}"  Width="60"/>
-                                    <DataGridTextColumn Header="Max CC"  Binding="{Binding MaxCC,       Mode=OneWay}"       Width="70"/>
-                                    <DataGridTextColumn Header="Score"   Binding="{Binding Score,       Mode=OneWay}"       Width="60"/>
+                                    <DataGridTextColumn Header="LOC"     Binding="{Binding TotalLines,  Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="Max CC"  Binding="{Binding MaxCC,       Mode=OneWay}" Width="70"/>
+                                    <DataGridTextColumn Header="Score"   Binding="{Binding Score,       Mode=OneWay}" Width="60"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>
@@ -203,7 +203,7 @@
                     <TabItem.Header>
                         <TextBlock>
                             <Run Text="Issues "/>
-                            <Run Text="{Binding Issues.Count}"/>
+                            <Run Text="{Binding Issues.Count, Mode=OneWay}"/>
                         </TextBlock>
                     </TabItem.Header>
                     <Grid Margin="8">
@@ -225,7 +225,7 @@
                                      ToolTip="Search issues…"/>
                         </StackPanel>
                         <DataGrid Grid.Row="1"
-                                  ItemsSource="{Binding Issues}"
+                                  ItemsSource="{Binding Issues, Mode=OneWay}"
                                   AutoGenerateColumns="False"
                                   IsReadOnly="True"
                                   CanUserReorderColumns="False"
@@ -234,12 +234,12 @@
                                   RowHeaderWidth="0"
                                   MouseDoubleClick="OnGridDoubleClick">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header=""       Binding="{Binding SeverityIcon}" Width="24"/>
-                                <DataGridTextColumn Header="ID"     Binding="{Binding Id}"          Width="80"/>
-                                <DataGridTextColumn Header="Message" Binding="{Binding Message}"    Width="*"/>
-                                <DataGridTextColumn Header="File"   Binding="{Binding FileName}"    Width="160"/>
-                                <DataGridTextColumn Header="Line"   Binding="{Binding Line}"        Width="55"/>
-                                <DataGridTextColumn Header="Project" Binding="{Binding ProjectName}" Width="140"/>
+                                <DataGridTextColumn Header=""        Binding="{Binding SeverityIcon, Mode=OneWay}" Width="24"/>
+                                <DataGridTextColumn Header="ID"      Binding="{Binding Id,           Mode=OneWay}" Width="80"/>
+                                <DataGridTextColumn Header="Message" Binding="{Binding Message,      Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="File"    Binding="{Binding FileName,     Mode=OneWay}" Width="160"/>
+                                <DataGridTextColumn Header="Line"    Binding="{Binding Line,         Mode=OneWay}" Width="55"/>
+                                <DataGridTextColumn Header="Project" Binding="{Binding ProjectName,  Mode=OneWay}" Width="140"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -248,7 +248,7 @@
                 <!-- ── Complexity ────────────────────────────────────────── -->
                 <TabItem Header="Complexity">
                     <Grid Margin="8">
-                        <DataGrid ItemsSource="{Binding TopMethods}"
+                        <DataGrid ItemsSource="{Binding TopMethods, Mode=OneWay}"
                                   AutoGenerateColumns="False"
                                   IsReadOnly="True"
                                   CanUserReorderColumns="False"
@@ -257,12 +257,12 @@
                                   RowHeaderWidth="0"
                                   MouseDoubleClick="OnGridDoubleClick">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Method"    Binding="{Binding FullyQualifiedName}" Width="*"/>
-                                <DataGridTextColumn Header="CC"        Binding="{Binding CyclomaticComplexity}"  Width="60"/>
-                                <DataGridTextColumn Header="Cognitive" Binding="{Binding CognitiveComplexity}"   Width="80"/>
-                                <DataGridTextColumn Header="LOC"       Binding="{Binding Loc}"                   Width="60"/>
-                                <DataGridTextColumn Header="Params"    Binding="{Binding ParameterCount}"        Width="60"/>
-                                <DataGridTextColumn Header="Line"      Binding="{Binding Line}"                  Width="55"/>
+                                <DataGridTextColumn Header="Method"    Binding="{Binding FullyQualifiedName,     Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="CC"        Binding="{Binding CyclomaticComplexity,   Mode=OneWay}" Width="60"/>
+                                <DataGridTextColumn Header="Cognitive" Binding="{Binding CognitiveComplexity,    Mode=OneWay}" Width="80"/>
+                                <DataGridTextColumn Header="LOC"       Binding="{Binding Loc,                    Mode=OneWay}" Width="60"/>
+                                <DataGridTextColumn Header="Params"    Binding="{Binding ParameterCount,         Mode=OneWay}" Width="60"/>
+                                <DataGridTextColumn Header="Line"      Binding="{Binding Line,                   Mode=OneWay}" Width="55"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -271,7 +271,7 @@
                 <!-- ── Coupling ──────────────────────────────────────────── -->
                 <TabItem Header="Coupling">
                     <Grid Margin="8">
-                        <DataGrid ItemsSource="{Binding TopCouplings}"
+                        <DataGrid ItemsSource="{Binding TopCouplings, Mode=OneWay}"
                                   AutoGenerateColumns="False"
                                   IsReadOnly="True"
                                   CanUserReorderColumns="False"
@@ -280,12 +280,12 @@
                                   RowHeaderWidth="0"
                                   MouseDoubleClick="OnGridDoubleClick">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Type"        Binding="{Binding TypeName}"            Width="*"/>
-                                <DataGridTextColumn Header="Ca"          Binding="{Binding Ca}"                  Width="50"/>
-                                <DataGridTextColumn Header="Ce"          Binding="{Binding Ce}"                  Width="50"/>
-                                <DataGridTextColumn Header="Instability" Binding="{Binding Instability, StringFormat={}{0:F2}}" Width="85"/>
-                                <DataGridTextColumn Header="LCOM"        Binding="{Binding Lcom}"                Width="70"/>
-                                <DataGridTextColumn Header="Line"        Binding="{Binding Line}"                Width="55"/>
+                                <DataGridTextColumn Header="Type"        Binding="{Binding TypeName,    Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="Ca"          Binding="{Binding Ca,          Mode=OneWay}" Width="50"/>
+                                <DataGridTextColumn Header="Ce"          Binding="{Binding Ce,          Mode=OneWay}" Width="50"/>
+                                <DataGridTextColumn Header="Instability" Binding="{Binding Instability, Mode=OneWay, StringFormat={}{0:F2}}" Width="85"/>
+                                <DataGridTextColumn Header="LCOM"        Binding="{Binding Lcom,        Mode=OneWay}" Width="70"/>
+                                <DataGridTextColumn Header="Line"        Binding="{Binding Line,        Mode=OneWay}" Width="55"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -294,7 +294,7 @@
                 <!-- ── Duplication ───────────────────────────────────────── -->
                 <TabItem Header="Duplication">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8">
-                        <ItemsControl ItemsSource="{Binding Duplications}">
+                        <ItemsControl ItemsSource="{Binding Duplications, Mode=OneWay}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border Margin="0,0,0,8" Padding="8"
@@ -303,23 +303,23 @@
                                         <StackPanel>
                                             <TextBlock FontWeight="SemiBold">
                                                 <Run Text="Clone group — "/>
-                                                <Run Text="{Binding LineCount}"/>
+                                                <Run Text="{Binding LineCount,          Mode=OneWay}"/>
                                                 <Run Text=" lines, "/>
-                                                <Run Text="{Binding Occurrences.Count}"/>
+                                                <Run Text="{Binding Occurrences.Count,  Mode=OneWay}"/>
                                                 <Run Text=" occurrences, "/>
-                                                <Run Text="{Binding TokenCount}"/>
+                                                <Run Text="{Binding TokenCount,         Mode=OneWay}"/>
                                                 <Run Text=" tokens"/>
                                             </TextBlock>
-                                            <ItemsControl ItemsSource="{Binding Occurrences}"
+                                            <ItemsControl ItemsSource="{Binding Occurrences, Mode=OneWay}"
                                                           Margin="12,4,0,0">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock FontFamily="Consolas" FontSize="11">
-                                                            <Run Text="{Binding FilePath}"/>
+                                                            <Run Text="{Binding FilePath,  Mode=OneWay}"/>
                                                             <Run Text=" : "/>
-                                                            <Run Text="{Binding StartLine}"/>
+                                                            <Run Text="{Binding StartLine, Mode=OneWay}"/>
                                                             <Run Text="–"/>
-                                                            <Run Text="{Binding EndLine}"/>
+                                                            <Run Text="{Binding EndLine,   Mode=OneWay}"/>
                                                         </TextBlock>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
@@ -335,7 +335,7 @@
                 <!-- ── Dead Code ─────────────────────────────────────────── -->
                 <TabItem Header="Dead Code">
                     <Grid Margin="8">
-                        <DataGrid ItemsSource="{Binding DeadSymbols}"
+                        <DataGrid ItemsSource="{Binding DeadSymbols, Mode=OneWay}"
                                   AutoGenerateColumns="False"
                                   IsReadOnly="True"
                                   CanUserReorderColumns="False"
@@ -344,11 +344,11 @@
                                   RowHeaderWidth="0"
                                   MouseDoubleClick="OnGridDoubleClick">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Symbol"  Binding="{Binding Name}"        Width="*"/>
-                                <DataGridTextColumn Header="Kind"    Binding="{Binding Kind}"         Width="90"/>
-                                <DataGridTextColumn Header="File"    Binding="{Binding FilePath, Converter={x:Static conv:FileNameConverter.Instance}}" Width="160"/>
-                                <DataGridTextColumn Header="Line"    Binding="{Binding Line}"          Width="55"/>
-                                <DataGridTextColumn Header="Project" Binding="{Binding ProjectName}"   Width="140"/>
+                                <DataGridTextColumn Header="Symbol"  Binding="{Binding Name,        Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="Kind"    Binding="{Binding Kind,         Mode=OneWay}" Width="90"/>
+                                <DataGridTextColumn Header="File"    Binding="{Binding FilePath,     Mode=OneWay, Converter={x:Static conv:FileNameConverter.Instance}}" Width="160"/>
+                                <DataGridTextColumn Header="Line"    Binding="{Binding Line,         Mode=OneWay}" Width="55"/>
+                                <DataGridTextColumn Header="Project" Binding="{Binding ProjectName,  Mode=OneWay}" Width="140"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
