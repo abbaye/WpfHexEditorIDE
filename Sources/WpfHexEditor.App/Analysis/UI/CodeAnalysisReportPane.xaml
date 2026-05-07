@@ -83,11 +83,11 @@
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
                             Visibility="{Binding HasReport, Converter={StaticResource BoolToVis}}">
                     <TextBlock Style="{StaticResource TabLabelStyle}">
-                        <Run Text="{Binding TotalFiles, StringFormat={}{0} files}"/>
+                        <Run Text="{Binding TotalFiles, Mode=OneWay, StringFormat={}{0} files}"/>
                         <Run Text=" · "/>
-                        <Run Text="{Binding TotalLines, StringFormat={}{0:N0} LOC}"/>
+                        <Run Text="{Binding TotalLines, Mode=OneWay, StringFormat={}{0:N0} LOC}"/>
                         <Run Text=" · "/>
-                        <Run Text="{Binding ProjectCount, StringFormat={}{0} projects}"/>
+                        <Run Text="{Binding ProjectCount, Mode=OneWay, StringFormat={}{0} projects}"/>
                     </TextBlock>
                     <TextBlock Margin="16,0,0,0" VerticalAlignment="Center"
                                Text="{Binding TrendingText}"
@@ -166,13 +166,13 @@
                                       RowHeaderWidth="0"
                                       Margin="0,0,0,16">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Project" Binding="{Binding ProjectName}" Width="*"/>
-                                    <DataGridTextColumn Header="Files"   Binding="{Binding TotalFiles}"  Width="60"/>
-                                    <DataGridTextColumn Header="LOC"     Binding="{Binding TotalLines, StringFormat={}{0:N0}}" Width="80"/>
-                                    <DataGridTextColumn Header="Types"   Binding="{Binding TypeCount}"   Width="60"/>
-                                    <DataGridTextColumn Header="Avg CC"  Binding="{Binding AvgCyclomaticComplexity, StringFormat={}{0:F1}}" Width="70"/>
-                                    <DataGridTextColumn Header="Score"   Binding="{Binding Score}"       Width="60"/>
-                                    <DataGridTextColumn Header="Grade"   Binding="{Binding Grade}"       Width="55"/>
+                                    <DataGridTextColumn Header="Project" Binding="{Binding ProjectName, Mode=OneWay}" Width="*"/>
+                                    <DataGridTextColumn Header="Files"   Binding="{Binding TotalFiles,              Mode=OneWay}"  Width="60"/>
+                                    <DataGridTextColumn Header="LOC"     Binding="{Binding TotalLines,              Mode=OneWay, StringFormat={}{0:N0}}" Width="80"/>
+                                    <DataGridTextColumn Header="Types"   Binding="{Binding TypeCount,               Mode=OneWay}"   Width="60"/>
+                                    <DataGridTextColumn Header="Avg CC"  Binding="{Binding AvgCyclomaticComplexity, Mode=OneWay, StringFormat={}{0:F1}}" Width="70"/>
+                                    <DataGridTextColumn Header="Score"   Binding="{Binding Score,                   Mode=OneWay}"       Width="60"/>
+                                    <DataGridTextColumn Header="Grade"   Binding="{Binding Grade,                   Mode=OneWay}"       Width="55"/>
                                 </DataGrid.Columns>
                             </DataGrid>
 
@@ -187,11 +187,11 @@
                                       RowHeaderWidth="0"
                                       MouseDoubleClick="OnGridDoubleClick">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="File"    Binding="{Binding FileName}"    Width="*"/>
-                                    <DataGridTextColumn Header="Project" Binding="{Binding ProjectName}" Width="140"/>
-                                    <DataGridTextColumn Header="LOC"     Binding="{Binding TotalLines}"  Width="60"/>
-                                    <DataGridTextColumn Header="Max CC"  Binding="{Binding MaxCC}"       Width="70"/>
-                                    <DataGridTextColumn Header="Score"   Binding="{Binding Score}"       Width="60"/>
+                                    <DataGridTextColumn Header="File"    Binding="{Binding FileName,    Mode=OneWay}"    Width="*"/>
+                                    <DataGridTextColumn Header="Project" Binding="{Binding ProjectName, Mode=OneWay}" Width="140"/>
+                                    <DataGridTextColumn Header="LOC"     Binding="{Binding TotalLines,  Mode=OneWay}"  Width="60"/>
+                                    <DataGridTextColumn Header="Max CC"  Binding="{Binding MaxCC,       Mode=OneWay}"       Width="70"/>
+                                    <DataGridTextColumn Header="Score"   Binding="{Binding Score,       Mode=OneWay}"       Width="60"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>
