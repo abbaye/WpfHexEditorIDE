@@ -66,6 +66,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// <summary>Raised when the user requests hex inspection of a block (image or other).</summary>
     public event EventHandler<DocumentBlock>? InspectBlockRequested;
 
+    /// <summary>Raised when the user requests the Page Setup panel (context menu or keyboard).</summary>
+    public event EventHandler? PageSetupRequested;
+
     /// <summary>Raised when a block is selected — host should show pop-toolbar.</summary>
     public event EventHandler<PopToolbarRequestedArgs>? PopToolbarRequested;
 
@@ -232,6 +235,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private System.Windows.Controls.MenuItem? _miImageSave, _miImageCopyClipboard;
     private System.Windows.Controls.MenuItem? _miImageAlign, _miImageWrap, _miImageInspect, _miImageProperties;
     private System.Windows.Controls.Separator? _miImageSep1, _miImageSep2, _miImageSep3;
+    private System.Windows.Controls.MenuItem? _miPageSetup;
 
     private System.Windows.Controls.ContextMenu BuildContextMenu()
     {
@@ -302,6 +306,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         cm.Items.Add(new System.Windows.Controls.Separator());
         cm.Items.Add(_miSelectBlock);
         cm.Items.Add(_miSelectAll);
+        cm.Items.Add(new System.Windows.Controls.Separator());
+        _miPageSetup = MakeMenuItem("DocCanvas_PageSetup", "Page Setup…", () => PageSetupRequested?.Invoke(this, EventArgs.Empty), "");
+        cm.Items.Add(_miPageSetup);
 
         _miImageSep1         = new System.Windows.Controls.Separator { Visibility = Visibility.Collapsed };
         _miImageCut          = MakeMenuItem("ImgCtx_Cut",          "Cut",                    () => CutImageAtCaret(),             "Ctrl+X");

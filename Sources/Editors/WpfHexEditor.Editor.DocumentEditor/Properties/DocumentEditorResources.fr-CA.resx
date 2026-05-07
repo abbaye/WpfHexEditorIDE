@@ -228,6 +228,7 @@
   <data name="DocCanvas_Paste"      xml:space="preserve"><value>Coller</value></data>
   <data name="DocCanvas_Delete"     xml:space="preserve"><value>Supprimer</value></data>
   <data name="DocCanvas_SelectAll"  xml:space="preserve"><value>Tout sélectionner</value></data>
+  <data name="DocCanvas_PageSetup" xml:space="preserve"><value>Mise en page…</value></data>
   <data name="DocCanvas_Undo"       xml:space="preserve"><value>Annuler</value></data>
   <data name="DocCanvas_Redo"       xml:space="preserve"><value>Rétablir</value></data>
   <data name="DocCanvas_Bold"       xml:space="preserve"><value>Gras</value></data>

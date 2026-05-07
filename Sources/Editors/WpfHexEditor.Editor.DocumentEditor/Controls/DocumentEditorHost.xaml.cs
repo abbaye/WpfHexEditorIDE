@@ -1236,6 +1236,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_TextPane.PART_Renderer.FindResultsChanged     += (_, _) => UpdateSearchScrollMarkers();
         PART_TextPane.PART_Renderer.InspectBlockRequested += (_, b) => BlockHexInspectRequested?.Invoke(this, b);
         PART_TextPane.BlockInspectRequested               += (_, b) => BlockHexInspectRequested?.Invoke(this, b);
+        PART_TextPane.PART_Renderer.PageSetupRequested    += (_, _) => OnPageSetupBtnClick(this, new RoutedEventArgs());
 
         PART_StatusBar.ViewModeChangeRequested    += (_, m) => ViewMode   = m;
         PART_StatusBar.RenderModeChangeRequested  += (_, m) => RenderMode = m;
