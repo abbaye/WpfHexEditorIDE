@@ -15,6 +15,7 @@
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -94,6 +95,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private int    _hoverIndex    = -1;
     private int    _selectedIndex = -1;
     private bool   _forensicMode  = false;
+
+    // Forensic hover popup
+    private ForensicHoverPopup?    _forensicPopup;
+    private readonly DispatcherTimer _forensicHoverTimer;
+    private Point  _pendingHoverPt;
+    private int    _forensicHoverBlockIdx = -1;
 
     // Dirty-block tracking for scroll markers (block indices modified since last save)
     private readonly HashSet<int> _dirtyBlockIndices = [];
@@ -217,6 +224,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         ContextMenuOpening += OnContextMenuOpening;
         ContextMenu        = BuildContextMenu();
+
+        // Forensic hover timer — 400 ms dwell before showing popup (matches CodeEditor QuickInfo)
+        _forensicHoverTimer       = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(400) };
+        _forensicHoverTimer.Tick += OnForensicHoverTimerTick;
 
         // Blink timer: only redraws the 2px caret visual, not the whole page
         _blinkTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
@@ -2732,18 +2743,45 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         }
 
         int hovered = HitTestBlock(pt);
-        if (hovered == _hoverIndex) return;
-        _hoverIndex = hovered;
-        // Show hand cursor when hovering a hyperlink with Ctrl held
-        bool isHoveredHyperlink = hovered >= 0 && hovered < _blocks.Count &&
-                                   _blocks[hovered].Block.Kind == "hyperlink" &&
-                                   (Keyboard.Modifiers & ModifierKeys.Control) != 0;
-        Cursor = isHoveredHyperlink ? Cursors.Hand : Cursors.IBeam;
-        InvalidateVisual();
+        if (hovered != _hoverIndex)
+        {
+            _hoverIndex = hovered;
+            // Show hand cursor when hovering a hyperlink with Ctrl held
+            bool isHoveredHyperlink = hovered >= 0 && hovered < _blocks.Count &&
+                                       _blocks[hovered].Block.Kind == "hyperlink" &&
+                                       (Keyboard.Modifiers & ModifierKeys.Control) != 0;
+            Cursor = isHoveredHyperlink ? Cursors.Hand : Cursors.IBeam;
+            InvalidateVisual();
+        }
+
+        // Forensic hover — detect chip or dot under cursor
+        if (_forensicMode)
+        {
+            int forensicIdx = HitTestForensicElement(pt);
+            if (forensicIdx != _forensicHoverBlockIdx)
+            {
+                _forensicHoverBlockIdx = forensicIdx;
+                _forensicHoverTimer.Stop();
+                if (forensicIdx >= 0)
+                {
+                    _pendingHoverPt = pt;
+                    Cursor = Cursors.Hand;
+                    _forensicHoverTimer.Start();
+                }
+                else
+                {
+                    _forensicPopup?.Hide();
+                }
+            }
+        }
     }
 
     private void OnMouseLeave(object sender, MouseEventArgs e)
     {
+        _forensicHoverTimer.Stop();
+        _forensicHoverBlockIdx = -1;
+        _forensicPopup?.OnEditorMouseLeft();
+
         if (_hoverIndex == -1) return;
         _hoverIndex = -1;
         InvalidateVisual();
@@ -2751,6 +2789,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void OnMouseDown(object sender, MouseButtonEventArgs e)
     {
+        _forensicPopup?.Hide();
         Focus();
         Keyboard.Focus(this);
         var pt  = e.GetPosition(this);
@@ -3136,6 +3175,76 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         RebuildLayout();
         RefreshCaretVisual();
         return true;
+    }
+
+    // ── Forensic hit-test + hover popup ──────────────────────────────────────
+
+    /// <summary>
+    /// Returns the block index when <paramref name="pt"/> lands on a forensic
+    /// kind-chip, a forensic dot, or any block that has a ForensicAlert.
+    /// Returns -1 when forensic mode is off or no element is hit.
+    /// </summary>
+    private int HitTestForensicElement(Point pt)
+    {
+        if (!_forensicMode || _blocks.Count == 0) return -1;
+
+        for (int i = 0; i < _blocks.Count; i++)
+        {
+            var rb = _blocks[i];
+            if (rb.Block.Kind is "header" or "footer" or "page-break") continue;
+
+            double screenY = PageCanvasPad + rb.Y - _offset.Y;
+
+            // Kind chip: Rect(_pageLeft + 8, screenY + 2, 36, 16)
+            var chipRect = new Rect(_pageLeft + 8, screenY + 2, 36, 16);
+            if (chipRect.Contains(pt)) return i;
+
+            // Forensic dot: ellipse centre (_pageLeft + _pageWidth - marginRight - 2, screenY + 8) r=4
+            if (rb.ForensicSeverity.HasValue)
+            {
+                double cx = _pageLeft + _pageWidth - _pageSettings.MarginRight - 2;
+                double cy = screenY + 8;
+                double dx = pt.X - cx, dy = pt.Y - cy;
+                if (dx * dx + dy * dy <= 36) return i; // r=6 hit area
+            }
+        }
+        return -1;
+    }
+
+    private void OnForensicHoverTimerTick(object? sender, EventArgs e)
+    {
+        _forensicHoverTimer.Stop();
+        if (_forensicHoverBlockIdx < 0 || _forensicHoverBlockIdx >= _blocks.Count) return;
+
+        var rb    = _blocks[_forensicHoverBlockIdx];
+        var alert = _model?.ForensicAlerts.FirstOrDefault(a => ReferenceEquals(a.Block, rb.Block));
+
+        string kindLabel = rb.Block.Kind.ToUpperInvariant() switch
+        {
+            "PARAGRAPH" => "Paragraph",
+            "LIST-ITEM" => "List item",
+            "HEADING"   => $"Heading {rb.Block.Attributes.GetValueOrDefault("level") ?? "1"}",
+            "TABLE"     => "Table",
+            "CODE"      => "Code block",
+            "IMAGE"     => "Image",
+            string k    => k[..1] + k[1..].ToLowerInvariant()
+        };
+
+        var popup = EnsureForensicPopup();
+        popup.Show(this, _pendingHoverPt, ForensicHoverTarget.Block,
+                   rb.Block, _forensicHoverBlockIdx, alert, kindLabel);
+    }
+
+    private ForensicHoverPopup EnsureForensicPopup()
+    {
+        if (_forensicPopup is not null) return _forensicPopup;
+
+        _forensicPopup = new ForensicHoverPopup();
+        _forensicPopup.NavigateRequested  += (_, idx) => NavigateToBlockIndex(idx);
+        _forensicPopup.CopyRequested      += (_, txt) => System.Windows.Clipboard.SetText(txt);
+        _forensicPopup.SuppressRequested  += (_, alert) => _model?.SuppressAlert(alert);
+        _forensicPopup.InspectRequested   += (_, block) => InspectBlockRequested?.Invoke(this, block);
+        return _forensicPopup;
     }
 
     private int HitTestBlock(Point pt)
