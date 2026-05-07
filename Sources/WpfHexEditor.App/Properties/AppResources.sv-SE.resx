@@ -903,4 +903,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbolupplosning slutford.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Datbrytpunkter</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Lagg till datbrytpunkt</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Kör kodanalys...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Analysera projekt...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Analysera fil...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Öppna analysrapport</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Analyserar...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Kodkvalitetspoäng — klicka för att öppna rapport</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Kodanalys</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Översikt</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Problem</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Komplexitet</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Koppling</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Duplicering</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Död kod</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Poäng</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ förbättrad</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ försämrad</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Ingen förändring</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>PER PROJEKT</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>TOPP 5 SÄMSTA FILER</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Alla</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Kritisk</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Sök problem...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Tröskel: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Instabilitet</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Totalt duplicerat</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>klass</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>fält</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>metod</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>parameter</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>variabel</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Samlar in volymmätvärden...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Analyserar komplexitet...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Analyserar koppling...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Identifierar dupliceringar...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Identifierar död kod...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Samlar in Roslyn-diagnostik...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Beräknar kvalitetspoäng...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Ingen lösning öppen. Öppna en lösning innan kodanalys körs.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Kodanalys misslyckades: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Analysögonblicksbild sparad.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Analysögonblicksbild rensad.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Allmänt</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Tröskelvärden</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Regler</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Kör analys automatiskt när lösning öppnas</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Kör analys automatiskt vid bygge</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Visa poängmärke i statusfältet</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Skicka diagnostik till felpanelen</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Inkludera genererade filer (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Kvarhållning av ögonblicksbilder:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Utdataverbositet:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Återställ standardvärden</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Inaktiverad</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Information</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Varning</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Fel</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Kör om</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Exportera ▾</value></data>
 </root>

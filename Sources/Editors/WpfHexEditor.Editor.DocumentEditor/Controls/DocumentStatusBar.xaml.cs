@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
+using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 using WpfHexEditor.Editor.DocumentEditor.Properties;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
@@ -65,6 +66,14 @@ public partial class DocumentStatusBar : UserControl
         DependencyProperty.Register(nameof(ViewModeText), typeof(string), typeof(DocumentStatusBar),
             new PropertyMetadata(DocumentEditorResources.DocStatusBar_DefaultViewMode));
 
+    public static readonly DependencyProperty ViewModeProperty =
+        DependencyProperty.Register(nameof(ViewMode), typeof(DocumentViewMode), typeof(DocumentStatusBar),
+            new PropertyMetadata(DocumentViewMode.TextOnly, OnViewModePropertyChanged));
+
+    public static readonly DependencyProperty RenderModeProperty =
+        DependencyProperty.Register(nameof(RenderMode), typeof(DocumentRenderMode), typeof(DocumentStatusBar),
+            new PropertyMetadata(DocumentRenderMode.Page, OnRenderModePropertyChanged));
+
     // ── Events ────────────────────────────────────────────────────────────────
 
     /// <summary>Raised when the user clicks the forensic alert badge.</summary>
@@ -72,6 +81,12 @@ public partial class DocumentStatusBar : UserControl
 
     /// <summary>Raised when the zoom slider value changes (value = percent 50–200).</summary>
     public event EventHandler<double>? ZoomChanged;
+
+    /// <summary>Raised when the user selects a view mode chip in the status bar.</summary>
+    public event EventHandler<DocumentViewMode>? ViewModeChangeRequested;
+
+    /// <summary>Raised when the user selects a render mode chip in the status bar.</summary>
+    public event EventHandler<DocumentRenderMode>? RenderModeChangeRequested;
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
@@ -140,6 +155,18 @@ public partial class DocumentStatusBar : UserControl
     {
         get => (string)GetValue(ViewModeTextProperty);
         set => SetValue(ViewModeTextProperty, value);
+    }
+
+    public DocumentViewMode ViewMode
+    {
+        get => (DocumentViewMode)GetValue(ViewModeProperty);
+        set => SetValue(ViewModeProperty, value);
+    }
+
+    public DocumentRenderMode RenderMode
+    {
+        get => (DocumentRenderMode)GetValue(RenderModeProperty);
+        set => SetValue(RenderModeProperty, value);
     }
 
     // ── Public API ───────────────────────────────────────────────────────────
@@ -236,4 +263,31 @@ public partial class DocumentStatusBar : UserControl
 
     private void OnSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) =>
         ZoomChanged?.Invoke(this, e.NewValue);
+
+    // ── Status bar view/render mode chips ───────────────────────────────────
+
+    private void OnSBTextModeClicked(object sender, RoutedEventArgs e)   => ViewModeChangeRequested?.Invoke(this, DocumentViewMode.TextOnly);
+    private void OnSBStructModeClicked(object sender, RoutedEventArgs e) => ViewModeChangeRequested?.Invoke(this, DocumentViewMode.Structure);
+    private void OnSBFocusModeClicked(object sender, RoutedEventArgs e)  => ViewModeChangeRequested?.Invoke(this, DocumentViewMode.Focus);
+    private void OnSBPageModeClicked(object sender, RoutedEventArgs e)   => RenderModeChangeRequested?.Invoke(this, DocumentRenderMode.Page);
+    private void OnSBDraftModeClicked(object sender, RoutedEventArgs e)  => RenderModeChangeRequested?.Invoke(this, DocumentRenderMode.Draft);
+    private void OnSBOutlineModeClicked(object sender, RoutedEventArgs e)=> RenderModeChangeRequested?.Invoke(this, DocumentRenderMode.Outline);
+
+    private static void OnViewModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is not DocumentStatusBar sb) return;
+        var mode = (DocumentViewMode)e.NewValue;
+        if (sb.PART_SB_TextModeBtn   is not null) sb.PART_SB_TextModeBtn.IsChecked   = mode == DocumentViewMode.TextOnly;
+        if (sb.PART_SB_StructModeBtn is not null) sb.PART_SB_StructModeBtn.IsChecked = mode == DocumentViewMode.Structure;
+        if (sb.PART_SB_FocusModeBtn  is not null) sb.PART_SB_FocusModeBtn.IsChecked  = mode == DocumentViewMode.Focus;
+    }
+
+    private static void OnRenderModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is not DocumentStatusBar sb) return;
+        var mode = (DocumentRenderMode)e.NewValue;
+        if (sb.PART_SB_PageModeBtn    is not null) sb.PART_SB_PageModeBtn.IsChecked    = mode == DocumentRenderMode.Page;
+        if (sb.PART_SB_DraftModeBtn   is not null) sb.PART_SB_DraftModeBtn.IsChecked   = mode == DocumentRenderMode.Draft;
+        if (sb.PART_SB_OutlineModeBtn is not null) sb.PART_SB_OutlineModeBtn.IsChecked = mode == DocumentRenderMode.Outline;
+    }
 }

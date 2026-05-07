@@ -599,4 +599,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbol resolution complete.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Data Breakpoints</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Add Data Breakpoint</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>เรียกใช้การวิเคราะห์โค้ด...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>วิเคราะห์โปรเจกต์...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>วิเคราะห์ไฟล์...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>เปิดรายงานการวิเคราะห์</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>กำลังวิเคราะห์...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>คะแนนคุณภาพโค้ด — คลิกเพื่อเปิดรายงาน</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>การวิเคราะห์โค้ด</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>ภาพรวม</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>ปัญหา</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>ความซับซ้อน</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>การเชื่อมต่อ</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>การซ้ำซ้อน</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>โค้ดที่ไม่ได้ใช้</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>คะแนน</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ ดีขึ้น</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ แย่ลง</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>ไม่มีการเปลี่ยนแปลง</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>ตามโปรเจกต์</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>5 ไฟล์ที่แย่ที่สุด</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>ทั้งหมด</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>วิกฤต</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>ค้นหาปัญหา...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>เกณฑ์: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>ความไม่เสถียร</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>รวมที่ซ้ำกัน</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>คลาส</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>ฟิลด์</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>เมธอด</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>พารามิเตอร์</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>ตัวแปร</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>กำลังรวบรวมเมตริกปริมาณ...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>กำลังวิเคราะห์ความซับซ้อน...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>กำลังวิเคราะห์การเชื่อมต่อ...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>กำลังตรวจจับการซ้ำซ้อน...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>กำลังตรวจจับโค้ดที่ไม่ได้ใช้...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>กำลังรวบรวมการวินิจฉัย Roslyn...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>กำลังคำนวณคะแนนคุณภาพ...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>ไม่มีโซลูชันที่เปิดอยู่ กรุณาเปิดโซลูชันก่อนเรียกใช้การวิเคราะห์โค้ด</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>การวิเคราะห์โค้ดล้มเหลว: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>บันทึกสแนปชอตการวิเคราะห์แล้ว</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>ล้างสแนปชอตการวิเคราะห์แล้ว</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>ทั่วไป</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>เกณฑ์</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>กฎ</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>เรียกใช้การวิเคราะห์อัตโนมัติเมื่อเปิดโซลูชัน</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>เรียกใช้การวิเคราะห์อัตโนมัติเมื่อบิลด์</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>แสดงป้ายคะแนนในแถบสถานะ</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>ส่งการวินิจฉัยไปยังแผงข้อผิดพลาด</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>รวมไฟล์ที่สร้างขึ้น (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>การเก็บรักษาสแนปชอต:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>ความละเอียดของเอาต์พุต:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>คืนค่าเริ่มต้น</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>ปิดใช้งาน</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>ข้อมูล</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>คำเตือน</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>ข้อผิดพลาด</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ เรียกใช้อีกครั้ง</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>ส่งออก ▾</value></data>
 </root>

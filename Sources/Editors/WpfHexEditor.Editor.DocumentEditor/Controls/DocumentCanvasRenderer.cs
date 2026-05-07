@@ -15,6 +15,7 @@
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -63,6 +64,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// <summary>Raised when the user clicks a block.</summary>
     public event EventHandler<DocumentBlock?>? SelectedBlockChanged;
 
+    /// <summary>Raised when the user requests hex inspection of a block (image or other).</summary>
+    public event EventHandler<DocumentBlock>? InspectBlockRequested;
+
+    /// <summary>Raised when the user requests the Page Setup panel (context menu or keyboard).</summary>
+    public event EventHandler? PageSetupRequested;
+
     /// <summary>Raised when a block is selected — host should show pop-toolbar.</summary>
     public event EventHandler<PopToolbarRequestedArgs>? PopToolbarRequested;
 
@@ -88,6 +95,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private int    _hoverIndex    = -1;
     private int    _selectedIndex = -1;
     private bool   _forensicMode  = false;
+
+    // Forensic hover popup
+    private ForensicHoverPopup?    _forensicPopup;
+    private readonly DispatcherTimer _forensicHoverTimer;
+    private Point  _pendingHoverPt;
+    private int    _forensicHoverBlockIdx = -1;
 
     // Dirty-block tracking for scroll markers (block indices modified since last save)
     private readonly HashSet<int> _dirtyBlockIndices = [];
@@ -212,6 +225,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         ContextMenuOpening += OnContextMenuOpening;
         ContextMenu        = BuildContextMenu();
 
+        // Forensic hover timer — 400 ms dwell before showing popup (matches CodeEditor QuickInfo)
+        _forensicHoverTimer       = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(400) };
+        _forensicHoverTimer.Tick += OnForensicHoverTimerTick;
+
         // Blink timer: only redraws the 2px caret visual, not the whole page
         _blinkTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
         _blinkTimer.Tick += (_, _) => { _caretVisible = !_caretVisible; RefreshCaretVisual(); };
@@ -225,6 +242,11 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private System.Windows.Controls.MenuItem? _miSelectBlock, _miInsertPageBreak, _miInsertHyperlink, _miInsertTable;
     private System.Windows.Controls.MenuItem? _miTableInsertRowAbove, _miTableInsertRow, _miTableDeleteRow;
     private System.Windows.Controls.MenuItem? _miTableInsertColLeft, _miTableInsertCol, _miTableDeleteCol, _miTable;
+    private System.Windows.Controls.MenuItem? _miImageCut, _miImageCopy, _miImageDelete, _miImageReplace;
+    private System.Windows.Controls.MenuItem? _miImageSave, _miImageCopyClipboard;
+    private System.Windows.Controls.MenuItem? _miImageAlign, _miImageWrap, _miImageInspect, _miImageProperties;
+    private System.Windows.Controls.Separator? _miImageSep1, _miImageSep2, _miImageSep3;
+    private System.Windows.Controls.MenuItem? _miPageSetup;
 
     private System.Windows.Controls.ContextMenu BuildContextMenu()
     {
@@ -295,7 +317,60 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         cm.Items.Add(new System.Windows.Controls.Separator());
         cm.Items.Add(_miSelectBlock);
         cm.Items.Add(_miSelectAll);
+        cm.Items.Add(new System.Windows.Controls.Separator());
+        _miPageSetup = MakeMenuItem("DocCanvas_PageSetup", "Page Setup…", () => PageSetupRequested?.Invoke(this, EventArgs.Empty), "");
+        cm.Items.Add(_miPageSetup);
+
+        _miImageSep1         = new System.Windows.Controls.Separator { Visibility = Visibility.Collapsed };
+        _miImageCut          = MakeMenuItem("ImgCtx_Cut",          "Cut",                    () => CutImageAtCaret(),             "Ctrl+X");
+        _miImageCopy         = MakeMenuItem("ImgCtx_Copy",         "Copy",                   () => CopySelection(),               "Ctrl+C");
+        _miImageCopyClipboard= MakeMenuItem("ImgCtx_CopyImage",    "Copy image to clipboard",() => CopyImageToClipboard(),        "");
+        _miImageDelete       = MakeMenuItem("ImgCtx_Delete",       "Delete image",            () => DeleteAtCaret(forward: true), "Del");
+        _miImageReplace      = MakeMenuItem("ImgCtx_Replace",      "Replace image…",          () => ReplaceImageAtCaret(),        "");
+        _miImageSave         = MakeMenuItem("ImgCtx_SaveAs",       "Save image as…",          () => SaveImageAtCaret(),           "");
+
+        _miImageAlign = MakeSubmenu("ImgCtx_Align", "Alignment",
+            MakeMenuItem("ImgCtx_AlignLeft",   "Align left",   () => SetImageAttribute("align", "left"),   ""),
+            MakeMenuItem("ImgCtx_AlignCenter", "Center",       () => SetImageAttribute("align", "center"), ""),
+            MakeMenuItem("ImgCtx_AlignRight",  "Align right",  () => SetImageAttribute("align", "right"),  ""));
+
+        _miImageWrap = MakeSubmenu("ImgCtx_Wrap", "Text wrapping",
+            MakeMenuItem("ImgCtx_WrapNone",  "No wrap",          () => SetImageAttribute("wrap", "none"),  ""),
+            MakeMenuItem("ImgCtx_WrapLeft",  "Wrap text – left", () => SetImageAttribute("wrap", "left"),  ""),
+            MakeMenuItem("ImgCtx_WrapRight", "Wrap text – right",() => SetImageAttribute("wrap", "right"), ""));
+
+        _miImageInspect   = MakeMenuItem("ImgCtx_InspectHex",  "Inspect in Hex Editor", () => RaiseInspectImage(), "");
+        _miImageProperties= MakeMenuItem("ImgCtx_Properties",  "Image properties…",     () => OpenImagePropertiesDialog(), "F4");
+        _miImageSep2      = new System.Windows.Controls.Separator { Visibility = Visibility.Collapsed };
+        _miImageSep3      = new System.Windows.Controls.Separator { Visibility = Visibility.Collapsed };
+
+        cm.Items.Add(_miImageSep1);
+        cm.Items.Add(_miImageCut);
+        cm.Items.Add(_miImageCopy);
+        cm.Items.Add(_miImageCopyClipboard);
+        cm.Items.Add(_miImageDelete);
+        cm.Items.Add(_miImageReplace);
+        cm.Items.Add(_miImageSave);
+        cm.Items.Add(_miImageSep3);
+        cm.Items.Add(_miImageAlign);
+        cm.Items.Add(_miImageWrap);
+        cm.Items.Add(_miImageSep2);
+        cm.Items.Add(_miImageInspect);
+        cm.Items.Add(_miImageProperties);
+
         return cm;
+    }
+
+    // ── Image context menu visibility toggle ─────────────────────────────────
+
+    private void SetImageMenuVisible(bool visible)
+    {
+        var vis = visible ? Visibility.Visible : Visibility.Collapsed;
+        foreach (var item in new System.Windows.FrameworkElement?[]
+            { _miImageSep1, _miImageCut, _miImageCopy, _miImageCopyClipboard,
+              _miImageDelete, _miImageReplace, _miImageSave, _miImageSep3,
+              _miImageAlign, _miImageWrap, _miImageSep2, _miImageInspect, _miImageProperties })
+            if (item is not null) item.Visibility = vis;
     }
 
     private System.Windows.Controls.MenuItem MakeSubmenu(string headerKey, string fallback, params System.Windows.Controls.MenuItem?[] items)
@@ -314,7 +389,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         return mi;
     }
 
-    private void SetBlockStyleFromMenu(string? style, int? level)
+    internal void SetBlockStyleFromMenu(string? style, int? level)
     {
         if (_mutator is null || _blocks.Count == 0) return;
         int bi    = _caret.BlockIndex >= 0 ? _caret.BlockIndex : (_selectedIndex >= 0 ? _selectedIndex : 0);
@@ -376,6 +451,144 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var dlg = new Dialogs.InsertTableDialog { Owner = win };
         if (dlg.ShowDialog() != true) return;
         InsertTable(dlg.Rows, dlg.Columns);
+    }
+
+    // ── Image context menu actions ────────────────────────────────────────────
+
+    private RenderBlock? GetImageAtCaret()
+    {
+        int bi = _caret.BlockIndex >= 0 ? _caret.BlockIndex : (_selectedIndex >= 0 ? _selectedIndex : -1);
+        if (bi < 0 || bi >= _blocks.Count) return null;
+        var rb = _blocks[bi];
+        return rb.Block.Kind == "image" ? rb : null;
+    }
+
+    private void CutImageAtCaret()
+    {
+        CopySelection();
+        DeleteAtCaret(forward: true);
+    }
+
+    private string? GetImageCacheKey(RenderBlock rb) =>
+        rb.Block.Attributes.TryGetValue("zipEntryName", out var ze) && ze is string s
+            ? $"{_model?.FilePath}|{s}"
+            : rb.Block.Attributes.TryGetValue("binaryData", out _)
+                ? $"binaryData|{rb.Block.RawOffset}"
+                : null;
+
+    private void CopyImageToClipboard()
+    {
+        var rb = GetImageAtCaret();
+        if (rb is null) return;
+        var key = GetImageCacheKey(rb);
+        if (key is null || _imageCache is null || !_imageCache.TryGetValue(key, out var bmp) || bmp is null) return;
+        System.Windows.Clipboard.SetImage(bmp);
+    }
+
+    private void ReplaceImageAtCaret()
+    {
+        var rb = GetImageAtCaret();
+        if (rb is null || _mutator is null) return;
+
+        var dlg = new Microsoft.Win32.OpenFileDialog
+        {
+            Filter      = "Image files|*.png;*.jpg;*.jpeg;*.gif;*.bmp;*.webp;*.tiff|All files|*.*",
+            Title       = TryFindResource("ImgCtx_Replace") as string ?? "Replace image"
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        var bytes = System.IO.File.ReadAllBytes(dlg.FileName);
+        _mutator.SetBlockAttribute(rb.Block, "binaryData",   bytes);
+        _mutator.SetBlockAttribute(rb.Block, "zipEntryName", null);
+        _mutator.SetBlockAttribute(rb.Block, "naturalWidth",  null);
+        _mutator.SetBlockAttribute(rb.Block, "naturalHeight", null);
+        RebuildLayout();
+        InvalidateVisual();
+    }
+
+    private void SaveImageAtCaret()
+    {
+        var rb = GetImageAtCaret();
+        if (rb is null) return;
+
+        var key = GetImageCacheKey(rb);
+        if (key is null || _imageCache is null || !_imageCache.TryGetValue(key, out var bmp) || bmp is null) return;
+
+        var name = System.IO.Path.GetFileNameWithoutExtension(_model?.FilePath ?? "image");
+        var dlg  = new Microsoft.Win32.SaveFileDialog
+        {
+            Filter   = "PNG image|*.png|JPEG image|*.jpg",
+            FileName = name
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        var encoder = dlg.FilterIndex == 2
+            ? (System.Windows.Media.Imaging.BitmapEncoder)new System.Windows.Media.Imaging.JpegBitmapEncoder()
+            : new System.Windows.Media.Imaging.PngBitmapEncoder();
+        encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bmp));
+        using var fs = System.IO.File.OpenWrite(dlg.FileName);
+        encoder.Save(fs);
+    }
+
+    private void SetImageAttribute(string key, string value)
+    {
+        var rb = GetImageAtCaret();
+        if (rb is null || _mutator is null) return;
+        _mutator.SetBlockAttribute(rb.Block, key, value);
+        RebuildLayout();
+        InvalidateVisual();
+    }
+
+    private void RaiseInspectImage()
+    {
+        var rb = GetImageAtCaret();
+        if (rb is null) return;
+        InspectBlockRequested?.Invoke(this, rb.Block);
+    }
+
+    /// <summary>Opens the image properties dialog if the caret sits on an image block (called by F4).</summary>
+    public void OpenImagePropertiesViaKey() => OpenImagePropertiesDialog();
+
+    private void OpenImagePropertiesDialog()
+    {
+        var rb = GetImageAtCaret();
+        if (rb is null) return;
+
+        System.Windows.Media.Imaging.BitmapSource? preview = null;
+        var key = GetImageCacheKey(rb);
+        if (key is not null && _imageCache is not null)
+        {
+            _imageCache.TryGetValue(key, out var bmpImg);
+            preview = bmpImg;
+        }
+
+        var win = Window.GetWindow(this);
+        var dlg = new Dialogs.ImagePropertiesDialog(rb.Block, preview) { Owner = win };
+        if (dlg.ShowDialog() != true || dlg.Result is null) return;
+
+        var r = dlg.Result;
+        if (_mutator is not null)
+        {
+            _mutator.SetBlockAttribute(rb.Block, "naturalWidth",   r.Width  > 0 ? r.Width  : null);
+            _mutator.SetBlockAttribute(rb.Block, "naturalHeight",  r.Height > 0 ? r.Height : null);
+            _mutator.SetBlockAttribute(rb.Block, "align",          r.Alignment);
+            _mutator.SetBlockAttribute(rb.Block, "wrap",           r.WrapMode);
+            _mutator.SetBlockAttribute(rb.Block, "spaceTop",       r.SpaceTop);
+            _mutator.SetBlockAttribute(rb.Block, "spaceBottom",    r.SpaceBottom);
+            _mutator.SetBlockAttribute(rb.Block, "spaceLeft",      r.SpaceLeft);
+            _mutator.SetBlockAttribute(rb.Block, "spaceRight",     r.SpaceRight);
+            _mutator.SetBlockAttribute(rb.Block, "borderEnabled",  r.BorderEnabled ? 1.0 : 0.0);
+            _mutator.SetBlockAttribute(rb.Block, "borderWidth",    r.BorderWidth);
+            _mutator.SetBlockAttribute(rb.Block, "borderColor",    r.BorderColor.ToString());
+            _mutator.SetBlockAttribute(rb.Block, "borderStyle",    r.BorderStyle);
+            _mutator.SetBlockAttribute(rb.Block, "cornerRadius",   r.CornerRadius);
+            _mutator.SetBlockAttribute(rb.Block, "alt",            r.AltText);
+            _mutator.SetBlockAttribute(rb.Block, "keepAspect",     r.KeepAspect  ? 1.0 : 0.0);
+            _mutator.SetBlockAttribute(rb.Block, "protect",        r.Protect     ? 1.0 : 0.0);
+            _mutator.SetBlockAttribute(rb.Block, "printable",      r.Printable   ? 1.0 : 0.0);
+        }
+        RebuildLayout();
+        InvalidateVisual();
     }
 
     private void ToggleFormatOnSelection(string attr)
@@ -454,7 +667,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         if (_miRedo        is not null) _miRedo.IsEnabled        = _model?.UndoEngine.CanRedo == true;
         if (_miCut         is not null) _miCut.IsEnabled         = hasSelection && editable;
         if (_miCopy        is not null) _miCopy.IsEnabled        = hasSelection;
-        if (_miPaste       is not null) _miPaste.IsEnabled       = hasCaret && editable && System.Windows.Clipboard.ContainsText();
+        if (_miPaste       is not null) _miPaste.IsEnabled       = hasCaret && editable && (System.Windows.Clipboard.ContainsText() || System.Windows.Clipboard.ContainsImage());
         if (_miDelete      is not null) _miDelete.IsEnabled      = (hasSelection || hasCaret) && editable;
         if (_miSelectAll   is not null) _miSelectAll.IsEnabled   = _model is not null && _model.Blocks.Count > 0;
         if (_miSelectBlock is not null) _miSelectBlock.IsEnabled = hasCaret;
@@ -475,6 +688,17 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         if (_miTableInsertColLeft  is not null) _miTableInsertColLeft.IsEnabled  = canEditTable;
         if (_miTableInsertCol    is not null) _miTableInsertCol.IsEnabled    = canEditTable;
         if (_miTableDeleteCol    is not null) _miTableDeleteCol.IsEnabled    = canEditTable;
+
+        // Image-specific menu
+        bool isOnImage = hasCaret && _caret.BlockIndex < _blocks.Count &&
+                         _blocks[_caret.BlockIndex].Block.Kind == "image";
+        SetImageMenuVisible(isOnImage);
+        if (isOnImage)
+        {
+            if (_miImageCut    is not null) _miImageCut.IsEnabled    = editable;
+            if (_miImageDelete is not null) _miImageDelete.IsEnabled = editable;
+            if (_miImageReplace is not null) _miImageReplace.IsEnabled = editable;
+        }
 
         Focus();
         Keyboard.Focus(this);
@@ -677,6 +901,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         if (_renderMode == mode) return;
         _renderMode = mode;
+        // Reset scroll so the first block is visible in the new layout
+        _offset = new Vector(0, 0);
         RebuildLayout();
     }
 
@@ -1002,8 +1228,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         // White background covering the full viewport
         dc.DrawRectangle(_pageBg ?? Brushes.White, null, new Rect(0, 0, vw, vh));
 
-        double baseX  = _pageLeft + _pageSettings.MarginLeft;
-        double maxW   = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
+        // Outline uses full viewport width with a fixed left indent — no page card geometry
+        const double OutlineLeftPad = 32.0;
+        double baseX = OutlineLeftPad;
+        double maxW  = Math.Max(1, vw - OutlineLeftPad * 2);
 
         for (int idx = 0; idx < _blocks.Count; idx++)
         {
@@ -1245,6 +1473,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 rb.Block.Attributes.GetValueOrDefault("level") as string, out int lv) ? lv : 1;
             DrawVisualLines(dc, rb.GlyphLines, x, y, isHeading, level, rb.LineSpacingMultiplier, align, maxW);
             if (isHyperlink) DrawHyperlinkUnderline(dc, rb.GlyphLines, x, y);
+            DrawParagraphBorder(dc, rb, x, y, maxW);
             return;
         }
 
@@ -1273,25 +1502,29 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             }
         }
 
-        // Paragraph bottom border (w:pBdr/w:bottom) — drawn below the block
-        if (rb.Block.Attributes.TryGetValue("borderBottom", out var bbObj) && bbObj is string bbColor)
+        DrawParagraphBorder(dc, rb, x, y, maxW);
+    }
+
+    private void DrawParagraphBorder(DrawingContext dc, RenderBlock rb, double x, double y, double maxW)
+    {
+        if (!rb.Block.Attributes.TryGetValue("borderBottom", out var bbObj) || bbObj is not string bbColor)
+            return;
+
+        EnsureBrushCache();
+        double pt    = rb.Block.Attributes.TryGetValue("borderBottomPt", out var ptObj) && ptObj is double d ? d : 0.75;
+        double ruleY = y + rb.Height + 1.5;
+        Brush  borderBrush;
+        if (bbColor == "auto" || string.IsNullOrEmpty(bbColor))
+            borderBrush = _fgBrush ?? Brushes.Black;
+        else
         {
-            EnsureBrushCache();
-            double pt    = rb.Block.Attributes.TryGetValue("borderBottomPt", out var ptObj) && ptObj is double d ? d : 0.75;
-            double ruleY = y + rb.Height + 1.5;
-            Brush  borderBrush;
-            if (bbColor == "auto" || string.IsNullOrEmpty(bbColor))
-                borderBrush = _fgBrush ?? Brushes.Black;
-            else
-            {
-                try { borderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(bbColor)); }
-                catch { borderBrush = _fgBrush ?? Brushes.Black; }
-                ((SolidColorBrush)borderBrush).Freeze();
-            }
-            var borderPen = new Pen(borderBrush, Math.Max(0.5, pt));
-            borderPen.Freeze();
-            dc.DrawLine(borderPen, new Point(x, ruleY), new Point(x + maxW, ruleY));
+            try { borderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(bbColor)); }
+            catch { borderBrush = _fgBrush ?? Brushes.Black; }
+            ((SolidColorBrush)borderBrush).Freeze();
         }
+        var borderPen = new Pen(borderBrush, Math.Max(0.5, pt));
+        borderPen.Freeze();
+        dc.DrawLine(borderPen, new Point(x, ruleY), new Point(x + maxW, ruleY));
     }
 
     private static void DrawHyperlinkUnderline(DrawingContext dc,
@@ -1686,7 +1919,8 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     {
         double maxW         = Math.Max(100, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
         double pageContentH = _pageSettings.ContentHeight;
-        double yCanvas      = _pageSettings.ContentTopY;
+        // Outline mode: start from 0 — no page margin, compact linear layout
+        double yCanvas      = _renderMode == RenderMode.Outline ? 0 : _pageSettings.ContentTopY;
         double yOnPage      = 0;
         int    curPage      = 0;
         var    result       = new List<RenderBlock>();
@@ -2509,18 +2743,45 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         }
 
         int hovered = HitTestBlock(pt);
-        if (hovered == _hoverIndex) return;
-        _hoverIndex = hovered;
-        // Show hand cursor when hovering a hyperlink with Ctrl held
-        bool isHoveredHyperlink = hovered >= 0 && hovered < _blocks.Count &&
-                                   _blocks[hovered].Block.Kind == "hyperlink" &&
-                                   (Keyboard.Modifiers & ModifierKeys.Control) != 0;
-        Cursor = isHoveredHyperlink ? Cursors.Hand : Cursors.IBeam;
-        InvalidateVisual();
+        if (hovered != _hoverIndex)
+        {
+            _hoverIndex = hovered;
+            // Show hand cursor when hovering a hyperlink with Ctrl held
+            bool isHoveredHyperlink = hovered >= 0 && hovered < _blocks.Count &&
+                                       _blocks[hovered].Block.Kind == "hyperlink" &&
+                                       (Keyboard.Modifiers & ModifierKeys.Control) != 0;
+            Cursor = isHoveredHyperlink ? Cursors.Hand : Cursors.IBeam;
+            InvalidateVisual();
+        }
+
+        // Forensic hover — detect chip or dot under cursor
+        if (_forensicMode)
+        {
+            int forensicIdx = HitTestForensicElement(pt);
+            if (forensicIdx != _forensicHoverBlockIdx)
+            {
+                _forensicHoverBlockIdx = forensicIdx;
+                _forensicHoverTimer.Stop();
+                if (forensicIdx >= 0)
+                {
+                    _pendingHoverPt = pt;
+                    Cursor = Cursors.Hand;
+                    _forensicHoverTimer.Start();
+                }
+                else
+                {
+                    _forensicPopup?.Hide();
+                }
+            }
+        }
     }
 
     private void OnMouseLeave(object sender, MouseEventArgs e)
     {
+        _forensicHoverTimer.Stop();
+        _forensicHoverBlockIdx = -1;
+        _forensicPopup?.OnEditorMouseLeft();
+
         if (_hoverIndex == -1) return;
         _hoverIndex = -1;
         InvalidateVisual();
@@ -2528,6 +2789,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
     private void OnMouseDown(object sender, MouseButtonEventArgs e)
     {
+        _forensicPopup?.Hide();
         Focus();
         Keyboard.Focus(this);
         var pt  = e.GetPosition(this);
@@ -2567,11 +2829,16 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             }
         }
 
-        // Ctrl+Click on hyperlink → open URL
+        // Ctrl+Click on hyperlink → open URL (safe schemes only — prevents RCE via malicious DOCX)
         if (block.Kind == "hyperlink" &&
             (Keyboard.Modifiers & ModifierKeys.Control) != 0 &&
             block.Attributes.TryGetValue("href", out var hrefVal) && hrefVal is string href &&
-            !string.IsNullOrWhiteSpace(href))
+            !string.IsNullOrWhiteSpace(href) &&
+            Uri.TryCreate(href, UriKind.Absolute, out var hrefUri) &&
+            (hrefUri.Scheme == Uri.UriSchemeHttps ||
+             hrefUri.Scheme == Uri.UriSchemeHttp  ||
+             hrefUri.Scheme == "mailto"            ||
+             hrefUri.Scheme == "ftp"))
         {
             try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(href) { UseShellExecute = true }); }
             catch { }
@@ -2908,6 +3175,81 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         RebuildLayout();
         RefreshCaretVisual();
         return true;
+    }
+
+    // ── Forensic hit-test + hover popup ──────────────────────────────────────
+
+    /// <summary>
+    /// Returns the block index when <paramref name="pt"/> lands on a forensic
+    /// kind-chip, a forensic dot, or any block that has a ForensicAlert.
+    /// Returns -1 when forensic mode is off or no element is hit.
+    /// </summary>
+    private int HitTestForensicElement(Point pt)
+    {
+        if (!_forensicMode || _blocks.Count == 0) return -1;
+
+        for (int i = 0; i < _blocks.Count; i++)
+        {
+            var rb = _blocks[i];
+            if (rb.Block.Kind is "header" or "footer" or "page-break") continue;
+
+            double screenY = PageCanvasPad + rb.Y - _offset.Y;
+
+            // Kind chip: Rect(_pageLeft + 8, screenY + 2, 36, 16)
+            var chipRect = new Rect(_pageLeft + 8, screenY + 2, 36, 16);
+            if (chipRect.Contains(pt)) return i;
+
+            // Forensic dot: ellipse centre (_pageLeft + _pageWidth - marginRight - 2, screenY + 8) r=4
+            if (rb.ForensicSeverity.HasValue)
+            {
+                double cx = _pageLeft + _pageWidth - _pageSettings.MarginRight - 2;
+                double cy = screenY + 8;
+                double dx = pt.X - cx, dy = pt.Y - cy;
+                if (dx * dx + dy * dy <= 36) return i; // r=6 hit area
+            }
+        }
+        return -1;
+    }
+
+    private void OnForensicHoverTimerTick(object? sender, EventArgs e)
+    {
+        _forensicHoverTimer.Stop();
+        if (_forensicHoverBlockIdx < 0 || _forensicHoverBlockIdx >= _blocks.Count) return;
+
+        var rb    = _blocks[_forensicHoverBlockIdx];
+        var alert = _model?.ForensicAlerts.FirstOrDefault(a => ReferenceEquals(a.Block, rb.Block));
+
+        string kindLabel = rb.Block.Kind.ToUpperInvariant() switch
+        {
+            "PARAGRAPH" => "Paragraph",
+            "LIST-ITEM" => "List item",
+            "HEADING"   => $"Heading {rb.Block.Attributes.GetValueOrDefault("level") ?? "1"}",
+            "TABLE"     => "Table",
+            "CODE"      => "Code block",
+            "IMAGE"     => "Image",
+            string k    => k[..1] + k[1..].ToLowerInvariant()
+        };
+
+        // Compute block screen rect — popup opens below bottom, flips above top if needed
+        double screenY     = PageCanvasPad + rb.Y - _offset.Y;
+        double blockTop    = screenY;
+        double blockBottom = screenY + rb.Height;
+
+        var popup = EnsureForensicPopup();
+        popup.Show(this, _pendingHoverPt, blockTop, blockBottom, ForensicHoverTarget.Block,
+                   rb.Block, _forensicHoverBlockIdx, alert, kindLabel);
+    }
+
+    private ForensicHoverPopup EnsureForensicPopup()
+    {
+        if (_forensicPopup is not null) return _forensicPopup;
+
+        _forensicPopup = new ForensicHoverPopup();
+        _forensicPopup.NavigateRequested  += (_, idx) => NavigateToBlockIndex(idx);
+        _forensicPopup.CopyRequested      += (_, txt) => System.Windows.Clipboard.SetText(txt);
+        _forensicPopup.SuppressRequested  += (_, alert) => _model?.SuppressAlert(alert);
+        _forensicPopup.InspectRequested   += (_, block) => InspectBlockRequested?.Invoke(this, block);
+        return _forensicPopup;
     }
 
     private int HitTestBlock(Point pt)
@@ -4195,12 +4537,54 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public void PasteAtCaret()
     {
         if (_isReadOnly) return;
+
+        // Image paste takes priority over text.
+        if (System.Windows.Clipboard.ContainsImage())
+        {
+            PasteImageFromClipboard();
+            return;
+        }
+
         var text = System.Windows.Clipboard.GetText();
         if (!string.IsNullOrEmpty(text))
         {
             DeleteSelectionIfAny();
             InsertTextAtCaret(text);
         }
+    }
+
+    private void PasteImageFromClipboard()
+    {
+        if (_mutator is null) return;
+
+        var bmpSource = System.Windows.Clipboard.GetImage();
+        if (bmpSource is null) return;
+
+        // Encode as PNG bytes for storage in the binaryData attribute.
+        var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+        encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bmpSource));
+        byte[] pngBytes;
+        using (var ms = new System.IO.MemoryStream())
+        {
+            encoder.Save(ms);
+            pngBytes = ms.ToArray();
+        }
+
+        DeleteSelectionIfAny();
+        _mutator.InsertImageBlock(
+            _caret.BlockIndex,
+            pngBytes,
+            bmpSource.PixelWidth,
+            bmpSource.PixelHeight);
+        // Advance caret to the trailing paragraph inserted by InsertImageBlock.
+        _caret = new TextCaret(_caret.BlockIndex + 2, 0, 0);
+        _selection.Anchor = _caret;
+        _selection.Focus  = _caret;
+        _rebuildPending = false;
+        RebuildLayout();
+        RefreshCaretVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        NotifyCaretMoved();
     }
 
     /// <summary>Deletes one character or the selection at the caret.</summary>

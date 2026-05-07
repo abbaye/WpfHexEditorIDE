@@ -1,0 +1,425 @@
+<Window x:Class="WpfHexEditor.Editor.DocumentEditor.Dialogs.ImagePropertiesDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
+        Title="{DynamicResource ImgDlg_Title}"
+        Width="560" SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Background="{DynamicResource DockBackgroundBrush}"
+        Foreground="{DynamicResource DockMenuForegroundBrush}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <docSvc:DocumentEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="TabLabelStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}"/>
+                <Setter Property="Margin" Value="0,8,0,4"/>
+            </Style>
+
+            <Style x:Key="FieldLabelStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="Opacity" Value="0.75"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}"/>
+            </Style>
+
+            <Style x:Key="NumBoxStyle" TargetType="TextBox">
+                <Setter Property="Width" Value="80"/>
+                <Setter Property="Height" Value="24"/>
+                <Setter Property="Padding" Value="4,2"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Background" Value="{StaticResource DockBackgroundBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource DockBorderBrush}"/>
+                <Setter Property="CaretBrush" Value="{StaticResource DockMenuForegroundBrush}"/>
+            </Style>
+
+            <Style x:Key="UnitLabelStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="Opacity" Value="0.6"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="4,0,0,0"/>
+                <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- tab header strip -->
+            <RowDefinition Height="*"/>     <!-- tab content -->
+            <RowDefinition Height="Auto"/>  <!-- button bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Tab header strip ─────────────────────────────────────────── -->
+        <Border Grid.Row="0"
+                Background="{StaticResource DockBackgroundBrush}"
+                BorderBrush="{StaticResource DockBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal" Margin="8,0">
+                <RadioButton x:Name="PART_TabSize"     GroupName="Tabs" IsChecked="True"
+                             Style="{StaticResource {x:Type RadioButton}}"
+                             Click="OnTabClicked" Tag="0" Margin="0,0,2,0">
+                    <TextBlock Style="{StaticResource TabLabelStyle}" Text="{StaticResource ImgDlg_TabSize}"/>
+                </RadioButton>
+                <RadioButton x:Name="PART_TabWrap"     GroupName="Tabs"
+                             Style="{StaticResource {x:Type RadioButton}}"
+                             Click="OnTabClicked" Tag="1" Margin="0,0,2,0">
+                    <TextBlock Style="{StaticResource TabLabelStyle}" Text="{StaticResource ImgDlg_TabWrap}"/>
+                </RadioButton>
+                <RadioButton x:Name="PART_TabBorder"   GroupName="Tabs"
+                             Style="{StaticResource {x:Type RadioButton}}"
+                             Click="OnTabClicked" Tag="2" Margin="0,0,2,0">
+                    <TextBlock Style="{StaticResource TabLabelStyle}" Text="{StaticResource ImgDlg_TabBorder}"/>
+                </RadioButton>
+                <RadioButton x:Name="PART_TabOptions"  GroupName="Tabs"
+                             Style="{StaticResource {x:Type RadioButton}}"
+                             Click="OnTabClicked" Tag="3">
+                    <TextBlock Style="{StaticResource TabLabelStyle}" Text="{StaticResource ImgDlg_TabOptions}"/>
+                </RadioButton>
+            </StackPanel>
+        </Border>
+
+        <!-- ── Tab content area ─────────────────────────────────────────── -->
+        <Grid Grid.Row="1" Margin="16">
+            <!-- Preview always visible on the right -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="140"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ── Live preview ─────────────────────────────────── -->
+            <StackPanel Grid.Column="2" VerticalAlignment="Top">
+                <TextBlock Style="{StaticResource SectionHeaderStyle}"
+                           Text="{StaticResource ImgDlg_Preview}"/>
+                <Border x:Name="PART_PreviewBorder"
+                        Width="120" Height="120"
+                        Background="{StaticResource DockBackgroundBrush}"
+                        BorderBrush="{StaticResource DockBorderBrush}"
+                        BorderThickness="1">
+                    <Image x:Name="PART_PreviewImage"
+                           Stretch="Uniform"
+                           StretchDirection="Both"
+                           Margin="4"/>
+                </Border>
+                <TextBlock x:Name="PART_DimensionLabel"
+                           FontSize="10" Opacity="0.6" TextAlignment="Center"
+                           Foreground="{StaticResource DockMenuForegroundBrush}"
+                           Margin="0,4,0,0"
+                           Text="—"/>
+            </StackPanel>
+
+            <!-- ── Tab panels (visibility switched in code-behind) ─ -->
+            <StackPanel x:Name="PART_PanelSize" Grid.Column="0" Visibility="Visible">
+
+                <!-- Size section -->
+                <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{StaticResource ImgDlg_SizeSection}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="4"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="24"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="6"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="6"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabelStyle}"
+                               Text="{StaticResource ImgDlg_Width}"/>
+                    <TextBox   Grid.Row="0" Grid.Column="2" x:Name="PART_Width"
+                               Style="{StaticResource NumBoxStyle}"
+                               TextChanged="OnSizeChanged"/>
+                    <TextBlock Grid.Row="0" Grid.Column="4" Style="{StaticResource UnitLabelStyle}" Text="px"/>
+                    <!-- Lock aspect ratio button -->
+                    <ToggleButton Grid.Row="0" Grid.Column="6"
+                                  Grid.RowSpan="3"
+                                  x:Name="PART_LockAspect"
+                                  Width="22" Height="22"
+                                  VerticalAlignment="Center"
+                                  ToolTip="{StaticResource ImgDlg_LockAspect}"
+                                  IsChecked="True">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE72E;" FontSize="12"/>
+                    </ToggleButton>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabelStyle}"
+                               Text="{StaticResource ImgDlg_Height}"/>
+                    <TextBox   Grid.Row="2" Grid.Column="2" x:Name="PART_Height"
+                               Style="{StaticResource NumBoxStyle}"
+                               TextChanged="OnSizeChanged"/>
+                    <TextBlock Grid.Row="2" Grid.Column="4" Style="{StaticResource UnitLabelStyle}" Text="px"/>
+
+                    <Button    Grid.Row="4" Grid.Column="2"
+                               Content="{StaticResource ImgDlg_ResetSize}"
+                               Padding="8,3" FontSize="11"
+                               Click="OnResetSizeClicked"/>
+                </Grid>
+
+                <!-- Alignment section -->
+                <TextBlock Style="{StaticResource SectionHeaderStyle}" Margin="0,16,0,4"
+                           Text="{StaticResource ImgDlg_AlignSection}"/>
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton x:Name="PART_AlignLeft"   GroupName="ImgAlign"
+                                 IsChecked="True" Margin="0,0,12,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E4;" FontSize="13" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="{StaticResource ImgDlg_AlignLeft}" FontSize="11" VerticalAlignment="Center"
+                                       Foreground="{StaticResource DockMenuForegroundBrush}"/>
+                        </StackPanel>
+                    </RadioButton>
+                    <RadioButton x:Name="PART_AlignCenter" GroupName="ImgAlign" Margin="0,0,12,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E3;" FontSize="13" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="{StaticResource ImgDlg_AlignCenter}" FontSize="11" VerticalAlignment="Center"
+                                       Foreground="{StaticResource DockMenuForegroundBrush}"/>
+                        </StackPanel>
+                    </RadioButton>
+                    <RadioButton x:Name="PART_AlignRight"  GroupName="ImgAlign">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E2;" FontSize="13" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="{StaticResource ImgDlg_AlignRight}" FontSize="11" VerticalAlignment="Center"
+                                       Foreground="{StaticResource DockMenuForegroundBrush}"/>
+                        </StackPanel>
+                    </RadioButton>
+                </StackPanel>
+
+                <!-- Alt text -->
+                <TextBlock Style="{StaticResource SectionHeaderStyle}" Margin="0,16,0,4"
+                           Text="{StaticResource ImgDlg_AltText}"/>
+                <TextBox x:Name="PART_AltText"
+                         Height="28" Padding="6,4" FontSize="12"
+                         Background="{StaticResource DockBackgroundBrush}"
+                         Foreground="{StaticResource DockMenuForegroundBrush}"
+                         BorderBrush="{StaticResource DockBorderBrush}"
+                         CaretBrush="{StaticResource DockMenuForegroundBrush}"/>
+            </StackPanel>
+
+            <!-- ── Wrap tab ──────────────────────────────────────── -->
+            <StackPanel x:Name="PART_PanelWrap" Grid.Column="0" Visibility="Collapsed">
+                <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{StaticResource ImgDlg_WrapSection}"/>
+
+                <UniformGrid Columns="3" Rows="2" Width="260" HorizontalAlignment="Left">
+                    <RadioButton x:Name="PART_WrapNone"    GroupName="ImgWrap" IsChecked="True" Margin="4">
+                        <StackPanel>
+                            <Border Width="56" Height="40" BorderBrush="{StaticResource DockBorderBrush}" BorderThickness="1" Margin="0,0,0,3">
+                                <Canvas>
+                                    <Rectangle Canvas.Left="4"  Canvas.Top="4"  Width="48" Height="6"  Fill="{StaticResource DockMenuForegroundBrush}" Opacity="0.4"/>
+                                    <Rectangle Canvas.Left="4"  Canvas.Top="14" Width="48" Height="18" Fill="{StaticResource DockBorderBrush}"/>
+                                    <Rectangle Canvas.Left="4"  Canvas.Top="36" Width="48" Height="6"  Fill="{StaticResource DockMenuForegroundBrush}" Opacity="0.4"/>
+                                </Canvas>
+                            </Border>
+                            <TextBlock Text="{StaticResource ImgDlg_WrapNone}"   FontSize="10" HorizontalAlignment="Center"
+                                       Foreground="{StaticResource DockMenuForegroundBrush}"/>
+                        </StackPanel>
+                    </RadioButton>
+                    <RadioButton x:Name="PART_WrapLeft"    GroupName="ImgWrap" Margin="4">
+                        <StackPanel>
+                            <Border Width="56" Height="40" BorderBrush="{StaticResource DockBorderBrush}" BorderThickness="1" Margin="0,0,0,3">
+                                <Canvas>
+                                    <Rectangle Canvas.Left="4"  Canvas.Top="4"  Width="22" Height="32" Fill="{StaticResource DockBorderBrush}"/>
+                                    <Rectangle Canvas.Left="30" Canvas.Top="4"  Width="22" Height="6"  Fill="{StaticResource DockMenuForegroundBrush}" Opacity="0.4"/>
+                                    <Rectangle Canvas.Left="30" Canvas.Top="14" Width="22" Height="6"  Fill="{StaticResource DockMenuForegroundBrush}" Opacity="0.4"/>
+                                    <Rectangle Canvas.Left="30" Canvas.Top="24" Width="22" Height="6"  Fill="{StaticResource DockMenuForegroundBrush}" Opacity="0.4"/>
+                                </Canvas>
+                            </Border>
+                            <TextBlock Text="{StaticResource ImgDlg_WrapLeft}"   FontSize="10" HorizontalAlignment="Center"
+                                       Foreground="{StaticResource DockMenuForegroundBrush}"/>
+                        </StackPanel>
+                    </RadioButton>
+                    <RadioButton x:Name="PART_WrapRight"   GroupName="ImgWrap" Margin="4">
+                        <StackPanel>
+                            <Border Width="56" Height="40" BorderBrush="{StaticResource DockBorderBrush}" BorderThickness="1" Margin="0,0,0,3">
+                                <Canvas>
+                                    <Rectangle Canvas.Left="30" Canvas.Top="4"  Width="22" Height="32" Fill="{StaticResource DockBorderBrush}"/>
+                                    <Rectangle Canvas.Left="4"  Canvas.Top="4"  Width="22" Height="6"  Fill="{StaticResource DockMenuForegroundBrush}" Opacity="0.4"/>
+                                    <Rectangle Canvas.Left="4"  Canvas.Top="14" Width="22" Height="6"  Fill="{StaticResource DockMenuForegroundBrush}" Opacity="0.4"/>
+                                    <Rectangle Canvas.Left="4"  Canvas.Top="24" Width="22" Height="6"  Fill="{StaticResource DockMenuForegroundBrush}" Opacity="0.4"/>
+                                </Canvas>
+                            </Border>
+                            <TextBlock Text="{StaticResource ImgDlg_WrapRight}"  FontSize="10" HorizontalAlignment="Center"
+                                       Foreground="{StaticResource DockMenuForegroundBrush}"/>
+                        </StackPanel>
+                    </RadioButton>
+                </UniformGrid>
+
+                <!-- Spacing around image -->
+                <TextBlock Style="{StaticResource SectionHeaderStyle}" Margin="0,16,0,4"
+                           Text="{StaticResource ImgDlg_WrapSpacing}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="4"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="4"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="6"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabelStyle}"
+                               Text="{StaticResource ImgDlg_SpaceTop}"/>
+                    <TextBox   Grid.Row="0" Grid.Column="2" x:Name="PART_SpaceTop" Style="{StaticResource NumBoxStyle}" Text="8"/>
+                    <TextBlock Grid.Row="0" Grid.Column="4" Style="{StaticResource UnitLabelStyle}" Text="px"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="6" Style="{StaticResource FieldLabelStyle}"
+                               Text="{StaticResource ImgDlg_SpaceBottom}"/>
+                    <TextBox   Grid.Row="0" Grid.Column="8" x:Name="PART_SpaceBottom" Style="{StaticResource NumBoxStyle}" Text="8"/>
+                    <TextBlock Grid.Row="0" Grid.Column="10" Style="{StaticResource UnitLabelStyle}" Text="px"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabelStyle}"
+                               Text="{StaticResource ImgDlg_SpaceLeft}"/>
+                    <TextBox   Grid.Row="2" Grid.Column="2" x:Name="PART_SpaceLeft" Style="{StaticResource NumBoxStyle}" Text="0"/>
+                    <TextBlock Grid.Row="2" Grid.Column="4" Style="{StaticResource UnitLabelStyle}" Text="px"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="6" Style="{StaticResource FieldLabelStyle}"
+                               Text="{StaticResource ImgDlg_SpaceRight}"/>
+                    <TextBox   Grid.Row="2" Grid.Column="8" x:Name="PART_SpaceRight" Style="{StaticResource NumBoxStyle}" Text="0"/>
+                    <TextBlock Grid.Row="2" Grid.Column="10" Style="{StaticResource UnitLabelStyle}" Text="px"/>
+                </Grid>
+            </StackPanel>
+
+            <!-- ── Border tab ────────────────────────────────────── -->
+            <StackPanel x:Name="PART_PanelBorder" Grid.Column="0" Visibility="Collapsed">
+                <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{StaticResource ImgDlg_BorderSection}"/>
+
+                <CheckBox x:Name="PART_BorderEnabled" Margin="0,0,0,8"
+                          Foreground="{StaticResource DockMenuForegroundBrush}"
+                          Checked="OnBorderEnabledChanged" Unchecked="OnBorderEnabledChanged">
+                    <TextBlock Text="{StaticResource ImgDlg_BorderEnable}" FontSize="11"
+                               Foreground="{StaticResource DockMenuForegroundBrush}"/>
+                </CheckBox>
+
+                <Grid x:Name="PART_BorderControls" IsEnabled="False">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="4"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabelStyle}"
+                               Text="{StaticResource ImgDlg_BorderWidth}"/>
+                    <TextBox   Grid.Row="0" Grid.Column="2" x:Name="PART_BorderWidth"
+                               Style="{StaticResource NumBoxStyle}" Text="1"/>
+                    <TextBlock Grid.Row="0" Grid.Column="4" Style="{StaticResource UnitLabelStyle}" Text="px"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabelStyle}"
+                               Text="{StaticResource ImgDlg_BorderColor}"/>
+                    <Border    Grid.Row="2" Grid.Column="2"
+                               Width="80" Height="24"
+                               BorderBrush="{StaticResource DockBorderBrush}" BorderThickness="1"
+                               Cursor="Hand"
+                               MouseLeftButtonUp="OnPickBorderColor">
+                        <Border x:Name="PART_BorderColorSwatch" Background="Black" Margin="2"/>
+                    </Border>
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Style="{StaticResource FieldLabelStyle}"
+                               Text="{StaticResource ImgDlg_BorderStyle}"/>
+                    <ComboBox  Grid.Row="4" Grid.Column="2"
+                               x:Name="PART_BorderStyleCombo"
+                               Width="80" Height="24" FontSize="11">
+                        <ComboBoxItem Content="{StaticResource ImgDlg_BorderStyleSolid}"  IsSelected="True"/>
+                        <ComboBoxItem Content="{StaticResource ImgDlg_BorderStyleDashed}"/>
+                        <ComboBoxItem Content="{StaticResource ImgDlg_BorderStyleDotted}"/>
+                    </ComboBox>
+                </Grid>
+
+                <!-- Rounded corners -->
+                <TextBlock Style="{StaticResource SectionHeaderStyle}" Margin="0,16,0,4"
+                           Text="{StaticResource ImgDlg_CornerRadius}"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox x:Name="PART_CornerRadius" Style="{StaticResource NumBoxStyle}" Text="0"/>
+                    <TextBlock Style="{StaticResource UnitLabelStyle}" Text="px"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- ── Options tab ───────────────────────────────────── -->
+            <StackPanel x:Name="PART_PanelOptions" Grid.Column="0" Visibility="Collapsed">
+                <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{StaticResource ImgDlg_OptionsSection}"/>
+
+                <CheckBox x:Name="PART_OptKeepAspect"
+                          IsChecked="True" Margin="0,0,0,8"
+                          Foreground="{StaticResource DockMenuForegroundBrush}">
+                    <TextBlock Text="{StaticResource ImgDlg_OptKeepAspect}" FontSize="11"
+                               Foreground="{StaticResource DockMenuForegroundBrush}"/>
+                </CheckBox>
+                <CheckBox x:Name="PART_OptProtect"
+                          IsChecked="False" Margin="0,0,0,8"
+                          Foreground="{StaticResource DockMenuForegroundBrush}">
+                    <TextBlock Text="{StaticResource ImgDlg_OptProtect}" FontSize="11"
+                               Foreground="{StaticResource DockMenuForegroundBrush}"/>
+                </CheckBox>
+                <CheckBox x:Name="PART_OptPrintable"
+                          IsChecked="True" Margin="0,0,0,8"
+                          Foreground="{StaticResource DockMenuForegroundBrush}">
+                    <TextBlock Text="{StaticResource ImgDlg_OptPrintable}" FontSize="11"
+                               Foreground="{StaticResource DockMenuForegroundBrush}"/>
+                </CheckBox>
+
+                <!-- Source info (read-only) -->
+                <TextBlock Style="{StaticResource SectionHeaderStyle}" Margin="0,16,0,4"
+                           Text="{StaticResource ImgDlg_SourceInfo}"/>
+                <TextBlock x:Name="PART_SourceLabel"
+                           FontSize="11" Opacity="0.7" TextWrapping="Wrap"
+                           Foreground="{StaticResource DockMenuForegroundBrush}"
+                           Text="—"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- ── Button bar ──────────────────────────────────────────────── -->
+        <Border Grid.Row="2"
+                BorderBrush="{StaticResource DockBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="16,10">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="PART_ResetBtn"
+                        Content="{StaticResource ImgDlg_Reset}"
+                        Width="80" Margin="0,0,8,0"
+                        Click="OnResetClicked"/>
+                <Button Content="{StaticResource ImgDlg_Cancel}"
+                        Width="80" Margin="0,0,8,0"
+                        IsCancel="True" Click="OnCancelClicked"/>
+                <Button x:Name="PART_OkBtn"
+                        Content="{StaticResource ImgDlg_OK}"
+                        Width="80" IsDefault="True"
+                        Click="OnOkClicked"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -559,4 +559,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Preklad symbolu byl dokoncen.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Datove zarazky</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Pridat datovou zarazku</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Spustit analýzu kódu...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Analyzovat projekt...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Analyzovat soubor...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Otevřít sestavu analýzy</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Analyzuji...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Skóre kvality kódu — klikněte pro otevření sestavy</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Analýza kódu</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Přehled</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Problémy</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Složitost</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Vazby</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Duplicity</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Mrtvý kód</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Skóre</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ zlepšení</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ zhoršení</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Beze změny</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>PODLE PROJEKTU</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>TOP 5 NEJHORŠÍCH SOUBORŮ</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Vše</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Kritické</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Hledat problémy...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Práh: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Nestabilita</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Celkem duplikátů</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>třída</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>pole</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>metoda</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>parametr</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>proměnná</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Sbírám metriky objemu...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Analyzuji složitost...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Analyzuji vazby...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Zjišťuji duplicity...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Zjišťuji mrtvý kód...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Sbírám diagnostiku Roslyn...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Počítám skóre kvality...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Žádné otevřené řešení. Před spuštěním analýzy kódu otevřete řešení.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Analýza kódu selhala: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Snímek analýzy uložen.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Snímek analýzy vymazán.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Obecné</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Prahové hodnoty</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Pravidla</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Spouštět analýzu automaticky při otevření řešení</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Spouštět analýzu automaticky při sestavení</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Zobrazit odznak skóre ve stavovém řádku</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Posílat diagnostiku do panelu chyb</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Zahrnout generované soubory (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Uchovávání snímků:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Podrobnost výstupu:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Obnovit výchozí nastavení</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Zakázáno</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Info</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Upozornění</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Chyba</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Znovu spustit</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Exportovat ▾</value></data>
 </root>

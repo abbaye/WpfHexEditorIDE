@@ -239,6 +239,8 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>Tamam</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>URL'yi tarayıcıda aç</value></data>
+  <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Geçerli bir URL girin (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>Tablo ekle</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Satırlar</value></data>
   <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Sütunlar</value></data>
@@ -306,4 +308,65 @@
   <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Yükle</value></data>
   <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Daha sonra</value></data>
   <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Bir daha gösterme</value></data>
+
+  <!-- Image dialog & context menu -->
+  <data name="ImgDlg_Title" xml:space="preserve"><value>Resim Özellikleri</value></data>
+  <data name="ImgDlg_TabSize" xml:space="preserve"><value>Boyut ve Konum</value></data>
+  <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Metin Kaydırma</value></data>
+  <data name="ImgDlg_TabBorder" xml:space="preserve"><value>Kenarlık</value></data>
+  <data name="ImgDlg_TabOptions" xml:space="preserve"><value>Seçenekler</value></data>
+  <data name="ImgDlg_Preview" xml:space="preserve"><value>Önizleme</value></data>
+  <data name="ImgDlg_SizeSection" xml:space="preserve"><value>Boyut</value></data>
+  <data name="ImgDlg_Width" xml:space="preserve"><value>Genişlik</value></data>
+  <data name="ImgDlg_Height" xml:space="preserve"><value>Yükseklik</value></data>
+  <data name="ImgDlg_LockAspect" xml:space="preserve"><value>En-boy oranını kilitle</value></data>
+  <data name="ImgDlg_ResetSize" xml:space="preserve"><value>Özgün boyut</value></data>
+  <data name="ImgDlg_AlignSection" xml:space="preserve"><value>Hizalama</value></data>
+  <data name="ImgDlg_AlignLeft" xml:space="preserve"><value>Sol</value></data>
+  <data name="ImgDlg_AlignCenter" xml:space="preserve"><value>Orta</value></data>
+  <data name="ImgDlg_AlignRight" xml:space="preserve"><value>Sağ</value></data>
+  <data name="ImgDlg_AltText" xml:space="preserve"><value>Alternatif metin (erişilebilirlik)</value></data>
+  <data name="ImgDlg_WrapSection" xml:space="preserve"><value>Metin kaydırma</value></data>
+  <data name="ImgDlg_WrapNone" xml:space="preserve"><value>Kaydırma yok</value></data>
+  <data name="ImgDlg_WrapLeft" xml:space="preserve"><value>Soldan kaydır</value></data>
+  <data name="ImgDlg_WrapRight" xml:space="preserve"><value>Sağdan kaydır</value></data>
+  <data name="ImgDlg_WrapSpacing" xml:space="preserve"><value>Resim etrafı boşluk</value></data>
+  <data name="ImgDlg_SpaceTop" xml:space="preserve"><value>Üst</value></data>
+  <data name="ImgDlg_SpaceBottom" xml:space="preserve"><value>Alt</value></data>
+  <data name="ImgDlg_SpaceLeft" xml:space="preserve"><value>Sol</value></data>
+  <data name="ImgDlg_SpaceRight" xml:space="preserve"><value>Sağ</value></data>
+  <data name="ImgDlg_BorderSection" xml:space="preserve"><value>Kenarlık</value></data>
+  <data name="ImgDlg_BorderEnable" xml:space="preserve"><value>Resim etrafında kenarlık göster</value></data>
+  <data name="ImgDlg_BorderWidth" xml:space="preserve"><value>Kalınlık</value></data>
+  <data name="ImgDlg_BorderColor" xml:space="preserve"><value>Renk</value></data>
+  <data name="ImgDlg_BorderStyle" xml:space="preserve"><value>Stil</value></data>
+  <data name="ImgDlg_BorderStyleSolid" xml:space="preserve"><value>Düz</value></data>
+  <data name="ImgDlg_BorderStyleDashed" xml:space="preserve"><value>Kesik</value></data>
+  <data name="ImgDlg_BorderStyleDotted" xml:space="preserve"><value>Noktalı</value></data>
+  <data name="ImgDlg_CornerRadius" xml:space="preserve"><value>Yuvarlak köşeler</value></data>
+  <data name="ImgDlg_OptionsSection" xml:space="preserve"><value>Seçenekler</value></data>
+  <data name="ImgDlg_OptKeepAspect" xml:space="preserve"><value>Yeniden boyutlandırırken en-boy oranını koru</value></data>
+  <data name="ImgDlg_OptProtect" xml:space="preserve"><value>Resmi düzenlemeden koru</value></data>
+  <data name="ImgDlg_OptPrintable" xml:space="preserve"><value>Baskıya dahil et</value></data>
+  <data name="ImgDlg_SourceInfo" xml:space="preserve"><value>Resim kaynağı</value></data>
+  <data name="ImgDlg_Reset" xml:space="preserve"><value>Sıfırla</value></data>
+  <data name="ImgDlg_Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="ImgDlg_OK" xml:space="preserve"><value>Tamam</value></data>
+  <data name="ImgCtx_Cut" xml:space="preserve"><value>Kes</value></data>
+  <data name="ImgCtx_Copy" xml:space="preserve"><value>Kopyala</value></data>
+  <data name="ImgCtx_Paste" xml:space="preserve"><value>Yapıştır</value></data>
+  <data name="ImgCtx_Delete" xml:space="preserve"><value>Resmi sil</value></data>
+  <data name="ImgCtx_Replace" xml:space="preserve"><value>Resmi değiştir...</value></data>
+  <data name="ImgCtx_SaveAs" xml:space="preserve"><value>Resmi farklı kaydet...</value></data>
+  <data name="ImgCtx_CopyImage" xml:space="preserve"><value>Resmi panoya kopyala</value></data>
+  <data name="ImgCtx_AlignLeft" xml:space="preserve"><value>Sola hizala</value></data>
+  <data name="ImgCtx_AlignCenter" xml:space="preserve"><value>Ortala</value></data>
+  <data name="ImgCtx_AlignRight" xml:space="preserve"><value>Sağa hizala</value></data>
+  <data name="ImgCtx_Align" xml:space="preserve"><value>Hizalama</value></data>
+  <data name="ImgCtx_WrapNone" xml:space="preserve"><value>Kaydırma yok</value></data>
+  <data name="ImgCtx_WrapLeft" xml:space="preserve"><value>Soldan kaydır</value></data>
+  <data name="ImgCtx_WrapRight" xml:space="preserve"><value>Sağdan kaydır</value></data>
+  <data name="ImgCtx_Wrap" xml:space="preserve"><value>Metin kaydırma</value></data>
+  <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Hex düzenleyicide incele</value></data>
+  <data name="ImgCtx_Properties" xml:space="preserve"><value>Resim özellikleri...</value></data>
 </root>

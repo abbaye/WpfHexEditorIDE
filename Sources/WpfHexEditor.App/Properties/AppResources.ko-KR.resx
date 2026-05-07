@@ -903,4 +903,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbol resolution complete.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Data Breakpoints</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Add Data Breakpoint</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>코드 분석 실행...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>프로젝트 분석...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>파일 분석...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>분석 보고서 열기</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>분석 중...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>코드 품질 점수 — 보고서를 열려면 클릭</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>코드 분석</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>개요</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>문제</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>복잡도</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>결합도</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>중복</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>데드 코드</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>점수</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ 향상됨</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ 저하됨</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>변경 없음</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>프로젝트별</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>최악 파일 상위 5개</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>전체</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>심각</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>문제 검색...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>임계값: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>불안정성</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>전체 중복</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>클래스</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>필드</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>메서드</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>매개변수</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>변수</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>볼륨 메트릭 수집 중...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>복잡도 분석 중...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>결합도 분석 중...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>중복 감지 중...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>데드 코드 감지 중...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Roslyn 진단 수집 중...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>품질 점수 계산 중...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>열린 솔루션이 없습니다. 코드 분석을 실행하기 전에 솔루션을 여세요.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>코드 분석 실패: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>분석 스냅샷이 저장되었습니다.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>분석 스냅샷이 지워졌습니다.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>일반</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>임계값</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>규칙</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>솔루션 열기 시 자동으로 분석 실행</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>빌드 시 자동으로 분석 실행</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>상태 표시줄에 점수 배지 표시</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>오류 패널에 진단 전송</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>생성된 파일 포함 (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>스냅샷 보존:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>출력 세부 정보:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>기본값 복원</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>사용 안 함</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>정보</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>경고</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>오류</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ 다시 실행</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>내보내기 ▾</value></data>
 </root>

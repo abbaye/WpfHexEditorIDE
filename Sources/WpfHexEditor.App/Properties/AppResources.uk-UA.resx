@@ -599,4 +599,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbol resolution complete.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Data Breakpoints</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Add Data Breakpoint</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Запустити аналіз коду...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Аналізувати проект...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Аналізувати файл...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Відкрити звіт аналізу</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Аналіз виконується...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Оцінка якості коду — натисніть, щоб відкрити звіт</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Аналіз коду</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Огляд</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Проблеми</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Складність</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Зв'язність</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Дублювання</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Мертвий код</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Оцінка</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ покращено</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ погіршено</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Без змін</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>ЗА ПРОЕКТОМ</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>ТОП 5 НАЙГІРШИХ ФАЙЛІВ</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Усі</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Критичний</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Пошук проблем...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Поріг: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Нестабільність</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Загалом дубльовано</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>клас</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>поле</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>метод</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>параметр</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>змінна</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Збір метрик обсягу...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Аналіз складності...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Аналіз зв'язності...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Виявлення дублювань...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Виявлення мертвого коду...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Збір діагностики Roslyn...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Обчислення оцінки якості...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Немає відкритого рішення. Відкрийте рішення перед запуском аналізу коду.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Аналіз коду не вдався: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Знімок аналізу збережено.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Знімок аналізу очищено.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Загальні</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Порогові значення</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Правила</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Автоматично запускати аналіз при відкритті рішення</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Автоматично запускати аналіз при збірці</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Показувати значок оцінки в рядку стану</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Надсилати діагностику до панелі помилок</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Включати згенеровані файли (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Зберігання знімків:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Деталізація виводу:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Відновити стандартні налаштування</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Вимкнено</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Інформація</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Попередження</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Помилка</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Повторити</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Експорт ▾</value></data>
 </root>

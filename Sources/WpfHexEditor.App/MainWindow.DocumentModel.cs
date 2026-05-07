@@ -27,6 +27,7 @@ using System.Windows.Input;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Documents;
+using DocEditorModel = WpfHexEditor.Editor.DocumentEditor.Core.Model.DocumentBlock;
 
 namespace WpfHexEditor.App;
 
@@ -190,5 +191,43 @@ public partial class MainWindow
         if (!IsTrackedProjectItem(item)) return false;
         if (!_contentCache.TryGetValue(item.ContentId, out var ctrl)) return false;
         return IsChangesetEnabledForEditor(ctrl, WpfHexEditor.Core.Options.AppSettingsService.Instance.Current);
+    }
+
+    /// <summary>
+    /// Handles "Inspect in Hex Editor" from a DocumentEditorHost.
+    /// Opens the document file in the connected hex editor and navigates to the block's raw offset.
+    /// </summary>
+    private void OnDocumentBlockHexInspectRequested(object? sender, DocEditorModel block)
+    {
+        if (block.RawOffset <= 0) return;
+
+        // Navigate the already-connected hex editor if available
+        if (_connectedHexEditor != null)
+        {
+            _connectedHexEditor.SetPosition(block.RawOffset);
+            return;
+        }
+
+        // No hex editor open — open the source file in a new hex tab then navigate
+        if (sender is WpfHexEditor.Editor.DocumentEditor.Controls.DocumentEditorHost host &&
+            !string.IsNullOrEmpty(host.FilePath))
+            OpenFileWithOffset(host.FilePath, block.RawOffset);
+    }
+
+    /// <summary>
+    /// Opens <paramref name="filePath"/> in a hex-editor tab and navigates to <paramref name="offset"/>
+    /// once the tab content has been created.
+    /// </summary>
+    private void OpenFileWithOffset(string filePath, long offset)
+    {
+        OpenStandaloneFileWithEditor(filePath, "hex-editor");
+
+        // Content is created lazily after Dock; defer the navigate until layout is complete.
+        Dispatcher.InvokeAsync(() =>
+        {
+            var hex = ActiveHexEditor;
+            if (hex is not null && offset < hex.Length)
+                hex.SetPosition(offset);
+        }, System.Windows.Threading.DispatcherPriority.Loaded);
     }
 }

@@ -903,4 +903,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbol resolution complete.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Data Breakpoints</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Add Data Breakpoint</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Выполнить анализ кода...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Анализировать проект...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Анализировать файл...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Открыть отчёт анализа</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Анализ выполняется...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Оценка качества кода — нажмите, чтобы открыть отчёт</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Анализ кода</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Обзор</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Проблемы</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Сложность</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Связанность</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Дублирование</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Мёртвый код</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Оценка</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ улучшено</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ ухудшено</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Без изменений</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>ПО ПРОЕКТУ</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>ТОП 5 ХУДШИХ ФАЙЛОВ</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Все</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Критический</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Поиск проблем...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Порог: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Нестабильность</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Всего дублировано</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>класс</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>поле</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>метод</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>параметр</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>переменная</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Сбор метрик объёма...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Анализ сложности...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Анализ связанности...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Обнаружение дублирования...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Обнаружение мёртвого кода...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Сбор диагностики Roslyn...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Вычисление оценки качества...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Нет открытого решения. Откройте решение перед запуском анализа кода.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Анализ кода не выполнен: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Снимок анализа сохранён.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Снимок анализа очищен.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Общие</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Пороговые значения</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Правила</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Автоматически выполнять анализ при открытии решения</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Автоматически выполнять анализ при сборке</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Показывать значок оценки в строке состояния</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Отправлять диагностику на панель ошибок</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Включать созданные файлы (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Хранение снимков:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Детализация вывода:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Восстановить настройки по умолчанию</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Отключено</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Информация</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Предупреждение</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Ошибка</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Повторить</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Экспорт ▾</value></data>
 </root>

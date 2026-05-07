@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
         Title="{DynamicResource HyperlinkDlg_Title}"
-        Width="400" SizeToContent="Height"
+        Width="440" SizeToContent="Height"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        ShowInTaskbar="False">
+        ShowInTaskbar="False"
+        Background="{DynamicResource DockBackgroundBrush}"
+        Foreground="{DynamicResource DockMenuForegroundBrush}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,36 +18,96 @@
     </Window.Resources>
     <Grid Margin="16">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="8"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="8"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>  <!-- icon + title header -->
+            <RowDefinition Height="14"/>
+            <RowDefinition Height="Auto"/>  <!-- Display text label -->
+            <RowDefinition Height="4"/>
+            <RowDefinition Height="Auto"/>  <!-- Display text input -->
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="Auto"/>  <!-- URL label -->
+            <RowDefinition Height="4"/>
+            <RowDefinition Height="Auto"/>  <!-- URL input -->
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="Auto"/>  <!-- URL validation hint -->
             <RowDefinition Height="16"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>  <!-- buttons -->
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource HyperlinkDlg_LabelText}"
-                   VerticalAlignment="Center"/>
-        <TextBox   Grid.Row="0" Grid.Column="2" x:Name="PART_DisplayText"/>
+        <!-- ── Header ──────────────────────────────────────────────── -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE71B;"
+                       FontSize="18" VerticalAlignment="Center"
+                       Foreground="{StaticResource DockMenuForegroundBrush}"
+                       Margin="0,0,8,0"/>
+            <TextBlock Text="{StaticResource HyperlinkDlg_Title}"
+                       FontSize="14" FontWeight="SemiBold"
+                       VerticalAlignment="Center"
+                       Foreground="{StaticResource DockMenuForegroundBrush}"/>
+        </StackPanel>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource HyperlinkDlg_LabelUrl}"
-                   VerticalAlignment="Center"/>
-        <TextBox   Grid.Row="2" Grid.Column="2" x:Name="PART_Url"/>
+        <!-- ── Display text ────────────────────────────────────────── -->
+        <TextBlock Grid.Row="2"
+                   Text="{StaticResource HyperlinkDlg_LabelText}"
+                   FontSize="11" Opacity="0.75"
+                   Foreground="{StaticResource DockMenuForegroundBrush}"/>
+        <TextBox Grid.Row="4"
+                 x:Name="PART_DisplayText"
+                 Height="28" Padding="6,4"
+                 FontSize="13"
+                 Background="{StaticResource DockBackgroundBrush}"
+                 Foreground="{StaticResource DockMenuForegroundBrush}"
+                 BorderBrush="{StaticResource DockBorderBrush}"
+                 CaretBrush="{StaticResource DockMenuForegroundBrush}"
+                 TextChanged="OnDisplayTextChanged"/>
 
-        <StackPanel Grid.Row="4" Grid.ColumnSpan="3" Orientation="Horizontal"
-                    HorizontalAlignment="Right" Margin="0,8,0,0">
-            <Button Content="{DynamicResource HyperlinkDlg_Cancel}"
+        <!-- ── URL ─────────────────────────────────────────────────── -->
+        <TextBlock Grid.Row="6"
+                   Text="{StaticResource HyperlinkDlg_LabelUrl}"
+                   FontSize="11" Opacity="0.75"
+                   Foreground="{StaticResource DockMenuForegroundBrush}"/>
+        <Grid Grid.Row="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0"
+                     x:Name="PART_Url"
+                     Height="28" Padding="6,4"
+                     FontSize="13"
+                     Background="{StaticResource DockBackgroundBrush}"
+                     Foreground="{StaticResource DockMenuForegroundBrush}"
+                     BorderBrush="{StaticResource DockBorderBrush}"
+                     CaretBrush="{StaticResource DockMenuForegroundBrush}"
+                     TextChanged="OnUrlChanged"/>
+            <!-- Open-in-browser preview button -->
+            <Button Grid.Column="2"
+                    x:Name="PART_TestBtn"
+                    Width="28" Height="28"
+                    ToolTip="{StaticResource HyperlinkDlg_TestUrl}"
+                    Click="OnTestUrlClicked"
+                    IsEnabled="False">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A7;" FontSize="14"/>
+            </Button>
+        </Grid>
+
+        <!-- ── URL validation hint ─────────────────────────────────── -->
+        <TextBlock Grid.Row="10"
+                   x:Name="PART_UrlHint"
+                   FontSize="11"
+                   Opacity="0.7"
+                   Foreground="#E05050"
+                   Visibility="Collapsed"/>
+
+        <!-- ── Buttons ──────────────────────────────────────────────── -->
+        <StackPanel Grid.Row="12" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="{StaticResource HyperlinkDlg_Cancel}"
                     Width="80" Margin="0,0,8,0"
                     IsCancel="True" Click="OnCancelClicked"/>
             <Button x:Name="PART_OkBtn"
-                    Content="{DynamicResource HyperlinkDlg_OK}"
-                    Width="80" IsDefault="True" Click="OnOkClicked"/>
+                    Content="{StaticResource HyperlinkDlg_OK}"
+                    Width="80" IsDefault="True"
+                    Click="OnOkClicked"/>
         </StackPanel>
     </Grid>
 </Window>

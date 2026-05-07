@@ -145,6 +145,25 @@ public static class DocumentBlockFactory
     }
 
     /// <summary>
+    /// Creates an image block whose pixels are embedded as a raw PNG/JPEG byte array.
+    /// <paramref name="pngBytes"/> is the raw encoded image; natural dimensions are optional hints.
+    /// </summary>
+    public static DocumentBlock NewImage(byte[] pngBytes, double naturalWidth = 0, double naturalHeight = 0)
+    {
+        var block = new DocumentBlock
+        {
+            Kind      = "image",
+            Text      = "[image]",
+            RawOffset = -1,
+            RawLength = 0
+        };
+        block.Attributes["binaryData"] = pngBytes;
+        if (naturalWidth  > 0) block.Attributes["naturalWidth"]  = naturalWidth;
+        if (naturalHeight > 0) block.Attributes["naturalHeight"] = naturalHeight;
+        return block;
+    }
+
+    /// <summary>
     /// Clones an existing block's text and attributes into a new block with
     /// <c>RawOffset = -1</c>. Used by SplitBlock to produce the second half.
     /// </summary>

@@ -12,6 +12,7 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.Core.Undo;
 using WpfHexEditor.Editor.DocumentEditor.Core.BinaryMap;
@@ -160,6 +161,17 @@ public sealed class DocumentModel : INotifyPropertyChanged
     /// <summary>Replaces forensic alerts and raises <see cref="ForensicAlertsChanged"/>.</summary>
     public void SetForensicAlerts(IReadOnlyList<ForensicAlert> alerts) =>
         ForensicAlerts = alerts;
+
+    /// <summary>
+    /// Removes <paramref name="alert"/> from <see cref="ForensicAlerts"/> (mark as false positive).
+    /// No-op if the alert is not in the current list.
+    /// </summary>
+    public void SuppressAlert(ForensicAlert alert)
+    {
+        var updated = _forensicAlerts.Where(a => !ReferenceEquals(a, alert)).ToArray();
+        if (updated.Length != _forensicAlerts.Count)
+            ForensicAlerts = updated;
+    }
 
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

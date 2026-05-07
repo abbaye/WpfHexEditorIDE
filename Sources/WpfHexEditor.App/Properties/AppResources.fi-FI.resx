@@ -599,4 +599,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbolien selvittaminen valmis.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Datakatkaisupisteet</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Lisaa datakatkaisupiste</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Suorita koodianalyysi...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Analysoi projekti...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Analysoi tiedosto...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Avaa analyysirapotti</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Analysoidaan...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Koodin laatupisteet — avaa raportti napsauttamalla</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Koodianalyysi</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Yleiskatsaus</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Ongelmat</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Monimutkaisuus</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Kytkentä</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Kopiointi</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Kuollut koodi</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Pisteet</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ parantunut</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ heikentynyt</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Ei muutosta</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>PROJEKTEITTAIN</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>TOP 5 HUONOIMMAT TIEDOSTOT</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Kaikki</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Kriittinen</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Etsi ongelmia...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Kynnys: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Epävakaus</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Yhteensä kopioitu</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>luokka</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>kenttä</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>metodi</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>parametri</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>muuttuja</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Kerätään volyymimittareita...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Analysoidaan monimutkaisuutta...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Analysoidaan kytkentää...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Havaitaan kopioita...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Havaitaan kuollutta koodia...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Kerätään Roslyn-diagnostiikkaa...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Lasketaan laatupisteitä...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Ratkaisua ei ole auki. Avaa ratkaisu ennen koodianalyysin suorittamista.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Koodianalyysi epäonnistui: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Analyysitilannevedos tallennettu.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Analyysitilannevedos tyhjennetty.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Yleinen</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Kynnysarvot</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Säännöt</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Suorita analyysi automaattisesti ratkaisun avaamisen yhteydessä</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Suorita analyysi automaattisesti buildin yhteydessä</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Näytä pisteiden merkki tilarivissä</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Lähetä diagnostiikka virheruutuun</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Sisällytä luodut tiedostot (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Tilannevedosten säilytys:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Tulosteen yksityiskohtaisuus:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Palauta oletusasetukset</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Poistettu käytöstä</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Tiedot</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Varoitus</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Virhe</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Suorita uudelleen</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Vie ▾</value></data>
 </root>

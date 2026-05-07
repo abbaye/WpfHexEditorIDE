@@ -1,0 +1,455 @@
+<UserControl x:Class="WpfHexEditor.App.Analysis.UI.CodeAnalysisReportPane"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.App.Analysis.UI.ViewModels"
+             xmlns:conv="clr-namespace:WpfHexEditor.App.Analysis.UI.Converters"
+             Background="{DynamicResource DockWindowBackgroundBrush}"
+             Foreground="{DynamicResource DockMenuForegroundBrush}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.App;component/Themes/DialogStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:GradeToColorConverter   x:Key="GradeToColor"/>
+            <conv:SeverityToIconConverter x:Key="SevToIcon"/>
+            <conv:ScoreToProgressConverter x:Key="ScoreToProgress"/>
+            <BooleanToVisibilityConverter  x:Key="BoolToVis"/>
+
+            <Style TargetType="TabItem">
+                <Setter Property="Background"  Value="Transparent"/>
+                <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="Padding"     Value="10,4"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="0"
+                                    Padding="{TemplateBinding Padding}"
+                                    Margin="0,0,2,0">
+                                <ContentPresenter ContentSource="Header"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  TextBlock.Foreground="{TemplateBinding Foreground}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Border" Property="Background"
+                                            Value="{DynamicResource DockWindowBackgroundBrush}"/>
+                                    <Setter TargetName="Border" Property="BorderThickness"
+                                            Value="0,0,0,2"/>
+                                    <Setter TargetName="Border" Property="BorderBrush"
+                                            Value="{DynamicResource DockAccentBrush}"/>
+                                    <Setter Property="Foreground"
+                                            Value="{DynamicResource DockMenuForegroundBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background"
+                                            Value="{DynamicResource DockBorderBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="TabLabelStyle" TargetType="TextBlock">
+                <Setter Property="Margin"     Value="6,0"/>
+                <Setter Property="FontSize"   Value="12"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="MetricLabel" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{DynamicResource DockForegroundBrush}"/>
+                <Setter Property="FontSize"   Value="11"/>
+                <Setter Property="Margin"     Value="0,1"/>
+            </Style>
+
+            <Style x:Key="ScoreBig" TargetType="TextBlock">
+                <Setter Property="FontSize"   Value="48"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+            </Style>
+
+            <Style x:Key="GradeBig" TargetType="TextBlock">
+                <Setter Property="FontSize"   Value="24"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Margin"     Value="0,4,0,0"/>
+            </Style>
+
+            <Style x:Key="SectionHeader" TargetType="TextBlock">
+                <Setter Property="FontSize"   Value="11"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="{DynamicResource DockForegroundBrush}"/>
+                <Setter Property="Margin"     Value="0,12,0,4"/>
+            </Style>
+
+            <Style TargetType="DataGrid">
+                <Setter Property="Background"            Value="{DynamicResource DockWindowBackgroundBrush}"/>
+                <Setter Property="Foreground"            Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="BorderBrush"           Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="BorderThickness"       Value="1"/>
+                <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="VerticalGridLinesBrush"   Value="Transparent"/>
+                <Setter Property="RowBackground"         Value="Transparent"/>
+                <Setter Property="AlternatingRowBackground" Value="{DynamicResource DockWindowBackgroundBrush}"/>
+                <Setter Property="SelectionMode"         Value="Single"/>
+            </Style>
+
+            <Style TargetType="DataGridColumnHeader">
+                <Setter Property="Background"  Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                <Setter Property="Padding"     Value="6,4"/>
+                <Setter Property="FontSize"    Value="11"/>
+                <Setter Property="FontWeight"  Value="SemiBold"/>
+            </Style>
+
+            <Style TargetType="DataGridRow">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource DockAccentBrush}"/>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource DockBorderBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="DataGridCell">
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Padding"         Value="6,3"/>
+                <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ── Header bar ────────────────────────────────────────────────── -->
+        <Border Grid.Row="0" BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                Padding="12,6">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button x:Name="ReRunButton" Content="⟳ Re-run"
+                            Padding="10,4" Margin="4,0"
+                            Click="OnReRunClicked"
+                            ToolTip="Re-run the analysis"/>
+                    <ComboBox x:Name="ExportCombo" Width="90" Margin="4,0"
+                              SelectedIndex="0" ToolTip="Export report"
+                              SelectionChanged="OnExportSelectionChanged">
+                        <ComboBoxItem Content="Export ▾"/>
+                        <ComboBoxItem Content="Markdown"/>
+                        <ComboBoxItem Content="CSV"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Progress bar (indeterminate while running) -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0"
+                            Visibility="{Binding IsRunning, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+                    <ProgressBar IsIndeterminate="True" Width="160" Height="4"
+                                 Foreground="{DynamicResource DockAccentBrush}"
+                                 Background="{DynamicResource DockBorderBrush}"
+                                 BorderThickness="0" Margin="0,0,8,0"/>
+                    <TextBlock Text="Analyzing…" VerticalAlignment="Center"
+                               Foreground="{DynamicResource DockForegroundBrush}"
+                               FontSize="11"/>
+                </StackPanel>
+
+                <!-- Summary line when done -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                            Visibility="{Binding HasReport, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Style="{StaticResource TabLabelStyle}">
+                        <Run Text="{Binding TotalFiles,    Mode=OneWay, StringFormat={}{0} files}"/>
+                        <Run Text=" · "/>
+                        <Run Text="{Binding TotalLines,    Mode=OneWay, StringFormat={}{0:N0} LOC}"/>
+                        <Run Text=" · "/>
+                        <Run Text="{Binding ProjectCount,  Mode=OneWay, StringFormat={}{0} projects}"/>
+                    </TextBlock>
+                    <TextBlock Margin="16,0,0,0" VerticalAlignment="Center"
+                               Text="{Binding TrendingText, Mode=OneWay}"
+                               Foreground="{DynamicResource DockAccentBrush}"/>
+                </StackPanel>
+
+                <TextBlock Text="{Binding StatusText, Mode=OneWay}" VerticalAlignment="Center"
+                           Visibility="{Binding HasReport, Mode=OneWay, Converter={StaticResource BoolToVis},
+                                        ConverterParameter=Inverse}"
+                           Style="{StaticResource MetricLabel}"/>
+            </DockPanel>
+        </Border>
+
+        <!-- ── Body ─────────────────────────────────────────────────────── -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Score sidebar -->
+            <Border Grid.Column="0" BorderThickness="0,0,1,0"
+                    BorderBrush="{DynamicResource DockBorderBrush}"
+                    Padding="16,16,12,16">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionHeader}" Text="SCORE"/>
+                    <TextBlock Style="{StaticResource ScoreBig}"
+                               Text="{Binding Score, Mode=OneWay}"
+                               Foreground="{Binding Grade, Mode=OneWay, Converter={StaticResource GradeToColor}}"/>
+                    <TextBlock Style="{StaticResource GradeBig}"
+                               Text="{Binding Grade, Mode=OneWay}"
+                               Foreground="{Binding Grade, Mode=OneWay, Converter={StaticResource GradeToColor}}"/>
+                    <TextBlock Text="{Binding TrendingText, Mode=OneWay}" Margin="0,6,0,0"
+                               Foreground="{DynamicResource DockAccentBrush}"/>
+
+                    <TextBlock Style="{StaticResource SectionHeader}" Text="SUB-SCORES" Margin="0,24,0,4"/>
+
+                    <TextBlock Text="Volume"     Style="{StaticResource MetricLabel}"/>
+                    <ProgressBar Value="{Binding VolumeScore,     Mode=OneWay, Converter={StaticResource ScoreToProgress}}"
+                                 Maximum="1" Height="4" Margin="0,2,0,6"/>
+                    <TextBlock Text="Complexity" Style="{StaticResource MetricLabel}"/>
+                    <ProgressBar Value="{Binding ComplexityScore, Mode=OneWay, Converter={StaticResource ScoreToProgress}}"
+                                 Maximum="1" Height="4" Margin="0,2,0,6"/>
+                    <TextBlock Text="Coupling"   Style="{StaticResource MetricLabel}"/>
+                    <ProgressBar Value="{Binding CouplingScore,   Mode=OneWay, Converter={StaticResource ScoreToProgress}}"
+                                 Maximum="1" Height="4" Margin="0,2,0,6"/>
+                    <TextBlock Text="Duplication" Style="{StaticResource MetricLabel}"/>
+                    <ProgressBar Value="{Binding DuplicationScore, Mode=OneWay, Converter={StaticResource ScoreToProgress}}"
+                                 Maximum="1" Height="4" Margin="0,2,0,6"/>
+                    <TextBlock Text="Dead Code"  Style="{StaticResource MetricLabel}"/>
+                    <ProgressBar Value="{Binding DeadCodeScore,   Mode=OneWay, Converter={StaticResource ScoreToProgress}}"
+                                 Maximum="1" Height="4" Margin="0,2,0,6"/>
+                    <TextBlock Text="Conventions" Style="{StaticResource MetricLabel}"/>
+                    <ProgressBar Value="{Binding ConventionScore, Mode=OneWay, Converter={StaticResource ScoreToProgress}}"
+                                 Maximum="1" Height="4" Margin="0,2,0,6"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Tabs -->
+            <TabControl Grid.Column="1" x:Name="MainTabs"
+                        Background="{DynamicResource DockWindowBackgroundBrush}"
+                        BorderThickness="0"
+                        BorderBrush="{DynamicResource DockBorderBrush}">
+
+                <!-- ── Overview ──────────────────────────────────────────── -->
+                <TabItem Header="Overview">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="12">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SectionHeader}" Text="BY PROJECT"/>
+                            <DataGrid x:Name="ProjectsGrid"
+                                      ItemsSource="{Binding Projects, Mode=OneWay}"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      CanUserReorderColumns="False"
+                                      GridLinesVisibility="Horizontal"
+                                      HeadersVisibility="Column"
+                                      RowHeaderWidth="0"
+                                      Margin="0,0,0,16">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Project" Binding="{Binding ProjectName,              Mode=OneWay}" Width="*"/>
+                                    <DataGridTextColumn Header="Files"   Binding="{Binding TotalFiles,               Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="LOC"     Binding="{Binding TotalLines,               Mode=OneWay, StringFormat={}{0:N0}}" Width="80"/>
+                                    <DataGridTextColumn Header="Types"   Binding="{Binding TypeCount,                Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="Avg CC"  Binding="{Binding AvgCyclomaticComplexity, Mode=OneWay, StringFormat={}{0:F1}}" Width="70"/>
+                                    <DataGridTextColumn Header="Score"   Binding="{Binding Score,                   Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="Grade"   Binding="{Binding Grade,                   Mode=OneWay}" Width="55"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <TextBlock Style="{StaticResource SectionHeader}" Text="TOP 5 WORST FILES"/>
+                            <DataGrid x:Name="WorstFilesGrid"
+                                      ItemsSource="{Binding WorstFiles, Mode=OneWay}"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      CanUserReorderColumns="False"
+                                      GridLinesVisibility="Horizontal"
+                                      HeadersVisibility="Column"
+                                      RowHeaderWidth="0"
+                                      MouseDoubleClick="OnGridDoubleClick">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="File"    Binding="{Binding FileName,    Mode=OneWay}" Width="*"/>
+                                    <DataGridTextColumn Header="Project" Binding="{Binding ProjectName, Mode=OneWay}" Width="140"/>
+                                    <DataGridTextColumn Header="LOC"     Binding="{Binding TotalLines,  Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="Max CC"  Binding="{Binding MaxCC,       Mode=OneWay}" Width="70"/>
+                                    <DataGridTextColumn Header="Score"   Binding="{Binding Score,       Mode=OneWay}" Width="60"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- ── Issues ────────────────────────────────────────────── -->
+                <TabItem x:Name="IssuesTab">
+                    <TabItem.Header>
+                        <TextBlock>
+                            <Run Text="Issues "/>
+                            <Run Text="{Binding Issues.Count, Mode=OneWay}"/>
+                        </TextBlock>
+                    </TabItem.Header>
+                    <Grid Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
+                            <ComboBox x:Name="SeverityFilter" Width="100" Margin="0,0,8,0"
+                                      SelectedIndex="0"
+                                      SelectionChanged="OnSeverityFilterChanged">
+                                <ComboBoxItem Content="All"/>
+                                <ComboBoxItem Content="Error"/>
+                                <ComboBoxItem Content="Warning"/>
+                                <ComboBoxItem Content="Info"/>
+                            </ComboBox>
+                            <TextBox x:Name="IssueSearchBox" Width="200"
+                                     Text="{Binding IssueFilter, UpdateSourceTrigger=PropertyChanged}"
+                                     ToolTip="Search issues…"/>
+                        </StackPanel>
+                        <DataGrid Grid.Row="1"
+                                  ItemsSource="{Binding Issues, Mode=OneWay}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserReorderColumns="False"
+                                  GridLinesVisibility="Horizontal"
+                                  HeadersVisibility="Column"
+                                  RowHeaderWidth="0"
+                                  MouseDoubleClick="OnGridDoubleClick">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header=""        Binding="{Binding SeverityIcon, Mode=OneWay}" Width="24"/>
+                                <DataGridTextColumn Header="ID"      Binding="{Binding Id,           Mode=OneWay}" Width="80"/>
+                                <DataGridTextColumn Header="Message" Binding="{Binding Message,      Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="File"    Binding="{Binding FileName,     Mode=OneWay}" Width="160"/>
+                                <DataGridTextColumn Header="Line"    Binding="{Binding Line,         Mode=OneWay}" Width="55"/>
+                                <DataGridTextColumn Header="Project" Binding="{Binding ProjectName,  Mode=OneWay}" Width="140"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+
+                <!-- ── Complexity ────────────────────────────────────────── -->
+                <TabItem Header="Complexity">
+                    <Grid Margin="8">
+                        <DataGrid ItemsSource="{Binding TopMethods, Mode=OneWay}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserReorderColumns="False"
+                                  GridLinesVisibility="Horizontal"
+                                  HeadersVisibility="Column"
+                                  RowHeaderWidth="0"
+                                  MouseDoubleClick="OnGridDoubleClick">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Method"    Binding="{Binding FullyQualifiedName,     Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="CC"        Binding="{Binding CyclomaticComplexity,   Mode=OneWay}" Width="60"/>
+                                <DataGridTextColumn Header="Cognitive" Binding="{Binding CognitiveComplexity,    Mode=OneWay}" Width="80"/>
+                                <DataGridTextColumn Header="LOC"       Binding="{Binding Loc,                    Mode=OneWay}" Width="60"/>
+                                <DataGridTextColumn Header="Params"    Binding="{Binding ParameterCount,         Mode=OneWay}" Width="60"/>
+                                <DataGridTextColumn Header="Line"      Binding="{Binding Line,                   Mode=OneWay}" Width="55"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+
+                <!-- ── Coupling ──────────────────────────────────────────── -->
+                <TabItem Header="Coupling">
+                    <Grid Margin="8">
+                        <DataGrid ItemsSource="{Binding TopCouplings, Mode=OneWay}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserReorderColumns="False"
+                                  GridLinesVisibility="Horizontal"
+                                  HeadersVisibility="Column"
+                                  RowHeaderWidth="0"
+                                  MouseDoubleClick="OnGridDoubleClick">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Type"        Binding="{Binding TypeName,    Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="Ca"          Binding="{Binding Ca,          Mode=OneWay}" Width="50"/>
+                                <DataGridTextColumn Header="Ce"          Binding="{Binding Ce,          Mode=OneWay}" Width="50"/>
+                                <DataGridTextColumn Header="Instability" Binding="{Binding Instability, Mode=OneWay, StringFormat={}{0:F2}}" Width="85"/>
+                                <DataGridTextColumn Header="LCOM"        Binding="{Binding Lcom,        Mode=OneWay}" Width="70"/>
+                                <DataGridTextColumn Header="Line"        Binding="{Binding Line,        Mode=OneWay}" Width="55"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+
+                <!-- ── Duplication ───────────────────────────────────────── -->
+                <TabItem Header="Duplication">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8">
+                        <ItemsControl ItemsSource="{Binding Duplications, Mode=OneWay}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,8" Padding="8"
+                                            BorderThickness="1"
+                                            BorderBrush="{DynamicResource DockBorderBrush}">
+                                        <StackPanel>
+                                            <TextBlock FontWeight="SemiBold">
+                                                <Run Text="Clone group — "/>
+                                                <Run Text="{Binding LineCount,          Mode=OneWay}"/>
+                                                <Run Text=" lines, "/>
+                                                <Run Text="{Binding Occurrences.Count,  Mode=OneWay}"/>
+                                                <Run Text=" occurrences, "/>
+                                                <Run Text="{Binding TokenCount,         Mode=OneWay}"/>
+                                                <Run Text=" tokens"/>
+                                            </TextBlock>
+                                            <ItemsControl ItemsSource="{Binding Occurrences, Mode=OneWay}"
+                                                          Margin="12,4,0,0">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock FontFamily="Consolas" FontSize="11">
+                                                            <Run Text="{Binding FilePath,  Mode=OneWay}"/>
+                                                            <Run Text=" : "/>
+                                                            <Run Text="{Binding StartLine, Mode=OneWay}"/>
+                                                            <Run Text="–"/>
+                                                            <Run Text="{Binding EndLine,   Mode=OneWay}"/>
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- ── Dead Code ─────────────────────────────────────────── -->
+                <TabItem Header="Dead Code">
+                    <Grid Margin="8">
+                        <DataGrid ItemsSource="{Binding DeadSymbols, Mode=OneWay}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserReorderColumns="False"
+                                  GridLinesVisibility="Horizontal"
+                                  HeadersVisibility="Column"
+                                  RowHeaderWidth="0"
+                                  MouseDoubleClick="OnGridDoubleClick">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Symbol"  Binding="{Binding Name,        Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="Kind"    Binding="{Binding Kind,         Mode=OneWay}" Width="90"/>
+                                <DataGridTextColumn Header="File"    Binding="{Binding FilePath,     Mode=OneWay, Converter={x:Static conv:FileNameConverter.Instance}}" Width="160"/>
+                                <DataGridTextColumn Header="Line"    Binding="{Binding Line,         Mode=OneWay}" Width="55"/>
+                                <DataGridTextColumn Header="Project" Binding="{Binding ProjectName,  Mode=OneWay}" Width="140"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+
+            </TabControl>
+        </Grid>
+    </Grid>
+</UserControl>

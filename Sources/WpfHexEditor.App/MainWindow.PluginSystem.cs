@@ -72,6 +72,7 @@ public partial class MainWindow
     private WpfHexEditor.App.Services.DebuggerServiceImpl?      _debuggerService;
     private WpfHexEditor.App.Debug.DebugModule?                 _debugModule;
     private WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule? _assemblyExplorerModule;
+    private WpfHexEditor.App.Analysis.CodeAnalysisModule?       _codeAnalysisModule;
     private WpfHexEditor.App.Services.ScriptingServiceImpl?     _scriptingService;
     private WpfHexEditor.App.Services.TabGroupService?          _tabGroupService;
     private readonly FocusContextService _focusContextService = new();
@@ -483,6 +484,17 @@ public partial class MainWindow
             // Panels/ViewModels/decompiler backend are built in EnsureActivated on first use.
             _assemblyExplorerModule = new WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule();
             await _assemblyExplorerModule.InitializeAsync(hostContext).ConfigureAwait(true);
+
+            // Code Analysis module — provides OVERKILL analysis with full IDE integration
+            // (status bar badge, Tools menu, Solution/Project/File context menus, Error Panel, Options pages).
+            _codeAnalysisModule = new WpfHexEditor.App.Analysis.CodeAnalysisModule();
+            _codeAnalysisModule.Initialize(
+                hostContext,
+                dockingAdapter,
+                statusBarAdapter,
+                menuAdapter,
+                Dispatcher,
+                _commandRegistry);
 
             // Both modules are now ready. Any panel-dbg-* or AssemblyExplorer panels that were
             // rendered as a CreateDocumentContent placeholder during layout restore (because the

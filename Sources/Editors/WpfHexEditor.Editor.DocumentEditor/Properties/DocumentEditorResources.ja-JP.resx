@@ -239,6 +239,8 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>ブラウザでURLを開く</value></data>
+  <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>有効なURLを入力してください（https://、http://、mailto:、ftp://）</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>表を挿入</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>行数</value></data>
   <data name="InsertTableDlg_Columns" xml:space="preserve"><value>列数</value></data>
@@ -306,4 +308,65 @@
   <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>インストール</value></data>
   <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>後で</value></data>
   <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>表示しない</value></data>
+
+  <!-- Image dialog & context menu -->
+  <data name="ImgDlg_Title" xml:space="preserve"><value>画像のプロパティ</value></data>
+  <data name="ImgDlg_TabSize" xml:space="preserve"><value>サイズと位置</value></data>
+  <data name="ImgDlg_TabWrap" xml:space="preserve"><value>テキストの折り返し</value></data>
+  <data name="ImgDlg_TabBorder" xml:space="preserve"><value>枠線</value></data>
+  <data name="ImgDlg_TabOptions" xml:space="preserve"><value>オプション</value></data>
+  <data name="ImgDlg_Preview" xml:space="preserve"><value>プレビュー</value></data>
+  <data name="ImgDlg_SizeSection" xml:space="preserve"><value>サイズ</value></data>
+  <data name="ImgDlg_Width" xml:space="preserve"><value>幅</value></data>
+  <data name="ImgDlg_Height" xml:space="preserve"><value>高さ</value></data>
+  <data name="ImgDlg_LockAspect" xml:space="preserve"><value>縦横比を固定</value></data>
+  <data name="ImgDlg_ResetSize" xml:space="preserve"><value>元のサイズ</value></data>
+  <data name="ImgDlg_AlignSection" xml:space="preserve"><value>配置</value></data>
+  <data name="ImgDlg_AlignLeft" xml:space="preserve"><value>左</value></data>
+  <data name="ImgDlg_AlignCenter" xml:space="preserve"><value>中央</value></data>
+  <data name="ImgDlg_AlignRight" xml:space="preserve"><value>右</value></data>
+  <data name="ImgDlg_AltText" xml:space="preserve"><value>代替テキスト（アクセシビリティ）</value></data>
+  <data name="ImgDlg_WrapSection" xml:space="preserve"><value>テキストの折り返し</value></data>
+  <data name="ImgDlg_WrapNone" xml:space="preserve"><value>折り返しなし</value></data>
+  <data name="ImgDlg_WrapLeft" xml:space="preserve"><value>左折り返し</value></data>
+  <data name="ImgDlg_WrapRight" xml:space="preserve"><value>右折り返し</value></data>
+  <data name="ImgDlg_WrapSpacing" xml:space="preserve"><value>画像周辺の余白</value></data>
+  <data name="ImgDlg_SpaceTop" xml:space="preserve"><value>上</value></data>
+  <data name="ImgDlg_SpaceBottom" xml:space="preserve"><value>下</value></data>
+  <data name="ImgDlg_SpaceLeft" xml:space="preserve"><value>左</value></data>
+  <data name="ImgDlg_SpaceRight" xml:space="preserve"><value>右</value></data>
+  <data name="ImgDlg_BorderSection" xml:space="preserve"><value>枠線</value></data>
+  <data name="ImgDlg_BorderEnable" xml:space="preserve"><value>画像に枠線を表示</value></data>
+  <data name="ImgDlg_BorderWidth" xml:space="preserve"><value>太さ</value></data>
+  <data name="ImgDlg_BorderColor" xml:space="preserve"><value>色</value></data>
+  <data name="ImgDlg_BorderStyle" xml:space="preserve"><value>スタイル</value></data>
+  <data name="ImgDlg_BorderStyleSolid" xml:space="preserve"><value>実線</value></data>
+  <data name="ImgDlg_BorderStyleDashed" xml:space="preserve"><value>破線</value></data>
+  <data name="ImgDlg_BorderStyleDotted" xml:space="preserve"><value>点線</value></data>
+  <data name="ImgDlg_CornerRadius" xml:space="preserve"><value>角の丸み</value></data>
+  <data name="ImgDlg_OptionsSection" xml:space="preserve"><value>オプション</value></data>
+  <data name="ImgDlg_OptKeepAspect" xml:space="preserve"><value>サイズ変更時に縦横比を維持</value></data>
+  <data name="ImgDlg_OptProtect" xml:space="preserve"><value>画像を編集から保護</value></data>
+  <data name="ImgDlg_OptPrintable" xml:space="preserve"><value>印刷出力に含める</value></data>
+  <data name="ImgDlg_SourceInfo" xml:space="preserve"><value>画像ソース</value></data>
+  <data name="ImgDlg_Reset" xml:space="preserve"><value>リセット</value></data>
+  <data name="ImgDlg_Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="ImgDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="ImgCtx_Cut" xml:space="preserve"><value>切り取り</value></data>
+  <data name="ImgCtx_Copy" xml:space="preserve"><value>コピー</value></data>
+  <data name="ImgCtx_Paste" xml:space="preserve"><value>貼り付け</value></data>
+  <data name="ImgCtx_Delete" xml:space="preserve"><value>画像を削除</value></data>
+  <data name="ImgCtx_Replace" xml:space="preserve"><value>画像を置換...</value></data>
+  <data name="ImgCtx_SaveAs" xml:space="preserve"><value>名前を付けて画像を保存...</value></data>
+  <data name="ImgCtx_CopyImage" xml:space="preserve"><value>画像をクリップボードにコピー</value></data>
+  <data name="ImgCtx_AlignLeft" xml:space="preserve"><value>左揃え</value></data>
+  <data name="ImgCtx_AlignCenter" xml:space="preserve"><value>中央揃え</value></data>
+  <data name="ImgCtx_AlignRight" xml:space="preserve"><value>右揃え</value></data>
+  <data name="ImgCtx_Align" xml:space="preserve"><value>配置</value></data>
+  <data name="ImgCtx_WrapNone" xml:space="preserve"><value>折り返しなし</value></data>
+  <data name="ImgCtx_WrapLeft" xml:space="preserve"><value>左折り返し</value></data>
+  <data name="ImgCtx_WrapRight" xml:space="preserve"><value>右折り返し</value></data>
+  <data name="ImgCtx_Wrap" xml:space="preserve"><value>テキストの折り返し</value></data>
+  <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Hexエディタで検査</value></data>
+  <data name="ImgCtx_Properties" xml:space="preserve"><value>画像のプロパティ...</value></data>
 </root>

@@ -194,6 +194,9 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         ? DocumentEditorResources.DocEditorHost_DocumentTitle
         : Path.GetFileName(_vm.Model.FilePath) + (IsDirty ? " *" : string.Empty);
 
+    /// <summary>Absolute path of the currently loaded document file, or null when no file is loaded.</summary>
+    public string? FilePath => _vm?.Model.FilePath;
+
     public int    UndoCount       => _vm?.Model.UndoEngine.UndoCount ?? 0;
     public int    RedoCount       => _vm?.Model.UndoEngine.RedoCount ?? 0;
     public string UndoDescription => _vm?.Model.UndoEngine.PeekUndoDescription ?? "Undo";
@@ -215,6 +218,9 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     public event EventHandler<string>? StatusMessage;
     public event EventHandler<string>? OutputMessage;
     public event EventHandler?         SelectionChanged;
+
+    /// <summary>Raised when the user chooses "Inspect in Hex Editor" on a block via the image context menu.</summary>
+    public event EventHandler<Core.Model.DocumentBlock>? BlockHexInspectRequested;
     public event EventHandler<DocumentOperationEventArgs>?          OperationStarted;
     public event EventHandler<DocumentOperationEventArgs>?          OperationProgress;
     public event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
@@ -430,6 +436,8 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         if (PART_StructModeBtn is not null) PART_StructModeBtn.IsChecked = mode == DocumentViewMode.Structure;
         if (PART_FocusModeBtn  is not null) PART_FocusModeBtn.IsChecked  = mode == DocumentViewMode.Focus;
 
+        PART_StatusBar.ViewMode = mode;
+
         var readOnlySuffix = IsReadOnly ? DocumentEditorResources.DocEditorHost_ReadOnlySuffix : string.Empty;
         PART_StatusBar.ViewModeText = mode switch
         {
@@ -526,6 +534,8 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         if (PART_PageModeBtn    is not null) PART_PageModeBtn.IsChecked    = mode == DocumentRenderMode.Page;
         if (PART_DraftModeBtn   is not null) PART_DraftModeBtn.IsChecked   = mode == DocumentRenderMode.Draft;
         if (PART_OutlineModeBtn is not null) PART_OutlineModeBtn.IsChecked = mode == DocumentRenderMode.Outline;
+
+        PART_StatusBar.RenderMode = mode;
     }
 
     // ── Phase 14/15: Text + paragraph formatting toolbar handlers ─────────────
@@ -815,6 +825,21 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     private void OnHostPreviewKeyDown(object sender, KeyEventArgs e)
     {
+        // Escape always exits focus mode regardless of modifiers
+        if (e.Key == Key.Escape && _isFocusMode)
+        {
+            ViewMode  = DocumentViewMode.TextOnly;
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.F4 && (Keyboard.Modifiers & ModifierKeys.Control) == 0)
+        {
+            PART_TextPane.PART_Renderer.OpenImagePropertiesViaKey();
+            e.Handled = true;
+            return;
+        }
+
         if ((Keyboard.Modifiers & ModifierKeys.Control) == 0) return;
 
         if (e.Key == Key.F)  { OpenFindDialog(showReplace: false); e.Handled = true; }
@@ -1209,6 +1234,12 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_TextPane.PART_Renderer.SelectionFormatChanged += OnSelectionFormatChanged;
         PART_TextPane.PART_Renderer.PageChanged            += OnRendererPageChanged;
         PART_TextPane.PART_Renderer.FindResultsChanged     += (_, _) => UpdateSearchScrollMarkers();
+        PART_TextPane.PART_Renderer.InspectBlockRequested += (_, b) => BlockHexInspectRequested?.Invoke(this, b);
+        PART_TextPane.BlockInspectRequested               += (_, b) => BlockHexInspectRequested?.Invoke(this, b);
+        PART_TextPane.PART_Renderer.PageSetupRequested    += (_, _) => OnPageSetupBtnClick(this, new RoutedEventArgs());
+
+        PART_StatusBar.ViewModeChangeRequested    += (_, m) => ViewMode   = m;
+        PART_StatusBar.RenderModeChangeRequested  += (_, m) => RenderMode = m;
 
         // Scroll marker panel — created once, injected into PART_ScrollMarkerHost (added in Wave 5)
         _scrollMarker = new DocumentScrollMarkerPanel();
@@ -1343,7 +1374,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     {
         PART_StatusBar.UpdateCurrentPage(e.Current, e.Total);
         var r = PART_TextPane.PART_Renderer;
-        PART_MiniMap.UpdateScroll(r.VerticalOffset, r.ExtentHeight, r.ViewportHeight);
+        PART_MiniMap.UpdateScroll(r.VerticalOffset, r.ExtentHeight, r.ViewportHeight, r.LayoutBlocks);
         _scrollMarker?.UpdateCaretMarker(r.CaretBlockIndex, r.BlockCount);
     }
 

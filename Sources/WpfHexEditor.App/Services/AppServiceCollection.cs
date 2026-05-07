@@ -17,6 +17,9 @@
 // ==========================================================
 
 using Microsoft.Extensions.DependencyInjection;
+using WpfHexEditor.Core.Contracts;
+using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.Core.Dialogs;
 using WpfHexEditor.PluginHost.Adapters;
 using WpfHexEditor.SDK.Contracts;
@@ -64,6 +67,9 @@ internal static class AppServiceCollection
 
         // Themed dialog service — replaces System.Windows.MessageBox.
         services.AddSingleton<IDialogService, DialogServiceImpl>();
+
+        services.AddSingleton<IEmbeddedFormatCatalog>(EmbeddedFormatCatalog.Instance);
+        services.AddSingleton(LanguageRegistry.Instance);
 
         return services;
     }

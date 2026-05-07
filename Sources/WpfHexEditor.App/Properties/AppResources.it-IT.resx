@@ -903,4 +903,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Risoluzione simboli completata.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Punti di interruzione dati</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Aggiungi punto di interruzione dati</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Esegui analisi del codice...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Analizza progetto...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Analizza file...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Apri report di analisi</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Analisi in corso...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Punteggio qualità del codice — clic per aprire il report</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Analisi del codice</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Panoramica</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Problemi</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Complessità</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Accoppiamento</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Duplicazione</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Codice morto</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Punteggio</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ migliorato</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ degradato</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Nessun cambiamento</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>PER PROGETTO</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>TOP 5 FILE PEGGIORI</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Tutti</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Critico</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Cerca problemi...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Soglia: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Instabilità</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Totale duplicato</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>classe</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>campo</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>metodo</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>parametro</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>variabile</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Raccolta metriche di volume...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Analisi della complessità...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Analisi dell'accoppiamento...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Rilevamento duplicazioni...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Rilevamento codice morto...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Raccolta diagnostiche Roslyn...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Calcolo punteggio qualità...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Nessuna soluzione aperta. Aprire una soluzione prima di eseguire l'analisi del codice.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Analisi del codice non riuscita: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Snapshot di analisi salvato.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Snapshot di analisi cancellato.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Generale</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Soglie</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Regole</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Esegui analisi automaticamente all'apertura della soluzione</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Esegui analisi automaticamente alla compilazione</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Mostra badge punteggio nella barra di stato</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Invia diagnostiche al pannello errori</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Includi file generati (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Conservazione snapshot:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Verbosità output:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Ripristina impostazioni predefinite</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Disabilitato</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Info</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Avviso</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Errore</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Riesegui</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Esporta ▾</value></data>
 </root>

@@ -903,4 +903,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Rozwiazywanie symboli zakonczone.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Punkty przerwania danych</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Dodaj punkt przerwania danych</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Uruchom analizę kodu...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Analizuj projekt...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Analizuj plik...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Otwórz raport analizy</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Analizowanie...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Wynik jakości kodu — kliknij, aby otworzyć raport</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Analiza kodu</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Przegląd</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Problemy</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Złożoność</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Sprzężenie</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Duplikacja</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Martwy kod</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Wynik</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ poprawiono</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ pogorszono</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Brak zmian</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>WG PROJEKTU</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>TOP 5 NAJGORSZYCH PLIKÓW</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Wszystkie</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Krytyczny</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Szukaj problemów...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Próg: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Niestabilność</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Łącznie zduplikowano</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>klasa</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>pole</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>metoda</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>parametr</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>zmienna</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Zbieranie metryk wolumenu...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Analizowanie złożoności...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Analizowanie sprzężenia...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Wykrywanie duplikacji...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Wykrywanie martwego kodu...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Zbieranie diagnostyki Roslyn...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Obliczanie wyniku jakości...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Brak otwartego rozwiązania. Otwórz rozwiązanie przed uruchomieniem analizy kodu.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Analiza kodu nie powiodła się: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Migawka analizy zapisana.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Migawka analizy wyczyszczona.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Ogólne</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Progi</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Reguły</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Uruchamiaj analizę automatycznie przy otwieraniu rozwiązania</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Uruchamiaj analizę automatycznie podczas kompilacji</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Pokaż odznakę wyniku na pasku stanu</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Wysyłaj diagnostykę do panelu błędów</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Uwzględnij wygenerowane pliki (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Przechowywanie migawek:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Szczegółowość wyjścia:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Przywróć ustawienia domyślne</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Wyłączono</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Informacja</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Ostrzeżenie</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Błąd</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Uruchom ponownie</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Eksportuj ▾</value></data>
 </root>
