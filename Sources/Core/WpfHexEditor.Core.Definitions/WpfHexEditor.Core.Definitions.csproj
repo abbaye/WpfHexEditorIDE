@@ -12,9 +12,9 @@
 
     <!-- NuGet package metadata -->
     <PackageId>whfmt.FileFormatCatalog</PackageId>
-    <Version>1.2.0</Version>
-    <AssemblyVersion>1.2.0</AssemblyVersion>
-    <FileVersion>1.2.0</FileVersion>
+    <Version>1.3.0</Version>
+    <AssemblyVersion>1.3.0</AssemblyVersion>
+    <FileVersion>1.3.0</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>whfmt.FileFormatCatalog</Product>
@@ -29,7 +29,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageReleaseNotes>1.2.0 — 790+ definitions, schema v2.4, formatId on every entry, 57 language grammars; FormatFileAnalyzer async enumeration; CatalogQuery.WithFormatId(); FormatMetadata implements IEquatable; pre-sized JSON parser allocations.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.3.0 — Schema v2.5: diff/repair/fuzz/migration blocks. 6 priority formats enriched (ZIP, PNG, PE_EXE, PDF, MP3, SQLite) with field-level diff keys, repair rules, and 5–7 fuzz strategies each. Powers whfmt.Analysis, whfmt.Fuzz, whfmt.CodeGen companion packages.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>

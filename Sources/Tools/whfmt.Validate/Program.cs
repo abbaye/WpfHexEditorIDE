@@ -13,6 +13,7 @@ var rootCmd = new RootCommand("whfmt — binary file format validator powered by
     ValidateCommand.Build(),
     ListCommand.Build(),
     InfoCommand.Build(),
+    RepairCommand.Build(),
 };
 
 rootCmd.Name = "whfmt";
