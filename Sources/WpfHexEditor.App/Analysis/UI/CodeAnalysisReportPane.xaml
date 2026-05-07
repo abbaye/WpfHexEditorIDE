@@ -17,6 +17,46 @@
             <conv:ScoreToProgressConverter x:Key="ScoreToProgress"/>
             <BooleanToVisibilityConverter  x:Key="BoolToVis"/>
 
+            <Style TargetType="TabItem">
+                <Setter Property="Background"  Value="Transparent"/>
+                <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="Padding"     Value="10,4"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="0"
+                                    Padding="{TemplateBinding Padding}"
+                                    Margin="0,0,2,0">
+                                <ContentPresenter ContentSource="Header"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  TextBlock.Foreground="{TemplateBinding Foreground}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Border" Property="Background"
+                                            Value="{DynamicResource DockWindowBackgroundBrush}"/>
+                                    <Setter TargetName="Border" Property="BorderThickness"
+                                            Value="0,0,0,2"/>
+                                    <Setter TargetName="Border" Property="BorderBrush"
+                                            Value="{DynamicResource DockAccentBrush}"/>
+                                    <Setter Property="Foreground"
+                                            Value="{DynamicResource DockMenuForegroundBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background"
+                                            Value="{DynamicResource DockBorderBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <Style x:Key="TabLabelStyle" TargetType="TextBlock">
                 <Setter Property="Margin"     Value="6,0"/>
                 <Setter Property="FontSize"   Value="12"/>
@@ -74,10 +114,17 @@
                     </ComboBox>
                 </StackPanel>
 
-                <!-- Running spinner -->
-                <TextBlock Text="⟳ Analysis running…" Margin="0,0,16,0"
-                           VerticalAlignment="Center"
-                           Visibility="{Binding IsRunning, Mode=OneWay, Converter={StaticResource BoolToVis}}"/>
+                <!-- Progress bar (indeterminate while running) -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0"
+                            Visibility="{Binding IsRunning, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+                    <ProgressBar IsIndeterminate="True" Width="160" Height="4"
+                                 Foreground="{DynamicResource DockAccentBrush}"
+                                 Background="{DynamicResource DockBorderBrush}"
+                                 BorderThickness="0" Margin="0,0,8,0"/>
+                    <TextBlock Text="Analyzing…" VerticalAlignment="Center"
+                               Foreground="{DynamicResource DockForegroundBrush}"
+                               FontSize="11"/>
+                </StackPanel>
 
                 <!-- Summary line when done -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
@@ -148,8 +195,9 @@
 
             <!-- Tabs -->
             <TabControl Grid.Column="1" x:Name="MainTabs"
-                        Background="Transparent"
-                        BorderThickness="0">
+                        Background="{DynamicResource DockWindowBackgroundBrush}"
+                        BorderThickness="0"
+                        BorderBrush="{DynamicResource DockBorderBrush}">
 
                 <!-- ── Overview ──────────────────────────────────────────── -->
                 <TabItem Header="Overview">

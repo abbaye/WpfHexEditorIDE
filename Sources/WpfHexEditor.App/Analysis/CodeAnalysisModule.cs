@@ -237,10 +237,24 @@ internal sealed class CodeAnalysisModule
 
     private string GetSolutionPath()
     {
+        // 1. IDE solution open → use its directory
         var solutionFile = _context?.SolutionExplorer?.ActiveSolutionPath;
-        return string.IsNullOrEmpty(solutionFile)
-            ? AppDomain.CurrentDomain.BaseDirectory
-            : Path.GetDirectoryName(solutionFile) ?? AppDomain.CurrentDomain.BaseDirectory;
+        if (!string.IsNullOrEmpty(solutionFile))
+            return Path.GetDirectoryName(solutionFile) ?? AppDomain.CurrentDomain.BaseDirectory;
+
+        // 2. Walk up from the executable to find a .sln file (dev/CI scenario)
+        var dir = AppDomain.CurrentDomain.BaseDirectory;
+        for (int i = 0; i < 8; i++)
+        {
+            if (Directory.GetFiles(dir, "*.sln").Length > 0)
+                return dir;
+            var parent = Path.GetDirectoryName(dir);
+            if (parent is null || parent == dir) break;
+            dir = parent;
+        }
+
+        // 3. Last resort: executable directory
+        return AppDomain.CurrentDomain.BaseDirectory;
     }
 
     private static string ScoreToGrade(int score) => score switch
