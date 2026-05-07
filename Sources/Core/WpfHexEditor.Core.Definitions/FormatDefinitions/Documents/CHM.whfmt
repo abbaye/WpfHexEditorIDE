@@ -289,6 +289,60 @@
     "extensions": [".chm"],
     "note": "CHM replaced the older WinHelp (.hlp) format from Windows 98 onward. Rendered by Trident (IE engine) — security context depends on file location (mark-of-the-web). CHM from network shares or internet zones has restricted script execution. Local CHM files execute scripts with full local permissions."
   },
+  "diff": {
+    "keyFields": ["itsfSignature", "version", "headerLength", "languageID"],
+    "ignoreFields": ["unknown", "isVersion3"],
+    "groupBy": "ITSF Header",
+    "note": "Signature, version, and LCID characterize the CHM variant; header length is a fixed structural invariant. The unknown field is always -1 and adds no diff value."
+  },
+  "repair": [
+    {
+      "name": "FixItsfSignature",
+      "trigger": "itsfSignature != 'ITSF'",
+      "action": "set_value",
+      "target": "itsfSignature",
+      "value": "49545346",
+      "description": "Restore the ITSF magic bytes 'ITSF' (49 54 53 46) at offset 0"
+    },
+    {
+      "name": "FixVersion",
+      "trigger": "version != 3 && version != 2",
+      "action": "set_value",
+      "target": "version",
+      "value": "03000000",
+      "description": "Reset ITSF version to 3 (LE uint32) for standard CHM compatibility"
+    },
+    {
+      "name": "FixHeaderLength",
+      "trigger": "version == 3 && headerLength != 96",
+      "action": "set_value",
+      "target": "headerLength",
+      "value": "60000000",
+      "description": "Restore header length to 96 bytes (LE uint32 = 0x60) for ITSF v3"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "itsfSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'ITSF' magic to test CHM parser rejection of invalid containers" },
+      { "field": "version",       "mutation": "boundary_values",   "weight": 2, "description": "Test version values (0, 1, 4, 0xFF) to expose version-check edge cases in hh.exe" },
+      { "field": "totalLength",   "mutation": "overflow",          "weight": 2, "description": "Overflow total file length to stress size validation in CHM loaders" },
+      { "field": "languageID",    "mutation": "random_bytes",      "weight": 1, "description": "Randomize LCID to test code-page fallback behavior in HTML Help viewer" },
+      { "field": "headerLength",  "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in header length to cause off-by-one directory offset errors" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "ITSF-v2",
+      "to": "ITSF-v3",
+      "description": "Upgrade older ITS/IT v2 format to standard CHM ITSF v3; header length changes from legacy to 96 bytes",
+      "changes": [
+        { "field": "version",      "changeType": "set_value", "value": "03000000", "description": "Set version to 3 (LE uint32) for HTML Help Workshop compatibility" },
+        { "field": "headerLength", "changeType": "set_value", "value": "60000000", "description": "Set header length to 96 bytes (0x60 LE) for ITSF v3 standard" }
+      ]
+    }
+  ],
   "MimeTypes": [
     "application/vnd.ms-htmlhelp",
     "application/x-chm"

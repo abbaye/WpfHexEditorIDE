@@ -406,6 +406,59 @@
     "SupportsFixedLayout": true,
     "SupportsReflowable": true
   },
+  "diff": {
+    "keyFields": ["zipSignature", "zipCompressionMethod", "zipCrc32", "mimetypeContent"],
+    "ignoreFields": ["zipLastModTime", "zipLastModDate", "compressionRatio", "totalHeaderSize"],
+    "groupBy": "ZIP Local File Header",
+    "note": "Signature, CRC, and mimetype content confirm valid EPUB container; compression method on the first entry must be 0. Timestamps are unstable across round-trips."
+  },
+  "repair": [
+    {
+      "name": "FixZipSignature",
+      "trigger": "zipSignature != 0x04034B50",
+      "action": "set_value",
+      "target": "zipSignature",
+      "value": "504B0304",
+      "description": "Restore the ZIP Local File Header magic bytes to 50 4B 03 04"
+    },
+    {
+      "name": "FixMimetypeCompression",
+      "trigger": "zipCompressionMethod != 0",
+      "action": "set_value",
+      "target": "zipCompressionMethod",
+      "value": "0000",
+      "description": "Force the mimetype entry to Stored (method 0) as required by the OCF EPUB specification"
+    },
+    {
+      "name": "FixExtraFieldLength",
+      "trigger": "zipExtraFieldLength != 0",
+      "action": "set_value",
+      "target": "zipExtraFieldLength",
+      "value": "0000",
+      "description": "Clear extra field length for the mimetype entry so the MIME string appears at the expected offset 38"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "zipSignature",          "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt PK magic to test EPUB reader rejection of invalid ZIP containers" },
+      { "field": "zipCompressionMethod",  "mutation": "boundary_values",   "weight": 2, "description": "Set non-zero compression on mimetype to test OCF validation rejection" },
+      { "field": "zipUncompressedSize",   "mutation": "overflow",          "weight": 2, "description": "Overflow uncompressed size to stress EPUB reader memory allocation" },
+      { "field": "zipGeneralFlags",       "mutation": "random_bytes",      "weight": 1, "description": "Randomize flags to surface unexpected branches in EPUB parsers" },
+      { "field": "zipCrc32",              "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit CRC corruption to verify integrity checking in EPUB loaders" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "EPUB-2.0",
+      "to": "EPUB-3.2",
+      "description": "EPUB 2 to 3.2 upgrade: container structure is backward compatible; OPF namespace changes but ZIP header is identical",
+      "changes": [
+        { "field": "zipCompressionMethod", "changeType": "set_value", "value": "0000", "description": "Ensure mimetype entry remains uncompressed (Stored) per both EPUB 2 and EPUB 3 OCF spec" }
+      ]
+    }
+  ],
   "forensic": {
     "category": "document",
     "riskLevel": "medium",

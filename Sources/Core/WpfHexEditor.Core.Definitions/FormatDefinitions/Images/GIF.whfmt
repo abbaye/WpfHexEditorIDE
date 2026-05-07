@@ -340,5 +340,66 @@
     "SupportsAnimation": true,
     "ExtensionBlockBased": true,
     "GIF89aFeatures": "animation, transparency, comments, application extensions"
-  }
+  },
+  "diff": {
+    "keyFields": ["gifVersion", "logicalScreenWidth", "logicalScreenHeight", "packedFields"],
+    "ignoreFields": ["pixelAspectRatio", "globalColorTableBytes"],
+    "groupBy": "gifVersion",
+    "note": "Version string, canvas dimensions, and packed color-table flags determine rendering behaviour; aspect ratio is almost universally zero and adds noise"
+  },
+  "repair": [
+    {
+      "name": "FixGIFSignature",
+      "trigger": "gifSignature != 'GIF'",
+      "action": "set_value",
+      "target": "offset:0",
+      "value": "474946",
+      "description": "Restore the 'GIF' ASCII signature at offset 0 so all decoders can identify the file"
+    },
+    {
+      "name": "FixGIFVersion",
+      "trigger": "gifVersion != '87a' && gifVersion != '89a'",
+      "action": "set_value",
+      "target": "offset:3",
+      "value": "383961",
+      "description": "Write '89a' version string so decoders use the current GIF89a feature set"
+    },
+    {
+      "name": "FixZeroCanvasDimensions",
+      "trigger": "logicalScreenWidth == 0 || logicalScreenHeight == 0",
+      "action": "set_value",
+      "target": "logicalScreenWidth",
+      "value": "0100",
+      "description": "Set logical screen width to 1 pixel to produce a technically valid (if tiny) canvas when dimensions are zero"
+    },
+    {
+      "name": "FixPackedFieldsGCTMismatch",
+      "trigger": "(packedFields & 128) != 0 && globalColorTableEntries == 0",
+      "action": "set_value",
+      "target": "packedFields",
+      "value": "00",
+      "description": "Clear the Global Color Table flag in packed fields when no GCT data follows to prevent out-of-bounds reads"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "gifSignature",          "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'GIF' magic to probe decoder identification and rejection logic" },
+      { "field": "logicalScreenWidth",    "mutation": "boundary_values",   "weight": 2, "description": "Zero and 0xFFFF canvas widths stress canvas-allocation paths" },
+      { "field": "packedFields",          "mutation": "enum_sweep",        "weight": 2, "description": "Sweep all packed-byte combinations to exercise GCT flag, color resolution, and sort-flag logic" },
+      { "field": "backgroundColorIndex",  "mutation": "overflow",          "weight": 2, "description": "Background color index beyond palette size to test out-of-bounds palette access" },
+      { "field": "gifVersion",            "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in the version string to expose version-check bypass opportunities" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "GIF87a",
+      "to": "GIF89a",
+      "description": "Upgrade from the original 1987 GIF specification to the 1989 extension that adds animation, transparency, application extensions, and comment blocks",
+      "changes": [
+        { "field": "gifVersion", "changeType": "set_value", "value": "383961", "description": "Replace '87a' (0x383761) with '89a' (0x383961) version string at offset 3" }
+      ]
+    }
+  ]
 }

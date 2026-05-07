@@ -352,5 +352,66 @@
     "MaxImages": 256,
     "MaxSize": "256x256 (PNG), no theoretical limit for DIB",
     "SupportsAlpha": true
-  }
+  },
+  "diff": {
+    "keyFields": ["type", "imageCount", "entryWidth", "entryHeight", "entryBitCount", "entrySizeInBytes"],
+    "ignoreFields": ["reserved", "entryPlanes"],
+    "groupBy": "type",
+    "note": "File type (ICO/CUR), image count, per-entry dimensions and bit depth identify meaningful structural differences; reserved fields and plane count are always fixed values"
+  },
+  "repair": [
+    {
+      "name": "FixReservedField",
+      "trigger": "reserved != 0",
+      "action": "set_value",
+      "target": "offset:0",
+      "value": "0000",
+      "description": "Zero the ICONDIR reserved field at bytes 0-1 to make the file conformant with the Microsoft specification"
+    },
+    {
+      "name": "FixInvalidType",
+      "trigger": "type != 1 && type != 2",
+      "action": "set_value",
+      "target": "type",
+      "value": "0100",
+      "description": "Set image type to 1 (ICO) when the stored value is not a valid ICO or CUR type code"
+    },
+    {
+      "name": "FixZeroImageCount",
+      "trigger": "imageCount == 0",
+      "action": "set_value",
+      "target": "imageCount",
+      "value": "0100",
+      "description": "Set image count to 1 when zero is stored, since an ICO with no entries is technically invalid"
+    },
+    {
+      "name": "FixEntryImageOffset",
+      "trigger": "entryImageOffset < 6 + imageCount * 16",
+      "action": "set_value",
+      "target": "entryImageOffset",
+      "value": "16000000",
+      "description": "Relocate the first image data offset to just after the directory (6 + imageCount*16) when it incorrectly overlaps the directory"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "type",               "mutation": "corrupt_signature", "weight": 3, "description": "Set type to values other than 1/2 to test ICO type-validation in icon loaders" },
+      { "field": "imageCount",         "mutation": "boundary_values",   "weight": 2, "description": "Zero and 0xFFFF image counts to stress directory-loop bounds checking" },
+      { "field": "entryBitCount",      "mutation": "enum_sweep",        "weight": 2, "description": "Sweep all bit-depth values including unusual ones to exercise color-depth dispatch" },
+      { "field": "entrySizeInBytes",   "mutation": "overflow",          "weight": 2, "description": "Overflow image-data size to test allocation guard in icon image decoders" },
+      { "field": "entryImageOffset",   "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in the data offset to land image reads outside file bounds" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "Legacy ICO (1-bit or 4-bit palette, entryBitCount=1 or 4)",
+      "to": "True Color ICO (32-bit RGBA, entryBitCount=32)",
+      "description": "Upgrade palette-based icon images to 32-bit RGBA for high-quality rendering on modern displays",
+      "changes": [
+        { "field": "entryBitCount", "changeType": "set_value", "value": "2000", "description": "Set bits-per-pixel to 32 (0x0020) to enable full RGBA true-colour rendering with per-pixel alpha" }
+      ]
+    }
+  ]
 }

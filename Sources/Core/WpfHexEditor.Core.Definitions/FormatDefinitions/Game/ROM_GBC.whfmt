@@ -526,5 +526,42 @@
     "readUInt8": "Read 8-bit header fields (flags, checksums, size codes)",
     "readUInt16BE": "Read big-endian 16-bit global checksum",
     "extractASCIIString": "Read game title and licensee codes"
-  }
+  },
+  "diff": {
+    "keyFields": ["title", "cgbFlag", "cartridgeType", "headerChecksum"],
+    "ignoreFields": ["globalChecksum"],
+    "groupBy": "destinationCode",
+    "note": "title+cgbFlag identifies a GBC-specific build; cartridgeType determines MBC banking hardware; headerChecksum is hardware-enforced so it changes with any header edit; globalChecksum is not verified by hardware and has low diff value"
+  },
+  "repair": [
+    {
+      "name": "FixHeaderChecksum",
+      "trigger": "headerChecksum does not match computed value over bytes 0x134–0x14C",
+      "action": "recompute_checksum",
+      "target": "headerChecksum",
+      "algorithm": "crc32",
+      "description": "Recompute the 8-bit header checksum using: x=0; for i=0x134..0x14C: x=x-mem[i]-1; store lower 8 bits at 0x14D; the hardware boot ROM rejects any cartridge where this check fails"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "nintendoLogo",    "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 48-byte Nintendo logo bitmap to trigger boot ROM cartridge rejection" },
+      { "field": "cgbFlag",         "mutation": "enum_sweep",        "weight": 2, "description": "Sweep CGBFlag values (0x00, 0x80, 0xC0, 0xFF) to test compatibility mode selection" },
+      { "field": "headerChecksum",  "mutation": "bit_flip", "rate": 0.01, "weight": 2, "description": "Flip bits in header checksum to produce an invalid value and test boot rejection" },
+      { "field": "romSize",         "mutation": "overflow",          "weight": 2, "description": "Set ROM size code above 8 (8MB) to test size decoding out-of-range handling" },
+      { "field": "cartridgeType",   "mutation": "random_bytes",      "weight": 1, "description": "Set cartridge type to unknown MBC values to test emulator MBC fallback behavior" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "DMG-only ROM (cgbFlag=0x00)",
+      "to": "GBC-compatible ROM (cgbFlag=0x80)",
+      "description": "Upgrade a DMG-only ROM to indicate GBC compatibility mode, enabling GBC color palettes and enhancements while preserving backward compatibility with original Game Boy hardware",
+      "changes": [
+        { "field": "cgbFlag", "changeType": "set_value", "value": "128", "description": "Set cgbFlag from 0x00 (DMG only) to 0x80 (GBC compatible, also runs on DMG)" }
+      ]
+    }
+  ]
 }

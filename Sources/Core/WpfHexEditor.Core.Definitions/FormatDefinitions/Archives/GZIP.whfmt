@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "GZIP Compressed File",
   "formatId": "GZIP",
@@ -340,5 +340,43 @@
     "MaxUncompressedSize": "Stored as uint32, wraps at 4 GiB (size mod 2^32)",
     "StringEncoding": "ISO 8859-1 (Latin-1)",
     "SupportsMultipleMembers": true
-  }
+  },
+  "diff": {
+    "keyFields": ["gzipMagic", "compressionMethod", "flags"],
+    "ignoreFields": ["modificationTime", "operatingSystem"],
+    "groupBy": "gzipHeader",
+    "note": "Magic and compression method are structural identity fields; flags determine optional field layout; mtime and OS are environment metadata not relevant to content comparison"
+  },
+  "repair": [
+    {
+      "name": "FixCompressionMethod",
+      "trigger": "InvalidCompressionMethod",
+      "action": "recompute_checksum",
+      "target": "compressionMethod",
+      "algorithm": "crc32",
+      "description": "Resets the compression method byte to 8 (DEFLATE) when an invalid value is detected, restoring RFC 1952 compliance"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": true,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "gzipMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 0x1F 0x8B magic to test signature rejection" },
+      { "field": "compressionMethod", "mutation": "enum_sweep", "weight": 2, "description": "Sweep all 256 method values to test rejection of non-8 values" },
+      { "field": "flags", "mutation": "boundary_values", "weight": 2, "description": "Set reserved flag bits 5-7 to test conformance rejection of non-zero reserved bits" },
+      { "field": "modificationTime", "mutation": "overflow", "weight": 1, "description": "Set mtime to UINT32_MAX or 0 to test timestamp edge cases" },
+      { "field": "extraFlags", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip XFL bits to test handling of undefined extra flag values" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "1.0",
+      "to": "RFC1952",
+      "description": "Ensure GZIP header conforms to RFC 1952 by clearing reserved flag bits and setting standard OS byte",
+      "changes": [
+        { "field": "flags", "changeType": "set_value", "value": "0", "description": "Clear all flag bits to produce a minimal conformant GZIP header" },
+        { "field": "operatingSystem", "changeType": "set_value", "value": "255", "description": "Set OS byte to 255 (unknown) when original OS identifier is non-standard" }
+      ]
+    }
+  ]
 }

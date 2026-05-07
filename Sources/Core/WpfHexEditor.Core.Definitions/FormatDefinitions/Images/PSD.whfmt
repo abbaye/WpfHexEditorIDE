@@ -350,5 +350,66 @@
     "MaxDimensionsPSD": "30000x30000",
     "MaxDimensionsPSB": "300000x300000",
     "MaxChannels": 56
-  }
+  },
+  "diff": {
+    "keyFields": ["version", "channels", "imageHeight", "imageWidth", "bitDepth", "colorMode"],
+    "ignoreFields": ["reserved1", "reserved2", "reserved3", "reserved4", "reserved5", "reserved6", "totalPixels", "bitsPerPixel"],
+    "groupBy": "colorMode",
+    "note": "Version, channel count, dimensions, bit depth, and color mode define the document's encoding contract; reserved bytes and derived pixel counts are noise"
+  },
+  "repair": [
+    {
+      "name": "FixPSDSignature",
+      "trigger": "psdSignature != '8BPS'",
+      "action": "set_value",
+      "target": "offset:0",
+      "value": "38425053",
+      "description": "Restore the '8BPS' four-byte magic so Photoshop and compatible tools identify the file correctly"
+    },
+    {
+      "name": "FixInvalidVersion",
+      "trigger": "version != 1 && version != 2",
+      "action": "set_value",
+      "target": "version",
+      "value": "0001",
+      "description": "Set version to 1 (standard PSD) when the stored value is not 1 (PSD) or 2 (PSB)"
+    },
+    {
+      "name": "FixReservedBytes",
+      "trigger": "reserved1 != 0 || reserved2 != 0 || reserved3 != 0",
+      "action": "set_value",
+      "target": "offset:6",
+      "value": "000000000000",
+      "description": "Zero the six reserved bytes (offsets 6-11) as required by the PSD specification"
+    },
+    {
+      "name": "FixInvalidColorMode",
+      "trigger": "colorMode > 9",
+      "action": "set_value",
+      "target": "colorMode",
+      "value": "0003",
+      "description": "Set color mode to 3 (RGB) when the stored value exceeds the defined maximum of 9 (Lab)"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "psdSignature",  "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt '8BPS' magic to test PSD signature-validation rejection in Photoshop and compatible readers" },
+      { "field": "imageHeight",   "mutation": "boundary_values",   "weight": 2, "description": "Zero and max (30000/300000 depending on version) heights to stress dimension-limit checks" },
+      { "field": "colorMode",     "mutation": "enum_sweep",        "weight": 2, "description": "Sweep all color mode values including undefined ones to exercise mode-dispatch code paths" },
+      { "field": "channels",      "mutation": "overflow",          "weight": 2, "description": "Overflow channel count beyond 56 to test channel-allocation guard in layer parsers" },
+      { "field": "bitDepth",      "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in bit-depth field to produce invalid values and stress depth-validation code" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "PSD (version=1, max 30000x30000)",
+      "to": "PSB Large Document (version=2, max 300000x300000)",
+      "description": "Upgrade to PSB format to support canvas dimensions larger than 30000 pixels and extended layer data sizes",
+      "changes": [
+        { "field": "version", "changeType": "set_value", "value": "0002", "description": "Set version field to 2 (big-endian 0x0002) to declare PSB Large Document format" }
+      ]
+    }
+  ]
 }

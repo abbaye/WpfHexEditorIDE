@@ -442,5 +442,42 @@
     "HeaderOffset": "HiROM: $FFB0 = 65456 (.sfc) / 65968 (.smc); LoROM: $7FB0 = 32688 (.sfc) / 33200 (.smc)",
     "Checksum": "uint16 sum of all bytes mod 0x10000; checksum + complement = 0xFFFF",
     "SRAM": "Battery SRAM -> .srm (raw dump, same basename as ROM)"
-  }
+  },
+  "diff": {
+    "keyFields": ["gameTitle", "checksum", "checksumComplement", "romVersion"],
+    "ignoreFields": ["checksumTotal"],
+    "groupBy": "regionCode",
+    "note": "Title and checksum pair uniquely identify a ROM revision; romVersion tracks mask ROM revisions (0=first, 1=Rev.A); regionCode groups by market"
+  },
+  "repair": [
+    {
+      "name": "FixChecksumPair",
+      "trigger": "checksumTotal != 65535",
+      "action": "recompute_checksum",
+      "target": "checksumComplement",
+      "algorithm": "crc32",
+      "description": "Recompute checksumComplement as (0xFFFF - checksum) so that checksum + checksumComplement = 0xFFFF, restoring integrity of the SNES ROM header"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "gameTitle",          "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 21-byte ASCII game title to test emulator title parsing robustness" },
+      { "field": "romLayout",          "mutation": "enum_sweep",        "weight": 2, "description": "Sweep through all LoROM/HiROM/ExHiROM layout codes to detect emulator mapping fallbacks" },
+      { "field": "checksum",           "mutation": "bit_flip", "rate": 0.01, "weight": 2, "description": "Flip bits in checksum to invalidate the checksum pair and test error handling" },
+      { "field": "romSize",            "mutation": "overflow",          "weight": 2, "description": "Set romSize to out-of-range log2 values (>13) to test size computation limits" },
+      { "field": "checksumComplement", "mutation": "random_bytes",      "weight": 1, "description": "Randomize complement to produce an inconsistent checksum pair" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "SMC copier header (.smc)",
+      "to": "Headerless canonical (.sfc)",
+      "description": "Strip the 512-byte copier header added by Super Magicom or FIG hardware to produce a clean .sfc file; all ROM header field offsets shift down by 512",
+      "changes": [
+        { "field": "gameTitle", "changeType": "set_value", "value": "offset - 512", "description": "Game title moves from file offset 65968 to 65456 after removing the 512-byte copier header" }
+      ]
+    }
+  ]
 }

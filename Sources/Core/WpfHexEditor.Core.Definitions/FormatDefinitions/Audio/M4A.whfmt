@@ -299,5 +299,58 @@
     "DRMSystem": "FairPlay (M4P variant)",
     "ChapterSupport": true,
     "MetadataFormat": "iTunes ilst atoms (udta > meta > ilst)"
-  }
+  },
+  "diff": {
+    "keyFields": ["ftypBoxType", "majorBrand", "minorVersion"],
+    "ignoreFields": ["ftypBoxSize", "compatBrand1", "isM4A", "isM4B", "isM4P"],
+    "groupBy": "majorBrand",
+    "note": "Box type and major brand define container identity; box size and compatible brand list vary across encoder versions"
+  },
+  "repair": [
+    {
+      "name": "FixFtypBoxType",
+      "trigger": "ftypBoxType != 'ftyp'",
+      "action": "set_value",
+      "target": "ftypBoxType",
+      "value": "ftyp",
+      "description": "First box type must be 'ftyp'; reset to restore valid ISOBMFF container identity"
+    },
+    {
+      "name": "FixFtypBoxSize",
+      "trigger": "ftypBoxSize < 16 || ftypBoxSize > 256",
+      "action": "set_value",
+      "target": "ftypBoxSize",
+      "value": 24,
+      "description": "ftyp box size outside normal range (16-256); reset to minimum valid size of 24 bytes (size+type+brand+version+1 compat brand)"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "ftypBoxType", "mutation": "corrupt_signature", "weight": 3, "description": "Replace 'ftyp' with unknown box type to test ISOBMFF parser rejection of invalid first box" },
+      { "field": "majorBrand", "mutation": "enum_sweep", "weight": 2, "description": "Sweep various 4-byte brand codes including unknown ones to stress brand dispatch logic" },
+      { "field": "ftypBoxSize", "mutation": "boundary_values", "weight": 2, "description": "Test box sizes of 0, 1, 7, 8 to exercise size-field validation and box-boundary parsing" },
+      { "field": "minorVersion", "mutation": "overflow", "weight": 2, "description": "Max uint32 minor version to check version-gating logic in parsers" },
+      { "field": "compatBrand1", "mutation": "random_bytes", "weight": 1, "description": "Corrupt compatible brand entries to test brand-list iteration safety" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "M4P",
+      "to": "M4A",
+      "description": "Remove FairPlay DRM designation; does NOT remove DRM encryption itself — only updates the brand field to signal unprotected format",
+      "changes": [
+        { "field": "majorBrand", "changeType": "set_value", "value": "M4A ", "description": "Change major brand from 'M4P ' to 'M4A ' to remove DRM brand signal" }
+      ]
+    },
+    {
+      "from": "M4A",
+      "to": "M4B",
+      "description": "Re-brand iTunes audio file as audiobook with chapter support",
+      "changes": [
+        { "field": "majorBrand", "changeType": "set_value", "value": "M4B ", "description": "Change major brand from 'M4A ' to 'M4B ' to enable chapter and bookmark support" }
+      ]
+    }
+  ]
 }

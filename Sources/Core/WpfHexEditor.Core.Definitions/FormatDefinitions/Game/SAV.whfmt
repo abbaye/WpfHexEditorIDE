@@ -157,5 +157,42 @@
         "saveData"
       ]
     }
+  ],
+  "diff": {
+    "keyFields": ["saveData"],
+    "ignoreFields": [],
+    "groupBy": "saveData",
+    "note": "saveData is the only structured field in this generic save format; diffing at the raw byte level is preferred since game-specific layouts are not described in this definition"
+  },
+  "repair": [
+    {
+      "name": "FixSaveDataChecksum",
+      "trigger": "saveData header magic is zero or corrupted",
+      "action": "recompute_checksum",
+      "target": "saveData",
+      "algorithm": "crc32",
+      "description": "Attempt to restore a valid header word at offset 0; actual repair strategy is game-specific since .sav has no universal format — this is a placeholder for game-specific repair rules"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "saveData", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the first 4 bytes to invalidate any game-specific magic or identifier" },
+      { "field": "saveData", "mutation": "boundary_values",   "weight": 2, "description": "Set save data header word to 0x00000000 or 0xFFFFFFFF to test save-file validation paths" },
+      { "field": "saveData", "mutation": "bit_flip", "rate": 0.01, "weight": 2, "description": "Flip random bits in the save data header to simulate SRAM bit rot or corruption" },
+      { "field": "saveData", "mutation": "zero_field",        "weight": 2, "description": "Zero the save data field to simulate an erased or blank save slot" },
+      { "field": "saveData", "mutation": "random_bytes",      "weight": 1, "description": "Replace header bytes with random data to test save corruption recovery in the target game" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "SRAM save (raw battery backup)",
+      "to": "Emulator save state (.sav wrapper)",
+      "description": "Emulators typically dump raw SRAM contents as .sav files; some emulators prepend a small header with platform/game metadata, shifting all game-specific save data offsets",
+      "changes": [
+        { "field": "saveData", "changeType": "set_value", "value": "platform_header_prepended", "description": "When converting raw SRAM to an emulator-wrapped .sav, the first bytes may become a platform identifier or size header rather than raw save data" }
+      ]
+    }
   ]
 }

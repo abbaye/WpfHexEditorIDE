@@ -190,5 +190,42 @@
     "Versions": "v1 = HL2/TF2/Portal; v2 = CS:GO/Portal2 with MD5 integrity + signing",
     "Structure": "Fixed header + directory tree (nested null-term strings + FileEntry structs)",
     "DataFiles": "_000.vpk, _001.vpk = raw data files with no magic header; archiveIndex 0x7FFF = data embedded in _dir.vpk"
-  }
+  },
+  "diff": {
+    "keyFields": ["vpkVersion", "vpkTreeSize"],
+    "ignoreFields": [],
+    "groupBy": "vpkSignature",
+    "note": "vpkVersion distinguishes v1 (HL2/TF2) from v2 (CS:GO/Portal2) format with different header sizes; vpkTreeSize reflects the total file index size and changes with any asset addition or removal"
+  },
+  "repair": [
+    {
+      "name": "FixVpkMagic",
+      "trigger": "vpkSignature != 0x55AA1234",
+      "action": "recompute_checksum",
+      "target": "vpkSignature",
+      "algorithm": "crc32",
+      "description": "Restore the VPK magic number 0x55AA1234 (LE bytes: 34 12 AA 55) at offset 0; an invalid magic causes Source Engine and VPKEdit to reject the directory file"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "vpkSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 0x55AA1234 LE magic to test VPK loader rejection in Source Engine" },
+      { "field": "vpkVersion",   "mutation": "boundary_values",   "weight": 2, "description": "Set VPK version to 0 or 3+ to test version-gated header parsing fallback" },
+      { "field": "vpkTreeSize",  "mutation": "bit_flip", "rate": 0.01, "weight": 2, "description": "Flip bits in tree size to cause directory tree over/under-read" },
+      { "field": "vpkTreeSize",  "mutation": "overflow",          "weight": 2, "description": "Set tree size to max uint32 to test bounds checking when reading the directory tree" },
+      { "field": "vpkVersion",   "mutation": "random_bytes",      "weight": 1, "description": "Set random version bytes to stress version-dispatch code paths in VPKEdit/GCFScape" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "VPK v1",
+      "to": "VPK v2",
+      "description": "VPK v2 extends v1 with four additional uint32 LE fields after the tree size: fileDataSectionSize, archiveMD5SectionSize, otherMD5SectionSize, and signatureSectionSize; the fixed header grows from 12 to 28 bytes",
+      "changes": [
+        { "field": "vpkVersion", "changeType": "set_value", "value": "2", "description": "Update version from 1 to 2 to indicate the extended v2 header layout with MD5 integrity sections" }
+      ]
+    }
+  ]
 }

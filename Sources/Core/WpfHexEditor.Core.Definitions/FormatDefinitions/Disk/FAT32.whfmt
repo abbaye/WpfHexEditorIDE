@@ -285,5 +285,58 @@
     "CompletenessScore": 88,
     "LastUpdated": "2026-04-15",
     "ReviewedBy": "WPFHexaEditor Team"
-  }
+  },
+  "diff": {
+    "keyFields": ["fat32OemName", "fat32BytesPerSector", "fat32SectorsPerCluster", "fat32NumFATs"],
+    "ignoreFields": ["fat32JmpBoot"],
+    "groupBy": "fat32OemName",
+    "note": "OEM name identifies the formatting tool, sector/cluster geometry defines allocation unit size, NumFATs reflects redundancy configuration. JmpBoot varies by OS loader and is not meaningful for volume comparison"
+  },
+  "repair": [
+    {
+      "name": "FixFat32NumFATs",
+      "trigger": "fat32NumFATs != 2",
+      "action": "set_value",
+      "target": "fat32NumFATs",
+      "value": "02",
+      "description": "Restore NumFATs to 2 — the FAT32 specification requires exactly 2 FAT copies for redundancy; 1 indicates non-standard or corrupted BPB"
+    },
+    {
+      "name": "FixFat32BytesPerSector",
+      "trigger": "fat32BytesPerSector != 512 && fat32BytesPerSector != 1024 && fat32BytesPerSector != 2048 && fat32BytesPerSector != 4096",
+      "action": "set_value",
+      "target": "fat32BytesPerSector",
+      "value": "0002",
+      "description": "Reset BytesPerSector to 512 (LE uint16 0x0200) — the most common valid value — when it holds an invalid non-power-of-2 value"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "fat32OemName",          "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt OEM name string to test whether FAT32 parsers fall back gracefully or reject volumes with non-standard formatter strings" },
+      { "field": "fat32BytesPerSector",   "mutation": "boundary_values",   "weight": 2, "description": "Test extreme BytesPerSector values (0, 256, 8192) to probe BPB validation in filesystem drivers and recovery tools" },
+      { "field": "fat32SectorsPerCluster","mutation": "overflow",          "weight": 2, "description": "Set SectorsPerCluster to non-power-of-2 values (e.g., 3, 255) to expose cluster size validation failures in FAT table size calculations" },
+      { "field": "fat32NumFATs",          "mutation": "random_bytes",      "weight": 1, "description": "Set NumFATs to random values (0, 3, 255) to test parser handling of invalid FAT copy counts" },
+      { "field": "fat32JmpBoot",          "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in the jump instruction to probe whether boot loaders validate the x86 JMP opcode before execution" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "FAT16",
+      "to": "FAT32",
+      "description": "FAT16 to FAT32 upgrade — BPB extended at offset 36+ with FAT32-specific fields (FATSz32, ExtFlags, RootClus, FSInfo, BkBootSec); OEM name convention changes",
+      "changes": [
+        { "field": "fat32OemName", "changeType": "set_value", "value": "4D53444F53352E30", "description": "Set OEM name to 'MSDOS5.0' (8 ASCII bytes) — standard value for FAT32-formatted volumes created by Windows" }
+      ]
+    },
+    {
+      "from": "FAT32",
+      "to": "exFAT",
+      "description": "FAT32 to exFAT migration — exFAT uses a completely different BPB layout with 'EXFAT   ' at offset 3; not in-place — requires reformatting",
+      "changes": [
+        { "field": "fat32OemName", "changeType": "set_value", "value": "455846415420202020", "description": "exFAT OEM name is 'EXFAT   ' (8 bytes); this documents the format identity break requiring full reformatting" }
+      ]
+    }
+  ]
 }

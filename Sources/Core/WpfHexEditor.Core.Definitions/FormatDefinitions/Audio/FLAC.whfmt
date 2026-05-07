@@ -589,5 +589,57 @@
     "PerFrameCRC": true,
     "FrameHeaderCRC": "CRC-8 (polynomial 0x07)",
     "FrameFooterCRC": "CRC-16 (polynomial 0x8005)"
-  }
+  },
+  "diff": {
+    "keyFields": ["flacSignature", "sampleRate", "channels", "bitsPerSample", "totalSamples"],
+    "ignoreFields": ["md5High", "md5Low", "compressionRatio", "byteRate"],
+    "groupBy": "flacSignature",
+    "note": "Stream identity and audio parameters are structurally meaningful; MD5 changes whenever PCM content changes so treat as noise when diffing headers only"
+  },
+  "repair": [
+    {
+      "name": "FixBlockLength",
+      "trigger": "blockLength != 34",
+      "action": "set_value",
+      "target": "blockLength",
+      "value": 34,
+      "description": "STREAMINFO body must be exactly 34 bytes; reset to correct value to restore a parseable header"
+    },
+    {
+      "name": "FixMinBlockSize",
+      "trigger": "minBlockSize < 16",
+      "action": "set_value",
+      "target": "minBlockSize",
+      "value": 16,
+      "description": "Minimum block size below 16 violates the FLAC spec; clamp to the minimum legal value"
+    },
+    {
+      "name": "ClearMD5WhenZero",
+      "trigger": "md5High == 0 && md5Low == 0",
+      "action": "zero_field",
+      "target": "md5High",
+      "description": "MD5 all-zeros is valid (streaming encoder) — no repair needed; this rule documents the known-good state"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "flacSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 'fLaC' marker to test parser rejection of invalid files" },
+      { "field": "minBlockSize", "mutation": "boundary_values", "weight": 2, "description": "Test block sizes at 0, 15, 16, 65535 to verify bounds checking" },
+      { "field": "metadataBlockHeader", "mutation": "enum_sweep", "weight": 2, "description": "Sweep block type bits to exercise unknown/reserved type handling" },
+      { "field": "totalSamplesLow", "mutation": "overflow", "weight": 2, "description": "Max-value total sample count stresses duration calculation" },
+      { "field": "sampleRateChannelsBps", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Random bit flips in packed field can produce invalid sampleRate/channel/bps combinations" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "pre-RFC9639",
+      "to": "RFC9639",
+      "description": "FLAC files created before RFC 9639 (2024) may lack strictly validated STREAMINFO; no structural field changes required, only toolchain update",
+      "changes": [
+        { "field": "metadataBlockHeader", "changeType": "set_value", "value": "0x00", "description": "Ensure first block type is STREAMINFO (type 0) as mandated by RFC 9639" }
+      ]
+    }
+  ]
 }

@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "BZIP2 Compressed File",
   "formatId": "BZIP2",
@@ -225,13 +225,13 @@
       {
         "name": "Stream Header",
         "offset": 0,
-        "icon": "\uE71B",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "First Block Header",
         "offset": 4,
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#FFE66D"
       }
     ]
@@ -243,17 +243,17 @@
     "groups": [
       {
         "title": "Stream Header",
-        "icon": "\uE71B",
+        "icon": "",
         "fields": ["bzip2Signature", "blockSize", "blockSizeKB"]
       },
       {
         "title": "First Block",
-        "icon": "\uE8A5",
+        "icon": "",
         "fields": ["blockMagic", "blockCRC", "randomizedBit", "origPtr"]
       },
       {
         "title": "Huffman Configuration",
-        "icon": "\uE9D9",
+        "icon": "",
         "fields": ["huffmanTrees"]
       }
     ]
@@ -349,5 +349,42 @@
     "SupportsMultipleFiles": false,
     "MaxBlockSize": "900KB",
     "TypicalCompressionRatio": "3:1 to 8:1"
-  }
+  },
+  "diff": {
+    "keyFields": ["bzip2Signature", "blockSize", "blockCRC"],
+    "ignoreFields": ["blockSizeKB"],
+    "groupBy": "bzip2Stream",
+    "note": "Signature and block size digit identify the stream; blockCRC verifies block integrity; blockSizeKB is derived from blockSize and adds no diff value"
+  },
+  "repair": [
+    {
+      "name": "FixBlockCRC32",
+      "trigger": "BlockCRCMismatch",
+      "action": "recompute_checksum",
+      "target": "blockCRC",
+      "algorithm": "crc32",
+      "description": "Recomputes the CRC-32 over the uncompressed block data and writes the corrected big-endian value at offset 10"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": true,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "bzip2Signature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt BZh magic to test stream identifier rejection" },
+      { "field": "blockSize", "mutation": "boundary_values", "weight": 2, "description": "Set block size to 0x30 or 0x3A (outside '1'-'9' range) to test block size validation" },
+      { "field": "huffmanTrees", "mutation": "overflow", "weight": 2, "description": "Set Huffman tree count above 6 to test decoder rejection of invalid tree counts" },
+      { "field": "blockMagic", "mutation": "random_bytes", "weight": 1, "description": "Corrupt pi-magic bytes to test block boundary detection failure" },
+      { "field": "randomizedBit", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip randomization flag to test BZIP1 compatibility code path" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "BZIP1",
+      "to": "BZIP2",
+      "description": "Migrate BZIP1 randomized streams to standard BZIP2 by clearing the randomization flag",
+      "changes": [
+        { "field": "randomizedBit", "changeType": "set_value", "value": "0", "description": "Clear randomization flag to produce a standard BZIP2-compatible stream" }
+      ]
+    }
+  ]
 }

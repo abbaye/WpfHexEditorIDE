@@ -177,5 +177,58 @@
     "Language": "PostScript (Turing-complete page description language)",
     "Encoding": "ASCII / Latin-1",
     "Note": "PostScript is a security risk when processed by Ghostscript without -dSAFER sandbox"
-  }
+  },
+  "diff": {
+    "keyFields": ["psMagic", "psType", "psVersion"],
+    "ignoreFields": ["boundingBox"],
+    "groupBy": "PostScript Header",
+    "note": "Magic and type string identify PS/EPS/font variant; DSC version differentiates spec revisions. BoundingBox varies per document and is not useful for structural diffs."
+  },
+  "repair": [
+    {
+      "name": "FixPsMagic",
+      "trigger": "psMagic != '%!'",
+      "action": "set_value",
+      "target": "psMagic",
+      "value": "2521",
+      "description": "Restore the PostScript magic bytes '%!' (0x25 0x21) at offset 0"
+    },
+    {
+      "name": "FixPsType",
+      "trigger": "psType == ''",
+      "action": "set_value",
+      "target": "psType",
+      "value": "50532D41646F62652D",
+      "description": "Insert 'PS-Adobe-' type identifier when the format type field is empty"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "psMagic",    "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt '%!' magic to test Ghostscript and PS reader rejection of invalid files" },
+      { "field": "psType",     "mutation": "random_bytes",      "weight": 2, "description": "Randomize type string to expose parser behavior for unrecognized PS variants" },
+      { "field": "psVersion",  "mutation": "boundary_values",   "weight": 2, "description": "Test non-standard DSC version strings to expose version parsing robustness" },
+      { "field": "boundingBox","mutation": "overflow",          "weight": 1, "description": "Overflow BoundingBox coordinates to stress EPS dimension validation in renderers" },
+      { "field": "psMagic",    "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit flip in magic bytes to expose subtle signature validation paths" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "DSC-1.0",
+      "to": "DSC-3.0",
+      "description": "Upgrade PostScript DSC version from 1.0 to 3.0 conformance; header string changes but binary layout is unchanged",
+      "changes": [
+        { "field": "psVersion", "changeType": "set_value", "value": "332E3020", "description": "Update DSC version string to '3.0 ' for current Adobe DSC 3.0 compliance" }
+      ]
+    },
+    {
+      "from": "PS",
+      "to": "EPS",
+      "description": "Convert full PostScript document to Encapsulated PostScript by adding EPSF marker in the type/version fields",
+      "changes": [
+        { "field": "psVersion", "changeType": "set_value", "value": "332E3020455053462D332E30", "description": "Append ' EPSF-3.0' suffix after DSC version to signal EPS format" }
+      ]
+    }
+  ]
 }

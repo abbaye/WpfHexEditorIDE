@@ -174,5 +174,59 @@
         "majorVersion"
       ]
     }
+  ],
+  "diff": {
+    "keyFields": ["majorVersion", "minorVersion", "javaMagic"],
+    "ignoreFields": [],
+    "groupBy": "majorVersion",
+    "note": "Major version directly maps to the Java SE release that compiled the class; minor version distinguishes preview features. Magic is constant but included to catch corrupted files during bulk diffing."
+  },
+  "repair": [
+    {
+      "name": "FixJavaMagic",
+      "trigger": "javaMagic != 0xCAFEBABE",
+      "action": "set_value",
+      "target": "javaMagic",
+      "value": "CAFEBABE",
+      "description": "Restore the 4-byte CAFEBABE magic at offset 0 (big-endian) when it has been truncated or overwritten"
+    },
+    {
+      "name": "FixMinorVersionForRelease",
+      "trigger": "minorVersion != 0 && minorVersion != 65535",
+      "action": "set_value",
+      "target": "minorVersion",
+      "value": "0000",
+      "description": "Reset minor version to 0 for standard release classes; 65535 (0xFFFF) is reserved for preview-feature classes only"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "javaMagic",    "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt CAFEBABE to test JVM class-loader rejection and hex-editor fallback detection" },
+      { "field": "majorVersion", "mutation": "boundary_values",   "weight": 2, "description": "Test majorVersion at 0, 0xFFFF, and beyond the current max (67 for Java 23) to probe JVM version-gate logic" },
+      { "field": "minorVersion", "mutation": "enum_sweep",        "weight": 2, "description": "Sweep 0, 65535, and intermediate values to probe preview-feature gating across JVM versions" },
+      { "field": "majorVersion", "mutation": "overflow",          "weight": 2, "description": "Overflow the 16-bit major version field to expose integer truncation in class-file parsers" },
+      { "field": "javaMagic",    "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit flip in the magic to find off-by-one class-file detection boundaries" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "Java 8 (major=52)",
+      "to": "Java 17 LTS (major=61)",
+      "description": "Upgrade the declared class-file version from Java 8 to Java 17 LTS; does not recompile bytecode — only updates the version gate",
+      "changes": [
+        { "field": "majorVersion", "changeType": "set_value", "value": "003D", "description": "Set majorVersion (BE) to 61 (0x003D) for Java 17 compatibility" },
+        { "field": "minorVersion", "changeType": "set_value", "value": "0000", "description": "Clear minor version to 0 (standard release, not preview)" }
+      ]
+    },
+    {
+      "from": "Java 17 (major=61)",
+      "to": "Java 21 LTS (major=65)",
+      "description": "Upgrade declared version to Java 21 LTS",
+      "changes": [
+        { "field": "majorVersion", "changeType": "set_value", "value": "0041", "description": "Set majorVersion (BE) to 65 (0x0041) for Java 21 compatibility" }
+      ]
+    }
   ]
 }

@@ -1,0 +1,301 @@
+{
+  "diffMode": "binary",
+  "formatName": "DNS Wire Format Message",
+  "formatId": "DNS",
+  "version": "1.0",
+  "extensions": [".dns", ".bin"],
+  "description": "DNS (Domain Name System) wire format binary message as defined in RFC 1035. Used in network packets (UDP port 53, TCP port 53), DNS capture files, and DNS test vectors. A DNS message consists of a 12-byte fixed header followed by variable-length sections: Question, Answer, Authority, and Additional. Header: Transaction ID (2B), Flags (2B), QDCOUNT (2B), ANCOUNT (2B), NSCOUNT (2B), ARCOUNT (2B). Flags word: QR(bit15)=0 query/1 response, OPCODE(bits14-11)=0 standard/1 inverse/2 status, AA(bit10) authoritative, TC(bit9) truncated, RD(bit8) recursion desired, RA(bit7) recursion available, Z(bit6) reserved/0, AD(bit5) authenticated data (DNSSEC), CD(bit4) checking disabled, RCODE(bits3-0)=0 ok/1 format error/2 server fail/3 name error/4 not implemented/5 refused. Question section: QNAME (length-prefixed labels ending with 0x00), QTYPE (2B), QCLASS (2B, 1=IN). Resource records: NAME (2B pointer 0xC0xx or length-prefixed), TYPE (2B), CLASS (2B), TTL (4B), RDLENGTH (2B), RDATA (variable).",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "RFC 1035 — Domain Names: Implementation and Specification",
+      "RFC 4035 — DNS Security Extensions (DNSSEC)",
+      "RFC 6891 — Extension Mechanisms for DNS (EDNS0)"
+    ],
+    "WebLinks": [
+      "https://datatracker.ietf.org/doc/html/rfc1035",
+      "https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml",
+      "https://en.wikipedia.org/wiki/Domain_Name_System"
+    ]
+  },
+  "detection": {
+    "signatures": [],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "required": false,
+    "Strength": "Weak",
+    "validation": {
+      "minFileSize": 12,
+      "maxSignatureOffset": 0,
+      "note": "DNS wire format has no magic number. A 12-byte minimum size is required (header only). Detection relies on: header flags word structure, QDCOUNT >= 1 for queries, RCODE in bits 3-0 of flags byte 1, and the .dns extension. Used primarily in PCAP packet payloads."
+    }
+  },
+  "variables": {
+    "dnsTransactionId": 0,
+    "dnsFlags": 0,
+    "dnsQdcount": 0,
+    "dnsAncount": 0,
+    "dnsNscount": 0,
+    "dnsArcount": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Transaction ID",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "2-byte big-endian transaction ID (XID). Randomly assigned by the client; the server copies it verbatim into the response. Used to match DNS responses to outstanding queries. DNS cache poisoning attacks (Kaminsky 2008) exploit predictable XID values. Should be cryptographically random.",
+      "storeAs": "dnsTransactionId",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Flags",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "2-byte big-endian DNS message flags. Bit 15 (QR): 0=query, 1=response. Bits 14-11 (OPCODE): 0=QUERY, 1=IQUERY, 2=STATUS. Bit 10 (AA): Authoritative Answer. Bit 9 (TC): TrunCated. Bit 8 (RD): Recursion Desired. Bit 7 (RA): Recursion Available (set by resolver). Bit 5 (AD): Authenticated Data (DNSSEC). Bit 4 (CD): Checking Disabled (DNSSEC). Bits 3-0 (RCODE): 0=NOERROR, 1=FORMERR, 2=SERVFAIL, 3=NXDOMAIN, 4=NOTIMP, 5=REFUSED.",
+      "storeAs": "dnsFlags",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Question Count",
+      "offset": 4,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Number of entries in the Question section (QDCOUNT). Standard queries contain exactly 1 question. Values > 1 are theoretically valid but never used in practice. Value 0 is unusual for a query.",
+      "storeAs": "dnsQdcount",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Answer Count",
+      "offset": 6,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Number of resource records in the Answer section (ANCOUNT). 0 for query messages; non-zero for responses with answers. Large values may indicate zone transfer (AXFR) responses. NXDOMAIN responses have 0 answers with non-zero authority RRs.",
+      "storeAs": "dnsAncount",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Authority Count",
+      "offset": 8,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "Number of resource records in the Authority section (NSCOUNT). Used for delegations and NXDOMAIN SOA records. Referral responses contain NS records here pointing to authoritative servers for the queried zone.",
+      "storeAs": "dnsNscount",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Additional Count",
+      "offset": 10,
+      "length": 2,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "description": "Number of resource records in the Additional section (ARCOUNT). Includes glue A/AAAA records for NS records, and EDNS0 OPT pseudo-RR (type 41) for extended DNS. EDNS0 presence in additional signals support for larger UDP payloads and DNSSEC.",
+      "storeAs": "dnsArcount",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "metadata",
+      "name": "Transaction ID",
+      "variable": "dnsTransactionId",
+      "description": "DNS message transaction ID (XID) for request/response matching"
+    },
+    {
+      "type": "metadata",
+      "name": "Flags",
+      "variable": "dnsFlags",
+      "description": "DNS header flags word encoding QR, OPCODE, AA, TC, RD, RA, AD, CD, RCODE"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Header minimum size",
+      "expression": "fileSize >= 12",
+      "severity": "error",
+      "message": "DNS wire format requires a minimum 12-byte header. File is too small to be a valid DNS message."
+    },
+    {
+      "name": "RCODE is valid",
+      "expression": "(dnsFlags & 15) <= 10",
+      "severity": "warning",
+      "message": "DNS RCODE (bits 3-0 of flags) should be in the range 0-10 per IANA DNS RCODEs registry."
+    },
+    {
+      "name": "OPCODE is valid",
+      "expression": "((dnsFlags >> 11) & 15) <= 5",
+      "severity": "warning",
+      "message": "DNS OPCODE (bits 14-11 of flags) should be in 0-5 per IANA DNS OpCodes."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Transaction ID", "offset": 0, "color": "#FF6B6B" },
+      { "name": "Flags", "offset": 2, "color": "#4ECDC4" },
+      { "name": "Question Section", "offset": 12, "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "DNS",
+    "primaryField": "dnsTransactionId",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "DNS Header",
+        "icon": "",
+        "fields": ["dnsTransactionId", "dnsFlags"]
+      },
+      {
+        "title": "Section Counts",
+        "icon": "",
+        "fields": ["dnsQdcount", "dnsAncount", "dnsNscount", "dnsArcount"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "DNS Header (JSON)",
+      "format": "json",
+      "fields": ["dnsTransactionId", "dnsFlags", "dnsQdcount", "dnsAncount", "dnsNscount", "dnsArcount"]
+    },
+    {
+      "name": "DNS Summary (Text)",
+      "format": "text",
+      "fields": ["dnsTransactionId", "dnsFlags", "dnsQdcount", "dnsAncount"]
+    }
+  ],
+  "forensic": {
+    "category": "network",
+    "riskLevel": "medium",
+    "notes": "DNS wire-format captures may reveal internal hostnames, data exfiltration via DNS tunneling (large TXT/NULL records), C2 callback domains, and cache poisoning evidence. NXDOMAIN floods may indicate reconnaissance. Anomalous OPCODE values (non-0) are rare in legitimate traffic.",
+    "suspiciousPatterns": [
+      "Large TXT or NULL record RDATA may indicate DNS tunneling (data exfiltration)",
+      "High-entropy subdomain labels are a signature of domain generation algorithms (DGA malware)",
+      "Unexpected OPCODE values (non-standard operations) in query traffic",
+      "Responses with AA=1 from non-authoritative IP addresses — potential cache poisoning"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "DNS wire format: 12-byte header { XID(2B BE), Flags(2B BE), QDCOUNT(2B BE), ANCOUNT(2B BE), NSCOUNT(2B BE), ARCOUNT(2B BE) }. Question: QNAME(length-prefixed labels, 0x00 terminator) + QTYPE(2B BE) + QCLASS(2B BE, 0x0001=IN). Name compression: 0xC0 xx = pointer to offset xx in the message (cannot chain more than once). RR types: 1=A, 2=NS, 5=CNAME, 6=SOA, 12=PTR, 15=MX, 16=TXT, 28=AAAA, 33=SRV, 41=OPT(EDNS0), 257=CAA. Flags QR=1 means response; RCODE bits 3-0: 0=NOERROR, 3=NXDOMAIN, 2=SERVFAIL.",
+    "suggestedInspections": [
+      "Check Transaction ID (bytes 0-1) for randomness — sequential or low-entropy XIDs indicate DNS spoofing vulnerability",
+      "Byte 2 bit 7 (QR flag): 0=query, 1=response — determines which section counts are populated",
+      "Bytes 2-3 bits 3-0 (RCODE): 3=NXDOMAIN (domain does not exist), 2=SERVFAIL (resolver failure)",
+      "Bytes 12+: parse QNAME label sequence — each label preceded by length byte, terminated by 0x00",
+      "Look for 0xC0 prefix in NAME fields — DNS message compression pointer (offset into message)",
+      "ARCOUNT > 0 with OPT record (type 41) at end indicates EDNS0 — check payload size and DNSSEC DO bit"
+    ]
+  },
+  "software": [
+    "Wireshark — DNS protocol dissector (filter: dns)",
+    "tcpdump — `tcpdump -i eth0 port 53`",
+    "dig — DNS query tool with wire format view (+hex)",
+    "dnscat2 — DNS tunneling tool for forensic reference",
+    "bind9 named — authoritative DNS server"
+  ],
+  "formatRelationships": {
+    "category": "Network",
+    "extensions": [".dns", ".bin"],
+    "relatedFormats": ["PCAP", "PCAPNG", "DNS_ZONE"],
+    "note": "DNS wire format is the binary on-the-wire encoding. DNS_ZONE (.zone/.db) is the text master file format for authoritative servers. DNS messages appear inside UDP/TCP packets in PCAP captures (port 53). AXFR (zone transfer) uses the same wire format over TCP."
+  },
+  "MimeTypes": [
+    "application/dns-message",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "DNS protocol analysis in Wireshark captures",
+    "DNS resolver and server implementation testing",
+    "DNS cache poisoning and DNSSEC validation research",
+    "DNS tunneling detection and forensic analysis",
+    "Network monitoring and DNS anomaly detection"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary, big-endian, 12-byte fixed header + variable sections",
+    "Standard": "RFC 1035 (base), RFC 4035 (DNSSEC), RFC 6891 (EDNS0)",
+    "HeaderSize": "12 bytes (fixed)",
+    "Transport": "UDP port 53 (≤512 bytes without EDNS0), TCP port 53 (large responses, zone transfers)",
+    "Endianness": "All multi-byte fields are big-endian (network byte order)",
+    "NameEncoding": "Length-prefixed labels (max 63 bytes per label, 255 bytes total), 0xC0 compression pointers"
+  },
+  "diff": {
+    "keyFields": ["dnsFlags", "dnsQdcount", "dnsAncount", "dnsNscount", "dnsArcount"],
+    "ignoreFields": ["dnsTransactionId"],
+    "groupBy": "dnsFlags",
+    "note": "dnsTransactionId is random per query and has no diff value. dnsFlags encodes query/response type and RCODE which are the primary differentiators. Section counts reflect response richness."
+  },
+  "repair": [
+    {
+      "name": "FixOpcodeZero",
+      "trigger": "((dnsFlags >> 11) & 15) > 5",
+      "action": "set_value",
+      "target": "dnsFlags",
+      "value": "0100",
+      "description": "Resets the OPCODE bits (14-11) to 0 (QUERY) when an invalid opcode is detected — preserves QR and RD bits."
+    },
+    {
+      "name": "FixRcodeNoError",
+      "trigger": "(dnsFlags & 15) > 10",
+      "action": "set_value",
+      "target": "dnsFlags",
+      "value": "8180",
+      "description": "Resets RCODE bits (3-0) to 0 (NOERROR) with standard response flags (QR=1, RD=1, RA=1) when an invalid RCODE is present."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "dnsFlags",         "mutation": "corrupt_signature", "weight": 3, "description": "Invalid flag combinations (e.g., QR=0 with RCODE=3) test DNS parser flag-validation logic." },
+      { "field": "dnsQdcount",       "mutation": "boundary_values",   "weight": 2, "description": "QDCOUNT of 0 or 65535 stresses question-section iteration in DNS resolvers." },
+      { "field": "dnsAncount",       "mutation": "overflow",          "weight": 2, "description": "ANCOUNT exceeding actual answer RRs triggers buffer read beyond available data." },
+      { "field": "dnsTransactionId", "mutation": "bit_flip",          "rate": 0.001, "weight": 2, "description": "XID bit flips test transaction-matching edge cases in DNS stub resolvers." },
+      { "field": "dnsArcount",       "mutation": "random_bytes",      "weight": 1, "description": "Random ARCOUNT values with mismatched additional section data test OPT record parsing fallbacks." }
+    ]
+  },
+  "migration": [
+    {
+      "from": "dns-query",
+      "to": "dns-response-noerror",
+      "description": "Convert a DNS query wire message to a NOERROR response by setting QR=1 and RA=1 in the flags word — used in DNS test fixtures.",
+      "changes": [
+        { "field": "dnsFlags", "changeType": "set_value", "value": "8180", "description": "Set flags to 0x8180 (QR=1/response, RD=1, RA=1, RCODE=0/NOERROR)." }
+      ]
+    },
+    {
+      "from": "dns-udp",
+      "to": "dns-tcp-prefixed",
+      "description": "Prepend a 2-byte big-endian length field when transporting DNS over TCP (RFC 1035 Section 4.2.2) — UDP DNS messages lack this prefix.",
+      "changes": [
+        { "field": "dnsTransactionId", "changeType": "set_value", "value": "0024", "description": "Prepend 2-byte message length (e.g., 0x0024 = 36 bytes) before the DNS header for TCP framing." }
+      ]
+    }
+  ]
+}

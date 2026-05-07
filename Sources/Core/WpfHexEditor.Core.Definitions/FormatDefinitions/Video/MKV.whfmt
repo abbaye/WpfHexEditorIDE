@@ -202,5 +202,51 @@
     "supportsChapters": true,
     "supportsAttachments": true,
     "codecSupport": "universal (any audio/video codec)"
-  }
+  },
+  "diff": {
+    "keyFields": ["ebmlId", "ebmlVersion", "ebmlReadVersion"],
+    "ignoreFields": ["ebmlHeaderSize"],
+    "groupBy": "ebmlVersion",
+    "note": "ebmlId is the format discriminator; ebmlVersion and ebmlReadVersion define minimum compatibility requirements; header size varies with payload and is noise for comparison"
+  },
+  "repair": [
+    {
+      "name": "FixEbmlSignature",
+      "trigger": "ebmlId != '1A45DFA3'",
+      "action": "set_value",
+      "target": "ebmlId",
+      "value": "1A45DFA3",
+      "description": "Restores the mandatory 4-byte EBML Document Header element ID at offset 0 when the Matroska signature is missing or overwritten"
+    },
+    {
+      "name": "FixEbmlVersion",
+      "trigger": "ebmlVersion == 0",
+      "action": "set_value",
+      "target": "ebmlVersion",
+      "value": "01",
+      "description": "Resets the EBML version sub-element first byte to 1 when the header payload begins with an unexpected zero byte"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "ebmlId", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupting the 4-byte EBML ID tests format rejection in all EBML-aware parsers; distinguishes MKV from WebM handling" },
+      { "field": "ebmlHeaderSize", "mutation": "boundary_values", "weight": 2, "description": "VINT size values at extremes (0x00, 0x7F, 0xFF) test EBML variable-length integer decoding edge cases" },
+      { "field": "ebmlVersion", "mutation": "overflow", "weight": 2, "description": "An ebmlVersion > 1 may cause strict parsers to refuse parsing; exercises version-check rejection paths" },
+      { "field": "ebmlReadVersion", "mutation": "enum_sweep", "weight": 2, "description": "Non-standard readVersion values test minimum-version enforcement in EBML readers" },
+      { "field": "ebmlHeaderSize", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit flips in the VINT size byte exercise EBML variable-length integer robustness" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "matroska-v1",
+      "to": "matroska-v2",
+      "description": "Bump EBML version fields to signal Matroska v2 feature set support (lacing, block groups)",
+      "changes": [
+        { "field": "ebmlVersion", "changeType": "set_value", "value": "01", "description": "EBMLVersion remains 1 per EBML spec; DocType version bumped via internal DocTypeVersion element" },
+        { "field": "ebmlReadVersion", "changeType": "set_value", "value": "01", "description": "EBMLReadVersion stays 1 to maintain backward reader compatibility" }
+      ]
+    }
+  ]
 }

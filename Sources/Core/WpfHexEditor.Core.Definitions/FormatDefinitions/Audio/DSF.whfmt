@@ -331,5 +331,58 @@
     "SampleRates": "DSD64=2822400 Hz, DSD128=5644800 Hz, DSD256=11289600 Hz",
     "BlockInterleaving": "4096 bytes per channel",
     "MetadataFormat": "ID3v2 tag appended at end of file (offset stored in DSD header)"
-  }
+  },
+  "diff": {
+    "keyFields": ["dsdChunkId", "fmtVersion", "channelType", "channelCount", "sampleRate", "bitsPerSample"],
+    "ignoreFields": ["dsdChunkSize", "totalFileSize", "id3MetadataOffset"],
+    "groupBy": "sampleRate",
+    "note": "DSD identity is determined by chunk ID, format version, channel layout and sample rate; file size and ID3 offset vary with content"
+  },
+  "repair": [
+    {
+      "name": "FixDsdChunkSize",
+      "trigger": "dsdChunkSize != 28",
+      "action": "set_value",
+      "target": "dsdChunkSize",
+      "value": 28,
+      "description": "DSF DSD header chunk size must be exactly 28 bytes per v1.01 specification; reset to the mandated value"
+    },
+    {
+      "name": "FixBitsPerSample",
+      "trigger": "bitsPerSample != 1",
+      "action": "set_value",
+      "target": "bitsPerSample",
+      "value": 1,
+      "description": "DSD audio always uses 1-bit PDM samples; reset to 1 to restore valid DSD format"
+    },
+    {
+      "name": "FixFmtVersion",
+      "trigger": "fmtVersion != 1",
+      "action": "set_value",
+      "target": "fmtVersion",
+      "value": 1,
+      "description": "DSF format version must be 1 per the v1.01 specification; reset non-1 values"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "dsdChunkId", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'DSD ' magic (including trailing space) to test DSF parser rejection" },
+      { "field": "sampleRate", "mutation": "enum_sweep", "weight": 2, "description": "Sweep non-standard DSD rates and 0 to test sample-rate lookup and DSD tier classification" },
+      { "field": "channelType", "mutation": "boundary_values", "weight": 2, "description": "Test channel types 0 and 255 beyond the defined 1-7 range to probe speaker layout dispatch" },
+      { "field": "totalFileSize", "mutation": "overflow", "weight": 2, "description": "Mismatched total file size causes seek-to-ID3 offset to fall outside file bounds" },
+      { "field": "id3MetadataOffset", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Corrupt ID3 offset to cause out-of-bounds seeks when parsing optional metadata tag" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "DSD64",
+      "to": "DSD128",
+      "description": "Upgrade DSD stream from standard SACD rate (DSD64) to high-resolution DSD128; requires full re-mastering at the higher sample rate",
+      "changes": [
+        { "field": "sampleRate", "changeType": "set_value", "value": 5644800, "description": "Change sample rate from 2822400 (DSD64) to 5644800 (DSD128)" }
+      ]
+    }
+  ]
 }

@@ -233,5 +233,58 @@
     "SyncByte": "0x47 every 188 bytes",
     "PIDRange": "0x0000-0x1FFF (13 bits)",
     "MaxBitrate": "Theoretical unlimited; practical DVB-T2 up to 50 Mbps"
-  }
+  },
+  "diff": {
+    "keyFields": ["syncByte", "packetPID", "scramblingControl"],
+    "ignoreFields": ["transportErrorIndicator"],
+    "groupBy": "packetPID",
+    "note": "syncByte must always be 0x47; packetPID is the primary stream discriminator grouping packets by content type; scramblingControl reveals encryption state; transportErrorIndicator is a transient error flag, not a structural differentiator"
+  },
+  "repair": [
+    {
+      "name": "FixSyncByte",
+      "trigger": "syncByte != 71",
+      "action": "set_value",
+      "target": "syncByte",
+      "value": "47",
+      "description": "Restores the mandatory MPEG-TS sync byte 0x47 at the start of the packet; every valid 188-byte TS packet must begin with this byte"
+    },
+    {
+      "name": "FixNullPidPacket",
+      "trigger": "scramblingControl != 0 && packetPID == 255",
+      "action": "set_value",
+      "target": "scramblingControl",
+      "value": "10",
+      "description": "Clears scrambling bits on null packets (PID 0x1FFF); null/stuffing packets must never be flagged as scrambled per ISO 13818-1"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "syncByte", "mutation": "corrupt_signature", "weight": 3, "description": "Changing sync byte from 0x47 tests TS synchronization and re-sync logic in all MPEG-TS demuxers and broadcast analyzers" },
+      { "field": "packetPID", "mutation": "boundary_values", "weight": 2, "description": "PID values 0x0000 (PAT) and 0x1FFF (null) are reserved; PID 0x1FFE is the maximum valid assigned PID; boundary PIDs test reserved-PID handling in demuxers" },
+      { "field": "scramblingControl", "mutation": "enum_sweep", "weight": 2, "description": "Sweeping scrambling control values (0-3) on PAT/PMT packets tests conditional access handling when normally-clear SI tables appear encrypted" },
+      { "field": "transportErrorIndicator", "mutation": "overflow", "weight": 2, "description": "Setting TEI on continuity-counter-zero packets tests error-recovery and packet-drop behavior in TS receivers" },
+      { "field": "syncByte", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Near-valid sync byte values (0x46, 0x67) test synchronization pattern matching tolerance in broadcast decoders" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "TS-clear",
+      "to": "TS-scrambled",
+      "description": "Mark elementary stream packets as scrambled with even-key CA after applying a Conditional Access system; updates scramblingControl bits across stream packets",
+      "changes": [
+        { "field": "scramblingControl", "changeType": "set_value", "value": "82", "description": "Set bits 7-6 to '10' (even key scrambled) in the 4th packet header byte while preserving adaptation field control and continuity counter" }
+      ]
+    },
+    {
+      "from": "TS-188",
+      "to": "M2TS-192",
+      "description": "Repackage standard 188-byte TS packets into 192-byte M2TS packets for Blu-ray BDMV by prepending a 4-byte TP_extra_header with source packet number and arrival timestamp",
+      "changes": [
+        { "field": "syncByte", "changeType": "set_value", "value": "47", "description": "Sync byte remains 0x47 but shifts to offset 4 in the 192-byte M2TS packet; a 4-byte timestamp is prepended at offset 0" }
+      ]
+    }
+  ]
 }

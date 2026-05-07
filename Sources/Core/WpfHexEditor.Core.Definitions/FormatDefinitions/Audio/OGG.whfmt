@@ -537,5 +537,58 @@
     "StreamingCapable": true,
     "SupportsMultiplexing": true,
     "CRCProtected": true
-  }
+  },
+  "diff": {
+    "keyFields": ["oggSignature", "streamVersion", "headerTypeFlag", "serialNumber", "pageSequenceNumber"],
+    "ignoreFields": ["crcChecksum", "granulePositionLow", "granulePositionHigh", "totalSegmentSize"],
+    "groupBy": "serialNumber",
+    "note": "Page identity and stream structure are key; CRC and granule position change with every page so exclude from structural comparison"
+  },
+  "repair": [
+    {
+      "name": "RecomputePageCRC",
+      "trigger": "crcChecksum invalid",
+      "action": "recompute_checksum",
+      "target": "crcChecksum",
+      "algorithm": "crc32",
+      "description": "Recompute CRC-32 over the full Ogg page (polynomial 0x04C11DB7, non-reflected) with the checksum field zeroed during computation"
+    },
+    {
+      "name": "FixStreamVersion",
+      "trigger": "streamVersion != 0",
+      "action": "set_value",
+      "target": "streamVersion",
+      "value": 0,
+      "description": "Ogg stream version must be 0 per RFC 3533; reset non-zero values to restore compatibility"
+    },
+    {
+      "name": "ClearReservedHeaderBits",
+      "trigger": "(headerTypeFlag & 248) != 0",
+      "action": "set_value",
+      "target": "headerTypeFlag",
+      "description": "Mask off reserved bits 3-7 in header type flags to produce a standard-compliant value"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "oggSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'OggS' to test page resync and error handling" },
+      { "field": "headerTypeFlag", "mutation": "enum_sweep", "weight": 2, "description": "Sweep BOS/EOS/continuation bit combinations including reserved bits" },
+      { "field": "pageSequenceNumber", "mutation": "overflow", "weight": 2, "description": "Wraparound sequence numbers test monotonicity checks in demuxers" },
+      { "field": "numPageSegments", "mutation": "boundary_values", "weight": 2, "description": "Test 0 and 255 segment counts for buffer allocation edge cases" },
+      { "field": "crcChecksum", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in checksum to trigger integrity-check failures" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "Ogg-Vorbis",
+      "to": "Ogg-Opus",
+      "description": "Re-encapsulate Vorbis audio stream in Opus container format; requires re-encoding audio data and replacing BOS header packet",
+      "changes": [
+        { "field": "headerTypeFlag", "changeType": "set_value", "value": "0x02", "description": "Set BOS flag for new Opus stream first page" },
+        { "field": "serialNumber", "changeType": "set_value", "value": "new random uint32", "description": "Assign new random serial number for Opus logical bitstream" }
+      ]
+    }
+  ]
 }

@@ -635,5 +635,42 @@
     "readUInt32LE": "Read little-endian 32-bit header fields",
     "readUInt16LE": "Read little-endian 16-bit checksums",
     "extractASCIIString": "Read game title and codes"
-  }
+  },
+  "diff": {
+    "keyFields": ["gameTitle", "gameCode", "romVersion", "headerChecksum"],
+    "ignoreFields": ["iconTitleOffset"],
+    "groupBy": "unitCode",
+    "note": "gameTitle+gameCode identify the title; romVersion distinguishes revisions; headerChecksum confirms header integrity; unitCode separates NDS-only from DSi-enhanced builds"
+  },
+  "repair": [
+    {
+      "name": "FixHeaderChecksum",
+      "trigger": "headerChecksum does not match CRC-16 of bytes 0x000–0x15D",
+      "action": "recompute_checksum",
+      "target": "headerChecksum",
+      "algorithm": "crc32",
+      "description": "Recompute the CRC-16 header checksum over bytes 0x000–0x15D and write the corrected value to offset 0x15E; a mismatching checksum prevents hardware boot"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "nintendoLogo",    "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 156-byte NDS Nintendo logo to trigger boot ROM rejection" },
+      { "field": "arm9Size",        "mutation": "boundary_values",   "weight": 2, "description": "Set ARM9 binary size to 0 or above 4MB limit to test emulator validation" },
+      { "field": "headerChecksum",  "mutation": "bit_flip", "rate": 0.01, "weight": 2, "description": "Flip CRC-16 bits to invalidate the header checksum" },
+      { "field": "deviceCapacity",  "mutation": "overflow",          "weight": 2, "description": "Set capacity exponent beyond valid range to test cartridge size calculation" },
+      { "field": "gameCode",        "mutation": "random_bytes",      "weight": 1, "description": "Randomize the 4-char game code to stress region and ID parsing" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "NDS (unitCode=0)",
+      "to": "NDS+DSi Enhanced (unitCode=2)",
+      "description": "Upgrade a standard NDS ROM header to indicate DSi-enhanced mode, enabling DSi-specific extended header fields and features while retaining NDS backward compatibility",
+      "changes": [
+        { "field": "unitCode", "changeType": "set_value", "value": "2", "description": "Set unitCode from 0x00 (NDS only) to 0x02 (NDS+DSi enhanced)" }
+      ]
+    }
+  ]
 }

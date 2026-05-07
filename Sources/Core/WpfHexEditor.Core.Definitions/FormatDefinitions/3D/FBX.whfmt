@@ -220,5 +220,50 @@
     "nodeOffsetSize": "32-bit for version < 7500, 64-bit for version >= 7500",
     "asciiVariant": "starts with '; FBX' comment (no binary magic)",
     "propertyTypes": ["Y=int16", "C=bool", "I=int32", "F=float32", "D=float64", "L=int64", "f/d/l/i/b=typed arrays", "S=string", "R=raw"]
-  }
+  },
+  "diff": {
+    "keyFields": ["fbxVersion", "fbxGuardByte"],
+    "ignoreFields": ["fbxNullByte"],
+    "groupBy": "fbxVersion",
+    "note": "Version field identifies FBX SDK generation and 32/64-bit offset mode; guard byte distinguishes binary from ASCII FBX"
+  },
+  "repair": [
+    {
+      "name": "FixGuardByte",
+      "trigger": "fbxGuardByte != 26",
+      "action": "set_value",
+      "target": "fbxGuardByte",
+      "value": "1A",
+      "description": "Restore the 0x1A guard byte at offset 21 to ensure binary FBX is not misprocessed by text tools"
+    },
+    {
+      "name": "FixNullByte",
+      "trigger": "fbxNullByte != 0",
+      "action": "set_value",
+      "target": "fbxNullByte",
+      "value": "00",
+      "description": "Restore the null byte at offset 20 to complete the 23-byte binary FBX magic sequence"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "fbxMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 'Kaydara FBX Binary' magic to test FBX parser identification fallbacks" },
+      { "field": "fbxVersion", "mutation": "boundary_values", "weight": 2, "description": "Test unknown version values outside the 7100-7700 range to probe version-gated parsing paths" },
+      { "field": "fbxVersion", "mutation": "overflow", "weight": 2, "description": "Overflow the version uint32 to trigger integer wrap in version-conditional node offset size selection" },
+      { "field": "fbxGuardByte", "mutation": "random_bytes", "weight": 1, "description": "Corrupt the 0x1A guard byte to test binary vs ASCII disambiguation logic" },
+      { "field": "fbxGuardByte", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit-flip the guard byte to produce values adjacent to 0x1A and test boundary tolerance" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "fbx_7400",
+      "to": "fbx_7500",
+      "description": "Upgrade FBX from version 7400 (32-bit offsets) to version 7500 (64-bit node offsets for Autodesk 2016+)",
+      "changes": [
+        { "field": "fbxVersion", "changeType": "set_value", "value": "4C1D0000", "description": "Set version to 7500 (0x00001D4C) to enable 64-bit node offset mode" }
+      ]
+    }
+  ]
 }

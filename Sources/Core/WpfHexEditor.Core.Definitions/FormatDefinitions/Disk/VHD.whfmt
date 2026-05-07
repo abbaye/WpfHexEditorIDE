@@ -206,5 +206,58 @@
       "severity": "warning",
       "message": "VHD magic field is zero — possible detection failure"
     }
+  ],
+  "diff": {
+    "keyFields": ["vhdCookie", "formatVersion", "features"],
+    "ignoreFields": [],
+    "groupBy": "vhdCookie",
+    "note": "Cookie identifies the format, formatVersion tracks spec revision, features flags distinguish fixed/dynamic/differencing disk types — all three together define the disk identity for comparison"
+  },
+  "repair": [
+    {
+      "name": "FixVhdCookie",
+      "trigger": "vhdCookie == 0",
+      "action": "set_value",
+      "target": "vhdCookie",
+      "value": "636F6E65637469780000",
+      "description": "Restore the VHD footer cookie 'conectix' (8 ASCII bytes) at offset 0 when it is zeroed or corrupted"
+    },
+    {
+      "name": "FixVhdFeatures",
+      "trigger": "features == 0",
+      "action": "set_value",
+      "target": "features",
+      "value": "00000002",
+      "description": "Set features flags to 0x00000002 (Reserved bit must be set per VHD spec) when the field is invalid zero"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "vhdCookie",     "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 'conectix' cookie to verify that VHD parsers reject invalid footer cookies without crashing" },
+      { "field": "features",      "mutation": "boundary_values",   "weight": 2, "description": "Test features field at 0x00000000 and 0xFFFFFFFF to probe flag validation in Hyper-V and third-party VHD loaders" },
+      { "field": "formatVersion", "mutation": "overflow",          "weight": 2, "description": "Overflow the format version field to test parser resilience against unknown VHD format revisions" },
+      { "field": "vhdCookie",     "mutation": "random_bytes",      "weight": 1, "description": "Replace cookie with random bytes to validate detection rejection of non-VHD files" },
+      { "field": "features",      "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip individual bits in features flags to expose unhandled flag combinations in VHD disk type logic" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "VHD-Connectix",
+      "to": "VHD-Microsoft",
+      "description": "Connectix Virtual PC VHD to Microsoft Hyper-V VHD — same binary format but creator application field and UUID semantics differ",
+      "changes": [
+        { "field": "features", "changeType": "set_value", "value": "00000002", "description": "Ensure Reserved features bit (0x2) is set per Microsoft VHD spec; Connectix files may have this cleared" }
+      ]
+    },
+    {
+      "from": "VHD",
+      "to": "VHDX",
+      "description": "Legacy VHD to VHDX (new format introduced in Windows Server 2012 with 64 TB support, sector alignment, and journaling) — requires conversion tool, not in-place migration",
+      "changes": [
+        { "field": "vhdCookie", "changeType": "set_value", "value": "76686478 66696c65", "description": "VHDX uses 'vhdxfile' cookie (8 bytes); this field documents the format break" }
+      ]
+    }
   ]
 }

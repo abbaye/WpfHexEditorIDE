@@ -629,5 +629,66 @@
     "SupportsTransparency": true,
     "TagBasedFormat": true,
     "VariantBigTIFF": "Supports files >4GB with 64-bit offsets (magic=43)"
-  }
+  },
+  "diff": {
+    "keyFields": ["byteOrderMark", "tiffMagicNumber", "ifdOffset", "ifdEntryCount", "tiffWidth", "tiffHeight", "tiffBitsPerSample", "tiffCompression", "tiffSamplesPerPixel"],
+    "ignoreFields": ["estimatedUncompressedSize", "formattedSize"],
+    "groupBy": "byteOrderMark",
+    "note": "Endianness, variant, IFD structure, and image geometry are the primary semantic identifiers; computed size estimates are derived and noisy for diff"
+  },
+  "repair": [
+    {
+      "name": "FixByteOrderMark",
+      "trigger": "byteOrderMark != 18761 && byteOrderMark != 19789",
+      "action": "set_value",
+      "target": "offset:0",
+      "value": "4949",
+      "description": "Write the 'II' (Intel / little-endian) byte-order mark so parsers can determine endianness"
+    },
+    {
+      "name": "FixTIFFMagicNumber",
+      "trigger": "tiffMagicNumber != 42 && tiffMagicNumber != 43",
+      "action": "set_value",
+      "target": "offset:2",
+      "value": "2A00",
+      "description": "Restore standard TIFF magic 42 (little-endian 0x002A) so decoders recognise the file as TIFF"
+    },
+    {
+      "name": "FixIFDOffset",
+      "trigger": "ifdOffset < 8",
+      "action": "set_value",
+      "target": "ifdOffset",
+      "value": "08000000",
+      "description": "Set first IFD offset to 8 (immediately after the 8-byte header) when it incorrectly points inside the header"
+    },
+    {
+      "name": "FixZeroIFDEntryCount",
+      "trigger": "ifdEntryCount == 0",
+      "action": "set_value",
+      "target": "ifdEntryCount",
+      "value": "0100",
+      "description": "Set IFD entry count to at least 1 to prevent parsers from treating the directory as empty"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "byteOrderMark",  "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt byte-order mark to probe endianness-detection and fallback code" },
+      { "field": "ifdOffset",      "mutation": "boundary_values",   "weight": 2, "description": "Zero, 1, and very-large IFD offsets to test bounds-checking in IFD traversal" },
+      { "field": "ifd0TagId",      "mutation": "enum_sweep",        "weight": 2, "description": "Sweep unknown and reserved tag IDs to test tag-parsing robustness" },
+      { "field": "ifdEntryCount",  "mutation": "overflow",          "weight": 2, "description": "Overflow IFD entry count to exercise allocation and loop-termination guards" },
+      { "field": "ifd0TagValue",   "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Random bit flips in value/offset field to hit parser edge cases in inline vs. offset value decoding" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "Standard TIFF (tiffMagicNumber=42)",
+      "to": "BigTIFF (tiffMagicNumber=43)",
+      "description": "Upgrade to BigTIFF format for files exceeding the 4 GB limit, switching to 64-bit IFD offsets and an extended header",
+      "changes": [
+        { "field": "tiffMagicNumber", "changeType": "set_value", "value": "2B00", "description": "Change magic number from 42 (0x2A) to 43 (0x2B) to signal BigTIFF encoding" }
+      ]
+    }
+  ]
 }

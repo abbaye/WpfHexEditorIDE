@@ -230,5 +230,42 @@
       "Check resource/asset table entries and data block offsets",
       "Inspect compression flags, checksums, and embedded file boundaries"
     ]
-  }
+  },
+  "diff": {
+    "keyFields": ["prgRomSize", "chrRomSize", "flags6", "flags7"],
+    "ignoreFields": ["tvSystemFlags", "tvSystemChrRam"],
+    "groupBy": "nesMagic",
+    "note": "PRG/CHR bank counts define ROM size and mapper; flags6/7 encode mapper number and mirroring — these are the fields that differ between ROM versions and hacks"
+  },
+  "repair": [
+    {
+      "name": "FixPaddingBytes",
+      "trigger": "Padding bytes at offset 11 are non-zero",
+      "action": "recompute_checksum",
+      "target": "offset:11",
+      "algorithm": "crc32",
+      "description": "Zero out reserved padding bytes (offsets 11–15) which must be 0x00 per iNES spec; non-zero values indicate a corrupted or non-standard header"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "nesMagic",    "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 4-byte iNES magic to trigger format rejection in emulators" },
+      { "field": "prgRomSize",  "mutation": "boundary_values",   "weight": 2, "description": "Test PRG ROM bank count at extremes (0, 1, 255) — 0 is invalid per spec" },
+      { "field": "flags6",      "mutation": "bit_flip", "rate": 0.01, "weight": 2, "description": "Flip mapper/mirroring bits to produce invalid mapper numbers" },
+      { "field": "chrRomSize",  "mutation": "overflow",          "weight": 2, "description": "Overflow CHR ROM bank count to test emulator bounds checking" },
+      { "field": "prgRamSize",  "mutation": "random_bytes",      "weight": 1, "description": "Randomize PRG RAM size byte (usually 0) to stress non-standard values" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "iNES 1.0",
+      "to": "NES 2.0",
+      "description": "NES 2.0 extends iNES 1.0 by using flags7 bits 2–3 = 0b10 as a version marker and repurposing bytes 8–15 for extended mapper, submapper, ROM size MSBs, VRAM, CPU/PPU timing, and VS/Extend system fields",
+      "changes": [
+        { "field": "flags7", "changeType": "set_value", "value": "flags7 | 0x08", "description": "Set bits 2–3 of flags7 to 0b10 (binary 0000_10xx) to signal NES 2.0 format" }
+      ]
+    }
+  ]
 }

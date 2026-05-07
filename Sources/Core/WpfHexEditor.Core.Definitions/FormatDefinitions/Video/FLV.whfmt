@@ -205,5 +205,58 @@
     "videoCodecs": { "2": "Sorenson Spark (H.263)", "4": "VP6", "5": "VP6 with alpha", "7": "H.264 (AVC)" },
     "audioCodecs": { "2": "MP3", "10": "AAC" },
     "legacyFormat": true
-  }
+  },
+  "diff": {
+    "keyFields": ["flvVersion", "flvFlags", "dataOffset"],
+    "ignoreFields": [],
+    "groupBy": "flvFlags",
+    "note": "flvVersion identifies the FLV spec level; flvFlags declares audio/video stream presence; dataOffset must equal 9 for standard files — all three are meaningful discriminators"
+  },
+  "repair": [
+    {
+      "name": "FixFlvMagic",
+      "trigger": "flvMagic != 'FLV'",
+      "action": "set_value",
+      "target": "flvMagic",
+      "value": "464C56",
+      "description": "Restores the 3-byte ASCII FLV magic bytes 'FLV' at offset 0 when the container signature is missing or corrupted"
+    },
+    {
+      "name": "FixFlvVersion",
+      "trigger": "flvVersion != 1",
+      "action": "set_value",
+      "target": "flvVersion",
+      "value": "01",
+      "description": "Resets the FLV version byte to 1 at offset 3; all valid FLV files use version 1 — other values are invalid per the Adobe specification"
+    },
+    {
+      "name": "FixDataOffset",
+      "trigger": "dataOffset != 9",
+      "action": "set_value",
+      "target": "dataOffset",
+      "value": "00000009",
+      "description": "Resets the data offset field at offset 5 to the standard value of 9 (big-endian uint32), ensuring parsers locate the first tag at the correct byte position"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "flvMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupting 'FLV' at offset 0-2 tests Flash Player and FFmpeg magic-byte rejection and format-identification fallback" },
+      { "field": "dataOffset", "mutation": "boundary_values", "weight": 2, "description": "dataOffset values 0, 1, and 0xFFFFFFFF test tag-location arithmetic overflow in FLV demuxers that skip to the first tag offset" },
+      { "field": "flvFlags", "mutation": "enum_sweep", "weight": 2, "description": "Sweeping flags byte values exercises audio-only, video-only, and combined stream detection paths" },
+      { "field": "flvVersion", "mutation": "overflow", "weight": 2, "description": "Non-1 version values (2, 255) test version-guard branches in FLV parsers that reject unknown versions" },
+      { "field": "flvFlags", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit flips in the flags byte test robustness of audio/video presence detection in FLV readers" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "FLV-video-only",
+      "to": "FLV-audio-video",
+      "description": "Update stream flags to declare both audio and video streams present when re-muxing audio into an existing video-only FLV",
+      "changes": [
+        { "field": "flvFlags", "changeType": "set_value", "value": "05", "description": "Set bit 0 (audio) and bit 2 (video) in flags byte to declare combined audio/video FLV" }
+      ]
+    }
+  ]
 }

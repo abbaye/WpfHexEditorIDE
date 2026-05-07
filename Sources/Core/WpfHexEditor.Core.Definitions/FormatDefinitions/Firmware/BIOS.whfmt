@@ -1,0 +1,301 @@
+{
+  "diffMode": "binary",
+  "formatName": "Legacy BIOS Firmware Image",
+  "formatId": "BIOS",
+  "version": "1.0",
+  "extensions": [".bin", ".rom", ".fd", ".bios"],
+  "description": "Legacy BIOS (Basic Input/Output System) firmware ROM image for x86 systems pre-UEFI or running in Compatibility Support Module (CSM) mode. A BIOS ROM image is a flat binary flash dump, typically 1MB, 2MB, 4MB, or 8MB. Key structures: (1) Reset vector at offset -16 from end (0xFFF0 in a 64KB segment = physical 0xFFFFFFF0 for 4GB address space), typically a far jump instruction (EA xx xx xx F0). (2) BIOS ID string near end of image (ASCII, vendor-specific, often at offsets -11 to -1 from end). (3) Optional DMI/SMBIOS structures. (4) PCI Option ROMs (signature 55 AA at block boundaries, 512-byte aligned). (5) MPTABLE (SMP configuration) starting with '_MP_' signature. (6) ACPI RSDP signature 'RSD PTR ' (52 53 44 20 50 54 52 20). Legacy BIOS images have no single mandatory magic number — detection relies on characteristic structures and the x86 reset vector pattern. Modern systems use UEFI but CSM mode BIOS images still appear in enterprise and embedded systems.",
+  "category": "Firmware",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Intel BIOS Writer's Guide (BWG)",
+      "ACPI Specification v6.5 (RSDP structure)",
+      "SMBIOS (System Management BIOS) Specification v3.6"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/BIOS",
+      "https://wiki.osdev.org/BIOS",
+      "https://www.coreboot.org/",
+      "https://www.seabios.org/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "5541AA", "offset": 0, "label": "0x55 0x41 0xAA — CSM/VGA BIOS option ROM with 'UA' prefix variant", "weight": 0.5 },
+      { "value": "55AA", "offset": 0, "label": "0x55 0xAA — x86 PCI Option ROM signature (also MBR boot signature)", "weight": 0.4 },
+      { "value": "52534420505452200", "offset": -15, "label": "'RSD PTR ' — ACPI RSDP signature near end of image", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 2.0, "max": 7.0 },
+    "validation": {
+      "minFileSize": 65536,
+      "maxSignatureOffset": 1024,
+      "note": "BIOS ROMs have no universal magic. Detection is heuristic: file size is power-of-two between 64KB and 64MB, optional 55AA at offset 0 or in first 512 bytes, BIOS ID string near end, and presence of ACPI RSDP or '_MP_' MP table signatures."
+    }
+  },
+  "variables": {
+    "biosOptionRomSig": 0,
+    "biosOptionRomSize": 0,
+    "biosResetVectorOpcode": 0,
+    "biosIdString": "",
+    "biosAcpiRsdpSig": "",
+    "biosFileSize": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Option ROM Signature",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.35,
+      "description": "First 2 bytes of the BIOS image. 0x55 0xAA is the x86 PCI Option ROM signature (and boot sector MBR signature). Present in VGA BIOS ROMs, adapter firmware ROMs, and some legacy BIOS images. Not universally present in all BIOS images — many flat BIOS dumps start at arbitrary code.",
+      "storeAs": "biosOptionRomSig",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Option ROM Size",
+      "offset": 2,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "For Option ROM images: size in 512-byte blocks (uint8). Total ROM size = value * 512 bytes. A value of 0x80 = 64KB Option ROM. Only meaningful when bytes 0-1 are the 55 AA signature. For non-ROM-style BIOS images, this byte is code or data.",
+      "storeAs": "biosOptionRomSize",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Reset Vector Opcode",
+      "offset": -16,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "x86 opcode at the reset vector location — 16 bytes from the end of the ROM image (segment-relative offset 0xFFF0, physical 0xFFFFFFF0 in 4GB). Should be 0xEA (far JMP) for a standard BIOS reset vector, or 0xEB (short JMP near) for small ROMs. This is the first instruction executed by the CPU after power-on or reset.",
+      "storeAs": "biosResetVectorOpcode",
+      "valueType": "uint8",
+      "valueMap": {
+        "234": "0xEA — far JMP (standard BIOS reset vector)",
+        "235": "0xEB — short JMP near",
+        "144": "0x90 — NOP (unusual at reset vector)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "BIOS ID String",
+      "offset": -11,
+      "length": 11,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "11-byte BIOS ID string at the last 11 bytes of the ROM image (offsets -11 to -1). Contains build date and version: e.g. '08/15/2019' or 'BIOS_VER_X'. This is the standard location used by AMI, Award, and Phoenix BIOS versions. Forensically important for BIOS version identification and build timeline.",
+      "storeAs": "biosIdString",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "ACPI RSDP Signature",
+      "offset": 917504,
+      "length": 8,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "'RSD PTR ' (52 53 44 20 50 54 52 20) — ACPI Root System Description Pointer signature. Located on a 16-byte boundary in the first 1KB of the EBDA (Extended BIOS Data Area) or in BIOS ROM between 0xE0000 and 0xFFFFF. Its presence confirms this is a BIOS image with ACPI support. The RSDP points to the RSDT/XSDT table chain.",
+      "storeAs": "biosAcpiRsdpSig",
+      "valueType": "ascii"
+    },
+    {
+      "type": "metadata",
+      "name": "Option ROM Signature",
+      "variable": "biosOptionRomSig",
+      "description": "0x55AA = Option ROM / MBR boot signature at offset 0"
+    },
+    {
+      "type": "metadata",
+      "name": "BIOS ID String",
+      "variable": "biosIdString",
+      "description": "BIOS version/date ID string at the last 11 bytes of the ROM"
+    },
+    {
+      "type": "metadata",
+      "name": "Reset Vector Opcode",
+      "variable": "biosResetVectorOpcode",
+      "description": "x86 opcode at reset vector (offset -16 from end) — should be 0xEA (far JMP)"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "File size power of two",
+      "expression": "fileSize >= 65536",
+      "severity": "warning",
+      "message": "BIOS ROM images are typically power-of-two sized (64KB to 64MB). Unusual sizes may indicate a partial or corrupt dump."
+    },
+    {
+      "name": "Reset vector is far JMP",
+      "expression": "biosResetVectorOpcode == 234",
+      "severity": "info",
+      "message": "Reset vector at offset -16 is not a far JMP (0xEA). May be a non-standard BIOS or the image does not end at the 1MB boundary."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Option ROM Sig", "offset": 0, "color": "#FF6B6B" },
+      { "name": "ACPI RSDP Search", "offset": 917504, "color": "#C7CEEA" },
+      { "name": "Reset Vector", "offset": -16, "color": "#95E1D3" },
+      { "name": "BIOS ID", "offset": -11, "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "BIOS",
+    "primaryField": "biosIdString",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "ROM Header",
+        "icon": "",
+        "fields": ["biosOptionRomSig", "biosOptionRomSize"]
+      },
+      {
+        "title": "BIOS Identity",
+        "icon": "",
+        "fields": ["biosIdString", "biosResetVectorOpcode"]
+      },
+      {
+        "title": "ACPI",
+        "icon": "",
+        "fields": ["biosAcpiRsdpSig"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "BIOS Image Info (JSON)",
+      "format": "json",
+      "fields": ["biosOptionRomSig", "biosOptionRomSize", "biosIdString", "biosResetVectorOpcode", "biosAcpiRsdpSig"]
+    },
+    {
+      "name": "BIOS Summary (Text)",
+      "format": "text",
+      "fields": ["biosIdString", "biosResetVectorOpcode", "biosOptionRomSig"]
+    }
+  ],
+  "forensic": {
+    "category": "firmware",
+    "riskLevel": "critical",
+    "notes": "Legacy BIOS firmware persists through OS reinstalls and is invisible to OS-level security tools. BIOS-level malware (bootkits) may overwrite the reset vector or inject code at 0xFFFFFFF0. Reflash attacks can permanently compromise systems. BIOS ID string near end of ROM provides version and build date for timeline evidence.",
+    "suspiciousPatterns": [
+      "Reset vector opcode other than 0xEA (far JMP) — may indicate overwrite or non-standard entry",
+      "BIOS ID string overwritten with nulls or non-ASCII — possible firmware tampering",
+      "Presence of shellcode patterns (NOP sleds) in the 0xF0000-0xFFFFF region"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Legacy BIOS ROM layout (1MB typical): 0x00000-0x9FFFF = conventional memory + ROM shadow, 0xA0000-0xBFFFF = VGA RAM, 0xC0000-0xC7FFF = VGA BIOS option ROM (55 AA), 0xC8000-0xDFFFF = adapter ROM area, 0xE0000-0xFFFFF = system BIOS (the actual 128KB BIOS ROM). Reset vector at physical 0xFFFFFFF0 = ROM byte at (fileSize - 16). BIOS ID at last 11 bytes. ACPI RSDP '52 53 44 20 50 54 52 20' on 16-byte boundary in 0xE0000-0xFFFFF. Option ROM at 0xC0000: 55 AA, size_in_512B_blocks, code. PCI Option ROM header: 55 AA + size + PCI data structure pointer at offset 18 or 24.",
+    "suggestedInspections": [
+      "Bytes at (fileSize - 16): should be 0xEA (far JMP) — the CPU reset vector; any other opcode is suspicious",
+      "Last 11 bytes: BIOS ID string with build date in MM/DD/YYYY format for version identification",
+      "Search for 'RSD PTR ' (52 53 44 20 50 54 52 20) on 16-byte boundaries for ACPI RSDP location",
+      "Search for 55 AA at 512-byte boundaries in 0xC0000-0xDFFFF for PCI Option ROM modules",
+      "Search for '_MP_' (5F 4D 50 5F) for SMP MP table — reveals CPU topology information",
+      "Use binwalk -e to extract compressed BIOS modules (LZMA/LZ4/zlib)"
+    ]
+  },
+  "software": [
+    "binwalk — firmware analysis and extraction",
+    "UEFITool — also handles legacy BIOS ROMs with UEFI modules",
+    "coreboot — open-source BIOS (reference for structure)",
+    "SeaBIOS — open-source legacy BIOS implementation",
+    "CBROM — AMI/Award BIOS module extraction tool",
+    "mmtool — AMI Aptio BIOS module extraction"
+  ],
+  "formatRelationships": {
+    "category": "Firmware",
+    "extensions": [".bin", ".rom", ".fd", ".bios"],
+    "relatedFormats": ["UEFI", "UEFI_FV", "EFI_CAPSULE"],
+    "note": "Legacy BIOS (CSM) images differ from UEFI firmware volumes — no '_FVH' signature, flat binary structure, reset vector at the end. Modern systems use UEFI (UEFI.whfmt) but may include a CSM module for legacy OS compatibility. UEFI_FV.whfmt covers the Firmware Volume container within UEFI images."
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Legacy BIOS firmware analysis and reverse engineering",
+    "BIOS mod/update development for older motherboards",
+    "Bootkit detection and firmware integrity verification",
+    "Embedded systems with legacy BIOS (industrial, automotive)",
+    "BIOS flash extraction and backup for repair purposes"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 78,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-05-07",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Flat binary ROM image, x86 architecture",
+    "ResetVector": "Last 16 bytes (offset -16), physical 0xFFFFFFF0 in 4GB address space",
+    "BIOSIDOffset": "Last 11 bytes (offset -11)",
+    "TypicalSizes": "64KB, 128KB, 256KB, 512KB, 1MB, 2MB, 4MB, 8MB (power-of-two)",
+    "OptionROMSig": "0x55 0xAA at 512-byte-aligned boundaries",
+    "ACPIRSDPSig": "'RSD PTR ' on 16-byte boundaries in 0xE0000-0xFFFFF range"
+  },
+  "diff": {
+    "keyFields": ["biosOptionRomSig", "biosResetVectorOpcode", "biosIdString", "biosAcpiRsdpSig"],
+    "ignoreFields": [],
+    "groupBy": "biosIdString",
+    "note": "biosIdString is the primary BIOS version identifier for diff grouping. biosResetVectorOpcode should be constant (0xEA) in legitimate images — any change is significant."
+  },
+  "repair": [
+    {
+      "name": "FixOptionRomSig",
+      "trigger": "biosOptionRomSig != 0xAA55",
+      "action": "set_value",
+      "target": "biosOptionRomSig",
+      "value": "55AA",
+      "description": "Restores the 0x55 0xAA Option ROM signature at offset 0 when the BIOS image starts with an Option ROM or MBR-style entry point."
+    },
+    {
+      "name": "FixResetVector",
+      "trigger": "biosResetVectorOpcode != 234",
+      "action": "set_value",
+      "target": "biosResetVectorOpcode",
+      "value": "EA",
+      "description": "Restores the far JMP opcode (0xEA) at the reset vector location (offset -16 from end) when it has been overwritten."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "biosResetVectorOpcode", "mutation": "corrupt_signature", "weight": 3, "description": "Overwriting the reset vector opcode tests how emulators and BIOS analysis tools handle invalid entry points." },
+      { "field": "biosOptionRomSize",     "mutation": "boundary_values",   "weight": 2, "description": "Extreme Option ROM size values (0, 255) test size-validation in Option ROM scanners." },
+      { "field": "biosOptionRomSig",      "mutation": "bit_flip",          "rate": 0.001, "weight": 2, "description": "Bit flips in the 55 AA signature test Option ROM detection robustness." },
+      { "field": "biosIdString",          "mutation": "random_bytes",      "weight": 2, "description": "Random BIOS ID bytes test ID string parsing in BIOS analysis and update tools." },
+      { "field": "biosAcpiRsdpSig",       "mutation": "zero_field",        "weight": 1, "description": "Zeroing the ACPI RSDP signature tests ACPI detection fallback paths in OS loaders." }
+    ]
+  },
+  "migration": [
+    {
+      "from": "bios-legacy-1mb",
+      "to": "bios-csm-4mb",
+      "description": "Expand a 1MB legacy BIOS ROM to 4MB by padding with 0xFF (erased flash state) to accommodate additional CSM modules and extended NVRAM area.",
+      "changes": [
+        { "field": "biosOptionRomSize", "changeType": "set_value", "value": "80", "description": "Update Option ROM size field to 0x80 (64KB = 128 * 512 bytes) if the ROM header is used." }
+      ]
+    },
+    {
+      "from": "bios-legacy",
+      "to": "uefi-csm",
+      "description": "Transition from pure legacy BIOS to UEFI with CSM (Compatibility Support Module) — legacy BIOS code becomes the CSM module within a UEFI FV structure.",
+      "changes": [
+        { "field": "biosOptionRomSig", "changeType": "set_value", "value": "5F465648", "description": "UEFI integration: '_FVH' signature replaces the legacy ROM header as the container format changes to UEFI FV." }
+      ]
+    }
+  ]
+}

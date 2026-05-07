@@ -150,5 +150,42 @@
       "severity": "warning",
       "message": "LLVM_BC magic field is zero — possible detection failure"
     }
+  ],
+  "diff": {
+    "keyFields": ["llvmBitcodeMagic"],
+    "ignoreFields": [],
+    "groupBy": "llvmBitcodeMagic",
+    "note": "The 4-byte magic 'BC\\xC0\\xDE' is the sole structural constant in the header; all subsequent content is bitstream-encoded and varies per IR module. Magic-level diffing quickly identifies valid vs. corrupted files."
+  },
+  "repair": [
+    {
+      "name": "FixLLVMMagic",
+      "trigger": "llvmBitcodeMagic != 0x4243C0DE",
+      "action": "set_value",
+      "target": "llvmBitcodeMagic",
+      "value": "4243C0DE",
+      "description": "Restore the 4-byte LLVM Bitcode magic 'BC' 0xC0 0xDE at offset 0 when it has been corrupted or zeroed"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "llvmBitcodeMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the BC magic to test LLVM tool rejection paths (llvm-dis, opt, clang LTO) and hex-editor detection fallback" },
+      { "field": "llvmBitcodeMagic", "mutation": "boundary_values",   "weight": 2, "description": "Test all-zero and all-0xFF magic to probe null-pointer and invalid-format handling in LLVM parsers" },
+      { "field": "llvmBitcodeMagic", "mutation": "zero_field",        "weight": 2, "description": "Zero the magic bytes to simulate a truncated or empty bitcode file and verify graceful error reporting" },
+      { "field": "llvmBitcodeMagic", "mutation": "random_bytes",      "weight": 2, "description": "Replace magic with random 4 bytes to trigger unknown-format code paths in LLVM readers" },
+      { "field": "llvmBitcodeMagic", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit flip in the magic to find lax vs. strict detection boundaries in bitcode consumers" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "corrupted-magic",
+      "to": "valid-bc",
+      "description": "Recover a bitcode file whose magic was accidentally overwritten (e.g., by a partial write or file-system error)",
+      "changes": [
+        { "field": "llvmBitcodeMagic", "changeType": "set_value", "value": "4243C0DE", "description": "Restore the canonical LLVM Bitcode magic bytes 0x42 0x43 0xC0 0xDE at offset 0" }
+      ]
+    }
   ]
 }

@@ -205,5 +205,50 @@
     "variants": ["WMA Standard", "WMA Pro", "WMA Lossless", "WMA Voice"],
     "drmSupport": true,
     "maxBitrate": "768 kbps (WMA Pro)"
-  }
+  },
+  "diff": {
+    "keyFields": ["asfGuid", "numHeaders"],
+    "ignoreFields": ["asfSize", "reserved"],
+    "groupBy": "asfGuid",
+    "note": "The ASF GUID and sub-object count define container identity; header size varies with metadata volume so exclude from structural diffs"
+  },
+  "repair": [
+    {
+      "name": "FixReservedField",
+      "trigger": "reserved != 0x0201",
+      "action": "set_value",
+      "target": "reserved",
+      "value": "0x0201",
+      "description": "ASF spec requires reserved field at offset 28 to be 0x0201; reset to the mandated value"
+    },
+    {
+      "name": "FixMinHeaderCount",
+      "trigger": "numHeaders < 1",
+      "action": "set_value",
+      "target": "numHeaders",
+      "value": 1,
+      "description": "ASF header must contain at least one sub-object; zero sub-objects indicates a malformed or truncated ASF header"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "asfGuid", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 16-byte ASF GUID to test parser rejection of non-ASF files" },
+      { "field": "numHeaders", "mutation": "boundary_values", "weight": 2, "description": "Test 0 and 0xFFFFFFFF sub-object counts for allocation and iteration safety" },
+      { "field": "asfSize", "mutation": "overflow", "weight": 2, "description": "Header size larger than file size triggers truncated-read path in parsers" },
+      { "field": "reserved", "mutation": "enum_sweep", "weight": 2, "description": "Non-standard reserved field values may confuse strict ASF parsers" },
+      { "field": "asfGuid", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit flips in GUID bytes create near-miss signatures for fuzzing GUID matching code" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "WMA-Standard",
+      "to": "WMA-Lossless",
+      "description": "Re-encode WMA Standard stream as WMA Lossless; requires replacing Stream Properties Object codec info GUID within the ASF header sub-objects",
+      "changes": [
+        { "field": "numHeaders", "changeType": "set_value", "value": "existing + 1", "description": "Additional sub-object added for lossless codec properties" }
+      ]
+    }
+  ]
 }

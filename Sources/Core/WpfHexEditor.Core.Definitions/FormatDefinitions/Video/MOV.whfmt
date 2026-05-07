@@ -318,6 +318,69 @@
     "MaxFileSize": "Unlimited (64-bit extended sizes)",
     "primary_extension": ".mov"
   },
+  "diff": {
+    "keyFields": ["firstAtomType", "ftypBrand", "ftypMinorVer"],
+    "ignoreFields": ["nextAtomSize"],
+    "groupBy": "ftypBrand",
+    "note": "firstAtomType distinguishes modern from legacy MOV; ftypBrand identifies the QuickTime variant; ftypMinorVer encodes the QuickTime version for the 'qt  ' brand; nextAtomSize is layout-dependent"
+  },
+  "repair": [
+    {
+      "name": "FixFtypAtomType",
+      "trigger": "firstAtomType != 'ftyp' && firstAtomType != 'moov' && firstAtomType != 'mdat'",
+      "action": "set_value",
+      "target": "firstAtomType",
+      "value": "66747970",
+      "description": "Restores the 'ftyp' atom type at offset 4 for modern QuickTime files when an unknown atom type is found"
+    },
+    {
+      "name": "FixQtBrand",
+      "trigger": "ftypBrand is empty or non-ASCII",
+      "action": "set_value",
+      "target": "ftypBrand",
+      "value": "71742020",
+      "description": "Writes the standard Apple QuickTime brand 'qt  ' (with two trailing spaces) at offset 8 when the major brand is corrupt"
+    },
+    {
+      "name": "FixFirstAtomSize",
+      "trigger": "firstAtomSize == 0 || firstAtomSize > 268435456",
+      "action": "set_value",
+      "target": "firstAtomSize",
+      "value": "00000020",
+      "description": "Resets ftyp atom size to 32 bytes (standard minimal ftyp with 4 compatible brands) when an out-of-range size is detected"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "firstAtomType", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupting the first atom type FourCC tests QuickTime parser fallback and rejection logic for unknown container headers" },
+      { "field": "firstAtomSize", "mutation": "boundary_values", "weight": 2, "description": "Values 0 (extends to EOF), 1 (64-bit extended), and 0xFFFFFFFF test atom-size boundary handling in QuickTime parsers" },
+      { "field": "ftypBrand", "mutation": "enum_sweep", "weight": 2, "description": "Sweeping brand FourCCs exercises brand-specific code paths; unknown brands test the 'compatible brands' fallback chain" },
+      { "field": "ftypMinorVer", "mutation": "overflow", "weight": 2, "description": "Overflowing the uint32 minor version tests version-comparison arithmetic in QuickTime player version checks" },
+      { "field": "compatBrand1", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Random bit flips in compatible brand bytes test parser tolerance for partially-corrupt brand list entries" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "legacy-no-ftyp",
+      "to": "modern-qt",
+      "description": "Add ftyp atom with 'qt  ' brand to legacy QuickTime files that start directly with moov or mdat atoms",
+      "changes": [
+        { "field": "firstAtomType", "changeType": "set_value", "value": "66747970", "description": "Prepend a standard ftyp atom with 'ftyp' type identifier" },
+        { "field": "ftypBrand", "changeType": "set_value", "value": "71742020", "description": "Set major brand to 'qt  ' for Apple QuickTime identification" }
+      ]
+    },
+    {
+      "from": "qt  ",
+      "to": "isom",
+      "description": "Convert QuickTime-native brand to ISO Base Media for cross-platform player compatibility",
+      "changes": [
+        { "field": "ftypBrand", "changeType": "set_value", "value": "69736F6D", "description": "Replace 'qt  ' with 'isom' for generic ISOBMFF compatibility" },
+        { "field": "ftypMinorVer", "changeType": "set_value", "value": "00000000", "description": "Clear QuickTime version encoding from minor version field" }
+      ]
+    }
+  ],
   "assertions": [
     {
       "name": "First atom size is reasonable",

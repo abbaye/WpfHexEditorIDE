@@ -1,0 +1,311 @@
+{
+  "diffMode": "binary",
+  "formatName": "GPG Binary Packet",
+  "formatId": "GPG",
+  "version": "1.0",
+  "extensions": [".gpg", ".pgp"],
+  "description": "GPG (GNU Privacy Guard) binary packet format as defined in RFC 4880 (OpenPGP) and RFC 9580 (OpenPGP 2024). GPG binary files consist of a self-delimiting sequence of typed packets. Each packet begins with a Packet Tag byte where bit 7 is always 1 (0x80 mask). Bit 6 determines the format: 0=old format (bits 5-2=packet type, bits 1-0=length type), 1=new format (bits 5-0=packet type). Old-format public key packet: 0x99 (tag type 6, 2-byte length); old-format secret key: 0x95 (tag type 5); new-format: 0xC6 (public key), 0xC5 (secret key), 0xCB (literal data), 0xC8 (compressed data). Key version byte at the start of key packet body: 3=PGP 2.x legacy (MD5+RSA), 4=RFC 4880 current (SHA-1 fingerprint), 5=RFC 9580 draft (SHA-256). Creation timestamp (4B BE) and algorithm identifier byte follow the version in key packets. GPG binary files have no unique magic number — detected by packet tag structure with bit 7 set. Files may be encrypted messages, signed messages, encrypted+signed, public keyrings, or secret keyrings.",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "RFC 4880 — OpenPGP Message Format",
+      "RFC 9580 — OpenPGP (2024 update)",
+      "RFC 6637 — ECC in OpenPGP"
+    ],
+    "WebLinks": [
+      "https://datatracker.ietf.org/doc/html/rfc4880",
+      "https://datatracker.ietf.org/doc/html/rfc9580",
+      "https://gnupg.org/documentation/",
+      "https://openpgp.dev/book/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "9901", "offset": 0, "label": "0x99 0x01 — old-format public key packet (type 6) with 2-byte length starting 0x01xx", "weight": 0.8 },
+      { "value": "9501", "offset": 0, "label": "0x95 0x01 — old-format secret key packet (type 5) with 2-byte length", "weight": 0.9 },
+      { "value": "C67B", "offset": 0, "label": "0xC6 0x7B — new-format public key packet (type 6) 123-byte body", "weight": 0.7 },
+      { "value": "C57B", "offset": 0, "label": "0xC5 0x7B — new-format secret key packet (type 5) 123-byte body", "weight": 0.7 },
+      { "value": "A3", "offset": 0, "label": "0xA3 — old-format Symmetric-Key Encrypted Session Key packet", "weight": 0.5 },
+      { "value": "85", "offset": 0, "label": "0x85 — old-format Public-Key Encrypted Session Key packet", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
+    "required": false,
+    "Strength": "Moderate",
+    "EntropyHint": { "min": 4.0, "max": 8.0 },
+    "validation": {
+      "minFileSize": 3,
+      "maxSignatureOffset": 0,
+      "note": "GPG binary files have no unique magic number. First byte must have bit 7 set (value >= 0x80). Bits 6-2 (old format) or 5-0 (new format) encode the packet type (1-19). The .gpg extension is the strongest indicator."
+    }
+  },
+  "variables": {
+    "gpgPacketTag": 0,
+    "gpgPacketLength": 0,
+    "gpgKeyVersion": 0,
+    "gpgKeyCreationTime": 0,
+    "gpgPublicKeyAlgorithm": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Packet Tag",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "OpenPGP packet tag byte. Bit 7 must always be 1 (0x80 mask). Bit 6: 0=old format, 1=new format. Old format bits 5-2: packet type (1=PKE, 2=Signature, 3=SKE, 5=Secret Key, 6=Public Key, 8=Compressed, 9=Encrypted, 11=Literal, 13=UserID, 14=Public Subkey). Old format bits 1-0: length type (0=1B, 1=2B, 2=4B, 3=indeterminate). New format bits 5-0: type. Common values: 0x99=old public key, 0x95=old secret key, 0xC5=new secret key, 0xC6=new public key.",
+      "storeAs": "gpgPacketTag",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Packet Length",
+      "offset": 1,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Packet body length. For old-format with 2-byte length type (tag bits 1-0 = 1): 2-byte big-endian uint16. For new-format: variable encoding — single byte 0-191 = literal length, 192-223 = 2-byte, 255 = 5-byte, 224-254 = partial body length. Most public/secret key packets use 2-byte old-format length.",
+      "storeAs": "gpgPacketLength",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Key Version",
+      "offset": 3,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Key packet version at offset 3 (for old-format with 2-byte length). Version 3=PGP 2.x legacy (MD5 fingerprint, RSA only), Version 4=RFC 4880 current (SHA-1 fingerprint, all algorithms), Version 5=RFC 9580 draft (SHA-256 fingerprint). Version 4 is the current standard for all modern GPG keys.",
+      "storeAs": "gpgKeyVersion",
+      "valueType": "uint8",
+      "valueMap": {
+        "3": "PGP 2.x legacy — MD5 + RSA only (deprecated)",
+        "4": "OpenPGP RFC 4880 — SHA-1 fingerprint (current standard)",
+        "5": "OpenPGP RFC 9580 — SHA-256 fingerprint (modern)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Key Creation Time",
+      "offset": 4,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "4-byte big-endian Unix timestamp (seconds since 1970-01-01 UTC) recording when the key was generated. Forensically important for establishing key provenance and validity period. Set at key generation time by GPG/OpenPGP; cannot be changed without re-creating the key.",
+      "storeAs": "gpgKeyCreationTime",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Public Key Algorithm",
+      "offset": 8,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "Public key algorithm identifier at offset 8 in a version 4 key packet. 1=RSA(Encrypt+Sign), 2=RSA(Encrypt), 3=RSA(Sign), 16=Elgamal, 17=DSA, 18=ECDH, 19=ECDSA, 22=EdDSA(Ed25519). RSA and EdDSA are the most common in modern GPG installations.",
+      "storeAs": "gpgPublicKeyAlgorithm",
+      "valueType": "uint8",
+      "valueMap": {
+        "1": "RSA (Encrypt or Sign)",
+        "2": "RSA (Encrypt-Only)",
+        "3": "RSA (Sign-Only)",
+        "16": "Elgamal (Encrypt-Only)",
+        "17": "DSA",
+        "18": "ECDH",
+        "19": "ECDSA",
+        "22": "EdDSA (Ed25519)"
+      }
+    },
+    {
+      "type": "metadata",
+      "name": "Packet Tag",
+      "variable": "gpgPacketTag",
+      "description": "First byte packet tag — encodes old/new format and packet type"
+    },
+    {
+      "type": "metadata",
+      "name": "Key Version",
+      "variable": "gpgKeyVersion",
+      "description": "OpenPGP key version (3=legacy, 4=current, 5=modern)"
+    },
+    {
+      "type": "metadata",
+      "name": "Key Algorithm",
+      "variable": "gpgPublicKeyAlgorithm",
+      "description": "Public key algorithm identifier"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Packet tag high bit set",
+      "expression": "gpgPacketTag >= 128",
+      "severity": "error",
+      "message": "GPG packet tag byte must have bit 7 set (value >= 0x80). Any byte < 0x80 at offset 0 is not a valid OpenPGP packet."
+    },
+    {
+      "name": "Key version valid",
+      "expression": "gpgKeyVersion == 3 || gpgKeyVersion == 4 || gpgKeyVersion == 5",
+      "severity": "warning",
+      "message": "Key version must be 3 (legacy PGP 2.x), 4 (RFC 4880 current), or 5 (RFC 9580). Other values indicate non-standard or corrupted key data."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Packet Tag", "offset": 0, "color": "#FF6B6B" },
+      { "name": "Packet Length", "offset": 1, "color": "#4ECDC4" },
+      { "name": "Key Version", "offset": 3, "color": "#95E1D3" },
+      { "name": "Creation Time", "offset": 4, "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "GPG",
+    "primaryField": "gpgKeyVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Packet Header",
+        "icon": "",
+        "fields": ["gpgPacketTag", "gpgPacketLength"]
+      },
+      {
+        "title": "Key Metadata",
+        "icon": "",
+        "fields": ["gpgKeyVersion", "gpgKeyCreationTime", "gpgPublicKeyAlgorithm"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GPG Key Summary (JSON)",
+      "format": "json",
+      "fields": ["gpgPacketTag", "gpgPacketLength", "gpgKeyVersion", "gpgKeyCreationTime", "gpgPublicKeyAlgorithm"]
+    },
+    {
+      "name": "GPG Forensic Report (Text)",
+      "format": "text",
+      "fields": ["gpgPacketTag", "gpgKeyVersion", "gpgKeyCreationTime", "gpgPublicKeyAlgorithm"]
+    }
+  ],
+  "forensic": {
+    "category": "crypto",
+    "riskLevel": "high",
+    "notes": "GPG binary files with secret key packet tags (0x95, 0xC5) contain private key material. If the private key is not passphrase-protected (S2K usage octet 0x00), key material is directly accessible. Version 3 keys use MD5 fingerprints and are cryptographically weak. Key creation timestamps provide forensic timeline evidence. Use 'gpg --list-keys', 'gpg --export', or pgpdump for structured analysis.",
+    "suspiciousPatterns": [
+      "Secret key packet (tag 0x95 or 0xC5) without passphrase protection (S2K usage = 0)",
+      "Version 3 key (MD5 fingerprint) — cryptographically weak, should be flagged",
+      "Elgamal (algorithm 16) key — rarely used in modern GPG, may indicate old infrastructure"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "GPG binary packet chain: each packet starts with tag byte (bit7=1). Old format (bit6=0): bits5-2=type, bits1-0=length type (0=1B, 1=2B, 2=4B, 3=indeterminate). New format (bit6=1): bits5-0=type; length variable encoding (0-191=literal, 192-223=2-byte, 255=5-byte). Key packet (type 5=secret, 6=public): version(1B) + creation_time(4B BE) + algorithm(1B) + MPI key material. Secret key type 5: after public key material, s2k_usage(1B): 0=no passphrase, 254=S2K with SHA-1 integrity, 255=S2K no integrity. Use pgpdump for full packet analysis.",
+    "suggestedInspections": [
+      "First byte: must be >= 0x80 (bit 7 set); bits 5-2 (old format) identify packet type",
+      "Offset 3 (old format key): key version byte — 3 (legacy/weak) vs 4 (current) vs 5 (modern)",
+      "Offset 4-7: key creation timestamp BE uint32 — convert to date for timeline evidence",
+      "Offset 8: public key algorithm — 22 (EdDSA/Ed25519) is modern; 1-3 (RSA) check key length in MPIs",
+      "Secret key packets (type 5): s2k_usage byte after public key material — 0x00 = no passphrase (immediate access to key)"
+    ]
+  },
+  "software": [
+    "GnuPG / GPG (gpg --list-keys, gpg --export, gpg --decrypt)",
+    "Kleopatra (GnuPG GUI for Windows/Linux)",
+    "GPG4Win (Windows GPG distribution)",
+    "pgpdump (packet structure dump tool)",
+    "Sequoia PGP (modern Rust implementation)",
+    "OpenPGP.js (JavaScript implementation)"
+  ],
+  "formatRelationships": {
+    "category": "Crypto",
+    "extensions": [".gpg", ".pgp"],
+    "relatedFormats": ["PGP", "GPG_KEYRING", "PEM", "P12"],
+    "note": "GPG is the binary packet format for OpenPGP (RFC 4880). PGP files may be ASCII-armored (text) or binary (same packet format). GPG_KEYRING files are also GPG binary format. Contrast with X.509 (DER/PEM/P12) which uses ASN.1 rather than OpenPGP packet structure."
+  },
+  "MimeTypes": [
+    "application/pgp-encrypted",
+    "application/pgp-keys",
+    "application/pgp-signature",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Email encryption and signing (OpenPGP standard)",
+    "File encryption with asymmetric key pairs",
+    "Software package signing (Debian APT, RPM, ArchLinux pacman)",
+    "Git commit and tag signing",
+    "Secure communication via encrypted binary messages"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-05-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary self-delimiting packet chain",
+    "Standard": "RFC 4880 (OpenPGP), RFC 9580 (OpenPGP 2024)",
+    "PacketTag": "Bit 7 always 1; bit 6 = old(0)/new(1) format",
+    "KeyVersions": "3=PGP 2.x (deprecated), 4=RFC 4880 (current), 5=RFC 9580 (modern)",
+    "Endianness": "Big-endian for multi-byte length and timestamp fields"
+  },
+  "diff": {
+    "keyFields": ["gpgPacketTag", "gpgKeyVersion", "gpgPublicKeyAlgorithm", "gpgKeyCreationTime"],
+    "ignoreFields": [],
+    "groupBy": "gpgKeyVersion",
+    "note": "gpgKeyVersion groups keys by OpenPGP spec generation; gpgPublicKeyAlgorithm identifies the cryptographic family; gpgKeyCreationTime is a forensic anchor for timeline analysis."
+  },
+  "repair": [
+    {
+      "name": "FixPacketTagHighBit",
+      "trigger": "gpgPacketTag < 128",
+      "action": "set_value",
+      "target": "gpgPacketTag",
+      "value": "99",
+      "description": "Restores the high bit on a corrupted packet tag byte by setting it to 0x99 (old-format public key packet) when bit 7 is missing."
+    },
+    {
+      "name": "FixKeyVersionV4",
+      "trigger": "gpgKeyVersion == 3",
+      "action": "set_value",
+      "target": "gpgKeyVersion",
+      "value": "04",
+      "description": "Upgrades the key version marker from 3 (PGP 2.x legacy/MD5) to 4 (RFC 4880/SHA-1) — note: key material must also be re-generated as the format differs."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "gpgPacketTag",          "mutation": "corrupt_signature", "weight": 3, "description": "Clearing bit 7 of the packet tag creates an invalid OpenPGP packet that tests parser tag-validation." },
+      { "field": "gpgPacketLength",        "mutation": "boundary_values",   "weight": 2, "description": "Extreme packet lengths (0, 0xFFFF) test body-bounds validation in packet chain parsers." },
+      { "field": "gpgPublicKeyAlgorithm",  "mutation": "enum_sweep",        "weight": 2, "description": "Unknown algorithm IDs (0, 20-21, 127) test algorithm-registry lookups and MPI parsing fallbacks." },
+      { "field": "gpgKeyVersion",          "mutation": "overflow",          "weight": 2, "description": "Invalid key versions (6+, 255) test version-gate branches in GPG key importers." },
+      { "field": "gpgKeyCreationTime",     "mutation": "bit_flip",          "rate": 0.001, "weight": 1, "description": "Bit flips in creation time produce future or prehistoric timestamps that may confuse validity checks." }
+    ]
+  },
+  "migration": [
+    {
+      "from": "gpg-v3-rsa",
+      "to": "gpg-v4-ed25519",
+      "description": "Migrate from deprecated PGP 2.x v3 RSA key to modern OpenPGP v4 Ed25519 key — requires generating new key pair and transitioning signatures/certifications.",
+      "changes": [
+        { "field": "gpgKeyVersion",         "changeType": "set_value", "value": "04", "description": "Set version to 4 (RFC 4880)." },
+        { "field": "gpgPublicKeyAlgorithm", "changeType": "set_value", "value": "16", "description": "Set algorithm to 22 (EdDSA/Ed25519) in new key packet." }
+      ]
+    },
+    {
+      "from": "gpg-v4-rfc4880",
+      "to": "gpg-v5-rfc9580",
+      "description": "Upgrade key from OpenPGP v4 (RFC 4880, SHA-1 fingerprint) to v5 (RFC 9580, SHA-256 fingerprint) for post-quantum readiness and stronger key identification.",
+      "changes": [
+        { "field": "gpgKeyVersion", "changeType": "set_value", "value": "05", "description": "Set version to 5 (RFC 9580) — fingerprint computation changes from SHA-1 to SHA-256." }
+      ]
+    }
+  ]
+}

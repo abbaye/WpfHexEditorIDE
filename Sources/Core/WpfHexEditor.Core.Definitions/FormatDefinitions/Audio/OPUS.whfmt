@@ -519,5 +519,59 @@
     "HasHeader": true,
     "Lossless": false,
     "FrameSize": "2.5ms to 60ms"
-  }
+  },
+  "diff": {
+    "keyFields": ["oggsCapturePattern", "opusHeadMagic", "opusVersion", "channelCount", "inputSampleRate", "channelMappingFamily"],
+    "ignoreFields": ["pageChecksum", "granulePosition", "streamSerialNumber", "pageSequenceNumber", "outputGain"],
+    "groupBy": "channelMappingFamily",
+    "note": "Codec identity and channel layout are structurally significant; CRC, granule position, and serial number change per page/file so exclude from structural diffs"
+  },
+  "repair": [
+    {
+      "name": "RecomputePageChecksum",
+      "trigger": "pageChecksum invalid",
+      "action": "recompute_checksum",
+      "target": "pageChecksum",
+      "algorithm": "crc32",
+      "description": "Recompute Ogg page CRC-32 (polynomial 0x04C11DB7, non-reflected) with checksum field zeroed during computation"
+    },
+    {
+      "name": "FixOpusVersion",
+      "trigger": "opusVersion != 1",
+      "action": "set_value",
+      "target": "opusVersion",
+      "value": 1,
+      "description": "Opus ID Header version must be 1 per RFC 6716; reset to 1 to restore RFC compliance"
+    },
+    {
+      "name": "FixPreSkip",
+      "trigger": "preSkip > 3840",
+      "action": "set_value",
+      "target": "preSkip",
+      "value": 312,
+      "description": "Pre-skip above 3840 samples is non-standard; reset to the typical encoder delay of 312 samples (6.5ms at 48kHz)"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "opusHeadMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'OpusHead' magic to test ID header rejection and fallback behavior" },
+      { "field": "channelCount", "mutation": "boundary_values", "weight": 2, "description": "Test 0, 1, 2, 8, 255 channel counts against mapping family constraints" },
+      { "field": "channelMappingFamily", "mutation": "enum_sweep", "weight": 2, "description": "Sweep mapping family values including reserved 2-254 to test unknown family handling" },
+      { "field": "inputSampleRate", "mutation": "overflow", "weight": 2, "description": "Max uint32 input sample rate stresses any rate-conversion path" },
+      { "field": "preSkip", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Corrupt pre-skip value to cause audio start position misalignment" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "Opus-mono",
+      "to": "Opus-stereo",
+      "description": "Upgrade mono Opus stream to stereo by updating channel count and channel mapping family fields in the ID header",
+      "changes": [
+        { "field": "channelCount", "changeType": "set_value", "value": 2, "description": "Set channel count to 2 for stereo output" },
+        { "field": "channelMappingFamily", "changeType": "set_value", "value": 0, "description": "Family 0 is valid for stereo (1 or 2 channels)" }
+      ]
+    }
+  ]
 }

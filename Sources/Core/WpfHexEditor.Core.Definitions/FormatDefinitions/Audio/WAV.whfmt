@@ -357,5 +357,57 @@
     "SampleRate": 44100,
     "DefaultBitDepth": 16,
     "UncompressedPCM": true
-  }
+  },
+  "diff": {
+    "keyFields": ["riffSignature", "waveType", "audioFormat", "numChannels", "sampleRate", "bitsPerSample"],
+    "ignoreFields": ["fileSize", "byteRate", "wavDuration", "totalSamples"],
+    "groupBy": "audioFormat",
+    "note": "Format, channel, and sample-rate fields define audio identity; fileSize and derived fields vary with content so exclude from structural diffs"
+  },
+  "repair": [
+    {
+      "name": "RecomputeByteRate",
+      "trigger": "byteRate != sampleRate * numChannels * bitsPerSample / 8",
+      "action": "recompute_checksum",
+      "target": "byteRate",
+      "algorithm": "sampleRate * numChannels * bitsPerSample / 8",
+      "description": "ByteRate must equal SampleRate × NumChannels × BitsPerSample / 8; recompute from other header fields"
+    },
+    {
+      "name": "RecomputeBlockAlign",
+      "trigger": "blockAlign != numChannels * bitsPerSample / 8",
+      "action": "set_value",
+      "target": "blockAlign",
+      "description": "BlockAlign must equal NumChannels × BitsPerSample / 8; fix to maintain alignment consistency"
+    },
+    {
+      "name": "FixRiffChunkSize",
+      "trigger": "fileSize != actualFileSize - 8",
+      "action": "set_value",
+      "target": "fileSize",
+      "description": "RIFF chunk size must be total file size minus 8 bytes (RIFF ID + size field); recalculate from actual file length"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "riffSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'RIFF' or 'WAVE' marker to test container rejection" },
+      { "field": "audioFormat", "mutation": "enum_sweep", "weight": 2, "description": "Sweep codec IDs including undefined values to stress codec dispatch" },
+      { "field": "numChannels", "mutation": "boundary_values", "weight": 2, "description": "Test 0, 1, 2, 8, 65535 channels to probe buffer allocation" },
+      { "field": "sampleRate", "mutation": "overflow", "weight": 2, "description": "Extreme sample rate values stress duration and memory calculations" },
+      { "field": "bitsPerSample", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Random bit flips in bit-depth field can produce invalid sample sizes" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "WAV-PCM",
+      "to": "WAV-EXTENSIBLE",
+      "description": "Upgrade standard PCM WAV (fmtChunkSize=16) to WAVEFORMATEXTENSIBLE (fmtChunkSize=40) for multichannel or high-bit-depth audio",
+      "changes": [
+        { "field": "fmtChunkSize", "changeType": "set_value", "value": 40, "description": "Extensible format requires 40-byte fmt chunk" },
+        { "field": "audioFormat", "changeType": "set_value", "value": 65534, "description": "Set audioFormat to 0xFFFE (WAVE_FORMAT_EXTENSIBLE)" }
+      ]
+    }
+  ]
 }

@@ -322,6 +322,68 @@
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
   },
+  "diff": {
+    "keyFields": ["zipSignature", "compressionMethod", "crc32"],
+    "ignoreFields": ["lastModTime", "lastModDate", "compressionRatio"],
+    "groupBy": "ZIP Local File Header",
+    "note": "Signature and CRC identify content integrity; compression method affects reproducibility. Timestamps are noise for structural diffs."
+  },
+  "repair": [
+    {
+      "name": "FixZipSignature",
+      "trigger": "zipSignature != 0x04034B50",
+      "action": "set_value",
+      "target": "zipSignature",
+      "value": "504B0304",
+      "description": "Restore the ZIP Local File Header magic bytes to 50 4B 03 04"
+    },
+    {
+      "name": "FixCompressionMethod",
+      "trigger": "compressionMethod > 14",
+      "action": "set_value",
+      "target": "compressionMethod",
+      "value": "0800",
+      "description": "Reset compression method to Deflate (8) when an unknown method is stored"
+    },
+    {
+      "name": "ClearEncryptionFlag",
+      "trigger": "(generalPurposeFlags & 1) == 1",
+      "action": "set_value",
+      "target": "generalPurposeFlags",
+      "value": "0000",
+      "description": "Clear the encryption bit so standard DOCX parsers can read the entry"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "zipSignature",        "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the PK magic to test parser rejection logic" },
+      { "field": "compressionMethod",   "mutation": "boundary_values",   "weight": 2, "description": "Test edge values (0, 14, 0xFFFF) for compression method handling" },
+      { "field": "compressedSize",      "mutation": "overflow",          "weight": 2, "description": "Overflow compressed size to stress ZIP64 path and allocation guards" },
+      { "field": "generalPurposeFlags", "mutation": "random_bytes",      "weight": 1, "description": "Randomize flag bits to surface unexpected parser code paths" },
+      { "field": "crc32",               "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit CRC corruption to verify integrity validation" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "OOXML-2006",
+      "to": "OOXML-2016",
+      "description": "Office Open XML transitional to strict conformance; versionNeeded may increase from 20 to 45 for ZIP64 support",
+      "changes": [
+        { "field": "versionNeeded", "changeType": "set_value", "value": "2D00", "description": "Raise version needed to 4.5 (0x002D) for ZIP64-capable containers" }
+      ]
+    },
+    {
+      "from": "ZIP-standard",
+      "to": "ZIP64",
+      "description": "Upgrade large DOCX packages exceeding 4 GB to ZIP64 format",
+      "changes": [
+        { "field": "compressedSize",   "changeType": "set_value", "value": "FFFFFFFF", "description": "Set compressed size sentinel for ZIP64 extension" },
+        { "field": "uncompressedSize", "changeType": "set_value", "value": "FFFFFFFF", "description": "Set uncompressed size sentinel for ZIP64 extension" }
+      ]
+    }
+  ],
   "documentSchema": {
     "engine": "ooxml",
     "contentEntry": "word/document.xml",

@@ -239,5 +239,66 @@
     "CompletenessScore": 85,
     "LastUpdated": "2026-04-16",
     "ReviewedBy": "WPFHexaEditor Team"
-  }
+  },
+  "diff": {
+    "keyFields": ["wasmCompMagic", "wasmCompLayer", "wasmCompVersion"],
+    "ignoreFields": ["wasmCompFirstSectionId"],
+    "groupBy": "wasmCompLayer",
+    "note": "Magic and layer byte together uniquely identify a Component Model file vs a core WASM module; version tracks spec evolution. First-section ID is positional and varies per component structure."
+  },
+  "repair": [
+    {
+      "name": "FixWASMMagic",
+      "trigger": "wasmCompMagic != '0061736D'",
+      "action": "set_value",
+      "target": "wasmCompMagic",
+      "value": "0061736D",
+      "description": "Restore the 4-byte WASM magic ('\\0asm') when it has been corrupted or overwritten"
+    },
+    {
+      "name": "FixComponentLayer",
+      "trigger": "wasmCompLayer != 13",
+      "action": "set_value",
+      "target": "wasmCompLayer",
+      "value": "0D00",
+      "description": "Set the layer field to 0x000D (component model) when it has been mistakenly set to the core-module value 0x0001 or another invalid value"
+    },
+    {
+      "name": "FixComponentVersion",
+      "trigger": "wasmCompVersion != 1",
+      "action": "set_value",
+      "target": "wasmCompVersion",
+      "value": "0100",
+      "description": "Reset component model version to 1 (the only currently defined value) when it has been corrupted"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "wasmCompMagic",   "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the WASM magic bytes to test component parser rejection and fallback to raw hex view" },
+      { "field": "wasmCompLayer",   "mutation": "boundary_values",   "weight": 2, "description": "Test layer byte boundary values (0, 0xFF) to probe component vs core module dispatch logic" },
+      { "field": "wasmCompVersion", "mutation": "enum_sweep",        "weight": 2, "description": "Sweep version values beyond 1 to test forward-compatibility handling in runtimes" },
+      { "field": "wasmCompLayer",   "mutation": "overflow",          "weight": 2, "description": "Overflow the 2-byte layer field to expose integer truncation bugs in parsers" },
+      { "field": "wasmCompMagic",   "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit flip in magic to find off-by-one detection boundaries" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "core-module (layer 0x01)",
+      "to": "component-model (layer 0x0D)",
+      "description": "Upgrade a core WASM module header to the Component Model layer by changing bytes 4-5 from 0x01 0x00 to 0x0D 0x00",
+      "changes": [
+        { "field": "wasmCompLayer", "changeType": "set_value", "value": "0D00", "description": "Change layer identifier from core module (0x0001) to component model (0x000D)" }
+      ]
+    },
+    {
+      "from": "version-0",
+      "to": "version-1",
+      "description": "Migrate pre-release component files that carry a zero version field to the released v1 spec",
+      "changes": [
+        { "field": "wasmCompVersion", "changeType": "set_value", "value": "0100", "description": "Set component model version from 0 to 1 (LE encoded)" }
+      ]
+    }
+  ]
 }

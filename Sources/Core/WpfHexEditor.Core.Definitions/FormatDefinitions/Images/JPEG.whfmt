@@ -358,5 +358,74 @@
     "SupportsAnimation": false,
     "MarkerBasedFormat": true,
     "JFIFVersion": "1.02"
-  }
+  },
+  "diff": {
+    "keyFields": ["jfifMajorVersion", "jfifMinorVersion", "densityUnits", "xDensity", "yDensity"],
+    "ignoreFields": ["thumbnailWidth", "thumbnailHeight", "thumbnailPixels"],
+    "groupBy": "jfifIdentifier",
+    "note": "Version and density fields identify meaningful JFIF conformance differences; thumbnail data is noisy and rarely affects rendering correctness"
+  },
+  "repair": [
+    {
+      "name": "FixSOIMarker",
+      "trigger": "jpegSoiMarker != 0xFFD8",
+      "action": "set_value",
+      "target": "offset:0",
+      "value": "FFD8",
+      "description": "Restore the mandatory JPEG Start Of Image marker so decoders can recognize the file"
+    },
+    {
+      "name": "FixAPP0Marker",
+      "trigger": "app0Marker != 0xFFE0",
+      "action": "set_value",
+      "target": "offset:2",
+      "value": "FFE0",
+      "description": "Restore the APP0 marker to make the file JFIF-compliant"
+    },
+    {
+      "name": "FixJFIFIdentifier",
+      "trigger": "jfifIdentifier != 'JFIF'",
+      "action": "set_value",
+      "target": "offset:6",
+      "value": "4A46494600",
+      "description": "Write the 'JFIF\\0' null-terminated identifier string required by the JFIF specification"
+    },
+    {
+      "name": "FixDensityUnits",
+      "trigger": "densityUnits > 2",
+      "action": "set_value",
+      "target": "densityUnits",
+      "value": "00",
+      "description": "Reset invalid density units to 0 (aspect-ratio-only mode) so decoders do not misinterpret DPI values"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "jpegSoiMarker",     "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt SOI marker to test decoder rejection of invalid JPEG magic" },
+      { "field": "app0Length",        "mutation": "boundary_values",   "weight": 2, "description": "Boundary values (0, 1, 0xFFFF) stress segment-length parsers" },
+      { "field": "densityUnits",      "mutation": "enum_sweep",        "weight": 2, "description": "Sweep all density unit codes including undefined values above 2" },
+      { "field": "xDensity",          "mutation": "overflow",          "weight": 2, "description": "Overflow 16-bit density field to test DPI calculation code paths" },
+      { "field": "jfifMinorVersion",  "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Random bit flip in version byte to detect version-gating bugs" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "JFIF 1.00",
+      "to": "JFIF 1.01",
+      "description": "Version bump clarifying pixel aspect ratio semantics when densityUnits=0",
+      "changes": [
+        { "field": "jfifMinorVersion", "changeType": "set_value", "value": "01", "description": "Increment minor version to 1 to indicate aspect-ratio clarification revision" }
+      ]
+    },
+    {
+      "from": "JFIF 1.01",
+      "to": "JFIF 1.02",
+      "description": "Version bump adding support for JFIF thumbnail formats (JPEG and palette-based thumbnails in addition to uncompressed RGB)",
+      "changes": [
+        { "field": "jfifMinorVersion", "changeType": "set_value", "value": "02", "description": "Increment minor version to 2 to signal thumbnail-extension support" }
+      ]
+    }
+  ]
 }

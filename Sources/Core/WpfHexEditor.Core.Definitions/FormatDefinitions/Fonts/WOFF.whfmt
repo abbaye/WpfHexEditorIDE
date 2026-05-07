@@ -268,5 +268,50 @@
     "Standard": "WOFF File Format 1.0 — W3C Recommendation (2012)",
     "Endianness": "big-endian for header and Table Directory fields",
     "Compression": "zlib deflate per font table (compLength field in Table Directory)"
-  }
+  },
+  "diff": {
+    "keyFields": ["woffSignature", "woffFlavor", "woffNumTables"],
+    "ignoreFields": ["woffReserved"],
+    "groupBy": "woffFlavor",
+    "note": "Flavor identifies underlying font type (TrueType vs CFF); table count reflects font complexity; reserved field is always zero and carries no diff information"
+  },
+  "repair": [
+    {
+      "name": "FixWoffSignature",
+      "trigger": "woffSignature != 'wOFF'",
+      "action": "set_value",
+      "target": "woffSignature",
+      "value": "774F4646",
+      "description": "Restore the 'wOFF' magic bytes at offset 0 to identify the file as WOFF 1.0"
+    },
+    {
+      "name": "FixReservedField",
+      "trigger": "woffReserved != 0",
+      "action": "set_value",
+      "target": "woffReserved",
+      "value": "0000",
+      "description": "Zero the reserved field at offset 14 to comply with the WOFF 1.0 specification requirement"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "woffSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'wOFF' magic to test browser font loader fallback on unrecognized WOFF headers" },
+      { "field": "woffLength", "mutation": "boundary_values", "weight": 2, "description": "Set woffLength to 0 or 0xFFFFFFFF to test file-size validation against actual on-disk size" },
+      { "field": "woffNumTables", "mutation": "overflow", "weight": 2, "description": "Overflow the table count to trigger excessive Table Directory parsing iterations" },
+      { "field": "woffFlavor", "mutation": "random_bytes", "weight": 1, "description": "Set an unknown flavor value to test handling of non-TrueType non-CFF flavor identifiers" },
+      { "field": "totalSfntSize", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit-flip the SFNT size to produce a mismatched decompression buffer allocation hint" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "woff_1_0",
+      "to": "woff2",
+      "description": "Upgrade WOFF 1.0 to WOFF2 by changing magic signature and switching to Brotli compression",
+      "changes": [
+        { "field": "woffSignature", "changeType": "set_value", "value": "774F4632", "description": "Replace 'wOFF' (0x774F4646) with 'wOF2' (0x774F4632) magic to declare WOFF2 format" }
+      ]
+    }
+  ]
 }

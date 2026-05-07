@@ -358,5 +358,66 @@
     "SupportsICCProfile": true,
     "MaxDimension": "16383 pixels (VP8), 16777216 pixels (VP8X canvas)",
     "LossyAndLossless": true
-  }
+  },
+  "diff": {
+    "keyFields": ["chunkFourCC", "vp8Width", "vp8Height", "vp8FrameTag", "riffFileSize"],
+    "ignoreFields": ["formattedFileSize", "totalPixels"],
+    "groupBy": "chunkFourCC",
+    "note": "Chunk FourCC determines the encoding path; dimensions and frame tag carry encoding metadata; derived size fields are noisy for diff"
+  },
+  "repair": [
+    {
+      "name": "FixRIFFSignature",
+      "trigger": "riffSignature != 'RIFF'",
+      "action": "set_value",
+      "target": "offset:0",
+      "value": "52494646",
+      "description": "Restore the 'RIFF' four-byte signature at offset 0 so RIFF-aware parsers identify the container"
+    },
+    {
+      "name": "FixWEBPFormType",
+      "trigger": "webpFormType != 'WEBP'",
+      "action": "set_value",
+      "target": "offset:8",
+      "value": "57454250",
+      "description": "Write the 'WEBP' form-type identifier at offset 8 to distinguish this RIFF file from AVI, WAV, etc."
+    },
+    {
+      "name": "FixInvalidChunkFourCC",
+      "trigger": "chunkFourCC != 'VP8 ' && chunkFourCC != 'VP8L' && chunkFourCC != 'VP8X'",
+      "action": "set_value",
+      "target": "chunkFourCC",
+      "value": "56503820",
+      "description": "Set chunk FourCC to 'VP8 ' (lossy) when the stored value is not a recognised WebP encoding type"
+    },
+    {
+      "name": "FixRIFFFileSizeMismatch",
+      "trigger": "riffFileSize == 0",
+      "action": "set_value",
+      "target": "riffFileSize",
+      "value": "00000000",
+      "description": "Flag zero RIFF file size — parsers relying on this field for bounds checks will be unable to traverse chunks safely"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "riffSignature",  "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'RIFF' magic to test container-level rejection by WebP decoders" },
+      { "field": "chunkSize",      "mutation": "boundary_values",   "weight": 2, "description": "Zero and 0xFFFFFFFF chunk sizes to stress chunk-traversal bounds logic" },
+      { "field": "chunkFourCC",    "mutation": "enum_sweep",        "weight": 2, "description": "Sweep unknown FourCC codes to probe unknown-chunk handling in VP8/VP8L/VP8X dispatch" },
+      { "field": "riffFileSize",   "mutation": "overflow",          "weight": 2, "description": "Overflow 32-bit RIFF size to test allocation and end-of-chunk detection" },
+      { "field": "vp8FrameTag",    "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Random bit flip in VP8 frame tag to exercise inter/intra frame and partition-size edge cases" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "VP8 Lossy (chunkFourCC='VP8 ')",
+      "to": "VP8X Extended (chunkFourCC='VP8X')",
+      "description": "Upgrade a simple lossy WebP to extended format to accommodate alpha, ICC profiles, EXIF, or XMP metadata",
+      "changes": [
+        { "field": "chunkFourCC", "changeType": "set_value", "value": "56503858", "description": "Replace 'VP8 ' chunk type with 'VP8X' to enable the extended feature flag byte and canvas-size fields" }
+      ]
+    }
+  ]
 }

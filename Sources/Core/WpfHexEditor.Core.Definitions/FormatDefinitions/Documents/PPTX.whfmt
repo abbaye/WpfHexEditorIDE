@@ -321,5 +321,58 @@
       "Check for embedded macros, scripts, or active content",
       "Inspect document metadata: author, timestamps, revisions"
     ]
-  }
+  },
+  "diff": {
+    "keyFields": ["zipSignature", "compressionMethod", "crc32"],
+    "ignoreFields": ["lastModTime", "lastModDate", "compressionRatio"],
+    "groupBy": "ZIP Local File Header",
+    "note": "Signature and CRC expose structural or content changes in presentation slides; timestamps are unstable across saves."
+  },
+  "repair": [
+    {
+      "name": "FixZipSignature",
+      "trigger": "zipSignature != 0x04034B50",
+      "action": "set_value",
+      "target": "zipSignature",
+      "value": "504B0304",
+      "description": "Restore the ZIP Local File Header magic bytes to 50 4B 03 04"
+    },
+    {
+      "name": "FixCompressionMethod",
+      "trigger": "compressionMethod > 14",
+      "action": "set_value",
+      "target": "compressionMethod",
+      "value": "0800",
+      "description": "Reset compression method to Deflate (8) when an unknown value is encountered"
+    },
+    {
+      "name": "ClearEncryptionFlag",
+      "trigger": "(generalPurposeFlags & 1) == 1",
+      "action": "set_value",
+      "target": "generalPurposeFlags",
+      "value": "0000",
+      "description": "Clear encryption bit so PowerPoint can open the entry without prompting"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "zipSignature",        "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt PK magic to test PPTX container rejection in presentation parsers" },
+      { "field": "compressionMethod",   "mutation": "boundary_values",   "weight": 2, "description": "Test edge compression values for slide decompression robustness" },
+      { "field": "compressedSize",      "mutation": "overflow",          "weight": 2, "description": "Overflow compressed size to trigger ZIP64 or allocation guard paths" },
+      { "field": "generalPurposeFlags", "mutation": "random_bytes",      "weight": 1, "description": "Random flag bits to expose unexpected code paths in PPTX loaders" },
+      { "field": "crc32",               "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit CRC corruption to verify checksum validation in slide readers" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "OOXML-2006",
+      "to": "OOXML-2016",
+      "description": "Transitional PPTX to strict conformance; versionNeeded may increase for ZIP64 large presentations",
+      "changes": [
+        { "field": "versionNeeded", "changeType": "set_value", "value": "2D00", "description": "Raise version needed to 4.5 (ZIP64) for large presentation packages" }
+      ]
+    }
+  ]
 }

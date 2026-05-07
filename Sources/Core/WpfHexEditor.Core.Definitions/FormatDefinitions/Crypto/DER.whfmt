@@ -1,0 +1,311 @@
+{
+  "diffMode": "binary",
+  "formatName": "DER Certificate / ASN.1",
+  "formatId": "DER",
+  "version": "1.0",
+  "extensions": [".der", ".cer", ".crt", ".key"],
+  "description": "Distinguished Encoding Rules (DER) is the binary serialization of ASN.1 data structures, defined in ITU-T X.690. DER is a canonical subset of BER (Basic Encoding Rules) that guarantees a unique encoding for every ASN.1 value, enabling reliable digital signatures. DER is used for X.509 certificates (RFC 5280), PKCS#8 private keys, PKCS#10 certificate signing requests, PKCS#12 (P12/PFX), PKCS#7 signed data (CMS), and CRL structures. Every DER file begins with an ASN.1 SEQUENCE tag (0x30) followed by a length in DER length encoding: short form (0x00-0x7F for 0-127 bytes), or long form (0x81 nn for up to 255 bytes, 0x82 nn nn for up to 65535 bytes). For TLS certificates the typical first bytes are 30 82 (SEQUENCE with 2-byte length). DER files have no unique magic number — detection relies on 0x30 at offset 0 and plausible length values.",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "ITU-T X.690 — ASN.1 BER/DER encoding rules",
+      "RFC 5280 — Internet X.509 PKI Certificate and CRL Profile",
+      "RFC 5958 — Asymmetric Key Packages (PKCS#8)"
+    ],
+    "WebLinks": [
+      "https://www.itu.int/rec/T-REC-X.690/en",
+      "https://datatracker.ietf.org/doc/html/rfc5280",
+      "https://en.wikipedia.org/wiki/X.690"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "3082", "offset": 0, "label": "0x30 0x82 — ASN.1 SEQUENCE with 2-byte length (typical X.509 certificate)", "weight": 0.8 },
+      { "value": "3081", "offset": 0, "label": "0x30 0x81 — ASN.1 SEQUENCE with 1-byte length (small DER objects)", "weight": 0.7 },
+      { "value": "30", "offset": 0, "label": "0x30 — ASN.1 SEQUENCE tag (may be DER)", "weight": 0.4 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "required": true,
+    "Strength": "Moderate",
+    "validation": {
+      "minFileSize": 4,
+      "maxSignatureOffset": 0,
+      "note": "DER files always begin with 0x30 (SEQUENCE). The 0x82 or 0x81 following it indicates the DER long-form length encoding. Short-form length (single byte ≤ 0x7F) is also valid for small objects."
+    }
+  },
+  "variables": {
+    "derSequenceTag": 0,
+    "derLengthIndicator": 0,
+    "derTotalLength": 0,
+    "derInnerTag": 0,
+    "derVersionTag": 0,
+    "derVersion": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ASN.1 SEQUENCE Tag",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "0x30 — ASN.1 universal SEQUENCE tag byte. In DER encoding, 0x30 = constructed (bit 6 set) + universal class (bits 7-6 = 00) + SEQUENCE type (bits 4-0 = 10000). Every X.509 certificate, PKCS#8 key, and PKCS#10 CSR starts with this byte. A different tag at offset 0 indicates non-DER binary or a different ASN.1 type.",
+      "storeAs": "derSequenceTag",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Length Indicator",
+      "offset": 1,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "DER length encoding indicator at offset 1. Values 0x00-0x7F = short form (length directly). 0x81 = long form 1-byte length follows. 0x82 = long form 2-byte length follows. 0x83 = 3-byte, 0x84 = 4-byte. For X.509 certificates, 0x82 is typical (certificates 128-65535 bytes). 0x80 (indefinite length) is forbidden in DER.",
+      "storeAs": "derLengthIndicator",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Total DER Length",
+      "offset": 2,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "2-byte big-endian total length of the SEQUENCE body when length indicator is 0x82 (most common for X.509 certificates). The total file size = 4 (tag + 0x82 + 2-byte length) + this value. For 0x81 indicator, this field is 1 byte at offset 2. For short-form, no length field follows the indicator.",
+      "storeAs": "derTotalLength",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Inner Tag",
+      "offset": 4,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "First tag byte inside the outer SEQUENCE. For X.509 certificates: 0x30 (SEQUENCE = TBSCertificate). For PKCS#8 PrivateKeyInfo: 0x02 (INTEGER = version). For PKCS#10 CSR: 0x30 (SEQUENCE = CertificationRequestInfo). This inner tag helps identify the DER content type.",
+      "storeAs": "derInnerTag",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Version Tag",
+      "offset": 5,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "Tag for the version field within the first inner SEQUENCE. For X.509 v3 certificates: 0xA0 (context-specific [0] EXPLICIT for the optional version field). For X.509 v1 certificates: version field is absent. For PKCS#8: 0x02 (INTEGER tag for version). Helps distinguish X.509 v1, v2, v3 certificates.",
+      "storeAs": "derVersionTag",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Version Value",
+      "offset": 8,
+      "length": 1,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "description": "Version value byte for X.509 certificate: 0x00=v1, 0x01=v2, 0x02=v3. X.509 v3 (0x02) is the current standard supporting SAN extensions. v1 (0x00) certificates lack Subject Alternative Name extensions. PKCS#8 version is always 0x00 (v1) for unencrypted keys.",
+      "storeAs": "derVersion",
+      "valueType": "uint8",
+      "valueMap": {
+        "0": "v1 — X.509 version 1 (no extensions)",
+        "1": "v2 — X.509 version 2 (issuer/subject unique ID)",
+        "2": "v3 — X.509 version 3 (SAN extensions, current standard)"
+      }
+    },
+    {
+      "type": "metadata",
+      "name": "SEQUENCE Tag",
+      "variable": "derSequenceTag",
+      "description": "0x30 = ASN.1 SEQUENCE — outer DER container"
+    },
+    {
+      "type": "metadata",
+      "name": "DER Length",
+      "variable": "derTotalLength",
+      "description": "Total length of SEQUENCE body in bytes"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "SEQUENCE tag valid",
+      "expression": "derSequenceTag == 48",
+      "severity": "error",
+      "message": "DER file must begin with 0x30 (ASN.1 SEQUENCE tag). Any other value indicates non-DER binary."
+    },
+    {
+      "name": "DER length indicator valid",
+      "expression": "derLengthIndicator != 128",
+      "severity": "error",
+      "message": "Length indicator 0x80 (indefinite form) is forbidden in DER encoding — only BER allows indefinite lengths."
+    },
+    {
+      "name": "Version is X.509 v3",
+      "expression": "derVersion == 2",
+      "severity": "info",
+      "message": "Certificate version is not v3 (0x02). X.509 v1/v2 certificates lack SAN extension support."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "SEQUENCE Tag", "offset": 0, "color": "#FF6B6B" },
+      { "name": "DER Body", "offset": 4, "color": "#4ECDC4" },
+      { "name": "TBSCertificate", "offset": 4, "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "DER",
+    "primaryField": "derVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "ASN.1 Header",
+        "icon": "",
+        "fields": ["derSequenceTag", "derLengthIndicator", "derTotalLength"]
+      },
+      {
+        "title": "Certificate Info",
+        "icon": "",
+        "fields": ["derInnerTag", "derVersionTag", "derVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "DER Header (JSON)",
+      "format": "json",
+      "fields": ["derSequenceTag", "derLengthIndicator", "derTotalLength", "derVersion"]
+    },
+    {
+      "name": "DER Summary (Text)",
+      "format": "text",
+      "fields": ["derSequenceTag", "derTotalLength", "derVersion"]
+    }
+  ],
+  "forensic": {
+    "category": "crypto",
+    "riskLevel": "medium",
+    "notes": "DER files are binary representations of cryptographic objects. Private key DER files (.key, .der) contain sensitive key material. Certificate DER files are public. PKCS#12 (.p12/.pfx) bundles both and is highly sensitive.",
+    "suspiciousPatterns": [
+      "DER file with inner PKCS#8 tag structure at offset 4 — may contain unencrypted private key",
+      "X.509 v1 certificate (version 0x00) — lacks SAN, may indicate self-signed or legacy CA cert"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "DER = binary ASN.1 BER canonical form. TLV structure: Tag(1B) + Length(variable) + Value. Length encoding: 0x00-0x7F=direct; 0x81 nn=1-byte follows; 0x82 nn nn=2-byte BE follows. X.509 cert outer structure: SEQUENCE { TBSCertificate SEQUENCE, AlgorithmIdentifier SEQUENCE, Signature BIT STRING }. TBSCertificate: version[0] EXPLICIT INTEGER, serialNumber INTEGER, signature AlgorithmIdentifier, issuer Name, validity Validity, subject Name, subjectPublicKeyInfo SubjectPublicKeyInfo, extensions[3] EXPLICIT Extensions. Use `openssl x509 -in cert.der -inform DER -text` to decode.",
+    "suggestedInspections": [
+      "Byte 0: must be 0x30 (SEQUENCE) — any other byte is not a standard DER certificate or key",
+      "Bytes 1-3: determine DER length encoding (0x82 nn nn for typical certificates)",
+      "Offset 8 (for X.509 v3): version byte should be 0x02 for v3 with SAN support",
+      "Scan for 0x55 0x04 (OID prefix for X.500 attribute types) to find Subject/Issuer Distinguished Names",
+      "Check for 0x55 0x1D 0x11 (OID 2.5.29.17 = SAN extension) to extract domain names",
+      "Use ASN.1 decoder (openssl asn1parse -inform DER -in cert.der) for full structural analysis"
+    ]
+  },
+  "software": [
+    "OpenSSL (openssl x509 -inform DER, openssl asn1parse)",
+    "Java keytool",
+    "Bouncy Castle ASN.1 library",
+    "dumpasn1 — command-line ASN.1 decoder",
+    "ASN.1 JavaScript decoder (lapo.it/asn1js)"
+  ],
+  "formatRelationships": {
+    "category": "Crypto",
+    "extensions": [".der", ".cer", ".crt", ".key"],
+    "relatedFormats": ["PEM", "P12", "PKCS7"],
+    "note": "DER is the binary encoding; PEM is the Base64 text encoding of the same DER data. P12/PFX uses DER internally for all contained objects. PKCS#7/CMS signed data uses DER-encoded ContentInfo."
+  },
+  "MimeTypes": [
+    "application/x-x509-ca-cert",
+    "application/pkix-cert",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "TLS/SSL certificate deployment in binary format",
+    "X.509 certificate exchange between systems",
+    "Private key storage (PKCS#8 DER format)",
+    "Certificate Signing Request (CSR) submission to CAs",
+    "Code signing certificate distribution"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary ASN.1 DER (Distinguished Encoding Rules)",
+    "Standard": "ITU-T X.690, RFC 5280 (X.509)",
+    "Endianness": "Big-endian for multi-byte lengths",
+    "FirstByte": "Always 0x30 (ASN.1 SEQUENCE) for standard DER certificates and keys",
+    "LengthEncoding": "Short form (≤127 bytes) or long form (0x81/0x82 + 1/2-byte BE length)"
+  },
+  "diff": {
+    "keyFields": ["derSequenceTag", "derTotalLength", "derVersion", "derLengthIndicator"],
+    "ignoreFields": [],
+    "groupBy": "derVersion",
+    "note": "derSequenceTag is constant (0x30) for all valid DER; derTotalLength is the size differentiator; derVersion distinguishes X.509 v1/v2/v3 certificate families."
+  },
+  "repair": [
+    {
+      "name": "FixSequenceTag",
+      "trigger": "derSequenceTag != 48",
+      "action": "set_value",
+      "target": "derSequenceTag",
+      "value": "30",
+      "description": "Restores the mandatory 0x30 ASN.1 SEQUENCE tag at offset 0 when the DER outer wrapper is corrupted."
+    },
+    {
+      "name": "FixIndefiniteLength",
+      "trigger": "derLengthIndicator == 128",
+      "action": "set_value",
+      "target": "derLengthIndicator",
+      "value": "82",
+      "description": "Replaces the DER-illegal indefinite length indicator 0x80 with 0x82 (2-byte long-form length) — indefinite form is valid in BER but forbidden in DER."
+    },
+    {
+      "name": "FixVersionV3",
+      "trigger": "derVersionTag == 160 && derVersion != 2",
+      "action": "set_value",
+      "target": "derVersion",
+      "value": "02",
+      "description": "Sets the X.509 certificate version to v3 (0x02) enabling Subject Alternative Name and other standard extensions."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "derSequenceTag",     "mutation": "corrupt_signature", "weight": 3, "description": "Replacing 0x30 with an invalid tag byte tests ASN.1 tag-validation in TLS libraries." },
+      { "field": "derTotalLength",     "mutation": "boundary_values",   "weight": 2, "description": "Extreme length values (0, 0xFFFF) trigger buffer over/under-read in DER parsers." },
+      { "field": "derLengthIndicator", "mutation": "overflow",          "weight": 2, "description": "Invalid length indicator bytes (0x80 indefinite, 0x85+ multi-byte) test length-parsing edge cases." },
+      { "field": "derVersion",         "mutation": "enum_sweep",        "weight": 2, "description": "Non-standard version values (3-255) test version-check branches in X.509 validators." },
+      { "field": "derInnerTag",        "mutation": "bit_flip",          "rate": 0.001, "weight": 1, "description": "Bit flips in the inner tag byte produce unexpected ASN.1 types that may crash lenient parsers." }
+    ]
+  },
+  "migration": [
+    {
+      "from": "der-x509v1",
+      "to": "der-x509v3",
+      "description": "Upgrade X.509 certificate from version 1 to version 3 to enable SAN extensions and modern key usage constraints — requires re-issuing the certificate with a v3-capable CA.",
+      "changes": [
+        { "field": "derVersion", "changeType": "set_value", "value": "02", "description": "Set version byte to 0x02 (v3) inside the [0] EXPLICIT wrapper." }
+      ]
+    },
+    {
+      "from": "der-binary",
+      "to": "pem-text",
+      "description": "Convert DER binary to PEM text by Base64-encoding the DER bytes and wrapping with '-----BEGIN CERTIFICATE-----' / '-----END CERTIFICATE-----' armor.",
+      "changes": [
+        { "field": "derSequenceTag", "changeType": "set_value", "value": "2D2D2D2D2D424547494E2043455254494649434154452D2D2D2D2D", "description": "Replace binary DER with PEM text armor prefix (Base64 encoding applied to the full DER body)." }
+      ]
+    }
+  ]
+}

@@ -192,5 +192,50 @@
       "severity": "warning",
       "message": "VMDK magic field is zero — possible detection failure"
     }
+  ],
+  "diff": {
+    "keyFields": ["vmdkSignature", "version"],
+    "ignoreFields": [],
+    "groupBy": "vmdkSignature",
+    "note": "Signature and version uniquely identify a VMDK extent and its format revision; capacity/sector metadata are derived and secondary for diff comparison"
+  },
+  "repair": [
+    {
+      "name": "FixVmdkSignature",
+      "trigger": "vmdkSignature != 'KDM'",
+      "action": "set_value",
+      "target": "vmdkSignature",
+      "value": "4B444D",
+      "description": "Restore the 3-byte VMDK magic bytes 'KDM' (0x4B 0x44 0x4D) at offset 0 when they are corrupt or zeroed"
+    },
+    {
+      "name": "FixVmdkVersion",
+      "trigger": "version == 0",
+      "action": "set_value",
+      "target": "version",
+      "value": "01000000",
+      "description": "Set VMDK version field to 1 (little-endian uint32) when it is missing or zeroed, restoring minimum valid sparse extent header"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "vmdkSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the KDM magic bytes to test format detection rejection and graceful error handling in VMDK parsers" },
+      { "field": "version",       "mutation": "boundary_values",   "weight": 2, "description": "Test parser behavior at version boundaries (0, 0xFFFF) to expose version validation gaps" },
+      { "field": "version",       "mutation": "overflow",          "weight": 2, "description": "Overflow the version field to trigger integer handling bugs in extent header parsers" },
+      { "field": "vmdkSignature", "mutation": "random_bytes",      "weight": 1, "description": "Replace signature with random bytes to validate that detection correctly rejects non-VMDK files" },
+      { "field": "version",       "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit flips in version field to test parser tolerance of near-valid version values" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "VMDK-v1",
+      "to": "VMDK-v3",
+      "description": "VMware sparse extent version 1 to version 3 (introduced in Workstation 4/ESX 2.x for grainDirectory compression support)",
+      "changes": [
+        { "field": "version", "changeType": "set_value", "value": "03000000", "description": "Update version uint32 LE from 1 to 3 to signal compressed grain directory support" }
+      ]
+    }
   ]
 }
