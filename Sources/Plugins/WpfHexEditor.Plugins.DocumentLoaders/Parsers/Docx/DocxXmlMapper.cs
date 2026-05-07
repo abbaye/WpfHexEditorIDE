@@ -118,7 +118,7 @@ internal sealed class DocxXmlMapper
             para.Attributes["numId"]     = numId;
         }
         if (headingLevel > 0)
-            para.Attributes["level"] = headingLevel;
+            para.Attributes["level"] = headingLevel.ToString();
 
         if (pPr is not null) ExtractParagraphProps(pPr, para);
 
@@ -184,9 +184,12 @@ internal sealed class DocxXmlMapper
         if (rPr is not null) ExtractRunProps(rPr, run);
 
         var sb = new System.Text.StringBuilder();
-        foreach (var t  in rElem.Elements(W + "t"))  sb.Append(t.Value);
-        foreach (var _  in rElem.Elements(W + "br")) sb.Append('\n');
-        foreach (var __ in rElem.Elements(W + "tab"))sb.Append('\t');
+        foreach (var child in rElem.Elements())
+        {
+            if      (child.Name == W + "t")   sb.Append(child.Value);
+            else if (child.Name == W + "tab") sb.Append('\t');
+            else if (child.Name == W + "br")  sb.Append('\n');
+        }
 
         run.Text = sb.ToString();
         mapBuilder.AddZipRelative("word/document.xml", run, off, len);
@@ -315,7 +318,8 @@ internal sealed class DocxXmlMapper
                     Pos = t.Attribute(W + "pos")?.Value,
                     Val = t.Attribute(W + "val")?.Value ?? "left"
                 })
-                .Where(t => t.Pos is not null && int.TryParse(t.Pos, out _))
+                .Where(t => t.Pos is not null && int.TryParse(t.Pos, out _)
+                         && t.Val != "clear" && t.Val != "bar" && t.Val != "num")
                 .Select(t => $"{t.Val}:{DocumentPageSettings.TwipsToPx(int.Parse(t.Pos!)):F1}")
                 .ToList();
             if (tabList.Count > 0) para.Attributes["tabStops"] = string.Join(";", tabList);
