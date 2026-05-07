@@ -268,5 +268,50 @@
     "Standard": "WOFF File Format 2.0 — W3C Recommendation (2018)",
     "Endianness": "mixed: flavor is big-endian; length/numTables/etc are little-endian",
     "Compression": "Single Brotli stream (RFC 7932) for all font table data combined"
-  }
+  },
+  "diff": {
+    "keyFields": ["woff2Magic", "flavor", "numTables", "totalCompressedSize"],
+    "ignoreFields": ["reserved"],
+    "groupBy": "flavor",
+    "note": "Flavor and compressed size are the key structural identifiers; total compressed size changes indicate font data modifications; reserved field is always zero"
+  },
+  "repair": [
+    {
+      "name": "FixWoff2Signature",
+      "trigger": "woff2Magic != 'wOF2'",
+      "action": "set_value",
+      "target": "woff2Magic",
+      "value": "774F4632",
+      "description": "Restore the 'wOF2' magic bytes at offset 0 to correctly identify the file as WOFF2"
+    },
+    {
+      "name": "FixReservedField",
+      "trigger": "reserved != 0",
+      "action": "set_value",
+      "target": "reserved",
+      "value": "0000",
+      "description": "Zero the reserved field at offset 14 to comply with the WOFF2 specification requirement"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "woff2Magic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'wOF2' magic to test browser WOFF2 loader detection fallback on invalid headers" },
+      { "field": "woff2Length", "mutation": "boundary_values", "weight": 2, "description": "Set total length to 0 or max uint32 to test file-size consistency validation" },
+      { "field": "totalCompressedSize", "mutation": "overflow", "weight": 2, "description": "Overflow the Brotli compressed size to probe decompressor buffer allocation limits" },
+      { "field": "flavor", "mutation": "random_bytes", "weight": 1, "description": "Set an unknown flavor value to test handling of non-TrueType non-CFF flavor identifiers" },
+      { "field": "totalSfntSize", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit-flip the uncompressed SFNT size to produce a mismatched decompression buffer target" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "woff2_truetype",
+      "to": "woff2_cff",
+      "description": "Re-flavor WOFF2 container from TrueType outlines to CFF/PostScript outlines",
+      "changes": [
+        { "field": "flavor", "changeType": "set_value", "value": "4F54544F", "description": "Change flavor from TrueType (0x00010000) to CFF 'OTTO' (0x4F54544F) to declare PostScript cubic Bezier outlines" }
+      ]
+    }
+  ]
 }

@@ -1,0 +1,246 @@
+{
+  "diffMode": "text",
+  "formatName": "PEM Certificate / Key",
+  "formatId": "PEM",
+  "version": "1.0",
+  "extensions": [".pem", ".crt", ".cer", ".key", ".pub"],
+  "description": "Privacy Enhanced Mail (PEM) is a Base64-encoded container format for cryptographic objects defined in RFC 7468. PEM files are text files delimited by '-----BEGIN <label>-----' and '-----END <label>-----' markers. Common labels: CERTIFICATE, PRIVATE KEY, PUBLIC KEY, RSA PRIVATE KEY, EC PRIVATE KEY, CERTIFICATE REQUEST, X509 CRL, TRUSTED CERTIFICATE. Each PEM block contains Base64-encoded DER data. PEM files may contain multiple concatenated blocks (e.g., a full certificate chain). RFC 7468 standardized the label names; legacy labels (RSA PRIVATE KEY, CERTIFICATE) are widely used by OpenSSL. PKCS#8 unencrypted private keys use 'PRIVATE KEY'; PKCS#1 RSA keys use 'RSA PRIVATE KEY'.",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "text-editor",
+  "references": {
+    "specifications": [
+      "RFC 7468 — Textual Encodings of PKIX, PKCS, and CMS Structures",
+      "RFC 5280 — Internet X.509 PKI Certificate and CRL Profile",
+      "RFC 8017 — PKCS#1: RSA Cryptography Specifications"
+    ],
+    "WebLinks": [
+      "https://datatracker.ietf.org/doc/html/rfc7468",
+      "https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail",
+      "https://www.openssl.org/docs/man1.1.1/man1/pem.html"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "2D2D2D2D2D424547494E20", "offset": 0, "label": "'-----BEGIN ' — PEM header begin marker", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
+    "required": true,
+    "Strength": "Strong",
+    "validation": {
+      "minFileSize": 27,
+      "maxSignatureOffset": 0,
+      "note": "PEM files always begin with '-----BEGIN '. The 5 dashes are mandatory per RFC 7468."
+    }
+  },
+  "variables": {
+    "pemBeginMarker": "",
+    "pemLabel": "",
+    "pemBase64Body": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PEM Begin Marker",
+      "offset": 0,
+      "length": 11,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "'-----BEGIN ' — the mandatory 11-byte opening of every PEM block. Must be exactly 5 dashes + 'BEGIN' + space. Absent or malformed dash count is the most common PEM corruption.",
+      "storeAs": "pemBeginMarker",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "PEM Label",
+      "offset": 11,
+      "length": 30,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "PEM label identifying the cryptographic object type. Read until '-----' is encountered. Common labels: CERTIFICATE, PRIVATE KEY, PUBLIC KEY, RSA PRIVATE KEY, EC PRIVATE KEY, CERTIFICATE REQUEST, X509 CRL. RFC 7468 defines canonical label names. OpenSSL uses legacy labels for PKCS#1 keys.",
+      "storeAs": "pemLabel",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Base64 Body",
+      "offset": 64,
+      "length": 64,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "First 64 bytes of Base64-encoded DER data. Each PEM line is 64 Base64 characters per RFC 7468. The full Base64 body continues until the '-----END <label>-----' footer. Decode the Base64 to obtain the underlying DER-encoded ASN.1 structure (X.509 certificate, PKCS#8 key, etc.).",
+      "storeAs": "pemBase64Body",
+      "valueType": "ascii"
+    },
+    {
+      "type": "metadata",
+      "name": "PEM Label",
+      "variable": "pemLabel",
+      "description": "PEM label string identifying the enclosed cryptographic object type"
+    },
+    {
+      "type": "metadata",
+      "name": "Base64 Body Preview",
+      "variable": "pemBase64Body",
+      "description": "First line of Base64-encoded DER data"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "PEM begin marker valid",
+      "expression": "pemBeginMarker == '-----BEGIN '",
+      "severity": "error",
+      "message": "File must start with '-----BEGIN ' (5 dashes + BEGIN + space). Malformed dash count or missing space is invalid per RFC 7468."
+    },
+    {
+      "name": "PEM label present",
+      "expression": "pemLabel.length > 0",
+      "severity": "error",
+      "message": "PEM label (CERTIFICATE, PRIVATE KEY, etc.) must follow the begin marker and be non-empty."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "BEGIN Marker", "offset": 0, "color": "#FF6B6B" },
+      { "name": "Base64 Body", "offset": 64, "color": "#4ECDC4" }
+    ]
+  },
+  "inspector": {
+    "badge": "PEM",
+    "primaryField": "pemLabel",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "PEM Block",
+        "icon": "",
+        "fields": ["pemBeginMarker", "pemLabel", "pemBase64Body"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PEM Info (JSON)",
+      "format": "json",
+      "fields": ["pemLabel", "pemBeginMarker"]
+    },
+    {
+      "name": "PEM Summary (Text)",
+      "format": "text",
+      "fields": ["pemLabel", "pemBase64Body"]
+    }
+  ],
+  "forensic": {
+    "category": "crypto",
+    "riskLevel": "high",
+    "notes": "PEM files with 'PRIVATE KEY' or 'RSA PRIVATE KEY' labels contain unencrypted private key material. Encrypted private keys use 'ENCRYPTED PRIVATE KEY' or include 'Proc-Type: 4,ENCRYPTED' headers. Private key exposure allows impersonation, decryption of past sessions, and code-signing forgery.",
+    "suspiciousPatterns": [
+      "Unencrypted private key label (PRIVATE KEY / RSA PRIVATE KEY) without Proc-Type encryption header",
+      "Multiple concatenated private keys in a single PEM file"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "PEM structure: '-----BEGIN <LABEL>-----\\n' + Base64 lines (64 chars each) + '\\n-----END <LABEL>-----\\n'. Multiple PEM blocks may be concatenated. Base64 decodes to DER (BER). For CERTIFICATE: DER is X.509 ASN.1. For PRIVATE KEY: PKCS#8 PrivateKeyInfo. For RSA PRIVATE KEY: PKCS#1 RSAPrivateKey. Use `openssl x509 -in file.pem -text` to decode certificates, `openssl pkey -in file.pem -text` for keys.",
+    "suggestedInspections": [
+      "Check label after '-----BEGIN ' to identify the cryptographic object type",
+      "Presence of 'PRIVATE KEY' or 'RSA PRIVATE KEY' indicates sensitive private key material — check if encrypted",
+      "For CERTIFICATE: decode Base64 and parse ASN.1 for Subject, Issuer, validity dates, SANs, and key usage",
+      "Verify BEGIN/END labels match — mismatched markers indicate file corruption or splicing",
+      "Multiple concatenated PEM blocks indicate a certificate chain — order should be leaf → intermediate → root"
+    ]
+  },
+  "software": [
+    "OpenSSL (openssl x509, openssl pkey, openssl req)",
+    "GnuTLS (certtool)",
+    "NSS (certutil)",
+    "Java keytool",
+    "XCA — X Certificate and Key Management GUI"
+  ],
+  "formatRelationships": {
+    "category": "Crypto",
+    "extensions": [".pem", ".crt", ".cer", ".key", ".pub"],
+    "relatedFormats": ["DER", "P12", "PKCS7"],
+    "note": "PEM is the Base64 text encoding of DER binary. Converting PEM to DER: `openssl x509 -in cert.pem -outform DER -out cert.der`. P12/PFX bundles private key + certificate chain in binary PKCS#12 format."
+  },
+  "MimeTypes": [
+    "application/x-pem-file",
+    "application/x-x509-ca-cert",
+    "text/plain"
+  ],
+  "UseCases": [
+    "TLS/SSL certificate deployment for HTTPS servers",
+    "Private key storage for web servers (Apache, nginx)",
+    "Certificate Authority (CA) root and intermediate certificate distribution",
+    "SSH public key format (authorized_keys uses a different format but .pub uses PEM for some key types)",
+    "Code signing certificates for software distribution"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-05-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Text — Base64-encoded DER wrapped in ASCII armor markers",
+    "Standard": "RFC 7468 (modern), RFC 1421 (original PEM standard)",
+    "LineLength": "64 Base64 characters per line per RFC 7468",
+    "DERContent": "X.509 certificate, PKCS#8 private key, PKCS#10 CSR, CRL, etc.",
+    "MultiBlock": "Multiple PEM blocks may be concatenated for certificate chains"
+  },
+  "diff": {
+    "keyFields": ["pemLabel", "pemBeginMarker"],
+    "ignoreFields": [],
+    "groupBy": "pemLabel",
+    "note": "The PEM label determines the object type and is the primary differentiator. pemBase64Body changes with every distinct key or certificate and is the content fingerprint."
+  },
+  "repair": [
+    {
+      "name": "FixBeginMarker",
+      "trigger": "pemBeginMarker != '-----BEGIN '",
+      "action": "set_value",
+      "target": "pemBeginMarker",
+      "value": "2D2D2D2D2D424547494E20",
+      "description": "Restores the mandatory '-----BEGIN ' prefix (5 dashes + BEGIN + space) when the PEM begin marker is malformed."
+    },
+    {
+      "name": "FixDashCount",
+      "trigger": "first 5 bytes are not all 0x2D",
+      "action": "set_value",
+      "target": "pemBeginMarker",
+      "value": "2D2D2D2D2D424547494E20",
+      "description": "Corrects incorrect dash count — RFC 7468 requires exactly 5 dashes on both begin and end lines."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "pemBeginMarker", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupting the begin marker prevents PEM parsing and tests parser error handling." },
+      { "field": "pemLabel",       "mutation": "random_bytes",      "weight": 2, "description": "Unknown or malformed labels test label-validation paths in OpenSSL and GnuTLS." },
+      { "field": "pemBase64Body",  "mutation": "bit_flip",          "rate": 0.001, "weight": 2, "description": "Bit flips in Base64 body corrupt the underlying DER structure in non-obvious ways." },
+      { "field": "pemLabel",       "mutation": "overflow",          "weight": 2, "description": "Extremely long label strings test label-length bounds in PEM parsers." },
+      { "field": "pemBase64Body",  "mutation": "truncate",          "weight": 1, "description": "Truncated Base64 body produces incomplete DER and tests incomplete-data error paths." }
+    ]
+  },
+  "migration": [
+    {
+      "from": "pem-rsa-pkcs1",
+      "to": "pem-pkcs8",
+      "description": "Migrate RSA private key from legacy PKCS#1 format ('RSA PRIVATE KEY') to PKCS#8 ('PRIVATE KEY') for broader compatibility with modern TLS libraries and FIPS compliance.",
+      "changes": [
+        { "field": "pemLabel", "changeType": "set_value", "value": "PRIVATE KEY", "description": "Change label from 'RSA PRIVATE KEY' to 'PRIVATE KEY' — requires re-encoding the key body in PKCS#8 PrivateKeyInfo wrapper." }
+      ]
+    },
+    {
+      "from": "pem-der-text",
+      "to": "der-binary",
+      "description": "Convert PEM text file to binary DER by stripping the ASCII armor markers and Base64-decoding the body.",
+      "changes": [
+        { "field": "pemBeginMarker", "changeType": "set_value", "value": "3082", "description": "Remove PEM armor — DER begins with 0x30 0x82 ASN.1 SEQUENCE tag and length." }
+      ]
+    }
+  ]
+}

@@ -236,5 +236,77 @@
     "MinSHBSize": 28,
     "BlockStructure": "BlockType(4B) + BlockTotalLength(4B) + body + BlockTotalLength(4B)",
     "Timestamps": "64-bit microseconds (default) or nanoseconds (IDB option if_tsresol)"
-  }
+  },
+  "diff": {
+    "keyFields": ["pcapngSHBType", "pcapngByteOrderMagic", "pcapngVersionMajor", "pcapngVersionMinor", "pcapngBlockLength"],
+    "ignoreFields": [],
+    "groupBy": "pcapngByteOrderMagic",
+    "note": "SHB type and Byte Order Magic are the identity anchors; version fields determine spec conformance. Block length varies per capture and is not a stable diff key."
+  },
+  "repair": [
+    {
+      "name": "FixSHBMagic",
+      "trigger": "pcapngSHBType != 168755466",
+      "action": "set_value",
+      "target": "pcapngSHBType",
+      "value": "0A0D0D0A",
+      "description": "Restores the PCAPNG Section Header Block magic 0x0A0D0D0A when corrupted (e.g., by text-mode line-ending conversion)."
+    },
+    {
+      "name": "FixByteOrderMagicLE",
+      "trigger": "pcapngByteOrderMagic != 439041101 && pcapngByteOrderMagic != 1312767820",
+      "action": "set_value",
+      "target": "pcapngByteOrderMagic",
+      "value": "4D3C2B1A",
+      "description": "Restores the little-endian Byte Order Magic (0x1A2B3C4D stored as 4D 3C 2B 1A) when the value is corrupt, re-enabling correct endianness detection."
+    },
+    {
+      "name": "FixVersionMajor",
+      "trigger": "pcapngVersionMajor != 1",
+      "action": "set_value",
+      "target": "pcapngVersionMajor",
+      "value": "0100",
+      "description": "Resets PCAPNG version_major to 1 per the IETF draft specification to ensure parser compatibility."
+    },
+    {
+      "name": "FixVersionMinor",
+      "trigger": "pcapngVersionMinor != 0",
+      "action": "set_value",
+      "target": "pcapngVersionMinor",
+      "value": "0000",
+      "description": "Resets PCAPNG version_minor to 0 forming version 1.0 as mandated by the current IETF PCAPNG specification."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "pcapngSHBType",         "mutation": "corrupt_signature", "weight": 3, "description": "SHB magic corruption (e.g., simulating CRLF mangling) tests resilience of PCAPNG format detection." },
+      { "field": "pcapngBlockLength",      "mutation": "boundary_values",   "weight": 2, "description": "Extreme block lengths (0, UINT32_MAX) stress block-traversal bounds checking." },
+      { "field": "pcapngByteOrderMagic",   "mutation": "overflow",          "weight": 2, "description": "Invalid byte-order magic values test fallback behavior when endianness cannot be determined." },
+      { "field": "pcapngVersionMajor",     "mutation": "bit_flip",          "rate": 0.001, "weight": 2, "description": "Single-bit version corruption tests version-mismatch error paths." },
+      { "field": "pcapngVersionMinor",     "mutation": "random_bytes",      "weight": 1, "description": "Random minor version exercises forward-compatibility handling in strict parsers." }
+    ]
+  },
+  "migration": [
+    {
+      "from": "pcapng-1.0-be",
+      "to": "pcapng-1.0-le",
+      "description": "Convert PCAPNG file from big-endian to little-endian byte order by updating the Byte Order Magic — all subsequent block fields must also be byte-swapped by the conversion tool.",
+      "changes": [
+        { "field": "pcapngByteOrderMagic", "changeType": "set_value", "value": "4D3C2B1A", "description": "Set Byte Order Magic to 0x1A2B3C4D stored LE (4D 3C 2B 1A) indicating little-endian file." }
+      ]
+    },
+    {
+      "from": "pcap-legacy",
+      "to": "pcapng-1.0",
+      "description": "Migrate from legacy PCAP (A1B2C3D4 magic) to PCAPNG format — requires wrapping the global header in an SHB block and all packet records in EPB blocks with interface IDs.",
+      "changes": [
+        { "field": "pcapngSHBType",       "changeType": "set_value", "value": "0A0D0D0A", "description": "Write SHB block type magic at offset 0." },
+        { "field": "pcapngByteOrderMagic","changeType": "set_value", "value": "4D3C2B1A", "description": "Write LE Byte Order Magic at offset 8 of SHB body." },
+        { "field": "pcapngVersionMajor",  "changeType": "set_value", "value": "0100",     "description": "Set version 1 major." },
+        { "field": "pcapngVersionMinor",  "changeType": "set_value", "value": "0000",     "description": "Set version 0 minor." }
+      ]
+    }
+  ]
 }

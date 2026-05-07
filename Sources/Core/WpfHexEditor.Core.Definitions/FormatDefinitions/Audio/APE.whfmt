@@ -237,5 +237,66 @@
     "minVersion": 3800,
     "lossless": true,
     "seekTableSupport": true
-  }
+  },
+  "diff": {
+    "keyFields": ["apeMagic", "apeVersion", "compressionLevel", "channels", "sampleRate"],
+    "ignoreFields": ["descriptorBytes"],
+    "groupBy": "compressionLevel",
+    "note": "Magic, version, compression level, channel count and sample rate together define the encoding parameters; descriptor size is layout metadata"
+  },
+  "repair": [
+    {
+      "name": "ClampCompressionLevel",
+      "trigger": "compressionLevel not in [1000, 2000, 3000, 4000, 5000]",
+      "action": "set_value",
+      "target": "compressionLevel",
+      "value": 2000,
+      "description": "Compression level must be one of the 5 standard values; default to Normal (2000) when an unknown level is encountered"
+    },
+    {
+      "name": "FixSampleRate",
+      "trigger": "sampleRate < 8000 || sampleRate > 192000",
+      "action": "set_value",
+      "target": "sampleRate",
+      "value": 44100,
+      "description": "Sample rate outside the 8000-192000 Hz range is invalid for audio; reset to CD standard 44100 Hz"
+    },
+    {
+      "name": "FixChannelCount",
+      "trigger": "channels < 1",
+      "action": "set_value",
+      "target": "channels",
+      "value": 2,
+      "description": "Channel count of 0 is invalid; reset to stereo (2) as the most common APE configuration"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "apeMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'MAC ' magic (including trailing space) to test APE parser rejection" },
+      { "field": "compressionLevel", "mutation": "enum_sweep", "weight": 2, "description": "Sweep all uint16 compression level values beyond the 5 defined levels to test validation" },
+      { "field": "apeVersion", "mutation": "boundary_values", "weight": 2, "description": "Test versions below 3800 and near uint16 max to probe version-dependent header parsing" },
+      { "field": "sampleRate", "mutation": "overflow", "weight": 2, "description": "Max uint32 sample rate stresses duration and DMA buffer allocation" },
+      { "field": "channels", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in channel count to produce unusual multichannel configurations" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "APE-Fast",
+      "to": "APE-High",
+      "description": "Increase compression level from Fast (1000) to High (3000) for better compression ratio at cost of encode/decode speed; requires full re-encode",
+      "changes": [
+        { "field": "compressionLevel", "changeType": "set_value", "value": 3000, "description": "Set compression level to High (3000)" }
+      ]
+    },
+    {
+      "from": "pre-3980",
+      "to": "3990+",
+      "description": "APE format version upgrade to descriptor-based layout; older files (pre-3980) lack the descriptor block and must be re-encoded with a modern encoder",
+      "changes": [
+        { "field": "apeVersion", "changeType": "set_value", "value": 3990, "description": "Update format version to 3990 to signal descriptor-based layout support" }
+      ]
+    }
+  ]
 }

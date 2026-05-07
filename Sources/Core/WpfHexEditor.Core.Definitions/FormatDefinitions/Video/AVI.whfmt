@@ -446,6 +446,59 @@
     "SupportsInterleaving": true,
     "SupportsIndex": true
   },
+  "diff": {
+    "keyFields": ["width", "height", "microsecondsPerFrame", "numberOfStreams", "aviFlags"],
+    "ignoreFields": ["paddingGranularity", "suggestedBufferSize"],
+    "groupBy": "numberOfStreams",
+    "note": "Dimensions, frame timing, stream count, and flags characterise the AVI stream configuration; buffer/padding values are player-hint noise"
+  },
+  "repair": [
+    {
+      "name": "FixRiffSignature",
+      "trigger": "riffSignature != 'RIFF'",
+      "action": "set_value",
+      "target": "riffSignature",
+      "value": "52494646",
+      "description": "Restores the RIFF four-byte magic at offset 0 when the container header is corrupted"
+    },
+    {
+      "name": "FixAviFormType",
+      "trigger": "aviFormType != 'AVI '",
+      "action": "set_value",
+      "target": "aviFormType",
+      "value": "41564920",
+      "description": "Restores the 'AVI ' form type at offset 8 (note trailing space 0x20) to identify the RIFF file as an AVI container"
+    },
+    {
+      "name": "FixAvihChunkSize",
+      "trigger": "avihChunkSize != 56",
+      "action": "set_value",
+      "target": "avihChunkSize",
+      "value": "38000000",
+      "description": "Resets the avih chunk size to the standard 56 bytes (0x38 LE) when a non-standard value would cause parsers to mis-align subsequent fields"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "riffSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupting 'RIFF' magic at offset 0 exercises RIFF identification and rejection paths in all parsers" },
+      { "field": "microsecondsPerFrame", "mutation": "boundary_values", "weight": 2, "description": "Values 0 and 0xFFFFFFFF test divide-by-zero guards in FPS calculation and duration estimation code" },
+      { "field": "aviFlags", "mutation": "enum_sweep", "weight": 2, "description": "Sweeping flag combinations exercises index, interleaving, and trust-chunk-type code paths in demuxers" },
+      { "field": "totalFrames", "mutation": "overflow", "weight": 2, "description": "Overflowing totalFrames tests duration arithmetic overflow in players that compute length from frame count" },
+      { "field": "width", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flipping bits in video dimensions exercises bounds-checking and allocation safety in video renderers" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "AVI 1.0",
+      "to": "OpenDML AVI 2.0",
+      "description": "Enable OpenDML extensions to lift the 2 GB file size limit; adds odml super-index LIST chunk after hdrl",
+      "changes": [
+        { "field": "aviFlags", "changeType": "set_value", "value": "10010000", "description": "Set AVIF_HASINDEX + AVIF_ISINTERLEAVED + AVIF_TRUSTCKTYPE flags for OpenDML-compatible indexing" }
+      ]
+    }
+  ],
   "assertions": [
     {
       "name": "RIFF signature valid",

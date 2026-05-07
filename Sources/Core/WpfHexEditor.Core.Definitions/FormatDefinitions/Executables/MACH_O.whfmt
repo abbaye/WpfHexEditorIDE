@@ -430,5 +430,67 @@
     "SupportsFatBinary": true,
     "HeaderSize32": "28 bytes",
     "HeaderSize64": "32 bytes"
-  }
+  },
+  "diff": {
+    "keyFields": ["machMagic", "cpuType", "fileType", "flags"],
+    "ignoreFields": ["reservedField"],
+    "groupBy": "fileType",
+    "note": "Magic identifies bitness and endianness; cpuType and fileType classify the binary's purpose; flags encode security properties (PIE, NX). Reserved padding is always zero and has no semantic value."
+  },
+  "repair": [
+    {
+      "name": "FixMachMagic32LE",
+      "trigger": "machMagic not in known_values",
+      "action": "set_value",
+      "target": "machMagic",
+      "value": "CEFAEDFE",
+      "description": "Restore magic to 0xFEEDFACE (32-bit LE) when the 4-byte magic is unrecognised; choose the most common fallback"
+    },
+    {
+      "name": "SetPIEFlag",
+      "trigger": "fileType == 2 && (flags & 0x200000) == 0",
+      "action": "set_value",
+      "target": "flags",
+      "value": "set_bit:21",
+      "description": "Enable MH_PIE (bit 21) on MH_EXECUTE binaries that are missing ASLR support"
+    },
+    {
+      "name": "ClearReservedField",
+      "trigger": "reservedField != 0",
+      "action": "set_value",
+      "target": "reservedField",
+      "value": "00000000",
+      "description": "Zero the reserved 4-byte padding field in 64-bit headers; non-zero values may confuse strict loaders"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "machMagic",        "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the magic number to test Mach-O parser resilience and misdetection handling" },
+      { "field": "loadCommandCount", "mutation": "boundary_values",   "weight": 2, "description": "Probe boundary values (0, 0xFFFFFFFF) for load-command count to expose parser allocation errors" },
+      { "field": "fileType",         "mutation": "enum_sweep",        "weight": 2, "description": "Sweep all known MH_* type values and unknowns to test file-type dispatch logic" },
+      { "field": "sizeOfCmds",       "mutation": "overflow",          "weight": 2, "description": "Overflow total load-command size to trigger out-of-bounds reads in loaders" },
+      { "field": "flags",            "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip random flag bits to find security-flag handling edge cases in the dynamic linker" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "32-bit (FEEDFACE)",
+      "to": "64-bit (FEEDFACF)",
+      "description": "Upgrade a 32-bit Mach-O to the 64-bit header layout; header grows from 28 to 32 bytes and a reserved field is appended",
+      "changes": [
+        { "field": "machMagic",      "changeType": "set_value", "value": "CFFAEDFE", "description": "Change magic from FEEDFACE (4277009102) to FEEDFACF (4277009103)" },
+        { "field": "reservedField",  "changeType": "set_value", "value": "00000000", "description": "Insert 4-byte reserved padding after flags in the 64-bit header" }
+      ]
+    },
+    {
+      "from": "no-PIE",
+      "to": "PIE-enabled",
+      "description": "Enable ASLR on older executables that ship without the MH_PIE flag",
+      "changes": [
+        { "field": "flags", "changeType": "set_value", "value": "set_bit:21", "description": "Set MH_PIE (bit 21) in the flags bitmask" }
+      ]
+    }
+  ]
 }

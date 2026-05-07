@@ -261,6 +261,51 @@
     "MacroCapable": false,
     "OLECapable": true
   },
+  "diff": {
+    "keyFields": ["rtfHeader", "rtfVersionByte"],
+    "ignoreFields": ["hasUnicodeContent", "isMalformed"],
+    "groupBy": "RTF Header",
+    "note": "The header bytes and version digit uniquely identify RTF format and version; computed fields are derivatives and should be excluded from structural diffs."
+  },
+  "repair": [
+    {
+      "name": "FixRtfMagic",
+      "trigger": "rtfHeader != '{\\rtf'",
+      "action": "set_value",
+      "target": "rtfHeader",
+      "value": "7B5C727466",
+      "description": "Restore the RTF file signature '{\\rtf' (7B 5C 72 74 66) at offset 0"
+    },
+    {
+      "name": "FixRtfVersion",
+      "trigger": "rtfVersionByte != 49",
+      "action": "set_value",
+      "target": "rtfVersionByte",
+      "value": "31",
+      "description": "Set RTF version byte to ASCII '1' (0x31) for standard RTF 1.x compatibility"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "rtfHeader",      "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt '{\\rtf' magic to test RTF parser rejection of invalid files" },
+      { "field": "rtfVersionByte", "mutation": "boundary_values",   "weight": 2, "description": "Test version byte values (0, 2, 0xFF) to expose non-standard version handling" },
+      { "field": "rtfVersionByte", "mutation": "enum_sweep",        "weight": 2, "description": "Sweep ASCII digits 0x30-0x39 to test all plausible version values" },
+      { "field": "rtfHeader",      "mutation": "random_bytes",      "weight": 1, "description": "Randomize header bytes to stress initial-state parser error paths" },
+      { "field": "rtfVersionByte", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit flip in version byte to expose subtle parser version checks" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "RTF-1.0",
+      "to": "RTF-1.9",
+      "description": "All RTF 1.x files share the same header byte '1' (0x31); no binary migration needed — version is declared by control words inside the document body",
+      "changes": [
+        { "field": "rtfVersionByte", "changeType": "set_value", "value": "31", "description": "Ensure version byte is '1' (ASCII 49 = 0x31) for RTF 1.x compliance" }
+      ]
+    }
+  ],
   "documentSchema": {
     "engine": "rtf",
     "blockMappings": [

@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Cabinet Archive",
   "formatId": "CAB",
@@ -342,19 +342,19 @@
       {
         "name": "Cabinet Header",
         "offset": 0,
-        "icon": "\uE71B",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "Version / Folder Count",
         "offset": 24,
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#FFE66D"
       },
       {
         "name": "First File Entry",
         "offsetVar": "filesOffset",
-        "icon": "\uE9D9",
+        "icon": "",
         "color": "#95E1D3"
       }
     ]
@@ -366,22 +366,22 @@
     "groups": [
       {
         "title": "Cabinet Header",
-        "icon": "\uE71B",
+        "icon": "",
         "fields": ["cabSignature", "cabSize", "filesOffset"]
       },
       {
         "title": "Format Version",
-        "icon": "\uE8A5",
+        "icon": "",
         "fields": ["versionMajor", "versionMinor"]
       },
       {
         "title": "Content Structure",
-        "icon": "\uE9D9",
+        "icon": "",
         "fields": ["numFolders", "numFiles", "cabinetFlags", "hasPrevCabinet", "hasNextCabinet"]
       },
       {
         "title": "Cabinet Set",
-        "icon": "\uE8B7",
+        "icon": "",
         "fields": ["setID", "cabinetIndex"]
       }
     ]
@@ -500,5 +500,43 @@
     "SupportsEncryption": false,
     "HasPerBlockChecksum": true,
     "ChecksumAlgorithm": "Custom XOR-based checksum (not standard CRC-32)"
-  }
+  },
+  "diff": {
+    "keyFields": ["cabSignature", "cabSize", "numFiles", "numFolders"],
+    "ignoreFields": ["hasPrevCabinet", "hasNextCabinet"],
+    "groupBy": "cabHeader",
+    "note": "Signature confirms identity; cabSize and file/folder counts describe archive content structure; multi-cabinet flags are topology metadata derived from cabinetFlags"
+  },
+  "repair": [
+    {
+      "name": "FixCabSize",
+      "trigger": "CabSizeMismatch",
+      "action": "recompute_checksum",
+      "target": "cabSize",
+      "algorithm": "crc32",
+      "description": "Recomputes and writes the correct cabinet file size by measuring the actual file length and writing it as a little-endian uint32 at offset 8"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": true,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "cabSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt MSCF magic to test cabinet signature rejection" },
+      { "field": "numFiles", "mutation": "boundary_values", "weight": 2, "description": "Set numFiles to 0 or UINT16_MAX to test empty cabinet and overflow handling" },
+      { "field": "cabSize", "mutation": "overflow", "weight": 2, "description": "Set cabSize larger than actual file to test size validation and read-past-end bugs" },
+      { "field": "cabinetFlags", "mutation": "random_bytes", "weight": 1, "description": "Set undefined cabinet flag bits to test reserved bit handling" },
+      { "field": "versionMajor", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip version byte bits to probe unknown format version handling" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "1.2",
+      "to": "1.3",
+      "description": "Update cabinet version fields to the current 1.3 standard",
+      "changes": [
+        { "field": "versionMajor", "changeType": "set_value", "value": "1", "description": "Set major version to 1 (current standard)" },
+        { "field": "versionMinor", "changeType": "set_value", "value": "3", "description": "Set minor version to 3 (current 1.3 standard)" }
+      ]
+    }
+  ]
 }

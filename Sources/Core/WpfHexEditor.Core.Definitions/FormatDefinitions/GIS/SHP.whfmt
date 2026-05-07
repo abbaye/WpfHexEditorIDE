@@ -246,5 +246,50 @@
     "Standard": "ESRI Shapefile Technical Description (1998) — open but ESRI-controlled",
     "Endianness": "Mixed: bytes 0-27 big-endian, bytes 28+ little-endian",
     "MultiFile": "Requires companion .shx and .dbf; .prj for CRS"
-  }
+  },
+  "diff": {
+    "keyFields": ["shpFileCode", "shpVersion", "shapeType"],
+    "ignoreFields": ["fileLength"],
+    "groupBy": "shapeType",
+    "note": "fileCode and version uniquely identify a valid Shapefile; shapeType determines all geometry in the file. fileLength changes on any edit and is not useful as a diff key"
+  },
+  "repair": [
+    {
+      "name": "FixShpFileCode",
+      "trigger": "shpFileCode != 9994",
+      "action": "set_value",
+      "target": "shpFileCode",
+      "value": "0000270A",
+      "description": "Restore the Shapefile file code 9994 (0x0000270A, big-endian uint32) at offset 0 when it is corrupt or zero"
+    },
+    {
+      "name": "FixShpVersion",
+      "trigger": "shpVersion != 1000",
+      "action": "set_value",
+      "target": "shpVersion",
+      "value": "E8030000",
+      "description": "Reset the Shapefile version to 1000 (little-endian uint32, 0xE8 0x03 0x00 0x00) at offset 28 — the only valid version since 1998"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "shpFileCode",  "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt file code 9994 to verify that ESRI and GDAL parsers reject non-Shapefile inputs and handle the error gracefully" },
+      { "field": "shapeType",    "mutation": "boundary_values",   "weight": 2, "description": "Test shapeType at undefined values (e.g., 2, 4, 6, 32) to probe geometry dispatch logic in GIS readers" },
+      { "field": "fileLength",   "mutation": "overflow",          "weight": 2, "description": "Overflow fileLength (big-endian 16-bit words) to expose integer arithmetic errors in file size validation and memory allocation" },
+      { "field": "shpVersion",   "mutation": "random_bytes",      "weight": 1, "description": "Set version to non-1000 values to test whether parsers enforce the version constraint or silently accept invalid files" },
+      { "field": "shpFileCode",  "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit flips in file code to probe near-valid detection boundaries in format identification" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "SHP-v1000",
+      "to": "GPKG",
+      "description": "ESRI Shapefile to GeoPackage (OGC-recommended single-file replacement) — shapeType maps to GPKG geometry_type_name in gpkg_geometry_columns; requires ogr2ogr conversion",
+      "changes": [
+        { "field": "shapeType", "changeType": "set_value", "value": "01000000", "description": "In GPKG migration, Point (1) maps to 'POINT', Polyline (3) to 'MULTILINESTRING', Polygon (5) to 'MULTIPOLYGON'; document the source shapeType for schema mapping" }
+      ]
+    }
+  ]
 }

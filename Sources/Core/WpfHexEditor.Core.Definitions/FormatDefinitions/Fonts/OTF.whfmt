@@ -388,5 +388,50 @@
     "AdvancedTables": "GPOS, GSUB, GDEF, BASE, JSTF, MATH",
     "ChecksumAdjustment": "0xB1B0AFBA",
     "Alignment": "4-byte boundary"
-  }
+  },
+  "diff": {
+    "keyFields": ["otfSignature", "numberOfTables", "table1Tag"],
+    "ignoreFields": ["searchRange", "entrySelector", "rangeShift"],
+    "groupBy": "numberOfTables",
+    "note": "OTTO signature and table count distinguish CFF OpenType from TrueType; binary search fields are computed constants with no diff value"
+  },
+  "repair": [
+    {
+      "name": "FixOttoSignature",
+      "trigger": "otfSignature != 'OTTO'",
+      "action": "set_value",
+      "target": "otfSignature",
+      "value": "4F54544F",
+      "description": "Restore the 'OTTO' (0x4F54544F) signature at offset 0 to identify the file as an OpenType CFF font"
+    },
+    {
+      "name": "FixSearchRange",
+      "trigger": "searchRange invalid for numberOfTables",
+      "action": "set_value",
+      "target": "searchRange",
+      "value": "computed",
+      "description": "Recompute searchRange as (maxPow2 <= numberOfTables) * 16 to restore correct binary search optimization"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "otfSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 'OTTO' signature to test font engine handling of unrecognized OpenType font flavors" },
+      { "field": "numberOfTables", "mutation": "boundary_values", "weight": 2, "description": "Test table counts of 0, 1, and 100 to probe table directory parsing and allocation limits" },
+      { "field": "table1Offset", "mutation": "overflow", "weight": 2, "description": "Overflow the CFF table offset to trigger out-of-bounds reads in CFF charstring parsers" },
+      { "field": "table1Tag", "mutation": "random_bytes", "weight": 1, "description": "Randomize the first table tag to test unknown table handling in OpenType layout engines" },
+      { "field": "searchRange", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit-flip the binary search optimization values to test parser tolerance for inconsistent header fields" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "opentype_cff1",
+      "to": "opentype_cff2",
+      "description": "Upgrade OpenType font from CFF (CFF version 1) to CFF2 outline format for variable font support",
+      "changes": [
+        { "field": "table1Tag", "changeType": "set_value", "value": "43464632", "description": "Replace 'CFF ' (0x43464620) table tag with 'CFF2' (0x43464632) to declare CFF version 2 outlines" }
+      ]
+    }
+  ]
 }

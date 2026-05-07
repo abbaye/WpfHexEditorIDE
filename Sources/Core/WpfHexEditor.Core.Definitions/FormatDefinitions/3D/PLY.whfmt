@@ -194,5 +194,50 @@
     "binaryVariants": ["binary_little_endian 1.0", "binary_big_endian 1.0"],
     "propertyTypes": ["char", "uchar", "short", "ushort", "int", "uint", "float", "double", "list"],
     "commonElements": ["vertex", "face", "edge", "material"]
-  }
+  },
+  "diff": {
+    "keyFields": ["plyMagic", "formatLine"],
+    "ignoreFields": ["newline"],
+    "groupBy": "formatLine",
+    "note": "Format line determines binary vs ASCII encoding and endianness; magic confirms file identity; newline byte is structural boilerplate"
+  },
+  "repair": [
+    {
+      "name": "FixInvalidMagic",
+      "trigger": "plyMagic != 'ply'",
+      "action": "set_value",
+      "target": "plyMagic",
+      "value": "706C79",
+      "description": "Restore the 'ply' ASCII magic at offset 0 to make the file identifiable as a valid PLY polygon file"
+    },
+    {
+      "name": "FixCRLFNewline",
+      "trigger": "newline == 13",
+      "action": "set_value",
+      "target": "newline",
+      "value": "0A",
+      "description": "Replace CR (0x0D) with LF (0x0A) to conform to the PLY spec requiring Unix line endings after the magic"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "plyMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 'ply' magic to test PLY parser identification and fallback behavior" },
+      { "field": "formatLine", "mutation": "boundary_values", "weight": 2, "description": "Replace format line with edge-case values like empty string or unknown encoding name" },
+      { "field": "formatLine", "mutation": "enum_sweep", "weight": 2, "description": "Sweep through all format variants (ascii/binary_little_endian/binary_big_endian) to test encoding branch coverage" },
+      { "field": "newline", "mutation": "random_bytes", "weight": 1, "description": "Replace the LF with random bytes to test line-ending robustness in PLY header parsers" },
+      { "field": "plyMagic", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit-flip the 'ply' magic bytes to produce near-miss values and test strict vs lenient validation" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "ply_ascii_1_0",
+      "to": "ply_binary_little_endian_1_0",
+      "description": "Convert PLY ASCII format to binary little-endian for more compact and faster-loading representation",
+      "changes": [
+        { "field": "formatLine", "changeType": "set_value", "value": "format binary_little_endian 1.0", "description": "Change the format declaration to binary little-endian to switch data encoding after the header" }
+      ]
+    }
+  ]
 }

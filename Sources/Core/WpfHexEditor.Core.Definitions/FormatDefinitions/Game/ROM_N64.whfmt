@@ -249,5 +249,42 @@
       "Check resource/asset table entries and data block offsets",
       "Inspect compression flags, checksums, and embedded file boundaries"
     ]
-  }
+  },
+  "diff": {
+    "keyFields": ["gameTitle", "gameCode", "crc1", "crc2", "romVersion"],
+    "ignoreFields": ["clockRate", "releaseOffset"],
+    "groupBy": "gameCode",
+    "note": "CRC1+CRC2 are the IPL3-verified integrity values that uniquely fingerprint a specific ROM build; gameCode+romVersion identify the title and revision; clockRate/releaseOffset are SDK artifacts with low diff value"
+  },
+  "repair": [
+    {
+      "name": "FixIPL3CRC",
+      "trigger": "crc1 or crc2 do not match computed IPL3 checksum",
+      "action": "recompute_checksum",
+      "target": "crc1",
+      "algorithm": "crc32",
+      "description": "Recompute the N64 CRC1 and CRC2 values using the IPL3 algorithm over the ROM data region (0x1000–0x100FFF); mismatched CRCs cause the console to refuse to boot the ROM"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "piBsdRegister", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 0x80371240 magic bytes to prevent z64 format recognition" },
+      { "field": "crc1",          "mutation": "boundary_values",   "weight": 2, "description": "Set CRC1 to 0 or 0xFFFFFFFF to test IPL3 validation rejection" },
+      { "field": "crc2",          "mutation": "bit_flip", "rate": 0.01, "weight": 2, "description": "Flip bits in CRC2 to create a mismatched checksum pair" },
+      { "field": "bootAddress",   "mutation": "overflow",          "weight": 2, "description": "Set boot address beyond valid MIPS RAM range to test emulator safety" },
+      { "field": "gameTitle",     "mutation": "random_bytes",      "weight": 1, "description": "Randomize the 20-byte ASCII game title to test title parsing robustness" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "v64 byte-swapped format",
+      "to": "z64 big-endian format",
+      "description": "Convert a v64 (16-bit byte-swapped) or n64 (32-bit byte-swapped) ROM dump to the canonical z64 big-endian format by swapping bytes; the piBsdRegister magic identifies the byte order",
+      "changes": [
+        { "field": "piBsdRegister", "changeType": "set_value", "value": "0x80371240", "description": "After byte-swap conversion, piBsdRegister must read 0x80371240 (z64 big-endian canonical magic)" }
+      ]
+    }
+  ]
 }

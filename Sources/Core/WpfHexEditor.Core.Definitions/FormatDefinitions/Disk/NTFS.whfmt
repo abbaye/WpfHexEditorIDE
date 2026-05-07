@@ -138,5 +138,50 @@
   "functions": {
     "readUInt32LE": "Read file header",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"
-  }
+  },
+  "diff": {
+    "keyFields": ["version", "fileSize"],
+    "ignoreFields": ["formattedSize"],
+    "groupBy": "version",
+    "note": "Version identifies the NTFS format revision; fileSize is the primary structural metric. formattedSize is a derived display string and is excluded from diff comparisons"
+  },
+  "repair": [
+    {
+      "name": "FixNtfsSignature",
+      "trigger": "NTFSBootSector_signature != '4E544653'",
+      "action": "set_value",
+      "target": "NTFS Boot Sector",
+      "value": "4E54465320202020",
+      "description": "Restore the NTFS OEM ID 'NTFS    ' (8 ASCII bytes, 4E 54 46 53 20 20 20 20) at offset 3 of the boot sector when it is corrupt"
+    },
+    {
+      "name": "FixBootSectorSignature",
+      "trigger": "BootSectorEndSignature != '55AA'",
+      "action": "set_value",
+      "target": "NTFS Boot Sector",
+      "value": "55AA",
+      "description": "Restore the boot sector end signature 0x55 0xAA at offset 510 when it is zeroed or overwritten, enabling BIOS/UEFI to recognize the volume"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "version",     "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the NTFS OEM ID at offset 3 to test NTFS driver and forensic tool detection rejection paths" },
+      { "field": "fileSize",    "mutation": "boundary_values",   "weight": 2, "description": "Test fileSize at 0, max uint64 and typical MFT record size boundaries to probe NTFS partition size validation" },
+      { "field": "version",     "mutation": "overflow",          "weight": 2, "description": "Overflow the version field to test handling of unrecognized NTFS versions in Windows and third-party drivers" },
+      { "field": "fileSize",    "mutation": "random_bytes",      "weight": 1, "description": "Randomize fileSize to simulate corrupted BPB and test recovery tool resilience during volume size calculations" },
+      { "field": "version",     "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit flips in version bytes to expose near-boundary version handling in chkdsk and ntfsfix" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "NTFS-v1.2",
+      "to": "NTFS-v3.1",
+      "description": "NTFS v1.2 (Windows NT 4.0) to NTFS v3.1 (Windows XP/2003+) — adds support for sparse files, reparse points, per-file encryption (EFS), and 64-bit MFT entries",
+      "changes": [
+        { "field": "version", "changeType": "set_value", "value": "0301", "description": "Update NTFS version bytes at BPB offset 0x3D-0x3E from 1.2 to 3.1 to indicate modern NTFS feature support" }
+      ]
+    }
+  ]
 }

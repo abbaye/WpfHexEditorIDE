@@ -314,6 +314,59 @@
     "HeaderSize": 30,
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
   },
+  "diff": {
+    "keyFields": ["zipSignature", "compressionMethod", "crc32"],
+    "ignoreFields": ["lastModTime", "lastModDate", "compressionRatio"],
+    "groupBy": "ZIP Local File Header",
+    "note": "Signature and CRC reveal container integrity; compression method affects page rendering fidelity. Timestamps are volatile and excluded from structural diffs."
+  },
+  "repair": [
+    {
+      "name": "FixZipSignature",
+      "trigger": "zipSignature != 0x04034B50",
+      "action": "set_value",
+      "target": "zipSignature",
+      "value": "504B0304",
+      "description": "Restore the ZIP Local File Header magic bytes to 50 4B 03 04"
+    },
+    {
+      "name": "FixCompressionMethod",
+      "trigger": "compressionMethod > 14",
+      "action": "set_value",
+      "target": "compressionMethod",
+      "value": "0800",
+      "description": "Reset compression method to Deflate (8) for XPS viewer compatibility"
+    },
+    {
+      "name": "ClearEncryptionFlag",
+      "trigger": "(generalPurposeFlags & 1) == 1",
+      "action": "set_value",
+      "target": "generalPurposeFlags",
+      "value": "0000",
+      "description": "Clear encryption bit to allow XPS Viewer to open the document"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "zipSignature",        "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt PK magic to test XPS container rejection" },
+      { "field": "compressionMethod",   "mutation": "boundary_values",   "weight": 2, "description": "Test edge compression values for fixed-layout page decompression" },
+      { "field": "compressedSize",      "mutation": "overflow",          "weight": 2, "description": "Overflow compressed size to stress XPS Viewer allocation paths" },
+      { "field": "generalPurposeFlags", "mutation": "random_bytes",      "weight": 1, "description": "Random flags to expose unexpected XPS parser branches" },
+      { "field": "crc32",               "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit CRC flip to verify integrity checking in XPS readers" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "XPS-ECMA388-1st",
+      "to": "OXPS-ECMA388-2nd",
+      "description": "XPS to Open XPS (OXPS) migration; container structure is identical but MIME type and content types change",
+      "changes": [
+        { "field": "compressionMethod", "changeType": "set_value", "value": "0800", "description": "Ensure Deflate compression for all OXPS page content entries" }
+      ]
+    }
+  ],
   "forensic": {
     "category": "document",
     "riskLevel": "medium",

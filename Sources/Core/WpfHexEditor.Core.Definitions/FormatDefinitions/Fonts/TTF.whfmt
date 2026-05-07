@@ -385,5 +385,50 @@
     "RequiredTables": "cmap, glyf, head, hhea, hmtx, loca, maxp, name, post",
     "ChecksumAdjustment": "0xB1B0AFBA",
     "Alignment": "4-byte boundary"
-  }
+  },
+  "diff": {
+    "keyFields": ["scalerType", "numberOfTables", "table1Tag"],
+    "ignoreFields": ["searchRange", "entrySelector", "rangeShift"],
+    "groupBy": "numberOfTables",
+    "note": "Scaler type and table count identify font version and complexity; binary search optimization fields are derived values and carry no semantic diff value"
+  },
+  "repair": [
+    {
+      "name": "FixScalerType",
+      "trigger": "scalerType != 65536 && scalerType != 1953658213",
+      "action": "set_value",
+      "target": "scalerType",
+      "value": "00010000",
+      "description": "Restore the standard TrueType scaler type 0x00010000 at offset 0 so font engines select the correct rasterizer"
+    },
+    {
+      "name": "FixSearchRange",
+      "trigger": "searchRange invalid for numberOfTables",
+      "action": "set_value",
+      "target": "searchRange",
+      "value": "computed",
+      "description": "Recompute searchRange as (maxPow2 <= numberOfTables) * 16 to restore correct binary search optimization"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "scalerType", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the scaler type to test font engine fallback and error handling on unrecognized font flavors" },
+      { "field": "numberOfTables", "mutation": "boundary_values", "weight": 2, "description": "Test extreme table counts (0, 1, 255) to probe table directory allocation and search logic" },
+      { "field": "table1Offset", "mutation": "overflow", "weight": 2, "description": "Overflow the first table offset to trigger out-of-bounds access in table data readers" },
+      { "field": "table1Tag", "mutation": "random_bytes", "weight": 1, "description": "Randomize the first table tag to test unknown-table handling in font parsers" },
+      { "field": "searchRange", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit-flip the binary search optimization field to test parser tolerance for incorrect precomputed values" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "truetype_apple",
+      "to": "truetype_windows",
+      "description": "Normalize Apple-specific TrueType scaler type ('true' 0x74727565) to standard Windows TrueType (0x00010000)",
+      "changes": [
+        { "field": "scalerType", "changeType": "set_value", "value": "00010000", "description": "Replace Apple 'true' scaler type with Windows-standard 0x00010000 for cross-platform compatibility" }
+      ]
+    }
+  ]
 }

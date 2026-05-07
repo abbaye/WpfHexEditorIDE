@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "7-Zip Archive",
   "formatId": "7Z",
@@ -281,17 +281,17 @@
       {
         "name": "Start Header",
         "offsetVar": "currentOffset",
-        "icon": ""
+        "icon": ""
       },
       {
         "name": "Next Header (metadata)",
         "offsetVar": "nextHeaderAbsoluteOffset",
-        "icon": ""
+        "icon": ""
       },
       {
         "name": "Archive End",
         "offsetVar": "archiveEndOffset",
-        "icon": ""
+        "icon": ""
       }
     ]
   },
@@ -306,5 +306,50 @@
     "SupportsMultiVolume": true,
     "MaxFileSize": "Virtually unlimited (64-bit offsets)",
     "CRCAlgorithm": "CRC-32 (ISO 3309)"
-  }
+  },
+  "diff": {
+    "keyFields": ["sevenZipSignature", "nextHeaderCrc", "startHeaderCrc"],
+    "ignoreFields": ["nextHeaderAbsoluteOffset", "archiveEndOffset"],
+    "groupBy": "startHeader",
+    "note": "Signature and both CRC fields uniquely identify archive integrity; computed offsets are derived and should not drive diff decisions"
+  },
+  "repair": [
+    {
+      "name": "FixStartHeaderCRC",
+      "trigger": "StartHeaderCRCMismatch",
+      "action": "recompute_checksum",
+      "target": "startHeaderCrc",
+      "algorithm": "crc32",
+      "description": "Recomputes the CRC-32 over bytes 12-31 (NextHeaderOffset, NextHeaderSize, NextHeaderCRC) and writes the corrected value at offset 8"
+    },
+    {
+      "name": "FixNextHeaderCRC",
+      "trigger": "NextHeaderCRCMismatch",
+      "action": "recompute_checksum",
+      "target": "nextHeaderCrc",
+      "algorithm": "crc32",
+      "description": "Recomputes the CRC-32 over the Next Header metadata block and writes the corrected value at offset 28"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": true,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "sevenZipSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt magic bytes to test signature rejection path" },
+      { "field": "nextHeaderOffset", "mutation": "boundary_values", "weight": 2, "description": "Test extreme Next Header offset values including 0 and UINT32_MAX" },
+      { "field": "nextHeaderSize", "mutation": "overflow", "weight": 2, "description": "Overflow the Next Header size to trigger allocation errors in decoders" },
+      { "field": "startHeaderCrc", "mutation": "random_bytes", "weight": 1, "description": "Randomize Start Header CRC to test header integrity rejection" },
+      { "field": "minorVersion", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip version bits to trigger unknown-version code paths" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "0.2",
+      "to": "0.4",
+      "description": "Upgrade legacy 7z format version to current standard by updating minor version field",
+      "changes": [
+        { "field": "minorVersion", "changeType": "set_value", "value": "4", "description": "Set minor version to 4 (current standard) from legacy 0.2 format" }
+      ]
+    }
+  ]
 }

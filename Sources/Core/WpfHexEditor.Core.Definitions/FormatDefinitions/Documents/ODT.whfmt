@@ -312,6 +312,59 @@
       "Inspect document metadata: author, timestamps, revisions"
     ]
   },
+  "diff": {
+    "keyFields": ["zipSignature", "compressionMethod", "crc32"],
+    "ignoreFields": ["lastModTime", "lastModDate", "compressionRatio"],
+    "groupBy": "ZIP Local File Header",
+    "note": "Signature and CRC identify structural integrity; compression method reveals format options. Timestamps change on every save and must be ignored for diffs."
+  },
+  "repair": [
+    {
+      "name": "FixZipSignature",
+      "trigger": "zipSignature != 0x04034B50",
+      "action": "set_value",
+      "target": "zipSignature",
+      "value": "504B0304",
+      "description": "Restore the ZIP Local File Header magic bytes to 50 4B 03 04"
+    },
+    {
+      "name": "FixCompressionMethod",
+      "trigger": "compressionMethod > 14",
+      "action": "set_value",
+      "target": "compressionMethod",
+      "value": "0800",
+      "description": "Reset compression method to Deflate (8) for standard ODT compatibility"
+    },
+    {
+      "name": "ClearEncryptionFlag",
+      "trigger": "(generalPurposeFlags & 1) == 1",
+      "action": "set_value",
+      "target": "generalPurposeFlags",
+      "value": "0000",
+      "description": "Clear encryption bit so LibreOffice can open the entry without password prompt"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "zipSignature",        "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt PK magic to test ODT container rejection in ODF-aware parsers" },
+      { "field": "compressionMethod",   "mutation": "boundary_values",   "weight": 2, "description": "Test edge compression values for ODF content.xml decompression" },
+      { "field": "uncompressedSize",    "mutation": "overflow",          "weight": 2, "description": "Overflow uncompressed size to stress memory allocation in ODF loaders" },
+      { "field": "generalPurposeFlags", "mutation": "random_bytes",      "weight": 1, "description": "Random flag bits to expose unexpected branches in ODF parsers" },
+      { "field": "crc32",               "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit CRC flip to verify integrity checking in ODT readers" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "ODF-1.1",
+      "to": "ODF-1.3",
+      "description": "ODT version upgrade: versionNeeded may change for extended features; mimetype entry must remain uncompressed",
+      "changes": [
+        { "field": "compressionMethod", "changeType": "set_value", "value": "0000", "description": "First entry (mimetype) must use Stored (method 0) per ODF spec" }
+      ]
+    }
+  ],
   "documentSchema": {
     "engine": "odf",
     "contentEntry": "content.xml",

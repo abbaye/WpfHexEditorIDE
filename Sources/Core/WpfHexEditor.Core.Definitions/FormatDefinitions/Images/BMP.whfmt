@@ -414,5 +414,74 @@
     "SupportsAnimation": false,
     "Platform": "Windows",
     "RowPadding": "4-byte aligned"
-  }
+  },
+  "diff": {
+    "keyFields": ["bmpWidth", "bmpHeight", "bitsPerPixel", "compressionMethod", "dibHeaderSize"],
+    "ignoreFields": ["reserved1", "reserved2", "importantColors", "xPixelsPerMeter", "yPixelsPerMeter"],
+    "groupBy": "dibHeaderSize",
+    "note": "Dimensions, bit depth, compression, and DIB header version are the semantically significant fields; reserved/resolution fields rarely affect rendering"
+  },
+  "repair": [
+    {
+      "name": "FixBMPSignature",
+      "trigger": "bmpSignature != 0x4D42",
+      "action": "set_value",
+      "target": "offset:0",
+      "value": "424D",
+      "description": "Restore the 'BM' file signature so Windows and third-party readers recognize the file as a BMP"
+    },
+    {
+      "name": "FixColorPlanes",
+      "trigger": "colorPlanes != 1",
+      "action": "set_value",
+      "target": "colorPlanes",
+      "value": "0100",
+      "description": "Reset color planes to 1 as mandated by the BMP specification; any other value is non-conformant"
+    },
+    {
+      "name": "FixReservedFields",
+      "trigger": "reserved1 != 0 || reserved2 != 0",
+      "action": "set_value",
+      "target": "offset:6",
+      "value": "00000000",
+      "description": "Zero out both reserved 16-bit fields to restore specification compliance"
+    },
+    {
+      "name": "FixDibHeaderSize",
+      "trigger": "dibHeaderSize != 40 && dibHeaderSize != 12 && dibHeaderSize != 108 && dibHeaderSize != 124",
+      "action": "set_value",
+      "target": "dibHeaderSize",
+      "value": "28000000",
+      "description": "Set DIB header size to 40 (BITMAPINFOHEADER, most common) when the stored value is not a recognised variant"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "bmpSignature",       "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'BM' magic to test decoder rejection path" },
+      { "field": "bmpHeight",          "mutation": "boundary_values",   "weight": 2, "description": "Zero, negative-max, and positive-max height to test top-down/bottom-up row handling" },
+      { "field": "bitsPerPixel",       "mutation": "enum_sweep",        "weight": 2, "description": "Sweep bit-depth values including invalid ones to exercise palette and color-conversion paths" },
+      { "field": "fileSize",           "mutation": "overflow",          "weight": 2, "description": "Overflow 32-bit file size to test bounds-checking in file-size-dependent allocation" },
+      { "field": "pixelDataOffset",    "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in pixel data offset to land reads outside valid pixel data area" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "BITMAPCOREHEADER (OS/2 v1, dibHeaderSize=12)",
+      "to": "BITMAPINFOHEADER (Windows 3.x, dibHeaderSize=40)",
+      "description": "Upgrade OS/2 minimal header to the standard Windows DIB header, adding compression, resolution, and color-count fields",
+      "changes": [
+        { "field": "dibHeaderSize", "changeType": "set_value", "value": "28000000", "description": "Expand header size field from 12 to 40 bytes and zero-fill the additional 28 bytes" }
+      ]
+    },
+    {
+      "from": "BITMAPINFOHEADER (dibHeaderSize=40)",
+      "to": "BITMAPV5HEADER (dibHeaderSize=124)",
+      "description": "Upgrade to V5 header to support ICC colour profiles, RGBA bit-field masks, and gamma correction metadata",
+      "changes": [
+        { "field": "dibHeaderSize", "changeType": "set_value", "value": "7C000000", "description": "Set header size to 124 bytes and append the V5 colour-profile extension fields" }
+      ]
+    }
+  ]
 }

@@ -181,5 +181,51 @@
       "0xBD": "Private Stream 1 (AC-3/DTS)"
     },
     "maxBitrate": "1.856 Mbps (MPEG-1), 10.08 Mbps (DVD MPEG-2)"
-  }
+  },
+  "diff": {
+    "keyFields": ["mpegStartCode", "scrByte"],
+    "ignoreFields": [],
+    "groupBy": "mpegStartCode",
+    "note": "mpegStartCode discriminates MPEG-2 PS packs (0x000001BA) from raw elementary streams (0x000001B3); scrByte upper bits confirm MPEG-1 vs MPEG-2"
+  },
+  "repair": [
+    {
+      "name": "FixMpeg2PsStartCode",
+      "trigger": "mpegStartCode != '000001BA' && mpegStartCode != '000001B3'",
+      "action": "set_value",
+      "target": "mpegStartCode",
+      "value": "000001BA",
+      "description": "Restores the MPEG-2 Program Stream pack start code 0x000001BA at offset 0 when the stream header is missing or corrupted"
+    },
+    {
+      "name": "FixMpeg2ScrMarker",
+      "trigger": "mpegStartCode == '000001BA' && (scrByte & 0xC0) != 0x40",
+      "action": "set_value",
+      "target": "scrByte",
+      "value": "44",
+      "description": "Sets the SCR byte upper bits to 01 (0x40 masked) to confirm MPEG-2 PS encoding; bits 6-7 of the byte at offset 4 must be '01' for MPEG-2"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "mpegStartCode", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupting the 0x000001 prefix at offset 0 tests MPEG start-code scanner rejection and re-sync in demuxers" },
+      { "field": "scrByte", "mutation": "boundary_values", "weight": 2, "description": "SCR byte values 0x00 and 0xFF test MPEG-1/2 discriminator logic and timestamp overflow in pack header parsers" },
+      { "field": "mpegStartCode", "mutation": "enum_sweep", "weight": 2, "description": "Sweeping the fourth byte (0xBA, 0xB3, 0xBB, 0xB9, etc.) exercises all MPEG start-code dispatch paths" },
+      { "field": "scrByte", "mutation": "overflow", "weight": 2, "description": "Overflow of SCR timestamp bits tests 33-bit PCR/SCR arithmetic in MPEG-2 PS decoders" },
+      { "field": "scrByte", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit mutations in the SCR byte test parser tolerance for slightly-corrupted pack timing data" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "MPEG-1-PS",
+      "to": "MPEG-2-PS",
+      "description": "Upgrade a raw MPEG-1 video elementary stream to an MPEG-2 Program Stream by writing a proper pack header",
+      "changes": [
+        { "field": "mpegStartCode", "changeType": "set_value", "value": "000001BA", "description": "Replace MPEG-1 sequence header start code 0x000001B3 with MPEG-2 PS pack start code 0x000001BA" },
+        { "field": "scrByte", "changeType": "set_value", "value": "44", "description": "Set SCR byte upper bits to '01' to mark stream as MPEG-2 PS encoding" }
+      ]
+    }
+  ]
 }

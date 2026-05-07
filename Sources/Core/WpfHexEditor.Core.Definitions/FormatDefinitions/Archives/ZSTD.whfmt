@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Zstandard Compressed",
   "formatId": "ZSTD",
@@ -191,13 +191,13 @@
       {
         "name": "Frame Magic",
         "offset": 0,
-        "icon": "\uE71B",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "Frame Header Descriptor",
         "offset": 4,
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#4ECDC4"
       }
     ]
@@ -209,17 +209,17 @@
     "groups": [
       {
         "title": "Frame Identity",
-        "icon": "\uE71B",
+        "icon": "",
         "fields": ["frameMagic", "frameType", "isSkippable"]
       },
       {
         "title": "Frame Header",
-        "icon": "\uE8A5",
+        "icon": "",
         "fields": ["fhd", "singleSegmentFlag", "contentChecksumFlag", "dictIdFlag"]
       },
       {
         "title": "Compression Parameters",
-        "icon": "\uE9D9",
+        "icon": "",
         "fields": ["windowDescriptor", "dictionaryId", "frameContentSize"]
       }
     ]
@@ -320,5 +320,42 @@
     "SupportsMultipleFrames": true,
     "TypicalCompressionRatio": "3:1 to 5:1 text, 1.5:1 binary",
     "CompressionSpeed": "400-1400 MB/s (hardware dependent)"
-  }
+  },
+  "diff": {
+    "keyFields": ["frameMagic", "fhd", "dictionaryId"],
+    "ignoreFields": ["frameContentSize", "isSkippable"],
+    "groupBy": "zstdFrame",
+    "note": "Magic identifies frame type; FHD encodes all structural flags; dictionaryId is critical for decompressibility; frameContentSize is content-dependent metadata"
+  },
+  "repair": [
+    {
+      "name": "FixFHDReservedBit",
+      "trigger": "FHDReservedBitSet",
+      "action": "recompute_checksum",
+      "target": "fhd",
+      "algorithm": "crc32",
+      "description": "Clears reserved bit 3 in the Frame Header Descriptor to restore RFC 8878 compliance and revalidates the frame structure"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": true,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "frameMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 0xFD2FB528 magic to test frame rejection" },
+      { "field": "fhd", "mutation": "boundary_values", "weight": 2, "description": "Set FHD to edge values (0x00, 0xFF) to test header descriptor parsing" },
+      { "field": "windowDescriptor", "mutation": "overflow", "weight": 2, "description": "Set window descriptor to 0xFF to trigger maximum window size allocation (~3.75 GB)" },
+      { "field": "dictionaryId", "mutation": "random_bytes", "weight": 1, "description": "Set a random dictionary ID to trigger missing dictionary error in decoder" },
+      { "field": "fhd", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip FHD bits to probe optional field presence edge cases" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "no_checksum",
+      "to": "with_checksum",
+      "description": "Enable content checksum in existing ZSTD frames for improved data integrity verification",
+      "changes": [
+        { "field": "fhd", "changeType": "set_value", "value": "4", "description": "Set Content_Checksum_Flag (bit 2) in FHD to append CRC-32 after the last data block" }
+      ]
+    }
+  ]
 }

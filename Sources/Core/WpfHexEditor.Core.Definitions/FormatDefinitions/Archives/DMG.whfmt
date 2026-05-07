@@ -456,5 +456,75 @@
     "TrailerSize": "512 bytes",
     "SupportsEncryption": true,
     "EncryptionNote": "AES-128 and AES-256 encrypted DMGs use a different structure with an ENCRCDSA trailer"
-  }
+  },
+  "diff": {
+    "keyFields": ["kolyMagic", "kolyVersion", "kolyFlags", "checksumType", "dataForkLength"],
+    "ignoreFields": ["dataForkStart"],
+    "groupBy": "kolyVersion",
+    "note": "Magic and version identify the UDIF variant; flags expose security-relevant properties (InternetEnabled); checksumType shows integrity algorithm; dataForkLength tracks content size changes. Raw data fork bytes at offset 0 vary with content and should be excluded from header-level diffs."
+  },
+  "repair": [
+    {
+      "name": "FixKolyMagic",
+      "trigger": "kolyMagic != 'koly'",
+      "action": "set_value",
+      "target": "kolyMagic",
+      "value": "6B6F6C79",
+      "description": "Restore the 4-byte 'koly' trailer magic at EOF-512 when it has been overwritten or truncated"
+    },
+    {
+      "name": "FixKolyVersion",
+      "trigger": "kolyVersion != 4",
+      "action": "set_value",
+      "target": "kolyVersion",
+      "value": "00000004",
+      "description": "Reset koly version to 4 (big-endian) — the only value produced by modern macOS tools"
+    },
+    {
+      "name": "FixHeaderSize",
+      "trigger": "headerSize != 512",
+      "action": "set_value",
+      "target": "headerSize",
+      "value": "00000200",
+      "description": "Restore koly header size field to 512 (0x200 BE) as required by the UDIF v4 specification"
+    },
+    {
+      "name": "ClearInternetEnabledFlag",
+      "trigger": "(kolyFlags & 16) != 0",
+      "action": "set_value",
+      "target": "kolyFlags",
+      "value": "clear_bit:4",
+      "description": "Clear the InternetEnabled flag (bit 4) to prevent Safari from auto-mounting the DMG after download — a primary macOS malware delivery mechanism"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "kolyMagic",    "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the koly trailer magic to test DMG parser rejection in hdiutil, 7-Zip, and forensic tools" },
+      { "field": "segmentCount", "mutation": "boundary_values",   "weight": 2, "description": "Test 0, 1, and 0xFFFFFFFF segment counts to probe multi-part DMG handling in DiskImages.framework" },
+      { "field": "checksumType", "mutation": "enum_sweep",        "weight": 2, "description": "Sweep checksum type values (0, 2, 4, 5, and unknowns) to test checksum-algorithm dispatch in DMG parsers" },
+      { "field": "dataForkLength","mutation": "overflow",         "weight": 2, "description": "Set dataForkLength beyond actual file size to expose out-of-bounds read in compressed data decoders" },
+      { "field": "kolyFlags",    "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip random flag bits to find unhandled flag combinations in macOS DiskImages.framework" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "UDIF-v1-v2",
+      "to": "UDIF-v4",
+      "description": "Upgrade obsolete pre-10.3 UDIF disk images (version 1 or 2) to the current v4 format required by modern macOS",
+      "changes": [
+        { "field": "kolyVersion", "changeType": "set_value", "value": "00000004", "description": "Set koly version to 4 (big-endian) — the current UDIF standard" },
+        { "field": "headerSize",  "changeType": "set_value", "value": "00000200", "description": "Set header size to 512 (0x200 BE) as required by UDIF v4" }
+      ]
+    },
+    {
+      "from": "internet-enabled",
+      "to": "standard",
+      "description": "Remove the InternetEnabled flag from DMG files to prevent Safari auto-mount behavior",
+      "changes": [
+        { "field": "kolyFlags", "changeType": "set_value", "value": "clear_bit:4", "description": "Clear bit 4 (InternetEnabled) from the kolyFlags field" }
+      ]
+    }
+  ]
 }

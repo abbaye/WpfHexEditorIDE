@@ -173,6 +173,52 @@
     "materialFile": ".mtl",
     "coordinateSystem": "right-handed Y-up"
   },
+  "diff": {
+    "keyFields": ["firstLine", "firstVertex"],
+    "ignoreFields": ["firstByte"],
+    "groupBy": "mtllibRef",
+    "note": "First line reveals the authoring tool and export version; vertex data changes indicate geometry edits; mtllib groups files by material set"
+  },
+  "repair": [
+    {
+      "name": "FixNullStartBytes",
+      "trigger": "firstByte == 0x0000",
+      "action": "set_value",
+      "target": "firstByte",
+      "value": "2320",
+      "description": "Replace null start bytes with '# ' to restore a valid OBJ comment line and prevent binary misidentification"
+    },
+    {
+      "name": "FixMissingMtllibNewline",
+      "trigger": "mtllibRef missing newline terminator",
+      "action": "set_value",
+      "target": "mtllibRef",
+      "value": "0A",
+      "description": "Ensure mtllib reference line is newline-terminated to prevent material library parsing failures"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "firstLine", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the opening comment or vertex line to test OBJ parser fault tolerance" },
+      { "field": "firstVertex", "mutation": "boundary_values", "weight": 2, "description": "Insert extreme float values in vertex coordinates to test geometry pipeline overflow" },
+      { "field": "mtllibRef", "mutation": "overflow", "weight": 2, "description": "Overflow the mtllib filename to test path-length handling in material loaders" },
+      { "field": "firstLine", "mutation": "random_bytes", "weight": 1, "description": "Inject random bytes at start to test resilience against non-ASCII content in text parser" },
+      { "field": "firstVertex", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit-flip vertex data to produce invalid coordinate values and exercise geometry validators" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "wavefront_obj_legacy",
+      "to": "wavefront_obj_modern",
+      "description": "Normalize OBJ file to use standard 'v/vt/vn' line format with consistent whitespace and UTF-8 encoding",
+      "changes": [
+        { "field": "firstLine", "changeType": "set_value", "value": "23 Exported by WpfHexEditor", "description": "Replace legacy generator comment with standard tool attribution comment" },
+        { "field": "mtllibRef", "changeType": "set_value", "value": "mtllib model.mtl", "description": "Normalize material library reference to standard relative path convention" }
+      ]
+    }
+  ],
   "forensic": {
     "category": "3d",
     "riskLevel": "low",

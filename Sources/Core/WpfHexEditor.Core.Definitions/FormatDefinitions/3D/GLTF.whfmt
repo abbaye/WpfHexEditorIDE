@@ -169,6 +169,51 @@
     "embeddedBase64": true,
     "specification": "Khronos glTF 2.0"
   },
+  "diff": {
+    "keyFields": ["assetMarker", "versionMarker"],
+    "ignoreFields": ["jsonBrace"],
+    "groupBy": "assetMarker",
+    "note": "Asset marker encodes the glTF version and generator; scene/mesh region captures structural scene graph changes"
+  },
+  "repair": [
+    {
+      "name": "FixMissingOpenBrace",
+      "trigger": "jsonBrace != 123",
+      "action": "set_value",
+      "target": "jsonBrace",
+      "value": "7B",
+      "description": "Restore the JSON opening brace '{' at offset 0 to make the file parseable as a valid JSON object"
+    },
+    {
+      "name": "FixMissingAssetVersion",
+      "trigger": "assetMarker does not contain 'version'",
+      "action": "set_value",
+      "target": "assetMarker",
+      "value": "22617373657422 3A7B2276657273696F6E223A22322E30227D",
+      "description": "Inject the required 'asset':{\"version\":\"2.0\"} object to make the JSON a conformant glTF 2.0 document"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "headerText", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the JSON header text to test glTF parser fault tolerance on malformed JSON" },
+      { "field": "assetMarker", "mutation": "boundary_values", "weight": 2, "description": "Replace asset version with empty string or null to test mandatory field validation" },
+      { "field": "versionMarker", "mutation": "overflow", "weight": 2, "description": "Inject extremely large mesh/buffer array declarations to probe memory allocation limits" },
+      { "field": "headerText", "mutation": "random_bytes", "weight": 1, "description": "Inject random bytes into JSON to test UTF-8 handling in JSON parsers" },
+      { "field": "jsonBrace", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit-flip the opening brace to produce invalid JSON start characters" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "gltf_1_0",
+      "to": "gltf_2_0",
+      "description": "Upgrade glTF asset version declaration from 1.0 to 2.0 (PBR material model, improved scene graph)",
+      "changes": [
+        { "field": "assetMarker", "changeType": "set_value", "value": "\"asset\":{\"version\":\"2.0\"}", "description": "Update the asset version string from '1.0' to '2.0' to signal Khronos glTF 2.0 compliance" }
+      ]
+    }
+  ],
   "forensic": {
     "category": "3d",
     "riskLevel": "low",

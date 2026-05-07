@@ -477,6 +477,67 @@
     "Endianness": "big-endian",
     "SyncPattern": "0xFFF (12 bits)"
   },
+  "diff": {
+    "keyFields": ["adtsSyncWord", "adtsId", "adtsProfile", "adtsSamplingIndex", "channelConfig"],
+    "ignoreFields": ["adtsFrameLenHigh", "adtsFrameLenMid", "adtsBufferFullnessLow", "crcCheck"],
+    "groupBy": "adtsProfile",
+    "note": "MPEG version, profile, sample rate index, and channel config define codec identity; frame length and buffer fullness vary per frame"
+  },
+  "repair": [
+    {
+      "name": "FixSyncWord",
+      "trigger": "(adtsSyncWord & 0xFFF0) != 0xFFF0",
+      "action": "set_value",
+      "target": "adtsSyncWord",
+      "value": "0xFFF1",
+      "description": "Restore the 12-bit ADTS sync word (0xFFF) and protection-absent bit to allow frame boundary detection"
+    },
+    {
+      "name": "FixLayer",
+      "trigger": "adtsLayer != 0",
+      "action": "set_value",
+      "target": "adtsLayer",
+      "value": 0,
+      "description": "ADTS layer must always be 0 for AAC; non-zero values indicate a misidentified MP1/MP2/MP3 stream"
+    },
+    {
+      "name": "ClampSamplingIndex",
+      "trigger": "adtsSamplingIndex > 12",
+      "action": "set_value",
+      "target": "adtsSamplingIndex",
+      "value": 4,
+      "description": "Sampling frequency index 13-15 are reserved; default to index 4 (44100 Hz) when out of range"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "adtsSyncWord", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 0xFFF sync pattern to test frame boundary detection and recovery" },
+      { "field": "adtsSamplingIndex", "mutation": "enum_sweep", "weight": 2, "description": "Sweep all 16 sampling index values including reserved 13-15 to test lookup table bounds" },
+      { "field": "adtsProfile", "mutation": "enum_sweep", "weight": 2, "description": "Sweep AAC profile values including undefined ones to test decoder profile dispatch" },
+      { "field": "adtsHeader4", "mutation": "overflow", "weight": 2, "description": "Max frame length value stresses decoder buffer allocation" },
+      { "field": "adtsHeader3", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Random bit flips across channel config and frame length spans two bytes" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "MPEG-2 AAC",
+      "to": "MPEG-4 AAC",
+      "description": "Switch ADTS stream from MPEG-2 to MPEG-4 signaling; enables SBR/HE-AAC and PS tools in compliant decoders",
+      "changes": [
+        { "field": "adtsId", "changeType": "set_value", "value": 0, "description": "Set MPEG ID bit to 0 to signal MPEG-4 (ISO/IEC 14496-3)" }
+      ]
+    },
+    {
+      "from": "AAC-LC",
+      "to": "AAC-Main",
+      "description": "Upgrade profile from Low Complexity to Main profile for full-tool encoding (not typically done post-encode)",
+      "changes": [
+        { "field": "adtsProfile", "changeType": "set_value", "value": 0, "description": "Set profile bits to 0 (AAC Main, object type 1)" }
+      ]
+    }
+  ],
   "forensic": {
     "category": "audio",
     "riskLevel": "low",

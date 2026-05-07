@@ -187,5 +187,66 @@
       "Check timestamp sequence for gaps or chronological anomalies",
       "Inspect event severity levels and source identifiers"
     ]
-  }
+  },
+  "diff": {
+    "keyFields": ["minidumpSignature", "version", "numberOfStreams", "timestamp", "flags"],
+    "ignoreFields": ["checksum"],
+    "groupBy": "flags",
+    "note": "Signature and version establish dump validity; numberOfStreams and timestamp identify the dump scope and creation time; flags describe the dump type. Checksum is typically zero and can vary without semantic change."
+  },
+  "repair": [
+    {
+      "name": "FixMinidumpSignature",
+      "trigger": "minidumpSignature != 'MDMP'",
+      "action": "set_value",
+      "target": "minidumpSignature",
+      "value": "4D444D50",
+      "description": "Restore the 4-byte MDMP signature at offset 0 when it has been truncated or overwritten"
+    },
+    {
+      "name": "FixVersion",
+      "trigger": "version != 0x93A7",
+      "action": "set_value",
+      "target": "version",
+      "value": "A793",
+      "description": "Reset the version field to 0x93A7 (LE: A7 93) — the only defined Minidump version value"
+    },
+    {
+      "name": "ClearChecksum",
+      "trigger": "checksum != 0",
+      "action": "set_value",
+      "target": "checksum",
+      "value": "00000000",
+      "description": "Zero the checksum field; Windows always writes 0 here and non-zero values confuse some parsers"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "minidumpSignature",  "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the MDMP magic to test dump parser rejection and fallback handling in debuggers" },
+      { "field": "numberOfStreams",    "mutation": "boundary_values",   "weight": 2, "description": "Test 0 and 0xFFFF stream counts to probe stream-directory parsing and allocator bounds" },
+      { "field": "flags",             "mutation": "enum_sweep",        "weight": 2, "description": "Sweep known MiniDumpType flag combinations to test dump-content dispatch in WinDbg and similar tools" },
+      { "field": "streamDirectoryRva", "mutation": "overflow",         "weight": 2, "description": "Overflow the RVA to test out-of-bounds access in stream directory readers" },
+      { "field": "timestamp",         "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in the Unix timestamp to test time parsing and display edge cases" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "MiniDumpNormal (flags=0x0)",
+      "to": "MiniDumpWithFullMemory (flags=0x2)",
+      "description": "Upgrade a minimal crash dump to a full-memory dump by changing the type flags; actual memory data must be appended separately",
+      "changes": [
+        { "field": "flags", "changeType": "set_value", "value": "0200000000000000", "description": "Set flags uint64 to MiniDumpWithFullMemory (0x00000002) in LE encoding" }
+      ]
+    },
+    {
+      "from": "legacy-version",
+      "to": "standard-version",
+      "description": "Repair dumps written by early crash handlers that used incorrect version bytes",
+      "changes": [
+        { "field": "version", "changeType": "set_value", "value": "A793", "description": "Set version field to the canonical Windows Minidump value 0x93A7 (LE)" }
+      ]
+    }
+  ]
 }

@@ -199,5 +199,50 @@
     "allowedVideoCodecs": ["VP8", "VP9", "AV1"],
     "allowedAudioCodecs": ["Vorbis", "Opus"],
     "royaltyFree": true
-  }
+  },
+  "diff": {
+    "keyFields": ["ebmlId", "ebmlVersion", "docTypeSize"],
+    "ignoreFields": ["ebmlSize"],
+    "groupBy": "ebmlVersion",
+    "note": "ebmlId is the mandatory EBML discriminator; ebmlVersion and docTypeSize reflect the EBML header configuration; ebmlSize is a VINT that varies by encoder and is layout noise"
+  },
+  "repair": [
+    {
+      "name": "FixEbmlSignature",
+      "trigger": "ebmlId != '1A45DFA3'",
+      "action": "set_value",
+      "target": "ebmlId",
+      "value": "1A45DFA3",
+      "description": "Restores the 4-byte EBML element ID at offset 0; required for any EBML-based container including WebM"
+    },
+    {
+      "name": "FixEbmlVersion",
+      "trigger": "ebmlVersion == 0",
+      "action": "set_value",
+      "target": "ebmlVersion",
+      "value": "01",
+      "description": "Sets the EBML version payload byte to 1; WebM spec mandates EBMLVersion = 1"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "ebmlId", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupting the EBML ID tests browser WebM decoder rejection and exercises format-detection fallback in media pipelines" },
+      { "field": "ebmlSize", "mutation": "boundary_values", "weight": 2, "description": "VINT boundary values (0x00, 0x7F, multi-byte VINT) test EBML variable-length size decoding robustness in Chrome/Firefox" },
+      { "field": "ebmlVersion", "mutation": "overflow", "weight": 2, "description": "Values > 1 test strict EBML version rejection in conformant readers; exercises version-gate code" },
+      { "field": "docTypeSize", "mutation": "enum_sweep", "weight": 2, "description": "Sweeping docTypeSize values tests DocType element boundary parsing; an incorrect size can shift all subsequent element parsing" },
+      { "field": "ebmlId", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit mutations in the EBML ID byte test near-valid signature tolerance in browser media decoders" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "webm-vp8",
+      "to": "webm-vp9",
+      "description": "Migrate a VP8-codec WebM file declaration to VP9 profile; codec FourCC change is in the Tracks element, not the EBML header",
+      "changes": [
+        { "field": "ebmlVersion", "changeType": "set_value", "value": "01", "description": "EBMLVersion remains 1; actual codec migration happens within the Tracks/TrackEntry/CodecID EBML element" }
+      ]
+    }
+  ]
 }

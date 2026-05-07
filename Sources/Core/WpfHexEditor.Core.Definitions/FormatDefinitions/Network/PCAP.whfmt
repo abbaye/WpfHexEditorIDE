@@ -269,5 +269,74 @@
     "HeaderSize": 24,
     "PacketRecordHeaderSize": 16,
     "LinkTypes": "See IANA LINKTYPE registry — https://www.tcpdump.org/linktypes.html"
-  }
+  },
+  "diff": {
+    "keyFields": ["pcapMagic", "versionMajor", "versionMinor", "network", "snaplen"],
+    "ignoreFields": ["timeZoneOffset", "timestampAccuracy"],
+    "groupBy": "network",
+    "note": "Magic determines byte order and timestamp resolution; network (link type) defines packet decoding strategy. timeZoneOffset and timestampAccuracy are always 0 in practice and carry no diff value."
+  },
+  "repair": [
+    {
+      "name": "FixMagicLE",
+      "trigger": "pcapMagic not in {2712847316, 3569595041, 2712812109, 1295823777}",
+      "action": "set_value",
+      "target": "pcapMagic",
+      "value": "A1B2C3D4",
+      "description": "Restores the standard little-endian microsecond PCAP magic number when the header magic is corrupt or missing."
+    },
+    {
+      "name": "FixVersionMajor",
+      "trigger": "versionMajor != 2",
+      "action": "set_value",
+      "target": "versionMajor",
+      "value": "0200",
+      "description": "Resets version_major to 2 (standard libpcap value) when a non-standard or zero value breaks compatibility with Wireshark and tcpdump."
+    },
+    {
+      "name": "FixVersionMinor",
+      "trigger": "versionMinor != 4",
+      "action": "set_value",
+      "target": "versionMinor",
+      "value": "0400",
+      "description": "Resets version_minor to 4 forming the standard PCAP version 2.4 expected by all libpcap-compatible tools."
+    },
+    {
+      "name": "FixSnaplen",
+      "trigger": "snaplen == 0",
+      "action": "set_value",
+      "target": "snaplen",
+      "value": "FFFF0000",
+      "description": "Sets snaplen to 65535 (0x0000FFFF LE) when snaplen is 0, which causes Wireshark to display all packets as truncated."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "pcapMagic",    "mutation": "corrupt_signature", "weight": 3, "description": "Corrupting the magic breaks format detection and may cause parser crashes in lenient tools." },
+      { "field": "snaplen",      "mutation": "boundary_values",   "weight": 2, "description": "Extreme snaplen values (0, 0xFFFFFFFF) stress packet-length validation in parsers." },
+      { "field": "network",      "mutation": "overflow",          "weight": 2, "description": "Invalid link-layer type codes trigger unhandled decoder paths in Wireshark dissectors." },
+      { "field": "versionMajor", "mutation": "bit_flip",          "rate": 0.001, "weight": 2, "description": "Single-bit corruption in version fields tests version-check error handling." },
+      { "field": "timeZoneOffset","mutation": "random_bytes",     "weight": 1, "description": "Non-zero timezone offset is ignored by most tools but may expose incorrect signed-integer handling." }
+    ]
+  },
+  "migration": [
+    {
+      "from": "pcap-2.3",
+      "to": "pcap-2.4",
+      "description": "Update PCAP minor version from 3 to 4 — version 2.4 is the universal libpcap standard and the only version accepted by modern Wireshark without a warning.",
+      "changes": [
+        { "field": "versionMinor", "changeType": "set_value", "value": "0400", "description": "Set version_minor to 4 (LE uint16) to conform to PCAP 2.4." }
+      ]
+    },
+    {
+      "from": "pcap-le-micro",
+      "to": "pcap-le-nano",
+      "description": "Upgrade timestamp resolution from microseconds to nanoseconds by updating the magic number — requires re-writing all packet ts_usec fields as nanoseconds.",
+      "changes": [
+        { "field": "pcapMagic", "changeType": "set_value", "value": "A1B23C4D", "description": "Change magic from A1B2C3D4 (microsecond LE) to A1B23C4D (nanosecond LE)." }
+      ]
+    }
+  ]
 }

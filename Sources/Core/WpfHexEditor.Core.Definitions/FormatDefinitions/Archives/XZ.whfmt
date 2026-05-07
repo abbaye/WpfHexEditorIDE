@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "XZ Compressed File",
   "formatId": "XZ",
@@ -170,25 +170,25 @@
       {
         "name": "Stream Header",
         "offset": 0,
-        "icon": "\uE71B",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "Stream Flags",
         "offset": 6,
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#4ECDC4"
       },
       {
         "name": "Stream Header CRC-32",
         "offset": 8,
-        "icon": "\uE72E",
+        "icon": "",
         "color": "#FF6B9D"
       },
       {
         "name": "First Block",
         "offset": 12,
-        "icon": "\uE8B7",
+        "icon": "",
         "color": "#FFE66D"
       }
     ]
@@ -200,12 +200,12 @@
     "groups": [
       {
         "title": "Stream Header",
-        "icon": "\uE71B",
+        "icon": "",
         "fields": ["xzMagic", "streamFlagsMSB", "streamFlagsLSB"]
       },
       {
         "title": "Integrity",
-        "icon": "\uE72E",
+        "icon": "",
         "fields": ["headerCRC", "crcValid"]
       }
     ]
@@ -312,5 +312,50 @@
     "SupportsMultipleBlocks": true,
     "StreamHeaderSize": "12 bytes",
     "StreamFooterSize": "12 bytes"
-  }
+  },
+  "diff": {
+    "keyFields": ["xzMagic", "streamFlagsLSB", "headerCRC"],
+    "ignoreFields": ["crcValid"],
+    "groupBy": "xzStreamHeader",
+    "note": "Magic and check type flags define the stream identity; headerCRC confirms flag integrity; crcValid is a computed boolean with no diff value"
+  },
+  "repair": [
+    {
+      "name": "FixStreamHeaderCRC32",
+      "trigger": "HeaderCRCMismatch",
+      "action": "recompute_checksum",
+      "target": "headerCRC",
+      "algorithm": "crc32",
+      "description": "Recomputes the CRC-32 over the 2 stream flags bytes (offsets 6-7) and writes the corrected little-endian value at offset 8"
+    },
+    {
+      "name": "FixStreamFlagsMSB",
+      "trigger": "StreamFlagsMSBNonZero",
+      "action": "recompute_checksum",
+      "target": "streamFlagsMSB",
+      "algorithm": "crc32",
+      "description": "Resets the stream flags high byte to 0x00 to restore XZ specification compliance, then recomputes headerCRC"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": true,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "xzMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 0xFD377A585A00 magic to test stream rejection" },
+      { "field": "streamFlagsLSB", "mutation": "enum_sweep", "weight": 2, "description": "Sweep all 256 check type values including undefined ones to test decoder robustness" },
+      { "field": "streamFlagsMSB", "mutation": "boundary_values", "weight": 2, "description": "Set MSB to non-zero values to test reserved byte rejection" },
+      { "field": "headerCRC", "mutation": "random_bytes", "weight": 1, "description": "Randomize the header CRC to trigger CRC mismatch code path" },
+      { "field": "streamFlagsLSB", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip individual bits in check type byte to probe boundary conditions" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "check_none",
+      "to": "check_crc64",
+      "description": "Upgrade XZ stream from no integrity check to CRC-64 for improved data reliability",
+      "changes": [
+        { "field": "streamFlagsLSB", "changeType": "set_value", "value": "4", "description": "Set check type to 0x04 (CRC-64) — the most common default for modern xz-utils" }
+      ]
+    }
+  ]
 }

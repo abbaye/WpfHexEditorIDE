@@ -193,5 +193,58 @@
     "partitions": ["Header", "Body", "Footer"],
     "essenceModes": ["Frame-wrapped", "Clip-wrapped", "Custom-wrapped"],
     "standardBody": "SMPTE"
-  }
+  },
+  "diff": {
+    "keyFields": ["mxfKey", "mxfKeyFull", "berLength"],
+    "ignoreFields": [],
+    "groupBy": "mxfKey",
+    "note": "mxfKey (first 8 bytes) identifies the SMPTE Universal Label prefix; mxfKeyFull discriminates specific partition types; berLength encodes the KLV value size and impacts partition layout"
+  },
+  "repair": [
+    {
+      "name": "FixSmpteUlPrefix",
+      "trigger": "mxfKey != '060E2B3402050101'",
+      "action": "set_value",
+      "target": "mxfKey",
+      "value": "060E2B3402050101",
+      "description": "Restores the 8-byte SMPTE Universal Label prefix at offset 0; this is the mandatory identifier for any MXF KLV structure"
+    },
+    {
+      "name": "FixHeaderPartitionKey",
+      "trigger": "mxfKeyFull does not start with '060E2B34'",
+      "action": "set_value",
+      "target": "mxfKeyFull",
+      "value": "060E2B3402050101 0D01020101020000",
+      "description": "Restores the complete 16-byte Header Partition Pack KLV key when the full key is corrupted beyond the UL prefix"
+    },
+    {
+      "name": "FixBerLength",
+      "trigger": "berLength == 0",
+      "action": "set_value",
+      "target": "berLength",
+      "value": "83",
+      "description": "Sets BER length to 0x83 (3-byte long-form BER) which is typical for MXF Header Partition Pack value sizes; a zero length byte indicates corruption"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "mxfKey", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupting the SMPTE UL prefix tests MXF parser KLV scanner rejection and partition-search fallback in broadcast tools" },
+      { "field": "berLength", "mutation": "boundary_values", "weight": 2, "description": "BER length values 0x00, 0x7F, 0x80, and 0xFF test BER long-form vs short-form decode boundary conditions in MXF readers" },
+      { "field": "mxfKeyFull", "mutation": "enum_sweep", "weight": 2, "description": "Sweeping the partition-type bytes within the full KLV key (bytes 12-13) exercises different partition-type handling (header/body/footer/generic)" },
+      { "field": "berLength", "mutation": "overflow", "weight": 2, "description": "Multi-byte BER length overflow (0x84 + 4-byte length claiming extreme size) tests allocation guard in KLV value-buffer sizing" },
+      { "field": "mxfKey", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit mutations in the SMPTE UL bytes test near-valid key tolerance in conformant MXF parsers" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "MXF-OP-Atom",
+      "to": "MXF-OP1a",
+      "description": "Migrate an MXF OP-Atom (single-essence clip-wrapped) file declaration to OP1a (interleaved frame-wrapped) by updating the Operational Pattern UL in the Header Partition Pack value",
+      "changes": [
+        { "field": "mxfKeyFull", "changeType": "set_value", "value": "060E2B3402050101 0D01020101010000", "description": "Replace OP-Atom partition key variant bytes with OP1a pattern; bytes 12-13 change from 0x02/0x00 to 0x01/0x00" }
+      ]
+    }
+  ]
 }

@@ -162,5 +162,42 @@
     "Compression": "LZ4/LZ4HC (typical) or LZMA per block",
     "Versions": "Bundle v6=Unity5, v7=2017-19, v8=2020+",
     "Contents": "AssetBundleManifest + compressed asset data blocks"
-  }
+  },
+  "diff": {
+    "keyFields": ["unitySignature", "unityBundleVersion"],
+    "ignoreFields": [],
+    "groupBy": "unitySignature",
+    "note": "unitySignature distinguishes UnityFS/UnityRaw/UnityWeb bundle types; unityBundleVersion maps to a Unity Engine release generation and determines header layout — both must match when comparing bundles across Unity versions"
+  },
+  "repair": [
+    {
+      "name": "FixBundleSignature",
+      "trigger": "unitySignature is not 'UnityFS', 'UnityRaw', or 'UnityWeb'",
+      "action": "recompute_checksum",
+      "target": "unitySignature",
+      "algorithm": "crc32",
+      "description": "Restore the Unity bundle type signature string at offset 0; an invalid or truncated signature causes Unity Engine and extraction tools to reject the bundle file"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "unitySignature",     "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 'UnityFS\\0' ASCII magic to test bundle loader format rejection" },
+      { "field": "unityBundleVersion", "mutation": "boundary_values",   "weight": 2, "description": "Set bundle version to 0 or 255 to test version-gated parsing paths in UnityPy/AssetStudio" },
+      { "field": "unityBundleVersion", "mutation": "bit_flip", "rate": 0.01, "weight": 2, "description": "Flip bits in bundle version uint32 to produce unsupported version values" },
+      { "field": "unityBundleVersion", "mutation": "overflow",          "weight": 2, "description": "Set version to max uint32 to test overflow handling in version-dispatch code" },
+      { "field": "unitySignature",     "mutation": "truncate",          "weight": 1, "description": "Truncate the signature before the null terminator to test null-safety in string parsing" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "UnityFS v6 (Unity 5.x)",
+      "to": "UnityFS v8 (Unity 2020+)",
+      "description": "Unity 2020+ bundles use bundle version 8 with an extended header layout; the signature string remains 'UnityFS\\0' but the bundleSize field is expanded to uint64 and new compression flags are defined",
+      "changes": [
+        { "field": "unityBundleVersion", "changeType": "set_value", "value": "8", "description": "Update bundle format version from 6 (Unity 5.x) to 8 (Unity 2020+) to enable 2020+ header layout parsing" }
+      ]
+    }
+  ]
 }

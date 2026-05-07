@@ -296,5 +296,74 @@
     "checksumAlgorithm": "Adler-32 from offset 12",
     "signatureAlgorithm": "SHA-1 from offset 32",
     "multidexSupport": "Multiple DEX files in APK: classes.dex, classes2.dex, classesN.dex"
-  }
+  },
+  "diff": {
+    "keyFields": ["dexVersion", "dexClassCount", "dexStringCount", "dexEndianTag"],
+    "ignoreFields": ["dexChecksum", "dexSha1"],
+    "groupBy": "dexVersion",
+    "note": "Version string identifies Android target API; class and string counts reveal structural differences between builds. Checksums change with any byte edit and are therefore excluded from semantic diffing."
+  },
+  "repair": [
+    {
+      "name": "FixDEXMagic",
+      "trigger": "dexMagic != 'dex\\n'",
+      "action": "set_value",
+      "target": "dexMagic",
+      "value": "6465780A",
+      "description": "Restore the 4-byte DEX magic 'dex\\n' (0x64 0x65 0x78 0x0A) at offset 0 when corrupted"
+    },
+    {
+      "name": "FixHeaderSize",
+      "trigger": "dexHeaderSize != 112",
+      "action": "set_value",
+      "target": "dexHeaderSize",
+      "value": "70000000",
+      "description": "Reset header size field to 0x70 (112) in LE encoding; any other value is invalid per the DEX specification"
+    },
+    {
+      "name": "FixEndianTag",
+      "trigger": "dexEndianTag != 305419896",
+      "action": "set_value",
+      "target": "dexEndianTag",
+      "value": "78563412",
+      "description": "Restore the little-endian tag 0x12345678 (LE encoded as 78 56 34 12) when it has been overwritten"
+    },
+    {
+      "name": "FixNullTerminator",
+      "trigger": "dexNullTerm != 0",
+      "action": "set_value",
+      "target": "dexNullTerm",
+      "value": "00",
+      "description": "Zero the null terminator byte at offset 7; a non-zero byte here causes version-string mismatch in strict parsers"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "dexMagic",      "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 'dex\\n' magic to test Android runtime and static analysis tool rejection paths" },
+      { "field": "dexClassCount", "mutation": "boundary_values",   "weight": 2, "description": "Test 0 and 0xFFFFFFFF class counts to probe class-loader allocation and iteration bounds" },
+      { "field": "dexVersion",    "mutation": "enum_sweep",        "weight": 2, "description": "Sweep version strings ('035'–'040' and beyond) to test version-gating in ART and dex parsers" },
+      { "field": "dexFileSize",   "mutation": "overflow",          "weight": 2, "description": "Set fileSize to values larger or smaller than the actual file to test size-validation checks" },
+      { "field": "dexChecksum",   "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in the Adler-32 checksum to test integrity-check bypass handling in loaders" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "dex-035",
+      "to": "dex-039",
+      "description": "Upgrade the version string for Android 10+ compatibility when repackaging older APKs",
+      "changes": [
+        { "field": "dexVersion", "changeType": "set_value", "value": "303339", "description": "Set 3-byte ASCII version from '035' (0x30 0x33 0x35) to '039' (0x30 0x33 0x39)" }
+      ]
+    },
+    {
+      "from": "big-endian",
+      "to": "little-endian",
+      "description": "Normalize non-standard big-endian DEX files produced by rare toolchains back to the standard LE byte order",
+      "changes": [
+        { "field": "dexEndianTag", "changeType": "set_value", "value": "78563412", "description": "Set endian tag to 0x12345678 in LE encoding (standard Android format)" }
+      ]
+    }
+  ]
 }

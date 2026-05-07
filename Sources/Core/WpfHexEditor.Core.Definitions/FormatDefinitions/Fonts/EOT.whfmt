@@ -205,5 +205,50 @@
     "Compression": "MtxCompression (proprietary Microsoft, not zlib/Brotli) when Flags bit2=1",
     "Status": "Deprecated — Internet Explorer only, not supported by any modern browser",
     "Detection": "Offset 34 = 0x504C magic + .eot extension"
-  }
+  },
+  "diff": {
+    "keyFields": ["eotVersion", "eotMagic", "eotFontDataSize"],
+    "ignoreFields": ["eotSize"],
+    "groupBy": "eotVersion",
+    "note": "Version distinguishes EOT v2.1 from v2.2 (embedding restriction changes); font data size reveals embedded font changes; total file size is a derived field and redundant for diff"
+  },
+  "repair": [
+    {
+      "name": "FixEotMagic",
+      "trigger": "eotMagic != 20556",
+      "action": "set_value",
+      "target": "eotMagic",
+      "value": "4C50",
+      "description": "Restore the 'PL' (0x504C) magic number at offset 34 to make the file identifiable as a valid EOT font"
+    },
+    {
+      "name": "FixEotSize",
+      "trigger": "eotSize != actual file size",
+      "action": "set_value",
+      "target": "eotSize",
+      "value": "computed",
+      "description": "Update the EOTSize field at offset 0 to match the actual on-disk file size for valid EOT identification"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "eotMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 'PL' magic at offset 34 to test IE EOT parser detection and error recovery" },
+      { "field": "eotFontDataSize", "mutation": "boundary_values", "weight": 2, "description": "Test font data size of 0 or 0xFFFFFFFF to probe embedded font data reader allocation" },
+      { "field": "eotVersion", "mutation": "overflow", "weight": 2, "description": "Set version to unknown values outside 0x00020001-0x00020002 to test EOT version handling" },
+      { "field": "eotSize", "mutation": "random_bytes", "weight": 1, "description": "Corrupt the total file size field to cause size-mismatch errors in EOT validators" },
+      { "field": "eotMagic", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit-flip the 'PL' magic to produce near-miss values and test strict vs lenient EOT detection" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "eot_v2_1",
+      "to": "eot_v2_2",
+      "description": "Upgrade EOT header version from v2.1 (standard) to v2.2 (with embedding restrictions)",
+      "changes": [
+        { "field": "eotVersion", "changeType": "set_value", "value": "02000200", "description": "Set version to 0x00020002 to declare EOT v2.2 with embedding restriction flags enabled" }
+      ]
+    }
+  ]
 }

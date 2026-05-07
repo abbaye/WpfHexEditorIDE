@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "TAR Archive",
   "formatId": "TAR",
@@ -374,5 +374,43 @@
     "BlockAlignment": 512,
     "MaxPathLength": "256 characters (USTAR: 155 prefix + 100 name)",
     "MaxFileSize": "8 GiB (octal representation limit)"
-  }
+  },
+  "diff": {
+    "keyFields": ["fileName", "fileSize", "headerChecksum", "ustarMagic"],
+    "ignoreFields": ["lastModTime", "ownerUID", "groupGID"],
+    "groupBy": "tarEntry",
+    "note": "fileName and fileSize identify the entry; headerChecksum detects corruption; timestamps and ownership are environment-specific and noisy for structural diffs"
+  },
+  "repair": [
+    {
+      "name": "FixHeaderChecksum",
+      "trigger": "HeaderChecksumMismatch",
+      "action": "recompute_checksum",
+      "target": "headerChecksum",
+      "algorithm": "crc32",
+      "description": "Recomputes the header checksum by summing all 512 bytes of the TAR header block (treating the checksum field as spaces) and writing the corrected octal ASCII value at offset 148"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": true,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "ustarMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 'ustar' magic to test USTAR format detection fallback to V7" },
+      { "field": "fileSize", "mutation": "boundary_values", "weight": 2, "description": "Set file size to 0 or maximum octal value to test boundary handling in extraction" },
+      { "field": "typeFlag", "mutation": "enum_sweep", "weight": 2, "description": "Sweep all type flag values including undefined ones to test entry type handling" },
+      { "field": "fileName", "mutation": "overflow", "weight": 1, "description": "Overflow the 100-byte filename field to test path truncation handling" },
+      { "field": "headerChecksum", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in the checksum field to trigger checksum mismatch detection" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "V7",
+      "to": "USTAR",
+      "description": "Upgrade legacy V7 TAR to POSIX USTAR format by adding magic and version fields",
+      "changes": [
+        { "field": "ustarMagic", "changeType": "set_value", "value": "ustar", "description": "Write 'ustar' magic at offset 257 to signal USTAR extended header format" },
+        { "field": "ustarVersion", "changeType": "set_value", "value": "00", "description": "Write '00' version string at offset 263 per POSIX USTAR specification" }
+      ]
+    }
+  ]
 }

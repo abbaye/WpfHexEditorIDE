@@ -261,5 +261,42 @@
       "Check resource/asset table entries and data block offsets",
       "Inspect compression flags, checksums, and embedded file boundaries"
     ]
-  }
+  },
+  "diff": {
+    "keyFields": ["gameTitle", "gameCode", "complement", "softwareVersion"],
+    "ignoreFields": ["makerCode"],
+    "groupBy": "gameCode",
+    "note": "gameCode encodes region and title identity; complement is the header integrity checksum; softwareVersion tracks game revisions — these together uniquely identify a ROM build"
+  },
+  "repair": [
+    {
+      "name": "FixHeaderComplement",
+      "trigger": "complement != -(sum(bytes[0xA0..0xBC])) - 0x19",
+      "action": "recompute_checksum",
+      "target": "complement",
+      "algorithm": "crc32",
+      "description": "Recompute the GBA header complement byte as -(sum of bytes 0xA0–0xBC) - 0x19 (mod 256); an invalid complement causes the GBA boot ROM to reject the cartridge"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "nintendoLogo",   "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 156-byte Nintendo logo bitmap to trigger boot ROM rejection" },
+      { "field": "gameCode",       "mutation": "boundary_values",   "weight": 2, "description": "Replace game code with null/all-FF to test region and ID parsing edge cases" },
+      { "field": "complement",     "mutation": "bit_flip", "rate": 0.01, "weight": 2, "description": "Flip bits in complement byte to produce invalid header checksum" },
+      { "field": "entryPoint",     "mutation": "overflow",          "weight": 2, "description": "Set entry point to out-of-range ARM addresses to test emulator boot handling" },
+      { "field": "softwareVersion","mutation": "random_bytes",      "weight": 1, "description": "Randomize version byte to stress revision tracking logic" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "GBA ROM v1.0",
+      "to": "GBA ROM Rev.A",
+      "description": "Mask ROM revision increment — the softwareVersion byte advances from 0x00 to 0x01; no structural header changes, only version byte update",
+      "changes": [
+        { "field": "softwareVersion", "changeType": "set_value", "value": "1", "description": "Increment softwareVersion from 0x00 (first release) to 0x01 (Rev.A)" }
+      ]
+    }
+  ]
 }

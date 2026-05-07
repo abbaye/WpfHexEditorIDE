@@ -264,5 +264,42 @@
       "Check resource/asset table entries and data block offsets",
       "Inspect compression flags, checksums, and embedded file boundaries"
     ]
-  }
+  },
+  "diff": {
+    "keyFields": ["initialPc", "loadAddress", "fileSize"],
+    "ignoreFields": ["marker", "memfillStart", "memfillSize"],
+    "groupBy": "psXExeMagic",
+    "note": "initialPc (entry point) and loadAddress together determine where the executable loads and runs in PSX RAM; fileSize identifies the executable payload size; marker is license text that is identical across all standard PS1 executables"
+  },
+  "repair": [
+    {
+      "name": "FixMagicBytes",
+      "trigger": "psXExeMagic does not equal 'PS-X EXE'",
+      "action": "recompute_checksum",
+      "target": "psXExeMagic",
+      "algorithm": "crc32",
+      "description": "Restore the 8-byte PS-X EXE magic string ('PS-X EXE' followed by 0x00 padding) at offset 0; a corrupted magic string prevents the BIOS from loading the executable"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "psXExeMagic",  "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 'PS-X EXE' ASCII magic to test BIOS EXE loader rejection" },
+      { "field": "initialPc",    "mutation": "boundary_values",   "weight": 2, "description": "Set initial PC to 0 or 0xFFFFFFFF to test invalid MIPS entry point handling" },
+      { "field": "loadAddress",  "mutation": "bit_flip", "rate": 0.01, "weight": 2, "description": "Flip bits in load address to target invalid PSX RAM regions" },
+      { "field": "fileSize",     "mutation": "overflow",          "weight": 2, "description": "Set fileSize beyond available PSX RAM (2MB) to test size validation" },
+      { "field": "initialSp",    "mutation": "random_bytes",      "weight": 1, "description": "Randomize initial stack pointer to trigger stack overflow scenarios" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "Raw PS-X EXE (CD-ROM)",
+      "to": "LibCrypt-patched EXE",
+      "description": "LibCrypt protection adds sub-channel data dependencies; the EXE header itself is unchanged but initialGp and sector-based decryption keys in the code section are modified",
+      "changes": [
+        { "field": "initialGp", "changeType": "set_value", "value": "patched_gp_value", "description": "LibCrypt patches may update initialGp to reference protection-specific data tables injected into the executable" }
+      ]
+    }
+  ]
 }

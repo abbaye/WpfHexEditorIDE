@@ -183,5 +183,58 @@
       "severity": "warning",
       "message": "ISO magic field is zero — possible detection failure"
     }
+  ],
+  "diff": {
+    "keyFields": ["primaryVolumeDescriptor", "volumeDescriptorType"],
+    "ignoreFields": [],
+    "groupBy": "volumeDescriptorType",
+    "note": "The CD001 identifier and descriptor type together confirm a valid ISO 9660 Primary Volume Descriptor and distinguish it from Supplementary (Joliet) or Boot descriptors."
+  },
+  "repair": [
+    {
+      "name": "FixCD001Identifier",
+      "trigger": "primaryVolumeDescriptor != 'CD001'",
+      "action": "set_value",
+      "target": "primaryVolumeDescriptor",
+      "value": "4344303031",
+      "description": "Restore the 5-byte ISO 9660 'CD001' identifier at offset 32769 when it has been corrupted; without it the volume is unrecognizable to all ISO parsers"
+    },
+    {
+      "name": "FixPrimaryVolumeType",
+      "trigger": "volumeDescriptorType != 1",
+      "action": "set_value",
+      "target": "volumeDescriptorType",
+      "value": "01",
+      "description": "Set the Volume Descriptor Type byte at offset 32768 to 1 (Primary Volume Descriptor) when it has been incorrectly set"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "primaryVolumeDescriptor", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the CD001 identifier to test ISO parser rejection in mount utilities and forensic tools" },
+      { "field": "volumeDescriptorType",    "mutation": "boundary_values",   "weight": 2, "description": "Test descriptor type values 0 (boot), 255 (terminator), and out-of-range values to probe descriptor-dispatch logic" },
+      { "field": "volumeDescriptorType",    "mutation": "enum_sweep",        "weight": 2, "description": "Sweep all ISO 9660 descriptor type values (0-5, 255) plus unknowns to test type-handling completeness" },
+      { "field": "primaryVolumeDescriptor", "mutation": "random_bytes",      "weight": 2, "description": "Replace CD001 with random bytes to test graceful failure paths in ISO mount and extraction tools" },
+      { "field": "primaryVolumeDescriptor", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit flip in the identifier to find strict vs. tolerant parser boundaries" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "ISO-9660-basic",
+      "to": "ISO-9660-joliet",
+      "description": "Promote a basic ISO 9660 image to declare Joliet extension support by adding a Supplementary Volume Descriptor",
+      "changes": [
+        { "field": "volumeDescriptorType", "changeType": "set_value", "value": "02", "description": "Set descriptor type to 2 (Supplementary Volume Descriptor) for the Joliet extension descriptor block" }
+      ]
+    },
+    {
+      "from": "boot-record",
+      "to": "primary-volume",
+      "description": "Convert a Boot Record Descriptor (type 0) to a Primary Volume Descriptor (type 1) for compatibility with standard ISO readers",
+      "changes": [
+        { "field": "volumeDescriptorType", "changeType": "set_value", "value": "01", "description": "Set descriptor type byte to 1 (Primary Volume Descriptor)" }
+      ]
+    }
   ]
 }

@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "LZ4 Compressed",
   "formatId": "LZ4",
@@ -184,25 +184,25 @@
       {
         "name": "LZ4 Frame Magic",
         "offset": 0,
-        "icon": "\uE71B",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "FLG Byte",
         "offset": 4,
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#4ECDC4"
       },
       {
         "name": "BD Byte",
         "offset": 5,
-        "icon": "\uE8B7",
+        "icon": "",
         "color": "#95E1D3"
       },
       {
         "name": "Header Checksum",
         "offset": 6,
-        "icon": "\uE72E",
+        "icon": "",
         "color": "#FF6B9D"
       }
     ]
@@ -214,22 +214,22 @@
     "groups": [
       {
         "title": "Frame Identity",
-        "icon": "\uE71B",
+        "icon": "",
         "fields": ["lz4Magic", "isSkippable"]
       },
       {
         "title": "Frame Flags (FLG)",
-        "icon": "\uE8A5",
+        "icon": "",
         "fields": ["flgByte", "bIndep", "bChecksum", "cSize", "cChecksum", "dictID"]
       },
       {
         "title": "Block Configuration (BD)",
-        "icon": "\uE8B7",
+        "icon": "",
         "fields": ["bdByte", "maxBlockSizeCode"]
       },
       {
         "title": "Integrity",
-        "icon": "\uE72E",
+        "icon": "",
         "fields": ["headerChecksum", "contentSize"]
       }
     ]
@@ -338,5 +338,42 @@
     "MinHeaderSize": "7 bytes",
     "MaxBlockSize": "4 MB (BD[6:4]=7)",
     "TypicalSpeed": "500-2000 MB/s decompression"
-  }
+  },
+  "diff": {
+    "keyFields": ["lz4Magic", "flgByte", "bdByte"],
+    "ignoreFields": ["headerChecksum", "isSkippable"],
+    "groupBy": "lz4Frame",
+    "note": "Magic, FLG and BD bytes define the complete frame configuration; headerChecksum is derived from FLG+BD; isSkippable is computed from magic"
+  },
+  "repair": [
+    {
+      "name": "FixHeaderChecksum",
+      "trigger": "HeaderChecksumMismatch",
+      "action": "recompute_checksum",
+      "target": "headerChecksum",
+      "algorithm": "crc32",
+      "description": "Recomputes the xxHash-32 over FLG and BD bytes, extracts the second byte (bits 15-8), and writes the corrected value at offset 6"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": true,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "lz4Magic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 0x184D2204 magic to test frame type rejection" },
+      { "field": "bdByte", "mutation": "boundary_values", "weight": 2, "description": "Set BD block size bits outside 4-7 range to test buffer size miscalculation" },
+      { "field": "flgByte", "mutation": "overflow", "weight": 2, "description": "Set FLG version bits to 00, 10, or 11 to test version rejection" },
+      { "field": "headerChecksum", "mutation": "random_bytes", "weight": 1, "description": "Randomize the header checksum byte to trigger checksum validation failure" },
+      { "field": "flgByte", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip individual FLG flag bits to probe optional field presence combinations" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "dependent_blocks",
+      "to": "independent_blocks",
+      "description": "Enable block independence for random-access decompression by setting the B.Indep flag",
+      "changes": [
+        { "field": "flgByte", "changeType": "set_value", "value": "96", "description": "Set FLG to 0x60 (version=01, B.Indep=1) enabling independent block decompression" }
+      ]
+    }
+  ]
 }

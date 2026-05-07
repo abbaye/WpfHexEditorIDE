@@ -1,0 +1,325 @@
+{
+  "diffMode": "binary",
+  "formatName": "PKCS#12 Certificate Bundle",
+  "formatId": "P12",
+  "version": "1.0",
+  "extensions": [".p12", ".pfx"],
+  "description": "PKCS#12 (RFC 7292) is a binary format for bundling a private key together with its X.509 certificate chain, protected by a passphrase. Widely used for exporting/importing key+certificate pairs in Windows (PFX), IIS, Exchange, macOS Keychain, Java keystores, and browser certificate management. The outer structure is a DER-encoded ASN.1 SEQUENCE (0x30 0x82). The PKCS#12 PFX (Personal Information Exchange) header begins: SEQUENCE { version INTEGER (3), authSafe ContentInfo, macData MacData }. Version is always 3. authSafe contains SafeContents bags: either CertBag (X.509 certs), KeyBag (unencrypted private key), or PKCS8ShroudedKeyBag (encrypted private key). The MAC (Message Authentication Code) at the end uses HMAC-SHA1 or HMAC-SHA256 to authenticate the entire PFX. Passphrase is required for decryption and MAC verification. Empty-passphrase P12 files exist but are unusual.",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "RFC 7292 — PKCS #12: Personal Information Exchange Syntax",
+      "RFC 5652 — Cryptographic Message Syntax (CMS)",
+      "RFC 5280 — X.509 PKI Certificate Profile"
+    ],
+    "WebLinks": [
+      "https://datatracker.ietf.org/doc/html/rfc7292",
+      "https://en.wikipedia.org/wiki/PKCS_12",
+      "https://learn.microsoft.com/en-us/windows/win32/seccertenroll/pfx"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "3082", "offset": 0, "label": "0x30 0x82 — PKCS#12 outer ASN.1 SEQUENCE with 2-byte length", "weight": 0.7 },
+      { "value": "308204", "offset": 0, "label": "0x30 0x82 0x04 — typical P12 SEQUENCE with 1KB+ body", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
+    "required": true,
+    "Strength": "Moderate",
+    "validation": {
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "P12/PFX files start with ASN.1 SEQUENCE (0x30 0x82). The version INTEGER (value 3) at a known offset within the SEQUENCE distinguishes PKCS#12 from other DER formats. Extension .p12 or .pfx is a strong secondary indicator."
+    }
+  },
+  "variables": {
+    "p12SequenceTag": 0,
+    "p12LengthIndicator": 0,
+    "p12TotalLength": 0,
+    "p12VersionTag": 0,
+    "p12VersionLength": 0,
+    "p12Version": 0,
+    "p12ContentTag": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ASN.1 SEQUENCE Tag",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "0x30 — outer ASN.1 SEQUENCE tag. PKCS#12 PFX is a top-level DER SEQUENCE. Must be exactly 0x30 for a valid P12 file.",
+      "storeAs": "p12SequenceTag",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Length Indicator",
+      "offset": 1,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "DER length form indicator. 0x82 means the next 2 bytes hold the total SEQUENCE length (big-endian). Typical for P12 files which are hundreds to tens of thousands of bytes. 0x84 (4-byte length) appears for large P12 bundles containing long certificate chains.",
+      "storeAs": "p12LengthIndicator",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Total Length",
+      "offset": 2,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "2-byte big-endian length of the PKCS#12 SEQUENCE body (when length indicator is 0x82). Total file size = 4 + this value. Large P12 bundles with full certificate chains can exceed 10KB.",
+      "storeAs": "p12TotalLength",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Version Tag",
+      "offset": 4,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "ASN.1 INTEGER tag 0x02 for the PKCS#12 version field. The PFX version is always 3 per RFC 7292. The presence of 0x02 at offset 4 followed by length 0x01 and value 0x03 strongly identifies the file as PKCS#12.",
+      "storeAs": "p12VersionTag",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Version Length",
+      "offset": 5,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.25,
+      "description": "Length of the version INTEGER value. Always 0x01 (1 byte) for PKCS#12 version 3.",
+      "storeAs": "p12VersionLength",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 6,
+      "length": 1,
+      "color": "#B8B8FF",
+      "opacity": 0.35,
+      "description": "PKCS#12 PFX version number. Always 3 (0x03) per RFC 7292 Section 4. Any other value is non-standard and indicates a corrupted or non-standard P12 file.",
+      "storeAs": "p12Version",
+      "valueType": "uint8",
+      "valueMap": {
+        "3": "PKCS#12 version 3 — RFC 7292 (standard)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "AuthSafe ContentInfo Tag",
+      "offset": 7,
+      "length": 1,
+      "color": "#A8E6CF",
+      "opacity": 0.3,
+      "description": "Tag for the authSafe ContentInfo SEQUENCE that follows the version. Should be 0x30 (SEQUENCE). The authSafe ContentInfo wraps the encrypted/unencrypted SafeContents containing certificate and key bags.",
+      "storeAs": "p12ContentTag",
+      "valueType": "uint8"
+    },
+    {
+      "type": "metadata",
+      "name": "P12 Version",
+      "variable": "p12Version",
+      "description": "PKCS#12 PFX version — always 3 per RFC 7292"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Length",
+      "variable": "p12TotalLength",
+      "description": "Total PKCS#12 structure body size in bytes"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "SEQUENCE tag valid",
+      "expression": "p12SequenceTag == 48",
+      "severity": "error",
+      "message": "P12/PFX must begin with 0x30 (ASN.1 SEQUENCE tag)."
+    },
+    {
+      "name": "Version is 3",
+      "expression": "p12Version == 3",
+      "severity": "error",
+      "message": "PKCS#12 PFX version must be 3 per RFC 7292. Non-3 version indicates corrupted or non-standard P12 file."
+    },
+    {
+      "name": "Version tag is INTEGER",
+      "expression": "p12VersionTag == 2",
+      "severity": "warning",
+      "message": "Version field should have ASN.1 INTEGER tag 0x02 at offset 4."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "PFX SEQUENCE", "offset": 0, "color": "#FF6B6B" },
+      { "name": "Version Field", "offset": 4, "color": "#FFE66D" },
+      { "name": "AuthSafe ContentInfo", "offset": 7, "color": "#4ECDC4" }
+    ]
+  },
+  "inspector": {
+    "badge": "P12",
+    "primaryField": "p12Version",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "PFX Header",
+        "icon": "",
+        "fields": ["p12SequenceTag", "p12LengthIndicator", "p12TotalLength"]
+      },
+      {
+        "title": "Version",
+        "icon": "",
+        "fields": ["p12VersionTag", "p12VersionLength", "p12Version"]
+      },
+      {
+        "title": "Content",
+        "icon": "",
+        "fields": ["p12ContentTag"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "P12 Header (JSON)",
+      "format": "json",
+      "fields": ["p12SequenceTag", "p12TotalLength", "p12Version"]
+    },
+    {
+      "name": "P12 Summary (Text)",
+      "format": "text",
+      "fields": ["p12Version", "p12TotalLength"]
+    }
+  ],
+  "forensic": {
+    "category": "crypto",
+    "riskLevel": "critical",
+    "notes": "P12/PFX files are among the most sensitive cryptographic artifacts — they bundle a private key + certificate chain in a single passphrase-protected file. Extracting the private key enables identity impersonation, TLS traffic decryption, and code-signing forgery. Weak or empty passphrases allow offline brute-force attacks. Files found on unauthorized systems represent a serious security incident.",
+    "suspiciousPatterns": [
+      "P12 file with zero-length MAC (no passphrase protection) — private key extractable without passphrase",
+      "P12 with PKCS8ShroudedKeyBag using RC2 or 3DES encryption — weak legacy algorithms susceptible to brute-force"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "PKCS#12 PFX structure (RFC 7292): SEQUENCE { version INTEGER(3), authSafe ContentInfo { contentType OID(data/encryptedData), content OCTET STRING(SafeContents) }, macData MacData { mac DigestInfo, macSalt OCTET STRING, iterations INTEGER } }. SafeContents ::= SEQUENCE OF SafeBag. SafeBag types: 1.2.840.113549.1.12.10.1.1=KeyBag, 1.2.840.113549.1.12.10.1.2=PKCS8ShroudedKeyBag, 1.2.840.113549.1.12.10.1.3=CertBag. CertBag contains X.509 DER certificate. Use `openssl pkcs12 -in file.p12 -info -noout` to inspect without extracting. `openssl pkcs12 -in file.p12 -nocerts -nodes` extracts the unencrypted private key (dangerous).",
+    "suggestedInspections": [
+      "Verify version byte at offset 6 is 0x03 — any other value indicates corrupted P12",
+      "Check MAC presence at end of file — absent MAC means no integrity protection",
+      "Identify SafeBag types to determine if private key (PKCS8ShroudedKeyBag) is present",
+      "Inspect encryption algorithm OIDs in PKCS8ShroudedKeyBag — RC2/3DES are legacy weak algorithms",
+      "Use openssl pkcs12 to attempt decryption with empty passphrase: `openssl pkcs12 -in file.p12 -noout -passin pass:`"
+    ]
+  },
+  "software": [
+    "OpenSSL (openssl pkcs12)",
+    "Java keytool (-importkeystore -srckeystore file.p12 -srcstoretype PKCS12)",
+    "Windows certmgr.msc — imports P12/PFX via UI",
+    "macOS Keychain Access — double-click to import P12",
+    "XCA — X Certificate and Key Management"
+  ],
+  "formatRelationships": {
+    "category": "Crypto",
+    "extensions": [".p12", ".pfx"],
+    "relatedFormats": ["PEM", "DER", "PKCS7"],
+    "note": "P12/PFX is the standard format for exporting private keys + certificate chains as a single portable file. PFX is the Microsoft terminology for the same format. To convert to PEM: `openssl pkcs12 -in file.p12 -out file.pem -nodes`."
+  },
+  "MimeTypes": [
+    "application/x-pkcs12",
+    "application/pkcs12",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "TLS private key and certificate export/import between servers",
+    "Windows IIS and Exchange certificate installation (PFX format)",
+    "Code signing certificate distribution for Authenticode",
+    "macOS Keychain and iOS certificate provisioning profile import",
+    "Java application server (Tomcat, JBoss) keystore population"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 9,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Binary DER-encoded ASN.1, passphrase-protected",
+    "Standard": "RFC 7292 (PKCS#12), supersedes PFX v3",
+    "Version": "Always 3",
+    "MACAlgorithm": "HMAC-SHA1 (legacy) or HMAC-SHA256 (modern)",
+    "KeyEncryption": "PKCS8ShroudedKeyBag with AES-256-CBC (modern) or 3DES/RC2 (legacy)",
+    "Extension": ".p12 (PKCS#12) and .pfx (PFX) are interchangeable"
+  },
+  "diff": {
+    "keyFields": ["p12SequenceTag", "p12Version", "p12TotalLength", "p12ContentTag"],
+    "ignoreFields": [],
+    "groupBy": "p12Version",
+    "note": "p12Version is always 3 for valid P12 files; p12TotalLength reflects the certificate chain size and is the primary size differentiator between P12 bundles."
+  },
+  "repair": [
+    {
+      "name": "FixSequenceTag",
+      "trigger": "p12SequenceTag != 48",
+      "action": "set_value",
+      "target": "p12SequenceTag",
+      "value": "30",
+      "description": "Restores 0x30 ASN.1 SEQUENCE tag at offset 0 when the P12 outer wrapper is corrupted."
+    },
+    {
+      "name": "FixVersion",
+      "trigger": "p12Version != 3",
+      "action": "set_value",
+      "target": "p12Version",
+      "value": "03",
+      "description": "Resets PKCS#12 version to 3 — the only valid version per RFC 7292."
+    },
+    {
+      "name": "FixVersionTag",
+      "trigger": "p12VersionTag != 2",
+      "action": "set_value",
+      "target": "p12VersionTag",
+      "value": "02",
+      "description": "Restores the ASN.1 INTEGER tag 0x02 for the version field at offset 4."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "p12SequenceTag",    "mutation": "corrupt_signature", "weight": 3, "description": "Corrupting the outer SEQUENCE tag tests P12 parser initial-tag validation in OpenSSL and Windows CryptoAPI." },
+      { "field": "p12TotalLength",    "mutation": "boundary_values",   "weight": 2, "description": "Extreme length values stress P12 body-bounds validation in DER parsers." },
+      { "field": "p12Version",        "mutation": "overflow",          "weight": 2, "description": "Non-3 version values test version-check branches in PKCS#12 processors." },
+      { "field": "p12VersionTag",     "mutation": "bit_flip",          "rate": 0.001, "weight": 2, "description": "Bit-flipping the INTEGER tag tests tag-validation error paths." },
+      { "field": "p12ContentTag",     "mutation": "random_bytes",      "weight": 1, "description": "Random ContentInfo tag values test SafeContents bag parsing robustness." }
+    ]
+  },
+  "migration": [
+    {
+      "from": "p12-3des-legacy",
+      "to": "p12-aes256-modern",
+      "description": "Re-encrypt the PKCS8ShroudedKeyBag from 3DES (pbeWithSHA1And3-KeyTripleDES-CBC) to AES-256-CBC (PBES2 + PBKDF2) for stronger key protection — requires re-exporting with modern OpenSSL (1.1.1+).",
+      "changes": [
+        { "field": "p12Version", "changeType": "set_value", "value": "03", "description": "Version remains 3; the encryption algorithm OID inside the key bag changes." }
+      ]
+    },
+    {
+      "from": "p12-pfx",
+      "to": "pem-split",
+      "description": "Extract private key and certificate chain from P12 bundle into separate PEM files for deployment on Linux/Unix servers.",
+      "changes": [
+        { "field": "p12SequenceTag", "changeType": "set_value", "value": "2D2D2D2D2D424547494E20", "description": "Convert to PEM text format — private key to key.pem, certificates to cert.pem." }
+      ]
+    }
+  ]
+}

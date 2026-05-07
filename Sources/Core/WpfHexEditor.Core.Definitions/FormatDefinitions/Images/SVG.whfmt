@@ -190,5 +190,50 @@
     "Standard": "SVG 2.0 — W3C Candidate Recommendation (2018) / SVG 1.1 Second Edition (2011)",
     "Endianness": "N/A (XML text)",
     "Security": "XSS risk when served as image/svg+xml in browser — embedded JavaScript executes"
-  }
+  },
+  "diff": {
+    "keyFields": ["svgTag", "firstByte"],
+    "ignoreFields": [],
+    "groupBy": "svgTag",
+    "note": "SVG is text-based; the opening tag indicates whether the file is plain SVG, XML-prefixed SVG, or SVGZ (gzip). Full content diff requires XML-aware comparison beyond these two header fields."
+  },
+  "repair": [
+    {
+      "name": "FixSVGFirstByte",
+      "trigger": "firstByte != 0x3C",
+      "action": "set_value",
+      "target": "offset:0",
+      "value": "3C",
+      "description": "Ensure the file starts with '<' (0x3C) when it does not begin with a standard XML or SVG tag — may indicate a BOM or encoding issue"
+    },
+    {
+      "name": "FlagSVGZContent",
+      "trigger": "firstByte == 0x1F",
+      "action": "set_value",
+      "target": "offset:0",
+      "value": "1F8B",
+      "description": "Mark file as SVGZ (gzip-compressed SVG) when the gzip magic 0x1F 0x8B is present — requires decompression before XML parsing"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "firstByte",  "mutation": "corrupt_signature", "weight": 3, "description": "Replace '<' with non-XML bytes to test SVG parser rejection and MIME-type sniffing fallback" },
+      { "field": "svgTag",     "mutation": "boundary_values",   "weight": 2, "description": "Truncate or zero-fill the 4-byte tag to test partial-read and empty-document handling" },
+      { "field": "svgTag",     "mutation": "enum_sweep",        "weight": 2, "description": "Substitute known XML preamble variants ('<!--', BOM, null bytes) to probe XML prologue parsers" },
+      { "field": "firstByte",  "mutation": "random_bytes",      "weight": 2, "description": "Random first byte to trigger content-sniffing and charset-detection edge cases" },
+      { "field": "svgTag",     "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in the opening tag bytes to corrupt XML well-formedness markers" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "SVG 1.1",
+      "to": "SVG 2.0",
+      "description": "Upgrade SVG namespace and feature declarations from SVG 1.1 Second Edition to SVG 2.0 Candidate Recommendation, which deprecates xlink:href in favour of href and aligns with CSS Shapes and Geometry",
+      "changes": [
+        { "field": "svgTag", "changeType": "set_value", "value": "3C737667", "description": "SVG 2.0 uses the same root '<svg' tag; migration primarily involves namespace and attribute changes in the document body" }
+      ]
+    }
+  ]
 }

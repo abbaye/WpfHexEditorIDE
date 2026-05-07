@@ -489,5 +489,74 @@
     "HasColorMap": "optional (colorMapType=1)",
     "HasHeader": true,
     "HeaderSize": "18 bytes fixed + optional Image ID + optional color map"
-  }
+  },
+  "diff": {
+    "keyFields": ["imageType", "imageWidth", "imageHeight", "pixelDepth", "colorMapType", "imageDescriptor"],
+    "ignoreFields": ["xOrigin", "yOrigin", "cmFirstEntry", "cmLength", "cmEntrySize"],
+    "groupBy": "imageType",
+    "note": "Image type, dimensions, and pixel depth fully determine encoding; origin and color-map spec fields are rarely meaningful for structural diff"
+  },
+  "repair": [
+    {
+      "name": "FixColorMapType",
+      "trigger": "colorMapType != 0 && colorMapType != 1",
+      "action": "set_value",
+      "target": "colorMapType",
+      "value": "00",
+      "description": "Reset color map type to 0 (no color map) when the stored value is outside the valid range of 0-1"
+    },
+    {
+      "name": "FixInvalidImageType",
+      "trigger": "imageType != 0 && imageType != 1 && imageType != 2 && imageType != 3 && imageType != 9 && imageType != 10 && imageType != 11",
+      "action": "set_value",
+      "target": "imageType",
+      "value": "02",
+      "description": "Set image type to 2 (uncompressed true-color) when the stored code is not a recognised TGA image type"
+    },
+    {
+      "name": "FixZeroImageDimensions",
+      "trigger": "imageWidth == 0 || imageHeight == 0",
+      "action": "set_value",
+      "target": "imageWidth",
+      "value": "0100",
+      "description": "Set image width to 1 when it is zero to prevent downstream division-by-zero in pixel-count calculations"
+    },
+    {
+      "name": "FixInvalidPixelDepth",
+      "trigger": "pixelDepth != 8 && pixelDepth != 15 && pixelDepth != 16 && pixelDepth != 24 && pixelDepth != 32",
+      "action": "set_value",
+      "target": "pixelDepth",
+      "value": "18",
+      "description": "Set pixel depth to 24 (0x18) when the stored value is not a standard TGA bit depth"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "imageType",        "mutation": "corrupt_signature", "weight": 3, "description": "Set imageType to unusual/reserved codes to probe TGA image-type dispatch and fallback paths" },
+      { "field": "imageWidth",       "mutation": "boundary_values",   "weight": 2, "description": "Zero and 0xFFFF widths to trigger integer-overflow in width*height*depth allocation" },
+      { "field": "pixelDepth",       "mutation": "enum_sweep",        "weight": 2, "description": "Sweep all byte values for pixel depth to exercise bit-depth-specific decode branches" },
+      { "field": "idLength",         "mutation": "overflow",          "weight": 2, "description": "Overflow ID length to shift pixel data start beyond file bounds" },
+      { "field": "imageDescriptor",  "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in the descriptor byte to randomise origin and interleave flags" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "TGA v1 (no footer)",
+      "to": "TGA v2 (with TRUEVISION-XFILE footer)",
+      "description": "Upgrade to TGA version 2 by appending a 26-byte footer with extension area offset, developer area offset, and the 'TRUEVISION-XFILE.\\0' signature",
+      "changes": [
+        { "field": "idLength", "changeType": "set_value", "value": "00", "description": "Ensure idLength is 0 so the pixel data starts immediately at offset 18, simplifying v2 upgrade" }
+      ]
+    },
+    {
+      "from": "Uncompressed TGA (imageType=2)",
+      "to": "RLE-compressed TGA (imageType=10)",
+      "description": "Switch from uncompressed true-color storage to run-length encoded true-color to reduce file size for images with large uniform areas",
+      "changes": [
+        { "field": "imageType", "changeType": "set_value", "value": "0A", "description": "Change image type from 2 (uncompressed true-color) to 10 (RLE true-color)" }
+      ]
+    }
+  ]
 }

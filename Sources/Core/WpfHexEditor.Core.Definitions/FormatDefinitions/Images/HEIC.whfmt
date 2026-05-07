@@ -215,5 +215,66 @@
     "colorSpaces": ["sRGB", "Display P3", "Rec.2020"],
     "hdrTransferFunctions": ["PQ (SMPTE ST 2084)", "HLG (ARIB STD-B67)"],
     "features": ["alpha", "depth-map", "burst", "live-photo", "HDR", "wide-gamut"]
-  }
+  },
+  "diff": {
+    "keyFields": ["boxType", "majorBrand", "minorVersion", "boxSize"],
+    "ignoreFields": ["ftypValid"],
+    "groupBy": "majorBrand",
+    "note": "Major brand is the primary discriminator between HEIC, HEIF, and AVC-I variants; box size and minor version track container spec revisions; ftypValid is a derived flag"
+  },
+  "repair": [
+    {
+      "name": "FixBoxType",
+      "trigger": "boxType != 'ftyp'",
+      "action": "set_value",
+      "target": "offset:4",
+      "value": "66747970",
+      "description": "Restore 'ftyp' box type identifier at offset 4 so ISOBMFF parsers recognise the mandatory file-type box"
+    },
+    {
+      "name": "FixInvalidMajorBrand",
+      "trigger": "majorBrand != 'heic' && majorBrand != 'heif' && majorBrand != 'avci' && majorBrand != 'heis' && majorBrand != 'mif1'",
+      "action": "set_value",
+      "target": "majorBrand",
+      "value": "68656963",
+      "description": "Set major brand to 'heic' (0x68656963) when the stored brand is not a recognised HEIF/HEIC brand"
+    },
+    {
+      "name": "FixBoxSizeTooSmall",
+      "trigger": "boxSize < 16",
+      "action": "set_value",
+      "target": "boxSize",
+      "value": "00000018",
+      "description": "Set ftyp box size to 24 (16-byte fixed header + 8 bytes for two compatible brands) when it is too small to hold the mandatory fields"
+    },
+    {
+      "name": "FixMinorVersion",
+      "trigger": "minorVersion != 0",
+      "action": "set_value",
+      "target": "minorVersion",
+      "value": "00000000",
+      "description": "Reset minor version to 0 for standard HEIC files where a non-zero value was written in error"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "boxType",      "mutation": "corrupt_signature", "weight": 3, "description": "Replace 'ftyp' with unknown box type to test ISOBMFF box-dispatch and unknown-box skip logic" },
+      { "field": "boxSize",      "mutation": "boundary_values",   "weight": 2, "description": "Zero, 1, and very large ftyp box sizes to probe box-size bounds checking in HEIF parsers" },
+      { "field": "majorBrand",   "mutation": "enum_sweep",        "weight": 2, "description": "Sweep unknown 4-byte brand codes to test brand-matching and format-fallback behaviour" },
+      { "field": "minorVersion", "mutation": "overflow",          "weight": 2, "description": "Overflow minor version field to test version-gating and future-version handling" },
+      { "field": "boxType",      "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in the box type field to generate subtly corrupted four-character codes" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "HEIC single-image (majorBrand='heic')",
+      "to": "HEIF multi-image (majorBrand='mif1')",
+      "description": "Upgrade a single-still HEIC file to a HEIF multi-image container that can store burst sequences, depth maps, and alpha planes as separate image items",
+      "changes": [
+        { "field": "majorBrand", "changeType": "set_value", "value": "6D696631", "description": "Change major brand from 'heic' (0x68656963) to 'mif1' (0x6D696631) for multi-image HEIF container" }
+      ]
+    }
+  ]
 }

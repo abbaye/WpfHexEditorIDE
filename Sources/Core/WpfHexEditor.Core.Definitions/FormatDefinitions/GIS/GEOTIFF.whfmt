@@ -218,5 +218,66 @@
     "Standard": "OGC GeoTIFF Standard 1.1 (OGC 19-008r4) / ISO 19101",
     "Endianness": "As declared by bytes 0-1: 'II'=little-endian, 'MM'=big-endian",
     "Extension": "GeoTIFF tags 33550, 33922, 34735 embed CRS and transform in TIFF IFD"
-  }
+  },
+  "diff": {
+    "keyFields": ["tiffByteOrder", "tiffMagicNum", "ifdOffset"],
+    "ignoreFields": [],
+    "groupBy": "tiffByteOrder",
+    "note": "Byte order and magic number define the TIFF encoding variant (LE/BE, TIFF/BigTIFF); ifdOffset marks the structural entry point. All three together identify the file's layout for comparison"
+  },
+  "repair": [
+    {
+      "name": "FixTiffByteOrderLE",
+      "trigger": "tiffByteOrder != 'II' && tiffByteOrder != 'MM'",
+      "action": "set_value",
+      "target": "tiffByteOrder",
+      "value": "4949",
+      "description": "Restore TIFF byte order mark to 'II' (49 49, little-endian) at offset 0 when it is invalid — most GeoTIFF files are little-endian"
+    },
+    {
+      "name": "FixTiffMagicNumber",
+      "trigger": "tiffMagicNum != 42 && tiffMagicNum != 43",
+      "action": "set_value",
+      "target": "tiffMagicNum",
+      "value": "2A00",
+      "description": "Restore TIFF magic number to 42 (0x2A 0x00 LE) at offset 2 when it is corrupted, re-establishing the standard TIFF 6.0 identifier"
+    },
+    {
+      "name": "FixIfdOffset",
+      "trigger": "ifdOffset < 8",
+      "action": "set_value",
+      "target": "ifdOffset",
+      "value": "08000000",
+      "description": "Reset IFD0 offset to 8 (uint32 LE, minimum valid value for a standard TIFF) when it points before the 8-byte TIFF header"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "tiffByteOrder", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt byte order mark 'II'/'MM' to test TIFF/GeoTIFF parser endianness detection failures and error handling in GDAL and rasterio" },
+      { "field": "tiffMagicNum",  "mutation": "boundary_values",   "weight": 2, "description": "Test magic number at 0, 41, 44, 65535 to probe TIFF version discrimination in parsers that may accept values other than 42/43" },
+      { "field": "ifdOffset",     "mutation": "overflow",          "weight": 2, "description": "Overflow IFD0 offset to cause out-of-bounds IFD traversal in TIFF parsers — a known class of TIFF vulnerabilities" },
+      { "field": "tiffByteOrder", "mutation": "random_bytes",      "weight": 1, "description": "Replace byte order mark with random bytes to validate that GDAL and QGIS reject malformed TIFF headers cleanly" },
+      { "field": "ifdOffset",     "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit flips in IFD offset to test IFD pointer validation and NULL-deref guards in image library parsers" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "TIFF-6.0",
+      "to": "BigTIFF",
+      "description": "Standard TIFF 6.0 (magic 42) to BigTIFF (magic 43) — adds 64-bit IFD offsets for files exceeding 4 GB; required for Cloud Optimized GeoTIFF (COG) of large satellite imagery tiles",
+      "changes": [
+        { "field": "tiffMagicNum", "changeType": "set_value", "value": "2B00", "description": "Change TIFF magic from 42 (0x2A 0x00) to 43 (0x2B 0x00) to declare BigTIFF format; IFD offset field must also be widened to 8 bytes" }
+      ]
+    },
+    {
+      "from": "GeoTIFF-LE",
+      "to": "GeoTIFF-BE",
+      "description": "Convert little-endian GeoTIFF to big-endian — byte order mark changes from 'II' to 'MM' and all multi-byte IFD values must be byte-swapped; requires GDAL gdal_translate conversion",
+      "changes": [
+        { "field": "tiffByteOrder", "changeType": "set_value", "value": "4D4D", "description": "Change byte order mark from 'II' (49 49) to 'MM' (4D 4D) at offset 0 to declare big-endian byte order" }
+      ]
+    }
+  ]
 }

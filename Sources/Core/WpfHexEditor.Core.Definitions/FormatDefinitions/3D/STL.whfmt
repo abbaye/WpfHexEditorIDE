@@ -195,5 +195,51 @@
     "triangleRecord": "normal(12B) + v1(12B) + v2(12B) + v3(12B) + attribute(2B) = 50 bytes",
     "encoding": "binary-little-endian",
     "fileSizeFormula": "84 + triangleCount * 50 bytes"
-  }
+  },
+  "diff": {
+    "keyFields": ["triangleCount", "firstNormalX"],
+    "ignoreFields": ["stlHeader"],
+    "groupBy": "triangleCount",
+    "note": "Triangle count and normal vectors identify structural mesh changes; the 80-byte text header is noise for binary diff purposes"
+  },
+  "repair": [
+    {
+      "name": "FixZeroTriangleCount",
+      "trigger": "triangleCount == 0",
+      "action": "set_value",
+      "target": "triangleCount",
+      "value": "01000000",
+      "description": "Restore a non-zero triangle count to prevent parsers from treating the file as empty geometry"
+    },
+    {
+      "name": "FixSolidHeaderPrefix",
+      "trigger": "stlHeader starts with 'solid'",
+      "action": "set_value",
+      "target": "stlHeader",
+      "value": "42696E61727920535446",
+      "description": "Replace 'solid' prefix in binary STL header with 'Binary STF' to prevent misidentification as ASCII STL"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "stlHeader", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the text header to test parser robustness against unexpected header content" },
+      { "field": "triangleCount", "mutation": "boundary_values", "weight": 2, "description": "Test extreme triangle counts including 0, 1, and 0xFFFFFFFF to probe memory allocation guards" },
+      { "field": "triangleCount", "mutation": "overflow", "weight": 2, "description": "Overflow the triangle count to trigger integer overflow in file size validation" },
+      { "field": "firstNormalX", "mutation": "random_bytes", "weight": 1, "description": "Corrupt the first normal vector to test NaN/infinity float handling in 3D renderers" },
+      { "field": "firstNormalX", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit-flip the float32 normal components to produce denormal or NaN values" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "ascii_stl",
+      "to": "binary_stl",
+      "description": "Convert ASCII STL to binary STL by replacing text geometry with packed float32 triangle records",
+      "changes": [
+        { "field": "stlHeader", "changeType": "set_value", "value": "42696E61727920535446206C6561646572", "description": "Set binary-safe header that does not start with 'solid'" },
+        { "field": "triangleCount", "changeType": "set_value", "value": "computed", "description": "Write the actual triangle count as uint32 LE at offset 80" }
+      ]
+    }
+  ]
 }

@@ -301,5 +301,58 @@
     "CompletenessScore": 89,
     "LastUpdated": "2026-04-15",
     "ReviewedBy": "WPFHexaEditor Team"
-  }
+  },
+  "diff": {
+    "keyFields": ["qcow2Magic", "qcow2Version", "qcow2DiskSize", "qcow2Encryption"],
+    "ignoreFields": ["qcow2BackingOffset"],
+    "groupBy": "qcow2Version",
+    "note": "Magic and version identify format; diskSize and encryption state define the disk identity. BackingOffset is volatile across COW chain reconstructions and should not drive diff decisions"
+  },
+  "repair": [
+    {
+      "name": "FixQcow2Magic",
+      "trigger": "qcow2Magic != '514649FB'",
+      "action": "set_value",
+      "target": "qcow2Magic",
+      "value": "514649FB",
+      "description": "Restore the QCOW2 magic bytes 'QFI\\xFB' (51 46 49 FB) at offset 0 when they are corrupted"
+    },
+    {
+      "name": "FixQcow2Version",
+      "trigger": "qcow2Version < 2 || qcow2Version > 3",
+      "action": "set_value",
+      "target": "qcow2Version",
+      "value": "00000002",
+      "description": "Reset version to 2 (big-endian uint32) when it falls outside the valid range of 2-3"
+    },
+    {
+      "name": "FixClusterBits",
+      "trigger": "qcow2ClusterBits < 9 || qcow2ClusterBits > 21",
+      "action": "set_value",
+      "target": "qcow2ClusterBits",
+      "value": "00000010",
+      "description": "Reset clusterBits to 16 (64 KB clusters, big-endian uint32) — typical default — when value is outside the valid 9-21 range"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "qcow2Magic",      "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt QFI\\xFB magic to test QEMU/libvirt parser rejection and error path coverage" },
+      { "field": "qcow2ClusterBits","mutation": "boundary_values",   "weight": 2, "description": "Test clusterBits at extremes (0, 8, 22, 32) to probe cluster size computation overflow in L1/L2 table traversal" },
+      { "field": "qcow2DiskSize",   "mutation": "overflow",          "weight": 2, "description": "Overflow diskSize (uint64 BE) to trigger 64-bit arithmetic errors in virtual disk geometry calculations" },
+      { "field": "qcow2Encryption", "mutation": "random_bytes",      "weight": 1, "description": "Set encryption field to unsupported values to test graceful handling of unknown encryption methods" },
+      { "field": "qcow2Version",    "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in version field to test near-boundary version validation (e.g., version=4 or version=1)" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "QCOW2-v2",
+      "to": "QCOW2-v3",
+      "description": "QCOW2 version 2 to version 3 — v3 adds incompatible features bitmask, autoclear features, refcount order, and header length fields at offsets 80-103",
+      "changes": [
+        { "field": "qcow2Version", "changeType": "set_value", "value": "00000003", "description": "Update version field from 2 to 3 (big-endian uint32) at offset 4 to indicate v3 extended header" }
+      ]
+    }
+  ]
 }

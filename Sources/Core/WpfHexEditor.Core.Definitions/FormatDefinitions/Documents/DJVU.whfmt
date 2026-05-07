@@ -273,6 +273,59 @@
     "extensions": [".djvu", ".djv"],
     "note": "DjVu was designed as a web-optimized alternative to PDF for scanned documents, achieving 3-8x better compression than JPEG for scanned text at equal quality. Developed at AT&T Labs Research (Léon Bottou, Yann LeCun), later open-sourced as DjVuLibre."
   },
+  "diff": {
+    "keyFields": ["atTFormSignature", "djvuType", "bodySize"],
+    "ignoreFields": ["isSinglePage", "isMultiPage", "isBundle"],
+    "groupBy": "DjVu Container Header",
+    "note": "Signature and form type uniquely identify the DjVu variant; body size detects content changes. Computed boolean flags are derived and excluded from structural diffs."
+  },
+  "repair": [
+    {
+      "name": "FixAtTFormSignature",
+      "trigger": "atTFormSignature != 'AT&TFORM'",
+      "action": "set_value",
+      "target": "atTFormSignature",
+      "value": "41542654464F524D",
+      "description": "Restore the DjVu container header 'AT&TFORM' (41 54 26 54 46 4F 52 4D) at offset 0"
+    },
+    {
+      "name": "FixDjvuFormType",
+      "trigger": "djvuType != 'DJVU' && djvuType != 'DJVM' && djvuType != 'DJVI' && djvuType != 'THUM'",
+      "action": "set_value",
+      "target": "djvuType",
+      "value": "444A5655",
+      "description": "Reset form type to 'DJVU' (single-page) when an unrecognized type is stored"
+    },
+    {
+      "name": "FixZeroBodySize",
+      "trigger": "bodySize == 0",
+      "action": "set_value",
+      "target": "bodySize",
+      "value": "00000010",
+      "description": "Set a non-zero minimal body size (16 bytes BE) to prevent empty-document assertion failures"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "atTFormSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'AT&TFORM' magic to test DjVu parser rejection of invalid IFF containers" },
+      { "field": "djvuType",         "mutation": "enum_sweep",        "weight": 2, "description": "Sweep non-standard 4-byte type codes to expose form-type validation paths" },
+      { "field": "bodySize",         "mutation": "overflow",          "weight": 2, "description": "Overflow body size (BE uint32) to stress chunk iteration bounds checking" },
+      { "field": "atTFormSignature", "mutation": "random_bytes",      "weight": 1, "description": "Random 8-byte header to stress IFF parser initialization" },
+      { "field": "bodySize",         "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit flip in big-endian body size to expose off-by-one in chunk parsing" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "DjVu-single",
+      "to": "DjVu-multi",
+      "description": "Convert single-page DJVU document to multi-page DJVM bundle by updating the form type",
+      "changes": [
+        { "field": "djvuType", "changeType": "set_value", "value": "444A564D", "description": "Change form type from 'DJVU' (444A5655) to 'DJVM' (444A564D) for multi-page bundle" }
+      ]
+    }
+  ],
   "MimeTypes": [
     "image/vnd.djvu",
     "image/x-djvu",

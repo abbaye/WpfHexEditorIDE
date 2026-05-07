@@ -528,5 +528,76 @@
     "HeaderSize64": 64,
     "IdentificationSize": 16,
     "VariableWidthFields": "Entry point, program header offset, and section header offset are 4 bytes in ELF32 and 8 bytes in ELF64"
-  }
+  },
+  "diff": {
+    "keyFields": ["elfMachine", "elfType", "elfEntryPoint", "elfClass"],
+    "ignoreFields": ["elfPadding"],
+    "groupBy": "elfType",
+    "note": "Machine architecture, file type, and entry point identify binary purpose and target; padding bytes are always zero and carry no semantic value"
+  },
+  "repair": [
+    {
+      "name": "FixELFMagic",
+      "trigger": "elfMagic != 0x464C457F",
+      "action": "set_value",
+      "target": "elfMagic",
+      "value": "7F454C46",
+      "description": "Restore the 4-byte ELF magic number to the canonical value 0x7F454C46 when it has been corrupted"
+    },
+    {
+      "name": "FixELFVersion",
+      "trigger": "elfVersion != 1",
+      "action": "set_value",
+      "target": "elfVersion",
+      "value": "01",
+      "description": "Reset ELF header version to EV_CURRENT (1); any other value is invalid per the ABI specification"
+    },
+    {
+      "name": "FixELFVersionWord",
+      "trigger": "elfVersionWord != 1",
+      "action": "set_value",
+      "target": "elfVersionWord",
+      "value": "01000000",
+      "description": "Reset the 32-bit version word at offset 20 to EV_CURRENT (1) in little-endian encoding"
+    },
+    {
+      "name": "ClearPadding",
+      "trigger": "elfPadding != 0x00000000000000",
+      "action": "set_value",
+      "target": "elfPadding",
+      "value": "00000000000000",
+      "description": "Zero out the 7 reserved EI_PAD bytes (offsets 9-15); non-zero padding may cause loader rejection on strict OSes"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "elfMagic",      "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 4-byte magic to test loader rejection and detection code paths" },
+      { "field": "elfEntryPoint", "mutation": "boundary_values",   "weight": 2, "description": "Test entry-point boundary values (0, 0xFFFFFFFF) to probe loader address validation" },
+      { "field": "elfType",       "mutation": "enum_sweep",        "weight": 2, "description": "Sweep all known ET_* values plus unknown ones to test type-dispatch logic in loaders" },
+      { "field": "elfPhNum",      "mutation": "overflow",          "weight": 2, "description": "Overflow program-header count to trigger allocator or parser size checks" },
+      { "field": "elfFlags",      "mutation": "bit_flip",          "rate": 0.001, "weight": 1, "description": "Random bit flip in processor flags to detect flag-interpretation edge cases" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "ELF32",
+      "to": "ELF64",
+      "description": "Promote a 32-bit ELF to 64-bit class; header size grows from 52 to 64 bytes and pointer fields double in width",
+      "changes": [
+        { "field": "elfClass",   "changeType": "set_value", "value": "02",         "description": "Change EI_CLASS from ELFCLASS32 (1) to ELFCLASS64 (2)" },
+        { "field": "elfEhSize", "changeType": "set_value", "value": "4000",        "description": "Update ELF header size field from 52 (0x34) to 64 (0x40) in LE" }
+      ]
+    },
+    {
+      "from": "EV_NONE",
+      "to": "EV_CURRENT",
+      "description": "Repair files where the version byte was mistakenly zeroed by early toolchains",
+      "changes": [
+        { "field": "elfVersion",     "changeType": "set_value", "value": "01", "description": "Set EI_VERSION to EV_CURRENT (1)" },
+        { "field": "elfVersionWord", "changeType": "set_value", "value": "01000000", "description": "Set the word-size version field at offset 20 to EV_CURRENT (1) LE" }
+      ]
+    }
+  ]
 }

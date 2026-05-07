@@ -555,5 +555,57 @@
     "HeaderSize": "12 bytes FORM header + 26 bytes COMM chunk + SSND header",
     "CompressionAIFC": "PCM (NONE), IMA ADPCM (ima4), µ-law (ulaw), A-law (alaw), MACE3, MACE6, Qualcomm PureVoice",
     "BaseFormat": "IFF-85 Electronic Arts Interchange File Format"
-  }
+  },
+  "diff": {
+    "keyFields": ["formChunkId", "fileType", "channels", "sampleFrames", "sampleSize"],
+    "ignoreFields": ["formSize", "ssndSize", "estimatedDuration", "byteRate", "totalDataBytes"],
+    "groupBy": "fileType",
+    "note": "FORM identity, file variant (AIFF vs AIFC), channel layout and bit depth are structurally significant; chunk sizes and computed durations vary with content"
+  },
+  "repair": [
+    {
+      "name": "FixFormChunkSize",
+      "trigger": "formSize != actualFileSize - 8",
+      "action": "set_value",
+      "target": "formSize",
+      "description": "FORM chunk size must equal total file size minus 8 bytes; recalculate from actual file length"
+    },
+    {
+      "name": "FixChannelCount",
+      "trigger": "channels < 1",
+      "action": "set_value",
+      "target": "channels",
+      "value": 1,
+      "description": "Channel count of 0 or negative is invalid; reset to mono (1) as a safe default"
+    },
+    {
+      "name": "ZeroSsndOffset",
+      "trigger": "ssndOffset != 0",
+      "action": "zero_field",
+      "target": "ssndOffset",
+      "description": "Non-zero SSND offset is extremely rare and may indicate modification; zero it to align data to standard offset"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "formChunkId", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'FORM' marker to test IFF container rejection; parser must reject non-FORM containers" },
+      { "field": "fileType", "mutation": "corrupt_signature", "weight": 3, "description": "Replace 'AIFF'/'AIFC' with unknown type to test graceful failure for unrecognized FORM content" },
+      { "field": "channels", "mutation": "boundary_values", "weight": 2, "description": "Test 0, 1, 8, 32767 channel counts to probe buffer allocation limits" },
+      { "field": "sampleSize", "mutation": "boundary_values", "weight": 2, "description": "Test bit depths 0, 1, 33, 32767 to probe sample word size handling" },
+      { "field": "sampleRateBytes", "mutation": "random_bytes", "weight": 1, "description": "Corrupt the 80-bit extended float to produce NaN/Infinity/zero sample rates" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "AIFF",
+      "to": "AIFC-NONE",
+      "description": "Upgrade plain AIFF to AIFC container with NONE compression type to allow adding metadata extensions while keeping uncompressed PCM audio",
+      "changes": [
+        { "field": "fileType", "changeType": "set_value", "value": "AIFC", "description": "Change file type to AIFC" },
+        { "field": "commSize", "changeType": "set_value", "value": 22, "description": "Extend COMM chunk size to 22 bytes to accommodate AIFC compression type field" }
+      ]
+    }
+  ]
 }

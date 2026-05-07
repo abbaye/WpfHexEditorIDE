@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "RAR Archive",
   "formatId": "RAR",
@@ -354,12 +354,12 @@
       {
         "name": "Archive Header Start",
         "offsetVar": "currentOffset",
-        "icon": ""
+        "icon": ""
       },
       {
         "name": "First File Block",
         "offsetVar": "totalHeaderBytes",
-        "icon": ""
+        "icon": ""
       }
     ]
   },
@@ -373,5 +373,42 @@
     "SupportsMultiVolume": true,
     "SupportsRecoveryRecord": true,
     "HeaderSize": "Variable (typically 20 bytes for RAR4 main header)"
-  }
+  },
+  "diff": {
+    "keyFields": ["rarSignature", "rarVersionByte", "headerCrc"],
+    "ignoreFields": ["totalHeaderBytes"],
+    "groupBy": "archiveHeader",
+    "note": "Signature and version byte determine format generation; headerCrc detects header tampering; totalHeaderBytes is derived"
+  },
+  "repair": [
+    {
+      "name": "FixHeaderCRC16",
+      "trigger": "HeaderCRCMismatch",
+      "action": "recompute_checksum",
+      "target": "headerCrc",
+      "algorithm": "crc32",
+      "description": "Recomputes the CRC-16 over the archive header block (from header type through end of declared header size) and writes the corrected value at offset 7"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": true,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "rarSignature", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the Rar! magic bytes to test signature validation rejection" },
+      { "field": "headerSize", "mutation": "boundary_values", "weight": 2, "description": "Set header size to 0 or UINT16_MAX to test header size boundary handling" },
+      { "field": "headerFlags", "mutation": "overflow", "weight": 2, "description": "Set all flag bits to test parser behaviour with undefined flag combinations" },
+      { "field": "rarVersionByte", "mutation": "random_bytes", "weight": 1, "description": "Use an unexpected version byte value to test version discrimination logic" },
+      { "field": "reservedDword1", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in a reserved field to probe non-zero reserved field handling" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "RAR4",
+      "to": "RAR5",
+      "description": "Update RAR version discriminator byte to signal RAR5 format with AES-256 and variable-length integer encoding",
+      "changes": [
+        { "field": "rarVersionByte", "changeType": "set_value", "value": "1", "description": "Set version discriminator to 1 to indicate RAR5 format" }
+      ]
+    }
+  ]
 }

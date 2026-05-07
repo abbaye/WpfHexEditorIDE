@@ -451,5 +451,67 @@
     "SupportsStreaming": true,
     "SupportsFragmentation": true,
     "MaxFileSize": "Unlimited (64-bit extended sizes)"
-  }
+  },
+  "diff": {
+    "keyFields": ["majorBrand", "minorVersion", "ftypBoxSize"],
+    "ignoreFields": ["nextBoxSize"],
+    "groupBy": "majorBrand",
+    "note": "majorBrand and minorVersion identify the MP4 profile/variant; ftypBoxSize determines compatible brand count; nextBoxSize is position-dependent noise"
+  },
+  "repair": [
+    {
+      "name": "FixFtypSignature",
+      "trigger": "ftypBoxType != 'ftyp'",
+      "action": "set_value",
+      "target": "ftypBoxType",
+      "value": "66747970",
+      "description": "Restores the mandatory 'ftyp' four-character box type at offset 4 when the ISOBMFF signature is missing or corrupted"
+    },
+    {
+      "name": "FixMajorBrandIsom",
+      "trigger": "majorBrand is empty or non-ASCII",
+      "action": "set_value",
+      "target": "majorBrand",
+      "value": "69736F6D",
+      "description": "Writes the generic 'isom' ISO Base Media brand at offset 8 when the major brand field contains invalid data"
+    },
+    {
+      "name": "FixMinorVersionZero",
+      "trigger": "minorVersion > 65535",
+      "action": "set_value",
+      "target": "minorVersion",
+      "value": "00000000",
+      "description": "Resets minor version to 0 when the field contains an implausibly large value indicating header corruption"
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      { "field": "ftypBoxType", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupting the 'ftyp' FourCC causes ISOBMFF parsers to reject or misidentify the file; exercises magic-byte validation paths" },
+      { "field": "ftypBoxSize", "mutation": "boundary_values", "weight": 2, "description": "Edge values (0, 1, 0xFFFFFFFF) exercise extended-size and zero-size handling in box parsers" },
+      { "field": "majorBrand", "mutation": "enum_sweep", "weight": 2, "description": "Sweeping through uncommon brand FourCCs exercises brand-specific code paths and fallback handling in players" },
+      { "field": "minorVersion", "mutation": "overflow", "weight": 2, "description": "Overflowing the uint32 minor version field may expose arithmetic issues in version-conditioned parsing" },
+      { "field": "compatBrand1", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Random bit flips in compatible brand fields test parser resilience to partially-corrupt brand lists" }
+    ]
+  },
+  "migration": [
+    {
+      "from": "mp41",
+      "to": "isom",
+      "description": "Upgrade MPEG-4 v1 major brand to generic ISO Base Media brand for maximum player compatibility",
+      "changes": [
+        { "field": "majorBrand", "changeType": "set_value", "value": "69736F6D", "description": "Replace 'mp41' with 'isom' to broaden compatibility" }
+      ]
+    },
+    {
+      "from": "isom",
+      "to": "mp42",
+      "description": "Upgrade generic ISO base media to MPEG-4 Part 14 v2 brand for improved codec signalling",
+      "changes": [
+        { "field": "majorBrand", "changeType": "set_value", "value": "6D703432", "description": "Replace 'isom' with 'mp42' to declare MPEG-4 v2 compliance" },
+        { "field": "minorVersion", "changeType": "set_value", "value": "00000000", "description": "Reset minor version to 0 for mp42 base profile" }
+      ]
+    }
+  ]
 }
