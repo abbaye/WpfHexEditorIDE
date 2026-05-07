@@ -557,6 +557,26 @@ public sealed class DocumentMutator(DocumentModel model)
         model.NotifyBlocksChanged();
     }
 
+    // ── Image insert ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Inserts an image block whose pixels are embedded as <paramref name="pngBytes"/> after
+    /// <paramref name="blockIndex"/>. Followed by an empty paragraph so the caret has a landing point.
+    /// </summary>
+    public void InsertImageBlock(int blockIndex, byte[] pngBytes, double naturalWidth = 0, double naturalHeight = 0)
+    {
+        if (blockIndex < 0) blockIndex = Math.Max(0, model.Blocks.Count - 1);
+        var img  = DocumentBlockFactory.NewImage(pngBytes, naturalWidth, naturalHeight);
+        var para = DocumentBlockFactory.NewParagraph();
+        int insertAt = Math.Min(blockIndex + 1, model.Blocks.Count);
+        model.Blocks.Insert(insertAt, img);
+        model.Blocks.Insert(insertAt + 1, para);
+        model.UndoEngine.Push(new BlockInsertUndoEntry { Model = model, Block = img,  BlockIndex = insertAt });
+        model.UndoEngine.Push(new BlockInsertUndoEntry { Model = model, Block = para, BlockIndex = insertAt + 1 });
+        BlockMutated?.Invoke(this, new BlockMutatedArgs(img, BlockMutationKind.Inserted));
+        model.NotifyBlocksChanged();
+    }
+
     // ── Hyperlink insert ─────────────────────────────────────────────────────
 
     /// <summary>Inserts a hyperlink block after <paramref name="blockIndex"/>.</summary>

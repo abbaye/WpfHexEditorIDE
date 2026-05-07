@@ -528,6 +528,9 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         InspectBlockRequested?.Invoke(this, rb.Block);
     }
 
+    /// <summary>Opens the image properties dialog if the caret sits on an image block (called by F4).</summary>
+    public void OpenImagePropertiesViaKey() => OpenImagePropertiesDialog();
+
     private void OpenImagePropertiesDialog()
     {
         var rb = GetImageAtCaret();
@@ -646,7 +649,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         if (_miRedo        is not null) _miRedo.IsEnabled        = _model?.UndoEngine.CanRedo == true;
         if (_miCut         is not null) _miCut.IsEnabled         = hasSelection && editable;
         if (_miCopy        is not null) _miCopy.IsEnabled        = hasSelection;
-        if (_miPaste       is not null) _miPaste.IsEnabled       = hasCaret && editable && System.Windows.Clipboard.ContainsText();
+        if (_miPaste       is not null) _miPaste.IsEnabled       = hasCaret && editable && (System.Windows.Clipboard.ContainsText() || System.Windows.Clipboard.ContainsImage());
         if (_miDelete      is not null) _miDelete.IsEnabled      = (hasSelection || hasCaret) && editable;
         if (_miSelectAll   is not null) _miSelectAll.IsEnabled   = _model is not null && _model.Blocks.Count > 0;
         if (_miSelectBlock is not null) _miSelectBlock.IsEnabled = hasCaret;
@@ -4408,12 +4411,54 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     public void PasteAtCaret()
     {
         if (_isReadOnly) return;
+
+        // Image paste takes priority over text.
+        if (System.Windows.Clipboard.ContainsImage())
+        {
+            PasteImageFromClipboard();
+            return;
+        }
+
         var text = System.Windows.Clipboard.GetText();
         if (!string.IsNullOrEmpty(text))
         {
             DeleteSelectionIfAny();
             InsertTextAtCaret(text);
         }
+    }
+
+    private void PasteImageFromClipboard()
+    {
+        if (_mutator is null) return;
+
+        var bmpSource = System.Windows.Clipboard.GetImage();
+        if (bmpSource is null) return;
+
+        // Encode as PNG bytes for storage in the binaryData attribute.
+        var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+        encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bmpSource));
+        byte[] pngBytes;
+        using (var ms = new System.IO.MemoryStream())
+        {
+            encoder.Save(ms);
+            pngBytes = ms.ToArray();
+        }
+
+        DeleteSelectionIfAny();
+        _mutator.InsertImageBlock(
+            _caret.BlockIndex,
+            pngBytes,
+            bmpSource.PixelWidth,
+            bmpSource.PixelHeight);
+        // Advance caret to the trailing paragraph inserted by InsertImageBlock.
+        _caret = new TextCaret(_caret.BlockIndex + 2, 0, 0);
+        _selection.Anchor = _caret;
+        _selection.Focus  = _caret;
+        _rebuildPending = false;
+        RebuildLayout();
+        RefreshCaretVisual();
+        NotifyCaretBlockChangedIfNeeded();
+        NotifyCaretMoved();
     }
 
     /// <summary>Deletes one character or the selection at the caret.</summary>

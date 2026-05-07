@@ -2763,6 +2763,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     splitHostProj.FormattingOptionsRequested      += (_, _) => OpenSettingsAt("Code Editor", "Formatting");
                 }
 
+                // Wire DocumentEditorHost hex-inspect: navigate connected hex editor to block's raw offset.
+                if (editor is WpfHexEditor.Editor.DocumentEditor.Controls.DocumentEditorHost docHost)
+                    docHost.BlockHexInspectRequested += OnDocumentBlockHexInspectRequested;
+
                 // Register as diagnostic source
                 if (editor is IDiagnosticSource diagSrc)
                     EnsureErrorPanelInstance().AddSource(diagSrc);
@@ -2980,6 +2984,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             }
 
             editor.OutputMessage += OnEditorOutputMessage;
+
+            if (editor is WpfHexEditor.Editor.DocumentEditor.Controls.DocumentEditorHost docHost2)
+                docHost2.BlockHexInspectRequested += OnDocumentBlockHexInspectRequested;
 
             if (editor is IDiagnosticSource diagSrc)
                 EnsureErrorPanelInstance().AddSource(diagSrc);

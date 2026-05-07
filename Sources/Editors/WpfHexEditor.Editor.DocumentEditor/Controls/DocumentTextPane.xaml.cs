@@ -32,6 +32,9 @@ public partial class DocumentTextPane : UserControl
     /// <summary>Raised when a selection occurs — host should show pop-toolbar.</summary>
     public event EventHandler<PopToolbarRequestedArgs>? PopToolbarRequested;
 
+    /// <summary>Raised when the user requests hex inspection of a block from the forensic gutter.</summary>
+    public event EventHandler<DocumentBlock>? BlockInspectRequested;
+
     // ── Fields ────────────────────────────────────────────────────────────────
 
     private DocumentModel? _model;
@@ -224,7 +227,7 @@ public partial class DocumentTextPane : UserControl
             if (rb.ForensicSeverity.HasValue)
             {
                 alertByBlock.TryGetValue(rb.Block, out var alert);
-                PART_ForensicGutter.Children.Add(MakeForensicDot(rb, i, screenY, alert?.Description ?? string.Empty));
+                PART_ForensicGutter.Children.Add(MakeForensicDot(rb, i, screenY, alert));
             }
         }
     }
@@ -283,8 +286,9 @@ public partial class DocumentTextPane : UserControl
         return chip;
     }
 
-    private UIElement MakeForensicDot(RenderBlock rb, int blockIdx, double screenY, string alertDesc)
+    private UIElement MakeForensicDot(RenderBlock rb, int blockIdx, double screenY, Core.Forensic.ForensicAlert? alert)
     {
+        var alertDesc   = alert?.Description ?? string.Empty;
         var isError     = rb.ForensicSeverity == Core.Forensic.ForensicSeverity.Error;
         var normalBrush = isError
             ? (TryFindResource("DE_ForensicErrorBrush") as Brush ?? Brushes.Red)
@@ -301,7 +305,7 @@ public partial class DocumentTextPane : UserControl
             Tag     = blockIdx
         };
 
-        dot.ContextMenu = BuildForensicDotContextMenu(rb, blockIdx, alertDesc);
+        dot.ContextMenu = BuildForensicDotContextMenu(rb, blockIdx, alertDesc, alert);
 
         dot.MouseEnter += (_, _) => dot.Fill = hoverBrush;
         dot.MouseLeave += (_, _) => dot.Fill = normalBrush;
@@ -359,12 +363,13 @@ public partial class DocumentTextPane : UserControl
         cm.Items.Add(new Separator());
 
         AddMenuItem(cm, TryFindResource("Forensic_Ctx_InspectBinary") as string ?? "Inspect in Hex Editor",
-            "&#xE7C4;", () => { /* raise event for host to open hex */ });
+            "&#xE7C4;", () => BlockInspectRequested?.Invoke(this, rb.Block));
 
         return cm;
     }
 
-    private ContextMenu BuildForensicDotContextMenu(RenderBlock rb, int blockIdx, string alertDesc)
+    private ContextMenu BuildForensicDotContextMenu(
+        RenderBlock rb, int blockIdx, string alertDesc, Core.Forensic.ForensicAlert? alert)
     {
         var cm = new ContextMenu();
 
@@ -383,16 +388,17 @@ public partial class DocumentTextPane : UserControl
 
         cm.Items.Add(new Separator());
 
-        AddMenuItem(cm, TryFindResource("Forensic_Ctx_MarkFalsePositive") as string ?? "Mark as false positive",
-            "&#xE73E;", () => { /* TODO: mark alert suppressed */ });
+        var suppressItem = AddMenuItem(cm, TryFindResource("Forensic_Ctx_MarkFalsePositive") as string ?? "Mark as false positive",
+            "&#xE73E;", () => { if (alert is not null) _model?.SuppressAlert(alert); });
+        suppressItem.IsEnabled = alert is not null;
 
         AddMenuItem(cm, TryFindResource("Forensic_Ctx_InspectBinary") as string ?? "Inspect in Hex Editor",
-            "&#xE7C4;", () => { /* raise event for host */ });
+            "&#xE7C4;", () => BlockInspectRequested?.Invoke(this, rb.Block));
 
         return cm;
     }
 
-    private static void AddMenuItem(ContextMenu cm, string header, string? iconGlyph, Action action)
+    private static MenuItem AddMenuItem(ContextMenu cm, string header, string? iconGlyph, Action action)
     {
         var item = new MenuItem { Header = header };
         if (iconGlyph is not null)
@@ -406,6 +412,7 @@ public partial class DocumentTextPane : UserControl
         }
         item.Click += (_, _) => action();
         cm.Items.Add(item);
+        return item;
     }
 
     private void UpdateForensicGutterPositions()

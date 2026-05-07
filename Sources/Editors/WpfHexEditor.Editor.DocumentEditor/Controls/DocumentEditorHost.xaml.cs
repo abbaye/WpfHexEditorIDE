@@ -194,6 +194,9 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         ? DocumentEditorResources.DocEditorHost_DocumentTitle
         : Path.GetFileName(_vm.Model.FilePath) + (IsDirty ? " *" : string.Empty);
 
+    /// <summary>Absolute path of the currently loaded document file, or null when no file is loaded.</summary>
+    public string? FilePath => _vm?.Model.FilePath;
+
     public int    UndoCount       => _vm?.Model.UndoEngine.UndoCount ?? 0;
     public int    RedoCount       => _vm?.Model.UndoEngine.RedoCount ?? 0;
     public string UndoDescription => _vm?.Model.UndoEngine.PeekUndoDescription ?? "Undo";
@@ -830,6 +833,13 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             return;
         }
 
+        if (e.Key == Key.F4 && (Keyboard.Modifiers & ModifierKeys.Control) == 0)
+        {
+            PART_TextPane.PART_Renderer.OpenImagePropertiesViaKey();
+            e.Handled = true;
+            return;
+        }
+
         if ((Keyboard.Modifiers & ModifierKeys.Control) == 0) return;
 
         if (e.Key == Key.F)  { OpenFindDialog(showReplace: false); e.Handled = true; }
@@ -1224,7 +1234,8 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         PART_TextPane.PART_Renderer.SelectionFormatChanged += OnSelectionFormatChanged;
         PART_TextPane.PART_Renderer.PageChanged            += OnRendererPageChanged;
         PART_TextPane.PART_Renderer.FindResultsChanged     += (_, _) => UpdateSearchScrollMarkers();
-        PART_TextPane.PART_Renderer.InspectBlockRequested  += (_, b) => BlockHexInspectRequested?.Invoke(this, b);
+        PART_TextPane.PART_Renderer.InspectBlockRequested += (_, b) => BlockHexInspectRequested?.Invoke(this, b);
+        PART_TextPane.BlockInspectRequested               += (_, b) => BlockHexInspectRequested?.Invoke(this, b);
 
         PART_StatusBar.ViewModeChangeRequested    += (_, m) => ViewMode   = m;
         PART_StatusBar.RenderModeChangeRequested  += (_, m) => RenderMode = m;
