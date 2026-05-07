@@ -165,8 +165,6 @@ public partial class ImagePropertiesDialog : Window
         _suppressSizeEvents = false;
     }
 
-    private void OnAspectLockChanged(object sender, RoutedEventArgs e) { }
-
     private void OnResetSizeClicked(object sender, RoutedEventArgs e)
     {
         _suppressSizeEvents = true;

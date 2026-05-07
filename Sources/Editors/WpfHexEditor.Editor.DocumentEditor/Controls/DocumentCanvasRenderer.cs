@@ -231,7 +231,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private System.Windows.Controls.MenuItem? _miImageCut, _miImageCopy, _miImageDelete, _miImageReplace;
     private System.Windows.Controls.MenuItem? _miImageSave, _miImageCopyClipboard;
     private System.Windows.Controls.MenuItem? _miImageAlign, _miImageWrap, _miImageInspect, _miImageProperties;
-    private System.Windows.Controls.Separator? _miImageSep1, _miImageSep2;
+    private System.Windows.Controls.Separator? _miImageSep1, _miImageSep2, _miImageSep3;
 
     private System.Windows.Controls.ContextMenu BuildContextMenu()
     {
@@ -303,7 +303,6 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         cm.Items.Add(_miSelectBlock);
         cm.Items.Add(_miSelectAll);
 
-        // Image-specific items (hidden unless right-click lands on an image block)
         _miImageSep1         = new System.Windows.Controls.Separator { Visibility = Visibility.Collapsed };
         _miImageCut          = MakeMenuItem("ImgCtx_Cut",          "Cut",                    () => CutImageAtCaret(),             "Ctrl+X");
         _miImageCopy         = MakeMenuItem("ImgCtx_Copy",         "Copy",                   () => CopySelection(),               "Ctrl+C");
@@ -325,6 +324,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         _miImageInspect   = MakeMenuItem("ImgCtx_InspectHex",  "Inspect in Hex Editor", () => RaiseInspectImage(), "");
         _miImageProperties= MakeMenuItem("ImgCtx_Properties",  "Image properties…",     () => OpenImagePropertiesDialog(), "F4");
         _miImageSep2      = new System.Windows.Controls.Separator { Visibility = Visibility.Collapsed };
+        _miImageSep3      = new System.Windows.Controls.Separator { Visibility = Visibility.Collapsed };
 
         cm.Items.Add(_miImageSep1);
         cm.Items.Add(_miImageCut);
@@ -333,7 +333,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         cm.Items.Add(_miImageDelete);
         cm.Items.Add(_miImageReplace);
         cm.Items.Add(_miImageSave);
-        cm.Items.Add(new System.Windows.Controls.Separator { Visibility = Visibility.Collapsed, Tag = "imgSep3" });
+        cm.Items.Add(_miImageSep3);
         cm.Items.Add(_miImageAlign);
         cm.Items.Add(_miImageWrap);
         cm.Items.Add(_miImageSep2);
@@ -348,21 +348,11 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     private void SetImageMenuVisible(bool visible)
     {
         var vis = visible ? Visibility.Visible : Visibility.Collapsed;
-        if (_miImageSep1          is not null) _miImageSep1.Visibility           = vis;
-        if (_miImageCut           is not null) _miImageCut.Visibility            = vis;
-        if (_miImageCopy          is not null) _miImageCopy.Visibility           = vis;
-        if (_miImageCopyClipboard is not null) _miImageCopyClipboard.Visibility  = vis;
-        if (_miImageDelete        is not null) _miImageDelete.Visibility         = vis;
-        if (_miImageReplace       is not null) _miImageReplace.Visibility        = vis;
-        if (_miImageSave          is not null) _miImageSave.Visibility           = vis;
-        if (_miImageAlign         is not null) _miImageAlign.Visibility          = vis;
-        if (_miImageWrap          is not null) _miImageWrap.Visibility           = vis;
-        if (_miImageSep2          is not null) _miImageSep2.Visibility           = vis;
-        if (_miImageInspect       is not null) _miImageInspect.Visibility        = vis;
-        if (_miImageProperties    is not null) _miImageProperties.Visibility     = vis;
-        // also hide the imgSep3 separator
-        foreach (var item in ContextMenu!.Items.OfType<System.Windows.Controls.Separator>())
-            if (item.Tag as string == "imgSep3") item.Visibility = vis;
+        foreach (var item in new System.Windows.FrameworkElement?[]
+            { _miImageSep1, _miImageCut, _miImageCopy, _miImageCopyClipboard,
+              _miImageDelete, _miImageReplace, _miImageSave, _miImageSep3,
+              _miImageAlign, _miImageWrap, _miImageSep2, _miImageInspect, _miImageProperties })
+            if (item is not null) item.Visibility = vis;
     }
 
     private System.Windows.Controls.MenuItem MakeSubmenu(string headerKey, string fallback, params System.Windows.Controls.MenuItem?[] items)
@@ -461,15 +451,18 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         DeleteAtCaret(forward: true);
     }
 
-    private void CopyImageToClipboard()
-    {
-        var rb = GetImageAtCaret();
-        if (rb is null) return;
-        var key = rb.Block.Attributes.TryGetValue("zipEntryName", out var ze) && ze is string s
+    private string? GetImageCacheKey(RenderBlock rb) =>
+        rb.Block.Attributes.TryGetValue("zipEntryName", out var ze) && ze is string s
             ? $"{_model?.FilePath}|{s}"
             : rb.Block.Attributes.TryGetValue("binaryData", out _)
                 ? $"binaryData|{rb.Block.RawOffset}"
                 : null;
+
+    private void CopyImageToClipboard()
+    {
+        var rb = GetImageAtCaret();
+        if (rb is null) return;
+        var key = GetImageCacheKey(rb);
         if (key is null || _imageCache is null || !_imageCache.TryGetValue(key, out var bmp) || bmp is null) return;
         System.Windows.Clipboard.SetImage(bmp);
     }
@@ -500,11 +493,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         var rb = GetImageAtCaret();
         if (rb is null) return;
 
-        var key = rb.Block.Attributes.TryGetValue("zipEntryName", out var ze) && ze is string s
-            ? $"{_model?.FilePath}|{s}"
-            : rb.Block.Attributes.TryGetValue("binaryData", out _)
-                ? $"binaryData|{rb.Block.RawOffset}"
-                : null;
+        var key = GetImageCacheKey(rb);
         if (key is null || _imageCache is null || !_imageCache.TryGetValue(key, out var bmp) || bmp is null) return;
 
         var name = System.IO.Path.GetFileNameWithoutExtension(_model?.FilePath ?? "image");
@@ -545,11 +534,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         if (rb is null) return;
 
         System.Windows.Media.Imaging.BitmapSource? preview = null;
-        var key = rb.Block.Attributes.TryGetValue("zipEntryName", out var ze) && ze is string s
-            ? $"{_model?.FilePath}|{s}"
-            : rb.Block.Attributes.TryGetValue("binaryData", out _)
-                ? $"binaryData|{rb.Block.RawOffset}"
-                : null;
+        var key = GetImageCacheKey(rb);
         if (key is not null && _imageCache is not null)
         {
             _imageCache.TryGetValue(key, out var bmpImg);

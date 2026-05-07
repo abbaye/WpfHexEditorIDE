@@ -36,6 +36,12 @@ public partial class DocumentTextPane : UserControl
 
     private DocumentModel? _model;
 
+    private static readonly Brush FallbackKindBg     = Frozen(Color.FromRgb( 55,  65,  85));
+    private static readonly Brush FallbackKindHoverBg = Frozen(Color.FromRgb( 80, 100, 140));
+    private static readonly Brush FallbackErrorHover  = Frozen(Color.FromRgb(255, 120, 120));
+    private static readonly Brush FallbackWarnHover   = Frozen(Color.FromRgb(255, 210,  80));
+    private static Brush Frozen(Color c) { var b = new SolidColorBrush(c); b.Freeze(); return b; }
+
     // ── Constructor ──────────────────────────────────────────────────────────
 
     public DocumentTextPane()
@@ -56,7 +62,6 @@ public partial class DocumentTextPane : UserControl
             PART_VRuler.Attach(PART_Renderer);
         };
 
-        // Track scroll to reposition forensic gutter badges
         PART_ScrollViewer.ScrollChanged += (_, _) => UpdateForensicGutterPositions();
         PART_Renderer.SizeChanged       += (_, _) => UpdateForensicGutterPositions();
     }
@@ -203,6 +208,7 @@ public partial class DocumentTextPane : UserControl
         if (blocks.Count == 0) return;
 
         double scrollY = PART_Renderer.VerticalOffset;
+        var alertByBlock = _model.ForensicAlerts.ToDictionary(a => a.Block);
 
         for (int i = 0; i < blocks.Count; i++)
         {
@@ -211,15 +217,12 @@ public partial class DocumentTextPane : UserControl
 
             double screenY = RendererPagePad + rb.Y - scrollY;
 
-            // Kind chip — always shown
-            var kindEl = MakeKindChip(rb, i, screenY);
-            PART_ForensicGutter.Children.Add(kindEl);
+            PART_ForensicGutter.Children.Add(MakeKindChip(rb, i, screenY));
 
-            // Forensic dot — only when there is an alert
             if (rb.ForensicSeverity.HasValue)
             {
-                var dotEl = MakeForensicDot(rb, i, screenY);
-                PART_ForensicGutter.Children.Add(dotEl);
+                alertByBlock.TryGetValue(rb.Block, out var alert);
+                PART_ForensicGutter.Children.Add(MakeForensicDot(rb, i, screenY, alert?.Description ?? string.Empty));
             }
         }
     }
@@ -240,12 +243,15 @@ public partial class DocumentTextPane : UserControl
         var kindKey    = $"Forensic_Kind_{label}";
         var tooltipKey = $"Forensic_Kind_{label}_Tip";
 
+        var normalBg = TryFindResource("DE_ForensicKindBg")     as Brush ?? FallbackKindBg;
+        var hoverBg  = TryFindResource("DE_ForensicKindHoverBg") as Brush ?? FallbackKindHoverBg;
+
         var chip = new Border
         {
             Width           = 36,
             Height          = 16,
             CornerRadius    = new CornerRadius(2),
-            Background      = TryFindResource("DE_ForensicKindBg")   as Brush ?? new SolidColorBrush(Color.FromRgb(55, 65, 85)),
+            Background      = normalBg,
             Cursor          = Cursors.Hand,
             ToolTip         = TryFindResource(tooltipKey) as string
                               ?? BuildKindTooltip(rb.Block.Kind, rb.Block),
@@ -263,16 +269,8 @@ public partial class DocumentTextPane : UserControl
 
         chip.ContextMenu = BuildBlockContextMenu(rb, blockIdx);
 
-        chip.MouseEnter += (_, _) =>
-        {
-            chip.Background = TryFindResource("DE_ForensicKindHoverBg") as Brush
-                              ?? new SolidColorBrush(Color.FromRgb(80, 100, 140));
-        };
-        chip.MouseLeave += (_, _) =>
-        {
-            chip.Background = TryFindResource("DE_ForensicKindBg") as Brush
-                              ?? new SolidColorBrush(Color.FromRgb(55, 65, 85));
-        };
+        chip.MouseEnter += (_, _) => chip.Background = hoverBg;
+        chip.MouseLeave += (_, _) => chip.Background = normalBg;
         chip.MouseLeftButtonUp += (_, _) =>
         {
             PART_Renderer.NavigateToBlockIndex(blockIdx);
@@ -283,22 +281,13 @@ public partial class DocumentTextPane : UserControl
         return chip;
     }
 
-    private UIElement MakeForensicDot(RenderBlock rb, int blockIdx, double screenY)
+    private UIElement MakeForensicDot(RenderBlock rb, int blockIdx, double screenY, string alertDesc)
     {
-        var isError = rb.ForensicSeverity == Core.Forensic.ForensicSeverity.Error;
+        var isError     = rb.ForensicSeverity == Core.Forensic.ForensicSeverity.Error;
         var normalBrush = isError
             ? (TryFindResource("DE_ForensicErrorBrush") as Brush ?? Brushes.Red)
             : (TryFindResource("DE_ForensicWarnBrush")  as Brush ?? Brushes.Orange);
-        var hoverBrush = isError
-            ? new SolidColorBrush(Color.FromRgb(255, 120, 120))
-            : new SolidColorBrush(Color.FromRgb(255, 210, 80));
-
-        string alertDesc = string.Empty;
-        if (_model is not null)
-        {
-            var alert = _model.ForensicAlerts.FirstOrDefault(a => a.Block == rb.Block);
-            if (alert is not null) alertDesc = alert.Description;
-        }
+        var hoverBrush  = isError ? FallbackErrorHover : FallbackWarnHover;
 
         var dot = new System.Windows.Shapes.Ellipse
         {
@@ -437,13 +426,11 @@ public partial class DocumentTextPane : UserControl
 
             double screenY = RendererPagePad + rb.Y - scrollY;
 
-            // chip
             if (childIdx < PART_ForensicGutter.Children.Count)
             {
                 Canvas.SetTop(PART_ForensicGutter.Children[childIdx], screenY + 1);
                 childIdx++;
             }
-            // dot
             if (rb.ForensicSeverity.HasValue && childIdx < PART_ForensicGutter.Children.Count)
             {
                 Canvas.SetTop(PART_ForensicGutter.Children[childIdx], screenY + 3);

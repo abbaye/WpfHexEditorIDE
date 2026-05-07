@@ -157,9 +157,7 @@
                                   Width="22" Height="22"
                                   VerticalAlignment="Center"
                                   ToolTip="{StaticResource ImgDlg_LockAspect}"
-                                  IsChecked="True"
-                                  Checked="OnAspectLockChanged"
-                                  Unchecked="OnAspectLockChanged">
+                                  IsChecked="True">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE72E;" FontSize="12"/>
                     </ToggleButton>
 
