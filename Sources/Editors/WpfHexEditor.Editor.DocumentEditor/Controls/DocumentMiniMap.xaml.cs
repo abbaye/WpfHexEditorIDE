@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Properties;
+using WpfHexEditor.Editor.DocumentEditor.Rendering; // RenderBlock
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -27,6 +28,7 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
     private double         _scrollOffset;    // current vertical scroll offset in document pixels
     private double         _scrollExtent;    // total document canvas height
     private double         _viewportHeight;  // visible area height
+    private IReadOnlyList<RenderBlock>? _layoutBlocks; // live layout positions from renderer
 
     // ── Static frozen brushes (same pattern as CodeEditor MinimapControl) ─────
     private static readonly Brush ViewportBrush;
@@ -138,14 +140,26 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
         Dispatcher.InvokeAsync(Redraw);
     }
 
-    /// <summary>Updates scroll state so the viewport rectangle reflects the current position.</summary>
+    /// <summary>Updates scroll state and layout blocks; redraws overlay (and bitmap if layout changed).</summary>
     public void UpdateScroll(double scrollOffset, double scrollExtent, double viewportHeight)
+        => UpdateScroll(scrollOffset, scrollExtent, viewportHeight, null);
+
+    internal void UpdateScroll(double scrollOffset, double scrollExtent, double viewportHeight,
+                               IReadOnlyList<RenderBlock>? layoutBlocks)
     {
         _scrollOffset   = scrollOffset;
         _scrollExtent   = scrollExtent;
         _viewportHeight = viewportHeight;
-        // Only the cheap overlay needs to refresh on scroll — block bitmap is unchanged.
-        RedrawOverlay();
+
+        bool layoutChanged = layoutBlocks is not null && !ReferenceEquals(layoutBlocks, _layoutBlocks);
+        if (layoutChanged)
+        {
+            _layoutBlocks = layoutBlocks;
+            _bgImage = null; // force bitmap rebuild
+        }
+
+        if (layoutChanged) Redraw();
+        else RedrawOverlay();
     }
 
     // ── Drawing ──────────────────────────────────────────────────────────────
@@ -155,10 +169,6 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
     private System.Windows.Shapes.Rectangle? _hoverBand;
     private double _cachedW, _cachedH;
     private int    _cachedBlockCount;
-    // Total drawn content height in minimap pixels (totalLines * lineH).
-    // Used by RedrawOverlay to scale the viewport rect to the block image, not
-    // to the full scroll extent (which includes page padding/gaps).
-    private double _contentPixelHeight;
 
     private void Redraw()
     {
@@ -196,40 +206,8 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
 
     private System.Windows.Controls.Image BuildBlocksImage(List<DocumentBlock> blocks, double w, double h)
     {
-        // Walk every block once and emit (lineLengthChars, blockKind) pairs so we
-        // can pick a uniform vertical scale that matches both very short and very
-        // long documents — same trick CodeEditor's MinimapControl uses.
-        var lines = new List<(int Len, DocumentBlock Block)>(capacity: blocks.Count * 2);
-        foreach (var block in blocks)
-        {
-            if (block.Kind is "page-break") continue;
-            string text = block.Children.Count > 0
-                ? string.Concat(block.Children.Select(c => c.Text))
-                : block.Text;
-            if (string.IsNullOrEmpty(text)) { lines.Add((0, block)); continue; }
-
-            int start = 0;
-            for (int i = 0; i <= text.Length; i++)
-            {
-                bool atEnd  = i == text.Length;
-                bool atNl   = !atEnd && text[i] == '\n';
-                bool atWrap = !atEnd && !atNl && (i - start) >= MinimapWrapColumns;
-                if (!atEnd && !atNl && !atWrap) continue;
-
-                lines.Add((i - start, block));
-                start = atNl ? i + 1 : i;
-            }
-        }
-        if (lines.Count == 0) lines.Add((0, blocks[0]));
-
-        // Per-line height: enough lines to read the document at a glance, but
-        // never so dense that individual lines disappear (min 1.4 dip).
-        double rawScale = h / Math.Max(1, lines.Count);
-        double lineH    = Math.Clamp(rawScale, 1.4, 4.0);
-        _contentPixelHeight = lines.Count * lineH;
-        double rowFill  = Math.Max(0.8, lineH * 0.55);
-        double indent   = 4;
-        double maxW     = w - indent * 2;
+        double indent = 4;
+        double maxW   = w - indent * 2;
 
         var visual = new DrawingVisual();
         using (var dc = visual.RenderOpen())
@@ -238,6 +216,30 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
                           ?? new SolidColorBrush(Color.FromRgb(22, 22, 22));
             dc.DrawRectangle(bgBrush, null, new Rect(0, 0, w, h));
 
+            // Uniform line-height distribution — approximates document density without
+            // requiring live layout positions. Each logical line gets a proportional row.
+            var lines = new List<(int Len, DocumentBlock Block)>(blocks.Count * 2);
+            foreach (var block in blocks)
+            {
+                if (block.Kind is "page-break") continue;
+                string text = block.Children.Count > 0
+                    ? string.Concat(block.Children.Select(c => c.Text))
+                    : block.Text;
+                if (string.IsNullOrEmpty(text)) { lines.Add((0, block)); continue; }
+                int start = 0;
+                for (int i = 0; i <= text.Length; i++)
+                {
+                    bool atEnd  = i == text.Length;
+                    bool atNl   = !atEnd && text[i] == '\n';
+                    bool atWrap = !atEnd && !atNl && (i - start) >= MinimapWrapColumns;
+                    if (!atEnd && !atNl && !atWrap) continue;
+                    lines.Add((i - start, block));
+                    start = atNl ? i + 1 : i;
+                }
+            }
+            if (lines.Count == 0 && blocks.Count > 0) lines.Add((0, blocks[0]));
+            double lineH   = Math.Clamp(h / Math.Max(1, lines.Count), 1.4, 4.0);
+            double rowFill = Math.Max(0.8, lineH * 0.55);
             double y = 0;
             foreach (var (len, block) in lines)
             {
@@ -261,6 +263,14 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
             Height  = h,
             IsHitTestVisible = false
         };
+    }
+
+    private static double EstimateTextFraction(DocumentBlock block)
+    {
+        int len = block.Children.Count > 0
+            ? block.Children.Sum(c => c.Text?.Length ?? 0)
+            : block.Text?.Length ?? 0;
+        return Math.Clamp(len / (double)MinimapWrapColumns, 0.05, 1.0);
     }
 
     private void RedrawOverlay()
@@ -298,16 +308,11 @@ public partial class DocumentMiniMap : System.Windows.Controls.UserControl
             return;
         }
 
-        // Map scroll positions to minimap pixels using the actual drawn content height,
-        // not the full minimap height. The block strips cover _contentPixelHeight pixels
-        // (which may be less than h when lineH is clamped); the full scroll extent
-        // includes page padding and inter-page gaps beyond the text content. Using
-        // _contentPixelHeight / _scrollExtent as the scale correctly sizes the viewport
-        // rect relative to what the block strips represent.
-        double contentH = _contentPixelHeight > 0 ? _contentPixelHeight : h;
-        double scale = contentH / _scrollExtent;
-        double vpH   = Math.Max(8, _viewportHeight * scale);
-        double top   = Math.Clamp(_scrollOffset * scale, 0, h - vpH);
+        // Map scroll positions linearly across the full minimap height.
+        // scale = minimap_height / total_scroll_extent so viewport rect tracks correctly.
+        double scale = h / _scrollExtent;
+        double vpH   = Math.Max(8, Math.Min(h, _viewportHeight * scale));
+        double top   = Math.Clamp(_scrollOffset * scale, 0, Math.Max(0, h - vpH));
 
         _viewportRect.Width  = w;
         _viewportRect.Height = vpH;

@@ -239,6 +239,8 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>확인</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>취소</value></data>
+  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>브라우저에서 URL 열기</value></data>
+  <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>올바른 URL을 입력하세요 (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>표 삽입</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>행</value></data>
   <data name="InsertTableDlg_Columns" xml:space="preserve"><value>열</value></data>
@@ -306,4 +308,65 @@
   <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>설치</value></data>
   <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>나중에</value></data>
   <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>다시 표시 안 함</value></data>
+
+  <!-- Image dialog & context menu -->
+  <data name="ImgDlg_Title" xml:space="preserve"><value>이미지 속성</value></data>
+  <data name="ImgDlg_TabSize" xml:space="preserve"><value>크기 및 위치</value></data>
+  <data name="ImgDlg_TabWrap" xml:space="preserve"><value>텍스트 줄 바꿈</value></data>
+  <data name="ImgDlg_TabBorder" xml:space="preserve"><value>테두리</value></data>
+  <data name="ImgDlg_TabOptions" xml:space="preserve"><value>옵션</value></data>
+  <data name="ImgDlg_Preview" xml:space="preserve"><value>미리 보기</value></data>
+  <data name="ImgDlg_SizeSection" xml:space="preserve"><value>크기</value></data>
+  <data name="ImgDlg_Width" xml:space="preserve"><value>너비</value></data>
+  <data name="ImgDlg_Height" xml:space="preserve"><value>높이</value></data>
+  <data name="ImgDlg_LockAspect" xml:space="preserve"><value>가로 세로 비율 잠금</value></data>
+  <data name="ImgDlg_ResetSize" xml:space="preserve"><value>원래 크기</value></data>
+  <data name="ImgDlg_AlignSection" xml:space="preserve"><value>정렬</value></data>
+  <data name="ImgDlg_AlignLeft" xml:space="preserve"><value>왼쪽</value></data>
+  <data name="ImgDlg_AlignCenter" xml:space="preserve"><value>가운데</value></data>
+  <data name="ImgDlg_AlignRight" xml:space="preserve"><value>오른쪽</value></data>
+  <data name="ImgDlg_AltText" xml:space="preserve"><value>대체 텍스트 (접근성)</value></data>
+  <data name="ImgDlg_WrapSection" xml:space="preserve"><value>텍스트 줄 바꿈</value></data>
+  <data name="ImgDlg_WrapNone" xml:space="preserve"><value>줄 바꿈 없음</value></data>
+  <data name="ImgDlg_WrapLeft" xml:space="preserve"><value>왼쪽 줄 바꿈</value></data>
+  <data name="ImgDlg_WrapRight" xml:space="preserve"><value>오른쪽 줄 바꿈</value></data>
+  <data name="ImgDlg_WrapSpacing" xml:space="preserve"><value>이미지 주변 간격</value></data>
+  <data name="ImgDlg_SpaceTop" xml:space="preserve"><value>위</value></data>
+  <data name="ImgDlg_SpaceBottom" xml:space="preserve"><value>아래</value></data>
+  <data name="ImgDlg_SpaceLeft" xml:space="preserve"><value>왼쪽</value></data>
+  <data name="ImgDlg_SpaceRight" xml:space="preserve"><value>오른쪽</value></data>
+  <data name="ImgDlg_BorderSection" xml:space="preserve"><value>테두리</value></data>
+  <data name="ImgDlg_BorderEnable" xml:space="preserve"><value>이미지 주위에 테두리 표시</value></data>
+  <data name="ImgDlg_BorderWidth" xml:space="preserve"><value>두께</value></data>
+  <data name="ImgDlg_BorderColor" xml:space="preserve"><value>색</value></data>
+  <data name="ImgDlg_BorderStyle" xml:space="preserve"><value>스타일</value></data>
+  <data name="ImgDlg_BorderStyleSolid" xml:space="preserve"><value>실선</value></data>
+  <data name="ImgDlg_BorderStyleDashed" xml:space="preserve"><value>파선</value></data>
+  <data name="ImgDlg_BorderStyleDotted" xml:space="preserve"><value>점선</value></data>
+  <data name="ImgDlg_CornerRadius" xml:space="preserve"><value>모서리 둥글게</value></data>
+  <data name="ImgDlg_OptionsSection" xml:space="preserve"><value>옵션</value></data>
+  <data name="ImgDlg_OptKeepAspect" xml:space="preserve"><value>크기 조정 시 가로 세로 비율 유지</value></data>
+  <data name="ImgDlg_OptProtect" xml:space="preserve"><value>편집으로부터 이미지 보호</value></data>
+  <data name="ImgDlg_OptPrintable" xml:space="preserve"><value>인쇄 출력에 포함</value></data>
+  <data name="ImgDlg_SourceInfo" xml:space="preserve"><value>이미지 소스</value></data>
+  <data name="ImgDlg_Reset" xml:space="preserve"><value>재설정</value></data>
+  <data name="ImgDlg_Cancel" xml:space="preserve"><value>취소</value></data>
+  <data name="ImgDlg_OK" xml:space="preserve"><value>확인</value></data>
+  <data name="ImgCtx_Cut" xml:space="preserve"><value>잘라내기</value></data>
+  <data name="ImgCtx_Copy" xml:space="preserve"><value>복사</value></data>
+  <data name="ImgCtx_Paste" xml:space="preserve"><value>붙여넣기</value></data>
+  <data name="ImgCtx_Delete" xml:space="preserve"><value>이미지 삭제</value></data>
+  <data name="ImgCtx_Replace" xml:space="preserve"><value>이미지 교체...</value></data>
+  <data name="ImgCtx_SaveAs" xml:space="preserve"><value>이미지 다른 이름으로 저장...</value></data>
+  <data name="ImgCtx_CopyImage" xml:space="preserve"><value>이미지를 클립보드에 복사</value></data>
+  <data name="ImgCtx_AlignLeft" xml:space="preserve"><value>왼쪽 정렬</value></data>
+  <data name="ImgCtx_AlignCenter" xml:space="preserve"><value>가운데 정렬</value></data>
+  <data name="ImgCtx_AlignRight" xml:space="preserve"><value>오른쪽 정렬</value></data>
+  <data name="ImgCtx_Align" xml:space="preserve"><value>정렬</value></data>
+  <data name="ImgCtx_WrapNone" xml:space="preserve"><value>줄 바꿈 없음</value></data>
+  <data name="ImgCtx_WrapLeft" xml:space="preserve"><value>왼쪽 줄 바꿈</value></data>
+  <data name="ImgCtx_WrapRight" xml:space="preserve"><value>오른쪽 줄 바꿈</value></data>
+  <data name="ImgCtx_Wrap" xml:space="preserve"><value>텍스트 줄 바꿈</value></data>
+  <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Hex 편집기에서 검사</value></data>
+  <data name="ImgCtx_Properties" xml:space="preserve"><value>이미지 속성...</value></data>
 </root>

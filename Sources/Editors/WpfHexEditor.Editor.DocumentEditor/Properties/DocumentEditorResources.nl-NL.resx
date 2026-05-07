@@ -239,6 +239,8 @@
   <data name="HyperlinkDlg_LabelUrl"   xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK"         xml:space="preserve"><value>OK</value></data>
   <data name="HyperlinkDlg_Cancel"     xml:space="preserve"><value>Annuleren</value></data>
+  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>URL openen in browser</value></data>
+  <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Voer een geldige URL in (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title"    xml:space="preserve"><value>Tabel invoegen</value></data>
   <data name="InsertTableDlg_Rows"     xml:space="preserve"><value>Rijen</value></data>
   <data name="InsertTableDlg_Columns"  xml:space="preserve"><value>Kolommen</value></data>
@@ -306,4 +308,65 @@
   <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Installeren</value></data>
   <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Later</value></data>
   <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Nooit meer weergeven</value></data>
+
+  <!-- Image dialog & context menu -->
+  <data name="ImgDlg_Title" xml:space="preserve"><value>Afbeeldingseigenschappen</value></data>
+  <data name="ImgDlg_TabSize" xml:space="preserve"><value>Grootte en positie</value></data>
+  <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Tekstterugloop</value></data>
+  <data name="ImgDlg_TabBorder" xml:space="preserve"><value>Rand</value></data>
+  <data name="ImgDlg_TabOptions" xml:space="preserve"><value>Opties</value></data>
+  <data name="ImgDlg_Preview" xml:space="preserve"><value>Voorbeeld</value></data>
+  <data name="ImgDlg_SizeSection" xml:space="preserve"><value>Grootte</value></data>
+  <data name="ImgDlg_Width" xml:space="preserve"><value>Breedte</value></data>
+  <data name="ImgDlg_Height" xml:space="preserve"><value>Hoogte</value></data>
+  <data name="ImgDlg_LockAspect" xml:space="preserve"><value>Beeldverhouding vergrendelen</value></data>
+  <data name="ImgDlg_ResetSize" xml:space="preserve"><value>Originele grootte</value></data>
+  <data name="ImgDlg_AlignSection" xml:space="preserve"><value>Uitlijning</value></data>
+  <data name="ImgDlg_AlignLeft" xml:space="preserve"><value>Links</value></data>
+  <data name="ImgDlg_AlignCenter" xml:space="preserve"><value>Midden</value></data>
+  <data name="ImgDlg_AlignRight" xml:space="preserve"><value>Rechts</value></data>
+  <data name="ImgDlg_AltText" xml:space="preserve"><value>Alternatieve tekst (toegankelijkheid)</value></data>
+  <data name="ImgDlg_WrapSection" xml:space="preserve"><value>Tekstterugloop</value></data>
+  <data name="ImgDlg_WrapNone" xml:space="preserve"><value>Geen terugloop</value></data>
+  <data name="ImgDlg_WrapLeft" xml:space="preserve"><value>Terugloop links</value></data>
+  <data name="ImgDlg_WrapRight" xml:space="preserve"><value>Terugloop rechts</value></data>
+  <data name="ImgDlg_WrapSpacing" xml:space="preserve"><value>Afstand rond afbeelding</value></data>
+  <data name="ImgDlg_SpaceTop" xml:space="preserve"><value>Boven</value></data>
+  <data name="ImgDlg_SpaceBottom" xml:space="preserve"><value>Onder</value></data>
+  <data name="ImgDlg_SpaceLeft" xml:space="preserve"><value>Links</value></data>
+  <data name="ImgDlg_SpaceRight" xml:space="preserve"><value>Rechts</value></data>
+  <data name="ImgDlg_BorderSection" xml:space="preserve"><value>Rand</value></data>
+  <data name="ImgDlg_BorderEnable" xml:space="preserve"><value>Rand rondom afbeelding tonen</value></data>
+  <data name="ImgDlg_BorderWidth" xml:space="preserve"><value>Dikte</value></data>
+  <data name="ImgDlg_BorderColor" xml:space="preserve"><value>Kleur</value></data>
+  <data name="ImgDlg_BorderStyle" xml:space="preserve"><value>Stijl</value></data>
+  <data name="ImgDlg_BorderStyleSolid" xml:space="preserve"><value>Doorlopend</value></data>
+  <data name="ImgDlg_BorderStyleDashed" xml:space="preserve"><value>Gestreept</value></data>
+  <data name="ImgDlg_BorderStyleDotted" xml:space="preserve"><value>Gestippeld</value></data>
+  <data name="ImgDlg_CornerRadius" xml:space="preserve"><value>Afgeronde hoeken</value></data>
+  <data name="ImgDlg_OptionsSection" xml:space="preserve"><value>Opties</value></data>
+  <data name="ImgDlg_OptKeepAspect" xml:space="preserve"><value>Beeldverhouding behouden bij aanpassen grootte</value></data>
+  <data name="ImgDlg_OptProtect" xml:space="preserve"><value>Afbeelding beveiligen tegen bewerking</value></data>
+  <data name="ImgDlg_OptPrintable" xml:space="preserve"><value>Opnemen in afdrukuitvoer</value></data>
+  <data name="ImgDlg_SourceInfo" xml:space="preserve"><value>Afbeeldingsbron</value></data>
+  <data name="ImgDlg_Reset" xml:space="preserve"><value>Resetten</value></data>
+  <data name="ImgDlg_Cancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="ImgDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="ImgCtx_Cut" xml:space="preserve"><value>Knippen</value></data>
+  <data name="ImgCtx_Copy" xml:space="preserve"><value>Kopiëren</value></data>
+  <data name="ImgCtx_Paste" xml:space="preserve"><value>Plakken</value></data>
+  <data name="ImgCtx_Delete" xml:space="preserve"><value>Afbeelding verwijderen</value></data>
+  <data name="ImgCtx_Replace" xml:space="preserve"><value>Afbeelding vervangen...</value></data>
+  <data name="ImgCtx_SaveAs" xml:space="preserve"><value>Afbeelding opslaan als...</value></data>
+  <data name="ImgCtx_CopyImage" xml:space="preserve"><value>Afbeelding naar klembord kopiëren</value></data>
+  <data name="ImgCtx_AlignLeft" xml:space="preserve"><value>Links uitlijnen</value></data>
+  <data name="ImgCtx_AlignCenter" xml:space="preserve"><value>Centreren</value></data>
+  <data name="ImgCtx_AlignRight" xml:space="preserve"><value>Rechts uitlijnen</value></data>
+  <data name="ImgCtx_Align" xml:space="preserve"><value>Uitlijning</value></data>
+  <data name="ImgCtx_WrapNone" xml:space="preserve"><value>Geen terugloop</value></data>
+  <data name="ImgCtx_WrapLeft" xml:space="preserve"><value>Terugloop links</value></data>
+  <data name="ImgCtx_WrapRight" xml:space="preserve"><value>Terugloop rechts</value></data>
+  <data name="ImgCtx_Wrap" xml:space="preserve"><value>Tekstterugloop</value></data>
+  <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Inspecteren in Hex-editor</value></data>
+  <data name="ImgCtx_Properties" xml:space="preserve"><value>Afbeeldingseigenschappen...</value></data>
 </root>

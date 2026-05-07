@@ -239,6 +239,8 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>ОК</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Скасувати</value></data>
+  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>Відкрити URL у браузері</value></data>
+  <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Введіть дійсну URL-адресу (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>Вставити таблицю</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Рядки</value></data>
   <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Стовпці</value></data>
@@ -306,4 +308,65 @@
   <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Встановити</value></data>
   <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Пізніше</value></data>
   <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Більше не показувати</value></data>
+
+  <!-- Image dialog & context menu -->
+  <data name="ImgDlg_Title" xml:space="preserve"><value>Властивості зображення</value></data>
+  <data name="ImgDlg_TabSize" xml:space="preserve"><value>Розмір і позиція</value></data>
+  <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Обтікання текстом</value></data>
+  <data name="ImgDlg_TabBorder" xml:space="preserve"><value>Рамка</value></data>
+  <data name="ImgDlg_TabOptions" xml:space="preserve"><value>Параметри</value></data>
+  <data name="ImgDlg_Preview" xml:space="preserve"><value>Попередній перегляд</value></data>
+  <data name="ImgDlg_SizeSection" xml:space="preserve"><value>Розмір</value></data>
+  <data name="ImgDlg_Width" xml:space="preserve"><value>Ширина</value></data>
+  <data name="ImgDlg_Height" xml:space="preserve"><value>Висота</value></data>
+  <data name="ImgDlg_LockAspect" xml:space="preserve"><value>Зберігати пропорції</value></data>
+  <data name="ImgDlg_ResetSize" xml:space="preserve"><value>Початковий розмір</value></data>
+  <data name="ImgDlg_AlignSection" xml:space="preserve"><value>Вирівнювання</value></data>
+  <data name="ImgDlg_AlignLeft" xml:space="preserve"><value>Ліворуч</value></data>
+  <data name="ImgDlg_AlignCenter" xml:space="preserve"><value>По центру</value></data>
+  <data name="ImgDlg_AlignRight" xml:space="preserve"><value>Праворуч</value></data>
+  <data name="ImgDlg_AltText" xml:space="preserve"><value>Альтернативний текст (доступність)</value></data>
+  <data name="ImgDlg_WrapSection" xml:space="preserve"><value>Обтікання текстом</value></data>
+  <data name="ImgDlg_WrapNone" xml:space="preserve"><value>Без обтікання</value></data>
+  <data name="ImgDlg_WrapLeft" xml:space="preserve"><value>Обтікання ліворуч</value></data>
+  <data name="ImgDlg_WrapRight" xml:space="preserve"><value>Обтікання праворуч</value></data>
+  <data name="ImgDlg_WrapSpacing" xml:space="preserve"><value>Відступ навколо зображення</value></data>
+  <data name="ImgDlg_SpaceTop" xml:space="preserve"><value>Зверху</value></data>
+  <data name="ImgDlg_SpaceBottom" xml:space="preserve"><value>Знизу</value></data>
+  <data name="ImgDlg_SpaceLeft" xml:space="preserve"><value>Ліворуч</value></data>
+  <data name="ImgDlg_SpaceRight" xml:space="preserve"><value>Праворуч</value></data>
+  <data name="ImgDlg_BorderSection" xml:space="preserve"><value>Рамка</value></data>
+  <data name="ImgDlg_BorderEnable" xml:space="preserve"><value>Показати рамку навколо зображення</value></data>
+  <data name="ImgDlg_BorderWidth" xml:space="preserve"><value>Товщина</value></data>
+  <data name="ImgDlg_BorderColor" xml:space="preserve"><value>Колір</value></data>
+  <data name="ImgDlg_BorderStyle" xml:space="preserve"><value>Стиль</value></data>
+  <data name="ImgDlg_BorderStyleSolid" xml:space="preserve"><value>Суцільна</value></data>
+  <data name="ImgDlg_BorderStyleDashed" xml:space="preserve"><value>Пунктирна</value></data>
+  <data name="ImgDlg_BorderStyleDotted" xml:space="preserve"><value>Крапкова</value></data>
+  <data name="ImgDlg_CornerRadius" xml:space="preserve"><value>Скруглені кути</value></data>
+  <data name="ImgDlg_OptionsSection" xml:space="preserve"><value>Параметри</value></data>
+  <data name="ImgDlg_OptKeepAspect" xml:space="preserve"><value>Зберігати пропорції при зміні розміру</value></data>
+  <data name="ImgDlg_OptProtect" xml:space="preserve"><value>Захистити зображення від редагування</value></data>
+  <data name="ImgDlg_OptPrintable" xml:space="preserve"><value>Включити до друкованого виводу</value></data>
+  <data name="ImgDlg_SourceInfo" xml:space="preserve"><value>Джерело зображення</value></data>
+  <data name="ImgDlg_Reset" xml:space="preserve"><value>Скинути</value></data>
+  <data name="ImgDlg_Cancel" xml:space="preserve"><value>Скасувати</value></data>
+  <data name="ImgDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="ImgCtx_Cut" xml:space="preserve"><value>Вирізати</value></data>
+  <data name="ImgCtx_Copy" xml:space="preserve"><value>Копіювати</value></data>
+  <data name="ImgCtx_Paste" xml:space="preserve"><value>Вставити</value></data>
+  <data name="ImgCtx_Delete" xml:space="preserve"><value>Видалити зображення</value></data>
+  <data name="ImgCtx_Replace" xml:space="preserve"><value>Замінити зображення...</value></data>
+  <data name="ImgCtx_SaveAs" xml:space="preserve"><value>Зберегти зображення як...</value></data>
+  <data name="ImgCtx_CopyImage" xml:space="preserve"><value>Скопіювати зображення в буфер обміну</value></data>
+  <data name="ImgCtx_AlignLeft" xml:space="preserve"><value>По лівому краю</value></data>
+  <data name="ImgCtx_AlignCenter" xml:space="preserve"><value>По центру</value></data>
+  <data name="ImgCtx_AlignRight" xml:space="preserve"><value>По правому краю</value></data>
+  <data name="ImgCtx_Align" xml:space="preserve"><value>Вирівнювання</value></data>
+  <data name="ImgCtx_WrapNone" xml:space="preserve"><value>Без обтікання</value></data>
+  <data name="ImgCtx_WrapLeft" xml:space="preserve"><value>Обтікання ліворуч</value></data>
+  <data name="ImgCtx_WrapRight" xml:space="preserve"><value>Обтікання праворуч</value></data>
+  <data name="ImgCtx_Wrap" xml:space="preserve"><value>Обтікання текстом</value></data>
+  <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Перевірити в Hex-редакторі</value></data>
+  <data name="ImgCtx_Properties" xml:space="preserve"><value>Властивості зображення...</value></data>
 </root>

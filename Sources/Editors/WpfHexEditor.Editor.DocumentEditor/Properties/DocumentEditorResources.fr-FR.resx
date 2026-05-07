@@ -287,6 +287,8 @@
   <data name="HyperlinkDlg_LabelUrl"   xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK"         xml:space="preserve"><value>OK</value></data>
   <data name="HyperlinkDlg_Cancel"     xml:space="preserve"><value>Annuler</value></data>
+  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>Ouvrir l'URL dans le navigateur</value></data>
+  <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Veuillez saisir une URL valide (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title"    xml:space="preserve"><value>Insérer un tableau</value></data>
   <data name="InsertTableDlg_Rows"     xml:space="preserve"><value>Lignes</value></data>
   <data name="InsertTableDlg_Columns"  xml:space="preserve"><value>Colonnes</value></data>
@@ -353,4 +355,65 @@
   <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Installer</value></data>
   <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Pas maintenant</value></data>
   <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Ne plus demander</value></data>
+
+  <!-- Image dialog & context menu -->
+  <data name="ImgDlg_Title" xml:space="preserve"><value>Propriétés de l'image</value></data>
+  <data name="ImgDlg_TabSize" xml:space="preserve"><value>Taille et position</value></data>
+  <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Habillage</value></data>
+  <data name="ImgDlg_TabBorder" xml:space="preserve"><value>Bordure</value></data>
+  <data name="ImgDlg_TabOptions" xml:space="preserve"><value>Options</value></data>
+  <data name="ImgDlg_Preview" xml:space="preserve"><value>Aperçu</value></data>
+  <data name="ImgDlg_SizeSection" xml:space="preserve"><value>Taille</value></data>
+  <data name="ImgDlg_Width" xml:space="preserve"><value>Largeur</value></data>
+  <data name="ImgDlg_Height" xml:space="preserve"><value>Hauteur</value></data>
+  <data name="ImgDlg_LockAspect" xml:space="preserve"><value>Verrouiller les proportions</value></data>
+  <data name="ImgDlg_ResetSize" xml:space="preserve"><value>Taille originale</value></data>
+  <data name="ImgDlg_AlignSection" xml:space="preserve"><value>Alignement</value></data>
+  <data name="ImgDlg_AlignLeft" xml:space="preserve"><value>Gauche</value></data>
+  <data name="ImgDlg_AlignCenter" xml:space="preserve"><value>Centré</value></data>
+  <data name="ImgDlg_AlignRight" xml:space="preserve"><value>Droite</value></data>
+  <data name="ImgDlg_AltText" xml:space="preserve"><value>Texte alternatif (accessibilité)</value></data>
+  <data name="ImgDlg_WrapSection" xml:space="preserve"><value>Habillage du texte</value></data>
+  <data name="ImgDlg_WrapNone" xml:space="preserve"><value>Aucun habillage</value></data>
+  <data name="ImgDlg_WrapLeft" xml:space="preserve"><value>Habillage gauche</value></data>
+  <data name="ImgDlg_WrapRight" xml:space="preserve"><value>Habillage droite</value></data>
+  <data name="ImgDlg_WrapSpacing" xml:space="preserve"><value>Espacement autour de l'image</value></data>
+  <data name="ImgDlg_SpaceTop" xml:space="preserve"><value>Haut</value></data>
+  <data name="ImgDlg_SpaceBottom" xml:space="preserve"><value>Bas</value></data>
+  <data name="ImgDlg_SpaceLeft" xml:space="preserve"><value>Gauche</value></data>
+  <data name="ImgDlg_SpaceRight" xml:space="preserve"><value>Droite</value></data>
+  <data name="ImgDlg_BorderSection" xml:space="preserve"><value>Bordure</value></data>
+  <data name="ImgDlg_BorderEnable" xml:space="preserve"><value>Afficher une bordure autour de l'image</value></data>
+  <data name="ImgDlg_BorderWidth" xml:space="preserve"><value>Épaisseur</value></data>
+  <data name="ImgDlg_BorderColor" xml:space="preserve"><value>Couleur</value></data>
+  <data name="ImgDlg_BorderStyle" xml:space="preserve"><value>Style</value></data>
+  <data name="ImgDlg_BorderStyleSolid" xml:space="preserve"><value>Plein</value></data>
+  <data name="ImgDlg_BorderStyleDashed" xml:space="preserve"><value>Tirets</value></data>
+  <data name="ImgDlg_BorderStyleDotted" xml:space="preserve"><value>Pointillés</value></data>
+  <data name="ImgDlg_CornerRadius" xml:space="preserve"><value>Coins arrondis</value></data>
+  <data name="ImgDlg_OptionsSection" xml:space="preserve"><value>Options</value></data>
+  <data name="ImgDlg_OptKeepAspect" xml:space="preserve"><value>Conserver les proportions lors du redimensionnement</value></data>
+  <data name="ImgDlg_OptProtect" xml:space="preserve"><value>Protéger l'image contre la modification</value></data>
+  <data name="ImgDlg_OptPrintable" xml:space="preserve"><value>Inclure dans l'impression</value></data>
+  <data name="ImgDlg_SourceInfo" xml:space="preserve"><value>Source de l'image</value></data>
+  <data name="ImgDlg_Reset" xml:space="preserve"><value>Réinitialiser</value></data>
+  <data name="ImgDlg_Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="ImgDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="ImgCtx_Cut" xml:space="preserve"><value>Couper</value></data>
+  <data name="ImgCtx_Copy" xml:space="preserve"><value>Copier</value></data>
+  <data name="ImgCtx_Paste" xml:space="preserve"><value>Coller</value></data>
+  <data name="ImgCtx_Delete" xml:space="preserve"><value>Supprimer l'image</value></data>
+  <data name="ImgCtx_Replace" xml:space="preserve"><value>Remplacer l'image...</value></data>
+  <data name="ImgCtx_SaveAs" xml:space="preserve"><value>Enregistrer l'image sous...</value></data>
+  <data name="ImgCtx_CopyImage" xml:space="preserve"><value>Copier l'image dans le presse-papiers</value></data>
+  <data name="ImgCtx_AlignLeft" xml:space="preserve"><value>Aligner à gauche</value></data>
+  <data name="ImgCtx_AlignCenter" xml:space="preserve"><value>Centrer</value></data>
+  <data name="ImgCtx_AlignRight" xml:space="preserve"><value>Aligner à droite</value></data>
+  <data name="ImgCtx_Align" xml:space="preserve"><value>Alignement</value></data>
+  <data name="ImgCtx_WrapNone" xml:space="preserve"><value>Aucun habillage</value></data>
+  <data name="ImgCtx_WrapLeft" xml:space="preserve"><value>Habillage gauche</value></data>
+  <data name="ImgCtx_WrapRight" xml:space="preserve"><value>Habillage droite</value></data>
+  <data name="ImgCtx_Wrap" xml:space="preserve"><value>Habillage du texte</value></data>
+  <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Inspecter dans l'éditeur Hex</value></data>
+  <data name="ImgCtx_Properties" xml:space="preserve"><value>Propriétés de l'image...</value></data>
 </root>

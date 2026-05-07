@@ -239,6 +239,8 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>Otevřít URL v prohlížeči</value></data>
+  <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Zadejte platnou URL adresu (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>Vložit tabulku</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Řádky</value></data>
   <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Sloupce</value></data>
@@ -305,4 +307,65 @@
   <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Instalovat</value></data>
   <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Teď ne</value></data>
   <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Neptat se znovu</value></data>
+
+  <!-- Image dialog & context menu -->
+  <data name="ImgDlg_Title" xml:space="preserve"><value>Vlastnosti obrázku</value></data>
+  <data name="ImgDlg_TabSize" xml:space="preserve"><value>Velikost a pozice</value></data>
+  <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Obtékání</value></data>
+  <data name="ImgDlg_TabBorder" xml:space="preserve"><value>Ohraničení</value></data>
+  <data name="ImgDlg_TabOptions" xml:space="preserve"><value>Možnosti</value></data>
+  <data name="ImgDlg_Preview" xml:space="preserve"><value>Náhled</value></data>
+  <data name="ImgDlg_SizeSection" xml:space="preserve"><value>Velikost</value></data>
+  <data name="ImgDlg_Width" xml:space="preserve"><value>Šířka</value></data>
+  <data name="ImgDlg_Height" xml:space="preserve"><value>Výška</value></data>
+  <data name="ImgDlg_LockAspect" xml:space="preserve"><value>Zamknout poměr stran</value></data>
+  <data name="ImgDlg_ResetSize" xml:space="preserve"><value>Původní velikost</value></data>
+  <data name="ImgDlg_AlignSection" xml:space="preserve"><value>Zarovnání</value></data>
+  <data name="ImgDlg_AlignLeft" xml:space="preserve"><value>Vlevo</value></data>
+  <data name="ImgDlg_AlignCenter" xml:space="preserve"><value>Na střed</value></data>
+  <data name="ImgDlg_AlignRight" xml:space="preserve"><value>Vpravo</value></data>
+  <data name="ImgDlg_AltText" xml:space="preserve"><value>Alternativní text (přístupnost)</value></data>
+  <data name="ImgDlg_WrapSection" xml:space="preserve"><value>Obtékání textem</value></data>
+  <data name="ImgDlg_WrapNone" xml:space="preserve"><value>Bez obtékání</value></data>
+  <data name="ImgDlg_WrapLeft" xml:space="preserve"><value>Obtékat vlevo</value></data>
+  <data name="ImgDlg_WrapRight" xml:space="preserve"><value>Obtékat vpravo</value></data>
+  <data name="ImgDlg_WrapSpacing" xml:space="preserve"><value>Mezery kolem obrázku</value></data>
+  <data name="ImgDlg_SpaceTop" xml:space="preserve"><value>Nahoře</value></data>
+  <data name="ImgDlg_SpaceBottom" xml:space="preserve"><value>Dole</value></data>
+  <data name="ImgDlg_SpaceLeft" xml:space="preserve"><value>Vlevo</value></data>
+  <data name="ImgDlg_SpaceRight" xml:space="preserve"><value>Vpravo</value></data>
+  <data name="ImgDlg_BorderSection" xml:space="preserve"><value>Ohraničení</value></data>
+  <data name="ImgDlg_BorderEnable" xml:space="preserve"><value>Zobrazit ohraničení obrázku</value></data>
+  <data name="ImgDlg_BorderWidth" xml:space="preserve"><value>Tloušťka</value></data>
+  <data name="ImgDlg_BorderColor" xml:space="preserve"><value>Barva</value></data>
+  <data name="ImgDlg_BorderStyle" xml:space="preserve"><value>Styl</value></data>
+  <data name="ImgDlg_BorderStyleSolid" xml:space="preserve"><value>Plná</value></data>
+  <data name="ImgDlg_BorderStyleDashed" xml:space="preserve"><value>Přerušovaná</value></data>
+  <data name="ImgDlg_BorderStyleDotted" xml:space="preserve"><value>Tečkovaná</value></data>
+  <data name="ImgDlg_CornerRadius" xml:space="preserve"><value>Zaoblené rohy</value></data>
+  <data name="ImgDlg_OptionsSection" xml:space="preserve"><value>Možnosti</value></data>
+  <data name="ImgDlg_OptKeepAspect" xml:space="preserve"><value>Zachovat poměr stran při změně velikosti</value></data>
+  <data name="ImgDlg_OptProtect" xml:space="preserve"><value>Chránit obrázek před úpravami</value></data>
+  <data name="ImgDlg_OptPrintable" xml:space="preserve"><value>Zahrnout do tiskového výstupu</value></data>
+  <data name="ImgDlg_SourceInfo" xml:space="preserve"><value>Zdroj obrázku</value></data>
+  <data name="ImgDlg_Reset" xml:space="preserve"><value>Resetovat</value></data>
+  <data name="ImgDlg_Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="ImgDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="ImgCtx_Cut" xml:space="preserve"><value>Vyjmout</value></data>
+  <data name="ImgCtx_Copy" xml:space="preserve"><value>Kopírovat</value></data>
+  <data name="ImgCtx_Paste" xml:space="preserve"><value>Vložit</value></data>
+  <data name="ImgCtx_Delete" xml:space="preserve"><value>Smazat obrázek</value></data>
+  <data name="ImgCtx_Replace" xml:space="preserve"><value>Nahradit obrázek...</value></data>
+  <data name="ImgCtx_SaveAs" xml:space="preserve"><value>Uložit obrázek jako...</value></data>
+  <data name="ImgCtx_CopyImage" xml:space="preserve"><value>Kopírovat obrázek do schránky</value></data>
+  <data name="ImgCtx_AlignLeft" xml:space="preserve"><value>Zarovnat vlevo</value></data>
+  <data name="ImgCtx_AlignCenter" xml:space="preserve"><value>Na střed</value></data>
+  <data name="ImgCtx_AlignRight" xml:space="preserve"><value>Zarovnat vpravo</value></data>
+  <data name="ImgCtx_Align" xml:space="preserve"><value>Zarovnání</value></data>
+  <data name="ImgCtx_WrapNone" xml:space="preserve"><value>Bez obtékání</value></data>
+  <data name="ImgCtx_WrapLeft" xml:space="preserve"><value>Obtékat vlevo</value></data>
+  <data name="ImgCtx_WrapRight" xml:space="preserve"><value>Obtékat vpravo</value></data>
+  <data name="ImgCtx_Wrap" xml:space="preserve"><value>Obtékání textem</value></data>
+  <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Zkontrolovat v Hex editoru</value></data>
+  <data name="ImgCtx_Properties" xml:space="preserve"><value>Vlastnosti obrázku...</value></data>
 </root>

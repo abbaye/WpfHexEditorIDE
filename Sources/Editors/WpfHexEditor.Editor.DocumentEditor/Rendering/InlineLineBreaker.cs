@@ -268,29 +268,30 @@ internal static class InlineLineBreaker
     {
         double w = 0;
 
-        // Measure within the current segment first
-        for (int j = charStart; j < seg.Text.Length; j++)
+        // Skip any leading tabs at charStart (consecutive tabs before the text)
+        // then measure text characters until the next tab/newline.
+        bool skippingTabs = true;
+
+        void MeasureCharsInText(string text, GlyphTypeface tgt, double emSize)
         {
-            char c = seg.Text[j];
-            if (c == '\t' || c == '\n') return w;
-            var tgt = seg.GlyphTypeface;
-            ushort gi = GetGlyphIndex(tgt, c);
-            w += tgt.AdvanceWidths[gi] * seg.Size;
+            foreach (char c in text)
+            {
+                if (c == '\n') { skippingTabs = false; return; }
+                if (c == '\t') { if (!skippingTabs) return; continue; } // skip leading tabs, stop at mid-text tabs
+                skippingTabs = false;
+                ushort gi = GetGlyphIndex(tgt, c);
+                w += tgt.AdvanceWidths[gi] * emSize;
+            }
         }
 
-        // Continue into subsequent segments
+        MeasureCharsInText(seg.Text[charStart..], seg.GlyphTypeface, seg.Size);
+
         if (allSegments is not null)
         {
             for (int si = segIdx + 1; si < allSegments.Count; si++)
             {
                 var ns = allSegments[si];
-                var ngt = ns.GlyphTypeface;
-                foreach (char c in ns.Text)
-                {
-                    if (c == '\t' || c == '\n') return w;
-                    ushort gi = GetGlyphIndex(ngt, c);
-                    w += ngt.AdvanceWidths[gi] * ns.Size;
-                }
+                MeasureCharsInText(ns.Text, ns.GlyphTypeface, ns.Size);
             }
         }
         return w;

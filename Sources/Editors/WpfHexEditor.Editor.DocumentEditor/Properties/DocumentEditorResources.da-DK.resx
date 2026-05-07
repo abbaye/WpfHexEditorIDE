@@ -239,6 +239,8 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Annuller</value></data>
+  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>Åbn URL i browser</value></data>
+  <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Angiv en gyldig URL (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>Indsæt tabel</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Rækker</value></data>
   <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Kolonner</value></data>
@@ -305,4 +307,65 @@
   <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Installer</value></data>
   <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Ikke nu</value></data>
   <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Spørg ikke igen</value></data>
+
+  <!-- Image dialog & context menu -->
+  <data name="ImgDlg_Title" xml:space="preserve"><value>Billedegenskaber</value></data>
+  <data name="ImgDlg_TabSize" xml:space="preserve"><value>Størrelse og position</value></data>
+  <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Ombrydning</value></data>
+  <data name="ImgDlg_TabBorder" xml:space="preserve"><value>Kant</value></data>
+  <data name="ImgDlg_TabOptions" xml:space="preserve"><value>Indstillinger</value></data>
+  <data name="ImgDlg_Preview" xml:space="preserve"><value>Forhåndsvisning</value></data>
+  <data name="ImgDlg_SizeSection" xml:space="preserve"><value>Størrelse</value></data>
+  <data name="ImgDlg_Width" xml:space="preserve"><value>Bredde</value></data>
+  <data name="ImgDlg_Height" xml:space="preserve"><value>Højde</value></data>
+  <data name="ImgDlg_LockAspect" xml:space="preserve"><value>Lås billedformat</value></data>
+  <data name="ImgDlg_ResetSize" xml:space="preserve"><value>Original størrelse</value></data>
+  <data name="ImgDlg_AlignSection" xml:space="preserve"><value>Justering</value></data>
+  <data name="ImgDlg_AlignLeft" xml:space="preserve"><value>Venstre</value></data>
+  <data name="ImgDlg_AlignCenter" xml:space="preserve"><value>Centreret</value></data>
+  <data name="ImgDlg_AlignRight" xml:space="preserve"><value>Højre</value></data>
+  <data name="ImgDlg_AltText" xml:space="preserve"><value>Alternativ tekst (tilgængelighed)</value></data>
+  <data name="ImgDlg_WrapSection" xml:space="preserve"><value>Tekstombrydning</value></data>
+  <data name="ImgDlg_WrapNone" xml:space="preserve"><value>Ingen ombrydning</value></data>
+  <data name="ImgDlg_WrapLeft" xml:space="preserve"><value>Ombryd venstre</value></data>
+  <data name="ImgDlg_WrapRight" xml:space="preserve"><value>Ombryd højre</value></data>
+  <data name="ImgDlg_WrapSpacing" xml:space="preserve"><value>Afstand rundt om billede</value></data>
+  <data name="ImgDlg_SpaceTop" xml:space="preserve"><value>Top</value></data>
+  <data name="ImgDlg_SpaceBottom" xml:space="preserve"><value>Bund</value></data>
+  <data name="ImgDlg_SpaceLeft" xml:space="preserve"><value>Venstre</value></data>
+  <data name="ImgDlg_SpaceRight" xml:space="preserve"><value>Højre</value></data>
+  <data name="ImgDlg_BorderSection" xml:space="preserve"><value>Kant</value></data>
+  <data name="ImgDlg_BorderEnable" xml:space="preserve"><value>Vis kant om billede</value></data>
+  <data name="ImgDlg_BorderWidth" xml:space="preserve"><value>Bredde</value></data>
+  <data name="ImgDlg_BorderColor" xml:space="preserve"><value>Farve</value></data>
+  <data name="ImgDlg_BorderStyle" xml:space="preserve"><value>Stil</value></data>
+  <data name="ImgDlg_BorderStyleSolid" xml:space="preserve"><value>Solid</value></data>
+  <data name="ImgDlg_BorderStyleDashed" xml:space="preserve"><value>Stiplet</value></data>
+  <data name="ImgDlg_BorderStyleDotted" xml:space="preserve"><value>Prikket</value></data>
+  <data name="ImgDlg_CornerRadius" xml:space="preserve"><value>Afrundede hjørner</value></data>
+  <data name="ImgDlg_OptionsSection" xml:space="preserve"><value>Indstillinger</value></data>
+  <data name="ImgDlg_OptKeepAspect" xml:space="preserve"><value>Behold billedformat ved ændring af størrelse</value></data>
+  <data name="ImgDlg_OptProtect" xml:space="preserve"><value>Beskyt billede mod redigering</value></data>
+  <data name="ImgDlg_OptPrintable" xml:space="preserve"><value>Medtag i udskrift</value></data>
+  <data name="ImgDlg_SourceInfo" xml:space="preserve"><value>Billedkilde</value></data>
+  <data name="ImgDlg_Reset" xml:space="preserve"><value>Nulstil</value></data>
+  <data name="ImgDlg_Cancel" xml:space="preserve"><value>Annuller</value></data>
+  <data name="ImgDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="ImgCtx_Cut" xml:space="preserve"><value>Klip</value></data>
+  <data name="ImgCtx_Copy" xml:space="preserve"><value>Kopiér</value></data>
+  <data name="ImgCtx_Paste" xml:space="preserve"><value>Sæt ind</value></data>
+  <data name="ImgCtx_Delete" xml:space="preserve"><value>Slet billede</value></data>
+  <data name="ImgCtx_Replace" xml:space="preserve"><value>Erstat billede...</value></data>
+  <data name="ImgCtx_SaveAs" xml:space="preserve"><value>Gem billede som...</value></data>
+  <data name="ImgCtx_CopyImage" xml:space="preserve"><value>Kopiér billede til udklipsholder</value></data>
+  <data name="ImgCtx_AlignLeft" xml:space="preserve"><value>Venstrejuster</value></data>
+  <data name="ImgCtx_AlignCenter" xml:space="preserve"><value>Centrér</value></data>
+  <data name="ImgCtx_AlignRight" xml:space="preserve"><value>Højrejuster</value></data>
+  <data name="ImgCtx_Align" xml:space="preserve"><value>Justering</value></data>
+  <data name="ImgCtx_WrapNone" xml:space="preserve"><value>Ingen ombrydning</value></data>
+  <data name="ImgCtx_WrapLeft" xml:space="preserve"><value>Ombryd venstre</value></data>
+  <data name="ImgCtx_WrapRight" xml:space="preserve"><value>Ombryd højre</value></data>
+  <data name="ImgCtx_Wrap" xml:space="preserve"><value>Tekstombrydning</value></data>
+  <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Undersøg i Hex Editor</value></data>
+  <data name="ImgCtx_Properties" xml:space="preserve"><value>Billedegenskaber...</value></data>
 </root>

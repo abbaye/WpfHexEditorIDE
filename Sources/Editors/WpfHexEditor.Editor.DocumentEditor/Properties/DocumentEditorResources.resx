@@ -730,6 +730,8 @@
   <data name="HyperlinkDlg_LabelUrl"   xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK"         xml:space="preserve"><value>OK</value></data>
   <data name="HyperlinkDlg_Cancel"     xml:space="preserve"><value>Cancel</value></data>
+  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>Open URL in browser</value></data>
+  <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Please enter a valid URL (https://, http://, mailto:, ftp://)</value></data>
 
   <!-- Insert Table dialog -->
   <data name="InsertTableDlg_Title"    xml:space="preserve"><value>Insert Table</value></data>
@@ -815,4 +817,67 @@
   <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Install</value></data>
   <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Not now</value></data>
   <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Don't ask again</value></data>
+
+  <!-- ── Image Properties Dialog ─────────────────────────────────────── -->
+  <data name="ImgDlg_Title"                  xml:space="preserve"><value>Image Properties</value></data>
+  <data name="ImgDlg_TabSize"                xml:space="preserve"><value>Size &amp; Position</value></data>
+  <data name="ImgDlg_TabWrap"                xml:space="preserve"><value>Wrap</value></data>
+  <data name="ImgDlg_TabBorder"              xml:space="preserve"><value>Border</value></data>
+  <data name="ImgDlg_TabOptions"             xml:space="preserve"><value>Options</value></data>
+  <data name="ImgDlg_Preview"                xml:space="preserve"><value>Preview</value></data>
+  <data name="ImgDlg_SizeSection"            xml:space="preserve"><value>Size</value></data>
+  <data name="ImgDlg_Width"                  xml:space="preserve"><value>Width</value></data>
+  <data name="ImgDlg_Height"                 xml:space="preserve"><value>Height</value></data>
+  <data name="ImgDlg_LockAspect"             xml:space="preserve"><value>Lock aspect ratio</value></data>
+  <data name="ImgDlg_ResetSize"              xml:space="preserve"><value>Original size</value></data>
+  <data name="ImgDlg_AlignSection"           xml:space="preserve"><value>Alignment</value></data>
+  <data name="ImgDlg_AlignLeft"              xml:space="preserve"><value>Left</value></data>
+  <data name="ImgDlg_AlignCenter"            xml:space="preserve"><value>Center</value></data>
+  <data name="ImgDlg_AlignRight"             xml:space="preserve"><value>Right</value></data>
+  <data name="ImgDlg_AltText"                xml:space="preserve"><value>Alternative text (accessibility)</value></data>
+  <data name="ImgDlg_WrapSection"            xml:space="preserve"><value>Text wrapping</value></data>
+  <data name="ImgDlg_WrapNone"               xml:space="preserve"><value>None</value></data>
+  <data name="ImgDlg_WrapLeft"               xml:space="preserve"><value>Left</value></data>
+  <data name="ImgDlg_WrapRight"              xml:space="preserve"><value>Right</value></data>
+  <data name="ImgDlg_WrapSpacing"            xml:space="preserve"><value>Spacing around image</value></data>
+  <data name="ImgDlg_SpaceTop"               xml:space="preserve"><value>Top</value></data>
+  <data name="ImgDlg_SpaceBottom"            xml:space="preserve"><value>Bottom</value></data>
+  <data name="ImgDlg_SpaceLeft"              xml:space="preserve"><value>Left</value></data>
+  <data name="ImgDlg_SpaceRight"             xml:space="preserve"><value>Right</value></data>
+  <data name="ImgDlg_BorderSection"          xml:space="preserve"><value>Border</value></data>
+  <data name="ImgDlg_BorderEnable"           xml:space="preserve"><value>Show border around image</value></data>
+  <data name="ImgDlg_BorderWidth"            xml:space="preserve"><value>Width</value></data>
+  <data name="ImgDlg_BorderColor"            xml:space="preserve"><value>Color</value></data>
+  <data name="ImgDlg_BorderStyle"            xml:space="preserve"><value>Style</value></data>
+  <data name="ImgDlg_BorderStyleSolid"       xml:space="preserve"><value>Solid</value></data>
+  <data name="ImgDlg_BorderStyleDashed"      xml:space="preserve"><value>Dashed</value></data>
+  <data name="ImgDlg_BorderStyleDotted"      xml:space="preserve"><value>Dotted</value></data>
+  <data name="ImgDlg_CornerRadius"           xml:space="preserve"><value>Rounded corners</value></data>
+  <data name="ImgDlg_OptionsSection"         xml:space="preserve"><value>Options</value></data>
+  <data name="ImgDlg_OptKeepAspect"          xml:space="preserve"><value>Keep original aspect ratio when resizing</value></data>
+  <data name="ImgDlg_OptProtect"             xml:space="preserve"><value>Protect image from editing</value></data>
+  <data name="ImgDlg_OptPrintable"           xml:space="preserve"><value>Include in printed output</value></data>
+  <data name="ImgDlg_SourceInfo"             xml:space="preserve"><value>Image source</value></data>
+  <data name="ImgDlg_Reset"                  xml:space="preserve"><value>Reset</value></data>
+  <data name="ImgDlg_Cancel"                 xml:space="preserve"><value>Cancel</value></data>
+  <data name="ImgDlg_OK"                     xml:space="preserve"><value>OK</value></data>
+
+  <!-- ── Image context menu ───────────────────────────────────────────── -->
+  <data name="ImgCtx_Cut"                    xml:space="preserve"><value>Cut</value></data>
+  <data name="ImgCtx_Copy"                   xml:space="preserve"><value>Copy</value></data>
+  <data name="ImgCtx_Paste"                  xml:space="preserve"><value>Paste</value></data>
+  <data name="ImgCtx_Delete"                 xml:space="preserve"><value>Delete image</value></data>
+  <data name="ImgCtx_Replace"                xml:space="preserve"><value>Replace image…</value></data>
+  <data name="ImgCtx_SaveAs"                 xml:space="preserve"><value>Save image as…</value></data>
+  <data name="ImgCtx_CopyImage"              xml:space="preserve"><value>Copy image to clipboard</value></data>
+  <data name="ImgCtx_AlignLeft"              xml:space="preserve"><value>Align left</value></data>
+  <data name="ImgCtx_AlignCenter"            xml:space="preserve"><value>Center</value></data>
+  <data name="ImgCtx_AlignRight"             xml:space="preserve"><value>Align right</value></data>
+  <data name="ImgCtx_Align"                  xml:space="preserve"><value>Alignment</value></data>
+  <data name="ImgCtx_WrapNone"               xml:space="preserve"><value>No wrap</value></data>
+  <data name="ImgCtx_WrapLeft"               xml:space="preserve"><value>Wrap text – left</value></data>
+  <data name="ImgCtx_WrapRight"              xml:space="preserve"><value>Wrap text – right</value></data>
+  <data name="ImgCtx_Wrap"                   xml:space="preserve"><value>Text wrapping</value></data>
+  <data name="ImgCtx_InspectHex"             xml:space="preserve"><value>Inspect in Hex Editor</value></data>
+  <data name="ImgCtx_Properties"             xml:space="preserve"><value>Image properties…</value></data>
 </root>

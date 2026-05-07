@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
         Title="{DynamicResource InsertTableDlg_Title}"
-        Width="260" SizeToContent="Height"
+        Width="340" SizeToContent="Height"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        ShowInTaskbar="False">
+        ShowInTaskbar="False"
+        Background="{DynamicResource DockBackgroundBrush}"
+        Foreground="{DynamicResource DockMenuForegroundBrush}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,32 +18,71 @@
     </Window.Resources>
     <Grid Margin="16">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="8"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>  <!-- grid picker -->
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>  <!-- dimension label -->
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>  <!-- manual inputs -->
+            <RowDefinition Height="14"/>
+            <RowDefinition Height="Auto"/>  <!-- buttons -->
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="80"/>
-        </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource InsertTableDlg_Rows}"
-                   VerticalAlignment="Center"/>
-        <TextBox   Grid.Row="0" Grid.Column="2" x:Name="PART_Rows" Text="3"/>
+        <!-- ── Interactive grid picker (up to 8×8) ─────────────────── -->
+        <Border Grid.Row="0"
+                BorderBrush="{StaticResource DockBorderBrush}"
+                BorderThickness="1"
+                Padding="4"
+                HorizontalAlignment="Left">
+            <UniformGrid x:Name="PART_GridPicker"
+                         Columns="8" Rows="8"
+                         Width="192" Height="192"
+                         MouseLeave="OnPickerMouseLeave"/>
+        </Border>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource InsertTableDlg_Columns}"
-                   VerticalAlignment="Center"/>
-        <TextBox   Grid.Row="2" Grid.Column="2" x:Name="PART_Columns" Text="3"/>
+        <!-- ── Selected dimension label ────────────────────────────── -->
+        <TextBlock Grid.Row="2"
+                   x:Name="PART_DimLabel"
+                   Text="3 × 3"
+                   FontSize="13"
+                   FontWeight="SemiBold"
+                   HorizontalAlignment="Center"
+                   Foreground="{StaticResource DockMenuForegroundBrush}"/>
 
-        <StackPanel Grid.Row="4" Grid.ColumnSpan="3" Orientation="Horizontal"
-                    HorizontalAlignment="Right">
-            <Button Content="{DynamicResource InsertTableDlg_Cancel}"
+        <!-- ── Manual inputs (fallback for large tables) ────────────── -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="60"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{StaticResource InsertTableDlg_Rows}"
+                       VerticalAlignment="Center"
+                       Foreground="{StaticResource DockMenuForegroundBrush}"/>
+            <TextBox   Grid.Column="2" x:Name="PART_Rows" Text="3"
+                       Background="{StaticResource DockBackgroundBrush}"
+                       Foreground="{StaticResource DockMenuForegroundBrush}"
+                       BorderBrush="{StaticResource DockBorderBrush}"
+                       TextChanged="OnManualInputChanged"/>
+            <TextBlock Grid.Column="4" Text="{StaticResource InsertTableDlg_Columns}"
+                       VerticalAlignment="Center"
+                       Foreground="{StaticResource DockMenuForegroundBrush}"/>
+            <TextBox   Grid.Column="6" x:Name="PART_Columns" Text="3"
+                       Background="{StaticResource DockBackgroundBrush}"
+                       Foreground="{StaticResource DockMenuForegroundBrush}"
+                       BorderBrush="{StaticResource DockBorderBrush}"
+                       TextChanged="OnManualInputChanged"/>
+        </Grid>
+
+        <!-- ── Buttons ──────────────────────────────────────────────── -->
+        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="{StaticResource InsertTableDlg_Cancel}"
                     Width="80" Margin="0,0,8,0"
                     IsCancel="True" Click="OnCancelClicked"/>
-            <Button Content="{DynamicResource InsertTableDlg_OK}"
+            <Button Content="{StaticResource InsertTableDlg_OK}"
                     Width="80" IsDefault="True" Click="OnOkClicked"/>
         </StackPanel>
     </Grid>

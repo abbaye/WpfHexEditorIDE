@@ -26,6 +26,39 @@
             <Setter Property="FontSize"         Value="11"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
+
+        <!-- Compact toggle button for view mode chips in status bar -->
+        <Style x:Key="StatusViewToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"      Value="{DynamicResource DE_StatusBarForeground}"/>
+            <Setter Property="Padding"         Value="5,1"/>
+            <Setter Property="Height"          Value="16"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Focusable"       Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="2"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DE_ToolbarButtonHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DE_ToolbarButtonActiveBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
             </ResourceDictionary>
     </UserControl.Resources>
 
@@ -71,12 +104,51 @@
 
             <!-- ── Right group ─────────────────────────────────────── -->
 
-            <!-- View mode label -->
-            <TextBlock x:Name="PART_ViewModeText"
-                       Style="{StaticResource StatusTextStyle}"
-                       DockPanel.Dock="Right"
-                       Margin="0,0,4,0"
-                       Text="{Binding ViewModeText, RelativeSource={RelativeSource AncestorType=local:DocumentStatusBar}}"/>
+            <!-- Render mode chips (Page / Draft / Outline) -->
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,2,0">
+                <ToggleButton x:Name="PART_SB_PageModeBtn"
+                              Style="{StaticResource StatusViewToggleStyle}"
+                              ToolTip="{DynamicResource DocEditorHost_PageViewToolTip}"
+                              Click="OnSBPageModeClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A8;" FontSize="11" VerticalAlignment="Center"/>
+                </ToggleButton>
+                <ToggleButton x:Name="PART_SB_DraftModeBtn"
+                              Style="{StaticResource StatusViewToggleStyle}"
+                              ToolTip="{DynamicResource DocEditorHost_DraftViewToolTip}"
+                              Click="OnSBDraftModeClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E9;" FontSize="11" VerticalAlignment="Center"/>
+                </ToggleButton>
+                <ToggleButton x:Name="PART_SB_OutlineModeBtn"
+                              Style="{StaticResource StatusViewToggleStyle}"
+                              ToolTip="{DynamicResource DocEditorHost_OutlineViewToolTip}"
+                              Click="OnSBOutlineModeClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F1;" FontSize="11" VerticalAlignment="Center"/>
+                </ToggleButton>
+            </StackPanel>
+
+            <Separator Style="{StaticResource StatusSepStyle}" DockPanel.Dock="Right"/>
+
+            <!-- View mode chips (Text / Structure / Focus) -->
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,2,0">
+                <ToggleButton x:Name="PART_SB_TextModeBtn"
+                              Style="{StaticResource StatusViewToggleStyle}"
+                              ToolTip="{DynamicResource DocEditorHost_TextViewToolTip}"
+                              Click="OnSBTextModeClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A5;" FontSize="11" VerticalAlignment="Center"/>
+                </ToggleButton>
+                <ToggleButton x:Name="PART_SB_StructModeBtn"
+                              Style="{StaticResource StatusViewToggleStyle}"
+                              ToolTip="{DynamicResource DocEditorHost_StructureViewToolTip}"
+                              Click="OnSBStructModeClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C9;" FontSize="11" VerticalAlignment="Center"/>
+                </ToggleButton>
+                <ToggleButton x:Name="PART_SB_FocusModeBtn"
+                              Style="{StaticResource StatusViewToggleStyle}"
+                              ToolTip="{DynamicResource DocEditorHost_FocusModeToolTip}"
+                              Click="OnSBFocusModeClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8D4;" FontSize="11" VerticalAlignment="Center"/>
+                </ToggleButton>
+            </StackPanel>
 
             <Separator Style="{StaticResource StatusSepStyle}" DockPanel.Dock="Right"/>
 

@@ -239,6 +239,8 @@
   <data name="HyperlinkDlg_LabelUrl"   xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK"         xml:space="preserve"><value>OK</value></data>
   <data name="HyperlinkDlg_Cancel"     xml:space="preserve"><value>Anuluj</value></data>
+  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>Otwórz URL w przeglądarce</value></data>
+  <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Wprowadź prawidłowy adres URL (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title"    xml:space="preserve"><value>Wstaw tabelę</value></data>
   <data name="InsertTableDlg_Rows"     xml:space="preserve"><value>Wiersze</value></data>
   <data name="InsertTableDlg_Columns"  xml:space="preserve"><value>Kolumny</value></data>
@@ -306,4 +308,65 @@
   <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Zainstaluj</value></data>
   <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Później</value></data>
   <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Nie pokazuj ponownie</value></data>
+
+  <!-- Image dialog & context menu -->
+  <data name="ImgDlg_Title" xml:space="preserve"><value>Właściwości obrazu</value></data>
+  <data name="ImgDlg_TabSize" xml:space="preserve"><value>Rozmiar i położenie</value></data>
+  <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Zawijanie tekstu</value></data>
+  <data name="ImgDlg_TabBorder" xml:space="preserve"><value>Obramowanie</value></data>
+  <data name="ImgDlg_TabOptions" xml:space="preserve"><value>Opcje</value></data>
+  <data name="ImgDlg_Preview" xml:space="preserve"><value>Podgląd</value></data>
+  <data name="ImgDlg_SizeSection" xml:space="preserve"><value>Rozmiar</value></data>
+  <data name="ImgDlg_Width" xml:space="preserve"><value>Szerokość</value></data>
+  <data name="ImgDlg_Height" xml:space="preserve"><value>Wysokość</value></data>
+  <data name="ImgDlg_LockAspect" xml:space="preserve"><value>Zablokuj proporcje</value></data>
+  <data name="ImgDlg_ResetSize" xml:space="preserve"><value>Oryginalny rozmiar</value></data>
+  <data name="ImgDlg_AlignSection" xml:space="preserve"><value>Wyrównanie</value></data>
+  <data name="ImgDlg_AlignLeft" xml:space="preserve"><value>Lewo</value></data>
+  <data name="ImgDlg_AlignCenter" xml:space="preserve"><value>Środek</value></data>
+  <data name="ImgDlg_AlignRight" xml:space="preserve"><value>Prawo</value></data>
+  <data name="ImgDlg_AltText" xml:space="preserve"><value>Tekst alternatywny (dostępność)</value></data>
+  <data name="ImgDlg_WrapSection" xml:space="preserve"><value>Zawijanie tekstu</value></data>
+  <data name="ImgDlg_WrapNone" xml:space="preserve"><value>Brak zawijania</value></data>
+  <data name="ImgDlg_WrapLeft" xml:space="preserve"><value>Zawijanie lewo</value></data>
+  <data name="ImgDlg_WrapRight" xml:space="preserve"><value>Zawijanie prawo</value></data>
+  <data name="ImgDlg_WrapSpacing" xml:space="preserve"><value>Odstęp wokół obrazu</value></data>
+  <data name="ImgDlg_SpaceTop" xml:space="preserve"><value>Góra</value></data>
+  <data name="ImgDlg_SpaceBottom" xml:space="preserve"><value>Dół</value></data>
+  <data name="ImgDlg_SpaceLeft" xml:space="preserve"><value>Lewo</value></data>
+  <data name="ImgDlg_SpaceRight" xml:space="preserve"><value>Prawo</value></data>
+  <data name="ImgDlg_BorderSection" xml:space="preserve"><value>Obramowanie</value></data>
+  <data name="ImgDlg_BorderEnable" xml:space="preserve"><value>Pokaż obramowanie wokół obrazu</value></data>
+  <data name="ImgDlg_BorderWidth" xml:space="preserve"><value>Grubość</value></data>
+  <data name="ImgDlg_BorderColor" xml:space="preserve"><value>Kolor</value></data>
+  <data name="ImgDlg_BorderStyle" xml:space="preserve"><value>Styl</value></data>
+  <data name="ImgDlg_BorderStyleSolid" xml:space="preserve"><value>Ciągłe</value></data>
+  <data name="ImgDlg_BorderStyleDashed" xml:space="preserve"><value>Przerywane</value></data>
+  <data name="ImgDlg_BorderStyleDotted" xml:space="preserve"><value>Kropkowane</value></data>
+  <data name="ImgDlg_CornerRadius" xml:space="preserve"><value>Zaokrąglone narożniki</value></data>
+  <data name="ImgDlg_OptionsSection" xml:space="preserve"><value>Opcje</value></data>
+  <data name="ImgDlg_OptKeepAspect" xml:space="preserve"><value>Zachowaj proporcje podczas zmiany rozmiaru</value></data>
+  <data name="ImgDlg_OptProtect" xml:space="preserve"><value>Chroń obraz przed edycją</value></data>
+  <data name="ImgDlg_OptPrintable" xml:space="preserve"><value>Uwzględnij w wydruku</value></data>
+  <data name="ImgDlg_SourceInfo" xml:space="preserve"><value>Źródło obrazu</value></data>
+  <data name="ImgDlg_Reset" xml:space="preserve"><value>Resetuj</value></data>
+  <data name="ImgDlg_Cancel" xml:space="preserve"><value>Anuluj</value></data>
+  <data name="ImgDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="ImgCtx_Cut" xml:space="preserve"><value>Wytnij</value></data>
+  <data name="ImgCtx_Copy" xml:space="preserve"><value>Kopiuj</value></data>
+  <data name="ImgCtx_Paste" xml:space="preserve"><value>Wklej</value></data>
+  <data name="ImgCtx_Delete" xml:space="preserve"><value>Usuń obraz</value></data>
+  <data name="ImgCtx_Replace" xml:space="preserve"><value>Zastąp obraz...</value></data>
+  <data name="ImgCtx_SaveAs" xml:space="preserve"><value>Zapisz obraz jako...</value></data>
+  <data name="ImgCtx_CopyImage" xml:space="preserve"><value>Kopiuj obraz do schowka</value></data>
+  <data name="ImgCtx_AlignLeft" xml:space="preserve"><value>Wyrównaj do lewej</value></data>
+  <data name="ImgCtx_AlignCenter" xml:space="preserve"><value>Wyśrodkuj</value></data>
+  <data name="ImgCtx_AlignRight" xml:space="preserve"><value>Wyrównaj do prawej</value></data>
+  <data name="ImgCtx_Align" xml:space="preserve"><value>Wyrównanie</value></data>
+  <data name="ImgCtx_WrapNone" xml:space="preserve"><value>Brak zawijania</value></data>
+  <data name="ImgCtx_WrapLeft" xml:space="preserve"><value>Zawijanie lewo</value></data>
+  <data name="ImgCtx_WrapRight" xml:space="preserve"><value>Zawijanie prawo</value></data>
+  <data name="ImgCtx_Wrap" xml:space="preserve"><value>Zawijanie tekstu</value></data>
+  <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Sprawdź w edytorze Hex</value></data>
+  <data name="ImgCtx_Properties" xml:space="preserve"><value>Właściwości obrazu...</value></data>
 </root>
