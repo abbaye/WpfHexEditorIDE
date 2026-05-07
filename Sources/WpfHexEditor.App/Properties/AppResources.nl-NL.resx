@@ -903,4 +903,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbolenomzetting voltooid.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Gegevensonderbrekingspunten</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Gegevensonderbrekingspunt toevoegen</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Code-analyse uitvoeren...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Project analyseren...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Bestand analyseren...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Analyserapport openen</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Analyseren...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Codekwaliteitsscore — klik om rapport te openen</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Code-analyse</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Overzicht</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Problemen</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Complexiteit</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Koppeling</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Duplicatie</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Dode code</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Score</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ verbeterd</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ verslechterd</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Geen wijziging</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>PER PROJECT</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>TOP 5 SLECHTSTE BESTANDEN</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Alles</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Kritiek</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Problemen zoeken...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Drempelwaarde: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Instabiliteit</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Totaal gedupliceerd</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>klasse</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>veld</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>methode</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>parameter</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>variabele</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Volumemetrieken verzamelen...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Complexiteit analyseren...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Koppeling analyseren...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Duplicaties detecteren...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Dode code detecteren...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Roslyn-diagnostiek verzamelen...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Kwaliteitsscore berekenen...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Geen oplossing geopend. Open een oplossing voordat u code-analyse uitvoert.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Code-analyse mislukt: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Analyse-snapshot opgeslagen.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Analyse-snapshot gewist.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Algemeen</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Drempelwaarden</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Regels</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Analyse automatisch uitvoeren bij het openen van de oplossing</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Analyse automatisch uitvoeren bij bouwen</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Scorebadge weergeven in de statusbalk</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Diagnostiek naar foutenpaneel sturen</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Gegenereerde bestanden opnemen (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Snapshot-retentie:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Uitvoerdetailniveau:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Standaardwaarden herstellen</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Uitgeschakeld</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Info</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Waarschuwing</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Fout</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Opnieuw uitvoeren</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Exporteren ▾</value></data>
 </root>

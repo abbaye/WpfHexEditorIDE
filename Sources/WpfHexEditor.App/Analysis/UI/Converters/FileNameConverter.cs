@@ -4,6 +4,7 @@
 // ==========================================================
 
 using System.Globalization;
+using System.IO;
 using System.Windows.Data;
 
 namespace WpfHexEditor.App.Analysis.UI.Converters;

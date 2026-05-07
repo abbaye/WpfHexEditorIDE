@@ -565,4 +565,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbol resolution complete.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Data Breakpoints</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Add Data Breakpoint</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Εκτέλεση ανάλυσης κώδικα...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Ανάλυση έργου...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Ανάλυση αρχείου...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Άνοιγμα αναφοράς ανάλυσης</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Ανάλυση σε εξέλιξη...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Βαθμολογία ποιότητας κώδικα — κλικ για άνοιγμα αναφοράς</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Ανάλυση κώδικα</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Επισκόπηση</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Ζητήματα</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Πολυπλοκότητα</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Σύζευξη</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Αντιγραφή</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Νεκρός κώδικας</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Βαθμολογία</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ βελτίωση</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ υποβάθμιση</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Καμία αλλαγή</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>ΑΝΑ ΕΡΓΟ</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>ΤΟΠ 5 ΧΕΙΡΟΤΕΡΑ ΑΡΧΕΙΑ</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Όλα</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Κρίσιμα</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Αναζήτηση ζητημάτων...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Κατώφλι: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Αστάθεια</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Σύνολο αντιγραφών</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>κλάση</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>πεδίο</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>μέθοδος</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>παράμετρος</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>μεταβλητή</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Συλλογή μετρικών όγκου...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Ανάλυση πολυπλοκότητας...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Ανάλυση σύζευξης...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Εντοπισμός αντιγραφών...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Εντοπισμός νεκρού κώδικα...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Συλλογή διαγνωστικών Roslyn...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Υπολογισμός βαθμολογίας ποιότητας...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Δεν υπάρχει ανοιχτή λύση. Ανοίξτε μια λύση πριν εκτελέσετε την ανάλυση κώδικα.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Η ανάλυση κώδικα απέτυχε: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Το στιγμιότυπο ανάλυσης αποθηκεύτηκε.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Το στιγμιότυπο ανάλυσης διαγράφηκε.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Γενικά</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Κατώφλια</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Κανόνες</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Αυτόματη εκτέλεση ανάλυσης κατά το άνοιγμα λύσης</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Αυτόματη εκτέλεση ανάλυσης κατά τη δημιουργία</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Εμφάνιση σήματος βαθμολογίας στη γραμμή κατάστασης</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Αποστολή διαγνωστικών στον πίνακα σφαλμάτων</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Συμπερίληψη παραγόμενων αρχείων (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Διατήρηση στιγμιοτύπων:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Λεπτομέρεια εξόδου:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Επαναφορά προεπιλογών</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Απενεργοποιημένο</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Πληροφορίες</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Προειδοποίηση</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Σφάλμα</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Επανεκτέλεση</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Εξαγωγή ▾</value></data>
 </root>

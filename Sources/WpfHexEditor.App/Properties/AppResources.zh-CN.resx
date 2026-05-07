@@ -903,4 +903,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbol resolution complete.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Data Breakpoints</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Add Data Breakpoint</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>运行代码分析...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>分析项目...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>分析文件...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>打开分析报告</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>正在分析...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>代码质量评分 — 单击以打开报告</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>代码分析</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>概述</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>问题</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>复杂度</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>耦合性</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>重复</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>死代码</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>评分</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ 改善</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ 退步</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>无变化</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>按项目</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>最差的 5 个文件</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>全部</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>严重</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>搜索问题...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>阈值: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>不稳定性</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>总重复数</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>类</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>字段</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>方法</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>参数</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>变量</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>正在收集卷量指标...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>正在分析复杂度...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>正在分析耦合性...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>正在检测重复...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>正在检测死代码...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>正在收集 Roslyn 诊断信息...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>正在计算质量评分...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>没有打开的解决方案。运行代码分析之前请先打开一个解决方案。</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>代码分析失败: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>分析快照已保存。</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>分析快照已清除。</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>常规</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>阈值</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>规则</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>打开解决方案时自动运行分析</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>生成时自动运行分析</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>在状态栏中显示评分徽章</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>将诊断发送到错误面板</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>包含生成的文件 (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>快照保留:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>输出详细程度:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>还原默认值</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>已禁用</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>信息</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>警告</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>错误</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ 重新运行</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>导出 ▾</value></data>
 </root>

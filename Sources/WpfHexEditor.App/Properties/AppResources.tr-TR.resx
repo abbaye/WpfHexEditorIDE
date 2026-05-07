@@ -903,4 +903,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Sembol cozumlemesi tamamlandi.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Veri Kesme Noktalari</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Veri Kesme Noktasi Ekle</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Kod analizini çalıştır...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Projeyi analiz et...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Dosyayı analiz et...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Analiz raporunu aç</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Analiz ediliyor...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Kod kalite puanı — raporu açmak için tıklayın</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Kod Analizi</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Genel Bakış</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Sorunlar</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Karmaşıklık</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Bağlaşım</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Çoğaltma</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Ölü Kod</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Puan</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ iyileşti</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ geriledi</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Değişiklik yok</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>PROJEYE GÖRE</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>EN KÖTÜ 5 DOSYA</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Tümü</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Kritik</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Sorunları ara...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Eşik: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Dengesizlik</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Toplam yinelenen</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>sınıf</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>alan</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>yöntem</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>parametre</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>değişken</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Hacim metrikleri toplanıyor...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Karmaşıklık analiz ediliyor...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Bağlaşım analiz ediliyor...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Çoğaltmalar algılanıyor...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Ölü kod algılanıyor...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Roslyn tanılamaları toplanıyor...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Kalite puanı hesaplanıyor...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Açık çözüm yok. Kod analizini çalıştırmadan önce bir çözüm açın.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Kod analizi başarısız: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Analiz anlık görüntüsü kaydedildi.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Analiz anlık görüntüsü temizlendi.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Genel</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Eşikler</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Kurallar</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Çözüm açıldığında analizi otomatik çalıştır</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Derlemede analizi otomatik çalıştır</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Durum çubuğunda puan rozetini göster</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Tanılamaları hata paneline gönder</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Oluşturulan dosyaları dahil et (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Anlık görüntü saklama:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Çıktı ayrıntı düzeyi:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Varsayılanları geri yükle</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Devre dışı</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Bilgi</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Uyarı</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Hata</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Yeniden çalıştır</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Dışa aktar ▾</value></data>
 </root>

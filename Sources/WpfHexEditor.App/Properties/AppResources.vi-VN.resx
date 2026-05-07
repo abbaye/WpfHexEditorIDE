@@ -599,4 +599,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Phan giai bieu tuong hoan tat.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Diem dung du lieu</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Them diem dung du lieu</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Chạy phân tích mã...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Phân tích dự án...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Phân tích tệp...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Mở báo cáo phân tích</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Đang phân tích...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Điểm chất lượng mã — nhấp để mở báo cáo</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Phân tích mã</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Tổng quan</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Vấn đề</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Độ phức tạp</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Khớp nối</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Trùng lặp</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Mã chết</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Điểm</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ cải thiện</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ giảm sút</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Không thay đổi</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>THEO DỰ ÁN</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>TOP 5 TỆP TỆ NHẤT</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Tất cả</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Nghiêm trọng</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Tìm kiếm vấn đề...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Ngưỡng: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Sự không ổn định</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Tổng trùng lặp</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>lớp</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>trường</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>phương thức</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>tham số</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>biến</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Đang thu thập số liệu khối lượng...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Đang phân tích độ phức tạp...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Đang phân tích khớp nối...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Đang phát hiện trùng lặp...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Đang phát hiện mã chết...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Đang thu thập chẩn đoán Roslyn...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Đang tính điểm chất lượng...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Không có giải pháp nào đang mở. Hãy mở một giải pháp trước khi chạy phân tích mã.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Phân tích mã thất bại: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Đã lưu ảnh chụp phân tích.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Đã xóa ảnh chụp phân tích.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Chung</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Ngưỡng</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Quy tắc</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Tự động chạy phân tích khi mở giải pháp</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Tự động chạy phân tích khi xây dựng</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Hiển thị huy hiệu điểm trên thanh trạng thái</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Gửi chẩn đoán đến bảng lỗi</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Bao gồm các tệp được tạo (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Lưu giữ ảnh chụp:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Độ chi tiết đầu ra:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Khôi phục mặc định</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Vô hiệu hóa</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Thông tin</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Cảnh báo</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Lỗi</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Chạy lại</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Xuất ▾</value></data>
 </root>

@@ -903,4 +903,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbol resolution complete.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Data Breakpoints</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Add Data Breakpoint</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>تشغيل تحليل الكود...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>تحليل المشروع...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>تحليل الملف...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>فتح تقرير التحليل</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>جارٍ التحليل...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>نتيجة جودة الكود — انقر لفتح التقرير</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>تحليل الكود</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>نظرة عامة</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>المشكلات</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>التعقيد</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>الاقتران</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>التكرار</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>الكود الميت</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>النتيجة</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ تحسّن</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ تراجع</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>لا تغيير</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>حسب المشروع</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>أسوأ 5 ملفات</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>الكل</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>حرج</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>البحث في المشكلات...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>الحد: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>عدم الاستقرار</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>إجمالي المكرر</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>فئة</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>حقل</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>طريقة</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>معامل</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>متغير</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>جمع مقاييس الحجم...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>تحليل التعقيد...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>تحليل الاقتران...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>اكتشاف التكرارات...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>اكتشاف الكود الميت...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>جمع تشخيصات Roslyn...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>حساب نتيجة الجودة...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>لا توجد حلول مفتوحة. افتح حلاً قبل تشغيل تحليل الكود.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>فشل تحليل الكود: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>تم حفظ لقطة التحليل.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>تم مسح لقطة التحليل.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>عام</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>العتبات</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>القواعد</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>تشغيل التحليل تلقائياً عند فتح الحل</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>تشغيل التحليل تلقائياً عند البناء</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>إظهار شارة النتيجة في شريط الحالة</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>إرسال التشخيصات إلى لوحة الأخطاء</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>تضمين الملفات المُولَّدة (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>الاحتفاظ باللقطة:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>تفصيل الإخراج:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>استعادة الإعدادات الافتراضية</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>معطّل</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>معلومات</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>تحذير</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>خطأ</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ إعادة التشغيل</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>تصدير ▾</value></data>
 </root>

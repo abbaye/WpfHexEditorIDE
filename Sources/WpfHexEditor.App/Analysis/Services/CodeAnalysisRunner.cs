@@ -77,7 +77,7 @@ internal sealed class CodeAnalysisRunner
 
             // Volume + complexity per file (parallel)
             var fileMetricsList = new ConcurrentBag<FileMetrics>();
-            await Parallel.ForEachAsync(trees, ct, async (tree, token) =>
+            await Parallel.ForEachAsync(trees, ct, (tree, token) =>
             {
                 token.ThrowIfCancellationRequested();
                 SemanticModel? model = null;
@@ -85,10 +85,6 @@ internal sealed class CodeAnalysisRunner
 
                 var volume  = VolumeMetricsCollector.Collect(tree, model, projName);
                 var methods = ComplexityMetricsCollector.Collect(tree);
-
-                int maxCc  = methods.Count > 0 ? methods.Max(m => m.CyclomaticComplexity) : 0;
-                int maxCog = methods.Count > 0 ? methods.Max(m => m.CognitiveComplexity)  : 0;
-                double avg = methods.Count > 0 ? methods.Average(m => (double)m.CyclomaticComplexity) : 0;
 
                 // Convention checks
                 var conventions = ConventionChecker.Check(tree, projName, opts);
@@ -135,10 +131,10 @@ internal sealed class CodeAnalysisRunner
                         $"File has {volume.TotalLines} lines (warning threshold: {opts.FileLocWarning}).",
                         tree.FilePath, 1, projName));
 
-                // Compute per-file score (placeholder — runner fills it below after coupling)
+                // Coupling is attached below once the per-project compilation is available
                 var fileWithMethods = volume with { Methods = methods };
                 fileMetricsList.Add(fileWithMethods);
-                await Task.CompletedTask;
+                return ValueTask.CompletedTask;
             });
 
             Report(progress, $"Coupling analysis — {projName}…", 35 + step * 20 / totalSteps);
@@ -224,7 +220,6 @@ internal sealed class CodeAnalysisRunner
         Report(progress, "Computing quality score…", 92);
         int totalLines = projectMetrics.Sum(p => p.TotalLines);
         var snapshot   = _snapshotService.LoadLatest();
-        int trendDelta = snapshot is null ? 0 : 0; // filled after score computed
 
         var diagList = allDiagnostics.ToList();
 
@@ -237,7 +232,7 @@ internal sealed class CodeAnalysisRunner
 
         var score = QualityScoreCalculator.Calculate(
             projectMetrics, duplications, allDeadSymbols, diagList,
-            totalLines, trendDelta, opts);
+            totalLines, 0, opts);
 
         // Compute trending delta now that we have the score
         int finalDelta = snapshot is null ? 0 : score.Score - snapshot.Score;
@@ -308,10 +303,14 @@ internal sealed class CodeAnalysisRunner
         await Parallel.ForEachAsync(files, ct, async (file, token) =>
         {
             token.ThrowIfCancellationRequested();
-            var source = await File.ReadAllTextAsync(file, token);
-            var tree   = CSharpSyntaxTree.ParseText(source, path: file,
-                cancellationToken: token);
-            var proj   = FindProjectName(file);
+            string source;
+            try   { source = await File.ReadAllTextAsync(file, token); }
+            catch { return; } // skip unreadable files
+
+            if (string.IsNullOrWhiteSpace(source)) return;
+
+            var tree     = CSharpSyntaxTree.ParseText(source, path: file, cancellationToken: token);
+            var proj     = FindProjectName(file);
             var projPath = FindProjectPath(file);
             results.Add((tree, proj, projPath));
         });

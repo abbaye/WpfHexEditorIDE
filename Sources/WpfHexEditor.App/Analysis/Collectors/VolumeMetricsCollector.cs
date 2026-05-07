@@ -5,6 +5,7 @@
 //              using Roslyn syntax trees. Stateless — safe for parallel use.
 // ==========================================================
 
+using System.IO;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -37,7 +38,7 @@ internal static class VolumeMetricsCollector
         var methods    = root.DescendantNodes().OfType<MethodDeclarationSyntax>().ToList();
         var properties = root.DescendantNodes().OfType<PropertyDeclarationSyntax>().ToList();
 
-        int maxDit = model is null ? 0 : types.Max(t => ComputeDit(t, model));
+        int maxDit = (model is null || types.Count == 0) ? 0 : types.Max(t => ComputeDit(t, model));
 
         return new FileMetrics
         {

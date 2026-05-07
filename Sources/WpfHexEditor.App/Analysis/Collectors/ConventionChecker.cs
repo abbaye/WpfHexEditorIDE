@@ -58,11 +58,16 @@ internal static class ConventionChecker
                 foreach (var variable in field.Declaration.Variables)
                 {
                     var name = variable.Identifier.Text;
-                    bool isPrivate = field.Modifiers.Any(m =>
-                        m.IsKind(SyntaxKind.PrivateKeyword) || !field.Modifiers.Any(x =>
-                            x.IsKind(SyntaxKind.PublicKeyword) || x.IsKind(SyntaxKind.ProtectedKeyword) || x.IsKind(SyntaxKind.InternalKeyword)));
+                    // A field is private if it has the private keyword, or has no
+                    // accessibility modifier (C# default is private inside a class).
+                    bool hasAccessibilityModifier = field.Modifiers.Any(m =>
+                        m.IsKind(SyntaxKind.PublicKeyword)    ||
+                        m.IsKind(SyntaxKind.ProtectedKeyword) ||
+                        m.IsKind(SyntaxKind.InternalKeyword));
+                    bool isPrivate = field.Modifiers.Any(m => m.IsKind(SyntaxKind.PrivateKeyword))
+                                     || !hasAccessibilityModifier;
 
-                    if (isPrivate && !name.StartsWith('_') && !name.StartsWith("s_"))
+                    if (isPrivate && !name.StartsWith('_') && !name.StartsWith("s_") && !name.StartsWith("k_"))
                         results.Add(Diag("WH0030", DiagnosticSeverity.Info,
                             $"Private field '{name}' should start with '_'.",
                             filePath, variable.Identifier.GetLocation(), projectName));

@@ -207,7 +207,7 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
                             <ComboBox x:Name="SeverityFilter" Width="100" Margin="0,0,8,0"
-                                      SelectedItem="{Binding SelectedSeverity}"
+                                      SelectedIndex="0"
                                       SelectionChanged="OnSeverityFilterChanged">
                                 <ComboBoxItem Content="All"/>
                                 <ComboBoxItem Content="Error"/>

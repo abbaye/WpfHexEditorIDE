@@ -903,4 +903,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbol resolution complete.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Data Breakpoints</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Add Data Breakpoint</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>कोड विश्लेषण चलाएं...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>प्रोजेक्ट विश्लेषण करें...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>फ़ाइल विश्लेषण करें...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>विश्लेषण रिपोर्ट खोलें</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>विश्लेषण जारी है...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>कोड गुणवत्ता स्कोर — रिपोर्ट खोलने के लिए क्लिक करें</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>कोड विश्लेषण</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>अवलोकन</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>समस्याएं</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>जटिलता</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>युग्मन</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>दोहराव</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>मृत कोड</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>स्कोर</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ सुधार हुआ</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ गिरावट हुई</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>कोई बदलाव नहीं</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>प्रोजेक्ट के अनुसार</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>शीर्ष 5 सबसे खराब फ़ाइलें</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>सभी</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>गंभीर</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>समस्याएं खोजें...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>सीमा: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>अस्थिरता</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>कुल दोहराव</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>क्लास</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>फील्ड</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>मेथड</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>पैरामीटर</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>वेरिएबल</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>वॉल्यूम मेट्रिक्स एकत्र हो रहे हैं...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>जटिलता का विश्लेषण हो रहा है...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>युग्मन का विश्लेषण हो रहा है...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>दोहराव का पता लग रहा है...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>मृत कोड का पता लग रहा है...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Roslyn डायग्नोस्टिक्स एकत्र हो रहे हैं...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>गुणवत्ता स्कोर की गणना हो रही है...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>कोई सॉल्यूशन खुला नहीं है। कोड विश्लेषण चलाने से पहले एक सॉल्यूशन खोलें।</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>कोड विश्लेषण विफल: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>विश्लेषण स्नैपशॉट सहेजा गया।</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>विश्लेषण स्नैपशॉट साफ़ किया गया।</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>सामान्य</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>सीमाएं</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>नियम</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>सॉल्यूशन खुलने पर स्वचालित रूप से विश्लेषण चलाएं</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>बिल्ड पर स्वचालित रूप से विश्लेषण चलाएं</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>स्टेटस बार में स्कोर बैज दिखाएं</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>एरर पैनल में डायग्नोस्टिक्स भेजें</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>जेनरेटेड फ़ाइलें शामिल करें (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>स्नैपशॉट रिटेंशन:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>आउटपुट वर्बोसिटी:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>डिफ़ॉल्ट पुनर्स्थापित करें</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>अक्षम</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>जानकारी</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>चेतावनी</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>त्रुटि</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ पुनः चलाएं</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>निर्यात ▾</value></data>
 </root>

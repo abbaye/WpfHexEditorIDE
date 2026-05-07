@@ -903,4 +903,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Symbol resolution complete.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Data Breakpoints</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Add Data Breakpoint</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>コード分析を実行...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>プロジェクトを分析...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>ファイルを分析...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>分析レポートを開く</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>分析中...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>コード品質スコア — クリックしてレポートを開く</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>コード分析</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>概要</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>問題</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>複雑度</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>結合度</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>重複</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>デッドコード</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>スコア</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ 改善</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ 低下</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>変化なし</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>プロジェクト別</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>ワースト上位5ファイル</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>すべて</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>重大</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>問題を検索...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>しきい値: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>不安定度</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>重複合計</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>クラス</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>フィールド</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>メソッド</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>パラメーター</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>変数</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>ボリュームメトリクスを収集中...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>複雑度を分析中...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>結合度を分析中...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>重複を検出中...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>デッドコードを検出中...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Roslyn診断を収集中...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>品質スコアを計算中...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>ソリューションが開かれていません。コード分析を実行する前にソリューションを開いてください。</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>コード分析が失敗しました: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>分析スナップショットを保存しました。</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>分析スナップショットをクリアしました。</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>全般</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>しきい値</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>ルール</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>ソリューションを開いたときに自動的に分析を実行する</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>ビルド時に自動的に分析を実行する</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>ステータスバーにスコアバッジを表示する</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>エラーパネルに診断を送信する</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>生成されたファイルを含める (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>スナップショット保持:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>出力の詳細度:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>既定値に戻す</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>無効</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>情報</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>警告</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>エラー</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ 再実行</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>エクスポート ▾</value></data>
 </root>

@@ -599,4 +599,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Szimbolumfeloldas kesz.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Adattorespontok</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Adattörespont hozzaadasa</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Kódelemzés futtatása...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Projekt elemzése...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Fájl elemzése...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Elemzési jelentés megnyitása</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Elemzés folyamatban...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Kódminőségi pontszám — kattintson a jelentés megnyitásához</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Kódelemzés</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Áttekintés</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Problémák</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Komplexitás</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Csatolás</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Duplikáció</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Holt kód</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Pontszám</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ javult</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ romlott</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Nincs változás</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>PROJEKT SZERINT</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>TOP 5 LEGROSSZABB FÁJL</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Összes</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Kritikus</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Problémák keresése...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Küszöb: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Instabilitás</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Összesen duplikált</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>osztály</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>mező</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>metódus</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>paraméter</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>változó</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Kötetmetrikák gyűjtése...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Komplexitás elemzése...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Csatolás elemzése...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Duplikációk felderítése...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Holt kód felderítése...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Roslyn-diagnosztikák gyűjtése...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Minőségi pontszám kiszámítása...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Nincs nyitott megoldás. A kódelemzés futtatása előtt nyisson meg egy megoldást.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>A kódelemzés sikertelen: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Elemzési pillanatkép mentve.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Elemzési pillanatkép törölve.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Általános</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Küszöbértékek</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Szabályok</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Elemzés automatikus futtatása megoldás megnyitásakor</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Elemzés automatikus futtatása buildeléskor</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Pontszám-jelvény megjelenítése az állapotsávon</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Diagnosztikák küldése a hibaablakba</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Generált fájlok bevonása (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Pillanatkép-megőrzés:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Kimenet részletessége:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Alapértelmezések visszaállítása</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Letiltva</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Információ</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Figyelmeztetés</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Hiba</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Újrafuttatás</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Exportálás ▾</value></data>
 </root>

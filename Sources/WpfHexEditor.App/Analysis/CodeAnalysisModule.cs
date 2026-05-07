@@ -96,18 +96,9 @@ internal sealed class CodeAnalysisModule
             new FileAnalysisContextMenuContributor(
                 path => RunAsync(AnalysisScope.File, path)));
 
-        // Register Options pages
+        // Register single options page (General + Thresholds + Rules all in one scrollable page)
         OptionsPageRegistry.RegisterDynamic(
             "Code Analysis", "General",
-            () =>
-            {
-                var page = new UI.Options.CodeAnalysisOptionsPage(_optionsService);
-                page.Load(null!);
-                return page;
-            });
-
-        OptionsPageRegistry.RegisterDynamic(
-            "Code Analysis", "Thresholds",
             () =>
             {
                 var page = new UI.Options.CodeAnalysisOptionsPage(_optionsService);

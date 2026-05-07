@@ -205,8 +205,10 @@ public sealed class CodeAnalysisOptionsPage : UserControl, IOptionsPage
 
         foreach (var (rule, chk, sev) in _ruleRows)
         {
-            rule.Severity = chk.IsChecked == true
-                ? Enum.Parse<RuleSeverity>(sev.SelectedItem?.ToString() ?? "Warning")
+            var target = o.Rules.FirstOrDefault(r => r.RuleId == rule.RuleId);
+            if (target is null) continue;
+            target.Severity = chk.IsChecked == true
+                ? Enum.Parse<RuleSeverity>(sev.SelectedItem?.ToString() ?? "Warning", ignoreCase: true)
                 : RuleSeverity.Disabled;
         }
 

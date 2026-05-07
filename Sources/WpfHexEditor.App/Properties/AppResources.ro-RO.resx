@@ -599,4 +599,70 @@
   <data name="Debugger_SymbolServerDone" xml:space="preserve"><value>Rezolvarea simbolurilor finalizata.</value></data>
   <data name="Debugger_DataBreakpointsPanelTitle" xml:space="preserve"><value>Puncte de intrerupere a datelor</value></data>
   <data name="Debugger_DataBreakpointAdd" xml:space="preserve"><value>Adaugati punct de intrerupere a datelor</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunSolution" xml:space="preserve"><value>Rulați analiza codului...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunProject" xml:space="preserve"><value>Analizați proiectul...</value></data>
+  <data name="CodeAnalysis_MenuLabel_RunFile" xml:space="preserve"><value>Analizați fișierul...</value></data>
+  <data name="CodeAnalysis_MenuLabel_OpenReport" xml:space="preserve"><value>Deschideți raportul de analiză</value></data>
+  <data name="CodeAnalysis_StatusBar_Score" xml:space="preserve"><value>{0}/100 ({1})</value></data>
+  <data name="CodeAnalysis_StatusBar_Running" xml:space="preserve"><value>Se analizează...</value></data>
+  <data name="CodeAnalysis_StatusBar_Tooltip" xml:space="preserve"><value>Scorul calității codului — faceți clic pentru a deschide raportul</value></data>
+  <data name="CodeAnalysis_Report_Title" xml:space="preserve"><value>Analiza codului</value></data>
+  <data name="CodeAnalysis_Tab_Overview" xml:space="preserve"><value>Prezentare generală</value></data>
+  <data name="CodeAnalysis_Tab_Issues" xml:space="preserve"><value>Probleme</value></data>
+  <data name="CodeAnalysis_Tab_Complexity" xml:space="preserve"><value>Complexitate</value></data>
+  <data name="CodeAnalysis_Tab_Coupling" xml:space="preserve"><value>Cuplare</value></data>
+  <data name="CodeAnalysis_Tab_Duplication" xml:space="preserve"><value>Duplicare</value></data>
+  <data name="CodeAnalysis_Tab_DeadCode" xml:space="preserve"><value>Cod mort</value></data>
+  <data name="CodeAnalysis_Grade_A" xml:space="preserve"><value>A</value></data>
+  <data name="CodeAnalysis_Grade_B" xml:space="preserve"><value>B</value></data>
+  <data name="CodeAnalysis_Grade_C" xml:space="preserve"><value>C</value></data>
+  <data name="CodeAnalysis_Grade_D" xml:space="preserve"><value>D</value></data>
+  <data name="CodeAnalysis_Grade_F" xml:space="preserve"><value>F</value></data>
+  <data name="CodeAnalysis_Score_Label" xml:space="preserve"><value>Scor</value></data>
+  <data name="CodeAnalysis_Score_Trending_Up" xml:space="preserve"><value>▲ îmbunătățit</value></data>
+  <data name="CodeAnalysis_Score_Trending_Down" xml:space="preserve"><value>▼ degradat</value></data>
+  <data name="CodeAnalysis_Score_Trending_Same" xml:space="preserve"><value>Nicio modificare</value></data>
+  <data name="CodeAnalysis_Overview_ByProject" xml:space="preserve"><value>PE PROIECT</value></data>
+  <data name="CodeAnalysis_Overview_WorstFiles" xml:space="preserve"><value>TOP 5 CEI MAI PROȘTI FIȘIERE</value></data>
+  <data name="CodeAnalysis_Issues_Filter_All" xml:space="preserve"><value>Toate</value></data>
+  <data name="CodeAnalysis_Issues_Filter_Critical" xml:space="preserve"><value>Critic</value></data>
+  <data name="CodeAnalysis_Issues_Search" xml:space="preserve"><value>Căutați probleme...</value></data>
+  <data name="CodeAnalysis_Complexity_Threshold" xml:space="preserve"><value>Prag: CC &gt;</value></data>
+  <data name="CodeAnalysis_Coupling_Instability" xml:space="preserve"><value>Instabilitate</value></data>
+  <data name="CodeAnalysis_Duplication_Total" xml:space="preserve"><value>Total duplicat</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Class" xml:space="preserve"><value>clasă</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Field" xml:space="preserve"><value>câmp</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Method" xml:space="preserve"><value>metodă</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Parameter" xml:space="preserve"><value>parametru</value></data>
+  <data name="CodeAnalysis_DeadCode_Kind_Variable" xml:space="preserve"><value>variabilă</value></data>
+  <data name="CodeAnalysis_Export_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="CodeAnalysis_Export_CSV" xml:space="preserve"><value>CSV</value></data>
+  <data name="CodeAnalysis_Running_Phase_Volume" xml:space="preserve"><value>Se colectează metrici de volum...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Complexity" xml:space="preserve"><value>Se analizează complexitatea...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Coupling" xml:space="preserve"><value>Se analizează cuplarea...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Duplication" xml:space="preserve"><value>Se detectează duplicările...</value></data>
+  <data name="CodeAnalysis_Running_Phase_DeadCode" xml:space="preserve"><value>Se detectează codul mort...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Roslyn" xml:space="preserve"><value>Se colectează diagnostice Roslyn...</value></data>
+  <data name="CodeAnalysis_Running_Phase_Score" xml:space="preserve"><value>Se calculează scorul de calitate...</value></data>
+  <data name="CodeAnalysis_Error_NoSolution" xml:space="preserve"><value>Nu există nicio soluție deschisă. Deschideți o soluție înainte de a rula analiza codului.</value></data>
+  <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Analiza codului a eșuat: {0}</value></data>
+  <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Instantaneul analizei salvat.</value></data>
+  <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Instantaneul analizei șters.</value></data>
+  <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>General</value></data>
+  <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Praguri</value></data>
+  <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Reguli</value></data>
+  <data name="CodeAnalysis_Options_AutoOnOpen" xml:space="preserve"><value>Rulați analiza automat la deschiderea soluției</value></data>
+  <data name="CodeAnalysis_Options_AutoOnBuild" xml:space="preserve"><value>Rulați analiza automat la compilare</value></data>
+  <data name="CodeAnalysis_Options_ShowBadge" xml:space="preserve"><value>Afișați insigna scorului în bara de stare</value></data>
+  <data name="CodeAnalysis_Options_PushDiagnostics" xml:space="preserve"><value>Trimiteți diagnosticele la panoul de erori</value></data>
+  <data name="CodeAnalysis_Options_IncludeGenerated" xml:space="preserve"><value>Includeți fișierele generate (*.g.cs, *.Designer.cs)</value></data>
+  <data name="CodeAnalysis_Options_SnapshotRetention" xml:space="preserve"><value>Retenție instantanee:</value></data>
+  <data name="CodeAnalysis_Options_Verbosity" xml:space="preserve"><value>Detaliere ieșire:</value></data>
+  <data name="CodeAnalysis_Options_RestoreDefaults" xml:space="preserve"><value>Restaurați valorile implicite</value></data>
+  <data name="CodeAnalysis_Options_Severity_Disabled" xml:space="preserve"><value>Dezactivat</value></data>
+  <data name="CodeAnalysis_Options_Severity_Info" xml:space="preserve"><value>Informații</value></data>
+  <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Avertisment</value></data>
+  <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Eroare</value></data>
+  <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Rulați din nou</value></data>
+  <data name="CodeAnalysis_Export" xml:space="preserve"><value>Exportați ▾</value></data>
 </root>

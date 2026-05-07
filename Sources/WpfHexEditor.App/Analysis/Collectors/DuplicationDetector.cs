@@ -7,6 +7,8 @@
 //              Stateless — safe for parallel use.
 // ==========================================================
 
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using WpfHexEditor.App.Analysis.Models;
@@ -70,7 +72,7 @@ internal static class DuplicationDetector
     // Normalize identifiers → "ID", literals → "LIT" before hashing.
     private static string ComputeNormalizedHash(IEnumerable<SyntaxToken> tokens)
     {
-        var sb = new System.Text.StringBuilder();
+        var sb = new StringBuilder();
         foreach (var token in tokens)
         {
             var kind = token.Kind();
@@ -83,7 +85,8 @@ internal static class DuplicationDetector
             else
                 sb.Append(token.Text).Append(' ');
         }
-        // Use a fast deterministic hash — not for security, just bucketing
-        return sb.ToString().GetHashCode().ToString();
+        // Deterministic SHA-256 (first 16 chars) — stable across processes/platforms
+        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(sb.ToString()));
+        return Convert.ToHexString(bytes)[..16];
     }
 }
