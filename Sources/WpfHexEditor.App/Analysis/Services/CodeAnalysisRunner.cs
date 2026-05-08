@@ -136,8 +136,19 @@ internal sealed class CodeAnalysisRunner
                         $"File has {volume.TotalLines} lines (warning threshold: {opts.FileLocWarning}).",
                         tree.FilePath, 1, projName));
 
+                // Roll up method-level complexity into the file
+                int maxCc  = methods.Count > 0 ? methods.Max(m => m.CyclomaticComplexity) : 0;
+                int maxCog = methods.Count > 0 ? methods.Max(m => m.CognitiveComplexity)  : 0;
+                double avgCc = methods.Count > 0 ? methods.Average(m => (double)m.CyclomaticComplexity) : 0.0;
+
                 // Coupling is attached below once the per-project compilation is available
-                var fileWithMethods = volume with { Methods = methods };
+                var fileWithMethods = volume with
+                {
+                    Methods                 = methods,
+                    MaxCyclomaticComplexity = maxCc,
+                    MaxCognitiveComplexity  = maxCog,
+                    AvgCyclomaticComplexity = Math.Round(avgCc, 2),
+                };
                 fileMetricsList.Add(fileWithMethods);
                 return ValueTask.CompletedTask;
             });
