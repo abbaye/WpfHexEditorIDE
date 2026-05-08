@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.App.Analysis.Models;
+using WpfHexEditor.App.Properties;
 
 namespace WpfHexEditor.App.Analysis.UI.ViewModels;
 
@@ -106,7 +107,7 @@ public sealed class CodeAnalysisReportViewModel : INotifyPropertyChanged
     }
 
     public IReadOnlyList<string> AvailableProjects =>
-        Projects.Select(p => p.ProjectName).Prepend("(All projects)").ToList();
+        Projects.Select(p => p.ProjectName).Prepend(AppResources.CodeAnalysis_AllProjects).ToList();
 
     /// <summary>AI insights markdown (Phase 8).</summary>
     private string _aiInsights = string.Empty;

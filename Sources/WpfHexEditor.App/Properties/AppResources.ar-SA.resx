@@ -970,4 +970,113 @@
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>خطأ</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ إعادة التشغيل</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>تصدير ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>خريطة شجرية</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>النتيجة</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>النتائج الفرعية</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>المشروع:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>بحث:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(جميع المشاريع)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>إعادة تشغيل تحليل الكود الكامل على الحل الحالي. الاختصار: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>تصدير التقرير — Markdown (قابل للقراءة)، CSV (جدول بيانات)، SARIF (تعليقات CI/PR) أو PR Checklist (نموذج مراجعة مُولَّد).</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>تصفية جميع علامات التبويب حسب المشروع</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>البحث في الملفات / الطرق / المشكلات (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>نتيجة الجودة</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>تجميع مرجح لست نتائج فرعية: الحجم 10%، التعقيد 25%، الاقتران 20%، التكرار 20%، الكود الميت 15%، الاتفاقيات 10%.</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>الدرجات: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>يُظهر سهم الاتجاه الفرق مقارنة بآخر لقطة محفوظة.</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>النتيجة الإجمالية 0-100. مرر فوق قسم النتيجة لرؤية الصيغة.</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>درجة بالحروف مشتقة من النتيجة (A+, A, A-, B+, B, B-, C+, C, C-, D, F).</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>الفرق مقابل اللقطة السابقة: ▲ تحسن، ▼ تراجع.</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>ستة محاور 0-100 (الأبعد عن المركز = أفضل): Vol = الالتزام بحجم الملف · CC = هامش التعقيد · Coup = استقرار الاقتران · Dup = نسبة التكرار · Dead = نسبة الرموز غير المستخدمة · Conv = التزام التسمية/الاتفاقيات.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>ملخص عالي المستوى: تفصيل لكل مشروع + 5 ملفات الأسوأ تقييمًا. انقر نقرًا مزدوجًا على صف للتعمق.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>جميع التشخيصات المُنتَجة في هذا التشغيل: قواعد الجودة WH00xx + تحذيرات Roslyn CS/IDE. صفِّ حسب الخطورة / البحث / المجموعة؛ انقر نقرًا مزدوجًا للقفز إلى سطر المصدر.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>أهم الطرق حسب التعقيد الحلقي + المعرفي. McCabe (CC) يحسب نقاط القرار؛ Cognitive (نمط Sonar) يزن التداخل. أعلى = أصعب في الاختبار/الصيانة.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>لكل نوع Ca (وارد — يعتمد عليك)، Ce (صادر — تعتمد عليه) وعدم الاستقرار = Ce/(Ca+Ce). قريب من 1 = وحدة متقلبة؛ قريب من 0 = أساس مستقر.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>الكشف عن الكلونات بناءً على الرموز. كل مجموعة هي تسلسل ≥50 رمزًا (قابل للتكوين) موجود في 2+ مكان — مرشحون للاستخراج إلى مساعد مشترك.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>خريطة شجرية</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>كل مستطيل هو ملف مصدر واحد. المساحة تتناسب مع أسطر الكود؛ اللون هو نتيجة الجودة لكل ملف (أخضر = صحي، أحمر = ضعيف). مرر للحصول على المقاييس الكاملة، انقر للفتح.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>الرموز الخاصة/الداخلية التي لم يتمكن Roslyn من العثور على مرجع لها. تحقق من كل واحد — قد تحدث إيجابيات كاذبة للرموز المستخدمة عبر الانعكاس أو حاويات DI أو مولدات المصدر.</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>تجميع المشكلات حسب…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>المشروع</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>الملفات</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>الأنواع</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>النتيجة</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>التقدير</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>الملف</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>الرسالة</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>السطر</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>الطريقة</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>معرفي</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>معامل</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>النوع</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>عدم الاستقرار</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>الرمز</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>النوع</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>قائمة PR</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>خطأ</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>تحذير</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>معلومات</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>المجموعة: لا شيء</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>حسب الخطورة</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>حسب القاعدة</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>حسب المشروع</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>حسب الملف</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>النتيجة:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>خريطة شجرية:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> مساحة المستطيل = أسطر الكود، اللون = نتيجة الجودة. مرر للحصول على المقاييس الكاملة، انقر فوق بلاطة لفتح الملف.</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>مجموعة الكلون — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> أسطر، </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> تكرارات، </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> رموز</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>ملفات Markdown (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>ملفات SARIF (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>ملفات CSV (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># تقرير تحليل الكود</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>فتح مجلد المشروع</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>إظهار في المستكشف</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>إعادة تحليل هذا المشروع</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>تصفية جميع علامات التبويب حسب المشروع</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>نسخ اسم المشروع</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>نسخ المقاييس كصف CSV</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>فتح</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>فتح المجلد الحاوي</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>إعادة تحليل هذا الملف</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>تصفية المشكلات حسب هذا الملف</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>نسخ المسار الكامل</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>نسخ اسم الملف</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>فتح عند إعلان الطريقة</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>نسخ اسم الطريقة</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>نسخ الاسم المؤهل بالكامل</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>فتح في موقع المشكلة</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>تصفية حسب هذه القاعدة</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>تصفية حسب هذا الملف</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>كتم هذا التكرار (علامة مضمنة)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>نسخ كـ Markdown</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>نسخ معرف المشكلة</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>فتح الملف المصدر</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>نسخ اسم النوع</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>نسخ قائمة التبعيات</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>فتح أول تكرار</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>نسخ المواقع ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>فتح عند الإعلان</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>نسخ اسم الرمز</value></data>
 </root>

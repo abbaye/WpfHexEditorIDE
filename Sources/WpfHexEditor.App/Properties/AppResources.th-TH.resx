@@ -666,4 +666,113 @@
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>ข้อผิดพลาด</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ เรียกใช้อีกครั้ง</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>ส่งออก ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>ทรีแมป</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>คะแนน</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>คะแนนย่อย</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>โครงการ:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>ค้นหา:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(โครงการทั้งหมด)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>เรียกใช้การวิเคราะห์โค้ดเต็มอีกครั้งกับโซลูชันปัจจุบัน ทางลัด: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>ส่งออกรายงาน — Markdown (อ่านได้), CSV (สเปรดชีต), SARIF (คำอธิบาย CI/PR) หรือรายการตรวจสอบ PR (เทมเพลตการตรวจทานที่สร้างโดยอัตโนมัติ)</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>กรองแท็บทั้งหมดตามโครงการ</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>ค้นหาในไฟล์ / เมธอด / ปัญหา (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>คะแนนคุณภาพ</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>ผลรวมถ่วงน้ำหนักของคะแนนย่อย 6 รายการ: ปริมาณ 10%, ความซับซ้อน 25%, การคู่ 20%, การซ้ำ 20%, โค้ดที่ตายแล้ว 15%, ข้อตกลง 10%</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>เกรด: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>ลูกศรแนวโน้มแสดงความแตกต่างเทียบกับสแน็ปช็อตที่บันทึกล่าสุด</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>คะแนนโดยรวม 0-100 วางเมาส์เหนือส่วนคะแนนเพื่อดูสูตร</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>เกรดตัวอักษรที่ได้จากคะแนน (A+, A, A-, B+, B, B-, C+, C, C-, D, F)</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>ความแตกต่างเทียบกับสแน็ปช็อตก่อนหน้า: ▲ การปรับปรุง, ▼ การถดถอย</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>หกแกน 0-100 (ห่างจากศูนย์กลางมากกว่า = ดีกว่า): Vol = การปฏิบัติตามขนาดไฟล์ · CC = ระยะของความซับซ้อน · Coup = ความเสถียรของการคู่ · Dup = อัตราส่วนการซ้ำ · Dead = อัตราส่วนสัญลักษณ์ที่ไม่ใช้ · Conv = การปฏิบัติตามการตั้งชื่อ/ข้อตกลง</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>สรุประดับสูง: รายละเอียดต่อโครงการ + 5 ไฟล์ที่ได้คะแนนต่ำสุด ดับเบิลคลิกที่แถวเพื่อเจาะลึก</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>การวินิจฉัยทั้งหมดที่สร้างในการรันนี้: กฎคุณภาพ WH00xx + คำเตือน CS/IDE Roslyn กรองตามความรุนแรง / การค้นหา / กลุ่ม; ดับเบิลคลิกเพื่อข้ามไปยังบรรทัดต้นทาง</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>เมธอดยอดนิยมตามความซับซ้อนแบบไซโคลแมติก + ความรู้ความเข้าใจ McCabe (CC) นับจุดตัดสินใจ; Cognitive (สไตล์ Sonar) ถ่วงน้ำหนักการซ้อน สูงกว่า = ทดสอบ/บำรุงรักษายากกว่า</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>ตามประเภท Ca (เข้า — ขึ้นอยู่กับคุณ), Ce (ออก — คุณขึ้นอยู่กับมัน) และความไม่เสถียร = Ce/(Ca+Ce) ใกล้ 1 = โมดูลผันผวน; ใกล้ 0 = ฐานเสถียร</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>การตรวจจับโคลนที่ใช้โทเค็น แต่ละกลุ่มเป็นลำดับของโทเค็น ≥50 ตัว (ปรับแต่งได้) ที่พบใน 2+ ที่ — ผู้สมัครสำหรับการแยกออกเป็นตัวช่วยที่ใช้ร่วมกัน</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>ทรีแมป</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>แต่ละสี่เหลี่ยมเป็นไฟล์ต้นฉบับหนึ่งไฟล์ พื้นที่เป็นสัดส่วนกับบรรทัดของโค้ด; สีคือคะแนนคุณภาพต่อไฟล์ (เขียว = แข็งแรง, แดง = แย่) วางเมาส์เพื่อดูเมตริกทั้งหมด คลิกเพื่อเปิด</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>สัญลักษณ์ส่วนตัว/ภายในที่ Roslyn ไม่พบการอ้างอิง ตรวจสอบแต่ละรายการ — ผลบวกลวงอาจเกิดขึ้นกับสัญลักษณ์ที่ใช้ผ่านการสะท้อน คอนเทนเนอร์ DI หรือตัวสร้างต้นฉบับ</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>จัดกลุ่มปัญหาตาม…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>โครงการ</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>ไฟล์</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>ประเภท</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>คะแนน</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>เกรด</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>ไฟล์</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>ข้อความ</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>บรรทัด</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>เมธอด</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>ความรู้</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>พารา.</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>ประเภท</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>ความไม่เสถียร</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>สัญลักษณ์</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>ชนิด</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>รายการตรวจสอบ PR</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>ข้อผิดพลาด</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>คำเตือน</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>ข้อมูล</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>กลุ่ม: ไม่มี</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>ตามความรุนแรง</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>ตามกฎ</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>ตามโครงการ</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>ตามไฟล์</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>คะแนน:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>ทรีแมป:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> พื้นที่สี่เหลี่ยม = บรรทัดของโค้ด, สี = คะแนนคุณภาพ วางเมาส์เพื่อดูเมตริกทั้งหมด คลิกที่ไทล์เพื่อเปิดไฟล์</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>กลุ่มโคลน — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> บรรทัด, </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> เหตุการณ์, </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> โทเค็น</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>ไฟล์ Markdown (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>ไฟล์ SARIF (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>ไฟล์ CSV (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># รายงานการวิเคราะห์โค้ด</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>เปิดโฟลเดอร์โครงการ</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>แสดงใน Explorer</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>วิเคราะห์โครงการนี้อีกครั้ง</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>กรองแท็บทั้งหมดตามโครงการ</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>คัดลอกชื่อโครงการ</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>คัดลอกเมตริกเป็นแถว CSV</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>เปิด</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>เปิดโฟลเดอร์ที่มี</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>วิเคราะห์ไฟล์นี้อีกครั้ง</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>กรองปัญหาตามไฟล์นี้</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>คัดลอกเส้นทางเต็ม</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>คัดลอกชื่อไฟล์</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>เปิดที่การประกาศเมธอด</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>คัดลอกชื่อเมธอด</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>คัดลอกชื่อที่ผ่านการรับรองอย่างสมบูรณ์</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>เปิดที่ตำแหน่งปัญหา</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>กรองตามกฎนี้</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>กรองตามไฟล์นี้</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>ระงับเหตุการณ์นี้ (เครื่องหมายอินไลน์)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>คัดลอกเป็น Markdown</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>คัดลอก ID ปัญหา</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>เปิดไฟล์ต้นฉบับ</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>คัดลอกชื่อประเภท</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>คัดลอกรายการการพึ่งพา</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>เปิดเหตุการณ์แรก</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>คัดลอกตำแหน่ง ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>เปิดที่การประกาศ</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>คัดลอกชื่อสัญลักษณ์</value></data>
 </root>

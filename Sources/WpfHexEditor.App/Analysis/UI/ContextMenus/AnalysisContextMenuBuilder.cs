@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using WpfHexEditor.App.Analysis.Models;
 using WpfHexEditor.App.Analysis.UI.ViewModels;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.App.Analysis.UI.ContextMenus;
@@ -42,15 +43,15 @@ internal sealed class AnalysisContextMenuBuilder
     internal ContextMenu BuildForProject(ProjectMetrics project)
     {
         var menu = new ContextMenu();
-        Add(menu, "Open project folder",          () => AnalysisContextMenuActions.OpenContainingFolder(project.ProjectPath));
-        Add(menu, "Reveal in Explorer",           () => AnalysisContextMenuActions.RevealInExplorer(project.ProjectPath));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_OpenProjectFolder,   () => AnalysisContextMenuActions.OpenContainingFolder(project.ProjectPath));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_RevealInExplorer,    () => AnalysisContextMenuActions.RevealInExplorer(project.ProjectPath));
         AddSeparator(menu);
         if (_scopedReRun is not null)
-            Add(menu, "Re-analyze this project",  () => _ = _scopedReRun(project.ProjectPath));
-        Add(menu, "Filter all tabs by project",   () => _vm.ProjectFilter = project.ProjectName);
+            Add(menu, AppResources.CodeAnalysis_ContextMenu_ReanalyzeProject,  () => _ = _scopedReRun(project.ProjectPath));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_FilterAllByProject,    () => _vm.ProjectFilter = project.ProjectName);
         AddSeparator(menu);
-        Add(menu, "Copy project name",            () => AnalysisContextMenuActions.Copy(project.ProjectName));
-        Add(menu, "Copy metrics as CSV row",      () => AnalysisContextMenuActions.Copy(AnalysisContextMenuActions.FormatProjectAsCsv(project)));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyProjectName,       () => AnalysisContextMenuActions.Copy(project.ProjectName));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyMetricsCsv,        () => AnalysisContextMenuActions.Copy(AnalysisContextMenuActions.FormatProjectAsCsv(project)));
         return menu;
     }
 
@@ -59,27 +60,27 @@ internal sealed class AnalysisContextMenuBuilder
     internal ContextMenu BuildForFile(FileMetrics file)
     {
         var menu = new ContextMenu();
-        Add(menu, "Open",                         () => AnalysisContextMenuActions.OpenFile(_docHost, file.FilePath, 1));
-        Add(menu, "Reveal in Explorer",           () => AnalysisContextMenuActions.RevealInExplorer(file.FilePath));
-        Add(menu, "Open containing folder",       () => AnalysisContextMenuActions.OpenContainingFolder(file.FilePath));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_Open,                  () => AnalysisContextMenuActions.OpenFile(_docHost, file.FilePath, 1));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_RevealInExplorer,      () => AnalysisContextMenuActions.RevealInExplorer(file.FilePath));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_OpenContainingFolder,  () => AnalysisContextMenuActions.OpenContainingFolder(file.FilePath));
         AddSeparator(menu);
         if (_scopedReRun is not null)
-            Add(menu, "Re-analyze this file",     () => _ = _scopedReRun(file.FilePath));
-        Add(menu, "Filter issues by this file",   () => _vm.IssueFilter = file.FileName);
+            Add(menu, AppResources.CodeAnalysis_ContextMenu_ReanalyzeFile,     () => _ = _scopedReRun(file.FilePath));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_FilterIssuesByFile,    () => _vm.IssueFilter = file.FileName);
         AddSeparator(menu);
-        Add(menu, "Copy full path",               () => AnalysisContextMenuActions.Copy(file.FilePath));
-        Add(menu, "Copy file name",               () => AnalysisContextMenuActions.Copy(file.FileName));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyFullPath,          () => AnalysisContextMenuActions.Copy(file.FilePath));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyFileName,          () => AnalysisContextMenuActions.Copy(file.FileName));
         return menu;
     }
 
     internal ContextMenu BuildForFileVm(FileMetricsViewModel fm)
     {
         var menu = new ContextMenu();
-        Add(menu, "Open",                         () => AnalysisContextMenuActions.OpenFile(_docHost, fm.FilePath, 1));
-        Add(menu, "Reveal in Explorer",           () => AnalysisContextMenuActions.RevealInExplorer(fm.FilePath));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_Open,                  () => AnalysisContextMenuActions.OpenFile(_docHost, fm.FilePath, 1));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_RevealInExplorer,      () => AnalysisContextMenuActions.RevealInExplorer(fm.FilePath));
         AddSeparator(menu);
-        Add(menu, "Filter issues by this file",   () => _vm.IssueFilter = fm.FileName);
-        Add(menu, "Copy full path",               () => AnalysisContextMenuActions.Copy(fm.FilePath));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_FilterIssuesByFile,    () => _vm.IssueFilter = fm.FileName);
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyFullPath,          () => AnalysisContextMenuActions.Copy(fm.FilePath));
         return menu;
     }
 
@@ -90,11 +91,11 @@ internal sealed class AnalysisContextMenuBuilder
         var menu = new ContextMenu();
         if (!string.IsNullOrEmpty(filePath))
         {
-            Add(menu, "Open at method declaration", () => AnalysisContextMenuActions.OpenFile(_docHost, filePath, method.Line));
+            Add(menu, AppResources.CodeAnalysis_ContextMenu_OpenAtMethodDecl,  () => AnalysisContextMenuActions.OpenFile(_docHost, filePath, method.Line));
             AddSeparator(menu);
         }
-        Add(menu, "Copy method name",              () => AnalysisContextMenuActions.Copy(method.Name));
-        Add(menu, "Copy fully-qualified name",     () => AnalysisContextMenuActions.Copy(method.FullyQualifiedName));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyMethodName,        () => AnalysisContextMenuActions.Copy(method.Name));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyFqn,               () => AnalysisContextMenuActions.Copy(method.FullyQualifiedName));
         return menu;
     }
 
@@ -103,16 +104,16 @@ internal sealed class AnalysisContextMenuBuilder
     internal ContextMenu BuildForIssue(IssueViewModel issue)
     {
         var menu = new ContextMenu();
-        Add(menu, "Open at issue location",        () => AnalysisContextMenuActions.OpenFile(_docHost, issue.FilePath, issue.Line));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_OpenAtIssueLocation,   () => AnalysisContextMenuActions.OpenFile(_docHost, issue.FilePath, issue.Line));
         AddSeparator(menu);
-        Add(menu, "Filter by this rule",           () => _vm.IssueFilter = issue.Id);
-        Add(menu, "Filter by this file",           () => _vm.IssueFilter = issue.FileName);
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_FilterByRule,          () => _vm.IssueFilter = issue.Id);
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_FilterByFile,          () => _vm.IssueFilter = issue.FileName);
         AddSeparator(menu);
-        Add(menu, "Suppress this occurrence (inline marker)",
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_SuppressInline,
             () => AnalysisContextMenuActions.AddInlineSuppressMarker(issue.FilePath, issue.Line, issue.Id));
         AddSeparator(menu);
-        Add(menu, "Copy as Markdown",              () => AnalysisContextMenuActions.Copy(AnalysisContextMenuActions.FormatIssueAsMarkdown(issue)));
-        Add(menu, "Copy issue ID",                 () => AnalysisContextMenuActions.Copy(issue.Id));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyAsMarkdown,        () => AnalysisContextMenuActions.Copy(AnalysisContextMenuActions.FormatIssueAsMarkdown(issue)));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyIssueId,           () => AnalysisContextMenuActions.Copy(issue.Id));
         return menu;
     }
 
@@ -121,10 +122,10 @@ internal sealed class AnalysisContextMenuBuilder
     internal ContextMenu BuildForCoupling(CouplingMetrics coupling)
     {
         var menu = new ContextMenu();
-        Add(menu, "Open source file",              () => AnalysisContextMenuActions.OpenFile(_docHost, coupling.FilePath, coupling.Line));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_OpenSourceFile,        () => AnalysisContextMenuActions.OpenFile(_docHost, coupling.FilePath, coupling.Line));
         AddSeparator(menu);
-        Add(menu, "Copy type name",                () => AnalysisContextMenuActions.Copy(coupling.TypeName));
-        Add(menu, "Copy dependency list",          () => AnalysisContextMenuActions.Copy(string.Join("\n", coupling.DependsOn)));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyTypeName,          () => AnalysisContextMenuActions.Copy(coupling.TypeName));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyDependencyList,    () => AnalysisContextMenuActions.Copy(string.Join("\n", coupling.DependsOn)));
         return menu;
     }
 
@@ -136,10 +137,10 @@ internal sealed class AnalysisContextMenuBuilder
         if (group.Occurrences.Count > 0)
         {
             var first = group.Occurrences[0];
-            Add(menu, "Open first occurrence",     () => AnalysisContextMenuActions.OpenFile(_docHost, first.FilePath, first.StartLine));
+            Add(menu, AppResources.CodeAnalysis_ContextMenu_OpenFirstOccurrence, () => AnalysisContextMenuActions.OpenFile(_docHost, first.FilePath, first.StartLine));
         }
         AddSeparator(menu);
-        Add(menu, $"Copy locations ({group.Occurrences.Count})",
+        Add(menu, string.Format(AppResources.CodeAnalysis_ContextMenu_CopyLocations, group.Occurrences.Count),
             () => AnalysisContextMenuActions.Copy(string.Join("\n", group.Occurrences.Select(o => $"{o.FilePath}:{o.StartLine}"))));
         return menu;
     }
@@ -149,9 +150,9 @@ internal sealed class AnalysisContextMenuBuilder
     internal ContextMenu BuildForDeadSymbol(DeadSymbol dead)
     {
         var menu = new ContextMenu();
-        Add(menu, "Open at declaration",           () => AnalysisContextMenuActions.OpenFile(_docHost, dead.FilePath, dead.Line));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_OpenAtDeclaration,     () => AnalysisContextMenuActions.OpenFile(_docHost, dead.FilePath, dead.Line));
         AddSeparator(menu);
-        Add(menu, "Copy symbol name",              () => AnalysisContextMenuActions.Copy(dead.Name));
+        Add(menu, AppResources.CodeAnalysis_ContextMenu_CopySymbolName,        () => AnalysisContextMenuActions.Copy(dead.Name));
         return menu;
     }
 

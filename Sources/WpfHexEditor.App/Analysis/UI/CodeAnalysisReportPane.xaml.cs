@@ -14,6 +14,7 @@ using Microsoft.Win32;
 using WpfHexEditor.App.Analysis.Models;
 using WpfHexEditor.App.Analysis.UI.ContextMenus;
 using WpfHexEditor.App.Analysis.UI.ViewModels;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.App.Analysis.UI;
@@ -135,7 +136,7 @@ public partial class CodeAnalysisReportPane : UserControl
     {
         if (DataContext is CodeAnalysisReportViewModel vm
             && ProjectFilterCombo.SelectedItem is string sel)
-            vm.ProjectFilter = sel == "(All projects)" ? string.Empty : sel;
+            vm.ProjectFilter = sel == AppResources.CodeAnalysis_AllProjects ? string.Empty : sel;
     }
 
     private void OnTreemapItemActivated(object? sender, FileMetrics file)
@@ -147,19 +148,18 @@ public partial class CodeAnalysisReportPane : UserControl
     private void OnGroupByChanged(object sender, SelectionChangedEventArgs e)
     {
         if (DataContext is not CodeAnalysisReportViewModel vm) return;
-        if (GroupByCombo.SelectedItem is not ComboBoxItem ci) return;
 
         var view = System.Windows.Data.CollectionViewSource.GetDefaultView(vm.Issues);
         view.GroupDescriptions.Clear();
 
-        string mode = ci.Content?.ToString() ?? "";
-        string? prop = mode switch
+        // Index 0 = None, 1 = Severity, 2 = Rule, 3 = Project, 4 = File
+        string? prop = GroupByCombo.SelectedIndex switch
         {
-            "By Severity" => nameof(IssueViewModel.Severity),
-            "By Rule"     => nameof(IssueViewModel.Id),
-            "By Project"  => nameof(IssueViewModel.ProjectName),
-            "By File"     => nameof(IssueViewModel.FileName),
-            _             => null,
+            1 => nameof(IssueViewModel.Severity),
+            2 => nameof(IssueViewModel.Id),
+            3 => nameof(IssueViewModel.ProjectName),
+            4 => nameof(IssueViewModel.FileName),
+            _ => null,
         };
         if (prop is not null)
             view.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription(prop));
@@ -169,10 +169,10 @@ public partial class CodeAnalysisReportPane : UserControl
     {
         (string fileName, string filter) = format switch
         {
-            "Markdown"  => ("code-analysis-report.md",    "Markdown files (*.md)|*.md"),
-            "SARIF"     => ("code-analysis-report.sarif", "SARIF files (*.sarif)|*.sarif"),
-            "Checklist" => ("code-review-checklist.md",   "Markdown files (*.md)|*.md"),
-            _           => ("code-analysis-report.csv",   "CSV files (*.csv)|*.csv"),
+            "Markdown"  => (AppResources.CodeAnalysis_Export_FileName_Markdown,  AppResources.CodeAnalysis_Export_Filter_Markdown),
+            "SARIF"     => (AppResources.CodeAnalysis_Export_FileName_Sarif,     AppResources.CodeAnalysis_Export_Filter_Sarif),
+            "Checklist" => (AppResources.CodeAnalysis_Export_FileName_Checklist, AppResources.CodeAnalysis_Export_Filter_Markdown),
+            _           => (AppResources.CodeAnalysis_Export_FileName_Csv,       AppResources.CodeAnalysis_Export_Filter_Csv),
         };
         var dlg = new SaveFileDialog { FileName = fileName, Filter = filter };
         if (dlg.ShowDialog() != true) return;
@@ -198,13 +198,15 @@ public partial class CodeAnalysisReportPane : UserControl
     private string BuildMarkdown()
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"# Code Analysis Report");
-        sb.AppendLine($"Score: **{_vm.Score}/100** ({_vm.Grade})  Trending: {_vm.TrendingText}");
-        sb.AppendLine($"Files: {_vm.TotalFiles}  LOC: {_vm.TotalLines:N0}  Projects: {_vm.ProjectCount}");
+        sb.AppendLine(AppResources.CodeAnalysis_Markdown_Title);
+        sb.AppendLine(string.Format(AppResources.CodeAnalysis_Markdown_ScoreLine,
+            _vm.Score, _vm.Grade, _vm.TrendingText));
+        sb.AppendLine(string.Format(AppResources.CodeAnalysis_Markdown_FilesLine,
+            _vm.TotalFiles, _vm.TotalLines, _vm.ProjectCount));
         sb.AppendLine();
-        sb.AppendLine("## Issues");
-        sb.AppendLine("| Severity | ID | Message | File | Line |");
-        sb.AppendLine("|---|---|---|---|---|");
+        sb.AppendLine(AppResources.CodeAnalysis_Markdown_IssuesHeading);
+        sb.AppendLine(AppResources.CodeAnalysis_Markdown_IssuesTableHeader);
+        sb.AppendLine(AppResources.CodeAnalysis_Markdown_IssuesTableSeparator);
         foreach (var i in _vm.Issues)
             sb.AppendLine($"| {i.Severity} | {i.Id} | {i.Message.Replace("|","\\|")} | {i.FileName} | {i.Line} |");
         return sb.ToString();
@@ -213,7 +215,7 @@ public partial class CodeAnalysisReportPane : UserControl
     private string BuildCsv()
     {
         var sb = new StringBuilder();
-        sb.AppendLine("Severity,ID,Message,FilePath,Line,Project");
+        sb.AppendLine(AppResources.CodeAnalysis_Csv_Header);
         foreach (var i in _vm.Issues)
             sb.AppendLine($"{i.Severity},{i.Id},{EscCsv(i.Message)},{EscCsv(i.FilePath)},{i.Line},{i.ProjectName}");
         return sb.ToString();
@@ -228,7 +230,15 @@ public partial class CodeAnalysisReportPane : UserControl
 
     private void OnSeverityFilterChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (DataContext is CodeAnalysisReportViewModel vm && SeverityFilter.SelectedItem is ComboBoxItem ci)
-            vm.SelectedSeverity = ci.Content?.ToString() ?? "All";
+        if (DataContext is not CodeAnalysisReportViewModel vm) return;
+        // Map by SelectedIndex so localization of ComboBoxItem.Content does not
+        // break the VM's stable English-side severity tokens.
+        vm.SelectedSeverity = SeverityFilter.SelectedIndex switch
+        {
+            1 => "Error",
+            2 => "Warning",
+            3 => "Info",
+            _ => "All",
+        };
     }
 }

@@ -151,34 +151,34 @@
                 Padding="12,6">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                    <Button x:Name="ReRunButton" Content="⟳ Re-run"
+                    <Button x:Name="ReRunButton" Content="{DynamicResource CodeAnalysis_Rerun}"
                             Padding="10,4" Margin="4,0"
                             Click="OnReRunClicked"
-                            ToolTip="Re-run the full Code Analysis on the current solution. Shortcut: F5"/>
+                            ToolTip="{DynamicResource CodeAnalysis_Tooltip_Rerun}"/>
                     <ComboBox x:Name="ExportCombo" Width="90" Margin="4,0"
                               SelectedIndex="0"
-                              ToolTip="Export the report — Markdown (human-readable), CSV (spreadsheet), SARIF (CI/PR annotations), or PR Checklist (auto-generated review template)."
+                              ToolTip="{DynamicResource CodeAnalysis_Tooltip_Export}"
                               SelectionChanged="OnExportSelectionChanged">
-                        <ComboBoxItem Content="Export ▾"/>
-                        <ComboBoxItem Content="Markdown"/>
-                        <ComboBoxItem Content="CSV"/>
-                        <ComboBoxItem Content="SARIF"/>
-                        <ComboBoxItem Content="PR Checklist"/>
+                        <ComboBoxItem Content="{DynamicResource CodeAnalysis_Export}"/>
+                        <ComboBoxItem Content="{DynamicResource CodeAnalysis_Export_Markdown}"/>
+                        <ComboBoxItem Content="{DynamicResource CodeAnalysis_Export_CSV}"/>
+                        <ComboBoxItem Content="{DynamicResource CodeAnalysis_Combo_SARIF}"/>
+                        <ComboBoxItem Content="{DynamicResource CodeAnalysis_Combo_PRChecklist}"/>
                     </ComboBox>
                     <!-- Phase 7 — Project filter -->
-                    <TextBlock Text="Project:" VerticalAlignment="Center" Margin="8,0,4,0"
+                    <TextBlock Text="{DynamicResource CodeAnalysis_Header_Project}" VerticalAlignment="Center" Margin="8,0,4,0"
                                Foreground="{DynamicResource DockForegroundBrush}" FontSize="11"/>
                     <ComboBox x:Name="ProjectFilterCombo" Width="160" Margin="0,0,4,0"
                               ItemsSource="{Binding AvailableProjects, Mode=OneWay}"
                               SelectionChanged="OnProjectFilterChanged"
-                              ToolTip="Filter all tabs by project"/>
+                              ToolTip="{DynamicResource CodeAnalysis_Tooltip_ProjectFilter}"/>
                     <!-- Phase 7 — Global search (Ctrl+F) -->
-                    <TextBlock Text="Search:" VerticalAlignment="Center" Margin="4,0"
+                    <TextBlock Text="{DynamicResource CodeAnalysis_Header_Search}" VerticalAlignment="Center" Margin="4,0"
                                Foreground="{DynamicResource DockForegroundBrush}" FontSize="11"/>
                     <TextBox x:Name="GlobalSearchBox" Width="180" Margin="0,0,4,0"
                              VerticalContentAlignment="Center"
                              Text="{Binding GlobalSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             ToolTip="Search across files / methods / issues (Ctrl+F)"/>
+                             ToolTip="{DynamicResource CodeAnalysis_Tooltip_GlobalSearch}"/>
                 </StackPanel>
 
                 <!-- Progress bar (indeterminate while running) -->
@@ -188,7 +188,7 @@
                                  Foreground="{DynamicResource DockAccentBrush}"
                                  Background="{DynamicResource DockBorderBrush}"
                                  BorderThickness="0" Margin="0,0,8,0"/>
-                    <TextBlock Text="Analyzing…" VerticalAlignment="Center"
+                    <TextBlock Text="{DynamicResource CodeAnalysis_StatusBar_Running}" VerticalAlignment="Center"
                                Foreground="{DynamicResource DockForegroundBrush}"
                                FontSize="11"/>
                 </StackPanel>
@@ -230,36 +230,36 @@
                     <StackPanel.ToolTip>
                         <ToolTip>
                             <StackPanel MaxWidth="360">
-                                <TextBlock FontWeight="SemiBold" Text="Quality Score"/>
+                                <TextBlock FontWeight="SemiBold" Text="{DynamicResource CodeAnalysis_Tooltip_QualityScore_Title}"/>
                                 <TextBlock TextWrapping="Wrap" Margin="0,4,0,0"
-                                           Text="Weighted aggregate of six sub-scores: Volume 10%, Complexity 25%, Coupling 20%, Duplication 20%, Dead Code 15%, Conventions 10%."/>
+                                           Text="{DynamicResource CodeAnalysis_Tooltip_QualityScore_Body}"/>
                                 <TextBlock TextWrapping="Wrap" Margin="0,6,0,0"
-                                           Text="Grades: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60"/>
+                                           Text="{DynamicResource CodeAnalysis_Tooltip_QualityScore_Grades}"/>
                                 <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" FontStyle="Italic"
-                                           Text="Trending arrow shows the delta vs the previous saved snapshot."/>
+                                           Text="{DynamicResource CodeAnalysis_Tooltip_QualityScore_Trending}"/>
                             </StackPanel>
                         </ToolTip>
                     </StackPanel.ToolTip>
-                    <TextBlock Style="{StaticResource SectionHeader}" Text="SCORE"/>
+                    <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource CodeAnalysis_Header_Score}"/>
                     <TextBlock Style="{StaticResource ScoreBig}"
                                Text="{Binding Score, Mode=OneWay}"
                                Foreground="{Binding Grade, Mode=OneWay, Converter={StaticResource GradeToColor}}"
-                               ToolTip="Overall score 0-100. Hover the SCORE section for the formula."/>
+                               ToolTip="{DynamicResource CodeAnalysis_Tooltip_Score}"/>
                     <TextBlock Style="{StaticResource GradeBig}"
                                Text="{Binding Grade, Mode=OneWay}"
                                Foreground="{Binding Grade, Mode=OneWay, Converter={StaticResource GradeToColor}}"
-                               ToolTip="Letter grade derived from the score (A+, A, A-, B+, B, B-, C+, C, C-, D, F)."/>
+                               ToolTip="{DynamicResource CodeAnalysis_Tooltip_Grade}"/>
                     <TextBlock Text="{Binding TrendingText, Mode=OneWay}" Margin="0,6,0,0"
                                Foreground="{DynamicResource DockAccentBrush}"
-                               ToolTip="Difference vs the previous snapshot: ▲ improvement, ▼ regression."/>
+                               ToolTip="{DynamicResource CodeAnalysis_Tooltip_Trending}"/>
 
-                    <TextBlock Style="{StaticResource SectionHeader}" Text="SUB-SCORES" Margin="0,24,0,4"/>
+                    <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource CodeAnalysis_Header_SubScores}" Margin="0,24,0,4"/>
 
                     <!-- Phase 3 — Radar visualization -->
                     <controls:ScoreRadarChart
                         Width="180" Height="180"
                         Foreground="{DynamicResource DockForegroundBrush}"
-                        ToolTip="Six axes 0-100 (further from centre = better):  Vol = file-size compliance · CC = complexity headroom · Coup = coupling stability · Dup = duplication ratio · Dead = unused-symbol ratio · Conv = naming/convention compliance."
+                        ToolTip="{DynamicResource CodeAnalysis_Tooltip_Radar}"
                         Volume="{Binding VolumeScore,        Mode=OneWay}"
                         Complexity="{Binding ComplexityScore, Mode=OneWay}"
                         Coupling="{Binding CouplingScore,    Mode=OneWay}"
@@ -278,10 +278,10 @@
                         BorderBrush="{DynamicResource DockBorderBrush}">
 
                 <!-- ── Overview ──────────────────────────────────────────── -->
-                <TabItem Header="Overview" ToolTip="High-level summary: per-project breakdown + 5 worst-scoring files. Double-click a row to drill in.">
+                <TabItem Header="{DynamicResource CodeAnalysis_Tab_Overview}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Overview}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="12">
                         <StackPanel>
-                            <TextBlock Style="{StaticResource SectionHeader}" Text="BY PROJECT"/>
+                            <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource CodeAnalysis_Overview_ByProject}"/>
                             <DataGrid x:Name="ProjectsGrid"
                                       ItemsSource="{Binding Projects, Mode=OneWay}"
                                       AutoGenerateColumns="False"
@@ -292,17 +292,17 @@
                                       RowHeaderWidth="0"
                                       Margin="0,0,0,16">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Project" Binding="{Binding ProjectName,              Mode=OneWay}" Width="*"/>
-                                    <DataGridTextColumn Header="Files"   Binding="{Binding TotalFiles,               Mode=OneWay}" Width="60"/>
-                                    <DataGridTextColumn Header="LOC"     Binding="{Binding TotalLines,               Mode=OneWay, StringFormat={}{0:N0}}" Width="80"/>
-                                    <DataGridTextColumn Header="Types"   Binding="{Binding TypeCount,                Mode=OneWay}" Width="60"/>
-                                    <DataGridTextColumn Header="Avg CC"  Binding="{Binding AvgCyclomaticComplexity, Mode=OneWay, StringFormat={}{0:F1}}" Width="70"/>
-                                    <DataGridTextColumn Header="Score"   Binding="{Binding Score,                   Mode=OneWay}" Width="60"/>
-                                    <DataGridTextColumn Header="Grade"   Binding="{Binding Grade,                   Mode=OneWay}" Width="55"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Project}" Binding="{Binding ProjectName,              Mode=OneWay}" Width="*"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Files}"   Binding="{Binding TotalFiles,               Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_LOC}"     Binding="{Binding TotalLines,               Mode=OneWay, StringFormat={}{0:N0}}" Width="80"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Types}"   Binding="{Binding TypeCount,                Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_AvgCC}"   Binding="{Binding AvgCyclomaticComplexity, Mode=OneWay, StringFormat={}{0:F1}}" Width="70"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Score}"   Binding="{Binding Score,                   Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Grade}"   Binding="{Binding Grade,                   Mode=OneWay}" Width="55"/>
                                 </DataGrid.Columns>
                             </DataGrid>
 
-                            <TextBlock Style="{StaticResource SectionHeader}" Text="TOP 5 WORST FILES"/>
+                            <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource CodeAnalysis_Overview_WorstFiles}"/>
                             <DataGrid x:Name="WorstFilesGrid"
                                       ItemsSource="{Binding WorstFiles, Mode=OneWay}"
                                       AutoGenerateColumns="False"
@@ -313,11 +313,11 @@
                                       RowHeaderWidth="0"
                                       MouseDoubleClick="OnGridDoubleClick">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="File"    Binding="{Binding FileName,    Mode=OneWay}" Width="*"/>
-                                    <DataGridTextColumn Header="Project" Binding="{Binding ProjectName, Mode=OneWay}" Width="140"/>
-                                    <DataGridTextColumn Header="LOC"     Binding="{Binding TotalLines,  Mode=OneWay}" Width="60"/>
-                                    <DataGridTextColumn Header="Max CC"  Binding="{Binding MaxCC,       Mode=OneWay}" Width="70"/>
-                                    <DataGridTextColumn Header="Score"   Binding="{Binding Score,       Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_File}"    Binding="{Binding FileName,    Mode=OneWay}" Width="*"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Project}" Binding="{Binding ProjectName, Mode=OneWay}" Width="140"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_LOC}"     Binding="{Binding TotalLines,  Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_MaxCC}"   Binding="{Binding MaxCC,       Mode=OneWay}" Width="70"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Score}"   Binding="{Binding Score,       Mode=OneWay}" Width="60"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>
@@ -326,10 +326,11 @@
 
                 <!-- ── Issues ────────────────────────────────────────────── -->
                 <TabItem x:Name="IssuesTab"
-                         ToolTip="All diagnostics produced this run: WH00xx quality rules + CS/IDE Roslyn warnings. Filter by severity / search / group; double-click to jump to the source line.">
+                         ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Issues}">
                     <TabItem.Header>
                         <TextBlock>
-                            <Run Text="Issues "/>
+                            <Run Text="{DynamicResource CodeAnalysis_Tab_Issues}"/>
+                            <Run Text=" "/>
                             <Run Text="{Binding Issues.Count, Mode=OneWay}"/>
                         </TextBlock>
                     </TabItem.Header>
@@ -342,22 +343,22 @@
                             <ComboBox x:Name="SeverityFilter" Width="100" Margin="0,0,8,0"
                                       SelectedIndex="0"
                                       SelectionChanged="OnSeverityFilterChanged">
-                                <ComboBoxItem Content="All"/>
-                                <ComboBoxItem Content="Error"/>
-                                <ComboBoxItem Content="Warning"/>
-                                <ComboBoxItem Content="Info"/>
+                                <ComboBoxItem Content="{DynamicResource CodeAnalysis_Issues_Filter_All}"/>
+                                <ComboBoxItem Content="{DynamicResource CodeAnalysis_Combo_Severity_Error}"/>
+                                <ComboBoxItem Content="{DynamicResource CodeAnalysis_Combo_Severity_Warning}"/>
+                                <ComboBoxItem Content="{DynamicResource CodeAnalysis_Combo_Severity_Info}"/>
                             </ComboBox>
                             <TextBox x:Name="IssueSearchBox" Width="200"
                                      Text="{Binding IssueFilter, UpdateSourceTrigger=PropertyChanged}"
-                                     ToolTip="Search issues…"/>
+                                     ToolTip="{DynamicResource CodeAnalysis_Issues_Search}"/>
                             <ComboBox x:Name="GroupByCombo" Width="120" Margin="8,0,0,0"
-                                      SelectedIndex="0" ToolTip="Group issues by…"
+                                      SelectedIndex="0" ToolTip="{DynamicResource CodeAnalysis_Tooltip_GroupBy}"
                                       SelectionChanged="OnGroupByChanged">
-                                <ComboBoxItem Content="Group: None"/>
-                                <ComboBoxItem Content="By Severity"/>
-                                <ComboBoxItem Content="By Rule"/>
-                                <ComboBoxItem Content="By Project"/>
-                                <ComboBoxItem Content="By File"/>
+                                <ComboBoxItem Content="{DynamicResource CodeAnalysis_Combo_GroupBy_None}"/>
+                                <ComboBoxItem Content="{DynamicResource CodeAnalysis_Combo_GroupBy_Severity}"/>
+                                <ComboBoxItem Content="{DynamicResource CodeAnalysis_Combo_GroupBy_Rule}"/>
+                                <ComboBoxItem Content="{DynamicResource CodeAnalysis_Combo_GroupBy_Project}"/>
+                                <ComboBoxItem Content="{DynamicResource CodeAnalysis_Combo_GroupBy_File}"/>
                             </ComboBox>
                         </StackPanel>
                         <DataGrid Grid.Row="1"
@@ -371,18 +372,18 @@
                                   MouseDoubleClick="OnGridDoubleClick">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header=""        Binding="{Binding SeverityIcon, Mode=OneWay}" Width="24"/>
-                                <DataGridTextColumn Header="ID"      Binding="{Binding Id,           Mode=OneWay}" Width="80"/>
-                                <DataGridTextColumn Header="Message" Binding="{Binding Message,      Mode=OneWay}" Width="*"/>
-                                <DataGridTextColumn Header="File"    Binding="{Binding FileName,     Mode=OneWay}" Width="160"/>
-                                <DataGridTextColumn Header="Line"    Binding="{Binding Line,         Mode=OneWay}" Width="55"/>
-                                <DataGridTextColumn Header="Project" Binding="{Binding ProjectName,  Mode=OneWay}" Width="140"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_ID}"      Binding="{Binding Id,           Mode=OneWay}" Width="80"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Message}" Binding="{Binding Message,      Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_File}"    Binding="{Binding FileName,     Mode=OneWay}" Width="160"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Line}"    Binding="{Binding Line,         Mode=OneWay}" Width="55"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Project}" Binding="{Binding ProjectName,  Mode=OneWay}" Width="140"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
                 </TabItem>
 
                 <!-- ── Complexity ────────────────────────────────────────── -->
-                <TabItem Header="Complexity" ToolTip="Top methods by Cyclomatic + Cognitive complexity. McCabe (CC) counts decision points; Cognitive (Sonar-style) weights nesting. Higher = harder to test/maintain.">
+                <TabItem Header="{DynamicResource CodeAnalysis_Tab_Complexity}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Complexity}">
                     <Grid Margin="8">
                         <DataGrid ItemsSource="{Binding TopMethods, Mode=OneWay}"
                                   AutoGenerateColumns="False"
@@ -393,19 +394,19 @@
                                   RowHeaderWidth="0"
                                   MouseDoubleClick="OnGridDoubleClick">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Method"    Binding="{Binding FullyQualifiedName,     Mode=OneWay}" Width="*"/>
-                                <DataGridTextColumn Header="CC"        Binding="{Binding CyclomaticComplexity,   Mode=OneWay}" Width="60"/>
-                                <DataGridTextColumn Header="Cognitive" Binding="{Binding CognitiveComplexity,    Mode=OneWay}" Width="80"/>
-                                <DataGridTextColumn Header="LOC"       Binding="{Binding Loc,                    Mode=OneWay}" Width="60"/>
-                                <DataGridTextColumn Header="Params"    Binding="{Binding ParameterCount,         Mode=OneWay}" Width="60"/>
-                                <DataGridTextColumn Header="Line"      Binding="{Binding Line,                   Mode=OneWay}" Width="55"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Method}"    Binding="{Binding FullyQualifiedName,     Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_CC}"        Binding="{Binding CyclomaticComplexity,   Mode=OneWay}" Width="60"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Cognitive}" Binding="{Binding CognitiveComplexity,    Mode=OneWay}" Width="80"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_LOC}"       Binding="{Binding Loc,                    Mode=OneWay}" Width="60"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Params}"    Binding="{Binding ParameterCount,         Mode=OneWay}" Width="60"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Line}"      Binding="{Binding Line,                   Mode=OneWay}" Width="55"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
                 </TabItem>
 
                 <!-- ── Coupling ──────────────────────────────────────────── -->
-                <TabItem Header="Coupling" ToolTip="Per-type Ca (afferent — depends on you), Ce (efferent — you depend on), and Instability = Ce/(Ca+Ce). Instability close to 1 = volatile module; close to 0 = stable foundation.">
+                <TabItem Header="{DynamicResource CodeAnalysis_Tab_Coupling}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Coupling}">
                     <Grid Margin="8">
                         <DataGrid ItemsSource="{Binding TopCouplings, Mode=OneWay}"
                                   AutoGenerateColumns="False"
@@ -416,19 +417,19 @@
                                   RowHeaderWidth="0"
                                   MouseDoubleClick="OnGridDoubleClick">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Type"        Binding="{Binding TypeName,    Mode=OneWay}" Width="*"/>
-                                <DataGridTextColumn Header="Ca"          Binding="{Binding Ca,          Mode=OneWay}" Width="50"/>
-                                <DataGridTextColumn Header="Ce"          Binding="{Binding Ce,          Mode=OneWay}" Width="50"/>
-                                <DataGridTextColumn Header="Instability" Binding="{Binding Instability, Mode=OneWay, StringFormat={}{0:F2}}" Width="85"/>
-                                <DataGridTextColumn Header="LCOM"        Binding="{Binding Lcom,        Mode=OneWay}" Width="70"/>
-                                <DataGridTextColumn Header="Line"        Binding="{Binding Line,        Mode=OneWay}" Width="55"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Type}"        Binding="{Binding TypeName,    Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Ca}"          Binding="{Binding Ca,          Mode=OneWay}" Width="50"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Ce}"          Binding="{Binding Ce,          Mode=OneWay}" Width="50"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Instability}" Binding="{Binding Instability, Mode=OneWay, StringFormat={}{0:F2}}" Width="85"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_LCOM}"        Binding="{Binding Lcom,        Mode=OneWay}" Width="70"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Line}"        Binding="{Binding Line,        Mode=OneWay}" Width="55"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
                 </TabItem>
 
                 <!-- ── Duplication ───────────────────────────────────────── -->
-                <TabItem Header="Duplication" ToolTip="Token-based clone detection. Each group is a sequence of ≥50 tokens (configurable) found in 2+ places — candidates for extraction into a shared helper.">
+                <TabItem Header="{DynamicResource CodeAnalysis_Tab_Duplication}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Duplication}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8">
                         <ItemsControl ItemsSource="{Binding Duplications, Mode=OneWay}">
                             <ItemsControl.ItemTemplate>
@@ -438,13 +439,13 @@
                                             BorderBrush="{DynamicResource DockBorderBrush}">
                                         <StackPanel>
                                             <TextBlock FontWeight="SemiBold">
-                                                <Run Text="Clone group — "/>
+                                                <Run Text="{DynamicResource CodeAnalysis_Duplication_CloneGroup}"/>
                                                 <Run Text="{Binding LineCount,          Mode=OneWay}"/>
-                                                <Run Text=" lines, "/>
+                                                <Run Text="{DynamicResource CodeAnalysis_Duplication_Lines}"/>
                                                 <Run Text="{Binding Occurrences.Count,  Mode=OneWay}"/>
-                                                <Run Text=" occurrences, "/>
+                                                <Run Text="{DynamicResource CodeAnalysis_Duplication_Occurrences}"/>
                                                 <Run Text="{Binding TokenCount,         Mode=OneWay}"/>
-                                                <Run Text=" tokens"/>
+                                                <Run Text="{DynamicResource CodeAnalysis_Duplication_Tokens}"/>
                                             </TextBlock>
                                             <ItemsControl ItemsSource="{Binding Occurrences, Mode=OneWay}"
                                                           Margin="12,4,0,0">
@@ -469,13 +470,13 @@
                 </TabItem>
 
                 <!-- ── Treemap (Phase 3) ─────────────────────────────────── -->
-                <TabItem Header="Treemap">
+                <TabItem Header="{DynamicResource CodeAnalysis_Tab_Treemap}">
                     <TabItem.ToolTip>
                         <ToolTip>
                             <StackPanel MaxWidth="380">
-                                <TextBlock FontWeight="SemiBold" Text="Treemap"/>
+                                <TextBlock FontWeight="SemiBold" Text="{DynamicResource CodeAnalysis_Tooltip_Tab_Treemap_Title}"/>
                                 <TextBlock TextWrapping="Wrap" Margin="0,4,0,0"
-                                           Text="Each rectangle is one source file. Area is proportional to lines of code; colour is the per-file quality score (green = healthy, red = poor). Hover for full metrics, click to open."/>
+                                           Text="{DynamicResource CodeAnalysis_Tooltip_Tab_Treemap_Body}"/>
                             </StackPanel>
                         </ToolTip>
                     </TabItem.ToolTip>
@@ -486,7 +487,7 @@
                                 CornerRadius="3">
                             <DockPanel>
                                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="Score:" Margin="0,0,8,0" FontSize="11"
+                                    <TextBlock Text="{DynamicResource CodeAnalysis_Treemap_Score}" Margin="0,0,8,0" FontSize="11"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                VerticalAlignment="Center"/>
                                     <Border Background="#43A047" Width="14" Height="14"/>
@@ -513,8 +514,8 @@
                                 <TextBlock TextWrapping="Wrap" VerticalAlignment="Center"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            FontSize="11">
-                                    <Run FontWeight="SemiBold" Text="Treemap:"/>
-                                    <Run Text=" rectangle area = lines of code, colour = quality score. Hover for full metrics, click a tile to open the file."/>
+                                    <Run FontWeight="SemiBold" Text="{DynamicResource CodeAnalysis_Treemap_Banner_Title}"/>
+                                    <Run Text="{DynamicResource CodeAnalysis_Treemap_Banner_Body}"/>
                                 </TextBlock>
                             </DockPanel>
                         </Border>
@@ -526,7 +527,7 @@
                 </TabItem>
 
                 <!-- ── Dead Code ─────────────────────────────────────────── -->
-                <TabItem Header="Dead Code" ToolTip="Private/internal symbols Roslyn could not find any reference to. Verify each — false positives can occur for symbols used via reflection, DI containers, or source generators.">
+                <TabItem Header="{DynamicResource CodeAnalysis_Tab_DeadCode}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_DeadCode}">
                     <Grid Margin="8">
                         <DataGrid ItemsSource="{Binding DeadSymbols, Mode=OneWay}"
                                   AutoGenerateColumns="False"
@@ -537,11 +538,11 @@
                                   RowHeaderWidth="0"
                                   MouseDoubleClick="OnGridDoubleClick">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Symbol"  Binding="{Binding Name,        Mode=OneWay}" Width="*"/>
-                                <DataGridTextColumn Header="Kind"    Binding="{Binding Kind,         Mode=OneWay}" Width="90"/>
-                                <DataGridTextColumn Header="File"    Binding="{Binding FilePath,     Mode=OneWay, Converter={x:Static conv:FileNameConverter.Instance}}" Width="160"/>
-                                <DataGridTextColumn Header="Line"    Binding="{Binding Line,         Mode=OneWay}" Width="55"/>
-                                <DataGridTextColumn Header="Project" Binding="{Binding ProjectName,  Mode=OneWay}" Width="140"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Symbol}"  Binding="{Binding Name,        Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Kind}"    Binding="{Binding Kind,         Mode=OneWay}" Width="90"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_File}"    Binding="{Binding FilePath,     Mode=OneWay, Converter={x:Static conv:FileNameConverter.Instance}}" Width="160"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Line}"    Binding="{Binding Line,         Mode=OneWay}" Width="55"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Project}" Binding="{Binding ProjectName,  Mode=OneWay}" Width="140"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>

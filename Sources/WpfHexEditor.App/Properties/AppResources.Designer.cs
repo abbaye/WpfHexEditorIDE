@@ -4507,5 +4507,1679 @@ namespace WpfHexEditor.App.Properties {
                 return ResourceManager.GetString("App_Workspace_SaveFailed", resourceCulture);
             }
         }
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save _As….
+        /// </summary>
+        internal static string App_Menu_SaveAs {
+            get {
+                return ResourceManager.GetString("App_Menu_SaveAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Connect to Remote Debugger….
+        /// </summary>
+        internal static string Debugger_RemoteConnect {
+            get {
+                return ResourceManager.GetString("Debugger_RemoteConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Connecting to remote debugger….
+        /// </summary>
+        internal static string Debugger_RemoteConnecting {
+            get {
+                return ResourceManager.GetString("Debugger_RemoteConnecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Failed to connect to remote debug adapter..
+        /// </summary>
+        internal static string Debugger_RemoteConnectFailed {
+            get {
+                return ResourceManager.GetString("Debugger_RemoteConnectFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Edit &amp; Continue applied..
+        /// </summary>
+        internal static string Debugger_EditContinueApplied {
+            get {
+                return ResourceManager.GetString("Debugger_EditContinueApplied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Hot Reload applied..
+        /// </summary>
+        internal static string Debugger_HotReloadApplied {
+            get {
+                return ResourceManager.GetString("Debugger_HotReloadApplied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Hot Reload is not supported by this runtime..
+        /// </summary>
+        internal static string Debugger_HotReloadNotSupported {
+            get {
+                return ResourceManager.GetString("Debugger_HotReloadNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Resolving symbols….
+        /// </summary>
+        internal static string Debugger_SymbolServerResolving {
+            get {
+                return ResourceManager.GetString("Debugger_SymbolServerResolving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Symbol resolution complete..
+        /// </summary>
+        internal static string Debugger_SymbolServerDone {
+            get {
+                return ResourceManager.GetString("Debugger_SymbolServerDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Data Breakpoints.
+        /// </summary>
+        internal static string Debugger_DataBreakpointsPanelTitle {
+            get {
+                return ResourceManager.GetString("Debugger_DataBreakpointsPanelTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Add Data Breakpoint.
+        /// </summary>
+        internal static string Debugger_DataBreakpointAdd {
+            get {
+                return ResourceManager.GetString("Debugger_DataBreakpointAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Run Code Analysis….
+        /// </summary>
+        internal static string CodeAnalysis_MenuLabel_RunSolution {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_MenuLabel_RunSolution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Analyze Project….
+        /// </summary>
+        internal static string CodeAnalysis_MenuLabel_RunProject {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_MenuLabel_RunProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Analyze File….
+        /// </summary>
+        internal static string CodeAnalysis_MenuLabel_RunFile {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_MenuLabel_RunFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open Analysis Report.
+        /// </summary>
+        internal static string CodeAnalysis_MenuLabel_OpenReport {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_MenuLabel_OpenReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0}/100 ({1}).
+        /// </summary>
+        internal static string CodeAnalysis_StatusBar_Score {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_StatusBar_Score", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Analyzing….
+        /// </summary>
+        internal static string CodeAnalysis_StatusBar_Running {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_StatusBar_Running", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Code Quality Score — click to open report.
+        /// </summary>
+        internal static string CodeAnalysis_StatusBar_Tooltip {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_StatusBar_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Code Analysis.
+        /// </summary>
+        internal static string CodeAnalysis_Report_Title {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Report_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Overview.
+        /// </summary>
+        internal static string CodeAnalysis_Tab_Overview {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tab_Overview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Issues.
+        /// </summary>
+        internal static string CodeAnalysis_Tab_Issues {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tab_Issues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Complexity.
+        /// </summary>
+        internal static string CodeAnalysis_Tab_Complexity {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tab_Complexity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Coupling.
+        /// </summary>
+        internal static string CodeAnalysis_Tab_Coupling {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tab_Coupling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Duplication.
+        /// </summary>
+        internal static string CodeAnalysis_Tab_Duplication {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tab_Duplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Dead Code.
+        /// </summary>
+        internal static string CodeAnalysis_Tab_DeadCode {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tab_DeadCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à A.
+        /// </summary>
+        internal static string CodeAnalysis_Grade_A {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Grade_A", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à B.
+        /// </summary>
+        internal static string CodeAnalysis_Grade_B {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Grade_B", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à C.
+        /// </summary>
+        internal static string CodeAnalysis_Grade_C {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Grade_C", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à D.
+        /// </summary>
+        internal static string CodeAnalysis_Grade_D {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Grade_D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à F.
+        /// </summary>
+        internal static string CodeAnalysis_Grade_F {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Grade_F", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Score.
+        /// </summary>
+        internal static string CodeAnalysis_Score_Label {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Score_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ▲ improved.
+        /// </summary>
+        internal static string CodeAnalysis_Score_Trending_Up {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Score_Trending_Up", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ▼ degraded.
+        /// </summary>
+        internal static string CodeAnalysis_Score_Trending_Down {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Score_Trending_Down", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No change.
+        /// </summary>
+        internal static string CodeAnalysis_Score_Trending_Same {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Score_Trending_Same", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à BY PROJECT.
+        /// </summary>
+        internal static string CodeAnalysis_Overview_ByProject {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Overview_ByProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à TOP 5 WORST FILES.
+        /// </summary>
+        internal static string CodeAnalysis_Overview_WorstFiles {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Overview_WorstFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à All.
+        /// </summary>
+        internal static string CodeAnalysis_Issues_Filter_All {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Issues_Filter_All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Critical.
+        /// </summary>
+        internal static string CodeAnalysis_Issues_Filter_Critical {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Issues_Filter_Critical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Search issues….
+        /// </summary>
+        internal static string CodeAnalysis_Issues_Search {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Issues_Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Threshold: CC &gt;.
+        /// </summary>
+        internal static string CodeAnalysis_Complexity_Threshold {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Complexity_Threshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Instability.
+        /// </summary>
+        internal static string CodeAnalysis_Coupling_Instability {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Coupling_Instability", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Total duplicated.
+        /// </summary>
+        internal static string CodeAnalysis_Duplication_Total {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Duplication_Total", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à class.
+        /// </summary>
+        internal static string CodeAnalysis_DeadCode_Kind_Class {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_DeadCode_Kind_Class", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à field.
+        /// </summary>
+        internal static string CodeAnalysis_DeadCode_Kind_Field {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_DeadCode_Kind_Field", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à method.
+        /// </summary>
+        internal static string CodeAnalysis_DeadCode_Kind_Method {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_DeadCode_Kind_Method", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à parameter.
+        /// </summary>
+        internal static string CodeAnalysis_DeadCode_Kind_Parameter {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_DeadCode_Kind_Parameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à variable.
+        /// </summary>
+        internal static string CodeAnalysis_DeadCode_Kind_Variable {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_DeadCode_Kind_Variable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Markdown.
+        /// </summary>
+        internal static string CodeAnalysis_Export_Markdown {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Export_Markdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à CSV.
+        /// </summary>
+        internal static string CodeAnalysis_Export_CSV {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Export_CSV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Collecting volume metrics….
+        /// </summary>
+        internal static string CodeAnalysis_Running_Phase_Volume {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Running_Phase_Volume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Analyzing complexity….
+        /// </summary>
+        internal static string CodeAnalysis_Running_Phase_Complexity {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Running_Phase_Complexity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Analyzing coupling….
+        /// </summary>
+        internal static string CodeAnalysis_Running_Phase_Coupling {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Running_Phase_Coupling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Detecting duplications….
+        /// </summary>
+        internal static string CodeAnalysis_Running_Phase_Duplication {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Running_Phase_Duplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Detecting dead code….
+        /// </summary>
+        internal static string CodeAnalysis_Running_Phase_DeadCode {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Running_Phase_DeadCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Collecting Roslyn diagnostics….
+        /// </summary>
+        internal static string CodeAnalysis_Running_Phase_Roslyn {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Running_Phase_Roslyn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Computing quality score….
+        /// </summary>
+        internal static string CodeAnalysis_Running_Phase_Score {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Running_Phase_Score", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No solution open. Open a solution before running Code Analysis..
+        /// </summary>
+        internal static string CodeAnalysis_Error_NoSolution {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Error_NoSolution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Code Analysis failed: {0}.
+        /// </summary>
+        internal static string CodeAnalysis_Error_AnalysisFailed {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Error_AnalysisFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Analysis snapshot saved..
+        /// </summary>
+        internal static string CodeAnalysis_Snapshot_Saved {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Snapshot_Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Analysis snapshot cleared..
+        /// </summary>
+        internal static string CodeAnalysis_Snapshot_Cleared {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Snapshot_Cleared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à General.
+        /// </summary>
+        internal static string CodeAnalysis_Options_General {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Thresholds.
+        /// </summary>
+        internal static string CodeAnalysis_Options_Thresholds {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_Thresholds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Rules.
+        /// </summary>
+        internal static string CodeAnalysis_Options_Rules {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_Rules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Run analysis automatically on solution open.
+        /// </summary>
+        internal static string CodeAnalysis_Options_AutoOnOpen {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_AutoOnOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Run analysis automatically on build.
+        /// </summary>
+        internal static string CodeAnalysis_Options_AutoOnBuild {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_AutoOnBuild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Show score badge in status bar.
+        /// </summary>
+        internal static string CodeAnalysis_Options_ShowBadge {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_ShowBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Push diagnostics to Error Panel.
+        /// </summary>
+        internal static string CodeAnalysis_Options_PushDiagnostics {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_PushDiagnostics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Include generated files (*.g.cs, *.Designer.cs).
+        /// </summary>
+        internal static string CodeAnalysis_Options_IncludeGenerated {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_IncludeGenerated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Snapshot retention:.
+        /// </summary>
+        internal static string CodeAnalysis_Options_SnapshotRetention {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_SnapshotRetention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Output verbosity:.
+        /// </summary>
+        internal static string CodeAnalysis_Options_Verbosity {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_Verbosity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Restore Defaults.
+        /// </summary>
+        internal static string CodeAnalysis_Options_RestoreDefaults {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_RestoreDefaults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Disabled.
+        /// </summary>
+        internal static string CodeAnalysis_Options_Severity_Disabled {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_Severity_Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Info.
+        /// </summary>
+        internal static string CodeAnalysis_Options_Severity_Info {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_Severity_Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Warning.
+        /// </summary>
+        internal static string CodeAnalysis_Options_Severity_Warning {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_Severity_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Error.
+        /// </summary>
+        internal static string CodeAnalysis_Options_Severity_Error {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Options_Severity_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ⟳ Re-run.
+        /// </summary>
+        internal static string CodeAnalysis_Rerun {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Rerun", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export ▾.
+        /// </summary>
+        internal static string CodeAnalysis_Export {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Treemap.
+        /// </summary>
+        internal static string CodeAnalysis_Tab_Treemap {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tab_Treemap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à SCORE.
+        /// </summary>
+        internal static string CodeAnalysis_Header_Score {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Header_Score", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à SUB-SCORES.
+        /// </summary>
+        internal static string CodeAnalysis_Header_SubScores {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Header_SubScores", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Project:.
+        /// </summary>
+        internal static string CodeAnalysis_Header_Project {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Header_Project", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Search:.
+        /// </summary>
+        internal static string CodeAnalysis_Header_Search {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Header_Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à (All projects).
+        /// </summary>
+        internal static string CodeAnalysis_AllProjects {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_AllProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Re-run the full Code Analysis on the current solution. Shortcut: F5.
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Rerun {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Rerun", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export the report — Markdown (human-readable), CSV (spreadsheet), SARIF (CI/PR a.
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Export {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Filter all tabs by project.
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_ProjectFilter {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_ProjectFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Search across files / methods / issues (Ctrl+F).
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_GlobalSearch {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_GlobalSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Quality Score.
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_QualityScore_Title {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_QualityScore_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Weighted aggregate of six sub-scores: Volume 10%, Complexity 25%, Coupling 20%, .
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_QualityScore_Body {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_QualityScore_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Grades: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- .
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_QualityScore_Grades {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_QualityScore_Grades", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Trending arrow shows the delta vs the previous saved snapshot..
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_QualityScore_Trending {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_QualityScore_Trending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Overall score 0-100. Hover the SCORE section for the formula..
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Score {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Score", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Letter grade derived from the score (A+, A, A-, B+, B, B-, C+, C, C-, D, F)..
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Grade {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Grade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Difference vs the previous snapshot: ▲ improvement, ▼ regression..
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Trending {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Trending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Six axes 0-100 (further from centre = better):  Vol = file-size compliance · CC .
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Radar {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Radar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à High-level summary: per-project breakdown + 5 worst-scoring files. Double-click .
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Tab_Overview {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Tab_Overview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à All diagnostics produced this run: WH00xx quality rules + CS/IDE Roslyn warnings.
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Tab_Issues {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Tab_Issues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Top methods by Cyclomatic + Cognitive complexity. McCabe (CC) counts decision po.
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Tab_Complexity {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Tab_Complexity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Per-type Ca (afferent — depends on you), Ce (efferent — you depend on), and Inst.
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Tab_Coupling {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Tab_Coupling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Token-based clone detection. Each group is a sequence of ≥50 tokens (configurabl.
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Tab_Duplication {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Tab_Duplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Treemap.
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Tab_Treemap_Title {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Tab_Treemap_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Each rectangle is one source file. Area is proportional to lines of code; colour.
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Tab_Treemap_Body {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Tab_Treemap_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Private/internal symbols Roslyn could not find any reference to. Verify each — f.
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_Tab_DeadCode {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_Tab_DeadCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Group issues by….
+        /// </summary>
+        internal static string CodeAnalysis_Tooltip_GroupBy {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Tooltip_GroupBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Project.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Project {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Project", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Files.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Files {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Files", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à LOC.
+        /// </summary>
+        internal static string CodeAnalysis_Col_LOC {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_LOC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Types.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Types {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Types", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Avg CC.
+        /// </summary>
+        internal static string CodeAnalysis_Col_AvgCC {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_AvgCC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Score.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Score {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Score", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Grade.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Grade {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Grade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à File.
+        /// </summary>
+        internal static string CodeAnalysis_Col_File {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Max CC.
+        /// </summary>
+        internal static string CodeAnalysis_Col_MaxCC {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_MaxCC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ID.
+        /// </summary>
+        internal static string CodeAnalysis_Col_ID {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_ID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Message.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Message {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Line.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Line {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Line", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Method.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Method {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Method", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à CC.
+        /// </summary>
+        internal static string CodeAnalysis_Col_CC {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_CC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Cognitive.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Cognitive {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Cognitive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Params.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Params {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Params", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Type.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Type {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Ca.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Ca {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Ca", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Ce.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Ce {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Ce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Instability.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Instability {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Instability", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à LCOM.
+        /// </summary>
+        internal static string CodeAnalysis_Col_LCOM {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_LCOM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Symbol.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Symbol {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Symbol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Kind.
+        /// </summary>
+        internal static string CodeAnalysis_Col_Kind {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Col_Kind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à PR Checklist.
+        /// </summary>
+        internal static string CodeAnalysis_Combo_PRChecklist {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Combo_PRChecklist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à SARIF.
+        /// </summary>
+        internal static string CodeAnalysis_Combo_SARIF {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Combo_SARIF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Error.
+        /// </summary>
+        internal static string CodeAnalysis_Combo_Severity_Error {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Combo_Severity_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Warning.
+        /// </summary>
+        internal static string CodeAnalysis_Combo_Severity_Warning {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Combo_Severity_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Info.
+        /// </summary>
+        internal static string CodeAnalysis_Combo_Severity_Info {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Combo_Severity_Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Group: None.
+        /// </summary>
+        internal static string CodeAnalysis_Combo_GroupBy_None {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Combo_GroupBy_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à By Severity.
+        /// </summary>
+        internal static string CodeAnalysis_Combo_GroupBy_Severity {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Combo_GroupBy_Severity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à By Rule.
+        /// </summary>
+        internal static string CodeAnalysis_Combo_GroupBy_Rule {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Combo_GroupBy_Rule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à By Project.
+        /// </summary>
+        internal static string CodeAnalysis_Combo_GroupBy_Project {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Combo_GroupBy_Project", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à By File.
+        /// </summary>
+        internal static string CodeAnalysis_Combo_GroupBy_File {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Combo_GroupBy_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Score:.
+        /// </summary>
+        internal static string CodeAnalysis_Treemap_Score {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Treemap_Score", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Treemap:.
+        /// </summary>
+        internal static string CodeAnalysis_Treemap_Banner_Title {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Treemap_Banner_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  rectangle area = lines of code, colour = quality score. Hover for full metrics,.
+        /// </summary>
+        internal static string CodeAnalysis_Treemap_Banner_Body {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Treemap_Banner_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Clone group — .
+        /// </summary>
+        internal static string CodeAnalysis_Duplication_CloneGroup {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Duplication_CloneGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  lines, .
+        /// </summary>
+        internal static string CodeAnalysis_Duplication_Lines {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Duplication_Lines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  occurrences, .
+        /// </summary>
+        internal static string CodeAnalysis_Duplication_Occurrences {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Duplication_Occurrences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  tokens.
+        /// </summary>
+        internal static string CodeAnalysis_Duplication_Tokens {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Duplication_Tokens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à code-analysis-report.md.
+        /// </summary>
+        internal static string CodeAnalysis_Export_FileName_Markdown {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Export_FileName_Markdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Markdown files (*.md)|*.md.
+        /// </summary>
+        internal static string CodeAnalysis_Export_Filter_Markdown {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Export_Filter_Markdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à code-analysis-report.sarif.
+        /// </summary>
+        internal static string CodeAnalysis_Export_FileName_Sarif {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Export_FileName_Sarif", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à SARIF files (*.sarif)|*.sarif.
+        /// </summary>
+        internal static string CodeAnalysis_Export_Filter_Sarif {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Export_Filter_Sarif", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à code-review-checklist.md.
+        /// </summary>
+        internal static string CodeAnalysis_Export_FileName_Checklist {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Export_FileName_Checklist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à code-analysis-report.csv.
+        /// </summary>
+        internal static string CodeAnalysis_Export_FileName_Csv {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Export_FileName_Csv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à CSV files (*.csv)|*.csv.
+        /// </summary>
+        internal static string CodeAnalysis_Export_Filter_Csv {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Export_Filter_Csv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à # Code Analysis Report.
+        /// </summary>
+        internal static string CodeAnalysis_Markdown_Title {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Markdown_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Score: **{0}/100** ({1})  Trending: {2}.
+        /// </summary>
+        internal static string CodeAnalysis_Markdown_ScoreLine {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Markdown_ScoreLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Files: {0}  LOC: {1:N0}  Projects: {2}.
+        /// </summary>
+        internal static string CodeAnalysis_Markdown_FilesLine {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Markdown_FilesLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ## Issues.
+        /// </summary>
+        internal static string CodeAnalysis_Markdown_IssuesHeading {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Markdown_IssuesHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à | Severity | ID | Message | File | Line |.
+        /// </summary>
+        internal static string CodeAnalysis_Markdown_IssuesTableHeader {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Markdown_IssuesTableHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à |---|---|---|---|---|.
+        /// </summary>
+        internal static string CodeAnalysis_Markdown_IssuesTableSeparator {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Markdown_IssuesTableSeparator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Severity,ID,Message,FilePath,Line,Project.
+        /// </summary>
+        internal static string CodeAnalysis_Csv_Header {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Csv_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open project folder.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_OpenProjectFolder {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_OpenProjectFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reveal in Explorer.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_RevealInExplorer {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_RevealInExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Re-analyze this project.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_ReanalyzeProject {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_ReanalyzeProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Filter all tabs by project.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_FilterAllByProject {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_FilterAllByProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy project name.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_CopyProjectName {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_CopyProjectName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy metrics as CSV row.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_CopyMetricsCsv {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_CopyMetricsCsv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_Open {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open containing folder.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_OpenContainingFolder {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_OpenContainingFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Re-analyze this file.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_ReanalyzeFile {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_ReanalyzeFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Filter issues by this file.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_FilterIssuesByFile {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_FilterIssuesByFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy full path.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_CopyFullPath {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_CopyFullPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy file name.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_CopyFileName {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_CopyFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open at method declaration.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_OpenAtMethodDecl {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_OpenAtMethodDecl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy method name.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_CopyMethodName {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_CopyMethodName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy fully-qualified name.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_CopyFqn {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_CopyFqn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open at issue location.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_OpenAtIssueLocation {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_OpenAtIssueLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Filter by this rule.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_FilterByRule {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_FilterByRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Filter by this file.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_FilterByFile {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_FilterByFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Suppress this occurrence (inline marker).
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_SuppressInline {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_SuppressInline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy as Markdown.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_CopyAsMarkdown {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_CopyAsMarkdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy issue ID.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_CopyIssueId {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_CopyIssueId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open source file.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_OpenSourceFile {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_OpenSourceFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy type name.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_CopyTypeName {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_CopyTypeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy dependency list.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_CopyDependencyList {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_CopyDependencyList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open first occurrence.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_OpenFirstOccurrence {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_OpenFirstOccurrence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy locations ({0}).
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_CopyLocations {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_CopyLocations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open at declaration.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_OpenAtDeclaration {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_OpenAtDeclaration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy symbol name.
+        /// </summary>
+        internal static string CodeAnalysis_ContextMenu_CopySymbolName {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_ContextMenu_CopySymbolName", resourceCulture);
+            }
+        }
+        
     }
 }

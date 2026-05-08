@@ -970,4 +970,113 @@
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>エラー</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ 再実行</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>エクスポート ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>ツリーマップ</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>スコア</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>サブスコア</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>プロジェクト:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>検索:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(すべてのプロジェクト)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>現在のソリューションでコード分析を再実行します。ショートカット: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>レポートをエクスポート — Markdown(可読)、CSV(表計算)、SARIF(CI/PR 注釈)、または PR チェックリスト(自動生成レビュー テンプレート)。</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>すべてのタブをプロジェクトでフィルター</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>ファイル / メソッド / 問題を横断検索 (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>品質スコア</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>6 つのサブスコアの加重平均: ボリューム 10%、複雑度 25%、結合度 20%、重複 20%、デッド コード 15%、規約 10%。</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>評価: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>トレンド矢印は、前回保存されたスナップショットとの差分を示します。</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>総合スコア 0-100。SCORE セクションをホバーして式を表示します。</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>スコアから派生したアルファベット評価 (A+, A, A-, B+, B, B-, C+, C, C-, D, F)。</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>前のスナップショットとの差: ▲ 改善、▼ 後退。</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>6 つの軸 0-100 (中心から離れるほど良好): Vol = ファイル サイズ準拠 · CC = 複雑度の余裕 · Coup = 結合安定性 · Dup = 重複率 · Dead = 未使用シンボル率 · Conv = 命名/規約準拠。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>高レベルのサマリー: プロジェクト別内訳 + 最も評価の低い 5 ファイル。行をダブルクリックして開きます。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>この実行で生成されたすべての診断: WH00xx 品質ルール + CS/IDE Roslyn 警告。重要度 / 検索 / グループでフィルター、ダブルクリックでソース行に移動。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>サイクロマティック + 認知複雑度の上位メソッド。McCabe (CC) は決定点をカウント、Cognitive (Sonar スタイル) はネストを重み付け。高い = テスト/保守が困難。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>型ごとの Ca (求心 — あなたに依存)、Ce (遠心 — あなたが依存)、不安定度 = Ce/(Ca+Ce)。1 に近い = 揮発性モジュール、0 に近い = 安定基盤。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>トークン ベースのクローン検出。各グループは ≥50 トークン (構成可能) のシーケンスで 2+ 箇所に存在 — 共有ヘルパーへの抽出候補。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>ツリーマップ</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>各長方形は 1 つのソース ファイル。面積はコード行数に比例、色はファイルごとの品質スコア (緑 = 健全、赤 = 不良)。ホバーで全メトリクス、クリックで開く。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>Roslyn が参照を見つけられなかったプライベート/内部シンボル。各々確認 — リフレクション、DI コンテナー、ソース ジェネレーターで使用されるシンボルでは誤検出が発生する可能性があります。</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>問題のグループ化…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>プロジェクト</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>ファイル</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>型</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>スコア</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>評価</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>ファイル</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>メッセージ</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>行</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>メソッド</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>認知</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>引数</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>型</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>不安定度</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>シンボル</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>種類</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>PR チェックリスト</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>エラー</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>警告</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>情報</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>グループ: なし</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>重要度別</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>ルール別</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>プロジェクト別</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>ファイル別</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>スコア:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>ツリーマップ:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> 長方形の面積 = コード行数、色 = 品質スコア。ホバーで全メトリクス、タイルをクリックでファイルを開く。</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>クローン グループ — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> 行、</value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> 出現、</value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> トークン</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>Markdown ファイル (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>SARIF ファイル (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>CSV ファイル (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># コード分析レポート</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>プロジェクト フォルダーを開く</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>エクスプローラーで表示</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>このプロジェクトを再分析</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>すべてのタブをプロジェクトでフィルター</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>プロジェクト名をコピー</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>メトリクスを CSV 行としてコピー</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>開く</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>格納フォルダーを開く</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>このファイルを再分析</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>このファイルで問題をフィルター</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>完全パスをコピー</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>ファイル名をコピー</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>メソッド宣言で開く</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>メソッド名をコピー</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>完全修飾名をコピー</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>問題の場所で開く</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>このルールでフィルター</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>このファイルでフィルター</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>このオカレンスを抑制 (インライン マーカー)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Markdown としてコピー</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>問題 ID をコピー</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>ソース ファイルを開く</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>型名をコピー</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>依存関係リストをコピー</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>最初のオカレンスを開く</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>場所をコピー ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>宣言で開く</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>シンボル名をコピー</value></data>
 </root>

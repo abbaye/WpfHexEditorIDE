@@ -626,4 +626,113 @@
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Chyba</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Znovu spustit</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>Exportovat ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>Stromová mapa</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>SKÓRE</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>DÍLČÍ SKÓRE</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>Projekt:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>Hledat:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(Všechny projekty)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>Znovu spustit kompletní analýzu kódu pro aktuální řešení. Zkratka: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>Exportovat zprávu — Markdown (čitelný), CSV (tabulka), SARIF (anotace CI/PR) nebo PR Checklist (vygenerovaná šablona kontroly).</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>Filtrovat všechny karty podle projektu</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>Vyhledávání v souborech / metodách / problémech (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>Skóre kvality</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>Vážený souhrn šesti dílčích skóre: Objem 10 %, Složitost 25 %, Vazby 20 %, Duplicita 20 %, Mrtvý kód 15 %, Konvence 10 %.</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>Známky: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>Šipka trendu ukazuje rozdíl oproti poslední uložené momentce.</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>Celkové skóre 0-100. Najeďte na sekci SKÓRE a zobrazte vzorec.</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>Písmenná známka odvozená ze skóre (A+, A, A-, B+, B, B-, C+, C, C-, D, F).</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>Rozdíl oproti předchozí momentce: ▲ zlepšení, ▼ regrese.</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>Šest os 0-100 (dále od středu = lepší): Vol = soulad velikosti souboru · CC = rezerva složitosti · Coup = stabilita vazeb · Dup = poměr duplicity · Dead = poměr nepoužívaných symbolů · Conv = soulad pojmenování/konvencí.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>Souhrn na vysoké úrovni: rozdělení podle projektu + 5 nejhůře hodnocených souborů. Dvojklik na řádek otevře.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>Všechny diagnostiky vytvořené v tomto běhu: pravidla kvality WH00xx + varování CS/IDE Roslyn. Filtrujte podle závažnosti / vyhledávání / skupiny; dvojklikem přejdete na řádek zdroje.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>Top metody podle cyklomatické + kognitivní složitosti. McCabe (CC) počítá rozhodovací body; Cognitive (Sonar) váží zanořování. Vyšší = obtížnější testovat/udržovat.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>Pro každý typ Ca (aferentní — záleží na vás), Ce (eferentní — vy závisíte na tom) a Nestabilita = Ce/(Ca+Ce). Blízko 1 = volatilní modul; blízko 0 = stabilní základ.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>Detekce klonů založená na tokenech. Každá skupina je sekvence ≥50 tokenů (konfigurovatelné) nalezená na 2+ místech — kandidáti pro extrakci do sdíleného pomocníka.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>Stromová mapa</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>Každý obdélník je jeden zdrojový soubor. Plocha je úměrná počtu řádků kódu; barva je skóre kvality podle souboru (zelená = zdravý, červená = špatný). Najeďte pro úplné metriky, klikněte pro otevření.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>Soukromé/interní symboly, ke kterým Roslyn nemohl najít žádný odkaz. Ověřte každý — falešně pozitivní mohou nastat u symbolů používaných přes reflexi, DI kontejnery nebo zdrojové generátory.</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>Seskupit problémy podle…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>Projekt</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>Soubory</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>Typy</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>Skóre</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>Známka</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>Soubor</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>Zpráva</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>Řádek</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>Metoda</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>Kognitivní</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>Param.</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>Typ</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>Nestabilita</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>Symbol</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>Druh</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>Seznam PR</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>Chyba</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>Varování</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>Informace</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>Skupina: Žádná</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>Podle závažnosti</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>Podle pravidla</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>Podle projektu</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>Podle souboru</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>Skóre:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>Stromová mapa:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> plocha obdélníku = řádky kódu, barva = skóre kvality. Najeďte pro úplné metriky, kliknutím na dlaždici otevřete soubor.</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>Skupina klonů — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> řádků, </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> výskytů, </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> tokenů</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>Soubory Markdown (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>Soubory SARIF (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>Soubory CSV (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># Zpráva analýzy kódu</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>Otevřít složku projektu</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>Zobrazit v Průzkumníku</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>Znovu analyzovat tento projekt</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>Filtrovat všechny karty podle projektu</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>Kopírovat název projektu</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>Kopírovat metriky jako řádek CSV</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>Otevřít</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>Otevřít obsahující složku</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>Znovu analyzovat tento soubor</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>Filtrovat problémy podle tohoto souboru</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>Kopírovat úplnou cestu</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>Kopírovat název souboru</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>Otevřít u deklarace metody</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>Kopírovat název metody</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>Kopírovat plně kvalifikovaný název</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>Otevřít v místě problému</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Filtrovat podle tohoto pravidla</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Filtrovat podle tohoto souboru</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Potlačit tento výskyt (vložená značka)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Kopírovat jako Markdown</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Kopírovat ID problému</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Otevřít zdrojový soubor</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>Kopírovat název typu</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>Kopírovat seznam závislostí</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>Otevřít první výskyt</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Kopírovat umístění ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Otevřít u deklarace</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Kopírovat název symbolu</value></data>
 </root>

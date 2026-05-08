@@ -970,4 +970,113 @@
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Ошибка</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Повторить</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>Экспорт ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>Дерево карты</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>ОЦЕНКА</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>ПОДОЦЕНКИ</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>Проект:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>Поиск:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(Все проекты)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>Перезапустить полный анализ кода для текущего решения. Сочетание клавиш: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>Экспорт отчёта — Markdown (читаемый), CSV (таблица), SARIF (аннотации CI/PR) или PR-чеклист (автоматически создаваемый шаблон обзора).</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>Фильтровать все вкладки по проекту</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>Поиск по файлам / методам / проблемам (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>Оценка качества</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>Взвешенный агрегат из шести подоценок: Объём 10%, Сложность 25%, Связанность 20%, Дублирование 20%, Мёртвый код 15%, Соглашения 10%.</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>Оценки: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>Стрелка тренда показывает разницу относительно последнего сохранённого снимка.</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>Общая оценка 0–100. Наведите курсор на раздел SCORE, чтобы увидеть формулу.</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>Буквенная оценка, полученная из числовой (A+, A, A-, B+, B, B-, C+, C, C-, D, F).</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>Разница относительно предыдущего снимка: ▲ улучшение, ▼ ухудшение.</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>Шесть осей 0–100 (дальше от центра = лучше): Vol = соответствие размеру файла · CC = запас по сложности · Coup = стабильность связей · Dup = коэффициент дублирования · Dead = доля неиспользуемых символов · Conv = соответствие именованию/соглашениям.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>Общий обзор: разбивка по проектам + 5 файлов с худшим показателем. Двойной щелчок — переход к деталям.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>Все диагностические сообщения этого запуска: правила качества WH00xx + предупреждения CS/IDE Roslyn. Фильтр по серьёзности / поиску / группе; двойной щелчок переходит к строке исходного кода.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>Топ методов по цикломатической + когнитивной сложности. McCabe (CC) считает точки решения; Cognitive (стиль Sonar) учитывает вложенность. Выше = сложнее тестировать/поддерживать.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>По типам Ca (афферентность — зависят от вас), Ce (эфферентность — вы зависите от них) и Нестабильность = Ce/(Ca+Ce). Близкая к 1 = изменчивый модуль; близкая к 0 = стабильная база.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>Обнаружение клонов на основе токенов. Каждая группа — последовательность ≥50 токенов (настраиваемое), найденная в 2+ местах — кандидаты для извлечения в общий помощник.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>Дерево карты</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>Каждый прямоугольник — один исходный файл. Площадь пропорциональна строкам кода; цвет — оценка качества по файлу (зелёный = здоровый, красный = плохой). Наведите для всех метрик, щёлкните, чтобы открыть.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>Приватные/внутренние символы, для которых Roslyn не нашёл ссылок. Проверьте каждый — возможны ложноположительные результаты для символов, используемых через рефлексию, DI-контейнеры или генераторы исходного кода.</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>Группировать проблемы по…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>Проект</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>Файлы</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>Типы</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>Оценка</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>Класс</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>Файл</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>Сообщение</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>Строка</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>Метод</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>Когн.</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>Парам.</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>Тип</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>Нестабильность</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>Символ</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>Вид</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>PR-чеклист</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>Ошибка</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>Предупреждение</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>Информация</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>Группа: Нет</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>По серьёзности</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>По правилу</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>По проекту</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>По файлу</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>Оценка:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>Дерево карты:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> площадь прямоугольника = строки кода, цвет = оценка качества. Наведите для всех метрик, щёлкните плитку, чтобы открыть файл.</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>Группа клонов — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> строк, </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> вхождений, </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> токенов</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>Файлы Markdown (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>Файлы SARIF (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>Файлы CSV (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># Отчёт об анализе кода</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>Открыть папку проекта</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>Показать в проводнике</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>Повторно анализировать этот проект</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>Фильтровать все вкладки по проекту</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>Копировать имя проекта</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>Копировать метрики как строку CSV</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>Открыть</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>Открыть содержащую папку</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>Повторно анализировать этот файл</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>Фильтровать проблемы по этому файлу</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>Копировать полный путь</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>Копировать имя файла</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>Открыть на объявлении метода</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>Копировать имя метода</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>Копировать полностью квалифицированное имя</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>Открыть в месте проблемы</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Фильтровать по этому правилу</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Фильтровать по этому файлу</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Подавить это вхождение (встроенный маркер)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Копировать как Markdown</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Копировать ID проблемы</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Открыть исходный файл</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>Копировать имя типа</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>Копировать список зависимостей</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>Открыть первое вхождение</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Копировать места ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Открыть на объявлении</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Копировать имя символа</value></data>
 </root>

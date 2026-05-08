@@ -970,4 +970,113 @@
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Hata</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Yeniden çalıştır</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>Dışa aktar ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>Ağaç haritası</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>PUAN</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>ALT PUANLAR</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>Proje:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>Ara:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(Tüm projeler)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>Geçerli çözümde tam Kod Analizini yeniden çalıştır. Kısayol: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>Raporu dışa aktar — Markdown (okunabilir), CSV (elektronik tablo), SARIF (CI/PR notları) veya PR Kontrol Listesi (otomatik oluşturulan inceleme şablonu).</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>Tüm sekmeleri projeye göre filtrele</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>Dosyalarda / metotlarda / sorunlarda ara (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>Kalite puanı</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>Altı alt puanın ağırlıklı toplamı: Hacim %10, Karmaşıklık %25, Bağlaşım %20, Yineleme %20, Ölü kod %15, Kurallar %10.</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>Notlar: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>Eğilim oku, son kaydedilen anlık görüntüye kıyasla farkı gösterir.</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>Genel puan 0-100. Formül için PUAN bölümünün üzerine gelin.</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>Puandan türetilen harf notu (A+, A, A-, B+, B, B-, C+, C, C-, D, F).</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>Önceki anlık görüntüye karşı fark: ▲ iyileşme, ▼ gerileme.</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>Altı eksen 0-100 (merkezden uzak = daha iyi): Vol = dosya boyutu uyumu · CC = karmaşıklık marjı · Coup = bağlaşım kararlılığı · Dup = yineleme oranı · Dead = kullanılmayan sembol oranı · Conv = adlandırma/kurallar uyumu.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>Üst düzey özet: proje başına döküm + en kötü puan alan 5 dosya. Açmak için bir satıra çift tıklayın.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>Bu çalıştırmada üretilen tüm tanılamalar: WH00xx kalite kuralları + CS/IDE Roslyn uyarıları. Önem derecesi / arama / gruba göre filtreleyin; kaynak satırına atlamak için çift tıklayın.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>Çevrimsel + bilişsel karmaşıklığa göre en üst metotlar. McCabe (CC) karar noktalarını sayar; Cognitive (Sonar tarzı) iç içe geçmeyi ağırlıklandırır. Daha yüksek = test/bakım daha zor.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>Tür başına Ca (giren — size bağlı), Ce (çıkan — siz bağlı) ve Kararsızlık = Ce/(Ca+Ce). 1'e yakın = değişken modül; 0'a yakın = kararlı temel.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>Belirteç tabanlı klon algılama. Her grup, 2+ yerde bulunan ≥50 belirteçlik (yapılandırılabilir) bir dizidir — paylaşılan bir yardımcıya çıkarmak için adaylar.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>Ağaç haritası</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>Her dikdörtgen bir kaynak dosyadır. Alan, kod satırlarıyla orantılıdır; renk dosya başına kalite puanıdır (yeşil = sağlıklı, kırmızı = kötü). Tüm metrikler için üzerine gelin, açmak için tıklayın.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>Roslyn'in herhangi bir referans bulamadığı özel/dahili semboller. Her birini doğrulayın — yansıma, DI kapsayıcıları veya kaynak oluşturucular aracılığıyla kullanılan semboller için yanlış pozitifler oluşabilir.</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>Sorunları şuna göre grupla…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>Proje</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>Dosyalar</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>Türler</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>Puan</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>Not</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>Dosya</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>İleti</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>Satır</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>Metot</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>Bilişsel</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>Param.</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>Tür</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>Kararsızlık</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>Sembol</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>Tür</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>PR Listesi</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>Hata</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>Uyarı</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>Bilgi</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>Grup: Yok</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>Önem derecesine göre</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>Kurala göre</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>Projeye göre</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>Dosyaya göre</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>Puan:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>Ağaç haritası:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> dikdörtgen alanı = kod satırları, renk = kalite puanı. Tüm metrikler için üzerine gelin, dosyayı açmak için bir karoya tıklayın.</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>Klon grubu — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> satır, </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> oluşum, </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> belirteç</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>Markdown dosyaları (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>SARIF dosyaları (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>CSV dosyaları (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># Kod Analiz Raporu</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>Proje klasörünü aç</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>Gezginde göster</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>Bu projeyi yeniden analiz et</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>Tüm sekmeleri projeye göre filtrele</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>Proje adını kopyala</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>Metrikleri CSV satırı olarak kopyala</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>Aç</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>İçeren klasörü aç</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>Bu dosyayı yeniden analiz et</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>Sorunları bu dosyaya göre filtrele</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>Tam yolu kopyala</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>Dosya adını kopyala</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>Metot bildiriminde aç</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>Metot adını kopyala</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>Tam nitelikli adı kopyala</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>Sorun konumunda aç</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Bu kurala göre filtrele</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Bu dosyaya göre filtrele</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Bu oluşumu bastır (satır içi işaret)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Markdown olarak kopyala</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Sorun kimliğini kopyala</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Kaynak dosyayı aç</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>Tür adını kopyala</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>Bağımlılık listesini kopyala</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>İlk oluşumu aç</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Konumları kopyala ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Bildirimde aç</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Sembol adını kopyala</value></data>
 </root>

@@ -666,4 +666,113 @@
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Hiba</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Újrafuttatás</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>Exportálás ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>Fatérkép</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>PONTSZÁM</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>RÉSZPONTSZÁMOK</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>Projekt:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>Keresés:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(Minden projekt)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>Teljes kódelemzés újrafuttatása az aktuális megoldáson. Gyorsbillentyű: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>Jelentés exportálása — Markdown (olvasható), CSV (táblázat), SARIF (CI/PR megjegyzések) vagy PR ellenőrző lista (automatikus áttekintő sablon).</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>Az összes lap szűrése projekt szerint</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>Keresés fájlokban / metódusokban / problémákban (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>Minőségi pontszám</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>Hat részpontszám súlyozott aggregátuma: Térfogat 10%, Bonyolultság 25%, Csatolás 20%, Duplikáció 20%, Holt kód 15%, Konvenciók 10%.</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>Osztályzatok: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>A trendnyíl az utolsó mentett pillanatképhez viszonyított eltérést mutatja.</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>Általános pontszám 0-100. Vigye az egeret a PONTSZÁM szakasz fölé a képletért.</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>A pontszámból származtatott betűosztályzat (A+, A, A-, B+, B, B-, C+, C, C-, D, F).</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>Eltérés az előző pillanatképhez képest: ▲ javulás, ▼ visszafejlődés.</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>Hat tengely 0-100 (minél távolabb a középponttól = jobb): Vol = fájlméret megfelelőség · CC = bonyolultsági mozgástér · Coup = csatolási stabilitás · Dup = duplikációs arány · Dead = nem használt szimbólumok aránya · Conv = elnevezési/konvenció megfelelőség.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>Magas szintű összefoglaló: projektenkénti bontás + 5 legrosszabbul értékelt fájl. Sorra kattintással kétszer megnyitható.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>Az ebben a futtatásban előállított összes diagnosztika: WH00xx minőségi szabályok + CS/IDE Roslyn figyelmeztetések. Szűrés súlyosság / keresés / csoport szerint; kettős kattintás a forráshoz ugráshoz.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>A legjobb metódusok ciklomatikus + kognitív bonyolultság szerint. McCabe (CC) a döntési pontokat számolja; Cognitive (Sonar stílus) a beágyazást súlyozza. Magasabb = nehezebben tesztelhető/karbantartható.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>Típusonként Ca (afferens — Öntől függ), Ce (efferens — Ön függ tőle) és Instabilitás = Ce/(Ca+Ce). Közel 1 = változékony modul; közel 0 = stabil alap.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>Token-alapú klónfelismerés. Minden csoport ≥50 token (konfigurálható) szekvenciája 2+ helyen — közös segéd kivonatának jelöltjei.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>Fatérkép</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>Minden téglalap egy forrásfájl. A terület arányos a kódsorok számával; a szín a fájlonkénti minőségi pontszám (zöld = egészséges, piros = rossz). A teljes metrikákért vigye fölé az egeret, a megnyitáshoz kattintson.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>Privát/belső szimbólumok, amelyekhez a Roslyn nem talált hivatkozást. Mindegyiket ellenőrizze — hamis pozitívok lehetnek a reflexión, DI konténereken vagy forrásgenerátorokon keresztül használt szimbólumok esetén.</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>Problémák csoportosítása…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>Projekt</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>Fájlok</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>Típusok</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>Pontszám</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>Osztályzat</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>Fájl</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>Üzenet</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>Sor</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>Metódus</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>Kognitív</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>Param.</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>Típus</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>Instabilitás</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>Szimbólum</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>Fajta</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>PR ellenőrző</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>Hiba</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>Figyelmeztetés</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>Információ</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>Csoport: Nincs</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>Súlyosság szerint</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>Szabály szerint</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>Projekt szerint</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>Fájl szerint</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>Pontszám:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>Fatérkép:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> a téglalap területe = kódsorok, szín = minőségi pontszám. A teljes metrikákhoz vigye fölé az egeret, a fájl megnyitásához kattintson egy csempére.</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>Klóncsoport — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> sor, </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> előfordulás, </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> token</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>Markdown fájlok (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>SARIF fájlok (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>CSV fájlok (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># Kódelemzési jelentés</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>Projektmappa megnyitása</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>Megjelenítés az Intézőben</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>Projekt újraelemzése</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>Minden lap szűrése projekt szerint</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>Projekt nevének másolása</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>Mérőszámok másolása CSV sorként</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>Megnyitás</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>Tartalmazó mappa megnyitása</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>Fájl újraelemzése</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>Problémák szűrése e fájl alapján</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>Teljes útvonal másolása</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>Fájlnév másolása</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>Megnyitás a metódusdeklarációnál</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>Metódus nevének másolása</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>Teljesen minősített név másolása</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>Megnyitás a probléma helyén</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Szűrés e szabály szerint</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Szűrés e fájl szerint</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Ezen előfordulás elnyomása (beágyazott jelölő)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Másolás Markdownként</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Probléma ID másolása</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Forrásfájl megnyitása</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>Típus nevének másolása</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>Függőségi lista másolása</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>Első előfordulás megnyitása</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Helyek másolása ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Megnyitás a deklarációnál</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Szimbólum nevének másolása</value></data>
 </root>

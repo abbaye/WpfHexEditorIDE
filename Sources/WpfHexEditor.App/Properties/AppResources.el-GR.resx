@@ -632,4 +632,113 @@
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Σφάλμα</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Επανεκτέλεση</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>Εξαγωγή ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>Δενδροδιάγραμμα</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>ΒΑΘΜΟΛΟΓΙΑ</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>ΥΠΟΒΑΘΜΟΛΟΓΙΕΣ</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>Έργο:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>Αναζήτηση:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(Όλα τα έργα)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>Επανεκτέλεση πλήρους ανάλυσης κώδικα στην τρέχουσα λύση. Συντόμευση: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>Εξαγωγή αναφοράς — Markdown (αναγνώσιμο), CSV (υπολογιστικό φύλλο), SARIF (σχόλια CI/PR) ή PR Checklist (αυτόματη φόρμα ανασκόπησης).</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>Φιλτράρισμα όλων των καρτελών ανά έργο</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>Αναζήτηση σε αρχεία / μεθόδους / ζητήματα (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>Βαθμολογία ποιότητας</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>Σταθμισμένο σύνολο έξι υποβαθμολογιών: Όγκος 10%, Πολυπλοκότητα 25%, Σύζευξη 20%, Διπλασιασμός 20%, Νεκρός κώδικας 15%, Συμβάσεις 10%.</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>Βαθμοί: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>Το βέλος τάσης δείχνει τη διαφορά σε σχέση με την τελευταία αποθηκευμένη στιγμιότυπο.</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>Συνολική βαθμολογία 0-100. Μετακινήστε το ποντίκι πάνω από την ενότητα ΒΑΘΜΟΛΟΓΙΑ για τον τύπο.</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>Βαθμός σε γράμματα από τη βαθμολογία (A+, A, A-, B+, B, B-, C+, C, C-, D, F).</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>Διαφορά σε σχέση με το προηγούμενο στιγμιότυπο: ▲ βελτίωση, ▼ υποχώρηση.</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>Έξι άξονες 0-100 (πιο μακριά από το κέντρο = καλύτερα): Vol = συμμόρφωση μεγέθους αρχείου · CC = περιθώριο πολυπλοκότητας · Coup = σταθερότητα σύζευξης · Dup = αναλογία διπλασιασμού · Dead = αναλογία αχρησιμοποίητων συμβόλων · Conv = συμμόρφωση ονομασίας/συμβάσεων.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>Σύνοψη υψηλού επιπέδου: ανάλυση ανά έργο + 5 χειρότερα αρχεία. Διπλό κλικ σε γραμμή για άνοιγμα.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>Όλα τα διαγνωστικά αυτής της εκτέλεσης: κανόνες ποιότητας WH00xx + προειδοποιήσεις CS/IDE Roslyn. Φιλτράρετε ανά σοβαρότητα / αναζήτηση / ομάδα· διπλό κλικ για μετάβαση στη γραμμή πηγής.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>Κορυφαίες μέθοδοι ανά κυκλωματική + γνωσιακή πολυπλοκότητα. McCabe (CC) μετρά σημεία απόφασης· Cognitive (Sonar) σταθμίζει τη φωλιασμό. Υψηλότερο = δυσκολότερο για δοκιμή/συντήρηση.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>Ανά τύπο Ca (προσαγωγό — εξαρτάται από εσάς), Ce (απαγωγό — εσείς εξαρτάστε) και Αστάθεια = Ce/(Ca+Ce). Κοντά στο 1 = ευμετάβλητο· κοντά στο 0 = σταθερή βάση.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>Ανίχνευση κλώνων βασισμένη σε tokens. Κάθε ομάδα είναι ακολουθία ≥50 tokens (παραμετροποιήσιμη) που βρέθηκε σε 2+ θέσεις — υποψήφιοι για εξαγωγή σε κοινόχρηστο βοηθό.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>Δενδροδιάγραμμα</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>Κάθε ορθογώνιο είναι ένα αρχείο πηγής. Η περιοχή είναι ανάλογη με τις γραμμές κώδικα· το χρώμα είναι η βαθμολογία ποιότητας ανά αρχείο (πράσινο = υγιές, κόκκινο = κακό). Μετακινήστε το ποντίκι για όλες τις μετρήσεις, κάντε κλικ για άνοιγμα.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>Ιδιωτικά/εσωτερικά σύμβολα για τα οποία ο Roslyn δεν βρήκε καμία αναφορά. Επαληθεύστε καθένα — μπορεί να εμφανιστούν ψευδώς θετικά για σύμβολα που χρησιμοποιούνται μέσω αντανάκλασης, κοντέινερ DI ή γεννήτριες πηγής.</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>Ομαδοποίηση ζητημάτων κατά…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>Έργο</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>Αρχεία</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>Τύποι</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>Βαθμολογία</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>Βαθμός</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>Αρχείο</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>Μήνυμα</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>Γραμμή</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>Μέθοδος</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>Γνωσιακή</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>Παρ.</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>Τύπος</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>Αστάθεια</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>Σύμβολο</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>Είδος</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>Λίστα PR</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>Σφάλμα</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>Προειδοποίηση</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>Πληροφορία</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>Ομάδα: Καμία</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>Κατά σοβαρότητα</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>Κατά κανόνα</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>Κατά έργο</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>Κατά αρχείο</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>Βαθμολογία:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>Δενδροδιάγραμμα:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> εμβαδόν ορθογωνίου = γραμμές κώδικα, χρώμα = βαθμολογία ποιότητας. Μετακινήστε το ποντίκι για όλες τις μετρήσεις, κάντε κλικ σε ένα πλακίδιο για να ανοίξετε το αρχείο.</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>Ομάδα κλώνων — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> γραμμές, </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> εμφανίσεις, </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> tokens</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>Αρχεία Markdown (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>Αρχεία SARIF (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>Αρχεία CSV (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># Αναφορά ανάλυσης κώδικα</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>Άνοιγμα φακέλου έργου</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>Εμφάνιση στην Εξερεύνηση</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>Επανανάλυση αυτού του έργου</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>Φιλτράρισμα όλων των καρτελών ανά έργο</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>Αντιγραφή ονόματος έργου</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>Αντιγραφή μετρήσεων ως γραμμή CSV</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>Άνοιγμα</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>Άνοιγμα φακέλου περιέχοντος</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>Επανανάλυση αυτού του αρχείου</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>Φιλτράρισμα ζητημάτων ανά αρχείο</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>Αντιγραφή πλήρους διαδρομής</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>Αντιγραφή ονόματος αρχείου</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>Άνοιγμα στη δήλωση μεθόδου</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>Αντιγραφή ονόματος μεθόδου</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>Αντιγραφή πλήρους ονόματος</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>Άνοιγμα στη θέση του ζητήματος</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Φιλτράρισμα κατά αυτόν τον κανόνα</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Φιλτράρισμα κατά αυτό το αρχείο</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Καταστολή αυτής της εμφάνισης (ενσωματωμένος δείκτης)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Αντιγραφή ως Markdown</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Αντιγραφή ID ζητήματος</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Άνοιγμα αρχείου πηγής</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>Αντιγραφή ονόματος τύπου</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>Αντιγραφή λίστας εξαρτήσεων</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>Άνοιγμα πρώτης εμφάνισης</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Αντιγραφή θέσεων ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Άνοιγμα στη δήλωση</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Αντιγραφή ονόματος συμβόλου</value></data>
 </root>

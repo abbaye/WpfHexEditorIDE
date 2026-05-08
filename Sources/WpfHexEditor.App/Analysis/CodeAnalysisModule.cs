@@ -121,6 +121,11 @@ internal sealed class CodeAnalysisModule
             if (snapshot is not null)
                 _statusBar.ShowScore(snapshot.Score, ScoreToGrade(snapshot.Score));
         }
+
+        // Pre-build the report pane so a layout-restored Code Analysis tab
+        // can find its real content on the very first BuildContentForItem call —
+        // before MainWindow.RefreshModulePanels gets a chance to invalidate.
+        EnsureReportPaneExists();
     }
 
     // ── Run ──────────────────────────────────────────────────────────────────
@@ -195,6 +200,8 @@ internal sealed class CodeAnalysisModule
                 _statusBar?.ShowScore(report.Score.Score, report.Score.Grade);
 
             EnsureReportPane();
+            _context!.Output.Info(
+                $"[Code Analysis] Pushing to VM: Score={report.Score.Score} Projects={report.Projects.Count} Files={report.TotalFiles} VM={(_reportVm is null ? "null" : "ok")}");
             _reportVm!.SetReport(report);
         });
     }
