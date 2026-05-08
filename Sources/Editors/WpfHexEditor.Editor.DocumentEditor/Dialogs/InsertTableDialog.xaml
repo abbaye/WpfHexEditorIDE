@@ -13,6 +13,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <docSvc:DocumentEditorLocalizedDictionary/>
+                <!-- Implicit Button/TextBox/ComboBox styles (themed via DockBrushes) -->
+                <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.App;component/Themes/DialogStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ec:ThemedDialog.Resources>
