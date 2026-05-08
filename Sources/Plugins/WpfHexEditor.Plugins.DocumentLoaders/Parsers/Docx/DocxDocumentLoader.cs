@@ -74,6 +74,15 @@ public sealed class DocxDocumentLoader : IDocumentLoader
         var blocks = await Task.Run(
             () => mapper.Map(documentXml, docEntryOffset, mapBuilder, ct), ct);
 
+        // Apply docDefaults (Cambria 11pt etc.) only to text-bearing blocks that
+        // don't already declare a font/size — paragraphs, headings, runs, etc.
+        // Skip structural kinds (image, page-break, header, footer, table-row)
+        // so the renderer doesn't pick up a font on something that should not
+        // be drawn as text.
+        var (defFont, defSize) = ReadDocDefaults(zipReader);
+        if (defFont is not null || defSize is not null)
+            ApplyTextDefaults(blocks, defFont, defSize);
+
         var metadata = ReadCoreProperties(zipReader);
         metadata = metadata with
         {
@@ -161,4 +170,56 @@ public sealed class DocxDocumentLoader : IDocumentLoader
 
     private static int ParseTwips(string? s) =>
         int.TryParse(s, out var v) ? v : 0;
+
+    /// <summary>
+    /// Reads <c>w:docDefaults/w:rPrDefault</c> from <c>word/styles.xml</c>:
+    /// the default font family + half-point size that the document inherits
+    /// when nothing more specific is declared on a paragraph or run.
+    /// </summary>
+    private static (string? family, double? sizePt) ReadDocDefaults(DocxZipReader zip)
+    {
+        var stylesXml = zip.ReadEntryText("word/styles.xml");
+        if (stylesXml is null) return (null, null);
+        try
+        {
+            XNamespace W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+            var doc      = XDocument.Parse(stylesXml);
+            var rPrDef   = doc.Descendants(W + "rPrDefault").FirstOrDefault()?.Element(W + "rPr");
+            if (rPrDef is null) return (null, null);
+
+            string? family = rPrDef.Element(W + "rFonts")?.Attribute(W + "ascii")?.Value
+                          ?? rPrDef.Element(W + "rFonts")?.Attribute(W + "hAnsi")?.Value;
+            var szRaw = rPrDef.Element(W + "sz")?.Attribute(W + "val")?.Value
+                     ?? rPrDef.Element(W + "szCs")?.Attribute(W + "val")?.Value;
+            double? sizePt = szRaw is not null && int.TryParse(szRaw, out int hpt)
+                ? hpt / 2.0 : null;
+            return (family, sizePt);
+        }
+        catch { return (null, null); }
+    }
+
+    /// <summary>
+    /// Writes <c>fontFamily</c>/<c>fontSize</c> only on text-bearing block kinds
+    /// that don't already declare them. Structural kinds (image, page-break,
+    /// header, footer, table-row, table) are left untouched so the renderer
+    /// doesn't apply a typeface to something that isn't drawn as text.
+    /// </summary>
+    private static void ApplyTextDefaults(IEnumerable<DocumentBlock> blocks,
+        string? defFont, double? defSize)
+    {
+        foreach (var b in blocks)
+        {
+            bool isText = b.Kind is "paragraph" or "heading" or "list-item"
+                                 or "run" or "hyperlink" or "structured-tag";
+            if (isText)
+            {
+                if (defFont is not null && !b.Attributes.ContainsKey("fontFamily"))
+                    b.Attributes["fontFamily"] = defFont;
+                if (defSize.HasValue && !b.Attributes.ContainsKey("fontSize"))
+                    b.Attributes["fontSize"]   = defSize.Value;
+            }
+            if (b.Children.Count > 0)
+                ApplyTextDefaults(b.Children, defFont, defSize);
+        }
+    }
 }
