@@ -74,15 +74,6 @@ public sealed class DocxDocumentLoader : IDocumentLoader
         var blocks = await Task.Run(
             () => mapper.Map(documentXml, docEntryOffset, mapBuilder, ct), ct);
 
-        // Read docDefaults (font/size) from styles.xml and apply to blocks that
-        // don't already have explicit fontFamily/fontSize so the renderer uses
-        // the document's own typeface (e.g. Cambria 11pt) instead of its hardcoded
-        // fallback (Georgia 14pt). Without this, paragraphs without inline rFonts
-        // wrap on more lines because the renderer's default font is wider/larger.
-        var (defFont, defSize) = ReadDocDefaults(zipReader);
-        if (defFont is not null || defSize is not null)
-            ApplyDefaultsRecursive(blocks, defFont, defSize);
-
         var metadata = ReadCoreProperties(zipReader);
         metadata = metadata with
         {
@@ -170,51 +161,4 @@ public sealed class DocxDocumentLoader : IDocumentLoader
 
     private static int ParseTwips(string? s) =>
         int.TryParse(s, out var v) ? v : 0;
-
-    /// <summary>
-    /// Reads <c>w:docDefaults</c> from <c>word/styles.xml</c> — specifically the
-    /// default font family and half-point size that propagate to every run not
-    /// declaring its own. Returns (null, null) when the entry is missing.
-    /// </summary>
-    private static (string? family, double? sizePt) ReadDocDefaults(DocxZipReader zip)
-    {
-        var stylesXml = zip.ReadEntryText("word/styles.xml");
-        if (stylesXml is null) return (null, null);
-        try
-        {
-            XNamespace W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
-            var doc      = XDocument.Parse(stylesXml);
-            var rPrDef   = doc.Descendants(W + "rPrDefault").FirstOrDefault()?.Element(W + "rPr");
-            if (rPrDef is null) return (null, null);
-
-            string? family = rPrDef.Element(W + "rFonts")?.Attribute(W + "ascii")?.Value
-                          ?? rPrDef.Element(W + "rFonts")?.Attribute(W + "hAnsi")?.Value;
-
-            var szRaw = rPrDef.Element(W + "sz")?.Attribute(W + "val")?.Value
-                     ?? rPrDef.Element(W + "szCs")?.Attribute(W + "val")?.Value;
-            double? sizePt = szRaw is not null && int.TryParse(szRaw, out int hpt)
-                ? hpt / 2.0 : null;
-
-            return (family, sizePt);
-        }
-        catch { return (null, null); }
-    }
-
-    /// <summary>
-    /// Walks the block tree and writes <c>fontFamily</c>/<c>fontSize</c>
-    /// attributes onto any block that does not already declare them.
-    /// </summary>
-    private static void ApplyDefaultsRecursive(IEnumerable<DocumentBlock> blocks,
-        string? defFont, double? defSize)
-    {
-        foreach (var b in blocks)
-        {
-            if (defFont is not null && !b.Attributes.ContainsKey("fontFamily"))
-                b.Attributes["fontFamily"] = defFont;
-            if (defSize.HasValue && !b.Attributes.ContainsKey("fontSize"))
-                b.Attributes["fontSize"]   = defSize.Value;
-            if (b.Children.Count > 0)
-                ApplyDefaultsRecursive(b.Children, defFont, defSize);
-        }
-    }
 }
