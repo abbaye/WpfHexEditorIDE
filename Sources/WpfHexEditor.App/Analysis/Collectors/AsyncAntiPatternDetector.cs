@@ -25,19 +25,31 @@ internal static class AsyncAntiPatternDetector
         var root    = tree.GetRoot();
         var path    = tree.FilePath;
 
-        // WH0060 — .Result / .Wait()
+        // WH0060 — only flag patterns that are *certainly* async-blocking:
+        //   - .Wait() invocation
+        //   - .GetAwaiter().GetResult() chain
+        // Plain ".Result" is too noisy without a semantic model (matches HttpResponseMessage.Result,
+        // IdentityResult.Result, OperationResult.Result, …) so we skip it for now.
         if (opts.IsRuleEnabled("WH0060"))
         {
-            foreach (var access in root.DescendantNodes().OfType<MemberAccessExpressionSyntax>())
+            foreach (var inv in root.DescendantNodes().OfType<InvocationExpressionSyntax>())
             {
+                if (inv.Expression is not MemberAccessExpressionSyntax access) continue;
                 var name = access.Name.Identifier.Text;
-                if (name is "Result" or "Wait" or "GetAwaiter")
-                {
-                    var pos = access.GetLocation().GetLineSpan().StartLinePosition;
-                    results.Add(Diag("WH0060", Severity.Warning,
-                        $"Blocking on async via '.{name}' — risk of deadlock; use 'await'.",
-                        path, pos.Line + 1, pos.Character + 1, projectName));
-                }
+
+                bool isWait        = name == "Wait" && inv.ArgumentList.Arguments.Count == 0;
+                bool isGetResult   = name == "GetResult"
+                                  && access.Expression is InvocationExpressionSyntax inner
+                                  && inner.Expression is MemberAccessExpressionSyntax innerAccess
+                                  && innerAccess.Name.Identifier.Text == "GetAwaiter";
+
+                if (!isWait && !isGetResult) continue;
+
+                var pos = inv.GetLocation().GetLineSpan().StartLinePosition;
+                results.Add(Diag("WH0060", Severity.Warning,
+                    isWait ? "Blocking on async via '.Wait()' — risk of deadlock; use 'await'."
+                           : "Blocking on async via '.GetAwaiter().GetResult()' — use 'await'.",
+                    path, pos.Line + 1, pos.Character + 1, projectName));
             }
         }
 

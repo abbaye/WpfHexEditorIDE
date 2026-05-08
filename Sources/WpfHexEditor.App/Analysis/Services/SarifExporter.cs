@@ -96,5 +96,10 @@ internal static class SarifExporter
     };
 
     private static string ToFileUri(string path)
-        => string.IsNullOrEmpty(path) ? "" : new Uri(path).AbsoluteUri;
+    {
+        if (string.IsNullOrEmpty(path)) return "";
+        // Diagnostics may carry relative paths (e.g. baseline-relativized) — emit as-is.
+        if (!Path.IsPathRooted(path)) return path.Replace('\\', '/');
+        try { return new Uri(path).AbsoluteUri; } catch { return path.Replace('\\', '/'); }
+    }
 }

@@ -18,12 +18,6 @@ internal sealed class AnalysisSnapshotService
 {
     private const int MaxEntries = 100;
 
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        WriteIndented        = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-    };
-
     private string _solutionDir = string.Empty;
 
     internal void SetSolutionDirectory(string dir) => _solutionDir = dir;
@@ -39,7 +33,7 @@ internal sealed class AnalysisSnapshotService
         try
         {
             var json = File.ReadAllText(path);
-            return JsonSerializer.Deserialize<List<SnapshotEntry>>(json, JsonOpts) ?? [];
+            return JsonSerializer.Deserialize<List<SnapshotEntry>>(json, AnalysisJson.Default) ?? [];
         }
         catch { return []; }
     }
@@ -72,7 +66,7 @@ internal sealed class AnalysisSnapshotService
         if (history.Count > MaxEntries)
             history = history.Skip(history.Count - MaxEntries).ToList();
 
-        File.WriteAllText(path, JsonSerializer.Serialize(history, JsonOpts));
+        File.WriteAllText(path, JsonSerializer.Serialize(history, AnalysisJson.Default));
     }
 
     internal void Clear()

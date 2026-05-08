@@ -16,12 +16,6 @@ namespace WpfHexEditor.App.Analysis.Services;
 
 internal sealed class AnalysisBaselineService
 {
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        WriteIndented        = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-    };
-
     private string _solutionDir = string.Empty;
 
     internal void SetSolutionDirectory(string dir) => _solutionDir = dir;
@@ -39,7 +33,7 @@ internal sealed class AnalysisBaselineService
         if (!File.Exists(path)) return [];
         try
         {
-            return JsonSerializer.Deserialize<List<BaselineEntry>>(File.ReadAllText(path), JsonOpts) ?? [];
+            return JsonSerializer.Deserialize<List<BaselineEntry>>(File.ReadAllText(path), AnalysisJson.Default) ?? [];
         }
         catch { return []; }
     }
@@ -57,7 +51,7 @@ internal sealed class AnalysisBaselineService
 
         var path = GetPath();
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        File.WriteAllText(path, JsonSerializer.Serialize(entries, JsonOpts));
+        File.WriteAllText(path, JsonSerializer.Serialize(entries, AnalysisJson.Default));
     }
 
     internal void Delete()

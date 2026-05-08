@@ -85,9 +85,17 @@ internal sealed class GitInsightService
             };
             using var proc = Process.Start(psi);
             if (proc is null) return null;
-            string output = proc.StandardOutput.ReadToEnd();
-            proc.WaitForExit(10_000);
-            return proc.ExitCode == 0 ? output : null;
+
+            // Read both streams concurrently to avoid pipe-buffer deadlock
+            var stdoutTask = proc.StandardOutput.ReadToEndAsync();
+            _ = proc.StandardError.ReadToEndAsync();
+
+            if (!proc.WaitForExit(10_000))
+            {
+                try { proc.Kill(entireProcessTree: true); } catch { /* already exited */ }
+                return null;
+            }
+            return proc.ExitCode == 0 ? stdoutTask.GetAwaiter().GetResult() : null;
         }
         catch { return null; }
     }

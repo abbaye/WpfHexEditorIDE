@@ -5,10 +5,13 @@
 //              placed directly above a code construct. Filters out matching
 //              diagnostics during analysis.
 // Architecture Notes:
-//     Stateless. Single regex pass per file.
+//     Stateless. Walks the already-parsed SyntaxTree's comment trivia —
+//     no extra disk I/O.
 // ==========================================================
 
 using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using WpfHexEditor.App.Analysis.Models;
 
 namespace WpfHexEditor.App.Analysis.Services;
@@ -21,25 +24,23 @@ internal static class InlineSuppressionReader
     /// <summary>Map of (filePath → set of (ruleId, line)). Line = the line of the // comment.</summary>
     public sealed record SuppressionMap(Dictionary<string, HashSet<(string Rule, int Line)>> Entries);
 
-    internal static SuppressionMap Read(IReadOnlyList<string> filePaths)
+    internal static SuppressionMap Read(IEnumerable<SyntaxTree> trees)
     {
         var map = new Dictionary<string, HashSet<(string, int)>>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var file in filePaths)
+        foreach (var tree in trees)
         {
-            try
+            var set = new HashSet<(string, int)>();
+            foreach (var trivia in tree.GetRoot().DescendantTrivia())
             {
-                var lines = System.IO.File.ReadAllLines(file);
-                var set = new HashSet<(string, int)>();
-                for (int i = 0; i < lines.Length; i++)
-                {
-                    var match = SuppressPattern.Match(lines[i]);
-                    if (match.Success)
-                        set.Add((match.Groups[1].Value, i + 1));
-                }
-                if (set.Count > 0) map[file] = set;
+                if (!trivia.IsKind(SyntaxKind.SingleLineCommentTrivia)) continue;
+                var match = SuppressPattern.Match(trivia.ToString());
+                if (!match.Success) continue;
+
+                int line = trivia.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                set.Add((match.Groups[1].Value, line));
             }
-            catch { /* skip unreadable */ }
+            if (set.Count > 0) map[tree.FilePath] = set;
         }
 
         return new SuppressionMap(map);

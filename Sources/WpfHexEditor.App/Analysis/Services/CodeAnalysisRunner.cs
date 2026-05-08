@@ -28,6 +28,11 @@ public sealed class AnalysisProgressUpdate
 
 internal sealed class CodeAnalysisRunner
 {
+    // ── Constants used in hotspot heuristic (Phase 5) ─────────────────────────
+    private const int HotspotScoreThreshold  = 70;  // file is "low score"
+    private const int HotspotChangeThreshold = 5;   // commits in last 30 days
+    private const int CommentDensityMinLocGate = 50; // skip WH0033 on tiny files
+
     private readonly CodeAnalysisOptionsService _optionsService;
     private readonly AnalysisSnapshotService    _snapshotService;
     private readonly AnalysisBaselineService    _baselineService;
@@ -83,6 +88,9 @@ internal sealed class CodeAnalysisRunner
                 GetBasicReferences(),
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
+            // Pre-compute NOC map once for the whole project — avoids O(T²) per-type walks
+            var nocMap = VolumeMetricsCollector.BuildNocMap(compilation);
+
             // Volume + complexity per file (parallel)
             var fileMetricsList = new ConcurrentBag<FileMetrics>();
             await Parallel.ForEachAsync(trees, ct, (tree, token) =>
@@ -91,7 +99,7 @@ internal sealed class CodeAnalysisRunner
                 SemanticModel? model = null;
                 try { model = compilation.GetSemanticModel(tree); } catch { }
 
-                var volume  = VolumeMetricsCollector.Collect(tree, model, projName);
+                var volume  = VolumeMetricsCollector.Collect(tree, model, projName, nocMap);
                 var methods = ComplexityMetricsCollector.Collect(tree);
 
                 // Convention checks
@@ -143,17 +151,23 @@ internal sealed class CodeAnalysisRunner
                         $"File has {volume.TotalLines} lines (warning threshold: {opts.FileLocWarning}).",
                         tree.FilePath, 1, projName));
 
-                // Roll up method-level complexity + Halstead + MI into the file
-                int maxCc  = methods.Count > 0 ? methods.Max(m => m.CyclomaticComplexity) : 0;
-                int maxCog = methods.Count > 0 ? methods.Max(m => m.CognitiveComplexity)  : 0;
-                double avgCc = methods.Count > 0 ? methods.Average(m => (double)m.CyclomaticComplexity) : 0.0;
-                double sumVolume = methods.Sum(m => m.HalsteadVolume);
-                double sumEffort = methods.Sum(m => m.HalsteadEffort);
+                // Roll up method-level metrics in a single pass
+                int    maxCc = 0, maxCog = 0;
+                double sumCc = 0, sumVolume = 0, sumEffort = 0, sumMi = 0;
+                foreach (var m in methods)
+                {
+                    if (m.CyclomaticComplexity > maxCc)  maxCc  = m.CyclomaticComplexity;
+                    if (m.CognitiveComplexity  > maxCog) maxCog = m.CognitiveComplexity;
+                    sumCc     += m.CyclomaticComplexity;
+                    sumVolume += m.HalsteadVolume;
+                    sumEffort += m.HalsteadEffort;
+                    sumMi     += m.MaintainabilityIndex;
+                }
+                double avgCc = methods.Count > 0 ? sumCc / methods.Count : 0.0;
 
-                // File-level MI: average of method MIs, weighted by LOC, with comment-density bonus
                 double commentRatio = volume.CommentDensity / 100.0;
                 double fileMi = methods.Count > 0
-                    ? methods.Average(m => m.MaintainabilityIndex)
+                    ? sumMi / methods.Count
                     : ComplexityMetricsCollector.ComputeMaintainabilityIndex(
                           Math.Max(1, sumVolume), maxCc, Math.Max(1, volume.CodeLines), commentRatio);
 
@@ -203,7 +217,7 @@ internal sealed class CodeAnalysisRunner
                 }
 
                 // Comment density diagnostics (WH0033 / WH0034)
-                if (opts.IsRuleEnabled("WH0033") && volume.CodeLines > 50 && volume.CommentDensity < opts.CommentDensityMinPct)
+                if (opts.IsRuleEnabled("WH0033") && volume.CodeLines > CommentDensityMinLocGate && volume.CommentDensity < opts.CommentDensityMinPct)
                     allDiagnostics.Add(ThresholdDiag("WH0033", Severity.Info,
                         $"Comment density {volume.CommentDensity:F1}% is low ({opts.CommentDensityMinPct}% minimum).",
                         tree.FilePath, 1, projName));
@@ -304,7 +318,6 @@ internal sealed class CodeAnalysisRunner
         // Phase 5 — git-aware hotspots (graceful no-op if not a git repo)
         var gitInsight = new GitInsightService(scopePath);
         var changeFreq = gitInsight.IsGitRepo() ? gitInsight.ChangeFrequency() : new Dictionary<string, int>();
-        int hotspotChangeThreshold = 5;
 
         // Mark hotspots: low score AND high change frequency
         for (int pi = 0; pi < projectMetrics.Count; pi++)
@@ -312,7 +325,9 @@ internal sealed class CodeAnalysisRunner
             var p = projectMetrics[pi];
             var newFiles = p.Files.Select(f =>
             {
-                bool hot = f.Score < 70 && changeFreq.TryGetValue(f.FilePath, out var cnt) && cnt >= hotspotChangeThreshold;
+                bool hot = f.Score < HotspotScoreThreshold
+                        && changeFreq.TryGetValue(f.FilePath, out var cnt)
+                        && cnt >= HotspotChangeThreshold;
                 return hot ? f with { IsHotspot = true } : f;
             }).ToList();
             projectMetrics[pi] = p with { Files = newFiles };
@@ -369,10 +384,10 @@ internal sealed class CodeAnalysisRunner
         Report(progress, "Filtering suppressed/baselined diagnostics…", 88);
         var diagList = allDiagnostics.ToList();
 
-        // Inline `// CodeAnalysis: suppress WHxxxx` markers
+        // Inline `// CodeAnalysis: suppress WHxxxx` markers — reuse already-parsed trees
         if (opts.RespectInlineSuppress)
         {
-            var supMap = InlineSuppressionReader.Read(parsedTrees.Select(t => t.tree.FilePath).Distinct().ToList());
+            var supMap = InlineSuppressionReader.Read(parsedTrees.Select(t => t.tree));
             diagList = diagList.Where(d => !InlineSuppressionReader.IsSuppressed(d, supMap)).ToList();
         }
 
