@@ -17,6 +17,21 @@ Powered by **757 binary whfmt format definitions** with dedicated `fuzz` blocks 
 
 ---
 
+## What's New
+
+### v1.1.0 — Sessions, reports, compound mutations
+
+- **`FuzzSession`** — multi-generation reproducible corpus with `manifest.json` save/restore (`SaveCorpusAsync` / `LoadCorpusAsync`)
+- **`FuzzReport`** — coverage analysis: `FieldCoverage`, `StrategyDistribution`, `UntestedFields`, `AverageMutationsPerVariant`
+- **Compound mutations** — `compound: N` parameter applies N independent mutations per variant
+- **`MutationLog`** — every applied mutation recorded as `MutationLogEntry` (type + field)
+- **3 new mutation strategies** — `InsertBytes`, `SliceRepeat`, `NegateField` (12 total)
+- **Async overloads** — `GenerateAsync(string file, …)` and `GenerateAsync(Stream stream, …)`
+- **`GenerateWithReport()`** — single call returns `(variants, report)` with one Resolve pass
+- **`Random.Shared`** replaces `new Random()` for stronger weak seeding
+
+---
+
 ## Install
 
 ```bash

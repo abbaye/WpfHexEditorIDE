@@ -25,6 +25,28 @@ Powered by **757 binary format definitions** from `whfmt.FileFormatCatalog` (790
 
 ---
 
+## What's New
+
+### v1.1.1 — VB.NET output language
+
+- **`--lang vb`** (aliases: `vbnet`, `visualbasic`) — generate VB.NET parsers
+  - `Public Class` with `BinaryReader`-based `Parse()` function
+  - Typed `Public Enum` for `valueMap` blocks
+  - `<Flags>` enum for bitfield blocks
+  - `List(Of T)` for repeating fields, nullable for conditionals
+  - `ReverseBytes()` overloads for big-endian fields
+  - VB reserved-word escaping (`[End]`, `[String]`, …)
+
+### v1.1.0 — Major evolution
+
+- **`dump` command** — structured binary inspection with checksum verification (CRC32 / MD5 / SHA1 / SHA256)
+- **Rich types** — `enum` for `valueMap`, `[Flags]` for bitfields, `List<T>` for repeating, nullable for conditionals
+- **Typed exceptions** with `--validate` — `InvalidSignatureException`, `ChecksumMismatchException`, `TruncatedFileException`
+- **Multi-language output** — `--lang csharp-span` (zero-alloc), `fsharp` (DU + records), `rust` (`TryFrom<&[u8]>`)
+- **`--project` flag** — emit a complete multi-file C# project (`.csproj` + `Types.cs` + `Parser.cs` + `Exceptions.cs`)
+
+---
+
 ## Install
 
 ```bash
