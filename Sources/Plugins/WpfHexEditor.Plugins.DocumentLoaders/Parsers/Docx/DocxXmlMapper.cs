@@ -53,20 +53,28 @@ internal sealed class DocxXmlMapper
             ct.ThrowIfCancellationRequested();
             var block = MapElement(child, entryBaseOffset, mapBuilder);
             if (block is null) continue;
-            blocks.Add(block);
 
             // Lift images carried as paragraph children into the top-level flow:
             // the renderer treats `image` as a block-level kind, so children of
-            // paragraphs are ignored. Inline + anchored images are both flowed
-            // here (anchored absolute positioning is not yet supported, so they
-            // appear after the paragraph instead — best-effort visual fallback).
+            // paragraphs are ignored.
+            // - Inline images: flow inline, after the paragraph
+            // - Floating images: lifted BEFORE the paragraph so rb.Y matches the
+            //   anchor paragraph's top, not its bottom (overlay positioning
+            //   relies on this baseline).
+            var floating = new List<DocumentBlock>();
+            var inline   = new List<DocumentBlock>();
             for (int i = block.Children.Count - 1; i >= 0; i--)
             {
                 var c = block.Children[i];
                 if (c.Kind != "image") continue;
                 block.Children.RemoveAt(i);
-                blocks.Add(c);
+                bool isFloating = c.Attributes.TryGetValue("floating", out var fv) && fv is true;
+                (isFloating ? floating : inline).Add(c);
             }
+
+            blocks.AddRange(floating);
+            blocks.Add(block);
+            blocks.AddRange(inline);
         }
 
         return blocks;

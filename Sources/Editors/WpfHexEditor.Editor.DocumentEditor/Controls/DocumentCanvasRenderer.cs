@@ -1578,7 +1578,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         if (rb.Block.Kind == "image")
         {
-            DrawImageBlock(dc, rb, x, y, maxW);
+            // Floating images are drawn separately by DrawFloatingImages (overlay
+            // pass) so they can honour their wp:anchor positionH/V. Skip here to
+            // avoid drawing them twice.
+            bool floating = rb.Block.Attributes.TryGetValue("floating", out var fv) && fv is true;
+            if (!floating)
+                DrawImageBlock(dc, rb, x, y, maxW);
             return;
         }
 
@@ -2379,14 +2384,18 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
             case "image":
             {
-                // Floating (wp:anchor) images do not occupy flow space — they are
-                // rendered as absolute overlays anchored to the page or paragraph.
-                bool floating = block.Attributes.TryGetValue("floating", out var fv) && fv is true;
-                if (floating)
-                    return new RenderBlock(block, y, 0, 0, 0, null, false, 0, severity);
-
                 double natH = TryParseAttr(block, "naturalHeight");
                 double h    = natH > 0 ? natH : 120.0;
+
+                // Floating (wp:anchor) images: occupy their own flow line (no
+                // text wrap-around yet — kept simple to avoid layout regressions).
+                // The block is still drawn via DrawFloatingImages overlay so its
+                // horizontal anchor (e.g. align=center, offset from column) is
+                // honoured even though it lives in the flow.
+                bool floating = block.Attributes.TryGetValue("floating", out var fv) && fv is true;
+                if (floating)
+                    return new RenderBlock(block, y, h, 8, 8, null, false, 0, severity);
+
                 return new RenderBlock(block, y, h, 8, 8, null, false, 0, severity);
             }
 
