@@ -160,17 +160,23 @@ internal sealed class DocxXmlMapper
             }
         }
 
-        // Images (inline + anchored). Both are added as paragraph children and
-        // lifted to the top-level flow by Map(). Anchored images currently flow
-        // at their containing paragraph position (best-effort fallback — true
-        // absolute positioning is not yet implemented).
+        // Images: extract inline (wp:inline) and anchored (wp:anchor) drawings.
+        // Both kinds are added as paragraph children, then lifted to the top-level
+        // flow by Map(). Anchored images carry positioning attributes so the
+        // renderer can draw them as a floating overlay relative to the page.
         foreach (var drawing in pElem.Descendants(W + "drawing"))
         {
+            var inlineEl = drawing.Element(ADrawNs + "inline");
+            var anchorEl = drawing.Element(ADrawNs + "anchor");
+            var container = inlineEl ?? anchorEl;
+            if (container is null) continue;
+
             var blip  = drawing.Descendants(ANs + "blip").FirstOrDefault();
             var embed = blip?.Attribute(RelNs + "embed")?.Value;
             if (embed is null || !_relsMap.TryGetValue(embed, out var entryName)) continue;
 
-            var ext = drawing.Descendants(ADrawNs + "extent").FirstOrDefault();
+            var ext = container.Element(ADrawNs + "extent")
+                   ?? drawing.Descendants(ADrawNs + "extent").FirstOrDefault();
             double? cx = ParseEmu(ext?.Attribute("cx")?.Value);
             double? cy = ParseEmu(ext?.Attribute("cy")?.Value);
 
@@ -182,9 +188,11 @@ internal sealed class DocxXmlMapper
             if (cy.HasValue)
                 imgBlock.Attributes["naturalHeight"] = cy.Value.ToString(CultureInfo.InvariantCulture);
 
-            // Mark anchored images for the renderer (future: render as floating overlay)
-            bool isAnchored = drawing.Element(ADrawNs + "anchor") is not null;
-            if (isAnchored) imgBlock.Attributes["floating"] = true;
+            if (anchorEl is not null)
+            {
+                imgBlock.Attributes["floating"] = true;
+                ExtractAnchorPosition(anchorEl, imgBlock);
+            }
 
             para.Children.Add(imgBlock);
         }
@@ -450,6 +458,52 @@ internal sealed class DocxXmlMapper
     /// <summary>EMU (English Metric Units) → pixels at 96 dpi.</summary>
     private static double? ParseEmu(string? s) =>
         s is not null && long.TryParse(s, out var v) ? v / 914400.0 * 96.0 : null;
+
+    /// <summary>
+    /// Extracts wp:anchor positioning into block attributes:
+    ///   anchorX/anchorY    → pixel offsets (or "center"/"left"/"right"/"top"/"bottom")
+    ///   anchorRelH/anchorRelV → "page", "margin", "column", "paragraph"
+    ///   anchorBehindDoc    → true if image draws behind text
+    /// </summary>
+    private static void ExtractAnchorPosition(XElement anchor, DocumentBlock img)
+    {
+        var posH = anchor.Element(ADrawNs + "positionH");
+        if (posH is not null)
+        {
+            var rel = posH.Attribute("relativeFrom")?.Value;
+            if (rel is not null) img.Attributes["anchorRelH"] = rel;
+
+            var align = posH.Element(ADrawNs + "align")?.Value;
+            if (align is not null)
+                img.Attributes["anchorX"] = align;
+            else
+            {
+                var off = ParseEmu(posH.Element(ADrawNs + "posOffset")?.Value);
+                if (off.HasValue)
+                    img.Attributes["anchorX"] = off.Value.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        var posV = anchor.Element(ADrawNs + "positionV");
+        if (posV is not null)
+        {
+            var rel = posV.Attribute("relativeFrom")?.Value;
+            if (rel is not null) img.Attributes["anchorRelV"] = rel;
+
+            var align = posV.Element(ADrawNs + "align")?.Value;
+            if (align is not null)
+                img.Attributes["anchorY"] = align;
+            else
+            {
+                var off = ParseEmu(posV.Element(ADrawNs + "posOffset")?.Value);
+                if (off.HasValue)
+                    img.Attributes["anchorY"] = off.Value.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        var behind = anchor.Attribute("behindDoc")?.Value;
+        if (behind == "1") img.Attributes["anchorBehindDoc"] = true;
+    }
 
     private static long ResolveOffset(XElement elem, long baseOffset)
     {

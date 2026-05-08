@@ -1144,6 +1144,163 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         DrawBlocksInViewport(dc, vw, vh,
             contentX: _pageLeft + _pageSettings.MarginLeft,
             contentW: Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight));
+
+        // Floating images (wp:anchor) — drawn AFTER body flow so they overlay text.
+        // Position is resolved relative to the page card or the anchor paragraph.
+        DrawFloatingImages(dc, vw, vh);
+    }
+
+    /// <summary>
+    /// Draws all floating (wp:anchor) images as overlays positioned relative to
+    /// their containing page or anchor paragraph. Floating blocks have height=0
+    /// in the flow and would otherwise be invisible.
+    /// </summary>
+    private void DrawFloatingImages(DrawingContext dc, double vw, double vh)
+    {
+        if (_blocks.Count == 0) return;
+
+        for (int i = 0; i < _blocks.Count; i++)
+        {
+            var rb = _blocks[i];
+            if (rb.Block.Kind != "image") continue;
+            if (!rb.Block.Attributes.TryGetValue("floating", out var fv) || fv is not true) continue;
+
+            // Resolve the page that contains this anchor (rb.Y is the in-flow position
+            // where the anchor paragraph would have been laid out).
+            int pageIdx = ResolvePageIndex(rb.Y);
+            double pageStart = _pageStarts[pageIdx];
+            double pageTopOnCanvas = PageCanvasPad + pageStart - _offset.Y;
+            double contentLeft  = _pageLeft + _pageSettings.MarginLeft;
+            double contentWidth = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
+
+            // Image natural size (already in pixels — converted from EMU by mapper)
+            double natW = TryParseAttr(rb.Block, "naturalWidth");
+            double natH = TryParseAttr(rb.Block, "naturalHeight");
+            if (natW <= 0) natW = 200;
+            if (natH <= 0) natH = 150;
+
+            // Resolve X
+            string anchorX  = rb.Block.Attributes.GetValueOrDefault("anchorX") as string ?? "0";
+            string anchorRH = rb.Block.Attributes.GetValueOrDefault("anchorRelH") as string ?? "column";
+            double x;
+            if (anchorX == "center")      x = contentLeft + (contentWidth - natW) / 2;
+            else if (anchorX == "right")  x = contentLeft + contentWidth - natW;
+            else if (anchorX == "left")   x = contentLeft;
+            else if (double.TryParse(anchorX, System.Globalization.NumberStyles.Float,
+                                     System.Globalization.CultureInfo.InvariantCulture, out double xOff))
+            {
+                x = (anchorRH == "page" ? _pageLeft : contentLeft) + xOff;
+            }
+            else x = contentLeft;
+
+            // Resolve Y — relative to anchor paragraph by default, or page top
+            string anchorY  = rb.Block.Attributes.GetValueOrDefault("anchorY") as string ?? "0";
+            string anchorRV = rb.Block.Attributes.GetValueOrDefault("anchorRelV") as string ?? "paragraph";
+            double anchorYBase;
+            if (anchorRV == "page" || anchorRV == "margin")
+                anchorYBase = pageTopOnCanvas + (anchorRV == "margin" ? _pageSettings.MarginTop : 0);
+            else
+                anchorYBase = PageCanvasPad + rb.Y - _offset.Y; // paragraph/column relative
+
+            double y;
+            if (anchorY == "center")      y = anchorYBase;
+            else if (anchorY == "top")    y = anchorYBase;
+            else if (anchorY == "bottom") y = anchorYBase;
+            else if (double.TryParse(anchorY, System.Globalization.NumberStyles.Float,
+                                     System.Globalization.CultureInfo.InvariantCulture, out double yOff))
+                y = anchorYBase + yOff;
+            else y = anchorYBase;
+
+            // Quick viewport cull
+            if (y + natH < 0 || y > vh) continue;
+
+            // Build a virtual RenderBlock at (x,y) for DrawImageBlock.
+            // It already handles cache/loading. Pass natW as maxW so the image
+            // is drawn at its natural size, not capped to the content column.
+            DrawImageBlockAt(dc, rb.Block, x, y, natW, natH);
+        }
+    }
+
+    /// <summary>Resolves which page index contains a given canvas Y coordinate.</summary>
+    private int ResolvePageIndex(double canvasY)
+    {
+        for (int i = _pageStarts.Count - 1; i >= 0; i--)
+            if (canvasY >= _pageStarts[i]) return i;
+        return 0;
+    }
+
+    /// <summary>
+    /// Draws an image block at an arbitrary (x, y) position with a fixed size.
+    /// Used by the floating-image overlay path.
+    /// </summary>
+    private void DrawImageBlockAt(DrawingContext dc, DocumentBlock block,
+        double x, double y, double w, double h)
+    {
+        _imageCache ??= new LruCache<string, BitmapImage?>(ImageCacheMaxEntries * 3);
+
+        var entryName = block.Attributes.TryGetValue("zipEntryName", out var ev) ? ev?.ToString() : null;
+        var filePath  = _model?.FilePath;
+        if (entryName is null || filePath is null || !File.Exists(filePath)) return;
+
+        var cacheKey = $"{filePath}|{entryName}";
+        if (_imageCache.TryGetValue(cacheKey, out var bmp) && bmp is not null)
+        {
+            dc.DrawImage(bmp, new Rect(x, y, w, h));
+            return;
+        }
+
+        // Trigger async decode if not yet started — reuses the same cache as inline images.
+        if (!_imageCache.ContainsKey(cacheKey + "\0loading") &&
+            !_imageCache.ContainsKey(cacheKey + "\0error"))
+        {
+            var sentinelKey = cacheKey + "\0loading";
+            _imageCache.Add(sentinelKey, null);
+            var captPath  = filePath;
+            var captEntry = entryName;
+            var captKey   = cacheKey;
+            Task.Run(() =>
+            {
+                try
+                {
+                    using var zip = ZipFile.OpenRead(captPath);
+                    var entry     = zip.GetEntry(captEntry);
+                    if (entry is null) throw new FileNotFoundException(captEntry);
+                    BitmapImage img;
+                    using (var ms = new MemoryStream())
+                    {
+                        using (var s = entry.Open()) s.CopyTo(ms);
+                        ms.Position = 0;
+                        img = new BitmapImage();
+                        img.BeginInit();
+                        img.StreamSource = ms;
+                        img.CacheOption  = BitmapCacheOption.OnLoad;
+                        img.EndInit();
+                        img.Freeze();
+                    }
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        if (_imageCache is null) return;
+                        _imageCache.Add(captKey, img);
+                        _imageCache.Remove(captKey + "\0loading");
+                        InvalidateVisual();
+                    });
+                }
+                catch
+                {
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        if (_imageCache is null) return;
+                        _imageCache.Remove(captKey + "\0loading");
+                        _imageCache.Add(captKey + "\0error", null);
+                    });
+                }
+            });
+        }
+
+        // Light placeholder while loading
+        var pen = new Pen(_fgDimBrush ?? Brushes.Gray, 0.5);
+        pen.Freeze();
+        dc.DrawRectangle(null, pen, new Rect(x, y, w, h));
     }
 
     /// <summary>
@@ -2222,6 +2379,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
             case "image":
             {
+                // Floating (wp:anchor) images do not occupy flow space — they are
+                // rendered as absolute overlays anchored to the page or paragraph.
+                bool floating = block.Attributes.TryGetValue("floating", out var fv) && fv is true;
+                if (floating)
+                    return new RenderBlock(block, y, 0, 0, 0, null, false, 0, severity);
+
                 double natH = TryParseAttr(block, "naturalHeight");
                 double h    = natH > 0 ? natH : 120.0;
                 return new RenderBlock(block, y, h, 8, 8, null, false, 0, severity);
