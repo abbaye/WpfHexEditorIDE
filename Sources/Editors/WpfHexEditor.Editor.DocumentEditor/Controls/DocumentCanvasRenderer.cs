@@ -4500,6 +4500,113 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         return result ?? [];
     }
 
+    /// <summary>
+    /// Returns the font family that is uniform across the selection (or under the caret
+    /// when the selection is empty), reading the same paragraph→run cascade that
+    /// <see cref="BuildSegments"/> applies. Returns <c>null</c> when the selection
+    /// straddles runs/paragraphs with different families (mixed state).
+    /// </summary>
+    public string? GetSelectionFontFamily() => GetSelectionRunValue<string>("fontFamily");
+
+    /// <summary>
+    /// Returns the font size (points) that is uniform across the selection, or
+    /// <c>null</c> when the selection straddles runs with different sizes.
+    /// </summary>
+    public double? GetSelectionFontSize()
+    {
+        var v = GetSelectionRunValue<object>("fontSize");
+        return v switch
+        {
+            double d => d,
+            int    i => i,
+            _        => null,
+        };
+    }
+
+    /// <summary>
+    /// Walks every run intersected by the current selection (or the run under the
+    /// caret when the selection is empty) and returns the value of <paramref name="key"/>
+    /// when it is identical on every run; otherwise <c>null</c>.
+    /// Each lookup falls back to the parent block's attribute, mirroring the
+    /// paragraph-as-defaults cascade in <see cref="BuildSegments"/>.
+    /// </summary>
+    private T? GetSelectionRunValue<T>(string key) where T : class
+    {
+        if (_blocks.Count == 0) return null;
+        var (start, end) = _selection.IsEmpty ? (_caret, _caret) : _selection.Ordered;
+
+        T?   first      = null;
+        bool firstSet   = false;
+
+        for (int bi = start.BlockIndex; bi <= end.BlockIndex && bi < _blocks.Count; bi++)
+        {
+            var block = _blocks[bi].Block;
+            int charFrom = bi == start.BlockIndex ? start.CharOffset : 0;
+            int charTo   = bi == end.BlockIndex   ? end.CharOffset   : GetFlatText(bi).Length;
+
+            // Empty selection: peek the run that contains the caret position.
+            if (_selection.IsEmpty && start.BlockIndex == end.BlockIndex && charFrom == charTo)
+                charTo = charFrom + 1;
+
+            if (block.Children.Count == 0)
+            {
+                if (!CompareAndAccumulate(block, key, ref first, ref firstSet)) return null;
+            }
+            else
+            {
+                int pos = 0;
+                bool anyMatched = false;
+                foreach (var run in block.Children)
+                {
+                    int runEnd = pos + run.Text.Length;
+                    if (pos < charTo && runEnd > charFrom)
+                    {
+                        anyMatched = true;
+                        // Run-level wins; fall back to paragraph-level (the parent block).
+                        if (!CompareAndAccumulateWithFallback(run, block, key, ref first, ref firstSet)) return null;
+                    }
+                    pos = runEnd;
+                }
+                // No run intersected (e.g., caret at the very end of the paragraph) —
+                // use paragraph-level defaults so the dropdown still reflects the
+                // typeface that new typing will inherit.
+                if (!anyMatched && !CompareAndAccumulate(block, key, ref first, ref firstSet)) return null;
+            }
+        }
+
+        return first;
+    }
+
+    private static bool CompareAndAccumulate<T>(DocumentBlock src, string key,
+        ref T? first, ref bool firstSet) where T : class
+    {
+        var v = src.Attributes.TryGetValue(key, out var raw) ? raw as T : null;
+        return AccumulateOrFail(v, ref first, ref firstSet);
+    }
+
+    private static bool CompareAndAccumulateWithFallback<T>(
+        DocumentBlock run, DocumentBlock parent, string key,
+        ref T? first, ref bool firstSet) where T : class
+    {
+        var v = run.Attributes.TryGetValue(key, out var rawRun) ? rawRun as T : null;
+        v ??= parent.Attributes.TryGetValue(key, out var rawPar) ? rawPar as T : null;
+        return AccumulateOrFail(v, ref first, ref firstSet);
+    }
+
+    private static bool AccumulateOrFail<T>(T? value, ref T? first, ref bool firstSet) where T : class
+    {
+        if (!firstSet)
+        {
+            first    = value;
+            firstSet = true;
+            return true;
+        }
+        // null compares equal to null; otherwise both must be non-null and equal.
+        if (first is null && value is null) return true;
+        if (first is null || value is null) return false;
+        return Equals(first, value);
+    }
+
     // ── Phase 15: Block-level formatting ─────────────────────────────────────
 
     /// <summary>Sets a block-level attribute (style, align, listStyle, indent) on the selected block.</summary>

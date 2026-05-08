@@ -605,6 +605,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     private void OnFontSizeChanged(object sender, SelectionChangedEventArgs e)
     {
+        if (_suppressFontDropdown) return;
         if (PART_FontSizeDropdown?.SelectedItem is not ComboBoxItem item) return;
         if (double.TryParse(item.Tag?.ToString(), out double sz) && sz > 0)
             ApplyRunFormat("fontSize", sz);
@@ -612,6 +613,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     private void OnFontSizeCommit(object sender, RoutedEventArgs e)
     {
+        if (_suppressFontDropdown) return;
         // User typed a custom size in the editable ComboBox
         if (PART_FontSizeDropdown is null) return;
         var text = PART_FontSizeDropdown.Text;
@@ -1434,11 +1436,37 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
     private void OnSelectionFormatChanged(object? sender, EventArgs e)
     {
-        var attrs = PART_TextPane.PART_Renderer.GetSelectionAttributes();
+        var renderer = PART_TextPane.PART_Renderer;
+        var attrs    = renderer.GetSelectionAttributes();
         if (PART_BoldBtn          is not null) PART_BoldBtn.IsChecked          = attrs.Contains("bold");
         if (PART_ItalicBtn        is not null) PART_ItalicBtn.IsChecked        = attrs.Contains("italic");
         if (PART_UnderlineBtn     is not null) PART_UnderlineBtn.IsChecked     = attrs.Contains("underline");
         if (PART_StrikethroughBtn is not null) PART_StrikethroughBtn.IsChecked = attrs.Contains("strikethrough");
+
+        // Sync the FontFamily / FontSize dropdowns to the run under the caret (or
+        // the uniform value across the selection). Suppress the SelectionChanged
+        // round-trip while we mutate the combo so we don't apply the read-back
+        // value back onto the document.
+        _suppressFontDropdown = true;
+        try
+        {
+            if (PART_FontFamilyDropdown is not null)
+            {
+                var family = renderer.GetSelectionFontFamily();
+                PART_FontFamilyDropdown.Text = family ?? string.Empty;
+            }
+            if (PART_FontSizeDropdown is not null)
+            {
+                var size = renderer.GetSelectionFontSize();
+                PART_FontSizeDropdown.Text = size is double d
+                    ? d.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)
+                    : string.Empty;
+            }
+        }
+        finally
+        {
+            _suppressFontDropdown = false;
+        }
     }
 
     private async Task PopulateFontFamilyDropdownAsync()
