@@ -208,4 +208,31 @@ public sealed class Treemap : Control
             }
         }
     }
+
+    protected override void OnMouseMove(MouseEventArgs e)
+    {
+        var p = e.GetPosition(this);
+        foreach (var (rect, file) in _tiles)
+        {
+            if (!rect.Contains(p)) continue;
+            Cursor = Cursors.Hand;
+            ToolTip = BuildTooltip(file);
+            return;
+        }
+        Cursor  = Cursors.Arrow;
+        ToolTip = null;
+    }
+
+    private static string BuildTooltip(FileMetrics f) =>
+        $"""
+         {f.FileName}
+         Project   : {f.ProjectName}
+         Score     : {f.Score}/100
+         LOC       : {f.TotalLines:N0}  ({f.CodeLines:N0} code · {f.CommentLines:N0} comments)
+         Max CC    : {f.MaxCyclomaticComplexity}
+         Max Cog   : {f.MaxCognitiveComplexity}
+         MI        : {f.MaintainabilityIndex:F0}
+         Methods   : {f.MethodCount}
+         {(f.IsHotspot ? "🔥 hotspot — frequent changes + low score\n" : "")}Click to open file
+         """;
 }

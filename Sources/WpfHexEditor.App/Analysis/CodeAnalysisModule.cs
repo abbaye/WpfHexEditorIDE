@@ -12,6 +12,7 @@
 // ==========================================================
 
 using System.IO;
+using System.Windows;
 using System.Windows.Threading;
 using WpfHexEditor.App.Analysis.IDE;
 using WpfHexEditor.App.Analysis.Models;
@@ -28,7 +29,11 @@ namespace WpfHexEditor.App.Analysis;
 
 internal sealed class CodeAnalysisModule
 {
-    private const string ReportTabUiId = "WpfHexEditor.Analysis.ReportTab";
+    /// <summary>ContentId of the persistent report tab — used by MainWindow.BuildContentForItem.</summary>
+    public const string ReportTabUiId = "WpfHexEditor.Analysis.ReportTab";
+
+    /// <summary>Returns the live report pane (or null if module not yet initialized / pane not yet shown).</summary>
+    internal UIElement? GetReportPane() => _reportPane;
 
     private IIDEHostContext?           _context;
     private IDockingAdapter?           _docking;
@@ -212,24 +217,30 @@ internal sealed class CodeAnalysisModule
 
     // ── Report pane ──────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Build the report pane + view-model if not already created. Used by
+    /// MainWindow.RefreshModulePanels to satisfy the layout-restored tab
+    /// without forcing it to the foreground.
+    /// </summary>
+    internal void EnsureReportPaneExists()
+    {
+        if (_reportPane is not null || _context is null) return;
+        _reportVm   = new CodeAnalysisReportViewModel();
+        _reportPane = new CodeAnalysisReportPane(_reportVm, _context.DocumentHost);
+        _reportPane.SetReRunCallback(
+            () => RunAsync(AnalysisScope.Solution, GetSolutionPath()));
+    }
+
     private void EnsureReportPane()
     {
         // Create the pane + VM once; keep them across re-runs so the report data persists
-        if (_reportPane is null)
-        {
-            _reportVm   = new CodeAnalysisReportViewModel();
-            _reportPane = new CodeAnalysisReportPane(
-                _reportVm,
-                _context!.DocumentHost);
-            _reportPane.SetReRunCallback(
-                () => RunAsync(AnalysisScope.Solution, GetSolutionPath()));
-        }
+        EnsureReportPaneExists();
 
         // Always (re-)register the tab — the user may have closed it. AddDocumentTab is
         // expected to no-op (or refresh) when a tab with the same uiId already exists.
         _docking!.AddDocumentTab(
             ReportTabUiId,
-            _reportPane,
+            _reportPane!,
             new DocumentDescriptor
             {
                 Title   = "Code Analysis",

@@ -1203,7 +1203,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // We do not guard on EagerContentKey here — an active tab also gets a Border cached
         // if the module was null at layout-load time.
         var asmIds = _layout.GetAllItems()
-            .Where(item => WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId))
+            .Where(item => WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId)
+                        || item.ContentId == WpfHexEditor.App.Analysis.CodeAnalysisModule.ReportTabUiId)
             .Select(item => item.ContentId)
             .ToList();
 
@@ -1214,6 +1215,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _displayContent.Remove(id);   // MainWindow's own cache — must clear so CreateContentForItem re-invokes BuildContentForItem
             DockHost.InvalidateContent(id); // DockControl's internal cache
         }
+
+        // Make sure the Analysis report pane actually exists before rebuild.
+        // Otherwise GetReportPane() returns null on the first BuildContentForItem after
+        // RebuildVisualTree, and we fall back to the placeholder again.
+        if (asmIds.Contains(WpfHexEditor.App.Analysis.CodeAnalysisModule.ReportTabUiId))
+            _codeAnalysisModule?.EnsureReportPaneExists();
 
         DockHost.RebuildVisualTree();
     }
@@ -1683,6 +1690,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                                                                     => GetOrBuildDebugPanelShell(item),
             _ when WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId)
                                                                     => GetOrDeferModulePanel(item, () => _assemblyExplorerModule?.GetPanel(item.ContentId), () => _assemblyExplorerModule is not null),
+            WpfHexEditor.App.Analysis.CodeAnalysisModule.ReportTabUiId
+                                                                    => GetOrDeferModulePanel(item, () => _codeAnalysisModule?.GetReportPane(), () => _codeAnalysisModule?.GetReportPane() is not null),
             _ when item.ContentId.StartsWith("doc-class-diagram-") => CreateClassDiagramGhostContent(item),
             _ when item.ContentId.StartsWith("doc-new-text-")   => CreateEmptyTextEditorContent(item),
             _ when item.ContentId.StartsWith("doc-new-code-")  => CreateEmptyCodeEditorContent(item),

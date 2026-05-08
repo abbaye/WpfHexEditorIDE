@@ -154,9 +154,10 @@
                     <Button x:Name="ReRunButton" Content="⟳ Re-run"
                             Padding="10,4" Margin="4,0"
                             Click="OnReRunClicked"
-                            ToolTip="Re-run the analysis"/>
+                            ToolTip="Re-run the full Code Analysis on the current solution. Shortcut: F5"/>
                     <ComboBox x:Name="ExportCombo" Width="90" Margin="4,0"
-                              SelectedIndex="0" ToolTip="Export report"
+                              SelectedIndex="0"
+                              ToolTip="Export the report — Markdown (human-readable), CSV (spreadsheet), SARIF (CI/PR annotations), or PR Checklist (auto-generated review template)."
                               SelectionChanged="OnExportSelectionChanged">
                         <ComboBoxItem Content="Export ▾"/>
                         <ComboBoxItem Content="Markdown"/>
@@ -226,15 +227,31 @@
                     BorderBrush="{DynamicResource DockBorderBrush}"
                     Padding="16,16,12,16">
                 <StackPanel>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <StackPanel MaxWidth="360">
+                                <TextBlock FontWeight="SemiBold" Text="Quality Score"/>
+                                <TextBlock TextWrapping="Wrap" Margin="0,4,0,0"
+                                           Text="Weighted aggregate of six sub-scores: Volume 10%, Complexity 25%, Coupling 20%, Duplication 20%, Dead Code 15%, Conventions 10%."/>
+                                <TextBlock TextWrapping="Wrap" Margin="0,6,0,0"
+                                           Text="Grades: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60"/>
+                                <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" FontStyle="Italic"
+                                           Text="Trending arrow shows the delta vs the previous saved snapshot."/>
+                            </StackPanel>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                     <TextBlock Style="{StaticResource SectionHeader}" Text="SCORE"/>
                     <TextBlock Style="{StaticResource ScoreBig}"
                                Text="{Binding Score, Mode=OneWay}"
-                               Foreground="{Binding Grade, Mode=OneWay, Converter={StaticResource GradeToColor}}"/>
+                               Foreground="{Binding Grade, Mode=OneWay, Converter={StaticResource GradeToColor}}"
+                               ToolTip="Overall score 0-100. Hover the SCORE section for the formula."/>
                     <TextBlock Style="{StaticResource GradeBig}"
                                Text="{Binding Grade, Mode=OneWay}"
-                               Foreground="{Binding Grade, Mode=OneWay, Converter={StaticResource GradeToColor}}"/>
+                               Foreground="{Binding Grade, Mode=OneWay, Converter={StaticResource GradeToColor}}"
+                               ToolTip="Letter grade derived from the score (A+, A, A-, B+, B, B-, C+, C, C-, D, F)."/>
                     <TextBlock Text="{Binding TrendingText, Mode=OneWay}" Margin="0,6,0,0"
-                               Foreground="{DynamicResource DockAccentBrush}"/>
+                               Foreground="{DynamicResource DockAccentBrush}"
+                               ToolTip="Difference vs the previous snapshot: ▲ improvement, ▼ regression."/>
 
                     <TextBlock Style="{StaticResource SectionHeader}" Text="SUB-SCORES" Margin="0,24,0,4"/>
 
@@ -242,6 +259,7 @@
                     <controls:ScoreRadarChart
                         Width="180" Height="180"
                         Foreground="{DynamicResource DockForegroundBrush}"
+                        ToolTip="Six axes 0-100 (further from centre = better):  Vol = file-size compliance · CC = complexity headroom · Coup = coupling stability · Dup = duplication ratio · Dead = unused-symbol ratio · Conv = naming/convention compliance."
                         Volume="{Binding VolumeScore,        Mode=OneWay}"
                         Complexity="{Binding ComplexityScore, Mode=OneWay}"
                         Coupling="{Binding CouplingScore,    Mode=OneWay}"
@@ -260,7 +278,7 @@
                         BorderBrush="{DynamicResource DockBorderBrush}">
 
                 <!-- ── Overview ──────────────────────────────────────────── -->
-                <TabItem Header="Overview">
+                <TabItem Header="Overview" ToolTip="High-level summary: per-project breakdown + 5 worst-scoring files. Double-click a row to drill in.">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="12">
                         <StackPanel>
                             <TextBlock Style="{StaticResource SectionHeader}" Text="BY PROJECT"/>
@@ -307,7 +325,8 @@
                 </TabItem>
 
                 <!-- ── Issues ────────────────────────────────────────────── -->
-                <TabItem x:Name="IssuesTab">
+                <TabItem x:Name="IssuesTab"
+                         ToolTip="All diagnostics produced this run: WH00xx quality rules + CS/IDE Roslyn warnings. Filter by severity / search / group; double-click to jump to the source line.">
                     <TabItem.Header>
                         <TextBlock>
                             <Run Text="Issues "/>
@@ -363,7 +382,7 @@
                 </TabItem>
 
                 <!-- ── Complexity ────────────────────────────────────────── -->
-                <TabItem Header="Complexity">
+                <TabItem Header="Complexity" ToolTip="Top methods by Cyclomatic + Cognitive complexity. McCabe (CC) counts decision points; Cognitive (Sonar-style) weights nesting. Higher = harder to test/maintain.">
                     <Grid Margin="8">
                         <DataGrid ItemsSource="{Binding TopMethods, Mode=OneWay}"
                                   AutoGenerateColumns="False"
@@ -386,7 +405,7 @@
                 </TabItem>
 
                 <!-- ── Coupling ──────────────────────────────────────────── -->
-                <TabItem Header="Coupling">
+                <TabItem Header="Coupling" ToolTip="Per-type Ca (afferent — depends on you), Ce (efferent — you depend on), and Instability = Ce/(Ca+Ce). Instability close to 1 = volatile module; close to 0 = stable foundation.">
                     <Grid Margin="8">
                         <DataGrid ItemsSource="{Binding TopCouplings, Mode=OneWay}"
                                   AutoGenerateColumns="False"
@@ -409,7 +428,7 @@
                 </TabItem>
 
                 <!-- ── Duplication ───────────────────────────────────────── -->
-                <TabItem Header="Duplication">
+                <TabItem Header="Duplication" ToolTip="Token-based clone detection. Each group is a sequence of ≥50 tokens (configurable) found in 2+ places — candidates for extraction into a shared helper.">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8">
                         <ItemsControl ItemsSource="{Binding Duplications, Mode=OneWay}">
                             <ItemsControl.ItemTemplate>
@@ -451,16 +470,63 @@
 
                 <!-- ── Treemap (Phase 3) ─────────────────────────────────── -->
                 <TabItem Header="Treemap">
-                    <Grid Margin="8">
+                    <TabItem.ToolTip>
+                        <ToolTip>
+                            <StackPanel MaxWidth="380">
+                                <TextBlock FontWeight="SemiBold" Text="Treemap"/>
+                                <TextBlock TextWrapping="Wrap" Margin="0,4,0,0"
+                                           Text="Each rectangle is one source file. Area is proportional to lines of code; colour is the per-file quality score (green = healthy, red = poor). Hover for full metrics, click to open."/>
+                            </StackPanel>
+                        </ToolTip>
+                    </TabItem.ToolTip>
+                    <DockPanel Margin="8">
+                        <!-- Help banner + colour legend -->
+                        <Border DockPanel.Dock="Top" Padding="8" Margin="0,0,0,8"
+                                Background="{DynamicResource DockBorderBrush}"
+                                CornerRadius="3">
+                            <DockPanel>
+                                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="Score:" Margin="0,0,8,0" FontSize="11"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               VerticalAlignment="Center"/>
+                                    <Border Background="#43A047" Width="14" Height="14"/>
+                                    <TextBlock Text="≥85" Margin="3,0,8,0" FontSize="11"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               VerticalAlignment="Center"/>
+                                    <Border Background="#9E9D24" Width="14" Height="14"/>
+                                    <TextBlock Text="70-84" Margin="3,0,8,0" FontSize="11"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               VerticalAlignment="Center"/>
+                                    <Border Background="#F57C00" Width="14" Height="14"/>
+                                    <TextBlock Text="55-69" Margin="3,0,8,0" FontSize="11"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               VerticalAlignment="Center"/>
+                                    <Border Background="#E53935" Width="14" Height="14"/>
+                                    <TextBlock Text="40-54" Margin="3,0,8,0" FontSize="11"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               VerticalAlignment="Center"/>
+                                    <Border Background="#B0231E" Width="14" Height="14"/>
+                                    <TextBlock Text="&lt;40" Margin="3,0,0,0" FontSize="11"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock TextWrapping="Wrap" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           FontSize="11">
+                                    <Run FontWeight="SemiBold" Text="Treemap:"/>
+                                    <Run Text=" rectangle area = lines of code, colour = quality score. Hover for full metrics, click a tile to open the file."/>
+                                </TextBlock>
+                            </DockPanel>
+                        </Border>
                         <controls:Treemap x:Name="FileTreemap"
                                           Items="{Binding AllFiles, Mode=OneWay}"
                                           Foreground="White"
                                           ItemActivated="OnTreemapItemActivated"/>
-                    </Grid>
+                    </DockPanel>
                 </TabItem>
 
                 <!-- ── Dead Code ─────────────────────────────────────────── -->
-                <TabItem Header="Dead Code">
+                <TabItem Header="Dead Code" ToolTip="Private/internal symbols Roslyn could not find any reference to. Verify each — false positives can occur for symbols used via reflection, DI containers, or source generators.">
                     <Grid Margin="8">
                         <DataGrid ItemsSource="{Binding DeadSymbols, Mode=OneWay}"
                                   AutoGenerateColumns="False"
