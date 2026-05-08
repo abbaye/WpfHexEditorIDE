@@ -2109,12 +2109,36 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                                   System.Globalization.CultureInfo.InvariantCulture, out double y0) ? y0 : 0;
                 double imgTop  = yCanvas + yOffset;
                 double imgBot  = imgTop + natH;
-                bool onLeft    = xLeft + natW / 2 < maxW / 2;
+
+                // Wrap-around only makes sense if there's enough text room left on
+                // ONE side of the image. If the image is centered or spans most of
+                // the column, fall back to "no wrap" — the text flows above and
+                // below, not beside, and isn't squeezed into a tiny strip.
                 const double WrapGap = 8.0;
-                floatRects.Add((imgTop, imgBot,
-                                xLeft - (onLeft ? 0 : WrapGap),
-                                xLeft + natW + (onLeft ? WrapGap : 0),
-                                onLeft));
+                const double MinWrapTextW = 120.0;
+                double leftRoom  = xLeft - WrapGap;
+                double rightRoom = maxW - (xLeft + natW) - WrapGap;
+                bool canWrapLeft  = leftRoom  >= MinWrapTextW;
+                bool canWrapRight = rightRoom >= MinWrapTextW;
+
+                if (canWrapLeft || canWrapRight)
+                {
+                    // Choose the side with more room
+                    bool wrapOnLeftSide = canWrapLeft && (!canWrapRight || leftRoom >= rightRoom);
+                    floatRects.Add((imgTop, imgBot,
+                                    wrapOnLeftSide ? 0       : xLeft - WrapGap,
+                                    wrapOnLeftSide ? xLeft + natW + WrapGap : maxW,
+                                    !wrapOnLeftSide));
+                    // ^^ OnLeftSide=true means image is on the LEFT (so text wraps RIGHT,
+                    //    we apply exclLeft on subsequent paragraphs).
+                    //    Stored Left/Right are the image's effective bounds.
+                }
+                // else: image too wide for side-by-side text — no wrap, text flows past
+
+                // In all cases, advance yCanvas past the image so text doesn't
+                // overlap when no wrap is applied.
+                if (!canWrapLeft && !canWrapRight)
+                    yCanvas = Math.Max(yCanvas, imgBot + 4);
 
                 // Place the image block in the flow with zero height (overlay draws it)
                 var imgRb = new RenderBlock(block, yCanvas + yOffset, 0, 0, 0, null, false, 0, null);
