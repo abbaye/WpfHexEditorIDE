@@ -51,6 +51,40 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Same VS-style icon button look but for ToggleButton (a sibling of Button
+             via ButtonBase, but the Button template above does not auto-apply to it). -->
+        <Style x:Key="StructToolToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="Width"           Value="22"/>
+            <Setter Property="Height"          Value="22"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Padding"         Value="3"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd" CornerRadius="2"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource SE_HoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockAccentBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
             </ResourceDictionary>
     </UserControl.Resources>
 
@@ -67,7 +101,10 @@
                 BorderBrush="{DynamicResource DockBorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="6,3">
-            <DockPanel>
+            <!-- LastChildFill=False so the rightmost docked button doesn't expand
+                 to fill the remaining space (which made the Outline ToggleButton
+                 squat the entire toolbar before this fix). -->
+            <DockPanel LastChildFill="False">
                 <!-- Title + block count -->
                 <TextBlock x:Name="PART_Header"
                            DockPanel.Dock="Left"
@@ -84,7 +121,10 @@
                            Opacity="0.6"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
 
-                <!-- Right-side toolbar buttons -->
+                <!-- Right-side toolbar buttons. DockPanel docks them in declaration
+                     order toward the right edge: the FIRST one ends up rightmost.
+                     Order chosen so toggles (Outline / ShowRuns) sit next to the
+                     count label, action buttons (Expand / Collapse) on the far right. -->
                 <Button x:Name="PART_CollapseAllBtn"
                         Style="{StaticResource StructToolBtnStyle}"
                         DockPanel.Dock="Right"
@@ -101,30 +141,28 @@
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70E;" FontSize="11"/>
                 </Button>
 
-                <ToggleButton x:Name="PART_ShowRunsBtn"
-                              DockPanel.Dock="Right"
-                              Background="Transparent"
-                              BorderThickness="0"
-                              Foreground="{DynamicResource DockMenuForegroundBrush}"
-                              Width="22" Height="22" Padding="3"
-                              Cursor="Hand"
-                              ToolTip="{DynamicResource DocStructure_ShowRunsToggleToolTip}"
-                              Checked="OnShowRunsToggled"
-                              Unchecked="OnShowRunsToggled">
-                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7BA;" FontSize="11"/>
-                </ToggleButton>
+                <Border DockPanel.Dock="Right"
+                        Width="1"
+                        Margin="3,3"
+                        Background="{DynamicResource DockBorderBrush}"
+                        Opacity="0.4"/>
 
                 <ToggleButton x:Name="PART_OutlineBtn"
+                              Style="{StaticResource StructToolToggleStyle}"
                               DockPanel.Dock="Right"
-                              Background="Transparent"
-                              BorderThickness="0"
-                              Foreground="{DynamicResource DockMenuForegroundBrush}"
-                              Width="22" Height="22" Padding="3"
-                              Cursor="Hand"
                               ToolTip="{DynamicResource DocStructure_OutlineModeToolTip}"
                               Checked="OnOutlineModeToggled"
                               Unchecked="OnOutlineModeToggled">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE71D;" FontSize="11"/>
+                </ToggleButton>
+
+                <ToggleButton x:Name="PART_ShowRunsBtn"
+                              Style="{StaticResource StructToolToggleStyle}"
+                              DockPanel.Dock="Right"
+                              ToolTip="{DynamicResource DocStructure_ShowRunsToggleToolTip}"
+                              Checked="OnShowRunsToggled"
+                              Unchecked="OnShowRunsToggled">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7BA;" FontSize="11"/>
                 </ToggleButton>
             </DockPanel>
         </Border>
