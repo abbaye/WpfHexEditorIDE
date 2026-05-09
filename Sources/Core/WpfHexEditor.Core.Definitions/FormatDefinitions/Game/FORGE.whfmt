@@ -214,5 +214,30 @@
     "Header": "8B magic + 4B version (LE) + 8B fileSize (LE) + index table",
     "Resources": "Identified by 8-byte UIDs; compressed with zlib or LZ4",
     "Versions": "Format version varies by game; Blacksmith supports newer AC titles"
+  },
+  "diff": {
+    "keyFields": [
+      "forge_magic",
+      "forge_file_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for FORGE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "forge_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "forge_file_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for FORGE. Hand-tune weights/rates per format if needed."
   }
 }

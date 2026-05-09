@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Windows DLL",
   "formatId": "DLL",
@@ -504,5 +504,56 @@
     "ExportDirectory": true,
     "TLSCallbackSupport": true,
     "ForwardedExports": true
+  },
+  "diff": {
+    "keyFields": [
+      "dos_signature",
+      "pe_header_offset",
+      "pe_signature",
+      "coff_machine",
+      "coff_characteristics",
+      "optional_magic"
+    ],
+    "ignoreFields": [
+      "coff_time_date_stamp"
+    ],
+    "note": "Inferred semantic diff for DLL. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dos_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "pe_signature",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "coff_machine",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "coff_characteristics",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "optional_magic",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "pe_header_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DLL. Hand-tune weights/rates per format if needed."
   }
 }

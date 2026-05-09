@@ -267,5 +267,42 @@
     "SampleFormat": "16-bit signed PCM (smpl) + optional 24-bit extension (sm24)",
     "SF3Variant": "OGG Vorbis-compressed samples in smpl chunk",
     "VersionRecord": "IFIL sub-chunk in INFO LIST (major.minor uint16 LE)"
+  },
+  "diff": {
+    "keyFields": [
+      "riff_magic",
+      "riff_size",
+      "list_size",
+      "list_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SF2. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "riff_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "list_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "riff_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "list_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SF2. Hand-tune weights/rates per format if needed."
   }
 }

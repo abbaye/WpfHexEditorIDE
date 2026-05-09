@@ -168,5 +168,24 @@
     "PrimaryProcessor": "Asciidoctor",
     "OutputFormats": ["HTML5", "PDF", "DocBook", "ePub", "man pages"],
     "Note": "No binary magic. Detection by extension (.adoc, .asciidoc) and '= Title' / ':attribute:' patterns."
+  },
+  "diff": {
+    "keyFields": [
+      "adoc_first_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ASCIIDOC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "adoc_first_byte",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ASCIIDOC. Hand-tune weights/rates per format if needed."
   }
 }

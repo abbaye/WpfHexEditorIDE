@@ -308,5 +308,48 @@
     "LastUpdated": "2026-04-15",
     "PriorityFormat": false,
     "AutoRefined": false
+  },
+  "diff": {
+    "keyFields": [
+      "fvh_fv_length",
+      "fvh_signature",
+      "fvh_header_length",
+      "fvh_revision",
+      "fvh_block_map_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for UEFI_FV. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "fvh_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 40 — parser must reject."
+      },
+      {
+        "field": "fvh_revision",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "fvh_fv_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "fvh_header_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "fvh_block_map_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for UEFI_FV. Hand-tune weights/rates per format if needed."
   }
 }

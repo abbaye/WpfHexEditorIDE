@@ -177,5 +177,30 @@
       "severity": "warning",
       "message": "LNK magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "header_size",
+      "link_clsid"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for LNK. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "link_clsid",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 4 — parser must reject."
+      },
+      {
+        "field": "header_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for LNK. Hand-tune weights/rates per format if needed."
+  }
 }

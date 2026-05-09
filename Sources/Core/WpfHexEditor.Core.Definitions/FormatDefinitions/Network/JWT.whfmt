@@ -180,5 +180,24 @@
     "RFC": "RFC 7519 (JWT), RFC 7518 (JWA algorithms), RFC 7516 (JWE encrypted JWT)",
     "JOSE": "Part of JSON Object Signing and Encryption framework",
     "SecurityNote": "Header and payload are readable without any key — only signature requires key"
+  },
+  "diff": {
+    "keyFields": [
+      "jwt_prefix"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for JWT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "jwt_prefix",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for JWT. Hand-tune weights/rates per format if needed."
   }
 }

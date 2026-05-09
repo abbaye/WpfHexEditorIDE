@@ -180,5 +180,24 @@
     "Video": "TMS9928A VDP (256x192, 16 colors)",
     "ROMRange": "0x8000-0xFFFF (32 KB cartridge window)",
     "Magic": "0xAA55 or 0x55AA at offset 0"
+  },
+  "diff": {
+    "keyFields": [
+      "coleco_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_COLECO. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "coleco_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_COLECO. Hand-tune weights/rates per format if needed."
   }
 }

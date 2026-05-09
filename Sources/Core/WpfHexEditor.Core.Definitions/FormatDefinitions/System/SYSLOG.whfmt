@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Syslog Binary Format",
   "formatId": "SYSLOG",
@@ -200,5 +200,38 @@
       "Check timestamp sequence for gaps or chronological anomalies",
       "Inspect event severity levels and source identifiers"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "hostname_length",
+      "app_name_length",
+      "message_length"
+    ],
+    "ignoreFields": [
+      "timestamp"
+    ],
+    "note": "Inferred semantic diff for SYSLOG. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "hostname_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "app_name_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "message_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SYSLOG. Hand-tune weights/rates per format if needed."
   }
 }

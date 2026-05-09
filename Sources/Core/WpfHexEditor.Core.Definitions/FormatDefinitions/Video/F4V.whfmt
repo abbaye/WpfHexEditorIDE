@@ -196,5 +196,36 @@
     "Endianness": "big-endian (all box sizes)",
     "VideoCodecs": "H.264/AVC (avc1)",
     "AudioCodecs": "AAC-LC (mp4a)"
+  },
+  "diff": {
+    "keyFields": [
+      "ftyp_box_size",
+      "ftyp_box_type",
+      "major_brand"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for F4V. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ftyp_box_type",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 4 — parser must reject."
+      },
+      {
+        "field": "major_brand",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "ftyp_box_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for F4V. Hand-tune weights/rates per format if needed."
   }
 }

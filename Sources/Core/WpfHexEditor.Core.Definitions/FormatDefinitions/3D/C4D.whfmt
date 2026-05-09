@@ -183,5 +183,24 @@
       "Inspect first 128 bytes for recognizable string patterns such as 'MAXON' or 'C4D'",
       "Note that the format is proprietary; report only structural observations without assuming field semantics"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "c4d_prefix"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for C4D. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "c4d_prefix",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for C4D. Hand-tune weights/rates per format if needed."
   }
 }

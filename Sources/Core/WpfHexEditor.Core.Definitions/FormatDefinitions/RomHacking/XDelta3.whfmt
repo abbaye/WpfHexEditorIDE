@@ -196,5 +196,24 @@
     "xdelta3AppHeader": "Enabled by hdr_indicator bit 0x04",
     "WindowFormat": "win_indicator + [src_size + src_pos] + delta_encoding",
     "MaxFileSize": "Unlimited (varint-addressed)"
+  },
+  "diff": {
+    "keyFields": [
+      "vcd_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for XDelta3. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "vcd_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for XDelta3. Hand-tune weights/rates per format if needed."
   }
 }

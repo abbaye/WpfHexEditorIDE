@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Sega Dreamcast Disc Image",
   "formatId": "ROM_DC",
@@ -250,5 +250,26 @@
       "Check resource/asset table entries and data block offsets",
       "Inspect compression flags, checksums, and embedded file boundaries"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "hardware_id"
+    ],
+    "ignoreFields": [
+      "release_date"
+    ],
+    "note": "Inferred semantic diff for ROM_DC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "hardware_id",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_DC. Hand-tune weights/rates per format if needed."
   }
 }

@@ -340,5 +340,42 @@
     "Endianness": "little-endian",
     "SelectiveDump": true,
     "BitmapFiltering": "Excludes free pages, cache pages based on dump level"
+  },
+  "diff": {
+    "keyFields": [
+      "kdump_magic",
+      "dump_status",
+      "block_size",
+      "sub_hdr_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for KDUMP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "kdump_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "dump_status",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "block_size",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "sub_hdr_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for KDUMP. Hand-tune weights/rates per format if needed."
   }
 }

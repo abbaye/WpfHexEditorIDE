@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "NuGet Package",
   "formatId": "NuPkg",
@@ -309,5 +309,80 @@
       "Check symbol/string table integrity and section boundaries",
       "Inspect code section offsets, relocations, and debug info"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "zip_signature",
+      "version_needed",
+      "general_purpose_flags",
+      "compression_method",
+      "compressed_size",
+      "uncompressed_size",
+      "filename_length",
+      "extra_field_length"
+    ],
+    "ignoreFields": [
+      "last_mod_time",
+      "last_mod_date"
+    ],
+    "note": "Inferred semantic diff for NuPkg. Compare key structural fields; ignore volatile metadata."
+  },
+  "repair": [
+    {
+      "name": "FixSignature",
+      "trigger": "SignatureMismatch",
+      "action": "set_value",
+      "target": "0",
+      "value": "04034B50",
+      "length": 4,
+      "description": "Restore the 4-byte NuPkg signature at offset 0."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "zip_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "version_needed",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "general_purpose_flags",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "compression_method",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "compressed_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "uncompressed_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "filename_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "extra_field_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for NuPkg. Hand-tune weights/rates per format if needed."
   }
 }

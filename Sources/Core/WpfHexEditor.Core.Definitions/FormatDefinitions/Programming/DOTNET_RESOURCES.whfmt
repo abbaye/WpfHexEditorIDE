@@ -337,5 +337,43 @@
     "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
     "AutoRefined": false
+  },
+  "diff": {
+    "keyFields": [
+      "magic",
+      "resource_manager_header_version"
+    ],
+    "ignoreFields": [
+      "runtime_version2_magic",
+      "runtime_header_version"
+    ],
+    "note": "Inferred semantic diff for DOTNET_RESOURCES. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "runtime_version2_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "resource_manager_header_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "runtime_header_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DOTNET_RESOURCES. Hand-tune weights/rates per format if needed."
   }
 }

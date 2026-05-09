@@ -191,5 +191,26 @@
     "innerStructure": "BasicOCSPResponse SEQUENCE containing tbsResponseData, signatureAlgorithm, signature",
     "typicalSize": "500 to 5000 bytes",
     "rfcs": [ "RFC 6960", "RFC 2560", "RFC 5019" ]
+  },
+  "diff": {
+    "keyFields": [
+      "ocsp_status"
+    ],
+    "ignoreFields": [
+      "ocsp_produced_at"
+    ],
+    "note": "Inferred semantic diff for OCSP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ocsp_status",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for OCSP. Hand-tune weights/rates per format if needed."
   }
 }

@@ -228,5 +228,24 @@
     "RecordTypes": "warcinfo, request, response, resource, metadata, revisit, conversion, continuation",
     "Compression": "Typically per-record gzip for random access (.warc.gz)",
     "MaxRecordSize": "No specification limit — Content-Length field determines size"
+  },
+  "diff": {
+    "keyFields": [
+      "warc_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for WARC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "warc_version",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for WARC. Hand-tune weights/rates per format if needed."
   }
 }

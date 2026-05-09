@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Microsoft Network Monitor",
   "formatId": "NETMON",
@@ -190,5 +190,38 @@
       "Check packet record timestamps and capture lengths",
       "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "netmon_signature",
+      "frame_table_offset",
+      "frame_table_length"
+    ],
+    "ignoreFields": [
+      "time_delta"
+    ],
+    "note": "Inferred semantic diff for NETMON. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "netmon_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "frame_table_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "frame_table_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for NETMON. Hand-tune weights/rates per format if needed."
   }
 }

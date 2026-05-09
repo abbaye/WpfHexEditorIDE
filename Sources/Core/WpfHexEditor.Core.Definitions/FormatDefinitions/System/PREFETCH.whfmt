@@ -168,5 +168,24 @@
       "severity": "warning",
       "message": "PREFETCH magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "signature"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PREFETCH. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 4 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PREFETCH. Hand-tune weights/rates per format if needed."
+  }
 }

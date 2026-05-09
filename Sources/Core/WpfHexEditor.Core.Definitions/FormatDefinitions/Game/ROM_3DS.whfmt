@@ -441,5 +441,66 @@
     "readUInt32LE": "Read little-endian 32-bit header fields",
     "readUInt64LE": "Read little-endian 64-bit fields (media ID)",
     "readBytes": "Read raw byte arrays (RSA signature, hash)"
+  },
+  "diff": {
+    "keyFields": [
+      "ncsd_magic",
+      "image_size",
+      "partition0_offset",
+      "partition0_size",
+      "partition1_offset",
+      "partition1_size",
+      "additional_header_size",
+      "sector_zero_offset"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_3DS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ncsd_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 256 — parser must reject."
+      },
+      {
+        "field": "image_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "partition0_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "partition0_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "partition1_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "partition1_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "additional_header_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "sector_zero_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_3DS. Hand-tune weights/rates per format if needed."
   }
 }

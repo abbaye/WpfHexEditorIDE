@@ -164,5 +164,24 @@
     "Geometry": "ACIS kernel (SAT/SAB) embedded in OLE2 stream 'MCAD' or 'Stream 0'",
     "Version": "SolidWorks release in 'SldWorks DocumentPropertyStorage' OLE2 stream",
     "AccessMethod": "SolidWorks API (COM), oletools, or commercial CAD translators"
+  },
+  "diff": {
+    "keyFields": [
+      "ole2_signature"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SLDPRT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ole2_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SLDPRT. Hand-tune weights/rates per format if needed."
   }
 }

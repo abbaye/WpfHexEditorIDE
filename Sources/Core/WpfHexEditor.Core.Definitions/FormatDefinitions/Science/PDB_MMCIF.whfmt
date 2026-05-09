@@ -215,5 +215,24 @@
     "coordinateUnit": "Angstrom",
     "standardBody": "wwPDB / IUCr",
     "mandatoryCategories": "_atom_site, _entity, _cell, _symmetry, _struct, _entry"
+  },
+  "diff": {
+    "keyFields": [
+      "cif_data_keyword"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PDB_MMCIF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "cif_data_keyword",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PDB_MMCIF. Hand-tune weights/rates per format if needed."
   }
 }

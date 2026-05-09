@@ -195,5 +195,30 @@
     "MaxChannels": "15.1 (7.1 in practice, Atmos via JOC)",
     "SampleRates": "32 kHz, 44.1 kHz, 48 kHz",
     "BackwardCompatible": "Yes — AC-3 decoders can play the independent substream"
+  },
+  "diff": {
+    "keyFields": [
+      "e_ac3_sync_word",
+      "strmtyp"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for EAC3. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "e_ac3_sync_word",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "strmtyp",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for EAC3. Hand-tune weights/rates per format if needed."
   }
 }

@@ -157,5 +157,24 @@
         "yamlHeader"
       ]
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "yaml_header"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PREFAB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "yaml_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PREFAB. Hand-tune weights/rates per format if needed."
+  }
 }

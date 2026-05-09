@@ -216,5 +216,48 @@
     "binaryChunkType": "0x004E4942",
     "jsonPadding": "0x20 (space) to 4-byte alignment",
     "binPadding": "0x00 to 4-byte alignment"
+  },
+  "diff": {
+    "keyFields": [
+      "glb_magic",
+      "glb_version",
+      "glb_length",
+      "json_chunk_length",
+      "chunk0_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for GLB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "glb_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "glb_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "chunk0_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "glb_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "json_chunk_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for GLB. Hand-tune weights/rates per format if needed."
   }
 }

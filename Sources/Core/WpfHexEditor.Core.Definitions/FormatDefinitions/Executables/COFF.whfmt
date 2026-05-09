@@ -209,5 +209,26 @@
     "magicOffset": 0,
     "endianness": "little-endian",
     "notes": "COFF does not have a fixed magic number — the machine type at offset 0 is the closest equivalent. The optional header size differentiates standalone objects (0) from PE images (224 for PE32, 240 for PE32+). Symbol table entries are 18 bytes each with 8-byte name or string table reference."
+  },
+  "diff": {
+    "keyFields": [
+      "machine"
+    ],
+    "ignoreFields": [
+      "time_date_stamp"
+    ],
+    "note": "Inferred semantic diff for COFF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "machine",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for COFF. Hand-tune weights/rates per format if needed."
   }
 }

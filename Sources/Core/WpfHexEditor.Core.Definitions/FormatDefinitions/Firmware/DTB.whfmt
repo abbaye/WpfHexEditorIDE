@@ -306,5 +306,48 @@
     "LastUpdated": "2026-04-15",
     "PriorityFormat": false,
     "AutoRefined": false
+  },
+  "diff": {
+    "keyFields": [
+      "dtb_magic",
+      "dtb_totalsize",
+      "dtb_version",
+      "dtb_size_dt_strings",
+      "dtb_size_dt_struct"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DTB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dtb_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "dtb_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "dtb_totalsize",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "dtb_size_dt_strings",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "dtb_size_dt_struct",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DTB. Hand-tune weights/rates per format if needed."
   }
 }

@@ -377,5 +377,26 @@
     "TrailerEntry": "'TRAILER!!!' (10 bytes + null) marks end of archive",
     "Endianness": "N/A for newc (hex ASCII strings); binary variant uses native byte order",
     "MaxFileSize": "4 GiB (32-bit hex field limit: 0xFFFFFFFF)"
+  },
+  "diff": {
+    "keyFields": [
+      "cpio_magic"
+    ],
+    "ignoreFields": [
+      "cpio_mtime"
+    ],
+    "note": "Inferred semantic diff for CPIO. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "cpio_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for CPIO. Hand-tune weights/rates per format if needed."
   }
 }

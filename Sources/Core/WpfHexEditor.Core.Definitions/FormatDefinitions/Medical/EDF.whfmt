@@ -266,5 +266,27 @@
     "DataResolution": "16-bit signed integer per sample",
     "Endianness": "little-endian",
     "PHI_Risk": "High — patient ID, recording ID, dates present in header"
+  },
+  "diff": {
+    "keyFields": [
+      "edf_version"
+    ],
+    "ignoreFields": [
+      "edf_start_date",
+      "edf_start_time"
+    ],
+    "note": "Inferred semantic diff for EDF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "edf_version",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for EDF. Hand-tune weights/rates per format if needed."
   }
 }

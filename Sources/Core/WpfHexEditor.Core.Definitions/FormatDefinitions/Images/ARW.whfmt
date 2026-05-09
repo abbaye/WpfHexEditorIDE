@@ -210,5 +210,36 @@
     "RawEncoding": "Sony ARW lossy (compression=32767) or lossless (32770)",
     "BitDepth": "14-bit raw sensor data",
     "ARWVersions": "ARW 1.0, ARW 2.0 (Exmor+AES), ARW 2.1, ARW 2.2, ARW 2.3"
+  },
+  "diff": {
+    "keyFields": [
+      "byte_order_mark",
+      "tiff_magic",
+      "ifd_offset"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ARW. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "byte_order_mark",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "tiff_magic",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "ifd_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ARW. Hand-tune weights/rates per format if needed."
   }
 }

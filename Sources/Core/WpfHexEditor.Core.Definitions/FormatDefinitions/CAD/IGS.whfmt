@@ -201,5 +201,24 @@
     "sectionCodes": { "S": "Start", "G": "Global", "D": "Directory Entry", "P": "Parameter Data", "T": "Terminate" },
     "dataColumns": "1-72 (data), 73 (section code), 74-80 (sequence number, right-justified)",
     "versions": ["3=v3.0", "4=v4.0", "5=v5.0", "11=v5.3 (current)"]
+  },
+  "diff": {
+    "keyFields": [
+      "section_code"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for IGS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "section_code",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for IGS. Hand-tune weights/rates per format if needed."
   }
 }

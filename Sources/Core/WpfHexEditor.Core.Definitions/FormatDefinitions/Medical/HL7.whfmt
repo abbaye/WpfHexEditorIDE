@@ -249,5 +249,24 @@
     "Standard": "HL7 v2.9 — Health Level Seven International",
     "Endianness": "N/A (ASCII text format)",
     "Privacy": "HIPAA PHI — patient name, ID, DOB, SSN, diagnoses, medications in PID/OBX segments"
+  },
+  "diff": {
+    "keyFields": [
+      "hl7msh"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for HL7. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "hl7msh",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for HL7. Hand-tune weights/rates per format if needed."
   }
 }

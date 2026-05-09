@@ -219,5 +219,36 @@
     "Standard": "OGC GeoPackage Encoding Standard 1.3 (OGC 12-128r18)",
     "Endianness": "SQLite header big-endian; page content encoding depends on SQLite settings",
     "Geometry": "Well-Known Binary (WKB) with GPKG envelope header in BLOB columns"
+  },
+  "diff": {
+    "keyFields": [
+      "sqlite_magic",
+      "page_size",
+      "application_id"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for GPKG. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "sqlite_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "application_id",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "page_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for GPKG. Hand-tune weights/rates per format if needed."
   }
 }

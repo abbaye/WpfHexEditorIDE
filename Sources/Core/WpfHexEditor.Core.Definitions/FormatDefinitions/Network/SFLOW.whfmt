@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "sFlow",
   "formatId": "SFLOW",
@@ -183,5 +183,26 @@
       "Check packet record timestamps and capture lengths",
       "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "sflow_version"
+    ],
+    "ignoreFields": [
+      "system_uptime"
+    ],
+    "note": "Inferred semantic diff for SFLOW. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "sflow_version",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SFLOW. Hand-tune weights/rates per format if needed."
   }
 }

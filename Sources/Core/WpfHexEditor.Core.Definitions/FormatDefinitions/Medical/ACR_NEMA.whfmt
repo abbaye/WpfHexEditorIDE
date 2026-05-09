@@ -227,5 +227,30 @@
     "noPreamble": true,
     "noMagicBytes": true,
     "predecessor": "ACR-NEMA 2.0 (1988) — superseded by DICOM 3.0 (1993)"
+  },
+  "diff": {
+    "keyFields": [
+      "acr_group",
+      "acr_value_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ACR_NEMA. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "acr_group",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "acr_value_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ACR_NEMA. Hand-tune weights/rates per format if needed."
   }
 }

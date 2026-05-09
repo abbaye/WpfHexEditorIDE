@@ -241,5 +241,36 @@
     "Standard": "OGC NetCDF Core (OGC 10-090r3) / Unidata NetCDF specification",
     "Endianness": "big-endian for classic/64-bit offset formats",
     "Compression": "None in classic format; zlib/szip in NetCDF-4 (HDF5)"
+  },
+  "diff": {
+    "keyFields": [
+      "nc_magic",
+      "nc_version",
+      "dim_list_tag"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for NETCDF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "nc_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "nc_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "dim_list_tag",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for NETCDF. Hand-tune weights/rates per format if needed."
   }
 }

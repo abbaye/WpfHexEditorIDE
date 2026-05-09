@@ -218,5 +218,30 @@
     "keySlots": 8,
     "keySlotSize": 48,
     "notes": "LUKS1 header is 592 bytes with 8 key slots. LUKS2 extends this with JSON metadata. Big-endian byte order for all header integers. The payload_offset field is in 512-byte sectors. Each active key slot contains an encrypted copy of the master key."
+  },
+  "diff": {
+    "keyFields": [
+      "luks_version",
+      "key_bytes"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for LUKS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "luks_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "key_bytes",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for LUKS. Hand-tune weights/rates per format if needed."
   }
 }

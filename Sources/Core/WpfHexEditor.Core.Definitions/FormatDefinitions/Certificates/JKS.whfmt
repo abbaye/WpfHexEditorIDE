@@ -241,5 +241,42 @@
     "DeprecatedSince": "Java 9 (2017) — use PKCS12 (.p12) instead",
     "MigrationCommand": "keytool -importkeystore -srckeystore file.jks -destkeystore file.p12 -deststoretype PKCS12",
     "SupportsStreaming": false
+  },
+  "diff": {
+    "keyFields": [
+      "jks_magic",
+      "jks_version",
+      "entry_count",
+      "first_entry_tag"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for JKS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "jks_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "jks_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "first_entry_tag",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "entry_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for JKS. Hand-tune weights/rates per format if needed."
   }
 }

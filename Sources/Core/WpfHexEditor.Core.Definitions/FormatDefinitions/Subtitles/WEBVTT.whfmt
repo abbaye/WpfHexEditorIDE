@@ -201,5 +201,24 @@
     "StylingSupport": "CSS ::cue pseudo-element",
     "PositioningSupport": "line, position, size, align, vertical",
     "InlineTagSupport": "<b>, <i>, <u>, <ruby>, <rt>, <v>, <c>, <lang>"
+  },
+  "diff": {
+    "keyFields": [
+      "webvtt_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for WEBVTT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "webvtt_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for WEBVTT. Hand-tune weights/rates per format if needed."
   }
 }

@@ -223,5 +223,24 @@
     "Standard": "FITS Standard 4.0 — IAU FITS Working Group / NASA NOST 100-2.0",
     "Endianness": "big-endian for all numeric data arrays",
     "BlockSize": "2880 bytes (36 x 80-char header cards per block)"
+  },
+  "diff": {
+    "keyFields": [
+      "fits_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for FITS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "fits_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for FITS. Hand-tune weights/rates per format if needed."
   }
 }

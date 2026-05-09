@@ -289,5 +289,54 @@
     "SampleRates": "Any (8000, 22050, 44100, 48000 Hz most common)",
     "Channels": "1 (mono) to 6 (5.1)",
     "Origin": "NeXTSTEP (1989) / Sun Microsystems"
+  },
+  "diff": {
+    "keyFields": [
+      "snd_magic",
+      "data_offset",
+      "data_size",
+      "encoding",
+      "sample_rate",
+      "channels"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SND. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "snd_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "data_size",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "encoding",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "sample_rate",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "channels",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "data_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SND. Hand-tune weights/rates per format if needed."
   }
 }

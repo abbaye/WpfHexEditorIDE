@@ -228,5 +228,24 @@
     "KeyEncryption": "pbeWithSHAAnd3-KeyTripleDES-CBC (legacy) or AES-256-CBC (modern)",
     "Inspect": "openssl pkcs12 -in file.p12 -info -noout",
     "RFC": "RFC 7292 (PKCS#12 v1.1)"
+  },
+  "diff": {
+    "keyFields": [
+      "pfx_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PKCS12. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pfx_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PKCS12. Hand-tune weights/rates per format if needed."
   }
 }

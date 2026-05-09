@@ -150,5 +150,24 @@
         "nbtCompoundTag"
       ]
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "nbt_compound_tag"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DAT_MC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "nbt_compound_tag",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DAT_MC. Hand-tune weights/rates per format if needed."
+  }
 }

@@ -335,5 +335,53 @@
     "ACIDCompliant": true,
     "SupportsNamedDatabases": true,
     "LockFile": "data.mdb-lock (reader table)"
+  },
+  "diff": {
+    "keyFields": [
+      "lmdb_magic",
+      "lmdb_version",
+      "map_size",
+      "page_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for LMDB. Compare key structural fields; ignore volatile metadata."
+  },
+  "repair": [
+    {
+      "name": "FixSignature",
+      "trigger": "SignatureMismatch",
+      "action": "set_value",
+      "target": "0",
+      "value": "BEEFC0DE",
+      "length": 4,
+      "description": "Restore the 4-byte LMDB signature at offset 0."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "lmdb_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "lmdb_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "page_size",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "map_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for LMDB. Hand-tune weights/rates per format if needed."
   }
 }

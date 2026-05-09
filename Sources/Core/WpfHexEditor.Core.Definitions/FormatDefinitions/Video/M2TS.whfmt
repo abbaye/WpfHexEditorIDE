@@ -215,5 +215,26 @@
     "pidBits": 13,
     "nullPID": "0x1FFF",
     "patPID": "0x0000"
+  },
+  "diff": {
+    "keyFields": [
+      "continuity_counter"
+    ],
+    "ignoreFields": [
+      "timestamp"
+    ],
+    "note": "Inferred semantic diff for M2TS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "continuity_counter",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for M2TS. Hand-tune weights/rates per format if needed."
   }
 }

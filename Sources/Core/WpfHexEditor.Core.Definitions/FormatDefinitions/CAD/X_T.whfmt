@@ -166,5 +166,24 @@
     "EntityModel": "Parasolid BREP: body, lump, shell, face, loop, fin, edge, vertex + geometry",
     "KernelVersion": "'KERNEL_VERSION N_N' in header identifies Parasolid release",
     "AccessMethod": "Parasolid licensed kernel or commercial CAD translator required"
+  },
+  "diff": {
+    "keyFields": [
+      "xt_header"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for X_T. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "xt_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for X_T. Hand-tune weights/rates per format if needed."
   }
 }

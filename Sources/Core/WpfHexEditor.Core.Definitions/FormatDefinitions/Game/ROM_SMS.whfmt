@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Sega Master System ROM",
   "formatId": "ROM_SMS",
@@ -178,5 +178,30 @@
       "Check resource/asset table entries and data block offsets",
       "Inspect compression flags, checksums, and embedded file boundaries"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "tmr_sega_header",
+      "region_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_SMS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "tmr_sega_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 32752 — parser must reject."
+      },
+      {
+        "field": "region_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_SMS. Hand-tune weights/rates per format if needed."
   }
 }

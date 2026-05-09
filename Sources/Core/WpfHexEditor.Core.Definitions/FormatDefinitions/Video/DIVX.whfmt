@@ -198,5 +198,36 @@
     "Endianness": "little-endian (all RIFF chunk sizes and AVI fields)",
     "VideoCodec": "MPEG-4 Part 2 ASP (FourCC: DIVX/DX50/DX40/DIV3)",
     "AudioCodecs": "MP3, AC-3, AAC (in later DivX versions)"
+  },
+  "diff": {
+    "keyFields": [
+      "riff_signature",
+      "riff_file_size",
+      "avi_form_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DIVX. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "riff_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "avi_form_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "riff_file_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DIVX. Hand-tune weights/rates per format if needed."
   }
 }

@@ -178,5 +178,24 @@
     "ASCIIArmor": "'-----BEGIN PGP [TYPE]-----' + base64 + '=[CRC24]' + '-----END PGP [TYPE]-----'",
     "BinaryPGP": "Packet tag bytes (bit7=1) + length + payload; .gpg extension",
     "KeyAlgorithms": "RSA, DSA, ECDSA, EdDSA (Ed25519); Symmetric: AES-256, AES-128"
+  },
+  "diff": {
+    "keyFields": [
+      "pgp_armor_header"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PGP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pgp_armor_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PGP. Hand-tune weights/rates per format if needed."
   }
 }

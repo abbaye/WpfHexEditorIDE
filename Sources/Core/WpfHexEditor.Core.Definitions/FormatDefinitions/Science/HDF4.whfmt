@@ -247,5 +247,42 @@
     "Standard": "HDF4 File Format Specification — NCSA/The HDF Group",
     "Endianness": "big-endian for all header and descriptor fields",
     "MaxElements": "65,535 unique (tag, ref) pairs per file"
+  },
+  "diff": {
+    "keyFields": [
+      "hdf4_magic",
+      "first_tag",
+      "first_offset",
+      "first_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for HDF4. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "hdf4_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "first_tag",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "first_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "first_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for HDF4. Hand-tune weights/rates per format if needed."
   }
 }

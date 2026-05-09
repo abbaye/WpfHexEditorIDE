@@ -213,5 +213,24 @@
       "-64": "float64 (IEEE 754)"
     },
     "Extensions": ["IMAGE", "BINTABLE", "TABLE"]
+  },
+  "diff": {
+    "keyFields": [
+      "fits_simple_key"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for FITS_IMAGE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "fits_simple_key",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for FITS_IMAGE. Hand-tune weights/rates per format if needed."
   }
 }

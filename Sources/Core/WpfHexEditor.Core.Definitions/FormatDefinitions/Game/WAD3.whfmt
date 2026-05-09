@@ -177,5 +177,30 @@
     "Header": "12 bytes: magic(4B) + numLumps(4B LE) + dirOffset(4B LE)",
     "DirEntry": "32 bytes: offset(4B) + diskSize(4B) + size(4B) + type(1B) + compr(1B) + pad(2B) + name(16B)",
     "MipTexUpgrade": "WAD3 vs WAD2: embedded 768B palette per texture (256 RGB entries)"
+  },
+  "diff": {
+    "keyFields": [
+      "wad3_signature",
+      "wad3_dir_offset"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for WAD3. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "wad3_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "wad3_dir_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for WAD3. Hand-tune weights/rates per format if needed."
   }
 }

@@ -186,5 +186,24 @@
       "severity": "warning",
       "message": "SPIRV magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "spir_v_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SPIRV. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "spir_v_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SPIRV. Hand-tune weights/rates per format if needed."
+  }
 }

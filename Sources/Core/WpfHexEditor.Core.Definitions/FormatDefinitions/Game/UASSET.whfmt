@@ -168,5 +168,30 @@
     "LegacyVersion": "-8=UE5/UE4.27+; -7=UE4.20-4.26; -6=UE4.15-4.19",
     "AssetTypes": ".uasset=content, .umap=level, .uexp=bulk, .ucas/.utoc=IO Store",
     "Serialization": "FPackageFileSummary + Name table + Import table + Export table"
+  },
+  "diff": {
+    "keyFields": [
+      "ue_package_tag",
+      "ue_legacy_file_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for UASSET. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ue_package_tag",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "ue_legacy_file_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for UASSET. Hand-tune weights/rates per format if needed."
   }
 }

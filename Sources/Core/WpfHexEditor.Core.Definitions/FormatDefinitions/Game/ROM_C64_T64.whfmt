@@ -242,5 +242,24 @@
     "DirectoryEntrySize": "32 bytes each",
     "FilenameEncoding": "PETSCII (Commodore character set, differs from ASCII)",
     "Versions": "T64 v1.0 (0x0100) and v2.0 (0x0200)"
+  },
+  "diff": {
+    "keyFields": [
+      "t64_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_C64_T64. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "t64_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_C64_T64. Hand-tune weights/rates per format if needed."
   }
 }

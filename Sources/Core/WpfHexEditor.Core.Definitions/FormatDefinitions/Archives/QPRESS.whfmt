@@ -177,5 +177,42 @@
     "Algorithm": "QuickLZ",
     "Endianness": "little-endian",
     "BlockTypes": { "0x66": "file block", "0x45": "end-of-file block" }
+  },
+  "diff": {
+    "keyFields": [
+      "qpress_magic",
+      "first_block_type",
+      "compressed_block_size",
+      "original_block_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for QPRESS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "qpress_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "first_block_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "compressed_block_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "original_block_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for QPRESS. Hand-tune weights/rates per format if needed."
   }
 }

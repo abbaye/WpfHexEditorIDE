@@ -194,5 +194,26 @@
     "MaxAtoms": "99,999 (ATOM serial number limit)",
     "CoordinateUnits": "Angstroms (1 Å = 0.1 nm)",
     "Superseded": "Replaced by mmCIF/PDBx for new wwPDB depositions since 2014"
+  },
+  "diff": {
+    "keyFields": [
+      "pdb_header"
+    ],
+    "ignoreFields": [
+      "pdb_date"
+    ],
+    "note": "Inferred semantic diff for PDB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pdb_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PDB. Hand-tune weights/rates per format if needed."
   }
 }

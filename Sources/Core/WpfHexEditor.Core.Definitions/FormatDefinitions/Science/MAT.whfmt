@@ -241,5 +241,24 @@
       "Check for Level 7.3 by looking for HDF5 magic (89 48 44 46) at offset 0 — these are .mat v7.3",
       "Enumerate all top-level variables by iterating data element headers throughout the file"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "matlab_header"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MAT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "matlab_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MAT. Hand-tune weights/rates per format if needed."
   }
 }

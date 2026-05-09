@@ -223,5 +223,26 @@
     "CommonFirstBytes": "0x99=old public key, 0xC5=new secret key, 0xC6=new public key, 0x4B42=Keybox",
     "KeyVersions": "v3 (legacy), v4 (RFC 4880 standard), v6 (draft)",
     "Keybox": "GnuPG 2.1+ internal format, magic 0x4B420200"
+  },
+  "diff": {
+    "keyFields": [
+      "key_algorithm"
+    ],
+    "ignoreFields": [
+      "key_timestamp"
+    ],
+    "note": "Inferred semantic diff for PGP_BINARY. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "key_algorithm",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PGP_BINARY. Hand-tune weights/rates per format if needed."
   }
 }

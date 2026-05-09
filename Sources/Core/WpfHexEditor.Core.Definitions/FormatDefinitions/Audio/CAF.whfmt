@@ -231,5 +231,35 @@
     "ChunkHeaderSize": "12 bytes (4B type + 8B size)",
     "MaxFileSize": "Unlimited (64-bit chunk sizes)",
     "MaxChannels": "Unlimited"
+  },
+  "diff": {
+    "keyFields": [
+      "caf_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for CAF. Compare key structural fields; ignore volatile metadata."
+  },
+  "repair": [
+    {
+      "name": "FixSignature",
+      "trigger": "SignatureMismatch",
+      "action": "set_value",
+      "target": "0",
+      "value": "caff",
+      "length": 4,
+      "description": "Restore the 4-byte CAF signature at offset 0."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "caf_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for CAF. Hand-tune weights/rates per format if needed."
   }
 }

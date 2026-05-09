@@ -220,5 +220,24 @@
     "readFloat32LE": "Read voxel sizes",
     "multiply": "Calculate pixels",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "diff": {
+    "keyFields": [
+      "header_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ANALYZE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "header_size",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ANALYZE. Hand-tune weights/rates per format if needed."
   }
 }

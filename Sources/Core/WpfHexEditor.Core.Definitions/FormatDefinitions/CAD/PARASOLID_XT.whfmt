@@ -191,5 +191,24 @@
     "TopologyEntities": ["body", "shell", "face", "loop", "edge", "vertex"],
     "GeometryEntities": ["plane", "cylinder", "cone", "sphere", "torus", "bspline_surface", "line", "circle", "bspline_curve"],
     "Endianness": "N/A (text format)"
+  },
+  "diff": {
+    "keyFields": [
+      "parasolid_xt_header"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PARASOLID_XT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "parasolid_xt_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PARASOLID_XT. Hand-tune weights/rates per format if needed."
   }
 }

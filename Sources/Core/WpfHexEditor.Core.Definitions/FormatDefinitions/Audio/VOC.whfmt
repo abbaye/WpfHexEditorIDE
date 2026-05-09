@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Creative Voice File",
   "formatId": "VOC",
@@ -289,5 +289,42 @@
     "SampleRateFormula": "SR = 1000000 / (256 - divisor) for block type 1",
     "SupportedCodecs": "8-bit unsigned PCM, 4-bit ADPCM 2-to-1, 3-bit ADPCM, 2-bit ADPCM",
     "EOFMarker": "0x1A (DOS Ctrl+Z)"
+  },
+  "diff": {
+    "keyFields": [
+      "voc_signature",
+      "data_block_offset",
+      "version",
+      "first_block_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for VOC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "voc_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "first_block_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "data_block_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for VOC. Hand-tune weights/rates per format if needed."
   }
 }

@@ -173,5 +173,30 @@
     "Magic": "0x30 (ASN.1 SEQUENCE) at offset 0 — not unique to certificates",
     "PEMRelation": "PEM = base64(DER) with '-----BEGIN CERTIFICATE-----' header/footer",
     "OtherDER": "0x30 prefix also used for CSRs (PKCS#10), CRLs, private keys (PKCS#8)"
+  },
+  "diff": {
+    "keyFields": [
+      "asn1_tag",
+      "asn1_length_indicator"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DER. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "asn1_tag",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "asn1_length_indicator",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DER. Hand-tune weights/rates per format if needed."
   }
 }

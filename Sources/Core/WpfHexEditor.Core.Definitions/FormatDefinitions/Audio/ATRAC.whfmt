@@ -221,5 +221,30 @@
     "Variants": "ATRAC1, ATRAC3, ATRAC3plus, ATRAC9, ATRAC Advanced Lossless",
     "HardwareDecoder": true,
     "TargetPlatform": "Sony PlayStation / MiniDisc / Walkman"
+  },
+  "diff": {
+    "keyFields": [
+      "atrac_riff_magic",
+      "atrac_file_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ATRAC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "atrac_riff_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "atrac_file_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ATRAC. Hand-tune weights/rates per format if needed."
   }
 }

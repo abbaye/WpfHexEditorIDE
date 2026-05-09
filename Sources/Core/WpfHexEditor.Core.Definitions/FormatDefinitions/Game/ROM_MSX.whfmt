@@ -243,5 +243,24 @@
     "ROMPageIdentifier": "'AB' = 0x4142 (cartridge), 'CD' = 0x4344 (MSX-DOS)",
     "MapperTypes": "Linear, ASCII8, ASCII16, Konami4, Konami5 (SCC), GameMaster2",
     "AddressSpace": "Page 1 = 0x4000-0x7FFF, Page 2 = 0x8000-0xBFFF"
+  },
+  "diff": {
+    "keyFields": [
+      "msx_id"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_MSX. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "msx_id",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_MSX. Hand-tune weights/rates per format if needed."
   }
 }

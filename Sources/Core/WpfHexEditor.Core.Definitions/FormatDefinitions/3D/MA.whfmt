@@ -177,5 +177,24 @@
       "Scan for 'requires' commands to identify plugin dependencies and Maya version requirements",
       "Look for 'createNode' commands to enumerate scene objects like meshes, cameras, and lights"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "maya_ascii_header"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MA. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "maya_ascii_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MA. Hand-tune weights/rates per format if needed."
   }
 }

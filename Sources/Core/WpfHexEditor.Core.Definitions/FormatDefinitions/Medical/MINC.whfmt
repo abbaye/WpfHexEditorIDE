@@ -210,5 +210,24 @@
     "Standard": "BIC-MNI MINC specification — McConnell Brain Imaging Centre",
     "Endianness": "big-endian for MINC1 (NetCDF), native for MINC2 (HDF5)",
     "SpatialModel": "Explicit direction cosines + step + start attributes for voxel-to-world transform"
+  },
+  "diff": {
+    "keyFields": [
+      "minc_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MINC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "minc_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MINC. Hand-tune weights/rates per format if needed."
   }
 }

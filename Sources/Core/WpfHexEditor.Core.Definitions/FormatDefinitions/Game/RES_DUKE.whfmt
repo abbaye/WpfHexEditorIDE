@@ -158,5 +158,30 @@
     "Header": "16 bytes: magic(12B) + fileCount(4B LE)",
     "FileTable": "16-byte entries: filename(12B null-padded) + fileSize(4B LE); table at offset 16",
     "Data": "Files stored contiguously after complete file table, no compression"
+  },
+  "diff": {
+    "keyFields": [
+      "grp_signature",
+      "grp_file_count"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for RES_DUKE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "grp_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "grp_file_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for RES_DUKE. Hand-tune weights/rates per format if needed."
   }
 }

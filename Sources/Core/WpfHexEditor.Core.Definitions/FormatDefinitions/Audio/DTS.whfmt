@@ -220,5 +220,24 @@
     "maxBitrate": "1536 kbps (core)",
     "maxChannels": "5.1 core (7.1 with DTS-HD extensions)",
     "frameSizeFormula": "FSIZE + 1 bytes"
+  },
+  "diff": {
+    "keyFields": [
+      "dts_sync_word"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DTS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dts_sync_word",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DTS. Hand-tune weights/rates per format if needed."
   }
 }

@@ -174,5 +174,24 @@
     "packetKeys": ["SH", "RG", "EI", "SO", "AP", "SE", "ES"],
     "derivedFrom": "MPEG-1 Layer II with psychoacoustic extensions",
     "lossless": false
+  },
+  "diff": {
+    "keyFields": [
+      "mpc_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MPC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "mpc_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MPC. Hand-tune weights/rates per format if needed."
   }
 }

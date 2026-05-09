@@ -235,5 +235,42 @@
     "Compression": ["None", "RLE", "zlib"],
     "ColorModes": { "0": "RGB", "1": "Grayscale", "2": "Indexed" },
     "PointerSize": "4 bytes (v011 and below) or 8 bytes (v012+)"
+  },
+  "diff": {
+    "keyFields": [
+      "xcf_magic",
+      "xcf_width",
+      "xcf_height",
+      "xcf_color_mode"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for GIMP_XCF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "xcf_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "xcf_color_mode",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "xcf_width",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "xcf_height",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for GIMP_XCF. Hand-tune weights/rates per format if needed."
   }
 }

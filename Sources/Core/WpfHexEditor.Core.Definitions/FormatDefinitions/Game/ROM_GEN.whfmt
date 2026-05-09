@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Sega Genesis/Mega Drive ROM",
   "formatId": "ROM_GEN",
@@ -315,5 +315,24 @@
       "Check resource/asset table entries and data block offsets",
       "Inspect compression flags, checksums, and embedded file boundaries"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "console_name"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_GEN. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "console_name",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 256 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_GEN. Hand-tune weights/rates per format if needed."
   }
 }

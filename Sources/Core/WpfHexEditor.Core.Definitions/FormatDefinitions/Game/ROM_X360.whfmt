@@ -221,5 +221,36 @@
       "severity": "warning",
       "message": "XEX2 magic must be 0x58455832 — not a valid Xbox 360 executable"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "xex2_magic",
+      "pe_data_offset",
+      "security_info_offset"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_X360. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "xex2_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "pe_data_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "security_info_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_X360. Hand-tune weights/rates per format if needed."
+  }
 }

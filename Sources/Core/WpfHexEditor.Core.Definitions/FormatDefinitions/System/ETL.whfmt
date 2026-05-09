@@ -325,5 +325,56 @@
     "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
     "AutoRefined": false
+  },
+  "diff": {
+    "keyFields": [
+      "first_buffer_header",
+      "buffer_size",
+      "saved_offset",
+      "current_offset",
+      "clock_type",
+      "buffer_type"
+    ],
+    "ignoreFields": [
+      "timestamp"
+    ],
+    "note": "Inferred semantic diff for ETL. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "first_buffer_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "clock_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "buffer_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "buffer_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "saved_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "current_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ETL. Hand-tune weights/rates per format if needed."
   }
 }

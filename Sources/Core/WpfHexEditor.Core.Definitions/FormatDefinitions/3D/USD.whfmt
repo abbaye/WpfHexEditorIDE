@@ -213,5 +213,24 @@
     "usdzContainer": "ZIP (uncompressed first entry must be .usdc or .usda)",
     "compositionArcs": ["sublayers", "references", "payloads", "inherits", "specializes", "variants"],
     "versionBytes": "major.minor.patch at offsets 8, 9, 10"
+  },
+  "diff": {
+    "keyFields": [
+      "usd_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for USD. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "usd_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for USD. Hand-tune weights/rates per format if needed."
   }
 }

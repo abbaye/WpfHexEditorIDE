@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "DSD Interchange File Format",
   "formatId": "DFF",
@@ -226,5 +226,36 @@
     "DSDEncoding": "1-bit pulse-density modulation (PDM)",
     "SampleRates": "DSD64=2822400 Hz, DSD128=5644800 Hz, DSD256=11289600 Hz",
     "CompressionOption": "DST lossless compression or raw DSD bitstream"
+  },
+  "diff": {
+    "keyFields": [
+      "frm_chunk",
+      "chunk_size",
+      "fver_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DFF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "frm_chunk",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "fver_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "chunk_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DFF. Hand-tune weights/rates per format if needed."
   }
 }

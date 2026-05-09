@@ -183,5 +183,24 @@
       "Read 64-bit TOC offset at offset 16 to locate the table of contents for full structure traversal",
       "Compare with ASCII USDA equivalent to understand the complete scene graph structure"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "pxr_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for USDC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pxr_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for USDC. Hand-tune weights/rates per format if needed."
   }
 }

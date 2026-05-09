@@ -187,5 +187,26 @@
     "PacketSize": "192 bytes (4-byte ATS + 188-byte TS)",
     "VideoCodecs": "H.264/AVC (1080i, 1080p, 720p)",
     "AudioCodecs": "AC-3 (Dolby Digital), LPCM"
+  },
+  "diff": {
+    "keyFields": [
+      "sync_byte"
+    ],
+    "ignoreFields": [
+      "arrival_time_stamp"
+    ],
+    "note": "Inferred semantic diff for MTS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "sync_byte",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 4 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MTS. Hand-tune weights/rates per format if needed."
   }
 }

@@ -212,5 +212,24 @@
     "magicBytes": "4C594E58",
     "endianness": "little-endian",
     "notes": "The 64-byte Lynx header predates standard ROM header conventions. Some emulators extend this header with additional flags."
+  },
+  "diff": {
+    "keyFields": [
+      "rotation"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_LYNX. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "rotation",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_LYNX. Hand-tune weights/rates per format if needed."
   }
 }

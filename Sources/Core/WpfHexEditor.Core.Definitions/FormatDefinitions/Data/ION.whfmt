@@ -226,5 +226,24 @@
     "SymbolTables": "System (9 predefined symbols) + optional local symbol table struct",
     "JSONSuperset": "Text Ion is a strict superset of JSON; binary Ion is a compact binary encoding",
     "SupportsStreaming": true
+  },
+  "diff": {
+    "keyFields": [
+      "ion_ivm"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ION. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ion_ivm",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ION. Hand-tune weights/rates per format if needed."
   }
 }

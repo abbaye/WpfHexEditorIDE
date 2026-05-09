@@ -264,5 +264,48 @@
     "storageFormats": ["verbatim (0)", "RLE per scanline (1)"],
     "channelOrdering": "planar (each channel stored separately, bottom-up row order)",
     "bitDepths": ["8-bit per channel", "16-bit per channel"]
+  },
+  "diff": {
+    "keyFields": [
+      "sgi_magic",
+      "storage_format",
+      "bytes_per_channel",
+      "dimensions",
+      "z_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SGI_RGB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "sgi_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "storage_format",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "bytes_per_channel",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "dimensions",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "z_size",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SGI_RGB. Hand-tune weights/rates per format if needed."
   }
 }

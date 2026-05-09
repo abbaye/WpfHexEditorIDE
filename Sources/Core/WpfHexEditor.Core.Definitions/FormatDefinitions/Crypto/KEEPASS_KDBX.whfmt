@@ -209,5 +209,24 @@
     "innerStreamCiphers": [ "Salsa20", "ChaCha20" ],
     "payloadFormat": "gzip-compressed XML",
     "authenticationKDBX4": "HMAC-SHA256 per-block"
+  },
+  "diff": {
+    "keyFields": [
+      "kdbx_version_major"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for KEEPASS_KDBX. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "kdbx_version_major",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for KEEPASS_KDBX. Hand-tune weights/rates per format if needed."
   }
 }

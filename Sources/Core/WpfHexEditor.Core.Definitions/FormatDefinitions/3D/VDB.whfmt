@@ -210,5 +210,30 @@
     "defaultLeafSize": "8x8x8 voxels per leaf node",
     "compressionCodecs": "None, Zip (zlib), ActiveMask+Zip, Blosc",
     "gridTypes": "float, double, int32, int64, bool, Vec3f, Vec3d, PointDataGrid"
+  },
+  "diff": {
+    "keyFields": [
+      "vdb_magic",
+      "vdb_compression"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for VDB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "vdb_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "vdb_compression",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for VDB. Hand-tune weights/rates per format if needed."
   }
 }

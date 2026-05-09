@@ -189,5 +189,24 @@
     "Namespace": "http://www.w3.org/ns/ttml",
     "StylingNamespace": "http://www.w3.org/ns/ttml#styling",
     "Profiles": ["DFXP (SMPTE ST 2052)", "EBU-TT", "W3C IMSC 1.1"]
+  },
+  "diff": {
+    "keyFields": [
+      "first_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for TTML. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "first_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for TTML. Hand-tune weights/rates per format if needed."
   }
 }

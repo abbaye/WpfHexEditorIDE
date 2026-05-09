@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Mobipocket eBook",
   "formatId": "MOBI",
@@ -324,5 +324,43 @@
     "Compression": "PalmDOC LZ77 or Huffdic",
     "HasHeader": true,
     "HeaderSize": "78 bytes PDB header + 8×recordCount bytes record list"
+  },
+  "diff": {
+    "keyFields": [
+      "pdb_attributes",
+      "pdb_type",
+      "record_count"
+    ],
+    "ignoreFields": [
+      "pdb_creator"
+    ],
+    "note": "Inferred semantic diff for MOBI. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pdb_attributes",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "pdb_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "pdb_creator",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "record_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MOBI. Hand-tune weights/rates per format if needed."
   }
 }

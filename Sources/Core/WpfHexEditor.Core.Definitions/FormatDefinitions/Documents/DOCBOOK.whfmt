@@ -328,5 +328,24 @@
       ".docbook",
       ".dbk"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "docbook_root"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DOCBOOK. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "docbook_root",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DOCBOOK. Hand-tune weights/rates per format if needed."
   }
 }

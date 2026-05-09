@@ -269,5 +269,30 @@
     "Standard": "Analyze 7.5 Format — Mayo Foundation (1990), no formal ISO/ANSI standard",
     "Endianness": "little-endian (most implementations), big-endian files possible",
     "Limitation": "No spatial orientation encoding — axis ambiguity is a known design flaw"
+  },
+  "diff": {
+    "keyFields": [
+      "sizeof_hdr",
+      "datatype"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ANALYZE75. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "datatype",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "sizeof_hdr",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ANALYZE75. Hand-tune weights/rates per format if needed."
   }
 }

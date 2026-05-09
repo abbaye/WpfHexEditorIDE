@@ -209,5 +209,26 @@
   "functions": {
     "readUInt32LE": "Read DICOM tag group/element pairs",
     "extractASCIIString": "Read UID and date string values"
+  },
+  "diff": {
+    "keyFields": [
+      "dicm_magic"
+    ],
+    "ignoreFields": [
+      "study_date"
+    ],
+    "note": "Inferred semantic diff for DICOM_SR. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dicm_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 128 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DICOM_SR. Hand-tune weights/rates per format if needed."
   }
 }

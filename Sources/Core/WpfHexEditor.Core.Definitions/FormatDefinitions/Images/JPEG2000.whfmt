@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "JPEG 2000 Image",
   "formatId": "JPEG2000",
@@ -386,5 +386,36 @@
     "HeaderSize": "12 bytes JP2 Signature Box + variable",
     "Lossless": true,
     "MaxBitDepth": "16 bits per component"
+  },
+  "diff": {
+    "keyFields": [
+      "jp2_signature_box_size",
+      "ftyp_box_size",
+      "jp2_brand"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for JPEG2000. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "jp2_signature_box_size",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "jp2_brand",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "ftyp_box_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for JPEG2000. Hand-tune weights/rates per format if needed."
   }
 }

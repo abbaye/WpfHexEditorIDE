@@ -227,5 +227,24 @@
     "FormatTag": "0x0165 (XMA1) or 0x0166 (XMA2)",
     "HardwareDecoder": true,
     "TargetPlatform": "Xbox 360 / Xbox One"
+  },
+  "diff": {
+    "keyFields": [
+      "xma_riff_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for XMA. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "xma_riff_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for XMA. Hand-tune weights/rates per format if needed."
   }
 }

@@ -220,5 +220,30 @@
     "endianness": "BigEndian",
     "userPasswordObfuscation": "MD5(shared_secret + authenticator) XOR password (16-byte blocks)",
     "rfcs": [ "RFC 2865 (auth/authz)", "RFC 2866 (accounting)", "RFC 3579 (EAP support)", "RFC 5997 (status server)" ]
+  },
+  "diff": {
+    "keyFields": [
+      "radius_code",
+      "radius_first_attr_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for RADIUS_PACKET. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "radius_code",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "radius_first_attr_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for RADIUS_PACKET. Hand-tune weights/rates per format if needed."
   }
 }

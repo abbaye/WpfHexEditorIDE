@@ -203,5 +203,30 @@
     "SampleRates": "44.1/48/88.2/96/176.4/192 kHz",
     "BitDepth": "up to 24-bit lossless",
     "UseCase": "DVD-Audio high-resolution surround sound"
+  },
+  "diff": {
+    "keyFields": [
+      "mlp_sync_word",
+      "format_sync_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MLP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "mlp_sync_word",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 4 — parser must reject."
+      },
+      {
+        "field": "format_sync_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MLP. Hand-tune weights/rates per format if needed."
   }
 }

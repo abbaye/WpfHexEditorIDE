@@ -191,5 +191,24 @@
     "FrameStructure": "ITEM: TIMESTEP → value → ITEM: NUMBER OF ATOMS → count → ITEM: BOX BOUNDS → extents → ITEM: ATOMS → per-atom data",
     "Endianness": "N/A (text format)",
     "MultiFrame": true
+  },
+  "diff": {
+    "keyFields": [
+      "lammps_dump_keyword"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for LAMMPS_DUMP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "lammps_dump_keyword",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for LAMMPS_DUMP. Hand-tune weights/rates per format if needed."
   }
 }

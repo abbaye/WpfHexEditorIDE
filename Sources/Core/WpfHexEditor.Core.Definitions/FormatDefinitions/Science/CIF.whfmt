@@ -162,5 +162,24 @@
     "Structure": "data_ blocks containing _tag value pairs and loop_ tables",
     "KeywordSet": "IUCr CIF dictionary tags prefixed with '_'",
     "Versions": "CIF 1.0 (1991), CIF 1.1 (2006), CIF 2.0 (2016)"
+  },
+  "diff": {
+    "keyFields": [
+      "cif_data_block"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for CIF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "cif_data_block",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for CIF. Hand-tune weights/rates per format if needed."
   }
 }

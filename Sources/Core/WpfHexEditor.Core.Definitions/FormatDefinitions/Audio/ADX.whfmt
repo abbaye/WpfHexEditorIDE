@@ -268,5 +268,42 @@
     "BlockSize": "18 bytes typical (32 samples at 4-bit)",
     "MaxChannels": 8,
     "NativeLoopSupport": true
+  },
+  "diff": {
+    "keyFields": [
+      "adx_magic",
+      "adx_copyright_offset",
+      "adx_encoding",
+      "adx_block_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ADX. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "adx_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "adx_encoding",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "adx_copyright_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "adx_block_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ADX. Hand-tune weights/rates per format if needed."
   }
 }

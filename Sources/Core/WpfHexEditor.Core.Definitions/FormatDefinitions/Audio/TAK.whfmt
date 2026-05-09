@@ -148,5 +148,24 @@
     "BitDepths": "8 to 32-bit",
     "OpenSource": false,
     "Platform": "Windows (official), FFmpeg (decoder only)"
+  },
+  "diff": {
+    "keyFields": [
+      "tak_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for TAK. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "tak_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for TAK. Hand-tune weights/rates per format if needed."
   }
 }

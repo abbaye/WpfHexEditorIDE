@@ -162,5 +162,24 @@
     "LastUpdated": "2026-04-15",
     "PriorityFormat": false,
     "AutoRefined": false
+  },
+  "diff": {
+    "keyFields": [
+      "nrg_first_bytes"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for NRG. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "nrg_first_bytes",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for NRG. Hand-tune weights/rates per format if needed."
   }
 }

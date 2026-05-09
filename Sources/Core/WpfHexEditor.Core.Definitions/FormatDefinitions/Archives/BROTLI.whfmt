@@ -73,5 +73,24 @@
   "MimeTypes": ["application/x-brotli"],
   "UseCases": ["HTTP Content-Encoding: br", ".woff2 web font compression", "npm package tarballs", "Static web asset pre-compression"],
   "QualityMetrics": { "CompletenessScore": 55, "DocumentationLevel": "detailed", "BlocksDefined": 2, "ValidationRules": 1, "LastUpdated": "2026-04-14", "PriorityFormat": false, "AutoRefined": false },
-  "TechnicalDetails": { "Format": "Brotli compressed stream (RFC 7932)", "Magic": "None — no magic bytes", "WindowSize": "Encoded in first byte (WBITS 10-24)", "RFC": "RFC 7932 (IETF, July 2016)" }
+  "TechnicalDetails": { "Format": "Brotli compressed stream (RFC 7932)", "Magic": "None — no magic bytes", "WindowSize": "Encoded in first byte (WBITS 10-24)", "RFC": "RFC 7932 (IETF, July 2016)" },
+  "diff": {
+    "keyFields": [
+      "window_descriptor"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for BROTLI. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "window_descriptor",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for BROTLI. Hand-tune weights/rates per format if needed."
+  }
 }

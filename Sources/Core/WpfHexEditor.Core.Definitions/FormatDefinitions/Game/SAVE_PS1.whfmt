@@ -192,5 +192,24 @@
     "headerMagic": "4D43",
     "endianness": "little-endian",
     "notes": "Memory card organized into 1024 frames of 128 bytes each. Frames 0=header, 1-15=directory, 16-63=unused, 64-1023=save data. Each save uses 64 frames (8KB). Frame type 0xFF indicates a free slot."
+  },
+  "diff": {
+    "keyFields": [
+      "dir1_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SAVE_PS1. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dir1_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SAVE_PS1. Hand-tune weights/rates per format if needed."
   }
 }

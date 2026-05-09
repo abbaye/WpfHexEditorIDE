@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "ARJ Archive",
   "formatId": "ARJ",
@@ -438,5 +438,74 @@
     "SupportsMultiVolume": true,
     "ChecksumAlgorithm": "CRC-32 (IEEE 802.3 polynomial)",
     "MaxFileSize": "2GB (32-bit size field)"
+  },
+  "diff": {
+    "keyFields": [
+      "arj_signature",
+      "basic_header_size",
+      "first_header_size",
+      "archive_version",
+      "host_os",
+      "arj_flags",
+      "file_type",
+      "compressed_size",
+      "original_size"
+    ],
+    "ignoreFields": [
+      "timestamp"
+    ],
+    "note": "Inferred semantic diff for ARJ. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "arj_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "basic_header_size",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "first_header_size",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "archive_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "host_os",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "arj_flags",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "file_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "compressed_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "original_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ARJ. Hand-tune weights/rates per format if needed."
   }
 }

@@ -172,5 +172,24 @@
     "bamOffset": 91392,
     "endianness": "little-endian",
     "notes": "CBM 1541 uses 35 tracks with variable sectors per track: tracks 1-17 have 21 sectors, tracks 18-24 have 19, tracks 25-30 have 18, and tracks 31-35 have 17. Directory is always on track 18."
+  },
+  "diff": {
+    "keyFields": [
+      "dos_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_C64_D64. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dos_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_C64_D64. Hand-tune weights/rates per format if needed."
   }
 }

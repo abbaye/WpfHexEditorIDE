@@ -163,5 +163,24 @@
     "VersionEncoding": "Binary integer at offset 4 encoding CATIA V5 release (R1-R33+)",
     "AccessMethod": "CATIA CAA V5 SDK required; commercial translators available",
     "NeutralExport": "STEP AP214 or IGES via CATIA export"
+  },
+  "diff": {
+    "keyFields": [
+      "catia_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for CATPART. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "catia_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for CATPART. Hand-tune weights/rates per format if needed."
   }
 }

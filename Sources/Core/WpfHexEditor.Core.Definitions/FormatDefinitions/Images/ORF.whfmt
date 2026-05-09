@@ -192,5 +192,36 @@
     "Endianness": "little-endian or big-endian depending on camera",
     "RawEncoding": "12-bit Bayer sensor data, lossless or uncompressed",
     "OlympusMagicValues": "0x4952, 0x4F52, 0x524F (distinguishes from standard TIFF)"
+  },
+  "diff": {
+    "keyFields": [
+      "byte_order_mark",
+      "orf_magic",
+      "ifd_offset"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ORF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "byte_order_mark",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "orf_magic",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "ifd_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ORF. Hand-tune weights/rates per format if needed."
   }
 }

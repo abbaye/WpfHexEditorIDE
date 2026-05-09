@@ -255,5 +255,36 @@
     "FragmentationTypes": ["FULL", "FIRST", "MIDDLE", "LAST"],
     "WriteBatchSequenceWidth": "64-bit monotonic counter",
     "ValueTypes": ["kTypeDeletion=0", "kTypeValue=1", "kTypeMerge=2"]
+  },
+  "diff": {
+    "keyFields": [
+      "first_record_length",
+      "first_record_type",
+      "batch_count"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROCKSDB_LOG. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "first_record_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "first_record_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "batch_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROCKSDB_LOG. Hand-tune weights/rates per format if needed."
   }
 }

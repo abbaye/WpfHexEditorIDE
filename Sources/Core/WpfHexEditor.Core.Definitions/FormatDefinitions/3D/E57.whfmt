@@ -251,5 +251,48 @@
     "pageCRC": "CRC32 at page bytes 1020-1023 (4 bytes per page)",
     "compression": "BitPackCodec and ConstantCodec (lossless bit-packing)",
     "encoding": "binary-little-endian with XML structure descriptor"
+  },
+  "diff": {
+    "keyFields": [
+      "e57_magic",
+      "file_length",
+      "xml_offset",
+      "xml_length",
+      "page_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for E57. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "e57_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "file_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "xml_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "xml_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "page_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for E57. Hand-tune weights/rates per format if needed."
   }
 }

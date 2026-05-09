@@ -186,5 +186,24 @@
     "ShadingModels": ["standard_surface", "UsdPreviewSurface", "gltf_pbr"],
     "NodeTypes": ["surfacematerial", "nodegraph", "image", "constant", "multiply", "add"],
     "Endianness": "N/A (XML text)"
+  },
+  "diff": {
+    "keyFields": [
+      "mtlx_root"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MATERIALX. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "mtlx_root",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MATERIALX. Hand-tune weights/rates per format if needed."
   }
 }

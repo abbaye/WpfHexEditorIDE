@@ -230,5 +230,30 @@
       "severity": "warning",
       "message": "WUX magic 0x57555800 invalid — not a valid Wii U WUX compressed disc image"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "uncompressed_size",
+      "sector_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_WIIU. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "uncompressed_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "sector_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_WIIU. Hand-tune weights/rates per format if needed."
+  }
 }

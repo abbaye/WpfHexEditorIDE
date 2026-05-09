@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "AIX iptrace",
   "formatId": "IPTRACE",
@@ -190,5 +190,30 @@
       "Check packet record timestamps and capture lengths",
       "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "iptrace_signature",
+      "packet_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for IPTRACE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "iptrace_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "packet_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for IPTRACE. Hand-tune weights/rates per format if needed."
   }
 }

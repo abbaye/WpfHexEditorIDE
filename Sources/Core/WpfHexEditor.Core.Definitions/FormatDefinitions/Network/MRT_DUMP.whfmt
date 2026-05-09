@@ -219,5 +219,32 @@
     "Archives": "RouteViews (routeviews.org) and RIPE RIS (ripe.net) — bzip2 compressed",
     "FullTableSize": "Typical full BGP table dump is 50-200MB compressed",
     "NamingConvention": "rib.YYYYMMDD.HHMM.bz2 (full), updates.YYYYMMDD.HHMM.bz2 (incremental)"
+  },
+  "diff": {
+    "keyFields": [
+      "mrt_type",
+      "mrt_length"
+    ],
+    "ignoreFields": [
+      "mrt_timestamp"
+    ],
+    "note": "Inferred semantic diff for MRT_DUMP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "mrt_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "mrt_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MRT_DUMP. Hand-tune weights/rates per format if needed."
   }
 }

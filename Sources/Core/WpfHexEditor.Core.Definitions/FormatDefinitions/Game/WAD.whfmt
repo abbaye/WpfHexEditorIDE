@@ -191,5 +191,36 @@
     "Header": "12 bytes: type(4B) + lumpCount(4B LE) + dirOffset(4B LE)",
     "DirEntry": "16 bytes: fileOffset(4B LE) + lumpSize(4B LE) + lumpName(8B null-padded ASCII)",
     "Compression": "None — lumps are stored uncompressed"
+  },
+  "diff": {
+    "keyFields": [
+      "wad_type",
+      "wad_lump_count",
+      "wad_dir_offset"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for WAD. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "wad_type",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "wad_lump_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "wad_dir_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for WAD. Hand-tune weights/rates per format if needed."
   }
 }

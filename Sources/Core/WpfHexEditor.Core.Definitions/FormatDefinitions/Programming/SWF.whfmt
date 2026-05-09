@@ -178,5 +178,30 @@
       "severity": "warning",
       "message": "SWF magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "swf_signature",
+      "file_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SWF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "swf_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "file_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SWF. Hand-tune weights/rates per format if needed."
+  }
 }

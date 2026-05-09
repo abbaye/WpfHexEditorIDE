@@ -152,5 +152,30 @@
     "VLI": "Variable-Length Integer: bit0=continuation, bits1-7=7-bit data chunks",
     "Commands": "SourceRead(0), TargetRead(1), SourceCopy(2), TargetCopy(3) — lower 2 bits",
     "Checksums": "Three CRC32 LE at EOF: source, target, patch"
+  },
+  "diff": {
+    "keyFields": [
+      "bps_magic",
+      "bps_src_size_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PATCH_BPS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "bps_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "bps_src_size_byte",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PATCH_BPS. Hand-tune weights/rates per format if needed."
   }
 }

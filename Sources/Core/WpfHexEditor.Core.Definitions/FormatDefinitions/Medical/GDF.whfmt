@@ -194,5 +194,24 @@
     "Endianness": "little-endian",
     "EventTable": "Appended at end of file (GDF v2.x)",
     "PHI_Risk": "High — patient ID and recording dates in header"
+  },
+  "diff": {
+    "keyFields": [
+      "gdf_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for GDF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "gdf_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for GDF. Hand-tune weights/rates per format if needed."
   }
 }

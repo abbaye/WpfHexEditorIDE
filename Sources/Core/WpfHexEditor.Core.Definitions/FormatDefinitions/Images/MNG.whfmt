@@ -179,5 +179,30 @@
       "severity": "warning",
       "message": "MNG magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "mng_signature",
+      "mhdr_chunk_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MNG. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "mng_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "mhdr_chunk_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MNG. Hand-tune weights/rates per format if needed."
+  }
 }

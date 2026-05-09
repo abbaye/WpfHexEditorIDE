@@ -237,5 +237,24 @@
       "Read TKey: buffer length (4), large flag (2), key length (2), object version (2), object length (4), date/time (4), key string length (2), cycle (2), seek key (4 or 8), seek pdir (4 or 8), class name, object name, object title",
       "Locate the TOP (TFile object) TKey to find the TFile directory and its key list"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "root_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROOT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "root_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROOT. Hand-tune weights/rates per format if needed."
   }
 }

@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "LZH Archive",
   "formatId": "LZH",
@@ -444,5 +444,68 @@
     "SupportsDirectories": true,
     "SupportsEncryption": false,
     "MaxFileSize": "4GB (32-bit size field)"
+  },
+  "diff": {
+    "keyFields": [
+      "header_size",
+      "method_id",
+      "compressed_size",
+      "original_size",
+      "attribute",
+      "header_level",
+      "filename_length",
+      "sum8"
+    ],
+    "ignoreFields": [
+      "timestamp"
+    ],
+    "note": "Inferred semantic diff for LZH. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": true,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "method_id",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 2 — parser must reject."
+      },
+      {
+        "field": "header_size",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "attribute",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "header_level",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "compressed_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "original_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "filename_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "sum8",
+        "mutation": "random_bytes",
+        "description": "Random SUM8 value triggers integrity failure."
+      }
+    ],
+    "note": "Inferred fuzz strategies for LZH. Hand-tune weights/rates per format if needed."
   }
 }

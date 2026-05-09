@@ -329,5 +329,48 @@
     "Endianness": "little-endian",
     "SensitiveData": "Full physical RAM contents including keys and credentials",
     "AnalysisTool": "WinDbg (Microsoft), Volatility Framework"
+  },
+  "diff": {
+    "keyFields": [
+      "dmp_magic",
+      "valid_dump",
+      "major_version",
+      "machine_type",
+      "bug_check_code"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for CRASHDUMP_WIN. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dmp_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "valid_dump",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "major_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "machine_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "bug_check_code",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for CRASHDUMP_WIN. Hand-tune weights/rates per format if needed."
   }
 }

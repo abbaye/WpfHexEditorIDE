@@ -224,5 +224,30 @@
     "keyDerivation": "PBKDF2 (password protector) or TPM-sealed key",
     "metadataRedundancy": 3,
     "fveMetadataCopies": "Three copies stored at offsets recorded in boot sector at offsets 176, 184, 192"
+  },
+  "diff": {
+    "keyFields": [
+      "btlk_bytes_per_sector",
+      "btlk_enc_method"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for BITLOCKER. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "btlk_bytes_per_sector",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "btlk_enc_method",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for BITLOCKER. Hand-tune weights/rates per format if needed."
   }
 }

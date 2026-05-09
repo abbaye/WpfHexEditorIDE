@@ -207,5 +207,36 @@
     "VideoCodec": "H.265/HEVC (ITU-T H.265 / ISO/IEC 23008-2)",
     "Endianness": "big-endian (start codes and NALU headers)",
     "MaxResolution": "Up to 8192×4320 (Level 6.2)"
+  },
+  "diff": {
+    "keyFields": [
+      "start_code",
+      "nalu_header_byte1",
+      "nalu_header_byte2"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for H265. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "start_code",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "nalu_header_byte1",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "nalu_header_byte2",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for H265. Hand-tune weights/rates per format if needed."
   }
 }

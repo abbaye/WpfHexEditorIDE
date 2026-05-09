@@ -209,5 +209,24 @@
     "LayoutNamespace": "http://www.w3.org/ns/ttml#parameter",
     "Profiles": "DFXP, SMPTE-TT, EBU-TT, IMSC 1.0/1.1",
     "Standard": "W3C TTML 1.0 / 2.0"
+  },
+  "diff": {
+    "keyFields": [
+      "dfxp_root"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DFXP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dfxp_root",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DFXP. Hand-tune weights/rates per format if needed."
   }
 }

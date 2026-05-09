@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "xdelta / VCDIFF Patch",
   "formatId": "xdelta_Patch",
@@ -98,5 +98,17 @@
       "Check patch record offsets stay within target ROM bounds",
       "Verify end-of-file marker and total patch data length"
     ]
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "vcdiff_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for xdelta_Patch. Hand-tune weights/rates per format if needed."
   }
 }

@@ -208,5 +208,36 @@
     "ByteOrder": "Big-endian throughout (SPARC/Solaris origin)",
     "Version": "Version 2 (RFC 1761 standard); version 1 = legacy pre-RFC",
     "PacketRecord": "originalLen(4B) + includedLen(4B) + recordLen(4B) + drops(4B) + sec(4B) + usec(4B) + data"
+  },
+  "diff": {
+    "keyFields": [
+      "snoop_magic",
+      "snoop_version",
+      "snoop_datalink_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SNOOP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "snoop_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "snoop_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "snoop_datalink_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SNOOP. Hand-tune weights/rates per format if needed."
   }
 }

@@ -186,5 +186,30 @@
     "MajorVersion": "3=512B sectors (standard), 4=4096B sectors (large assemblies)",
     "ExternalRefs": "Absolute/relative paths to .sldprt/.sldasm files embedded in OLE2 streams",
     "LargeAssembly": "Lightweight mode: only tessellated geometry loaded for assemblies >500 parts"
+  },
+  "diff": {
+    "keyFields": [
+      "ole2_signature",
+      "ole2_major_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SLDASM. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ole2_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "ole2_major_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SLDASM. Hand-tune weights/rates per format if needed."
   }
 }

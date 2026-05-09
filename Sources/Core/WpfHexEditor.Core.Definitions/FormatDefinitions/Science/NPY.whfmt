@@ -232,5 +232,24 @@
       "Compute array data size = product(shape) * itemsize and validate against file length",
       "Array data starts at offset 6+2+header_len rounded up to next multiple of 64"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "numpy_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for NPY. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "numpy_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for NPY. Hand-tune weights/rates per format if needed."
   }
 }

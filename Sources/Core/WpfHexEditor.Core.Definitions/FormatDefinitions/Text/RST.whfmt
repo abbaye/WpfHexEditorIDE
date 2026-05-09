@@ -166,5 +166,24 @@
     "SpecificationBody": "Docutils project",
     "ProcessingTools": "Sphinx, Docutils, pandoc",
     "Note": "No binary magic. Detection by extension (.rst, .rest) and '.. ' directive patterns."
+  },
+  "diff": {
+    "keyFields": [
+      "rst_first_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for RST. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "rst_first_byte",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for RST. Hand-tune weights/rates per format if needed."
   }
 }

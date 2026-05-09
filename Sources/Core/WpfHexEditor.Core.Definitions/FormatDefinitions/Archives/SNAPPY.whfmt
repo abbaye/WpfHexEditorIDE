@@ -190,5 +190,35 @@
     "Algorithm": "Snappy (LZ77 variant)",
     "Endianness": "little-endian",
     "ChunkTypes": { "0x00": "compressed", "0x01": "uncompressed", "0xFE": "padding", "0xFF": "stream identifier" }
+  },
+  "diff": {
+    "keyFields": [
+      "stream_identifier",
+      "first_chunk_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SNAPPY. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "stream_identifier_chunk_type",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "stream_identifier",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 4 — parser must reject."
+      },
+      {
+        "field": "first_chunk_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SNAPPY. Hand-tune weights/rates per format if needed."
   }
 }

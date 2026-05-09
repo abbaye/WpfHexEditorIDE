@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Virtual Memory Dump",
   "formatId": "VMEM",
@@ -183,5 +183,32 @@
       "Check timestamp sequence for gaps or chronological anomalies",
       "Inspect event severity levels and source identifiers"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "vmem_signature",
+      "memory_size"
+    ],
+    "ignoreFields": [
+      "snapshot_time"
+    ],
+    "note": "Inferred semantic diff for VMEM. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "vmem_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "memory_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for VMEM. Hand-tune weights/rates per format if needed."
   }
 }
