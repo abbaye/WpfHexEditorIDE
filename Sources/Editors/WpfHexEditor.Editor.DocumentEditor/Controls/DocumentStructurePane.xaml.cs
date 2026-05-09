@@ -10,6 +10,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Globalization;
@@ -234,8 +235,22 @@ public sealed class DocumentBlockNode : INotifyPropertyChanged
     public ObservableCollection<DocumentBlockNode> Children { get; } = [];
 
     public string KindLabel   => Block.Kind.ToUpperInvariant()[..Math.Min(3, Block.Kind.Length)];
-    public string Preview     => Block.Text.Length > 40 ? Block.Text[..40] + "…" : Block.Text;
+    public string Preview     => BuildPreview(Block.Text);
     public string OffsetText  => $"0x{Block.RawOffset:X}";
+
+    /// <summary>
+    /// Trims and collapses runs of whitespace (incl. tabs) into single spaces so
+    /// LibreOffice-style text alignment via tabs/multi-spaces (common in CV docs)
+    /// doesn't render as fragmented previews. Truncates to 60 chars with ellipsis.
+    /// </summary>
+    private static string BuildPreview(string raw)
+    {
+        if (string.IsNullOrEmpty(raw)) return string.Empty;
+        var collapsed = WhitespaceRun.Replace(raw.Trim(), " ");
+        return collapsed.Length > 60 ? collapsed[..60] + "…" : collapsed;
+    }
+
+    private static readonly Regex WhitespaceRun = new(@"\s+", RegexOptions.Compiled);
     public bool   HasAlert    => _alert is not null;
     public string AlertMessage => _alert?.Description ?? string.Empty;
 
