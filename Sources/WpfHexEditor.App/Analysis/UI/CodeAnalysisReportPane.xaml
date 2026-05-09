@@ -15,10 +15,12 @@
                 <appSvc:AppLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
 
-            <conv:GradeToColorConverter   x:Key="GradeToColor"/>
-            <conv:SeverityToIconConverter x:Key="SevToIcon"/>
-            <conv:ScoreToProgressConverter x:Key="ScoreToProgress"/>
-            <BooleanToVisibilityConverter  x:Key="BoolToVis"/>
+            <conv:GradeToColorConverter      x:Key="GradeToColor"/>
+            <conv:SeverityToIconConverter    x:Key="SevToIcon"/>
+            <conv:ScoreToProgressConverter   x:Key="ScoreToProgress"/>
+            <conv:ThresholdToBrushConverter  x:Key="ThresholdToBrush"/>
+            <conv:RiskLevelToBrushConverter  x:Key="RiskToBrush"/>
+            <BooleanToVisibilityConverter    x:Key="BoolToVis"/>
 
             <Style TargetType="TabItem">
                 <Setter Property="Background"  Value="Transparent"/>
@@ -425,12 +427,36 @@
                                   RowHeaderWidth="0"
                                   MouseDoubleClick="OnGridDoubleClick">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Method}"    Binding="{Binding FullyQualifiedName,     Mode=OneWay}" Width="*"/>
-                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_CC}"        Binding="{Binding CyclomaticComplexity,   Mode=OneWay}" Width="60"/>
-                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Cognitive}" Binding="{Binding CognitiveComplexity,    Mode=OneWay}" Width="80"/>
-                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_LOC}"       Binding="{Binding Loc,                    Mode=OneWay}" Width="60"/>
-                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Params}"    Binding="{Binding ParameterCount,         Mode=OneWay}" Width="60"/>
-                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Line}"      Binding="{Binding Line,                   Mode=OneWay}" Width="55"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Method}"    Binding="{Binding FullyQualifiedName, Mode=OneWay}" Width="*"/>
+                                <DataGridTemplateColumn Header="{DynamicResource CodeAnalysis_Col_CC}" Width="60" SortMemberPath="CyclomaticComplexity">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{Binding CyclomaticComplexity, Converter={StaticResource ThresholdToBrush}, ConverterParameter='5:#4CAF50;10:#FF9800;15:#F44336'}" Padding="4,2">
+                                                <TextBlock Text="{Binding CyclomaticComplexity, Mode=OneWay}" HorizontalAlignment="Right" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="{DynamicResource CodeAnalysis_Col_Cognitive}" Width="80" SortMemberPath="CognitiveComplexity">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{Binding CognitiveComplexity, Converter={StaticResource ThresholdToBrush}, ConverterParameter='8:#4CAF50;15:#FF9800;25:#F44336'}" Padding="4,2">
+                                                <TextBlock Text="{Binding CognitiveComplexity, Mode=OneWay}" HorizontalAlignment="Right" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="{DynamicResource CodeAnalysis_Col_LOC}" Width="60" SortMemberPath="Loc">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{Binding Loc, Converter={StaticResource ThresholdToBrush}, ConverterParameter='50:#4CAF50;100:#FF9800;200:#F44336'}" Padding="4,2">
+                                                <TextBlock Text="{Binding Loc, Mode=OneWay}" HorizontalAlignment="Right" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Params}"    Binding="{Binding ParameterCount, Mode=OneWay}" Width="60"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Line}"      Binding="{Binding Line,           Mode=OneWay}" Width="55"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -448,12 +474,28 @@
                                   RowHeaderWidth="0"
                                   MouseDoubleClick="OnGridDoubleClick">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Type}"        Binding="{Binding TypeName,    Mode=OneWay}" Width="*"/>
-                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Ca}"          Binding="{Binding Ca,          Mode=OneWay}" Width="50"/>
-                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Ce}"          Binding="{Binding Ce,          Mode=OneWay}" Width="50"/>
-                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Instability}" Binding="{Binding Instability, Mode=OneWay, StringFormat={}{0:F2}}" Width="85"/>
-                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_LCOM}"        Binding="{Binding Lcom,        Mode=OneWay}" Width="70"/>
-                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Line}"        Binding="{Binding Line,        Mode=OneWay}" Width="55"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Type}" Binding="{Binding TypeName, Mode=OneWay}" Width="*"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Ca}"   Binding="{Binding Ca,       Mode=OneWay}" Width="50"/>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Ce}"   Binding="{Binding Ce,       Mode=OneWay}" Width="50"/>
+                                <DataGridTemplateColumn Header="{DynamicResource CodeAnalysis_Col_Instability}" Width="85" SortMemberPath="Instability">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{Binding Instability, Converter={StaticResource ThresholdToBrush}, ConverterParameter='0.30:#4CAF50;0.60:#FF9800;0.80:#F44336'}" Padding="4,2">
+                                                <TextBlock Text="{Binding Instability, Mode=OneWay, StringFormat={}{0:F2}}" HorizontalAlignment="Right" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="{DynamicResource CodeAnalysis_Col_LCOM}" Width="80" SortMemberPath="Lcom">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{Binding Lcom, Converter={StaticResource RiskToBrush}}" Padding="4,2">
+                                                <TextBlock Text="{Binding Lcom, Mode=OneWay}" HorizontalAlignment="Center" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Col_Line}" Binding="{Binding Line, Mode=OneWay}" Width="55"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
