@@ -198,6 +198,12 @@ public partial class DocumentStructurePane : UserControl
 
     private void ApplyFilter()
     {
+        // Guard: ComboBox<KindFilter SelectedIndex="0"> fires SelectionChanged
+        // during InitializeComponent() — before PART_Tree's x:Name field is
+        // assigned. The next RebuildTree() (triggered from BindModel) will
+        // re-run ApplyFilter once everything is realized.
+        if (PART_Tree is null) return;
+
         bool hasText = !string.IsNullOrWhiteSpace(_filterText);
         bool hasKind = _kindFilter != "all";
 
@@ -231,6 +237,7 @@ public partial class DocumentStructurePane : UserControl
 
     private void UpdateCountLabel(IEnumerable<DocumentBlockNode>? filtered = null)
     {
+        if (PART_CountLabel is null) return;
         int total = CountNodes(_allNodes);
         if (filtered is null)
         {
