@@ -78,7 +78,7 @@
                 <Button x:Name="PART_CollapseAllBtn"
                         Style="{StaticResource StructToolBtnStyle}"
                         DockPanel.Dock="Right"
-                        ToolTip="{DynamicResource DocStructure_TooltipCollapseAll}"
+                        ToolTip="{DynamicResource DocStructure_CollapseAllToolTip}"
                         Click="OnCollapseAllClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70D;" FontSize="11"/>
                 </Button>
@@ -86,7 +86,7 @@
                 <Button x:Name="PART_ExpandAllBtn"
                         Style="{StaticResource StructToolBtnStyle}"
                         DockPanel.Dock="Right"
-                        ToolTip="{DynamicResource DocStructure_TooltipExpandAll}"
+                        ToolTip="{DynamicResource DocStructure_ExpandAllToolTip}"
                         Click="OnExpandAllClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70E;" FontSize="11"/>
                 </Button>
@@ -120,7 +120,7 @@
                             <Style.Resources>
                                 <VisualBrush x:Key="HintBrush" Stretch="None" AlignmentX="Left">
                                     <VisualBrush.Visual>
-                                        <TextBlock Text="{DynamicResource DocStructure_FilterHint}"
+                                        <TextBlock Text="{DynamicResource DocStructure_FilterPlaceholder}"
                                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                    Opacity="0.4"
                                                    FontSize="12"
@@ -145,7 +145,7 @@
                         Style="{StaticResource StructToolBtnStyle}"
                         Width="20" Height="20"
                         Margin="2,0,0,0"
-                        ToolTip="{DynamicResource DocStructure_TooltipClearFilter}"
+                        ToolTip="{DynamicResource DocStructure_ClearFilterToolTip}"
                         Click="OnClearSearchClicked"
                         Visibility="{Binding Text.Length, ElementName=PART_SearchBox,
                                      Converter={StaticResource BoolToVis}}">
@@ -216,14 +216,14 @@
             <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="PART_MenuNavigate"
-                              Header="{DynamicResource DocStructure_MenuNavigate}"
+                              Header="{DynamicResource DocStructure_NavigateMenuHeader}"
                               Click="OnMenuNavigateClicked">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A5;" FontSize="12"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="PART_MenuJumpHex"
-                              Header="{DynamicResource DocStructure_MenuJumpHex}"
+                              Header="{DynamicResource DocStructure_JumpHexMenuHeader}"
                               Click="OnMenuJumpHexClicked">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C4;" FontSize="12"/>
@@ -231,14 +231,14 @@
                     </MenuItem>
                     <Separator/>
                     <MenuItem x:Name="PART_MenuCopyText"
-                              Header="{DynamicResource DocStructure_MenuCopyText}"
+                              Header="{DynamicResource DocStructure_CopyTextMenuHeader}"
                               Click="OnMenuCopyTextClicked">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C8;" FontSize="12"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="PART_MenuCopyOffset"
-                              Header="{DynamicResource DocStructure_MenuCopyOffset}"
+                              Header="{DynamicResource DocStructure_CopyOffsetMenuHeader}"
                               Click="OnMenuCopyOffsetClicked">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F4;" FontSize="12"/>
