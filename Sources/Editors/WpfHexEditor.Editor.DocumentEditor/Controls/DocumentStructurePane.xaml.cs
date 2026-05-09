@@ -33,6 +33,7 @@ public partial class DocumentStructurePane : UserControl
     private ObservableCollection<DocumentBlockNode> _allNodes = [];
     private string _filterText = string.Empty;
     private bool   _showRuns   = false; // hide run leaves by default — they duplicate paragraph text
+    private string _kindFilter = "all"; // "all" | "heading" | "list-item" | "table" | "image"
 
     // ── Events ────────────────────────────────────────────────────────────────
 
@@ -84,30 +85,47 @@ public partial class DocumentStructurePane : UserControl
 
     private void ApplyFilter()
     {
-        if (string.IsNullOrWhiteSpace(_filterText))
+        bool hasText = !string.IsNullOrWhiteSpace(_filterText);
+        bool hasKind = _kindFilter != "all";
+
+        if (!hasText && !hasKind)
         {
             PART_Tree.ItemsSource = _allNodes;
+            UpdateCountLabel();
             return;
         }
 
-        var lower = _filterText.ToLowerInvariant();
+        var lower = hasText ? _filterText.ToLowerInvariant() : string.Empty;
         var filtered = _allNodes
-            .Where(n => MatchesFilter(n, lower))
+            .Where(n => Matches(n, lower, _kindFilter))
             .ToList();
 
         PART_Tree.ItemsSource = filtered;
+        UpdateCountLabel(filtered);
     }
 
-    private static bool MatchesFilter(DocumentBlockNode node, string filter) =>
-        node.KindLabel.ToLowerInvariant().Contains(filter) ||
-        node.Preview.ToLowerInvariant().Contains(filter)   ||
-        node.OffsetText.ToLowerInvariant().Contains(filter)||
-        node.Children.Any(c => MatchesFilter(c, filter));
+    /// <summary>Tree-aware filter: a node passes if it matches OR any descendant matches.</summary>
+    private static bool Matches(DocumentBlockNode node, string text, string kind)
+    {
+        bool kindOk = kind == "all" || node.Block.Kind == kind;
+        bool textOk = string.IsNullOrEmpty(text) ||
+                      node.KindLabel.ToLowerInvariant().Contains(text) ||
+                      node.Preview.ToLowerInvariant().Contains(text)   ||
+                      node.OffsetText.ToLowerInvariant().Contains(text);
+        if (kindOk && textOk) return true;
+        return node.Children.Any(c => Matches(c, text, kind));
+    }
 
-    private void UpdateCountLabel()
+    private void UpdateCountLabel(IEnumerable<DocumentBlockNode>? filtered = null)
     {
         int total = CountNodes(_allNodes);
-        PART_CountLabel.Text = $"({total})";
+        if (filtered is null)
+        {
+            PART_CountLabel.Text = $"({total})";
+            return;
+        }
+        int shown = CountNodes(filtered);
+        PART_CountLabel.Text = shown == total ? $"({total})" : $"({shown}/{total})";
     }
 
     private static int CountNodes(IEnumerable<DocumentBlockNode> nodes) =>
@@ -163,6 +181,16 @@ public partial class DocumentStructurePane : UserControl
     private void OnClearSearchClicked(object sender, RoutedEventArgs e)
     {
         PART_SearchBox.Clear();
+    }
+
+    private void OnKindFilterChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (PART_KindFilter?.SelectedItem is ComboBoxItem item &&
+            item.Tag is string tag)
+        {
+            _kindFilter = tag;
+            ApplyFilter();
+        }
     }
 
     // ── Expand / Collapse all ─────────────────────────────────────────────────

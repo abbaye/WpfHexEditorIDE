@@ -124,12 +124,33 @@
                 Padding="4,3">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
+                <!-- Kind filter (All / Headings / Lists / Tables / Images) -->
+                <ComboBox x:Name="PART_KindFilter"
+                          Grid.Column="0"
+                          Width="100"
+                          Height="22"
+                          Margin="0,0,4,0"
+                          FontSize="11"
+                          Background="{DynamicResource DockBackgroundBrush}"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}"
+                          BorderBrush="{DynamicResource DockBorderBrush}"
+                          ToolTip="{DynamicResource DocStructure_KindFilterToolTip}"
+                          SelectionChanged="OnKindFilterChanged"
+                          SelectedIndex="0">
+                    <ComboBoxItem Tag="all"       Content="{DynamicResource DocStructure_KindFilter_All}"/>
+                    <ComboBoxItem Tag="heading"   Content="{DynamicResource DocStructure_KindFilter_HeadingsOnly}"/>
+                    <ComboBoxItem Tag="list-item" Content="{DynamicResource DocStructure_KindFilter_ListsOnly}"/>
+                    <ComboBoxItem Tag="table"     Content="{DynamicResource DocStructure_KindFilter_TablesOnly}"/>
+                    <ComboBoxItem Tag="image"     Content="{DynamicResource DocStructure_KindFilter_ImagesOnly}"/>
+                </ComboBox>
+
                 <TextBox x:Name="PART_SearchBox"
-                         Grid.Column="0"
+                         Grid.Column="1"
                          Background="{DynamicResource DockBackgroundBrush}"
                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                          CaretBrush="{DynamicResource DockMenuForegroundBrush}"
@@ -164,7 +185,7 @@
                 </TextBox>
 
                 <Button x:Name="PART_ClearSearchBtn"
-                        Grid.Column="1"
+                        Grid.Column="2"
                         Style="{StaticResource StructToolBtnStyle}"
                         Width="20" Height="20"
                         Margin="2,0,0,0"
