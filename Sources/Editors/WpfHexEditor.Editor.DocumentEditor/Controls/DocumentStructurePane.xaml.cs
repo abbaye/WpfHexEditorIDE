@@ -234,7 +234,23 @@ public sealed class DocumentBlockNode : INotifyPropertyChanged
 
     public ObservableCollection<DocumentBlockNode> Children { get; } = [];
 
-    public string KindLabel   => Block.Kind.ToUpperInvariant()[..Math.Min(3, Block.Kind.Length)];
+    public string KindLabel
+    {
+        get
+        {
+            // Heading paragraphs surface their OOXML level (H1..H9) so the user
+            // can distinguish hierarchy at a glance instead of reading them all
+            // as "HEA". Falls back to the generic 3-letter prefix for everything
+            // else (PAR, LIS, TAB, IMG, …).
+            if (Block.Kind == "heading"
+                && Block.Attributes.TryGetValue("level", out var lvObj)
+                && lvObj is string lv && !string.IsNullOrEmpty(lv))
+            {
+                return $"H{lv}";
+            }
+            return Block.Kind.ToUpperInvariant()[..Math.Min(3, Block.Kind.Length)];
+        }
+    }
     public string Preview     => BuildPreview(Block.Text);
     public string OffsetText  => $"0x{Block.RawOffset:X}";
 
