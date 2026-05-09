@@ -345,6 +345,35 @@ public sealed class DocumentBlockNode : INotifyPropertyChanged
 
     public ObservableCollection<DocumentBlockNode> Children { get; } = [];
 
+    /// <summary>
+    /// Highest severity present on this node OR any descendant. Lets a parent
+    /// signal that some child carries an alert even when the parent itself is
+    /// clean — e.g. an H1 with one buried error paragraph still shows the dot.
+    /// </summary>
+    public ForensicSeverity? AggregateSeverity
+    {
+        get
+        {
+            ForensicSeverity? max = _alert?.Severity;
+            foreach (var c in Children)
+            {
+                var ch = c.AggregateSeverity;
+                if (ch is null) continue;
+                if (max is null || ch > max) max = ch;
+            }
+            return max;
+        }
+    }
+
+    public bool   HasAggregateAlert    => AggregateSeverity is not null;
+    public string AggregateAlertBrushKey => AggregateSeverity switch
+    {
+        ForensicSeverity.Error   => "DE_ForensicErrorBrush",
+        ForensicSeverity.Warning => "DE_ForensicWarnBrush",
+        ForensicSeverity.Info    => "DE_ForensicOkBrush",
+        _                        => "DE_ForensicOkBrush",
+    };
+
     public string KindLabel
     {
         get

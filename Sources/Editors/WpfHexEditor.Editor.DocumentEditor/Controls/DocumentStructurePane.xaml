@@ -208,14 +208,17 @@
                 <HierarchicalDataTemplate DataType="{x:Type local:DocumentBlockNode}"
                                           ItemsSource="{Binding Children}">
                     <StackPanel Orientation="Horizontal">
-                        <!-- Forensic badge dot -->
+                        <!-- Forensic badge dot: shows the highest severity present on this
+                             node OR any descendant, so a collapsed parent still surfaces a
+                             buried alert. The tooltip falls back to the parent's own message
+                             when no direct alert is set. -->
                         <Border x:Name="PART_ForensicBadge"
                                 Width="8" Height="8"
                                 CornerRadius="4"
                                 Margin="0,0,5,0"
                                 VerticalAlignment="Center"
-                                Visibility="{Binding HasAlert, Converter={StaticResource BoolToVis}}"
-                                Background="{Binding AlertBrushKey, Converter={StaticResource ResourceKeyToBrushConverter}}"
+                                Visibility="{Binding HasAggregateAlert, Converter={StaticResource BoolToVis}}"
+                                Background="{Binding AggregateAlertBrushKey, Converter={StaticResource ResourceKeyToBrushConverter}}"
                                 ToolTip="{Binding AlertMessage}"/>
 
                         <!-- Kind chip: semantic icon + 3-letter label, color-coded by Kind -->
