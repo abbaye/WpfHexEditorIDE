@@ -747,6 +747,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Φιλτράρισμα κατά αυτόν τον κανόνα</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Φιλτράρισμα κατά αυτό το αρχείο</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Καταστολή αυτής της εμφάνισης (ενσωματωμένος δείκτης)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>Καταστολή στον κώδικα</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>Καταστολή για αυτό το αρχείο</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>Προσθήκη στη βάση</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>Καθολική απενεργοποίηση κανόνα</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Αντιγραφή ως Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Αντιγραφή ID ζητήματος</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Άνοιγμα αρχείου πηγής</value></data>

@@ -1085,6 +1085,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>このルールでフィルター</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>このファイルでフィルター</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>このオカレンスを抑制 (インライン マーカー)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>ソースで抑制</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>このファイルで抑制</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>ベースラインに追加</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>ルールをグローバルに無効化</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Markdown としてコピー</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>問題 ID をコピー</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>ソース ファイルを開く</value></data>

@@ -749,6 +749,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Filtrer par cette règle</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Filtrer par ce fichier</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Supprimer cette occurrence (marqueur inline)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>Supprimer dans le code</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>Supprimer pour ce fichier</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>Ajouter à la base de référence</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>Désactiver la règle globalement</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Copier en Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Copier l’ID du problème</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Ouvrir le fichier source</value></data>

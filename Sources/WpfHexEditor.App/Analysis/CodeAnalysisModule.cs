@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using WpfHexEditor.App.Analysis.IDE;
 using WpfHexEditor.App.Analysis.Models;
 using WpfHexEditor.App.Analysis.Services;
+using WpfHexEditor.App.Analysis.Suppressions;
 using WpfHexEditor.App.Analysis.UI;
 using WpfHexEditor.App.Analysis.UI.ViewModels;
 using WpfHexEditor.Core.Commands;
@@ -43,6 +44,7 @@ internal sealed class CodeAnalysisModule
 
     private CodeAnalysisOptionsService _optionsService  = new();
     private AnalysisSnapshotService    _snapshotService = new();
+    private AnalysisBaselineService    _baselineService = new();
     private AnalysisScope              _lastScope       = AnalysisScope.Solution;
     private string                     _lastPath        = string.Empty;
     private CodeAnalysisRunner?        _runner;
@@ -156,6 +158,7 @@ internal sealed class CodeAnalysisModule
         var solutionDir = Directory.Exists(path) ? path : (Path.GetDirectoryName(path) ?? path);
         _optionsService.SetSolutionDirectory(solutionDir);
         _snapshotService.SetSolutionDirectory(solutionDir);
+        _baselineService.SetSolutionDirectory(solutionDir);
 
         // UI: show running state
         await _dispatcher!.InvokeAsync(() =>
@@ -245,6 +248,14 @@ internal sealed class CodeAnalysisModule
             rerun:       () => RunAsync(_lastScope, string.IsNullOrEmpty(_lastPath) ? GetSolutionPath() : _lastPath),
             runSolution: () => RunAsync(AnalysisScope.Solution, GetSolutionPath()),
             runFile:     path => RunAsync(AnalysisScope.File, path));
+
+        // Suppressions UX — uses the same re-run callback so the row disappears after apply.
+        _baselineService.SetSolutionDirectory(string.IsNullOrEmpty(_lastPath) ? GetSolutionPath() : _lastPath);
+        var suppress = new SuppressionApplyService(
+            _optionsService,
+            _baselineService,
+            () => RunAsync(_lastScope, string.IsNullOrEmpty(_lastPath) ? GetSolutionPath() : _lastPath));
+        _reportPane.SetSuppressionService(suppress);
     }
 
     private void EnsureReportPane()

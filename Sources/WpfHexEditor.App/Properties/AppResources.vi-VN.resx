@@ -781,6 +781,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Lọc theo quy tắc này</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Lọc theo tệp này</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Bỏ qua lần xuất hiện này (đánh dấu nội tuyến)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>Bỏ qua trong mã nguồn</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>Bỏ qua cho tệp này</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>Thêm vào đường cơ sở</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>Tắt quy tắc toàn cục</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Sao chép dưới dạng Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Sao chép ID vấn đề</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Mở tệp nguồn</value></data>

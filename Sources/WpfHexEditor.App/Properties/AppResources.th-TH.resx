@@ -781,6 +781,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>กรองตามกฎนี้</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>กรองตามไฟล์นี้</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>ระงับเหตุการณ์นี้ (เครื่องหมายอินไลน์)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>ระงับในซอร์ส</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>ระงับสำหรับไฟล์นี้</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>เพิ่มลงในเบสไลน์</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>ปิดใช้กฎทั่วโลก</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>คัดลอกเป็น Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>คัดลอก ID ปัญหา</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>เปิดไฟล์ต้นฉบับ</value></data>

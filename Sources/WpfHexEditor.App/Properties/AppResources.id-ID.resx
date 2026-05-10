@@ -781,6 +781,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Saring berdasarkan aturan ini</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Saring berdasarkan file ini</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Tekan kemunculan ini (penanda inline)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>Sembunyikan dalam sumber</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>Sembunyikan untuk berkas ini</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>Tambahkan ke baseline</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>Nonaktifkan aturan global</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Salin sebagai Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Salin ID masalah</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Buka file sumber</value></data>

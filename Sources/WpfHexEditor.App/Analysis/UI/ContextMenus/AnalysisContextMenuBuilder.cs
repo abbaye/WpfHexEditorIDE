@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfHexEditor.App.Analysis.Models;
+using WpfHexEditor.App.Analysis.Suppressions;
 using WpfHexEditor.App.Analysis.UI.ViewModels;
 using WpfHexEditor.App.Properties;
 using WpfHexEditor.SDK.Contracts.Services;
@@ -27,15 +28,18 @@ internal sealed class AnalysisContextMenuBuilder
     private readonly IDocumentHostService?         _docHost;
     private readonly CodeAnalysisReportViewModel   _vm;
     private readonly Func<string, Task>?           _scopedReRun;  // (path) → re-run scoped
+    private readonly SuppressionApplyService?      _suppress;
 
     internal AnalysisContextMenuBuilder(
         IDocumentHostService?       docHost,
         CodeAnalysisReportViewModel vm,
-        Func<string, Task>?         scopedReRun = null)
+        Func<string, Task>?         scopedReRun = null,
+        SuppressionApplyService?    suppress    = null)
     {
         _docHost     = docHost;
         _vm          = vm;
         _scopedReRun = scopedReRun;
+        _suppress    = suppress;
     }
 
     // ── Project row ─────────────────────────────────────────────────────────
@@ -109,8 +113,22 @@ internal sealed class AnalysisContextMenuBuilder
         Add(menu, AppResources.CodeAnalysis_ContextMenu_FilterByRule,          () => _vm.IssueFilter = issue.Id);
         Add(menu, AppResources.CodeAnalysis_ContextMenu_FilterByFile,          () => _vm.IssueFilter = issue.FileName);
         AddSeparator(menu);
-        Add(menu, AppResources.CodeAnalysis_ContextMenu_SuppressInline,
-            () => AnalysisContextMenuActions.AddInlineSuppressMarker(issue.FilePath, issue.Line, issue.Id));
+        if (_suppress is not null)
+        {
+            Add(menu, AppResources.CodeAnalysis_Suppress_InSource,
+                () => _ = _suppress.ApplyAsync(issue, SuppressionMode.InSource));
+            Add(menu, AppResources.CodeAnalysis_Suppress_InFile,
+                () => _ = _suppress.ApplyAsync(issue, SuppressionMode.InFile));
+            Add(menu, AppResources.CodeAnalysis_Suppress_InBaseline,
+                () => _ = _suppress.ApplyAsync(issue, SuppressionMode.InBaseline));
+            Add(menu, AppResources.CodeAnalysis_Suppress_Disable,
+                () => _ = _suppress.ApplyAsync(issue, SuppressionMode.DisableRule));
+        }
+        else
+        {
+            Add(menu, AppResources.CodeAnalysis_ContextMenu_SuppressInline,
+                () => AnalysisContextMenuActions.AddInlineSuppressMarker(issue.FilePath, issue.Line, issue.Id));
+        }
         AddSeparator(menu);
         Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyAsMarkdown,        () => AnalysisContextMenuActions.Copy(AnalysisContextMenuActions.FormatIssueAsMarkdown(issue)));
         Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyIssueId,           () => AnalysisContextMenuActions.Copy(issue.Id));

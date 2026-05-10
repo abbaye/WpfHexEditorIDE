@@ -1085,6 +1085,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>이 규칙으로 필터링</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>이 파일로 필터링</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>이 발생 억제 (인라인 마커)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>소스에서 표시 안 함</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>이 파일에 대해 표시 안 함</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>기준선에 추가</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>규칙 전역 비활성화</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Markdown으로 복사</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>문제 ID 복사</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>소스 파일 열기</value></data>

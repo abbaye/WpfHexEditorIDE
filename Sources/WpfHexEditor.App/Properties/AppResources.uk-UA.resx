@@ -781,6 +781,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Фільтрувати за цим правилом</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Фільтрувати за цим файлом</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Придушити цю появу (вбудований маркер)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>Придушити в коді</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>Придушити для цього файлу</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>Додати до базової лінії</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>Вимкнути правило глобально</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Копіювати як Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Копіювати ID проблеми</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Відкрити файл коду</value></data>

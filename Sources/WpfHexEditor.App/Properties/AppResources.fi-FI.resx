@@ -781,6 +781,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Suodata tämän säännön mukaan</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Suodata tämän tiedoston mukaan</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Estä tämä esiintymä (sisäänupotettu merkki)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>Vaienna koodissa</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>Vaienna tälle tiedostolle</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>Lisää perustasoon</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>Poista sääntö käytöstä kaikkialla</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Kopioi Markdownina</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Kopioi ongelman ID</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Avaa lähdetiedosto</value></data>

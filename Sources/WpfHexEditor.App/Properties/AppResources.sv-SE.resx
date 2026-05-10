@@ -1085,6 +1085,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Filtrera efter denna regel</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Filtrera efter denna fil</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Undertryck denna förekomst (inbäddad markör)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>Undertryck i koden</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>Undertryck för denna fil</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>Lägg till i baslinje</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>Inaktivera regel globalt</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Kopiera som Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Kopiera problem-ID</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Öppna källfil</value></data>

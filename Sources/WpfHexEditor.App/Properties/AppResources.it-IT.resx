@@ -1085,6 +1085,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Filtra per questa regola</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Filtra per questo file</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Sopprimi questa occorrenza (marcatore inline)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>Sopprimi nel codice</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>Sopprimi per questo file</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>Aggiungi alla baseline</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>Disabilita regola globalmente</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Copia come Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Copia ID problema</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Apri file sorgente</value></data>

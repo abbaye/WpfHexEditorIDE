@@ -1085,6 +1085,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Фильтровать по этому правилу</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Фильтровать по этому файлу</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Подавить это вхождение (встроенный маркер)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>Подавить в коде</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>Подавить для этого файла</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>Добавить в базовую линию</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>Отключить правило глобально</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Копировать как Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Копировать ID проблемы</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Открыть исходный файл</value></data>

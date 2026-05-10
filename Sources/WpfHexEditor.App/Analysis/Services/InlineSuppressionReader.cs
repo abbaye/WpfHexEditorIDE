@@ -21,7 +21,13 @@ internal static class InlineSuppressionReader
     private static readonly Regex SuppressPattern =
         new(@"//\s*CodeAnalysis:\s*suppress\s+(WH\d{4})", RegexOptions.Compiled);
 
-    /// <summary>Map of (filePath → set of (ruleId, line)). Line = the line of the // comment.</summary>
+    private static readonly Regex SuppressFilePattern =
+        new(@"//\s*CodeAnalysis:\s*suppress-file\s+(WH\d{4})", RegexOptions.Compiled);
+
+    /// <summary>
+    /// Map of (filePath → set of (ruleId, line)). Line = the line of the // comment.
+    /// Line == 0 is reserved for file-scoped suppressions (all lines in that file).
+    /// </summary>
     public sealed record SuppressionMap(Dictionary<string, HashSet<(string Rule, int Line)>> Entries);
 
     internal static SuppressionMap Read(IEnumerable<SyntaxTree> trees)
@@ -34,7 +40,12 @@ internal static class InlineSuppressionReader
             foreach (var trivia in tree.GetRoot().DescendantTrivia())
             {
                 if (!trivia.IsKind(SyntaxKind.SingleLineCommentTrivia)) continue;
-                var match = SuppressPattern.Match(trivia.ToString());
+                var text = trivia.ToString();
+
+                var fileMatch = SuppressFilePattern.Match(text);
+                if (fileMatch.Success) { set.Add((fileMatch.Groups[1].Value, 0)); continue; }
+
+                var match = SuppressPattern.Match(text);
                 if (!match.Success) continue;
 
                 int line = trivia.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
@@ -49,7 +60,9 @@ internal static class InlineSuppressionReader
     internal static bool IsSuppressed(AnalysisDiagnostic d, SuppressionMap map)
     {
         if (!map.Entries.TryGetValue(d.FilePath, out var set)) return false;
-        // Marker on the line above OR same line
-        return set.Contains((d.Id, d.Line - 1)) || set.Contains((d.Id, d.Line));
+        // File-scoped (line == 0) OR marker on the line above OR same line
+        return set.Contains((d.Id, 0))
+            || set.Contains((d.Id, d.Line - 1))
+            || set.Contains((d.Id, d.Line));
     }
 }

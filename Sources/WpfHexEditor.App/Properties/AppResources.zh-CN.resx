@@ -1085,6 +1085,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>按此规则筛选</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>按此文件筛选</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>抑制此次出现 (内联标记)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>在源代码中抑制</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>对此文件抑制</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>添加到基线</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>全局禁用规则</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>复制为 Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>复制问题 ID</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>打开源文件</value></data>

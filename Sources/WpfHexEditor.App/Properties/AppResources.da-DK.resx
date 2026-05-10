@@ -781,6 +781,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Filtrér efter denne regel</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Filtrér efter denne fil</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Undertryk denne forekomst (inline-markør)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>Undertryk i koden</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>Undertryk for denne fil</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>Føj til baseline</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>Deaktiver regel globalt</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Kopiér som Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Kopiér problem-id</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Åbn kildefil</value></data>

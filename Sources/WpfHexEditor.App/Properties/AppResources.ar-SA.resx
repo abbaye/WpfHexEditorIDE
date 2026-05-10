@@ -1085,6 +1085,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>تصفية حسب هذه القاعدة</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>تصفية حسب هذا الملف</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>كتم هذا التكرار (علامة مضمنة)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>إخفاء في المصدر</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>إخفاء لهذا الملف</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>إضافة إلى الأساس</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>تعطيل القاعدة عالميًا</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>نسخ كـ Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>نسخ معرف المشكلة</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>فتح الملف المصدر</value></data>

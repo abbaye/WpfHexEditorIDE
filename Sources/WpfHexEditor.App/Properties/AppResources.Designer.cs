@@ -6144,7 +6144,43 @@ namespace WpfHexEditor.App.Properties {
                 return ResourceManager.GetString("CodeAnalysis_ContextMenu_SuppressInline", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Suppress in source.
+        /// </summary>
+        internal static string CodeAnalysis_Suppress_InSource {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Suppress_InSource", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Suppress for this file.
+        /// </summary>
+        internal static string CodeAnalysis_Suppress_InFile {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Suppress_InFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Add to baseline.
+        /// </summary>
+        internal static string CodeAnalysis_Suppress_InBaseline {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Suppress_InBaseline", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Disable rule globally.
+        /// </summary>
+        internal static string CodeAnalysis_Suppress_Disable {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Suppress_Disable", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Copy as Markdown.
         /// </summary>

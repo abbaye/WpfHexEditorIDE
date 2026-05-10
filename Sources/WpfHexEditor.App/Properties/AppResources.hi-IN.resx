@@ -1085,6 +1085,10 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>इस नियम के अनुसार फ़िल्टर करें</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>इस फ़ाइल के अनुसार फ़िल्टर करें</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>इस उपस्थिति को दबाएँ (इनलाइन मार्कर)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>स्रोत में दबाएँ</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>इस फ़ाइल के लिए दबाएँ</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>आधार रेखा में जोड़ें</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>नियम वैश्विक रूप से अक्षम करें</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Markdown के रूप में कॉपी करें</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>समस्या ID कॉपी करें</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>स्रोत फ़ाइल खोलें</value></data>

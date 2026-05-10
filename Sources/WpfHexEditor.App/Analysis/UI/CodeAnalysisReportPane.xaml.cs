@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.App.Analysis.Models;
+using WpfHexEditor.App.Analysis.Suppressions;
 using WpfHexEditor.App.Analysis.UI.ContextMenus;
 using WpfHexEditor.App.Analysis.UI.ViewModels;
 using WpfHexEditor.App.Properties;
@@ -26,6 +27,7 @@ public partial class CodeAnalysisReportPane : UserControl
     private          Func<Task>?                  _reRunCallback;
     private          Func<Task>?                  _runSolutionCallback;
     private          Func<string, Task>?          _runFileCallback;
+    private          SuppressionApplyService?     _suppress;
 
     public CodeAnalysisReportPane(
         CodeAnalysisReportViewModel vm,
@@ -52,11 +54,14 @@ public partial class CodeAnalysisReportPane : UserControl
         _runFileCallback     = runFile;
     }
 
+    internal void SetSuppressionService(SuppressionApplyService suppress)
+        => _suppress = suppress;
+
     // Phase 7 — Context menu opening (call site: DataGrid.ContextMenuOpening)
     private void OnGridContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
         if (sender is not DataGrid grid) return;
-        var builder = new AnalysisContextMenuBuilder(_docHost, _vm);
+        var builder = new AnalysisContextMenuBuilder(_docHost, _vm, scopedReRun: null, suppress: _suppress);
         grid.ContextMenu = grid.CurrentItem switch
         {
             ProjectMetrics p              => builder.BuildForProject(p),
