@@ -245,5 +245,36 @@
     "SafeAlternative": "SafeTensors format (.safetensors) — no code execution risk",
     "SupportsStreaming": false,
     "TorchScriptSupport": true
+  },
+  "diff": {
+    "keyFields": [
+      "pk_magic",
+      "compression_method",
+      "file_name_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for TORCHSCRIPT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pk_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "compression_method",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "file_name_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for TORCHSCRIPT. Hand-tune weights/rates per format if needed."
   }
 }

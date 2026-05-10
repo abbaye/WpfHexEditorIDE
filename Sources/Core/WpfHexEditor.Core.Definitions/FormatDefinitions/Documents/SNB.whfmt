@@ -72,5 +72,30 @@
   "MimeTypes": ["application/x-snb", "application/zip"],
   "UseCases": ["Reading Shanda Bambook eBooks", "Converting SNB to EPUB/MOBI via Calibre", "Chinese ebook format analysis"],
   "QualityMetrics": { "CompletenessScore": 58, "DocumentationLevel": "detailed", "BlocksDefined": 6, "ValidationRules": 1, "LastUpdated": "2026-04-14", "PriorityFormat": false, "AutoRefined": false },
-  "TechnicalDetails": { "Format": "ZIP-based eBook container (Shanda Bambook)", "Magic": "PK\\x03\\x04 (0x504B0304) — standard ZIP local file header", "Structure": "snbf/book.snbf + snbf/toc.snbf + images/" }
+  "TechnicalDetails": { "Format": "ZIP-based eBook container (Shanda Bambook)", "Magic": "PK\\x03\\x04 (0x504B0304) — standard ZIP local file header", "Structure": "snbf/book.snbf + snbf/toc.snbf + images/" },
+  "diff": {
+    "keyFields": [
+      "zip_signature",
+      "zip_compression"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SNB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "zip_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "zip_compression",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SNB. Hand-tune weights/rates per format if needed."
+  }
 }

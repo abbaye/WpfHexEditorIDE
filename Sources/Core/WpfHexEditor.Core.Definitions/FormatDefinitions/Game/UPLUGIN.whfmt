@@ -157,5 +157,24 @@
         "jsonStart"
       ]
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "json_start"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for UPLUGIN. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "json_start",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for UPLUGIN. Hand-tune weights/rates per format if needed."
+  }
 }

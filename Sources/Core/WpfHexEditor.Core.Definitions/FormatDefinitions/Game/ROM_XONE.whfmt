@@ -215,5 +215,24 @@
       "severity": "warning",
       "message": "XVD signature field empty — may not be valid Xbox One XVD"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "content_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_XONE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "content_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_XONE. Hand-tune weights/rates per format if needed."
+  }
 }

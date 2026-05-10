@@ -169,5 +169,30 @@
       "severity": "warning",
       "message": "EVT magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "header_size",
+      "magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for EVT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 4 — parser must reject."
+      },
+      {
+        "field": "header_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for EVT. Hand-tune weights/rates per format if needed."
+  }
 }

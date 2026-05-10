@@ -266,5 +266,26 @@
       "Find Section 3 (grid definition) for grid type (lat-lon, Gaussian, Lambert, etc.) and dimensions",
       "Verify end marker '7777' at the last 4 bytes of the message"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "grib_magic"
+    ],
+    "ignoreFields": [
+      "reserved"
+    ],
+    "note": "Inferred semantic diff for GRIB2. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "grib_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for GRIB2. Hand-tune weights/rates per format if needed."
   }
 }

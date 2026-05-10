@@ -179,5 +179,30 @@
       "severity": "warning",
       "message": "JNG magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "jng_signature",
+      "jhdr_chunk_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for JNG. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "jng_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "jhdr_chunk_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for JNG. Hand-tune weights/rates per format if needed."
+  }
 }

@@ -369,4 +369,28 @@
   <data name="ImgCtx_Wrap" xml:space="preserve"><value>Zawijanie tekstu</value></data>
   <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Sprawdź w edytorze Hex</value></data>
   <data name="ImgCtx_Properties" xml:space="preserve"><value>Właściwości obrazu...</value></data>
+  <data name="DocStructure_ShowRunsToggleToolTip" xml:space="preserve">
+    <value>Pokaż przebiegi (fragmenty tekstu)</value>
+  </data>
+  <data name="DocStructure_OutlineModeToolTip" xml:space="preserve">
+    <value>Tylko konspekt (hierarchia nagłówków)</value>
+  </data>
+  <data name="DocStructure_KindFilterToolTip" xml:space="preserve">
+    <value>Filtruj wg typu bloku</value>
+  </data>
+  <data name="DocStructure_KindFilter_All" xml:space="preserve">
+    <value>Wszystkie</value>
+  </data>
+  <data name="DocStructure_KindFilter_HeadingsOnly" xml:space="preserve">
+    <value>Nagłówki</value>
+  </data>
+  <data name="DocStructure_KindFilter_ListsOnly" xml:space="preserve">
+    <value>Listy</value>
+  </data>
+  <data name="DocStructure_KindFilter_TablesOnly" xml:space="preserve">
+    <value>Tabele</value>
+  </data>
+  <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
+    <value>Obrazy</value>
+  </data>
 </root>

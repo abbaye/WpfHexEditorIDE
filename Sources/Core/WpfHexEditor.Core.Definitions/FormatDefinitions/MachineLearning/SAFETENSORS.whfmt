@@ -228,5 +228,30 @@
     "LastUpdated": "2026-04-14",
     "PriorityFormat": true,
     "AutoRefined": false
+  },
+  "diff": {
+    "keyFields": [
+      "header_size",
+      "json_start_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SAFETENSORS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "json_start_byte",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 8 — parser must reject."
+      },
+      {
+        "field": "header_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SAFETENSORS. Hand-tune weights/rates per format if needed."
   }
 }

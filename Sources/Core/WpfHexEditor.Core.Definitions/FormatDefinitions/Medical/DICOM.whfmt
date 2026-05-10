@@ -253,5 +253,36 @@
     "Standard": "DICOM PS3 (NEMA) — ISO 12052:2017",
     "Endianness": "little-endian by default (Explicit LE is most common transfer syntax)",
     "Privacy": "HIPAA PHI — patient name, ID, DOB, images — handle with strict access controls"
+  },
+  "diff": {
+    "keyFields": [
+      "dicom_magic",
+      "first_group_tag",
+      "first_vr"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DICOM. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dicom_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 128 — parser must reject."
+      },
+      {
+        "field": "first_group_tag",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "first_vr",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DICOM. Hand-tune weights/rates per format if needed."
   }
 }

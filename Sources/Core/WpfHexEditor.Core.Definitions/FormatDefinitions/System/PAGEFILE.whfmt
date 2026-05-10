@@ -215,5 +215,32 @@
       "severity": "warning",
       "message": "PAGEFILE magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "size",
+      "page_size"
+    ],
+    "ignoreFields": [
+      "creation_time"
+    ],
+    "note": "Inferred semantic diff for PAGEFILE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "page_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PAGEFILE. Hand-tune weights/rates per format if needed."
+  }
 }

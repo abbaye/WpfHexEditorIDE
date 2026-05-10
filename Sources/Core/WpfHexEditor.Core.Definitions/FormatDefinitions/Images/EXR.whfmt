@@ -236,5 +236,36 @@
     "attributeListOffset": 8,
     "pixelTypes": ["UINT=0", "HALF=1 (16-bit float)", "FLOAT=2 (32-bit float)"],
     "compressionTypes": ["None=0", "RLE=1", "ZIPS=2", "ZIP=3", "PIZ=4", "PXR24=5", "B44=6", "B44A=7", "DWAA=8", "DWAB=9"]
+  },
+  "diff": {
+    "keyFields": [
+      "exr_magic",
+      "version_number",
+      "flags"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for EXR. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "exr_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "version_number",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "flags",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for EXR. Hand-tune weights/rates per format if needed."
   }
 }

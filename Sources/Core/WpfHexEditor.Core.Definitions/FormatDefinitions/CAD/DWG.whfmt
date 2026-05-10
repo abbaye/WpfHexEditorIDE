@@ -205,5 +205,30 @@
     "unicodeSupport": "R2007+ (AC1021+)",
     "pageBasedStorage": "R2004+ uses page-based section architecture",
     "knownVersions": ["AC1009=R12", "AC1012=R13", "AC1014=R14", "AC1015=2000", "AC1018=2004", "AC1021=2007", "AC1024=2010", "AC1027=2013", "AC1032=2018", "AC1035=2021"]
+  },
+  "diff": {
+    "keyFields": [
+      "dwg_magic",
+      "version_code"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DWG. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dwg_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "version_code",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DWG. Hand-tune weights/rates per format if needed."
   }
 }

@@ -214,5 +214,36 @@
     "ByteOrder": "Big-endian throughout",
     "Versions": "v5 (legacy), v6 (extended), v7 (OmniPeek era)",
     "PacketRecord": "sliceLength(2B) + flags(2B) + status(2B) + timestamp(8B, 100ns) + protoSpec(2B) + data"
+  },
+  "diff": {
+    "keyFields": [
+      "file_version",
+      "capture_length",
+      "slice_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ETHERPEEK. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "file_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "capture_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "slice_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ETHERPEEK. Hand-tune weights/rates per format if needed."
   }
 }

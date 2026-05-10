@@ -183,5 +183,36 @@
     "Versions": "v38=Quake 2, v46=Quake 3 Arena, v47=Q3 Team Arena",
     "Header": "144 bytes: magic(4B) + version(4B LE) + 17 lump entries × 8B",
     "Features": "Bezier curve patches (Q3), RGB lightmaps, brushes/planes/visibility"
+  },
+  "diff": {
+    "keyFields": [
+      "ibsp_magic",
+      "ibsp_version",
+      "ibsp_entities_offset"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for BSP_Q3. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ibsp_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "ibsp_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "ibsp_entities_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for BSP_Q3. Hand-tune weights/rates per format if needed."
   }
 }

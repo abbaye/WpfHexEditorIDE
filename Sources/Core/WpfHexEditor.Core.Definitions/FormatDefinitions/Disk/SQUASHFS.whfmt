@@ -511,5 +511,50 @@
     "readUInt64LE": "Read little-endian 64-bit offset fields",
     "formatFileSize(var:bytesUsed)": "Format filesystem size as readable size",
     "formatTimestamp(var:modificationTime)": "Format Unix timestamp as human-readable date"
+  },
+  "diff": {
+    "keyFields": [
+      "magic",
+      "inode_count",
+      "block_size",
+      "fragment_entry_count",
+      "compression_id"
+    ],
+    "ignoreFields": [
+      "modification_time"
+    ],
+    "note": "Inferred semantic diff for SQUASHFS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "compression_id",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "inode_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "block_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "fragment_entry_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SQUASHFS. Hand-tune weights/rates per format if needed."
   }
 }

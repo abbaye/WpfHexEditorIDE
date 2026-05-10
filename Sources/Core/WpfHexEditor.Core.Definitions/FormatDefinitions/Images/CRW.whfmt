@@ -206,5 +206,36 @@
     "HeapIdentifier": "HEAPCCDR",
     "SensorType": "Bayer",
     "Compression": "uncompressed or Canon lossless"
+  },
+  "diff": {
+    "keyFields": [
+      "crw_byte_order",
+      "ciff_magic",
+      "heap_id"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for CRW. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "crw_byte_order",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "heap_id",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 6 — parser must reject."
+      },
+      {
+        "field": "ciff_magic",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for CRW. Hand-tune weights/rates per format if needed."
   }
 }

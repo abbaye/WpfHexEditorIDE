@@ -38,10 +38,11 @@ internal static class ParserGenerator
 
         return language switch
         {
-            OutputLanguage.CSharpSpan => SpanGenerator.Generate(formatName, category, version, desc, namespaceName, className, blocks, checksums, includeValidation),
-            OutputLanguage.FSharp     => FSharpGenerator.Generate(formatName, category, version, desc, namespaceName, className, blocks, checksums),
-            OutputLanguage.Rust       => RustGenerator.Generate(formatName, category, version, desc, className, blocks),
-            _                         => GenerateCSharp(formatName, category, version, desc, namespaceName, className, blocks, checksums, enums, includeValidation, generateAsync),
+            OutputLanguage.CSharpSpan  => SpanGenerator.Generate(formatName, category, version, desc, namespaceName, className, blocks, checksums, includeValidation),
+            OutputLanguage.FSharp      => FSharpGenerator.Generate(formatName, category, version, desc, namespaceName, className, blocks, checksums),
+            OutputLanguage.Rust        => RustGenerator.Generate(formatName, category, version, desc, className, blocks),
+            OutputLanguage.VisualBasic => VBGenerator.Generate(formatName, category, version, desc, namespaceName, className, blocks, checksums),
+            _                          => GenerateCSharp(formatName, category, version, desc, namespaceName, className, blocks, checksums, enums, includeValidation, generateAsync),
         };
     }
 

@@ -222,5 +222,24 @@
     "keyMarkers": "GAMESS VERSION, $CONTRL echo, TOTAL ENERGY, FREQUENCY:, TERMINATED NORMALLY",
     "energyUnit": "Hartree (1 Ha = 627.5094 kcal/mol)",
     "softwareFamily": "GAMESS-US (Iowa State) / PC-GAMESS (Firefly)"
+  },
+  "diff": {
+    "keyFields": [
+      "gamess_first_line"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for GAMESS_LOG. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "gamess_first_line",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for GAMESS_LOG. Hand-tune weights/rates per format if needed."
   }
 }

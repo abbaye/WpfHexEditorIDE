@@ -178,5 +178,30 @@
     "Magic": "'SketchUp Model' (14 ASCII bytes) at offset 0",
     "VersionField": "uint32 LE at offset 15 (version 3-23 = SketchUp 3 to 2023)",
     "Encryption": "No encryption — file is readable but proprietary binary structure"
+  },
+  "diff": {
+    "keyFields": [
+      "skp_magic",
+      "skp_version_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SKP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "skp_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "skp_version_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SKP. Hand-tune weights/rates per format if needed."
   }
 }

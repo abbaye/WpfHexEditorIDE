@@ -185,5 +185,24 @@
     "KeyEntries": ["[Content_Types].xml", "_rels/.rels", "3D/3dmodel.model"],
     "MeshFormat": "XML-encoded vertex/triangle mesh",
     "Extensions": ["Materials", "Production", "Slice", "Beam Lattice", "Securecontent"]
+  },
+  "diff": {
+    "keyFields": [
+      "three_mf_zip_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for THREE_MF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "three_mf_zip_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for THREE_MF. Hand-tune weights/rates per format if needed."
   }
 }

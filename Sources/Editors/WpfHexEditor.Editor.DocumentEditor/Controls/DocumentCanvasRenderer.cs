@@ -1144,6 +1144,163 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         DrawBlocksInViewport(dc, vw, vh,
             contentX: _pageLeft + _pageSettings.MarginLeft,
             contentW: Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight));
+
+        // Floating images (wp:anchor) — drawn AFTER body flow so they overlay text.
+        // Position is resolved relative to the page card or the anchor paragraph.
+        DrawFloatingImages(dc, vw, vh);
+    }
+
+    /// <summary>
+    /// Draws all floating (wp:anchor) images as overlays positioned relative to
+    /// their containing page or anchor paragraph. Floating blocks have height=0
+    /// in the flow and would otherwise be invisible.
+    /// </summary>
+    private void DrawFloatingImages(DrawingContext dc, double vw, double vh)
+    {
+        if (_blocks.Count == 0) return;
+
+        for (int i = 0; i < _blocks.Count; i++)
+        {
+            var rb = _blocks[i];
+            if (rb.Block.Kind != "image") continue;
+            if (!rb.Block.Attributes.TryGetValue("floating", out var fv) || fv is not true) continue;
+
+            // Resolve the page that contains this anchor (rb.Y is the in-flow position
+            // where the anchor paragraph would have been laid out).
+            int pageIdx = ResolvePageIndex(rb.Y);
+            double pageStart = _pageStarts[pageIdx];
+            double pageTopOnCanvas = PageCanvasPad + pageStart - _offset.Y;
+            double contentLeft  = _pageLeft + _pageSettings.MarginLeft;
+            double contentWidth = Math.Max(1, _pageWidth - _pageSettings.MarginLeft - _pageSettings.MarginRight);
+
+            // Image natural size (already in pixels — converted from EMU by mapper)
+            double natW = TryParseAttr(rb.Block, "naturalWidth");
+            double natH = TryParseAttr(rb.Block, "naturalHeight");
+            if (natW <= 0) natW = 200;
+            if (natH <= 0) natH = 150;
+
+            // Resolve X
+            string anchorX  = rb.Block.Attributes.GetValueOrDefault("anchorX") as string ?? "0";
+            string anchorRH = rb.Block.Attributes.GetValueOrDefault("anchorRelH") as string ?? "column";
+            double x;
+            if (anchorX == "center")      x = contentLeft + (contentWidth - natW) / 2;
+            else if (anchorX == "right")  x = contentLeft + contentWidth - natW;
+            else if (anchorX == "left")   x = contentLeft;
+            else if (double.TryParse(anchorX, System.Globalization.NumberStyles.Float,
+                                     System.Globalization.CultureInfo.InvariantCulture, out double xOff))
+            {
+                x = (anchorRH == "page" ? _pageLeft : contentLeft) + xOff;
+            }
+            else x = contentLeft;
+
+            // Resolve Y — relative to anchor paragraph by default, or page top
+            string anchorY  = rb.Block.Attributes.GetValueOrDefault("anchorY") as string ?? "0";
+            string anchorRV = rb.Block.Attributes.GetValueOrDefault("anchorRelV") as string ?? "paragraph";
+            double anchorYBase;
+            if (anchorRV == "page" || anchorRV == "margin")
+                anchorYBase = pageTopOnCanvas + (anchorRV == "margin" ? _pageSettings.MarginTop : 0);
+            else
+                anchorYBase = PageCanvasPad + rb.Y - _offset.Y; // paragraph/column relative
+
+            double y;
+            if (anchorY == "center")      y = anchorYBase;
+            else if (anchorY == "top")    y = anchorYBase;
+            else if (anchorY == "bottom") y = anchorYBase;
+            else if (double.TryParse(anchorY, System.Globalization.NumberStyles.Float,
+                                     System.Globalization.CultureInfo.InvariantCulture, out double yOff))
+                y = anchorYBase + yOff;
+            else y = anchorYBase;
+
+            // Quick viewport cull
+            if (y + natH < 0 || y > vh) continue;
+
+            // Build a virtual RenderBlock at (x,y) for DrawImageBlock.
+            // It already handles cache/loading. Pass natW as maxW so the image
+            // is drawn at its natural size, not capped to the content column.
+            DrawImageBlockAt(dc, rb.Block, x, y, natW, natH);
+        }
+    }
+
+    /// <summary>Resolves which page index contains a given canvas Y coordinate.</summary>
+    private int ResolvePageIndex(double canvasY)
+    {
+        for (int i = _pageStarts.Count - 1; i >= 0; i--)
+            if (canvasY >= _pageStarts[i]) return i;
+        return 0;
+    }
+
+    /// <summary>
+    /// Draws an image block at an arbitrary (x, y) position with a fixed size.
+    /// Used by the floating-image overlay path.
+    /// </summary>
+    private void DrawImageBlockAt(DrawingContext dc, DocumentBlock block,
+        double x, double y, double w, double h)
+    {
+        _imageCache ??= new LruCache<string, BitmapImage?>(ImageCacheMaxEntries * 3);
+
+        var entryName = block.Attributes.TryGetValue("zipEntryName", out var ev) ? ev?.ToString() : null;
+        var filePath  = _model?.FilePath;
+        if (entryName is null || filePath is null || !File.Exists(filePath)) return;
+
+        var cacheKey = $"{filePath}|{entryName}";
+        if (_imageCache.TryGetValue(cacheKey, out var bmp) && bmp is not null)
+        {
+            dc.DrawImage(bmp, new Rect(x, y, w, h));
+            return;
+        }
+
+        // Trigger async decode if not yet started — reuses the same cache as inline images.
+        if (!_imageCache.ContainsKey(cacheKey + "\0loading") &&
+            !_imageCache.ContainsKey(cacheKey + "\0error"))
+        {
+            var sentinelKey = cacheKey + "\0loading";
+            _imageCache.Add(sentinelKey, null);
+            var captPath  = filePath;
+            var captEntry = entryName;
+            var captKey   = cacheKey;
+            Task.Run(() =>
+            {
+                try
+                {
+                    using var zip = ZipFile.OpenRead(captPath);
+                    var entry     = zip.GetEntry(captEntry);
+                    if (entry is null) throw new FileNotFoundException(captEntry);
+                    BitmapImage img;
+                    using (var ms = new MemoryStream())
+                    {
+                        using (var s = entry.Open()) s.CopyTo(ms);
+                        ms.Position = 0;
+                        img = new BitmapImage();
+                        img.BeginInit();
+                        img.StreamSource = ms;
+                        img.CacheOption  = BitmapCacheOption.OnLoad;
+                        img.EndInit();
+                        img.Freeze();
+                    }
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        if (_imageCache is null) return;
+                        _imageCache.Add(captKey, img);
+                        _imageCache.Remove(captKey + "\0loading");
+                        InvalidateVisual();
+                    });
+                }
+                catch
+                {
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        if (_imageCache is null) return;
+                        _imageCache.Remove(captKey + "\0loading");
+                        _imageCache.Add(captKey + "\0error", null);
+                    });
+                }
+            });
+        }
+
+        // Light placeholder while loading
+        var pen = new Pen(_fgDimBrush ?? Brushes.Gray, 0.5);
+        pen.Freeze();
+        dc.DrawRectangle(null, pen, new Rect(x, y, w, h));
     }
 
     /// <summary>
@@ -1421,7 +1578,12 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
 
         if (rb.Block.Kind == "image")
         {
-            DrawImageBlock(dc, rb, x, y, maxW);
+            // Floating images are drawn separately by DrawFloatingImages (overlay
+            // pass) so they can honour their wp:anchor positionH/V. Skip here to
+            // avoid drawing them twice.
+            bool floating = rb.Block.Attributes.TryGetValue("floating", out var fv) && fv is true;
+            if (!floating)
+                DrawImageBlock(dc, rb, x, y, maxW);
             return;
         }
 
@@ -2224,6 +2386,16 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             {
                 double natH = TryParseAttr(block, "naturalHeight");
                 double h    = natH > 0 ? natH : 120.0;
+
+                // Floating (wp:anchor) images: occupy their own flow line (no
+                // text wrap-around yet — kept simple to avoid layout regressions).
+                // The block is still drawn via DrawFloatingImages overlay so its
+                // horizontal anchor (e.g. align=center, offset from column) is
+                // honoured even though it lives in the flow.
+                bool floating = block.Attributes.TryGetValue("floating", out var fv) && fv is true;
+                if (floating)
+                    return new RenderBlock(block, y, h, 8, 8, null, false, 0, severity);
+
                 return new RenderBlock(block, y, h, 8, 8, null, false, 0, severity);
             }
 
@@ -4326,6 +4498,113 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         }
 
         return result ?? [];
+    }
+
+    /// <summary>
+    /// Returns the font family that is uniform across the selection (or under the caret
+    /// when the selection is empty), reading the same paragraph→run cascade that
+    /// <see cref="BuildSegments"/> applies. Returns <c>null</c> when the selection
+    /// straddles runs/paragraphs with different families (mixed state).
+    /// </summary>
+    public string? GetSelectionFontFamily() => GetSelectionRunValue<string>("fontFamily");
+
+    /// <summary>
+    /// Returns the font size (points) that is uniform across the selection, or
+    /// <c>null</c> when the selection straddles runs with different sizes.
+    /// </summary>
+    public double? GetSelectionFontSize()
+    {
+        var v = GetSelectionRunValue<object>("fontSize");
+        return v switch
+        {
+            double d => d,
+            int    i => i,
+            _        => null,
+        };
+    }
+
+    /// <summary>
+    /// Walks every run intersected by the current selection (or the run under the
+    /// caret when the selection is empty) and returns the value of <paramref name="key"/>
+    /// when it is identical on every run; otherwise <c>null</c>.
+    /// Each lookup falls back to the parent block's attribute, mirroring the
+    /// paragraph-as-defaults cascade in <see cref="BuildSegments"/>.
+    /// </summary>
+    private T? GetSelectionRunValue<T>(string key) where T : class
+    {
+        if (_blocks.Count == 0) return null;
+        var (start, end) = _selection.IsEmpty ? (_caret, _caret) : _selection.Ordered;
+
+        T?   first      = null;
+        bool firstSet   = false;
+
+        for (int bi = start.BlockIndex; bi <= end.BlockIndex && bi < _blocks.Count; bi++)
+        {
+            var block = _blocks[bi].Block;
+            int charFrom = bi == start.BlockIndex ? start.CharOffset : 0;
+            int charTo   = bi == end.BlockIndex   ? end.CharOffset   : GetFlatText(bi).Length;
+
+            // Empty selection: peek the run that contains the caret position.
+            if (_selection.IsEmpty && start.BlockIndex == end.BlockIndex && charFrom == charTo)
+                charTo = charFrom + 1;
+
+            if (block.Children.Count == 0)
+            {
+                if (!CompareAndAccumulate(block, key, ref first, ref firstSet)) return null;
+            }
+            else
+            {
+                int pos = 0;
+                bool anyMatched = false;
+                foreach (var run in block.Children)
+                {
+                    int runEnd = pos + run.Text.Length;
+                    if (pos < charTo && runEnd > charFrom)
+                    {
+                        anyMatched = true;
+                        // Run-level wins; fall back to paragraph-level (the parent block).
+                        if (!CompareAndAccumulateWithFallback(run, block, key, ref first, ref firstSet)) return null;
+                    }
+                    pos = runEnd;
+                }
+                // No run intersected (e.g., caret at the very end of the paragraph) —
+                // use paragraph-level defaults so the dropdown still reflects the
+                // typeface that new typing will inherit.
+                if (!anyMatched && !CompareAndAccumulate(block, key, ref first, ref firstSet)) return null;
+            }
+        }
+
+        return first;
+    }
+
+    private static bool CompareAndAccumulate<T>(DocumentBlock src, string key,
+        ref T? first, ref bool firstSet) where T : class
+    {
+        var v = src.Attributes.TryGetValue(key, out var raw) ? raw as T : null;
+        return AccumulateOrFail(v, ref first, ref firstSet);
+    }
+
+    private static bool CompareAndAccumulateWithFallback<T>(
+        DocumentBlock run, DocumentBlock parent, string key,
+        ref T? first, ref bool firstSet) where T : class
+    {
+        var v = run.Attributes.TryGetValue(key, out var rawRun) ? rawRun as T : null;
+        v ??= parent.Attributes.TryGetValue(key, out var rawPar) ? rawPar as T : null;
+        return AccumulateOrFail(v, ref first, ref firstSet);
+    }
+
+    private static bool AccumulateOrFail<T>(T? value, ref T? first, ref bool firstSet) where T : class
+    {
+        if (!firstSet)
+        {
+            first    = value;
+            firstSet = true;
+            return true;
+        }
+        // null compares equal to null; otherwise both must be non-null and equal.
+        if (first is null && value is null) return true;
+        if (first is null || value is null) return false;
+        return Equals(first, value);
     }
 
     // ── Phase 15: Block-level formatting ─────────────────────────────────────

@@ -211,5 +211,26 @@
     "CodeObjectEncoding": "Python marshal format at offset 16",
     "PEP552": "Bitfield at offset 4 enables hash-based validation",
     "Note": "Python 2.x .pyc uses different 4-byte magic without CRLF. Python 3.x universally has 0x0D 0x0A at bytes 2-3."
+  },
+  "diff": {
+    "keyFields": [
+      "pyc_magic"
+    ],
+    "ignoreFields": [
+      "pyc_timestamp"
+    ],
+    "note": "Inferred semantic diff for PYBITCODE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pyc_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PYBITCODE. Hand-tune weights/rates per format if needed."
   }
 }

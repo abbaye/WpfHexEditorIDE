@@ -217,5 +217,30 @@
     "ROMWindow": "0x6000-0x7FFF (8 KB cartridge slot)",
     "GROM": "8 KB Graphics ROM via I/O port 0x9800",
     "ScratchpadRAM": "256 bytes at 0x8300-0x83FF"
+  },
+  "diff": {
+    "keyFields": [
+      "ti_tag",
+      "ti_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_TI99. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ti_tag",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "ti_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_TI99. Hand-tune weights/rates per format if needed."
   }
 }

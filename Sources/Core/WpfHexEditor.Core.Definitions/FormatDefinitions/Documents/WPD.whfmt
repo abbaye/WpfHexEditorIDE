@@ -291,5 +291,59 @@
     "CharacterSets": ["PC-8", "Multinational"],
     "FormattingModel": "Embedded binary codes interleaved with character data",
     "VersionRange": "WP 3.x through WP 8.x (1983-2000)"
+  },
+  "diff": {
+    "keyFields": [
+      "wpd_magic",
+      "offset_to_file_id",
+      "file_type",
+      "major_version",
+      "encrypt_flag"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for WPD. Compare key structural fields; ignore volatile metadata."
+  },
+  "repair": [
+    {
+      "name": "FixSignature",
+      "trigger": "SignatureMismatch",
+      "action": "set_value",
+      "target": "0",
+      "value": "FF575043",
+      "length": 4,
+      "description": "Restore the 4-byte WPD signature at offset 0."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "wpd_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "file_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "major_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "encrypt_flag",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "offset_to_file_id",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for WPD. Hand-tune weights/rates per format if needed."
   }
 }

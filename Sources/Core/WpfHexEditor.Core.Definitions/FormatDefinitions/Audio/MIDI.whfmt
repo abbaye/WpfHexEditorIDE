@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "MIDI Audio",
   "formatId": "MIDI",
@@ -348,5 +348,48 @@
     "MandatoryFirstChunk": "MThd (14 bytes total)",
     "TrackChunkID": "MTrk",
     "EventEncoding": "Variable-length delta time (VLQ) + MIDI status byte + data"
+  },
+  "diff": {
+    "keyFields": [
+      "midi_header",
+      "header_length",
+      "midi_format",
+      "track_count",
+      "division"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MIDI. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "midi_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "midi_format",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "division",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "header_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "track_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MIDI. Hand-tune weights/rates per format if needed."
   }
 }

@@ -368,4 +368,28 @@
   <data name="ImgCtx_Wrap" xml:space="preserve"><value>التفاف النص</value></data>
   <data name="ImgCtx_InspectHex" xml:space="preserve"><value>فحص في محرر Hex</value></data>
   <data name="ImgCtx_Properties" xml:space="preserve"><value>خصائص الصورة...</value></data>
+  <data name="DocStructure_ShowRunsToggleToolTip" xml:space="preserve">
+    <value>إظهار الفقرات</value>
+  </data>
+  <data name="DocStructure_OutlineModeToolTip" xml:space="preserve">
+    <value>مخطط فقط (تسلسل العناوين)</value>
+  </data>
+  <data name="DocStructure_KindFilterToolTip" xml:space="preserve">
+    <value>تصفية حسب نوع الكتلة</value>
+  </data>
+  <data name="DocStructure_KindFilter_All" xml:space="preserve">
+    <value>الكل</value>
+  </data>
+  <data name="DocStructure_KindFilter_HeadingsOnly" xml:space="preserve">
+    <value>العناوين</value>
+  </data>
+  <data name="DocStructure_KindFilter_ListsOnly" xml:space="preserve">
+    <value>القوائم</value>
+  </data>
+  <data name="DocStructure_KindFilter_TablesOnly" xml:space="preserve">
+    <value>الجداول</value>
+  </data>
+  <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
+    <value>الصور</value>
+  </data>
 </root>

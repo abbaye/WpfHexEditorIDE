@@ -183,5 +183,24 @@
     "KeyAlgorithms": "RSA, DSA, Elgamal, ECDH, ECDSA, EdDSA (Ed25519)",
     "HashAlgorithms": "SHA-1 (deprecated), SHA-256, SHA-384, SHA-512",
     "RFC": "RFC 4880 (OpenPGP v4), draft-ietf-openpgp-crypto-refresh (v6)"
+  },
+  "diff": {
+    "keyFields": [
+      "pgp_header"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PGP_ASCII. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pgp_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PGP_ASCII. Hand-tune weights/rates per format if needed."
   }
 }

@@ -229,5 +229,42 @@
     "CompressionMethods": ["stored", "RLE", "Huffman", "LZW"],
     "Endianness": "little-endian",
     "MaxFilenameLength": 12
+  },
+  "diff": {
+    "keyFields": [
+      "archive_marker",
+      "compression_method",
+      "compressed_size",
+      "uncompressed_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ARC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "archive_marker",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "compression_method",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "compressed_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "uncompressed_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ARC. Hand-tune weights/rates per format if needed."
   }
 }

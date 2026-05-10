@@ -185,5 +185,36 @@
     "Header": "12 bytes: magic(4B) + dirOffset(4B LE) + dirLength(4B LE)",
     "DirEntry": "64 bytes each: filename(56B null-padded) + offset(4B LE) + size(4B LE)",
     "Compression": "None — all files stored uncompressed"
+  },
+  "diff": {
+    "keyFields": [
+      "pak_signature",
+      "pak_dir_offset",
+      "pak_dir_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PAK. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pak_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "pak_dir_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "pak_dir_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PAK. Hand-tune weights/rates per format if needed."
   }
 }

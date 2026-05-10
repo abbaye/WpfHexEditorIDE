@@ -305,5 +305,30 @@
     "VideoChip": "MARIA (320x200, 25 sprites per scanline)",
     "A78HeaderSize": "128 bytes fixed",
     "Magic": "'ATARI7800' at offset 1 (9 bytes)"
+  },
+  "diff": {
+    "keyFields": [
+      "atari7800_magic",
+      "rom_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_A78. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "atari7800_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 1 — parser must reject."
+      },
+      {
+        "field": "rom_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_A78. Hand-tune weights/rates per format if needed."
   }
 }

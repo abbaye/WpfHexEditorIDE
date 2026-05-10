@@ -20,6 +20,9 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WpfHexEditor.Editor.ClassDiagram.Controls;
+using WpfHexEditor.Editor.ClassDiagram.Core.CodeGen;
+using WpfHexEditor.Editor.ClassDiagram.Core.CodeGen.Abstractions;
+using WpfHexEditor.Editor.ClassDiagram.Core.CodeGen.Options;
 using WpfHexEditor.Editor.ClassDiagram.Core.Export;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 
@@ -36,13 +39,23 @@ public sealed class ClassDiagramExportService
 
     /// <summary>
     /// Generates C# skeleton source for <paramref name="doc"/> and optionally writes it to disk.
+    /// Backward-compatible facade over <see cref="ExportCodeAsync"/> with C# defaults.
     /// </summary>
     /// <param name="doc">Source document.</param>
     /// <param name="filePath">Optional output file path. When null, no file is written.</param>
     /// <returns>Generated C# source text.</returns>
-    public async Task<string> ExportCSharpAsync(DiagramDocument doc, string? filePath = null)
+    public Task<string> ExportCSharpAsync(DiagramDocument doc, string? filePath = null) =>
+        ExportCodeAsync(doc, LanguageIds.CSharp, CodeGenOptions.Default, filePath);
+
+    /// <summary>
+    /// Generates source code for <paramref name="doc"/> using the language identified by
+    /// <paramref name="languageId"/> and the supplied <paramref name="options"/>, then optionally
+    /// writes it to disk.
+    /// </summary>
+    public async Task<string> ExportCodeAsync(
+        DiagramDocument doc, string languageId, CodeGenOptions options, string? filePath = null)
     {
-        string source = CSharpSkeletonGenerator.Generate(doc);
+        string source = CodeGenerationPipeline.Generate(doc, languageId, options);
         if (!string.IsNullOrEmpty(filePath))
             await File.WriteAllTextAsync(filePath, source).ConfigureAwait(false);
         return source;

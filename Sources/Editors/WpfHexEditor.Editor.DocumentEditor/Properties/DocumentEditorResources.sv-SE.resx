@@ -369,4 +369,28 @@
   <data name="ImgCtx_Wrap" xml:space="preserve"><value>Textbrytning</value></data>
   <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Granska i Hex-redigerare</value></data>
   <data name="ImgCtx_Properties" xml:space="preserve"><value>Bildegenskaper...</value></data>
+  <data name="DocStructure_ShowRunsToggleToolTip" xml:space="preserve">
+    <value>Visa körningar (textfragment)</value>
+  </data>
+  <data name="DocStructure_OutlineModeToolTip" xml:space="preserve">
+    <value>Endast disposition (rubrikhierarki)</value>
+  </data>
+  <data name="DocStructure_KindFilterToolTip" xml:space="preserve">
+    <value>Filtrera efter blocktyp</value>
+  </data>
+  <data name="DocStructure_KindFilter_All" xml:space="preserve">
+    <value>Alla</value>
+  </data>
+  <data name="DocStructure_KindFilter_HeadingsOnly" xml:space="preserve">
+    <value>Rubriker</value>
+  </data>
+  <data name="DocStructure_KindFilter_ListsOnly" xml:space="preserve">
+    <value>Listor</value>
+  </data>
+  <data name="DocStructure_KindFilter_TablesOnly" xml:space="preserve">
+    <value>Tabeller</value>
+  </data>
+  <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
+    <value>Bilder</value>
+  </data>
 </root>

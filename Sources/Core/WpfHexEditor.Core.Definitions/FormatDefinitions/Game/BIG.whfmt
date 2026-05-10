@@ -198,5 +198,42 @@
     "Header": "16 bytes: magic(4B) + archiveSize(4B LE) + fileCount(4B LE) + firstFileOffset(4B LE)",
     "FileTable": "Variable-length entries: dataOffset(4B BE) + dataSize(4B BE) + filename(CStr)",
     "Endianness": "Header fields are little-endian; file table dataOffset/dataSize are big-endian"
+  },
+  "diff": {
+    "keyFields": [
+      "big_magic",
+      "big_archive_size",
+      "big_file_count",
+      "big_first_file_offset"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for BIG. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "big_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "big_archive_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "big_file_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "big_first_file_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for BIG. Hand-tune weights/rates per format if needed."
   }
 }

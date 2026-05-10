@@ -172,5 +172,30 @@
     "Encryption": "PKCS#5 PBKDF2 + AES-256-CBC (modern) or PBE-SHA1-3DES (legacy)",
     "Security": "Contains private key — high risk if unprotected; always password-protect",
     "Extensions": ".p12 (standard), .pfx (Windows/IIS legacy name for identical format)"
+  },
+  "diff": {
+    "keyFields": [
+      "asn1_sequence",
+      "asn1_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for P12. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "asn1_sequence",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "asn1_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for P12. Hand-tune weights/rates per format if needed."
   }
 }

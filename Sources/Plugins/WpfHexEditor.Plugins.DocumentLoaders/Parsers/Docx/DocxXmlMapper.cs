@@ -28,9 +28,15 @@ internal sealed class DocxXmlMapper
     // ── Relationship map (rId → zip entry path) ───────────────────────────────
 
     private readonly IReadOnlyDictionary<string, string> _relsMap;
+    private readonly DocxStyleTable                      _styleTable;
 
-    public DocxXmlMapper(IReadOnlyDictionary<string, string>? relsMap = null)
-        => _relsMap = relsMap ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public DocxXmlMapper(
+        IReadOnlyDictionary<string, string>? relsMap     = null,
+        DocxStyleTable?                      styleTable = null)
+    {
+        _relsMap    = relsMap    ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        _styleTable = styleTable ?? DocxStyleTable.Empty;
+    }
 
     // ── Entry point ───────────────────────────────────────────────────────────
 
@@ -52,7 +58,29 @@ internal sealed class DocxXmlMapper
         {
             ct.ThrowIfCancellationRequested();
             var block = MapElement(child, entryBaseOffset, mapBuilder);
-            if (block is not null) blocks.Add(block);
+            if (block is null) continue;
+
+            // Lift images carried as paragraph children into the top-level flow:
+            // the renderer treats `image` as a block-level kind, so children of
+            // paragraphs are ignored.
+            // - Inline images: flow inline, after the paragraph
+            // - Floating images: lifted BEFORE the paragraph so rb.Y matches the
+            //   anchor paragraph's top, not its bottom (overlay positioning
+            //   relies on this baseline).
+            var floating = new List<DocumentBlock>();
+            var inline   = new List<DocumentBlock>();
+            for (int i = block.Children.Count - 1; i >= 0; i--)
+            {
+                var c = block.Children[i];
+                if (c.Kind != "image") continue;
+                block.Children.RemoveAt(i);
+                bool isFloating = c.Attributes.TryGetValue("floating", out var fv) && fv is true;
+                (isFloating ? floating : inline).Add(c);
+            }
+
+            blocks.AddRange(floating);
+            blocks.Add(block);
+            blocks.AddRange(inline);
         }
 
         return blocks;
@@ -146,14 +174,23 @@ internal sealed class DocxXmlMapper
             }
         }
 
-        // Inline images (w:drawing at paragraph level or nested inside w:r)
+        // Images: extract inline (wp:inline) and anchored (wp:anchor) drawings.
+        // Both kinds are added as paragraph children, then lifted to the top-level
+        // flow by Map(). Anchored images carry positioning attributes so the
+        // renderer can draw them as a floating overlay relative to the page.
         foreach (var drawing in pElem.Descendants(W + "drawing"))
         {
+            var inlineEl = drawing.Element(ADrawNs + "inline");
+            var anchorEl = drawing.Element(ADrawNs + "anchor");
+            var container = inlineEl ?? anchorEl;
+            if (container is null) continue;
+
             var blip  = drawing.Descendants(ANs + "blip").FirstOrDefault();
             var embed = blip?.Attribute(RelNs + "embed")?.Value;
             if (embed is null || !_relsMap.TryGetValue(embed, out var entryName)) continue;
 
-            var ext = drawing.Descendants(ADrawNs + "extent").FirstOrDefault();
+            var ext = container.Element(ADrawNs + "extent")
+                   ?? drawing.Descendants(ADrawNs + "extent").FirstOrDefault();
             double? cx = ParseEmu(ext?.Attribute("cx")?.Value);
             double? cy = ParseEmu(ext?.Attribute("cy")?.Value);
 
@@ -164,6 +201,13 @@ internal sealed class DocxXmlMapper
                 imgBlock.Attributes["naturalWidth"]  = cx.Value.ToString(CultureInfo.InvariantCulture);
             if (cy.HasValue)
                 imgBlock.Attributes["naturalHeight"] = cy.Value.ToString(CultureInfo.InvariantCulture);
+
+            if (anchorEl is not null)
+            {
+                imgBlock.Attributes["floating"] = true;
+                ExtractAnchorPosition(anchorEl, imgBlock);
+            }
+
             para.Children.Add(imgBlock);
         }
 
@@ -264,7 +308,7 @@ internal sealed class DocxXmlMapper
 
     // ── Property extractors ───────────────────────────────────────────────────
 
-    private static void ExtractParagraphProps(XElement pPr, DocumentBlock para)
+    private void ExtractParagraphProps(XElement pPr, DocumentBlock para)
     {
         var style = pPr.Element(W + "pStyle")?.Attribute(W + "val")?.Value;
         if (style is not null)
@@ -273,6 +317,15 @@ internal sealed class DocxXmlMapper
             // Store raw style for non-heading paragraphs.
             if (!style.StartsWith("Heading", StringComparison.OrdinalIgnoreCase))
                 para.Attributes["style"] = style;
+
+            // Resolve pStyle from word/styles.xml: font/size/bold/color from the style
+            // chain (basedOn-flattened) become paragraph-level defaults that child runs
+            // inherit. Direct pPr/rPr (handled below) overrides these; rStyle/rPr on
+            // a child run wins over both. Italic is intentionally not propagated to
+            // paragraph defaults — that matches the existing pPr/rPr-as-defaults rule
+            // (italic in pPr describes the paragraph mark, not a run default).
+            if (_styleTable.TryResolveParagraph(style, out var resolved))
+                ApplyResolvedStyleToParagraph(para, resolved);
         }
 
         var jc = pPr.Element(W + "jc")?.Attribute(W + "val")?.Value;
@@ -344,8 +397,19 @@ internal sealed class DocxXmlMapper
         }
     }
 
-    private static void ExtractRunProps(XElement rPr, DocumentBlock run)
+    private void ExtractRunProps(XElement rPr, DocumentBlock run)
     {
+        // Resolve rStyle FIRST: the style chain populates font/size/bold/italic/color
+        // as defaults that direct rPr properties below can override (each direct
+        // setter overwrites unconditionally). This produces the correct OOXML cascade:
+        //   docDefaults → pStyle → pPr direct → rStyle → rPr direct
+        // (pStyle is applied at the paragraph level in ExtractParagraphProps; the
+        // earlier stages have already filled the paragraph's defaults via
+        // ExtractRunPropsAsParaDefaults / ApplyResolvedStyleToParagraph.)
+        var rStyleEarly = rPr.Element(W + "rStyle")?.Attribute(W + "val")?.Value;
+        if (rStyleEarly is not null && _styleTable.TryResolveCharacter(rStyleEarly, out var rResolved))
+            ApplyResolvedStyleToRun(run, rResolved);
+
         // w:val="0" or w:val="false" means explicit off (override inherited); absent means inherit
         if (rPr.Element(W + "b") is { } bElem)
         {
@@ -404,7 +468,7 @@ internal sealed class DocxXmlMapper
     /// bold/italic/underline/strikethrough, which in pPr/w:rPr describe the paragraph
     /// mark style, not a default for child runs.
     /// </summary>
-    private static void ExtractRunPropsAsParaDefaults(XElement rPr, DocumentBlock para)
+    private void ExtractRunPropsAsParaDefaults(XElement rPr, DocumentBlock para)
     {
         var szVal = rPr.Element(W + "sz")?.Attribute(W + "val")?.Value
                  ?? rPr.Element(W + "szCs")?.Attribute(W + "val")?.Value;
@@ -423,11 +487,96 @@ internal sealed class DocxXmlMapper
             para.Attributes["color"] = color.StartsWith('#') ? color : $"#{color}";
     }
 
+    // ── Resolved-style application (pStyle / rStyle from styles.xml) ──────────
+
+    /// <summary>
+    /// Applies a flattened paragraph style to <paramref name="para"/>, only filling
+    /// keys that aren't already set so direct pPr/rPr settings handled afterwards
+    /// retain priority. Italic is intentionally skipped at the paragraph level: it
+    /// describes the paragraph mark, not a default for child runs (matches
+    /// <see cref="ExtractRunPropsAsParaDefaults"/>'s rule).
+    /// </summary>
+    private static void ApplyResolvedStyleToParagraph(DocumentBlock para, DocxStyleTable.ResolvedStyle s)
+    {
+        if (s.IsEmpty) return;
+
+        if (s.Font   is not null && !para.Attributes.ContainsKey("fontFamily"))
+            para.Attributes["fontFamily"] = s.Font;
+        if (s.SizePt is double sz && !para.Attributes.ContainsKey("fontSize"))
+            para.Attributes["fontSize"]   = sz;
+        if (s.Bold   is bool b   && b && !para.Attributes.ContainsKey("bold"))
+            para.Attributes["bold"]       = true;
+        if (s.Color  is not null && !para.Attributes.ContainsKey("color"))
+            para.Attributes["color"]      = s.Color;
+    }
+
+    /// <summary>
+    /// Applies a flattened character style to a run BEFORE direct rPr keys are read,
+    /// so the direct rPr (which writes unconditionally in <see cref="ExtractRunProps"/>)
+    /// overrides the style values when both are present.
+    /// </summary>
+    private static void ApplyResolvedStyleToRun(DocumentBlock run, DocxStyleTable.ResolvedStyle s)
+    {
+        if (s.IsEmpty) return;
+
+        if (s.Font   is not null) run.Attributes["fontFamily"] = s.Font;
+        if (s.SizePt is double sz) run.Attributes["fontSize"]  = sz;
+        if (s.Bold   is bool b   && b) run.Attributes["bold"]   = true;
+        if (s.Italic is bool i   && i) run.Attributes["italic"] = true;
+        if (s.Color  is not null) run.Attributes["color"]      = s.Color;
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     /// <summary>EMU (English Metric Units) → pixels at 96 dpi.</summary>
     private static double? ParseEmu(string? s) =>
         s is not null && long.TryParse(s, out var v) ? v / 914400.0 * 96.0 : null;
+
+    /// <summary>
+    /// Extracts wp:anchor positioning into block attributes:
+    ///   anchorX/anchorY    → pixel offsets (or "center"/"left"/"right"/"top"/"bottom")
+    ///   anchorRelH/anchorRelV → "page", "margin", "column", "paragraph"
+    ///   anchorBehindDoc    → true if image draws behind text
+    /// </summary>
+    private static void ExtractAnchorPosition(XElement anchor, DocumentBlock img)
+    {
+        var posH = anchor.Element(ADrawNs + "positionH");
+        if (posH is not null)
+        {
+            var rel = posH.Attribute("relativeFrom")?.Value;
+            if (rel is not null) img.Attributes["anchorRelH"] = rel;
+
+            var align = posH.Element(ADrawNs + "align")?.Value;
+            if (align is not null)
+                img.Attributes["anchorX"] = align;
+            else
+            {
+                var off = ParseEmu(posH.Element(ADrawNs + "posOffset")?.Value);
+                if (off.HasValue)
+                    img.Attributes["anchorX"] = off.Value.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        var posV = anchor.Element(ADrawNs + "positionV");
+        if (posV is not null)
+        {
+            var rel = posV.Attribute("relativeFrom")?.Value;
+            if (rel is not null) img.Attributes["anchorRelV"] = rel;
+
+            var align = posV.Element(ADrawNs + "align")?.Value;
+            if (align is not null)
+                img.Attributes["anchorY"] = align;
+            else
+            {
+                var off = ParseEmu(posV.Element(ADrawNs + "posOffset")?.Value);
+                if (off.HasValue)
+                    img.Attributes["anchorY"] = off.Value.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        var behind = anchor.Attribute("behindDoc")?.Value;
+        if (behind == "1") img.Attributes["anchorBehindDoc"] = true;
+    }
 
     private static long ResolveOffset(XElement elem, long baseOffset)
     {

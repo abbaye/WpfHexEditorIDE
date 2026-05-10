@@ -234,5 +234,36 @@
     "ColorSpace": "YCbCr + Alpha",
     "Compression": "Run-Length Encoding (RLE)",
     "Standard": "ETSI EN 300 743"
+  },
+  "diff": {
+    "keyFields": [
+      "dvb_sync_byte",
+      "dvb_seg_type",
+      "dvb_seg_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DVB_SUB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dvb_sync_byte",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "dvb_seg_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "dvb_seg_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DVB_SUB. Hand-tune weights/rates per format if needed."
   }
 }

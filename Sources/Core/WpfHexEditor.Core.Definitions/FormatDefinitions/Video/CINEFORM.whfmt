@@ -214,5 +214,24 @@
     "BitDepth": "10-bit or 12-bit",
     "IntraFrameOnly": true,
     "OpenSource": true
+  },
+  "diff": {
+    "keyFields": [
+      "cineform_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for CINEFORM. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "cineform_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for CINEFORM. Hand-tune weights/rates per format if needed."
   }
 }

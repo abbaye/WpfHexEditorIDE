@@ -375,5 +375,45 @@
     "readUInt32LE": "Read little-endian 32-bit header fields",
     "readUInt64LE": "Read little-endian 64-bit offset and size fields",
     "readAscii": "Read ASCII signature strings"
+  },
+  "diff": {
+    "keyFields": [
+      "file_type_id",
+      "header1_log_length",
+      "header1_log_offset",
+      "region_table1_entry_count"
+    ],
+    "ignoreFields": [
+      "creator_byte0",
+      "creator_byte2"
+    ],
+    "note": "Inferred semantic diff for VHDX. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "file_type_id",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "header1_log_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "header1_log_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "region_table1_entry_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for VHDX. Hand-tune weights/rates per format if needed."
   }
 }

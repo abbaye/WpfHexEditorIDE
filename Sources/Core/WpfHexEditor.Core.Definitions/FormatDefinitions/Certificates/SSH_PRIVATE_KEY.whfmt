@@ -183,5 +183,24 @@
     "OpenSSHMagic": "6F70656E7373682D6B65792D76310A (openssh-key-v1 + LF)",
     "KeyTypes": "RSA, ECDSA (P-256/384/521), Ed25519, FIDO sk-ssh-ed25519, sk-ecdsa",
     "PassphraseKDF": "bcrypt (modern, OpenSSH native), MD5 (legacy PEM DEK-Info)"
+  },
+  "diff": {
+    "keyFields": [
+      "pem_header"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SSH_PRIVATE_KEY. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pem_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SSH_PRIVATE_KEY. Hand-tune weights/rates per format if needed."
   }
 }

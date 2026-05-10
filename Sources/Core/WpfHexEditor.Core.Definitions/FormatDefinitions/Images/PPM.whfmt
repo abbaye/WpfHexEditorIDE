@@ -193,5 +193,24 @@
     "variants": ["P1=PBM-ASCII", "P2=PGM-ASCII", "P3=PPM-ASCII", "P4=PBM-binary", "P5=PGM-binary", "P6=PPM-binary", "P7=PAM"],
     "maxVal": "1-65535 (16-bit when > 255, stored big-endian)",
     "compression": "none"
+  },
+  "diff": {
+    "keyFields": [
+      "pnm_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PPM. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pnm_magic",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PPM. Hand-tune weights/rates per format if needed."
   }
 }

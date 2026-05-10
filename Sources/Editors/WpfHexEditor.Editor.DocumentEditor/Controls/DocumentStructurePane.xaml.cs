@@ -10,6 +10,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Globalization;
@@ -31,6 +32,10 @@ public partial class DocumentStructurePane : UserControl
     private DocumentModel? _model;
     private ObservableCollection<DocumentBlockNode> _allNodes = [];
     private string _filterText = string.Empty;
+    private bool   _showRuns   = false; // hide run leaves by default — they duplicate paragraph text
+    private string _kindFilter = "all"; // "all" | "heading" | "list-item" | "table" | "image"
+    private bool   _outlineMode;        // true = headings-only, hierarchically grouped by level
+    private bool   _suppressNavigateEvent;       // re-entrancy guard for SyncToBlock
 
     // ── Events ────────────────────────────────────────────────────────────────
 
@@ -64,6 +69,70 @@ public partial class DocumentStructurePane : UserControl
         RebuildTree();
     }
 
+    /// <summary>
+    /// Selects, expands ancestors of, and scrolls into view the tree node whose
+    /// underlying <see cref="DocumentBlock"/> matches <paramref name="block"/>.
+    /// Called from the host when the renderer's caret moves into a new block —
+    /// keeps the structure tree in sync with the cursor like VS's outline pane.
+    /// </summary>
+    public void SyncToBlock(DocumentBlock? block)
+    {
+        if (block is null) return;
+        var node = FindNode(_allNodes, block);
+        if (node is null) return;
+
+        // Expand chain: walk up by re-finding parents in the visual tree, since
+        // DocumentBlockNode doesn't carry a parent pointer. Re-running the search
+        // top-down with a path-collecting visitor keeps SyncToBlock allocation-light
+        // and stays correct under filtered ItemsSources.
+        var path = new List<DocumentBlockNode>();
+        if (CollectPath(_allNodes, block, path))
+        {
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                if (PART_Tree.ItemContainerGenerator.ContainerFromItem(path[i]) is TreeViewItem tvi)
+                    tvi.IsExpanded = true;
+            }
+            // Defer container realization for the leaf — the item generator
+            // populates lazily on expansion, so the container we need may not
+            // exist yet on the first dispatcher pass.
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, () =>
+            {
+                if (PART_Tree.ItemContainerGenerator.ContainerFromItem(node) is TreeViewItem leaf)
+                {
+                    _suppressNavigateEvent = true;
+                    leaf.IsSelected = true;
+                    _suppressNavigateEvent = false;
+                    leaf.BringIntoView();
+                }
+            });
+        }
+    }
+
+    private static DocumentBlockNode? FindNode(IEnumerable<DocumentBlockNode> nodes, DocumentBlock target)
+    {
+        foreach (var n in nodes)
+        {
+            if (ReferenceEquals(n.Block, target)) return n;
+            var hit = FindNode(n.Children, target);
+            if (hit is not null) return hit;
+        }
+        return null;
+    }
+
+    private static bool CollectPath(IEnumerable<DocumentBlockNode> nodes,
+        DocumentBlock target, List<DocumentBlockNode> path)
+    {
+        foreach (var n in nodes)
+        {
+            path.Add(n);
+            if (ReferenceEquals(n.Block, target)) return true;
+            if (CollectPath(n.Children, target, path)) return true;
+            path.RemoveAt(path.Count - 1);
+        }
+        return false;
+    }
+
     // ── Tree building ────────────────────────────────────────────────────────
 
     private void RebuildTree()
@@ -71,53 +140,131 @@ public partial class DocumentStructurePane : UserControl
         if (_model is null) return;
 
         var alertMap = BuildAlertMap();
-        _allNodes = new ObservableCollection<DocumentBlockNode>(
-            _model.Blocks.Select(b => BuildNode(b, alertMap)));
+        _allNodes = _outlineMode
+            ? BuildOutlineNodes(_model.Blocks, alertMap)
+            : new ObservableCollection<DocumentBlockNode>(
+                _model.Blocks
+                      .Where(b => _showRuns || b.Kind != "run")
+                      .Select(b => BuildNode(b, alertMap, _showRuns)));
 
         ApplyFilter();
         UpdateCountLabel();
     }
 
+    /// <summary>
+    /// Builds a heading-only tree where each heading owns the deeper-level headings
+    /// that follow it until a same-or-shallower heading breaks the chain. Mirrors
+    /// the document outline panes in VS Code / Word.
+    /// </summary>
+    private static ObservableCollection<DocumentBlockNode> BuildOutlineNodes(
+        IEnumerable<DocumentBlock> blocks, Dictionary<DocumentBlock, ForensicAlert> alertMap)
+    {
+        var roots = new ObservableCollection<DocumentBlockNode>();
+        var stack = new Stack<(int Level, DocumentBlockNode Node)>();
+
+        foreach (var block in blocks.SelectMany(Flatten).Where(b => b.Kind == "heading"))
+        {
+            int level = ReadHeadingLevel(block);
+            var node  = new DocumentBlockNode(block)
+            {
+                Alert = alertMap.TryGetValue(block, out var a) ? a : null
+            };
+
+            // Pop until we find a stricter ancestor.
+            while (stack.Count > 0 && stack.Peek().Level >= level)
+                stack.Pop();
+
+            if (stack.Count == 0)
+                roots.Add(node);
+            else
+                stack.Peek().Node.Children.Add(node);
+
+            stack.Push((level, node));
+        }
+
+        return roots;
+    }
+
+    private static IEnumerable<DocumentBlock> Flatten(DocumentBlock b)
+    {
+        yield return b;
+        foreach (var c in b.Children)
+            foreach (var d in Flatten(c)) yield return d;
+    }
+
+    private static int ReadHeadingLevel(DocumentBlock b) =>
+        b.Attributes.TryGetValue("level", out var lv) &&
+        lv is string s && int.TryParse(s, out int n) ? n : 1;
+
     private void ApplyFilter()
     {
-        if (string.IsNullOrWhiteSpace(_filterText))
+        // Guard: ComboBox<KindFilter SelectedIndex="0"> fires SelectionChanged
+        // during InitializeComponent() — before PART_Tree's x:Name field is
+        // assigned. The next RebuildTree() (triggered from BindModel) will
+        // re-run ApplyFilter once everything is realized.
+        if (PART_Tree is null) return;
+
+        bool hasText = !string.IsNullOrWhiteSpace(_filterText);
+        bool hasKind = _kindFilter != "all";
+
+        if (!hasText && !hasKind)
         {
             PART_Tree.ItemsSource = _allNodes;
+            UpdateCountLabel();
             return;
         }
 
-        var lower = _filterText.ToLowerInvariant();
+        var lower = hasText ? _filterText.ToLowerInvariant() : string.Empty;
         var filtered = _allNodes
-            .Where(n => MatchesFilter(n, lower))
+            .Where(n => Matches(n, lower, _kindFilter))
             .ToList();
 
         PART_Tree.ItemsSource = filtered;
+        UpdateCountLabel(filtered);
     }
 
-    private static bool MatchesFilter(DocumentBlockNode node, string filter) =>
-        node.KindLabel.ToLowerInvariant().Contains(filter) ||
-        node.Preview.ToLowerInvariant().Contains(filter)   ||
-        node.OffsetText.ToLowerInvariant().Contains(filter)||
-        node.Children.Any(c => MatchesFilter(c, filter));
-
-    private void UpdateCountLabel()
+    /// <summary>Tree-aware filter: a node passes if it matches OR any descendant matches.</summary>
+    private static bool Matches(DocumentBlockNode node, string text, string kind)
     {
+        bool kindOk = kind == "all" || node.Block.Kind == kind;
+        bool textOk = string.IsNullOrEmpty(text) ||
+                      node.KindLabel.ToLowerInvariant().Contains(text) ||
+                      node.Preview.ToLowerInvariant().Contains(text)   ||
+                      node.OffsetText.ToLowerInvariant().Contains(text);
+        if (kindOk && textOk) return true;
+        return node.Children.Any(c => Matches(c, text, kind));
+    }
+
+    private void UpdateCountLabel(IEnumerable<DocumentBlockNode>? filtered = null)
+    {
+        if (PART_CountLabel is null) return;
         int total = CountNodes(_allNodes);
-        PART_CountLabel.Text = $"({total})";
+        if (filtered is null)
+        {
+            PART_CountLabel.Text = $"({total})";
+            return;
+        }
+        int shown = CountNodes(filtered);
+        PART_CountLabel.Text = shown == total ? $"({total})" : $"({shown}/{total})";
     }
 
     private static int CountNodes(IEnumerable<DocumentBlockNode> nodes) =>
         nodes.Sum(n => 1 + CountNodes(n.Children));
 
     private static DocumentBlockNode BuildNode(
-        DocumentBlock block, Dictionary<DocumentBlock, ForensicAlert> alertMap)
+        DocumentBlock block, Dictionary<DocumentBlock, ForensicAlert> alertMap, bool showRuns)
     {
         var node = new DocumentBlockNode(block)
         {
             Alert = alertMap.TryGetValue(block, out var a) ? a : null
         };
         foreach (var child in block.Children)
-            node.Children.Add(BuildNode(child, alertMap));
+        {
+            // Run leaves duplicate the parent paragraph's flat text — hiding them
+            // by default cuts the tree size 2-3× without losing information.
+            if (!showRuns && child.Kind == "run") continue;
+            node.Children.Add(BuildNode(child, alertMap, showRuns));
+        }
         return node;
     }
 
@@ -139,6 +286,10 @@ public partial class DocumentStructurePane : UserControl
 
     private void OnTreeSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
+        // SyncToBlock toggles the selection programmatically when the caret
+        // moves — we must not re-fire BlockNavigated, or the renderer will
+        // fight the user every time they move the cursor.
+        if (_suppressNavigateEvent) return;
         if (e.NewValue is DocumentBlockNode node)
             BlockNavigated?.Invoke(this, node.Block);
     }
@@ -156,10 +307,37 @@ public partial class DocumentStructurePane : UserControl
         PART_SearchBox.Clear();
     }
 
+    private void OnKindFilterChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (PART_KindFilter?.SelectedItem is ComboBoxItem item &&
+            item.Tag is string tag)
+        {
+            _kindFilter = tag;
+            ApplyFilter();
+        }
+    }
+
     // ── Expand / Collapse all ─────────────────────────────────────────────────
 
     private void OnExpandAllClicked(object sender, RoutedEventArgs e)  => SetExpanded(PART_Tree, true);
     private void OnCollapseAllClicked(object sender, RoutedEventArgs e) => SetExpanded(PART_Tree, false);
+
+    private void OnShowRunsToggled(object sender, RoutedEventArgs e)
+    {
+        _showRuns = PART_ShowRunsBtn.IsChecked == true;
+        RebuildTree();
+    }
+
+    private void OnOutlineModeToggled(object sender, RoutedEventArgs e)
+    {
+        _outlineMode = PART_OutlineBtn.IsChecked == true;
+        // Outline mode is heading-only; the "show runs" and "kind filter" controls
+        // become noise in that view. Disable them visually so the user understands
+        // why their settings have no effect.
+        PART_ShowRunsBtn.IsEnabled = !_outlineMode;
+        PART_KindFilter.IsEnabled  = !_outlineMode;
+        RebuildTree();
+    }
 
     private static void SetExpanded(ItemsControl parent, bool expand)
     {
@@ -233,9 +411,104 @@ public sealed class DocumentBlockNode : INotifyPropertyChanged
 
     public ObservableCollection<DocumentBlockNode> Children { get; } = [];
 
-    public string KindLabel   => Block.Kind.ToUpperInvariant()[..Math.Min(3, Block.Kind.Length)];
-    public string Preview     => Block.Text.Length > 40 ? Block.Text[..40] + "…" : Block.Text;
-    public string OffsetText  => $"0x{Block.RawOffset:X}";
+    /// <summary>
+    /// Highest severity present on this node OR any descendant. Lets a parent
+    /// signal that some child carries an alert even when the parent itself is
+    /// clean — e.g. an H1 with one buried error paragraph still shows the dot.
+    /// </summary>
+    public ForensicSeverity? AggregateSeverity
+    {
+        get
+        {
+            ForensicSeverity? max = _alert?.Severity;
+            foreach (var c in Children)
+            {
+                var ch = c.AggregateSeverity;
+                if (ch is null) continue;
+                if (max is null || ch > max) max = ch;
+            }
+            return max;
+        }
+    }
+
+    public bool   HasAggregateAlert    => AggregateSeverity is not null;
+    public string AggregateAlertBrushKey => AggregateSeverity switch
+    {
+        ForensicSeverity.Error   => "DE_ForensicErrorBrush",
+        ForensicSeverity.Warning => "DE_ForensicWarnBrush",
+        ForensicSeverity.Info    => "DE_ForensicOkBrush",
+        _                        => "DE_ForensicOkBrush",
+    };
+
+    public string KindLabel
+    {
+        get
+        {
+            // Heading paragraphs surface their OOXML level (H1..H9) so the user
+            // can distinguish hierarchy at a glance instead of reading them all
+            // as "HEA". Falls back to the generic 3-letter prefix for everything
+            // else (PAR, LIS, TAB, IMG, …).
+            if (Block.Kind == "heading"
+                && Block.Attributes.TryGetValue("level", out var lvObj)
+                && lvObj is string lv && !string.IsNullOrEmpty(lv))
+            {
+                return $"H{lv}";
+            }
+            return Block.Kind.ToUpperInvariant()[..Math.Min(3, Block.Kind.Length)];
+        }
+    }
+    public string Preview     => BuildPreview(Block.Text);
+    /// <summary>
+    /// 8-digit zero-padded hex so all offsets render with the same character width
+    /// and stay visually aligned across siblings (Consolas in the chip).
+    /// </summary>
+    public string OffsetText  => $"0x{Block.RawOffset:X8}";
+
+    /// <summary>
+    /// Segoe MDL2 glyph picked per <see cref="Block"/>.Kind for the chip prefix.
+    /// Codepoints expressed via \uXXXX escapes to keep the source ASCII-clean.
+    /// </summary>
+    public string KindGlyph => Block.Kind switch
+    {
+        "heading"        => "\uE8FD", // Header
+        "paragraph"      => "\uE7C3", // Page
+        "list-item"      => "\uEA37", // BulletedList
+        "table"          => "\uF532", // GridView
+        "table-row"      => "\uE9D9", // RowGrid
+        "image"          => "\uEB9F", // Photo2
+        "hyperlink"      => "\uE71B", // Link
+        "page-break"     => "\uE7AD", // NewPage
+        "structured-tag" => "\uE8EC", // Tag
+        "run"            => "\uE8C1", // Font
+        _                => "\uE8A5", // PageHash
+    };
+
+    /// <summary>Resource key resolved by ResourceKeyToBrushConverter to color the chip background.</summary>
+    public string KindBrushKey => Block.Kind switch
+    {
+        "heading"        => "DE_StructureChipHeadingBrush",
+        "list-item"      => "DE_StructureChipListBrush",
+        "table"          => "DE_StructureChipTableBrush",
+        "table-row"      => "DE_StructureChipTableBrush",
+        "image"          => "DE_StructureChipImageBrush",
+        "hyperlink"      => "DE_StructureChipLinkBrush",
+        "structured-tag" => "DE_StructureChipTagBrush",
+        _                => "DE_StructureChipDefaultBrush",
+    };
+
+    /// <summary>
+    /// Trims and collapses runs of whitespace (incl. tabs) into single spaces so
+    /// LibreOffice-style text alignment via tabs/multi-spaces (common in CV docs)
+    /// doesn't render as fragmented previews. Truncates to 60 chars with ellipsis.
+    /// </summary>
+    private static string BuildPreview(string raw)
+    {
+        if (string.IsNullOrEmpty(raw)) return string.Empty;
+        var collapsed = WhitespaceRun.Replace(raw.Trim(), " ");
+        return collapsed.Length > 60 ? collapsed[..60] + "…" : collapsed;
+    }
+
+    private static readonly Regex WhitespaceRun = new(@"\s+", RegexOptions.Compiled);
     public bool   HasAlert    => _alert is not null;
     public string AlertMessage => _alert?.Description ?? string.Empty;
 

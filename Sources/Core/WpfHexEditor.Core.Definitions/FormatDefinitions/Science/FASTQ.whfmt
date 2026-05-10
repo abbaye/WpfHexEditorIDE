@@ -210,5 +210,24 @@
     "recordStructure": "4 lines per read",
     "qualityEncoding": "Phred+33 (Sanger/Illumina 1.8+)",
     "maxReadLength": "platform-dependent (Illumina: 300bp, PacBio/Nanopore: >100kb)"
+  },
+  "diff": {
+    "keyFields": [
+      "fastq_at_sign"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for FASTQ. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "fastq_at_sign",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for FASTQ. Hand-tune weights/rates per format if needed."
   }
 }

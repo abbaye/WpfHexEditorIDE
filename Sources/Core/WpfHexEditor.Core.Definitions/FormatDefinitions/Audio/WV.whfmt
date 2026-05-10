@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "WavPack Audio",
   "formatId": "WV",
@@ -440,5 +440,59 @@
     "HeaderSize": "32 bytes per block",
     "Lossless": true,
     "MaxBitDepth": "32-bit integer or float, DSD"
+  },
+  "diff": {
+    "keyFields": [
+      "wvpk_signature",
+      "block_size",
+      "version",
+      "block_flags",
+      "crc32"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for WV. Compare key structural fields; ignore volatile metadata."
+  },
+  "repair": [
+    {
+      "name": "RecomputeCRC32",
+      "trigger": "CRC32Mismatch",
+      "action": "recompute_checksum",
+      "target": "28",
+      "length": 4,
+      "algorithm": "crc32",
+      "description": "Recompute CRC32 and write at offset 28."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": true,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "wvpk_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "block_flags",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "block_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "crc32",
+        "mutation": "random_bytes",
+        "description": "Random CRC32 value triggers integrity failure."
+      }
+    ],
+    "note": "Inferred fuzz strategies for WV. Hand-tune weights/rates per format if needed."
   }
 }

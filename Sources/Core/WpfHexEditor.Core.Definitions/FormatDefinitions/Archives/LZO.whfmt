@@ -210,5 +210,30 @@
     "Algorithm": "LZO1X (Lempel-Ziv-Oberhumer)",
     "Endianness": "big-endian for header, little-endian for data blocks",
     "ChecksumTypes": ["CRC32", "Adler32"]
+  },
+  "diff": {
+    "keyFields": [
+      "lzo_magic",
+      "lzo_method"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for LZO. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "lzo_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "lzo_method",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for LZO. Hand-tune weights/rates per format if needed."
   }
 }

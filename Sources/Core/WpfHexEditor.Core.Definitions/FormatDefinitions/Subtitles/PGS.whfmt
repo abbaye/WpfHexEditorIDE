@@ -252,5 +252,36 @@
     "BitmapCompression": "Run-Length Encoding (RLE)",
     "SegmentHeaderSize": "13 bytes",
     "MaxObjectSize": "16 MB per ODS"
+  },
+  "diff": {
+    "keyFields": [
+      "pgs_magic",
+      "pgs_seg_type",
+      "pgs_seg_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PGS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pgs_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "pgs_seg_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "pgs_seg_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PGS. Hand-tune weights/rates per format if needed."
   }
 }

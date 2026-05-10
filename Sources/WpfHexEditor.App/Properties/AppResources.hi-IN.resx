@@ -969,5 +969,129 @@
   <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>चेतावनी</value></data>
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>त्रुटि</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ पुनः चलाएं</value></data>
+  <data name="CodeAnalysis_Rerun_SameScope" xml:space="preserve"><value>⟳ पुनः चलाएँ (समान दायरा)</value></data>
+  <data name="CodeAnalysis_Rerun_RunSolution" xml:space="preserve"><value>Solution चलाएँ</value></data>
+  <data name="CodeAnalysis_Rerun_RunProject" xml:space="preserve"><value>Project चलाएँ…</value></data>
+  <data name="CodeAnalysis_Rerun_RunFile" xml:space="preserve"><value>फ़ाइल चलाएँ…</value></data>
+  <data name="CodeAnalysis_Scope_Solution" xml:space="preserve"><value>Solution: {0}</value></data>
+  <data name="CodeAnalysis_Scope_Project" xml:space="preserve"><value>Project: {0}</value></data>
+  <data name="CodeAnalysis_Scope_File" xml:space="preserve"><value>फ़ाइल: {0}</value></data>
+  <data name="CodeAnalysis_Treemap_OpenFile" xml:space="preserve"><value>फ़ाइल खोलें</value></data>
+  <data name="CodeAnalysis_Treemap_CopyPath" xml:space="preserve"><value>पथ कॉपी करें</value></data>
+  <data name="CodeAnalysis_Treemap_CopyMetrics" xml:space="preserve"><value>मेट्रिक्स कॉपी करें</value></data>
+  <data name="CodeAnalysis_Treemap_RunOnFile" xml:space="preserve"><value>फ़ाइल पर विश्लेषण चलाएँ</value></data>
+  <data name="CodeAnalysis_Treemap_FilterProject" xml:space="preserve"><value>इस Project पर फ़िल्टर करें</value></data>
+  <data name="CodeAnalysis_Treemap_HighlightHotspots" xml:space="preserve"><value>शीर्ष 10 हॉटस्पॉट हाइलाइट करें</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_SameScope" xml:space="preserve"><value>अंतिम रन के समान दायरे और पथ का उपयोग करके विश्लेषण पुनः चलाएँ</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_RunSolution" xml:space="preserve"><value>पूरे Solution पर विश्लेषण चलाएँ</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>निर्यात ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>ट्रीमैप</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>स्कोर</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>उप-स्कोर</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>प्रोजेक्ट:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>खोजें:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(सभी प्रोजेक्ट)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>वर्तमान समाधान पर पूरा कोड विश्लेषण फिर से चलाएं। शॉर्टकट: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>रिपोर्ट निर्यात करें — Markdown (पठनीय), CSV (स्प्रेडशीट), SARIF (CI/PR टिप्पणियाँ), या PR Checklist (स्वचालित रूप से उत्पन्न समीक्षा टेम्पलेट)।</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>सभी टैब को प्रोजेक्ट के अनुसार फ़िल्टर करें</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>फ़ाइलों / विधियों / समस्याओं में खोजें (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>गुणवत्ता स्कोर</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>छह उप-स्कोर का भारित समुच्चय: वॉल्यूम 10%, जटिलता 25%, युग्मन 20%, द्विरुक्ति 20%, मृत कोड 15%, परंपराएँ 10%।</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>ग्रेड: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>रुझान तीर अंतिम सहेजे गए स्नैपशॉट के सापेक्ष अंतर दिखाता है।</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>कुल स्कोर 0-100। फ़ॉर्मूले के लिए स्कोर अनुभाग पर होवर करें।</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>स्कोर से प्राप्त अक्षर ग्रेड (A+, A, A-, B+, B, B-, C+, C, C-, D, F)।</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>पिछले स्नैपशॉट के सापेक्ष अंतर: ▲ सुधार, ▼ गिरावट।</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>छह अक्ष 0-100 (केंद्र से जितना दूर = उतना बेहतर): Vol = फ़ाइल आकार अनुपालन · CC = जटिलता मार्जिन · Coup = युग्मन स्थिरता · Dup = द्विरुक्ति अनुपात · Dead = अप्रयुक्त चिह्न अनुपात · Conv = नामकरण/परंपरा अनुपालन।</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>उच्च-स्तरीय सारांश: प्रति-प्रोजेक्ट विभाजन + 5 सबसे खराब फ़ाइलें। पंक्ति पर डबल-क्लिक करके खोलें।</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>इस रन में उत्पन्न सभी निदान: WH00xx गुणवत्ता नियम + CS/IDE Roslyn चेतावनियाँ। गंभीरता / खोज / समूह के अनुसार फ़िल्टर करें; स्रोत पंक्ति पर जाने के लिए डबल-क्लिक करें।</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>साइक्लोमैटिक + संज्ञानात्मक जटिलता द्वारा शीर्ष विधियाँ। McCabe (CC) निर्णय बिंदुओं की गणना करता है; Cognitive (Sonar शैली) नेस्टिंग को भार देता है। उच्च = परीक्षण/रखरखाव में अधिक कठिन।</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>प्रति-प्रकार Ca (आगामी — आप पर निर्भर), Ce (बहिर्गामी — आप उस पर निर्भर) और अस्थिरता = Ce/(Ca+Ce)। 1 के निकट = अस्थिर मॉड्यूल; 0 के निकट = स्थिर आधार।</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>टोकन-आधारित क्लोन पहचान। प्रत्येक समूह 2+ स्थानों पर पाया गया ≥50 टोकन (विन्यास योग्य) का क्रम है — साझा सहायक में निकालने के उम्मीदवार।</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>ट्रीमैप</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>प्रत्येक आयत एक स्रोत फ़ाइल है। क्षेत्र कोड पंक्तियों के अनुपात में है; रंग प्रति-फ़ाइल गुणवत्ता स्कोर है (हरा = स्वस्थ, लाल = खराब)। पूर्ण मेट्रिक्स के लिए होवर करें, खोलने के लिए क्लिक करें।</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>निजी/आंतरिक चिह्न जिनके लिए Roslyn कोई संदर्भ नहीं ढूंढ सका। प्रत्येक की पुष्टि करें — परावर्तन, DI कंटेनर या स्रोत जनरेटर के माध्यम से उपयोग किए गए चिह्नों के लिए गलत सकारात्मक हो सकते हैं।</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>समस्याओं को इस प्रकार समूहित करें…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>प्रोजेक्ट</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>फ़ाइलें</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>प्रकार</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>स्कोर</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>ग्रेड</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>फ़ाइल</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>संदेश</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>पंक्ति</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>विधि</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>संज्ञानात्मक</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>पैरा.</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>प्रकार</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>अस्थिरता</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>चिह्न</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>प्रकार</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>PR चेकलिस्ट</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>त्रुटि</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>चेतावनी</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>जानकारी</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>समूह: कोई नहीं</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>गंभीरता के अनुसार</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>नियम के अनुसार</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>प्रोजेक्ट के अनुसार</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>फ़ाइल के अनुसार</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>स्कोर:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>ट्रीमैप:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> आयत क्षेत्र = कोड पंक्तियाँ, रंग = गुणवत्ता स्कोर। पूर्ण मेट्रिक्स के लिए होवर करें, फ़ाइल खोलने के लिए टाइल पर क्लिक करें।</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>क्लोन समूह — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> पंक्तियाँ, </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> आवृत्तियाँ, </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> टोकन</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>Markdown फ़ाइलें (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>SARIF फ़ाइलें (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>CSV फ़ाइलें (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># कोड विश्लेषण रिपोर्ट</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>प्रोजेक्ट फ़ोल्डर खोलें</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>एक्सप्लोरर में दिखाएँ</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>इस प्रोजेक्ट का पुनः विश्लेषण करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>सभी टैब को प्रोजेक्ट के अनुसार फ़िल्टर करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>प्रोजेक्ट का नाम कॉपी करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>मेट्रिक्स को CSV पंक्ति के रूप में कॉपी करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>खोलें</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>रखरखाव फ़ोल्डर खोलें</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>इस फ़ाइल का पुनः विश्लेषण करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>इस फ़ाइल के अनुसार समस्याएँ फ़िल्टर करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>पूरा पथ कॉपी करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>फ़ाइल का नाम कॉपी करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>विधि घोषणा पर खोलें</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>विधि का नाम कॉपी करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>पूरी तरह योग्य नाम कॉपी करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>समस्या स्थान पर खोलें</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>इस नियम के अनुसार फ़िल्टर करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>इस फ़ाइल के अनुसार फ़िल्टर करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>इस उपस्थिति को दबाएँ (इनलाइन मार्कर)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Markdown के रूप में कॉपी करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>समस्या ID कॉपी करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>स्रोत फ़ाइल खोलें</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>प्रकार का नाम कॉपी करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>निर्भरता सूची कॉपी करें</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>पहली उपस्थिति खोलें</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>स्थान कॉपी करें ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>घोषणा पर खोलें</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>चिह्न का नाम कॉपी करें</value></data>
 </root>

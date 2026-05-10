@@ -228,5 +228,24 @@
       "severity": "warning",
       "message": "JSON magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "opening_character"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for JSON. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "opening_character",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for JSON. Hand-tune weights/rates per format if needed."
+  }
 }

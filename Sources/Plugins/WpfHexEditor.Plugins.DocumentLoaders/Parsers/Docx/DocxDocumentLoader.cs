@@ -70,9 +70,22 @@ public sealed class DocxDocumentLoader : IDocumentLoader
             catch { /* best-effort — missing rels just means no images */ }
         }
 
-        var mapper = new DocxXmlMapper(relsMap);
+        // Parse word/styles.xml once: docDefaults + pStyle/rStyle inheritance
+        // (basedOn chains flattened) so the mapper can apply resolved style
+        // attributes during traversal without re-walking the graph per node.
+        var styleTable = DocxStyleTable.Parse(zipReader.ReadEntryText("word/styles.xml"));
+
+        var mapper = new DocxXmlMapper(relsMap, styleTable);
         var blocks = await Task.Run(
             () => mapper.Map(documentXml, docEntryOffset, mapBuilder, ct), ct);
+
+        // Apply docDefaults (Cambria 11pt etc.) only to text-bearing blocks that
+        // don't already declare a font/size — paragraphs, headings, runs, etc.
+        // Skip structural kinds (image, page-break, header, footer, table-row)
+        // so the renderer doesn't pick up a font on something that should not
+        // be drawn as text.
+        if (styleTable.DefaultFont is not null || styleTable.DefaultSizePt is not null)
+            ApplyTextDefaults(blocks, styleTable.DefaultFont, styleTable.DefaultSizePt);
 
         var metadata = ReadCoreProperties(zipReader);
         metadata = metadata with
@@ -161,4 +174,29 @@ public sealed class DocxDocumentLoader : IDocumentLoader
 
     private static int ParseTwips(string? s) =>
         int.TryParse(s, out var v) ? v : 0;
+
+    /// <summary>
+    /// Writes <c>fontFamily</c>/<c>fontSize</c> only on text-bearing block kinds
+    /// that don't already declare them. Structural kinds (image, page-break,
+    /// header, footer, table-row, table) are left untouched so the renderer
+    /// doesn't apply a typeface to something that isn't drawn as text.
+    /// </summary>
+    private static void ApplyTextDefaults(IEnumerable<DocumentBlock> blocks,
+        string? defFont, double? defSize)
+    {
+        foreach (var b in blocks)
+        {
+            bool isText = b.Kind is "paragraph" or "heading" or "list-item"
+                                 or "run" or "hyperlink" or "structured-tag";
+            if (isText)
+            {
+                if (defFont is not null && !b.Attributes.ContainsKey("fontFamily"))
+                    b.Attributes["fontFamily"] = defFont;
+                if (defSize.HasValue && !b.Attributes.ContainsKey("fontSize"))
+                    b.Attributes["fontSize"]   = defSize.Value;
+            }
+            if (b.Children.Count > 0)
+                ApplyTextDefaults(b.Children, defFont, defSize);
+        }
+    }
 }

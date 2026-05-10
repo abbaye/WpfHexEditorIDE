@@ -222,5 +222,30 @@
     "LastUpdated": "2026-04-14",
     "PriorityFormat": true,
     "AutoRefined": false
+  },
+  "diff": {
+    "keyFields": [
+      "section_header",
+      "post_header_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ASS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "section_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "post_header_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ASS. Hand-tune weights/rates per format if needed."
   }
 }

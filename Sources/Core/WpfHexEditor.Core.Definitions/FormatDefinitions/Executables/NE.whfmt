@@ -171,5 +171,24 @@
     "magicBytes": "4E45",
     "endianness": "little-endian",
     "notes": "NE format predates PE32. Segment-based memory model. Resource table, import/export name tables, and module reference table follow the fixed 64-byte header. Windows .fon bitmap font files and .drv driver files still use this format."
+  },
+  "diff": {
+    "keyFields": [
+      "target_os"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for NE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "target_os",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for NE. Hand-tune weights/rates per format if needed."
   }
 }

@@ -20,4 +20,7 @@ public sealed class CouplingMetrics
     /// <summary>Instability = Ce / (Ca + Ce). Range [0,1]. 1 = maximally unstable.</summary>
     public double    Instability  { get; init; }
     public LcomLevel Lcom         { get; init; }
+
+    /// <summary>FQ type names this type depends on (efferent set).</summary>
+    public IReadOnlyList<string> DependsOn { get; init; } = [];
 }

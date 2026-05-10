@@ -191,5 +191,24 @@
       "severity": "warning",
       "message": "ODEX magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "dex_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ODEX. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dex_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ODEX. Hand-tune weights/rates per format if needed."
+  }
 }

@@ -254,5 +254,42 @@
     "Payload": "POSIX TAR archive, zlib-compressed if flag=1, AES-256 CBC if encrypted",
     "Encryption": "AES-256 CBC; key derived via PBKDF2-HMAC-SHA1, 10000 iterations default",
     "Tool": "android-backup-extractor (ABE): java -jar abe.jar unpack backup.ab backup.tar [password]"
+  },
+  "diff": {
+    "keyFields": [
+      "ab_magic",
+      "ab_version_byte",
+      "ab_compression_flag",
+      "ab_encryption_start"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ANDROID_BACKUP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ab_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "ab_version_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "ab_compression_flag",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "ab_encryption_start",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ANDROID_BACKUP. Hand-tune weights/rates per format if needed."
   }
 }

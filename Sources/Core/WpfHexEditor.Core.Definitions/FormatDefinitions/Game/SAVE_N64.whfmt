@@ -158,5 +158,24 @@
     "StorageTypes": "EEPROM 4K/16K, SRAM 256K, Flash 1M",
     "NoMagic": true,
     "SizeDiscriminator": "512 / 2048 / 32768 / 131072 bytes"
+  },
+  "diff": {
+    "keyFields": [
+      "size_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SAVE_N64. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "size_byte",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SAVE_N64. Hand-tune weights/rates per format if needed."
   }
 }

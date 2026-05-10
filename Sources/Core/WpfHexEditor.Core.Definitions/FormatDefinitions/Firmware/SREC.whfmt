@@ -199,5 +199,24 @@
     "LastUpdated": "2026-04-15",
     "PriorityFormat": false,
     "AutoRefined": false
+  },
+  "diff": {
+    "keyFields": [
+      "srec_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SREC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "srec_type",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SREC. Hand-tune weights/rates per format if needed."
   }
 }

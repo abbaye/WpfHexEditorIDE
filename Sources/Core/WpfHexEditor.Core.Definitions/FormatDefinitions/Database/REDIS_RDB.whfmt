@@ -234,5 +234,36 @@
     "Endianness": "mixed (big-endian length-encoded integers, little-endian CRC and expire timestamps)",
     "CompressionSupport": "LZF for strings longer than 20 bytes (optional)",
     "MaxDatabases": 65536
+  },
+  "diff": {
+    "keyFields": [
+      "redis_magic",
+      "rdb_version",
+      "first_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for REDIS_RDB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "redis_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "rdb_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "first_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for REDIS_RDB. Hand-tune weights/rates per format if needed."
   }
 }

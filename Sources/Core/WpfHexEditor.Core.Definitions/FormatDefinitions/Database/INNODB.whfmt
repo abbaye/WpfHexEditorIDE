@@ -306,5 +306,24 @@
     "SupportsEncryption": true,
     "SupportsCompression": true,
     "SpaceIDZero": "System tablespace (ibdata1)"
+  },
+  "diff": {
+    "keyFields": [
+      "page_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for INNODB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "page_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for INNODB. Hand-tune weights/rates per format if needed."
   }
 }

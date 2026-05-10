@@ -224,5 +224,32 @@
       "symmetric": [ "AES-128", "AES-192", "AES-256", "3DES", "Twofish" ],
       "hash": [ "SHA-1", "SHA-256", "SHA-384", "SHA-512", "RIPEMD-160" ]
     }
+  },
+  "diff": {
+    "keyFields": [
+      "gpg_key_version",
+      "gpg_public_key_algorithm"
+    ],
+    "ignoreFields": [
+      "gpg_key_creation_time"
+    ],
+    "note": "Inferred semantic diff for GPG_KEYRING. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "gpg_key_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "gpg_public_key_algorithm",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for GPG_KEYRING. Hand-tune weights/rates per format if needed."
   }
 }

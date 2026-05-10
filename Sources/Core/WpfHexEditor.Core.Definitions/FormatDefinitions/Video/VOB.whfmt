@@ -210,5 +210,30 @@
       "systemHeader": "0x000001BB"
     },
     "maxBitrate": "10.08 Mbps (single layer DVD)"
+  },
+  "diff": {
+    "keyFields": [
+      "pack_start_code",
+      "stuffing_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for VOB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pack_start_code",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "stuffing_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for VOB. Hand-tune weights/rates per format if needed."
   }
 }

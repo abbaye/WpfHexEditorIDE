@@ -216,5 +216,38 @@
     "ByteOrder": "Mixed: fileMagic LE, other fields BE",
     "GlobalHeader": "128 bytes: magic(4B) + type(4B) + startTime(8B) + hostnameLen(4B) + hostname(64B) + tz(64B)",
     "Files": ".trc0 = primary; .trc1 = secondary overflow file"
+  },
+  "diff": {
+    "keyFields": [
+      "file_magic",
+      "file_type",
+      "hostname_length"
+    ],
+    "ignoreFields": [
+      "time_zone"
+    ],
+    "note": "Inferred semantic diff for NETTL. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "file_magic",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "file_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "hostname_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for NETTL. Hand-tune weights/rates per format if needed."
   }
 }

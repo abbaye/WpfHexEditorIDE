@@ -198,5 +198,24 @@
     "SensorType": "Foveon X3 layered (full RGB per pixel, no Bayer)",
     "DirectoryLocation": "tail-anchored (end of file)",
     "Compression": "uncompressed or Sigma lossless"
+  },
+  "diff": {
+    "keyFields": [
+      "x3f_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for X3F. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "x3f_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for X3F. Hand-tune weights/rates per format if needed."
   }
 }

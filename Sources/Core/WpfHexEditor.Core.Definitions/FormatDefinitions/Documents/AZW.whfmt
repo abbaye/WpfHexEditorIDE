@@ -185,5 +185,37 @@
     "DRMSupport": true,
     "KeyOffset": 60,
     "KeySignature": "BOOKMOBI"
+  },
+  "diff": {
+    "keyFields": [
+      "record_count",
+      "palm_type"
+    ],
+    "ignoreFields": [
+      "palm_creator"
+    ],
+    "note": "Inferred semantic diff for AZW. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "palm_type",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 60 — parser must reject."
+      },
+      {
+        "field": "palm_creator",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 64 — parser must reject."
+      },
+      {
+        "field": "record_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for AZW. Hand-tune weights/rates per format if needed."
   }
 }

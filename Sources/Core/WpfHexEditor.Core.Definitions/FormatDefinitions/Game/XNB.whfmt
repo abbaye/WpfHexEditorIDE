@@ -199,5 +199,36 @@
     "Header": "10 bytes: magic(3B) + platform(1B) + version(1B) + flags(1B) + fileSize(4B LE)",
     "Compression": "LZX (Xbox) or LZ4 (PC) when flags bit7=1; uncompressed otherwise",
     "AssetTypes": "Texture2D, SpriteFont, Effect (HLSL), SoundEffect, Model, etc."
+  },
+  "diff": {
+    "keyFields": [
+      "xnb_signature",
+      "xnb_target_platform",
+      "xnb_format_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for XNB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "xnb_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "xnb_target_platform",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "xnb_format_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for XNB. Hand-tune weights/rates per format if needed."
   }
 }

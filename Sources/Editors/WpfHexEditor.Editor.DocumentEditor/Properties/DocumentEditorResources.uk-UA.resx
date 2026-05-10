@@ -369,4 +369,28 @@
   <data name="ImgCtx_Wrap" xml:space="preserve"><value>Обтікання текстом</value></data>
   <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Перевірити в Hex-редакторі</value></data>
   <data name="ImgCtx_Properties" xml:space="preserve"><value>Властивості зображення...</value></data>
+  <data name="DocStructure_ShowRunsToggleToolTip" xml:space="preserve">
+    <value>Показати рани (фрагменти тексту)</value>
+  </data>
+  <data name="DocStructure_OutlineModeToolTip" xml:space="preserve">
+    <value>Лише структура (ієрархія заголовків)</value>
+  </data>
+  <data name="DocStructure_KindFilterToolTip" xml:space="preserve">
+    <value>Фільтр за типом блоку</value>
+  </data>
+  <data name="DocStructure_KindFilter_All" xml:space="preserve">
+    <value>Усі</value>
+  </data>
+  <data name="DocStructure_KindFilter_HeadingsOnly" xml:space="preserve">
+    <value>Заголовки</value>
+  </data>
+  <data name="DocStructure_KindFilter_ListsOnly" xml:space="preserve">
+    <value>Списки</value>
+  </data>
+  <data name="DocStructure_KindFilter_TablesOnly" xml:space="preserve">
+    <value>Таблиці</value>
+  </data>
+  <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
+    <value>Зображення</value>
+  </data>
 </root>

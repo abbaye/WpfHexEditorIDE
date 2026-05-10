@@ -185,5 +185,30 @@
     "VideoCodec": "H.264/AVC (ITU-T H.264 / ISO/IEC 14496-10)",
     "Endianness": "big-endian (start codes and NALU header)",
     "MaxResolution": "Up to 8192×4320 (Level 6.2)"
+  },
+  "diff": {
+    "keyFields": [
+      "start_code",
+      "nalu_header_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for H264. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "start_code",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "nalu_header_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for H264. Hand-tune weights/rates per format if needed."
   }
 }

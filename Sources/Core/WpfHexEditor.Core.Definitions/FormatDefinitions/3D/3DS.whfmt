@@ -208,5 +208,36 @@
       "Enumerate sub-chunks to locate EDIT3DS (0x3D3D) and OBJECT (0x4100) sections",
       "Inspect material and texture reference chunks for embedded asset paths"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "primary_chunk_id",
+      "chunk_length",
+      "formatted_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for 3DS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "primary_chunk_id",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "chunk_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "formatted_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for 3DS. Hand-tune weights/rates per format if needed."
   }
 }

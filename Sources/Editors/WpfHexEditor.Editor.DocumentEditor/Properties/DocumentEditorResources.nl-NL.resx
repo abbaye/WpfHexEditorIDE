@@ -369,4 +369,28 @@
   <data name="ImgCtx_Wrap" xml:space="preserve"><value>Tekstterugloop</value></data>
   <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Inspecteren in Hex-editor</value></data>
   <data name="ImgCtx_Properties" xml:space="preserve"><value>Afbeeldingseigenschappen...</value></data>
+  <data name="DocStructure_ShowRunsToggleToolTip" xml:space="preserve">
+    <value>Runs weergeven (tekstfragmenten)</value>
+  </data>
+  <data name="DocStructure_OutlineModeToolTip" xml:space="preserve">
+    <value>Alleen overzicht (kophiërarchie)</value>
+  </data>
+  <data name="DocStructure_KindFilterToolTip" xml:space="preserve">
+    <value>Filter op bloktype</value>
+  </data>
+  <data name="DocStructure_KindFilter_All" xml:space="preserve">
+    <value>Alles</value>
+  </data>
+  <data name="DocStructure_KindFilter_HeadingsOnly" xml:space="preserve">
+    <value>Koppen</value>
+  </data>
+  <data name="DocStructure_KindFilter_ListsOnly" xml:space="preserve">
+    <value>Lijsten</value>
+  </data>
+  <data name="DocStructure_KindFilter_TablesOnly" xml:space="preserve">
+    <value>Tabellen</value>
+  </data>
+  <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
+    <value>Afbeeldingen</value>
+  </data>
 </root>

@@ -237,5 +237,47 @@
     "RandomAccess": "Requires .bai (BAM index) for coordinate-sorted access",
     "SortOrders": ["coordinate", "queryname", "unsorted"],
     "Endianness": "little-endian for all multi-byte integers"
+  },
+  "diff": {
+    "keyFields": [
+      "bgzf_magic",
+      "gzip_method",
+      "gzip_flags"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for BAM. Compare key structural fields; ignore volatile metadata."
+  },
+  "repair": [
+    {
+      "name": "FixSignature",
+      "trigger": "SignatureMismatch",
+      "action": "set_value",
+      "target": "0",
+      "value": "1F8B",
+      "length": 2,
+      "description": "Restore the 2-byte BAM signature at offset 0."
+    }
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "bgzf_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "gzip_method",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "gzip_flags",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for BAM. Hand-tune weights/rates per format if needed."
   }
 }

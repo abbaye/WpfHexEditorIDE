@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "PEM Certificate",
   "formatId": "PEM",
@@ -172,5 +172,24 @@
       "Check certificate dates, issuer DN, and key algorithm OIDs",
       "Inspect extensions (SAN, key usage) and signature algorithm"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "pem_header"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PEM. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pem_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PEM. Hand-tune weights/rates per format if needed."
   }
 }

@@ -208,5 +208,30 @@
     "VideoCodecs": "WMV1, WMV2, WMV3 (VC-1 Simple/Main), WVC1 (VC-1 Advanced)",
     "AudioCodecs": "WMA v2 (0x0161), WMA Pro (0x0162), WMA Lossless (0x0163), MP3 (0x0055)",
     "Streaming": "Designed for RTSP/MMS streaming with HTTP fallback"
+  },
+  "diff": {
+    "keyFields": [
+      "asf_header_guid",
+      "header_object_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ASF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "asf_header_guid",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "header_object_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ASF. Hand-tune weights/rates per format if needed."
   }
 }

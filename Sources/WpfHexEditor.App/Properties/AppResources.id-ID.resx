@@ -665,5 +665,129 @@
   <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Peringatan</value></data>
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Kesalahan</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Jalankan ulang</value></data>
+  <data name="CodeAnalysis_Rerun_SameScope" xml:space="preserve"><value>⟳ Jalankan Ulang (cakupan sama)</value></data>
+  <data name="CodeAnalysis_Rerun_RunSolution" xml:space="preserve"><value>Jalankan Solution</value></data>
+  <data name="CodeAnalysis_Rerun_RunProject" xml:space="preserve"><value>Jalankan Project…</value></data>
+  <data name="CodeAnalysis_Rerun_RunFile" xml:space="preserve"><value>Jalankan File…</value></data>
+  <data name="CodeAnalysis_Scope_Solution" xml:space="preserve"><value>Solution: {0}</value></data>
+  <data name="CodeAnalysis_Scope_Project" xml:space="preserve"><value>Project: {0}</value></data>
+  <data name="CodeAnalysis_Scope_File" xml:space="preserve"><value>File: {0}</value></data>
+  <data name="CodeAnalysis_Treemap_OpenFile" xml:space="preserve"><value>Buka File</value></data>
+  <data name="CodeAnalysis_Treemap_CopyPath" xml:space="preserve"><value>Salin Jalur</value></data>
+  <data name="CodeAnalysis_Treemap_CopyMetrics" xml:space="preserve"><value>Salin Metrik</value></data>
+  <data name="CodeAnalysis_Treemap_RunOnFile" xml:space="preserve"><value>Jalankan Analisis pada File</value></data>
+  <data name="CodeAnalysis_Treemap_FilterProject" xml:space="preserve"><value>Filter ke Project Ini</value></data>
+  <data name="CodeAnalysis_Treemap_HighlightHotspots" xml:space="preserve"><value>Sorot 10 Hotspot Teratas</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_SameScope" xml:space="preserve"><value>Jalankan ulang analisis menggunakan cakupan dan jalur yang sama seperti saat terakhir dijalankan</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_RunSolution" xml:space="preserve"><value>Jalankan analisis pada seluruh Solution</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>Ekspor ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>Peta pohon</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>SKOR</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>SUB-SKOR</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>Proyek:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>Cari:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(Semua proyek)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>Jalankan ulang Analisis Kode lengkap pada solusi saat ini. Pintasan: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>Ekspor laporan — Markdown (mudah dibaca), CSV (spreadsheet), SARIF (anotasi CI/PR), atau PR Checklist (templat tinjauan otomatis).</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>Saring semua tab berdasarkan proyek</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>Cari di seluruh file / metode / masalah (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>Skor kualitas</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>Agregat berbobot dari enam sub-skor: Volume 10%, Kompleksitas 25%, Kopling 20%, Duplikasi 20%, Kode mati 15%, Konvensi 10%.</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>Nilai: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>Panah tren menunjukkan selisih dengan snapshot tersimpan terakhir.</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>Skor keseluruhan 0-100. Arahkan ke bagian SKOR untuk melihat formula.</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>Nilai huruf yang berasal dari skor (A+, A, A-, B+, B, B-, C+, C, C-, D, F).</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>Selisih dengan snapshot sebelumnya: ▲ peningkatan, ▼ regresi.</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>Enam sumbu 0-100 (semakin jauh dari pusat = lebih baik): Vol = kepatuhan ukuran file · CC = ruang kompleksitas · Coup = stabilitas kopling · Dup = rasio duplikasi · Dead = rasio simbol tak terpakai · Conv = kepatuhan penamaan/konvensi.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>Ringkasan tingkat tinggi: rincian per proyek + 5 file dengan skor terburuk. Klik dua kali baris untuk membuka.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>Semua diagnosis yang dihasilkan dalam proses ini: aturan kualitas WH00xx + peringatan CS/IDE Roslyn. Saring berdasarkan tingkat keparahan / pencarian / grup; klik dua kali untuk melompat ke baris sumber.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>Metode teratas berdasarkan kompleksitas siklomatik + kognitif. McCabe (CC) menghitung titik keputusan; Cognitive (gaya Sonar) memberi bobot pada penyusutan. Lebih tinggi = lebih sulit diuji/dipelihara.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>Per tipe Ca (aferen — bergantung pada Anda), Ce (eferen — Anda bergantung), dan Ketidakstabilan = Ce/(Ca+Ce). Dekat 1 = modul mudah berubah; dekat 0 = dasar stabil.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>Deteksi klona berbasis token. Setiap grup adalah urutan ≥50 token (dapat dikonfigurasi) yang ditemukan di 2+ tempat — kandidat untuk diekstrak ke pembantu bersama.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>Peta pohon</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>Setiap persegi panjang adalah satu file sumber. Luas sebanding dengan baris kode; warna adalah skor kualitas per file (hijau = sehat, merah = buruk). Arahkan untuk metrik lengkap, klik untuk membuka.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>Simbol pribadi/internal yang tidak ditemukan referensinya oleh Roslyn. Verifikasi masing-masing — positif palsu dapat terjadi untuk simbol yang digunakan melalui refleksi, kontainer DI, atau generator sumber.</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>Kelompokkan masalah berdasarkan…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>Proyek</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>File</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>Tipe</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>Skor</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>Nilai</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>File</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>Pesan</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>Baris</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>Metode</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>Kognitif</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>Param.</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>Tipe</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>Ketidakstabilan</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>Simbol</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>Jenis</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>Daftar PR</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>Kesalahan</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>Peringatan</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>Informasi</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>Grup: Tidak ada</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>Berdasarkan tingkat keparahan</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>Berdasarkan aturan</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>Berdasarkan proyek</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>Berdasarkan file</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>Skor:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>Peta pohon:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> luas persegi panjang = baris kode, warna = skor kualitas. Arahkan untuk metrik lengkap, klik petak untuk membuka file.</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>Grup klona — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> baris, </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> kemunculan, </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> token</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>File Markdown (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>File SARIF (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>File CSV (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># Laporan Analisis Kode</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>Buka folder proyek</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>Tampilkan di Explorer</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>Analisis ulang proyek ini</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>Saring semua tab berdasarkan proyek</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>Salin nama proyek</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>Salin metrik sebagai baris CSV</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>Buka</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>Buka folder berisi</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>Analisis ulang file ini</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>Saring masalah berdasarkan file ini</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>Salin jalur lengkap</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>Salin nama file</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>Buka di deklarasi metode</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>Salin nama metode</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>Salin nama yang berkualifikasi penuh</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>Buka di lokasi masalah</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Saring berdasarkan aturan ini</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Saring berdasarkan file ini</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Tekan kemunculan ini (penanda inline)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Salin sebagai Markdown</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Salin ID masalah</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Buka file sumber</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>Salin nama tipe</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>Salin daftar dependensi</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>Buka kemunculan pertama</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Salin lokasi ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Buka di deklarasi</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Salin nama simbol</value></data>
 </root>

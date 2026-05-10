@@ -185,5 +185,30 @@
     "Endianness": "big-endian for directory offsets; RAW data varies",
     "RawEncoding": "12-bit Bayer (older) or 14-bit X-Trans 6x6 CFA (X-series)",
     "CFAPattern": "X-Trans 6x6 repeating pattern (unique to Fujifilm)"
+  },
+  "diff": {
+    "keyFields": [
+      "raf_magic",
+      "raf_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for RAF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "raf_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "raf_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for RAF. Hand-tune weights/rates per format if needed."
   }
 }

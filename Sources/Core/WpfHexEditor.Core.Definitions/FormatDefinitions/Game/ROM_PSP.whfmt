@@ -237,5 +237,36 @@
       "severity": "warning",
       "message": "CSO magic 'CISO' (0x4349534F) invalid — not a valid PSP CSO compressed image"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "header_size",
+      "uncompressed_size",
+      "block_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_PSP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "header_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "uncompressed_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "block_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_PSP. Hand-tune weights/rates per format if needed."
+  }
 }

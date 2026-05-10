@@ -169,5 +169,24 @@
       "severity": "warning",
       "message": "MSIL magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "dos_signature"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MSIL. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dos_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MSIL. Hand-tune weights/rates per format if needed."
+  }
 }

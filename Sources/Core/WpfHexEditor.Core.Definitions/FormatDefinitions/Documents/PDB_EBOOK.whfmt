@@ -204,5 +204,32 @@
     "SubFormats": ["PalmDOC", "Mobipocket", "MOBI"],
     "IdentificationField": "Type/Creator at offset 60 (8 bytes)",
     "Note": "No fixed magic at offset 0. Identification is by type/creator field + file extension."
+  },
+  "diff": {
+    "keyFields": [
+      "pdb_record_count"
+    ],
+    "ignoreFields": [
+      "pdb_create_time",
+      "pdb_type_creator"
+    ],
+    "note": "Inferred semantic diff for PDB_EBOOK. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pdb_type_creator",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 60 — parser must reject."
+      },
+      {
+        "field": "pdb_record_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PDB_EBOOK. Hand-tune weights/rates per format if needed."
   }
 }

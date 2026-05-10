@@ -221,5 +221,24 @@
     "Comments": "; (semicolon) begins a comment extending to end of line",
     "MultiLine": "Parentheses () allow multi-line records (e.g. SOA record)",
     "Validation": "BIND named-checkzone, PowerDNS zone2sql --check, Knot DNS kjournalprint"
+  },
+  "diff": {
+    "keyFields": [
+      "first_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DNS_ZONE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "first_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DNS_ZONE. Hand-tune weights/rates per format if needed."
   }
 }

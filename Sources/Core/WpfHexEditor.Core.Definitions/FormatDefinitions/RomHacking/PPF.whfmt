@@ -208,5 +208,24 @@
     "DescriptionField": "50 bytes ASCII at offset 5",
     "RecordOffsetSize": "4 bytes (PPF 1.0/2.0) or 8 bytes (PPF 3.0)",
     "MaxTargetOffset": "Effectively unlimited (4B=4 GB, 8B=16 EB)"
+  },
+  "diff": {
+    "keyFields": [
+      "ppf_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PPF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ppf_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PPF. Hand-tune weights/rates per format if needed."
   }
 }

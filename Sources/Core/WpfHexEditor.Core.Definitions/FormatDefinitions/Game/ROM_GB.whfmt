@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Game Boy ROM",
   "formatId": "ROM_GB",
@@ -295,5 +295,36 @@
       "Check resource/asset table entries and data block offsets",
       "Inspect compression flags, checksums, and embedded file boundaries"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "nintendo_logo",
+      "rom_size_code",
+      "ram_size_code"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_GB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "nintendo_logo",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 260 — parser must reject."
+      },
+      {
+        "field": "rom_size_code",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "ram_size_code",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_GB. Hand-tune weights/rates per format if needed."
   }
 }

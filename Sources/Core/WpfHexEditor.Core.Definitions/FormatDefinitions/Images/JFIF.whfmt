@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "JFIF Image",
   "formatId": "JFIF",
@@ -446,5 +446,66 @@
     "Compression": "DCT-based JPEG (lossy)",
     "HasHeader": true,
     "HeaderSize": "20 bytes (APP0 without thumbnail)"
+  },
+  "diff": {
+    "keyFields": [
+      "jpeg_soi_marker",
+      "app0_marker",
+      "app0_length",
+      "jfif_version_major",
+      "jfif_version_minor",
+      "pixel_aspect_ratio_unit",
+      "thumbnail_width",
+      "thumbnail_height"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for JFIF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "jpeg_soi_marker",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "app0_marker",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "jfif_version_major",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "jfif_version_minor",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "pixel_aspect_ratio_unit",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "app0_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "thumbnail_width",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "thumbnail_height",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for JFIF. Hand-tune weights/rates per format if needed."
   }
 }

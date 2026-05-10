@@ -285,5 +285,32 @@
     "MaxRecordsPerDatagram": 30,
     "v9": "Template-based, version=9, FlowSet and TemplateSet records",
     "IPFIX": "RFC 7011, version=10, Message Header + Sets"
+  },
+  "diff": {
+    "keyFields": [
+      "nf_version",
+      "nf_count"
+    ],
+    "ignoreFields": [
+      "sys_uptime"
+    ],
+    "note": "Inferred semantic diff for NETFLOW. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "nf_version",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "nf_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for NETFLOW. Hand-tune weights/rates per format if needed."
   }
 }

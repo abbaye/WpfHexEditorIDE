@@ -243,5 +243,30 @@
     "HeaderSize": "12 bytes (RIFF header) + variable bext chunk",
     "BextChunkMinSize": "602 bytes (v0) / 858 bytes (v2 with loudness)",
     "MaxFileSize": "4 GB (RIFF 32-bit limit; RF64 for larger)"
+  },
+  "diff": {
+    "keyFields": [
+      "bwf_riff_magic",
+      "bwf_file_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for BWF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "bwf_riff_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "bwf_file_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for BWF. Hand-tune weights/rates per format if needed."
   }
 }

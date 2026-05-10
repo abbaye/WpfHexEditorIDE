@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "DOS COM Executable",
   "formatId": "COM",
@@ -294,5 +294,24 @@
     "LoadAddress": "CS:0100h (PSP occupies 0x0000-0x00FF)",
     "MaxSize": "65280 bytes (64KB - 256-byte PSP)",
     "Endianness": "little-endian (x86 native)"
+  },
+  "diff": {
+    "keyFields": [
+      "first_opcode"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for COM. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "first_opcode",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for COM. Hand-tune weights/rates per format if needed."
   }
 }

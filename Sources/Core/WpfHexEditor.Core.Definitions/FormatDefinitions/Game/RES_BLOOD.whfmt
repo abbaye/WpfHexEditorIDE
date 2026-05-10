@@ -184,5 +184,30 @@
       "severity": "warning",
       "message": "RES_BLOOD magic invalid"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "rff_signature",
+      "directory_offset"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for RES_BLOOD. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "rff_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "directory_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for RES_BLOOD. Hand-tune weights/rates per format if needed."
+  }
 }

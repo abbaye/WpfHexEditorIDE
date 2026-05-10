@@ -140,5 +140,17 @@
       "severity": "warning",
       "message": "XPM magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "xpm_comment",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for XPM. Hand-tune weights/rates per format if needed."
+  }
 }

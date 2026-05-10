@@ -369,4 +369,28 @@
   <data name="ImgCtx_Wrap" xml:space="preserve"><value>Metin kaydırma</value></data>
   <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Hex düzenleyicide incele</value></data>
   <data name="ImgCtx_Properties" xml:space="preserve"><value>Resim özellikleri...</value></data>
+  <data name="DocStructure_ShowRunsToggleToolTip" xml:space="preserve">
+    <value>Çalıştırmaları göster (metin parçaları)</value>
+  </data>
+  <data name="DocStructure_OutlineModeToolTip" xml:space="preserve">
+    <value>Yalnızca anahat (başlık hiyerarşisi)</value>
+  </data>
+  <data name="DocStructure_KindFilterToolTip" xml:space="preserve">
+    <value>Blok türüne göre filtrele</value>
+  </data>
+  <data name="DocStructure_KindFilter_All" xml:space="preserve">
+    <value>Tümü</value>
+  </data>
+  <data name="DocStructure_KindFilter_HeadingsOnly" xml:space="preserve">
+    <value>Başlıklar</value>
+  </data>
+  <data name="DocStructure_KindFilter_ListsOnly" xml:space="preserve">
+    <value>Listeler</value>
+  </data>
+  <data name="DocStructure_KindFilter_TablesOnly" xml:space="preserve">
+    <value>Tablolar</value>
+  </data>
+  <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
+    <value>Görseller</value>
+  </data>
 </root>

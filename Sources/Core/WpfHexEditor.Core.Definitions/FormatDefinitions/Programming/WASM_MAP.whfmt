@@ -167,5 +167,24 @@
     "MappingsEncoding": "Base64 VLQ",
     "SpecVersion": "Source Map v3",
     "Note": "WASM source maps are text JSON files, not binary. Detection is by JSON structure + extension. Ambiguous with JS source maps on .map extension alone."
+  },
+  "diff": {
+    "keyFields": [
+      "wasm_map_start"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for WASM_MAP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "wasm_map_start",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for WASM_MAP. Hand-tune weights/rates per format if needed."
   }
 }

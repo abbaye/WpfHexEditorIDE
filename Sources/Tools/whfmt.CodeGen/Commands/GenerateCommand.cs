@@ -23,7 +23,7 @@ internal static class GenerateCommand
         var validateOpt= new Option<bool>   (["--validate"],       "Include signature assertion + checksum validation in the generated parser.");
         var asyncOpt   = new Option<bool>   (["--async"],          "Generate async Parse methods (uses Stream.ReadExactlyAsync).");
         var langOpt    = new Option<string> (["--lang",     "-l"], () => "csharp",
-            "Output language: csharp (default), csharp-span (zero-alloc), fsharp, rust.");
+            "Output language: csharp (default), csharp-span (zero-alloc), fsharp, rust, vb.");
 
         var cmd = new Command("generate", "Generate a strongly-typed parser from a .whfmt format definition.")
         {
@@ -85,10 +85,11 @@ internal static class GenerateCommand
 
     private static OutputLanguage ParseLanguage(string lang) => lang.ToLowerInvariant() switch
     {
-        "csharp-span" or "span" => OutputLanguage.CSharpSpan,
-        "fsharp"      or "fs"   => OutputLanguage.FSharp,
-        "rust"        or "rs"   => OutputLanguage.Rust,
-        _                       => OutputLanguage.CSharp,
+        "csharp-span" or "span"                    => OutputLanguage.CSharpSpan,
+        "fsharp"      or "fs"                      => OutputLanguage.FSharp,
+        "rust"        or "rs"                      => OutputLanguage.Rust,
+        "vb"          or "vbnet" or "visualbasic"  => OutputLanguage.VisualBasic,
+        _                                          => OutputLanguage.CSharp,
     };
 
     private static async Task WriteOutput(string? path, string code)

@@ -184,5 +184,30 @@
     "ContainerFormat": "RAR (4.x or 5.x)",
     "Endianness": "little-endian",
     "Note": "CBR is structurally identical to RAR — only the .cbr extension and image file content distinguish it"
+  },
+  "diff": {
+    "keyFields": [
+      "rar_signature",
+      "rar_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for CBR. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "rar_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "rar_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for CBR. Hand-tune weights/rates per format if needed."
   }
 }

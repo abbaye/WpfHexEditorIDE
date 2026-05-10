@@ -217,5 +217,24 @@
     "maintainer": "Web3D Consortium",
     "profiles": "Core, Interchange, Interactive, Immersive, Full, MedicalInterchange",
     "versions": "3.0, 3.1, 3.2, 3.3, 4.0"
+  },
+  "diff": {
+    "keyFields": [
+      "x3d_root"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for X3D. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "x3d_root",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for X3D. Hand-tune weights/rates per format if needed."
   }
 }

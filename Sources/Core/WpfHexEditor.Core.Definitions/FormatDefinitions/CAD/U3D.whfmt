@@ -181,5 +181,24 @@
     "Geometry": "CLOD (Continuous Level of Detail) tessellated mesh with quantization",
     "Embedding": "Embedded in PDF as 3D Artwork annotation with /U3D subtype",
     "Standard": "ECMA-363 4th edition (2007)"
+  },
+  "diff": {
+    "keyFields": [
+      "u3d_signature"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for U3D. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "u3d_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for U3D. Hand-tune weights/rates per format if needed."
   }
 }

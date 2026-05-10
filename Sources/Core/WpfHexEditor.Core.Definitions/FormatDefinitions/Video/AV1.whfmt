@@ -293,5 +293,60 @@
     "VideoCodec": "AV1 (AOMedia Video 1), VP8, or VP9",
     "Endianness": "little-endian (all IVF header fields)",
     "CompressionRatio": "30-50% better than VP9/H.265 at equivalent quality (AV1)"
+  },
+  "diff": {
+    "keyFields": [
+      "ivf_signature",
+      "ivf_version",
+      "ivf_header_length",
+      "ivf_four_cc",
+      "video_width",
+      "video_height",
+      "frame_count"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for AV1. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ivf_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "ivf_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "ivf_four_cc",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "ivf_header_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "video_width",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "video_height",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "frame_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for AV1. Hand-tune weights/rates per format if needed."
   }
 }

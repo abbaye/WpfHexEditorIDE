@@ -190,5 +190,30 @@
       "Parse the directory stream to enumerate internal stream names and identify Max-specific streams",
       "Note that the OLE2 magic alone does not confirm .max — file extension is required for disambiguation"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "ole2_magic",
+      "sector_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MAX. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ole2_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "sector_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MAX. Hand-tune weights/rates per format if needed."
   }
 }

@@ -206,5 +206,30 @@
     "vertexLimit": "65535 per named object mesh",
     "uvChannels": "1 (single UV channel only)",
     "animationSupport": "keyframe only (KEYF3DS chunk)"
+  },
+  "diff": {
+    "keyFields": [
+      "tds_chunk_id",
+      "tds_chunk_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MAX_3DS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "tds_chunk_id",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "tds_chunk_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MAX_3DS. Hand-tune weights/rates per format if needed."
   }
 }

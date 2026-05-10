@@ -183,5 +183,24 @@
     "rootBlockSector": 880,
     "endianness": "big-endian",
     "notes": "AmigaOS uses big-endian byte order (Motorola 68000). Bootblock checksum is one's complement sum of 32-bit words. Root block is always sector 880 on a standard 80-track DD disk."
+  },
+  "diff": {
+    "keyFields": [
+      "fs_flag"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_AMIGA_ADF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "fs_flag",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_AMIGA_ADF. Hand-tune weights/rates per format if needed."
   }
 }

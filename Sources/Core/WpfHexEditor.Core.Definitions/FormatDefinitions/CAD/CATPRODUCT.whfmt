@@ -163,5 +163,24 @@
     "Distinction": "Extension (.catproduct) distinguishes assembly from part (.catpart)",
     "ExternalRefs": "References external .catpart and .catproduct files by path for assembly tree",
     "NeutralExport": "STEP AP214, IGES, JT via CATIA export"
+  },
+  "diff": {
+    "keyFields": [
+      "catia_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for CATPRODUCT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "catia_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for CATPRODUCT. Hand-tune weights/rates per format if needed."
   }
 }

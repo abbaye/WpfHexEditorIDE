@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "PowerPoint Presentation (Legacy)",
   "formatId": "PPT",
@@ -330,5 +330,54 @@
     "HasHeader": true,
     "HeaderSize": "512 bytes (CFB header)",
     "MacroCapable": true
+  },
+  "diff": {
+    "keyFields": [
+      "ole2_signature",
+      "minor_version",
+      "major_version",
+      "byte_order",
+      "sector_size_exp",
+      "fat_sector_count"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PPT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ole2_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "minor_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "major_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "byte_order",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "sector_size_exp",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "fat_sector_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PPT. Hand-tune weights/rates per format if needed."
   }
 }

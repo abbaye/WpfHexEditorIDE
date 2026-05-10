@@ -417,4 +417,28 @@
   <data name="ImgCtx_Wrap" xml:space="preserve"><value>Habillage du texte</value></data>
   <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Inspecter dans l'éditeur Hex</value></data>
   <data name="ImgCtx_Properties" xml:space="preserve"><value>Propriétés de l'image...</value></data>
+  <data name="DocStructure_ShowRunsToggleToolTip" xml:space="preserve">
+    <value>Afficher les blocs de texte</value>
+  </data>
+  <data name="DocStructure_OutlineModeToolTip" xml:space="preserve">
+    <value>Plan seulement (hiérarchie des titres)</value>
+  </data>
+  <data name="DocStructure_KindFilterToolTip" xml:space="preserve">
+    <value>Filtrer par type de bloc</value>
+  </data>
+  <data name="DocStructure_KindFilter_All" xml:space="preserve">
+    <value>Tous</value>
+  </data>
+  <data name="DocStructure_KindFilter_HeadingsOnly" xml:space="preserve">
+    <value>Titres</value>
+  </data>
+  <data name="DocStructure_KindFilter_ListsOnly" xml:space="preserve">
+    <value>Listes</value>
+  </data>
+  <data name="DocStructure_KindFilter_TablesOnly" xml:space="preserve">
+    <value>Tableaux</value>
+  </data>
+  <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
+    <value>Images</value>
+  </data>
 </root>

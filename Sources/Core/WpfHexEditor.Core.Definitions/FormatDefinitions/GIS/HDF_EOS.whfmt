@@ -210,5 +210,24 @@
     "coordSystem": "WGS84 geographic or sinusoidal projection",
     "compression": "DEFLATE (gzip) or SZIP per variable",
     "dataTypes": "float32, int16, uint8 (packed with scale/offset)"
+  },
+  "diff": {
+    "keyFields": [
+      "hdf_eos_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for HDF_EOS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "hdf_eos_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for HDF_EOS. Hand-tune weights/rates per format if needed."
   }
 }

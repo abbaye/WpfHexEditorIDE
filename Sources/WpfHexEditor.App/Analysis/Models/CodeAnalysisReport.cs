@@ -23,6 +23,13 @@ public sealed class CodeAnalysisReport
     public IReadOnlyList<AnalysisDiagnostic> Diagnostics { get; init; } = [];
     public IReadOnlyList<DuplicationGroup> Duplications { get; init; } = [];
     public IReadOnlyList<DeadSymbol>       DeadSymbols  { get; init; } = [];
+    public IReadOnlyList<ProjectCycleInfo> ProjectCycles { get; init; } = [];
 
     public bool IsEmpty => TotalFiles == 0;
+}
+
+public sealed class ProjectCycleInfo
+{
+    public IReadOnlyList<string> Projects { get; init; } = [];
+    public string Display => string.Join(" → ", Projects) + " → " + (Projects.Count > 0 ? Projects[0] : "?");
 }

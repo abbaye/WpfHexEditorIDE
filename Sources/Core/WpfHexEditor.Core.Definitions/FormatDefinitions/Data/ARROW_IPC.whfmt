@@ -219,5 +219,26 @@
     "AccessPattern": "Random-access file or streaming (no magic for stream format)",
     "SupportsStreaming": true,
     "ZeroCopySupport": true
+  },
+  "diff": {
+    "keyFields": [
+      "arrow_magic"
+    ],
+    "ignoreFields": [
+      "padding"
+    ],
+    "note": "Inferred semantic diff for ARROW_IPC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "arrow_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ARROW_IPC. Hand-tune weights/rates per format if needed."
   }
 }

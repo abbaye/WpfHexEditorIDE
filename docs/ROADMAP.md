@@ -5,7 +5,7 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 
 > **Legend:** 🔧 In Progress · 🔜 Planned · ✅ Done (see CHANGELOG)
 >
-> 📅 *Last revised: 2026-05-05*
+> 📅 *Last revised: 2026-05-09*
 
 ---
 
@@ -323,6 +323,9 @@ Features internal to the `WPFHexaEditor` control itself — engine, ByteProvider
 
 | Feature | Version / Release |
 |---------|-------------------|
+| **Code Analysis scope UX + SplitButton re-run** — scope label (Solution/Project/File) displayed in italic in toolbar after each run; SplitButton: left = re-run same scope, dropdown = Run Solution / Run Project… / Run File…; `_lastScope/_lastPath` persisted in `CodeAnalysisModule`; `SetScope` on `CodeAnalysisReportViewModel` | [0.6.5.225] — 2026-05-09 |
+| **Code Analysis Treemap context menu** — right-click raises `ContextMenuRequested` event with `FileMetrics`; 6 items: Open File (editor nav), Copy Path, Copy Metrics (clipboard), Run Analysis on File, Filter to This Project, Highlight Top 10 Hotspots (toggle dims non-critical tiles); 15 new AppResources keys × 28 satellite languages | [0.6.5.225] — 2026-05-09 |
+| **Code Analysis localization fixes** — `AppLocalizedDictionary` added to `UserControl.Resources.MergedDictionaries` in `CodeAnalysisReportPane.xaml`; fixes empty `DataGridTextColumn.Header` and logical-tree `DynamicResource` resolution; matches `WatchesPanel` / `AssemblyDetailPane` pattern | [0.6.5.225] — 2026-05-09 |
 | **DocumentEditor Glyph-Accurate Caret & Hit-Test** — `GetCharOffsetFromGlyphLines` and `GetCaretXYFromGlyphLines` route all hit-testing and caret positioning through the GlyphRun pipeline (`PlacedSegment.AdvanceWidths`, `InlineVisualLine.CharStart/CharEnd`); eliminates caret/insert misalignment on wrapped lines caused by `FormattedText` vs `GlyphTypeface` pipeline divergence; synchronous `RebuildLayout` in all edit paths (InsertTextAtCaret, SplitBlockAtCaret, DeleteAtCaret); opens-dirty fix (`UndoEngine.MarkSaved` + `IsDirty=false` in `BindModel`); `GetCaretX` ArgumentOutOfRangeException guard | [0.6.5.110] — 2026-05-05 |
 | **DocumentEditor Vertical Ruler Scroll-Tracking** — `SetVerticalOffset` now fires `PageGeometryChanged`; ruler `DrawGraduations` anchored to `PageCanvasPadding × zoom − scrollOffset × zoom` so unit-0 always aligns with first content line regardless of scroll; margin zones clip to visible viewport | [0.6.5.110] — 2026-05-05 |
 | **DocumentEditor Ruler Indent Markers Follow Caret** — `OnMouseDown` and `OnMouseUp` (pending-collapse path) now call `NotifyCaretBlockChangedIfNeeded` and `NotifyCaretMoved`; all edit operations (insert, split, delete) also fire both notifications; horizontal ruler indent markers update on every caret movement, not only keyboard-driven ones | [0.6.5.110] — 2026-05-05 |

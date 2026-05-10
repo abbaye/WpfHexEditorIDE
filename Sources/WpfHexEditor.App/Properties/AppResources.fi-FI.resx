@@ -665,5 +665,129 @@
   <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Varoitus</value></data>
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Virhe</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Suorita uudelleen</value></data>
+  <data name="CodeAnalysis_Rerun_SameScope" xml:space="preserve"><value>⟳ Suorita uudelleen (sama laajuus)</value></data>
+  <data name="CodeAnalysis_Rerun_RunSolution" xml:space="preserve"><value>Suorita Solution</value></data>
+  <data name="CodeAnalysis_Rerun_RunProject" xml:space="preserve"><value>Suorita Project…</value></data>
+  <data name="CodeAnalysis_Rerun_RunFile" xml:space="preserve"><value>Suorita tiedosto…</value></data>
+  <data name="CodeAnalysis_Scope_Solution" xml:space="preserve"><value>Solution: {0}</value></data>
+  <data name="CodeAnalysis_Scope_Project" xml:space="preserve"><value>Project: {0}</value></data>
+  <data name="CodeAnalysis_Scope_File" xml:space="preserve"><value>Tiedosto: {0}</value></data>
+  <data name="CodeAnalysis_Treemap_OpenFile" xml:space="preserve"><value>Avaa tiedosto</value></data>
+  <data name="CodeAnalysis_Treemap_CopyPath" xml:space="preserve"><value>Kopioi polku</value></data>
+  <data name="CodeAnalysis_Treemap_CopyMetrics" xml:space="preserve"><value>Kopioi mittarit</value></data>
+  <data name="CodeAnalysis_Treemap_RunOnFile" xml:space="preserve"><value>Suorita analyysi tiedostolle</value></data>
+  <data name="CodeAnalysis_Treemap_FilterProject" xml:space="preserve"><value>Suodata tähän Projectiin</value></data>
+  <data name="CodeAnalysis_Treemap_HighlightHotspots" xml:space="preserve"><value>Korosta 10 parasta hotspotia</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_SameScope" xml:space="preserve"><value>Suorita analyysi uudelleen samalla laajuudella ja polulla kuin viime kerralla</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_RunSolution" xml:space="preserve"><value>Suorita analyysi koko Solutionille</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>Vie ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>Puukartta</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>PISTEET</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>ALAOSAPISTEET</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>Projekti:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>Haku:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(Kaikki projektit)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>Suorita täysi koodianalyysi uudelleen nykyiselle ratkaisulle. Pikanäppäin: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>Vie raportti — Markdown (luettava), CSV (taulukko), SARIF (CI/PR-merkinnät) tai PR Checklist (luotu tarkistusmalli).</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>Suodata kaikki välilehdet projektin mukaan</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>Haku tiedostoista / metodeista / ongelmista (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>Laatupisteet</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>Painotettu yhdistelmä kuudesta osapisteestä: Volyymi 10 %, Monimutkaisuus 25 %, Kytkennät 20 %, Päällekkäisyys 20 %, Kuollut koodi 15 %, Käytännöt 10 %.</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>Arvosanat: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>Trendinuoli näyttää eron viimeksi tallennettuun tilannekuvaan.</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>Kokonaispisteet 0-100. Kohdista PISTEET-osioon nähdäksesi kaavan.</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>Pisteistä johdettu kirjainarvosana (A+, A, A-, B+, B, B-, C+, C, C-, D, F).</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>Ero edelliseen tilannekuvaan: ▲ parannus, ▼ taantuminen.</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>Kuusi akselia 0-100 (kauempana keskiöstä = parempi): Vol = tiedostokoon noudattaminen · CC = monimutkaisuusvara · Coup = kytkentöjen vakaus · Dup = päällekkäisyysaste · Dead = käyttämättömien symbolien aste · Conv = nimeämis-/käytäntöjen noudattaminen.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>Yhteenveto: erittely projekteittain + 5 huonoiten arvioitua tiedostoa. Avaa kaksoisnapsauttamalla riviä.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>Tämän ajon kaikki diagnoosit: WH00xx-laatusäännöt + CS/IDE Roslyn -varoitukset. Suodata vakavuuden / haun / ryhmän mukaan; kaksoisnapsauta hypätäksesi lähderiville.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>Parhaat metodit syklomaattisen + kognitiivisen monimutkaisuuden mukaan. McCabe (CC) laskee päätöskohdat; Cognitive (Sonar-tyyli) painottaa sisennystä. Korkeampi = vaikeampi testata/ylläpitää.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>Tyypeittäin Ca (afferenttinen — riippuu sinusta), Ce (efferenttinen — riippuu siitä) ja Epävakaus = Ce/(Ca+Ce). Lähellä 1 = haihtuva moduuli; lähellä 0 = vakaa perusta.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>Tokenipohjainen kloonien tunnistus. Jokainen ryhmä on ≥50 tokenin sekvenssi (säädettävä), jota löytyy 2+ paikasta — ehdokas yhteisen apuvälineen erottamiseen.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>Puukartta</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>Jokainen suorakulmio on yksi lähdetiedosto. Pinta-ala on verrannollinen koodiriveihin; väri on tiedostokohtainen laatupiste (vihreä = terve, punainen = huono). Vie kohdistin nähdäksesi kaikki mittarit, napsauta avataksesi.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>Yksityiset/sisäiset symbolit, joihin Roslyn ei löytänyt viittauksia. Tarkista kukin — vääriä positiivisia voi esiintyä symboleille, joita käytetään heijastuksen, DI-säilöjen tai lähdegeneraattorien kautta.</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>Ryhmittele ongelmat…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>Projekti</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>Tiedostot</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>Tyypit</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>Pisteet</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>Arvosana</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>Tiedosto</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>Viesti</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>Rivi</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>Metodi</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>Kognitiivinen</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>Param.</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>Tyyppi</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>Epävakaus</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>Symboli</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>Laji</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>PR-tarkistuslista</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>Virhe</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>Varoitus</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>Tiedote</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>Ryhmä: Ei mitään</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>Vakavuuden mukaan</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>Säännön mukaan</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>Projektin mukaan</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>Tiedoston mukaan</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>Pisteet:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>Puukartta:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> suorakulmion pinta-ala = koodirivit, väri = laatupiste. Vie kohdistin nähdäksesi kaikki mittarit, napsauta laattaa avataksesi tiedoston.</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>Klooniryhmä — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> riviä, </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> esiintymää, </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> tokenia</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>Markdown-tiedostot (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>SARIF-tiedostot (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>CSV-tiedostot (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># Koodianalyysiraportti</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>Avaa projektikansio</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>Näytä Resurssienhallinnassa</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>Analysoi tämä projekti uudelleen</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>Suodata kaikki välilehdet projektin mukaan</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>Kopioi projektin nimi</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>Kopioi mittarit CSV-rivinä</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>Avaa</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>Avaa sisältävä kansio</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>Analysoi tämä tiedosto uudelleen</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>Suodata ongelmat tämän tiedoston mukaan</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>Kopioi koko polku</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>Kopioi tiedoston nimi</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>Avaa metodin määrittelyssä</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>Kopioi metodin nimi</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>Kopioi täysin määritetty nimi</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>Avaa ongelman sijainnissa</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Suodata tämän säännön mukaan</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Suodata tämän tiedoston mukaan</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Estä tämä esiintymä (sisäänupotettu merkki)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Kopioi Markdownina</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Kopioi ongelman ID</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Avaa lähdetiedosto</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>Kopioi tyypin nimi</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>Kopioi riippuvuusluettelo</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>Avaa ensimmäinen esiintymä</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Kopioi sijainnit ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Avaa määrittelyssä</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Kopioi symbolin nimi</value></data>
 </root>

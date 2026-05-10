@@ -221,5 +221,24 @@
       "severity": "warning",
       "message": "A magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "archive_signature"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for A. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "archive_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for A. Hand-tune weights/rates per format if needed."
+  }
 }

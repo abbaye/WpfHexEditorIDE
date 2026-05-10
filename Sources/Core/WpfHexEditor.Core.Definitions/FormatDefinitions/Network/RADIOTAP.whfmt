@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Radiotap 802.11",
   "formatId": "RADIOTAP",
@@ -220,5 +220,26 @@
       "Check packet record timestamps and capture lengths",
       "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "header_length"
+    ],
+    "ignoreFields": [
+      "mac_timestamp"
+    ],
+    "note": "Inferred semantic diff for RADIOTAP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "header_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for RADIOTAP. Hand-tune weights/rates per format if needed."
   }
 }

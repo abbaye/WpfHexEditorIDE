@@ -162,5 +162,24 @@
     "Sections": "@<TRIPOS>MOLECULE, ATOM, BOND, SUBSTRUCTURE, COMMENT",
     "AtomTypes": "Sybyl atom types (C.3, C.2, C.ar, N.3, O.3, etc.)",
     "ChargeTypes": "NO_CHARGES, GASTEIGER, MMFF94, USER_CHARGES"
+  },
+  "diff": {
+    "keyFields": [
+      "mol2_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MOL2. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "mol2_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MOL2. Hand-tune weights/rates per format if needed."
   }
 }

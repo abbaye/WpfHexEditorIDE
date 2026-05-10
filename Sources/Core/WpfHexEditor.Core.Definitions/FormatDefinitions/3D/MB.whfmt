@@ -191,5 +191,36 @@
       "Traverse IFF sub-chunks to locate 'VERS' (version) and 'PLUG' (plugins required) sections",
       "Compare file size against IFF chunk size at offset 4 plus 8 to check for truncation"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "iff_chunk_id",
+      "iff_chunk_size",
+      "first_sub_chunk_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "iff_chunk_id",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "iff_chunk_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "first_sub_chunk_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MB. Hand-tune weights/rates per format if needed."
   }
 }

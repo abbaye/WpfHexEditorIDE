@@ -195,5 +195,30 @@
     "VersionMapping": "0x51=5.1, 0x52=5.2, 0x53=5.3, 0x54=5.4",
     "LuaJIT": "LuaJIT uses magic 0x1B4C4A01 (not compatible)",
     "Note": "LUAC_DATA integrity sequence at offset 6 catches byte-order and encoding issues at load time."
+  },
+  "diff": {
+    "keyFields": [
+      "luac_magic",
+      "luac_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for LUAC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "luac_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "luac_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for LUAC. Hand-tune weights/rates per format if needed."
   }
 }

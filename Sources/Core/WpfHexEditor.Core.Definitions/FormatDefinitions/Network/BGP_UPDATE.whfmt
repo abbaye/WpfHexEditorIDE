@@ -244,5 +244,48 @@
     "MaxMessageSize": 4096,
     "Transport": "TCP port 179",
     "PathAttributes": "Variable-length TLV (Type-Length-Value) encoding"
+  },
+  "diff": {
+    "keyFields": [
+      "bgp_marker",
+      "bgp_length",
+      "bgp_type",
+      "withdrawn_routes_length",
+      "path_attr_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for BGP_UPDATE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "bgp_marker",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "bgp_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "bgp_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "withdrawn_routes_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "path_attr_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for BGP_UPDATE. Hand-tune weights/rates per format if needed."
   }
 }

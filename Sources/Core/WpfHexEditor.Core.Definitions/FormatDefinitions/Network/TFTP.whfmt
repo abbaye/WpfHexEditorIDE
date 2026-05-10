@@ -227,5 +227,30 @@
     "authentication": "none",
     "encryption": "none",
     "rfcs": [ "RFC 1350", "RFC 2347 (options)", "RFC 2348 (block size)", "RFC 2349 (timeout/tsize)" ]
+  },
+  "diff": {
+    "keyFields": [
+      "tftp_opcode",
+      "tftp_error_code"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for TFTP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "tftp_opcode",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "tftp_error_code",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for TFTP. Hand-tune weights/rates per format if needed."
   }
 }

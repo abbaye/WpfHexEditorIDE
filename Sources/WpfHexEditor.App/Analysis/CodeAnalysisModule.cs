@@ -12,6 +12,7 @@
 // ==========================================================
 
 using System.IO;
+using System.Windows;
 using System.Windows.Threading;
 using WpfHexEditor.App.Analysis.IDE;
 using WpfHexEditor.App.Analysis.Models;
@@ -28,7 +29,11 @@ namespace WpfHexEditor.App.Analysis;
 
 internal sealed class CodeAnalysisModule
 {
-    private const string ReportTabUiId = "WpfHexEditor.Analysis.ReportTab";
+    /// <summary>ContentId of the persistent report tab — used by MainWindow.BuildContentForItem.</summary>
+    public const string ReportTabUiId = "WpfHexEditor.Analysis.ReportTab";
+
+    /// <summary>Returns the live report pane (or null if module not yet initialized / pane not yet shown).</summary>
+    internal UIElement? GetReportPane() => _reportPane;
 
     private IIDEHostContext?           _context;
     private IDockingAdapter?           _docking;
@@ -38,6 +43,8 @@ internal sealed class CodeAnalysisModule
 
     private CodeAnalysisOptionsService _optionsService  = new();
     private AnalysisSnapshotService    _snapshotService = new();
+    private AnalysisScope              _lastScope       = AnalysisScope.Solution;
+    private string                     _lastPath        = string.Empty;
     private CodeAnalysisRunner?        _runner;
     private AnalysisOutputLogger?      _logger;
     private AnalysisErrorPanelBridge?  _errorBridge;
@@ -76,11 +83,14 @@ internal sealed class CodeAnalysisModule
             runSolution: () => RunAsync(AnalysisScope.Solution, GetSolutionPath()),
             openReport:  () => OpenReportAsync());
 
+        _lastPath = GetSolutionPath();
+
         // Register IDE commands (Command Palette)
         _commands = new AnalysisCommandsRegistrar(
             runSolution:   () => RunAsync(AnalysisScope.Solution, GetSolutionPath()),
             openReport:    () => OpenReportAsync(),
             clearSnapshot: ClearSnapshot);
+
         _commands.Register(commandRegistry);
 
         // Register Solution Explorer context menu contributors
@@ -116,6 +126,11 @@ internal sealed class CodeAnalysisModule
             if (snapshot is not null)
                 _statusBar.ShowScore(snapshot.Score, ScoreToGrade(snapshot.Score));
         }
+
+        // Pre-build the report pane so a layout-restored Code Analysis tab
+        // can find its real content on the very first BuildContentForItem call —
+        // before MainWindow.RefreshModulePanels gets a chance to invalidate.
+        EnsureReportPaneExists();
     }
 
     // ── Run ──────────────────────────────────────────────────────────────────
@@ -123,6 +138,9 @@ internal sealed class CodeAnalysisModule
     private async Task RunAsync(AnalysisScope scope, string path)
     {
         if (_runner is null || _context is null) return;
+
+        _lastScope = scope;
+        _lastPath  = path;
 
         // Cancel any in-flight run
         _cts?.Cancel();
@@ -190,7 +208,8 @@ internal sealed class CodeAnalysisModule
                 _statusBar?.ShowScore(report.Score.Score, report.Score.Grade);
 
             EnsureReportPane();
-            _reportVm!.SetReport(report);
+            _reportVm!.SetScope(scope, path);
+            _reportVm.SetReport(report);
         });
     }
 
@@ -212,26 +231,38 @@ internal sealed class CodeAnalysisModule
 
     // ── Report pane ──────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Build the report pane + view-model if not already created. Used by
+    /// MainWindow.RefreshModulePanels to satisfy the layout-restored tab
+    /// without forcing it to the foreground.
+    /// </summary>
+    internal void EnsureReportPaneExists()
+    {
+        if (_reportPane is not null || _context is null) return;
+        _reportVm   = new CodeAnalysisReportViewModel();
+        _reportPane = new CodeAnalysisReportPane(_reportVm, _context.DocumentHost);
+        _reportPane.SetReRunCallback(
+            rerun:       () => RunAsync(_lastScope, string.IsNullOrEmpty(_lastPath) ? GetSolutionPath() : _lastPath),
+            runSolution: () => RunAsync(AnalysisScope.Solution, GetSolutionPath()),
+            runFile:     path => RunAsync(AnalysisScope.File, path));
+    }
+
     private void EnsureReportPane()
     {
-        if (_reportPane is not null) return;
+        // Create the pane + VM once; keep them across re-runs so the report data persists
+        EnsureReportPaneExists();
 
-        _reportVm   = new CodeAnalysisReportViewModel();
-        _reportPane = new CodeAnalysisReportPane(
-            _reportVm,
-            _context!.DocumentHost);
-
-        _reportPane.SetReRunCallback(
-            () => RunAsync(AnalysisScope.Solution, GetSolutionPath()));
-
+        // Always (re-)register the tab — the user may have closed it. AddDocumentTab is
+        // expected to no-op (or refresh) when a tab with the same uiId already exists.
         _docking!.AddDocumentTab(
             ReportTabUiId,
-            _reportPane,
+            _reportPane!,
             new DocumentDescriptor
             {
                 Title   = "Code Analysis",
                 ToolTip = "Code Analysis Report",
             });
+        _docking.ShowDockablePanel(ReportTabUiId);
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────

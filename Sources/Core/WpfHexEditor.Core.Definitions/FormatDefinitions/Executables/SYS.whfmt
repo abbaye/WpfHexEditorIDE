@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Windows System Driver",
   "formatId": "SYS",
@@ -425,5 +425,56 @@
     "Endianness": "little-endian",
     "RequiresSignature": "Authenticode Kernel Mode Code Signing (64-bit Windows Vista+)",
     "EntryPoint": "DriverEntry(PDRIVER_OBJECT, PUNICODE_STRING) : NTSTATUS"
+  },
+  "diff": {
+    "keyFields": [
+      "dos_signature",
+      "pe_header_offset",
+      "coff_machine",
+      "coff_characteristics",
+      "optional_magic",
+      "subsystem_type"
+    ],
+    "ignoreFields": [
+      "coff_time_date_stamp"
+    ],
+    "note": "Inferred semantic diff for SYS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dos_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "coff_machine",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "coff_characteristics",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "optional_magic",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "subsystem_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "pe_header_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SYS. Hand-tune weights/rates per format if needed."
   }
 }

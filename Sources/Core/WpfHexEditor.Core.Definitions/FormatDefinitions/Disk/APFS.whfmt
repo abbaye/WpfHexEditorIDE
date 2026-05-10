@@ -426,5 +426,42 @@
     "readUInt32LE": "Read little-endian 32-bit fields",
     "readUInt64LE": "Read little-endian 64-bit fields",
     "readBytes": "Read raw byte arrays (UUID, checksum)"
+  },
+  "diff": {
+    "keyFields": [
+      "obj_type",
+      "nx_magic",
+      "nx_block_size",
+      "nx_block_count"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for APFS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "nx_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 32 — parser must reject."
+      },
+      {
+        "field": "obj_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "nx_block_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "nx_block_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for APFS. Hand-tune weights/rates per format if needed."
   }
 }

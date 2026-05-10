@@ -186,5 +186,30 @@
     "ZIPVariant": "Standard ZIP (PK magic) with VS-specific internal structure",
     "XMLVariant": "UTF-8 XML configuration for profiling session parameters",
     "LegacyBinary": ".vsp proprietary binary format (VS 2010-2015 era)"
+  },
+  "diff": {
+    "keyFields": [
+      "first_byte",
+      "magic_bytes"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SIGINFO. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "first_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "magic_bytes",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SIGINFO. Hand-tune weights/rates per format if needed."
   }
 }

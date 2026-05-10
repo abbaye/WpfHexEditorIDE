@@ -79,5 +79,36 @@
   "MimeTypes": ["application/octet-stream"],
   "UseCases": ["Parallel compression of large files on multi-core Linux systems", "Deduplication-aware backup archiving"],
   "QualityMetrics": { "CompletenessScore": 62, "DocumentationLevel": "detailed", "BlocksDefined": 7, "ValidationRules": 2, "LastUpdated": "2026-04-14", "PriorityFormat": false, "AutoRefined": false },
-  "TechnicalDetails": { "Format": "'PC'(2B)+ver(1B)+algo(1B)+chunkSize(4B LE)+flags(4B LE)", "Magic": "'PC' (0x5043) at offset 0", "Algorithms": "None/Zlib/Bzip2/LZMA/LZ4/Zstd" }
+  "TechnicalDetails": { "Format": "'PC'(2B)+ver(1B)+algo(1B)+chunkSize(4B LE)+flags(4B LE)", "Magic": "'PC' (0x5043) at offset 0", "Algorithms": "None/Zlib/Bzip2/LZMA/LZ4/Zstd" },
+  "diff": {
+    "keyFields": [
+      "pcompress_magic",
+      "compression_algo",
+      "chunk_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PCOMPRESS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pcompress_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "compression_algo",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "chunk_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PCOMPRESS. Hand-tune weights/rates per format if needed."
+  }
 }

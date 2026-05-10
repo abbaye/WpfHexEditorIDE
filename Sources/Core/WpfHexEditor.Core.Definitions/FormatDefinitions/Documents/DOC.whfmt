@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Word Document (Legacy)",
   "formatId": "DOC",
@@ -416,5 +416,66 @@
     "HeaderSize": "512 bytes (CFB container header)",
     "SectorSize": "512 bytes (major version 3) or 4096 bytes (version 4)",
     "MacroCapable": true
+  },
+  "diff": {
+    "keyFields": [
+      "ole2_signature",
+      "minor_version",
+      "major_version",
+      "byte_order",
+      "sector_size_exp",
+      "mini_sector_size_exp",
+      "dir_sector_count",
+      "fat_sector_count"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DOC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ole2_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "minor_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "major_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "byte_order",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "sector_size_exp",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "mini_sector_size_exp",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "dir_sector_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "fat_sector_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DOC. Hand-tune weights/rates per format if needed."
   }
 }

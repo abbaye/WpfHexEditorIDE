@@ -969,5 +969,129 @@
   <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Waarschuwing</value></data>
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Fout</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Opnieuw uitvoeren</value></data>
+  <data name="CodeAnalysis_Rerun_SameScope" xml:space="preserve"><value>⟳ Opnieuw uitvoeren (zelfde bereik)</value></data>
+  <data name="CodeAnalysis_Rerun_RunSolution" xml:space="preserve"><value>Solution uitvoeren</value></data>
+  <data name="CodeAnalysis_Rerun_RunProject" xml:space="preserve"><value>Project uitvoeren…</value></data>
+  <data name="CodeAnalysis_Rerun_RunFile" xml:space="preserve"><value>Bestand uitvoeren…</value></data>
+  <data name="CodeAnalysis_Scope_Solution" xml:space="preserve"><value>Solution: {0}</value></data>
+  <data name="CodeAnalysis_Scope_Project" xml:space="preserve"><value>Project: {0}</value></data>
+  <data name="CodeAnalysis_Scope_File" xml:space="preserve"><value>Bestand: {0}</value></data>
+  <data name="CodeAnalysis_Treemap_OpenFile" xml:space="preserve"><value>Bestand openen</value></data>
+  <data name="CodeAnalysis_Treemap_CopyPath" xml:space="preserve"><value>Pad kopiëren</value></data>
+  <data name="CodeAnalysis_Treemap_CopyMetrics" xml:space="preserve"><value>Statistieken kopiëren</value></data>
+  <data name="CodeAnalysis_Treemap_RunOnFile" xml:space="preserve"><value>Analyse uitvoeren op bestand</value></data>
+  <data name="CodeAnalysis_Treemap_FilterProject" xml:space="preserve"><value>Filteren op dit Project</value></data>
+  <data name="CodeAnalysis_Treemap_HighlightHotspots" xml:space="preserve"><value>Top 10 hotspots markeren</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_SameScope" xml:space="preserve"><value>Analyse opnieuw uitvoeren met hetzelfde bereik en pad als de laatste keer</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_RunSolution" xml:space="preserve"><value>Analyse uitvoeren op de volledige Solution</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>Exporteren ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>Treemap</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>SCORE</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>SUBSCORES</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>Project:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>Zoeken:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(Alle projecten)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>Voer de volledige Code-analyse opnieuw uit op de huidige oplossing. Sneltoets: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>Het rapport exporteren — Markdown (leesbaar), CSV (spreadsheet), SARIF (CI/PR-annotaties) of PR Checklist (gegenereerde reviewsjabloon).</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>Filter alle tabbladen op project</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>Zoeken in bestanden / methoden / problemen (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>Kwaliteitsscore</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>Gewogen aggregaat van zes subscores: Volume 10 %, Complexiteit 25 %, Koppeling 20 %, Duplicatie 20 %, Dode code 15 %, Conventies 10 %.</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>Cijfers: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>De trendpijl toont het verschil ten opzichte van de laatst opgeslagen snapshot.</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>Totale score 0-100. Beweeg over de SCORE-sectie voor de formule.</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>Lettercijfer afgeleid van de score (A+, A, A-, B+, B, B-, C+, C, C-, D, F).</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>Verschil ten opzichte van de vorige snapshot: ▲ verbetering, ▼ regressie.</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>Zes assen 0-100 (verder van het midden = beter): Vol = bestandsgrootteconformiteit · CC = complexiteitsmarge · Coup = koppelingsstabiliteit · Dup = duplicatieratio · Dead = ratio van ongebruikte symbolen · Conv = naam-/conventieconformiteit.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>Algemene samenvatting: indeling per project + 5 slechtst scorende bestanden. Dubbelklik op een rij om in te zoomen.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>Alle diagnostische gegevens van deze run: WH00xx-kwaliteitsregels + CS/IDE Roslyn-waarschuwingen. Filter op ernst / zoekopdracht / groep; dubbelklik om naar de bronregel te springen.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>Topmethoden op cyclomatische + cognitieve complexiteit. McCabe (CC) telt beslissingspunten; Cognitive (Sonar-stijl) weegt nesting. Hoger = moeilijker te testen/onderhouden.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>Per type Ca (afferent — afhankelijk van u), Ce (efferent — u bent ervan afhankelijk) en Instabiliteit = Ce/(Ca+Ce). Instabiliteit dichtbij 1 = volatiele module; dichtbij 0 = stabiele basis.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>Tokengebaseerde kloondetectie. Elke groep is een reeks van ≥50 tokens (configureerbaar) gevonden op 2+ plaatsen — kandidaten voor extractie naar een gedeelde helper.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>Treemap</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>Elke rechthoek is een bronbestand. Het oppervlak is evenredig met het aantal regels code; de kleur is de kwaliteitsscore per bestand (groen = gezond, rood = slecht). Beweeg over voor alle metrics, klik om te openen.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>Privé-/interne symbolen waarnaar Roslyn geen verwijzing heeft kunnen vinden. Verifieer elk — valse positieven kunnen optreden voor symbolen die via reflectie, DI-containers of bron-generators worden gebruikt.</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>Problemen groeperen op…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>Project</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>Bestanden</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>Typen</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>Score</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>Cijfer</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>Bestand</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>Bericht</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>Regel</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>Methode</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>Cognitief</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>Param.</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>Type</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>Instabiliteit</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>Symbool</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>Soort</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>PR-checklist</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>Fout</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>Waarschuwing</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>Info</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>Groep: Geen</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>Op ernst</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>Op regel</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>Op project</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>Op bestand</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>Score:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>Treemap:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> rechthoekoppervlak = regels code, kleur = kwaliteitsscore. Beweeg over voor alle metrics, klik op een tegel om het bestand te openen.</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>Kloongroep — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> regels, </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> voorkomens, </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> tokens</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>Markdown-bestanden (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>SARIF-bestanden (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>CSV-bestanden (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># Code-analyserapport</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>Projectmap openen</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>Tonen in Verkenner</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>Dit project opnieuw analyseren</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>Alle tabbladen filteren op project</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>Projectnaam kopiëren</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>Metrics kopiëren als CSV-rij</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>Openen</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>Bovenliggende map openen</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>Dit bestand opnieuw analyseren</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>Problemen filteren op dit bestand</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>Volledig pad kopiëren</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>Bestandsnaam kopiëren</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>Openen bij methodedeclaratie</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>Methodenaam kopiëren</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>Volledig gekwalificeerde naam kopiëren</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>Openen op probleemlocatie</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Filteren op deze regel</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Filteren op dit bestand</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Dit voorkomen onderdrukken (inline marker)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Kopiëren als Markdown</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Probleem-ID kopiëren</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Bronbestand openen</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>Typenaam kopiëren</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>Afhankelijkheidslijst kopiëren</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>Eerste voorkomen openen</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Locaties kopiëren ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Openen bij declaratie</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Symboolnaam kopiëren</value></data>
 </root>

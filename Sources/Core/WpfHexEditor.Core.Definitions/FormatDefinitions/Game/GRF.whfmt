@@ -188,5 +188,42 @@
     "Version": "GRF1 (v1, uncompressed table) or GRF2 (v2, zlib-compressed table)",
     "FileTable": "zlib-compressed in GRF2; entries: compressedSize+alignedSize+uncompressedSize+flags+offset+CStr name",
     "Quirk": "fileCount stored as actual+7 in GRF2; fileTableOffset relative to byte 46, not 0"
+  },
+  "diff": {
+    "keyFields": [
+      "grf_signature",
+      "grf_file_table_offset",
+      "grf_file_count",
+      "grf_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for GRF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "grf_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "grf_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "grf_file_table_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "grf_file_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for GRF. Hand-tune weights/rates per format if needed."
   }
 }

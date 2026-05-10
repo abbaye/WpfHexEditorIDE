@@ -163,5 +163,24 @@
     "TagNotation": "Category.item dot notation (e.g. _atom_site.Cartn_x)",
     "MaxAtoms": "No practical limit (replaces 99999-atom PDB format limit)",
     "Dictionary": "PDBx/mmCIF dictionary v5+ maintained by wwPDB"
+  },
+  "diff": {
+    "keyFields": [
+      "mmcif_data_block"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MMCIF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "mmcif_data_block",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MMCIF. Hand-tune weights/rates per format if needed."
   }
 }

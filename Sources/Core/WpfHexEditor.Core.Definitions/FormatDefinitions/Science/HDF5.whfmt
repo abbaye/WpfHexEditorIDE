@@ -198,5 +198,24 @@
       "Inspect dataset attributes for units, coordinate reference systems, and fill values",
       "Validate end-of-file address in superblock against actual file size"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "hdf5_signature"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for HDF5. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "hdf5_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for HDF5. Hand-tune weights/rates per format if needed."
   }
 }

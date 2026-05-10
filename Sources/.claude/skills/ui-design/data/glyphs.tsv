@@ -1,0 +1,177 @@
+codepoint	count	example
+U+E121	1	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE121;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E174	2	Sources\Plugins\WpfHexEditor.Plugins.XamlDesigner\Panels\ResourceBrowserPanel.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE174;"/> <Butto
+U+E700	1	Sources\Samples\WpfHexEditor.Sample.Docking\MainWindow.xaml  <TextBlock DockPanel.Dock="Left" Text="&#xE700;" FontFamily="Seg
+U+E706	2	Sources\Samples\WpfHexEditor.Sample.CodeEditor\MainWindow.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE706;" FontSize="11" Vertical
+U+E708	2	Sources\Samples\WpfHexEditor.Sample.CodeEditor\MainWindow.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE708;" FontSize="11" Vertical
+U+E70D	13	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" 
+U+E70E	3	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentStructurePane.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70E;" FontSize="11"/> </Butt
+U+E70F	9	Sources\Editors\WpfHexEditor.Editor.CodeEditor\Controls\FormatScriptEditorControl.xaml  <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="
+U+E710	10	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foregrou
+U+E711	21	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E712	17	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E713	10	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE713;" FontSize="13"/> </Butt
+U+E718	1	Sources\Editors\WpfHexEditor.HexEditor\HexEditor.xaml  <TextBlock Text="&#xE718;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E719	1	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE719;" FontFamily="Segoe MDL2 Assets" FontSize="13" Fore
+U+E71A	7	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E71B	6	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE71B;" FontSize="13"/> </Butt
+U+E71C	2	Sources\Plugins\WpfHexEditor.PluginHost\UI\PluginMonitoringPanel.xaml  <TextBlock Text="&#xE71C;" FontFamily="Segoe MDL2 Assets" FontSize="11"/> </Men
+U+E71D	1	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentStructurePane.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE71D;" FontSize="11"/> </Togg
+U+E71E	2	Sources\WpfHexEditor.App\Dialogs\ImportEmbeddedFormatDialog.xaml  <TextBlock Grid.Column="0" Text="&#xE71E;" FontFamily="Segoe MDL2 Assets
+U+E71F	4	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE71F;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E721	22	Sources\Core\WpfHexEditor.Core.Options\OptionsEditorControl.xaml  <TextBlock Grid.Column="0" Text="&#xE721;" FontF
+U+E724	1	Sources\Plugins\WpfHexEditor.Plugins.AIAssistant\Panel\Tabs\ConversationTab.xaml  <TextBlock Text="&#xE724;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foregrou
+U+E72B	1	Sources\WpfHexEditor.App\AssemblyExplorer\Controls\AssemblyTreeView.xaml  <TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Menu
+U+E72C	22	Sources\Editors\WpfHexEditor.Editor.ImageViewer\Controls\ImageViewer.xaml  <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Menu
+U+E72D	1	Sources\Plugins\WpfHexEditor.Plugins.XamlDesigner\Panels\DesignHistoryPanel.xaml  <TextBlock Text="&#xE72D;" FontFamily="Segoe MDL2 Assets" 
+U+E72E	4	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock x:Name="PART_LockIcon" DockPanel.Dock="Right" FontFam
+U+E72F	1	Sources\Core\WpfHexEditor.Core.ProjectSystem\Documents\References\ReferenceManagerDocument.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE72F;" FontSize="13" Vertical
+U+E734	6	Sources\Plugins\WpfHexEditor.Plugins.AIAssistant\Panel\Tabs\ConversationTab.xaml  <TextBlock Text="&#xE734;" FontFamily="Segoe MDL2 Assets" FontSize="36" Foregrou
+U+E735	1	Sources\Plugins\WpfHexEditor.Plugins.XamlDesigner\Panels\XamlToolboxPanel.xaml  <TextBlock Text="&#xE735;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> <
+U+E737	1	Sources\Plugins\WpfHexEditor.PluginHost\UI\PluginManagerControl.xaml  <TextBlock Text="&#xE737;" FontFamily="Segoe MDL2 Assets" FontSize="28" Horizont
+U+E73B	1	Sources\Editors\WpfHexEditor.Editor.TblEditor\Controls\TblEditor.xaml  <TextBlock Text="&#xE73B;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Menu
+U+E73E	11	Sources\Core\WpfHexEditor.Core.ProjectSystem\Documents\NuGet\NuGetManagerDocument.xaml  <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="11" 
+U+E740	1	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE740;" FontFamily="Segoe MDL2 Assets" FontSize="13" Fore
+U+E74A	6	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E74B	5	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE74B;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E74C	4	Sources\Plugins\WpfHexEditor.PluginDev\Panels\PluginDevLogPanel.xaml  <TextBlock Text="&#xE74C;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Togg
+U+E74D	30	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E74E	17	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E756	2	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="13" Fore
+U+E768	17	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E769	4	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E76B	4	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE76B;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foregrou
+U+E76C	5	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foregrou
+U+E76F	1	Sources\Editors\WpfHexEditor.Editor.Core\Views\QuickSearchBar.xaml  <TextBlock Text="&#xE76F;" FontFamily="Segoe MDL2 Assets" 
+U+E771	1	Sources\Editors\WpfHexEditor.HexEditor\HexEditor.xaml  <TextBlock Text="&#xE771;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E773	1	Sources\Plugins\WpfHexEditor.Plugins.XamlDesigner\Panels\ResourceBrowserPanel.xaml  <TextBlock Text="&#xE773;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Menu
+U+E774	2	Sources\Plugins\WpfHexEditor.Plugins.AIAssistant\Panel\AIAssistantPanel.xaml  <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foregrou
+U+E777	3	Sources\Plugins\WpfHexEditor.PluginHost\UI\PluginMonitoringPanel.xaml  <TextBlock Text="&#xE777;" FontFamily="Segoe MDL2 Assets" FontSize="12" Vertical
+U+E77B	2	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE77B;" FontSize="13"/> </Butt
+U+E77F	6	Sources\Editors\WpfHexEditor.Editor.TblEditor\Controls\TblEditor.xaml  <TextBlock Text="&#xE77F;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Menu
+U+E780	1	Sources\Editors\WpfHexEditor.Editor.TblEditor\Controls\TblEditor.xaml  <TextBlock Text="&#xE780;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Menu
+U+E783	4	Sources\Plugins\WpfHexEditor.PluginHost\UI\PluginManagerControl.xaml  <TextBlock Text="&#xE783;" FontFamily="Segoe MDL2 Assets" FontSize="13" 
+U+E78C	1	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE78C;" FontFamily="Segoe MDL2 Assets" FontSize="13" Fore
+U+E790	14	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="13" Fore
+U+E792	5	Sources\Editors\WpfHexEditor.Editor.ImageViewer\Controls\ImageViewer.xaml  <TextBlock Text="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Menu
+U+E7A6	6	Sources\Editors\WpfHexEditor.Editor.CodeEditor\Controls\FormatScriptEditorControl.xaml  <TextBlock Text="&#xE7A6;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="
+U+E7A7	8	Sources\Editors\WpfHexEditor.Editor.CodeEditor\Controls\FormatScriptEditorControl.xaml  <TextBlock Text="&#xE7A7;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="
+U+E7A8	2	Sources\Editors\WpfHexEditor.Editor.ImageViewer\Controls\ImageViewer.xaml  <TextBlock Text="&#xE7A8;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Menu
+U+E7AC	6	Sources\Shell\WpfHexEditor.Shell.Panels\Panels\WhfmtBrowserPanel.xaml  <TextBlock Text="&#xE7AC;" FontFamily="Segoe MDL2 Assets" FontSize="11" 
+U+E7AD	2	Sources\Editors\WpfHexEditor.Editor.ImageViewer\Controls\ImageViewer.xaml  <TextBlock Text="&#xE7AD;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Menu
+U+E7AE	2	Sources\Editors\WpfHexEditor.Editor.ImageViewer\Controls\ImageViewer.xaml  <TextBlock Text="&#xE7AE;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Menu
+U+E7B0	2	Sources\Plugins\WpfHexEditor.Plugins.DocumentStructure\Views\DocumentStructurePanel.xaml  <TextBlock Text="&#xE7B0;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></MenuI
+U+E7B3	3	Sources\Plugins\WpfHexEditor.PluginHost\UI\PluginManagerControl.xaml  <TextBlock Text="&#xE7B3;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuI
+U+E7B8	3	Sources\Core\WpfHexEditor.Core.ProjectSystem\Documents\NuGet\NuGetManagerDocument.xaml  <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="20" Hori
+U+E7BA	9	Sources\Editors\WpfHexEditor.Editor.CodeEditor\Controls\FormatScriptEditorControl.xaml  <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="
+U+E7C1	3	Sources\Plugins\WpfHexEditor.Plugins.FileComparison\Views\DiffViewerDocument.xaml  <TextBlock Text="&#xE7C1;" FontFamily="Segoe MDL2 Assets" FontSize="11"/> </Togg
+U+E7C3	5	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C3;" FontSize="13" Vertical
+U+E7C4	4	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentPopToolbar.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C4;" FontSize="13"/> </Butt
+U+E7C9	3	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C9;" FontSize="13" Vertical
+U+E7E7	1	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE7E7;" FontFamily="Segoe MDL2 Assets" FontSize="13" 
+U+E7E8	1	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE7E8;" FontFamily="Segoe MDL2 Assets" FontSize="13" Fore
+U+E7EE	2	Sources\Core\WpfHexEditor.Core.ProjectSystem\Documents\References\ReferenceManagerDocument.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7EE;" FontSize="13" Foregrou
+U+E7F4	1	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="13" Fore
+U+E80A	2	Sources\Core\WpfHexEditor.Core.ProjectSystem\Dialogs\NewFileDialog.xaml  <TextBlock Text="&#xE80A;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Togg
+U+E80F	1	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="14" Vertical
+U+E814	1	Sources\Plugins\WpfHexEditor.Plugins.XamlDesigner\Panels\BindingInspectorPanel.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE814;" Horizont
+U+E81C	3	Sources\Plugins\WpfHexEditor.Plugins.AIAssistant\Panel\AIAssistantPanel.xaml  <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foregrou
+U+E81E	1	Sources\Plugins\WpfHexEditor.Plugins.XamlDesigner\Panels\XamlOutlinePanel.xaml  <TextBlock Text="&#xE81E;" FontFamily="Segoe MDL2 Assets" 
+U+E823	4	Sources\Plugins\WpfHexEditor.Plugins.UnitTesting\Views\UnitTestingPanel.xaml  <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="
+U+E82D	1	Sources\WpfHexEditor.App\Controls\WelcomePanel.xaml  <TextBlock Text="&#xE82D;" FontFamily="Segoe MDL2 Assets" 
+U+E838	1	Sources\WpfHexEditor.App\AssemblyExplorer\Controls\AssemblyTreeView.xaml  <TextBlock Text="&#xE838;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Menu
+U+E840	2	Sources\WpfHexEditor.App\AssemblyExplorer\Controls\AssemblyTreeView.xaml  <TextBlock Text="&#xE840;" FontFamily="Segoe MDL2 Assets" FontSi
+U+E892	1	Sources\Plugins\WpfHexEditor.Plugins.XamlDesigner\Panels\DesignHistoryPanel.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE892;"/> </Butt
+U+E893	1	Sources\Plugins\WpfHexEditor.Plugins.XamlDesigner\Panels\DesignHistoryPanel.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE893;"/> </Butt
+U+E894	5	Sources\Plugins\WpfHexEditor.PluginDev\Panels\PluginDevLogPanel.xaml  <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Butt
+U+E895	2	Sources\Plugins\WpfHexEditor.Plugins.Git\Views\GitChangesPanel.xaml  <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Butt
+U+E896	4	Sources\Plugins\WpfHexEditor.Plugins.Git\Views\GitChangesPanel.xaml  <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Butt
+U+E898	5	Sources\Plugins\WpfHexEditor.PluginDev\Panels\PluginDevLogPanel.xaml  <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Butt
+U+E89A	1	Sources\Plugins\WpfHexEditor.Plugins.UnitTesting\Views\UnitTestingPanel.xaml  <TextBlock Text="&#xE89A;" FontFamily="Segoe MDL2 Assets" FontSize="10" Margin="
+U+E8A0	4	Sources\Plugins\WpfHexEditor.Plugins.FileComparison\Views\DiffViewerDocument.xaml  <TextBlock Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets" FontSize="11" Margin="
+U+E8A1	2	Sources\Plugins\WpfHexEditor.Plugins.AIAssistant\Panel\Tabs\ConversationTab.xaml  <TextBlock Text="&#xE8A1;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foregrou
+U+E8A2	2	Sources\Plugins\WpfHexEditor.Plugins.ScriptRunner\Panels\ScriptRunnerPanel.xaml  <TextBlock Text="&#xE8A2;" FontFamily="Segoe MDL2 Assets" FontSize="13" Vertical
+U+E8A3	4	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE8A3;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E8A4	2	Sources\Editors\WpfHexEditor.HexEditor\HexEditor.xaml  <TextBlock Text="&#xE8A4;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E8A5	12	Sources\Core\WpfHexEditor.Core.Options\OptionsEditorControl.xaml  <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="14"/> </Butt
+U+E8A6	1	Sources\Plugins\WpfHexEditor.Plugins.XamlDesigner\Panels\XamlToolboxPanel.xaml  <TextBlock Text="&#xE8A6;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> <
+U+E8A7	4	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Dialogs\HyperlinkInsertDialog.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A7;" FontSize="14"/> </Butt
+U+E8A8	2	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A8;" FontSize="13" Vertical
+U+E8A9	2	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE8A9;" FontFamily="Segoe MDL2 Assets" FontSize="13" 
+U+E8AA	1	Sources\WpfHexEditor.App\AssemblyExplorer\Controls\AssemblyTreeView.xaml  <TextBlock Text="&#xE8AA;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Menu
+U+E8AB	2	Sources\Editors\WpfHexEditor.HexEditor\HexEditor.xaml  <TextBlock Text="&#xE8AB;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E8AC	6	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE8AC;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E8AD	2	Sources\WpfHexEditor.App\AssemblyExplorer\Controls\AssemblyTreeView.xaml  <TextBlock Text="&#xE8AD;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Menu
+U+E8B0	4	Sources\Editors\WpfHexEditor.Editor.ImageViewer\Controls\ImageViewer.xaml  <TextBlock Text="&#xE8B0;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Menu
+U+E8B1	7	Sources\Editors\WpfHexEditor.Editor.ImageViewer\Controls\ImageViewer.xaml  <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Menu
+U+E8B3	2	Sources\Editors\WpfHexEditor.HexEditor\HexEditor.xaml  <TextBlock Text="&#xE8B3;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E8B5	4	Sources\Plugins\WpfHexEditor.PluginHost\UI\PluginManagerControl.xaml  <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foregrou
+U+E8B7	7	Sources\Editors\WpfHexEditor.HexEditor\HexEditor.xaml  <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E8BB	6	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="9" F
+U+E8BC	1	Sources\Plugins\WpfHexEditor.Plugins.UnitTesting\Views\UnitTestingPanel.xaml  <TextBlock x:Name="LayoutGlyph" Text="&#xE8BC;" FontFamily="Segoe MDL2 Assets" F
+U+E8BD	1	Sources\Plugins\WpfHexEditor.Plugins.AIAssistant\TitleBar\AITitleBarButton.xaml  <TextBlock Text="&#xE8BD;" FontFamily="Segoe MDL2 Assets" FontSize="14"/> </Menu
+U+E8C1	2	Sources\Samples\WpfHexEditor.Sample.CodeEditor\MainWindow.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C1;" /> </Button> </S
+U+E8C6	4	Sources\Editors\WpfHexEditor.Editor.TblEditor\Controls\TblEditor.xaml  <TextBlock Text="&#xE8C6;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Menu
+U+E8C8	35	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E8CB	3	Sources\Plugins\WpfHexEditor.Plugins.Git\Views\GitChangesPanel.xaml  <TextBlock Text="&#xE8CB;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Butt
+U+E8D4	4	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8D4;" FontSize="13" Vertical
+U+E8D7	2	Sources\Plugins\WpfHexEditor.Plugins.AIAssistant\Panel\AIAssistantPanel.xaml  <TextBlock Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets" FontSize="14"/> </Menu
+U+E8DA	1	Sources\Plugins\WpfHexEditor.Plugins.SynalysisGrammar\Views\GrammarSelectorPanel.xaml  <TextBlock Text="&#xE8DA;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foregrou
+U+E8E2	2	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E2;" FontSize="13"/> </Butt
+U+E8E3	2	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E3;" FontSize="13"/> </Butt
+U+E8E4	2	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E4;" FontSize="13"/> </Butt
+U+E8E5	10	Sources\Editors\WpfHexEditor.Editor.CodeEditor\Controls\FormatScriptEditorControl.xaml  <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="
+U+E8E9	2	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E9;" FontSize="13" Vertical
+U+E8EC	1	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8EC;" FontSize="13"/> </Butt
+U+E8EF	1	Sources\Editors\WpfHexEditor.HexEditor\HexEditor.xaml  <TextBlock Text="&#xE8EF;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E8F1	6	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F1;" FontSize="13" Vertical
+U+E8F4	5	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentPopToolbar.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F4;" FontSize="13"/> </Butt
+U+E8F9	2	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE8F9;" FontFamily="Segoe MDL2 Assets" FontSize="13" 
+U+E8FB	2	Sources\Editors\WpfHexEditor.Editor.CodeEditor\Controls\FormatScriptEditorControl.xaml  <TextBlock Text="&#xE8FB;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="
+U+E8FC	1	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentPopToolbar.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8FC;" FontSize="13"/> </Butt
+U+E8FD	6	Sources\Core\WpfHexEditor.Core.ProjectSystem\Dialogs\NewFileDialog.xaml  <TextBlock Text="&#xE8FD;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Togg
+U+E8FE	1	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8FE;" FontSize="13"/> </Togg
+U+E8FF	1	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8FF;" FontSize="13"/> </Butt
+U+E900	1	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE900;" FontSize="13"/> </Butt
+U+E90F	2	Sources\Plugins\WpfHexEditor.Plugins.AIAssistant\Panel\Tabs\ConversationTab.xaml  <TextBlock Text="&#xE90F;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foregrou
+U+E92F	1	Sources\Plugins\WpfHexEditor.Plugins.ClassDiagram\Panels\ClassToolboxPanel.xaml  <TextBlock Text="&#xE92F;" FontFamily="Segoe MDL2 Assets" FontSize="12" Vertical
+U+E930	3	Sources\Plugins\WpfHexEditor.Plugins.UnitTesting\Views\UnitTestingPanel.xaml  <TextBlock Text="&#xE930;" FontFamily="Segoe MDL2 Assets" FontSize="10" Margin="
+U+E932	1	Sources\Editors\WpfHexEditor.HexEditor\HexEditor.xaml  <TextBlock Text="&#xE932;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E943	9	Sources\Editors\WpfHexEditor.Editor.StructureEditor\Controls\StructurePopToolbar.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE943;" FontSize="13"/> </Butt
+U+E945	2	Sources\Plugins\WpfHexEditor.Plugins.AIAssistant\Panel\Tabs\ConversationTab.xaml  <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foregrou
+U+E946	2	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE946;" FontSize="13"/> </Butt
+U+E96D	1	Sources\Plugins\WpfHexEditor.Plugins.UnitTesting\Views\UnitTestingPanel.xaml  <TextBlock Text="&#xE96D;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Butt
+U+E96E	1	Sources\Plugins\WpfHexEditor.Plugins.UnitTesting\Views\UnitTestingPanel.xaml  <TextBlock Text="&#xE96E;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Butt
+U+E96F	1	Sources\Plugins\WpfHexEditor.Plugins.XamlDesigner\Panels\XamlOutlinePanel.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE96F;"/> </Butt
+U+E972	1	Sources\Plugins\WpfHexEditor.Plugins.XamlDesigner\Panels\XamlToolboxPanel.xaml  <TextBlock Text="&#xE972;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Butt
+U+E9A0	1	Sources\Plugins\WpfHexEditor.Plugins.XamlDesigner\Panels\XamlToolboxPanel.xaml  <TextBlock Text="&#xE9A0;" FontFamily="Segoe MDL2 Assets" FontSize="13"/> </Butt
+U+E9A4	1	Sources\Plugins\WpfHexEditor.Plugins.SynalysisGrammar\Views\GrammarSelectorPanel.xaml  <TextBlock Text="&#xE9A4;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foregrou
+U+E9A8	1	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE9A8;" FontFamily="Segoe MDL2 Assets" FontSize="14" Vertical
+U+E9CE	3	Sources\Plugins\WpfHexEditor.Plugins.DataInspector\Views\DataInspectorPanel.xaml  <TextBlock DockPanel.Dock="Right" Text="&#xE9CE;" 
+U+E9D2	3	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE9D2;" FontSize="13"/> </Butt
+U+E9D5	3	Sources\Editors\WpfHexEditor.HexEditor\HexEditor.xaml  <TextBlock Text="&#xE9D5;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+E9D9	5	Sources\Editors\WpfHexEditor.Editor.DisassemblyViewer\Controls\DisassemblyViewer.xaml  <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="32" 
+U+E9E6	1	Sources\Plugins\WpfHexEditor.Plugins.UnitTesting\Views\UnitTestingPanel.xaml  <TextBlock Text="&#xE9E6;" FontFamily="Segoe MDL2 Assets" FontSize="10" Margin="
+U+E9F5	1	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xE9F5;" FontFamily="Segoe MDL2 Assets" FontSize="13" Fore
+U+EA37	1	Sources\Editors\WpfHexEditor.HexEditor\HexEditor.xaml  <TextBlock Text="&#xEA37;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+EA39	6	Sources\Editors\WpfHexEditor.Editor.CodeEditor\Controls\FormatScriptEditorControl.xaml  <TextBlock Text="&#xEA39;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="
+U+EA3C	1	Sources\Core\WpfHexEditor.Core.ProjectSystem\Documents\References\ReferenceManagerDocument.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEA3C;" FontSize="13" Foregrou
+U+EA47	1	Sources\Editors\WpfHexEditor.Editor.TblEditor\Controls\TblEditor.xaml  <TextBlock Text="&#xEA47;" FontFamily="Segoe MDL2 Assets" FontSize="12"/> </Menu
+U+EB90	5	Sources\Plugins\WpfHexEditor.Plugins.UnitTesting\Views\UnitTestingPanel.xaml  <TextBlock Text="&#xEB90;" FontFamily="Segoe MDL2 Assets" FontSize="11" Margin="
+U+EB9F	5	Sources\Editors\WpfHexEditor.Editor.CodeEditor\Controls\FormatScriptEditorControl.xaml  <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="
+U+EBD2	2	Sources\Shell\WpfHexEditor.Shell.Panels\Panels\WhfmtBrowserPanel.xaml  <TextBlock Grid.Column="0" Text="&#xEBD2;" FontFamily="Segoe MDL2 Assets" FontSi
+U+EBD3	1	Sources\Shell\WpfHexEditor.Shell.Panels\Panels\WhfmtFormatDetailPanel.xaml  <TextBlock Text="&#xEBD3;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foregrou
+U+EBE8	2	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xEBE8;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+EC50	2	Sources\WpfHexEditor.App\AssemblyExplorer\Views\OpenAssemblyDialog.xaml  <TextBlock Text="&#xEC50;" FontFamily="Segoe MDL2 Assets" 
+U+ECAA	3	Sources\Plugins\WpfHexEditor.PluginHost\UI\PluginManagerControl.xaml  <TextBlock Text="&#xECAA;" FontFamily="Segoe MDL2 Assets" FontSize="18" Horizont
+U+ECC6	1	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xECC6;" FontFamily="Segoe MDL2 Assets" FontSize="13" Fore
+U+ECC9	1	Sources\WpfHexEditor.App\Debug\Panels\BreakpointExplorerPanel.xaml  <TextBlock Text="&#xECC9;" FontFamily="Segoe MDL2 Assets" FontSize="12" /></Menu
+U+ED25	2	Sources\Editors\WpfHexEditor.HexEditor\SearchModule\Views\AdvancedSearchDialog.xaml  <TextBlock Text="&#xED25;" FontFamily="Segoe MDL2 Assets" FontSize="10" Vertical
+U+ED41	2	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xED41;" FontFamily="Segoe MDL2 Assets" FontSize="13" 
+U+ED60	2	Sources\Plugins\WpfHexEditor.Plugins.ScriptRunner\Panels\ScriptRunnerPanel.xaml  <TextBlock Text="&#xED60;" FontFamily="Segoe MDL2 Assets" FontSize="13" /> </But
+U+EDE1	6	Sources\Editors\WpfHexEditor.Editor.DocumentEditor\Controls\DocumentEditorHost.xaml  <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEDE1;" FontSize="13"/> </Butt
+U+EF20	1	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xEF20;" FontFamily="Segoe MDL2 Assets" FontSize="13" Fore
+U+F0AF	1	Sources\Controls\WpfHexEditor.Terminal\TerminalPanel.xaml  <TextBlock Text="&#xF0AF;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou
+U+F165	1	Sources\Shell\WpfHexEditor.Shell.Panels\Panels\SolutionExplorerPanel.xaml  <TextBlock Text="&#xF165;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foregrou
+U+F16A	3	Sources\WpfHexEditor.App\MainWindow.xaml  <TextBlock Text="&#xF16A;" FontFamily="Segoe MDL2 Assets" FontSize="13" Fore
+U+F5B0	2	Sources\WpfHexEditor.App\Debug\Panels\LaunchConfigEditorPanel.xaml  <TextBlock Text="&#xF5B0;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foregrou

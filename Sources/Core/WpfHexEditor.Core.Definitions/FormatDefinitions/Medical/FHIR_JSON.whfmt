@@ -238,5 +238,24 @@
     "mandatoryField": "resourceType (first property)",
     "codingSystems": "SNOMED CT, LOINC, RxNorm, ICD-10, CPT",
     "privacyClass": "PHI under HIPAA; Special Category Data under GDPR Art.9"
+  },
+  "diff": {
+    "keyFields": [
+      "fhir_json_open"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for FHIR_JSON. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "fhir_json_open",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for FHIR_JSON. Hand-tune weights/rates per format if needed."
   }
 }

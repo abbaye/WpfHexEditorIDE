@@ -368,4 +368,28 @@
   <data name="ImgCtx_Wrap" xml:space="preserve"><value>Αναδίπλωση κειμένου</value></data>
   <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Εξέταση σε Hex Editor</value></data>
   <data name="ImgCtx_Properties" xml:space="preserve"><value>Ιδιότητες εικόνας...</value></data>
+  <data name="DocStructure_ShowRunsToggleToolTip" xml:space="preserve">
+    <value>Εμφάνιση εκτελέσεων (τμήματα κειμένου)</value>
+  </data>
+  <data name="DocStructure_OutlineModeToolTip" xml:space="preserve">
+    <value>Μόνο διάρθρωση (ιεραρχία επικεφαλίδων)</value>
+  </data>
+  <data name="DocStructure_KindFilterToolTip" xml:space="preserve">
+    <value>Φιλτράρισμα κατά τύπο</value>
+  </data>
+  <data name="DocStructure_KindFilter_All" xml:space="preserve">
+    <value>Όλα</value>
+  </data>
+  <data name="DocStructure_KindFilter_HeadingsOnly" xml:space="preserve">
+    <value>Επικεφαλίδες</value>
+  </data>
+  <data name="DocStructure_KindFilter_ListsOnly" xml:space="preserve">
+    <value>Λίστες</value>
+  </data>
+  <data name="DocStructure_KindFilter_TablesOnly" xml:space="preserve">
+    <value>Πίνακες</value>
+  </data>
+  <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
+    <value>Εικόνες</value>
+  </data>
 </root>

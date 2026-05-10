@@ -177,5 +177,24 @@
     "Endianness": "little-endian",
     "MagicLength": 20,
     "SecondaryTag": "0xFDC4A7DC"
+  },
+  "diff": {
+    "keyFields": [
+      "zoo_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ZOO. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "zoo_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ZOO. Hand-tune weights/rates per format if needed."
   }
 }

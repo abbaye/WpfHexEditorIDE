@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "TLS Session Ticket",
   "formatId": "TLS_SESSION",
@@ -210,5 +210,32 @@
       "Check key length, IV/nonce fields, and padding scheme",
       "Inspect version markers and recipient info structures"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "ticket_length",
+      "state_length"
+    ],
+    "ignoreFields": [
+      "ticket_lifetime_hint"
+    ],
+    "note": "Inferred semantic diff for TLS_SESSION. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ticket_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "state_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for TLS_SESSION. Hand-tune weights/rates per format if needed."
   }
 }

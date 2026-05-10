@@ -218,5 +218,30 @@
     "HeaderSize": "Variable (dataOffset field)",
     "EncryptionSupport": true,
     "NativeLoopSupport": true
+  },
+  "diff": {
+    "keyFields": [
+      "hca_magic",
+      "hca_data_offset"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for HCA. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "hca_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "hca_data_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for HCA. Hand-tune weights/rates per format if needed."
   }
 }

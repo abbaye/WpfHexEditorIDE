@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Nintendo Wii Disc",
   "formatId": "ROM_WII",
@@ -260,5 +260,30 @@
       "Check resource/asset table entries and data block offsets",
       "Inspect compression flags, checksums, and embedded file boundaries"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "stream_buffer_size",
+      "wii_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_WII. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "wii_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 24 — parser must reject."
+      },
+      {
+        "field": "stream_buffer_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_WII. Hand-tune weights/rates per format if needed."
   }
 }

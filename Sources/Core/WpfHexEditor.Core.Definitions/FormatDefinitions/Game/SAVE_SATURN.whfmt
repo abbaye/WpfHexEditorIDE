@@ -183,5 +183,26 @@
     "DirectoryEntry": "64 bytes per save slot",
     "BlockSize": "64 bytes",
     "ExternalCartridge": "512 KB or 1 MB backup RAM cartridge"
+  },
+  "diff": {
+    "keyFields": [
+      "data_size"
+    ],
+    "ignoreFields": [
+      "comment"
+    ],
+    "note": "Inferred semantic diff for SAVE_SATURN. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "data_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SAVE_SATURN. Hand-tune weights/rates per format if needed."
   }
 }

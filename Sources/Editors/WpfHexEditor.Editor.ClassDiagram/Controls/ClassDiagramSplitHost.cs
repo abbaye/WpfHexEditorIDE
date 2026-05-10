@@ -38,6 +38,8 @@ using WpfHexEditor.Editor.ClassDiagram.Options;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Editor.ClassDiagram.Core.Parser;
 using WpfHexEditor.Editor.ClassDiagram.Core.Serializer;
+using WpfHexEditor.Editor.ClassDiagram.Dialogs;
+using WpfHexEditor.Editor.ClassDiagram.Properties;
 using WpfHexEditor.Editor.ClassDiagram.Services;
 using WpfHexEditor.Editor.ClassDiagram.ViewModels;
 using WpfHexEditor.Core.ProjectSystem.Languages;
@@ -1191,7 +1193,7 @@ public sealed class ClassDiagramSplitHost : Grid,
             {
                 new() { Icon = "\uEB9F", Label = "Export PNG",     Command = new RelayCommand(() => _ = ExportPngAsync()) },
                 new() { Icon = "\uE781", Label = "Export SVG",     Command = new RelayCommand(() => _ = ExportSvgAsync()) },
-                new() { Icon = "\uE943", Label = "Export C#",      Command = new RelayCommand(() => _ = ExportCSharpAsync()) },
+                new() { Icon = "\uE943", Label = ClassDiagramResources.ExportCode_Toolbar_MenuItem, Command = new RelayCommand(() => _ = ExportCodeWithDialogAsync()) },
                 new() { Icon = "\uE728", Label = "Export Mermaid", Command = new RelayCommand(() => _ = ExportMermaidAsync()) }
             }
         });
@@ -2086,6 +2088,48 @@ public sealed class ClassDiagramSplitHost : Grid,
         {
             StatusMessage?.Invoke(this, $"Export C# failed: {ex.Message}");
             OutputMessage?.Invoke(this, $"[Export] C# failed: {ex.Message}");
+        }
+    }
+
+    private async Task ExportCodeWithDialogAsync()
+    {
+        if (CurrentDocument.Classes.Count == 0)
+        {
+            StatusMessage?.Invoke(this, ClassDiagramResources.ExportCode_Status_NothingToExport);
+            return;
+        }
+        var doc = CurrentDocument;
+
+        var initial = CodeGenSettingsStore.Load(new CodeGenSettings());
+        var dialog = new ExportCodeDialog(initial) { Owner = Window.GetWindow(this) };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+            return;
+
+        var settings = dialog.Result;
+        CodeGenSettingsStore.Save(settings);
+
+        var generator = WpfHexEditor.Editor.ClassDiagram.Core.CodeGen.CodeGenLanguageRegistry.Resolve(settings.LanguageId);
+        if (generator is null)
+        {
+            StatusMessage?.Invoke(this, string.Format(ClassDiagramResources.ExportCode_Status_UnknownLanguage, settings.LanguageId));
+            return;
+        }
+
+        string filter = string.Format(ClassDiagramResources.ExportCode_FileFilter, generator.DisplayName, generator.FileExtension);
+        string ext = generator.FileExtension.TrimStart('.');
+        string? path = PickSavePath(filter, generator.FileExtension, ext);
+        if (path is null) return;
+
+        try
+        {
+            await _exportService.ExportCodeAsync(doc, settings.LanguageId, settings.Options, path);
+            StatusMessage?.Invoke(this, string.Format(ClassDiagramResources.ExportCode_Status_Exported, generator.DisplayName, Path.GetFileName(path)));
+            OutputMessage?.Invoke(this, string.Format(ClassDiagramResources.ExportCode_Status_Exported, generator.DisplayName, path));
+        }
+        catch (Exception ex)
+        {
+            StatusMessage?.Invoke(this, string.Format(ClassDiagramResources.ExportCode_Status_Failed, generator.DisplayName, ex.Message));
+            OutputMessage?.Invoke(this, string.Format(ClassDiagramResources.ExportCode_Status_Failed, generator.DisplayName, ex.Message));
         }
     }
 

@@ -180,5 +180,24 @@
     "LineEndings": "LF (Unix)",
     "NoMagicBytes": true,
     "DetectionMethod": "File extension + first-line pattern matching"
+  },
+  "diff": {
+    "keyFields": [
+      "first_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for STRACE_LOG. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "first_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for STRACE_LOG. Hand-tune weights/rates per format if needed."
   }
 }

@@ -206,5 +206,26 @@
       "severity": "warning",
       "message": "Xbox XISO magic invalid"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "root_directory_size"
+    ],
+    "ignoreFields": [
+      "file_time"
+    ],
+    "note": "Inferred semantic diff for ROM_XBOX. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "root_directory_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_XBOX. Hand-tune weights/rates per format if needed."
+  }
 }

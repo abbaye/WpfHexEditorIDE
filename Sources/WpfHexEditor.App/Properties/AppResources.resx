@@ -1256,5 +1256,130 @@
   <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Warning</value></data>
   <data name="CodeAnalysis_Options_Severity_Error"  xml:space="preserve"><value>Error</value></data>
   <data name="CodeAnalysis_Rerun"                   xml:space="preserve"><value>⟳ Re-run</value></data>
+  <data name="CodeAnalysis_Rerun_SameScope"         xml:space="preserve"><value>⟳ Re-run (same scope)</value></data>
+  <data name="CodeAnalysis_Rerun_RunSolution"       xml:space="preserve"><value>Run Solution</value></data>
+  <data name="CodeAnalysis_Rerun_RunProject"        xml:space="preserve"><value>Run Project…</value></data>
+  <data name="CodeAnalysis_Rerun_RunFile"           xml:space="preserve"><value>Run File…</value></data>
+  <data name="CodeAnalysis_Scope_Solution"          xml:space="preserve"><value>Solution: {0}</value></data>
+  <data name="CodeAnalysis_Scope_Project"           xml:space="preserve"><value>Project: {0}</value></data>
+  <data name="CodeAnalysis_Scope_File"              xml:space="preserve"><value>File: {0}</value></data>
   <data name="CodeAnalysis_Export"                  xml:space="preserve"><value>Export ▾</value></data>
+  <data name="CodeAnalysis_Treemap_OpenFile"        xml:space="preserve"><value>Open File</value></data>
+  <data name="CodeAnalysis_Treemap_CopyPath"        xml:space="preserve"><value>Copy Path</value></data>
+  <data name="CodeAnalysis_Treemap_CopyMetrics"     xml:space="preserve"><value>Copy Metrics</value></data>
+  <data name="CodeAnalysis_Treemap_RunOnFile"       xml:space="preserve"><value>Run Analysis on File</value></data>
+  <data name="CodeAnalysis_Treemap_FilterProject"   xml:space="preserve"><value>Filter to This Project</value></data>
+  <data name="CodeAnalysis_Treemap_HighlightHotspots" xml:space="preserve"><value>Highlight Top 10 Hotspots</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_SameScope" xml:space="preserve"><value>Re-run analysis using the same scope and path as the last run</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_RunSolution" xml:space="preserve"><value>Run analysis on the full solution</value></data>
+  <!-- ── CodeAnalysis Report Pane (Phase 7+) ─────────────────────────────── -->
+  <data name="CodeAnalysis_Tab_Treemap"             xml:space="preserve"><value>Treemap</value></data>
+  <data name="CodeAnalysis_Header_Score"            xml:space="preserve"><value>SCORE</value></data>
+  <data name="CodeAnalysis_Header_SubScores"        xml:space="preserve"><value>SUB-SCORES</value></data>
+  <data name="CodeAnalysis_Header_Project"          xml:space="preserve"><value>Project:</value></data>
+  <data name="CodeAnalysis_Header_Search"           xml:space="preserve"><value>Search:</value></data>
+  <data name="CodeAnalysis_AllProjects"             xml:space="preserve"><value>(All projects)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun"           xml:space="preserve"><value>Re-run the full Code Analysis on the current solution. Shortcut: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export"          xml:space="preserve"><value>Export the report — Markdown (human-readable), CSV (spreadsheet), SARIF (CI/PR annotations), or PR Checklist (auto-generated review template).</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter"   xml:space="preserve"><value>Filter all tabs by project</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch"    xml:space="preserve"><value>Search across files / methods / issues (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title"    xml:space="preserve"><value>Quality Score</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body"     xml:space="preserve"><value>Weighted aggregate of six sub-scores: Volume 10%, Complexity 25%, Coupling 20%, Duplication 20%, Dead Code 15%, Conventions 10%.</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades"   xml:space="preserve"><value>Grades: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>Trending arrow shows the delta vs the previous saved snapshot.</value></data>
+  <data name="CodeAnalysis_Tooltip_Score"           xml:space="preserve"><value>Overall score 0-100. Hover the SCORE section for the formula.</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade"           xml:space="preserve"><value>Letter grade derived from the score (A+, A, A-, B+, B, B-, C+, C, C-, D, F).</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending"        xml:space="preserve"><value>Difference vs the previous snapshot: ▲ improvement, ▼ regression.</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar"           xml:space="preserve"><value>Six axes 0-100 (further from centre = better):  Vol = file-size compliance · CC = complexity headroom · Coup = coupling stability · Dup = duplication ratio · Dead = unused-symbol ratio · Conv = naming/convention compliance.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview"    xml:space="preserve"><value>High-level summary: per-project breakdown + 5 worst-scoring files. Double-click a row to drill in.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues"      xml:space="preserve"><value>All diagnostics produced this run: WH00xx quality rules + CS/IDE Roslyn warnings. Filter by severity / search / group; double-click to jump to the source line.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity"  xml:space="preserve"><value>Top methods by Cyclomatic + Cognitive complexity. McCabe (CC) counts decision points; Cognitive (Sonar-style) weights nesting. Higher = harder to test/maintain.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling"    xml:space="preserve"><value>Per-type Ca (afferent — depends on you), Ce (efferent — you depend on), and Instability = Ce/(Ca+Ce). Instability close to 1 = volatile module; close to 0 = stable foundation.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>Token-based clone detection. Each group is a sequence of ≥50 tokens (configurable) found in 2+ places — candidates for extraction into a shared helper.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>Treemap</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body"  xml:space="preserve"><value>Each rectangle is one source file. Area is proportional to lines of code; colour is the per-file quality score (green = healthy, red = poor). Hover for full metrics, click to open.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode"    xml:space="preserve"><value>Private/internal symbols Roslyn could not find any reference to. Verify each — false positives can occur for symbols used via reflection, DI containers, or source generators.</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy"         xml:space="preserve"><value>Group issues by…</value></data>
+  <data name="CodeAnalysis_Col_Project"             xml:space="preserve"><value>Project</value></data>
+  <data name="CodeAnalysis_Col_Files"               xml:space="preserve"><value>Files</value></data>
+  <data name="CodeAnalysis_Col_LOC"                 xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types"               xml:space="preserve"><value>Types</value></data>
+  <data name="CodeAnalysis_Col_AvgCC"               xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score"               xml:space="preserve"><value>Score</value></data>
+  <data name="CodeAnalysis_Col_Grade"               xml:space="preserve"><value>Grade</value></data>
+  <data name="CodeAnalysis_Col_File"                xml:space="preserve"><value>File</value></data>
+  <data name="CodeAnalysis_Col_MaxCC"               xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID"                  xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message"             xml:space="preserve"><value>Message</value></data>
+  <data name="CodeAnalysis_Col_Line"                xml:space="preserve"><value>Line</value></data>
+  <data name="CodeAnalysis_Col_Method"              xml:space="preserve"><value>Method</value></data>
+  <data name="CodeAnalysis_Col_CC"                  xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive"           xml:space="preserve"><value>Cognitive</value></data>
+  <data name="CodeAnalysis_Col_Params"              xml:space="preserve"><value>Params</value></data>
+  <data name="CodeAnalysis_Col_Type"                xml:space="preserve"><value>Type</value></data>
+  <data name="CodeAnalysis_Col_Ca"                  xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce"                  xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability"         xml:space="preserve"><value>Instability</value></data>
+  <data name="CodeAnalysis_Col_LCOM"                xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol"              xml:space="preserve"><value>Symbol</value></data>
+  <data name="CodeAnalysis_Col_Kind"                xml:space="preserve"><value>Kind</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist"       xml:space="preserve"><value>PR Checklist</value></data>
+  <data name="CodeAnalysis_Combo_SARIF"             xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error"    xml:space="preserve"><value>Error</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning"  xml:space="preserve"><value>Warning</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info"     xml:space="preserve"><value>Info</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None"      xml:space="preserve"><value>Group: None</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity"  xml:space="preserve"><value>By Severity</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule"      xml:space="preserve"><value>By Rule</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project"   xml:space="preserve"><value>By Project</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File"      xml:space="preserve"><value>By File</value></data>
+  <data name="CodeAnalysis_Treemap_Score"           xml:space="preserve"><value>Score:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title"    xml:space="preserve"><value>Treemap:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body"     xml:space="preserve"><value> rectangle area = lines of code, colour = quality score. Hover for full metrics, click a tile to open the file.</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup"  xml:space="preserve"><value>Clone group — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines"       xml:space="preserve"><value> lines, </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> occurrences, </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens"      xml:space="preserve"><value> tokens</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown"  xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown"    xml:space="preserve"><value>Markdown files (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif"     xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif"       xml:space="preserve"><value>SARIF files (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv"       xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv"         xml:space="preserve"><value>CSV files (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title"            xml:space="preserve"><value># Code Analysis Report</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine"        xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine"        xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading"    xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader"    xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header"                xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder"   xml:space="preserve"><value>Open project folder</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer"    xml:space="preserve"><value>Reveal in Explorer</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject"    xml:space="preserve"><value>Re-analyze this project</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject"  xml:space="preserve"><value>Filter all tabs by project</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName"     xml:space="preserve"><value>Copy project name</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv"      xml:space="preserve"><value>Copy metrics as CSV row</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open"                xml:space="preserve"><value>Open</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder"  xml:space="preserve"><value>Open containing folder</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile"       xml:space="preserve"><value>Re-analyze this file</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile"  xml:space="preserve"><value>Filter issues by this file</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath"        xml:space="preserve"><value>Copy full path</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName"        xml:space="preserve"><value>Copy file name</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl"    xml:space="preserve"><value>Open at method declaration</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName"      xml:space="preserve"><value>Copy method name</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn"             xml:space="preserve"><value>Copy fully-qualified name</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>Open at issue location</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule"        xml:space="preserve"><value>Filter by this rule</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile"        xml:space="preserve"><value>Filter by this file</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline"      xml:space="preserve"><value>Suppress this occurrence (inline marker)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown"      xml:space="preserve"><value>Copy as Markdown</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId"         xml:space="preserve"><value>Copy issue ID</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile"      xml:space="preserve"><value>Open source file</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName"        xml:space="preserve"><value>Copy type name</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList"  xml:space="preserve"><value>Copy dependency list</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>Open first occurrence</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations"       xml:space="preserve"><value>Copy locations ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration"   xml:space="preserve"><value>Open at declaration</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName"      xml:space="preserve"><value>Copy symbol name</value></data>
 </root>

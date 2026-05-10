@@ -191,5 +191,24 @@
       "severity": "warning",
       "message": "RGSS magic invalid"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "rgssad_signature"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for RGSS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "rgssad_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for RGSS. Hand-tune weights/rates per format if needed."
+  }
 }

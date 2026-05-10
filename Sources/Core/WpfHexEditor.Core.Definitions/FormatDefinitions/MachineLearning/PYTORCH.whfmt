@@ -289,5 +289,30 @@
     "LastUpdated": "2026-04-14",
     "PriorityFormat": true,
     "AutoRefined": false
+  },
+  "diff": {
+    "keyFields": [
+      "magic",
+      "zip_compression"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PYTORCH. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "zip_compression",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PYTORCH. Hand-tune weights/rates per format if needed."
   }
 }

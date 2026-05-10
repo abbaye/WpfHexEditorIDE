@@ -161,5 +161,24 @@
     "Sections": "~Version, ~Well, ~Curve, ~Parameter, ~ASCII",
     "DataEncoding": "Space-delimited floating-point columns in ~ASCII section",
     "Versions": "LAS 1.2, LAS 2.0 (most common), LAS 3.0"
+  },
+  "diff": {
+    "keyFields": [
+      "las_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for LAS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "las_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for LAS. Hand-tune weights/rates per format if needed."
   }
 }

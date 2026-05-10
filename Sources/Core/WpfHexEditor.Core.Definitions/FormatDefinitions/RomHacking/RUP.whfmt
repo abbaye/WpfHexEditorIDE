@@ -197,5 +197,36 @@
     "RecordOffsetSize": "4 bytes LE (vs IPS 3 bytes BE) — supports up to 4 GB",
     "EndMarker": "Record offset 0xFFFFFFFF",
     "SourceValidation": "source_size field (no CRC, unlike UPS)"
+  },
+  "diff": {
+    "keyFields": [
+      "rup_magic",
+      "source_size",
+      "target_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for RUP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "rup_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "source_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "target_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for RUP. Hand-tune weights/rates per format if needed."
   }
 }

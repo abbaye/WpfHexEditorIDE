@@ -224,5 +224,30 @@
     "standard": "ISO 22077-1:2015",
     "byteOrder": "configurable per tag 0x0C (0=big-endian default, 1=little-endian)",
     "sampleFormat": "signed integer (8/16/32-bit)"
+  },
+  "diff": {
+    "keyFields": [
+      "mfer_first_tag",
+      "mfer_tag_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MFER. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "mfer_first_tag",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "mfer_tag_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MFER. Hand-tune weights/rates per format if needed."
   }
 }

@@ -259,5 +259,44 @@
     "BitDepth": "10-bit (422) or 12-bit (4444)",
     "AlphaChannelSupport": "ProRes 4444 and 4444 XQ only",
     "IntraFrameOnly": true
+  },
+  "diff": {
+    "keyFields": [
+      "prores_frame_size",
+      "prores_frame_id",
+      "prores_width",
+      "prores_height"
+    ],
+    "ignoreFields": [
+      "prores_creator_id"
+    ],
+    "note": "Inferred semantic diff for PRORES. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "prores_frame_id",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 4 — parser must reject."
+      },
+      {
+        "field": "prores_frame_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "prores_width",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "prores_height",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PRORES. Hand-tune weights/rates per format if needed."
   }
 }

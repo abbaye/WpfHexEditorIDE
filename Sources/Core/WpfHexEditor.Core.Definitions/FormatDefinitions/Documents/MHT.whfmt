@@ -277,5 +277,24 @@
       "iconGlyph": "",
       "diffMode": "text"
     }
+  },
+  "diff": {
+    "keyFields": [
+      "first_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MHT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "first_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MHT. Hand-tune weights/rates per format if needed."
   }
 }

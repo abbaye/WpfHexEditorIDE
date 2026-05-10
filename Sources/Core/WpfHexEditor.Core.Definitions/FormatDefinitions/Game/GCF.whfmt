@@ -208,5 +208,30 @@
     "Status": "Deprecated since 2013 — replaced by VPK + Steam depot system",
     "AppIDs": "220=HL2, 440=TF2, 400=Portal, 500=L4D",
     "BlockSize": "8192 bytes (typical); data organized in fixed-size block allocation"
+  },
+  "diff": {
+    "keyFields": [
+      "gcf_version",
+      "gcf_file_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for GCF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "gcf_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "gcf_file_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for GCF. Hand-tune weights/rates per format if needed."
   }
 }

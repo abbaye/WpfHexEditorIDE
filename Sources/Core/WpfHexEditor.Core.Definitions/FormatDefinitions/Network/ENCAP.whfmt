@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Encapsulated Packet",
   "formatId": "ENCAP",
@@ -201,5 +201,30 @@
       "Check packet record timestamps and capture lengths",
       "Inspect captured protocol headers (Ethernet/IP/TCP/UDP)"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "total_length",
+      "header_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ENCAP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "total_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "header_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ENCAP. Hand-tune weights/rates per format if needed."
   }
 }

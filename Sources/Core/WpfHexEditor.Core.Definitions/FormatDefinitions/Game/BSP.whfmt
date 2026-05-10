@@ -188,5 +188,36 @@
     "Header": "124 bytes: version(4B) + 15 lump entries × 8B (offset+length)",
     "Lumps": "ENTITIES, PLANES, TEXTURES, VERTICES, VISIBILITY, NODES, TEXINFO, FACES, LIGHTING, CLIPNODES, LEAFS, MARKSURFACES, EDGES, SURFEDGES, MODELS",
     "Compiler": "qbsp / ericw-tools compile .map → .bsp"
+  },
+  "diff": {
+    "keyFields": [
+      "bsp_version",
+      "bsp_entities_offset",
+      "bsp_entities_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for BSP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "bsp_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "bsp_entities_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "bsp_entities_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for BSP. Hand-tune weights/rates per format if needed."
   }
 }

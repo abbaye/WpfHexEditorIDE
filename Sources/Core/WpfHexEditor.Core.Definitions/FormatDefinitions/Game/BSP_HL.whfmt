@@ -178,5 +178,36 @@
     "Header": "124 bytes: version(4B LE) + 15 lump entries × 8B (offset+length)",
     "Extensions": "Over Quake 1 BSP: RGB lighting, WAD3 texture references, larger map limits",
     "TextureSystem": "Texture names are references to WAD3 files (not embedded)"
+  },
+  "diff": {
+    "keyFields": [
+      "bsp_version",
+      "bsp_entities_offset",
+      "bsp_entities_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for BSP_HL. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "bsp_version",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "bsp_entities_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "bsp_entities_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for BSP_HL. Hand-tune weights/rates per format if needed."
   }
 }

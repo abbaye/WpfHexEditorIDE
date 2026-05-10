@@ -6,7 +6,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.5.110-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.5.225-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](docs/ROADMAP.md)
@@ -271,6 +271,9 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 
 | Feature | Version |
 |---------|---------|
+| **Code Analysis scope UX + SplitButton re-run** — scope label (Solution/Project/File) in toolbar; SplitButton with same-scope re-run + dropdown (Run Solution / Run Project… / Run File…); `_lastScope/_lastPath` persisted across tab switches | v0.6.5.225 |
+| **Code Analysis Treemap context menu** — right-click: Open File, Copy Path, Copy Metrics, Run Analysis on File, Filter to This Project, Highlight Top 10 Hotspots (toggle dims non-hotspot tiles); 15 new keys × 28 satellite languages | v0.6.5.225 |
+| **Code Analysis localization fixes** — `AppLocalizedDictionary` in `UserControl.Resources.MergedDictionaries` fixes empty DataGridTextColumn headers; matches WatchesPanel / AssemblyDetailPane pattern | v0.6.5.225 |
 | **WPFHexaEditor 3.3.0** — `HexEditorSplitHost` synchronized split-view host with built-in toolbar toggle; `HexEditorSettings` auto-generated settings panel; unified namespace (`xmlns:hex`); doc/guide clarity pass | v0.6.5.110 |
 | **Document Editor waves B–G** — headers/footers, page breaks, table insert/edit dialog, hyperlink insert dialog, auto-list (bullet & numbered), page settings dialog (margins/paper/orientation), rich context menu, 27-language localization | v0.6.5.110 |
 | **XAML Designer code-behind pipeline** — `XamlCodeBehindScanner`, `XamlCodeBehindGenerator`, `CodeBehindMergeEngine`, `CodeBehindSyncService`, `XamlNameRenameService`; `[GeneratedCode]` guard preserves user code; Visual State Manager panel (`VisualStatePanel`), `CodeGenPanel` | v0.6.5.110 |

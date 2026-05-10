@@ -210,5 +210,30 @@
     "LastUpdated": "2026-04-14",
     "PriorityFormat": true,
     "AutoRefined": false
+  },
+  "diff": {
+    "keyFields": [
+      "magic",
+      "post_header"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for VTT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "post_header",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for VTT. Hand-tune weights/rates per format if needed."
   }
 }

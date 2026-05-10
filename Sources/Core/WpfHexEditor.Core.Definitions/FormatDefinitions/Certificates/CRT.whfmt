@@ -245,5 +245,30 @@
     "Versions": "v1 (no extensions), v2 (UniqueID added), v3 (Extensions — current standard)",
     "CommonAlgorithms": "RSA-2048/4096 + SHA-256/384, ECDSA P-256/P-384 + SHA-256/384, Ed25519",
     "SupportsStreaming": false
+  },
+  "diff": {
+    "keyFields": [
+      "first_byte",
+      "asn_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for CRT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "first_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "asn_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for CRT. Hand-tune weights/rates per format if needed."
   }
 }

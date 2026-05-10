@@ -12,7 +12,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.App.Analysis.Models;
+using WpfHexEditor.App.Analysis.UI.ContextMenus;
 using WpfHexEditor.App.Analysis.UI.ViewModels;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.App.Analysis.UI;
@@ -22,6 +24,8 @@ public partial class CodeAnalysisReportPane : UserControl
     private readonly CodeAnalysisReportViewModel _vm;
     private readonly IDocumentHostService?        _docHost;
     private          Func<Task>?                  _reRunCallback;
+    private          Func<Task>?                  _runSolutionCallback;
+    private          Func<string, Task>?          _runFileCallback;
 
     public CodeAnalysisReportPane(
         CodeAnalysisReportViewModel vm,
@@ -31,10 +35,51 @@ public partial class CodeAnalysisReportPane : UserControl
         _vm      = vm;
         _docHost = docHost;
         DataContext = vm;
+
+        // Phase 7 — keyboard shortcuts (F5 = re-run, Ctrl+F = focus search)
+        InputBindings.Add(new KeyBinding(
+            new RelayCmd(_ => _ = (_reRunCallback?.Invoke() ?? Task.CompletedTask)),
+            new KeyGesture(Key.F5)));
+        InputBindings.Add(new KeyBinding(
+            new RelayCmd(_ => GlobalSearchBox.Focus()),
+            new KeyGesture(Key.F, ModifierKeys.Control)));
     }
 
-    internal void SetReRunCallback(Func<Task> callback)
-        => _reRunCallback = callback;
+    internal void SetReRunCallback(Func<Task> rerun, Func<Task> runSolution, Func<string, Task> runFile)
+    {
+        _reRunCallback       = rerun;
+        _runSolutionCallback = runSolution;
+        _runFileCallback     = runFile;
+    }
+
+    // Phase 7 — Context menu opening (call site: DataGrid.ContextMenuOpening)
+    private void OnGridContextMenuOpening(object sender, ContextMenuEventArgs e)
+    {
+        if (sender is not DataGrid grid) return;
+        var builder = new AnalysisContextMenuBuilder(_docHost, _vm);
+        grid.ContextMenu = grid.CurrentItem switch
+        {
+            ProjectMetrics p              => builder.BuildForProject(p),
+            FileMetrics f                 => builder.BuildForFile(f),
+            FileMetricsViewModel fm       => builder.BuildForFileVm(fm),
+            MethodMetrics m               => builder.BuildForMethod(m, null),
+            IssueViewModel iv             => builder.BuildForIssue(iv),
+            CouplingMetrics c             => builder.BuildForCoupling(c),
+            DuplicationGroup d            => builder.BuildForDuplication(d),
+            DeadSymbol ds                 => builder.BuildForDeadSymbol(ds),
+            _                             => null,
+        };
+        if (grid.ContextMenu is null) e.Handled = true;
+    }
+
+    private sealed class RelayCmd : ICommand
+    {
+        private readonly Action<object?> _exec;
+        public RelayCmd(Action<object?> exec) => _exec = exec;
+        public bool CanExecute(object? p) => true;
+        public void Execute(object? p)    => _exec(p);
+        public event EventHandler? CanExecuteChanged { add { } remove { } }
+    }
 
     // ── Navigation ───────────────────────────────────────────────────────────
 
@@ -76,42 +121,166 @@ public partial class CodeAnalysisReportPane : UserControl
         _ = _reRunCallback();
     }
 
+    private void OnReRunDropdownClicked(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.ContextMenu is { } cm)
+        {
+            cm.PlacementTarget = btn;
+            cm.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            cm.IsOpen = true;
+        }
+    }
+
+    private void OnRunSolutionClicked(object sender, RoutedEventArgs e)
+    {
+        if (_runSolutionCallback is null) return;
+        _ = _runSolutionCallback();
+    }
+
+    // ── Treemap context menu ──────────────────────────────────────────────────
+
+    private void OnTreemapContextMenuRequested(object? sender, Controls.TreemapContextMenuEventArgs e)
+    {
+        var cm = new ContextMenu();
+
+        var openItem = new MenuItem { Header = AppResources.CodeAnalysis_Treemap_OpenFile };
+        openItem.Click += (_, _) => Navigate(e.File.FilePath, 1);
+        cm.Items.Add(openItem);
+
+        var copyPath = new MenuItem { Header = AppResources.CodeAnalysis_Treemap_CopyPath };
+        copyPath.Click += (_, _) => Clipboard.SetText(e.File.FilePath);
+        cm.Items.Add(copyPath);
+
+        var copyMetrics = new MenuItem { Header = AppResources.CodeAnalysis_Treemap_CopyMetrics };
+        copyMetrics.Click += (_, _) => Clipboard.SetText(BuildFileMetricsText(e.File));
+        cm.Items.Add(copyMetrics);
+
+        cm.Items.Add(new Separator());
+
+        var runFile = new MenuItem { Header = AppResources.CodeAnalysis_Treemap_RunOnFile };
+        runFile.IsEnabled = _runFileCallback is not null;
+        runFile.Click += (_, _) => { if (_runFileCallback is not null) _ = _runFileCallback(e.File.FilePath); };
+        cm.Items.Add(runFile);
+
+        cm.Items.Add(new Separator());
+
+        var filterProj = new MenuItem { Header = AppResources.CodeAnalysis_Treemap_FilterProject };
+        filterProj.Click += (_, _) => _vm.ProjectFilter = e.File.ProjectName;
+        cm.Items.Add(filterProj);
+
+        var highlight = new MenuItem { Header = AppResources.CodeAnalysis_Treemap_HighlightHotspots };
+        highlight.Click += (_, _) => FileTreemap.ToggleHotspotMode();
+        cm.Items.Add(highlight);
+
+        cm.IsOpen = true;
+    }
+
+    private static string BuildFileMetricsText(FileMetrics f) =>
+        $"""
+         File      : {f.FileName}
+         Project   : {f.ProjectName}
+         Path      : {f.FilePath}
+         Score     : {f.Score}/100
+         LOC       : {f.TotalLines:N0}  ({f.CodeLines:N0} code · {f.CommentLines:N0} comments)
+         Max CC    : {f.MaxCyclomaticComplexity}
+         Max Cog   : {f.MaxCognitiveComplexity}
+         MI        : {f.MaintainabilityIndex:F0}
+         Methods   : {f.MethodCount}
+         """;
+
+
     // ── Export ───────────────────────────────────────────────────────────────
 
     private void OnExportSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (ExportCombo.SelectedIndex <= 0) return;
-        var fmt = ExportCombo.SelectedIndex == 1 ? "Markdown" : "CSV";
+        var fmt = ExportCombo.SelectedIndex switch
+        {
+            1 => "Markdown",
+            2 => "CSV",
+            3 => "SARIF",
+            4 => "Checklist",
+            _ => "CSV",
+        };
         ExportCombo.SelectedIndex = 0;
         Export(fmt);
     }
 
+    private void OnProjectFilterChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (DataContext is CodeAnalysisReportViewModel vm
+            && ProjectFilterCombo.SelectedItem is string sel)
+            vm.ProjectFilter = sel == AppResources.CodeAnalysis_AllProjects ? string.Empty : sel;
+    }
+
+    private void OnTreemapItemActivated(object? sender, FileMetrics file)
+    {
+        if (string.IsNullOrEmpty(file.FilePath)) return;
+        Navigate(file.FilePath, 1);
+    }
+
+    private void OnGroupByChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (DataContext is not CodeAnalysisReportViewModel vm) return;
+
+        var view = System.Windows.Data.CollectionViewSource.GetDefaultView(vm.Issues);
+        view.GroupDescriptions.Clear();
+
+        // Index 0 = None, 1 = Severity, 2 = Rule, 3 = Project, 4 = File
+        string? prop = GroupByCombo.SelectedIndex switch
+        {
+            1 => nameof(IssueViewModel.Severity),
+            2 => nameof(IssueViewModel.Id),
+            3 => nameof(IssueViewModel.ProjectName),
+            4 => nameof(IssueViewModel.FileName),
+            _ => null,
+        };
+        if (prop is not null)
+            view.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription(prop));
+    }
+
     private void Export(string format)
     {
-        var dlg = new SaveFileDialog
+        (string fileName, string filter) = format switch
         {
-            FileName = format == "Markdown" ? "code-analysis-report.md" : "code-analysis-report.csv",
-            Filter   = format == "Markdown" ? "Markdown files (*.md)|*.md" : "CSV files (*.csv)|*.csv",
+            "Markdown"  => (AppResources.CodeAnalysis_Export_FileName_Markdown,  AppResources.CodeAnalysis_Export_Filter_Markdown),
+            "SARIF"     => (AppResources.CodeAnalysis_Export_FileName_Sarif,     AppResources.CodeAnalysis_Export_Filter_Sarif),
+            "Checklist" => (AppResources.CodeAnalysis_Export_FileName_Checklist, AppResources.CodeAnalysis_Export_Filter_Markdown),
+            _           => (AppResources.CodeAnalysis_Export_FileName_Csv,       AppResources.CodeAnalysis_Export_Filter_Csv),
         };
+        var dlg = new SaveFileDialog { FileName = fileName, Filter = filter };
         if (dlg.ShowDialog() != true) return;
 
-        var content = format == "Markdown"
-            ? BuildMarkdown()
-            : BuildCsv();
+        if (format == "SARIF")
+        {
+            if (_vm.CurrentReport is not null)
+                Services.SarifExporter.Export(_vm.CurrentReport, dlg.FileName);
+            return;
+        }
+        if (format == "Checklist")
+        {
+            if (_vm.CurrentReport is not null)
+                File.WriteAllText(dlg.FileName,
+                    Services.CodeReviewChecklistBuilder.Build(_vm.CurrentReport), Encoding.UTF8);
+            return;
+        }
 
+        var content = format == "Markdown" ? BuildMarkdown() : BuildCsv();
         File.WriteAllText(dlg.FileName, content, Encoding.UTF8);
     }
 
     private string BuildMarkdown()
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"# Code Analysis Report");
-        sb.AppendLine($"Score: **{_vm.Score}/100** ({_vm.Grade})  Trending: {_vm.TrendingText}");
-        sb.AppendLine($"Files: {_vm.TotalFiles}  LOC: {_vm.TotalLines:N0}  Projects: {_vm.ProjectCount}");
+        sb.AppendLine(AppResources.CodeAnalysis_Markdown_Title);
+        sb.AppendLine(string.Format(AppResources.CodeAnalysis_Markdown_ScoreLine,
+            _vm.Score, _vm.Grade, _vm.TrendingText));
+        sb.AppendLine(string.Format(AppResources.CodeAnalysis_Markdown_FilesLine,
+            _vm.TotalFiles, _vm.TotalLines, _vm.ProjectCount));
         sb.AppendLine();
-        sb.AppendLine("## Issues");
-        sb.AppendLine("| Severity | ID | Message | File | Line |");
-        sb.AppendLine("|---|---|---|---|---|");
+        sb.AppendLine(AppResources.CodeAnalysis_Markdown_IssuesHeading);
+        sb.AppendLine(AppResources.CodeAnalysis_Markdown_IssuesTableHeader);
+        sb.AppendLine(AppResources.CodeAnalysis_Markdown_IssuesTableSeparator);
         foreach (var i in _vm.Issues)
             sb.AppendLine($"| {i.Severity} | {i.Id} | {i.Message.Replace("|","\\|")} | {i.FileName} | {i.Line} |");
         return sb.ToString();
@@ -120,7 +289,7 @@ public partial class CodeAnalysisReportPane : UserControl
     private string BuildCsv()
     {
         var sb = new StringBuilder();
-        sb.AppendLine("Severity,ID,Message,FilePath,Line,Project");
+        sb.AppendLine(AppResources.CodeAnalysis_Csv_Header);
         foreach (var i in _vm.Issues)
             sb.AppendLine($"{i.Severity},{i.Id},{EscCsv(i.Message)},{EscCsv(i.FilePath)},{i.Line},{i.ProjectName}");
         return sb.ToString();
@@ -135,7 +304,15 @@ public partial class CodeAnalysisReportPane : UserControl
 
     private void OnSeverityFilterChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (DataContext is CodeAnalysisReportViewModel vm && SeverityFilter.SelectedItem is ComboBoxItem ci)
-            vm.SelectedSeverity = ci.Content?.ToString() ?? "All";
+        if (DataContext is not CodeAnalysisReportViewModel vm) return;
+        // Map by SelectedIndex so localization of ComboBoxItem.Content does not
+        // break the VM's stable English-side severity tokens.
+        vm.SelectedSeverity = SeverityFilter.SelectedIndex switch
+        {
+            1 => "Error",
+            2 => "Warning",
+            3 => "Info",
+            _ => "All",
+        };
     }
 }

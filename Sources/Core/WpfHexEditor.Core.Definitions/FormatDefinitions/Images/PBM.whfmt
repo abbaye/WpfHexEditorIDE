@@ -163,5 +163,24 @@
       "severity": "warning",
       "message": "PBM magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "pbm_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PBM. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pbm_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PBM. Hand-tune weights/rates per format if needed."
+  }
 }

@@ -14,13 +14,13 @@
     <ToolCommandName>whfmt-codegen</ToolCommandName>
 
     <PackageId>whfmt.CodeGen</PackageId>
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0</AssemblyVersion>
-    <FileVersion>1.1.0</FileVersion>
+    <Version>1.1.1</Version>
+    <AssemblyVersion>1.1.1</AssemblyVersion>
+    <FileVersion>1.1.1</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>whfmt.CodeGen</Product>
-    <Title>whfmt.CodeGen — Binary Parser Generator (C# · F# · Rust)</Title>
+    <Title>whfmt.CodeGen — Binary Parser Generator (C# · F# · Rust · VB.NET)</Title>
     <Description>Generate strongly-typed parsers from .whfmt binary format definitions — C#, zero-alloc Span&lt;byte&gt;, F#, or Rust. 757 binary formats supported. Rich types: enums for valueMap, [Flags] enum for bitfields, List&lt;T&gt; for repeating, nullable for conditionals. Typed exceptions: InvalidSignatureException, ChecksumMismatchException, TruncatedFileException. New: dump command for structured binary inspection. Install: dotnet tool install -g whfmt.CodeGen</Description>
     <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
     <PackageTags>whfmt;codegen;parser;generator;binary;format;c#;dotnet-tool;net8</PackageTags>
@@ -31,7 +31,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageReleaseNotes>1.1.0 — Major evolution: dump command (structured binary inspection with checksum verification). Rich types: enums for valueMap, [Flags] enum for bitfields. Typed exceptions: InvalidSignatureException, ChecksumMismatchException, TruncatedFileException. Multi-language output: --lang csharp-span (zero-alloc Span&lt;byte&gt;), fsharp (DU + records), rust (TryFrom&lt;&amp;[u8]&gt;). --project flag for complete multi-file C# project output. README updated: 757 binary format count clarified.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.1.1 — Added VB.NET output language (--lang vb): Public Class with BinaryReader, typed enums for valueMap, &lt;Flags&gt; enum for bitfields, List(Of T) for repeating fields, nullable for conditionals, big-endian ReverseBytes helpers. 1.1.0 — dump command, rich types, typed exceptions, C#-Span/F#/Rust output, --project flag.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 

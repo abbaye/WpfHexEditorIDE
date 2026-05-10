@@ -213,5 +213,30 @@
   "functions": {
     "readUInt32BE": "Read big-endian header values",
     "extractASCIIString": "Read magic, version, and isotope strings"
+  },
+  "diff": {
+    "keyFields": [
+      "ecat_magic",
+      "file_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ECAT. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ecat_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "file_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ECAT. Hand-tune weights/rates per format if needed."
   }
 }

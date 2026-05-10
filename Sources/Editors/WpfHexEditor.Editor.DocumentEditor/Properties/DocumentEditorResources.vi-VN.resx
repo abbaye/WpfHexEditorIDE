@@ -369,4 +369,28 @@
   <data name="ImgCtx_Wrap" xml:space="preserve"><value>Bọc văn bản</value></data>
   <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Kiểm tra trong trình chỉnh sửa Hex</value></data>
   <data name="ImgCtx_Properties" xml:space="preserve"><value>Thuộc tính hình ảnh...</value></data>
+  <data name="DocStructure_ShowRunsToggleToolTip" xml:space="preserve">
+    <value>Hiển thị runs (đoạn văn bản)</value>
+  </data>
+  <data name="DocStructure_OutlineModeToolTip" xml:space="preserve">
+    <value>Chỉ phác thảo (hệ thống tiêu đề)</value>
+  </data>
+  <data name="DocStructure_KindFilterToolTip" xml:space="preserve">
+    <value>Lọc theo loại khối</value>
+  </data>
+  <data name="DocStructure_KindFilter_All" xml:space="preserve">
+    <value>Tất cả</value>
+  </data>
+  <data name="DocStructure_KindFilter_HeadingsOnly" xml:space="preserve">
+    <value>Tiêu đề</value>
+  </data>
+  <data name="DocStructure_KindFilter_ListsOnly" xml:space="preserve">
+    <value>Danh sách</value>
+  </data>
+  <data name="DocStructure_KindFilter_TablesOnly" xml:space="preserve">
+    <value>Bảng</value>
+  </data>
+  <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
+    <value>Hình ảnh</value>
+  </data>
 </root>

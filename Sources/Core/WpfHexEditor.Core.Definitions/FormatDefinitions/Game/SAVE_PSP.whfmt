@@ -216,5 +216,30 @@
     "valueTypes": "0x0004=binary, 0x0204=UTF-8 string (null-padded), 0x0404=uint32",
     "platforms": "PSP, PS3, PS4, PS Vita, PS5",
     "standardVersion": "v1.1 (0x00000101)"
+  },
+  "diff": {
+    "keyFields": [
+      "sfo_magic",
+      "sfo_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SAVE_PSP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "sfo_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "sfo_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SAVE_PSP. Hand-tune weights/rates per format if needed."
   }
 }

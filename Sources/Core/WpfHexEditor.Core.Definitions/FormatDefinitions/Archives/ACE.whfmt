@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "ACE Archive",
   "formatId": "ACE",
@@ -387,5 +387,62 @@
     "HasHeader": true,
     "HeaderSize": "variable (minimum ~28 bytes main header)",
     "Encryption": "AES-256 (ACE 2.0+)"
+  },
+  "diff": {
+    "keyFields": [
+      "header_size",
+      "header_type",
+      "header_flags",
+      "ace_signature",
+      "version_needed",
+      "host_os",
+      "ace_version"
+    ],
+    "ignoreFields": [
+      "timestamp"
+    ],
+    "note": "Inferred semantic diff for ACE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ace_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 7 — parser must reject."
+      },
+      {
+        "field": "header_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "header_flags",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "version_needed",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "host_os",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "ace_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "header_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ACE. Hand-tune weights/rates per format if needed."
   }
 }

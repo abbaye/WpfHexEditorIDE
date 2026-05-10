@@ -189,5 +189,30 @@
     "Compression": "Lossless JPEG (34892), JPEG-2000 (34713), or uncompressed (1)",
     "BitDepth": "8, 16, 32-bit (floating point in DNG 1.4+)",
     "DNGVersions": "1.0 (2004), 1.1, 1.2, 1.3, 1.4 (float), 1.5 (depth), 1.6 (2020)"
+  },
+  "diff": {
+    "keyFields": [
+      "byte_order_mark",
+      "ifd_offset"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for DNG. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "byte_order_mark",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "ifd_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DNG. Hand-tune weights/rates per format if needed."
   }
 }

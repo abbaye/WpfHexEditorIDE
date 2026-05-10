@@ -6,6 +6,28 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.6.5.225] — 2026-05-09 — Code Analysis: Scope UX, SplitButton Re-run, Treemap Context Menu, Localization Fixes
+
+### ✨ Added
+
+- **Code Analysis — scope display** — toolbar now shows the scope and path of the last run: `Solution: WpfHexEditorControl`, `Project: WpfHexEditor.App`, `File: Foo.cs`; displayed in italic between buttons and filters when a report is loaded
+- **Code Analysis — SplitButton Re-run** — left part re-runs the same scope/path as the last run; dropdown arrow opens a menu with _Re-run (same scope)_, _Run Solution_, _Run Project…_, _Run File…_; `_lastScope` / `_lastPath` persisted in `CodeAnalysisModule` so switching tabs does not reset the scope
+- **Code Analysis — Treemap context menu** — right-click on any tile shows a localized context menu: _Open File_ (opens in editor), _Copy Path_, _Copy Metrics_ (all metrics to clipboard), separator, _Run Analysis on File_ (runs analysis scoped to that file), separator, _Filter to This Project_ (sets the project filter), _Highlight Top 10 Hotspots_ (toggle — dims non-hotspot tiles to highlight the critical ones)
+- **Code Analysis — 15 new localization keys** — `CodeAnalysis_Rerun_SameScope`, `_RunSolution`, `_RunProject`, `_RunFile`; `CodeAnalysis_Scope_Solution/Project/File`; `CodeAnalysis_Treemap_OpenFile/CopyPath/CopyMetrics/RunOnFile/FilterProject/HighlightHotspots`; `CodeAnalysis_Tooltip_Rerun_SameScope/RunSolution`; translated in all 28 satellite languages
+
+### 🔧 Changed
+
+- **Code Analysis — `AppLocalizedDictionary` in UserControl.Resources** — `CodeAnalysisReportPane.xaml` now includes `<appSvc:AppLocalizedDictionary/>` in its local `MergedDictionaries`, matching the pattern used by `WatchesPanel` and `AssemblyDetailPane`; fixes `DataGridTextColumn.Header` and other logical-tree elements that cannot inherit `Application.Resources`
+- **Code Analysis — `EnsureReportPaneExists` eager init** — pane and view-model are pre-built during `Initialize()` so layout-restored tabs find real content on the first `BuildContentForItem` call
+- **Code Analysis — diagnostic log removed** — temporary `[Code Analysis] Pushing to VM` log removed from `RunAsync` (root cause confirmed resolved)
+
+### 🐛 Fixed
+
+- **Code Analysis — empty column headers** — `DataGridTextColumn.Header`, `ComboBoxItem.Content`, and button labels were rendering as empty because `DynamicResource CodeAnalysis_*` keys require the dictionary to be in the local UserControl scope; fixed by including `AppLocalizedDictionary` in `UserControl.Resources.MergedDictionaries`
+- **Code Analysis — Re-run always ran on solution** — `_reRunCallback` was wired to `GetSolutionPath()` unconditionally; now uses `_lastScope`/`_lastPath` so "Run Project" re-runs the project, not the full solution
+
+---
+
 ## [0.6.5.110] — 2026-05-05 — DocumentEditor Glyph-Accurate Caret, Ruler Scroll-Tracking, Debug Module Integration
 
 ### ✨ Added

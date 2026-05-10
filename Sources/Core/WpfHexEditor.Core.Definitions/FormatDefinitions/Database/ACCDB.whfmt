@@ -163,5 +163,24 @@
       "severity": "warning",
       "message": "ACCDB magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "ace_db_signature"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ACCDB. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ace_db_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ACCDB. Hand-tune weights/rates per format if needed."
+  }
 }

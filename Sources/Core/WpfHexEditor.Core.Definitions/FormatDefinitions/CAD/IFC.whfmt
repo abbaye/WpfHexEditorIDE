@@ -205,5 +205,24 @@
     "globalIdFormat": "22-character base64-encoded GUID",
     "compressionVariant": "IFC-ZIP uses ZIP compression of the SPF text",
     "xmlVariant": "IFC-XML uses ISO 10303-28 XML encoding"
+  },
+  "diff": {
+    "keyFields": [
+      "ifc_iso_header"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for IFC. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ifc_iso_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for IFC. Hand-tune weights/rates per format if needed."
   }
 }

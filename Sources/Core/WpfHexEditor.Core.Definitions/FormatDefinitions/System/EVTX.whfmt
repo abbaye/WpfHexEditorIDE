@@ -183,5 +183,24 @@
       "severity": "warning",
       "message": "EVTX magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "evtx_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for EVTX. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "evtx_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for EVTX. Hand-tune weights/rates per format if needed."
+  }
 }

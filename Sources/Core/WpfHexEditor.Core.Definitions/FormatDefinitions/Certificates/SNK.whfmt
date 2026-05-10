@@ -342,5 +342,56 @@
     "LastUpdated": "2026-04-14",
     "PriorityFormat": true,
     "AutoRefined": false
+  },
+  "diff": {
+    "keyFields": [
+      "b_type",
+      "b_version",
+      "ai_key_alg",
+      "rsa_magic",
+      "bitlen",
+      "pub_exp"
+    ],
+    "ignoreFields": [
+      "reserved"
+    ],
+    "note": "Inferred semantic diff for SNK. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "b_type",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "rsa_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 8 — parser must reject."
+      },
+      {
+        "field": "b_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "ai_key_alg",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "bitlen",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "pub_exp",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SNK. Hand-tune weights/rates per format if needed."
   }
 }

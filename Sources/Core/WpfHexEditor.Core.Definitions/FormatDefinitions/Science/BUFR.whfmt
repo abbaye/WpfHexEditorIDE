@@ -246,5 +246,24 @@
       "Check Section 3 for the list of BUFR F-X-Y descriptors encoding the data types",
       "Verify end marker '7777' (37 37 37 37) at the final 4 bytes of the message"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "bufr_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for BUFR. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "bufr_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for BUFR. Hand-tune weights/rates per format if needed."
   }
 }

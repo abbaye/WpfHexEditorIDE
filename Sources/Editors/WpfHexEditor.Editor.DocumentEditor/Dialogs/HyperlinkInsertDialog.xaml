@@ -1,21 +1,23 @@
-<Window x:Class="WpfHexEditor.Editor.DocumentEditor.Dialogs.HyperlinkInsertDialog"
+<ec:ThemedDialog x:Class="WpfHexEditor.Editor.DocumentEditor.Dialogs.HyperlinkInsertDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
         Title="{DynamicResource HyperlinkDlg_Title}"
         Width="440" SizeToContent="Height"
-        ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
-        Background="{DynamicResource DockBackgroundBrush}"
+        Background="{DynamicResource DockWindowBackgroundBrush}"
         Foreground="{DynamicResource DockMenuForegroundBrush}">
-    <Window.Resources>
+    <ec:ThemedDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <docSvc:DocumentEditorLocalizedDictionary/>
+                <!-- Implicit Button/TextBox/ComboBox styles (themed via DockBrushes) -->
+                <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.App;component/Themes/DialogStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Window.Resources>
+    </ec:ThemedDialog.Resources>
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>  <!-- icon + title header -->
@@ -110,4 +112,4 @@
                     Click="OnOkClicked"/>
         </StackPanel>
     </Grid>
-</Window>
+</ec:ThemedDialog>

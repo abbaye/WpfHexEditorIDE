@@ -207,5 +207,42 @@
     "Versions": "v0=classic(32B hdr), v1=TBC+(44B), v2=Cata+(68B, SHA-1), v3=extended",
     "Compression": "Per-file: zlib, bzip2, Huffman, ADPCM, Sparse, LZX (WoW)",
     "NamingSystem": "Hash-based (two independent hash functions per filename)"
+  },
+  "diff": {
+    "keyFields": [
+      "mpq_signature",
+      "mpq_header_size",
+      "mpq_archive_size",
+      "mpq_format_version"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MPQ. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "mpq_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "mpq_format_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "mpq_header_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "mpq_archive_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MPQ. Hand-tune weights/rates per format if needed."
   }
 }

@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "PKCS#7 Certificate",
   "formatId": "PKCS7",
@@ -240,5 +240,42 @@
       "Check key length, IV/nonce fields, and padding scheme",
       "Inspect version markers and recipient info structures"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "asn1_sequence",
+      "total_length",
+      "oid_length",
+      "content_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PKCS7. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "asn1_sequence",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "total_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "oid_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "content_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PKCS7. Hand-tune weights/rates per format if needed."
   }
 }

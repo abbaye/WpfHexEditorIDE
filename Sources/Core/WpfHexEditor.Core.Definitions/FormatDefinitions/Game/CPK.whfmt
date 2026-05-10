@@ -164,5 +164,30 @@
     "UTF": "@UTF table at offset 8: binary table format encoding file metadata",
     "Encryption": "Encrypted CPK: XOR key 0x655F applied to UTF data; bytes 8-11 differ from '@UTF'",
     "Compression": "CRILAYLA compression for assets; HCA format for audio"
+  },
+  "diff": {
+    "keyFields": [
+      "cpk_magic",
+      "cpk_file_count"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for CPK. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "cpk_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "cpk_file_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for CPK. Hand-tune weights/rates per format if needed."
   }
 }

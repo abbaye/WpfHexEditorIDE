@@ -209,5 +209,24 @@
     "TZX_Header": "10 bytes: 'ZXTape!'(7) + 0x1A(1) + major(1) + minor(1)",
     "TZX_CurrentVersion": "1.21",
     "TAP_Format": "Length-prefixed (uint16 LE) data blocks, no file header"
+  },
+  "diff": {
+    "keyFields": [
+      "tzx_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_SPECTRUM. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "tzx_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_SPECTRUM. Hand-tune weights/rates per format if needed."
   }
 }

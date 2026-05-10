@@ -665,5 +665,129 @@
   <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>Cảnh báo</value></data>
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>Lỗi</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ Chạy lại</value></data>
+  <data name="CodeAnalysis_Rerun_SameScope" xml:space="preserve"><value>⟳ Chạy lại (cùng phạm vi)</value></data>
+  <data name="CodeAnalysis_Rerun_RunSolution" xml:space="preserve"><value>Chạy Solution</value></data>
+  <data name="CodeAnalysis_Rerun_RunProject" xml:space="preserve"><value>Chạy Project…</value></data>
+  <data name="CodeAnalysis_Rerun_RunFile" xml:space="preserve"><value>Chạy tệp…</value></data>
+  <data name="CodeAnalysis_Scope_Solution" xml:space="preserve"><value>Solution: {0}</value></data>
+  <data name="CodeAnalysis_Scope_Project" xml:space="preserve"><value>Project: {0}</value></data>
+  <data name="CodeAnalysis_Scope_File" xml:space="preserve"><value>Tệp: {0}</value></data>
+  <data name="CodeAnalysis_Treemap_OpenFile" xml:space="preserve"><value>Mở tệp</value></data>
+  <data name="CodeAnalysis_Treemap_CopyPath" xml:space="preserve"><value>Sao chép đường dẫn</value></data>
+  <data name="CodeAnalysis_Treemap_CopyMetrics" xml:space="preserve"><value>Sao chép chỉ số</value></data>
+  <data name="CodeAnalysis_Treemap_RunOnFile" xml:space="preserve"><value>Chạy phân tích trên tệp</value></data>
+  <data name="CodeAnalysis_Treemap_FilterProject" xml:space="preserve"><value>Lọc theo Project này</value></data>
+  <data name="CodeAnalysis_Treemap_HighlightHotspots" xml:space="preserve"><value>Đánh dấu 10 điểm nóng hàng đầu</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_SameScope" xml:space="preserve"><value>Chạy lại phân tích với cùng phạm vi và đường dẫn như lần chạy cuối</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_RunSolution" xml:space="preserve"><value>Chạy phân tích trên toàn bộ Solution</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>Xuất ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>Bản đồ cây</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>ĐIỂM</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>ĐIỂM CON</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>Dự án:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>Tìm:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(Tất cả dự án)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>Chạy lại Phân tích Mã đầy đủ trên giải pháp hiện tại. Phím tắt: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>Xuất báo cáo — Markdown (dễ đọc), CSV (bảng tính), SARIF (chú thích CI/PR) hoặc PR Checklist (mẫu đánh giá tự động).</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>Lọc tất cả các tab theo dự án</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>Tìm trong tệp / phương thức / vấn đề (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>Điểm chất lượng</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>Tổng hợp có trọng số của sáu điểm con: Khối lượng 10%, Độ phức tạp 25%, Liên kết 20%, Trùng lặp 20%, Mã chết 15%, Quy ước 10%.</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>Hạng: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>Mũi tên xu hướng cho thấy chênh lệch so với ảnh chụp đã lưu gần nhất.</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>Điểm tổng thể 0-100. Di chuột qua phần ĐIỂM để xem công thức.</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>Hạng chữ cái lấy từ điểm (A+, A, A-, B+, B, B-, C+, C, C-, D, F).</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>Chênh lệch so với ảnh chụp trước: ▲ cải thiện, ▼ giảm.</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>Sáu trục 0-100 (xa trung tâm = tốt hơn): Vol = tuân thủ kích thước tệp · CC = biên độ phức tạp · Coup = ổn định liên kết · Dup = tỷ lệ trùng lặp · Dead = tỷ lệ ký hiệu không dùng · Conv = tuân thủ đặt tên/quy ước.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>Tóm tắt cấp cao: phân tích theo dự án + 5 tệp có điểm thấp nhất. Nhấp đúp vào hàng để mở.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>Tất cả chẩn đoán được tạo trong lần chạy này: quy tắc chất lượng WH00xx + cảnh báo CS/IDE Roslyn. Lọc theo mức độ / tìm kiếm / nhóm; nhấp đúp để chuyển đến dòng nguồn.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>Phương thức hàng đầu theo độ phức tạp chu trình + nhận thức. McCabe (CC) đếm các điểm quyết định; Cognitive (kiểu Sonar) cân nhắc lồng nhau. Cao hơn = khó kiểm thử/bảo trì hơn.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>Theo loại Ca (đến — phụ thuộc vào bạn), Ce (đi — bạn phụ thuộc) và Tính không ổn định = Ce/(Ca+Ce). Gần 1 = mô-đun dễ thay đổi; gần 0 = nền tảng ổn định.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>Phát hiện bản sao dựa trên mã thông báo. Mỗi nhóm là một chuỗi ≥50 mã thông báo (có thể cấu hình) được tìm thấy ở 2+ nơi — ứng viên để trích xuất thành trợ giúp dùng chung.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>Bản đồ cây</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>Mỗi hình chữ nhật là một tệp nguồn. Diện tích tỷ lệ với số dòng mã; màu là điểm chất lượng theo tệp (xanh lá = khỏe, đỏ = kém). Di chuột để xem đầy đủ chỉ số, nhấp để mở.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>Các ký hiệu riêng/nội bộ mà Roslyn không thể tìm thấy bất kỳ tham chiếu nào. Xác minh từng cái — có thể xảy ra dương tính giả đối với các ký hiệu được sử dụng qua phản chiếu, vùng chứa DI hoặc trình tạo nguồn.</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>Nhóm vấn đề theo…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>Dự án</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>Tệp</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>Loại</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>Điểm</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>Hạng</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>Tệp</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>Tin nhắn</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>Dòng</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>Phương thức</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>Nhận thức</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>Tham số</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>Loại</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>Tính không ổn định</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>Ký hiệu</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>Dạng</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>Danh sách PR</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>Lỗi</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>Cảnh báo</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>Thông tin</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>Nhóm: Không</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>Theo mức độ</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>Theo quy tắc</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>Theo dự án</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>Theo tệp</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>Điểm:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>Bản đồ cây:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> diện tích hình chữ nhật = số dòng mã, màu = điểm chất lượng. Di chuột để xem đầy đủ chỉ số, nhấp vào ô để mở tệp.</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>Nhóm bản sao — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> dòng, </value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> lần xuất hiện, </value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> mã thông báo</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>Tệp Markdown (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>Tệp SARIF (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>Tệp CSV (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># Báo cáo Phân tích Mã</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>Mở thư mục dự án</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>Hiển thị trong Explorer</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>Phân tích lại dự án này</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>Lọc tất cả các tab theo dự án</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>Sao chép tên dự án</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>Sao chép số liệu dưới dạng hàng CSV</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>Mở</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>Mở thư mục chứa</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>Phân tích lại tệp này</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>Lọc vấn đề theo tệp này</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>Sao chép đường dẫn đầy đủ</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>Sao chép tên tệp</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>Mở tại khai báo phương thức</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>Sao chép tên phương thức</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>Sao chép tên đầy đủ</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>Mở tại vị trí vấn đề</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Lọc theo quy tắc này</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Lọc theo tệp này</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Bỏ qua lần xuất hiện này (đánh dấu nội tuyến)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Sao chép dưới dạng Markdown</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Sao chép ID vấn đề</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Mở tệp nguồn</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>Sao chép tên loại</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>Sao chép danh sách phụ thuộc</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>Mở lần xuất hiện đầu tiên</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Sao chép vị trí ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Mở tại khai báo</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Sao chép tên ký hiệu</value></data>
 </root>

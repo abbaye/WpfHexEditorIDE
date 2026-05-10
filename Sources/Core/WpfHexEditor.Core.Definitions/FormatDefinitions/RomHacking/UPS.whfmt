@@ -178,5 +178,24 @@
     "XORHunks": "skip_count(varint) + xor_bytes + 0x00 terminator",
     "CRC32Trail": "source_CRC32 + target_CRC32 + patch_CRC32 (12 bytes LE at file end)",
     "MaxROMSize": "Unlimited (unlike IPS 16 MB limit)"
+  },
+  "diff": {
+    "keyFields": [
+      "ups_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for UPS. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ups_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for UPS. Hand-tune weights/rates per format if needed."
   }
 }

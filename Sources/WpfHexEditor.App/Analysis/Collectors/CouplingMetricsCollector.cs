@@ -80,6 +80,7 @@ internal static class CouplingMetricsCollector
                 Ce          = ce,
                 Instability = Math.Round(inst, 2),
                 Lcom        = lcom,
+                DependsOn   = ceSet.Select(t => t.ToDisplayString()).OrderBy(x => x, StringComparer.Ordinal).ToList(),
             });
         }
 

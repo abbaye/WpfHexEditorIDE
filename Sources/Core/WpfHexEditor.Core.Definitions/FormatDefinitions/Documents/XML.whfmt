@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "semantic",
   "formatName": "XML Document",
   "formatId": "XML",
@@ -402,5 +402,42 @@
       "Check for embedded macros, scripts, or active content",
       "Inspect document metadata: author, timestamps, revisions"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "bom_bytes",
+      "xml_decl_open",
+      "version_value",
+      "encoding_value"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for XML. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "xml_decl_open",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "bom_bytes",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "version_value",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "encoding_value",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for XML. Hand-tune weights/rates per format if needed."
   }
 }

@@ -272,5 +272,42 @@
     "MetadataEncoding": "Typed KV store with string keys and variant value types (0-9)",
     "TypicalFileSize": "1GB (7B Q4) to 80GB+ (70B F16)",
     "SupportsStreaming": false
+  },
+  "diff": {
+    "keyFields": [
+      "gguf_magic",
+      "gguf_version",
+      "tensor_count",
+      "metadata_kv_count"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for GGUF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "gguf_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "gguf_version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "tensor_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "metadata_kv_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for GGUF. Hand-tune weights/rates per format if needed."
   }
 }

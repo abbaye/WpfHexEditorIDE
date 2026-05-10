@@ -369,4 +369,28 @@
   <data name="ImgCtx_Wrap" xml:space="preserve"><value>การตัดข้อความ</value></data>
   <data name="ImgCtx_InspectHex" xml:space="preserve"><value>ตรวจสอบในโปรแกรมแก้ไข Hex</value></data>
   <data name="ImgCtx_Properties" xml:space="preserve"><value>คุณสมบัติรูปภาพ...</value></data>
+  <data name="DocStructure_ShowRunsToggleToolTip" xml:space="preserve">
+    <value>แสดงรัน (ส่วนของข้อความ)</value>
+  </data>
+  <data name="DocStructure_OutlineModeToolTip" xml:space="preserve">
+    <value>เค้าโครงเท่านั้น (ลำดับหัวเรื่อง)</value>
+  </data>
+  <data name="DocStructure_KindFilterToolTip" xml:space="preserve">
+    <value>กรองตามชนิดบล็อก</value>
+  </data>
+  <data name="DocStructure_KindFilter_All" xml:space="preserve">
+    <value>ทั้งหมด</value>
+  </data>
+  <data name="DocStructure_KindFilter_HeadingsOnly" xml:space="preserve">
+    <value>หัวเรื่อง</value>
+  </data>
+  <data name="DocStructure_KindFilter_ListsOnly" xml:space="preserve">
+    <value>รายการ</value>
+  </data>
+  <data name="DocStructure_KindFilter_TablesOnly" xml:space="preserve">
+    <value>ตาราง</value>
+  </data>
+  <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
+    <value>รูปภาพ</value>
+  </data>
 </root>

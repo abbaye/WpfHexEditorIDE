@@ -8,10 +8,11 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Editor.Core.Views;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Dialogs;
 
-public partial class HyperlinkInsertDialog : Window
+public partial class HyperlinkInsertDialog : ThemedDialog
 {
     public string DisplayText { get; private set; } = string.Empty;
     public string Url         { get; private set; } = string.Empty;

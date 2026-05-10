@@ -40,4 +40,22 @@ internal static class ClassDiagramResources
 
     internal static string ClassDiagEd_Menu_AutoLayout
         => ResourceManager.GetString("ClassDiagEd_Menu_AutoLayout", _resourceCulture)!;
+
+    internal static string ExportCode_Toolbar_MenuItem
+        => ResourceManager.GetString("ExportCode_Toolbar_MenuItem", _resourceCulture)!;
+
+    internal static string ExportCode_Status_NothingToExport
+        => ResourceManager.GetString("ExportCode_Status_NothingToExport", _resourceCulture)!;
+
+    internal static string ExportCode_Status_UnknownLanguage
+        => ResourceManager.GetString("ExportCode_Status_UnknownLanguage", _resourceCulture)!;
+
+    internal static string ExportCode_Status_Exported
+        => ResourceManager.GetString("ExportCode_Status_Exported", _resourceCulture)!;
+
+    internal static string ExportCode_Status_Failed
+        => ResourceManager.GetString("ExportCode_Status_Failed", _resourceCulture)!;
+
+    internal static string ExportCode_FileFilter
+        => ResourceManager.GetString("ExportCode_FileFilter", _resourceCulture)!;
 }

@@ -166,5 +166,24 @@
       "severity": "warning",
       "message": "SQLITE_WAL magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "wal_magic_number"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SQLITE_WAL. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "wal_magic_number",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SQLITE_WAL. Hand-tune weights/rates per format if needed."
+  }
 }

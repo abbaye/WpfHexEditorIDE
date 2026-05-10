@@ -10,10 +10,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using WpfHexEditor.Editor.Core.Views;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Dialogs;
 
-public partial class InsertTableDialog : Window
+public partial class InsertTableDialog : ThemedDialog
 {
     public int Rows    { get; private set; } = 3;
     public int Columns { get; private set; } = 3;
@@ -99,6 +100,9 @@ public partial class InsertTableDialog : Window
 
     private void UpdatePicker()
     {
+        // Guard: TextChanged may fire from InitializeComponent before BuildGrid populates _cells.
+        if (_cells[0, 0] is null) return;
+
         for (int r = 0; r < GridMax; r++)
             for (int c = 0; c < GridMax; c++)
                 _cells[r, c].Fill = (r < _hoverRow && c < _hoverCol) ? HoverFill : EmptyFill;

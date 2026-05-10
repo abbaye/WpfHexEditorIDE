@@ -200,5 +200,42 @@
     "Packing": "Method A (32-bit word, 2 padding bits) or Method B",
     "Endianness": "Determined by magic number (0x802A5FD7=BE, 0xD75F2A80=LE)",
     "HeaderSize": "Generic(300B) + Image(varies) + Orientation + Film + Origination"
+  },
+  "diff": {
+    "keyFields": [
+      "cin_magic",
+      "cin_image_offset",
+      "cin_header_size",
+      "cin_industry_header_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for CIN. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "cin_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "cin_image_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "cin_header_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "cin_industry_header_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for CIN. Hand-tune weights/rates per format if needed."
   }
 }

@@ -283,5 +283,36 @@
     "Standard": "NIfTI-1 (2004) / NIfTI-2 (2011) — NIMH/NIfTI Data Format Working Group",
     "Endianness": "little-endian (most common) or big-endian — detected from sizeof_hdr byte-swap check",
     "Compression": "gzip for .nii.gz (nibabel transparent decompression)"
+  },
+  "diff": {
+    "keyFields": [
+      "hdr_size",
+      "datatype",
+      "nifti_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for NIFTI. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "nifti_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 344 — parser must reject."
+      },
+      {
+        "field": "datatype",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "hdr_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for NIFTI. Hand-tune weights/rates per format if needed."
   }
 }

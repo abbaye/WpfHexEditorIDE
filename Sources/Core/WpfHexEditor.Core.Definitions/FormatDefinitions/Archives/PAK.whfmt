@@ -178,5 +178,36 @@
     "Endianness": "little-endian (Quake PACK)",
     "DirectoryEntrySize": 64,
     "Note": "PAK extension is shared by Quake PACK, ARC-derived PAK, Unreal Engine PAK, and others. 'PACK' magic identifies Quake variant."
+  },
+  "diff": {
+    "keyFields": [
+      "pak_signature",
+      "directory_offset",
+      "directory_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PAK. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pak_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "directory_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "directory_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PAK. Hand-tune weights/rates per format if needed."
   }
 }

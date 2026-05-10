@@ -204,5 +204,30 @@
     "bitDepths": ["8-bit (0x31)", "16-bit (0x32)"],
     "channels": ["grayscale(1)", "grayscale+alpha(2)", "RGB(3)", "RGBA(4)"],
     "interlacingModes": ["non-interlaced still(1)", "interlaced still(2)", "non-interlaced anim(3)", "interlaced anim(4)"]
+  },
+  "diff": {
+    "keyFields": [
+      "flif_magic",
+      "bit_depth"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for FLIF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "flif_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "bit_depth",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for FLIF. Hand-tune weights/rates per format if needed."
   }
 }

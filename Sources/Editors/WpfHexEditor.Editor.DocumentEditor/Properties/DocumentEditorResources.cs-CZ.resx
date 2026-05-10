@@ -368,4 +368,28 @@
   <data name="ImgCtx_Wrap" xml:space="preserve"><value>Obtékání textem</value></data>
   <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Zkontrolovat v Hex editoru</value></data>
   <data name="ImgCtx_Properties" xml:space="preserve"><value>Vlastnosti obrázku...</value></data>
+  <data name="DocStructure_ShowRunsToggleToolTip" xml:space="preserve">
+    <value>Zobrazit běhy (fragmenty textu)</value>
+  </data>
+  <data name="DocStructure_OutlineModeToolTip" xml:space="preserve">
+    <value>Pouze osnova (hierarchie nadpisů)</value>
+  </data>
+  <data name="DocStructure_KindFilterToolTip" xml:space="preserve">
+    <value>Filtrovat podle druhu</value>
+  </data>
+  <data name="DocStructure_KindFilter_All" xml:space="preserve">
+    <value>Vše</value>
+  </data>
+  <data name="DocStructure_KindFilter_HeadingsOnly" xml:space="preserve">
+    <value>Nadpisy</value>
+  </data>
+  <data name="DocStructure_KindFilter_ListsOnly" xml:space="preserve">
+    <value>Seznamy</value>
+  </data>
+  <data name="DocStructure_KindFilter_TablesOnly" xml:space="preserve">
+    <value>Tabulky</value>
+  </data>
+  <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
+    <value>Obrázky</value>
+  </data>
 </root>

@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Nintendo GameCube Disc",
   "formatId": "ROM_GCN",
@@ -244,5 +244,30 @@
       "Check resource/asset table entries and data block offsets",
       "Inspect compression flags, checksums, and embedded file boundaries"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "stream_buffer_size",
+      "magic_word"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for ROM_GCN. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "magic_word",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 28 — parser must reject."
+      },
+      {
+        "field": "stream_buffer_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for ROM_GCN. Hand-tune weights/rates per format if needed."
   }
 }

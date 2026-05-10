@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "LZMA Compression",
   "formatId": "LZMA",
@@ -296,5 +296,36 @@
     "HeaderSize": "13 bytes",
     "HasIntegrityCheck": false,
     "MaxDictionarySize": "4GB (32-bit field)"
+  },
+  "diff": {
+    "keyFields": [
+      "lzma_properties",
+      "dictionary_size",
+      "uncompressed_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for LZMA. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "lzma_properties",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "dictionary_size",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "uncompressed_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for LZMA. Hand-tune weights/rates per format if needed."
   }
 }

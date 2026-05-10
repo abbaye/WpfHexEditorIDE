@@ -175,5 +175,30 @@
     "ContainerFormat": "Raw JPEG frame sequence, AVI (MJPG FourCC), or QuickTime MOV",
     "VideoCodec": "JPEG (intra-frame only, no temporal prediction)",
     "Endianness": "big-endian (JPEG markers and segment lengths)"
+  },
+  "diff": {
+    "keyFields": [
+      "jpeg_soi_marker",
+      "jpeg_app0_marker"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MJPEG. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "jpeg_soi_marker",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "jpeg_app0_marker",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MJPEG. Hand-tune weights/rates per format if needed."
   }
 }

@@ -13,12 +13,6 @@ namespace WpfHexEditor.App.Analysis.Services;
 
 internal sealed class CodeAnalysisOptionsService
 {
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        WriteIndented        = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-    };
-
     private CodeAnalysisOptions _options = new();
 
     public CodeAnalysisOptions Options => _options;
@@ -31,7 +25,7 @@ internal sealed class CodeAnalysisOptionsService
         try
         {
             var json = File.ReadAllText(path);
-            _options = JsonSerializer.Deserialize<CodeAnalysisOptions>(json, JsonOpts) ?? new();
+            _options = JsonSerializer.Deserialize<CodeAnalysisOptions>(json, AnalysisJson.Default) ?? new();
 
             // Ensure new rules added since the user last saved are present
             foreach (var defaultRule in CodeAnalysisOptions.DefaultRules())
@@ -50,7 +44,7 @@ internal sealed class CodeAnalysisOptionsService
     {
         var path = GetPath();
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        File.WriteAllText(path, JsonSerializer.Serialize(_options, JsonOpts));
+        File.WriteAllText(path, JsonSerializer.Serialize(_options, AnalysisJson.Default));
     }
 
     internal void SetSolutionDirectory(string solutionDir)

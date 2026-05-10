@@ -229,5 +229,30 @@
     "readUInt32LE": "Read headerSize and integer fields",
     "readFloat32LE": "Read vox_offset and pixdim values",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
+  "diff": {
+    "keyFields": [
+      "header_size",
+      "data_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for NII. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "header_size",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "data_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for NII. Hand-tune weights/rates per format if needed."
   }
 }

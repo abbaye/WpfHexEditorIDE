@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "PCX Image",
   "formatId": "PCX",
@@ -499,5 +499,54 @@
     "HasHeader": true,
     "HeaderSize": "128 bytes fixed",
     "ExtendedPaletteSize": "769 bytes at EOF (version 5 only)"
+  },
+  "diff": {
+    "keyFields": [
+      "pcx_manufacturer",
+      "version",
+      "encoding",
+      "bits_per_pixel",
+      "n_planes",
+      "palette_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PCX. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pcx_manufacturer",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "version",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "encoding",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "bits_per_pixel",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "n_planes",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "palette_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PCX. Hand-tune weights/rates per format if needed."
   }
 }

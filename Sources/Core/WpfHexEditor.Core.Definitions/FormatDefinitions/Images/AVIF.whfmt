@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "AVIF Image",
   "formatId": "AVIF",
@@ -335,5 +335,36 @@
     "Container": "ISOBMFF / ISO Base Media File Format (ISO 14496-12)",
     "HasHeader": true,
     "HeaderSize": "variable (ftyp box, typically 24-36 bytes)"
+  },
+  "diff": {
+    "keyFields": [
+      "box_size",
+      "box_type",
+      "major_brand"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for AVIF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "box_type",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 4 — parser must reject."
+      },
+      {
+        "field": "major_brand",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "box_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for AVIF. Hand-tune weights/rates per format if needed."
   }
 }

@@ -189,5 +189,30 @@
     "NativeImageCache": "%WINDIR%\\assembly\\NativeImages_*",
     "ModernEquivalent": "ReadyToRun (R2R) in .NET 5+",
     "Note": "Weak detection — MZ magic is shared with all PE files. Use .ni.dll/.ni.exe extension + CLR data dir for confident identification."
+  },
+  "diff": {
+    "keyFields": [
+      "ni_mz_magic",
+      "ni_pe_offset"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MSIL_NGEN. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ni_mz_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "ni_pe_offset",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MSIL_NGEN. Hand-tune weights/rates per format if needed."
   }
 }

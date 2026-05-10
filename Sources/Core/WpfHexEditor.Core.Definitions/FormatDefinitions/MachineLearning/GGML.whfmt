@@ -240,5 +240,24 @@
     "Alignment": "None (ggml) or 32-byte (ggjt)",
     "SupportsStreaming": false,
     "ConversionPath": "llama.cpp/convert-llama-ggmlv3-to-gguf.py"
+  },
+  "diff": {
+    "keyFields": [
+      "ggml_magic"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for GGML. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "ggml_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for GGML. Hand-tune weights/rates per format if needed."
   }
 }

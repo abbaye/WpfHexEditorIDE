@@ -295,5 +295,44 @@
     "Confinement": "AppArmor + seccomp (strict), none (classic), or relaxed (devmode)",
     "SupportsStreaming": false,
     "PlatformLock": "Linux with snapd (Ubuntu, Debian, Fedora, openSUSE)"
+  },
+  "diff": {
+    "keyFields": [
+      "sqfs_magic",
+      "inode_count",
+      "block_size",
+      "compression"
+    ],
+    "ignoreFields": [
+      "mod_time"
+    ],
+    "note": "Inferred semantic diff for SNAP. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "sqfs_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "compression",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "inode_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "block_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SNAP. Hand-tune weights/rates per format if needed."
   }
 }

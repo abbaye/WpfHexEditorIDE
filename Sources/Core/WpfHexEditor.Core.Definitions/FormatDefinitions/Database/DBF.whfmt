@@ -192,5 +192,32 @@
       "severity": "warning",
       "message": "DBF magic field is zero — possible detection failure"
     }
-  ]
+  ],
+  "diff": {
+    "keyFields": [
+      "dbf_version",
+      "record_count"
+    ],
+    "ignoreFields": [
+      "last_update_date"
+    ],
+    "note": "Inferred semantic diff for DBF. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "dbf_version",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "record_count",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for DBF. Hand-tune weights/rates per format if needed."
+  }
 }

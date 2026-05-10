@@ -17,4 +17,6 @@ public enum OutputLanguage
     FSharp,
     /// <summary>Rust struct with impl From&lt;&amp;[u8]&gt;.</summary>
     Rust,
+    /// <summary>VB.NET class with BinaryReader.</summary>
+    VisualBasic,
 }

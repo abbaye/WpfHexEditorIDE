@@ -216,5 +216,24 @@
     "Standard": "PDB File Format v3.30 — wwPDB (2008)",
     "Endianness": "N/A (ASCII text format)",
     "LineWidth": "Exactly 80 characters per record line"
+  },
+  "diff": {
+    "keyFields": [
+      "pdb_record"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PDB_PROTEIN. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "pdb_record",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PDB_PROTEIN. Hand-tune weights/rates per format if needed."
   }
 }

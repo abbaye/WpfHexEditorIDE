@@ -1,4 +1,4 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "OpenSSH Private Key",
   "formatId": "SSH_KEY",
@@ -218,5 +218,48 @@
       "Check key length, IV/nonce fields, and padding scheme",
       "Inspect version markers and recipient info structures"
     ]
+  },
+  "diff": {
+    "keyFields": [
+      "openssh_magic",
+      "cipher_name_length",
+      "kdf_name_length",
+      "kdf_options_length",
+      "public_key_length"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for SSH_KEY. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "openssh_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "cipher_name_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "kdf_name_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "kdf_options_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "public_key_length",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for SSH_KEY. Hand-tune weights/rates per format if needed."
   }
 }

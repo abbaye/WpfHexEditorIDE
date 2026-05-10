@@ -257,5 +257,42 @@
     "Sections": "HEAD, ADPC, DATA",
     "NativeLoopSupport": true,
     "TargetPlatform": "Nintendo Wii / GameCube"
+  },
+  "diff": {
+    "keyFields": [
+      "brstm_magic",
+      "brstm_bom",
+      "brstm_file_size",
+      "brstm_header_size"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for BRSTM. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "brstm_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "brstm_bom",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "brstm_file_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "brstm_header_size",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for BRSTM. Hand-tune weights/rates per format if needed."
   }
 }

@@ -76,5 +76,24 @@
   "MimeTypes": ["text/plain"],
   "UseCases": ["Log file analysis", "Configuration file inspection", "CSV/TSV data files", "Markdown and documentation files"],
   "QualityMetrics": { "CompletenessScore": 55, "DocumentationLevel": "detailed", "BlocksDefined": 4, "ValidationRules": 1, "LastUpdated": "2026-04-14", "PriorityFormat": false, "AutoRefined": false },
-  "TechnicalDetails": { "Format": "Plain text (no binary structure)", "BOM": "Optional: UTF-8=EF BB BF, UTF-16 LE=FF FE, UTF-16 BE=FE FF", "LineEndings": "LF (Unix), CRLF (Windows), CR (legacy Mac)" }
+  "TechnicalDetails": { "Format": "Plain text (no binary structure)", "BOM": "Optional: UTF-8=EF BB BF, UTF-16 LE=FF FE, UTF-16 BE=FE FF", "LineEndings": "LF (Unix), CRLF (Windows), CR (legacy Mac)" },
+  "diff": {
+    "keyFields": [
+      "bom_byte0"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for PlainText. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "bom_byte0",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for PlainText. Hand-tune weights/rates per format if needed."
+  }
 }

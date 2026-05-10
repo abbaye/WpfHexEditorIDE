@@ -63,4 +63,34 @@
   <data name="ClassDiagEd_Menu_ChangeType" xml:space="preserve"><value>Change Type</value></data>
   <data name="ClassDiagEd_Menu_AutoLayout" xml:space="preserve"><value>Auto Layout</value></data>
 
+  <data name="ExportCode_Title" xml:space="preserve"><value>Export Code</value></data>
+  <data name="ExportCode_Language" xml:space="preserve"><value>Language</value></data>
+  <data name="ExportCode_RootNamespace" xml:space="preserve"><value>Root namespace</value></data>
+  <data name="ExportCode_IndentStyle" xml:space="preserve"><value>Indentation</value></data>
+  <data name="ExportCode_IndentSpaces" xml:space="preserve"><value>Spaces</value></data>
+  <data name="ExportCode_IndentTabs" xml:space="preserve"><value>Tabs</value></data>
+  <data name="ExportCode_IndentSize" xml:space="preserve"><value>Indent size</value></data>
+  <data name="ExportCode_CSharpVersion" xml:space="preserve"><value>C# version</value></data>
+  <data name="ExportCode_FileScopedNamespace" xml:space="preserve"><value>File-scoped namespace (C# 10+)</value></data>
+  <data name="ExportCode_Nullable" xml:space="preserve"><value>Enable nullable reference types</value></data>
+  <data name="ExportCode_XmlDocs" xml:space="preserve"><value>Emit XML doc comments</value></data>
+  <data name="ExportCode_Attributes" xml:space="preserve"><value>Emit attribute decorations</value></data>
+  <data name="ExportCode_Header" xml:space="preserve"><value>Emit auto-generated header</value></data>
+  <data name="ExportCode_PreferRecords" xml:space="preserve"><value>Use record syntax (C# 9+)</value></data>
+  <data name="ExportCode_AsyncSignatures" xml:space="preserve"><value>Wrap async returns in Task&lt;T&gt;</value></data>
+  <data name="ExportCode_Preview" xml:space="preserve"><value>Live preview</value></data>
+  <data name="ExportCode_Preset" xml:space="preserve"><value>Preset</value></data>
+  <data name="ExportCode_PresetDefault" xml:space="preserve"><value>Default</value></data>
+  <data name="ExportCode_PresetModern" xml:space="preserve"><value>Modern (C# 12)</value></data>
+  <data name="ExportCode_PresetLegacy" xml:space="preserve"><value>Legacy (C# 7.3)</value></data>
+  <data name="ExportCode_OK" xml:space="preserve"><value>Export</value></data>
+  <data name="ExportCode_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="ExportCode_GeneralOptions" xml:space="preserve"><value>General</value></data>
+  <data name="ExportCode_CSharpOptions" xml:space="preserve"><value>C# options</value></data>
+  <data name="ExportCode_Toolbar_MenuItem" xml:space="preserve"><value>Export Code…</value></data>
+  <data name="ExportCode_Status_NothingToExport" xml:space="preserve"><value>Nothing to export.</value></data>
+  <data name="ExportCode_Status_UnknownLanguage" xml:space="preserve"><value>Unknown language: {0}</value></data>
+  <data name="ExportCode_Status_Exported" xml:space="preserve"><value>{0} exported → {1}</value></data>
+  <data name="ExportCode_Status_Failed" xml:space="preserve"><value>Export {0} failed: {1}</value></data>
+  <data name="ExportCode_FileFilter" xml:space="preserve"><value>{0} Source|*{1}</value></data>
 </root>

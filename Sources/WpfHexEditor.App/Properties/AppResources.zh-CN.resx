@@ -969,5 +969,129 @@
   <data name="CodeAnalysis_Options_Severity_Warning" xml:space="preserve"><value>警告</value></data>
   <data name="CodeAnalysis_Options_Severity_Error" xml:space="preserve"><value>错误</value></data>
   <data name="CodeAnalysis_Rerun" xml:space="preserve"><value>⟳ 重新运行</value></data>
+  <data name="CodeAnalysis_Rerun_SameScope" xml:space="preserve"><value>⟳ 重新运行（相同范围）</value></data>
+  <data name="CodeAnalysis_Rerun_RunSolution" xml:space="preserve"><value>运行 Solution</value></data>
+  <data name="CodeAnalysis_Rerun_RunProject" xml:space="preserve"><value>运行 Project…</value></data>
+  <data name="CodeAnalysis_Rerun_RunFile" xml:space="preserve"><value>运行文件…</value></data>
+  <data name="CodeAnalysis_Scope_Solution" xml:space="preserve"><value>Solution: {0}</value></data>
+  <data name="CodeAnalysis_Scope_Project" xml:space="preserve"><value>Project: {0}</value></data>
+  <data name="CodeAnalysis_Scope_File" xml:space="preserve"><value>文件: {0}</value></data>
+  <data name="CodeAnalysis_Treemap_OpenFile" xml:space="preserve"><value>打开文件</value></data>
+  <data name="CodeAnalysis_Treemap_CopyPath" xml:space="preserve"><value>复制路径</value></data>
+  <data name="CodeAnalysis_Treemap_CopyMetrics" xml:space="preserve"><value>复制指标</value></data>
+  <data name="CodeAnalysis_Treemap_RunOnFile" xml:space="preserve"><value>对文件运行分析</value></data>
+  <data name="CodeAnalysis_Treemap_FilterProject" xml:space="preserve"><value>筛选到此 Project</value></data>
+  <data name="CodeAnalysis_Treemap_HighlightHotspots" xml:space="preserve"><value>突出显示前 10 个热点</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_SameScope" xml:space="preserve"><value>使用与上次运行相同的范围和路径重新运行分析</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun_RunSolution" xml:space="preserve"><value>对整个 Solution 运行分析</value></data>
   <data name="CodeAnalysis_Export" xml:space="preserve"><value>导出 ▾</value></data>
+  <data name="CodeAnalysis_Tab_Treemap" xml:space="preserve"><value>树状图</value></data>
+  <data name="CodeAnalysis_Header_Score" xml:space="preserve"><value>评分</value></data>
+  <data name="CodeAnalysis_Header_SubScores" xml:space="preserve"><value>子评分</value></data>
+  <data name="CodeAnalysis_Header_Project" xml:space="preserve"><value>项目:</value></data>
+  <data name="CodeAnalysis_Header_Search" xml:space="preserve"><value>搜索:</value></data>
+  <data name="CodeAnalysis_AllProjects" xml:space="preserve"><value>(所有项目)</value></data>
+  <data name="CodeAnalysis_Tooltip_Rerun" xml:space="preserve"><value>对当前解决方案重新运行完整代码分析。快捷键: F5</value></data>
+  <data name="CodeAnalysis_Tooltip_Export" xml:space="preserve"><value>导出报告 — Markdown(可读)、CSV(电子表格)、SARIF(CI/PR 注释)或 PR 检查清单(自动生成的审查模板)。</value></data>
+  <data name="CodeAnalysis_Tooltip_ProjectFilter" xml:space="preserve"><value>按项目筛选所有选项卡</value></data>
+  <data name="CodeAnalysis_Tooltip_GlobalSearch" xml:space="preserve"><value>在文件/方法/问题中搜索 (Ctrl+F)</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Title" xml:space="preserve"><value>质量评分</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Body" xml:space="preserve"><value>六个子评分的加权汇总: 体积 10%、复杂度 25%、耦合度 20%、重复 20%、死代码 15%、约定 10%。</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Grades" xml:space="preserve"><value>等级: A+ ≥97 · A ≥93 · A- ≥90 · B+ ≥87 · B ≥83 · B- ≥80 · C+ ≥77 · C ≥73 · C- ≥70 · D ≥60 · F &lt;60</value></data>
+  <data name="CodeAnalysis_Tooltip_QualityScore_Trending" xml:space="preserve"><value>趋势箭头显示与上次保存的快照之间的差异。</value></data>
+  <data name="CodeAnalysis_Tooltip_Score" xml:space="preserve"><value>总分 0-100。将鼠标悬停在 SCORE 部分查看公式。</value></data>
+  <data name="CodeAnalysis_Tooltip_Grade" xml:space="preserve"><value>从分数派生的字母等级 (A+, A, A-, B+, B, B-, C+, C, C-, D, F)。</value></data>
+  <data name="CodeAnalysis_Tooltip_Trending" xml:space="preserve"><value>与之前快照的差异: ▲ 改进, ▼ 退步。</value></data>
+  <data name="CodeAnalysis_Tooltip_Radar" xml:space="preserve"><value>六轴 0-100 (离中心越远越好): Vol = 文件大小合规 · CC = 复杂度余量 · Coup = 耦合稳定性 · Dup = 重复率 · Dead = 未使用符号比率 · Conv = 命名/约定合规。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Overview" xml:space="preserve"><value>高级摘要: 按项目细分 + 评分最低的 5 个文件。双击行钻取。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Issues" xml:space="preserve"><value>本次运行产生的所有诊断: WH00xx 质量规则 + CS/IDE Roslyn 警告。按严重程度/搜索/分组筛选;双击跳转到源代码行。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Complexity" xml:space="preserve"><value>按圈复杂度 + 认知复杂度排名前列的方法。McCabe (CC) 计算决策点;Cognitive (Sonar 风格) 加权嵌套。越高 = 越难以测试/维护。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Coupling" xml:space="preserve"><value>按类型 Ca (传入 — 依赖于您)、Ce (传出 — 您依赖) 和不稳定性 = Ce/(Ca+Ce)。接近 1 = 易变模块;接近 0 = 稳定基础。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Duplication" xml:space="preserve"><value>基于 token 的克隆检测。每组是在 2+ 处发现的 ≥50 个 token (可配置) 的序列 — 候选提取到共享辅助方法。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Title" xml:space="preserve"><value>树状图</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Treemap_Body" xml:space="preserve"><value>每个矩形是一个源文件。面积与代码行数成正比;颜色是每个文件的质量评分(绿色 = 健康,红色 = 差)。悬停查看完整指标,单击打开。</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_DeadCode" xml:space="preserve"><value>Roslyn 未能找到任何引用的私有/内部符号。逐一验证 — 通过反射、DI 容器或源代码生成器使用的符号可能出现误报。</value></data>
+  <data name="CodeAnalysis_Tooltip_GroupBy" xml:space="preserve"><value>按以下方式分组问题…</value></data>
+  <data name="CodeAnalysis_Col_Project" xml:space="preserve"><value>项目</value></data>
+  <data name="CodeAnalysis_Col_Files" xml:space="preserve"><value>文件</value></data>
+  <data name="CodeAnalysis_Col_LOC" xml:space="preserve"><value>LOC</value></data>
+  <data name="CodeAnalysis_Col_Types" xml:space="preserve"><value>类型</value></data>
+  <data name="CodeAnalysis_Col_AvgCC" xml:space="preserve"><value>Avg CC</value></data>
+  <data name="CodeAnalysis_Col_Score" xml:space="preserve"><value>评分</value></data>
+  <data name="CodeAnalysis_Col_Grade" xml:space="preserve"><value>等级</value></data>
+  <data name="CodeAnalysis_Col_File" xml:space="preserve"><value>文件</value></data>
+  <data name="CodeAnalysis_Col_MaxCC" xml:space="preserve"><value>Max CC</value></data>
+  <data name="CodeAnalysis_Col_ID" xml:space="preserve"><value>ID</value></data>
+  <data name="CodeAnalysis_Col_Message" xml:space="preserve"><value>消息</value></data>
+  <data name="CodeAnalysis_Col_Line" xml:space="preserve"><value>行</value></data>
+  <data name="CodeAnalysis_Col_Method" xml:space="preserve"><value>方法</value></data>
+  <data name="CodeAnalysis_Col_CC" xml:space="preserve"><value>CC</value></data>
+  <data name="CodeAnalysis_Col_Cognitive" xml:space="preserve"><value>认知</value></data>
+  <data name="CodeAnalysis_Col_Params" xml:space="preserve"><value>参数</value></data>
+  <data name="CodeAnalysis_Col_Type" xml:space="preserve"><value>类型</value></data>
+  <data name="CodeAnalysis_Col_Ca" xml:space="preserve"><value>Ca</value></data>
+  <data name="CodeAnalysis_Col_Ce" xml:space="preserve"><value>Ce</value></data>
+  <data name="CodeAnalysis_Col_Instability" xml:space="preserve"><value>不稳定性</value></data>
+  <data name="CodeAnalysis_Col_LCOM" xml:space="preserve"><value>LCOM</value></data>
+  <data name="CodeAnalysis_Col_Symbol" xml:space="preserve"><value>符号</value></data>
+  <data name="CodeAnalysis_Col_Kind" xml:space="preserve"><value>种类</value></data>
+  <data name="CodeAnalysis_Combo_PRChecklist" xml:space="preserve"><value>PR 检查清单</value></data>
+  <data name="CodeAnalysis_Combo_SARIF" xml:space="preserve"><value>SARIF</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Error" xml:space="preserve"><value>错误</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Warning" xml:space="preserve"><value>警告</value></data>
+  <data name="CodeAnalysis_Combo_Severity_Info" xml:space="preserve"><value>信息</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_None" xml:space="preserve"><value>分组: 无</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Severity" xml:space="preserve"><value>按严重程度</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Rule" xml:space="preserve"><value>按规则</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_Project" xml:space="preserve"><value>按项目</value></data>
+  <data name="CodeAnalysis_Combo_GroupBy_File" xml:space="preserve"><value>按文件</value></data>
+  <data name="CodeAnalysis_Treemap_Score" xml:space="preserve"><value>评分:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Title" xml:space="preserve"><value>树状图:</value></data>
+  <data name="CodeAnalysis_Treemap_Banner_Body" xml:space="preserve"><value> 矩形面积 = 代码行数,颜色 = 质量评分。悬停查看完整指标,单击图块打开文件。</value></data>
+  <data name="CodeAnalysis_Duplication_CloneGroup" xml:space="preserve"><value>克隆组 — </value></data>
+  <data name="CodeAnalysis_Duplication_Lines" xml:space="preserve"><value> 行,</value></data>
+  <data name="CodeAnalysis_Duplication_Occurrences" xml:space="preserve"><value> 出现,</value></data>
+  <data name="CodeAnalysis_Duplication_Tokens" xml:space="preserve"><value> token</value></data>
+  <data name="CodeAnalysis_Export_FileName_Markdown" xml:space="preserve"><value>code-analysis-report.md</value></data>
+  <data name="CodeAnalysis_Export_Filter_Markdown" xml:space="preserve"><value>Markdown 文件 (*.md)|*.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Sarif" xml:space="preserve"><value>code-analysis-report.sarif</value></data>
+  <data name="CodeAnalysis_Export_Filter_Sarif" xml:space="preserve"><value>SARIF 文件 (*.sarif)|*.sarif</value></data>
+  <data name="CodeAnalysis_Export_FileName_Checklist" xml:space="preserve"><value>code-review-checklist.md</value></data>
+  <data name="CodeAnalysis_Export_FileName_Csv" xml:space="preserve"><value>code-analysis-report.csv</value></data>
+  <data name="CodeAnalysis_Export_Filter_Csv" xml:space="preserve"><value>CSV 文件 (*.csv)|*.csv</value></data>
+  <data name="CodeAnalysis_Markdown_Title" xml:space="preserve"><value># 代码分析报告</value></data>
+  <data name="CodeAnalysis_Markdown_ScoreLine" xml:space="preserve"><value>Score: **{0}/100** ({1})  Trending: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_FilesLine" xml:space="preserve"><value>Files: {0}  LOC: {1:N0}  Projects: {2}</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesHeading" xml:space="preserve"><value>## Issues</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableHeader" xml:space="preserve"><value>| Severity | ID | Message | File | Line |</value></data>
+  <data name="CodeAnalysis_Markdown_IssuesTableSeparator" xml:space="preserve"><value>|---|---|---|---|---|</value></data>
+  <data name="CodeAnalysis_Csv_Header" xml:space="preserve"><value>Severity,ID,Message,FilePath,Line,Project</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenProjectFolder" xml:space="preserve"><value>打开项目文件夹</value></data>
+  <data name="CodeAnalysis_ContextMenu_RevealInExplorer" xml:space="preserve"><value>在资源管理器中显示</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeProject" xml:space="preserve"><value>重新分析此项目</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterAllByProject" xml:space="preserve"><value>按项目筛选所有选项卡</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyProjectName" xml:space="preserve"><value>复制项目名称</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMetricsCsv" xml:space="preserve"><value>将指标复制为 CSV 行</value></data>
+  <data name="CodeAnalysis_ContextMenu_Open" xml:space="preserve"><value>打开</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenContainingFolder" xml:space="preserve"><value>打开所在文件夹</value></data>
+  <data name="CodeAnalysis_ContextMenu_ReanalyzeFile" xml:space="preserve"><value>重新分析此文件</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterIssuesByFile" xml:space="preserve"><value>按此文件筛选问题</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFullPath" xml:space="preserve"><value>复制完整路径</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFileName" xml:space="preserve"><value>复制文件名</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtMethodDecl" xml:space="preserve"><value>在方法声明处打开</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyMethodName" xml:space="preserve"><value>复制方法名</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyFqn" xml:space="preserve"><value>复制完全限定名</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtIssueLocation" xml:space="preserve"><value>在问题位置打开</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>按此规则筛选</value></data>
+  <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>按此文件筛选</value></data>
+  <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>抑制此次出现 (内联标记)</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>复制为 Markdown</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>复制问题 ID</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>打开源文件</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyTypeName" xml:space="preserve"><value>复制类型名</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyDependencyList" xml:space="preserve"><value>复制依赖项列表</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenFirstOccurrence" xml:space="preserve"><value>打开首次出现</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>复制位置 ({0})</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>在声明处打开</value></data>
+  <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>复制符号名</value></data>
 </root>

@@ -67,7 +67,13 @@ internal static class QualityScoreCalculator
         if (files.Count == 0) return 100;
         int violations = files.Count(f => f.TotalLines > o.FileLocError);
         int warnings   = files.Count(f => f.TotalLines > o.FileLocWarning && f.TotalLines <= o.FileLocError);
-        return Math.Max(0, 100 - violations * 10 - warnings * 3);
+
+        // Magnitude penalty: each file >2x error threshold removes extra points (logarithmic)
+        double magnitudePenalty = files
+            .Where(f => f.TotalLines > o.FileLocError)
+            .Sum(f => Math.Log10((double)f.TotalLines / Math.Max(1, o.FileLocError)) * 10);
+
+        return Math.Max(0, 100 - violations * 10 - warnings * 3 - (int)magnitudePenalty);
     }
 
     private static int ScoreComplexity(List<FileMetrics> files, CodeAnalysisOptions o)

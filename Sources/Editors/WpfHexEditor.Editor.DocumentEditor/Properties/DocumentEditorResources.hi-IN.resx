@@ -368,4 +368,28 @@
   <data name="ImgCtx_Wrap" xml:space="preserve"><value>पाठ आवरण</value></data>
   <data name="ImgCtx_InspectHex" xml:space="preserve"><value>Hex संपादक में जांचें</value></data>
   <data name="ImgCtx_Properties" xml:space="preserve"><value>छवि गुण...</value></data>
+  <data name="DocStructure_ShowRunsToggleToolTip" xml:space="preserve">
+    <value>रन दिखाएं (टेक्स्ट फ़्रैगमेंट)</value>
+  </data>
+  <data name="DocStructure_OutlineModeToolTip" xml:space="preserve">
+    <value>केवल रूपरेखा (शीर्षक पदानुक्रम)</value>
+  </data>
+  <data name="DocStructure_KindFilterToolTip" xml:space="preserve">
+    <value>ब्लॉक प्रकार से फ़िल्टर करें</value>
+  </data>
+  <data name="DocStructure_KindFilter_All" xml:space="preserve">
+    <value>सभी</value>
+  </data>
+  <data name="DocStructure_KindFilter_HeadingsOnly" xml:space="preserve">
+    <value>शीर्षक</value>
+  </data>
+  <data name="DocStructure_KindFilter_ListsOnly" xml:space="preserve">
+    <value>सूचियाँ</value>
+  </data>
+  <data name="DocStructure_KindFilter_TablesOnly" xml:space="preserve">
+    <value>तालिकाएँ</value>
+  </data>
+  <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
+    <value>चित्र</value>
+  </data>
 </root>

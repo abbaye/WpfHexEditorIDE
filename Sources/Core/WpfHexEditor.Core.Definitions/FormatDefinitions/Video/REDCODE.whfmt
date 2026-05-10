@@ -219,5 +219,36 @@
     "MaxResolution": "8192x4320 (8K Full Format)",
     "BitDepth": "16-bit half-float linear (decoded)",
     "IntraFrameOnly": true
+  },
+  "diff": {
+    "keyFields": [
+      "red_magic",
+      "red_width",
+      "red_height"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for REDCODE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "red_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "red_width",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "red_height",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for REDCODE. Hand-tune weights/rates per format if needed."
   }
 }

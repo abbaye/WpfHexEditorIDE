@@ -26,5 +26,9 @@ public sealed record ProjectMetrics
     public int      Score           { get; init; }
     public string   Grade           { get; init; } = "?";
 
+    // Phase 2 aggregates
+    public double   AvgMaintainabilityIndex { get; init; }
+    public double   AvgCommentDensity       { get; init; }
+
     public IReadOnlyList<FileMetrics> Files { get; init; } = [];
 }

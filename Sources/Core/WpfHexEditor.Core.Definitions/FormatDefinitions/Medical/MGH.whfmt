@@ -233,5 +233,42 @@
   "functions": {
     "readUInt32BE": "Read all big-endian header int32 fields",
     "computeFromVariables(width * height, totalPixels)": "Calculate total voxels"
+  },
+  "diff": {
+    "keyFields": [
+      "mgh_version",
+      "width",
+      "height",
+      "data_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for MGH. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "mgh_version",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "data_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "width",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      },
+      {
+        "field": "height",
+        "mutation": "boundary_values",
+        "description": "Apply 0, 1, MAX-1, MAX boundaries — exposes overflow / underflow paths."
+      }
+    ],
+    "note": "Inferred fuzz strategies for MGH. Hand-tune weights/rates per format if needed."
   }
 }

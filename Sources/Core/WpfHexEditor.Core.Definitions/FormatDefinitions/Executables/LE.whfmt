@@ -179,5 +179,30 @@
     "magicBytes": "4C45 or 4C58",
     "endianness": "little-endian",
     "notes": "LE uses a flat (linear) address space model unlike NE's segmented model. LX is the OS/2 2.x variant with minor header differences. Windows 9x VxD files use LE with Win386 OS type and VxD loader flags in the module flags field."
+  },
+  "diff": {
+    "keyFields": [
+      "cpu_type",
+      "os_type"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for LE. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "cpu_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      },
+      {
+        "field": "os_type",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for LE. Hand-tune weights/rates per format if needed."
   }
 }

@@ -262,5 +262,30 @@
       "iconGlyph": "",
       "diffMode": "text"
     }
+  },
+  "diff": {
+    "keyFields": [
+      "vcard_magic",
+      "next_byte"
+    ],
+    "ignoreFields": [],
+    "note": "Inferred semantic diff for VCARD. Compare key structural fields; ignore volatile metadata."
+  },
+  "fuzz": {
+    "preserveChecksums": false,
+    "maxMutationsPerFile": 1,
+    "strategies": [
+      {
+        "field": "vcard_magic",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt magic bytes at offset 0 — parser must reject."
+      },
+      {
+        "field": "next_byte",
+        "mutation": "enum_sweep",
+        "description": "Sweep all valid enum codes plus reserved/invalid values."
+      }
+    ],
+    "note": "Inferred fuzz strategies for VCARD. Hand-tune weights/rates per format if needed."
   }
 }

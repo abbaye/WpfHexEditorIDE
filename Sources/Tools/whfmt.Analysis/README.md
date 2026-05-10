@@ -16,6 +16,21 @@ Powered by **757 binary whfmt format definitions** covering Archives, Images, Ex
 
 ---
 
+## What's New
+
+### v1.1.0 — Hex diff, checksums, structural diff
+
+- **`HexDiff`** — per-byte `BytesA` / `BytesB` / `DiffMask` rendered inline for changed binary fields
+- **`ChecksumStatus`** — CRC32 / MD5 / SHA1 / SHA256 stored-vs-computed validation per file (`CorruptedCountA`, `CorruptedCountB`)
+- **`StructuralDiff`** — block-level `OnlyInA` / `OnlyInB` / `InBoth` using MD5 block hashes
+- **`FieldChange.IsCorrupted`** — surfaces fields with broken checksums in diff output
+- **`DiffResult` is now an immutable value-object** (all properties `init`-only)
+- **`CompareAsync()`** — file-path and stream overloads
+- **New renderers** — `DiffRenderer.ToCsv()` and `DiffRenderer.ToMarkdown()` (GitHub-flavored tables with emoji status)
+- **Single-pass field extraction** in `FormatDiff` — half the JSON iteration cost on large definitions
+
+---
+
 ## Install
 
 ```bash
