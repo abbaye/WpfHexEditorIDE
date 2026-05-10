@@ -394,9 +394,27 @@ public sealed class ProjectPropertiesViewModel : ViewModelBase
         if (!string.Equals(ProjectName, _project.Name, StringComparison.Ordinal))
             await _solutionManager.RenameProjectAsync(_project, ProjectName);
 
+        // Persist project-level MSBuild properties when the project is a VS
+        // project with a .csproj / .vbproj file path exposed via reflection.
+        var projectFile = TryGetVsProjectPath();
+        if (!string.IsNullOrEmpty(projectFile) && File.Exists(projectFile))
+        {
+            CsprojPropertyWriter.SetProjectProperty(projectFile, "TargetFramework",  TargetFramework);
+            CsprojPropertyWriter.SetProjectProperty(projectFile, "AssemblyName",     AssemblyName);
+            CsprojPropertyWriter.SetProjectProperty(projectFile, "RootNamespace",    DefaultNamespace);
+            CsprojPropertyWriter.SetProjectProperty(projectFile, "OutputType",       OutputType);
+        }
+
         IsDirty       = false;
         SaveCompleted = true;   // pulse â€” code-behind shows toast
         SaveCompleted = false;
+    }
+
+    private string? TryGetVsProjectPath()
+    {
+        var t = _project.GetType();
+        return (t.GetProperty("ProjectFile") ?? t.GetProperty("FilePath") ?? t.GetProperty("Path"))
+                ?.GetValue(_project) as string;
     }
 
     private Task AddNuGetAsync()

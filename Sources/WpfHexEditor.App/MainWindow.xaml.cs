@@ -3980,7 +3980,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnSolutionExplorerItemSelected(object? sender, ProjectItemEventArgs e)
     {
-        _propertiesPanel?.SetProvider(new ProjectItemPropertyProvider(e.Item));
+        var path = e.Item?.AbsolutePath;
+        if (!string.IsNullOrEmpty(path)
+            && (path.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)
+             || path.EndsWith(".vbproj", StringComparison.OrdinalIgnoreCase)))
+        {
+            _propertiesPanel?.SetProvider(new WpfHexEditor.Core.ProjectSystem.Providers.ProjectNodePropertyProvider(path));
+        }
+        else
+        {
+            _propertiesPanel?.SetProvider(new ProjectItemPropertyProvider(e.Item));
+        }
 
         // Publish file preview event for ParsedFields panel (and any other consumers).
         var filePath = e.Item?.AbsolutePath;

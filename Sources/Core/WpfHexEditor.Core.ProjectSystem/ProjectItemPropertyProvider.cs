@@ -84,6 +84,14 @@ public sealed class ProjectItemPropertyProvider : IPropertyProvider
             groups.Add(vbProvider.BuildGroup());
         }
 
+        // -- C# item group (for .cs files) ------------------------------------
+        if (string.Equals(Path.GetExtension(_item.AbsolutePath), ".cs",
+                          StringComparison.OrdinalIgnoreCase))
+        {
+            var csProvider = new CsprojItemGroupPropertyProvider(_item.AbsolutePath);
+            groups.Add(csProvider.BuildGroup());
+        }
+
         return groups;
     }
 
