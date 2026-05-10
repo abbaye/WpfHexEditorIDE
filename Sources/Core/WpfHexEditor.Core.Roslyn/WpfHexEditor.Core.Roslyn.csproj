@@ -35,6 +35,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.SourceAnalysis\WpfHexEditor.Core.SourceAnalysis.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core.DocumentStructure\WpfHexEditor.Core.DocumentStructure.csproj" />
   </ItemGroup>
 
 </Project>
