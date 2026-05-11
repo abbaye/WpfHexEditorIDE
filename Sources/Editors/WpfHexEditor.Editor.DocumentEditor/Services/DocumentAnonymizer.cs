@@ -21,11 +21,8 @@ namespace WpfHexEditor.Editor.DocumentEditor.Services;
 /// </summary>
 public static class DocumentAnonymizer
 {
-    /// <summary>Marker written into <see cref="DocumentMetadata.Extra"/> when stripped.</summary>
-    public const string AnonymizedMarker = "anonymized";
-
-    /// <summary>Marker written into <see cref="DocumentMetadata.Extra"/> when macros were removed.</summary>
-    public const string MacrosRemovedMarker = "macrosRemoved";
+    // Marker keys live on DocumentMetadataExtraKeys so format savers can
+    // honor the same names without referencing the DocumentEditor assembly.
 
     /// <summary>
     /// Clears author/creation/modification fields and any custom Extra
@@ -55,12 +52,12 @@ public static class DocumentAnonymizer
         // Preserve format identity but clear authoring "Extra" keys (template flags, etc.)
         // that may leak provenance — except the marker itself.
         meta.Extra.Clear();
-        meta.Extra[AnonymizedMarker] = "true";
+        meta.Extra[DocumentMetadataExtraKeys.Anonymized] = "true";
 
         if (stripMacros && meta.HasMacros)
         {
             meta.HasMacros = false;
-            meta.Extra[MacrosRemovedMarker] = "true";
+            meta.Extra[DocumentMetadataExtraKeys.MacrosRemoved] = "true";
         }
 
         model.Metadata = meta;

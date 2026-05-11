@@ -117,7 +117,7 @@ public sealed class DocxDocumentLoader : IDocumentLoader
                             : Path.GetFileNameWithoutExtension(filePath)
         };
         if (IsTemplate(filePath))
-            metadata.Extra["isTemplate"] = "true";
+            metadata.Extra[DocumentMetadataExtraKeys.IsTemplate] = "true";
 
         target.FilePath    = filePath;
         target.Metadata    = metadata;

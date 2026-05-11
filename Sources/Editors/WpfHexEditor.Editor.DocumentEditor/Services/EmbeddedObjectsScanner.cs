@@ -32,9 +32,6 @@ public static class EmbeddedObjectsScanner
 
         Walk(model.Blocks, list);
 
-        // Synthetic entry for VBA macros — only the loader can confirm
-        // their presence (it reads word/vbaProject.bin). Drill-down opens
-        // that ZIP entry from the source file when available.
         if (model.Metadata?.HasMacros == true)
         {
             list.Add(new EmbeddedObjectEntry
@@ -42,9 +39,7 @@ public static class EmbeddedObjectsScanner
                 Kind         = "macro",
                 Name         = "vbaProject.bin",
                 SizeBytes    = -1,
-                Source       = "word/vbaProject.bin",
                 ZipEntryName = "word/vbaProject.bin",
-                Block        = null
             });
         }
         return list;
@@ -55,39 +50,31 @@ public static class EmbeddedObjectsScanner
         foreach (var b in blocks)
         {
             if (b.Kind == "image" || b.Kind == "object")
-            {
-                var entry = new EmbeddedObjectEntry
-                {
-                    Kind  = b.Kind == "object" ? "OLE" : "image",
-                    Name  = ExtractName(b),
-                    Block = b
-                };
-                if (b.Attributes.TryGetValue("zipEntryName", out var ze) && ze is string zes)
-                {
-                    entry.Source       = zes;
-                    entry.ZipEntryName = zes;
-                }
-                if (b.Attributes.TryGetValue("binaryData", out var bd) && bd is byte[] bytes)
-                {
-                    entry.InlineData = bytes;
-                    entry.SizeBytes  = bytes.Length;
-                }
-                else if (b.Attributes.TryGetValue("binarySize", out var bs))
-                {
-                    entry.SizeBytes = bs is int isz ? isz : -1;
-                }
-                else
-                {
-                    entry.SizeBytes = b.RawLength;
-                }
-                if (string.IsNullOrEmpty(entry.Source))
-                    entry.Source = $"@0x{b.RawOffset:X}";
-
-                sink.Add(entry);
-            }
-
+                sink.Add(BuildEntry(b));
             if (b.Children.Count > 0) Walk(b.Children, sink);
         }
+    }
+
+    private static EmbeddedObjectEntry BuildEntry(DocumentBlock b)
+    {
+        var entry = new EmbeddedObjectEntry
+        {
+            Kind  = b.Kind == "object" ? "OLE" : "image",
+            Name  = ExtractName(b),
+            Block = b
+        };
+        if (b.Attributes.TryGetValue("zipEntryName", out var ze) && ze is string zes)
+            entry.ZipEntryName = zes;
+        if (b.Attributes.TryGetValue("binaryData", out var bd) && bd is byte[] bytes)
+        {
+            entry.InlineData = bytes;
+            entry.SizeBytes  = bytes.Length;
+        }
+        else if (b.Attributes.TryGetValue("binarySize", out var bs))
+            entry.SizeBytes = bs is int isz ? isz : -1;
+        else
+            entry.SizeBytes = b.RawLength;
+        return entry;
     }
 
     private static string ExtractName(DocumentBlock b)
@@ -104,11 +91,14 @@ public sealed class EmbeddedObjectEntry
 {
     public string  Kind         { get; set; } = string.Empty;
     public string  Name         { get; set; } = string.Empty;
-    public string  Source       { get; set; } = string.Empty;
     public int     SizeBytes    { get; set; }
     public string? ZipEntryName { get; set; }
     public byte[]? InlineData   { get; set; }
     public DocumentBlock? Block { get; set; }
+
+    /// <summary>Display string for the Source column: zip path or raw byte offset.</summary>
+    public string Source => ZipEntryName
+        ?? (Block is not null ? $"@0x{Block.RawOffset:X}" : string.Empty);
 
     public string SizeText => SizeBytes < 0
         ? "—"

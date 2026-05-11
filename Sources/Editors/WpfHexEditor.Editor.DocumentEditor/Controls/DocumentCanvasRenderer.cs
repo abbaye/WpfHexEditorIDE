@@ -4814,9 +4814,11 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
     /// </summary>
     private List<WpfHexEditor.Editor.DocumentEditor.Core.Model.DocumentBlock> GetSelectedBlocksClone()
     {
-        var list = new List<WpfHexEditor.Editor.DocumentEditor.Core.Model.DocumentBlock>();
-        if (_selection.IsEmpty) return list;
+        if (_selection.IsEmpty)
+            return new List<WpfHexEditor.Editor.DocumentEditor.Core.Model.DocumentBlock>(0);
         var (start, end) = _selection.Ordered;
+        var list = new List<WpfHexEditor.Editor.DocumentEditor.Core.Model.DocumentBlock>(
+            end.BlockIndex - start.BlockIndex + 1);
 
         for (int bi = start.BlockIndex; bi <= end.BlockIndex && bi < _blocks.Count; bi++)
         {

@@ -20,6 +20,10 @@ namespace WpfHexEditor.Editor.DocumentEditor.Core.Schema;
 /// </summary>
 public static class RtfSchemaEngine
 {
+    /// <summary>Escapes the three characters that must be escaped in RTF text: <c>\</c>, <c>{</c>, <c>}</c>.</summary>
+    public static string EscapeText(string text) =>
+        text.Replace(@"\", @"\\").Replace("{", @"\{").Replace("}", @"\}");
+
     // ── Loading ──────────────────────────────────────────────────────────────
 
     /// <summary>

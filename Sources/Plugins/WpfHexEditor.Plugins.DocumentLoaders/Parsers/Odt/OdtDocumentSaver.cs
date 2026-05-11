@@ -41,7 +41,7 @@ public sealed class OdtDocumentSaver : IDocumentSaver
         using var outputMs   = new MemoryStream();
 
         bool anonymize = model.Metadata?.Extra is { } extra &&
-                         extra.TryGetValue("anonymized", out var anon) && anon == "true";
+                         extra.TryGetValue(DocumentMetadataExtraKeys.Anonymized, out var anon) && anon == "true";
 
         using (var originalZip = new ZipArchive(originalMs, ZipArchiveMode.Read, leaveOpen: true))
         using (var outputZip   = new ZipArchive(outputMs,   ZipArchiveMode.Create, leaveOpen: true))

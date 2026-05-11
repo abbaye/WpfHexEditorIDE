@@ -35,39 +35,26 @@ public sealed class DocxDocumentSaver : IDocumentSaver
     {
         var schema = LoadSchema("DOCX.whfmt");
         bool hasOriginal = !string.IsNullOrEmpty(model.FilePath) && File.Exists(model.FilePath);
-        bool anonymize   = model.Metadata?.Extra is { } extra &&
-                           extra.TryGetValue("anonymized", out var anon) && anon == "true";
-        bool stripMacros = anonymize && model.Metadata?.Extra is { } extra2 &&
-                           extra2.TryGetValue("macrosRemoved", out var mr) && mr == "true";
+        bool anonymize   = HasFlag(model, DocumentMetadataExtraKeys.Anonymized);
+        bool stripMacros = anonymize && HasFlag(model, DocumentMetadataExtraKeys.MacrosRemoved);
 
         using var outputMs = new MemoryStream();
 
         using (var outputZip = new ZipArchive(outputMs, ZipArchiveMode.Create, leaveOpen: true))
         {
-            const string documentEntry = "word/document.xml";
+            const string documentEntry  = "word/document.xml";
             const string corePropsEntry = "docProps/core.xml";
-            const string appPropsEntry  = "docProps/app.xml";
-            const string vbaEntry       = "word/vbaProject.bin";
 
             if (hasOriginal)
             {
-                byte[] originalBytes = await File.ReadAllBytesAsync(model.FilePath, ct);
-                using var originalMs = new MemoryStream(originalBytes);
-                using var originalZip = new ZipArchive(originalMs, ZipArchiveMode.Read, leaveOpen: true);
+                // Stream from disk rather than buffering the entire archive into memory
+                // — relevant for large DOCX/DOCM with embedded media.
+                await using var originalStream = File.OpenRead(model.FilePath!);
+                using var originalZip = new ZipArchive(originalStream, ZipArchiveMode.Read, leaveOpen: true);
 
                 foreach (var entry in originalZip.Entries)
                 {
-                    if (entry.FullName.Equals(documentEntry, StringComparison.OrdinalIgnoreCase))
-                        continue;
-
-                    // Anonymization: skip vbaProject.bin (will be omitted) and
-                    // replace docProps/core.xml + app.xml with cleaned content.
-                    if (anonymize && stripMacros &&
-                        entry.FullName.Equals(vbaEntry, StringComparison.OrdinalIgnoreCase))
-                        continue;
-                    if (anonymize &&
-                        (entry.FullName.Equals(corePropsEntry, StringComparison.OrdinalIgnoreCase) ||
-                         entry.FullName.Equals(appPropsEntry,  StringComparison.OrdinalIgnoreCase)))
+                    if (ShouldSkipEntry(entry.FullName, documentEntry, anonymize, stripMacros))
                         continue;
 
                     var newEntry = outputZip.CreateEntry(entry.FullName, CompressionLevel.Optimal);
@@ -128,6 +115,27 @@ public sealed class DocxDocumentSaver : IDocumentSaver
         WriteEntry(zip, "[Content_Types].xml",          contentTypesXml);
         WriteEntry(zip, "_rels/.rels",                  packageRelsXml);
         WriteEntry(zip, "word/_rels/document.xml.rels", documentRelsXml);
+    }
+
+    private static bool HasFlag(DocumentModel model, string key) =>
+        model.Metadata?.Extra is { } extra &&
+        extra.TryGetValue(key, out var v) && v == "true";
+
+    /// <summary>
+    /// Returns true when <paramref name="entryName"/> should not be copied to
+    /// the output archive. Skips the document entry (always rewritten), the
+    /// docProps when anonymizing, and vbaProject.bin when macros are stripped.
+    /// </summary>
+    private static bool ShouldSkipEntry(string entryName, string documentEntry,
+        bool anonymize, bool stripMacros)
+    {
+        if (entryName.Equals(documentEntry, StringComparison.OrdinalIgnoreCase)) return true;
+        if (!anonymize) return false;
+        if (entryName.Equals("docProps/core.xml", StringComparison.OrdinalIgnoreCase)) return true;
+        if (entryName.Equals("docProps/app.xml",  StringComparison.OrdinalIgnoreCase)) return true;
+        if (stripMacros &&
+            entryName.Equals("word/vbaProject.bin", StringComparison.OrdinalIgnoreCase)) return true;
+        return false;
     }
 
     /// <summary>

@@ -118,8 +118,7 @@ public partial class EmbeddedObjectsDialog : ThemedDialog
             using var fs = File.OpenRead(_model.FilePath);
             fs.Seek(entry.Block.RawOffset, SeekOrigin.Begin);
             byte[] buf = new byte[entry.Block.RawLength];
-            int read   = fs.Read(buf, 0, buf.Length);
-            if (read < buf.Length) Array.Resize(ref buf, read);
+            fs.ReadExactly(buf);
             return buf;
         }
 
