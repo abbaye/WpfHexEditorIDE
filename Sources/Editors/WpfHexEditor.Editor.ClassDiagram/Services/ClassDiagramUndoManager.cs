@@ -139,7 +139,10 @@ public sealed record SourceFileBackupUndoEntry(
 /// </summary>
 public sealed class ClassDiagramUndoManager
 {
-    private const int MaxEntries = 200;
+    // Phase 3B (ADR-031): industrial undo depth. 2000 entries cover a multi-hour
+    // editing session even with fine-grained operations; the cap is a soft ring
+    // (oldest entry drops on overflow). Memory cost ~2000*sizeof(record) ≈ negligible.
+    private const int MaxEntries = 2000;
 
     private readonly List<IClassDiagramUndoEntry> _stack = new(MaxEntries + 1);
     private int _pointer;
