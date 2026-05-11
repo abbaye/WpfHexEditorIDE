@@ -803,7 +803,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
             dc.DrawRectangle(lodAccentBrush, null, new Rect(0, 0, AccentBarWidth, HeaderBaseHeight));
             dc.Pop();
             Brush lodName = Res("CD_ClassNameForeground", Color.FromRgb(220, 220, 255));
-            var lodFt = MakeFT(node.Name, lodName, 10.0, bold: true);
+            var lodFt = MakeFT(GetDisplayName(node), lodName, 10.0, bold: true);
             dc.DrawText(lodFt, new Point((width - lodFt.Width) / 2,
                 (HeaderBaseHeight - lodFt.Height) / 2));
             if (isDimmed) dc.Pop();
@@ -871,8 +871,8 @@ public sealed class DiagramVisualLayer : FrameworkElement
         dc.DrawRectangle(accentGrad, null, new Rect(0, 0, AccentBarWidth, headerH));
         dc.Pop();
 
-        // ── Row 1: [icon] Name ───────────────────────────────────────────────
-        var nameFt = MakeFT(node.Name, nameColor, 13.0, bold: true);
+        // ── Row 1: [icon] Name<Generics> ─────────────────────────────────────
+        var nameFt = MakeFT(GetDisplayName(node), nameColor, 13.0, bold: true);
         double nameRowH = Math.Max(TypeIconSize, nameFt.Height);
         double nameRowY = 6.0;
 
@@ -1681,6 +1681,10 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     private static string GetStereotype(ClassNode node)
     {
+        // Phase 2B — user-supplied stereotypes win over auto-derived ones.
+        if (node.Stereotypes is { Count: > 0 })
+            return string.Concat(node.Stereotypes.Select(s => $"«{s}»"));
+
         if (node.IsRecord)  return "«record»";
         if (node.IsSealed && node.Kind == ClassKind.Class) return "«sealed»";
         return node.Kind switch
@@ -1692,6 +1696,20 @@ public sealed class DiagramVisualLayer : FrameworkElement
             ClassKind.Class when node.IsAbstract => "«abstract»",
             _ => string.Empty
         };
+    }
+
+    /// <summary>
+    /// Phase 2A — returns the display name with generic parameters in angle
+    /// brackets when the node has any. Constraints are not included in the
+    /// header (rendered in tooltip / properties panel instead) to keep the
+    /// header readable on small nodes.
+    /// </summary>
+    internal static string GetDisplayName(ClassNode node)
+    {
+        if (node.TypeParameters is not { Count: > 0 }) return node.Name;
+        var parts = node.TypeParameters.Select(tp =>
+            string.IsNullOrEmpty(tp.Variance) ? tp.Name : $"{tp.Variance} {tp.Name}");
+        return $"{node.Name}<{string.Join(", ", parts)}>";
     }
 
     /// <summary>Builds the merged stereotype + attributes label for a node header.</summary>
@@ -1712,8 +1730,8 @@ public sealed class DiagramVisualLayer : FrameworkElement
     /// <summary>Computes dynamic header height: Row1=icon+name, Row2=stereotype, Row3=namespace.</summary>
     public double ComputeHeaderHeight(ClassNode node)
     {
-        // Row 1: icon + name
-        var nameFt = MakeFT(node.Name, Brushes.White, 13.0, bold: true);
+        // Row 1: icon + name (with generics if any, so the row height matches the renderer)
+        var nameFt = MakeFT(GetDisplayName(node), Brushes.White, 13.0, bold: true);
         double y = 6.0 + Math.Max(TypeIconSize, nameFt.Height) + 2.0;
 
         // Row 2: merged stereotype + attributes

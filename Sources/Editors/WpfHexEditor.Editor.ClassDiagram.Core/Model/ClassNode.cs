@@ -101,6 +101,21 @@ public sealed class ClassNode
     /// </summary>
     public List<string> Attributes { get; init; } = [];
 
+    /// <summary>
+    /// Phase 2A — Type parameters with their generic constraints, rendered in the
+    /// node header (e.g. <c>Foo&lt;T, U&gt; where T : IComparable&lt;T&gt;</c>).
+    /// Empty when the type is non-generic or when populated by the regex fallback.
+    /// </summary>
+    public List<GenericParameter> TypeParameters { get; init; } = [];
+
+    /// <summary>
+    /// Phase 2B — UML stereotypes shown above the type name in guillemets
+    /// (e.g. <c>&lt;&lt;interface&gt;&gt;</c>, <c>&lt;&lt;entity&gt;&gt;</c>, <c>&lt;&lt;service&gt;&gt;</c>).
+    /// Detected from declared attributes when the analyzer recognises a known
+    /// pattern; user can also add custom stereotypes via the properties panel.
+    /// </summary>
+    public List<string> Stereotypes { get; init; } = [];
+
     // -------------------------------------------------------
     // Layout Properties (mutated by AutoLayoutEngine and drag)
     // -------------------------------------------------------
