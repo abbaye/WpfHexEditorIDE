@@ -366,6 +366,36 @@ namespace WpfHexEditor.Editor.DocumentEditor.Properties {
             }
         }
 
+        internal static string EmbeddedDlg_SourceSha {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_SourceSha", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_ShaComputing {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_ShaComputing", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_CopySha {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_CopySha", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_HashAll {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_HashAll", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_HashAllToolTip {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_HashAllToolTip", resourceCulture);
+            }
+        }
+
         internal static string DocEditorHost_AnonymizeToolTip {
             get {
                 return ResourceManager.GetString("DocEditorHost_AnonymizeToolTip", resourceCulture);

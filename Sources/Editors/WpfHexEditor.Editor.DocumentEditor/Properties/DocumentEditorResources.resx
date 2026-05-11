@@ -985,4 +985,11 @@ Custom properties cleared: {3}</value>
   <data name="EmbeddedDlg_CountFmt"          xml:space="preserve"><value>{0} embedded object(s)</value></data>
   <data name="EmbeddedDlg_EntryNotFoundFmt"  xml:space="preserve"><value>ZIP entry not found: {0}</value></data>
   <data name="EmbeddedDlg_NoSource"          xml:space="preserve"><value>The embedded object has no available source bytes (no inline data and the original file is missing).</value></data>
+
+  <!-- Hash signing (T3.1) -->
+  <data name="EmbeddedDlg_SourceSha"         xml:space="preserve"><value>Source SHA-256:</value></data>
+  <data name="EmbeddedDlg_ShaComputing"      xml:space="preserve"><value>computing…</value></data>
+  <data name="EmbeddedDlg_CopySha"           xml:space="preserve"><value>Copy hash to clipboard</value></data>
+  <data name="EmbeddedDlg_HashAll"           xml:space="preserve"><value>Hash All</value></data>
+  <data name="EmbeddedDlg_HashAllToolTip"    xml:space="preserve"><value>Compute SHA-256 over every embedded object</value></data>
 </root>

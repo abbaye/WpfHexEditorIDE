@@ -124,6 +124,20 @@ public sealed class EmbeddedObjectEntry
     public byte[]? InlineData   { get; set; }
     public DocumentBlock? Block { get; set; }
 
+    /// <summary>
+    /// SHA-256 hex digest of the embedded bytes. Populated lazily by the
+    /// dialog after extraction — empty until <see cref="ComputeHash"/> runs.
+    /// </summary>
+    public string Sha256 { get; private set; } = string.Empty;
+
+    /// <summary>Computes <see cref="Sha256"/> over the given bytes. Idempotent.</summary>
+    public void ComputeHash(byte[] bytes)
+    {
+        if (!string.IsNullOrEmpty(Sha256) || bytes is null || bytes.Length == 0) return;
+        using var sha = System.Security.Cryptography.SHA256.Create();
+        Sha256 = Convert.ToHexString(sha.ComputeHash(bytes)).ToLowerInvariant();
+    }
+
     /// <summary>Display string for the Source column: zip path or raw byte offset.</summary>
     public string Source => ZipEntryName
         ?? (Block is not null ? $"@0x{Block.RawOffset:X}" : string.Empty);

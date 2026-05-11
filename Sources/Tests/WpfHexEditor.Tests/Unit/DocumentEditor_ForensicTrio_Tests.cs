@@ -111,6 +111,27 @@ namespace WpfHexEditor.Tests.Unit
             Assert.AreEqual("2.00 MB", new EmbeddedObjectEntry { SizeBytes = 2 * 1024 * 1024 }.SizeText);
         }
 
+        [TestMethod]
+        public void ComputeHash_PopulatesSha256_OncePerEntry()
+        {
+            var entry = new EmbeddedObjectEntry { Kind = "image" };
+            entry.ComputeHash(new byte[] { 0x68, 0x69 }); // "hi"
+            // SHA-256 of "hi" = 8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4
+            Assert.AreEqual("8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4", entry.Sha256);
+
+            // Idempotent: second call doesn't overwrite.
+            entry.ComputeHash(new byte[] { 0xFF });
+            Assert.AreEqual("8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4", entry.Sha256);
+        }
+
+        [TestMethod]
+        public void ComputeHash_EmptyOrNullBytes_LeavesEmptyHash()
+        {
+            var entry = new EmbeddedObjectEntry();
+            entry.ComputeHash(System.Array.Empty<byte>());
+            Assert.AreEqual(string.Empty, entry.Sha256);
+        }
+
         // ── DocumentAnonymizer ────────────────────────────────────────────
 
         [TestMethod]

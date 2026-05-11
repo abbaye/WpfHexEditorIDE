@@ -44,7 +44,65 @@ public partial class EmbeddedObjectsDialog : ThemedDialog
         if (entries.Count > 0)
             PART_List.SelectedIndex = 0;
 
+        PART_SourceSha.Text = DocumentEditorResources.EmbeddedDlg_ShaComputing;
+        _ = ComputeSourceShaAsync();
+
         Closed += OnDialogClosed;
+    }
+
+    private async Task ComputeSourceShaAsync()
+    {
+        if (string.IsNullOrEmpty(_model.FilePath) || !File.Exists(_model.FilePath))
+        {
+            PART_SourceSha.Text = "—";
+            return;
+        }
+        try
+        {
+            string hex = await Task.Run(() =>
+            {
+                using var sha = System.Security.Cryptography.SHA256.Create();
+                using var fs  = File.OpenRead(_model.FilePath);
+                return Convert.ToHexString(sha.ComputeHash(fs)).ToLowerInvariant();
+            });
+            PART_SourceSha.Text = hex;
+        }
+        catch (Exception ex)
+        {
+            PART_SourceSha.Text = ex.Message;
+        }
+    }
+
+    private void OnCopyShaClicked(object sender, RoutedEventArgs e)
+    {
+        try { System.Windows.Clipboard.SetText(PART_SourceSha.Text); }
+        catch { /* clipboard busy */ }
+    }
+
+    private void OnHashAllClicked(object sender, RoutedEventArgs e)
+    {
+        if (PART_List.ItemsSource is not IReadOnlyList<EmbeddedObjectEntry> entries) return;
+        try
+        {
+            foreach (var entry in entries)
+            {
+                byte[]? bytes = entry.InlineData ?? TryLoadBytesQuiet(entry);
+                if (bytes is not null) entry.ComputeHash(bytes);
+            }
+            // Re-bind so the column refreshes (entries are plain CLR objects, no INotifyPropertyChanged).
+            PART_List.Items.Refresh();
+        }
+        catch (Exception ex)
+        {
+            IdeMessageBox.Show(ex.Message, DocumentEditorResources.EmbeddedDlg_Title,
+                MessageBoxButton.OK, MessageBoxImage.Error, Window.GetWindow(this));
+        }
+    }
+
+    private byte[]? TryLoadBytesQuiet(EmbeddedObjectEntry entry)
+    {
+        try { return LoadBytes(entry); }
+        catch { return null; }
     }
 
     private void OnDialogClosed(object? sender, EventArgs e)
