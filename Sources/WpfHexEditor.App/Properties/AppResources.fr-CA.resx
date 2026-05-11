@@ -791,6 +791,9 @@
   <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Cycles entre projets</value></data>
   <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Aucun cycle entre projets détecté.</value></data>
   <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Diagramme en cordes des cycles de dépendances entre projets. Chaque courbe rouge est un arc de cycle.</value></data>
+  <data name="CodeAnalysis_Fix_WH0010_Title" xml:space="preserve"><value>Supprimer le membre privé non utilisé</value></data>
+  <data name="CodeAnalysis_Fix_WH0013_Title" xml:space="preserve"><value>Supprimer la variable locale non utilisée</value></data>
+  <data name="CodeAnalysis_Fix_WH0061_Title" xml:space="preserve"><value>Remplacer `async void` par `async Task`</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Copier en Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Copier l’ID du problème</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Ouvrir le fichier source</value></data>

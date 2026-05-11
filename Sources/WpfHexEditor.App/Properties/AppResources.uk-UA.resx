@@ -653,6 +653,9 @@
   <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Цикли проектів</value></data>
   <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Циклів проектів не виявлено.</value></data>
   <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Хордова діаграма циклів залежностей між проектами. Кожна червона крива — ребро циклу.</value></data>
+  <data name="CodeAnalysis_Fix_WH0010_Title" xml:space="preserve"><value>Видалити невикористаний приватний член</value></data>
+  <data name="CodeAnalysis_Fix_WH0013_Title" xml:space="preserve"><value>Видалити невикористану локальну змінну</value></data>
+  <data name="CodeAnalysis_Fix_WH0061_Title" xml:space="preserve"><value>Замінити `async void` на `async Task`</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Загальні</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Порогові значення</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Правила</value></data>

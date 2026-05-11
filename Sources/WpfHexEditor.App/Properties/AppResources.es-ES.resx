@@ -957,6 +957,9 @@
   <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Ciclos de proyectos</value></data>
   <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>No se detectaron ciclos de proyectos.</value></data>
   <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Diagrama de cuerdas de los ciclos de dependencia entre proyectos. Cada curva roja es una arista del ciclo.</value></data>
+  <data name="CodeAnalysis_Fix_WH0010_Title" xml:space="preserve"><value>Eliminar miembro privado no usado</value></data>
+  <data name="CodeAnalysis_Fix_WH0013_Title" xml:space="preserve"><value>Eliminar variable local no usada</value></data>
+  <data name="CodeAnalysis_Fix_WH0061_Title" xml:space="preserve"><value>Cambiar `async void` por `async Task`</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>General</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Umbrales</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Reglas</value></data>

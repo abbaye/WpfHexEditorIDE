@@ -6275,6 +6275,9 @@ namespace WpfHexEditor.App.Properties {
         internal static string CodeAnalysis_Cycles_Title             { get { return ResourceManager.GetString("CodeAnalysis_Cycles_Title",             resourceCulture); } }
         internal static string CodeAnalysis_Cycles_NoneFound         { get { return ResourceManager.GetString("CodeAnalysis_Cycles_NoneFound",         resourceCulture); } }
         internal static string CodeAnalysis_Cycles_Tooltip           { get { return ResourceManager.GetString("CodeAnalysis_Cycles_Tooltip",           resourceCulture); } }
+        internal static string CodeAnalysis_Fix_WH0010_Title         { get { return ResourceManager.GetString("CodeAnalysis_Fix_WH0010_Title",         resourceCulture); } }
+        internal static string CodeAnalysis_Fix_WH0013_Title         { get { return ResourceManager.GetString("CodeAnalysis_Fix_WH0013_Title",         resourceCulture); } }
+        internal static string CodeAnalysis_Fix_WH0061_Title         { get { return ResourceManager.GetString("CodeAnalysis_Fix_WH0061_Title",         resourceCulture); } }
 
         internal static string PluginCmd_New_Description    { get { return ResourceManager.GetString("PluginCmd_New_Description",    resourceCulture); } }
         internal static string PluginCmd_New_Usage          { get { return ResourceManager.GetString("PluginCmd_New_Usage",          resourceCulture); } }

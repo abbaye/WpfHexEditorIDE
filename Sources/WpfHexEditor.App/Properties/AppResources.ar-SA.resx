@@ -957,6 +957,9 @@
   <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>حلقات المشاريع</value></data>
   <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>لم يتم اكتشاف حلقات بين المشاريع.</value></data>
   <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>مخطط الأوتار لحلقات التبعية بين المشاريع. كل منحنى أحمر يمثل ضلعًا لحلقة.</value></data>
+  <data name="CodeAnalysis_Fix_WH0010_Title" xml:space="preserve"><value>إزالة العضو الخاص غير المستخدم</value></data>
+  <data name="CodeAnalysis_Fix_WH0013_Title" xml:space="preserve"><value>إزالة المتغير المحلي غير المستخدم</value></data>
+  <data name="CodeAnalysis_Fix_WH0061_Title" xml:space="preserve"><value>تغيير `async void` إلى `async Task`</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>عام</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>العتبات</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>القواعد</value></data>

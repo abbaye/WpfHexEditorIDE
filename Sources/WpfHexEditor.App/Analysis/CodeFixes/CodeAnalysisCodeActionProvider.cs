@@ -14,6 +14,8 @@
 // ==========================================================
 
 using System.IO;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using WpfHexEditor.App.Analysis.CodeFixes.Fixers;
 using WpfHexEditor.App.Analysis.Models;
 using WpfHexEditor.App.Properties;
@@ -29,6 +31,14 @@ internal sealed class CodeAnalysisCodeActionProvider : ICodeActionProvider
         new ConfigureAwaitFixer(),
         new CountToAnyFixer(),
         new RemoveTodoMarkerFixer(),
+    ];
+
+    // Phase 11 — Roslyn-based fixers operate on parsed SyntaxTree, safer than regex.
+    private readonly IRoslynFixer[] _roslynFixers =
+    [
+        new AsyncVoidToTaskFixer(),
+        new UnusedLocalRemoveFixer(),
+        new UnusedPrivateRemoveFixer(),
     ];
 
     private DiagnosticIndex? _index;
@@ -54,7 +64,18 @@ internal sealed class CodeAnalysisCodeActionProvider : ICodeActionProvider
     private IReadOnlyList<LspCodeAction> BuildActions(string filePath, List<AnalysisDiagnostic> diagnostics)
     {
         IReadOnlyList<string>? lines = null;
-        try { if (File.Exists(filePath)) lines = File.ReadAllLines(filePath); } catch { }
+        SyntaxTree?            tree  = null;
+        try
+        {
+            if (File.Exists(filePath))
+            {
+                var text = File.ReadAllText(filePath);
+                lines    = text.Split('\n');
+                if (filePath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
+                    tree = CSharpSyntaxTree.ParseText(text, path: filePath);
+            }
+        }
+        catch { /* best-effort; provider must never throw */ }
 
         var actions = new List<LspCodeAction>();
         foreach (var d in diagnostics)
@@ -65,6 +86,15 @@ internal sealed class CodeAnalysisCodeActionProvider : ICodeActionProvider
                 {
                     if (fixer.RuleId != d.Id) continue;
                     var built = fixer.TryBuild(d, lines);
+                    if (built is not null) actions.Add(built);
+                }
+            }
+            if (tree is not null)
+            {
+                foreach (var roslyn in _roslynFixers)
+                {
+                    if (roslyn.RuleId != d.Id) continue;
+                    var built = roslyn.TryBuild(d, tree);
                     if (built is not null) actions.Add(built);
                 }
             }

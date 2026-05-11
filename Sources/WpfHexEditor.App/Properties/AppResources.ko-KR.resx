@@ -957,6 +957,9 @@
   <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>프로젝트 순환</value></data>
   <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>프로젝트 순환이 감지되지 않았습니다.</value></data>
   <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>프로젝트 간 종속성 순환의 코드 다이어그램입니다. 빨간색 곡선은 순환 간선입니다.</value></data>
+  <data name="CodeAnalysis_Fix_WH0010_Title" xml:space="preserve"><value>사용되지 않는 비공개 멤버 제거</value></data>
+  <data name="CodeAnalysis_Fix_WH0013_Title" xml:space="preserve"><value>사용되지 않는 지역 변수 제거</value></data>
+  <data name="CodeAnalysis_Fix_WH0061_Title" xml:space="preserve"><value>`async void`를 `async Task`로 변경</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>일반</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>임계값</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>규칙</value></data>
