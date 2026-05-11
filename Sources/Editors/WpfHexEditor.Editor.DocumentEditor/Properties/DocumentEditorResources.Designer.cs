@@ -396,6 +396,12 @@ namespace WpfHexEditor.Editor.DocumentEditor.Properties {
             }
         }
 
+        internal static string DocEditorHost_PrintToolTip {
+            get {
+                return ResourceManager.GetString("DocEditorHost_PrintToolTip", resourceCulture);
+            }
+        }
+
         internal static string DocEditorHost_AnonymizeToolTip {
             get {
                 return ResourceManager.GetString("DocEditorHost_AnonymizeToolTip", resourceCulture);

@@ -1017,6 +1017,31 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         }
     }
 
+    private void OnPrintClicked(object sender, RoutedEventArgs e)
+    {
+        var model = _vm?.Model;
+        if (model is null) return;
+        try
+        {
+            var flowDoc = WpfHexEditor.Editor.DocumentEditor.Services
+                .DocumentFlowDocumentBuilder.Build(model);
+            var dlg = new System.Windows.Controls.PrintDialog();
+            // Sync FlowDocument page size to the selected printer.
+            flowDoc.PageHeight = dlg.PrintableAreaHeight;
+            flowDoc.PageWidth  = dlg.PrintableAreaWidth;
+            if (dlg.ShowDialog() != true) return;
+            System.Windows.Documents.IDocumentPaginatorSource paginator = flowDoc;
+            dlg.PrintDocument(paginator.DocumentPaginator,
+                model.Metadata?.Title ?? "Document");
+        }
+        catch (Exception ex)
+        {
+            WpfHexEditor.Editor.Core.Dialogs.IdeMessageBox.Show(
+                ex.Message, DocumentEditorResources.DocEditorHost_PrintToolTip,
+                MessageBoxButton.OK, MessageBoxImage.Error, Window.GetWindow(this));
+        }
+    }
+
     private void OnEmbeddedClicked(object sender, RoutedEventArgs e)
     {
         var model = _vm?.Model;

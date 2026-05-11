@@ -992,4 +992,7 @@ Custom properties cleared: {3}</value>
   <data name="EmbeddedDlg_CopySha"           xml:space="preserve"><value>Copy hash to clipboard</value></data>
   <data name="EmbeddedDlg_HashAll"           xml:space="preserve"><value>Hash All</value></data>
   <data name="EmbeddedDlg_HashAllToolTip"    xml:space="preserve"><value>Compute SHA-256 over every embedded object</value></data>
+
+  <!-- Print / Export PDF (T1.3) -->
+  <data name="DocEditorHost_PrintToolTip"    xml:space="preserve"><value>Print or export as PDF (use the "Microsoft Print to PDF" printer to generate a PDF)</value></data>
 </root>

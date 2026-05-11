@@ -647,6 +647,15 @@
                     </Border>
                 </Popup>
 
+                <Button x:Name="PART_PrintBtn"
+                        Style="{StaticResource DocActionButtonStyle}"
+                        DockPanel.Dock="Right"
+                        Margin="0,0,2,0"
+                        ToolTip="{DynamicResource DocEditorHost_PrintToolTip}"
+                        Click="OnPrintClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE749;" FontSize="13"/>
+                </Button>
+
                 <Button x:Name="PART_ExportBtn"
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Right"
