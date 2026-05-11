@@ -28,6 +28,23 @@ using WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.Abstractions;
 namespace WpfHexEditor.Editor.ClassDiagram.Services;
 
 /// <summary>
+/// Editor-side abstraction for the live-sync watcher service that lives in
+/// the Plugins assembly. Implemented by <c>DiagramLiveSyncService</c> in
+/// Plugins; consumed here so the Editor assembly can push cycle-prevention
+/// requests without referencing Plugins (layering preserved).
+/// Phase F (ADR-036).
+/// </summary>
+public interface ILiveSyncCoordinator
+{
+    /// <summary>
+    /// Suppresses the next FileSystemWatcher Changed event for the given
+    /// absolute path within <paramref name="windowMs"/> milliseconds, so the
+    /// watcher does not re-analyze a file we just wrote ourselves.
+    /// </summary>
+    void SuppressNextChange(string filePath, int? windowMs = null);
+}
+
+/// <summary>
 /// Callback executed by <see cref="RoundTripScope"/> to apply a
 /// <see cref="MemberEdit"/> against <paramref name="filePath"/>. Returns
 /// the <see cref="RoundTripResult"/> reporting success and before/after
@@ -112,13 +129,14 @@ public static class RoundTripScope
         MemberEdit              edit,
         ClassDiagramUndoManager undoManager,
         string                  description,
-        Action?                 onSuccess = null)
+        Action?                 onSuccess     = null,
+        ILiveSyncCoordinator?   liveSync      = null)
     {
         if (Applier is null) return false;
         if (!HasSource(node))  return false;
 
         string filePath = node.SourceFilePath!;
-        _ = RunAsync(filePath, edit, undoManager, description, onSuccess);
+        _ = RunAsync(filePath, edit, undoManager, description, onSuccess, liveSync);
         return true;
     }
 
@@ -132,13 +150,14 @@ public static class RoundTripScope
         MemberEdit              edit,
         ClassDiagramUndoManager undoManager,
         string                  description,
-        Action?                 onSuccess = null)
+        Action?                 onSuccess     = null,
+        ILiveSyncCoordinator?   liveSync      = null)
     {
         if (Applier is null) return false;
         string? path = member.SourceFilePath ?? owner.SourceFilePath;
         if (string.IsNullOrEmpty(path) || !File.Exists(path)) return false;
 
-        _ = RunAsync(path, edit, undoManager, description, onSuccess);
+        _ = RunAsync(path, edit, undoManager, description, onSuccess, liveSync);
         return true;
     }
 
@@ -149,12 +168,18 @@ public static class RoundTripScope
         MemberEdit              edit,
         ClassDiagramUndoManager undoManager,
         string                  description,
-        Action?                 onSuccess)
+        Action?                 onSuccess,
+        ILiveSyncCoordinator?   liveSync)
     {
         var gate = GetLock(filePath);
         await gate.WaitAsync().ConfigureAwait(true);
         try
         {
+            // Phase F: suppress the watcher BEFORE we write, so the forward
+            // file write we trigger doesn't bounce back as a "change detected"
+            // event that would redundantly re-analyze the file.
+            liveSync?.SuppressNextChange(filePath);
+
             var result = await Applier!(filePath, edit, CancellationToken.None).ConfigureAwait(true);
             if (!result.Success)
             {
@@ -167,13 +192,20 @@ public static class RoundTripScope
             // undo/redo. Watcher suppression for the forward write was handled
             // inside Applier — on undo/redo we issue raw writes and accept a
             // brief re-analyze if the live-sync watcher catches them.
+            // Capture liveSync for the undo/redo path — same suppression must
+            // happen when the user later hits Ctrl+Z and we rewrite the file.
+            var capturedLiveSync = liveSync;
             undoManager.Push(new SourceFileBackupUndoEntry(
                 FilePath:       result.FilePath,
                 ContentBefore:  result.ContentBefore,
                 ContentAfter:   result.ContentAfter,
                 WriteSource:    (path, content) =>
                 {
-                    try { File.WriteAllText(path, content); }
+                    try
+                    {
+                        capturedLiveSync?.SuppressNextChange(path);
+                        File.WriteAllText(path, content);
+                    }
                     catch (Exception ex) { ErrorReporter?.Invoke($"Undo source write failed: {ex.Message}"); }
                 },
                 Inner:          null,

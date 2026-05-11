@@ -199,6 +199,11 @@ public sealed class DiagramCanvas : Canvas
     /// <summary>Injects the undo manager so drag/resize/delete ops are undoable.</summary>
     public void SetUndoManager(ClassDiagramUndoManager um) => _undoManager = um;
 
+    /// <summary>Phase F (ADR-036) — installs the live-sync coordinator for watcher cycle-prevention.</summary>
+    public void SetLiveSyncCoordinator(ILiveSyncCoordinator? coordinator) => _liveSync = coordinator;
+
+    private ILiveSyncCoordinator? _liveSync;
+
     /// <summary>Injects the snap engine so drag-move snaps to grid when enabled.</summary>
     public void SetSnapEngine(ClassSnapEngineService snap) => _snapEngine = snap;
 
@@ -299,7 +304,8 @@ public sealed class DiagramCanvas : Canvas
                 node,
                 new RemoveType() { TargetTypeFullName = node.Name },
                 _undoManager,
-                $"Source delete {node.Name}");
+                $"Source delete {node.Name}",
+                liveSync: _liveSync);
     }
 
     /// <summary>Returns all currently selected node IDs.</summary>
@@ -1769,7 +1775,8 @@ public sealed class DiagramCanvas : Canvas
                 node,
                 new AddType(TypeSnippetBuilder.ForCSharp(node)) { TargetTypeFullName = node.Name },
                 _undoManager,
-                $"Source add {kind} {typeName}");
+                $"Source add {kind} {typeName}",
+                liveSync: _liveSync);
 
         SelectSingleNode(node);
         RenameNodeRequested?.Invoke(this, (node, null));

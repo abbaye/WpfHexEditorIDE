@@ -1681,6 +1681,9 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         if (_liveSyncEnabled && File.Exists(csharpFilePath))
         {
             var svc = new DiagramLiveSyncService([csharpFilePath], doc, _options);
+            // Phase F (ADR-036) — expose the service to the host so round-trip
+            // writes triggered from the diagram can suppress the watcher.
+            host.LiveSyncCoordinator = svc;
             svc.DocumentPatched += (_, e) =>
             {
                 if (_openTabs.ContainsValue(uiId))

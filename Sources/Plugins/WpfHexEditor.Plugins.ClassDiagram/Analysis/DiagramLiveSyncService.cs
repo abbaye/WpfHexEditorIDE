@@ -24,6 +24,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Editor.ClassDiagram.Services;
 using WpfHexEditor.Plugins.ClassDiagram.Options;
 
 namespace WpfHexEditor.Plugins.ClassDiagram.Analysis;
@@ -35,7 +36,7 @@ namespace WpfHexEditor.Plugins.ClassDiagram.Analysis;
 /// <see cref="SuppressNextChange"/> drop incoming FSW events until their
 /// per-file suppression window elapses.
 /// </summary>
-public sealed class DiagramLiveSyncService : IDisposable
+public sealed class DiagramLiveSyncService : IDisposable, ILiveSyncCoordinator
 {
     private readonly IReadOnlyList<string>                 _filePaths;
     private readonly ClassDiagramOptions                   _options;

@@ -137,6 +137,25 @@ public sealed class ClassDiagramSplitHost : Grid,
     // ---------------------------------------------------------------------------
 
     private readonly ClassDiagramUndoManager   _undoManager;
+
+    /// <summary>
+    /// Phase F (ADR-036) — coordinator the plugin installs to push
+    /// watcher cycle-prevention when the round-trip pipeline writes the
+    /// .cs file. Null when no live-sync service is attached (e.g. DSL-
+    /// only diagrams, unit tests). Propagated to <see cref="_canvas"/> so
+    /// canvas-side round-trips (DeleteNode_Internal, AddNodeAtMenuPoint)
+    /// share the same coordinator.
+    /// </summary>
+    public ILiveSyncCoordinator? LiveSyncCoordinator
+    {
+        get => _liveSyncCoordinator;
+        set
+        {
+            _liveSyncCoordinator = value;
+            _canvas?.SetLiveSyncCoordinator(value);
+        }
+    }
+    private ILiveSyncCoordinator? _liveSyncCoordinator;
     private readonly ClassSnapEngineService    _snap;
     private readonly ClassInteractionService   _interactionService;
     private readonly ClassToSyncService        _syncService;
@@ -1682,7 +1701,8 @@ public sealed class ClassDiagramSplitHost : Grid,
             copy,
             new AddType(TypeSnippetBuilder.ForCSharp(copy)) { TargetTypeFullName = copy.Name },
             _undoManager,
-            $"Source duplicate {original.Name}");
+            $"Source duplicate {original.Name}",
+            liveSync: LiveSyncCoordinator);
 
         _canvas.ApplyDocument(_document);
         SyncDslPane();
@@ -1722,7 +1742,8 @@ public sealed class ClassDiagramSplitHost : Grid,
             node,
             new AddType(TypeSnippetBuilder.ForCSharp(node)) { TargetTypeFullName = node.Name },
             _undoManager,
-            $"Source add {kindLabel} {name}");
+            $"Source add {kindLabel} {name}",
+            liveSync: LiveSyncCoordinator);
 
         _canvas.ApplyDocument(_document);
         SyncDslPane();
@@ -1885,7 +1906,8 @@ public sealed class ClassDiagramSplitHost : Grid,
             renamedFinal,
             new RenameType(newName) { TargetTypeFullName = node.Name },
             _undoManager,
-            $"Source rename → {newName}");
+            $"Source rename → {newName}",
+            liveSync: LiveSyncCoordinator);
 
         _canvas.ApplyDocument(_document);
         SyncDslPane();
@@ -1940,7 +1962,8 @@ public sealed class ClassDiagramSplitHost : Grid,
             owner,
             new AddMember(snippet) { TargetTypeFullName = owner.Name },
             _undoManager,
-            $"Source add {kind.ToString().ToLowerInvariant()} → {unique}");
+            $"Source add {kind.ToString().ToLowerInvariant()} → {unique}",
+            liveSync: LiveSyncCoordinator);
 
         _canvas.ApplyDocument(_document);
         SyncDslPane();
@@ -1998,7 +2021,8 @@ public sealed class ClassDiagramSplitHost : Grid,
             owner, member,
             new RemoveMember(member.Name) { TargetTypeFullName = owner.Name },
             _undoManager,
-            $"Source delete member → {member.Name}");
+            $"Source delete member → {member.Name}",
+            liveSync: LiveSyncCoordinator);
 
         _canvas.ApplyDocument(_document);
         SyncDslPane();
@@ -2043,7 +2067,8 @@ public sealed class ClassDiagramSplitHost : Grid,
             owner, replaced,
             new ChangeVisibility(member.Name, kind) { TargetTypeFullName = owner.Name },
             _undoManager,
-            $"Source change {member.Name} visibility → {newVis}");
+            $"Source change {member.Name} visibility → {newVis}",
+            liveSync: LiveSyncCoordinator);
 
         _canvas.ApplyDocument(_document);
         SyncDslPane();
@@ -2086,7 +2111,8 @@ public sealed class ClassDiagramSplitHost : Grid,
             owner, replaced,
             new RenameMember(member.Name, newName) { TargetTypeFullName = owner.Name },
             _undoManager,
-            $"Source rename member → {newName}");
+            $"Source rename member → {newName}",
+            liveSync: LiveSyncCoordinator);
 
         _canvas.ApplyDocument(_document);
         SyncDslPane();
