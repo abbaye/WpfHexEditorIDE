@@ -38,4 +38,34 @@ internal static class TypeSnippetBuilder
         ClassKind.Enum      => "enum",
         _                   => isAbstract ? "abstract class" : "class"
     };
+
+    /// <summary>
+    /// Phase A (ADR-037) — VB variant of <see cref="ForCSharp(ClassNode)"/>.
+    /// Emits a minimal but valid VB type block that
+    /// <see cref="VisualBasicRoundTripEditor.ApplyAddType"/> can consume.
+    /// </summary>
+    public static string ForVisualBasic(ClassNode node) => node.Kind switch
+    {
+        ClassKind.Interface => $"Public Interface {node.Name}\nEnd Interface",
+        ClassKind.Struct    => $"Public Structure {node.Name}\nEnd Structure",
+        ClassKind.Enum      => $"Public Enum {node.Name}\n    Default\nEnd Enum",
+        _                   => node.IsAbstract
+            ? $"Public MustInherit Class {node.Name}\nEnd Class"
+            : $"Public Class {node.Name}\nEnd Class"
+    };
+
+    /// <summary>
+    /// Returns the appropriate snippet for the file extension associated
+    /// with <paramref name="node"/>. Falls back to C# when no path or
+    /// an unknown extension is encountered.
+    /// </summary>
+    public static string ForLanguage(ClassNode node)
+    {
+        string? ext = node.SourceFilePath is null
+            ? null
+            : System.IO.Path.GetExtension(node.SourceFilePath);
+        return string.Equals(ext, ".vb", StringComparison.OrdinalIgnoreCase)
+            ? ForVisualBasic(node)
+            : ForCSharp(node);
+    }
 }

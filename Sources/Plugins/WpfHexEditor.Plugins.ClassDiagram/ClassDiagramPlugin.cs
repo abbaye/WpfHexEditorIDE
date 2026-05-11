@@ -139,6 +139,10 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // any diagram tab opens. VB editor will join in Phase 1.5.
         WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.Abstractions.RoundTripEditorRegistry.Register(
             new WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.CSharpRoundTripEditor());
+        // Phase A (ADR-037) — VB.NET parity. Registered at the same point as
+        // the C# editor so any tab can resolve by .vb extension.
+        WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.Abstractions.RoundTripEditorRegistry.Register(
+            new WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.VisualBasicRoundTripEditor());
 
         // ADR-032 Phase 4: register built-in DSL importers (Mermaid, PlantUML).
         WpfHexEditor.Editor.ClassDiagram.Core.Import.DiagramImporterRegistry.Register(

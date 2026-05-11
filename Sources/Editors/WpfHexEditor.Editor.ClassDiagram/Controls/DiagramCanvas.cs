@@ -1773,7 +1773,7 @@ public sealed class DiagramCanvas : Canvas
         if (_undoManager is not null && node.SourceFilePath is not null)
             RoundTripScope.TryApply(
                 node,
-                new AddType(TypeSnippetBuilder.ForCSharp(node)) { TargetTypeFullName = node.Name },
+                new AddType(TypeSnippetBuilder.ForLanguage(node)) { TargetTypeFullName = node.Name },
                 _undoManager,
                 $"Source add {kind} {typeName}",
                 liveSync: _liveSync);

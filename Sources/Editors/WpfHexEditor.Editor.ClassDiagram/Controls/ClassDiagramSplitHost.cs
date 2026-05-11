@@ -1699,7 +1699,7 @@ public sealed class ClassDiagramSplitHost : Grid,
         // Round-trip: append a new type declaration to the original's source file.
         RoundTripScope.TryApply(
             copy,
-            new AddType(TypeSnippetBuilder.ForCSharp(copy)) { TargetTypeFullName = copy.Name },
+            new AddType(TypeSnippetBuilder.ForLanguage(copy)) { TargetTypeFullName = copy.Name },
             _undoManager,
             $"Source duplicate {original.Name}",
             liveSync: LiveSyncCoordinator);
@@ -1740,7 +1740,7 @@ public sealed class ClassDiagramSplitHost : Grid,
         // Round-trip: write the new type declaration to the inferred source file.
         RoundTripScope.TryApply(
             node,
-            new AddType(TypeSnippetBuilder.ForCSharp(node)) { TargetTypeFullName = node.Name },
+            new AddType(TypeSnippetBuilder.ForLanguage(node)) { TargetTypeFullName = node.Name },
             _undoManager,
             $"Source add {kindLabel} {name}",
             liveSync: LiveSyncCoordinator);
