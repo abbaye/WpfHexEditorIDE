@@ -44,9 +44,10 @@ internal sealed class CodeAnalysisModule
     private IMenuAdapter?              _menuAdapter;
     private Dispatcher?                _dispatcher;
 
-    private CodeAnalysisOptionsService    _optionsService   = new();
-    private AnalysisSnapshotService       _snapshotService  = new();
-    private AnalysisBaselineService       _baselineService  = new();
+    private CodeAnalysisOptionsService    _optionsService    = new();
+    private AnalysisSnapshotService       _snapshotService   = new();
+    private AnalysisBaselineService       _baselineService   = new();
+    private AnalysisHistoryService        _historyService    = new();
     private CodeAnalysisCodeActionProvider _codeActionProvider = new();
     private AnalysisScope              _lastScope       = AnalysisScope.Solution;
     private string                     _lastPath        = string.Empty;
@@ -165,6 +166,7 @@ internal sealed class CodeAnalysisModule
         _optionsService.SetSolutionDirectory(solutionDir);
         _snapshotService.SetSolutionDirectory(solutionDir);
         _baselineService.SetSolutionDirectory(solutionDir);
+        _historyService.SetSolutionDirectory(solutionDir);
 
         // UI: show running state
         await _dispatcher!.InvokeAsync(() =>
@@ -220,6 +222,11 @@ internal sealed class CodeAnalysisModule
             _reportVm!.SetScope(scope, path);
             _reportVm.SetReport(report);
             _codeActionProvider.SetDiagnostics(report.Diagnostics);
+
+            // Phase 10 — trending: append this run, prune by retention, refresh VM
+            _historyService.Append(report);
+            _historyService.Prune(opts.SnapshotRetentionDays);
+            _reportVm.SetHistory(_historyService.LoadAll());
         });
     }
 
@@ -256,8 +263,13 @@ internal sealed class CodeAnalysisModule
             runSolution: () => RunAsync(AnalysisScope.Solution, GetSolutionPath()),
             runFile:     path => RunAsync(AnalysisScope.File, path));
 
+        // Phase 10 — restore the trending sparkline as soon as the pane shows up.
+        var initDir = string.IsNullOrEmpty(_lastPath) ? GetSolutionPath() : _lastPath;
+        _historyService.SetSolutionDirectory(initDir);
+        _reportVm.SetHistory(_historyService.LoadAll());
+
         // Suppressions UX — uses the same re-run callback so the row disappears after apply.
-        _baselineService.SetSolutionDirectory(string.IsNullOrEmpty(_lastPath) ? GetSolutionPath() : _lastPath);
+        _baselineService.SetSolutionDirectory(initDir);
         var suppress = new SuppressionApplyService(
             _optionsService,
             _baselineService,

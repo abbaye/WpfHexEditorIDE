@@ -789,6 +789,9 @@
   <data name="CodeAnalysis_Fix_WH0062_Title" xml:space="preserve"><value>.ConfigureAwait(false) hozzáadása</value></data>
   <data name="CodeAnalysis_Fix_WH0070_Title" xml:space="preserve"><value>Any() használata Count() &gt; 0 helyett</value></data>
   <data name="CodeAnalysis_Fix_Suppress_Title" xml:space="preserve"><value>{0} elnyomása itt</value></data>
+  <data name="CodeAnalysis_History_Title" xml:space="preserve"><value>Pontszám-előzmények</value></data>
+  <data name="CodeAnalysis_History_Summary" xml:space="preserve"><value>{0} futás · utolsó {1} nap · trend {2}</value></data>
+  <data name="CodeAnalysis_History_NoData" xml:space="preserve"><value>Még nincs előzmény — futtassa újra az elemzést a trend indításához</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Másolás Markdownként</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Probléma ID másolása</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Forrásfájl megnyitása</value></data>

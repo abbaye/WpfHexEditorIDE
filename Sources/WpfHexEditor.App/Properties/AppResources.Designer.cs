@@ -6218,6 +6218,33 @@ namespace WpfHexEditor.App.Properties {
         }
 
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Score history.
+        /// </summary>
+        internal static string CodeAnalysis_History_Title {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_History_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} runs · last {1} days · trend {2}.
+        /// </summary>
+        internal static string CodeAnalysis_History_Summary {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_History_Summary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No history yet — run analysis again to start a trend.
+        /// </summary>
+        internal static string CodeAnalysis_History_NoData {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_History_NoData", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Copy as Markdown.
         /// </summary>
         internal static string CodeAnalysis_ContextMenu_CopyAsMarkdown {

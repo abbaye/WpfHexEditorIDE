@@ -314,6 +314,30 @@
                 <TabItem Header="{DynamicResource CodeAnalysis_Tab_Overview}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Overview}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="12">
                         <StackPanel>
+                            <!-- ── Phase 10 — score trending sparkline ─────────────── -->
+                            <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource CodeAnalysis_History_Title}"/>
+                            <Border Background="{DynamicResource DockWindowBackgroundBrush}"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="3"
+                                    Padding="10,8"
+                                    Margin="0,0,0,16">
+                                <StackPanel>
+                                    <controls:Sparkline ItemsSource="{Binding HistoryScores, Mode=OneWay}"
+                                                        Stroke="{DynamicResource AccentBrush}"
+                                                        Fill="{DynamicResource DockBorderBrush}"
+                                                        MinY="0"
+                                                        MaxY="100"
+                                                        Height="48"
+                                                        Margin="0,0,0,6"
+                                                        Visibility="{Binding HasHistory, Mode=OneWay, Converter={StaticResource BoolToVis}}"/>
+                                    <TextBlock Text="{Binding HistorySummaryText, Mode=OneWay}"
+                                               FontStyle="Italic"
+                                               Opacity="0.7"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+
                             <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource CodeAnalysis_Overview_ByProject}"/>
                             <DataGrid x:Name="ProjectsGrid"
                                       ItemsSource="{Binding Projects, Mode=OneWay}"

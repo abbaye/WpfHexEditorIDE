@@ -22,6 +22,7 @@ public sealed class CodeAnalysisReportViewModel : INotifyPropertyChanged
     private bool                _isRunning;
     private string              _statusText = "No analysis run yet.";
     private string              _scopeLabel = string.Empty;
+    private IReadOnlyList<HistoryEntry> _history = [];
 
     public bool IsRunning
     {
@@ -143,6 +144,41 @@ public sealed class CodeAnalysisReportViewModel : INotifyPropertyChanged
     {
         RecentScores = scores;
         OnPropertyChanged(nameof(RecentScores));
+    }
+
+    // ── History (Phase 10 — trending sparkline) ──────────────────────────────
+
+    /// <summary>Latest persisted snapshots — ordered ascending by Timestamp.</summary>
+    public IReadOnlyList<HistoryEntry> History => _history;
+
+    /// <summary>Scores as doubles for the Sparkline ItemsSource binding.</summary>
+    public IReadOnlyList<double> HistoryScores =>
+        _history.Select(e => (double)e.Score).ToList();
+
+    public bool HasHistory => _history.Count >= 2;
+
+    public string HistorySummaryText
+    {
+        get
+        {
+            if (_history.Count == 0)
+                return AppResources.CodeAnalysis_History_NoData;
+            int days = _history.Count == 1
+                ? 0
+                : Math.Max(1, (int)(_history[^1].Timestamp - _history[0].Timestamp).TotalDays);
+            int delta = _history.Count >= 2 ? _history[^1].Score - _history[0].Score : 0;
+            string trend = delta > 0 ? $"▲ +{delta}" : delta < 0 ? $"▼ {delta}" : "—";
+            return string.Format(AppResources.CodeAnalysis_History_Summary, _history.Count, days, trend);
+        }
+    }
+
+    public void SetHistory(IReadOnlyList<HistoryEntry> entries)
+    {
+        _history = entries ?? [];
+        OnPropertyChanged(nameof(History));
+        OnPropertyChanged(nameof(HistoryScores));
+        OnPropertyChanged(nameof(HasHistory));
+        OnPropertyChanged(nameof(HistorySummaryText));
     }
 
     /// <summary>Phase 4 — cyclic project deps.</summary>
