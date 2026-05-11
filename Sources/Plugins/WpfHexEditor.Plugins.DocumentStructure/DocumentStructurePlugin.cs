@@ -28,6 +28,7 @@ using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.SDK.ExtensionPoints.DocumentStructure;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Events;
 using WpfHexEditor.SDK.ExtensionPoints.XamlDesigner;
