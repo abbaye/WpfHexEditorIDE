@@ -146,6 +146,15 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         WpfHexEditor.Editor.ClassDiagram.Core.Import.DiagramImporterRegistry.Register(
             new WpfHexEditor.Editor.ClassDiagram.Core.Import.PlantUmlImporter());
 
+        // ADR-034 Phase 1B-6: wire RoundTripScope to the actual Roslyn pipeline.
+        // The editor assembly can't reference DiagramCodeEditService (Plugins ←
+        // Editor would be a layering violation), so we install a delegate here.
+        WpfHexEditor.Editor.ClassDiagram.Services.RoundTripScope.Applier =
+            (path, edit, ct) => Analysis.DiagramCodeEditService.ApplyEditAsync(
+                path, edit, liveSync: null, confirmBeforeWrite: null, ct: ct);
+        WpfHexEditor.Editor.ClassDiagram.Services.RoundTripScope.ErrorReporter =
+            msg => System.Diagnostics.Debug.WriteLine($"[ClassDiagram RoundTrip] {msg}");
+
         // Build panel instances.
         _outlinePanel    = new ClassOutlinePanel();
         _propertiesPanel = new ClassPropertiesPanel();

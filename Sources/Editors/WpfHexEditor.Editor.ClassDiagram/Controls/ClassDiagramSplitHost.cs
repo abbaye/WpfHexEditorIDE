@@ -34,6 +34,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using WpfHexEditor.Editor.ClassDiagram.Core.Layout;
+using WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.Abstractions;
 using WpfHexEditor.Editor.ClassDiagram.Options;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Editor.ClassDiagram.Core.Parser;
@@ -212,6 +213,8 @@ public sealed class ClassDiagramSplitHost : Grid,
         _canvas.RenameNodeRequested      += (_, args) => BeginRenameNode(args.Node);
         _canvas.RenameMemberRequested    += (_, args) => BeginRenameMember(args.Node, args.Member);
         _canvas.AddMemberRequested       += (_, args) => AddNewMember(args.Node, args.Kind);
+        _canvas.DeleteMemberRequested    += (_, args) => DeleteMember(args.Node, args.Member);
+        _canvas.ChangeMemberVisibilityRequested += (_, args) => ChangeMemberVisibility(args.Node, args.Member, args.NewVisibility);
         _canvas.ExportRequested          += OnCanvasExportRequested;
         _canvas.LayoutStrategyRequested  += (_, strategy) => _ = ApplyLayoutAsync(strategy);
         _canvas.FitToContentRequested    += (_, _) => _zoomPan.FitToContent();
@@ -1665,6 +1668,8 @@ public sealed class ClassDiagramSplitHost : Grid,
         var copy = ClassNode.Create(original.Name + "_Copy", original.Kind);
         copy.X = original.X + 20;
         copy.Y = original.Y + 20;
+        copy.Namespace      = original.Namespace;
+        copy.SourceFilePath = original.SourceFilePath;
         foreach (var m in original.Members) copy.Members.Add(m);
         _document.Classes.Add(copy);
 
@@ -1672,9 +1677,32 @@ public sealed class ClassDiagramSplitHost : Grid,
         _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
             $"Duplicate {original.Name}", ApplyDslSnapshot));
 
+        // Round-trip: append a new type declaration to the original's source file.
+        RoundTripScope.TryApply(
+            copy,
+            new AddType(BuildTypeSnippet(copy)) { TargetTypeFullName = copy.Name },
+            _undoManager,
+            $"Source duplicate {original.Name}");
+
         _canvas.ApplyDocument(_document);
         SyncDslPane();
         SetDirty(true);
+    }
+
+    /// <summary>
+    /// Minimal C# type-declaration snippet used by the round-trip AddType edit
+    /// when duplicating a node or pasting from the clipboard.
+    /// </summary>
+    private static string BuildTypeSnippet(ClassNode node)
+    {
+        string kindKeyword = node.Kind switch
+        {
+            ClassKind.Interface => "interface",
+            ClassKind.Struct    => "struct",
+            ClassKind.Enum      => "enum",
+            _                   => node.IsAbstract ? "abstract class" : "class"
+        };
+        return $"public {kindKeyword} {node.Name} {{ }}";
     }
 
     private void AddNewClass(ClassKind kind)
@@ -1870,6 +1898,14 @@ public sealed class ClassDiagramSplitHost : Grid,
         _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
             $"Rename → {newName}", ApplyDslSnapshot));
 
+        // Round-trip: patch the source file. Uses the node's OLD name as the
+        // target so Roslyn can find the type declaration before we renamed it.
+        RoundTripScope.TryApply(
+            renamedFinal,
+            new RenameType(newName) { TargetTypeFullName = node.Name },
+            _undoManager,
+            $"Source rename → {newName}");
+
         _canvas.ApplyDocument(_document);
         SyncDslPane();
         SetDirty(true);
@@ -1917,12 +1953,131 @@ public sealed class ClassDiagramSplitHost : Grid,
         _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
             $"Add {kind.ToString().ToLowerInvariant()} → {unique}", ApplyDslSnapshot));
 
+        // Round-trip: append the new member to the owning type in source.
+        string snippet = BuildMemberSnippet(newMember);
+        RoundTripScope.TryApply(
+            owner,
+            new AddMember(snippet) { TargetTypeFullName = owner.Name },
+            _undoManager,
+            $"Source add {kind.ToString().ToLowerInvariant()} → {unique}");
+
         _canvas.ApplyDocument(_document);
         SyncDslPane();
         SetDirty(true);
 
         // Immediately open the inline rename overlay so the user can name it.
         BeginRenameMember(owner, newMember);
+    }
+
+    /// <summary>
+    /// Builds a minimal C# member-declaration snippet for the round-trip
+    /// AddMember edit. The snippet is parsed by Roslyn's <c>ParseMemberDeclaration</c>
+    /// in <see cref="CSharpRoundTripEditor.ApplyAddMember"/> so it must be a
+    /// syntactically valid member.
+    /// </summary>
+    private static string BuildMemberSnippet(ClassMember m)
+    {
+        string vis = m.Visibility switch
+        {
+            MemberVisibility.Private    => "private",
+            MemberVisibility.Protected  => "protected",
+            MemberVisibility.Internal   => "internal",
+            _                           => "public"
+        };
+        string staticKw = m.IsStatic ? " static" : string.Empty;
+        return m.Kind switch
+        {
+            MemberKind.Field    => $"{vis}{staticKw} {m.TypeName} {m.Name};",
+            MemberKind.Property => $"{vis}{staticKw} {m.TypeName} {m.Name} {{ get; set; }}",
+            MemberKind.Method   => $"{vis}{staticKw} {m.TypeName} {m.Name}() {{ }}",
+            MemberKind.Event    => $"{vis}{staticKw} event {m.TypeName} {m.Name};",
+            _                   => $"{vis}{staticKw} {m.TypeName} {m.Name};"
+        };
+    }
+
+    /// <summary>
+    /// Context-menu "Delete" on a member row. Removes the member from the
+    /// owning node, snapshots undo, and patches the source file when one
+    /// is associated with the node.
+    /// </summary>
+    private void DeleteMember(ClassNode owner, ClassMember member)
+    {
+        if (owner is null || member is null) return;
+        int idx = owner.Members.IndexOf(member);
+        if (idx < 0) return;
+
+        string beforeDsl = ClassDiagramSerializer.Serialize(_document);
+        owner.Members.RemoveAt(idx);
+        string afterDsl = ClassDiagramSerializer.Serialize(_document);
+
+        _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
+            $"Delete member → {member.Name}", ApplyDslSnapshot));
+
+        RoundTripScope.TryApply(
+            owner, member,
+            new RemoveMember(member.Name) { TargetTypeFullName = owner.Name },
+            _undoManager,
+            $"Source delete member → {member.Name}");
+
+        _canvas.ApplyDocument(_document);
+        SyncDslPane();
+        SetDirty(true);
+    }
+
+    /// <summary>
+    /// Context-menu "Visibility →" on a member row. Replaces the member with
+    /// a clone carrying the new visibility, snapshots undo, patches source.
+    /// </summary>
+    private void ChangeMemberVisibility(ClassNode owner, ClassMember member, MemberVisibility newVis)
+    {
+        if (owner is null || member is null) return;
+        if (member.Visibility == newVis) return;
+
+        string beforeDsl = ClassDiagramSerializer.Serialize(_document);
+
+        var replaced = new ClassMember
+        {
+            Name               = member.Name,
+            TypeName           = member.TypeName,
+            Kind               = member.Kind,
+            Visibility         = newVis,
+            IsStatic           = member.IsStatic,
+            IsAbstract         = member.IsAbstract,
+            IsAsync            = member.IsAsync,
+            IsOverride         = member.IsOverride,
+            Parameters         = [.. member.Parameters],
+            GenericConstraints = member.GenericConstraints,
+            Attributes         = [.. member.Attributes],
+            XmlDocSummary      = member.XmlDocSummary,
+            SourceFilePath     = member.SourceFilePath,
+            SourceLineOneBased = member.SourceLineOneBased
+        };
+
+        int idx = owner.Members.IndexOf(member);
+        if (idx < 0) return;
+        owner.Members[idx] = replaced;
+
+        string afterDsl = ClassDiagramSerializer.Serialize(_document);
+        _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
+            $"Change {member.Name} visibility → {newVis}", ApplyDslSnapshot));
+
+        MemberVisibilityKind kind = newVis switch
+        {
+            MemberVisibility.Public    => MemberVisibilityKind.Public,
+            MemberVisibility.Internal  => MemberVisibilityKind.Internal,
+            MemberVisibility.Protected => MemberVisibilityKind.Protected,
+            MemberVisibility.Private   => MemberVisibilityKind.Private,
+            _                          => MemberVisibilityKind.Public
+        };
+        RoundTripScope.TryApply(
+            owner, replaced,
+            new ChangeVisibility(member.Name, kind) { TargetTypeFullName = owner.Name },
+            _undoManager,
+            $"Source change {member.Name} visibility → {newVis}");
+
+        _canvas.ApplyDocument(_document);
+        SyncDslPane();
+        SetDirty(true);
     }
 
     private static string UniqueMemberName(ClassNode owner, string baseName)
@@ -1967,6 +2122,13 @@ public sealed class ClassDiagramSplitHost : Grid,
         string afterDsl = ClassDiagramSerializer.Serialize(_document);
         _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
             $"Rename member → {newName}", ApplyDslSnapshot));
+
+        // Round-trip: patch the source file's member identifier.
+        RoundTripScope.TryApply(
+            owner, replaced,
+            new RenameMember(member.Name, newName) { TargetTypeFullName = owner.Name },
+            _undoManager,
+            $"Source rename member → {newName}");
 
         _canvas.ApplyDocument(_document);
         SyncDslPane();

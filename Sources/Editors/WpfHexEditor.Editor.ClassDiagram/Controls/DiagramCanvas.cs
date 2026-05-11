@@ -33,6 +33,7 @@ using WpfHexEditor.Editor.ClassDiagram.Properties;
 using WpfHexEditor.Editor.ClassDiagram.Core.Layout;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Editor.ClassDiagram.Services;
+using WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.Abstractions;
 using WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.Controls;
@@ -139,6 +140,7 @@ public sealed class DiagramCanvas : Canvas
     public event EventHandler<(ClassNode Node, string? NewName)>? RenameNodeRequested;
     public event EventHandler<(ClassNode Node, ClassMember Member)>? RenameMemberRequested;
     public event EventHandler<(ClassNode Node, ClassMember Member)>? DeleteMemberRequested;
+    public event EventHandler<(ClassNode Node, ClassMember Member, MemberVisibility NewVisibility)>? ChangeMemberVisibilityRequested;
     public event EventHandler<(ClassNode Node, ClassMember Member)>? NavigateToMemberRequested;
     public event EventHandler<string>?                        ExportRequested;  // format: "png","plantUml","structurizr","mermaid","svg","csharp"
     public event EventHandler<LayoutStrategyKind>?            LayoutStrategyRequested;
@@ -290,6 +292,14 @@ public sealed class DiagramCanvas : Canvas
             Description: $"Delete {node.Name}",
             UndoAction: () => { doc.Classes.Add(node); foreach (var r in removedRels) doc.Relationships.Add(r); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); },
             RedoAction: () => { doc.Classes.Remove(node); foreach (var r in removedRels) doc.Relationships.Remove(r); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); }));
+
+        // Round-trip: remove the type declaration from the source file.
+        if (_undoManager is not null)
+            RoundTripScope.TryApply(
+                node,
+                new RemoveType() { TargetTypeFullName = node.Name },
+                _undoManager,
+                $"Source delete {node.Name}");
     }
 
     /// <summary>Returns all currently selected node IDs.</summary>
@@ -1493,6 +1503,15 @@ public sealed class DiagramCanvas : Canvas
             menu.Items.Add(new Separator());
             menu.Items.Add(MakeItem("\uE16C", "Copy Name",          () => Clipboard.SetText(member.DisplayLabel)));
             menu.Items.Add(MakeItem("\uE7C5", "Navigate to Source", () => NavigateToMemberRequested?.Invoke(this, (node, member))));
+            menu.Items.Add(new Separator());
+
+            var visMenu = new MenuItem { Header = "Visibility" };
+            var capturedMember = member; // capture before lambdas
+            visMenu.Items.Add(MakeItem("",  "public",    () => ChangeMemberVisibilityRequested?.Invoke(this, (node, capturedMember, MemberVisibility.Public))));
+            visMenu.Items.Add(MakeItem("",  "internal",  () => ChangeMemberVisibilityRequested?.Invoke(this, (node, capturedMember, MemberVisibility.Internal))));
+            visMenu.Items.Add(MakeItem("",  "protected", () => ChangeMemberVisibilityRequested?.Invoke(this, (node, capturedMember, MemberVisibility.Protected))));
+            visMenu.Items.Add(MakeItem("",  "private",   () => ChangeMemberVisibilityRequested?.Invoke(this, (node, capturedMember, MemberVisibility.Private))));
+            menu.Items.Add(visMenu);
             menu.Items.Add(new Separator());
         }
 
