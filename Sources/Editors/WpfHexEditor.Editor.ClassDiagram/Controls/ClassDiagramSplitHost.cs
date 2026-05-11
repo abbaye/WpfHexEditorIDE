@@ -210,6 +210,7 @@ public sealed class ClassDiagramSplitHost : Grid,
         _canvas.SelectedClassChanged     += OnCanvasSelectedClassChanged;
         _canvas.HoveredClassChanged      += OnCanvasHoveredClassChanged;
         _canvas.RenameNodeRequested      += (_, args) => BeginRenameNode(args.Node);
+        _canvas.RenameMemberRequested    += (_, args) => BeginRenameMember(args.Node, args.Member);
         _canvas.AddMemberRequested       += (_, args) => AddNewMember(args.Node, args.Kind);
         _canvas.ExportRequested          += OnCanvasExportRequested;
         _canvas.LayoutStrategyRequested  += (_, strategy) => _ = ApplyLayoutAsync(strategy);
@@ -1712,23 +1713,17 @@ public sealed class ClassDiagramSplitHost : Grid,
     }
 
     /// <summary>
-    /// Converts a diagram-space rectangle into screen-space coordinates relative
-    /// to <c>this</c> control, honouring the ZoomPanCanvas internal transform.
-    /// Used by inline rename overlays to place a popup exactly over the target.
+    /// Converts a diagram-space rectangle into coordinates relative to <c>this</c>
+    /// control, honouring ZoomPanCanvas's RenderTransform. Bugfix 2026-05-11:
+    /// passing the raw diagram point to <c>TranslatePoint(local, this)</c> is
+    /// correct because WPF walks the visual-tree transform chain — the previous
+    /// manual <c>x * zoom + offset</c> double-applied the transform and threw the
+    /// popup far off-screen.
     /// </summary>
     private (Point Origin, double Width, double Height) DiagramRectToScreen(Rect diagramRect)
     {
-        // _zoomPan applies a TranslateTransform(OffsetX,Y) composed with ScaleTransform(zoom).
-        // Diagram coords map to ZoomPanCanvas local coords via that transform. We then ask
-        // WPF to translate from _zoomPan's local space to `this` so the popup placement is
-        // correct regardless of how _zoomPan is hosted (split-pane resizing, scrollbars).
-        double zoom    = _zoomPan.ZoomFactor;
-        double offsetX = _zoomPan.OffsetX;
-        double offsetY = _zoomPan.OffsetY;
-
-        var localTL = new Point(diagramRect.X * zoom + offsetX, diagramRect.Y * zoom + offsetY);
-        var screen  = _zoomPan.TranslatePoint(localTL, this);
-
+        double zoom = _zoomPan.ZoomFactor;
+        var screen  = _zoomPan.TranslatePoint(new Point(diagramRect.X, diagramRect.Y), this);
         return (screen, diagramRect.Width * zoom, diagramRect.Height * zoom);
     }
 
