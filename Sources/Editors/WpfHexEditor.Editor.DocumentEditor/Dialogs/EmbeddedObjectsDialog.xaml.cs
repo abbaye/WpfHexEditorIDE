@@ -26,6 +26,8 @@ public partial class EmbeddedObjectsDialog : ThemedDialog
 {
     private readonly DocumentModel _model;
     private readonly IIDEHostContext? _host;
+    private readonly List<string> _tempFiles = new();   // tracked for cleanup on Close
+    private readonly Dictionary<EmbeddedObjectEntry, string> _tempPathByEntry = new();
 
     public EmbeddedObjectsDialog(DocumentModel model, IIDEHostContext? host)
     {
@@ -41,6 +43,20 @@ public partial class EmbeddedObjectsDialog : ThemedDialog
 
         if (entries.Count > 0)
             PART_List.SelectedIndex = 0;
+
+        Closed += OnDialogClosed;
+    }
+
+    private void OnDialogClosed(object? sender, EventArgs e)
+    {
+        // Best-effort cleanup — files may still be locked by the hex-editor tab.
+        foreach (var path in _tempFiles)
+        {
+            try { if (File.Exists(path)) File.Delete(path); }
+            catch { /* still open in another tab; OS will clean up %TEMP% eventually */ }
+        }
+        _tempFiles.Clear();
+        _tempPathByEntry.Clear();
     }
 
     private void OnItemDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -58,13 +74,37 @@ public partial class EmbeddedObjectsDialog : ThemedDialog
             if (_host?.DocumentHost is { } host)
                 host.OpenDocument(tempPath, preferredEditorId: "hex-editor");
             else
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(tempPath) { UseShellExecute = true });
+                ShellOpenSafely(tempPath);
         }
         catch (Exception ex)
         {
             IdeMessageBox.Show(ex.Message, DocumentEditorResources.EmbeddedDlg_Title,
                 MessageBoxButton.OK, MessageBoxImage.Error, Window.GetWindow(this));
         }
+    }
+
+    /// <summary>
+    /// Standalone fallback for opening a temp file when no IDE host is wired.
+    /// Restricted to well-known safe extensions to avoid launching arbitrary
+    /// executables when the extracted blob happens to carry an .exe/.bat name.
+    /// </summary>
+    private static void ShellOpenSafely(string path)
+    {
+        string ext = Path.GetExtension(path).ToLowerInvariant();
+        var safe = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ".bin", ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tif", ".tiff",
+            ".svg", ".webp", ".ico", ".xml", ".txt", ".json", ".pdf"
+        };
+        if (!safe.Contains(ext))
+        {
+            // Open the containing folder rather than running an unknown payload.
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe",
+                $"/select,\"{path}\"") { UseShellExecute = true });
+            return;
+        }
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(path)
+            { UseShellExecute = true });
     }
 
     private void OnExtractClicked(object sender, RoutedEventArgs e)
@@ -109,7 +149,10 @@ public partial class EmbeddedObjectsDialog : ThemedDialog
             using var s  = ze.Open();
             using var ms = new MemoryStream();
             s.CopyTo(ms);
-            return ms.ToArray();
+            byte[] bytes = ms.ToArray();
+            // Cache so subsequent double-clicks on the same entry don't re-open the ZIP.
+            entry.InlineData = bytes;
+            return bytes;
         }
 
         if (entry.Block is not null && entry.Block.RawLength > 0 &&
@@ -119,6 +162,7 @@ public partial class EmbeddedObjectsDialog : ThemedDialog
             fs.Seek(entry.Block.RawOffset, SeekOrigin.Begin);
             byte[] buf = new byte[entry.Block.RawLength];
             fs.ReadExactly(buf);
+            entry.InlineData = buf;
             return buf;
         }
 
@@ -127,12 +171,18 @@ public partial class EmbeddedObjectsDialog : ThemedDialog
 
     private string ExtractToTemp(EmbeddedObjectEntry entry)
     {
+        // Reuse the previously-extracted temp file when re-opening the same entry.
+        if (_tempPathByEntry.TryGetValue(entry, out var cached) && File.Exists(cached))
+            return cached;
+
         byte[] bytes = LoadBytes(entry);
         string baseName = string.IsNullOrEmpty(entry.Name) ? "embed" : Path.GetFileName(entry.Name);
         string tempPath = Path.Combine(
             Path.GetTempPath(),
             $"whdoc_{Guid.NewGuid():N}_{baseName}");
         File.WriteAllBytes(tempPath, bytes);
+        _tempFiles.Add(tempPath);
+        _tempPathByEntry[entry] = tempPath;
         return tempPath;
     }
 }

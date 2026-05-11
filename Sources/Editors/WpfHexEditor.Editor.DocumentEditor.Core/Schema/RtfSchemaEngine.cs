@@ -20,9 +20,43 @@ namespace WpfHexEditor.Editor.DocumentEditor.Core.Schema;
 /// </summary>
 public static class RtfSchemaEngine
 {
-    /// <summary>Escapes the three characters that must be escaped in RTF text: <c>\</c>, <c>{</c>, <c>}</c>.</summary>
-    public static string EscapeText(string text) =>
-        text.Replace(@"\", @"\\").Replace("{", @"\{").Replace("}", @"\}");
+    /// <summary>
+    /// Escapes RTF text: the three structural chars (<c>\</c>, <c>{</c>, <c>}</c>)
+    /// plus any non-ASCII code point as <c>\uN?</c> per RTF 1.9 spec — required
+    /// so accents/CJK/emoji round-trip through Word/WordPad without corruption.
+    /// </summary>
+    public static string EscapeText(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return text ?? string.Empty;
+
+        // Fast path: ASCII-only with no structural chars → return as-is.
+        bool needsEscape = false;
+        foreach (char ch in text)
+        {
+            if (ch == '\\' || ch == '{' || ch == '}' || ch > 0x7F) { needsEscape = true; break; }
+        }
+        if (!needsEscape) return text;
+
+        var sb = new System.Text.StringBuilder(text.Length + 16);
+        foreach (char ch in text)
+        {
+            switch (ch)
+            {
+                case '\\': sb.Append(@"\\"); break;
+                case '{':  sb.Append(@"\{"); break;
+                case '}':  sb.Append(@"\}"); break;
+                default:
+                    if (ch > 0x7F)
+                    {
+                        // RTF \uN? — N is a signed 16-bit code unit; high surrogates emit a follow-up.
+                        sb.Append(@"\u").Append((short)ch).Append('?');
+                    }
+                    else sb.Append(ch);
+                    break;
+            }
+        }
+        return sb.ToString();
+    }
 
     // ── Loading ──────────────────────────────────────────────────────────────
 

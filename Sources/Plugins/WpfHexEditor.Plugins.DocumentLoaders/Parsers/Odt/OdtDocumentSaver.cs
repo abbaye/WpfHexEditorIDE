@@ -36,15 +36,15 @@ public sealed class OdtDocumentSaver : IDocumentSaver
         if (!File.Exists(model.FilePath))
             throw new FileNotFoundException("Original ODT file not found.", model.FilePath);
 
-        byte[] originalBytes = await File.ReadAllBytesAsync(model.FilePath, ct);
-        using var originalMs = new MemoryStream(originalBytes);
         using var outputMs   = new MemoryStream();
 
         bool anonymize = model.Metadata?.Extra is { } extra &&
                          extra.TryGetValue(DocumentMetadataExtraKeys.Anonymized, out var anon) && anon == "true";
 
-        using (var originalZip = new ZipArchive(originalMs, ZipArchiveMode.Read, leaveOpen: true))
-        using (var outputZip   = new ZipArchive(outputMs,   ZipArchiveMode.Create, leaveOpen: true))
+        // Stream from disk rather than buffering — relevant for ODT with embedded media.
+        await using var originalStream = File.OpenRead(model.FilePath!);
+        using (var originalZip = new ZipArchive(originalStream, ZipArchiveMode.Read, leaveOpen: true))
+        using (var outputZip   = new ZipArchive(outputMs,       ZipArchiveMode.Create, leaveOpen: true))
         {
             const string contentEntry = "content.xml";
             const string metaEntry    = "meta.xml";
@@ -68,8 +68,9 @@ public sealed class OdtDocumentSaver : IDocumentSaver
             {
                 var metaWriter = outputZip.CreateEntry(metaEntry, CompressionLevel.Optimal);
                 await using var ms = metaWriter.Open();
-                await using var mw = new StreamWriter(ms);
-                await mw.WriteAsync(BuildAnonymizedMetaXml(model.Metadata?.Title ?? string.Empty));
+                await using var mw = new StreamWriter(ms, Utf8NoBom);
+                await mw.WriteAsync(BuildAnonymizedMetaXml(model.Metadata?.Title ?? string.Empty)
+                    .AsMemory(), ct);
             }
 
             string newXml = schema is not null
@@ -78,13 +79,15 @@ public sealed class OdtDocumentSaver : IDocumentSaver
 
             var docEntry = outputZip.CreateEntry(contentEntry, CompressionLevel.Optimal);
             await using var docStream = docEntry.Open();
-            await using var writer   = new StreamWriter(docStream);
-            await writer.WriteAsync(newXml);
+            await using var writer   = new StreamWriter(docStream, Utf8NoBom);
+            await writer.WriteAsync(newXml.AsMemory(), ct);
         }
 
         outputMs.Position = 0;
         await outputMs.CopyToAsync(output, ct);
     }
+
+    private static readonly System.Text.UTF8Encoding Utf8NoBom = new(encoderShouldEmitUTF8Identifier: false);
 
     /// <summary>
     /// Minimal anonymized meta.xml: keeps the title, drops initial-creator/

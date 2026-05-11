@@ -78,13 +78,16 @@ public sealed class DocxDocumentSaver : IDocumentSaver
 
             var docEntry = outputZip.CreateEntry(documentEntry, CompressionLevel.Optimal);
             await using var docStream = docEntry.Open();
-            await using var writer   = new StreamWriter(docStream);
-            await writer.WriteAsync(newXml);
+            // OOXML spec requires UTF-8 without BOM. Default StreamWriter would emit a BOM.
+            await using var writer   = new StreamWriter(docStream, Utf8NoBom);
+            await writer.WriteAsync(newXml.AsMemory(), ct);
         }
 
         outputMs.Position = 0;
         await outputMs.CopyToAsync(output, ct);
     }
+
+    private static readonly System.Text.UTF8Encoding Utf8NoBom = new(encoderShouldEmitUTF8Identifier: false);
 
     /// <summary>
     /// Writes the minimum set of OOXML package parts a fresh DOCX needs

@@ -4836,7 +4836,13 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
                 RawOffset = src.RawOffset,
                 RawLength = src.RawLength
             };
-            foreach (var (k, v) in src.Attributes) clone.Attributes[k] = v;
+            // Skip binary attributes: keeping the byte[] reference would let
+            // clipboard consumers mutate the live model's image bytes.
+            foreach (var (k, v) in src.Attributes)
+            {
+                if (k == WpfHexEditor.Editor.DocumentEditor.Core.Model.DocumentBlockAttributes.BinaryData) continue;
+                clone.Attributes[k] = v;
+            }
             list.Add(clone);
         }
         return list;

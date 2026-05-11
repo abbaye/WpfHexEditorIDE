@@ -1046,11 +1046,13 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         // Refresh popup view to reflect stripped metadata immediately.
         OnMetadataClicked(sender, e);
 
+        string yes = DocumentEditorResources.DocEditorHost_MetaYesValue;
+        string no  = DocumentEditorResources.DocEditorHost_MetaNoValue;
         WpfHexEditor.Editor.Core.Dialogs.IdeMessageBox.Show(
             string.Format(DocumentEditorResources.DocEditorHost_AnonymizeDoneFmt,
-                result.HadAuthor ? 1 : 0,
-                result.HadCreated || result.HadModified ? 1 : 0,
-                result.HadMacros ? 1 : 0,
+                result.HadAuthor                              ? yes : no,
+                result.HadCreated || result.HadModified       ? yes : no,
+                result.HadMacros                              ? yes : no,
                 result.ExtraKeysRemoved),
             DocumentEditorResources.DocEditorHost_AnonymizeTitle,
             MessageBoxButton.OK,

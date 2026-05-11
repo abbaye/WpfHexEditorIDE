@@ -20,6 +20,19 @@ namespace WpfHexEditor.Editor.DocumentEditor.Services;
 /// </summary>
 public static class EmbeddedObjectsScanner
 {
+    // Format-specific macro entry paths — surfaced by the synthetic macro
+    // entry. Selected via DocumentMetadata.MimeType so the panel doesn't
+    // hard-code DOCX paths for ODF/RTF documents.
+    private const string DocxMacroEntry = "word/vbaProject.bin";
+
+    private static readonly string[] OoxmlMacroMimes =
+    {
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-word.document.macroEnabled.12",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+        "application/vnd.ms-word.template.macroEnabled.12",
+    };
+
     /// <summary>
     /// Returns one entry per embedded artefact: images (with zipEntryName
     /// or in-memory binaryData), OLE objects, and a synthetic entry for
@@ -34,22 +47,37 @@ public static class EmbeddedObjectsScanner
 
         if (model.Metadata?.HasMacros == true)
         {
+            string? macroPath = ResolveMacroEntryPath(model.Metadata);
             list.Add(new EmbeddedObjectEntry
             {
-                Kind         = "macro",
-                Name         = "vbaProject.bin",
+                Kind         = DocumentBlockKinds.Macro,
+                Name         = macroPath is null ? "macros" : Path.GetFileName(macroPath),
                 SizeBytes    = -1,
-                ZipEntryName = "word/vbaProject.bin",
+                ZipEntryName = macroPath,
             });
         }
         return list;
+    }
+
+    /// <summary>
+    /// Resolves the well-known archive entry path that holds macro bytes for
+    /// the document's source format. Returns null if the format doesn't have
+    /// a single canonical macro entry (e.g. ODT macros live under Basic/).
+    /// </summary>
+    private static string? ResolveMacroEntryPath(DocumentMetadata meta)
+    {
+        if (string.IsNullOrEmpty(meta.MimeType)) return DocxMacroEntry;
+        foreach (var m in OoxmlMacroMimes)
+            if (meta.MimeType.Equals(m, StringComparison.OrdinalIgnoreCase))
+                return DocxMacroEntry;
+        return null;
     }
 
     private static void Walk(IEnumerable<DocumentBlock> blocks, List<EmbeddedObjectEntry> sink)
     {
         foreach (var b in blocks)
         {
-            if (b.Kind == "image" || b.Kind == "object")
+            if (b.Kind == DocumentBlockKinds.Image || b.Kind == DocumentBlockKinds.ObjectEmbed)
                 sink.Add(BuildEntry(b));
             if (b.Children.Count > 0) Walk(b.Children, sink);
         }
@@ -59,18 +87,18 @@ public static class EmbeddedObjectsScanner
     {
         var entry = new EmbeddedObjectEntry
         {
-            Kind  = b.Kind == "object" ? "OLE" : "image",
+            Kind  = b.Kind == DocumentBlockKinds.ObjectEmbed ? "OLE" : DocumentBlockKinds.Image,
             Name  = ExtractName(b),
             Block = b
         };
-        if (b.Attributes.TryGetValue("zipEntryName", out var ze) && ze is string zes)
+        if (b.Attributes.TryGetValue(DocumentBlockAttributes.ZipEntryName, out var ze) && ze is string zes)
             entry.ZipEntryName = zes;
-        if (b.Attributes.TryGetValue("binaryData", out var bd) && bd is byte[] bytes)
+        if (b.Attributes.TryGetValue(DocumentBlockAttributes.BinaryData, out var bd) && bd is byte[] bytes)
         {
             entry.InlineData = bytes;
             entry.SizeBytes  = bytes.Length;
         }
-        else if (b.Attributes.TryGetValue("binarySize", out var bs))
+        else if (b.Attributes.TryGetValue(DocumentBlockAttributes.BinarySize, out var bs))
             entry.SizeBytes = bs is int isz ? isz : -1;
         else
             entry.SizeBytes = b.RawLength;
@@ -79,7 +107,7 @@ public static class EmbeddedObjectsScanner
 
     private static string ExtractName(DocumentBlock b)
     {
-        if (b.Attributes.TryGetValue("zipEntryName", out var ze) && ze is string s && !string.IsNullOrEmpty(s))
+        if (b.Attributes.TryGetValue(DocumentBlockAttributes.ZipEntryName, out var ze) && ze is string s && !string.IsNullOrEmpty(s))
             return Path.GetFileName(s);
         if (!string.IsNullOrEmpty(b.Text)) return b.Text;
         return b.Kind;

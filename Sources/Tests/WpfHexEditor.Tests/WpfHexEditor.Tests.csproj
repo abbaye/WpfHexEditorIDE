@@ -25,6 +25,8 @@
     <ProjectReference Include="..\..\Editors\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.DocumentEditor\WpfHexEditor.Editor.DocumentEditor.csproj" />
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.DocumentEditor.Core\WpfHexEditor.Editor.DocumentEditor.Core.csproj" />
     <ProjectReference Include="..\..\Plugins\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj" />
   </ItemGroup>
 

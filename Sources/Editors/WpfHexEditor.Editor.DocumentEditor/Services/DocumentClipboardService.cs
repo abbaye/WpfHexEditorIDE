@@ -97,12 +97,12 @@ public static class DocumentClipboardService
 
     private static void AppendHtmlBlock(StringBuilder sb, DocumentBlock b)
     {
-        if (b.Kind == "run")
+        if (b.Kind == DocumentBlockKinds.Run)
         {
             AppendInlineRun(sb, b);
             return;
         }
-        if (b.Kind == "image")
+        if (b.Kind == DocumentBlockKinds.Image)
         {
             sb.Append("<img alt=\"image\"/>");
             return;
@@ -110,13 +110,13 @@ public static class DocumentClipboardService
 
         string tag = b.Kind switch
         {
-            "heading"     => HeadingTag(b),
-            "list-item"   => "li",
-            "table"       => "table",
-            "table-row"   => "tr",
-            "table-cell"  => "td",
-            "hyperlink"   => "a",
-            _             => "p"
+            DocumentBlockKinds.Heading    => HeadingTag(b),
+            DocumentBlockKinds.ListItem   => "li",
+            DocumentBlockKinds.Table      => "table",
+            DocumentBlockKinds.TableRow   => "tr",
+            DocumentBlockKinds.TableCell  => "td",
+            DocumentBlockKinds.Hyperlink  => "a",
+            _                             => "p"
         };
 
         sb.Append('<').Append(tag);
@@ -142,7 +142,7 @@ public static class DocumentClipboardService
 
     private static string HeadingTag(DocumentBlock b)
     {
-        int level = b.Attributes.TryGetValue("level", out var l) && l is int li
+        int level = b.Attributes.TryGetValue(DocumentBlockAttributes.Level, out var l) && l is int li
             ? Math.Clamp(li, 1, 6) : 1;
         return "h" + level;
     }
@@ -163,29 +163,56 @@ public static class DocumentClipboardService
 
     private static void AppendCssStyle(StringBuilder sb, DocumentBlock b)
     {
-        if (b.Attributes.TryGetValue("fontFamily", out var ff) && ff is string s)
+        if (b.Attributes.TryGetValue(DocumentBlockAttributes.FontFamily, out var ff) && ff is string s && IsSafeFontFamily(s))
             sb.Append("font-family:").Append(s).Append(';');
-        if (b.Attributes.TryGetValue("fontSize", out var fs))
+        if (b.Attributes.TryGetValue(DocumentBlockAttributes.FontSize, out var fs))
         {
             double pt = fs switch { double d => d, int i => i, _ => 0 };
             if (pt > 0) sb.Append("font-size:").Append(pt.ToString(CultureInfo.InvariantCulture)).Append("pt;");
         }
-        if (b.Attributes.TryGetValue("bold",      out var bo) && bo is true) sb.Append("font-weight:bold;");
-        if (b.Attributes.TryGetValue("italic",    out var it) && it is true) sb.Append("font-style:italic;");
-        if (b.Attributes.TryGetValue("underline", out var un) && un is true) sb.Append("text-decoration:underline;");
-        if (b.Attributes.TryGetValue("color",     out var c)  && c  is string cs) sb.Append("color:").Append(cs).Append(';');
+        if (b.Attributes.TryGetValue(DocumentBlockAttributes.Bold,      out var bo) && bo is true) sb.Append("font-weight:bold;");
+        if (b.Attributes.TryGetValue(DocumentBlockAttributes.Italic,    out var it) && it is true) sb.Append("font-style:italic;");
+        if (b.Attributes.TryGetValue(DocumentBlockAttributes.Underline, out var un) && un is true) sb.Append("text-decoration:underline;");
+        if (b.Attributes.TryGetValue(DocumentBlockAttributes.Color,     out var c)  && c  is string cs && IsSafeColor(cs))
+            sb.Append("color:").Append(cs).Append(';');
+    }
+
+    /// <summary>
+    /// Rejects font-family strings that contain CSS-breakout characters
+    /// (<c>;</c>, <c>{</c>, <c>}</c>, <c>&lt;</c>, <c>&gt;</c>, <c>"</c>) so a
+    /// crafted attribute can't inject extra declarations into clipboard HTML.
+    /// </summary>
+    private static bool IsSafeFontFamily(string s)
+    {
+        foreach (char ch in s)
+            if (ch is ';' or '{' or '}' or '<' or '>' or '"') return false;
+        return s.Length > 0 && s.Length < 200;
+    }
+
+    /// <summary>Accepts <c>#RGB</c>/<c>#RRGGBB</c>/<c>#RRGGBBAA</c> only.</summary>
+    private static bool IsSafeColor(string s)
+    {
+        if (s.Length is not (4 or 7 or 9) || s[0] != '#') return false;
+        for (int i = 1; i < s.Length; i++)
+        {
+            char ch = s[i];
+            if (!((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F')))
+                return false;
+        }
+        return true;
     }
 
     private static void AppendHtmlEncoded(StringBuilder sb, string text) =>
         sb.Append(WebUtility.HtmlEncode(text));
 
     /// <summary>
-    /// Wraps an HTML fragment in the CF_HTML descriptor envelope expected by
-    /// Windows clipboard consumers.
+    /// Wraps an HTML fragment in the CF_HTML descriptor envelope.
+    /// Offsets are in UTF-8 bytes (per spec) — char-count would corrupt
+    /// fragments containing non-ASCII (accents, emoji, CJK).
     /// </summary>
     private static string WrapCfHtml(string fragmentHtml)
     {
-        // CF_HTML header is fixed-width (5 fields × :D10 + labels + CRLFs) = 105 chars.
+        // CF_HTML header is fixed-width (5 fields × :D10 + labels + CRLFs) = 105 ASCII bytes.
         const string headerFmt =
             "Version:0.9\r\n" +
             "StartHTML:{0:D10}\r\n" +
@@ -199,10 +226,13 @@ public static class DocumentClipboardService
 
         string html = "<html><body>" + startMarker + fragmentHtml + endMarker + "</body></html>";
 
+        int markerStartChars = html.IndexOf(startMarker, StringComparison.Ordinal);
+        int markerEndChars   = html.IndexOf(endMarker,   StringComparison.Ordinal);
+
         int startHtml     = headerLen;
-        int startFragment = startHtml + html.IndexOf(startMarker, StringComparison.Ordinal) + startMarker.Length;
-        int endFragment   = startHtml + html.IndexOf(endMarker,   StringComparison.Ordinal);
-        int endHtml       = startHtml + html.Length;
+        int startFragment = startHtml + Encoding.UTF8.GetByteCount(html.AsSpan(0, markerStartChars + startMarker.Length));
+        int endFragment   = startHtml + Encoding.UTF8.GetByteCount(html.AsSpan(0, markerEndChars));
+        int endHtml       = startHtml + Encoding.UTF8.GetByteCount(html);
 
         return string.Format(headerFmt, startHtml, endHtml, startFragment, endFragment) + html;
     }
@@ -259,12 +289,15 @@ public static class DocumentClipboardService
         }
     }
 
+    private const string FallbackRtfHeader =
+        @"{\rtf1\ansi\ansicpg1252\deff0{\fonttbl{\f0\fnil\fcharset0 Times New Roman;}}\f0\fs24" + " ";
+
     private static string FallbackRtf(IReadOnlyList<DocumentBlock> blocks)
     {
-        var sb = new StringBuilder();
-        sb.Append(@"{\rtf1\ansi\deff0{\fonttbl{\f0 Times New Roman;}}\f0\fs24 ");
+        var sb = new StringBuilder(FallbackRtfHeader.Length + blocks.Count * 32);
+        sb.Append(FallbackRtfHeader);
         foreach (var b in blocks)
-            sb.Append(@"\pard\plain ").Append(RtfSchemaEngine.EscapeText(b.Text)).Append(@"\par ");
+            sb.Append(@"\pard\plain ").Append(RtfSchemaEngine.EscapeText(b.Text)).Append(@"\par");
         sb.Append('}');
         return sb.ToString();
     }

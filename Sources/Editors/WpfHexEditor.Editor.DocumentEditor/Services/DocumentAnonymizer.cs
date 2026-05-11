@@ -37,11 +37,10 @@ public static class DocumentAnonymizer
 
         var result = new AnonymizeResult
         {
-            HadAuthor       = !string.IsNullOrEmpty(meta.Author),
-            HadCreated      = meta.CreatedUtc.HasValue,
-            HadModified     = meta.ModifiedUtc.HasValue,
-            HadMacros       = meta.HasMacros,
-            ExtraKeysRemoved = meta.Extra.Count
+            HadAuthor   = !string.IsNullOrEmpty(meta.Author),
+            HadCreated  = meta.CreatedUtc.HasValue,
+            HadModified = meta.ModifiedUtc.HasValue,
+            HadMacros   = meta.HasMacros,
         };
 
         // Wipe identifying fields. Title is kept (often = filename, user-visible context).
@@ -49,9 +48,19 @@ public static class DocumentAnonymizer
         meta.CreatedUtc  = null;
         meta.ModifiedUtc = null;
 
-        // Preserve format identity but clear authoring "Extra" keys (template flags, etc.)
-        // that may leak provenance — except the marker itself.
-        meta.Extra.Clear();
+        // Preserve format-identity keys; drop everything else (custom properties,
+        // company name, last-printed timestamps, etc. that may leak provenance).
+        int removed = 0;
+        var allowlist = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            DocumentMetadataExtraKeys.IsTemplate,
+        };
+        foreach (var key in meta.Extra.Keys.ToArray())
+        {
+            if (allowlist.Contains(key)) continue;
+            meta.Extra.Remove(key);
+            removed++;
+        }
         meta.Extra[DocumentMetadataExtraKeys.Anonymized] = "true";
 
         if (stripMacros && meta.HasMacros)
@@ -59,6 +68,8 @@ public static class DocumentAnonymizer
             meta.HasMacros = false;
             meta.Extra[DocumentMetadataExtraKeys.MacrosRemoved] = "true";
         }
+
+        result = result with { ExtraKeysRemoved = removed };
 
         model.Metadata = meta;
         return result;
