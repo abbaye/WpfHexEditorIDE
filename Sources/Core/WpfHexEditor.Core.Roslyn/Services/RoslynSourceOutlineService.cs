@@ -30,12 +30,23 @@ namespace WpfHexEditor.Core.Roslyn.Services;
 /// </summary>
 public sealed class RoslynSourceOutlineService : ISourceOutlineService
 {
-    private readonly RoslynWorkspaceManager _workspace;
+    private readonly Func<RoslynWorkspaceManager?> _workspaceAccessor;
     private readonly ConcurrentDictionary<string, CacheEntry> _cache = new(StringComparer.OrdinalIgnoreCase);
 
     public RoslynSourceOutlineService(RoslynWorkspaceManager workspace)
+        : this(() => workspace)
     {
-        _workspace = workspace;
+    }
+
+    /// <summary>
+    /// Lazy ctor — the workspace manager is resolved on each call, allowing
+    /// the host to register the provider before any Roslyn workspace exists.
+    /// Returns null from <see cref="GetOutlineAsync"/> until the workspace
+    /// becomes available.
+    /// </summary>
+    public RoslynSourceOutlineService(Func<RoslynWorkspaceManager?> workspaceAccessor)
+    {
+        _workspaceAccessor = workspaceAccessor;
     }
 
     public bool CanOutline(string filePath) =>
@@ -47,7 +58,10 @@ public sealed class RoslynSourceOutlineService : ISourceOutlineService
     {
         if (!CanOutline(filePath)) return null;
 
-        var doc = _workspace.GetDocument(filePath);
+        var workspace = _workspaceAccessor();
+        if (workspace is null) return null;
+
+        var doc = workspace.GetDocument(filePath);
         if (doc is null) return null;     // host should fall back to regex engine
 
         var version = (await doc.GetTextVersionAsync(ct).ConfigureAwait(false)).ToString();

@@ -32,6 +32,13 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, 
 {
     private readonly Dispatcher _dispatcher;
     private readonly RoslynWorkspaceManager _workspace;
+
+    /// <summary>
+    /// The underlying workspace manager. Exposed so the host can build
+    /// auxiliary services such as <c>RoslynSourceOutlineService</c> that
+    /// share the same Roslyn workspace.
+    /// </summary>
+    public RoslynWorkspaceManager WorkspaceManager => _workspace;
     private readonly BackgroundAnalysisService _analysisService;
     private readonly MetadataAsSourceCache _metadataCache = new();
     private readonly RoslynReferenceCountProvider _refCountProvider;

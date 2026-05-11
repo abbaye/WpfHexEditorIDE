@@ -25,6 +25,8 @@ public sealed partial class StructurePopToolbar : UserControl
     public event EventHandler? AddBlockRequested;
     public event EventHandler? DuplicateRequested;
     public event EventHandler? ToggleCodeViewRequested;
+    public event EventHandler? ImportRequested;
+    public event EventHandler<TemplateExportRequestedEventArgs>? ExportRequested;
 
     // ── Block operations visibility ──────────────────────────────────────────
 
@@ -53,4 +55,24 @@ public sealed partial class StructurePopToolbar : UserControl
     private void OnAddBlockClicked(object s, RoutedEventArgs e)       => AddBlockRequested?.Invoke(this, EventArgs.Empty);
     private void OnDuplicateClicked(object s, RoutedEventArgs e)      => DuplicateRequested?.Invoke(this, EventArgs.Empty);
     private void OnToggleCodeViewClicked(object s, RoutedEventArgs e) => ToggleCodeViewRequested?.Invoke(this, EventArgs.Empty);
+    private void OnImportClicked(object s, RoutedEventArgs e)         => ImportRequested?.Invoke(this, EventArgs.Empty);
+
+    private void OnExportClicked(object s, RoutedEventArgs e)
+    {
+        var menu = new ContextMenu { PlacementTarget = PART_ExportBtn };
+        foreach (Services.TemplateExportFormat fmt in Enum.GetValues<Services.TemplateExportFormat>())
+        {
+            var item = new MenuItem { Header = $"Export as {fmt}…", Tag = fmt };
+            item.Click += (_, _) => ExportRequested?.Invoke(this,
+                new TemplateExportRequestedEventArgs((Services.TemplateExportFormat)item.Tag!));
+            menu.Items.Add(item);
+        }
+        menu.IsOpen = true;
+    }
+}
+
+public sealed class TemplateExportRequestedEventArgs : EventArgs
+{
+    public Services.TemplateExportFormat Format { get; }
+    public TemplateExportRequestedEventArgs(Services.TemplateExportFormat fmt) => Format = fmt;
 }

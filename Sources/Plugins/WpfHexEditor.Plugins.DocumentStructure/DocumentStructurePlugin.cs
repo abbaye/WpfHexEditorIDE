@@ -102,6 +102,13 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
         _resolver.Register(new IniStructureProvider());
         _resolver.Register(new FoldingRegionStructureProvider());
 
+        // External providers registered via the ExtensionRegistry — allows
+        // host-side modules (e.g. RoslynSourceOutlineStructureProvider in
+        // WpfHexEditor.Core.Roslyn) to plug in without taking a dependency
+        // on this plugin assembly. Priority order is preserved by resolver.
+        foreach (var extProvider in context.ExtensionRegistry.GetExtensions<IDocumentStructureProvider>())
+            _resolver.Register(extProvider);
+
         // ── XAML Designer integration (optional) ─────────────────────────
         var designerSvc = context.ExtensionRegistry
             .GetExtensions<IXamlDesignerService>().FirstOrDefault();

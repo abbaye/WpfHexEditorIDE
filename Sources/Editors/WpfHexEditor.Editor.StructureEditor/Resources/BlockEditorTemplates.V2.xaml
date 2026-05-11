@@ -176,19 +176,36 @@
                            ToolTip="{DynamicResource SE_BE_Tip_VariantVar}"/>
             </Grid>
 
-            <TextBlock Text="{DynamicResource SE_BE_Variants}" Style="{StaticResource SectionHeader}"/>
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource SE_BE_Variants}" Style="{StaticResource SectionHeader}"/>
+                <Button   DockPanel.Dock="Right" Content="+ Add variant"
+                          Command="{Binding AddUnionVariantCommand}"
+                          Margin="0,4,0,2" Padding="6,1" FontSize="11"/>
+            </DockPanel>
             <DataGrid ItemsSource="{Binding UnionVariants}" AutoGenerateColumns="False"
-                      Margin="0,0,0,4" FontSize="11" CanUserAddRows="True"
+                      Margin="0,0,0,4" FontSize="11" CanUserAddRows="False"
                       Background="{DynamicResource TE_Background}"
                       Foreground="{DynamicResource TE_Foreground}"
                       BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
                       RowBackground="{DynamicResource TE_Background}"
                       AlternatingRowBackground="{DynamicResource TE_LineNumberBackground}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Key"       Binding="{Binding Key}"       Width="80"/>
-                    <DataGridTextColumn Header="{DynamicResource SE_BE_Length}"    Binding="{Binding Length}"     Width="60"/>
-                    <DataGridTextColumn Header="ValueType" Binding="{Binding ValueType}"  Width="*"/>
-                    <DataGridTextColumn Header="Color"     Binding="{Binding Color}"      Width="80"/>
+                    <DataGridTextColumn Header="Key"         Binding="{Binding Key}"         Width="80"/>
+                    <DataGridTextColumn Header="{DynamicResource SE_BE_Length}" Binding="{Binding Length}" Width="60"/>
+                    <DataGridTextColumn Header="ValueType"   Binding="{Binding ValueType}"   Width="*"/>
+                    <DataGridTextColumn Header="Color"       Binding="{Binding Color}"       Width="80"/>
+                    <DataGridTextColumn Header="Opacity"     Binding="{Binding Opacity}"     Width="60"/>
+                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
+                    <DataGridTemplateColumn Header="" Width="28">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets"
+                                        Command="{Binding RemoveCommand}"
+                                        Background="Transparent" BorderThickness="0"
+                                        ToolTip="Remove variant"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>

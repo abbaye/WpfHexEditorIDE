@@ -216,10 +216,25 @@ public partial class MainWindow
                 var langRegistry = WpfHexEditor.Core.ProjectSystem.Languages.LanguageRegistry.Instance;
                 var csharpExts   = langRegistry.FindById("csharp")?.Extensions.ToArray() ?? [".cs", ".csx"];
                 var vbnetExts    = langRegistry.FindById("vbnet")?.Extensions.ToArray()  ?? [".vb"];
-                registry.RegisterInProcess("csharp", csharpExts,
-                    () => new WpfHexEditor.Core.Roslyn.RoslynLanguageClient(dispatcher));
-                registry.RegisterInProcess("vbnet", vbnetExts,
-                    () => new WpfHexEditor.Core.Roslyn.RoslynLanguageClient(dispatcher));
+
+                // Shared singleton — both C# and VB.NET reuse the same workspace
+                // so the Roslyn-backed source outline provider can read documents
+                // regardless of which language id triggered the LSP request.
+                WpfHexEditor.Core.Roslyn.RoslynLanguageClient? sharedRoslynClient = null;
+                WpfHexEditor.Core.Roslyn.RoslynLanguageClient SharedRoslyn() =>
+                    sharedRoslynClient ??= new WpfHexEditor.Core.Roslyn.RoslynLanguageClient(dispatcher);
+
+                registry.RegisterInProcess("csharp", csharpExts, () => SharedRoslyn());
+                registry.RegisterInProcess("vbnet",  vbnetExts,  () => SharedRoslyn());
+
+                // Register the Roslyn-backed document-structure provider via the
+                // ExtensionRegistry. DocumentStructurePlugin picks it up at init.
+                _ = SharedRoslyn(); // force creation so the workspace exists early
+                var roslynOutlineService = new WpfHexEditor.Core.Roslyn.Services.RoslynSourceOutlineService(
+                    () => sharedRoslynClient?.WorkspaceManager);
+                extensionRegistry.Register<WpfHexEditor.SDK.ExtensionPoints.DocumentStructure.IDocumentStructureProvider>(
+                    "WpfHexEditor.Core.Roslyn",
+                    new WpfHexEditor.Core.Roslyn.Providers.RoslynSourceOutlineStructureProvider(roslynOutlineService));
 
                 lspRegistry = registry;
 
