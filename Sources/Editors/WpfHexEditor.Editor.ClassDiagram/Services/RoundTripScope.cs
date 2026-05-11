@@ -20,6 +20,7 @@
 //     of Roslyn/IO concerns.
 // ==========================================================
 
+using System.Collections.Concurrent;
 using System.IO;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.Abstractions;
@@ -58,6 +59,28 @@ public static class RoundTripScope
 
     /// <summary>Optional error sink (set once by the host).</summary>
     public static RoundTripErrorReporter? ErrorReporter { get; set; }
+
+    // Per-path serialization: two rapid mutations targeting the same file
+    // (paste-many-members, undo-spam) would race the read-modify-write cycle
+    // of Applier and corrupt the file. A keyed SemaphoreSlim queues them.
+    private static readonly ConcurrentDictionary<string, SemaphoreSlim> _fileLocks =
+        new(StringComparer.OrdinalIgnoreCase);
+
+    private static SemaphoreSlim GetLock(string filePath) =>
+        _fileLocks.GetOrAdd(filePath, _ => new SemaphoreSlim(1, 1));
+
+    /// <summary>
+    /// Clears the installed Applier, ErrorReporter, and per-file locks.
+    /// Intended for tests that need a clean slate; matches the same-named
+    /// helper on RoundTripEditorRegistry and DiagramImporterRegistry.
+    /// </summary>
+    public static void ResetForTests()
+    {
+        Applier       = null;
+        ErrorReporter = null;
+        foreach (var s in _fileLocks.Values) s.Dispose();
+        _fileLocks.Clear();
+    }
 
     /// <summary>
     /// Determines whether a node carries source-file information so a
@@ -128,6 +151,8 @@ public static class RoundTripScope
         string                  description,
         Action?                 onSuccess)
     {
+        var gate = GetLock(filePath);
+        await gate.WaitAsync().ConfigureAwait(true);
         try
         {
             var result = await Applier!(filePath, edit, CancellationToken.None).ConfigureAwait(true);
@@ -137,15 +162,12 @@ public static class RoundTripScope
                 return;
             }
 
-            // Build a paired source-backup undo entry so an undo at the diagram
-            // level also rolls back the source file. The "WriteSource" delegate
-            // is invoked on undo/redo — it must push watcher suppression to the
-            // live-sync service via the same Applier-aware path, which we
-            // approximate here by re-writing the file directly (the Applier
-            // itself handles SuppressNextChange during forward edits; for
-            // undo/redo we issue raw writes — the user can detect a brief
-            // re-analyze if the watcher catches them).
-            var sourceBackup = new SourceFileBackupUndoEntry(
+            // Caller has already pushed its diagram-side snapshot entry; here
+            // we add a chained entry that only restores the source bytes on
+            // undo/redo. Watcher suppression for the forward write was handled
+            // inside Applier — on undo/redo we issue raw writes and accept a
+            // brief re-analyze if the live-sync watcher catches them.
+            undoManager.Push(new SourceFileBackupUndoEntry(
                 FilePath:       result.FilePath,
                 ContentBefore:  result.ContentBefore,
                 ContentAfter:   result.ContentAfter,
@@ -154,31 +176,18 @@ public static class RoundTripScope
                     try { File.WriteAllText(path, content); }
                     catch (Exception ex) { ErrorReporter?.Invoke($"Undo source write failed: {ex.Message}"); }
                 },
-                Inner:          NoOpEntry.Instance,
-                Description:    description);
+                Inner:          null,
+                Description:    description));
 
-            undoManager.Push(sourceBackup);
             onSuccess?.Invoke();
         }
         catch (Exception ex)
         {
             ErrorReporter?.Invoke($"Round-trip error: {ex.Message}");
         }
-    }
-
-    /// <summary>
-    /// Stand-in for the "inner" diagram-side undo when the diagram mutation
-    /// has its own snapshot entry pushed separately by the caller. The
-    /// <see cref="SourceFileBackupUndoEntry"/> contract requires a non-null
-    /// inner entry; this no-op satisfies that without double-pushing the
-    /// caller's snapshot.
-    /// </summary>
-    private sealed class NoOpEntry : IClassDiagramUndoEntry
-    {
-        public static readonly NoOpEntry Instance = new();
-        public string Description => "(source-file backup)";
-        public DateTime Timestamp { get; } = DateTime.UtcNow;
-        public void Undo() { }
-        public void Redo() { }
+        finally
+        {
+            gate.Release();
+        }
     }
 }

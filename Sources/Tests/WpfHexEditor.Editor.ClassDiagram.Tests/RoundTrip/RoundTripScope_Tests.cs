@@ -50,8 +50,7 @@ public class RoundTripScope_Tests
     [TestCleanup]
     public void Cleanup()
     {
-        RoundTripScope.Applier       = null;
-        RoundTripScope.ErrorReporter = null;
+        RoundTripScope.ResetForTests();
         try { Directory.Delete(_tmpDir, recursive: true); } catch { /* best effort */ }
     }
 

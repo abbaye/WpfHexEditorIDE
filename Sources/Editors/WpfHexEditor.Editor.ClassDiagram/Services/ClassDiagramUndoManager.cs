@@ -111,7 +111,7 @@ public sealed record SourceFileBackupUndoEntry(
     string                       ContentBefore,
     string                       ContentAfter,
     Action<string, string>       WriteSource,
-    IClassDiagramUndoEntry       Inner,
+    IClassDiagramUndoEntry?      Inner,
     string                       Description) : IClassDiagramUndoEntry
 {
     public DateTime Timestamp { get; } = DateTime.UtcNow;
@@ -119,13 +119,13 @@ public sealed record SourceFileBackupUndoEntry(
     public void Undo()
     {
         WriteSource(FilePath, ContentBefore);
-        Inner.Undo();
+        Inner?.Undo();
     }
 
     public void Redo()
     {
         WriteSource(FilePath, ContentAfter);
-        Inner.Redo();
+        Inner?.Redo();
     }
 }
 

@@ -1680,7 +1680,7 @@ public sealed class ClassDiagramSplitHost : Grid,
         // Round-trip: append a new type declaration to the original's source file.
         RoundTripScope.TryApply(
             copy,
-            new AddType(BuildTypeSnippet(copy)) { TargetTypeFullName = copy.Name },
+            new AddType(TypeSnippetBuilder.ForCSharp(copy)) { TargetTypeFullName = copy.Name },
             _undoManager,
             $"Source duplicate {original.Name}");
 
@@ -1689,21 +1689,6 @@ public sealed class ClassDiagramSplitHost : Grid,
         SetDirty(true);
     }
 
-    /// <summary>
-    /// Minimal C# type-declaration snippet used by the round-trip AddType edit
-    /// when duplicating a node or pasting from the clipboard.
-    /// </summary>
-    private static string BuildTypeSnippet(ClassNode node)
-    {
-        string kindKeyword = node.Kind switch
-        {
-            ClassKind.Interface => "interface",
-            ClassKind.Struct    => "struct",
-            ClassKind.Enum      => "enum",
-            _                   => node.IsAbstract ? "abstract class" : "class"
-        };
-        return $"public {kindKeyword} {node.Name} {{ }}";
-    }
 
     private void AddNewClass(ClassKind kind)
     {
@@ -1735,7 +1720,7 @@ public sealed class ClassDiagramSplitHost : Grid,
         // Round-trip: write the new type declaration to the inferred source file.
         RoundTripScope.TryApply(
             node,
-            new AddType(BuildTypeSnippet(node)) { TargetTypeFullName = node.Name },
+            new AddType(TypeSnippetBuilder.ForCSharp(node)) { TargetTypeFullName = node.Name },
             _undoManager,
             $"Source add {kindLabel} {name}");
 
@@ -1885,30 +1870,7 @@ public sealed class ClassDiagramSplitHost : Grid,
     {
         string beforeDsl = ClassDiagramSerializer.Serialize(_document);
 
-        // ClassNode.Name is init-only — replace with a cloned node carrying the new name.
-        var renamed = node.DeepClone();
-        var renamedFinal = new ClassNode
-        {
-            Name               = newName,
-            Kind               = renamed.Kind,
-            IsAbstract         = renamed.IsAbstract,
-            IsPartial          = renamed.IsPartial,
-            IsRecord           = renamed.IsRecord,
-            IsSealed           = renamed.IsSealed,
-            Namespace          = renamed.Namespace,
-            XmlDocSummary      = renamed.XmlDocSummary,
-            SourceFilePath     = renamed.SourceFilePath,
-            SourceLineOneBased = renamed.SourceLineOneBased,
-            Metrics            = renamed.Metrics,
-            X                  = renamed.X,
-            Y                  = renamed.Y,
-            Width              = renamed.Width,
-            Height             = renamed.Height,
-            CustomColor        = renamed.CustomColor
-        };
-        renamedFinal.Id = node.Id;
-        renamedFinal.Members.AddRange(renamed.Members);
-        renamedFinal.Attributes.AddRange(renamed.Attributes);
+        var renamedFinal = node.DeepClone(newName);
 
         int idx = _document.Classes.IndexOf(node);
         if (idx >= 0) _document.Classes[idx] = renamedFinal;
@@ -1917,8 +1879,8 @@ public sealed class ClassDiagramSplitHost : Grid,
         _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
             $"Rename → {newName}", ApplyDslSnapshot));
 
-        // Round-trip: patch the source file. Uses the node's OLD name as the
-        // target so Roslyn can find the type declaration before we renamed it.
+        // Use the node's OLD name as TargetTypeFullName: Roslyn must locate
+        // the type declaration BEFORE the rename to apply RenameType.
         RoundTripScope.TryApply(
             renamedFinal,
             new RenameType(newName) { TargetTypeFullName = node.Name },
@@ -2054,22 +2016,11 @@ public sealed class ClassDiagramSplitHost : Grid,
 
         string beforeDsl = ClassDiagramSerializer.Serialize(_document);
 
-        var replaced = new ClassMember
+        var replaced = member with
         {
-            Name               = member.Name,
-            TypeName           = member.TypeName,
-            Kind               = member.Kind,
-            Visibility         = newVis,
-            IsStatic           = member.IsStatic,
-            IsAbstract         = member.IsAbstract,
-            IsAsync            = member.IsAsync,
-            IsOverride         = member.IsOverride,
-            Parameters         = [.. member.Parameters],
-            GenericConstraints = member.GenericConstraints,
-            Attributes         = [.. member.Attributes],
-            XmlDocSummary      = member.XmlDocSummary,
-            SourceFilePath     = member.SourceFilePath,
-            SourceLineOneBased = member.SourceLineOneBased
+            Visibility = newVis,
+            Parameters = [.. member.Parameters],
+            Attributes = [.. member.Attributes]
         };
 
         int idx = owner.Members.IndexOf(member);
@@ -2115,23 +2066,11 @@ public sealed class ClassDiagramSplitHost : Grid,
     {
         string beforeDsl = ClassDiagramSerializer.Serialize(_document);
 
-        // ClassMember.Name is init-only — build a replacement copying every init-only property.
-        var replaced = new ClassMember
+        var replaced = member with
         {
-            Name               = newName,
-            TypeName           = member.TypeName,
-            Kind               = member.Kind,
-            Visibility         = member.Visibility,
-            IsStatic           = member.IsStatic,
-            IsAbstract         = member.IsAbstract,
-            IsAsync            = member.IsAsync,
-            IsOverride         = member.IsOverride,
-            Parameters         = [.. member.Parameters],
-            GenericConstraints = member.GenericConstraints,
-            Attributes         = [.. member.Attributes],
-            XmlDocSummary      = member.XmlDocSummary,
-            SourceFilePath     = member.SourceFilePath,
-            SourceLineOneBased = member.SourceLineOneBased
+            Name       = newName,
+            Parameters = [.. member.Parameters],
+            Attributes = [.. member.Attributes]
         };
 
         int idx = owner.Members.IndexOf(member);

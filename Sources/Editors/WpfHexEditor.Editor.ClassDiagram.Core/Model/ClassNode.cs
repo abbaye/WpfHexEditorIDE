@@ -174,11 +174,11 @@ public sealed class ClassNode
     /// Returns a shallow-cloned copy of this node with a new independent <see cref="Members"/> list.
     /// Layout position is preserved; the caller is responsible for assigning a new Id and offset.
     /// </summary>
-    public ClassNode DeepClone()
+    public ClassNode DeepClone(string? newName = null)
     {
         var clone = new ClassNode
         {
-            Name               = Name,
+            Name               = newName ?? Name,
             Kind               = Kind,
             IsAbstract         = IsAbstract,
             IsPartial          = IsPartial,
@@ -195,7 +195,7 @@ public sealed class ClassNode
             Height             = Height,
             CustomColor        = CustomColor
         };
-        clone.Id = Name;  // caller replaces with Guid
+        clone.Id = Id;
         clone.Members.AddRange(Members);
         clone.Attributes.AddRange(Attributes);
         return clone;

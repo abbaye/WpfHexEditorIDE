@@ -1764,22 +1764,12 @@ public sealed class DiagramCanvas : Canvas
             UndoAction: () => { doc.Classes.Remove(node); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); },
             RedoAction: () => { doc.Classes.Add(node);    _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); }));
 
-        // Round-trip: append type declaration to the inferred file.
         if (_undoManager is not null && node.SourceFilePath is not null)
-        {
-            string kindKw = kind switch
-            {
-                ClassKind.Interface => "interface",
-                ClassKind.Struct    => "struct",
-                ClassKind.Enum      => "enum",
-                _                   => "class"
-            };
             RoundTripScope.TryApply(
                 node,
-                new AddType($"public {kindKw} {node.Name} {{ }}") { TargetTypeFullName = node.Name },
+                new AddType(TypeSnippetBuilder.ForCSharp(node)) { TargetTypeFullName = node.Name },
                 _undoManager,
                 $"Source add {kind} {typeName}");
-        }
 
         SelectSingleNode(node);
         RenameNodeRequested?.Invoke(this, (node, null));
