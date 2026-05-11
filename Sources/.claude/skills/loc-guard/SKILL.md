@@ -1,14 +1,17 @@
 ---
 name: loc-guard
 description: |
-  INTERNAL DEV WORKFLOW for WpfHexEditor — Claude self-invokes after editing
-  any *.resx (base or satellite) to verify the 28-language satellite parity:
-  every key in *Resources.resx must exist in every *Resources.<lang>.resx,
-  every satellite key must exist in the base (no orphans), placeholders
-  ({0}/{1}) must match, and value-equals-base in non-en languages is flagged
-  as "untranslated" (warn). Distinct from xaml-guard (which only checks
-  Designer.cs parity for the base resx — loc-guard covers the satellite
-  matrix that xaml-guard skips). Skip on: edits to non-resx files.
+  INTERNAL DEV WORKFLOW for WpfHexEditor — Claude self-invokes on two scopes:
+  (1) PARITY — after editing any *.resx (base or satellite), verifies the
+  28-language satellite parity (missing/orphan keys, placeholder drift,
+  untranslated). (2) SOURCE — after editing *.xaml or *.cs under App/,
+  Editors/, Plugins/, Core/, Controls/, advisory checks for: DynamicResource
+  on loc keys (must be StaticResource), hardcoded user-visible string
+  literals, IdeMessageBox.Show literals, legacy MessageBox.Show usage
+  (ADR-009), and missing LocalizedResourceDictionary wiring (ADR-005).
+  All SOURCE findings are warn-only. Distinct from xaml-guard (which only
+  checks Designer.cs parity for the base resx). Skip on: Themes/, ColorPicker,
+  Designer.cs/g.cs, Tests/, Samples/, pure structural XAML edits.
 ---
 
 # loc-guard (internal)
@@ -20,21 +23,45 @@ satellites** parity that no other skill covers.
 
 ## When I invoke
 
+### Scope 1 — PARITY (resx only)
+
 | Situation                                          | Run? |
 |----------------------------------------------------|------|
 | Edit a base `*Resources.resx`                      | yes (scan all its satellites) |
 | Edit a single satellite `*.<lang>.resx`            | yes (scan against its base only) |
 | Add a new key to base (Phase 6 loc workflow)       | yes  |
-| Edit non-resx file                                 | no   |
+
+### Scope 2 — SOURCE (xaml + cs, advisory)
+
+| Situation                                                                    | Run? |
+|------------------------------------------------------------------------------|------|
+| Edit `*.xaml` under `App/`, `Editors/`, `Plugins/`, `Core/`, `Controls/`     | yes  |
+| Edit `*.cs` (UI / view-model / service) outside excluded paths               | yes  |
+| Edit base `*Resources.resx` (also triggers R4 wiring check, once/assembly)   | yes  |
+| Edit `Themes/*.xaml`, `ColorPicker/*`, `*.Designer.cs`, `*.g.cs`             | no   |
+| Edit `Tests/`, `Samples/`, `obj/`, `bin/`                                    | no   |
+| Pure structural edits (Grid.Row, Margin, Width on existing elements)         | no   |
+| Single-line comment / whitespace                                             | no   |
 
 ## Pipeline
 
+### Scope 1 — parity
 1. For each modified resx, locate its base + all satellites.
 2. Run `scripts/loc-parity.ps1 -Files <paths>`.
 3. Output: per-base summary `Loc <BaseName>: <N> satellites checked` then
    per-satellite stats.
 
-## 5 rules
+### Scope 2 — source
+1. Collect modified `*.xaml` / `*.cs` / base `*.resx` paths.
+2. Run `scripts/loc-source-guard.ps1 -Files <paths>`.
+3. Output: one `WARN <rule> <file>:<line> <detail>` per finding. Always
+   exits 0 (advisory). To silence a specific line, append the marker
+   `// loc-ignore: <reason>` on that line (CS) or as a same-line XML
+   comment (XAML).
+
+## Rules
+
+### Scope 1 — parity (5 rules, errors are blocking)
 
 | Rule                  | Severity | Detected via                                    |
 |-----------------------|----------|-------------------------------------------------|
@@ -43,6 +70,20 @@ satellites** parity that no other skill covers.
 | `placeholder-mismatch`  | error  | base has `{0} {1}`, satellite has `{0}` (or any other format-arg drift) |
 | `untranslated`          | warn   | satellite value identical to base value (only flagged for non-`en-*` cultures) |
 | `satellite-malformed`   | error  | XML parse fails or root element != `<root>` (extends xaml-guard's check across 28 langs) |
+
+### Scope 2 — source (5 rules, all advisory / warn-only)
+
+| Rule                          | Detected via                                                                                                          |
+|-------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| `loc-static-required`         | `{DynamicResource <Key>}` where `<Key>` is a loc key (known assembly prefix or `_Title`/`_Label`/`_ToolTip`/… suffix). New loc strings MUST use `StaticResource` (or `{x:Static l10n:Resources.X}`). DynamicResource on loc keys is a regression — was historically allowed; current rule is StaticResource. |
+| `loc-hardcoded-string`        | XAML `Text=`/`ToolTip=`/`Header=`/`Content=`/`Title=` with a literal string value (not a binding, not a resource ref, not numeric/whitespace/punctuation-only). Same check for CS UI property assignments (`.Text = "…"`, `.Title = "…"`, …). |
+| `loc-idemessagebox-literal`   | `IdeMessageBox.Show("literal", …)` or `IDialogService.Show("literal", …)`. First positional argument must be a resource key.                                                                       |
+| `loc-messagebox-legacy`       | `MessageBox.Show(…)` (standard WPF). Should use `IdeMessageBox` via `IDEHostContext.Dialogs` — ADR-009.                                                                                            |
+| `loc-locdict-missing`         | Assembly contains `*Resources.resx` but no `App.xaml` / `Module.xaml` in the assembly merges a `LocalizedResourceDictionary` — ADR-005. Reported once per assembly.                                |
+
+LSP-style false positives (technical strings, format placeholders) are
+suppressed by `data/allowlist.json` and the per-line `// loc-ignore: <reason>`
+marker.
 
 ## Output format
 
@@ -86,6 +127,11 @@ loc completion across the 56 assemblies.
 - Does **not** validate `.Designer.cs` parity (xaml-guard's job).
 - Does **not** coordinate sub-agent satellite creation (that pattern is in
   memory `feedback_localization_agent_strategy`).
+- Does **not** block on Scope 2 findings (advisory only). Use in combination
+  with `code-analysis` for hard quality gates.
+- Does **not** detect LSP-aware semantic info (e.g. whether a `.Text` setter
+  binds to a `TextBlock` or a non-UI POCO). Heuristic-only; tune via
+  `data/allowlist.json` if noise rises.
 
 ## Maintenance
 

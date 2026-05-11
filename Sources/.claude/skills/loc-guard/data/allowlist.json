@@ -1,0 +1,42 @@
+{
+  "_comment": "loc-source-guard allow-list. Paths are repo-relative globs; matched case-insensitive.",
+  "skip_path_globs": [
+    "**/Themes/**",
+    "**/ColorPicker/**",
+    "**/*.Designer.cs",
+    "**/*.g.cs",
+    "**/*.g.i.cs",
+    "**/Tests/**",
+    "**/*.Tests/**",
+    "**/Samples/**",
+    "**/obj/**",
+    "**/bin/**"
+  ],
+  "_xaml_attrs_user_visible": [
+    "List of XAML attributes whose string literal value is considered user-visible and therefore must be a resource key, not a literal."
+  ],
+  "xaml_user_visible_attrs": [
+    "Text", "ToolTip", "Header", "Content", "Title",
+    "Watermark", "Placeholder", "Description", "Label"
+  ],
+  "_xaml_attr_ignore_values": [
+    "Values for the attributes above that should NOT be flagged (whitespace, single glyphs, format placeholders, numeric)."
+  ],
+  "xaml_ignore_value_patterns": [
+    "^\\s*$",
+    "^\\{.*\\}$",
+    "^[0-9\\.\\-:/]+$",
+    "^\\s*[\\p{P}\\p{S}]{1,3}\\s*$",
+    "^[\\p{L}]{1,2}\\s*[:=<>]\\s*$",
+    "^[<>=]+\\s*[0-9\\.]+$"
+  ],
+  "cs_ui_property_assign": [
+    "\\.Text\\s*=",
+    "\\.Title\\s*=",
+    "\\.Header\\s*=",
+    "\\.ToolTip\\s*=",
+    "\\.Content\\s*=",
+    "\\.Watermark\\s*="
+  ],
+  "ignore_inline_marker": "// loc-ignore:"
+}
