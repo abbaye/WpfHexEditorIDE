@@ -31,27 +31,34 @@ public sealed class SnippetVariableContext
     public DateTime Timestamp       { get; init; } = DateTime.Now;
 
     /// <summary>Resolves the value of a variable by name (case-insensitive).</summary>
-    public string Resolve(string variableName) => variableName.ToLowerInvariant() switch
-    {
-        "filename"        => System.IO.Path.GetFileName(FilePath),
-        "filenamebase"    => System.IO.Path.GetFileNameWithoutExtension(FilePath),
-        "filepath"        => FilePath,
-        "fileext"         => System.IO.Path.GetExtension(FilePath),
-        "filedir"         => System.IO.Path.GetDirectoryName(FilePath) ?? "",
-        "selectedtext"    => SelectedText,
-        "currentline"     => CurrentLineText,
-        "linenumber"      => (CurrentLine + 1).ToString(),
-        "cursorposition"  => $"({CurrentLine + 1},{CurrentColumn + 1})",
-        "indent"          => IndentText,
-        "projectname"     => ProjectName ?? "",
-        "clipboardtext"   => ClipboardText ?? "",
-        "date"            => Timestamp.ToString("yyyy-MM-dd"),
-        "time"            => Timestamp.ToString("HH:mm:ss"),
-        "year"            => Timestamp.Year.ToString(),
-        "username"        => Environment.UserName,
-        "machinename"     => Environment.MachineName,
-        _                 => string.Empty,
-    };
+    public string Resolve(string variableName) => Resolvers.TryGetValue(variableName, out var fn)
+        ? fn(this)
+        : string.Empty;
+
+    private static readonly Dictionary<string, Func<SnippetVariableContext, string>> Resolvers
+        = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["FileName"]       = c => System.IO.Path.GetFileName(c.FilePath),
+            ["FileNameBase"]   = c => System.IO.Path.GetFileNameWithoutExtension(c.FilePath),
+            ["FilePath"]       = c => c.FilePath,
+            ["FileExt"]        = c => System.IO.Path.GetExtension(c.FilePath),
+            ["FileDir"]        = c => System.IO.Path.GetDirectoryName(c.FilePath) ?? "",
+            ["SelectedText"]   = c => c.SelectedText,
+            ["CurrentLine"]    = c => c.CurrentLineText,
+            ["LineNumber"]     = c => (c.CurrentLine + 1).ToString(),
+            ["CursorPosition"] = c => $"({c.CurrentLine + 1},{c.CurrentColumn + 1})",
+            ["Indent"]         = c => c.IndentText,
+            ["ProjectName"]    = c => c.ProjectName ?? "",
+            ["ClipboardText"]  = c => c.ClipboardText ?? "",
+            ["Date"]           = c => c.Timestamp.ToString("yyyy-MM-dd"),
+            ["Time"]           = c => c.Timestamp.ToString("HH:mm:ss"),
+            ["Year"]           = c => c.Timestamp.Year.ToString(),
+            ["UserName"]       = _ => Environment.UserName,
+            ["MachineName"]    = _ => Environment.MachineName,
+        };
+
+    /// <summary>The set of variable names recognised by <see cref="Resolve"/>.</summary>
+    public static IReadOnlyCollection<string> KnownVariables => Resolvers.Keys;
 }
 
 /// <summary>Expands <c>${VariableName}</c> tokens inside a snippet body.</summary>

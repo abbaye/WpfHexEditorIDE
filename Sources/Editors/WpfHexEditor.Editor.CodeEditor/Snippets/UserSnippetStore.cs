@@ -42,29 +42,46 @@ public sealed class UserSnippetStore
     public UserSnippetStore() : this(DefaultPath) { }
     public UserSnippetStore(string path) => _path = path;
 
-    public IReadOnlyList<StoredSnippet> GetAll() => _cache ??= Load();
+    private readonly object _lock = new();
+
+    /// <summary>Returns a defensive copy so callers can iterate concurrently with mutations.</summary>
+    public IReadOnlyList<StoredSnippet> GetAll()
+    {
+        lock (_lock) return EnsureLoaded().ToList();
+    }
 
     /// <summary>Returns snippets matching <paramref name="languageId"/> or the global scope.</summary>
     public IEnumerable<StoredSnippet> GetForLanguage(string languageId)
     {
-        foreach (var s in GetAll())
+        // Materialize before yield to avoid holding the lock during enumeration.
+        var snapshot = GetAll();
+        foreach (var s in snapshot)
             if (s.LanguageId == "*" || string.Equals(s.LanguageId, languageId, StringComparison.OrdinalIgnoreCase))
                 yield return s;
     }
 
     public void Add(StoredSnippet snippet)
     {
-        var list = GetAll().ToList();
-        list.RemoveAll(s => SameKey(s, snippet));
-        list.Add(snippet);
-        SaveAll(list);
+        lock (_lock)
+        {
+            var list = EnsureLoaded();
+            list.RemoveAll(s => SameKey(s, snippet));
+            list.Add(snippet);
+            SaveAll(list);
+        }
     }
 
     public void Remove(string languageId, string trigger)
     {
-        var list = GetAll().Where(s => !(s.LanguageId == languageId && s.Trigger == trigger)).ToList();
-        SaveAll(list);
+        lock (_lock)
+        {
+            var list = EnsureLoaded();
+            list.RemoveAll(s => s.LanguageId == languageId && s.Trigger == trigger);
+            SaveAll(list);
+        }
     }
+
+    private List<StoredSnippet> EnsureLoaded() => _cache ??= Load();
 
     private static bool SameKey(StoredSnippet a, StoredSnippet b)
         => string.Equals(a.LanguageId, b.LanguageId, StringComparison.OrdinalIgnoreCase)

@@ -1237,25 +1237,34 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (!mgr.TryExpand(word, out var snippet))
                 return false;
 
-            var context = BuildSnippetVariableContext(lineText, start);
+            var context = BuildSnippetVariableContext(snippet.Body, lineText, start);
             var expansion = SnippetManager.BuildExpansion(snippet, _cursorLine, start, word.Length, context);
             ApplySnippetExpansion(expansion);
             return true;
         }
 
-        private SnippetVariableContext BuildSnippetVariableContext(string lineText, int triggerStart)
+        private SnippetVariableContext BuildSnippetVariableContext(string body, string lineText, int triggerStart)
         {
+            // Skip expensive lookups when the snippet body has no variables.
+            bool hasVariables = body.Contains("${", StringComparison.Ordinal);
+
             string selected = string.Empty;
-            try
+            if (hasVariables && body.Contains("${SelectedText}", StringComparison.OrdinalIgnoreCase))
             {
-                if (_selection is not null && !_selection.IsEmpty && _document is not null)
-                    selected = _document.GetText(_selection.NormalizedStart, _selection.NormalizedEnd);
+                try
+                {
+                    if (_selection is not null && !_selection.IsEmpty && _document is not null)
+                        selected = _document.GetText(_selection.NormalizedStart, _selection.NormalizedEnd);
+                }
+                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[Snippet] selection read failed: {ex.Message}"); }
             }
-            catch { /* selection inspection is best-effort */ }
 
             string clipboard = string.Empty;
-            try { clipboard = System.Windows.Clipboard.ContainsText() ? System.Windows.Clipboard.GetText() : ""; }
-            catch { /* clipboard access may fail on locked sessions */ }
+            if (hasVariables && body.Contains("${ClipboardText}", StringComparison.OrdinalIgnoreCase))
+            {
+                try { clipboard = System.Windows.Clipboard.ContainsText() ? System.Windows.Clipboard.GetText() : ""; }
+                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[Snippet] clipboard read failed: {ex.Message}"); }
+            }
 
             return new SnippetVariableContext
             {
