@@ -688,6 +688,48 @@ public sealed class DiagramVisualLayer : FrameworkElement
         return null;
     }
 
+    /// <summary>
+    /// Returns the rectangle (in diagram coordinates) occupied by <paramref name="member"/>
+    /// inside <paramref name="node"/>, or null when the member belongs to a collapsed section.
+    /// Mirrors the layout computed by <see cref="HitTestMember"/> and the renderer so
+    /// callers (e.g. inline rename overlay) can place a popup exactly over the row.
+    /// </summary>
+    public Rect? GetMemberBounds(ClassNode node, ClassMember member)
+    {
+        double baseY     = node.Y + ComputeHeaderHeight(node) + MemberPadding;
+        double memberY   = 0;
+        MemberKind? lastKind = null;
+
+        foreach (var m in node.Members)
+        {
+            if (lastKind.HasValue && m.Kind != lastKind)
+            {
+                memberY += 14.0;
+                if (IsSectionCollapsed(node.Id, GetSectionName(m.Kind)))
+                {
+                    lastKind = m.Kind;
+                    continue;
+                }
+            }
+            lastKind = m.Kind;
+            if (IsSectionCollapsed(node.Id, GetSectionName(m.Kind))) continue;
+
+            if (ReferenceEquals(m, member))
+                return new Rect(node.X, baseY + memberY, ComputeNodeWidth(node), MemberHeight);
+
+            memberY += MemberHeight;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Returns the rectangle (in diagram coordinates) occupied by the header strip
+    /// of <paramref name="node"/>. Used by inline rename overlay to place the class
+    /// rename popup precisely over the header.
+    /// </summary>
+    public Rect GetHeaderBounds(ClassNode node) =>
+        new(node.X, node.Y, ComputeNodeWidth(node), ComputeHeaderHeight(node));
+
     /// <summary>Returns the relationship whose line is within 6px of <paramref name="pt"/>, or null.</summary>
     public ClassRelationship? HitTestArrow(Point pt)
     {

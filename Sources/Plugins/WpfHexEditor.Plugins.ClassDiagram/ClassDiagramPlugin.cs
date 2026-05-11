@@ -134,6 +134,12 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     {
         _context = context;
 
+        // ADR-022 Phase 1B-3: register built-in round-trip editors so the
+        // RoundTripEditorRegistry has at least the C# editor available before
+        // any diagram tab opens. VB editor will join in Phase 1.5.
+        WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.Abstractions.RoundTripEditorRegistry.Register(
+            new WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.CSharpRoundTripEditor());
+
         // Build panel instances.
         _outlinePanel    = new ClassOutlinePanel();
         _propertiesPanel = new ClassPropertiesPanel();

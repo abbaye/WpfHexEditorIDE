@@ -63,6 +63,14 @@
   <data name="ClassDiagEd_Menu_ChangeType" xml:space="preserve"><value>Change Type</value></data>
   <data name="ClassDiagEd_Menu_AutoLayout" xml:space="preserve"><value>Auto Layout</value></data>
 
+  <!-- ADR-022 Phase 1B — RoundTripPreviewDialog -->
+  <data name="ClassDiagEd_RoundTripPreview_Title" xml:space="preserve"><value>Apply changes to source?</value></data>
+  <data name="ClassDiagEd_RoundTripPreview_Before" xml:space="preserve"><value>Before</value></data>
+  <data name="ClassDiagEd_RoundTripPreview_After" xml:space="preserve"><value>After</value></data>
+  <data name="ClassDiagEd_RoundTripPreview_Apply" xml:space="preserve"><value>Apply</value></data>
+  <data name="ClassDiagEd_RoundTripPreview_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="ClassDiagEd_RoundTripPreview_DontAskAgain" xml:space="preserve"><value>Don't ask again for this session</value></data>
+
   <data name="ExportCode_Title" xml:space="preserve"><value>Export Code</value></data>
   <data name="ExportCode_Language" xml:space="preserve"><value>Language</value></data>
   <data name="ExportCode_RootNamespace" xml:space="preserve"><value>Root namespace</value></data>

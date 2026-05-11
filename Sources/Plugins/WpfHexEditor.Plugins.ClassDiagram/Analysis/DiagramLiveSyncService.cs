@@ -19,6 +19,7 @@
 //     can safely update UI without extra marshalling.
 // ==========================================================
 
+using System.Collections.Concurrent;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
@@ -30,17 +31,23 @@ namespace WpfHexEditor.Plugins.ClassDiagram.Analysis;
 /// <summary>
 /// Watches a set of C# source files and fires <see cref="DocumentPatched"/>
 /// when any of them change on disk. Updates are debounced by 800 ms.
+/// Implements ADR-021 cycle-prevention: file paths registered via
+/// <see cref="SuppressNextChange"/> drop incoming FSW events until their
+/// per-file suppression window elapses.
 /// </summary>
 public sealed class DiagramLiveSyncService : IDisposable
 {
-    private readonly IReadOnlyList<string>      _filePaths;
-    private readonly ClassDiagramOptions        _options;
-    private readonly List<FileSystemWatcher>    _watchers  = [];
-    private          DiagramDocument            _current;
-    private          System.Threading.Timer?    _debounce;
-    private          bool                       _disposed;
+    private readonly IReadOnlyList<string>                 _filePaths;
+    private readonly ClassDiagramOptions                   _options;
+    private readonly List<FileSystemWatcher>               _watchers   = [];
+    private readonly ConcurrentDictionary<string, DateTime> _suppressUntil =
+        new(StringComparer.OrdinalIgnoreCase);
+    private          DiagramDocument                       _current;
+    private          System.Threading.Timer?               _debounce;
+    private          bool                                  _disposed;
 
-    private const int DebounceMs = 800;
+    private const int DebounceMs        = 800;
+    private const int SuppressionMs     = 500;
 
     /// <summary>
     /// Fired on the WPF Dispatcher thread when a live-sync cycle completes.
@@ -65,6 +72,33 @@ public sealed class DiagramLiveSyncService : IDisposable
 
     /// <summary>Replaces the baseline document used for diffing (e.g. after a manual re-layout).</summary>
     public void UpdateBaseline(DiagramDocument doc) => _current = doc;
+
+    /// <summary>
+    /// ADR-021 cycle prevention. Round-trip writers (DiagramCodeEditService and
+    /// implementations of ILanguageRoundTripEditor) must call this BEFORE writing
+    /// to a source file. Any FSW Changed event for that path arriving within the
+    /// suppression window is dropped instead of triggering a sync cycle.
+    /// </summary>
+    /// <param name="filePath">Absolute path of the file about to be written.</param>
+    /// <param name="windowMs">Optional override; defaults to 500 ms.</param>
+    public void SuppressNextChange(string filePath, int? windowMs = null)
+    {
+        if (string.IsNullOrEmpty(filePath)) return;
+        var deadline = DateTime.UtcNow.AddMilliseconds(windowMs ?? SuppressionMs);
+        _suppressUntil[filePath] = deadline;
+    }
+
+    /// <summary>True if the given path is currently in its suppression window.</summary>
+    internal bool IsSuppressed(string filePath)
+    {
+        if (!_suppressUntil.TryGetValue(filePath, out var deadline)) return false;
+        if (DateTime.UtcNow >= deadline)
+        {
+            _suppressUntil.TryRemove(filePath, out _);
+            return false;
+        }
+        return true;
+    }
 
     // ── FSW setup ─────────────────────────────────────────────────────────────
 
@@ -94,6 +128,11 @@ public sealed class DiagramLiveSyncService : IDisposable
     private void OnFileEvent(object sender, FileSystemEventArgs e)
     {
         if (!_filePaths.Contains(e.FullPath, StringComparer.OrdinalIgnoreCase))
+            return;
+
+        // ADR-021: drop events for files inside their suppression window
+        // (writes originated by our own round-trip code, not user edits).
+        if (IsSuppressed(e.FullPath))
             return;
 
         // Reset the debounce timer on every incoming event.

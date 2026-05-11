@@ -131,7 +131,7 @@ public sealed class DiagramCanvas : Canvas
     // ── Events ────────────────────────────────────────────────────────────────
     public event EventHandler<ClassNode?>?                    SelectedClassChanged;
     public event EventHandler<ClassNode?>?                    HoveredClassChanged;
-    public event EventHandler<ClassNode?>?                    AddMemberRequested;
+    public event EventHandler<(ClassNode Node, MemberKind Kind)>? AddMemberRequested;
     public event EventHandler<(ClassNode Node, string? NewName)>? RenameNodeRequested;
     public event EventHandler<(ClassNode Node, ClassMember Member)>? DeleteMemberRequested;
     public event EventHandler<(ClassNode Node, ClassMember Member)>? NavigateToMemberRequested;
@@ -245,6 +245,18 @@ public sealed class DiagramCanvas : Canvas
 
     /// <summary>Returns the primary selected class node, or null.</summary>
     public ClassNode? SelectedNode => _primarySelected;
+
+    /// <summary>Selected member inside a class node (set by row-level clicks); null when the selection is at the class level.</summary>
+    public ClassMember? SelectedMember => _selectedMember;
+
+    /// <summary>Node that owns <see cref="SelectedMember"/>; null when no member is selected.</summary>
+    public ClassNode? SelectedMemberNode => _selectedMemberNode;
+
+    /// <summary>Header rectangle (diagram coords) of <paramref name="node"/>. Used to position inline rename overlay.</summary>
+    public Rect GetHeaderBoundsOf(ClassNode node) => _layer.GetHeaderBounds(node);
+
+    /// <summary>Member-row rectangle (diagram coords) inside <paramref name="node"/>; null when the section is collapsed.</summary>
+    public Rect? GetMemberBoundsOf(ClassNode node, ClassMember member) => _layer.GetMemberBounds(node, member);
 
     /// <summary>The document currently rendered by this canvas.</summary>
     public DiagramDocument? Document => _doc;
@@ -1363,10 +1375,10 @@ public sealed class DiagramCanvas : Canvas
             }));
 
         var addMenu = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_AddMember };
-        addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, node)));
-        addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, node)));
-        addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, node)));
-        addMenu.Items.Add(MakeItem("\uECAD", "Event",    () => AddMemberRequested?.Invoke(this, node)));
+        addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, (node, MemberKind.Field))));
+        addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, (node, MemberKind.Property))));
+        addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, (node, MemberKind.Method))));
+        addMenu.Items.Add(MakeItem("\uECAD", "Event",    () => AddMemberRequested?.Invoke(this, (node, MemberKind.Event))));
         menu.Items.Add(addMenu);
 
         menu.Items.Add(MakeItem("\uE790", "Change Color…",  () => ChangeNodeColorRequested?.Invoke(this, node)));
@@ -1394,10 +1406,10 @@ public sealed class DiagramCanvas : Canvas
         }
 
         var addMenu = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_AddMember };
-        addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, node)));
-        addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, node)));
-        addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, node)));
-        addMenu.Items.Add(MakeItem("\uECAD", "Event",    () => AddMemberRequested?.Invoke(this, node)));
+        addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, (node, MemberKind.Field))));
+        addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, (node, MemberKind.Property))));
+        addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, (node, MemberKind.Method))));
+        addMenu.Items.Add(MakeItem("\uECAD", "Event",    () => AddMemberRequested?.Invoke(this, (node, MemberKind.Event))));
         menu.Items.Add(addMenu);
 
         menu.Items.Add(new Separator());

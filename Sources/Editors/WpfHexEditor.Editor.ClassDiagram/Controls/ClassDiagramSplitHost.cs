@@ -210,6 +210,7 @@ public sealed class ClassDiagramSplitHost : Grid,
         _canvas.SelectedClassChanged     += OnCanvasSelectedClassChanged;
         _canvas.HoveredClassChanged      += OnCanvasHoveredClassChanged;
         _canvas.RenameNodeRequested      += (_, args) => BeginRenameNode(args.Node);
+        _canvas.AddMemberRequested       += (_, args) => AddNewMember(args.Node, args.Kind);
         _canvas.ExportRequested          += OnCanvasExportRequested;
         _canvas.LayoutStrategyRequested  += (_, strategy) => _ = ApplyLayoutAsync(strategy);
         _canvas.FitToContentRequested    += (_, _) => _zoomPan.FitToContent();
@@ -1695,7 +1696,41 @@ public sealed class ClassDiagramSplitHost : Grid,
         SetDirty(true);
     }
 
-    private void BeginRename() => BeginRenameNode(_canvas.SelectedNode);
+    /// <summary>
+    /// F2 entry point. If a member is selected inside a node, renames the member;
+    /// otherwise renames the selected node. Bugfix 2026-05-10: previous version
+    /// always renamed the node and mispositioned the popup outside the canvas.
+    /// </summary>
+    private void BeginRename()
+    {
+        if (_canvas.SelectedMember is { } m && _canvas.SelectedMemberNode is { } owner)
+        {
+            BeginRenameMember(owner, m);
+            return;
+        }
+        BeginRenameNode(_canvas.SelectedNode);
+    }
+
+    /// <summary>
+    /// Converts a diagram-space rectangle into screen-space coordinates relative
+    /// to <c>this</c> control, honouring the ZoomPanCanvas internal transform.
+    /// Used by inline rename overlays to place a popup exactly over the target.
+    /// </summary>
+    private (Point Origin, double Width, double Height) DiagramRectToScreen(Rect diagramRect)
+    {
+        // _zoomPan applies a TranslateTransform(OffsetX,Y) composed with ScaleTransform(zoom).
+        // Diagram coords map to ZoomPanCanvas local coords via that transform. We then ask
+        // WPF to translate from _zoomPan's local space to `this` so the popup placement is
+        // correct regardless of how _zoomPan is hosted (split-pane resizing, scrollbars).
+        double zoom    = _zoomPan.ZoomFactor;
+        double offsetX = _zoomPan.OffsetX;
+        double offsetY = _zoomPan.OffsetY;
+
+        var localTL = new Point(diagramRect.X * zoom + offsetX, diagramRect.Y * zoom + offsetY);
+        var screen  = _zoomPan.TranslatePoint(localTL, this);
+
+        return (screen, diagramRect.Width * zoom, diagramRect.Height * zoom);
+    }
 
     /// <summary>
     /// Shows an inline TextBox popup positioned over the node header so the user
@@ -1705,29 +1740,56 @@ public sealed class ClassDiagramSplitHost : Grid,
     {
         if (node is null) return;
 
-        // Convert the node header's diagram-space top-left to screen coords.
-        double zoom    = _zoomPan.ZoomFactor;
-        double offsetX = _zoomPan.OffsetX;
-        double offsetY = _zoomPan.OffsetY;
+        var headerRect = _canvas.GetHeaderBoundsOf(node);
+        var (origin, width, height) = DiagramRectToScreen(headerRect);
 
-        // screen_pt = diagram_pt * zoom + offset (ZoomPanCanvas internal transform)
-        var screenOrigin = _zoomPan.TranslatePoint(
-            new Point(node.X * zoom + offsetX, node.Y * zoom + offsetY),
-            this);
+        ShowRenameOverlay(
+            initialText:  node.Name,
+            origin:       origin,
+            width:        Math.Max(width, 160),
+            height:       Math.Max(height, 24),
+            isBold:       true,
+            onCommit:     newName => CommitNodeRename(node, newName));
+    }
 
-        double popupW = Math.Max(node.Width * zoom, 160);
+    /// <summary>
+    /// Shows an inline TextBox popup positioned over the member row so the user
+    /// can rename the member in-place. Pre-fills with the member name, not the
+    /// class name (bugfix 2026-05-10).
+    /// </summary>
+    private void BeginRenameMember(ClassNode owner, ClassMember member)
+    {
+        var memberRect = _canvas.GetMemberBoundsOf(owner, member);
+        if (memberRect is null) return; // member section is collapsed
 
+        var (origin, width, height) = DiagramRectToScreen(memberRect.Value);
+
+        ShowRenameOverlay(
+            initialText:  member.Name,
+            origin:       origin,
+            width:        Math.Max(width, 160),
+            height:       Math.Max(height, 22),
+            isBold:       false,
+            onCommit:     newName => CommitMemberRename(owner, member, newName));
+    }
+
+    /// <summary>Generic inline rename overlay shared by node and member rename.</summary>
+    private void ShowRenameOverlay(
+        string initialText, Point origin, double width, double height,
+        bool isBold, Action<string> onCommit)
+    {
         var tb = new TextBox
         {
-            Text            = node.Name,
-            MinWidth        = popupW,
-            MaxWidth        = 320,
-            FontWeight      = FontWeights.Bold,
-            FontSize        = 13,
-            Padding         = new Thickness(6, 4, 6, 4),
+            Text            = initialText,
+            MinWidth        = width,
+            MaxWidth        = 480,
+            Height          = height,
+            FontWeight      = isBold ? FontWeights.Bold : FontWeights.Normal,
+            FontSize        = isBold ? 13 : 12,
+            Padding         = new Thickness(6, 2, 6, 2),
             BorderThickness = new Thickness(1),
             SelectionStart  = 0,
-            SelectionLength = node.Name.Length
+            SelectionLength = initialText.Length
         };
         tb.SetResourceReference(TextBox.BackgroundProperty,  "CD_ClassBoxHeaderBackground");
         tb.SetResourceReference(TextBox.ForegroundProperty,  "CD_ClassNameForeground");
@@ -1736,9 +1798,10 @@ public sealed class ClassDiagramSplitHost : Grid,
         var popup = new System.Windows.Controls.Primitives.Popup
         {
             Child              = new Border { Child = tb, CornerRadius = new CornerRadius(3), Padding = new Thickness(0) },
-            Placement          = System.Windows.Controls.Primitives.PlacementMode.AbsolutePoint,
-            HorizontalOffset   = screenOrigin.X,
-            VerticalOffset     = screenOrigin.Y,
+            Placement          = System.Windows.Controls.Primitives.PlacementMode.Relative,
+            PlacementTarget    = this,
+            HorizontalOffset   = origin.X,
+            VerticalOffset     = origin.Y,
             AllowsTransparency = true,
             StaysOpen          = true,
             IsOpen             = true
@@ -1750,49 +1813,9 @@ public sealed class ClassDiagramSplitHost : Grid,
         {
             if (!popup.IsOpen) return;
             popup.IsOpen = false;
-
-            string newName = tb.Text.Trim();
-            if (newName.Length == 0 || newName == node.Name) return;
-
-            string beforeDsl = ClassDiagramSerializer.Serialize(_document);
-
-            // ClassNode.Name is init-only — replace with a cloned node carrying the new name.
-            var renamed = node.DeepClone();
-            renamed.Id = node.Id; // preserve stable ID so relationships remain valid
-            // patch Name by creating a new instance (init-only property)
-            var renamedFinal = new ClassNode
-            {
-                Name               = newName,
-                Kind               = renamed.Kind,
-                IsAbstract         = renamed.IsAbstract,
-                IsPartial          = renamed.IsPartial,
-                IsRecord           = renamed.IsRecord,
-                IsSealed           = renamed.IsSealed,
-                Namespace          = renamed.Namespace,
-                XmlDocSummary      = renamed.XmlDocSummary,
-                SourceFilePath     = renamed.SourceFilePath,
-                SourceLineOneBased = renamed.SourceLineOneBased,
-                Metrics            = renamed.Metrics,
-                X                  = renamed.X,
-                Y                  = renamed.Y,
-                Width              = renamed.Width,
-                Height             = renamed.Height,
-                CustomColor        = renamed.CustomColor
-            };
-            renamedFinal.Id = node.Id;
-            renamedFinal.Members.AddRange(renamed.Members);
-            renamedFinal.Attributes.AddRange(renamed.Attributes);
-
-            int idx = _document.Classes.IndexOf(node);
-            if (idx >= 0) _document.Classes[idx] = renamedFinal;
-
-            string afterDsl = ClassDiagramSerializer.Serialize(_document);
-            _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
-                $"Rename → {newName}", ApplyDslSnapshot));
-
-            _canvas.ApplyDocument(_document);
-            SyncDslPane();
-            SetDirty(true);
+            string text = tb.Text.Trim();
+            if (text.Length == 0 || text == initialText) return;
+            onCommit(text);
         }
 
         tb.KeyDown   += (_, ke) =>
@@ -1801,6 +1824,145 @@ public sealed class ClassDiagramSplitHost : Grid,
             if (ke.Key == Key.Escape)  { popup.IsOpen = false;  ke.Handled = true; }
         };
         tb.LostFocus += (_, _) => Commit();
+    }
+
+    private void CommitNodeRename(ClassNode node, string newName)
+    {
+        string beforeDsl = ClassDiagramSerializer.Serialize(_document);
+
+        // ClassNode.Name is init-only — replace with a cloned node carrying the new name.
+        var renamed = node.DeepClone();
+        var renamedFinal = new ClassNode
+        {
+            Name               = newName,
+            Kind               = renamed.Kind,
+            IsAbstract         = renamed.IsAbstract,
+            IsPartial          = renamed.IsPartial,
+            IsRecord           = renamed.IsRecord,
+            IsSealed           = renamed.IsSealed,
+            Namespace          = renamed.Namespace,
+            XmlDocSummary      = renamed.XmlDocSummary,
+            SourceFilePath     = renamed.SourceFilePath,
+            SourceLineOneBased = renamed.SourceLineOneBased,
+            Metrics            = renamed.Metrics,
+            X                  = renamed.X,
+            Y                  = renamed.Y,
+            Width              = renamed.Width,
+            Height             = renamed.Height,
+            CustomColor        = renamed.CustomColor
+        };
+        renamedFinal.Id = node.Id;
+        renamedFinal.Members.AddRange(renamed.Members);
+        renamedFinal.Attributes.AddRange(renamed.Attributes);
+
+        int idx = _document.Classes.IndexOf(node);
+        if (idx >= 0) _document.Classes[idx] = renamedFinal;
+
+        string afterDsl = ClassDiagramSerializer.Serialize(_document);
+        _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
+            $"Rename → {newName}", ApplyDslSnapshot));
+
+        _canvas.ApplyDocument(_document);
+        SyncDslPane();
+        SetDirty(true);
+    }
+
+    /// <summary>
+    /// Context-menu "Add Member → {Field|Property|Method|Event}" entry point.
+    /// Creates a sensibly-defaulted member of the requested kind, appends it to
+    /// <paramref name="owner"/>, pushes an undo snapshot, syncs DSL, then opens
+    /// the inline rename overlay so the user can immediately name it.
+    /// </summary>
+    private void AddNewMember(ClassNode owner, MemberKind kind)
+    {
+        if (owner is null) return;
+
+        string baseName = kind switch
+        {
+            MemberKind.Field    => "newField",
+            MemberKind.Property => "NewProperty",
+            MemberKind.Method   => "NewMethod",
+            MemberKind.Event    => "NewEvent",
+            _                   => "NewMember"
+        };
+        string unique = UniqueMemberName(owner, baseName);
+
+        var newMember = new ClassMember
+        {
+            Name        = unique,
+            Kind        = kind,
+            Visibility  = MemberVisibility.Public,
+            TypeName    = kind switch
+            {
+                MemberKind.Field    => "object",
+                MemberKind.Property => "object",
+                MemberKind.Method   => "void",
+                MemberKind.Event    => "EventHandler",
+                _                   => "object"
+            }
+        };
+
+        string beforeDsl = ClassDiagramSerializer.Serialize(_document);
+        owner.Members.Add(newMember);
+        string afterDsl = ClassDiagramSerializer.Serialize(_document);
+
+        _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
+            $"Add {kind.ToString().ToLowerInvariant()} → {unique}", ApplyDslSnapshot));
+
+        _canvas.ApplyDocument(_document);
+        SyncDslPane();
+        SetDirty(true);
+
+        // Immediately open the inline rename overlay so the user can name it.
+        BeginRenameMember(owner, newMember);
+    }
+
+    private static string UniqueMemberName(ClassNode owner, string baseName)
+    {
+        var taken = new HashSet<string>(owner.Members.Select(m => m.Name), StringComparer.Ordinal);
+        if (!taken.Contains(baseName)) return baseName;
+        for (int i = 2; i < 1000; i++)
+        {
+            string candidate = baseName + i;
+            if (!taken.Contains(candidate)) return candidate;
+        }
+        return baseName + Guid.NewGuid().ToString("N")[..6];
+    }
+
+    private void CommitMemberRename(ClassNode owner, ClassMember member, string newName)
+    {
+        string beforeDsl = ClassDiagramSerializer.Serialize(_document);
+
+        // ClassMember.Name is init-only — build a replacement copying every init-only property.
+        var replaced = new ClassMember
+        {
+            Name               = newName,
+            TypeName           = member.TypeName,
+            Kind               = member.Kind,
+            Visibility         = member.Visibility,
+            IsStatic           = member.IsStatic,
+            IsAbstract         = member.IsAbstract,
+            IsAsync            = member.IsAsync,
+            IsOverride         = member.IsOverride,
+            Parameters         = [.. member.Parameters],
+            GenericConstraints = member.GenericConstraints,
+            Attributes         = [.. member.Attributes],
+            XmlDocSummary      = member.XmlDocSummary,
+            SourceFilePath     = member.SourceFilePath,
+            SourceLineOneBased = member.SourceLineOneBased
+        };
+
+        int idx = owner.Members.IndexOf(member);
+        if (idx < 0) return;
+        owner.Members[idx] = replaced;
+
+        string afterDsl = ClassDiagramSerializer.Serialize(_document);
+        _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
+            $"Rename member → {newName}", ApplyDslSnapshot));
+
+        _canvas.ApplyDocument(_document);
+        SyncDslPane();
+        SetDirty(true);
     }
 
     // ---------------------------------------------------------------------------

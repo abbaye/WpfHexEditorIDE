@@ -41,6 +41,25 @@ internal static class ClassDiagramResources
     internal static string ClassDiagEd_Menu_AutoLayout
         => ResourceManager.GetString("ClassDiagEd_Menu_AutoLayout", _resourceCulture)!;
 
+    // ADR-022 Phase 1B — RoundTripPreviewDialog
+    internal static string ClassDiagEd_RoundTripPreview_Title
+        => ResourceManager.GetString("ClassDiagEd_RoundTripPreview_Title", _resourceCulture)!;
+
+    internal static string ClassDiagEd_RoundTripPreview_Before
+        => ResourceManager.GetString("ClassDiagEd_RoundTripPreview_Before", _resourceCulture)!;
+
+    internal static string ClassDiagEd_RoundTripPreview_After
+        => ResourceManager.GetString("ClassDiagEd_RoundTripPreview_After", _resourceCulture)!;
+
+    internal static string ClassDiagEd_RoundTripPreview_Apply
+        => ResourceManager.GetString("ClassDiagEd_RoundTripPreview_Apply", _resourceCulture)!;
+
+    internal static string ClassDiagEd_RoundTripPreview_Cancel
+        => ResourceManager.GetString("ClassDiagEd_RoundTripPreview_Cancel", _resourceCulture)!;
+
+    internal static string ClassDiagEd_RoundTripPreview_DontAskAgain
+        => ResourceManager.GetString("ClassDiagEd_RoundTripPreview_DontAskAgain", _resourceCulture)!;
+
     internal static string ExportCode_Toolbar_MenuItem
         => ResourceManager.GetString("ExportCode_Toolbar_MenuItem", _resourceCulture)!;
 
