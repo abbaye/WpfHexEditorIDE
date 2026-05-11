@@ -489,7 +489,7 @@ internal sealed class BlockViewModel : ViewModelBase
         vm.RemoveRequested += (s, _) => { UnionVariants.Remove((UnionVariantViewModel)s!); RaiseChanged(); };
     }
 
-    private void LoadUnionVariants(Dictionary<string, BlockDefinition.UnionVariant>? variants)
+    private void LoadUnionVariants(Dictionary<string, UnionVariant>? variants)
     {
         UnionVariants.Clear();
         if (variants is null) return;
@@ -509,14 +509,14 @@ internal sealed class BlockViewModel : ViewModelBase
         }
     }
 
-    private Dictionary<string, BlockDefinition.UnionVariant>? BuildUnionVariants()
+    private Dictionary<string, UnionVariant>? BuildUnionVariants()
     {
         if (UnionVariants.Count == 0) return null;
-        var dict = new Dictionary<string, BlockDefinition.UnionVariant>();
+        var dict = new Dictionary<string, UnionVariant>();
         foreach (var vm in UnionVariants)
         {
             if (string.IsNullOrWhiteSpace(vm.Key)) continue;
-            dict[vm.Key] = new BlockDefinition.UnionVariant
+            dict[vm.Key] = new UnionVariant
             {
                 Length      = ParseObj(vm.Length),
                 ValueType   = string.IsNullOrEmpty(vm.ValueType) ? null : vm.ValueType,
