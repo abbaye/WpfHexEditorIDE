@@ -625,6 +625,21 @@
                 </TabItem>
 
                 <!-- ── Dead Code ─────────────────────────────────────────── -->
+                <TabItem Header="{DynamicResource CodeAnalysis_Tab_Dependencies}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Dependencies}">
+                    <Grid Margin="8">
+                        <controls:DependencyGraphCanvas x:Name="PART_DependencyGraph"
+                                                        Nodes="{Binding DependencyNodes, Mode=OneWay}"
+                                                        Edges="{Binding DependencyEdges, Mode=OneWay}"/>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="{DynamicResource CodeAnalysis_Tab_Trends}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Trends}">
+                    <Grid Margin="8">
+                        <controls:TrendChartControl x:Name="PART_TrendChart"
+                                                    Series="{Binding TrendSeries, Mode=OneWay}"/>
+                    </Grid>
+                </TabItem>
+
                 <TabItem Header="{DynamicResource CodeAnalysis_Tab_DeadCode}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_DeadCode}">
                     <Grid Margin="8">
                         <DataGrid ItemsSource="{Binding DeadSymbols, Mode=OneWay}"

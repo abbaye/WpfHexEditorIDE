@@ -1205,6 +1205,10 @@
   <data name="CodeAnalysis_Tab_Coupling"            xml:space="preserve"><value>Coupling</value></data>
   <data name="CodeAnalysis_Tab_Duplication"         xml:space="preserve"><value>Duplication</value></data>
   <data name="CodeAnalysis_Tab_DeadCode"            xml:space="preserve"><value>Dead Code</value></data>
+  <data name="CodeAnalysis_Tab_Dependencies"        xml:space="preserve"><value>Dependencies</value></data>
+  <data name="CodeAnalysis_Tab_Trends"              xml:space="preserve"><value>Trends</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Dependencies" xml:space="preserve"><value>Visualize coupling between projects and classes.</value></data>
+  <data name="CodeAnalysis_Tooltip_Tab_Trends"      xml:space="preserve"><value>Historical evolution of quality metrics across snapshots.</value></data>
   <data name="CodeAnalysis_Grade_A"                 xml:space="preserve"><value>A</value></data>
   <data name="CodeAnalysis_Grade_B"                 xml:space="preserve"><value>B</value></data>
   <data name="CodeAnalysis_Grade_C"                 xml:space="preserve"><value>C</value></data>

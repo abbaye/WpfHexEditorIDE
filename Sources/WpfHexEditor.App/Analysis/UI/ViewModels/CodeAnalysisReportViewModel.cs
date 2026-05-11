@@ -71,8 +71,15 @@ public sealed class CodeAnalysisReportViewModel : INotifyPropertyChanged
     public ObservableCollection<MethodMetrics>       TopMethods   { get; } = [];
     public ObservableCollection<CouplingMetrics>     TopCouplings { get; } = [];
     public ObservableCollection<DuplicationGroup>    Duplications { get; } = [];
+    public ObservableCollection<DuplicationGroupViewModel> DuplicationGroups { get; } = [];
     public ObservableCollection<DeadSymbol>          DeadSymbols  { get; } = [];
     public ObservableCollection<FileMetricsViewModel> WorstFiles  { get; } = [];
+
+    // ── Dependencies / Trends tabs ───────────────────────────────────────────
+
+    public ObservableCollection<WpfHexEditor.App.Analysis.UI.Controls.DependencyNode> DependencyNodes { get; } = [];
+    public ObservableCollection<WpfHexEditor.App.Analysis.UI.Controls.DependencyEdge> DependencyEdges { get; } = [];
+    public ObservableCollection<WpfHexEditor.App.Analysis.UI.Controls.TrendChartSeries> TrendSeries   { get; } = [];
 
     // ── Filter ───────────────────────────────────────────────────────────────
 
@@ -157,6 +164,18 @@ public sealed class CodeAnalysisReportViewModel : INotifyPropertyChanged
 
     public bool HasHistory => _history.Count >= 2;
 
+    // ── Duplication aggregates (Phase 10B) ───────────────────────────────────
+
+    public int TotalDuplicatedLines =>
+        DuplicationGroups.Sum(g => g.DuplicatedLines);
+
+    public double DuplicationRatioPercent =>
+        TotalLines <= 0 ? 0 : (double)TotalDuplicatedLines / TotalLines * 100;
+
+    public string DuplicationSummaryText =>
+        string.Format(AppResources.CodeAnalysis_Duplication_Summary,
+            DuplicationGroups.Count, TotalDuplicatedLines, DuplicationRatioPercent);
+
     public string HistorySummaryText
     {
         get
@@ -218,7 +237,12 @@ public sealed class CodeAnalysisReportViewModel : INotifyPropertyChanged
             TopCouplings.Add(c);
 
         Duplications.Clear();
-        foreach (var d in report.Duplications) Duplications.Add(d);
+        DuplicationGroups.Clear();
+        foreach (var d in report.Duplications)
+        {
+            Duplications.Add(d);
+            DuplicationGroups.Add(new DuplicationGroupViewModel(d));
+        }
 
         DeadSymbols.Clear();
         foreach (var d in report.DeadSymbols) DeadSymbols.Add(d);
@@ -229,6 +253,57 @@ public sealed class CodeAnalysisReportViewModel : INotifyPropertyChanged
         WorstFiles.Clear();
         foreach (var f in report.Score.WorstFiles)
             WorstFiles.Add(new FileMetricsViewModel(f));
+
+        // Dependency graph — nodes = types, edges = efferent dependencies.
+        DependencyNodes.Clear();
+        DependencyEdges.Clear();
+        var nodeIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var c in report.TopCouplings)
+        {
+            if (nodeIds.Add(c.TypeName))
+                DependencyNodes.Add(new WpfHexEditor.App.Analysis.UI.Controls.DependencyNode
+                {
+                    Id     = c.TypeName,
+                    Label  = ShortName(c.TypeName),
+                    Tag    = c.FilePath,
+                    Weight = Math.Max(1, c.Ca + c.Ce),
+                });
+        }
+        foreach (var c in report.TopCouplings)
+            foreach (var dep in c.DependsOn)
+                if (nodeIds.Contains(dep))
+                    DependencyEdges.Add(new WpfHexEditor.App.Analysis.UI.Controls.DependencyEdge(c.TypeName, dep));
+
+        // Trend series — read from history entries (most recent first → reverse for chronological).
+        TrendSeries.Clear();
+        if (_history.Count > 0)
+        {
+            var chrono = _history.Reverse().ToList();
+            TrendSeries.Add(new WpfHexEditor.App.Analysis.UI.Controls.TrendChartSeries
+            {
+                Label  = "Quality",
+                Stroke = System.Windows.Media.Brushes.SteelBlue,
+                Values = chrono.Select(h => (double)h.Score).ToList(),
+            });
+            TrendSeries.Add(new WpfHexEditor.App.Analysis.UI.Controls.TrendChartSeries
+            {
+                Label  = "Files",
+                Stroke = System.Windows.Media.Brushes.SeaGreen,
+                Values = chrono.Select(h => (double)h.TotalFiles).ToList(),
+            });
+            TrendSeries.Add(new WpfHexEditor.App.Analysis.UI.Controls.TrendChartSeries
+            {
+                Label  = "Errors",
+                Stroke = System.Windows.Media.Brushes.Crimson,
+                Values = chrono.Select(h => (double)h.Errors).ToList(),
+            });
+            TrendSeries.Add(new WpfHexEditor.App.Analysis.UI.Controls.TrendChartSeries
+            {
+                Label  = "Warnings",
+                Stroke = System.Windows.Media.Brushes.DarkOrange,
+                Values = chrono.Select(h => (double)h.Warnings).ToList(),
+            });
+        }
 
         OnPropertyChanged(nameof(Score));
         OnPropertyChanged(nameof(Grade));
@@ -241,6 +316,9 @@ public sealed class CodeAnalysisReportViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(ComplexityScore));
         OnPropertyChanged(nameof(CouplingScore));
         OnPropertyChanged(nameof(DuplicationScore));
+        OnPropertyChanged(nameof(TotalDuplicatedLines));
+        OnPropertyChanged(nameof(DuplicationRatioPercent));
+        OnPropertyChanged(nameof(DuplicationSummaryText));
         OnPropertyChanged(nameof(DeadCodeScore));
         OnPropertyChanged(nameof(ConventionScore));
         OnPropertyChanged(nameof(HasReport));
@@ -274,4 +352,12 @@ public sealed class CodeAnalysisReportViewModel : INotifyPropertyChanged
 
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+    /// <summary>Returns the unqualified portion of a fully-qualified type name.</summary>
+    private static string ShortName(string fqn)
+    {
+        if (string.IsNullOrEmpty(fqn)) return fqn;
+        var dot = fqn.LastIndexOf('.');
+        return dot >= 0 && dot < fqn.Length - 1 ? fqn[(dot + 1)..] : fqn;
+    }
 }
