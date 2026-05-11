@@ -1205,6 +1205,18 @@
   <data name="CodeAnalysis_Tab_Coupling"            xml:space="preserve"><value>Coupling</value></data>
   <data name="CodeAnalysis_Tab_Duplication"         xml:space="preserve"><value>Duplication</value></data>
   <data name="CodeAnalysis_Tab_DeadCode"            xml:space="preserve"><value>Dead Code</value></data>
+  <data name="PluginCmd_New_Description"            xml:space="preserve"><value>Scaffold a new WpfHexEditor plugin project.</value></data>
+  <data name="PluginCmd_New_Usage"                  xml:space="preserve"><value>plugin-new &lt;name&gt; [author] [--path &lt;dir&gt;]</value></data>
+  <data name="PluginCmd_Pack_Description"           xml:space="preserve"><value>Package a built plugin folder into a .whxplugin archive.</value></data>
+  <data name="PluginCmd_Pack_Usage"                 xml:space="preserve"><value>plugin-pack [--path &lt;dir&gt;] [--output &lt;file&gt;]</value></data>
+  <data name="PluginCmd_New_NameRequired"           xml:space="preserve"><value>Plugin name is required.</value></data>
+  <data name="PluginCmd_New_FolderNotFound"         xml:space="preserve"><value>Target folder not found.</value></data>
+  <data name="PluginCmd_New_Success"                xml:space="preserve"><value>Plugin scaffolded at:</value></data>
+  <data name="PluginCmd_New_NextStep"               xml:space="preserve"><value>Run `dotnet build` then `plugin-pack` to produce a .whxplugin archive.</value></data>
+  <data name="PluginCmd_Pack_FolderNotFound"        xml:space="preserve"><value>Plugin folder not found.</value></data>
+  <data name="PluginCmd_Pack_Success"               xml:space="preserve"><value>Package created:</value></data>
+  <data name="PluginCmd_Pack_Failed"                xml:space="preserve"><value>Pack failed:</value></data>
+  <data name="PluginCmd_New_Failed"                 xml:space="preserve"><value>Scaffold failed:</value></data>
   <data name="CodeAnalysis_Tab_Dependencies"        xml:space="preserve"><value>Dependencies</value></data>
   <data name="CodeAnalysis_Tab_Trends"              xml:space="preserve"><value>Trends</value></data>
   <data name="CodeAnalysis_Tooltip_Tab_Dependencies" xml:space="preserve"><value>Visualize coupling between projects and classes.</value></data>
@@ -1388,6 +1400,26 @@
   <data name="CodeAnalysis_History_Title"                   xml:space="preserve"><value>Score history</value></data>
   <data name="CodeAnalysis_History_Summary"                 xml:space="preserve"><value>{0} runs · last {1} days · trend {2}</value></data>
   <data name="CodeAnalysis_History_NoData"                  xml:space="preserve"><value>No history yet — run analysis again to start a trend</value></data>
+  <data name="CodeAnalysis_Duplication_Header_Severity"     xml:space="preserve"><value>Sev</value></data>
+  <data name="CodeAnalysis_Duplication_Header_Lines"        xml:space="preserve"><value>Lines</value></data>
+  <data name="CodeAnalysis_Duplication_Header_Tokens"       xml:space="preserve"><value>Tokens</value></data>
+  <data name="CodeAnalysis_Duplication_Header_Occurrences"  xml:space="preserve"><value>×</value></data>
+  <data name="CodeAnalysis_Duplication_Header_PrimaryFile"  xml:space="preserve"><value>File</value></data>
+  <data name="CodeAnalysis_Duplication_Filter_Placeholder"  xml:space="preserve"><value>Filter by file path…</value></data>
+  <data name="CodeAnalysis_Duplication_Sort_Lines"          xml:space="preserve"><value>Sort: lines</value></data>
+  <data name="CodeAnalysis_Duplication_Sort_Tokens"         xml:space="preserve"><value>Sort: tokens</value></data>
+  <data name="CodeAnalysis_Duplication_Sort_Occurrences"    xml:space="preserve"><value>Sort: occurrences</value></data>
+  <data name="CodeAnalysis_Duplication_Summary"             xml:space="preserve"><value>{0} clone groups · {1} duplicated lines · {2:F1}%</value></data>
+  <data name="CodeAnalysis_Duplication_Preview_NoSelection" xml:space="preserve"><value>Select a clone group on the left to preview the duplicated code side-by-side.</value></data>
+  <data name="CodeAnalysis_Duplication_Export_Button"       xml:space="preserve"><value>Export…</value></data>
+  <data name="CodeAnalysis_Duplication_Export_FileName"     xml:space="preserve"><value>clones.md</value></data>
+  <data name="CodeAnalysis_Duplication_Export_Title"        xml:space="preserve"><value># Code Duplication Report</value></data>
+  <data name="CodeAnalysis_Duplication_Menu_OpenA"          xml:space="preserve"><value>Open occurrence A</value></data>
+  <data name="CodeAnalysis_Duplication_Menu_OpenB"          xml:space="preserve"><value>Open occurrence B</value></data>
+  <data name="CodeAnalysis_Duplication_Menu_OpenAll"        xml:space="preserve"><value>Open all in tabs ({0})</value></data>
+  <data name="CodeAnalysis_Duplication_Menu_CopyMarkdown"   xml:space="preserve"><value>Copy group as Markdown</value></data>
+  <data name="CodeAnalysis_Duplication_Menu_SuggestExtract" xml:space="preserve"><value>Suggest extract refactor (to clipboard)</value></data>
+  <data name="CodeAnalysis_Duplication_Menu_SuppressFile"   xml:space="preserve"><value>Suppress WH0020 in all files</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown"      xml:space="preserve"><value>Copy as Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId"         xml:space="preserve"><value>Copy issue ID</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile"      xml:space="preserve"><value>Open source file</value></data>
