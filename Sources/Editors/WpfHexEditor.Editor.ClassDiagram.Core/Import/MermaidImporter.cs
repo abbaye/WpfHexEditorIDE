@@ -100,8 +100,8 @@ public sealed partial class MermaidImporter : IDiagramImporter
                 var tgtName = rm.Groups["b"].Value;
                 var kind    = ArrowToKind(rm.Groups["arrow"].Value);
 
-                var src = GetOrAddPlaceholder(srcName, byName, doc);
-                var tgt = GetOrAddPlaceholder(tgtName, byName, doc);
+                var src = ImporterHelpers.GetOrAddPlaceholder(srcName, byName, doc);
+                var tgt = ImporterHelpers.GetOrAddPlaceholder(tgtName, byName, doc);
 
                 doc.Relationships.Add(new ClassRelationship
                 {
@@ -124,7 +124,7 @@ public sealed partial class MermaidImporter : IDiagramImporter
             if (mm.Success)
             {
                 var ownerName = mm.Groups["name"].Value;
-                var owner     = GetOrAddPlaceholder(ownerName, byName, doc);
+                var owner     = ImporterHelpers.GetOrAddPlaceholder(ownerName, byName, doc);
                 AddMemberFromShortForm(owner, mm.Groups["body"].Value.Trim(), warnings, lineNo);
                 continue;
             }
@@ -136,15 +136,6 @@ public sealed partial class MermaidImporter : IDiagramImporter
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────
-
-    private static ClassNode GetOrAddPlaceholder(string name, Dictionary<string, ClassNode> byName, DiagramDocument doc)
-    {
-        if (byName.TryGetValue(name, out var existing)) return existing;
-        var node = new ClassNode { Name = name, Id = Guid.NewGuid().ToString() };
-        byName[name] = node;
-        doc.Classes.Add(node);
-        return node;
-    }
 
     private static RelationshipKind ArrowToKind(string arrow) => arrow switch
     {
@@ -163,17 +154,7 @@ public sealed partial class MermaidImporter : IDiagramImporter
         //   +name : type            (field)
         //   +method(args) returnType (method)
         //   visibility ∈ { +, -, #, ~ }
-        MemberVisibility vis = MemberVisibility.Public;
-        if (body.Length > 0)
-        {
-            switch (body[0])
-            {
-                case '+': vis = MemberVisibility.Public;    body = body[1..].TrimStart(); break;
-                case '-': vis = MemberVisibility.Private;   body = body[1..].TrimStart(); break;
-                case '#': vis = MemberVisibility.Protected; body = body[1..].TrimStart(); break;
-                case '~': vis = MemberVisibility.Internal;  body = body[1..].TrimStart(); break;
-            }
-        }
+        ImporterHelpers.TryConsumeVisibilityPrefix(ref body, out var vis);
 
         if (body.Contains('(', StringComparison.Ordinal))
         {

@@ -98,8 +98,6 @@ public sealed class DiagramCanvas : Canvas
     private double      _resizeStartWidth;
     private double      _resizeStartNodeX;
     private double      _resizeStartNodeY;
-    // kept for backwards-compat with old code paths that only read Y delta:
-    private double      _resizeStartY;
 
     // ── Swimlane group drag ──────────────────────────────────────────────────
     private string? _draggingGroupNs;
@@ -768,6 +766,46 @@ public sealed class DiagramCanvas : Canvas
 
     // ── Mouse – canvas level ──────────────────────────────────────────────────
 
+    /// <summary>
+    /// Computes the new (X, Y, W, H) rectangle for the node being resized given
+    /// the active <paramref name="edge"/> and the current pointer position.
+    /// Enforces minimum width/height; when shrinking from the left or top below
+    /// the minimum, pins the new origin so the opposite edge stays put.
+    /// </summary>
+    private Rect ComputeResizedRect(ResizeEdge edge, Point pt)
+    {
+        const double minW = 80, minH = 40;
+        double dx = pt.X - _resizeStartPt.X;
+        double dy = pt.Y - _resizeStartPt.Y;
+
+        double newX = _resizeStartNodeX;
+        double newY = _resizeStartNodeY;
+        double newW = _resizeStartWidth;
+        double newH = _resizeStartHeight;
+
+        bool affectsLeft = edge is ResizeEdge.W  or ResizeEdge.NW or ResizeEdge.SW;
+        bool affectsTop  = edge is ResizeEdge.N  or ResizeEdge.NE or ResizeEdge.NW;
+        bool affectsRight  = edge is ResizeEdge.E  or ResizeEdge.NE or ResizeEdge.SE;
+        bool affectsBottom = edge is ResizeEdge.S  or ResizeEdge.SE or ResizeEdge.SW;
+
+        if (affectsLeft)   { newX = _resizeStartNodeX + dx; newW = _resizeStartWidth  - dx; }
+        if (affectsRight)  { newW = _resizeStartWidth  + dx; }
+        if (affectsTop)    { newY = _resizeStartNodeY + dy; newH = _resizeStartHeight - dy; }
+        if (affectsBottom) { newH = _resizeStartHeight + dy; }
+
+        if (newW < minW)
+        {
+            if (affectsLeft) newX = _resizeStartNodeX + (_resizeStartWidth - minW);
+            newW = minW;
+        }
+        if (newH < minH)
+        {
+            if (affectsTop)  newY = _resizeStartNodeY + (_resizeStartHeight - minH);
+            newH = minH;
+        }
+        return new Rect(newX, newY, newW, newH);
+    }
+
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
     {
         base.OnMouseLeftButtonDown(e);
@@ -804,13 +842,12 @@ public sealed class DiagramCanvas : Canvas
         // hover/click interactions with their handles.
         if (_doc is not null && _primarySelected is not null)
         {
-            var hit = _layer.HitTestResizeHandle(new[] { _primarySelected }, pt);
+            var hit = _layer.HitTestResizeHandle(_primarySelected, pt);
             if (hit is { } handle)
             {
                 _resizingNode      = handle.Node;
                 _resizingEdge      = handle.Edge;
                 _resizeStartPt     = pt;
-                _resizeStartY      = pt.Y;
                 _resizeStartHeight = _layer.ComputeNodeHeight(handle.Node);
                 _resizeStartWidth  = handle.Node.Width;
                 _resizeStartNodeX  = handle.Node.X;
@@ -944,48 +981,11 @@ public sealed class DiagramCanvas : Canvas
         // Node resize in progress (8-way)
         if (_resizingNode is not null)
         {
-            const double minW = 80, minH = 40;
-            double dx = pt.X - _resizeStartPt.X;
-            double dy = pt.Y - _resizeStartPt.Y;
-
-            double newX = _resizeStartNodeX;
-            double newY = _resizeStartNodeY;
-            double newW = _resizeStartWidth;
-            double newH = _resizeStartHeight;
-
-            switch (_resizingEdge)
-            {
-                case ResizeEdge.E:  newW = _resizeStartWidth  + dx; break;
-                case ResizeEdge.W:  newX = _resizeStartNodeX  + dx; newW = _resizeStartWidth  - dx; break;
-                case ResizeEdge.S:  newH = _resizeStartHeight + dy; break;
-                case ResizeEdge.N:  newY = _resizeStartNodeY  + dy; newH = _resizeStartHeight - dy; break;
-                case ResizeEdge.NE: newW = _resizeStartWidth  + dx; newY = _resizeStartNodeY + dy; newH = _resizeStartHeight - dy; break;
-                case ResizeEdge.NW: newX = _resizeStartNodeX  + dx; newW = _resizeStartWidth - dx;
-                                     newY = _resizeStartNodeY + dy; newH = _resizeStartHeight - dy; break;
-                case ResizeEdge.SE: newW = _resizeStartWidth  + dx; newH = _resizeStartHeight + dy; break;
-                case ResizeEdge.SW: newX = _resizeStartNodeX  + dx; newW = _resizeStartWidth - dx;
-                                     newH = _resizeStartHeight + dy; break;
-            }
-
-            // Enforce minima — if a left/top drag would shrink below minimum,
-            // pin the new origin so the right/bottom edge stays put.
-            if (newW < minW)
-            {
-                if (_resizingEdge is ResizeEdge.W or ResizeEdge.NW or ResizeEdge.SW)
-                    newX = _resizeStartNodeX + (_resizeStartWidth - minW);
-                newW = minW;
-            }
-            if (newH < minH)
-            {
-                if (_resizingEdge is ResizeEdge.N or ResizeEdge.NE or ResizeEdge.NW)
-                    newY = _resizeStartNodeY + (_resizeStartHeight - minH);
-                newH = minH;
-            }
-
-            _resizingNode.X     = newX;
-            _resizingNode.Y     = newY;
-            _resizingNode.Width = newW;
-            _layer.SetCustomHeight(_resizingNode.Id, newH);
+            var rect = ComputeResizedRect(_resizingEdge, pt);
+            _resizingNode.X     = rect.X;
+            _resizingNode.Y     = rect.Y;
+            _resizingNode.Width = rect.Width;
+            _layer.SetCustomHeight(_resizingNode.Id, rect.Height);
             _layer.RenderAll(_doc!, _selectedNode?.Id, _hoveredNode?.Id);
             UpdateSelectAdornerPosition();
             e.Handled = true;
@@ -1075,7 +1075,7 @@ public sealed class DiagramCanvas : Canvas
             Cursor? resizeCursor = null;
             if (_doc is not null && _primarySelected is not null)
             {
-                var hit = _layer.HitTestResizeHandle(new[] { _primarySelected }, pt);
+                var hit = _layer.HitTestResizeHandle(_primarySelected, pt);
                 if (hit is { } h)
                     resizeCursor = h.Edge switch
                     {

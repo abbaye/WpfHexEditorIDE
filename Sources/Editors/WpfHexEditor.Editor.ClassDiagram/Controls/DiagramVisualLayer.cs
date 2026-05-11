@@ -114,8 +114,9 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     // ── Performance: node size caches ────────────────────────────────────────
     // Keyed by node.Id. Invalidated on state changes (collapse/expand/section/resize).
-    private readonly Dictionary<string, double> _heightCache = new(StringComparer.Ordinal);
-    private readonly Dictionary<string, double> _widthCache  = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, double> _heightCache       = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, double> _widthCache        = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, double> _headerHeightCache = new(StringComparer.Ordinal);
 
     // ── Performance: viewport culling ────────────────────────────────────────
     // When set, nodes and arrows outside this rect are not painted.
@@ -169,6 +170,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
         _doc = doc;
         _heightCache.Clear();
         _widthCache.Clear();
+        _headerHeightCache.Clear();
         _blankNodeIds.Clear();
         _arrowsDirty = true;
 
@@ -1454,8 +1456,18 @@ public sealed class DiagramVisualLayer : FrameworkElement
     /// </summary>
     private void InvalidateNodeSizeCache(string? nodeId)
     {
-        if (nodeId is null) { _heightCache.Clear(); _widthCache.Clear(); }
-        else { _heightCache.Remove(nodeId); _widthCache.Remove(nodeId); }
+        if (nodeId is null)
+        {
+            _heightCache.Clear();
+            _widthCache.Clear();
+            _headerHeightCache.Clear();
+        }
+        else
+        {
+            _heightCache.Remove(nodeId);
+            _widthCache.Remove(nodeId);
+            _headerHeightCache.Remove(nodeId);
+        }
     }
 
     // ── Node height/width computation (with caching) ──────────────────────────
@@ -1534,35 +1546,31 @@ public sealed class DiagramVisualLayer : FrameworkElement
     /// <summary>
     /// Returns the node + edge whose 8-way resize handle is at <paramref name="pt"/>, or null.
     /// Corners win over edges (smaller hit zone but higher priority). Hit zone is
-    /// GripperHeight pixels around each anchor point. Only the primary-selected
-    /// node exposes resize handles — passing the full classes list lets callers
-    /// limit checks to a single node by filtering upstream when needed.
+    /// GripperHeight pixels around each anchor point. Used by canvas hover/drag
+    /// for the selected node.
     /// </summary>
-    public (ClassNode Node, ResizeEdge Edge)? HitTestResizeHandle(
-        IReadOnlyList<ClassNode> nodes, Point pt)
+    public (ClassNode Node, ResizeEdge Edge)? HitTestResizeHandle(ClassNode node, Point pt)
     {
         const double slack = GripperHeight;
 
-        foreach (var node in nodes)
-        {
-            double h    = ComputeNodeHeight(node);
-            double left = node.X, right = node.X + node.Width;
-            double top  = node.Y, bottom = node.Y + h;
-            double midX = node.X + node.Width / 2.0;
-            double midY = node.Y + h           / 2.0;
+        double h    = ComputeNodeHeight(node);
+        double left = node.X, right = node.X + node.Width;
+        double top  = node.Y, bottom = node.Y + h;
+        double midX = node.X + node.Width / 2.0;
+        double midY = node.Y + h          / 2.0;
 
-            // 4 corners first (smaller zones, higher priority)
-            if (HitZone(pt, left,  top,    slack)) return (node, ResizeEdge.NW);
-            if (HitZone(pt, right, top,    slack)) return (node, ResizeEdge.NE);
-            if (HitZone(pt, left,  bottom, slack)) return (node, ResizeEdge.SW);
-            if (HitZone(pt, right, bottom, slack)) return (node, ResizeEdge.SE);
+        // 4 corners first (smaller zones, higher priority)
+        if (HitZone(pt, left,  top,    slack)) return (node, ResizeEdge.NW);
+        if (HitZone(pt, right, top,    slack)) return (node, ResizeEdge.NE);
+        if (HitZone(pt, left,  bottom, slack)) return (node, ResizeEdge.SW);
+        if (HitZone(pt, right, bottom, slack)) return (node, ResizeEdge.SE);
 
-            // 4 edge mid-points
-            if (HitZone(pt, midX, top,    slack)) return (node, ResizeEdge.N);
-            if (HitZone(pt, midX, bottom, slack)) return (node, ResizeEdge.S);
-            if (HitZone(pt, left,  midY,  slack)) return (node, ResizeEdge.W);
-            if (HitZone(pt, right, midY,  slack)) return (node, ResizeEdge.E);
-        }
+        // 4 edge mid-points
+        if (HitZone(pt, midX, top,    slack)) return (node, ResizeEdge.N);
+        if (HitZone(pt, midX, bottom, slack)) return (node, ResizeEdge.S);
+        if (HitZone(pt, left,  midY,  slack)) return (node, ResizeEdge.W);
+        if (HitZone(pt, right, midY,  slack)) return (node, ResizeEdge.E);
+
         return null;
     }
 
@@ -1727,8 +1735,20 @@ public sealed class DiagramVisualLayer : FrameworkElement
         return "«" + sterCore + " · " + attrs + "»";
     }
 
-    /// <summary>Computes dynamic header height: Row1=icon+name, Row2=stereotype, Row3=namespace.</summary>
+    /// <summary>
+    /// Computes dynamic header height: Row1=icon+name, Row2=stereotype, Row3=namespace.
+    /// Result is cached per node id; invalidated by <see cref="InvalidateNodeSizeCache"/>
+    /// when any header-affecting property changes (name, stereotypes, namespace, attributes).
+    /// </summary>
     public double ComputeHeaderHeight(ClassNode node)
+    {
+        if (_headerHeightCache.TryGetValue(node.Id, out double cached)) return cached;
+        double result = ComputeHeaderHeightCore(node);
+        _headerHeightCache[node.Id] = result;
+        return result;
+    }
+
+    private double ComputeHeaderHeightCore(ClassNode node)
     {
         // Row 1: icon + name (with generics if any, so the row height matches the renderer)
         var nameFt = MakeFT(GetDisplayName(node), Brushes.White, 13.0, bold: true);

@@ -103,7 +103,7 @@ public sealed partial class PlantUmlImporter : IDiagramImporter
                 {
                     foreach (var b in SplitList(tm.Groups["base"].Value))
                     {
-                        var baseNode = GetOrAddPlaceholder(b, byName, doc);
+                        var baseNode = ImporterHelpers.GetOrAddPlaceholder(b, byName, doc);
                         doc.Relationships.Add(new ClassRelationship
                         {
                             SourceId = node.Id, TargetId = baseNode.Id,
@@ -115,7 +115,7 @@ public sealed partial class PlantUmlImporter : IDiagramImporter
                 {
                     foreach (var i in SplitList(tm.Groups["ifaces"].Value))
                     {
-                        var ifaceNode = GetOrAddPlaceholder(i, byName, doc);
+                        var ifaceNode = ImporterHelpers.GetOrAddPlaceholder(i, byName, doc);
                         doc.Relationships.Add(new ClassRelationship
                         {
                             SourceId = node.Id, TargetId = ifaceNode.Id,
@@ -133,8 +133,8 @@ public sealed partial class PlantUmlImporter : IDiagramImporter
             var rm = RelationshipRegex().Match(line);
             if (rm.Success)
             {
-                var src = GetOrAddPlaceholder(rm.Groups["a"].Value, byName, doc);
-                var tgt = GetOrAddPlaceholder(rm.Groups["b"].Value, byName, doc);
+                var src = ImporterHelpers.GetOrAddPlaceholder(rm.Groups["a"].Value, byName, doc);
+                var tgt = ImporterHelpers.GetOrAddPlaceholder(rm.Groups["b"].Value, byName, doc);
                 doc.Relationships.Add(new ClassRelationship
                 {
                     SourceId = src.Id, TargetId = tgt.Id,
@@ -191,36 +191,23 @@ public sealed partial class PlantUmlImporter : IDiagramImporter
     private static IEnumerable<string> SplitList(string raw) =>
         raw.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-    private static ClassNode GetOrAddPlaceholder(string name, Dictionary<string, ClassNode> byName, DiagramDocument doc)
-    {
-        if (byName.TryGetValue(name, out var existing)) return existing;
-        var node = new ClassNode { Name = name, Id = Guid.NewGuid().ToString() };
-        byName[name] = node;
-        doc.Classes.Add(node);
-        return node;
-    }
-
     private static void AddMemberFromBody(ClassNode owner, string body, List<string> warnings, int lineNo)
     {
         if (string.IsNullOrWhiteSpace(body)) return;
 
         // Visibility and {static} can appear in either order in PlantUML.
-        // Loop until neither prefix consumes anything.
+        // Each modifier is consumed at most once; loop until neither matches.
         MemberVisibility vis = MemberVisibility.Public;
-        bool isStatic = false;
-        while (body.Length > 0)
+        bool isStatic   = false;
+        bool gotVis     = false;
+        while (true)
         {
-            if (body[0] == '+') { vis = MemberVisibility.Public;    body = body[1..].TrimStart(); continue; }
-            if (body[0] == '-') { vis = MemberVisibility.Private;   body = body[1..].TrimStart(); continue; }
-            if (body[0] == '#') { vis = MemberVisibility.Protected; body = body[1..].TrimStart(); continue; }
-            if (body[0] == '~') { vis = MemberVisibility.Internal;  body = body[1..].TrimStart(); continue; }
-            if (body.StartsWith("{static}", StringComparison.OrdinalIgnoreCase))
-            {
-                isStatic = true;
-                body = body[8..].TrimStart();
-                continue;
-            }
-            break;
+            bool progressed = false;
+            if (!gotVis && ImporterHelpers.TryConsumeVisibilityPrefix(ref body, out var v))
+            { vis = v; gotVis = true; progressed = true; }
+            if (!isStatic && body.StartsWith("{static}", StringComparison.OrdinalIgnoreCase))
+            { isStatic = true; body = body[8..].TrimStart(); progressed = true; }
+            if (!progressed) break;
         }
 
         if (body.Contains('(', StringComparison.Ordinal))
