@@ -140,6 +140,12 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.Abstractions.RoundTripEditorRegistry.Register(
             new WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.CSharpRoundTripEditor());
 
+        // ADR-032 Phase 4: register built-in DSL importers (Mermaid, PlantUML).
+        WpfHexEditor.Editor.ClassDiagram.Core.Import.DiagramImporterRegistry.Register(
+            new WpfHexEditor.Editor.ClassDiagram.Core.Import.MermaidImporter());
+        WpfHexEditor.Editor.ClassDiagram.Core.Import.DiagramImporterRegistry.Register(
+            new WpfHexEditor.Editor.ClassDiagram.Core.Import.PlantUmlImporter());
+
         // Build panel instances.
         _outlinePanel    = new ClassOutlinePanel();
         _propertiesPanel = new ClassPropertiesPanel();
