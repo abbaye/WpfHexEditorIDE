@@ -20,6 +20,7 @@ public sealed partial class PluginDevLogPanel : UserControl
 {
     private PluginDevLog? _log;
     private ICollectionView? _view;
+    private Dictionary<PluginDevLogCategory, CheckBox>? _filters;
 
     public PluginDevLogPanel()
     {
@@ -30,6 +31,15 @@ public sealed partial class PluginDevLogPanel : UserControl
     public void Bind(PluginDevLog log)
     {
         _log = log;
+        _filters = new Dictionary<PluginDevLogCategory, CheckBox>
+        {
+            [PluginDevLogCategory.Info]      = PART_FilterInfo,
+            [PluginDevLogCategory.Load]      = PART_FilterLoad,
+            [PluginDevLogCategory.Unload]    = PART_FilterUnload,
+            [PluginDevLogCategory.HotReload] = PART_FilterHotReload,
+            [PluginDevLogCategory.Crash]     = PART_FilterCrash,
+            [PluginDevLogCategory.Slow]      = PART_FilterSlow,
+        };
         _view = CollectionViewSource.GetDefaultView(_log.Entries);
         _view.Filter = ShouldShow;
         PART_List.ItemsSource = _view;
@@ -37,27 +47,26 @@ public sealed partial class PluginDevLogPanel : UserControl
         ((INotifyCollectionChanged)_log.Entries).CollectionChanged += OnEntriesChanged;
     }
 
+    private bool _scrollPending;
+
     private void OnEntriesChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.Action != NotifyCollectionChangedAction.Add) return;
-        // Auto-scroll only if the user is already near the bottom.
-        if (PART_List.Items.Count == 0) return;
-        PART_List.ScrollIntoView(PART_List.Items[PART_List.Items.Count - 1]);
+        if (_scrollPending) return;
+        _scrollPending = true;
+        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, () =>
+        {
+            _scrollPending = false;
+            if (PART_List.Items.Count == 0) return;
+            PART_List.ScrollIntoView(PART_List.Items[PART_List.Items.Count - 1]);
+        });
     }
 
     private bool ShouldShow(object item)
     {
         if (item is not PluginDevLogEntry e) return false;
-        return e.Category switch
-        {
-            PluginDevLogCategory.Info      => PART_FilterInfo.IsChecked      == true,
-            PluginDevLogCategory.Load      => PART_FilterLoad.IsChecked      == true,
-            PluginDevLogCategory.Unload    => PART_FilterUnload.IsChecked    == true,
-            PluginDevLogCategory.HotReload => PART_FilterHotReload.IsChecked == true,
-            PluginDevLogCategory.Crash     => PART_FilterCrash.IsChecked     == true,
-            PluginDevLogCategory.Slow      => PART_FilterSlow.IsChecked      == true,
-            _                              => true,
-        };
+        if (_filters is null) return true;
+        return !_filters.TryGetValue(e.Category, out var cb) || cb.IsChecked == true;
     }
 
     private void OnFilterChanged(object sender, RoutedEventArgs e) => _view?.Refresh();

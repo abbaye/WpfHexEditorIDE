@@ -41,10 +41,20 @@ public sealed class TrendChartControl : FrameworkElement
 
     private static readonly Pen GridPen = new(new SolidColorBrush(Color.FromArgb(40, 128, 128, 128)), 0.5);
     private static readonly Typeface LegendFace = new("Segoe UI");
+    private static readonly Dictionary<Brush, Pen> PenCache = new();
 
     static TrendChartControl()
     {
         GridPen.Freeze();
+    }
+
+    private static Pen GetPen(Brush stroke)
+    {
+        if (PenCache.TryGetValue(stroke, out var existing)) return existing;
+        var p = new Pen(stroke, 1.5);
+        p.Freeze();
+        PenCache[stroke] = p;
+        return p;
     }
 
     protected override void OnRender(DrawingContext dc)
@@ -82,8 +92,7 @@ public sealed class TrendChartControl : FrameworkElement
         foreach (var s in Series)
         {
             if (s?.Values is null || s.Values.Count < 2) continue;
-            var pen = new Pen(s.Stroke, 1.5);
-            pen.Freeze();
+            var pen = GetPen(s.Stroke);
             var geom = new StreamGeometry();
             using (var ctx = geom.Open())
             {

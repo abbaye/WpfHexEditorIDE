@@ -8,6 +8,7 @@
 //     applies the edits if the user confirms.
 // ==========================================================
 
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using WpfHexEditor.Core.LSP.Refactoring;
@@ -46,12 +47,12 @@ public sealed class RefactoringOrchestrator
 
         IRefactoring? refactoring = e.Kind switch
         {
-            "rename"             => new RenameRefactoring { NewName = ExtractWordAtCaret(context) + "_renamed" },
-            "extract-method"     => new ExtractMethodRefactoring(),
-            "extract-class"      => new ExtractClassRefactoring(),
-            "introduce-variable" => new IntroduceVariableRefactoring(),
-            "inline-method"      => new InlineMethodRefactoring(),
-            _                    => null,
+            RefactoringKind.Rename            => new RenameRefactoring { NewName = ExtractWordAtCaret(context) + "_renamed" },
+            RefactoringKind.ExtractMethod     => new ExtractMethodRefactoring(),
+            RefactoringKind.ExtractClass      => new ExtractClassRefactoring(),
+            RefactoringKind.IntroduceVariable => new IntroduceVariableRefactoring(),
+            RefactoringKind.InlineMethod      => new InlineMethodRefactoring(),
+            _                                 => null,
         };
         if (refactoring is null || !refactoring.CanApply(context)) return;
 
@@ -65,7 +66,7 @@ public sealed class RefactoringOrchestrator
         };
         if (dlg.ShowDialog() != true) return;
 
-        ApplyEdits(edits, editor, e);
+        ApplyEdits(edits, e);
     }
 
     private static string ExtractWordAtCaret(RefactoringContext context)
@@ -80,49 +81,37 @@ public sealed class RefactoringOrchestrator
         return e > s ? t[s..e] : "";
     }
 
-    private static void ApplyEdits(IReadOnlyList<TextEdit> edits,
-                                   WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor editor,
-                                   RefactoringMenuRequestedEventArgs activeArgs)
+    private static void ApplyEdits(IReadOnlyList<TextEdit> edits, RefactoringMenuRequestedEventArgs activeArgs)
     {
-        // Group by file and apply in reverse offset order to preserve indices.
         foreach (var group in edits.GroupBy(e => e.FilePath, StringComparer.OrdinalIgnoreCase))
         {
             var ordered = group.OrderByDescending(e => e.StartOffset).ToList();
+            var isActiveFile = string.Equals(group.Key, activeArgs.FilePath, StringComparison.OrdinalIgnoreCase);
+            var seed = isActiveFile ? activeArgs.DocumentText : SafeRead(group.Key);
+            if (seed is null) continue;
 
-            // Active editor's file: rewrite via the file on disk too — the
-            // CodeEditor's internal model will reload through its file-watcher.
-            if (string.Equals(group.Key, activeArgs.FilePath, StringComparison.OrdinalIgnoreCase))
-            {
-                var sb = new System.Text.StringBuilder(activeArgs.DocumentText);
-                foreach (var ed in ordered)
-                {
-                    int start = Math.Clamp(ed.StartOffset, 0, sb.Length);
-                    int len   = Math.Clamp(ed.Length, 0, sb.Length - start);
-                    sb.Remove(start, len);
-                    sb.Insert(start, ed.NewText);
-                }
-                if (File.Exists(activeArgs.FilePath))
-                {
-                    try { File.WriteAllText(activeArgs.FilePath, sb.ToString()); } catch { }
-                }
-            }
-            else if (File.Exists(group.Key))
-            {
-                try
-                {
-                    var disk = File.ReadAllText(group.Key);
-                    var sb   = new System.Text.StringBuilder(disk);
-                    foreach (var ed in ordered)
-                    {
-                        int start = Math.Clamp(ed.StartOffset, 0, sb.Length);
-                        int len   = Math.Clamp(ed.Length, 0, sb.Length - start);
-                        sb.Remove(start, len);
-                        sb.Insert(start, ed.NewText);
-                    }
-                    File.WriteAllText(group.Key, sb.ToString());
-                }
-                catch { /* silent — preview already validated */ }
-            }
+            var sb = ApplyOrdered(seed, ordered);
+            try { File.WriteAllText(group.Key, sb); }
+            catch (Exception ex) { Debug.WriteLine($"[Refactor] write failed: {group.Key} — {ex.Message}"); }
         }
+    }
+
+    private static string? SafeRead(string path)
+    {
+        try { return File.ReadAllText(path); }
+        catch (Exception ex) { Debug.WriteLine($"[Refactor] read failed: {path} — {ex.Message}"); return null; }
+    }
+
+    private static string ApplyOrdered(string seed, IEnumerable<TextEdit> orderedDescending)
+    {
+        var sb = new System.Text.StringBuilder(seed);
+        foreach (var ed in orderedDescending)
+        {
+            int start = Math.Clamp(ed.StartOffset, 0, sb.Length);
+            int len   = Math.Clamp(ed.Length, 0, sb.Length - start);
+            sb.Remove(start, len);
+            sb.Insert(start, ed.NewText);
+        }
+        return sb.ToString();
     }
 }

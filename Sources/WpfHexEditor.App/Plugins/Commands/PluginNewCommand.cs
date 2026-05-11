@@ -30,7 +30,7 @@ internal sealed class PluginNewCommand : PluginTerminalCommandBase
 
         var name   = args[0];
         var author = args.Length > 1 && !args[1].StartsWith("--") ? args[1] : null;
-        var path   = GetPathArg(args) ?? Environment.CurrentDirectory;
+        var path   = TerminalArgs.GetFlag(args, "--path") ?? Environment.CurrentDirectory;
 
         if (!Directory.Exists(path))
         {
@@ -48,12 +48,5 @@ internal sealed class PluginNewCommand : PluginTerminalCommandBase
         output.WriteInfo($"{AppResources.PluginCmd_New_Success} {result.PluginDirectory}");
         output.WriteInfo(AppResources.PluginCmd_New_NextStep);
         return Task.FromResult(0);
-    }
-
-    private static string? GetPathArg(string[] args)
-    {
-        for (int i = 0; i < args.Length - 1; i++)
-            if (args[i] == "--path") return args[i + 1];
-        return null;
     }
 }

@@ -22,7 +22,7 @@ internal sealed class PluginPackCommand : PluginTerminalCommandBase
     protected override Task<int> ExecuteCoreAsync(
         string[] args, ITerminalOutput output, ITerminalContext ctx, CancellationToken ct)
     {
-        var pluginDir = GetArg(args, "--path") ?? Environment.CurrentDirectory;
+        var pluginDir = TerminalArgs.GetFlag(args, "--path") ?? Environment.CurrentDirectory;
         if (!Directory.Exists(pluginDir))
         {
             output.WriteError($"{AppResources.PluginCmd_Pack_FolderNotFound} {pluginDir}");
@@ -30,7 +30,7 @@ internal sealed class PluginPackCommand : PluginTerminalCommandBase
         }
 
         var defaultOut = Path.Combine(pluginDir, $"{Path.GetFileName(pluginDir.TrimEnd(Path.DirectorySeparatorChar))}.whxplugin");
-        var outputPath = GetArg(args, "--output") ?? defaultOut;
+        var outputPath = TerminalArgs.GetFlag(args, "--output") ?? defaultOut;
 
         var result = new WhxpluginPackager().Pack(pluginDir, outputPath);
         if (!result.Success)
@@ -41,12 +41,5 @@ internal sealed class PluginPackCommand : PluginTerminalCommandBase
 
         output.WriteInfo($"{AppResources.PluginCmd_Pack_Success} {result.OutputPath}");
         return Task.FromResult(0);
-    }
-
-    private static string? GetArg(string[] args, string flag)
-    {
-        for (int i = 0; i < args.Length - 1; i++)
-            if (args[i] == flag) return args[i + 1];
-        return null;
     }
 }

@@ -3938,17 +3938,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 Header = CodeEditorResources.CodeEditor_ContextMenuRefactor,
                 Icon   = MakeMenuIcon(""),  // edit/pen glyph
             };
-            void AddRefactorItem(string label, string kind)
+            void AddRefactorItem(string label, RefactoringKind kind)
             {
                 var mi = new MenuItem { Header = label };
                 mi.Click += (_, _) => RefactoringMenuRequested?.Invoke(this, BuildRefactorEventArgs(kind));
                 miRefactor.Items.Add(mi);
             }
-            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorRename,            "rename");
-            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorExtractMethod,     "extract-method");
-            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorExtractClass,      "extract-class");
-            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorIntroduceVariable, "introduce-variable");
-            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorInlineMethod,      "inline-method");
+            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorRename,            RefactoringKind.Rename);
+            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorExtractMethod,     RefactoringKind.ExtractMethod);
+            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorExtractClass,      RefactoringKind.ExtractClass);
+            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorIntroduceVariable, RefactoringKind.IntroduceVariable);
+            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorInlineMethod,      RefactoringKind.InlineMethod);
             contextMenu.Items.Add(miRefactor);
 
             // Set context menu
@@ -3961,32 +3961,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// <summary>Raised when the user picks an item under Refactor ▶.</summary>
         public event EventHandler<RefactoringMenuRequestedEventArgs>? RefactoringMenuRequested;
 
-        private RefactoringMenuRequestedEventArgs BuildRefactorEventArgs(string kind)
+        private RefactoringMenuRequestedEventArgs BuildRefactorEventArgs(RefactoringKind kind)
         {
-            // Use whatever the editor exposes; fall back to empty/zero when properties
-            // are unavailable in a given build configuration.
-            var args = new RefactoringMenuRequestedEventArgs(kind)
+            var fullText = _document?.SaveToString() ?? string.Empty;
+            var startOff = TextPositionToOffset(fullText, _selection?.NormalizedStart);
+            var endOff   = TextPositionToOffset(fullText, _selection?.NormalizedEnd);
+            var caret    = TextPositionToOffset(fullText, _selection?.End);
+
+            return new RefactoringMenuRequestedEventArgs(kind)
             {
-                DocumentText    = TryReadString(nameof(RefactoringMenuRequestedEventArgs.DocumentText)),
-                FilePath        = TryReadString(nameof(RefactoringMenuRequestedEventArgs.FilePath)),
-                CaretOffset     = TryReadInt(nameof(RefactoringMenuRequestedEventArgs.CaretOffset)),
-                SelectionStart  = TryReadInt(nameof(RefactoringMenuRequestedEventArgs.SelectionStart)),
-                SelectionLength = TryReadInt(nameof(RefactoringMenuRequestedEventArgs.SelectionLength)),
+                DocumentText    = fullText,
+                FilePath        = _currentFilePath ?? string.Empty,
+                CaretOffset     = caret,
+                SelectionStart  = startOff,
+                SelectionLength = Math.Max(0, endOff - startOff),
             };
-            return args;
         }
 
-        private string TryReadString(string name)
+        private static int TextPositionToOffset(string text, TextPosition? pos)
         {
-            // Look up a public instance property by name; fall back to "".
-            var p = GetType().GetProperty(name, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            return p?.GetValue(this) as string ?? string.Empty;
-        }
-
-        private int TryReadInt(string name)
-        {
-            var p = GetType().GetProperty(name, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            return p?.GetValue(this) is int n ? n : 0;
+            if (pos is null || string.IsNullOrEmpty(text)) return 0;
+            int line = 0, offset = 0;
+            for (int i = 0; i < text.Length && line < pos.Line; i++)
+                if (text[i] == '\n') { line++; offset = i + 1; }
+            return Math.Min(text.Length, offset + pos.Column);
         }
 
         /// <summary>
