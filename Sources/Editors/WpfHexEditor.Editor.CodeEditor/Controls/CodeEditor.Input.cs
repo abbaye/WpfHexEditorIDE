@@ -1237,9 +1237,43 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (!mgr.TryExpand(word, out var snippet))
                 return false;
 
-            var expansion = SnippetManager.BuildExpansion(snippet, _cursorLine, start, word.Length);
+            var context = BuildSnippetVariableContext(lineText, start);
+            var expansion = SnippetManager.BuildExpansion(snippet, _cursorLine, start, word.Length, context);
             ApplySnippetExpansion(expansion);
             return true;
+        }
+
+        private SnippetVariableContext BuildSnippetVariableContext(string lineText, int triggerStart)
+        {
+            string selected = string.Empty;
+            try
+            {
+                if (_selection is not null && !_selection.IsEmpty && _document is not null)
+                    selected = _document.GetText(_selection.NormalizedStart, _selection.NormalizedEnd);
+            }
+            catch { /* selection inspection is best-effort */ }
+
+            string clipboard = string.Empty;
+            try { clipboard = System.Windows.Clipboard.ContainsText() ? System.Windows.Clipboard.GetText() : ""; }
+            catch { /* clipboard access may fail on locked sessions */ }
+
+            return new SnippetVariableContext
+            {
+                FilePath        = _currentFilePath ?? string.Empty,
+                SelectedText    = selected,
+                CurrentLineText = lineText,
+                CurrentLine     = _cursorLine,
+                CurrentColumn   = triggerStart,
+                IndentText      = ExtractLeadingWhitespace(lineText),
+                ClipboardText   = clipboard,
+            };
+        }
+
+        private static string ExtractLeadingWhitespace(string line)
+        {
+            int i = 0;
+            while (i < line.Length && (line[i] == ' ' || line[i] == '\t')) i++;
+            return i == 0 ? string.Empty : line[..i];
         }
 
         /// <summary>

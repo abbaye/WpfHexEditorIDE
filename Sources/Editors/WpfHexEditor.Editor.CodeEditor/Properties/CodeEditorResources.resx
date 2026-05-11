@@ -837,5 +837,22 @@
   <data name="CodeEditor_RenamePopupPlaceholder" xml:space="preserve">
     <value>New name…</value>
   </data>
+  <data name="Snippet_Var_FileName"        xml:space="preserve"><value>File name (e.g. Program.cs)</value></data>
+  <data name="Snippet_Var_FilePath"        xml:space="preserve"><value>Absolute file path</value></data>
+  <data name="Snippet_Var_FileExt"         xml:space="preserve"><value>File extension (e.g. .cs)</value></data>
+  <data name="Snippet_Var_FileDir"         xml:space="preserve"><value>Directory containing the file</value></data>
+  <data name="Snippet_Var_FileNameBase"    xml:space="preserve"><value>File name without extension</value></data>
+  <data name="Snippet_Var_SelectedText"    xml:space="preserve"><value>Text currently selected in the editor</value></data>
+  <data name="Snippet_Var_CurrentLine"     xml:space="preserve"><value>Text of the line containing the caret</value></data>
+  <data name="Snippet_Var_LineNumber"      xml:space="preserve"><value>1-based caret line number</value></data>
+  <data name="Snippet_Var_CursorPosition"  xml:space="preserve"><value>Caret position (line, column)</value></data>
+  <data name="Snippet_Var_Indent"          xml:space="preserve"><value>Leading whitespace of the current line</value></data>
+  <data name="Snippet_Var_ProjectName"     xml:space="preserve"><value>Name of the active project</value></data>
+  <data name="Snippet_Var_ClipboardText"   xml:space="preserve"><value>Current clipboard text</value></data>
+  <data name="Snippet_Var_Date"            xml:space="preserve"><value>Current date (yyyy-MM-dd)</value></data>
+  <data name="Snippet_Var_Time"            xml:space="preserve"><value>Current time (HH:mm:ss)</value></data>
+  <data name="Snippet_Var_Year"            xml:space="preserve"><value>Current year</value></data>
+  <data name="Snippet_Var_UserName"        xml:space="preserve"><value>Logged-in user name</value></data>
+  <data name="Snippet_Var_MachineName"     xml:space="preserve"><value>Local machine name</value></data>
 
 </root>
