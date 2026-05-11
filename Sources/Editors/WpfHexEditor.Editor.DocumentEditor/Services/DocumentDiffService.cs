@@ -7,13 +7,13 @@
 //     stream and runs an LCS pass to label each row as Equal /
 //     Added / Removed / Modified.
 // Architecture notes:
-//     LCS-based (Myers-equivalent for our short-row case) — keeps
-//     dependencies internal; we don't bind to Core.Diff's binary-
-//     oriented APIs because semantics differ (no byte alignment
-//     concept on the document side).
-//     Modified rows are emitted when adjacent Added+Removed pairs
-//     share the same Kind — surfaces "this paragraph was edited"
-//     vs "this paragraph was deleted and a different one inserted".
+//     LCS uses a byte-direction matrix (1 byte/cell instead of 4)
+//     so worst-case memory is m·n bytes — 100 MB for two 10k-row
+//     docs rather than 400 MB with an int matrix. The LCS-length
+//     row is held as a rolling int[n+1] pair (prev/cur), not a
+//     full int[m+1,n+1] table.
+//     Modified rows are emitted when adjacent Removed+Added pairs
+//     share the same Kind.
 // ==========================================================
 
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
@@ -23,6 +23,10 @@ namespace WpfHexEditor.Editor.DocumentEditor.Services;
 /// <summary>Computes a structural diff between two <see cref="DocumentModel"/>s.</summary>
 public static class DocumentDiffService
 {
+    private const byte DirDiag = 0;
+    private const byte DirUp   = 1;
+    private const byte DirLeft = 2;
+
     /// <summary>Returns one row per block-level change, in display order.</summary>
     public static IReadOnlyList<DocumentDiffRow> Diff(DocumentModel left, DocumentModel right)
     {
@@ -47,66 +51,89 @@ public static class DocumentDiffService
     {
         foreach (var b in blocks)
         {
-            // Skip purely structural containers; surface only "addressable" rows.
-            if (b.Kind is DocumentBlockKinds.Section) { Walk(b.Children, sink); continue; }
+            // Sections are pure containers — skip the row, descend into children.
+            if (b.Kind is DocumentBlockKinds.Section)
+            {
+                Walk(b.Children, sink);
+                continue;
+            }
 
-            string text = b.Children.Count == 0
-                ? (b.Text ?? string.Empty)
-                : Flatten(b);
-            sink.Add(new DocumentDiffSignature(b.Kind, text.Trim(), b));
+            sink.Add(new DocumentDiffSignature(b.Kind, FlattenText(b).Trim(), b));
 
-            // Walk children only for container kinds where children represent
-            // sub-blocks the user thinks of separately (tables, lists).
+            // For tables/lists, surface child rows so per-cell/per-item edits
+            // show up as their own diff rows.
             if (b.Kind is DocumentBlockKinds.Table or DocumentBlockKinds.List)
                 Walk(b.Children, sink);
         }
     }
 
-    private static string Flatten(DocumentBlock b)
+    /// <summary>Concatenates text of <paramref name="b"/>'s subtree in a single walk.</summary>
+    private static string FlattenText(DocumentBlock b)
     {
+        if (b.Children.Count == 0) return b.Text ?? string.Empty;
         var sb = new System.Text.StringBuilder();
-        Append(sb, b);
+        AppendText(sb, b);
         return sb.ToString();
 
-        static void Append(System.Text.StringBuilder sb, DocumentBlock b)
+        static void AppendText(System.Text.StringBuilder sb, DocumentBlock b)
         {
             if (b.Children.Count == 0) { sb.Append(b.Text); return; }
-            foreach (var c in b.Children) Append(sb, c);
+            foreach (var c in b.Children) AppendText(sb, c);
         }
     }
 
-    // ── LCS table + walk ───────────────────────────────────────────────────
+    // ── LCS (byte direction table + rolling int row) ───────────────────────
 
     private static IReadOnlyList<DocumentDiffRow> BuildRows(
         IReadOnlyList<DocumentDiffSignature> a,
         IReadOnlyList<DocumentDiffSignature> b)
     {
         int m = a.Count, n = b.Count;
-        var lcs = new int[m + 1, n + 1];
+        var dir  = new byte[m + 1, n + 1];
+        var prev = new int[n + 1];
+        var cur  = new int[n + 1];
+
         for (int i = m - 1; i >= 0; i--)
+        {
             for (int j = n - 1; j >= 0; j--)
-                lcs[i, j] = a[i].Equals(b[j])
-                    ? lcs[i + 1, j + 1] + 1
-                    : Math.Max(lcs[i + 1, j], lcs[i, j + 1]);
+            {
+                if (a[i].Equals(b[j]))
+                {
+                    cur[j]    = prev[j + 1] + 1;
+                    dir[i, j] = DirDiag;
+                }
+                else if (prev[j] >= cur[j + 1])
+                {
+                    cur[j]    = prev[j];
+                    dir[i, j] = DirUp;
+                }
+                else
+                {
+                    cur[j]    = cur[j + 1];
+                    dir[i, j] = DirLeft;
+                }
+            }
+            (prev, cur) = (cur, prev);
+        }
 
         var rows = new List<DocumentDiffRow>(Math.Max(m, n));
         int x = 0, y = 0;
         while (x < m && y < n)
         {
-            if (a[x].Equals(b[y]))
+            switch (dir[x, y])
             {
-                rows.Add(new DocumentDiffRow(DocumentDiffKind.Equal, a[x].Block, b[y].Block, a[x].Text));
-                x++; y++;
-            }
-            else if (lcs[x + 1, y] >= lcs[x, y + 1])
-            {
-                rows.Add(new DocumentDiffRow(DocumentDiffKind.Removed, a[x].Block, null, a[x].Text));
-                x++;
-            }
-            else
-            {
-                rows.Add(new DocumentDiffRow(DocumentDiffKind.Added, null, b[y].Block, b[y].Text));
-                y++;
+                case DirDiag:
+                    rows.Add(new DocumentDiffRow(DocumentDiffKind.Equal, a[x].Block, b[y].Block, a[x].Text));
+                    x++; y++;
+                    break;
+                case DirUp:
+                    rows.Add(new DocumentDiffRow(DocumentDiffKind.Removed, a[x].Block, null, a[x].Text));
+                    x++;
+                    break;
+                default:
+                    rows.Add(new DocumentDiffRow(DocumentDiffKind.Added, null, b[y].Block, b[y].Text));
+                    y++;
+                    break;
             }
         }
         while (x < m) { rows.Add(new DocumentDiffRow(DocumentDiffKind.Removed, a[x].Block, null, a[x].Text)); x++; }
@@ -124,26 +151,38 @@ public static class DocumentDiffService
         var output = new List<DocumentDiffRow>(input.Count);
         for (int i = 0; i < input.Count; i++)
         {
-            var cur = input[i];
-            if (i + 1 < input.Count &&
-                cur.Kind == DocumentDiffKind.Removed &&
-                input[i + 1].Kind == DocumentDiffKind.Added &&
-                cur.Left is not null && input[i + 1].Right is not null &&
-                cur.Left.Kind == input[i + 1].Right!.Kind)
+            if (TryPairModification(input, i, out var merged))
             {
-                output.Add(new DocumentDiffRow(
-                    DocumentDiffKind.Modified, cur.Left, input[i + 1].Right,
-                    $"{cur.Text}  →  {input[i + 1].Text}"));
+                output.Add(merged);
                 i++;
                 continue;
             }
-            output.Add(cur);
+            output.Add(input[i]);
         }
         return output;
     }
+
+    private static bool TryPairModification(List<DocumentDiffRow> rows, int i, out DocumentDiffRow merged)
+    {
+        merged = default!;
+        if (i + 1 >= rows.Count) return false;
+        var cur  = rows[i];
+        var next = rows[i + 1];
+        if (cur.Kind != DocumentDiffKind.Removed || next.Kind != DocumentDiffKind.Added) return false;
+        if (cur.Left is null || next.Right is null) return false;
+        if (cur.Left.Kind != next.Right.Kind) return false;
+
+        merged = new DocumentDiffRow(
+            DocumentDiffKind.Modified, cur.Left, next.Right,
+            $"{cur.Text}  →  {next.Text}");
+        return true;
+    }
 }
 
-/// <summary>Internal flattening signature: kind + normalized text + original block ref.</summary>
+/// <summary>
+/// Internal flattening signature. <c>Block</c> is intentionally excluded from
+/// equality so identical text under different block instances still matches.
+/// </summary>
 internal readonly record struct DocumentDiffSignature(string Kind, string Text, DocumentBlock Block)
 {
     public bool Equals(DocumentDiffSignature other) =>

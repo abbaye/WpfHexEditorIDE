@@ -134,8 +134,7 @@ public sealed class EmbeddedObjectEntry
     public void ComputeHash(byte[] bytes)
     {
         if (!string.IsNullOrEmpty(Sha256) || bytes is null || bytes.Length == 0) return;
-        using var sha = System.Security.Cryptography.SHA256.Create();
-        Sha256 = Convert.ToHexString(sha.ComputeHash(bytes)).ToLowerInvariant();
+        Sha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)).ToLowerInvariant();
     }
 
     /// <summary>Display string for the Source column: zip path or raw byte offset.</summary>

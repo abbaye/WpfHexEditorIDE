@@ -11,6 +11,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core.BinaryMap;
 using WpfHexEditor.Editor.DocumentEditor.Core.Forensic;
+using WpfHexEditor.Editor.DocumentEditor.Core.Helpers;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 
@@ -36,7 +37,7 @@ public sealed class OdtDocumentLoader : IDocumentLoader
         DocumentModel     target,
         CancellationToken ct = default)
     {
-        byte[] rawBytes = await BufferStreamAsync(stream, ct);
+        byte[] rawBytes = await DocumentLoaderHelpers.BufferStreamAsync(stream, ct);
         using var ms = new MemoryStream(rawBytes, writable: false);
 
         using var zipReader = new OdtZipReader(ms);
@@ -91,15 +92,6 @@ public sealed class OdtDocumentLoader : IDocumentLoader
         target.SetForensicAlerts(alerts);
     }
 
-    private static async Task<byte[]> BufferStreamAsync(Stream stream, CancellationToken ct)
-    {
-        if (stream is MemoryStream ms && ms.TryGetBuffer(out _))
-            return ms.ToArray();
-        using var buf = new MemoryStream();
-        await stream.CopyToAsync(buf, ct);
-        return buf.ToArray();
-    }
-
     private static DocumentMetadata ReadMetaXml(OdtZipReader zip)
     {
         var xml = zip.ReadEntryText("meta.xml");
@@ -114,14 +106,11 @@ public sealed class OdtDocumentLoader : IDocumentLoader
             {
                 Title      = doc.Descendants(dc   + "title").FirstOrDefault()?.Value            ?? string.Empty,
                 Author     = doc.Descendants(meta + "initial-creator").FirstOrDefault()?.Value  ?? string.Empty,
-                CreatedUtc = TryParseDate(doc.Descendants(meta + "creation-date").FirstOrDefault()?.Value)
+                CreatedUtc = DocumentLoaderHelpers.TryParseDate(doc.Descendants(meta + "creation-date").FirstOrDefault()?.Value)
             };
         }
         catch { return new DocumentMetadata(); }
     }
-
-    private static DateTime? TryParseDate(string? value) =>
-        DateTime.TryParse(value, out var dt) ? dt.ToUniversalTime() : null;
 
     /// <summary>
     /// Reads all <c>style:style</c> elements from the given ZIP entry into <paramref name="into"/>.

@@ -119,10 +119,11 @@ public static class DocumentFlowDocumentBuilder
         var p = BuildParagraph(b);
         p.Margin = new Thickness(24, 0, 0, 4);
         p.TextIndent = -12;
-        if (p.Inlines.FirstInline is null || p.Inlines.FirstInline is not Run firstRun)
-            p.Inlines.InsertBefore(p.Inlines.FirstInline, new Run("• "));
-        else if (!firstRun.Text.StartsWith("•") && !firstRun.Text.StartsWith("1.") && !firstRun.Text.StartsWith("- "))
-            firstRun.Text = "• " + firstRun.Text;
+        // Always prepend the bullet as a separate Run so the original inlines
+        // keep their styling intact (mutating firstRun.Text would mangle them).
+        var bullet = new Run("• ");
+        if (p.Inlines.FirstInline is null) p.Inlines.Add(bullet);
+        else                                p.Inlines.InsertBefore(p.Inlines.FirstInline, bullet);
         return p;
     }
 

@@ -91,9 +91,14 @@ public partial class DocumentDiffDialog : ThemedDialog
             throw new InvalidOperationException(
                 string.Format(DocumentEditorResources.DocDiffDlg_NoLoaderForFmt, Path.GetExtension(path)));
 
-        var model = new DocumentModel { FilePath = path };
-        await using var stream = File.OpenRead(path);
-        await loader.LoadAsync(path, stream, model);
+        // Loader contract: it sets FilePath on the model; we don't preset it.
+        var model = new DocumentModel();
+        // Off-thread parse so large docs don't freeze the dispatcher.
+        await Task.Run(async () =>
+        {
+            await using var stream = File.OpenRead(path);
+            await loader.LoadAsync(path, stream, model);
+        });
         return model;
     }
 

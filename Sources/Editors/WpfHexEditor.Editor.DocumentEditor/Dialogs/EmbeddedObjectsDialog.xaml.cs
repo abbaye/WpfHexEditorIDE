@@ -61,9 +61,8 @@ public partial class EmbeddedObjectsDialog : ThemedDialog
         {
             string hex = await Task.Run(() =>
             {
-                using var sha = System.Security.Cryptography.SHA256.Create();
-                using var fs  = File.OpenRead(_model.FilePath);
-                return Convert.ToHexString(sha.ComputeHash(fs)).ToLowerInvariant();
+                using var fs = File.OpenRead(_model.FilePath);
+                return Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(fs)).ToLowerInvariant();
             });
             PART_SourceSha.Text = hex;
         }
@@ -79,17 +78,14 @@ public partial class EmbeddedObjectsDialog : ThemedDialog
         catch { /* clipboard busy */ }
     }
 
-    private void OnHashAllClicked(object sender, RoutedEventArgs e)
+    private async void OnHashAllClicked(object sender, RoutedEventArgs e)
     {
         if (PART_List.ItemsSource is not IReadOnlyList<EmbeddedObjectEntry> entries) return;
         try
         {
-            foreach (var entry in entries)
-            {
-                byte[]? bytes = entry.InlineData ?? TryLoadBytesQuiet(entry);
-                if (bytes is not null) entry.ComputeHash(bytes);
-            }
-            // Re-bind so the column refreshes (entries are plain CLR objects, no INotifyPropertyChanged).
+            await Task.Run(() => HashAllEntriesUsingSharedZip(entries));
+            // Refresh so the SHA-256 column re-binds; EmbeddedObjectEntry is a plain CLR
+            // object so PropertyChanged would have to be added everywhere — simpler here.
             PART_List.Items.Refresh();
         }
         catch (Exception ex)
@@ -99,10 +95,64 @@ public partial class EmbeddedObjectsDialog : ThemedDialog
         }
     }
 
-    private byte[]? TryLoadBytesQuiet(EmbeddedObjectEntry entry)
+    /// <summary>
+    /// Hashes every entry in one pass, opening the source ZIP at most once.
+    /// Inline-data entries and raw-offset entries reuse their bytes directly.
+    /// </summary>
+    private void HashAllEntriesUsingSharedZip(IReadOnlyList<EmbeddedObjectEntry> entries)
     {
-        try { return LoadBytes(entry); }
-        catch { return null; }
+        ZipArchive? sharedZip = null;
+        FileStream?  sharedFs  = null;
+        bool hasZipSource = !string.IsNullOrEmpty(_model.FilePath) && File.Exists(_model.FilePath);
+        try
+        {
+            foreach (var entry in entries)
+            {
+                if (!string.IsNullOrEmpty(entry.Sha256)) continue;
+                byte[]? bytes = entry.InlineData ?? TryLoadBytesShared(entry, hasZipSource, ref sharedZip, ref sharedFs);
+                if (bytes is not null) entry.ComputeHash(bytes);
+            }
+        }
+        finally
+        {
+            sharedZip?.Dispose();
+            sharedFs?.Dispose();
+        }
+    }
+
+    private byte[]? TryLoadBytesShared(EmbeddedObjectEntry entry, bool hasZipSource,
+        ref ZipArchive? sharedZip, ref FileStream? sharedFs)
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(entry.ZipEntryName) && hasZipSource)
+            {
+                sharedZip ??= ZipFile.OpenRead(_model.FilePath!);
+                var ze = sharedZip.GetEntry(entry.ZipEntryName);
+                if (ze is null) return null;
+                using var s = ze.Open();
+                using var ms = new MemoryStream();
+                s.CopyTo(ms);
+                var bytes = ms.ToArray();
+                entry.InlineData = bytes;
+                return bytes;
+            }
+            if (entry.Block is { RawLength: > 0 } blk && hasZipSource)
+            {
+                sharedFs ??= File.OpenRead(_model.FilePath!);
+                sharedFs.Seek(blk.RawOffset, SeekOrigin.Begin);
+                var buf = new byte[blk.RawLength];
+                sharedFs.ReadExactly(buf);
+                entry.InlineData = buf;
+                return buf;
+            }
+            return null;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[EmbeddedObjectsDialog] hash skip {entry.Name}: {ex.Message}");
+            return null;
+        }
     }
 
     private void OnDialogClosed(object? sender, EventArgs e)

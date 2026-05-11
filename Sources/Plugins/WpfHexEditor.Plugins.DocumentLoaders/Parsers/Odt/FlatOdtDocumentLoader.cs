@@ -18,6 +18,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core.BinaryMap;
 using WpfHexEditor.Editor.DocumentEditor.Core.Forensic;
+using WpfHexEditor.Editor.DocumentEditor.Core.Helpers;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 
@@ -49,7 +50,7 @@ public sealed class FlatOdtDocumentLoader : IDocumentLoader
         DocumentModel     target,
         CancellationToken ct = default)
     {
-        byte[] rawBytes = await BufferStreamAsync(stream, ct);
+        byte[] rawBytes = await DocumentLoaderHelpers.BufferStreamAsync(stream, ct);
         string xml      = System.Text.Encoding.UTF8.GetString(rawBytes);
 
         // Strip UTF-8 BOM if present (XDocument.Parse rejects it).
@@ -100,14 +101,6 @@ public sealed class FlatOdtDocumentLoader : IDocumentLoader
         target.SetForensicAlerts(alerts);
     }
 
-    private static async Task<byte[]> BufferStreamAsync(Stream stream, CancellationToken ct)
-    {
-        if (stream is MemoryStream ms && ms.TryGetBuffer(out _))
-            return ms.ToArray();
-        using var buf = new MemoryStream();
-        await stream.CopyToAsync(buf, ct);
-        return buf.ToArray();
-    }
 
     private static DocumentMetadata ReadMeta(XDocument doc)
     {
@@ -120,14 +113,12 @@ public sealed class FlatOdtDocumentLoader : IDocumentLoader
             {
                 Title      = meta.Element(DcNs   + "title")?.Value           ?? string.Empty,
                 Author     = meta.Element(MetaNs + "initial-creator")?.Value ?? string.Empty,
-                CreatedUtc = TryParseDate(meta.Element(MetaNs + "creation-date")?.Value)
+                CreatedUtc = DocumentLoaderHelpers.TryParseDate(meta.Element(MetaNs + "creation-date")?.Value)
             };
         }
         catch { return new DocumentMetadata(); }
     }
 
-    private static DateTime? TryParseDate(string? value) =>
-        DateTime.TryParse(value, out var dt) ? dt.ToUniversalTime() : null;
 
     private static DocumentPageSettings? ReadPageSettings(XDocument doc)
     {

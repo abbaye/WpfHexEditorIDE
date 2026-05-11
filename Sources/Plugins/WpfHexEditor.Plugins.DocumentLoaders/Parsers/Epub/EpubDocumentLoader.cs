@@ -20,6 +20,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core.BinaryMap;
 using WpfHexEditor.Editor.DocumentEditor.Core.Forensic;
+using WpfHexEditor.Editor.DocumentEditor.Core.Helpers;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 
 namespace WpfHexEditor.Plugins.DocumentLoaders.Parsers.Epub;
@@ -44,7 +45,7 @@ public sealed class EpubDocumentLoader : IDocumentLoader
         DocumentModel     target,
         CancellationToken ct = default)
     {
-        byte[] rawBytes = await BufferStreamAsync(stream, ct);
+        byte[] rawBytes = await DocumentLoaderHelpers.BufferStreamAsync(stream, ct);
         using var ms = new MemoryStream(rawBytes, writable: false);
         using var zip = new ZipArchive(ms, ZipArchiveMode.Read, leaveOpen: true);
 
@@ -102,7 +103,7 @@ public sealed class EpubDocumentLoader : IDocumentLoader
         {
             Title  = metaEl?.Element(DcNs + "title")?.Value   ?? Path.GetFileNameWithoutExtension(filePath),
             Author = metaEl?.Element(DcNs + "creator")?.Value ?? string.Empty,
-            CreatedUtc = TryParseDate(metaEl?.Element(DcNs + "date")?.Value),
+            CreatedUtc = DocumentLoaderHelpers.TryParseDate(metaEl?.Element(DcNs + "date")?.Value),
         };
 
         // Build id → href lookup from <manifest>.
@@ -132,7 +133,7 @@ public sealed class EpubDocumentLoader : IDocumentLoader
             target.Blocks.Add(new DocumentBlock
             {
                 Kind = DocumentBlockKinds.Paragraph,
-                Text = StripTags(xhtml),
+                Text = DocumentLoaderHelpers.StripHtmlTags(xhtml),
             });
             return;
         }
@@ -140,12 +141,16 @@ public sealed class EpubDocumentLoader : IDocumentLoader
         var body = doc.Descendants().FirstOrDefault(e => e.Name.LocalName == "body");
         if (body is null) return;
 
-        // Insert a synthetic chapter-break heading so the spine item shows in the Structure pane.
+        // Chapter break: prefer the XHTML <title> for a user-visible label; fall back to filename.
+        string chapterTitle =
+            doc.Descendants().FirstOrDefault(e => e.Name.LocalName == "title")?.Value?.Trim() is { Length: > 0 } t
+                ? t
+                : Path.GetFileNameWithoutExtension(sourceEntry);
         target.Blocks.Add(new DocumentBlock
         {
             Kind = DocumentBlockKinds.Heading,
-            Text = Path.GetFileNameWithoutExtension(sourceEntry),
-            Attributes = { ["level"] = 1 },
+            Text = chapterTitle,
+            Attributes = { [DocumentBlockAttributes.Level] = 1 },
         });
 
         foreach (var el in body.Elements())
@@ -162,7 +167,7 @@ public sealed class EpubDocumentLoader : IDocumentLoader
                 {
                     Kind = DocumentBlockKinds.Heading,
                     Text = CollapseWhitespace(el.Value),
-                    Attributes = { ["level"] = local[1] - '0' },
+                    Attributes = { [DocumentBlockAttributes.Level] = local[1] - '0' },
                 });
                 break;
             case "p":
@@ -192,7 +197,7 @@ public sealed class EpubDocumentLoader : IDocumentLoader
                     Text = "[image]",
                     Attributes =
                     {
-                        ["zipEntryName"] = el.Attribute("src")?.Value ?? string.Empty,
+                        [DocumentBlockAttributes.ZipEntryName] = el.Attribute("src")?.Value ?? string.Empty,
                     },
                 });
                 break;
@@ -205,15 +210,7 @@ public sealed class EpubDocumentLoader : IDocumentLoader
         }
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────
-
-    private static async Task<byte[]> BufferStreamAsync(Stream stream, CancellationToken ct)
-    {
-        if (stream is MemoryStream ms && ms.TryGetBuffer(out _)) return ms.ToArray();
-        using var buf = new MemoryStream();
-        await stream.CopyToAsync(buf, ct);
-        return buf.ToArray();
-    }
+    // ── Helpers (EPUB-specific only) ──────────────────────────────────────
 
     private static string ReadEntryText(ZipArchiveEntry entry)
     {
@@ -221,9 +218,6 @@ public sealed class EpubDocumentLoader : IDocumentLoader
         using var sr = new StreamReader(s, System.Text.Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
         return sr.ReadToEnd();
     }
-
-    private static DateTime? TryParseDate(string? value) =>
-        DateTime.TryParse(value, out var dt) ? dt.ToUniversalTime() : null;
 
     private static string GetParentPath(string zipPath)
     {
@@ -237,6 +231,11 @@ public sealed class EpubDocumentLoader : IDocumentLoader
         return $"{dir}/{href}".Replace("//", "/");
     }
 
+    /// <summary>
+    /// Collapses runs of whitespace (including line breaks) to a single space
+    /// and trims edges — XHTML preserves source formatting that DocumentEditor
+    /// doesn't honor at the renderer layer.
+    /// </summary>
     private static string CollapseWhitespace(string s)
     {
         if (string.IsNullOrEmpty(s)) return string.Empty;
@@ -251,18 +250,5 @@ public sealed class EpubDocumentLoader : IDocumentLoader
             else { sb.Append(ch); prevSpace = false; }
         }
         return sb.ToString().Trim();
-    }
-
-    private static string StripTags(string html)
-    {
-        var sb = new System.Text.StringBuilder(html.Length);
-        bool inTag = false;
-        foreach (char ch in html)
-        {
-            if (ch == '<') { inTag = true; continue; }
-            if (ch == '>') { inTag = false; continue; }
-            if (!inTag) sb.Append(ch);
-        }
-        return CollapseWhitespace(sb.ToString());
     }
 }

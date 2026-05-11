@@ -13,6 +13,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core.BinaryMap;
 using WpfHexEditor.Editor.DocumentEditor.Core.Forensic;
+using WpfHexEditor.Editor.DocumentEditor.Core.Helpers;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 
@@ -54,7 +55,7 @@ public sealed class DocxDocumentLoader : IDocumentLoader
         DocumentModel     target,
         CancellationToken ct = default)
     {
-        byte[] rawBytes = await BufferStreamAsync(stream, ct);
+        byte[] rawBytes = await DocumentLoaderHelpers.BufferStreamAsync(stream, ct);
         using var ms = new MemoryStream(rawBytes, writable: false);
 
         using var zipReader = new DocxZipReader(ms);
@@ -132,15 +133,6 @@ public sealed class DocxDocumentLoader : IDocumentLoader
         target.SetForensicAlerts(alerts);
     }
 
-    private static async Task<byte[]> BufferStreamAsync(Stream stream, CancellationToken ct)
-    {
-        if (stream is MemoryStream ms && ms.TryGetBuffer(out _))
-            return ms.ToArray();
-        using var buf = new MemoryStream();
-        await stream.CopyToAsync(buf, ct);
-        return buf.ToArray();
-    }
-
     private static DocumentMetadata ReadCoreProperties(DocxZipReader zip)
     {
         var xml = zip.ReadEntryText("docProps/core.xml");
@@ -155,15 +147,12 @@ public sealed class DocxDocumentLoader : IDocumentLoader
             {
                 Title       = doc.Descendants(dc      + "title").FirstOrDefault()?.Value   ?? string.Empty,
                 Author      = doc.Descendants(dc      + "creator").FirstOrDefault()?.Value ?? string.Empty,
-                CreatedUtc  = TryParseDate(doc.Descendants(dcterms + "created").FirstOrDefault()?.Value),
-                ModifiedUtc = TryParseDate(doc.Descendants(dcterms + "modified").FirstOrDefault()?.Value)
+                CreatedUtc  = DocumentLoaderHelpers.TryParseDate(doc.Descendants(dcterms + "created").FirstOrDefault()?.Value),
+                ModifiedUtc = DocumentLoaderHelpers.TryParseDate(doc.Descendants(dcterms + "modified").FirstOrDefault()?.Value)
             };
         }
         catch { return new DocumentMetadata(); }
     }
-
-    private static DateTime? TryParseDate(string? value) =>
-        DateTime.TryParse(value, out var dt) ? dt.ToUniversalTime() : null;
 
     private static DocumentPageSettings? ReadDocxPageSettings(string documentXml)
     {
