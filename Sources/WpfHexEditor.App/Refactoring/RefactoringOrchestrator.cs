@@ -92,14 +92,14 @@ public sealed class RefactoringOrchestrator
 
             var sb = ApplyOrdered(seed, ordered);
             try { File.WriteAllText(group.Key, sb); }
-            catch (Exception ex) { Debug.WriteLine($"[Refactor] write failed: {group.Key} — {ex.Message}"); }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[Refactor] write failed: {group.Key} — {ex.Message}"); }
         }
     }
 
     private static string? SafeRead(string path)
     {
         try { return File.ReadAllText(path); }
-        catch (Exception ex) { Debug.WriteLine($"[Refactor] read failed: {path} — {ex.Message}"); return null; }
+        catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[Refactor] read failed: {path} — {ex.Message}"); return null; }
     }
 
     private static string ApplyOrdered(string seed, IEnumerable<TextEdit> orderedDescending)

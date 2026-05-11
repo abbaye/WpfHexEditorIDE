@@ -70,7 +70,6 @@ public sealed class CodeAnalysisReportViewModel : INotifyPropertyChanged
     public ObservableCollection<IssueViewModel>      Issues       { get; } = [];
     public ObservableCollection<MethodMetrics>       TopMethods   { get; } = [];
     public ObservableCollection<CouplingMetrics>     TopCouplings { get; } = [];
-    public ObservableCollection<DuplicationGroup>    Duplications { get; } = [];
     public ObservableCollection<DuplicationGroupViewModel> DuplicationGroups { get; } = [];
     public ObservableCollection<DeadSymbol>          DeadSymbols  { get; } = [];
     public ObservableCollection<FileMetricsViewModel> WorstFiles  { get; } = [];
@@ -165,16 +164,17 @@ public sealed class CodeAnalysisReportViewModel : INotifyPropertyChanged
     public bool HasHistory => _history.Count >= 2;
 
     // ── Duplication aggregates (Phase 10B) ───────────────────────────────────
+    // Cached field — Sum() runs only once in SetReport, not on every binding access.
 
-    public int TotalDuplicatedLines =>
-        DuplicationGroups.Sum(g => g.DuplicatedLines);
+    private int _totalDuplicatedLines;
+    public int TotalDuplicatedLines => _totalDuplicatedLines;
 
     public double DuplicationRatioPercent =>
-        TotalLines <= 0 ? 0 : (double)TotalDuplicatedLines / TotalLines * 100;
+        TotalLines <= 0 ? 0 : (double)_totalDuplicatedLines / TotalLines * 100;
 
     public string DuplicationSummaryText =>
         string.Format(AppResources.CodeAnalysis_Duplication_Summary,
-            DuplicationGroups.Count, TotalDuplicatedLines, DuplicationRatioPercent);
+            DuplicationGroups.Count, _totalDuplicatedLines, DuplicationRatioPercent);
 
     public string HistorySummaryText
     {
@@ -236,13 +236,12 @@ public sealed class CodeAnalysisReportViewModel : INotifyPropertyChanged
             .Take(50))
             TopCouplings.Add(c);
 
-        Duplications.Clear();
         DuplicationGroups.Clear();
         foreach (var d in report.Duplications)
-        {
-            Duplications.Add(d);
             DuplicationGroups.Add(new DuplicationGroupViewModel(d));
-        }
+
+        // Recompute cached aggregate from the fresh groups.
+        _totalDuplicatedLines = DuplicationGroups.Sum(g => g.DuplicatedLines);
 
         DeadSymbols.Clear();
         foreach (var d in report.DeadSymbols) DeadSymbols.Add(d);

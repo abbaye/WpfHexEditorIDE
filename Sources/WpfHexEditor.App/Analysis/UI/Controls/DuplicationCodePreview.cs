@@ -3,20 +3,23 @@
 // File: Analysis/UI/Controls/DuplicationCodePreview.cs
 // Description: Side-by-side preview of a clone group's two occurrences with
 //              line numbers, monospace text, and a whitespace-only diff
-//              highlight. Reads files on demand, caches by (path, mtime).
+//              highlight. Reads only the windowed range of each file and
+//              caches the snippet keyed by (path, mtime, startLine, count).
 // Architecture Notes:
-//     - FrameworkElement with a single DrawingVisual: each render rebuilds
-//       FormattedText for visible lines only (capped via MaxLinesShown).
-//     - File cache: bounded LRU (20 entries) keyed by (path, mtime, length).
-//     - Theme-aware: pulls foreground from inherited TextElement.Foreground;
-//       background tints from DynamicResource theme brushes resolved once
-//       per render via Application.Current.FindResource.
+//     - All brushes are static frozen — no per-render allocation
+//     - File reads use File.ReadLines + Skip/Take so a 50k-line file with a
+//       30-line clone window costs O(window), not O(file)
+//     - Snippet cache evicts oldest when over MaxCacheEntries, scoped per
+//       (path, mtime, startLine, count) so two clones in the same file
+//       coexist without re-reading
 // ==========================================================
 
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using WpfHexEditor.App.Analysis.Models;
 using WpfHexEditor.App.Analysis.UI.ViewModels;
 
 namespace WpfHexEditor.App.Analysis.UI.Controls;
@@ -33,45 +36,55 @@ public sealed class DuplicationCodePreview : FrameworkElement
         set => SetValue(GroupProperty, value);
     }
 
-    private const int MaxLinesShown = 200;
-    private const double LineHeight = 16;
-    private const double GutterWidth = 56;
-    private const double FontSize = 11;
+    private const int    MaxLinesShown = 200;
+    private const double LineHeight    = 16;
+    private const double GutterWidth   = 56;
+    private const double FontSize      = 11;
 
-    private static readonly Typeface MonoFace = new("Consolas");
+    private static readonly Typeface       MonoFace = new("Consolas");
+    private static readonly SolidColorBrush GutterFg = Freeze(new SolidColorBrush(Color.FromArgb(0x99, 0x80, 0x80, 0x80)));
+    private static readonly SolidColorBrush SameBg   = Freeze(new SolidColorBrush(Color.FromArgb(28, 60, 200, 100)));
+    private static readonly SolidColorBrush WsBg     = Freeze(new SolidColorBrush(Color.FromArgb(28, 220, 180, 0)));
 
-    // ── File cache (bounded LRU) ─────────────────────────────────────────────
+    private static SolidColorBrush Freeze(SolidColorBrush b) { b.Freeze(); return b; }
 
-    private sealed record CacheEntry(string[] Lines, DateTime Mtime, long Length);
-    private static readonly Dictionary<string, CacheEntry> _cache = new(StringComparer.OrdinalIgnoreCase);
-    private static readonly LinkedList<string> _lru = new();
-    private const int MaxCacheEntries = 20;
+    // ── Snippet cache (bounded LRU) ──────────────────────────────────────────
 
-    private static string[]? ReadFileCached(string path)
+    private sealed record CacheKey(string Path, DateTime Mtime, long Length, int StartLine, int Count);
+    private static readonly Dictionary<CacheKey, string[]> _cache = new();
+    private static readonly LinkedList<CacheKey>           _lru   = new();
+    private const int MaxCacheEntries = 64;
+
+    private static string[] ReadSnippetCached(string path, int startLine, int endLine)
     {
-        try
+        if (string.IsNullOrEmpty(path) || startLine < 1) return [];
+        FileInfo info;
+        try { info = new FileInfo(path); if (!info.Exists) return []; }
+        catch { return []; }
+
+        int from  = startLine - 1;
+        int count = Math.Max(0, endLine - startLine + 1);
+        var key   = new CacheKey(path, info.LastWriteTimeUtc, info.Length, from, count);
+
+        if (_cache.TryGetValue(key, out var hit))
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path)) return null;
-            var info = new FileInfo(path);
-            if (_cache.TryGetValue(path, out var hit)
-             && hit.Mtime == info.LastWriteTimeUtc
-             && hit.Length == info.Length)
-            {
-                _lru.Remove(path); _lru.AddFirst(path);
-                return hit.Lines;
-            }
-            var lines = File.ReadAllLines(path);
-            _cache[path] = new CacheEntry(lines, info.LastWriteTimeUtc, info.Length);
-            _lru.AddFirst(path);
-            while (_lru.Count > MaxCacheEntries)
-            {
-                var oldest = _lru.Last!.Value;
-                _lru.RemoveLast();
-                _cache.Remove(oldest);
-            }
-            return lines;
+            _lru.Remove(key); _lru.AddFirst(key);
+            return hit;
         }
-        catch { return null; }
+
+        string[] snippet;
+        try { snippet = File.ReadLines(path).Skip(from).Take(count).ToArray(); }
+        catch { return []; }
+
+        _cache[key] = snippet;
+        _lru.AddFirst(key);
+        while (_lru.Count > MaxCacheEntries)
+        {
+            var oldest = _lru.Last!.Value;
+            _lru.RemoveLast();
+            _cache.Remove(oldest);
+        }
+        return snippet;
     }
 
     // ── Render ───────────────────────────────────────────────────────────────
@@ -87,95 +100,69 @@ public sealed class DuplicationCodePreview : FrameworkElement
     {
         if (Group is null || ActualWidth <= 0 || ActualHeight <= 0) return;
         var occA = Group.OccurrenceA;
-        var occB = Group.OccurrenceB;
         if (occA is null) return;
+        var occB = Group.OccurrenceB;
 
         double half = (ActualWidth - 8) / 2;
         var fg = TextElement.GetForeground(this) ?? SystemColors.ControlTextBrush;
-        var gutterFg = new SolidColorBrush(((SolidColorBrush)Brushes.Gray).Color) { Opacity = 0.6 };
-        gutterFg.Freeze();
 
-        var (linesA, snippetA) = LoadSnippet(occA);
-        DrawPane(dc, 0, half, ActualHeight, linesA, snippetA, fg, gutterFg,
-                 occA.StartLine, occA.EndLine, otherSnippet: occB is null ? null : LoadSnippet(occB).snippet);
+        string[] snippetA = ReadSnippetCached(occA.FilePath, occA.StartLine, occA.EndLine);
+        string[] snippetB = occB is null ? [] : ReadSnippetCached(occB.FilePath, occB.StartLine, occB.EndLine);
 
+        DrawPane(dc, x: 0,         half, ActualHeight, snippetA, otherSnippet: snippetB, occA.StartLine, occA.EndLine, fg);
         if (occB is not null)
-        {
-            var (linesB, snippetB) = LoadSnippet(occB);
-            DrawPane(dc, half + 8, half, ActualHeight, linesB, snippetB, fg, gutterFg,
-                     occB.StartLine, occB.EndLine, otherSnippet: snippetA);
-        }
-    }
-
-    private static (string[] all, string[] snippet) LoadSnippet(Models.DuplicationOccurrence occ)
-    {
-        var all = ReadFileCached(occ.FilePath) ?? [];
-        if (all.Length == 0) return (all, []);
-        int from = Math.Max(0, occ.StartLine - 1);
-        int to   = Math.Min(all.Length - 1, occ.EndLine - 1);
-        int count = Math.Min(MaxLinesShown, Math.Max(0, to - from + 1));
-        var snippet = new string[count];
-        for (int i = 0; i < count; i++) snippet[i] = all[from + i];
-        return (all, snippet);
+            DrawPane(dc, x: half + 8, half, ActualHeight, snippetB, otherSnippet: snippetA, occB.StartLine, occB.EndLine, fg);
     }
 
     private static void DrawPane(
         DrawingContext dc, double x, double width, double height,
-        string[] allFile, string[] snippet,
-        Brush fg, Brush gutterFg,
+        string[] snippet, string[] otherSnippet,
         int startLine, int endLine,
-        string[]? otherSnippet)
+        Brush fg)
     {
+        dc.PushClip(new RectangleGeometry(new Rect(x, 0, width, height)));
+
+        int totalLines = Math.Max(0, endLine - startLine + 1);
+        int shown      = Math.Min(snippet.Length, MaxLinesShown);
+        double codeMaxWidth = Math.Max(20, width - GutterWidth - 8);
         double y = 4;
-        var rect = new Rect(x, 0, width, height);
-        dc.PushClip(new RectangleGeometry(rect));
 
-        var sameBg  = (Application.Current?.TryFindResource("CodeAnalysis_Dup_SameBg")  as Brush)
-                      ?? new SolidColorBrush(Color.FromArgb(28, 60, 200, 100));
-        var wsBg    = (Application.Current?.TryFindResource("CodeAnalysis_Dup_WsBg")    as Brush)
-                      ?? new SolidColorBrush(Color.FromArgb(28, 220, 180, 0));
-        if (sameBg.CanFreeze) sameBg.Freeze();
-        if (wsBg.CanFreeze)   wsBg.Freeze();
-
-        for (int i = 0; i < snippet.Length; i++)
+        for (int i = 0; i < shown; i++)
         {
-            if (y + LineHeight > height - 4) break;
+            if (y + LineHeight > height - 4) { shown = i; break; }
 
-            // Diff-light: compare normalized line with the other pane at same index
-            Brush? rowBg = null;
-            if (otherSnippet is not null && i < otherSnippet.Length)
+            if (i < otherSnippet.Length)
             {
                 var a = snippet[i];
                 var b = otherSnippet[i];
-                if (string.Equals(a, b, StringComparison.Ordinal)) rowBg = sameBg;
-                else if (string.Equals(Normalize(a), Normalize(b), StringComparison.Ordinal)) rowBg = wsBg;
+                Brush? rowBg =
+                    string.Equals(a, b, StringComparison.Ordinal)                       ? SameBg :
+                    string.Equals(Normalize(a), Normalize(b), StringComparison.Ordinal) ? WsBg   :
+                    null;
+                if (rowBg is not null)
+                    dc.DrawRectangle(rowBg, null, new Rect(x, y, width, LineHeight));
             }
-            if (rowBg is not null)
-                dc.DrawRectangle(rowBg, null, new Rect(x, y, width, LineHeight));
 
-            // Gutter line number
-            int lineNo = startLine + i;
-            var gutterFt = new FormattedText(lineNo.ToString(), System.Globalization.CultureInfo.InvariantCulture,
-                FlowDirection.LeftToRight, MonoFace, FontSize, gutterFg, 1.0)
-            { TextAlignment = TextAlignment.Right, MaxTextWidth = GutterWidth - 8 };
+            var gutterFt = new FormattedText((startLine + i).ToString(CultureInfo.InvariantCulture),
+                CultureInfo.InvariantCulture, FlowDirection.LeftToRight, MonoFace, FontSize, GutterFg, 1.0)
+                { TextAlignment = TextAlignment.Right, MaxTextWidth = GutterWidth - 8 };
             dc.DrawText(gutterFt, new Point(x + 4, y));
 
-            // Code text
-            string text = snippet[i] ?? string.Empty;
-            text = text.Replace("\t", "    ");
-            var codeFt = new FormattedText(text, System.Globalization.CultureInfo.InvariantCulture,
+            string text = (snippet[i] ?? string.Empty).Replace("\t", "    ");
+            var codeFt = new FormattedText(text, CultureInfo.InvariantCulture,
                 FlowDirection.LeftToRight, MonoFace, FontSize, fg, 1.0)
-            { MaxTextWidth = Math.Max(20, width - GutterWidth - 8) };
+                { MaxTextWidth = codeMaxWidth };
             dc.DrawText(codeFt, new Point(x + GutterWidth, y));
 
             y += LineHeight;
         }
 
-        if (snippet.Length > MaxLinesShown)
+        int hidden = totalLines - shown;
+        if (hidden > 0)
         {
-            var footer = new FormattedText($"… +{snippet.Length - MaxLinesShown} lines",
-                System.Globalization.CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
-                MonoFace, FontSize, gutterFg, 1.0);
+            var footer = new FormattedText($"… +{hidden} lines",
+                CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
+                MonoFace, FontSize, GutterFg, 1.0);
             dc.DrawText(footer, new Point(x + GutterWidth, y + 4));
         }
 
@@ -197,5 +184,12 @@ public sealed class DuplicationCodePreview : FrameworkElement
             else { sb.Append(ch); prevSpace = false; }
         }
         return sb.ToString().Trim();
+    }
+
+    /// <summary>Drop all cached snippets — called when a fresh report arrives so stale entries don't survive analyses.</summary>
+    internal static void InvalidateCache()
+    {
+        _cache.Clear();
+        _lru.Clear();
     }
 }

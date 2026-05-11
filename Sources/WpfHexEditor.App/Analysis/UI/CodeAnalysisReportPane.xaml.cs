@@ -38,6 +38,16 @@ public partial class CodeAnalysisReportPane : UserControl
         _docHost = docHost;
         DataContext = vm;
 
+        // Re-apply filter/sort + drop the snippet cache whenever a fresh report
+        // arrives. DuplicationSummaryText is raised at the end of SetReport so
+        // it's a stable, allocation-free signal.
+        _vm.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName != nameof(CodeAnalysisReportViewModel.DuplicationSummaryText)) return;
+            Controls.DuplicationCodePreview.InvalidateCache();
+            if (IsLoaded) ApplyDupView();
+        };
+
         // Phase 7 — keyboard shortcuts (F5 = re-run, Ctrl+F = focus search)
         InputBindings.Add(new KeyBinding(
             new RelayCmd(_ => _ = (_reRunCallback?.Invoke() ?? Task.CompletedTask)),

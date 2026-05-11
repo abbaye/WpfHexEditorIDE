@@ -22,6 +22,7 @@
             <conv:RiskLevelToBrushConverter  x:Key="RiskToBrush"/>
             <conv:DuplicationSeverityToBrushConverter x:Key="DupSevToBrush"/>
             <conv:NullToVisibilityConverter  x:Key="NullToVis"/>
+            <conv:NullToVisibilityConverter  x:Key="NullToVisInverse" Invert="True"/>
             <BooleanToVisibilityConverter    x:Key="BoolToVis"/>
 
             <Style TargetType="TabItem">
@@ -622,7 +623,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                            Opacity="0.5" FontStyle="Italic"
                                            Visibility="{Binding SelectedItem, ElementName=DupGroupsGrid,
-                                                        Converter={StaticResource NullToVis}, ConverterParameter=Inverse}"/>
+                                                        Converter={StaticResource NullToVisInverse}}"/>
 
                                 <DockPanel Visibility="{Binding SelectedItem, ElementName=DupGroupsGrid,
                                                         Converter={StaticResource NullToVis}}">

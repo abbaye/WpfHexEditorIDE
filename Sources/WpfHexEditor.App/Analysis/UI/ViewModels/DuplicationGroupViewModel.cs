@@ -2,9 +2,8 @@
 // Project: WpfHexEditor.App
 // File: Analysis/UI/ViewModels/DuplicationGroupViewModel.cs
 // Description: Wraps a DuplicationGroup for the redesigned Duplication tab.
-//              Exposes derived display fields (severity, primary file, summary
-//              line) and the two occurrence indices chosen for side-by-side
-//              preview.
+//              Exposes derived display fields (severity, primary file name)
+//              and the two occurrence indices chosen for side-by-side preview.
 // ==========================================================
 
 using System.ComponentModel;
@@ -18,43 +17,33 @@ public sealed class DuplicationGroupViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    private readonly DuplicationGroup _group;
     private int _selectedIndexA;
     private int _selectedIndexB = 1;
 
     public DuplicationGroupViewModel(DuplicationGroup group)
     {
-        Group = group;
+        _group   = group;
         Severity = ComputeSeverity(group);
-        if (group.Occurrences.Count == 1) _selectedIndexB = 0;
+        if (group.Occurrences.Count <= 1)
+            _selectedIndexB = Math.Max(0, group.Occurrences.Count - 1);
     }
 
-    public DuplicationGroup Group { get; }
-
-    public int    LineCount        => Group.LineCount;
-    public int    TokenCount       => Group.TokenCount;
-    public int    OccurrenceCount  => Group.Occurrences.Count;
+    public int    LineCount        => _group.LineCount;
+    public int    TokenCount       => _group.TokenCount;
+    public int    OccurrenceCount  => _group.Occurrences.Count;
     public DuplicationSeverity Severity { get; }
 
-    public IReadOnlyList<DuplicationOccurrence> Occurrences => Group.Occurrences;
+    public IReadOnlyList<DuplicationOccurrence> Occurrences => _group.Occurrences;
 
     /// <summary>First occurrence's file name (no path) — for compact list display.</summary>
     public string PrimaryFileName =>
-        Group.Occurrences.Count == 0 ? string.Empty : Path.GetFileName(Group.Occurrences[0].FilePath);
-
-    public string PrimaryFolder
-    {
-        get
-        {
-            if (Group.Occurrences.Count == 0) return string.Empty;
-            var dir = Path.GetDirectoryName(Group.Occurrences[0].FilePath) ?? string.Empty;
-            return Path.GetFileName(dir);
-        }
-    }
+        _group.Occurrences.Count == 0 ? string.Empty : Path.GetFileName(_group.Occurrences[0].FilePath);
 
     /// <summary>Total "wasted" lines = LineCount × (Occurrences − 1).</summary>
     public int DuplicatedLines => Math.Max(0, LineCount * (OccurrenceCount - 1));
 
-    /// <summary>0-based index of the left-pane occurrence in Group.Occurrences.</summary>
+    /// <summary>0-based index of the left-pane occurrence.</summary>
     public int SelectedIndexA
     {
         get => _selectedIndexA;
@@ -69,10 +58,10 @@ public sealed class DuplicationGroupViewModel : INotifyPropertyChanged
     }
 
     public DuplicationOccurrence? OccurrenceA =>
-        SelectedIndexA >= 0 && SelectedIndexA < Group.Occurrences.Count ? Group.Occurrences[SelectedIndexA] : null;
+        SelectedIndexA >= 0 && SelectedIndexA < _group.Occurrences.Count ? _group.Occurrences[SelectedIndexA] : null;
 
     public DuplicationOccurrence? OccurrenceB =>
-        SelectedIndexB >= 0 && SelectedIndexB < Group.Occurrences.Count ? Group.Occurrences[SelectedIndexB] : null;
+        SelectedIndexB >= 0 && SelectedIndexB < _group.Occurrences.Count ? _group.Occurrences[SelectedIndexB] : null;
 
     /// <summary>Score-based derivation: LineCount × (Occurrences−1) × log2(Tokens/50).</summary>
     private static DuplicationSeverity ComputeSeverity(DuplicationGroup g)

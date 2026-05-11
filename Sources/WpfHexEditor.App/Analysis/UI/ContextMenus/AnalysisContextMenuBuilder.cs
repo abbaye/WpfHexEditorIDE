@@ -168,24 +168,18 @@ internal sealed class AnalysisContextMenuBuilder
     {
         var menu = new ContextMenu();
         var occs = dvm.Occurrences;
+        if (occs.Count == 0) return menu;
 
-        if (occs.Count > 0)
-        {
-            var a = occs[dvm.SelectedIndexA];
+        if (dvm.OccurrenceA is { } a)
             Add(menu, AppResources.CodeAnalysis_Duplication_Menu_OpenA,
                 () => AnalysisContextMenuActions.OpenFile(_docHost, a.FilePath, a.StartLine));
-        }
-        if (occs.Count > 1)
-        {
-            var b = occs[dvm.SelectedIndexB];
+
+        if (dvm.OccurrenceB is { } b && occs.Count > 1)
             Add(menu, AppResources.CodeAnalysis_Duplication_Menu_OpenB,
                 () => AnalysisContextMenuActions.OpenFile(_docHost, b.FilePath, b.StartLine));
-        }
-        if (occs.Count > 0)
-        {
-            Add(menu, string.Format(AppResources.CodeAnalysis_Duplication_Menu_OpenAll, occs.Count),
-                () => { foreach (var o in occs) AnalysisContextMenuActions.OpenFile(_docHost, o.FilePath, o.StartLine); });
-        }
+
+        Add(menu, string.Format(AppResources.CodeAnalysis_Duplication_Menu_OpenAll, occs.Count),
+            () => { foreach (var o in occs) AnalysisContextMenuActions.OpenFile(_docHost, o.FilePath, o.StartLine); });
         AddSeparator(menu);
 
         Add(menu, AppResources.CodeAnalysis_Duplication_Menu_CopyMarkdown,

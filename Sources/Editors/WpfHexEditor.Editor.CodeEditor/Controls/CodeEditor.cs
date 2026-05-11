@@ -3981,10 +3981,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private static int TextPositionToOffset(string text, TextPosition? pos)
         {
             if (pos is null || string.IsNullOrEmpty(text)) return 0;
+            var p = pos.Value;
             int line = 0, offset = 0;
-            for (int i = 0; i < text.Length && line < pos.Line; i++)
+            for (int i = 0; i < text.Length && line < p.Line; i++)
                 if (text[i] == '\n') { line++; offset = i + 1; }
-            return Math.Min(text.Length, offset + pos.Column);
+            return Math.Min(text.Length, offset + p.Column);
         }
 
         /// <summary>
