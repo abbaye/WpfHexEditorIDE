@@ -129,6 +129,17 @@ public interface IIDEHostContext
     /// </summary>
     ICommandRegistry? CommandRegistry => null;
 
+    // -- DI / Service Container -----------------------------------------------
+
+    /// <summary>
+    /// Service-locator facade over the host IServiceProvider. Plugins use
+    /// this to resolve cross-cutting services (ICommandBus,
+    /// PluginSettingsRegistry, PreferencesExportService, …) without taking a
+    /// direct dependency on the framework DI assembly. Null when DI is not
+    /// exposed to plugins.
+    /// </summary>
+    IServiceContainer? Services => null;
+
     // -- LSP (Language Server Protocol) ---------------------------------------
 
     /// <summary>

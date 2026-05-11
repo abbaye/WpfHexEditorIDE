@@ -17,8 +17,10 @@
 // ==========================================================
 
 using Microsoft.Extensions.DependencyInjection;
+using WpfHexEditor.Core.Commands;
 using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.Options;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.Core.Dialogs;
 using WpfHexEditor.PluginHost.Adapters;
@@ -40,7 +42,8 @@ internal sealed record MainWindowServiceArgs(
     IDockingAdapter      DockingAdapter,
     IMenuAdapter         MenuAdapter,
     IStatusBarAdapter    StatusBarAdapter,
-    IDocumentHostService DocumentHostService);
+    IDocumentHostService DocumentHostService,
+    ICommandRegistry?    CommandRegistry = null);
 
 /// <summary>
 /// Extension method that registers all app-level services as singletons.
@@ -70,6 +73,20 @@ internal static class AppServiceCollection
 
         services.AddSingleton<IEmbeddedFormatCatalog>(EmbeddedFormatCatalog.Instance);
         services.AddSingleton(LanguageRegistry.Instance);
+
+        // ── IDE foundation (#36/#37/#39) ──────────────────────────────────────
+        // CommandRegistry is owned by MainWindow (see MainWindow.Commands.cs).
+        // Register the live instance so ICommandBus and other consumers
+        // resolve the same registry the menus / toolbar were built against.
+        if (args.CommandRegistry is not null)
+            services.AddSingleton(args.CommandRegistry);
+        else
+            services.AddSingleton<ICommandRegistry, CommandRegistry>();
+
+        services.AddSingleton<ICommandBus, CommandBus>();
+        services.AddSingleton<IServiceContainer>(sp => new ServiceContainerAdapter(sp));
+        services.AddSingleton(PluginSettingsRegistry.Instance);
+        services.AddSingleton<PreferencesExportService>();
 
         return services;
     }

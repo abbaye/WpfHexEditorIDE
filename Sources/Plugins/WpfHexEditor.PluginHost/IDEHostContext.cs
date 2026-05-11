@@ -104,6 +104,9 @@ public sealed class IDEHostContext : IIDEHostContext
     public IFormatCatalogService FormatCatalog { get; }
 
     /// <inheritdoc />
+    public IServiceContainer? Services { get; init; }
+
+    /// <inheritdoc />
     public IFormatParsingService? FormatParsing { get; }
 
     /// <inheritdoc />

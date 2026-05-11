@@ -437,6 +437,7 @@ public partial class MainWindow
                 UIFactory        = uiControlFactory,
                 TabGroups        = tabGroupService,
                 DebugVisualizers = new WpfHexEditor.App.Services.DebugVisualizerRegistry(),
+                Services         = _serviceProvider.GetService<WpfHexEditor.SDK.Contracts.IServiceContainer>(),
             };
 
             // Attach TabGroupService to the engine (available after DockHost.Layout is set).
@@ -1584,7 +1585,8 @@ public partial class MainWindow
             DockingAdapter:      docking,
             MenuAdapter:         menu,
             StatusBarAdapter:    statusBar,
-            DocumentHostService: docHost);
+            DocumentHostService: docHost,
+            CommandRegistry:     _commandRegistry);
     }
 
     // ── Roslyn status bar helpers ────────────────────────────────────────────
