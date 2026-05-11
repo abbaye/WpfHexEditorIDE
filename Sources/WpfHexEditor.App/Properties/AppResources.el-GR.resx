@@ -615,6 +615,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Η ανάλυση κώδικα απέτυχε: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Το στιγμιότυπο ανάλυσης αποθηκεύτηκε.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Το στιγμιότυπο ανάλυσης διαγράφηκε.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Άνοιγμα τεκμηρίωσης κανόνα…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Κύκλοι έργων</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Δεν εντοπίστηκαν κύκλοι έργων.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Διάγραμμα χορδών των κύκλων εξαρτήσεων μεταξύ έργων. Κάθε κόκκινη καμπύλη είναι ακμή κύκλου.</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Γενικά</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Κατώφλια</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Κανόνες</value></data>

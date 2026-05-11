@@ -649,6 +649,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Kodeanalyse mislykkedes: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Analyseøjebliksbillede gemt.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Analyseøjebliksbillede ryddet.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Åbn regeldokumentation…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Projektcyklusser</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Ingen projektcyklusser fundet.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Akkord-diagram over afhængighedscyklusser mellem projekter. Hver rød kurve er en cyklus-kant.</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Generelt</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Tærskelværdier</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Regler</value></data>

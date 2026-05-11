@@ -27,7 +27,7 @@ internal sealed class ServiceContainerAdapter : IServiceContainer
         => new ServiceScopeAdapter(_provider.CreateScope());
 }
 
-internal sealed class ServiceScopeAdapter : IServiceScope
+internal sealed class ServiceScopeAdapter : WpfHexEditor.SDK.Contracts.IServiceScope
 {
     private readonly Microsoft.Extensions.DependencyInjection.IServiceScope _inner;
 

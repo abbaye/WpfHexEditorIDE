@@ -609,6 +609,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Analýza kódu selhala: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Snímek analýzy uložen.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Snímek analýzy vymazán.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Otevřít dokumentaci pravidla…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Cykly projektů</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Nebyly zjištěny žádné cykly projektů.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Tětivový diagram cyklů závislostí mezi projekty. Každá červená křivka je hrana cyklu.</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Obecné</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Prahové hodnoty</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Pravidla</value></data>

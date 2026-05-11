@@ -1427,6 +1427,10 @@
   <data name="CodeAnalysis_Tab_Title"          xml:space="preserve"><value>Code Analysis</value></data>
   <data name="CodeAnalysis_Tab_ToolTip"        xml:space="preserve"><value>Code Analysis Report</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared"   xml:space="preserve"><value>[Code Analysis] Snapshot cleared.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Open rule documentation…</value></data>
+  <data name="CodeAnalysis_Cycles_Title"             xml:space="preserve"><value>Project cycles</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound"         xml:space="preserve"><value>No project cycles detected.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip"           xml:space="preserve"><value>Chord diagram of dependency cycles between projects. Each red curve is a cycle edge.</value></data>
   <data name="PluginCmd_New_Description"   xml:space="preserve"><value>Scaffold a new plugin project from the official template.</value></data>
   <data name="PluginCmd_New_Usage"         xml:space="preserve"><value>plugin-new &lt;name&gt; [author] [--path &lt;folder&gt;]</value></data>
   <data name="PluginCmd_New_NameRequired"  xml:space="preserve"><value>Plugin name is required.</value></data>

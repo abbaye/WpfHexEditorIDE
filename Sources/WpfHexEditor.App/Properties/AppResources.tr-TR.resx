@@ -953,6 +953,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Kod analizi başarısız: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Analiz anlık görüntüsü kaydedildi.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Analiz anlık görüntüsü temizlendi.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Kural belgelerini aç…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Proje döngüleri</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Proje döngüsü algılanmadı.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Projeler arası bağımlılık döngülerinin akor diyagramı. Her kırmızı eğri bir döngü kenarıdır.</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Genel</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Eşikler</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Kurallar</value></data>

@@ -953,6 +953,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>代码分析失败: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>分析快照已保存。</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>分析快照已清除。</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>打开规则文档…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>项目循环依赖</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>未检测到项目循环依赖。</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>项目间依赖循环的弦图。每条红色曲线代表一条循环边。</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>常规</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>阈值</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>规则</value></data>

@@ -649,6 +649,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Analisis kode gagal: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Snapshot analisis disimpan.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Snapshot analisis dihapus.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Buka dokumentasi aturan…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Siklus proyek</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Tidak ada siklus proyek terdeteksi.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Diagram tali dari siklus dependensi antar proyek. Setiap kurva merah adalah tepi siklus.</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Umum</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Ambang batas</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Aturan</value></data>

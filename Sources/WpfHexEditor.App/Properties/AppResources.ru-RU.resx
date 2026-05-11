@@ -953,6 +953,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Анализ кода не выполнен: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Снимок анализа сохранён.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Снимок анализа очищен.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Открыть документацию правила…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Циклы проектов</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Циклы проектов не обнаружены.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Хордовая диаграмма циклов зависимостей между проектами. Каждая красная кривая — ребро цикла.</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Общие</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Пороговые значения</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Правила</value></data>

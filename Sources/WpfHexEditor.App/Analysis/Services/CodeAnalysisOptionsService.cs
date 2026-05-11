@@ -33,6 +33,13 @@ internal sealed class CodeAnalysisOptionsService
                 if (!_options.Rules.Any(r => r.RuleId == defaultRule.RuleId))
                     _options.Rules.Add(defaultRule);
             }
+
+            // Phase 11 migration — older options have no Category. The enum
+            // default (Complexity) collides with naming rules, so back-fill
+            // from RuleId.
+            foreach (var r in _options.Rules)
+                if (r.Category == RuleCategory.Complexity && !RuleCategoryHelper.FromRuleId(r.RuleId).Equals(RuleCategory.Complexity))
+                    r.Category = RuleCategoryHelper.FromRuleId(r.RuleId);
         }
         catch
         {

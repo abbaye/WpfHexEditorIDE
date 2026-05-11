@@ -71,7 +71,15 @@ public sealed class CodeAnalysisOptions
     public bool IsRuleEnabled(string ruleId)
         => GetRule(ruleId)?.IsEnabled == true;
 
-    public static List<RuleConfiguration> DefaultRules() =>
+    public static List<RuleConfiguration> DefaultRules()
+    {
+        var rules = BuildDefaultRules();
+        foreach (var r in rules)
+            r.Category = RuleCategoryHelper.FromRuleId(r.RuleId);
+        return rules;
+    }
+
+    private static List<RuleConfiguration> BuildDefaultRules() =>
     [
         new() { RuleId = "WH0001", Description = "Cyclomatic complexity exceeded",  Severity = RuleSeverity.Warning },
         new() { RuleId = "WH0002", Description = "Cognitive complexity exceeded",   Severity = RuleSeverity.Warning },

@@ -437,7 +437,6 @@ public partial class MainWindow
                 UIFactory        = uiControlFactory,
                 TabGroups        = tabGroupService,
                 DebugVisualizers = new WpfHexEditor.App.Services.DebugVisualizerRegistry(),
-                Services         = _serviceProvider.GetService<WpfHexEditor.SDK.Contracts.IServiceContainer>(),
             };
 
             // Attach TabGroupService to the engine (available after DockHost.Layout is set).

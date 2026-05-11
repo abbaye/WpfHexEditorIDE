@@ -132,6 +132,14 @@ internal sealed class AnalysisContextMenuBuilder
         AddSeparator(menu);
         Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyAsMarkdown,        () => AnalysisContextMenuActions.Copy(AnalysisContextMenuActions.FormatIssueAsMarkdown(issue)));
         Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyIssueId,           () => AnalysisContextMenuActions.Copy(issue.Id));
+
+        var info = RuleMetadata.Get(issue.Id);
+        if (info is not null)
+        {
+            AddSeparator(menu);
+            Add(menu, AppResources.CodeAnalysis_ContextMenu_OpenRuleHelp,
+                () => AnalysisContextMenuActions.OpenUrl(info.HelpUri));
+        }
         return menu;
     }
 

@@ -953,6 +953,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Analisi del codice non riuscita: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Snapshot di analisi salvato.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Snapshot di analisi cancellato.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Apri la documentazione della regola…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Cicli tra progetti</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Nessun ciclo tra progetti rilevato.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Diagramma a corde dei cicli di dipendenza tra progetti. Ogni curva rossa è un arco del ciclo.</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Generale</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Soglie</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Regole</value></data>

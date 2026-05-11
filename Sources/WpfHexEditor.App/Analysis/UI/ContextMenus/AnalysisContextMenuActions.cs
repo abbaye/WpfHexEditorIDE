@@ -32,6 +32,14 @@ internal static class AnalysisContextMenuActions
         docHost.ActivateAndNavigateTo(filePath, Math.Max(1, line), 1);
     }
 
+    /// <summary>Open a URL in the user's default browser. Silent on failure.</summary>
+    internal static void OpenUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return;
+        try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
+        catch { /* browser missing / URL malformed — never crash the menu */ }
+    }
+
     internal static void RevealInExplorer(string filePath)
     {
         if (string.IsNullOrEmpty(filePath)) return;

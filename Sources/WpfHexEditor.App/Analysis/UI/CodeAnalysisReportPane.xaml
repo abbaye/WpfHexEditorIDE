@@ -492,7 +492,28 @@
                 <!-- ── Coupling ──────────────────────────────────────────── -->
                 <TabItem Header="{DynamicResource CodeAnalysis_Tab_Coupling}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Coupling}">
                     <Grid Margin="8">
-                        <DataGrid ItemsSource="{Binding TopCouplings, Mode=OneWay}"
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Expander Grid.Row="0"
+                                  Header="{DynamicResource CodeAnalysis_Cycles_Title}"
+                                  IsExpanded="True"
+                                  Margin="0,0,0,8">
+                            <Border Padding="4"
+                                    BorderThickness="1"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    CornerRadius="3">
+                                <controls:CyclicDepGraph
+                                    Cycles="{Binding ProjectCycles, Mode=OneWay}"
+                                    Height="240"
+                                    ToolTip="{DynamicResource CodeAnalysis_Cycles_Tooltip}"/>
+                            </Border>
+                        </Expander>
+
+                        <DataGrid Grid.Row="1"
+                                  ItemsSource="{Binding TopCouplings, Mode=OneWay}"
                                   AutoGenerateColumns="False"
                                   IsReadOnly="True"
                                   CanUserReorderColumns="False"

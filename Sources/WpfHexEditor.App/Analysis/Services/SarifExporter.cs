@@ -22,13 +22,7 @@ internal static class SarifExporter
     {
         var rules = report.Diagnostics
             .Select(d => d.Id).Distinct().OrderBy(x => x, StringComparer.Ordinal)
-            .Select(id => new JsonObject
-            {
-                ["id"]   = id,
-                ["name"] = id,
-                ["shortDescription"] = new JsonObject { ["text"] = id },
-                ["defaultConfiguration"] = new JsonObject { ["level"] = "warning" },
-            })
+            .Select(BuildRuleDescriptor)
             .ToArray();
 
         var results = new JsonArray();
@@ -87,6 +81,51 @@ internal static class SarifExporter
         Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
         File.WriteAllText(outputPath, json);
     }
+
+    private static JsonObject BuildRuleDescriptor(string ruleId)
+    {
+        var info = RuleMetadata.Get(ruleId);
+        if (info is null)
+        {
+            return new JsonObject
+            {
+                ["id"]   = ruleId,
+                ["name"] = ruleId,
+                ["shortDescription"]     = new JsonObject { ["text"] = ruleId },
+                ["defaultConfiguration"] = new JsonObject { ["level"] = "warning" },
+            };
+        }
+
+        var tags = new JsonArray();
+        foreach (var t in info.Tags) tags.Add(t);
+
+        return new JsonObject
+        {
+            ["id"]   = ruleId,
+            ["name"] = info.Name,
+            ["shortDescription"] = new JsonObject { ["text"] = info.ShortDescription },
+            ["fullDescription"]  = new JsonObject { ["text"] = info.FullDescription },
+            ["helpUri"]          = info.HelpUri,
+            ["help"] = new JsonObject
+            {
+                ["text"]     = info.FullDescription,
+                ["markdown"] = $"**{info.Name}** — {info.ShortDescription}\n\n{info.FullDescription}\n\n[Documentation]({info.HelpUri})",
+            },
+            ["defaultConfiguration"] = new JsonObject { ["level"] = ToSarifLevel(SeverityFor(info.DefaultLevel)) },
+            ["properties"]           = new JsonObject
+            {
+                ["category"] = RuleCategoryHelper.FromRuleId(ruleId).ToString(),
+                ["tags"]     = tags,
+            },
+        };
+    }
+
+    private static Severity SeverityFor(RuleSeverity rs) => rs switch
+    {
+        RuleSeverity.Error   => Severity.Error,
+        RuleSeverity.Warning => Severity.Warning,
+        _                    => Severity.Info,
+    };
 
     private static string ToSarifLevel(Severity s) => s switch
     {

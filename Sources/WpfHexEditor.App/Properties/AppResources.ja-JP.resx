@@ -953,6 +953,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>コード分析が失敗しました: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>分析スナップショットを保存しました。</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>分析スナップショットをクリアしました。</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>ルールのドキュメントを開く…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>プロジェクトの循環</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>プロジェクトの循環は検出されませんでした。</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>プロジェクト間の依存循環のコード図。赤い曲線が各サイクルの辺です。</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>全般</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>しきい値</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>ルール</value></data>

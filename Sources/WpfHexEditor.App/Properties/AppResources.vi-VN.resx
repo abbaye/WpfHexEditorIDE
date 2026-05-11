@@ -649,6 +649,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Phân tích mã thất bại: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Đã lưu ảnh chụp phân tích.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Đã xóa ảnh chụp phân tích.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Mở tài liệu quy tắc…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Vòng lặp dự án</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Không phát hiện vòng lặp dự án nào.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Sơ đồ dây của các vòng phụ thuộc giữa các dự án. Mỗi đường cong đỏ là cạnh của một vòng.</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Chung</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Ngưỡng</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Quy tắc</value></data>

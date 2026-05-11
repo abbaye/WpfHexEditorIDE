@@ -953,6 +953,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Kodanalys misslyckades: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Analysögonblicksbild sparad.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Analysögonblicksbild rensad.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Öppna regeldokumentation…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Projektcykler</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Inga projektcykler upptäcktes.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Snörediagram över beroendecykler mellan projekt. Varje röd kurva är en cykelkant.</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Allmänt</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Tröskelvärden</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Regler</value></data>

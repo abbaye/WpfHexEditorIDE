@@ -649,6 +649,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>A kódelemzés sikertelen: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Elemzési pillanatkép mentve.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Elemzési pillanatkép törölve.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Szabály dokumentációjának megnyitása…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Projekt-ciklusok</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Nem észlelhetők projekt-ciklusok.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>A projektek közötti függőségi ciklusok húrdiagramja. Minden piros görbe egy ciklus-él.</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Általános</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Küszöbértékek</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Szabályok</value></data>

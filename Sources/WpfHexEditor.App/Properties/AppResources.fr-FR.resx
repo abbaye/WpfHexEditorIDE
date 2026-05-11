@@ -940,6 +940,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed"     xml:space="preserve"><value>Echec de l'analyse du code : {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved"           xml:space="preserve"><value>Instantane d'analyse sauvegarde.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared"         xml:space="preserve"><value>Instantane d'analyse efface.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Ouvrir la documentation de la règle…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Cycles entre projets</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Aucun cycle entre projets détecté.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Diagramme en cordes des cycles de dépendances entre projets. Chaque courbe rouge est un arc de cycle.</value></data>
   <data name="CodeAnalysis_Options_General"          xml:space="preserve"><value>General</value></data>
   <data name="CodeAnalysis_Options_Thresholds"       xml:space="preserve"><value>Seuils</value></data>
   <data name="CodeAnalysis_Options_Rules"            xml:space="preserve"><value>Regles</value></data>

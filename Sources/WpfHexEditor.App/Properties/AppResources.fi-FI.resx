@@ -649,6 +649,10 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Koodianalyysi epäonnistui: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Analyysitilannevedos tallennettu.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Analyysitilannevedos tyhjennetty.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Avaa säännön dokumentaatio…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Projektisyklit</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Projektisyklejä ei havaittu.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Hordeakaavio projektien välisistä riippuvuussykleistä. Jokainen punainen käyrä on syklin reuna.</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Yleinen</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Kynnysarvot</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Säännöt</value></data>

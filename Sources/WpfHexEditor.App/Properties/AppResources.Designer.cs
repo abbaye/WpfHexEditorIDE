@@ -6271,6 +6271,10 @@ namespace WpfHexEditor.App.Properties {
         internal static string CodeAnalysis_Status_Failed    { get { return ResourceManager.GetString("CodeAnalysis_Status_Failed",    resourceCulture); } }
         internal static string CodeAnalysis_Tab_Title        { get { return ResourceManager.GetString("CodeAnalysis_Tab_Title",        resourceCulture); } }
         internal static string CodeAnalysis_Tab_ToolTip      { get { return ResourceManager.GetString("CodeAnalysis_Tab_ToolTip",      resourceCulture); } }
+        internal static string CodeAnalysis_ContextMenu_OpenRuleHelp { get { return ResourceManager.GetString("CodeAnalysis_ContextMenu_OpenRuleHelp", resourceCulture); } }
+        internal static string CodeAnalysis_Cycles_Title             { get { return ResourceManager.GetString("CodeAnalysis_Cycles_Title",             resourceCulture); } }
+        internal static string CodeAnalysis_Cycles_NoneFound         { get { return ResourceManager.GetString("CodeAnalysis_Cycles_NoneFound",         resourceCulture); } }
+        internal static string CodeAnalysis_Cycles_Tooltip           { get { return ResourceManager.GetString("CodeAnalysis_Cycles_Tooltip",           resourceCulture); } }
 
         internal static string PluginCmd_New_Description    { get { return ResourceManager.GetString("PluginCmd_New_Description",    resourceCulture); } }
         internal static string PluginCmd_New_Usage          { get { return ResourceManager.GetString("PluginCmd_New_Usage",          resourceCulture); } }
