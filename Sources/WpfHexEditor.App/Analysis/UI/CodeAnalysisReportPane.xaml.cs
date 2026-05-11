@@ -40,10 +40,13 @@ public partial class CodeAnalysisReportPane : UserControl
 
         // Re-apply filter/sort + drop the snippet cache whenever a fresh report
         // arrives. DuplicationSummaryText is raised at the end of SetReport so
-        // it's a stable, allocation-free signal. Stored as a field so we can
-        // unsubscribe on Unloaded — VM outlives this control.
-        _vm.PropertyChanged += OnVmPropertyChanged;
-        Unloaded += (_, _) => _vm.PropertyChanged -= OnVmPropertyChanged;
+        // it's a stable, allocation-free signal. VM outlives this control, so
+        // we unsubscribe on Unloaded — but a docked pane fires Unloaded on
+        // tab-switch and Loaded again on tab-return, so re-subscribe there
+        // (idempotently — `_vmSubscribed` guards against double-add).
+        Loaded   += (_, _) => SubscribeVm();
+        Unloaded += (_, _) => UnsubscribeVm();
+        SubscribeVm();
 
         // Phase 7 — keyboard shortcuts (F5 = re-run, Ctrl+F = focus search)
         InputBindings.Add(new KeyBinding(
@@ -52,6 +55,22 @@ public partial class CodeAnalysisReportPane : UserControl
         InputBindings.Add(new KeyBinding(
             new RelayCmd(_ => GlobalSearchBox.Focus()),
             new KeyGesture(Key.F, ModifierKeys.Control)));
+    }
+
+    private bool _vmSubscribed;
+
+    private void SubscribeVm()
+    {
+        if (_vmSubscribed) return;
+        _vm.PropertyChanged += OnVmPropertyChanged;
+        _vmSubscribed = true;
+    }
+
+    private void UnsubscribeVm()
+    {
+        if (!_vmSubscribed) return;
+        _vm.PropertyChanged -= OnVmPropertyChanged;
+        _vmSubscribed = false;
     }
 
     private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

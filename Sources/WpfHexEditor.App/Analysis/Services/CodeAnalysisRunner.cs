@@ -80,7 +80,9 @@ internal sealed class CodeAnalysisRunner
 
         // Compilations are expensive to build (Roslyn reads + resolves refs); cache them
         // so the dead-code pass below reuses the same instance instead of rebuilding.
-        var compilations = new Dictionary<string, CSharpCompilation>(StringComparer.Ordinal);
+        // Keyed by projPath (case-insensitive) — projName alone collides for sibling
+        // projects sharing a name across folders (e.g. multiple Tests.csproj).
+        var compilations = new Dictionary<string, CSharpCompilation>(StringComparer.OrdinalIgnoreCase);
 
         Report(progress, "Analyzing volume + complexity…", 15);
 
@@ -94,7 +96,7 @@ internal sealed class CodeAnalysisRunner
                 trees,
                 GetBasicReferences(),
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-            compilations[projName] = compilation;
+            compilations[projPath] = compilation;
 
             // Pre-compute NOC map once for the whole project — avoids O(T²) per-type walks
             var nocMap = VolumeMetricsCollector.BuildNocMap(compilation);
@@ -374,10 +376,10 @@ internal sealed class CodeAnalysisRunner
 
         Report(progress, "Detecting dead code…", 82);
         var allDeadSymbols = new List<DeadSymbol>();
-        foreach (var (projName, _, trees) in byProject)
+        foreach (var (projName, projPath, trees) in byProject)
         {
             // Reuse the compilation built during the volume/complexity pass.
-            if (!compilations.TryGetValue(projName, out var compilation))
+            if (!compilations.TryGetValue(projPath, out var compilation))
                 compilation = CSharpCompilation.Create(projName, trees, GetBasicReferences(),
                     new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
             var dead = DeadCodeDetector.Detect(compilation);
