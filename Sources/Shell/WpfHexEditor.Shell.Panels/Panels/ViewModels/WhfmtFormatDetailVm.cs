@@ -15,6 +15,7 @@ using System.Linq;
 using System.Windows.Input;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.Contracts;
+using WpfHexEditor.Core.Definitions.Metadata;
 using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.Editor.Core;
@@ -50,6 +51,12 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     private IReadOnlyList<string>               _aiVulnerabilities     = [];
     private int                                 _assertionCount;
     private int                                 _aiHintCount;
+    // Piste A — documentary fields surfaced via Format*Extensions
+    private IReadOnlyList<SoftwareReference>    _softwareDisplay       = [];
+    private IReadOnlyList<string>               _useCasesDisplay       = [];
+    private IReadOnlyList<FormatRelationship>   _relationshipsDisplay  = [];
+    private string                              _navigationStructure   = string.Empty;
+    private string                              _navigationNotes       = string.Empty;
 
     // ------------------------------------------------------------------
     // Display properties
@@ -92,6 +99,16 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     public IReadOnlyList<string> AiVulnerabilities  { get => _aiVulnerabilities; set => SetField(ref _aiVulnerabilities, value); }
     public int  AiHintCount { get => _aiHintCount; set => SetField(ref _aiHintCount, value); }
     public bool HasAiHints  => _aiHintCount > 0;
+
+    // Piste A — Documentary tab (Software / UseCases / Relationships / Navigation)
+    public IReadOnlyList<SoftwareReference>  SoftwareDisplay      { get => _softwareDisplay;      set => SetField(ref _softwareDisplay, value); }
+    public IReadOnlyList<string>             UseCasesDisplay      { get => _useCasesDisplay;      set => SetField(ref _useCasesDisplay, value); }
+    public IReadOnlyList<FormatRelationship> RelationshipsDisplay { get => _relationshipsDisplay; set => SetField(ref _relationshipsDisplay, value); }
+    public string                            NavigationStructure  { get => _navigationStructure;  set => SetField(ref _navigationStructure, value); }
+    public string                            NavigationNotes      { get => _navigationNotes;      set => SetField(ref _navigationNotes, value); }
+    public bool HasDocumentation =>
+        _softwareDisplay.Count > 0 || _useCasesDisplay.Count > 0 ||
+        _relationshipsDisplay.Count > 0 || !string.IsNullOrEmpty(_navigationStructure);
 
     // ------------------------------------------------------------------
     // Commands (set by the parent ViewModel after construction)
@@ -218,9 +235,32 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
                 AiHintCount           = 0;
             }
 
+            // Piste A — documentary fields from the v3 extension methods.
+            // The embedded catalog can resolve by name; user-loaded formats won't
+            // have an EmbeddedFormatEntry and are skipped (empty lists).
+            var entry = embCatalog.Query().WithName(item.Name).First();
+            if (entry is not null)
+            {
+                SoftwareDisplay      = entry.GetSoftware(embCatalog);
+                UseCasesDisplay      = entry.GetUseCases(embCatalog);
+                RelationshipsDisplay = entry.GetFormatRelationships(embCatalog);
+                var nav = entry.GetNavigationOverview(embCatalog);
+                NavigationStructure  = nav?.Structure is { Count: > 0 } s ? string.Join(" → ", s) : string.Empty;
+                NavigationNotes      = nav?.Notes ?? string.Empty;
+            }
+            else
+            {
+                SoftwareDisplay      = [];
+                UseCasesDisplay      = [];
+                RelationshipsDisplay = [];
+                NavigationStructure  = string.Empty;
+                NavigationNotes      = string.Empty;
+            }
+
             OnPropertyChanged(nameof(HasReferences));
             OnPropertyChanged(nameof(HasAssertions));
             OnPropertyChanged(nameof(HasAiHints));
+            OnPropertyChanged(nameof(HasDocumentation));
         }
     }
 
@@ -281,9 +321,15 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
         AiAnalysisContext    = string.Empty;
         AiVulnerabilities    = [];
         AiHintCount          = 0;
+        SoftwareDisplay      = [];
+        UseCasesDisplay      = [];
+        RelationshipsDisplay = [];
+        NavigationStructure  = string.Empty;
+        NavigationNotes      = string.Empty;
         OnPropertyChanged(nameof(HasReferences));
         OnPropertyChanged(nameof(HasAssertions));
         OnPropertyChanged(nameof(HasAiHints));
+        OnPropertyChanged(nameof(HasDocumentation));
     }
 }
 

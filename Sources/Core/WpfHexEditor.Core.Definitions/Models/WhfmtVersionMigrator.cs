@@ -67,10 +67,13 @@ public static class WhfmtVersionMigrator
         ArgumentNullException.ThrowIfNull(whfmtJson);
         if (!HasAnyLegacyField(whfmtJson)) return whfmtJson;
 
-        var root = ParseToNode(whfmtJson);
+        // ParseToNode filters out any PascalCase property that collides with a
+        // camelCase variant in the source. That filtering is itself a meaningful
+        // change, so we capture it via the flag returned by the helper.
+        var root = ParseToNode(whfmtJson, out bool filteredCaseCollision);
         if (root is not JsonObject obj) return whfmtJson;
 
-        bool changed = false;
+        bool changed = filteredCaseCollision;
         changed |= RenameKeys(obj, s_rootRenames);
 
         if (obj["detection"] is JsonObject det)
@@ -90,30 +93,100 @@ public static class WhfmtVersionMigrator
     {
         if (!HasAnyLegacyField(whfmtJson)) return Array.Empty<string>();
 
-        var root = ParseToNode(whfmtJson);
-        if (root is not JsonObject obj) return Array.Empty<string>();
+        // DryRun reports against the raw document (pre-filter) so case-collisions
+        // are visible as "dropped" entries.
+        using var doc = JsonDocument.Parse(whfmtJson, WhfmtJsonOptions.Jsonc);
+        if (doc.RootElement.ValueKind != JsonValueKind.Object) return Array.Empty<string>();
 
+        var rootKeys = CollectKeys(doc.RootElement);
         var report = new List<string>();
-        AppendPlan(obj, s_rootRenames, "root", report);
-        if (obj["detection"] is JsonObject det)
-            AppendPlan(det, s_detectionRenames, "detection", report);
+        AppendPlanFromKeySet(rootKeys, s_rootRenames, "root", report);
+
+        if (doc.RootElement.TryGetProperty("detection", out var det) && det.ValueKind == JsonValueKind.Object)
+            AppendPlanFromKeySet(CollectKeys(det), s_detectionRenames, "detection", report);
+
         return report;
+    }
+
+    private static HashSet<string> CollectKeys(JsonElement obj)
+    {
+        var set = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var p in obj.EnumerateObject()) set.Add(p.Name);
+        return set;
+    }
+
+    private static void AppendPlanFromKeySet(
+        HashSet<string> keys,
+        IReadOnlyDictionary<string, string> renames,
+        string scope,
+        List<string> report)
+    {
+        foreach (var (from, to) in renames)
+        {
+            if (!keys.Contains(from)) continue;
+            report.Add(keys.Contains(to)
+                ? $"{scope}: {from} dropped (camelCase '{to}' already present)"
+                : $"{scope}: {from} → {to}");
+        }
     }
 
     // ---- helpers ----------------------------------------------------------
 
-    private static JsonNode? ParseToNode(string json)
+    private static JsonNode? ParseToNode(string json, out bool filteredCaseCollision)
     {
-        // JsonNode.Parse(string) does not consume JsonDocumentOptions, so we
-        // route through JsonDocument (which strips comments + trailing commas)
-        // and re-emit strict JSON into a stream that JsonNode reads directly.
         using var doc = JsonDocument.Parse(json, WhfmtJsonOptions.Jsonc);
         using var ms  = new MemoryStream();
         using (var writer = new Utf8JsonWriter(ms))
-            doc.RootElement.WriteTo(writer);
+            filteredCaseCollision = WriteWithoutCaseCollisions(doc.RootElement, writer);
         ms.Position = 0;
         return JsonNode.Parse(ms);
     }
+
+    /// <summary>
+    /// Re-emits <paramref name="root"/> while skipping any root object property
+    /// whose lowercased name collides with another property already written
+    /// (e.g. "Software" when "software" already came through). The camelCase
+    /// form (first char lowercase) is preferred. Returns true when at least one
+    /// property was skipped.
+    /// </summary>
+    private static bool WriteWithoutCaseCollisions(JsonElement root, Utf8JsonWriter writer)
+    {
+        if (root.ValueKind != JsonValueKind.Object) { root.WriteTo(writer); return false; }
+
+        // Identify case-collision groups. Key = lowercased name; value = preferred property name to keep.
+        // Preference rule: camelCase (first char lowercase) wins over PascalCase (first char uppercase).
+        var preferred = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var p in root.EnumerateObject())
+        {
+            var lower = p.Name.ToLowerInvariant();
+            if (preferred.TryGetValue(lower, out var existing))
+            {
+                if (StartsLower(p.Name) && !StartsLower(existing))
+                    preferred[lower] = p.Name;
+            }
+            else
+            {
+                preferred[lower] = p.Name;
+            }
+        }
+
+        writer.WriteStartObject();
+        bool skipped = false;
+        var written = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var p in root.EnumerateObject())
+        {
+            var lower = p.Name.ToLowerInvariant();
+            if (preferred[lower] != p.Name) { skipped = true; continue; }
+            if (!written.Add(lower))        { skipped = true; continue; }
+            writer.WritePropertyName(p.Name);
+            p.Value.WriteTo(writer);
+        }
+        writer.WriteEndObject();
+        return skipped;
+    }
+
+    private static bool StartsLower(string s)
+        => s.Length > 0 && s[0] >= 'a' && s[0] <= 'z';
 
     private static bool RenameKeys(JsonObject obj, IReadOnlyDictionary<string, string> renames)
     {
@@ -134,21 +207,6 @@ public static class WhfmtVersionMigrator
             changed = true;
         }
         return changed;
-    }
-
-    private static void AppendPlan(
-        JsonObject obj,
-        IReadOnlyDictionary<string, string> renames,
-        string scope,
-        List<string> report)
-    {
-        foreach (var (from, to) in renames)
-        {
-            if (!obj.ContainsKey(from)) continue;
-            report.Add(obj.ContainsKey(to)
-                ? $"{scope}: {from} dropped (camelCase '{to}' already present)"
-                : $"{scope}: {from} → {to}");
-        }
     }
 
     private static bool HasAnyLegacyField(string json)

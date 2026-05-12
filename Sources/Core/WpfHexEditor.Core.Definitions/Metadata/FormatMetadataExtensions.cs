@@ -351,7 +351,10 @@ public static class FormatMetadataExtensions
 
     internal static TechnicalDetails? ParseTechnicalDetails(JsonElement root)
     {
-        if (!root.TryGetProperty("TechnicalDetails", out var td)) return null;
+        // Accept both v3 canonical "technicalDetails" and legacy PascalCase "TechnicalDetails"
+        // so this reader works whether the caller went through GetJson (raw) or GetJsonV3 (migrated).
+        if (!root.TryGetProperty("technicalDetails", out var td) &&
+            !root.TryGetProperty("TechnicalDetails", out td)) return null;
         bool? supportsEncryption = td.TryGetProperty("supportsEncryption", out var se)
             ? se.ValueKind == JsonValueKind.True : null;
         return new TechnicalDetails(

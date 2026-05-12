@@ -120,6 +120,21 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         return json;
     }
 
+    /// <summary>
+    /// Returns the v3-normalized JSON for the given .whfmt resource — runs the
+    /// raw JSON through <see cref="WhfmtVersionMigrator.Migrate"/> so callers
+    /// see canonical camelCase root keys. Falls back to the raw JSON on
+    /// migration errors (catalog entries with duplicate-case property collisions
+    /// are kept as-is and surfaced to whfmt-guard for cleanup).
+    /// </summary>
+    public string GetJsonV3(string resourceKey)
+    {
+        var raw = GetJson(resourceKey);
+        if (!resourceKey.EndsWith(".whfmt", StringComparison.OrdinalIgnoreCase)) return raw;
+        try { return WhfmtVersionMigrator.Migrate(raw); }
+        catch { return raw; }
+    }
+
     /// <inheritdoc/>
     public EmbeddedFormatEntry? GetByExtension(string extension)
     {
@@ -224,42 +239,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
 
         foreach (var entry in GetAll())
         {
-            if (entry.Signatures is not { Count: > 0 }) continue;
-
-            // P3: minFileSize gate — when set, the file header must be at least that big.
-            if (entry.MinFileSize > 0 && header.Length < entry.MinFileSize) continue;
-
-            // P3: matchMode controls how individual signature hits accumulate into a score.
-            //   "all"  — every signature must match; score is the sum of weights.
-            //   "any"  — first matching signature wins (its weight is the score).
-            //   "best" — default; sum of weights of every matching signature.
-            int matched = 0;
-            double score = 0;
-            foreach (var sig in entry.Signatures)
-            {
-                // Guard: signature value must be valid hex (even-length). Skip malformed
-                // catalog entries rather than crashing the entire detection pass.
-                if (sig.Value.Length == 0 || (sig.Value.Length & 1) != 0) continue;
-                byte[] bytes;
-                try { bytes = Convert.FromHexString(sig.Value); }
-                catch (FormatException) { continue; }
-
-                if (sig.Offset + bytes.Length > header.Length) continue;
-                if (header.Slice(sig.Offset, bytes.Length).SequenceEqual(bytes))
-                {
-                    matched++;
-                    score += sig.Weight;
-                    if (entry.MatchMode.Equals("any", StringComparison.OrdinalIgnoreCase)) break;
-                }
-            }
-
-            if (matched == 0) continue;
-            if (entry.MatchMode.Equals("all", StringComparison.OrdinalIgnoreCase) &&
-                matched != entry.Signatures.Count) continue;
-
-            // P3: MinimumScore gate — skip entries that didn't reach their declared threshold.
-            if (entry.MinimumScore > 0 && score < entry.MinimumScore) continue;
-
+            var score = Matching.FormatMatcher.ScoreEntry(entry, header);
             if (score > bestScore) { bestScore = score; best = entry; }
         }
         return bestScore > 0 ? best : null;
