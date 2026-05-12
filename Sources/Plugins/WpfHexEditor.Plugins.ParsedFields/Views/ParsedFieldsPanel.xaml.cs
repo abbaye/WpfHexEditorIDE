@@ -15,6 +15,9 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.Definitions.Metadata;
+using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.ViewModels;
@@ -261,9 +264,45 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         public void SetEnrichedFormat(FormatDefinition? format)
         {
             _enrichedVm.CurrentFormat = format;
+            // Piste A — surface the v3 documentary fields (Navigation/Inspector/Forensic.Notes)
+            // that aren't carried by the legacy FormatDefinition model. Resolved by name
+            // against the embedded catalog; user-loaded formats fall through silently.
+            EnrichV3Fields(format?.FormatName);
             RemoveEnrichedFields();
             if (format != null)
                 InjectEnrichedFields();
+        }
+
+        private void EnrichV3Fields(string? formatName)
+        {
+            if (string.IsNullOrEmpty(formatName))
+            {
+                _enrichedVm.NavigationStructure = string.Empty;
+                _enrichedVm.NavigationNotes     = string.Empty;
+                _enrichedVm.InspectorBadge      = string.Empty;
+                _enrichedVm.ForensicNotes       = string.Empty;
+                return;
+            }
+
+            var catalog = EmbeddedFormatCatalog.Instance;
+            var entry   = catalog.Query().WithName(formatName).First();
+            if (entry is null)
+            {
+                _enrichedVm.NavigationStructure = string.Empty;
+                _enrichedVm.NavigationNotes     = string.Empty;
+                _enrichedVm.InspectorBadge      = string.Empty;
+                _enrichedVm.ForensicNotes       = string.Empty;
+                return;
+            }
+
+            var nav = entry.GetNavigationOverview(catalog);
+            _enrichedVm.NavigationStructure = nav?.Structure is { Count: > 0 } s ? string.Join(" → ", s) : string.Empty;
+            _enrichedVm.NavigationNotes     = nav?.Notes ?? string.Empty;
+
+            var hdr = entry.GetInspectorHeader(catalog);
+            _enrichedVm.InspectorBadge      = hdr?.Badge ?? string.Empty;
+
+            _enrichedVm.ForensicNotes       = entry.GetForensicNotes(catalog) ?? string.Empty;
         }
 
         /// <summary>
@@ -334,6 +373,16 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                     if (Uri.TryCreate(u, UriKind.Absolute, out var uri)) return uri.Host;
                     return u.Length > 40 ? u[..37] + "â€¦" : u;
                 })), "ðŸŒ");
+
+            // Piste A — v3 fields from EmbeddedFormatCatalog extensions
+            if (_enrichedVm.HasNavigationStructure)
+                Add("Structure",   _enrichedVm.NavigationStructure, "*", "Ordered top-level sections");
+            if (_enrichedVm.HasNavigationNotes)
+                Add("Nav Notes",   _enrichedVm.NavigationNotes,     "i");
+            if (_enrichedVm.HasInspectorBadge)
+                Add("Badge Field", _enrichedVm.InspectorBadge,      "*", "Variable shown as inspector badge");
+            if (_enrichedVm.HasForensicNotes)
+                Add("Forensic",    _enrichedVm.ForensicNotes,       "!");
 
             // Insert in reverse so they stay in declaration order at the top
             for (int i = fields.Count - 1; i >= 0; i--)

@@ -51,6 +51,11 @@ namespace WpfHexEditor.Core.ViewModels
         private string _signatureHex;
         private string _offsetDisplay;
         private bool _isRequired;
+        // Piste A — v3 extensions surfaced from the embedded catalog.
+        private string _navigationStructure  = string.Empty;
+        private string _navigationNotes      = string.Empty;
+        private string _inspectorBadge       = string.Empty;
+        private string _forensicNotes        = string.Empty;
 
         public EnrichedFormatViewModel()
         {
@@ -252,6 +257,37 @@ namespace WpfHexEditor.Core.ViewModels
         public bool HasDetectionInfo => _currentFormat?.Detection != null &&
                                          !string.IsNullOrEmpty(_currentFormat.Detection.Signature);
 
+        // Piste A — surfaced from the v3 catalog extensions (Navigation/Inspector/Forensic.Notes).
+        // Populated by hosts that have IEmbeddedFormatCatalog access (Core doesn't reference
+        // Core.Definitions to avoid a cycle); the panel populates these via direct setters.
+        public string NavigationStructure
+        {
+            get => _navigationStructure;
+            set { _navigationStructure = value ?? string.Empty; OnPropertyChanged(); OnPropertyChanged(nameof(HasNavigationStructure)); }
+        }
+        public bool HasNavigationStructure => !string.IsNullOrEmpty(_navigationStructure);
+
+        public string NavigationNotes
+        {
+            get => _navigationNotes;
+            set { _navigationNotes = value ?? string.Empty; OnPropertyChanged(); OnPropertyChanged(nameof(HasNavigationNotes)); }
+        }
+        public bool HasNavigationNotes => !string.IsNullOrEmpty(_navigationNotes);
+
+        public string InspectorBadge
+        {
+            get => _inspectorBadge;
+            set { _inspectorBadge = value ?? string.Empty; OnPropertyChanged(); OnPropertyChanged(nameof(HasInspectorBadge)); }
+        }
+        public bool HasInspectorBadge => !string.IsNullOrEmpty(_inspectorBadge);
+
+        public string ForensicNotes
+        {
+            get => _forensicNotes;
+            set { _forensicNotes = value ?? string.Empty; OnPropertyChanged(); OnPropertyChanged(nameof(HasForensicNotes)); }
+        }
+        public bool HasForensicNotes => !string.IsNullOrEmpty(_forensicNotes);
+
         private string FormatSignature(string hex)
         {
             if (string.IsNullOrEmpty(hex))
@@ -347,6 +383,10 @@ namespace WpfHexEditor.Core.ViewModels
             IsPriorityFormat = false;
             SignatureHex = "N/A";
             OffsetDisplay = "N/A";
+            NavigationStructure = string.Empty;
+            NavigationNotes     = string.Empty;
+            InspectorBadge      = string.Empty;
+            ForensicNotes       = string.Empty;
             IsRequired = false;
             OnPropertyChanged(nameof(TechnicalSummary));
             OnPropertyChanged(nameof(HasTechnicalDetails));
