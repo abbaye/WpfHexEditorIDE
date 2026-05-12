@@ -262,28 +262,28 @@ namespace WpfHexEditor.Core.ViewModels
         public string NavigationStructure
         {
             get => _navigationStructure;
-            set { _navigationStructure = value ?? string.Empty; OnPropertyChanged(); OnPropertyChanged(nameof(HasNavigationStructure)); }
+            set => SetField(ref _navigationStructure, value, alsoNotify: nameof(HasNavigationStructure));
         }
         public bool HasNavigationStructure => !string.IsNullOrEmpty(_navigationStructure);
 
         public string NavigationNotes
         {
             get => _navigationNotes;
-            set { _navigationNotes = value ?? string.Empty; OnPropertyChanged(); OnPropertyChanged(nameof(HasNavigationNotes)); }
+            set => SetField(ref _navigationNotes, value, alsoNotify: nameof(HasNavigationNotes));
         }
         public bool HasNavigationNotes => !string.IsNullOrEmpty(_navigationNotes);
 
         public string InspectorBadge
         {
             get => _inspectorBadge;
-            set { _inspectorBadge = value ?? string.Empty; OnPropertyChanged(); OnPropertyChanged(nameof(HasInspectorBadge)); }
+            set => SetField(ref _inspectorBadge, value, alsoNotify: nameof(HasInspectorBadge));
         }
         public bool HasInspectorBadge => !string.IsNullOrEmpty(_inspectorBadge);
 
         public string ForensicNotes
         {
             get => _forensicNotes;
-            set { _forensicNotes = value ?? string.Empty; OnPropertyChanged(); OnPropertyChanged(nameof(HasForensicNotes)); }
+            set => SetField(ref _forensicNotes, value, alsoNotify: nameof(HasForensicNotes));
         }
         public bool HasForensicNotes => !string.IsNullOrEmpty(_forensicNotes);
 

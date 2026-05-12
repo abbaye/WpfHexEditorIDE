@@ -43,6 +43,25 @@ namespace WpfHexEditor.Core.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// String-specialized <see cref="SetField{T}"/>: coerces <see langword="null"/> to
+        /// <see cref="string.Empty"/> before comparing/storing, and notifies the listed
+        /// dependent properties (e.g. computed <c>HasXxx</c>) when the value changed.
+        /// </summary>
+        protected bool SetField(
+            ref string field,
+            string? value,
+            [CallerMemberName] string? name = null,
+            params string[] alsoNotify)
+        {
+            var v = value ?? string.Empty;
+            if (string.Equals(field, v)) return false;
+            field = v;
+            OnPropertyChanged(name);
+            foreach (var dep in alsoNotify) OnPropertyChanged(dep);
+            return true;
+        }
+
         // ── First-load gate ───────────────────────────────────────────────────
 
         private bool _hasLoadedOnce;
