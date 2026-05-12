@@ -4,6 +4,9 @@
 
 `whfmt.Validate` is a **dotnet global tool** that detects file formats and validates them for structural integrity, checksum correctness, and forensic anomalies — all powered by the [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) library with 799 embedded `.whfmt` definitions.
 
+
+> **Full documentation**: [whfmt-Validate-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Tools/whfmt.Validate/whfmt-Validate-guide.md) — API reference, architecture, integration guides, and usage examples.
+
 ---
 
 ## Install
@@ -188,7 +191,7 @@ A self-contained dark-themed HTML report — suitable for CI artifacts or sharin
 
 ## Supported format categories
 
-The tool validates files across **29 categories** and **790+ formats**:
+The tool validates files across **29 categories** and **799 formats**:
 
 | Category | Count | Examples |
 |----------|-------|---------|
@@ -204,7 +207,7 @@ The tool validates files across **29 categories** and **790+ formats**:
 | Firmware | 12 | Intel HEX, SREC, BIN, UF2, EFI |
 | Medical | 20 | DICOM, NIfTI, MINC, Analyze, PAR/REC |
 | Network | 23 | PCAP, PCAPNG, Wireshark, NetFlow, HAR |
-| ... | ... | [790+ total — `whfmt list` for full catalog] |
+| ... | ... | [799 total — `whfmt list` for full catalog] |
 
 ---
 
@@ -237,7 +240,7 @@ The tool validates files across **29 categories** and **790+ formats**:
 
 ## Powered by whfmt.FileFormatCatalog
 
-`whfmt.Validate` depends on [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) — automatically installed by NuGet. The catalog ships 790+ `.whfmt` format definitions as embedded resources, covering magic-byte signatures, checksum rules, structural assertions, and forensic metadata for every supported format.
+`whfmt.Validate` depends on [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) — automatically installed by NuGet. The catalog ships 799 `.whfmt` format definitions as embedded resources, covering magic-byte signatures, checksum rules, structural assertions, and forensic metadata for every supported format.
 
 ---
 

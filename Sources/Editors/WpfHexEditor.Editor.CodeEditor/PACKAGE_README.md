@@ -150,6 +150,16 @@ All bundled inside the package — zero external NuGet dependencies:
 
 ---
 
+## What's New in 0.9.9.0
+
+- **New**: **Phase 9 Inline Code Actions** (Ctrl+. / lightbulb) — `CodeActionRegistry` + 3 mechanical fixers (`WH0032`/`WH0062`/`WH0070`) + Suppress-here, plugged into the existing LSP code-action pipeline.
+- **New**: **Refactor ▶ context menu** + preview dialog + orchestrator (UI1–UI5) — rename, extract method, inline variable, change signature with diff preview.
+- **New**: **Phase 10B Duplication tab redesign** — master/detail layout, side-by-side code preview with whitespace-only diff, severity chips, virtualized DataGrid, 8-item context menu, Markdown export.
+- **New**: **Dynamic Snippets** with variable expansion + user snippet store (#88) — `$VAR$` placeholders resolved at insertion; `~/.wpfcodeeditor/snippets/*.json` user overlay.
+- **New**: **Phase 1 Debugger integration** — Data Tips, Autos, edit-in-place, Run to Cursor, Exception Settings, Attach to Process dialog. `IDebugValueProvider` contract + `DebugValueHintsLayer` overlay.
+- **New**: **+10 UI localizations** — uk-UA, cs-CZ, vi-VN, hu-HU, ro-RO, id-ID, th-TH, el-GR, da-DK, fi-FI — reaching 28 satellite resource locales total.
+- **No public API breaks** — drop-in upgrade from 0.9.8.0.
+
 ## What's New in 0.9.8.0
 
 - **New**: LSP semantic token colorization — richer syntax coloring driven by the language server.

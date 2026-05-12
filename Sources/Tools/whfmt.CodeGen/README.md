@@ -11,7 +11,7 @@ whfmt-codegen generate PNG --namespace My.Parsers --output PngParser.cs
 # Dump a binary file's structure
 whfmt-codegen dump myfile.png
 
-# List all 757 supported binary formats
+# List all 799 supported binary formats
 whfmt-codegen list
 ```
 
@@ -21,11 +21,19 @@ Every `BlockDefinition` in a `.whfmt` file becomes a **typed property**.
 Big-endian fields emit BSwap helpers automatically.  
 `--validate` adds `InvalidSignatureException`, `ChecksumMismatchException`, `TruncatedFileException`.
 
-Powered by **789 binary format definitions** from `whfmt.FileFormatCatalog` (790+ total; 789 binary formats available for code generation — text-format grammars excluded).
+Powered by **789 binary format definitions** from `whfmt.FileFormatCatalog` (790+ total; 799 binary formats available for code generation — text-format grammars excluded).
+
+
+> **Full documentation**: [whfmt-CodeGen-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Tools/whfmt.CodeGen/whfmt-CodeGen-guide.md) — API reference, architecture, integration guides, and usage examples.
 
 ---
 
 ## What's New
+
+### v1.1.2 — Catalog 1.3.2 alignment
+
+- **Catalog bump** to `whfmt.FileFormatCatalog 1.3.2` (Phase B audit + bug fixes, 799 definitions, schema v3 canonical).
+- **No CodeGen API changes** — drop-in upgrade from 1.1.1.
 
 ### v1.1.1 — VB.NET output language
 
@@ -96,7 +104,7 @@ whfmt-codegen dump <file> [options]
 whfmt-codegen list [--search <term>] [--category <name>]
 ```
 
-Lists all 789 binary formats available for code generation grouped by category.
+Lists all 799 binary formats available for code generation grouped by category.
 
 ---
 
@@ -391,7 +399,7 @@ End Namespace
 
 ## Supported Formats (789 binary)
 
-Run `whfmt-codegen list` to browse all 789 binary formats by category. Key formats:
+Run `whfmt-codegen list` to browse all 799 binary formats by category. Key formats:
 
 | Category | Formats |
 |---|---|
@@ -410,7 +418,7 @@ Run `whfmt-codegen list` to browse all 789 binary formats by category. Key forma
 | Disk | VMDK, VHD, QCOW2, ISO... |
 | Network | PCAP, PCAPNG, DNS... |
 
-> **790+ total definitions** in `whfmt.FileFormatCatalog`. 789 binary formats are available for code generation; 33 text-format grammars (C#, Python, Rust, etc.) are excluded from `list` and `generate`.
+> **799 binary definitions** available for code generation in `whfmt.FileFormatCatalog` (schema v3); text-format grammars are excluded from `list` and `generate`.
 
 ---
 
@@ -431,7 +439,7 @@ whfmt.CodeGen (dotnet global tool: whfmt-codegen)
     └── OutputLanguage    — enum: CSharp | CSharpSpan | FSharp | Rust
 ```
 
-Depends on: `whfmt.FileFormatCatalog 1.3.1+` · `System.CommandLine 2.0.0-beta4` — cross-platform net8.0.
+Depends on: `whfmt.FileFormatCatalog 1.3.2+` · `System.CommandLine 2.0.0-beta4` — cross-platform net8.0.
 
 ---
 

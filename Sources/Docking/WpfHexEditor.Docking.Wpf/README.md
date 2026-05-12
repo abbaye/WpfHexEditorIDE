@@ -9,6 +9,24 @@ dotnet add package WpfDocking
 
 ---
 
+## What's New in 0.9.8.0
+
+- **Fix**: `UpdateOverlay` retry chain bounded (was firing on a dispatcher flood at startup); active-panel overlay alignment race fixed.
+- **Fix**: `EagerContentKey` bypasses `LazyContentPlaceholder` for migrated panels (resolves stale-placeholder bug after layout reload).
+- **Fix**: Active-panel overlay misaligned at startup — guarded with `Loaded` retry + sub-pixel rounding (`UseLayoutRounding`).
+- **Threads + Parallel Stacks panels** added (debugger integration) with full 28-locale localization.
+- **WorkspaceFindReplace panel redesigned** (29 keys × 28 locales).
+- **+10 UI localizations** — uk-UA, cs-CZ, vi-VN, hu-HU, ro-RO, id-ID, th-TH, el-GR, da-DK, fi-FI — reaching 28 satellite resource locales total.
+
+## What's New in 0.9.7.0
+
+- Horizontal reorder for docked tool-panel tabs.
+- Tab-switch triple-fire eliminated (perf).
+- Toolbar `StaticResource` labels fix.
+- Phase 5 + 6 full localization wired into all docking strings (17 locales).
+
+---
+
 ## Quick Start
 
 ### 1 — Add the namespace
@@ -104,9 +122,9 @@ All bundled inside the package — zero external NuGet dependencies:
 |---|---|
 | WpfHexEditor.Docking.Wpf | WPF chrome, panels, documents, tab groups, drag-drop |
 | WpfHexEditor.Docking.Core | Platform-agnostic layout engine (no WPF dependency) |
-| WpfHexEditor.Core.Localization | 17-language satellite assemblies (ar-SA, de-DE, es, fr, it, ja, ko, nl, pl, pt-BR, pt-PT, ru, sv, tr, zh-CN, hi-IN, es-419) |
+| WpfHexEditor.Core.Localization | 28-language satellite assemblies |
 
-**Localizations**: ar-SA, de-DE, es-419, es-ES, fr-CA, fr-FR, hi-IN, it-IT, ja-JP, ko-KR, nl-NL, pl-PL, pt-BR, pt-PT, ru-RU, sv-SE, tr-TR, zh-CN
+**Localizations** (28): ar-SA, cs-CZ, da-DK, de-DE, el-GR, es-419, es-ES, fi-FI, fr-CA, fr-FR, hi-IN, hu-HU, id-ID, it-IT, ja-JP, ko-KR, nl-NL, pl-PL, pt-BR, pt-PT, ro-RO, ru-RU, sv-SE, th-TH, tr-TR, uk-UA, vi-VN, zh-CN
 
 ---
 

@@ -12,11 +12,19 @@ Instead of comparing raw bytes, `whfmt.Analysis` understands the *structure* of 
 - **Structural diff** — block-level OnlyInA / OnlyInB / InBoth using MD5 hashes
 - Outputs rich text, JSON, CSV, Markdown, or dark-themed HTML reports
 
-Powered by **789 binary whfmt format definitions** covering Archives, Images, Executables, Documents, Audio, Databases, and more.
+Powered by **799 whfmt format definitions** covering Archives, Images, Executables, Documents, Audio, Databases, and more.
+
+
+> **Full documentation**: [whfmt-Analysis-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Tools/whfmt.Analysis/whfmt-Analysis-guide.md) — API reference, architecture, integration guides, and usage examples.
 
 ---
 
 ## What's New
+
+### v1.1.1 — Catalog 1.3.2 alignment
+
+- **Catalog bump** to `whfmt.FileFormatCatalog 1.3.2` (Phase B audit + 2 bug fixes, 799 definitions, schema v3 canonical).
+- **No Analysis API changes** — drop-in upgrade from 1.1.0.
 
 ### v1.1.0 — Hex diff, checksums, structural diff
 
@@ -193,7 +201,7 @@ whfmt.Analysis — Semantic Binary Diff
 | **MP3** | mpeg_version, bitrate, sample_rate, id3 tags | - |
 | **SQLite** | page_size, schema_format, user_version | change_counter |
 
-All 789 binary catalog formats are supported for raw-byte fallback. Formats with a `diff` block in their .whfmt definition get full semantic key-field comparison.
+All 799 catalog formats are supported for raw-byte fallback. Formats with a `diff` block in their .whfmt definition get full semantic key-field comparison.
 
 ---
 
@@ -231,7 +239,7 @@ whfmt.Analysis
 └── DiffRenderer       — text / JSON / CSV / Markdown / HTML output
 ```
 
-Depends on: `whfmt.FileFormatCatalog 1.3.0+` (zero other dependencies, cross-platform net8.0).
+Depends on: `whfmt.FileFormatCatalog 1.3.2+` (zero other dependencies, cross-platform net8.0).
 
 ---
 

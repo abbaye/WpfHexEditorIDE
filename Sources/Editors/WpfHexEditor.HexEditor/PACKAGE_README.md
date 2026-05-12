@@ -108,7 +108,7 @@ Merge once in `App.xaml` so themes and brushes resolve correctly:
 - Fill selection with value
 
 ### Format Detection
-- 790+ built-in format definitions (.whfmt) — auto-detection on open
+- 799 built-in format definitions (.whfmt) — auto-detection on open
 - Format field overlay — semi-transparent colored blocks over detected structures
 - Syntax coloring driven by format rules
 - Shannon entropy, byte distribution, anomaly detection
@@ -142,6 +142,15 @@ Merge once in `App.xaml` so themes and brushes resolve correctly:
 - `ByteToolTipDisplayMode`, `ByteToolTipDetailLevel`, `MouseWheelSpeed`, `FontSize`, `BytePerLine`, and 30+ more
 
 ---
+
+## What's New in 3.3.1
+
+- **Updated** to `whfmt.FileFormatCatalog 1.3.2` (whfmt v3 GA) — 799 format definitions, runtime expression engine, schema v3 canonical.
+- **Fix**: Split-view focus border hidden when the split is closed (was leaving a stale frame around the empty secondary slot).
+- **Fix**: Breadcrumb bar synced in the secondary pane after layout reload.
+- **Fix**: All mutation types + initial paint + standalone-mode split correctly synced between primary and secondary editors.
+- **Fix**: Module panels now return singleton instances (matches Solution Explorer behaviour — prevents dual-cache stale-placeholder bug).
+- **No public API changes** — drop-in upgrade from 3.3.0.
 
 ## What's New in 3.3.0
 

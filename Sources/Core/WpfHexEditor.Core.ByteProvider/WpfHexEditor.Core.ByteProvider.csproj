@@ -62,6 +62,7 @@
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="\" />
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="WpfHexEditor-Core-ByteProvider-guide.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

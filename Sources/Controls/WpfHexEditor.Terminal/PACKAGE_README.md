@@ -6,6 +6,13 @@ A standalone WPF terminal emulator UserControl for .NET 8.
 dotnet add package WpfTerminal
 ```
 
+## What's New in 0.9.7.1
+
+- **+10 UI localizations** added — uk-UA, cs-CZ, vi-VN, hu-HU, ro-RO, id-ID, th-TH, el-GR, da-DK, fi-FI — reaching 28 satellite resource locales total.
+- **Fix**: missing `Terminal_Tab*` resource keys backfilled across all 10 new language satellites (previous build was missing these strings → English fallback was shown).
+- **Phase 6 localization waves 5 + 13** integrated.
+- **No public API changes** — drop-in upgrade from 0.9.7.0.
+
 ## What's New in 0.9.7.0
 
 - **Fix**: LSP host startup stability — burst-init dispatcher calls downgraded to `Background` priority so shell startup does not block WPF frame rendering.
@@ -70,7 +77,7 @@ All bundled inside the package — zero external NuGet dependencies:
 | WpfHexEditor.Core.Events | Event bus |
 | WpfHexEditor.SDK | Plugin contracts and interfaces |
 
-**Localizations**: ar-SA, de-DE, es-419, es-ES, fr-CA, fr-FR, hi-IN, it-IT, ja-JP, ko-KR, nl-NL, pl-PL, pt-BR, pt-PT, ru-RU, sv-SE, tr-TR, zh-CN
+**Localizations** (28): ar-SA, cs-CZ, da-DK, de-DE, el-GR, es-419, es-ES, fi-FI, fr-CA, fr-FR, hi-IN, hu-HU, id-ID, it-IT, ja-JP, ko-KR, nl-NL, pl-PL, pt-BR, pt-PT, ro-RO, ru-RU, sv-SE, th-TH, tr-TR, uk-UA, vi-VN, zh-CN
 
 ## License
 

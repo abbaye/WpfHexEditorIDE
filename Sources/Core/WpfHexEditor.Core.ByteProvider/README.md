@@ -4,10 +4,24 @@
 
 [![.NET](https://img.shields.io/badge/.NET-net8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![NuGet](https://img.shields.io/nuget/v/WpfHexEditor.Core.ByteProvider?logo=nuget)](https://www.nuget.org/packages/WpfHexEditor.Core.ByteProvider)  
-[![Version](https://img.shields.io/badge/version-1.1.0-blue)](https://www.nuget.org/packages/WpfHexEditor.Core.ByteProvider)
+[![Version](https://img.shields.io/badge/version-1.1.1-blue)](https://www.nuget.org/packages/WpfHexEditor.Core.ByteProvider)
 [![License](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://github.com/abbaye/WpfHexEditorControl/blob/master/LICENSE)
 
+
+> **Full documentation**: [WpfHexEditor-Core-ByteProvider-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Core/WpfHexEditor.Core.ByteProvider/WpfHexEditor-Core-ByteProvider-guide.md) — API reference, architecture, integration guides, and usage examples.
+
 ---
+
+## What's New in 1.1.1
+
+- **Undo/redo unification completed** (issue #107) — `HexEditor` ↔ `CodeEditor` now share a single `UndoEngine` instance through the `IUndoAwareEditor` contract. Drop-in upgrade from 1.1.0.
+- **No public API changes.**
+
+## What's New in 1.1.0
+
+- **`IUndoAwareEditor` contract** + `HexByteUndoEntry` — share the undo engine across `HexEditor` and `CodeEditor`.
+- **`DocumentBuffer` undo wiring** — text edits now participate in the same undo stack as byte edits.
+- **Regression test suite added** — `ByteProvider`, `UndoRedoManager`, `SearchEngine`, `EditsManager`, `ChangesetSnapshot`.
 
 ## Features
 

@@ -6,7 +6,17 @@
 [![NuGet](https://img.shields.io/nuget/v/WpfHexEditor.Core.BinaryAnalysis?logo=nuget)](https://www.nuget.org/packages/WpfHexEditor.Core.BinaryAnalysis)
 [![License](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://github.com/abbaye/WpfHexEditorControl/blob/master/LICENSE)
 
+
+> **Full documentation**: [WpfHexEditor-Core-BinaryAnalysis-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Core/WpfHexEditor.Core.BinaryAnalysis/WpfHexEditor-Core-BinaryAnalysis-guide.md) — API reference, architecture, integration guides, and usage examples.
+
 ---
+
+## What's New in 1.0.1
+
+- **`Title` metadata** added — was missing from the 1.0.0 package, NuGet UI now shows a proper title.
+- **`ViewModelBase`** introduced + LINQ allocation fixes in shared code paths consumed across the WpfHexEditor solution.
+- **Repository reorganized** into group subfolders (no source-level changes — pure path reshuffling).
+- **No public API changes** — drop-in upgrade from 1.0.0.
 
 ## Services
 

@@ -13,11 +13,20 @@ Unlike naive byte-flippers, `whfmt.Fuzz` understands the *structure* of binary f
 - **`FuzzReport`** — field coverage, strategy distribution, and untested fields analysis
 - Weighted random strategy picker ensures coverage of the most dangerous fields first
 
-Powered by **789 binary whfmt format definitions** with dedicated `fuzz` blocks for ZIP, PNG, PE/EXE, PDF, MP3, SQLite, and more.
+Powered by **799 whfmt format definitions** with dedicated `fuzz` blocks for ZIP, PNG, PE/EXE, PDF, MP3, SQLite, and more.
+
+
+> **Full documentation**: [whfmt-Fuzz-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Tools/whfmt.Fuzz/whfmt-Fuzz-guide.md) — API reference, architecture, integration guides, and usage examples.
 
 ---
 
 ## What's New
+
+### v1.1.1 — Catalog 1.3.2 alignment + extended mutations
+
+- **Catalog bump** to `whfmt.FileFormatCatalog 1.3.2` (Phase B audit + 2 bug fixes, 799 definitions, schema v3 canonical).
+- **`FuzzMutation` enum extended** (Lot 4) with `byte_swap` / `truncate` / `duplicate` mutations.
+- **No Fuzz API changes** — drop-in upgrade from 1.1.0.
 
 ### v1.1.0 — Sessions, reports, compound mutations
 
@@ -294,7 +303,7 @@ whfmt.Fuzz
 
 Checksum recomputation: CRC32 (poly 0xEDB88320), MD5, SHA1, SHA256 — all built-in, zero external dependencies.
 
-Depends on: `whfmt.FileFormatCatalog 1.3.0+` — cross-platform net8.0.
+Depends on: `whfmt.FileFormatCatalog 1.3.2+` — cross-platform net8.0.
 
 ---
 

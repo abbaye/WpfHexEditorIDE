@@ -25,8 +25,8 @@ WPFHexaEditor.nupkg
     ├── WpfHexEditor.HexEditor.dll        — HexEditor UserControl, main entry point
     ├── WpfHexEditor.Core.dll             — byte providers, format detection, search, undo/redo
     ├── WpfHexEditor.Core.BinaryAnalysis.dll — cross-platform binary analysis (no WPF)
-    ├── WpfHexEditor.Core.Definitions.dll — 790+ embedded .whfmt format definitions
-    ├── WpfHexEditor.Core.Localization.dll — localized strings (17 languages)
+    ├── WpfHexEditor.Core.Definitions.dll — 799 embedded .whfmt format definitions
+    ├── WpfHexEditor.Core.Localization.dll — localized strings (28 languages)
     ├── WpfHexEditor.Editor.Core.dll      — shared editor abstractions and undo engine
     ├── WpfHexEditor.ColorPicker.dll      — color picker (settings panel)
     ├── WpfHexEditor.HexBox.dll           — hex display rendering control
@@ -49,7 +49,7 @@ Zero external NuGet dependencies. All assemblies are bundled inside the package.
 | `FormatInfo` | Core | Format detection result — Name, Category, Bookmarks, Candidates |
 | `ByteProvider` | Core | Pluggable data source (file, stream, memory) |
 | `UndoEngine` | Editor.Core | Undo/redo engine — `UndoGroup` transactions and coalescence |
-| `EmbeddedFormatCatalog` | Core.Definitions | Lazy-loaded 790+ format definitions, thread-safe singleton |
+| `EmbeddedFormatCatalog` | Core.Definitions | Lazy-loaded 799 format definitions, thread-safe singleton |
 | `DataInspectorService` | Core.BinaryAnalysis | Multi-format byte interpretation (int/float/date/GUID/network) |
 | `DataStatisticsService` | Core.BinaryAnalysis | Shannon entropy, byte distribution, anomaly detection |
 

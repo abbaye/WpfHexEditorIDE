@@ -2,6 +2,20 @@
 
 A modern, full-featured WPF Color Picker UserControl for .NET 8.
 
+
+> **Full documentation**: [WpfColorPicker-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Controls/WpfHexEditor.ColorPicker/WpfColorPicker-guide.md) — API reference, architecture, integration guides, and usage examples.
+
+## What's New in 2.0.2
+
+- **+10 UI localizations** added — uk-UA, cs-CZ, vi-VN, hu-HU, ro-RO, id-ID, th-TH, el-GR, da-DK, fi-FI — reaching 28 satellite resource locales (Phase 6 wave).
+- **Self-contained NuGet localization fix** — subclass resources are now loaded correctly when the package is consumed standalone (Phase 5 fix for the constructor-ordering bug that prevented satellite assemblies from resolving).
+- **`NeutralLanguage=en-US`** declared so `ResourceManager` no longer warns at build time.
+- **No public API changes** — drop-in upgrade from 2.0.1.
+
+## What's New in 2.0.1
+
+- **HSV color wheel + RGB/HSL sliders + opacity + recent colors + eyedropper** — full feature set wired with `DynamicResource` theming so the picker follows the host app's theme.
+
 ## Features
 
 - **HSV Color Wheel** — intuitive hue/saturation selection with value slider

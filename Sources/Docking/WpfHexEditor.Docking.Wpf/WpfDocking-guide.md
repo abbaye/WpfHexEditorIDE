@@ -21,7 +21,7 @@ WpfDocking.nupkg
 └── lib/net8.0-windows/
     ├── WpfHexEditor.Docking.Wpf.dll      — DockControl, panels, documents, drag-drop, chrome
     ├── WpfHexEditor.Docking.Core.dll     — platform-agnostic layout engine (no WPF dependency)
-    └── WpfHexEditor.Core.Localization.dll — localized strings (17 languages)
+    └── WpfHexEditor.Core.Localization.dll — localized strings (28 languages)
 ```
 
 Zero external NuGet dependencies. All assemblies are bundled inside the package.
