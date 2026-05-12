@@ -513,56 +513,66 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel Margin="8,6">
 
-                                <!-- Software (empty ItemsControl renders nothing — no visibility binding needed) -->
-                                <TextBlock Text="Software" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
-                                <ItemsControl ItemsSource="{Binding SoftwareDisplay}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-                                                <TextBlock Text="{Binding Name}" FontSize="10"
-                                                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                                                <TextBlock Text="{Binding Role, StringFormat=' — {0}'}" FontSize="10"
-                                                           Foreground="{DynamicResource SE_MutedBrush}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                <!-- Software -->
+                                <StackPanel Visibility="{Binding HasSoftware, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="Software" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                    <ItemsControl ItemsSource="{Binding SoftwareDisplay}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                                    <TextBlock Text="{Binding Name}" FontSize="10"
+                                                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                                    <TextBlock Text="{Binding Role, StringFormat=' — {0}'}" FontSize="10"
+                                                               Foreground="{DynamicResource SE_MutedBrush}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
 
                                 <!-- Use Cases -->
-                                <TextBlock Text="Use Cases" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
-                                <ItemsControl ItemsSource="{Binding UseCasesDisplay}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding}" FontSize="10" TextWrapping="Wrap" Margin="0,0,0,2"
-                                                       Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                <StackPanel Visibility="{Binding HasUseCases, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="Use Cases" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
+                                    <ItemsControl ItemsSource="{Binding UseCasesDisplay}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}" FontSize="10" TextWrapping="Wrap" Margin="0,0,0,2"
+                                                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
 
                                 <!-- Format Relationships -->
-                                <TextBlock Text="Related Formats" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
-                                <ItemsControl ItemsSource="{Binding RelationshipsDisplay}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-                                                <TextBlock Text="{Binding Format}" FontSize="10" FontWeight="SemiBold"
-                                                           Foreground="{DynamicResource SE_AccentBrush}"/>
-                                                <TextBlock Text="{Binding Relationship, StringFormat=' — {0}'}" FontSize="10" TextWrapping="Wrap"
-                                                           Foreground="{DynamicResource SE_MutedBrush}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                <StackPanel Visibility="{Binding HasRelationships, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="Related Formats" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
+                                    <ItemsControl ItemsSource="{Binding RelationshipsDisplay}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                                    <TextBlock Text="{Binding Format}" FontSize="10" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource SE_AccentBrush}"/>
+                                                    <TextBlock Text="{Binding Relationship, StringFormat=' — {0}'}" FontSize="10" TextWrapping="Wrap"
+                                                               Foreground="{DynamicResource SE_MutedBrush}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
 
                                 <!-- Navigation Structure -->
-                                <TextBlock Text="Structure" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
-                                <TextBlock Text="{Binding NavigationStructure}" FontSize="10" TextWrapping="Wrap"
-                                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                <StackPanel Visibility="{Binding HasNavigationStructure, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="Structure" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
+                                    <TextBlock Text="{Binding NavigationStructure}" FontSize="10" TextWrapping="Wrap"
+                                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                </StackPanel>
 
                                 <!-- Navigation Notes -->
-                                <TextBlock Text="Notes" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
-                                <TextBlock Text="{Binding NavigationNotes}" FontSize="10" TextWrapping="Wrap"
-                                           Foreground="{DynamicResource SE_MutedBrush}"/>
+                                <StackPanel Visibility="{Binding HasNavigationNotes, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="Notes" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
+                                    <TextBlock Text="{Binding NavigationNotes}" FontSize="10" TextWrapping="Wrap"
+                                               Foreground="{DynamicResource SE_MutedBrush}"/>
+                                </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>

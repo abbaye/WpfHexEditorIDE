@@ -160,6 +160,31 @@ function Get-ExprStrings($p) {
     return ,$out
 }
 
+# R10 PowerShell fallback when the C# whfmt-validate binary isn't built. Same
+# heuristic identifier-scan as before but hoisted to module scope (was nested
+# inside the per-target foreach which broke declaration-order under StrictMode).
+function Invoke-R10PowerShellFallback($parsed, $declared, $rel) {
+    $declaredFns = @()
+    if ((Test-Prop $parsed 'functions') -and $parsed.functions) {
+        $declaredFns = Get-PropNames $parsed.functions
+    }
+    $known = [System.Collections.Generic.HashSet[string]]::new($ExprBuiltins)
+    foreach ($n in $declared)    { [void]$known.Add($n) }
+    foreach ($n in $declaredFns) { [void]$known.Add($n) }
+
+    foreach ($expr in (Get-ExprStrings $parsed)) {
+        $stripped = [regex]::Replace($expr.Src, "'(?:[^'\\]|\\.)*'", "''")
+        $stripped = [regex]::Replace($stripped,  '"(?:[^"\\]|\\.)*"', '""')
+        $reported = [System.Collections.Generic.HashSet[string]]::new()
+        foreach ($m in [regex]::Matches($stripped, '(?<![.\w])([A-Za-z_][A-Za-z0-9_]*)')) {
+            $id = $m.Groups[1].Value
+            if ($known.Contains($id)) { continue }
+            if (-not $reported.Add($id)) { continue }
+            Add-Finding 'WARN' 'whfmt-expression-refs' $rel ("{0}: '{1}' not declared in variables{{}} / functions{{}} / builtins" -f $expr.Path, $id)
+        }
+    }
+}
+
 function Read-Whfmt([string]$path) {
     $raw = Get-Content -LiteralPath $path -Raw -Encoding UTF8
     # strip UTF-8 BOM
@@ -365,58 +390,45 @@ foreach ($path in $targets) {
         }
     }
 
-    # R10 — expression identifier references. Two implementations:
-    #   - C# binary path: full AST walk via WhfmtExpressionValidator (R10-000…R10-003).
-    #   - PowerShell fallback: lightweight identifier-scan when the binary isn't built.
-    if ($WhfmtCli) {
-        try {
-            # whfmt lint-expressions --json <file>
-            $cliArgs = @('lint-expressions', '--json', $path)
-            if ($WhfmtCli -like '*.dll') {
-                $output = & dotnet $WhfmtCli @cliArgs 2>&1
-            } else {
-                $output = & $WhfmtCli @cliArgs 2>&1
-            }
-            foreach ($line in @($output)) {
-                $text = [string]$line
-                if (-not $text.StartsWith('{')) { continue }   # skip stderr garbage
-                try {
-                    $obj = ConvertFrom-Json -InputObject $text -ErrorAction Stop
-                    $sev = if ($obj.severity -eq 'Error') { 'WARN' } else { 'WARN' }  # R10 is WARN at the skill level
-                    Add-Finding $sev 'whfmt-expression-refs' $rel ("{0}: {1} [{2}]" -f $obj.path, $obj.message, $obj.ruleId)
-                } catch { }
-            }
-        } catch {
-            # Binary failed — fall back to PS scan silently.
-            Invoke-R10PowerShellFallback
-        }
-    } else {
-        Invoke-R10PowerShellFallback
-    }
-
-    function Invoke-R10PowerShellFallback {
-        $declaredFns = @()
-        if ((Test-Prop $parsed 'functions') -and $parsed.functions) {
-            $declaredFns = Get-PropNames $parsed.functions
-        }
-        $known = [System.Collections.Generic.HashSet[string]]::new($ExprBuiltins)
-        foreach ($n in $declared)    { [void]$known.Add($n) }
-        foreach ($n in $declaredFns) { [void]$known.Add($n) }
-
-        foreach ($expr in (Get-ExprStrings $parsed)) {
-            $stripped = [regex]::Replace($expr.Src, "'(?:[^'\\]|\\.)*'", "''")
-            $stripped = [regex]::Replace($stripped,  '"(?:[^"\\]|\\.)*"', '""')
-            $reported = [System.Collections.Generic.HashSet[string]]::new()
-            foreach ($m in [regex]::Matches($stripped, '(?<![.\w])([A-Za-z_][A-Za-z0-9_]*)')) {
-                $id = $m.Groups[1].Value
-                if ($known.Contains($id)) { continue }
-                if (-not $reported.Add($id)) { continue }
-                Add-Finding 'WARN' 'whfmt-expression-refs' $rel ("{0}: '{1}' not declared in variables{{}} / functions{{}} / builtins" -f $expr.Path, $id)
-            }
-        }
+    # R10 PS fallback only (per-file scan). The C# binary path runs in a single
+    # batched call AFTER the foreach loop — see post-loop section below.
+    if (-not $WhfmtCli) {
+        Invoke-R10PowerShellFallback $parsed $declared $rel
     }
     } catch {
         Add-Finding 'ERR' 'whfmt-guard-internal' $rel ("rule evaluation failed: " + $_.Exception.Message)
+    }
+}
+
+# R10 — batched C# binary invocation. ONE process start for all targets instead
+# of N (saves ~200 ms cold-start per file). Skipped when the binary isn't built;
+# the PS fallback already ran per-file inside the loop above in that case.
+if ($WhfmtCli -and $targets.Count -gt 0) {
+    try {
+        $cliArgs = @('lint-expressions', '--json') + $targets
+        if ($WhfmtCli -like '*.dll') {
+            $output = & dotnet $WhfmtCli @cliArgs 2>&1
+        } else {
+            $output = & $WhfmtCli @cliArgs 2>&1
+        }
+        $sawAny = $false
+        foreach ($line in @($output)) {
+            $text = [string]$line
+            if (-not $text.StartsWith('{')) { continue }
+            try {
+                $obj = ConvertFrom-Json -InputObject $text -ErrorAction Stop
+                $sawAny = $true
+                $rel    = [System.IO.Path]::GetRelativePath($RepoRoot, $obj.file).Replace('\','/')
+                Add-Finding 'WARN' 'whfmt-expression-refs' $rel ("{0}: {1} [{2}]" -f $obj.path, $obj.message, $obj.ruleId)
+            } catch { }
+        }
+        # Defensive: surface a single internal finding when the binary exited
+        # non-zero but emitted no parseable JSON (otherwise the failure is invisible).
+        if ($LASTEXITCODE -ne 0 -and -not $sawAny) {
+            Add-Finding 'WARN' 'whfmt-guard-internal' '' ("whfmt-validate exited {0} with no JSON output" -f $LASTEXITCODE)
+        }
+    } catch {
+        Add-Finding 'WARN' 'whfmt-guard-internal' '' ("whfmt-validate invocation failed: " + $_.Exception.Message)
     }
 }
 

@@ -106,9 +106,17 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     public IReadOnlyList<FormatRelationship> RelationshipsDisplay { get => _relationshipsDisplay; set => SetField(ref _relationshipsDisplay, value); }
     public string                            NavigationStructure  { get => _navigationStructure;  set => SetField(ref _navigationStructure, value); }
     public string                            NavigationNotes      { get => _navigationNotes;      set => SetField(ref _navigationNotes, value); }
+
+    // Per-section visibility flags consumed by Tab 5 XAML to avoid showing
+    // section headers above empty content (e.g. "Software" label with no rows).
+    public bool HasSoftware             => _softwareDisplay.Count > 0;
+    public bool HasUseCases             => _useCasesDisplay.Count > 0;
+    public bool HasRelationships        => _relationshipsDisplay.Count > 0;
+    public bool HasNavigationStructure  => !string.IsNullOrEmpty(_navigationStructure);
+    public bool HasNavigationNotes      => !string.IsNullOrEmpty(_navigationNotes);
     public bool HasDocumentation =>
-        _softwareDisplay.Count > 0 || _useCasesDisplay.Count > 0 ||
-        _relationshipsDisplay.Count > 0 || !string.IsNullOrEmpty(_navigationStructure);
+        HasSoftware || HasUseCases || HasRelationships ||
+        HasNavigationStructure || HasNavigationNotes;
 
     // ------------------------------------------------------------------
     // Commands (set by the parent ViewModel after construction)
