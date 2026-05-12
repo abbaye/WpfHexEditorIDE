@@ -11,29 +11,57 @@ dotnet add package whfmt.FileFormatCatalog
 
 ---
 
-## What's New in 1.3.2
+## What's New in 1.3.2 (whfmt v3 GA)
 
-- **2 catalog bug fixes caught by the new B8 smoke test before publication**:
-  - `FormatMatcher.ScoreEntry` now handles **negative offsets** (offset-from-end signatures used by SHEBANG, FAT_BINARY, NE, LE, TRUECRYPT). Previously threw `ArgumentOutOfRangeException`.
-  - Assertion engine accepts `.whfmt` variables of type `bool` and `null` (e.g. `PNG.crc32Valid = false`). Previously crashed on `InvalidOperationException`.
-- **Phase B pre-publication audit** — `WhfmtExprNode` AST surface internalized (consumers go through `WhfmtExpressionEvaluator.Evaluate(string)` returning `object?`), enabling future bytecode lowering without ABI break. Schema v3 `category` enum extended to 31 values (matches the 29 on-disk directories + Programming + Other). Direct unit tests added for `GetJsonV3`, `FormatSummaryBuilder`, `GetDocumentationBundle`, and `FormatMatcher`.
-- **Catalog cleanup Lots 1-7**: 131 `matchMode` normalizations, 32 block-type swaps, 20 endian-suffixed valueType splits, 9 formatId collision renames (DER→DER_CRYPTO, PAK→PAK_GAME, YAML→YAML_LANG, …), 8 Unix-style fictive extensions, 12 exotic valueType mappings to canonical (uint24→uint32, vint→int64, filetime→int64, …).
-- See [audit-pre-publication](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Docs/whfmt-v3/audit-pre-publication/audit-SYNTHESE.md) for the full 4-axis audit report.
+First public NuGet release of the whfmt v3 family — consolidates the work of the
+internal 1.3.0 and 1.3.1 milestones (never published) plus the Phase B
+pre-publication audit and 2 catalog bug fixes.
 
-## What's New in 1.3.1
+### Schema v3 — declarative becomes executable
 
-- **101 formats enriched** — `diff`, `repair`, `fuzz`, `migration` blocks added across 15 categories: Audio (10), Images (10), Archives (9), Executables (5), Video (10), Documents (10), Game/ROM (10), Crypto (4), Network (3), Firmware (3), 3D (5), Fonts (5), Disk (5), System (3), GIS (2).
-- **8 new format definitions** — PEM, DER, P12, GPG, UEFI, BIOS, UBoot, DNS added to catalog.
-- **Zero JSON parse errors** — all 101 enriched files validated.
+- **Four new root blocks**: `diff`, `repair`, `fuzz`, `migration` — declare format-specific semantics for the companion NuGets.
+- **Runtime expression engine** — `assertions[].expression`, `blocks[].condition` / `expression`, and `forensic.suspiciousPatterns[].condition` are now **evaluated at runtime** via `WhfmtExpressionEvaluator` (lexer + parser + AST cache + variable store + function registry). 11 built-in functions, custom function registration via `IWhfmtFunction`.
+- **`FormatAssertionEvaluator`** — single-call bridge between the expression engine and a `.whfmt` file's `assertions[]` block. Returns `Pass | Fail | Skipped` per rule.
+- **Typed variables** — `variables` can now be a typed array (`{ name, type, offset, length, endian }`) consumed by `WhfmtVariableParser.BuildStore`. The dict form is still accepted.
+- **Executable function descriptors** — `functions` block accepts the v3 form `{ params, returns, body, builtIn }`. Doc-strings still accepted for legacy.
+- **Negative-offset signatures** — `detection.signatures[].offset` can be negative (offset-from-end). Used by SHEBANG, FAT_BINARY, NE, LE, TRUECRYPT.
 
-## What's New in 1.3.0
+### 101 formats enriched + 8 new definitions
 
-- **Schema v3** — four new root blocks: `diff`, `repair`, `fuzz`, `migration`. Each declares format-specific semantics for the new companion packages.
-- **6 priority formats enriched** — ZIP, PNG, PE/EXE, PDF, MP3, SQLite now carry complete `diff` key-fields, `repair` rules, and 5–7 `fuzz` strategies with weights and descriptions.
-- **`whfmt.Analysis`** *(new companion package)* — `FormatDiff.Compare()` performs field-level semantic diff using the `diff` block; outputs text / JSON / dark HTML.
-- **`whfmt.Fuzz`** *(new companion package)* — `FormatFuzzer.Generate()` produces format-aware mutant files using the `fuzz` strategies (BoundaryValues, EnumSweep, CorruptSignature, BitFlip, ZeroField, Overflow, RandomBytes, Truncate, Duplicate) with automatic checksum recomputation.
-- **`whfmt.CodeGen`** *(new companion dotnet tool)* — `whfmt-codegen generate <format>` produces a strongly-typed C# parser class from any `.whfmt` definition; supports `--validate`, `--async`, `--namespace`.
-- **`whfmt.Validate` 1.0.0** *(new companion dotnet tool)* — `whfmt repair` command applies `repair` rules from the `.whfmt` definition (recompute_checksum, set_value, zero_field, truncate, pad).
+Cumulative catalog growth from 1.2.0 → 1.3.2:
+
+- **101 formats enriched** — `diff`, `repair`, `fuzz`, `migration` blocks added across 15 categories: Audio (10), Images (10), Archives (9), Executables (5), Video (10), Documents (10), Game/ROM (10), Crypto (4), Network (3), Firmware (3), 3D (5), Fonts (5), Disk (5), System (3), GIS (2). The 6 priority formats (ZIP, PNG, PE/EXE, PDF, MP3, SQLite) carry complete `diff` keyFields + `repair` rules + 5–7 `fuzz` strategies.
+- **8 new format definitions**: PEM, DER, P12, GPG (Crypto), UEFI, BIOS, UBoot (Firmware), DNS (Network).
+- **Zero JSON parse errors** — all enriched files validated.
+
+### Companion NuGet packages (now public)
+
+- **`whfmt.Analysis`** — `FormatDiff.Compare()` performs field-level semantic diff using the `diff` block; outputs text / JSON / dark HTML.
+- **`whfmt.Fuzz`** — `FormatFuzzer.Generate()` produces format-aware mutant files using the `fuzz` strategies with automatic checksum recomputation.
+- **`whfmt.CodeGen`** *(dotnet tool)* — `whfmt-codegen generate <format>` produces a strongly-typed parser in C# / F# / Rust / VB.NET from any `.whfmt` definition.
+- **`whfmt.Validate`** *(dotnet tool)* — `whfmt validate | list | info | repair | lint-expressions` CLI. The `repair` command applies `repair` rules (recompute_checksum, set_value, zero_field, truncate, pad). `lint-expressions` runs `WhfmtExpressionValidator` to catch parse errors, undeclared identifiers, and unknown function calls without executing.
+
+### Catalog cleanup (Lots 1-7)
+
+Sweep of the whole catalog for canonicalization before the v3 GA:
+
+- 131 `matchMode` normalizations (`first` → `any`, etc.)
+- 32 block-type swaps (`blocks[].type = '<valueType>'` → `type='field' + valueType=X`)
+- 20 endian-suffixed valueType splits (`uint32be` → `valueType: uint32, endianness: big`)
+- 9 `formatId` collision renames: DER→DER_CRYPTO, PEM→PEM_CRYPTO, P12→P12_CRYPTO, PKCS7→PKCS7_CRYPTO, PAK→PAK_GAME, NSF→NSF_NOTES, YAML→YAML_LANG, SYSLOG→SYSLOG_NET, PDB→PDB_DEBUG
+- 8 Unix-style formats given fictive extensions (APFS → `.apfs`, SHEBANG → `.sh`, …)
+- 12 exotic valueType mappings to canonical (`uint24` → `uint32`, `vint` → `int64`, `filetime` → `int64`, …)
+
+### Phase B — pre-publication audit
+
+- **2 bug fixes** caught by the new B8 smoke test:
+  - `FormatMatcher.ScoreEntry` no longer throws `ArgumentOutOfRangeException` on negative-offset signatures.
+  - Assertion engine no longer crashes on `.whfmt` variables of type `bool` or `null` (e.g. `PNG.crc32Valid = false`).
+- **AST surface internalized** — `WhfmtExprNode` and the 11 record subtypes are now `internal`. Consumers go through `WhfmtExpressionEvaluator.Evaluate(string)` returning `object?`, so the evaluator can evolve (bytecode lowering, alternative parsers) without ABI break.
+- **Schema v3 `category` enum aligned** to 31 values (matches the 29 on-disk category directories + Programming + Other).
+- **Direct unit tests** added for `GetJsonV3`, `FormatSummaryBuilder`, `GetDocumentationBundle`, `FormatMatcher` (covers internal `ScoreEntry` via the public surface).
+
+See the [audit-SYNTHESE](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Docs/whfmt-v3/audit-pre-publication/audit-SYNTHESE.md) for the full 4-axis audit report.
 
 ## What's New in 1.2.0
 
@@ -500,27 +528,40 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 
 ## Changelog
 
-### 1.3.2
+### 1.3.2 (whfmt v3 GA)
 
-- **Bug fix**: `FormatMatcher.ScoreEntry` handles negative-offset signatures (offset-from-end convention).
-- **Bug fix**: assertion engine ingests `bool` and `null` variables without throwing.
-- **Phase B audit**: `WhfmtExprNode` AST internalized; schema v3 `category` enum aligned to 31 values; direct unit tests added.
-- **Catalog cleanup**: Lots 1-7 (matchMode normalization, block-type swaps, endian splits, formatId collision renames, fictive extensions, exotic valueType canonicalization).
+First public release of the whfmt v3 family. Consolidates the internal 1.3.0 and 1.3.1
+milestones (never published) + Phase B audit + 2 bug fixes.
 
-### 1.3.1
+**Schema v3 — declarative becomes executable**
 
-- **101 formats enriched** with diff/repair/fuzz/migration blocks across 15 categories.
-- **8 new format definitions**: PEM, DER, P12, GPG (Crypto), UEFI, BIOS, UBoot (Firmware), DNS (Network).
-- All enriched files pass JSON validation.
+- 4 new root blocks: `diff`, `repair`, `fuzz`, `migration`.
+- Runtime expression engine (`WhfmtExpressionEvaluator` + variable store + 11 built-in functions + custom registration via `IWhfmtFunction`).
+- `FormatAssertionEvaluator` bridges expressions to `assertions[]` blocks.
+- Typed variables array + executable function descriptors.
+- Negative-offset signatures (offset-from-end).
 
-### 1.3.0
+**Catalog**
 
-- **Schema v3** — `diff`, `repair`, `fuzz`, `migration` root blocks added to `whfmt-schema-canonical-v3.json`.
-- **6 formats enriched** — ZIP, PNG, PE/EXE, PDF, MP3, SQLite: `diff.keyFields`, `repair[]` rules, `fuzz.strategies[]` with weights.
-- **whfmt.Analysis 1.0.0** — new companion NuGet: `FormatDiff.Compare()`, `DiffRenderer` (text/JSON/HTML).
-- **whfmt.Fuzz 1.0.0** — new companion NuGet: `FormatFuzzer.Generate()`, 9 mutation strategies, checksum recomputation.
-- **whfmt.CodeGen 1.0.0** — new companion dotnet tool: `whfmt-codegen generate <format>` → typed C# parser.
-- **whfmt.Validate 1.0.0** — new companion dotnet tool: `whfmt repair` command with `recompute_checksum`, `set_value`, `zero_field`, `truncate`, `pad` actions.
+- 101 formats enriched with `diff` / `repair` / `fuzz` / `migration` blocks across 15 categories.
+- 8 new format definitions: PEM, DER, P12, GPG, UEFI, BIOS, UBoot, DNS.
+- 6 priority formats fully wired (ZIP, PNG, PE/EXE, PDF, MP3, SQLite).
+- Cleanup Lots 1-7: 131 matchMode normalizations, 32 block-type swaps, 20 endian splits, 9 formatId collision renames, 8 fictive extensions, 12 exotic valueType mappings.
+
+**Companion NuGets (public)**
+
+- `whfmt.Analysis` — semantic diff via `FormatDiff.Compare()`.
+- `whfmt.Fuzz` — format-aware fuzzing via `FormatFuzzer.Generate()`.
+- `whfmt.CodeGen` — dotnet tool generating typed parsers in C# / F# / Rust / VB.NET.
+- `whfmt.Validate` — dotnet tool with `validate`, `list`, `info`, `repair`, `lint-expressions` commands.
+
+**Phase B (pre-publication audit)**
+
+- Bug fix: `FormatMatcher.ScoreEntry` handles negative-offset signatures.
+- Bug fix: assertion engine ingests `bool` and `null` variables without throwing.
+- `WhfmtExprNode` AST internalized (consumers go through `Evaluate(string) → object?`).
+- Schema v3 `category` enum aligned to 31 values.
+- Direct unit tests added for `GetJsonV3`, `FormatSummaryBuilder`, `GetDocumentationBundle`, `FormatMatcher`.
 
 ### 1.2.0
 
