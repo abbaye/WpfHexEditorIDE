@@ -87,12 +87,12 @@ public sealed class SnippetsOptionsPage : UserControl, IOptionsPage
             AcceptsReturn = true,
             AcceptsTab    = true,
             Height        = 140,
-            FontFamily    = new FontFamily("Consolas, Courier New"),
-            FontSize      = 12,
             TextWrapping  = TextWrapping.NoWrap,
             VerticalScrollBarVisibility   = ScrollBarVisibility.Auto,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
         };
+        _bodyEditor.SetResourceReference(TextBox.FontFamilyProperty, "CE_FontFamily");
+        _bodyEditor.SetResourceReference(TextBox.FontSizeProperty,   "CE_FontSize");
         _bodyEditor.LostFocus += (_, _) => Persist();
 
         var varsHint = new TextBlock
@@ -177,19 +177,12 @@ public sealed class SnippetsOptionsPage : UserControl, IOptionsPage
 
     private void Persist()
     {
-        // Body is owned by the TextBox while a row is selected — sync back before save.
         if (_grid.SelectedItem is StoredSnippet selected)
             selected.Body = _bodyEditor.Text ?? string.Empty;
 
-        // UserSnippetStore round-trip: clear + re-add by replaying the visible rows.
-        // Capture a snapshot of triggers to remove before re-adding (avoids duplicate
-        // accumulation when the user edits an existing row's trigger / language).
-        var existing = _store.GetAll().ToList();
-        foreach (var stale in existing)
-            _store.Remove(stale.LanguageId, stale.Trigger);
-        foreach (var row in _rows)
-            _store.Add(row);
-
+        // Snapshot _rows up-front so concurrent UI edits during the (locked)
+        // disk write don't bleed half-mutated state into the store.
+        _store.ReplaceAll(_rows.ToList());
         Changed?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -81,6 +81,26 @@ public sealed class UserSnippetStore
         }
     }
 
+    /// <summary>
+    /// Atomic batch replace — writes the entire snippet list once instead of
+    /// the O(N) per-row Remove+Add cycle. Caller passes the desired final
+    /// state; we copy defensively before persisting.
+    /// </summary>
+    public void ReplaceAll(IEnumerable<StoredSnippet> snippets)
+    {
+        ArgumentNullException.ThrowIfNull(snippets);
+        var list = snippets.Select(Clone).ToList();
+        lock (_lock) SaveAll(list);
+    }
+
+    private static StoredSnippet Clone(StoredSnippet s) => new()
+    {
+        LanguageId  = s.LanguageId,
+        Trigger     = s.Trigger,
+        Body        = s.Body,
+        Description = s.Description,
+    };
+
     private List<StoredSnippet> EnsureLoaded() => _cache ??= Load();
 
     private static bool SameKey(StoredSnippet a, StoredSnippet b)
