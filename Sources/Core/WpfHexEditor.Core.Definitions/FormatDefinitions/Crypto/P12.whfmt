@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "PKCS#12 Certificate Bundle",
   "formatId": "P12",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [".p12", ".pfx"],
   "description": "PKCS#12 (RFC 7292) is a binary format for bundling a private key together with its X.509 certificate chain, protected by a passphrase. Widely used for exporting/importing key+certificate pairs in Windows (PFX), IIS, Exchange, macOS Keychain, Java keystores, and browser certificate management. The outer structure is a DER-encoded ASN.1 SEQUENCE (0x30 0x82). The PKCS#12 PFX (Personal Information Exchange) header begins: SEQUENCE { version INTEGER (3), authSafe ContentInfo, macData MacData }. Version is always 3. authSafe contains SafeContents bags: either CertBag (X.509 certs), KeyBag (unencrypted private key), or PKCS8ShroudedKeyBag (encrypted private key). The MAC (Message Authentication Code) at the end uses HMAC-SHA1 or HMAC-SHA256 to authenticate the entire PFX. Passphrase is required for decryption and MAC verification. Empty-passphrase P12 files exist but are unusual.",
   "category": "Crypto",
@@ -28,7 +28,7 @@
     "matchMode": "any",
     "MinimumScore": 0.7,
     "required": true,
-    "Strength": "Moderate",
+    "Strength": "Medium",
     "validation": {
       "minFileSize": 10,
       "maxSignatureOffset": 0,

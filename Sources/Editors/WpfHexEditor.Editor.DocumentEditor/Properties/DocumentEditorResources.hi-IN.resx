@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>ठीक है</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>रद्द करें</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>URL को ब्राउज़र में खोलें</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>URL को ब्राउज़र में खोलें</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>कृपया एक वैध URL दर्ज करें (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>तालिका डालें</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>पंक्तियाँ</value></data>
@@ -284,31 +284,31 @@
   <data name="PageStyleDlg_Apply" xml:space="preserve"><value>लागू करें</value></data>
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>ठीक है</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>रद्द करें</value></data>
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>वर्तनी जाँच सक्षम करें</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>शब्दकोश</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>भाषा</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>स्थिति</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>डाउनलोड करें</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>ब्राउज़ करें…</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>हटाएं</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>कस्टम शब्दकोश</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>संपादित करें…</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>स्थापित</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>स्थापित नहीं</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>अनदेखा करें</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>शब्दकोश में जोड़ें</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>.dic शब्दकोश फ़ाइल चुनें</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>.aff प्रत्यय फ़ाइल चुनें</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>डाउनलोड विफल: {0}</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>शब्दकोश डाउनलोड त्रुटि</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>वर्तनी जाँच शब्दकोश उपलब्ध है</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>वर्तनी जाँच के लिए {0} शब्दकोश स्थापित करें? (~2 MB)</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>स्थापित करें</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>अभी नहीं</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>फिर मत पूछें</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>वर्तनी जाँच सक्षम करें</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>शब्दकोश</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>भाषा</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>स्थिति</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>डाउनलोड करें</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>ब्राउज़ करें…</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>हटाएं</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>कस्टम शब्दकोश</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>संपादित करें…</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>स्थापित</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>स्थापित नहीं</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>अनदेखा करें</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>शब्दकोश में जोड़ें</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>.dic शब्दकोश फ़ाइल चुनें</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>.aff प्रत्यय फ़ाइल चुनें</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>डाउनलोड विफल: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>शब्दकोश डाउनलोड त्रुटि</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>वर्तनी जाँच शब्दकोश उपलब्ध है</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>वर्तनी जाँच के लिए {0} शब्दकोश स्थापित करें? (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>स्थापित करें</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>अभी नहीं</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>फिर मत पूछें</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>छवि गुण</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>आकार और स्थान</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>पाठ आवरण</value></data>
@@ -392,4 +392,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>चित्र</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>मेटाडेटा गुमनाम करें</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>इस दस्तावेज़ से लेखक, टाइमस्टैम्प, कस्टम गुण और मैक्रोज़ हटाता है। सहेजने तक परिवर्तन मेमोरी में रहता है।</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>मेटाडेटा गुमनाम करें</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>इस दस्तावेज़ से लेखक, टाइमस्टैम्प, कस्टम गुण और मैक्रोज़ हटाएँ?
+
+परिवर्तन तुरंत मेमोरी में लागू होता है और अगले सहेजने पर फ़ाइल में सहेजा जाता है।</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>गुमनामीकरण पूर्ण।
+
+लेखक हटाया गया: {0}
+टाइमस्टैम्प हटाए गए: {1}
+मैक्रोज़ हटाए गए: {2}
+कस्टम गुण साफ़ किए गए: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>एम्बेड किए गए ऑब्जेक्ट्स की समीक्षा करें (छवियाँ, OLE, मैक्रोज़)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>एम्बेडेड ऑब्जेक्ट्स</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>प्रकार</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>नाम</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>आकार</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>स्रोत</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>निकालें…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>चयनित एम्बेडेड ऑब्जेक्ट को फ़ाइल में सहेजें</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>Hex में खोलें</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>अस्थायी फ़ाइल में निकालें और Hex Editor में खोलें</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>बंद करें</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>{0} एम्बेडेड ऑब्जेक्ट</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>ZIP प्रविष्टि नहीं मिली: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>एम्बेडेड ऑब्जेक्ट में उपलब्ध स्रोत बाइट नहीं हैं।</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>स्रोत SHA-256:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>गणना हो रही है…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>हैश क्लिपबोर्ड में कॉपी करें</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>सभी का हैश</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>प्रत्येक एम्बेडेड ऑब्जेक्ट के लिए SHA-256 गणना करें</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>प्रिंट करें या PDF के रूप में निर्यात करें (PDF बनाने के लिए "Microsoft Print to PDF" प्रिंटर का उपयोग करें)</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>किसी अन्य दस्तावेज़ से तुलना करें…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>दस्तावेज़ों की तुलना</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>बाएं:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>दाएं:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>ब्राउज़ करें…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(फ़ाइल चुनने के लिए ब्राउज़ पर क्लिक करें)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>प्रकार</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>परिवर्तन</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>पाठ</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} जोड़े गए, −{1} हटाए गए, ~{2} संशोधित, {3} अपरिवर्तित</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>कोई दस्तावेज़ लोडर पंजीकृत नहीं है।</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>एक्सटेंशन {0} के लिए कोई लोडर पंजीकृत नहीं है।</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>बंद करें</value></data></root>

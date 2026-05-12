@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>ตกลง</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>เปิด URL ในเบราว์เซอร์</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>เปิด URL ในเบราว์เซอร์</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>กรุณาใส่ URL ที่ถูกต้อง (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>แทรกตาราง</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>แถว</value></data>
@@ -285,31 +285,31 @@
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>ตกลง</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
 
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>เปิดใช้การตรวจสอบการสะกด</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>พจนานุกรม</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>ภาษา</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>สถานะ</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>ดาวน์โหลด</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>เรียกดู...</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>ลบออก</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>พจนานุกรมผู้ใช้</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>แก้ไขพจนานุกรมผู้ใช้</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>ติดตั้งแล้ว</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>ยังไม่ได้ติดตั้ง</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>ละเว้น</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>เพิ่มในพจนานุกรม</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>เลือกไฟล์พจนานุกรม</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>เลือกไฟล์ affix</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>ไม่สามารถดาวน์โหลดพจนานุกรมได้</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>ข้อผิดพลาดในการดาวน์โหลด</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>พจนานุกรมการสะกด</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>ไม่พบพจนานุกรมการสะกด ดาวน์โหลดตอนนี้เลยหรือไม่?</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>ติดตั้ง</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>ภายหลัง</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>ไม่แสดงอีก</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>เปิดใช้การตรวจสอบการสะกด</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>พจนานุกรม</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>ภาษา</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>สถานะ</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>ดาวน์โหลด</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>เรียกดู...</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>ลบออก</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>พจนานุกรมผู้ใช้</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>แก้ไขพจนานุกรมผู้ใช้</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>ติดตั้งแล้ว</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>ยังไม่ได้ติดตั้ง</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>ละเว้น</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>เพิ่มในพจนานุกรม</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>เลือกไฟล์พจนานุกรม</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>เลือกไฟล์ affix</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>ไม่สามารถดาวน์โหลดพจนานุกรมได้</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>ข้อผิดพลาดในการดาวน์โหลด</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>พจนานุกรมการสะกด</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>ไม่พบพจนานุกรมการสะกด ดาวน์โหลดตอนนี้เลยหรือไม่?</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>ติดตั้ง</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>ภายหลัง</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>ไม่แสดงอีก</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>คุณสมบัติรูปภาพ</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>ขนาดและตำแหน่ง</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>การตัดข้อความ</value></data>
@@ -393,4 +393,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>รูปภาพ</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>ทำให้ข้อมูลเมตาเป็นนิรนาม</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>ลบผู้สร้าง การประทับเวลา คุณสมบัติแบบกำหนดเอง และมาโครจากเอกสารนี้ การเปลี่ยนแปลงจะอยู่ในหน่วยความจำจนกว่าจะบันทึก</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>ทำให้ข้อมูลเมตาเป็นนิรนาม</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>ลบผู้สร้าง การประทับเวลา คุณสมบัติแบบกำหนดเอง และมาโครจากเอกสารนี้หรือไม่
+
+การเปลี่ยนแปลงจะมีผลในหน่วยความจำทันทีและจะถูกบันทึกในไฟล์เมื่อบันทึกครั้งถัดไป</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>การทำให้เป็นนิรนามเสร็จสมบูรณ์
+
+ผู้สร้างถูกลบ: {0}
+การประทับเวลาถูกลบ: {1}
+มาโครถูกลบ: {2}
+คุณสมบัติแบบกำหนดเองถูกล้าง: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>ตรวจสอบวัตถุที่ฝัง (รูปภาพ, OLE, มาโคร)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>วัตถุที่ฝัง</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>ประเภท</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>ชื่อ</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>ขนาด</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>แหล่งที่มา</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>แตกไฟล์…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>บันทึกวัตถุที่ฝังที่เลือกเป็นไฟล์</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>เปิดใน Hex</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>แตกไฟล์ไปยังไฟล์ชั่วคราวและเปิดใน Hex Editor</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>ปิด</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>วัตถุที่ฝัง {0} รายการ</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>ไม่พบรายการ ZIP: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>วัตถุที่ฝังไม่มีไบต์ต้นทางที่พร้อมใช้งาน</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>SHA-256 ของแหล่งที่มา:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>กำลังคำนวณ…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>คัดลอกแฮชไปยังคลิปบอร์ด</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>แฮชทั้งหมด</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>คำนวณ SHA-256 สำหรับวัตถุที่ฝังทุกรายการ</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>พิมพ์หรือส่งออกเป็น PDF (ใช้เครื่องพิมพ์ "Microsoft Print to PDF" เพื่อสร้าง PDF)</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>เปรียบเทียบกับเอกสารอื่น…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>เปรียบเทียบเอกสาร</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>ซ้าย:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>ขวา:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>เรียกดู…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(คลิก เรียกดู เพื่อเลือกไฟล์)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>ประเภท</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>การเปลี่ยนแปลง</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>ข้อความ</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} เพิ่ม, −{1} ลบ, ~{2} แก้ไข, {3} ไม่เปลี่ยนแปลง</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>ไม่มีตัวโหลดเอกสารที่ลงทะเบียน</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>ไม่มีตัวโหลดที่ลงทะเบียนสำหรับนามสกุล {0}</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>ปิด</value></data></root>

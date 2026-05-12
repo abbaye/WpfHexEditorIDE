@@ -74,7 +74,7 @@ namespace WpfHexEditor.BinaryAnalysis.Tests.Services
             var data = new byte[256];
             for (int i = 0; i < 256; i++) data[i] = (byte)i;
             var stats = _service.CalculateStatistics(data);
-            Assert.IsGreaterThan(stats.Entropy, 7.9, $"Expected entropy > 7.9, got {stats.Entropy}");
+            Assert.IsGreaterThan(7.9, stats.Entropy, $"Expected entropy > 7.9, got {stats.Entropy}");
         }
 
         [TestMethod]
@@ -116,7 +116,7 @@ namespace WpfHexEditor.BinaryAnalysis.Tests.Services
 
             var chart = _service.GenerateEntropyChart(data, windowSize: 256);
             Assert.IsNotNull(chart);
-            Assert.IsGreaterThan(chart.DataPoints.Count, 0);
+            Assert.IsGreaterThan(0, chart.DataPoints.Count);
         }
 
         [TestMethod]

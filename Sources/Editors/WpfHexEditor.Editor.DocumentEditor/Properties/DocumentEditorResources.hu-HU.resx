@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Mégse</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>URL megnyitása böngészőben</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>URL megnyitása böngészőben</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Adjon meg érvényes URL-t (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>Táblázat beszúrása</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Sorok</value></data>
@@ -284,31 +284,31 @@
   <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Alkalmaz</value></data>
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Mégse</value></data>
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Helyesírás-ellenőrzés engedélyezése</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Szótárak</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Nyelv</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Állapot</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>Letöltés</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Tallózás…</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Eltávolítás</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Egyéni szótár</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Szerkesztés…</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Telepítve</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Nincs telepítve</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Mellőzés</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Hozzáadás a szótárhoz</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>.dic szótárfájl kiválasztása</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>.aff végződésfájl kiválasztása</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>A letöltés meghiúsult: {0}</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Szótár letöltési hiba</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Helyesírás-ellenőrző szótár elérhető</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Telepíti a {0} szótárt a helyesírás-ellenőrzéshez? (~2 MB)</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Telepítés</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Most nem</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Ne kérdezzen újra</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>Helyesírás-ellenőrzés engedélyezése</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>Szótárak</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>Nyelv</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>Állapot</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>Letöltés</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>Tallózás…</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>Eltávolítás</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>Egyéni szótár</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>Szerkesztés…</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>Telepítve</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>Nincs telepítve</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>Mellőzés</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>Hozzáadás a szótárhoz</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>.dic szótárfájl kiválasztása</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>.aff végződésfájl kiválasztása</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>A letöltés meghiúsult: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>Szótár letöltési hiba</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>Helyesírás-ellenőrző szótár elérhető</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>Telepíti a {0} szótárt a helyesírás-ellenőrzéshez? (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Telepítés</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Most nem</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Ne kérdezzen újra</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>Képtulajdonságok</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>Méret és pozíció</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Szövegkörzés</value></data>
@@ -392,4 +392,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>Képek</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>Metaadatok anonimizálása</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>Eltávolítja a szerzőt, az időbélyegeket, az egyéni tulajdonságokat és a makrókat a dokumentumból. A változás mentésig a memóriában marad.</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>Metaadatok anonimizálása</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>Eltávolítja a szerzőt, az időbélyegeket, az egyéni tulajdonságokat és a makrókat ebből a dokumentumból?
+
+A változás azonnal érvényesül a memóriában, és a következő Mentéskor a fájlba kerül.</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>Anonimizálás kész.
+
+Szerző eltávolítva: {0}
+Időbélyegek eltávolítva: {1}
+Makrók eltávolítva: {2}
+Egyéni tulajdonságok törölve: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>Beágyazott objektumok ellenőrzése (képek, OLE, makrók)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>Beágyazott objektumok</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>Típus</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>Név</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>Méret</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>Forrás</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>Kibontás…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>A kiválasztott beágyazott objektum mentése fájlba</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>Megnyitás Hex-ben</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>Kibontás ideiglenes fájlba és megnyitás a Hex szerkesztőben</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>Bezárás</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>{0} beágyazott objektum</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>ZIP-bejegyzés nem található: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>A beágyazott objektumnak nincsenek elérhető forrásbájtjai.</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>Forrás SHA-256:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>számítás folyamatban…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>Hash másolása a vágólapra</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>Mind hash-elése</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>SHA-256 számítása minden beágyazott objektumra</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>Nyomtatás vagy PDF-be exportálás (használja a „Microsoft Print to PDF" nyomtatót PDF létrehozásához)</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>Összehasonlítás másik dokumentummal…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>Dokumentumok összehasonlítása</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>Bal:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>Jobb:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>Tallózás…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(kattintson a Tallózás gombra fájl választásához)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>Típus</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>Változás</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>Szöveg</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} hozzáadva, −{1} eltávolítva, ~{2} módosítva, {3} változatlan</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>Nincs regisztrált dokumentumbetöltő.</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>Nincs regisztrált betöltő a {0} kiterjesztéshez.</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>Bezárás</value></data></root>

@@ -3929,11 +3929,63 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             contextMenu.Opened += (_, _) => miWordHighlight.IsChecked = EnableWordHighlight;
             contextMenu.Items.Add(miWordHighlight);
 
+            // Refactor submenu (Rename / Extract Method / Extract Class /
+            // Introduce Variable / Inline Method). All wired through
+            // RefactoringMenuRequested so a host can present its own UI.
+            contextMenu.Items.Add(new Separator());
+            var miRefactor = new MenuItem
+            {
+                Header = CodeEditorResources.CodeEditor_ContextMenuRefactor,
+                Icon   = MakeMenuIcon(""),  // edit/pen glyph
+            };
+            void AddRefactorItem(string label, RefactoringKind kind)
+            {
+                var mi = new MenuItem { Header = label };
+                mi.Click += (_, _) => RefactoringMenuRequested?.Invoke(this, BuildRefactorEventArgs(kind));
+                miRefactor.Items.Add(mi);
+            }
+            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorRename,            RefactoringKind.Rename);
+            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorExtractMethod,     RefactoringKind.ExtractMethod);
+            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorExtractClass,      RefactoringKind.ExtractClass);
+            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorIntroduceVariable, RefactoringKind.IntroduceVariable);
+            AddRefactorItem(CodeEditorResources.CodeEditor_RefactorInlineMethod,      RefactoringKind.InlineMethod);
+            contextMenu.Items.Add(miRefactor);
+
             // Set context menu
             ContextMenu = contextMenu;
 
             // Register command bindings
             RegisterContextMenuCommands();
+        }
+
+        /// <summary>Raised when the user picks an item under Refactor ▶.</summary>
+        public event EventHandler<RefactoringMenuRequestedEventArgs>? RefactoringMenuRequested;
+
+        private RefactoringMenuRequestedEventArgs BuildRefactorEventArgs(RefactoringKind kind)
+        {
+            var fullText = _document?.SaveToString() ?? string.Empty;
+            var startOff = TextPositionToOffset(fullText, _selection?.NormalizedStart);
+            var endOff   = TextPositionToOffset(fullText, _selection?.NormalizedEnd);
+            var caret    = TextPositionToOffset(fullText, _selection?.End);
+
+            return new RefactoringMenuRequestedEventArgs(kind)
+            {
+                DocumentText    = fullText,
+                FilePath        = _currentFilePath ?? string.Empty,
+                CaretOffset     = caret,
+                SelectionStart  = startOff,
+                SelectionLength = Math.Max(0, endOff - startOff),
+            };
+        }
+
+        private static int TextPositionToOffset(string text, TextPosition? pos)
+        {
+            if (pos is null || string.IsNullOrEmpty(text)) return 0;
+            var p = pos.Value;
+            int line = 0, offset = 0;
+            for (int i = 0; i < text.Length && line < p.Line; i++)
+                if (text[i] == '\n') { line++; offset = i + 1; }
+            return Math.Min(text.Length, offset + p.Column);
         }
 
         /// <summary>

@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "PlayStation 3 Disc/Package",
   "formatId": "ROM_PS3",
-  "version": "2.52",
+  "version": "2.52.1",
   "extensions": [
     ".iso",
     ".pkg"
@@ -30,7 +30,8 @@
     "required": false,
     "validation": {
       "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "maxSignatureOffset": 1024,
+      "note": "Shares Sony PKG magic 7F504B47 with PSP/PSVita PKG. Discriminate via pkg_type uint16-BE at offset 0x06: PS3 = 0x0001. See psdevwiki.com/ps3/PKG_files."
     }
   },
   "variables": {

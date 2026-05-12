@@ -22,7 +22,7 @@ public sealed class PluginDevLoaderTests
         var dir = CreateTempDir();
         try
         {
-            using var loader = new PluginDevLoader(null!, null!, null!);
+            using var loader = new PluginDevLoader();
             loader.Watch("test-plugin", dir);
             loader.StopWatching("test-plugin");
         }
@@ -32,7 +32,7 @@ public sealed class PluginDevLoaderTests
     [TestMethod]
     public void StopWatching_UnknownPlugin_DoesNotThrow()
     {
-        using var loader = new PluginDevLoader(null!, null!, null!);
+        using var loader = new PluginDevLoader();
         loader.StopWatching("nonexistent-plugin");
     }
 
@@ -42,7 +42,7 @@ public sealed class PluginDevLoaderTests
         var dir = CreateTempDir();
         try
         {
-            using var loader = new PluginDevLoader(null!, null!, null!);
+            using var loader = new PluginDevLoader();
             loader.Watch("dup-plugin", dir);
             loader.Watch("dup-plugin", dir); // should replace
             loader.StopWatching("dup-plugin");
@@ -57,7 +57,7 @@ public sealed class PluginDevLoaderTests
         var dir2 = CreateTempDir();
         try
         {
-            using var loader = new PluginDevLoader(null!, null!, null!);
+            using var loader = new PluginDevLoader();
             loader.Watch("plugin-a", dir1);
             loader.Watch("plugin-b", dir2);
             loader.StopWatching("plugin-a");
@@ -73,7 +73,7 @@ public sealed class PluginDevLoaderTests
     [TestMethod]
     public void StopAll_WithNoWatchers_DoesNotThrow()
     {
-        using var loader = new PluginDevLoader(null!, null!, null!);
+        using var loader = new PluginDevLoader();
         loader.StopAll();
     }
 
@@ -83,7 +83,7 @@ public sealed class PluginDevLoaderTests
         var dir = CreateTempDir();
         try
         {
-            using var loader = new PluginDevLoader(null!, null!, null!);
+            using var loader = new PluginDevLoader();
             loader.Watch("p1", dir);
             loader.Watch("p2", dir);
             loader.StopAll(); // should not throw
@@ -94,7 +94,7 @@ public sealed class PluginDevLoaderTests
     [TestMethod]
     public void ReloadCompleted_CanSubscribeAndUnsubscribe()
     {
-        using var loader = new PluginDevLoader(null!, null!, null!);
+        using var loader = new PluginDevLoader();
         EventHandler<PluginDevReloadEventArgs>? h = (_, _) => { };
         loader.ReloadCompleted += h;
         loader.ReloadCompleted -= h;
@@ -103,7 +103,7 @@ public sealed class PluginDevLoaderTests
     [TestMethod]
     public void ReloadFailed_CanSubscribeAndUnsubscribe()
     {
-        using var loader = new PluginDevLoader(null!, null!, null!);
+        using var loader = new PluginDevLoader();
         EventHandler<PluginDevReloadFailedEventArgs>? h = (_, _) => { };
         loader.ReloadFailed += h;
         loader.ReloadFailed -= h;
@@ -116,7 +116,7 @@ public sealed class PluginDevLoaderTests
         int fired = 0;
         try
         {
-            using var loader = new PluginDevLoader(null!, null!, null!);
+            using var loader = new PluginDevLoader();
             loader.ReloadCompleted += (_, _) => Interlocked.Increment(ref fired);
             loader.Watch("debounce-test", dir);
 
@@ -137,7 +137,7 @@ public sealed class PluginDevLoaderTests
         var dir = CreateTempDir();
         try
         {
-            var loader = new PluginDevLoader(null!, null!, null!);
+            var loader = new PluginDevLoader();
             loader.Watch("p", dir);
             loader.Dispose();
         }

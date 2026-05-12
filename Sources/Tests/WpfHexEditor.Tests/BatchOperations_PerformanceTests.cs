@@ -312,9 +312,12 @@ namespace WpfHexEditor.Tests
             provider.BeginBatch();
             try
             {
+                // ~original avoids the revert-to-original optimization that drops the marker
                 for (int i = 0; i < editCount; i++)
                 {
-                    provider.ModifyByte(i * 5, 0xFF);
+                    long pos = i * 5;
+                    byte original = (byte)(pos % 256);
+                    provider.ModifyByte(pos, (byte)~original);
                 }
             }
             finally
@@ -459,8 +462,7 @@ namespace WpfHexEditor.Tests
             Console.WriteLine(stats);
 
             // Verify cache statistics contain expected information
-            Assert.IsTrue(stats.Contains("Line Cache") || stats.Contains("Cache"),
-                "Cache statistics should contain cache information");
+            StringAssert.Contains(stats, "ByteReader");
         }
 
         #endregion

@@ -78,6 +78,12 @@ internal sealed class CodeAnalysisRunner
 
         int step = 0; int totalSteps = byProject.Count;
 
+        // Compilations are expensive to build (Roslyn reads + resolves refs); cache them
+        // so the dead-code pass below reuses the same instance instead of rebuilding.
+        // Keyed by projPath (case-insensitive) — projName alone collides for sibling
+        // projects sharing a name across folders (e.g. multiple Tests.csproj).
+        var compilations = new Dictionary<string, CSharpCompilation>(StringComparer.OrdinalIgnoreCase);
+
         Report(progress, "Analyzing volume + complexity…", 15);
 
         foreach (var (projName, projPath, trees) in byProject)
@@ -90,6 +96,7 @@ internal sealed class CodeAnalysisRunner
                 trees,
                 GetBasicReferences(),
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            compilations[projPath] = compilation;
 
             // Pre-compute NOC map once for the whole project — avoids O(T²) per-type walks
             var nocMap = VolumeMetricsCollector.BuildNocMap(compilation);
@@ -150,7 +157,7 @@ internal sealed class CodeAnalysisRunner
                         $"File has {volume.TotalLines} lines (error threshold: {opts.FileLocError}).",
                         tree.FilePath, 1, projName));
                 else if (volume.TotalLines > opts.FileLocWarning)
-                    allDiagnostics.Add(ThresholdDiag("WH0004", Severity.Info,
+                    allDiagnostics.Add(ThresholdDiag("WH0004", Severity.Warning,
                         $"File has {volume.TotalLines} lines (warning threshold: {opts.FileLocWarning}).",
                         tree.FilePath, 1, projName));
 
@@ -369,11 +376,12 @@ internal sealed class CodeAnalysisRunner
 
         Report(progress, "Detecting dead code…", 82);
         var allDeadSymbols = new List<DeadSymbol>();
-        foreach (var (projName, _, trees) in byProject)
+        foreach (var (projName, projPath, trees) in byProject)
         {
-            var compilation = CSharpCompilation.Create(
-                projName, trees, GetBasicReferences(),
-                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            // Reuse the compilation built during the volume/complexity pass.
+            if (!compilations.TryGetValue(projPath, out var compilation))
+                compilation = CSharpCompilation.Create(projName, trees, GetBasicReferences(),
+                    new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
             var dead = DeadCodeDetector.Detect(compilation);
             allDeadSymbols.AddRange(dead);
 
@@ -411,7 +419,7 @@ internal sealed class CodeAnalysisRunner
 
         // Patch project grades
         for (int i = 0; i < projectMetrics.Count; i++)
-            projectMetrics[i] = projectMetrics[i] with { Grade = ScoreToGrade(projectMetrics[i].Score) };
+            projectMetrics[i] = projectMetrics[i] with { Grade = QualityScore.ToGrade(projectMetrics[i].Score) };
 
         var score = QualityScoreCalculator.Calculate(
             projectMetrics, duplications, allDeadSymbols, diagList,
@@ -552,12 +560,6 @@ internal sealed class CodeAnalysisRunner
         if (couplings.Any(c => c.Instability > 0.8))        score -= 10;
         return Math.Max(0, score);
     }
-
-    private static string ScoreToGrade(int score) => score switch
-    {
-        >= 93 => "A", >= 87 => "B+", >= 80 => "B",
-        >= 70 => "C", >= 60 => "D",  _ => "F",
-    };
 
     private static AnalysisDiagnostic ThresholdDiag(
         string id, Severity severity, string message,

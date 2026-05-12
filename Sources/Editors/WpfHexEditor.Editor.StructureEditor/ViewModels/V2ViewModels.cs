@@ -766,13 +766,53 @@ internal sealed class ImportViewModel : ViewModelBase
 /// <summary>One row in the union variants DataGrid.</summary>
 public sealed class UnionVariantViewModel : ViewModelBase
 {
-    private string _key       = "";
-    private string _length    = "";
-    private string _valueType = "";
-    private string _color     = "";
+    private string _key         = "";
+    private string _length      = "";
+    private string _valueType   = "";
+    private string _color       = "";
+    private double _opacity     = 0.3;
+    private string _description = "";
 
-    public string Key       { get => _key;       set => SetField(ref _key,       value); }
-    public string Length    { get => _length;    set => SetField(ref _length,    value); }
-    public string ValueType { get => _valueType; set => SetField(ref _valueType, value); }
-    public string Color     { get => _color;     set => SetField(ref _color,     value); }
+    public string Key
+    {
+        get => _key;
+        set { if (SetField(ref _key, value)) RaiseChanged(); }
+    }
+
+    public string Length
+    {
+        get => _length;
+        set { if (SetField(ref _length, value)) RaiseChanged(); }
+    }
+
+    public string ValueType
+    {
+        get => _valueType;
+        set { if (SetField(ref _valueType, value)) RaiseChanged(); }
+    }
+
+    public string Color
+    {
+        get => _color;
+        set { if (SetField(ref _color, value)) RaiseChanged(); }
+    }
+
+    public double Opacity
+    {
+        get => _opacity;
+        set { if (SetField(ref _opacity, value)) RaiseChanged(); }
+    }
+
+    public string Description
+    {
+        get => _description;
+        set { if (SetField(ref _description, value)) RaiseChanged(); }
+    }
+
+    public event EventHandler? Changed;
+    public event EventHandler? RemoveRequested;
+
+    public ICommand RemoveCommand => new RelayCommand(() => RemoveRequested?.Invoke(this, EventArgs.Empty));
+
+    private void RaiseChanged() => Changed?.Invoke(this, EventArgs.Empty);
 }

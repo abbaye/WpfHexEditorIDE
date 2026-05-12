@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "PlayStation 5 Package",
   "formatId": "ROM_PS5",
-  "version": "1.13",
+  "version": "1.13.1",
   "extensions": [
     ".pkg"
   ],
@@ -29,7 +29,8 @@
     "required": false,
     "validation": {
       "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "maxSignatureOffset": 1024,
+      "note": "Shares Sony CNT magic 7F434E54 with PS4 CNT. Discriminate via pkg_content_type uint32-BE at offset 0x74: PS5 value 0x1F observed in fpkg tooling (no single-field authoritative discriminator yet on psdevwiki; combine with PFS image type and pkg_revision uint32-BE at offset 0x04). See psdevwiki.com/ps5/PKG_files."
     }
   },
   "variables": {

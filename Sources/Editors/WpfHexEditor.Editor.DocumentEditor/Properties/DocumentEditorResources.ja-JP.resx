@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>キャンセル</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>ブラウザでURLを開く</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>ブラウザでURLを開く</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>有効なURLを入力してください（https://、http://、mailto:、ftp://）</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>表を挿入</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>行数</value></data>
@@ -285,31 +285,31 @@
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>キャンセル</value></data>
 
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>スペルチェックを有効にする</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>辞書</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>言語</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>状態</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>ダウンロード</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>参照...</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>削除</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>ユーザー辞書</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>ユーザー辞書を編集</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>インストール済み</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>未インストール</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>無視する</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>辞書に追加</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>辞書ファイルを選択</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>アフィックスファイルを選択</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>辞書のダウンロードに失敗しました。</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>ダウンロードエラー</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>スペルチェック辞書</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>スペルチェック辞書が見つかりませんでした。今すぐダウンロードしますか？</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>インストール</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>後で</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>表示しない</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>スペルチェックを有効にする</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>辞書</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>言語</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>状態</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>ダウンロード</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>参照...</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>削除</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>ユーザー辞書</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>ユーザー辞書を編集</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>インストール済み</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>未インストール</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>無視する</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>辞書に追加</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>辞書ファイルを選択</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>アフィックスファイルを選択</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>辞書のダウンロードに失敗しました。</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>ダウンロードエラー</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>スペルチェック辞書</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>スペルチェック辞書が見つかりませんでした。今すぐダウンロードしますか？</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>インストール</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>後で</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>表示しない</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>画像のプロパティ</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>サイズと位置</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>テキストの折り返し</value></data>
@@ -393,4 +393,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>画像</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>メタデータの匿名化</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>このドキュメントから作成者、タイムスタンプ、カスタムプロパティ、マクロを削除します。変更は保存するまでメモリ上に保持されます。</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>メタデータの匿名化</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>このドキュメントから作成者、タイムスタンプ、カスタムプロパティ、マクロを削除しますか？
+
+変更はすぐにメモリに適用され、次回保存時にファイルに反映されます。</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>匿名化が完了しました。
+
+作成者削除: {0}
+タイムスタンプ削除: {1}
+マクロ削除: {2}
+カスタムプロパティクリア: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>埋め込みオブジェクトの確認（画像、OLE、マクロ）</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>埋め込みオブジェクト</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>種類</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>名前</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>サイズ</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>ソース</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>抽出…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>選択した埋め込みオブジェクトをファイルに保存</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>Hex で開く</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>一時ファイルに抽出して Hex エディタで開く</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>閉じる</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>埋め込みオブジェクト {0} 個</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>ZIP エントリが見つかりません: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>埋め込みオブジェクトに使用可能なソースバイトがありません。</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>ソース SHA-256:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>計算中…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>ハッシュをクリップボードにコピー</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>すべてハッシュ</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>各埋め込みオブジェクトに対して SHA-256 を計算</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>印刷または PDF として書き出し（PDF を生成するには「Microsoft Print to PDF」プリンターを使用）</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>他のドキュメントと比較…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>ドキュメント比較</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>左:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>右:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>参照…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(参照をクリックしてファイルを選択)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>種類</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>変更</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>テキスト</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} 追加、−{1} 削除、~{2} 変更、{3} 変更なし</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>ドキュメントローダーが登録されていません。</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>拡張子 {0} に対してローダーが登録されていません。</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>閉じる</value></data></root>

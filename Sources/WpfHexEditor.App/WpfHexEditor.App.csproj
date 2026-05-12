@@ -77,6 +77,7 @@
     <ProjectReference Include="..\Controls\WpfHexEditor.Terminal\WpfHexEditor.Terminal.csproj" />
     <ProjectReference Include="..\Core\WpfHexEditor.Core.BuildSystem\WpfHexEditor.Core.BuildSystem.csproj" />
     <ProjectReference Include="..\Core\WpfHexEditor.Core.LSP.Client\WpfHexEditor.Core.LSP.Client.csproj" />
+    <ProjectReference Include="..\Core\WpfHexEditor.Core.LSP\WpfHexEditor.Core.LSP.csproj" />
     <ProjectReference Include="..\Core\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
     <ProjectReference Include="..\Plugins\WpfHexEditor.PluginDev\WpfHexEditor.PluginDev.csproj" />
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.SolutionLoader.Folder\WpfHexEditor.Plugins.SolutionLoader.Folder.csproj" />

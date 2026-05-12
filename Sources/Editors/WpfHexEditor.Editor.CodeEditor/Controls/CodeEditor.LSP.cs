@@ -497,15 +497,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private async Task ShowCodeActionsAsync()
         {
-            if (_lspClient is null || _currentFilePath is null) return;
+            if (_currentFilePath is null) return;
             try
             {
-                var actions = await _lspClient.CodeActionAsync(
-                    _currentFilePath,
-                    _cursorLine, _cursorColumn,
-                    _cursorLine, _cursorColumn,
-                    CancellationToken.None).ConfigureAwait(true);
-
+                var actions = await CollectCodeActionsAsync(CancellationToken.None).ConfigureAwait(true);
                 if (actions.Count == 0) return;
 
                 var screenPt = ComputeCaretScreenPoint(belowCaret: true);
@@ -522,6 +517,40 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
         }
 
+        /// <summary>
+        /// Aggregates code actions from the LSP server (if any) and from every
+        /// <see cref="Providers.ICodeActionProvider"/> registered via
+        /// <see cref="Providers.CodeActionRegistry"/>. Both sources may contribute;
+        /// the popup shows the merged list.
+        /// </summary>
+        private async Task<IReadOnlyList<LspCodeAction>> CollectCodeActionsAsync(CancellationToken ct)
+        {
+            var merged = new List<LspCodeAction>();
+
+            if (_lspClient is not null && _currentFilePath is not null)
+            {
+                try
+                {
+                    var lspActions = await _lspClient.CodeActionAsync(
+                        _currentFilePath,
+                        _cursorLine, _cursorColumn,
+                        _cursorLine, _cursorColumn, ct).ConfigureAwait(false);
+                    merged.AddRange(lspActions);
+                }
+                catch (OperationCanceledException) { throw; }
+                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[LSP] CodeAction LSP: {ex.Message}"); }
+            }
+
+            if (_currentFilePath is not null)
+            {
+                var extra = await Providers.CodeActionRegistry
+                    .CollectAsync(_currentFilePath, _cursorLine, _cursorColumn, ct).ConfigureAwait(false);
+                merged.AddRange(extra);
+            }
+
+            return merged;
+        }
+
         // ── Lightbulb gutter check ───────────────────────────────────────────────
 
         /// <summary>
@@ -530,7 +559,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         internal void ScheduleLightbulbCheck()
         {
-            if (_lspClient is null || !_lspClient.IsInitialized)
+            // Gate: at least one source must be available (LSP server OR a registered provider)
+            bool lspReady       = _lspClient is not null && _lspClient.IsInitialized;
+            bool providerActive = Providers.CodeActionRegistry.HasProviders;
+            if (!lspReady && !providerActive)
             {
                 if (_lightbulbLine != -1) { _lightbulbLine = -1; InvalidateVisual(); }
                 return;
@@ -557,14 +589,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// </summary>
         private async Task CheckCodeActionsAtCursorAsync()
         {
-            if (_lspClient is null || _currentFilePath is null) return;
+            if (_currentFilePath is null) return;
             try
             {
-                var actions = await _lspClient.CodeActionAsync(
-                    _currentFilePath,
-                    _cursorLine, _cursorColumn,
-                    _cursorLine, _cursorColumn,
-                    CancellationToken.None).ConfigureAwait(false);
+                var actions = await CollectCodeActionsAsync(CancellationToken.None).ConfigureAwait(false);
 
                 await Dispatcher.InvokeAsync(() =>
                 {

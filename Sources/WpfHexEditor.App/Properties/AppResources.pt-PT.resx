@@ -953,6 +953,13 @@
   <data name="CodeAnalysis_Error_AnalysisFailed" xml:space="preserve"><value>Falha na análise de código: {0}</value></data>
   <data name="CodeAnalysis_Snapshot_Saved" xml:space="preserve"><value>Instantâneo de análise guardado.</value></data>
   <data name="CodeAnalysis_Snapshot_Cleared" xml:space="preserve"><value>Instantâneo de análise limpo.</value></data>
+  <data name="CodeAnalysis_ContextMenu_OpenRuleHelp" xml:space="preserve"><value>Abrir documentação da regra…</value></data>
+  <data name="CodeAnalysis_Cycles_Title" xml:space="preserve"><value>Ciclos de projetos</value></data>
+  <data name="CodeAnalysis_Cycles_NoneFound" xml:space="preserve"><value>Nenhum ciclo de projetos detetado.</value></data>
+  <data name="CodeAnalysis_Cycles_Tooltip" xml:space="preserve"><value>Diagrama de cordas dos ciclos de dependência entre projetos. Cada curva vermelha é uma aresta do ciclo.</value></data>
+  <data name="CodeAnalysis_Fix_WH0010_Title" xml:space="preserve"><value>Remover membro privado não usado</value></data>
+  <data name="CodeAnalysis_Fix_WH0013_Title" xml:space="preserve"><value>Remover variável local não usada</value></data>
+  <data name="CodeAnalysis_Fix_WH0061_Title" xml:space="preserve"><value>Trocar `async void` por `async Task`</value></data>
   <data name="CodeAnalysis_Options_General" xml:space="preserve"><value>Geral</value></data>
   <data name="CodeAnalysis_Options_Thresholds" xml:space="preserve"><value>Limiares</value></data>
   <data name="CodeAnalysis_Options_Rules" xml:space="preserve"><value>Regras</value></data>
@@ -1085,6 +1092,37 @@
   <data name="CodeAnalysis_ContextMenu_FilterByRule" xml:space="preserve"><value>Filtrar por esta regra</value></data>
   <data name="CodeAnalysis_ContextMenu_FilterByFile" xml:space="preserve"><value>Filtrar por este ficheiro</value></data>
   <data name="CodeAnalysis_ContextMenu_SuppressInline" xml:space="preserve"><value>Suprimir esta ocorrência (marcador inline)</value></data>
+  <data name="CodeAnalysis_Suppress_InSource" xml:space="preserve"><value>Suprimir no código</value></data>
+  <data name="CodeAnalysis_Suppress_InFile" xml:space="preserve"><value>Suprimir para este ficheiro</value></data>
+  <data name="CodeAnalysis_Suppress_InBaseline" xml:space="preserve"><value>Adicionar à linha de base</value></data>
+  <data name="CodeAnalysis_Suppress_Disable" xml:space="preserve"><value>Desativar regra globalmente</value></data>
+  <data name="CodeAnalysis_Fix_WH0032_Title" xml:space="preserve"><value>Remover marcador TODO/FIXME</value></data>
+  <data name="CodeAnalysis_Fix_WH0062_Title" xml:space="preserve"><value>Adicionar .ConfigureAwait(false)</value></data>
+  <data name="CodeAnalysis_Fix_WH0070_Title" xml:space="preserve"><value>Usar Any() em vez de Count() &gt; 0</value></data>
+  <data name="CodeAnalysis_Fix_Suppress_Title" xml:space="preserve"><value>Suprimir {0} aqui</value></data>
+  <data name="CodeAnalysis_History_Title" xml:space="preserve"><value>Histórico de pontuação</value></data>
+  <data name="CodeAnalysis_History_Summary" xml:space="preserve"><value>{0} execuções · últimos {1} dias · tendência {2}</value></data>
+  <data name="CodeAnalysis_History_NoData" xml:space="preserve"><value>Sem histórico — execute a análise novamente para iniciar uma tendência</value></data>
+  <data name="CodeAnalysis_Duplication_Header_Severity" xml:space="preserve"><value>Grav</value></data>
+  <data name="CodeAnalysis_Duplication_Header_Lines" xml:space="preserve"><value>Linhas</value></data>
+  <data name="CodeAnalysis_Duplication_Header_Tokens" xml:space="preserve"><value>Tokens</value></data>
+  <data name="CodeAnalysis_Duplication_Header_Occurrences" xml:space="preserve"><value>×</value></data>
+  <data name="CodeAnalysis_Duplication_Header_PrimaryFile" xml:space="preserve"><value>Ficheiro</value></data>
+  <data name="CodeAnalysis_Duplication_Filter_Placeholder" xml:space="preserve"><value>Filtrar por caminho…</value></data>
+  <data name="CodeAnalysis_Duplication_Sort_Lines" xml:space="preserve"><value>Ordenar: linhas</value></data>
+  <data name="CodeAnalysis_Duplication_Sort_Tokens" xml:space="preserve"><value>Ordenar: tokens</value></data>
+  <data name="CodeAnalysis_Duplication_Sort_Occurrences" xml:space="preserve"><value>Ordenar: ocorrências</value></data>
+  <data name="CodeAnalysis_Duplication_Summary" xml:space="preserve"><value>{0} grupos de clones · {1} linhas duplicadas · {2:F1}%</value></data>
+  <data name="CodeAnalysis_Duplication_Preview_NoSelection" xml:space="preserve"><value>Selecione um grupo de clones à esquerda para visualizar o código duplicado lado a lado.</value></data>
+  <data name="CodeAnalysis_Duplication_Export_Button" xml:space="preserve"><value>Exportar…</value></data>
+  <data name="CodeAnalysis_Duplication_Export_FileName" xml:space="preserve"><value>clones.md</value></data>
+  <data name="CodeAnalysis_Duplication_Export_Title" xml:space="preserve"><value># Relatório de duplicação de código</value></data>
+  <data name="CodeAnalysis_Duplication_Menu_OpenA" xml:space="preserve"><value>Abrir ocorrência A</value></data>
+  <data name="CodeAnalysis_Duplication_Menu_OpenB" xml:space="preserve"><value>Abrir ocorrência B</value></data>
+  <data name="CodeAnalysis_Duplication_Menu_OpenAll" xml:space="preserve"><value>Abrir todos em separadores ({0})</value></data>
+  <data name="CodeAnalysis_Duplication_Menu_CopyMarkdown" xml:space="preserve"><value>Copiar grupo como Markdown</value></data>
+  <data name="CodeAnalysis_Duplication_Menu_SuggestExtract" xml:space="preserve"><value>Sugerir refactor extract (área de transferência)</value></data>
+  <data name="CodeAnalysis_Duplication_Menu_SuppressFile" xml:space="preserve"><value>Suprimir WH0020 em todos os ficheiros</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyAsMarkdown" xml:space="preserve"><value>Copiar como Markdown</value></data>
   <data name="CodeAnalysis_ContextMenu_CopyIssueId" xml:space="preserve"><value>Copiar ID do problema</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenSourceFile" xml:space="preserve"><value>Abrir ficheiro de origem</value></data>

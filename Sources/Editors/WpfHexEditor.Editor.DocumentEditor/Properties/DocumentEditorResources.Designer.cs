@@ -275,7 +275,197 @@ namespace WpfHexEditor.Editor.DocumentEditor.Properties {
                 return ResourceManager.GetString("DocEditorHost_MetadataToolTip", resourceCulture);
             }
         }
-        
+
+        internal static string DocEditorHost_AnonymizeBtn {
+            get {
+                return ResourceManager.GetString("DocEditorHost_AnonymizeBtn", resourceCulture);
+            }
+        }
+
+        internal static string DocEditorHost_EmbeddedToolTip {
+            get {
+                return ResourceManager.GetString("DocEditorHost_EmbeddedToolTip", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_Title {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_Title", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_ColKind {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_ColKind", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_ColName {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_ColName", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_ColSize {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_ColSize", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_ColSource {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_ColSource", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_Extract {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_Extract", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_ExtractToolTip {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_ExtractToolTip", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_OpenHex {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_OpenHex", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_OpenHexToolTip {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_OpenHexToolTip", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_Close {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_Close", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_CountFmt {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_CountFmt", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_EntryNotFoundFmt {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_EntryNotFoundFmt", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_NoSource {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_NoSource", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_SourceSha {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_SourceSha", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_ShaComputing {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_ShaComputing", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_CopySha {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_CopySha", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_HashAll {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_HashAll", resourceCulture);
+            }
+        }
+
+        internal static string EmbeddedDlg_HashAllToolTip {
+            get {
+                return ResourceManager.GetString("EmbeddedDlg_HashAllToolTip", resourceCulture);
+            }
+        }
+
+        internal static string DocEditorHost_PrintToolTip {
+            get {
+                return ResourceManager.GetString("DocEditorHost_PrintToolTip", resourceCulture);
+            }
+        }
+
+        internal static string DocEditorHost_DiffToolTip {
+            get { return ResourceManager.GetString("DocEditorHost_DiffToolTip", resourceCulture); }
+        }
+        internal static string DocDiffDlg_Title {
+            get { return ResourceManager.GetString("DocDiffDlg_Title", resourceCulture); }
+        }
+        internal static string DocDiffDlg_LabelLeft {
+            get { return ResourceManager.GetString("DocDiffDlg_LabelLeft", resourceCulture); }
+        }
+        internal static string DocDiffDlg_LabelRight {
+            get { return ResourceManager.GetString("DocDiffDlg_LabelRight", resourceCulture); }
+        }
+        internal static string DocDiffDlg_PickRight {
+            get { return ResourceManager.GetString("DocDiffDlg_PickRight", resourceCulture); }
+        }
+        internal static string DocDiffDlg_PickHint {
+            get { return ResourceManager.GetString("DocDiffDlg_PickHint", resourceCulture); }
+        }
+        internal static string DocDiffDlg_ColKind {
+            get { return ResourceManager.GetString("DocDiffDlg_ColKind", resourceCulture); }
+        }
+        internal static string DocDiffDlg_ColChange {
+            get { return ResourceManager.GetString("DocDiffDlg_ColChange", resourceCulture); }
+        }
+        internal static string DocDiffDlg_ColText {
+            get { return ResourceManager.GetString("DocDiffDlg_ColText", resourceCulture); }
+        }
+        internal static string DocDiffDlg_SummaryFmt {
+            get { return ResourceManager.GetString("DocDiffDlg_SummaryFmt", resourceCulture); }
+        }
+        internal static string DocDiffDlg_NoLoaders {
+            get { return ResourceManager.GetString("DocDiffDlg_NoLoaders", resourceCulture); }
+        }
+        internal static string DocDiffDlg_NoLoaderForFmt {
+            get { return ResourceManager.GetString("DocDiffDlg_NoLoaderForFmt", resourceCulture); }
+        }
+        internal static string DocDiffDlg_Close {
+            get { return ResourceManager.GetString("DocDiffDlg_Close", resourceCulture); }
+        }
+
+        internal static string DocEditorHost_AnonymizeToolTip {
+            get {
+                return ResourceManager.GetString("DocEditorHost_AnonymizeToolTip", resourceCulture);
+            }
+        }
+
+        internal static string DocEditorHost_AnonymizeTitle {
+            get {
+                return ResourceManager.GetString("DocEditorHost_AnonymizeTitle", resourceCulture);
+            }
+        }
+
+        internal static string DocEditorHost_AnonymizeConfirm {
+            get {
+                return ResourceManager.GetString("DocEditorHost_AnonymizeConfirm", resourceCulture);
+            }
+        }
+
+        internal static string DocEditorHost_AnonymizeDoneFmt {
+            get {
+                return ResourceManager.GetString("DocEditorHost_AnonymizeDoneFmt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Recherche une chaîne localisée semblable à —.
         /// </summary>

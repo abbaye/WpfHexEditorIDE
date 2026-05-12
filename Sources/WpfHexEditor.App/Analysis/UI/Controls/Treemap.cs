@@ -168,24 +168,33 @@ public sealed class Treemap : Control
 
     // ── Render & hit-test ─────────────────────────────────────────────────────
 
+    // Static frozen render assets — allocated once per process, not per paint.
+    private static readonly Typeface       TileFace  = new("Segoe UI");
+    private static readonly Pen            TilePen   = FreezePen(new Pen(Brushes.Black, 0.5));
+    private static readonly SolidColorBrush DimBrush  = FreezeBrush(new SolidColorBrush(Color.FromArgb(80, 60, 60, 60)));
+    private static readonly SolidColorBrush ScoreA    = FreezeBrush(new SolidColorBrush(Color.FromRgb( 67, 160,  71)));
+    private static readonly SolidColorBrush ScoreB    = FreezeBrush(new SolidColorBrush(Color.FromRgb(158, 157,  36)));
+    private static readonly SolidColorBrush ScoreC    = FreezeBrush(new SolidColorBrush(Color.FromRgb(245, 124,   0)));
+    private static readonly SolidColorBrush ScoreD    = FreezeBrush(new SolidColorBrush(Color.FromRgb(229,  57,  53)));
+    private static readonly SolidColorBrush ScoreF    = FreezeBrush(new SolidColorBrush(Color.FromRgb(176,  35,  30)));
+
+    private static SolidColorBrush FreezeBrush(SolidColorBrush b) { b.Freeze(); return b; }
+    private static Pen             FreezePen  (Pen p)             { p.Freeze();  return p; }
+
     protected override void OnRender(DrawingContext dc)
     {
-        var labelBr = (Foreground as SolidColorBrush) ?? Brushes.White;
-        var typeface = new Typeface("Segoe UI");
+        var labelBr = Foreground ?? Brushes.White;
 
         foreach (var (rect, file) in _tiles)
         {
             if (rect.Width <= 1 || rect.Height <= 1) continue;
-            var brush = _hotspotMode && !file.IsHotspot
-                ? new SolidColorBrush(Color.FromArgb(80, 60, 60, 60))
-                : ScoreToBrush(file.Score);
-            var pen   = new Pen(Brushes.Black, 0.5);
-            dc.DrawRectangle(brush, pen, rect);
+            var brush = _hotspotMode && !file.IsHotspot ? DimBrush : ScoreToBrush(file.Score);
+            dc.DrawRectangle(brush, TilePen, rect);
 
             if (rect.Width > 60 && rect.Height > 22)
             {
                 var ft = new FormattedText(file.FileName, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
-                    typeface, 10, labelBr, 1.0)
+                    TileFace, 10, labelBr, 1.0)
                 {
                     MaxTextWidth  = Math.Max(0, rect.Width - 4),
                     MaxLineCount  = 1,
@@ -196,13 +205,13 @@ public sealed class Treemap : Control
         }
     }
 
-    private static Brush ScoreToBrush(int score) => score switch
+    private static SolidColorBrush ScoreToBrush(int score) => score switch
     {
-        >= 85 => new SolidColorBrush(Color.FromRgb( 67, 160,  71)),  // green
-        >= 70 => new SolidColorBrush(Color.FromRgb(158, 157,  36)),  // olive
-        >= 55 => new SolidColorBrush(Color.FromRgb(245, 124,   0)),  // orange
-        >= 40 => new SolidColorBrush(Color.FromRgb(229,  57,  53)),  // red-orange
-        _     => new SolidColorBrush(Color.FromRgb(176,  35,  30)),  // dark red
+        >= 85 => ScoreA,
+        >= 70 => ScoreB,
+        >= 55 => ScoreC,
+        >= 40 => ScoreD,
+        _     => ScoreF,
     };
 
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

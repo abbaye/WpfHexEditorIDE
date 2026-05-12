@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>Tamam</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>İptal</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>URL'yi tarayıcıda aç</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>URL'yi tarayıcıda aç</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Geçerli bir URL girin (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>Tablo ekle</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Satırlar</value></data>
@@ -285,31 +285,31 @@
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>Tamam</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>İptal</value></data>
 
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Yazım denetimini etkinleştir</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Sözlükler</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Dil</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Durum</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>İndir</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Gözat...</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Kaldır</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Kullanıcı sözlüğü</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Kullanıcı sözlüğünü düzenle</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Yüklü</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Yüklü değil</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Yoksay</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Sözlüğe ekle</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>Sözlük dosyasını seçin</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>Ek dosyasını seçin</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Sözlük indirilemedi.</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>İndirme hatası</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Yazım denetimi sözlüğü</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Yazım denetimi sözlüğü bulunamadı. Şimdi indirilsin mi?</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Yükle</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Daha sonra</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Bir daha gösterme</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>Yazım denetimini etkinleştir</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>Sözlükler</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>Dil</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>Durum</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>İndir</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>Gözat...</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>Kullanıcı sözlüğü</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>Kullanıcı sözlüğünü düzenle</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>Yüklü</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>Yüklü değil</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>Yoksay</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>Sözlüğe ekle</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>Sözlük dosyasını seçin</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>Ek dosyasını seçin</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>Sözlük indirilemedi.</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>İndirme hatası</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>Yazım denetimi sözlüğü</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>Yazım denetimi sözlüğü bulunamadı. Şimdi indirilsin mi?</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Yükle</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Daha sonra</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Bir daha gösterme</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>Resim Özellikleri</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>Boyut ve Konum</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Metin Kaydırma</value></data>
@@ -393,4 +393,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>Görseller</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>Üst verileri anonimleştir</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>Bu belgeden yazar, zaman damgaları, özel özellikler ve makroları kaldırır. Değişiklik kaydedene kadar bellekte kalır.</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>Üst verileri anonimleştir</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>Bu belgeden yazar, zaman damgaları, özel özellikler ve makroları kaldırılsın mı?
+
+Değişiklik bellekte hemen uygulanır ve sonraki Kaydet işleminde dosyaya yazılır.</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>Anonimleştirme tamamlandı.
+
+Yazar kaldırıldı: {0}
+Zaman damgaları kaldırıldı: {1}
+Makrolar kaldırıldı: {2}
+Özel özellikler temizlendi: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>Gömülü nesneleri incele (resimler, OLE, makrolar)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>Gömülü Nesneler</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>Tür</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>Ad</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>Boyut</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>Kaynak</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>Çıkar…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>Seçilen gömülü nesneyi bir dosyaya kaydet</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>Hex'te aç</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>Geçici dosyaya çıkar ve Hex Düzenleyici'de aç</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>Kapat</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>{0} gömülü nesne</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>ZIP girişi bulunamadı: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>Gömülü nesnenin kullanılabilir kaynak baytları yok.</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>Kaynak SHA-256:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>hesaplanıyor…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>Hash'i panoya kopyala</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>Tümünü hashle</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>Her gömülü nesne için SHA-256 hesapla</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>Yazdır veya PDF olarak dışa aktar (PDF oluşturmak için "Microsoft Print to PDF" yazıcısını kullanın)</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>Başka bir belgeyle karşılaştır…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>Belge karşılaştırma</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>Sol:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>Sağ:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>Gözat…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(dosya seçmek için Gözat'a tıklayın)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>Tür</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>Değişiklik</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>Metin</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} eklendi, −{1} kaldırıldı, ~{2} değiştirildi, {3} değişmedi</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>Kayıtlı belge yükleyicisi yok.</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>{0} uzantısı için kayıtlı yükleyici yok.</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>Kapat</value></data></root>

@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Open XML Paper Specification",
   "formatId": "OXPS",
-  "version": "2.02",
+  "version": "2.02.1",
   "extensions": [
     ".oxps"
   ],
@@ -27,7 +27,8 @@
     "required": true,
     "validation": {
       "minFileSize": 100,
-      "maxSignatureOffset": 0
+      "maxSignatureOffset": 0,
+      "note": "Shares ZIP magic 504B0304 with XPS, OOXML and other OPC packages. Discriminate via [Content_Types].xml entry: OXPS (ECMA-388) uses ContentType 'application/vnd.ms-package.oxps-fixeddocumentsequence+xml' and namespace 'http://schemas.openxps.org/oxps/v1.0'."
     }
   },
   "variables": {

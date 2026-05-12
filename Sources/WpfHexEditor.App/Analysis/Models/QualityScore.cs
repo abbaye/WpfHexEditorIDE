@@ -24,4 +24,11 @@ public sealed record QualityScore
     public int    ConventionScore   { get; init; }
 
     public IReadOnlyList<FileMetrics> WorstFiles { get; init; } = [];
+
+    /// <summary>Standard letter grade for a 0–100 score (single source of truth).</summary>
+    public static string ToGrade(int score) => score switch
+    {
+        >= 93 => "A", >= 87 => "B+", >= 80 => "B",
+        >= 70 => "C", >= 60 => "D",  _ => "F",
+    };
 }

@@ -4796,12 +4796,56 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
         Keyboard.Focus(this);
     }
 
-    /// <summary>Copies the current text selection to the clipboard.</summary>
+    /// <summary>Copies the current text selection to the clipboard with plain + HTML + RTF formats.</summary>
     public void CopySelection()
     {
-        var text = GetSelectedFlatText();
-        if (!string.IsNullOrEmpty(text))
-            System.Windows.Clipboard.SetText(text);
+        var text   = GetSelectedFlatText();
+        if (string.IsNullOrEmpty(text)) return;
+
+        var blocks = GetSelectedBlocksClone();
+        WpfHexEditor.Editor.DocumentEditor.Services.DocumentClipboardService.CopyRich(blocks, text);
+    }
+
+    /// <summary>
+    /// Builds a shallow clone of the blocks intersecting the current selection,
+    /// trimming the first/last block's text to the selection bounds. Used by
+    /// DocumentClipboardService to build HTML/RTF payloads that mirror the
+    /// visible selection (including formatting attributes).
+    /// </summary>
+    private List<WpfHexEditor.Editor.DocumentEditor.Core.Model.DocumentBlock> GetSelectedBlocksClone()
+    {
+        if (_selection.IsEmpty)
+            return new List<WpfHexEditor.Editor.DocumentEditor.Core.Model.DocumentBlock>(0);
+        var (start, end) = _selection.Ordered;
+        var list = new List<WpfHexEditor.Editor.DocumentEditor.Core.Model.DocumentBlock>(
+            end.BlockIndex - start.BlockIndex + 1);
+
+        for (int bi = start.BlockIndex; bi <= end.BlockIndex && bi < _blocks.Count; bi++)
+        {
+            var src  = _blocks[bi].Block;
+            var text = GetFlatText(bi);
+            int from = bi == start.BlockIndex ? start.CharOffset : 0;
+            int to   = bi == end.BlockIndex   ? end.CharOffset   : text.Length;
+            if (to <= from) continue;
+            var slice = text[from..to];
+
+            var clone = new WpfHexEditor.Editor.DocumentEditor.Core.Model.DocumentBlock
+            {
+                Kind      = src.Kind,
+                Text      = slice,
+                RawOffset = src.RawOffset,
+                RawLength = src.RawLength
+            };
+            // Skip binary attributes: keeping the byte[] reference would let
+            // clipboard consumers mutate the live model's image bytes.
+            foreach (var (k, v) in src.Attributes)
+            {
+                if (k == WpfHexEditor.Editor.DocumentEditor.Core.Model.DocumentBlockAttributes.BinaryData) continue;
+                clone.Attributes[k] = v;
+            }
+            list.Add(clone);
+        }
+        return list;
     }
 
     /// <summary>Cuts the current text selection.</summary>
@@ -4824,7 +4868,10 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             return;
         }
 
-        var text = System.Windows.Clipboard.GetText();
+        // Prefer the rich payload (HTML body stripped → text); fall back to plain.
+        var text = WpfHexEditor.Editor.DocumentEditor.Services.DocumentClipboardService.GetTextFromClipboard();
+        if (string.IsNullOrEmpty(text))
+            text = System.Windows.Clipboard.GetText();
         if (!string.IsNullOrEmpty(text))
         {
             DeleteSelectionIfAny();

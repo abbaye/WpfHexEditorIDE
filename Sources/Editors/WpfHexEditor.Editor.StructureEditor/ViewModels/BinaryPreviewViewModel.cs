@@ -15,6 +15,7 @@ using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.StructureEditor.Services;
 using WpfHexEditor.Core.FormatDetection;
+// StructureHexSyncService is in the same Services namespace, already imported above.
 
 namespace WpfHexEditor.Editor.StructureEditor.ViewModels;
 
@@ -36,12 +37,23 @@ public sealed class FieldResultRow
 public sealed class BinaryPreviewViewModel : ViewModelBase
 {
     // ── State ─────────────────────────────────────────────────────────────────
-    private IDocumentBuffer?  _buffer;
-    private byte[]?           _binaryBytes;
-    private bool              _isRunning;
-    private string            _statusText = "No binary loaded.";
+    private IDocumentBuffer?           _buffer;
+    private byte[]?                    _binaryBytes;
+    private bool                       _isRunning;
+    private string                     _statusText = "No binary loaded.";
+    private IStructureHexSyncService?  _sync;
 
     public ObservableCollection<FieldResultRow> Rows { get; } = new();
+
+    /// <summary>
+    /// Optional sync service. When set, <see cref="EditFieldHex"/> writes back
+    /// to the underlying buffer and notifies the host HexEditor.
+    /// </summary>
+    public IStructureHexSyncService? SyncService
+    {
+        get => _sync;
+        set => _sync = value;
+    }
 
     public string StatusText
     {
@@ -84,6 +96,7 @@ public sealed class BinaryPreviewViewModel : ViewModelBase
         try
         {
             _binaryBytes = await File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
+            _sync?.SetBytes(_binaryBytes);
             StatusText = $"Binary: {Path.GetFileName(filePath)} ({_binaryBytes.Length:N0} bytes)";
             if (_buffer is not null)
                 _ = RefreshAsync(_buffer.Text);
@@ -92,6 +105,32 @@ public sealed class BinaryPreviewViewModel : ViewModelBase
         {
             StatusText = $"Error loading binary: {ex.Message}";
         }
+    }
+
+    /// <summary>
+    /// Persists a new hex value for the given row back to the buffer (via
+    /// <see cref="SyncService"/>) and refreshes the preview. Offset is parsed
+    /// from <see cref="FieldResultRow.Offset"/> (e.g. "0x001C").
+    /// </summary>
+    public bool EditFieldHex(FieldResultRow row, string newHex)
+    {
+        if (_sync is null || _binaryBytes is null) return false;
+
+        var bytes = StructureHexSyncService.TryParseHex(newHex);
+        if (bytes is null) return false;
+
+        var offsetStr = row.Offset.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
+            ? row.Offset[2..]
+            : row.Offset;
+        if (!long.TryParse(offsetStr,
+                System.Globalization.NumberStyles.HexNumber,
+                System.Globalization.CultureInfo.InvariantCulture, out var offset))
+            return false;
+
+        if (!_sync.WriteField(offset, bytes, row.Name)) return false;
+
+        if (_buffer is not null) _ = RefreshAsync(_buffer.Text);
+        return true;
     }
 
     // ── Refresh ───────────────────────────────────────────────────────────────

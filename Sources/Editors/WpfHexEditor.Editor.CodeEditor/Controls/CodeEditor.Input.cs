@@ -1237,9 +1237,52 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (!mgr.TryExpand(word, out var snippet))
                 return false;
 
-            var expansion = SnippetManager.BuildExpansion(snippet, _cursorLine, start, word.Length);
+            var context = BuildSnippetVariableContext(snippet.Body, lineText, start);
+            var expansion = SnippetManager.BuildExpansion(snippet, _cursorLine, start, word.Length, context);
             ApplySnippetExpansion(expansion);
             return true;
+        }
+
+        private SnippetVariableContext BuildSnippetVariableContext(string body, string lineText, int triggerStart)
+        {
+            // Skip expensive lookups when the snippet body has no variables.
+            bool hasVariables = body.Contains("${", StringComparison.Ordinal);
+
+            string selected = string.Empty;
+            if (hasVariables && body.Contains("${SelectedText}", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    if (_selection is not null && !_selection.IsEmpty && _document is not null)
+                        selected = _document.GetText(_selection.NormalizedStart, _selection.NormalizedEnd);
+                }
+                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[Snippet] selection read failed: {ex.Message}"); }
+            }
+
+            string clipboard = string.Empty;
+            if (hasVariables && body.Contains("${ClipboardText}", StringComparison.OrdinalIgnoreCase))
+            {
+                try { clipboard = System.Windows.Clipboard.ContainsText() ? System.Windows.Clipboard.GetText() : ""; }
+                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[Snippet] clipboard read failed: {ex.Message}"); }
+            }
+
+            return new SnippetVariableContext
+            {
+                FilePath        = _currentFilePath ?? string.Empty,
+                SelectedText    = selected,
+                CurrentLineText = lineText,
+                CurrentLine     = _cursorLine,
+                CurrentColumn   = triggerStart,
+                IndentText      = ExtractLeadingWhitespace(lineText),
+                ClipboardText   = clipboard,
+            };
+        }
+
+        private static string ExtractLeadingWhitespace(string line)
+        {
+            int i = 0;
+            while (i < line.Length && (line[i] == ' ' || line[i] == '\t')) i++;
+            return i == 0 ? string.Empty : line[..i];
         }
 
         /// <summary>

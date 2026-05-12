@@ -208,7 +208,7 @@ namespace WpfHexEditor.Tests
         {
             var rule = new DetectionRule
             {
-                Signature = "504B03", // Odd length
+                Signature = "504B030", // Odd length (7 chars)
                 Offset = 0,
                 Required = true
             };
@@ -268,7 +268,7 @@ namespace WpfHexEditor.Tests
                     Value = "0x00",
                     Length = 1
                 },
-                Body = {
+                Body = new() {
                     new BlockDefinition {
                         Type = "field",
                         Name = "Loop Block",
@@ -346,7 +346,12 @@ namespace WpfHexEditor.Tests
         [TestMethod]
         public void FormatDefinition_FormatId_DeserializesCorrectly()
         {
-            var json = @"{ ""formatName"": ""Test"", ""formatId"": ""test-fmt"" }";
+            var json = @"{
+                ""formatName"": ""Test"",
+                ""formatId"": ""test-fmt"",
+                ""detection"": { ""signature"": ""DEADBEEF"", ""offset"": 0 },
+                ""blocks"": [ { ""type"": ""field"", ""name"": ""magic"", ""offset"": 0, ""length"": 4, ""color"": ""#FF0000"" } ]
+            }";
             var service = new FormatDetectionService();
             var fmt = service.ImportFromJson(json);
             Assert.IsNotNull(fmt);

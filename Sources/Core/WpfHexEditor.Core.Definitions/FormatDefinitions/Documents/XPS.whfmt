@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "XML Paper Specification",
   "formatId": "XPS",
-  "version": "2.02",
+  "version": "2.02.1",
   "extensions": [
     ".xps",
     ".oxps"
@@ -27,7 +27,8 @@
     "required": true,
     "validation": {
       "minFileSize": 100,
-      "maxSignatureOffset": 0
+      "maxSignatureOffset": 0,
+      "note": "Shares ZIP magic 504B0304 with OXPS, OOXML and other OPC packages. Discriminate via [Content_Types].xml entry: XPS uses ContentType 'application/vnd.ms-package.xps-fixeddocumentsequence+xml' and namespace 'http://schemas.microsoft.com/xps/2005/06'."
     }
   },
   "variables": {

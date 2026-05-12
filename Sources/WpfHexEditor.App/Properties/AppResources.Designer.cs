@@ -6144,7 +6144,154 @@ namespace WpfHexEditor.App.Properties {
                 return ResourceManager.GetString("CodeAnalysis_ContextMenu_SuppressInline", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Suppress in source.
+        /// </summary>
+        internal static string CodeAnalysis_Suppress_InSource {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Suppress_InSource", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Suppress for this file.
+        /// </summary>
+        internal static string CodeAnalysis_Suppress_InFile {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Suppress_InFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Add to baseline.
+        /// </summary>
+        internal static string CodeAnalysis_Suppress_InBaseline {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Suppress_InBaseline", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Disable rule globally.
+        /// </summary>
+        internal static string CodeAnalysis_Suppress_Disable {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Suppress_Disable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Remove TODO/FIXME marker.
+        /// </summary>
+        internal static string CodeAnalysis_Fix_WH0032_Title {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Fix_WH0032_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Add .ConfigureAwait(false).
+        /// </summary>
+        internal static string CodeAnalysis_Fix_WH0062_Title {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Fix_WH0062_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Use Any() instead of Count() &gt; 0.
+        /// </summary>
+        internal static string CodeAnalysis_Fix_WH0070_Title {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Fix_WH0070_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Suppress {0} here.
+        /// </summary>
+        internal static string CodeAnalysis_Fix_Suppress_Title {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_Fix_Suppress_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Score history.
+        /// </summary>
+        internal static string CodeAnalysis_History_Title {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_History_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} runs · last {1} days · trend {2}.
+        /// </summary>
+        internal static string CodeAnalysis_History_Summary {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_History_Summary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No history yet — run analysis again to start a trend.
+        /// </summary>
+        internal static string CodeAnalysis_History_NoData {
+            get {
+                return ResourceManager.GetString("CodeAnalysis_History_NoData", resourceCulture);
+            }
+        }
+
+        internal static string CodeAnalysis_Duplication_Header_Severity     { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Header_Severity",     resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Header_Lines        { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Header_Lines",        resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Header_Tokens       { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Header_Tokens",       resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Header_Occurrences  { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Header_Occurrences",  resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Header_PrimaryFile  { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Header_PrimaryFile",  resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Filter_Placeholder  { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Filter_Placeholder",  resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Sort_Lines          { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Sort_Lines",          resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Sort_Tokens         { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Sort_Tokens",         resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Sort_Occurrences    { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Sort_Occurrences",    resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Summary             { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Summary",             resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Preview_NoSelection { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Preview_NoSelection", resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Export_Button       { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Export_Button",       resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Export_FileName     { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Export_FileName",     resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Export_Title        { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Export_Title",        resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Menu_OpenA          { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Menu_OpenA",          resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Menu_OpenB          { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Menu_OpenB",          resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Menu_OpenAll        { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Menu_OpenAll",        resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Menu_CopyMarkdown   { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Menu_CopyMarkdown",   resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Menu_SuggestExtract { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Menu_SuggestExtract", resourceCulture); } }
+        internal static string CodeAnalysis_Duplication_Menu_SuppressFile   { get { return ResourceManager.GetString("CodeAnalysis_Duplication_Menu_SuppressFile",   resourceCulture); } }
+
+        internal static string CodeAnalysis_Status_Running   { get { return ResourceManager.GetString("CodeAnalysis_Status_Running",   resourceCulture); } }
+        internal static string CodeAnalysis_Status_Complete  { get { return ResourceManager.GetString("CodeAnalysis_Status_Complete",  resourceCulture); } }
+        internal static string CodeAnalysis_Status_None      { get { return ResourceManager.GetString("CodeAnalysis_Status_None",      resourceCulture); } }
+        internal static string CodeAnalysis_Status_Failed    { get { return ResourceManager.GetString("CodeAnalysis_Status_Failed",    resourceCulture); } }
+        internal static string CodeAnalysis_Tab_Title        { get { return ResourceManager.GetString("CodeAnalysis_Tab_Title",        resourceCulture); } }
+        internal static string CodeAnalysis_Tab_ToolTip      { get { return ResourceManager.GetString("CodeAnalysis_Tab_ToolTip",      resourceCulture); } }
+        internal static string CodeAnalysis_ContextMenu_OpenRuleHelp { get { return ResourceManager.GetString("CodeAnalysis_ContextMenu_OpenRuleHelp", resourceCulture); } }
+        internal static string CodeAnalysis_Cycles_Title             { get { return ResourceManager.GetString("CodeAnalysis_Cycles_Title",             resourceCulture); } }
+        internal static string CodeAnalysis_Cycles_NoneFound         { get { return ResourceManager.GetString("CodeAnalysis_Cycles_NoneFound",         resourceCulture); } }
+        internal static string CodeAnalysis_Cycles_Tooltip           { get { return ResourceManager.GetString("CodeAnalysis_Cycles_Tooltip",           resourceCulture); } }
+        internal static string CodeAnalysis_Fix_WH0010_Title         { get { return ResourceManager.GetString("CodeAnalysis_Fix_WH0010_Title",         resourceCulture); } }
+        internal static string CodeAnalysis_Fix_WH0013_Title         { get { return ResourceManager.GetString("CodeAnalysis_Fix_WH0013_Title",         resourceCulture); } }
+        internal static string CodeAnalysis_Fix_WH0061_Title         { get { return ResourceManager.GetString("CodeAnalysis_Fix_WH0061_Title",         resourceCulture); } }
+
+        internal static string PluginCmd_New_Description    { get { return ResourceManager.GetString("PluginCmd_New_Description",    resourceCulture); } }
+        internal static string PluginCmd_New_Usage          { get { return ResourceManager.GetString("PluginCmd_New_Usage",          resourceCulture); } }
+        internal static string PluginCmd_New_NameRequired   { get { return ResourceManager.GetString("PluginCmd_New_NameRequired",   resourceCulture); } }
+        internal static string PluginCmd_New_FolderNotFound { get { return ResourceManager.GetString("PluginCmd_New_FolderNotFound", resourceCulture); } }
+        internal static string PluginCmd_New_Failed         { get { return ResourceManager.GetString("PluginCmd_New_Failed",         resourceCulture); } }
+        internal static string PluginCmd_New_Success        { get { return ResourceManager.GetString("PluginCmd_New_Success",        resourceCulture); } }
+        internal static string PluginCmd_New_NextStep       { get { return ResourceManager.GetString("PluginCmd_New_NextStep",       resourceCulture); } }
+        internal static string PluginCmd_Pack_Description   { get { return ResourceManager.GetString("PluginCmd_Pack_Description",   resourceCulture); } }
+        internal static string PluginCmd_Pack_Usage         { get { return ResourceManager.GetString("PluginCmd_Pack_Usage",         resourceCulture); } }
+        internal static string PluginCmd_Pack_FolderNotFound{ get { return ResourceManager.GetString("PluginCmd_Pack_FolderNotFound",resourceCulture); } }
+        internal static string PluginCmd_Pack_Failed        { get { return ResourceManager.GetString("PluginCmd_Pack_Failed",        resourceCulture); } }
+        internal static string PluginCmd_Pack_Success       { get { return ResourceManager.GetString("PluginCmd_Pack_Success",       resourceCulture); } }
+
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Copy as Markdown.
         /// </summary>

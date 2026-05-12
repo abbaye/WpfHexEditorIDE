@@ -725,4 +725,16 @@ or use Install to add a .whxplugin</value>
   <data name="PH_ColEventType" xml:space="preserve">
     <value>Event Type</value>
   </data>
+  <data name="PluginDevLog_Cat_Info"      xml:space="preserve"><value>Info</value></data>
+  <data name="PluginDevLog_Cat_Load"      xml:space="preserve"><value>Load</value></data>
+  <data name="PluginDevLog_Cat_Unload"    xml:space="preserve"><value>Unload</value></data>
+  <data name="PluginDevLog_Cat_HotReload" xml:space="preserve"><value>Hot Reload</value></data>
+  <data name="PluginDevLog_Cat_Crash"     xml:space="preserve"><value>Crash</value></data>
+  <data name="PluginDevLog_Cat_Slow"      xml:space="preserve"><value>Slow</value></data>
+  <data name="PluginDevLog_Clear"         xml:space="preserve"><value>Clear</value></data>
+  <data name="PluginDevLog_Col_Timestamp" xml:space="preserve"><value>Timestamp</value></data>
+  <data name="PluginDevLog_Col_Category"  xml:space="preserve"><value>Category</value></data>
+  <data name="PluginDevLog_Col_PluginId"  xml:space="preserve"><value>Plugin Id</value></data>
+  <data name="PluginDevLog_Col_Message"   xml:space="preserve"><value>Message</value></data>
+  <data name="PluginDevLog_PanelTitle"    xml:space="preserve"><value>Plugin Dev Log</value></data>
 </root>

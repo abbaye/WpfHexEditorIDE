@@ -105,6 +105,23 @@
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE943;" FontSize="13"/>
             </Button>
 
+            <Separator Style="{StaticResource PopSepStyle}"/>
+
+            <!-- Group: Import / Export template packages -->
+            <Button x:Name="PART_ImportBtn"
+                    Style="{StaticResource PopBtnStyle}"
+                    ToolTip="Import .whfmt template…"
+                    Click="OnImportClicked">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8B5;" FontSize="13"/>
+            </Button>
+
+            <Button x:Name="PART_ExportBtn"
+                    Style="{StaticResource PopBtnStyle}"
+                    ToolTip="Export as JSON / C struct / Python bytes"
+                    Click="OnExportClicked">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE898;" FontSize="13"/>
+            </Button>
+
             <!-- Group 3: Block operations (visible when Blocks tab is active) -->
             <Separator x:Name="PART_BlockSep" Style="{StaticResource PopSepStyle}" Visibility="Collapsed"/>
 

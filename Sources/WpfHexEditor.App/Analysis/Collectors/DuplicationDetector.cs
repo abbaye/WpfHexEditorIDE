@@ -30,15 +30,18 @@ internal static class DuplicationDetector
             var root = tree.GetRoot();
             foreach (var block in root.DescendantNodes().OfType<Microsoft.CodeAnalysis.CSharp.Syntax.BlockSyntax>())
             {
-                var tokens = block.DescendantTokens().ToList();
-                if (tokens.Count < minTokens) continue;
+                // Cheap pre-filter: streaming take avoids materializing the full
+                // token list for the vast majority of blocks (small methods).
+                int approxCount = block.DescendantTokens().Take(minTokens).Count();
+                if (approxCount < minTokens) continue;
 
+                var tokens = block.DescendantTokens().ToList();
                 var hash = ComputeNormalizedHash(tokens);
-                if (!buckets.ContainsKey(hash))
-                    buckets[hash] = [];
+                if (!buckets.TryGetValue(hash, out var bucket))
+                    buckets[hash] = bucket = [];
 
                 var span  = block.GetLocation().GetLineSpan();
-                buckets[hash].Add((
+                bucket.Add((
                     tree.FilePath,
                     span.StartLinePosition.Line + 1,
                     span.EndLinePosition.Line + 1,

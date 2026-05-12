@@ -11,6 +11,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core.BinaryMap;
 using WpfHexEditor.Editor.DocumentEditor.Core.Forensic;
+using WpfHexEditor.Editor.DocumentEditor.Core.Helpers;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 
@@ -36,7 +37,7 @@ public sealed class OdtDocumentLoader : IDocumentLoader
         DocumentModel     target,
         CancellationToken ct = default)
     {
-        byte[] rawBytes = await BufferStreamAsync(stream, ct);
+        byte[] rawBytes = await DocumentLoaderHelpers.BufferStreamAsync(stream, ct);
         using var ms = new MemoryStream(rawBytes, writable: false);
 
         using var zipReader = new OdtZipReader(ms);
@@ -57,10 +58,13 @@ public sealed class OdtDocumentLoader : IDocumentLoader
         if (contentEntryOffset >= 0)
             mapBuilder.RegisterZipEntry("content.xml", contentEntryOffset);
 
-        // Build style-name → formatting-properties map from styles.xml and content.xml automatic-styles
-        var styleProps = new Dictionary<string, IReadOnlyDictionary<string, object>>(StringComparer.OrdinalIgnoreCase);
-        LoadOdtStyles(zipReader, "styles.xml",  styleProps);  // named styles (baseline)
-        LoadOdtStyles(zipReader, "content.xml", styleProps);  // automatic styles override
+        // Build style-name → formatting-properties map from styles.xml and content.xml automatic-styles.
+        // Two-pass: collect raw style props + parent-style-name, then flatten basedOn chains.
+        var rawStyles = new Dictionary<string, OdtRawStyle>(StringComparer.OrdinalIgnoreCase);
+        LoadOdtStylesRaw(zipReader, "styles.xml",  rawStyles); // named styles (baseline)
+        LoadOdtStylesRaw(zipReader, "content.xml", rawStyles); // automatic styles override
+
+        var styleProps = FlattenOdtStyles(rawStyles);
 
         var mapper = new OdtXmlMapper(styleProps);
         var blocks = await Task.Run(
@@ -88,15 +92,6 @@ public sealed class OdtDocumentLoader : IDocumentLoader
         target.SetForensicAlerts(alerts);
     }
 
-    private static async Task<byte[]> BufferStreamAsync(Stream stream, CancellationToken ct)
-    {
-        if (stream is MemoryStream ms && ms.TryGetBuffer(out _))
-            return ms.ToArray();
-        using var buf = new MemoryStream();
-        await stream.CopyToAsync(buf, ct);
-        return buf.ToArray();
-    }
-
     private static DocumentMetadata ReadMetaXml(OdtZipReader zip)
     {
         var xml = zip.ReadEntryText("meta.xml");
@@ -111,28 +106,35 @@ public sealed class OdtDocumentLoader : IDocumentLoader
             {
                 Title      = doc.Descendants(dc   + "title").FirstOrDefault()?.Value            ?? string.Empty,
                 Author     = doc.Descendants(meta + "initial-creator").FirstOrDefault()?.Value  ?? string.Empty,
-                CreatedUtc = TryParseDate(doc.Descendants(meta + "creation-date").FirstOrDefault()?.Value)
+                CreatedUtc = DocumentLoaderHelpers.TryParseDate(doc.Descendants(meta + "creation-date").FirstOrDefault()?.Value)
             };
         }
         catch { return new DocumentMetadata(); }
     }
 
-    private static DateTime? TryParseDate(string? value) =>
-        DateTime.TryParse(value, out var dt) ? dt.ToUniversalTime() : null;
-
     /// <summary>
-    /// Reads all <c>style:style</c> elements from the given ZIP entry (styles.xml or content.xml)
-    /// and extracts their text-properties (bold, italic, underline, fontSize, fontFamily) into
-    /// <paramref name="into"/>. Content.xml automatic-styles should be loaded last to override.
+    /// Reads all <c>style:style</c> elements from the given ZIP entry into <paramref name="into"/>.
+    /// Captures raw text-properties + parent-style-name + family for later basedOn flattening.
+    /// Content.xml automatic-styles should be loaded last so they override base styles.xml entries.
     /// </summary>
-    private static void LoadOdtStyles(
+    private static void LoadOdtStylesRaw(
         OdtZipReader zipReader,
         string entryName,
-        Dictionary<string, IReadOnlyDictionary<string, object>> into)
+        Dictionary<string, OdtRawStyle> into)
     {
         var xml = zipReader.ReadEntryText(entryName);
         if (xml is null) return;
+        LoadOdtStylesRawFromXml(xml, into);
+    }
 
+    /// <summary>
+    /// XML-only variant of <see cref="LoadOdtStylesRaw"/> — used by FlatODT
+    /// where styles and content live in a single XML document.
+    /// </summary>
+    internal static void LoadOdtStylesRawFromXml(
+        string xml,
+        Dictionary<string, OdtRawStyle> into)
+    {
         XDocument doc;
         try { doc = XDocument.Parse(xml); }
         catch { return; }
@@ -145,30 +147,91 @@ public sealed class OdtDocumentLoader : IDocumentLoader
             var name = style.Attribute(styleNs + "name")?.Value;
             if (name is null) continue;
 
+            var parent = style.Attribute(styleNs + "parent-style-name")?.Value;
+            var family = style.Attribute(styleNs + "family")?.Value;
+
             var props = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             var tp    = style.Element(styleNs + "text-properties");
-            if (tp is null) { into[name] = props; continue; }
-
-            if (tp.Attribute(foNs + "font-weight")?.Value     == "bold")      props["bold"]      = true;
-            if (tp.Attribute(foNs + "font-style")?.Value      == "italic")    props["italic"]    = true;
-            if (tp.Attribute(foNs + "text-decoration")?.Value == "underline") props["underline"] = true;
-
-            var fs = tp.Attribute(foNs + "font-size")?.Value;
-            if (fs is not null)
+            if (tp is not null)
             {
-                // Parse "12pt", "14pt" → store as double fontSize
-                if (fs.EndsWith("pt", StringComparison.Ordinal) &&
-                    double.TryParse(fs[..^2], NumberStyles.Any, CultureInfo.InvariantCulture, out double ptVal))
-                    props["fontSize"] = ptVal;
+                if (tp.Attribute(foNs + "font-weight")?.Value     == "bold")      props["bold"]      = true;
+                if (tp.Attribute(foNs + "font-style")?.Value      == "italic")    props["italic"]    = true;
+                if (tp.Attribute(foNs + "text-decoration")?.Value == "underline") props["underline"] = true;
+
+                var fs = tp.Attribute(foNs + "font-size")?.Value;
+                double? sz = ParseOdtFontSizePt(fs);
+                if (sz is not null) props["fontSize"] = sz.Value;
+
+                var ff = tp.Attribute(foNs  + "font-family")?.Value
+                      ?? tp.Attribute(styleNs + "font-name")?.Value;
+                if (ff is not null) props["fontFamily"] = ff;
+
+                var color = tp.Attribute(foNs + "color")?.Value;
+                if (!string.IsNullOrEmpty(color))
+                    props["color"] = color.StartsWith('#') ? color : $"#{color.TrimStart('#')}";
             }
 
-            var ff = tp.Attribute(foNs  + "font-family")?.Value
-                  ?? tp.Attribute(styleNs + "font-name")?.Value;
-            if (ff is not null) props["fontFamily"] = ff;
-
-            into[name] = props;
+            into[name] = new OdtRawStyle(props, parent, family);
         }
     }
+
+    /// <summary>
+    /// Flattens basedOn chains (parent-style-name) with cycle guard. Parent props come first,
+    /// child overrides. Mirrors DocxStyleTable.Flatten and the new RtfStyleTable approach.
+    /// </summary>
+    internal static Dictionary<string, IReadOnlyDictionary<string, object>> FlattenOdtStyles(
+        IReadOnlyDictionary<string, OdtRawStyle> raw)
+    {
+        var resolved = new Dictionary<string, IReadOnlyDictionary<string, object>>(StringComparer.OrdinalIgnoreCase);
+        foreach (var name in raw.Keys)
+            resolved[name] = Flatten(name, raw, new HashSet<string>(StringComparer.OrdinalIgnoreCase));
+        return resolved;
+
+        static IReadOnlyDictionary<string, object> Flatten(
+            string name,
+            IReadOnlyDictionary<string, OdtRawStyle> r,
+            HashSet<string> visited)
+        {
+            if (!r.TryGetValue(name, out var self) || !visited.Add(name))
+                return new Dictionary<string, object>();
+
+            var parentProps = self.Parent is { Length: > 0 } p
+                ? Flatten(p, r, visited)
+                : new Dictionary<string, object>();
+
+            var merged = new Dictionary<string, object>(parentProps, StringComparer.OrdinalIgnoreCase);
+            foreach (var kv in self.Props) merged[kv.Key] = kv.Value;
+
+            // Carry the resolved family attribute so consumers can distinguish paragraph/text styles.
+            if (self.Family is not null) merged["__family"] = self.Family;
+            return merged;
+        }
+    }
+
+    /// <summary>Parses ODT font-size strings (12pt, 14pt, 1cm, 0.5in) into points.</summary>
+    private static double? ParseOdtFontSizePt(string? raw)
+    {
+        if (string.IsNullOrEmpty(raw)) return null;
+
+        if (raw.EndsWith("pt", StringComparison.Ordinal) &&
+            double.TryParse(raw[..^2], NumberStyles.Any, CultureInfo.InvariantCulture, out double pt))
+            return pt;
+        if (raw.EndsWith("cm", StringComparison.Ordinal) &&
+            double.TryParse(raw[..^2], NumberStyles.Any, CultureInfo.InvariantCulture, out double cm))
+            return cm * 28.3464567;          // 1 cm = 28.346 pt
+        if (raw.EndsWith("mm", StringComparison.Ordinal) &&
+            double.TryParse(raw[..^2], NumberStyles.Any, CultureInfo.InvariantCulture, out double mm))
+            return mm * 2.83464567;
+        if (raw.EndsWith("in", StringComparison.Ordinal) &&
+            double.TryParse(raw[..^2], NumberStyles.Any, CultureInfo.InvariantCulture, out double inch))
+            return inch * 72.0;
+        return null;
+    }
+
+    internal sealed record OdtRawStyle(
+        IReadOnlyDictionary<string, object> Props,
+        string? Parent,
+        string? Family);
 
     private static DocumentPageSettings? ReadOdtPageSettings(OdtZipReader zip)
     {

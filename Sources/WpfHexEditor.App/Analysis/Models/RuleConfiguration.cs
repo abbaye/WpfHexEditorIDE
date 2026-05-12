@@ -13,5 +13,6 @@ public sealed class RuleConfiguration
     public string       RuleId      { get; set; } = string.Empty;
     public string       Description { get; set; } = string.Empty;
     public RuleSeverity Severity    { get; set; } = RuleSeverity.Warning;
+    public RuleCategory Category    { get; set; } = RuleCategory.Conventions;
     public bool         IsEnabled   => Severity != RuleSeverity.Disabled;
 }

@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.App.Analysis.Models;
+using WpfHexEditor.App.Analysis.Suppressions;
 using WpfHexEditor.App.Analysis.UI.ContextMenus;
 using WpfHexEditor.App.Analysis.UI.ViewModels;
 using WpfHexEditor.App.Properties;
@@ -26,6 +27,7 @@ public partial class CodeAnalysisReportPane : UserControl
     private          Func<Task>?                  _reRunCallback;
     private          Func<Task>?                  _runSolutionCallback;
     private          Func<string, Task>?          _runFileCallback;
+    private          SuppressionApplyService?     _suppress;
 
     public CodeAnalysisReportPane(
         CodeAnalysisReportViewModel vm,
@@ -36,6 +38,16 @@ public partial class CodeAnalysisReportPane : UserControl
         _docHost = docHost;
         DataContext = vm;
 
+        // Re-apply filter/sort + drop the snippet cache whenever a fresh report
+        // arrives. DuplicationSummaryText is raised at the end of SetReport so
+        // it's a stable, allocation-free signal. VM outlives this control, so
+        // we unsubscribe on Unloaded — but a docked pane fires Unloaded on
+        // tab-switch and Loaded again on tab-return, so re-subscribe there
+        // (idempotently — `_vmSubscribed` guards against double-add).
+        Loaded   += (_, _) => SubscribeVm();
+        Unloaded += (_, _) => UnsubscribeVm();
+        SubscribeVm();
+
         // Phase 7 — keyboard shortcuts (F5 = re-run, Ctrl+F = focus search)
         InputBindings.Add(new KeyBinding(
             new RelayCmd(_ => _ = (_reRunCallback?.Invoke() ?? Task.CompletedTask)),
@@ -45,6 +57,29 @@ public partial class CodeAnalysisReportPane : UserControl
             new KeyGesture(Key.F, ModifierKeys.Control)));
     }
 
+    private bool _vmSubscribed;
+
+    private void SubscribeVm()
+    {
+        if (_vmSubscribed) return;
+        _vm.PropertyChanged += OnVmPropertyChanged;
+        _vmSubscribed = true;
+    }
+
+    private void UnsubscribeVm()
+    {
+        if (!_vmSubscribed) return;
+        _vm.PropertyChanged -= OnVmPropertyChanged;
+        _vmSubscribed = false;
+    }
+
+    private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(CodeAnalysisReportViewModel.DuplicationSummaryText)) return;
+        Controls.DuplicationCodePreview.InvalidateCache();
+        if (IsLoaded) ApplyDupView();
+    }
+
     internal void SetReRunCallback(Func<Task> rerun, Func<Task> runSolution, Func<string, Task> runFile)
     {
         _reRunCallback       = rerun;
@@ -52,11 +87,14 @@ public partial class CodeAnalysisReportPane : UserControl
         _runFileCallback     = runFile;
     }
 
+    internal void SetSuppressionService(SuppressionApplyService suppress)
+        => _suppress = suppress;
+
     // Phase 7 — Context menu opening (call site: DataGrid.ContextMenuOpening)
     private void OnGridContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
         if (sender is not DataGrid grid) return;
-        var builder = new AnalysisContextMenuBuilder(_docHost, _vm);
+        var builder = new AnalysisContextMenuBuilder(_docHost, _vm, scopedReRun: null, suppress: _suppress);
         grid.ContextMenu = grid.CurrentItem switch
         {
             ProjectMetrics p              => builder.BuildForProject(p),
@@ -65,6 +103,7 @@ public partial class CodeAnalysisReportPane : UserControl
             MethodMetrics m               => builder.BuildForMethod(m, null),
             IssueViewModel iv             => builder.BuildForIssue(iv),
             CouplingMetrics c             => builder.BuildForCoupling(c),
+            DuplicationGroupViewModel dvm => builder.BuildForDuplicationVm(dvm),
             DuplicationGroup d            => builder.BuildForDuplication(d),
             DeadSymbol ds                 => builder.BuildForDeadSymbol(ds),
             _                             => null,
@@ -314,5 +353,49 @@ public partial class CodeAnalysisReportPane : UserControl
             3 => "Info",
             _ => "All",
         };
+    }
+
+    // ── Duplication tab (Phase 10B) ──────────────────────────────────────────
+
+    private void OnDupFilterChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        => ApplyDupView();
+
+    private void OnDupSortChanged(object sender, SelectionChangedEventArgs e)
+        => ApplyDupView();
+
+    private void ApplyDupView()
+    {
+        if (DataContext is not CodeAnalysisReportViewModel vm) return;
+        var view = System.Windows.Data.CollectionViewSource.GetDefaultView(vm.DuplicationGroups);
+
+        string query = DupFilterBox?.Text?.Trim() ?? string.Empty;
+        view.Filter = string.IsNullOrEmpty(query)
+            ? null
+            : new Predicate<object>(o =>
+                o is DuplicationGroupViewModel d
+                && d.Occurrences.Any(occ => occ.FilePath.Contains(query, StringComparison.OrdinalIgnoreCase)));
+
+        view.SortDescriptions.Clear();
+        string prop = DupSortCombo?.SelectedIndex switch
+        {
+            1 => nameof(DuplicationGroupViewModel.TokenCount),
+            2 => nameof(DuplicationGroupViewModel.OccurrenceCount),
+            _ => nameof(DuplicationGroupViewModel.LineCount),
+        };
+        view.SortDescriptions.Add(new System.ComponentModel.SortDescription(prop,
+            System.ComponentModel.ListSortDirection.Descending));
+    }
+
+    private void OnDupExportClicked(object sender, RoutedEventArgs e)
+    {
+        if (_vm.CurrentReport is null) return;
+        var dlg = new SaveFileDialog
+        {
+            FileName = AppResources.CodeAnalysis_Duplication_Export_FileName,
+            Filter   = AppResources.CodeAnalysis_Export_Filter_Markdown,
+        };
+        if (dlg.ShowDialog() != true) return;
+        var content = Services.DuplicationReportExporter.Build(_vm);
+        File.WriteAllText(dlg.FileName, content, Encoding.UTF8);
     }
 }

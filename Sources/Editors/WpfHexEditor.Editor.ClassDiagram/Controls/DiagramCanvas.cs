@@ -33,6 +33,7 @@ using WpfHexEditor.Editor.ClassDiagram.Properties;
 using WpfHexEditor.Editor.ClassDiagram.Core.Layout;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Editor.ClassDiagram.Services;
+using WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.Abstractions;
 using WpfHexEditor.Editor.ClassDiagram.ViewModels;
 
 namespace WpfHexEditor.Editor.ClassDiagram.Controls;
@@ -90,10 +91,14 @@ public sealed class DiagramCanvas : Canvas
     private double _dragNodeStartY;
     private Dictionary<string, Point> _dragStartPositions = []; // for multi-node drag
 
-    // ── Resize gripper ────────────────────────────────────────────────────────
-    private ClassNode? _resizingNode;
-    private double     _resizeStartY;
-    private double     _resizeStartHeight;
+    // ── Resize gripper (8-way) ────────────────────────────────────────────────
+    private ClassNode?  _resizingNode;
+    private ResizeEdge  _resizingEdge;
+    private Point       _resizeStartPt;
+    private double      _resizeStartHeight;
+    private double      _resizeStartWidth;
+    private double      _resizeStartNodeX;
+    private double      _resizeStartNodeY;
 
     // ── Swimlane group drag ──────────────────────────────────────────────────
     private string? _draggingGroupNs;
@@ -131,9 +136,11 @@ public sealed class DiagramCanvas : Canvas
     // ── Events ────────────────────────────────────────────────────────────────
     public event EventHandler<ClassNode?>?                    SelectedClassChanged;
     public event EventHandler<ClassNode?>?                    HoveredClassChanged;
-    public event EventHandler<ClassNode?>?                    AddMemberRequested;
+    public event EventHandler<(ClassNode Node, MemberKind Kind)>? AddMemberRequested;
     public event EventHandler<(ClassNode Node, string? NewName)>? RenameNodeRequested;
+    public event EventHandler<(ClassNode Node, ClassMember Member)>? RenameMemberRequested;
     public event EventHandler<(ClassNode Node, ClassMember Member)>? DeleteMemberRequested;
+    public event EventHandler<(ClassNode Node, ClassMember Member, MemberVisibility NewVisibility)>? ChangeMemberVisibilityRequested;
     public event EventHandler<(ClassNode Node, ClassMember Member)>? NavigateToMemberRequested;
     public event EventHandler<string>?                        ExportRequested;  // format: "png","plantUml","structurizr","mermaid","svg","csharp"
     public event EventHandler<LayoutStrategyKind>?            LayoutStrategyRequested;
@@ -192,6 +199,11 @@ public sealed class DiagramCanvas : Canvas
     /// <summary>Injects the undo manager so drag/resize/delete ops are undoable.</summary>
     public void SetUndoManager(ClassDiagramUndoManager um) => _undoManager = um;
 
+    /// <summary>Phase F (ADR-036) — installs the live-sync coordinator for watcher cycle-prevention.</summary>
+    public void SetLiveSyncCoordinator(ILiveSyncCoordinator? coordinator) => _liveSync = coordinator;
+
+    private ILiveSyncCoordinator? _liveSync;
+
     /// <summary>Injects the snap engine so drag-move snaps to grid when enabled.</summary>
     public void SetSnapEngine(ClassSnapEngineService snap) => _snapEngine = snap;
 
@@ -246,6 +258,18 @@ public sealed class DiagramCanvas : Canvas
     /// <summary>Returns the primary selected class node, or null.</summary>
     public ClassNode? SelectedNode => _primarySelected;
 
+    /// <summary>Selected member inside a class node (set by row-level clicks); null when the selection is at the class level.</summary>
+    public ClassMember? SelectedMember => _selectedMember;
+
+    /// <summary>Node that owns <see cref="SelectedMember"/>; null when no member is selected.</summary>
+    public ClassNode? SelectedMemberNode => _selectedMemberNode;
+
+    /// <summary>Header rectangle (diagram coords) of <paramref name="node"/>. Used to position inline rename overlay.</summary>
+    public Rect GetHeaderBoundsOf(ClassNode node) => _layer.GetHeaderBounds(node);
+
+    /// <summary>Member-row rectangle (diagram coords) inside <paramref name="node"/>; null when the section is collapsed.</summary>
+    public Rect? GetMemberBoundsOf(ClassNode node, ClassMember member) => _layer.GetMemberBounds(node, member);
+
     /// <summary>The document currently rendered by this canvas.</summary>
     public DiagramDocument? Document => _doc;
 
@@ -273,6 +297,15 @@ public sealed class DiagramCanvas : Canvas
             Description: $"Delete {node.Name}",
             UndoAction: () => { doc.Classes.Add(node); foreach (var r in removedRels) doc.Relationships.Add(r); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); },
             RedoAction: () => { doc.Classes.Remove(node); foreach (var r in removedRels) doc.Relationships.Remove(r); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); }));
+
+        // Round-trip: remove the type declaration from the source file.
+        if (_undoManager is not null)
+            RoundTripScope.TryApply(
+                node,
+                new RemoveType() { TargetTypeFullName = node.Name },
+                _undoManager,
+                $"Source delete {node.Name}",
+                liveSync: _liveSync);
     }
 
     /// <summary>Returns all currently selected node IDs.</summary>
@@ -750,6 +783,46 @@ public sealed class DiagramCanvas : Canvas
 
     // ── Mouse – canvas level ──────────────────────────────────────────────────
 
+    /// <summary>
+    /// Computes the new (X, Y, W, H) rectangle for the node being resized given
+    /// the active <paramref name="edge"/> and the current pointer position.
+    /// Enforces minimum width/height; when shrinking from the left or top below
+    /// the minimum, pins the new origin so the opposite edge stays put.
+    /// </summary>
+    private Rect ComputeResizedRect(ResizeEdge edge, Point pt)
+    {
+        const double minW = 80, minH = 40;
+        double dx = pt.X - _resizeStartPt.X;
+        double dy = pt.Y - _resizeStartPt.Y;
+
+        double newX = _resizeStartNodeX;
+        double newY = _resizeStartNodeY;
+        double newW = _resizeStartWidth;
+        double newH = _resizeStartHeight;
+
+        bool affectsLeft = edge is ResizeEdge.W  or ResizeEdge.NW or ResizeEdge.SW;
+        bool affectsTop  = edge is ResizeEdge.N  or ResizeEdge.NE or ResizeEdge.NW;
+        bool affectsRight  = edge is ResizeEdge.E  or ResizeEdge.NE or ResizeEdge.SE;
+        bool affectsBottom = edge is ResizeEdge.S  or ResizeEdge.SE or ResizeEdge.SW;
+
+        if (affectsLeft)   { newX = _resizeStartNodeX + dx; newW = _resizeStartWidth  - dx; }
+        if (affectsRight)  { newW = _resizeStartWidth  + dx; }
+        if (affectsTop)    { newY = _resizeStartNodeY + dy; newH = _resizeStartHeight - dy; }
+        if (affectsBottom) { newH = _resizeStartHeight + dy; }
+
+        if (newW < minW)
+        {
+            if (affectsLeft) newX = _resizeStartNodeX + (_resizeStartWidth - minW);
+            newW = minW;
+        }
+        if (newH < minH)
+        {
+            if (affectsTop)  newY = _resizeStartNodeY + (_resizeStartHeight - minH);
+            newH = minH;
+        }
+        return new Rect(newX, newY, newW, newH);
+    }
+
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
     {
         base.OnMouseLeftButtonDown(e);
@@ -781,15 +854,21 @@ public sealed class DiagramCanvas : Canvas
             }
         }
 
-        // Resize gripper — bottom edge of any node
-        if (_doc is not null)
+        // 8-way resize gripper on the primary-selected node.
+        // We restrict to the selected node so unselected nodes don't fight
+        // hover/click interactions with their handles.
+        if (_doc is not null && _primarySelected is not null)
         {
-            var gripNode = _layer.IsGripperHit(_doc.Classes, pt);
-            if (gripNode is not null)
+            var hit = _layer.HitTestResizeHandle(_primarySelected, pt);
+            if (hit is { } handle)
             {
-                _resizingNode      = gripNode;
-                _resizeStartY      = pt.Y;
-                _resizeStartHeight = _layer.ComputeNodeHeight(gripNode);
+                _resizingNode      = handle.Node;
+                _resizingEdge      = handle.Edge;
+                _resizeStartPt     = pt;
+                _resizeStartHeight = _layer.ComputeNodeHeight(handle.Node);
+                _resizeStartWidth  = handle.Node.Width;
+                _resizeStartNodeX  = handle.Node.X;
+                _resizeStartNodeY  = handle.Node.Y;
                 UpdateSelectAdornerPosition();
                 CaptureMouse();
                 e.Handled = true;
@@ -916,11 +995,14 @@ public sealed class DiagramCanvas : Canvas
             return;
         }
 
-        // Node resize in progress
+        // Node resize in progress (8-way)
         if (_resizingNode is not null)
         {
-            double dy = pt.Y - _resizeStartY;
-            _layer.SetCustomHeight(_resizingNode.Id, Math.Max(_resizeStartHeight + dy, 40));
+            var rect = ComputeResizedRect(_resizingEdge, pt);
+            _resizingNode.X     = rect.X;
+            _resizingNode.Y     = rect.Y;
+            _resizingNode.Width = rect.Width;
+            _layer.SetCustomHeight(_resizingNode.Id, rect.Height);
             _layer.RenderAll(_doc!, _selectedNode?.Id, _hoveredNode?.Id);
             UpdateSelectAdornerPosition();
             e.Handled = true;
@@ -1005,11 +1087,24 @@ public sealed class DiagramCanvas : Canvas
                 }
             }
 
-            // Show SizeNS cursor when hovering over a node's bottom-edge gripper,
-            // SizeAll cursor when hovering a swimlane background (group drag hint)
-            bool onGripper = _doc is not null && _layer.IsGripperHit(_doc.Classes, pt) is not null;
-            if (onGripper)
-                Cursor = Cursors.SizeNS;
+            // 8-way resize cursor when hovering one of the selected node's handles;
+            // SizeAll over a swimlane background for group-drag hint.
+            Cursor? resizeCursor = null;
+            if (_doc is not null && _primarySelected is not null)
+            {
+                var hit = _layer.HitTestResizeHandle(_primarySelected, pt);
+                if (hit is { } h)
+                    resizeCursor = h.Edge switch
+                    {
+                        ResizeEdge.N or ResizeEdge.S   => Cursors.SizeNS,
+                        ResizeEdge.E or ResizeEdge.W   => Cursors.SizeWE,
+                        ResizeEdge.NE or ResizeEdge.SW => Cursors.SizeNESW,
+                        ResizeEdge.NW or ResizeEdge.SE => Cursors.SizeNWSE,
+                        _                              => null
+                    };
+            }
+            if (resizeCursor is not null)
+                Cursor = resizeCursor;
             else if (_hoveredNode is null && _layer.HitTestSwimLane(pt) is not null)
                 Cursor = Cursors.SizeAll;
             else
@@ -1055,19 +1150,43 @@ public sealed class DiagramCanvas : Canvas
 
         if (_resizingNode is not null)
         {
-            // Commit resize undo entry
+            // Commit 8-way resize undo entry — captures every dimension that
+            // can change so undo restores the box exactly to its starting rect.
             if (_undoManager is not null && _doc is not null)
             {
-                double finalH  = _layer.ComputeNodeHeight(_resizingNode);
-                double startH  = _resizeStartHeight;
-                var    rNode   = _resizingNode;
-                var    rDoc    = _doc;   // capture current doc
-                if (Math.Abs(finalH - startH) > 0.5)
+                var    rNode    = _resizingNode;
+                var    rDoc     = _doc;
+                double startX   = _resizeStartNodeX;
+                double startY   = _resizeStartNodeY;
+                double startW   = _resizeStartWidth;
+                double startH   = _resizeStartHeight;
+                double finalX   = rNode.X;
+                double finalY   = rNode.Y;
+                double finalW   = rNode.Width;
+                double finalH   = _layer.ComputeNodeHeight(rNode);
+
+                bool changed =
+                    Math.Abs(finalH - startH) > 0.5 ||
+                    Math.Abs(finalW - startW) > 0.5 ||
+                    Math.Abs(finalX - startX) > 0.5 ||
+                    Math.Abs(finalY - startY) > 0.5;
+
+                if (changed)
                 {
                     _undoManager.Push(new SingleClassDiagramUndoEntry(
                         Description: $"Resize {rNode.Name}",
-                        UndoAction: () => { _layer.SetCustomHeight(rNode.Id, startH); _layer.RenderAll(rDoc, _selectedNode?.Id, _hoveredNode?.Id); },
-                        RedoAction: () => { _layer.SetCustomHeight(rNode.Id, finalH); _layer.RenderAll(rDoc, _selectedNode?.Id, _hoveredNode?.Id); }));
+                        UndoAction: () =>
+                        {
+                            rNode.X = startX; rNode.Y = startY; rNode.Width = startW;
+                            _layer.SetCustomHeight(rNode.Id, startH);
+                            _layer.RenderAll(rDoc, _selectedNode?.Id, _hoveredNode?.Id);
+                        },
+                        RedoAction: () =>
+                        {
+                            rNode.X = finalX; rNode.Y = finalY; rNode.Width = finalW;
+                            _layer.SetCustomHeight(rNode.Id, finalH);
+                            _layer.RenderAll(rDoc, _selectedNode?.Id, _hoveredNode?.Id);
+                        }));
                 }
             }
             _resizingNode = null;
@@ -1363,10 +1482,10 @@ public sealed class DiagramCanvas : Canvas
             }));
 
         var addMenu = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_AddMember };
-        addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, node)));
-        addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, node)));
-        addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, node)));
-        addMenu.Items.Add(MakeItem("\uECAD", "Event",    () => AddMemberRequested?.Invoke(this, node)));
+        addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, (node, MemberKind.Field))));
+        addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, (node, MemberKind.Property))));
+        addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, (node, MemberKind.Method))));
+        addMenu.Items.Add(MakeItem("\uECAD", "Event",    () => AddMemberRequested?.Invoke(this, (node, MemberKind.Event))));
         menu.Items.Add(addMenu);
 
         menu.Items.Add(MakeItem("\uE790", "Change Color…",  () => ChangeNodeColorRequested?.Invoke(this, node)));
@@ -1384,20 +1503,29 @@ public sealed class DiagramCanvas : Canvas
 
         if (member is not null)
         {
-            menu.Items.Add(MakeItem("\uE70F", "Rename…",            () => RenameNodeRequested?.Invoke(this, (node, null))));
+            menu.Items.Add(MakeItem("\uE70F", "Rename…",            () => RenameMemberRequested?.Invoke(this, (node, member))));
             menu.Items.Add(MakeItem("\uE74D", "Delete",             () => DeleteMemberRequested?.Invoke(this, (node, member))));
             menu.Items.Add(MakeItem("\uE8C8", "Duplicate",          () => DuplicateNode(node)));
             menu.Items.Add(new Separator());
             menu.Items.Add(MakeItem("\uE16C", "Copy Name",          () => Clipboard.SetText(member.DisplayLabel)));
             menu.Items.Add(MakeItem("\uE7C5", "Navigate to Source", () => NavigateToMemberRequested?.Invoke(this, (node, member))));
             menu.Items.Add(new Separator());
+
+            var visMenu = new MenuItem { Header = "Visibility" };
+            var capturedMember = member; // capture before lambdas
+            visMenu.Items.Add(MakeItem("",  "public",    () => ChangeMemberVisibilityRequested?.Invoke(this, (node, capturedMember, MemberVisibility.Public))));
+            visMenu.Items.Add(MakeItem("",  "internal",  () => ChangeMemberVisibilityRequested?.Invoke(this, (node, capturedMember, MemberVisibility.Internal))));
+            visMenu.Items.Add(MakeItem("",  "protected", () => ChangeMemberVisibilityRequested?.Invoke(this, (node, capturedMember, MemberVisibility.Protected))));
+            visMenu.Items.Add(MakeItem("",  "private",   () => ChangeMemberVisibilityRequested?.Invoke(this, (node, capturedMember, MemberVisibility.Private))));
+            menu.Items.Add(visMenu);
+            menu.Items.Add(new Separator());
         }
 
         var addMenu = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_AddMember };
-        addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, node)));
-        addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, node)));
-        addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, node)));
-        addMenu.Items.Add(MakeItem("\uECAD", "Event",    () => AddMemberRequested?.Invoke(this, node)));
+        addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, (node, MemberKind.Field))));
+        addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, (node, MemberKind.Property))));
+        addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, (node, MemberKind.Method))));
+        addMenu.Items.Add(MakeItem("\uECAD", "Event",    () => AddMemberRequested?.Invoke(this, (node, MemberKind.Event))));
         menu.Items.Add(addMenu);
 
         menu.Items.Add(new Separator());
@@ -1623,12 +1751,33 @@ public sealed class DiagramCanvas : Canvas
         var node = new ClassNode { Name = typeName, Id = Guid.NewGuid().ToString(), Kind = kind };
         node.X = Math.Max(0, _lastMenuPoint.X - node.Width / 2);
         node.Y = Math.Max(0, _lastMenuPoint.Y - 40);
+
+        // Phase 1B-7: inherit a source-file target from the document so the
+        // AddType round-trip can write the new declaration to the .cs file.
+        string? targetFile = DiagramTargetFileResolver.Resolve(doc, _primarySelected);
+        if (targetFile is not null)
+        {
+            node.SourceFilePath = targetFile;
+            node.Namespace = doc.Classes
+                .FirstOrDefault(c => string.Equals(c.SourceFilePath, targetFile, StringComparison.OrdinalIgnoreCase))?
+                .Namespace ?? string.Empty;
+        }
+
         doc.Classes.Add(node);
         _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id);
         _undoManager?.Push(new SingleClassDiagramUndoEntry(
             Description: $"Add {kind} {typeName}",
             UndoAction: () => { doc.Classes.Remove(node); _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); },
             RedoAction: () => { doc.Classes.Add(node);    _layer.RenderAll(doc, _selectedNode?.Id, _hoveredNode?.Id); }));
+
+        if (_undoManager is not null && node.SourceFilePath is not null)
+            RoundTripScope.TryApply(
+                node,
+                new AddType(TypeSnippetBuilder.ForLanguage(node)) { TargetTypeFullName = node.Name },
+                _undoManager,
+                $"Source add {kind} {typeName}",
+                liveSync: _liveSync);
+
         SelectSingleNode(node);
         RenameNodeRequested?.Invoke(this, (node, null));
     }

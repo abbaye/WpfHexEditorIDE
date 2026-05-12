@@ -134,6 +134,31 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     {
         _context = context;
 
+        // ADR-022 Phase 1B-3: register built-in round-trip editors so the
+        // RoundTripEditorRegistry has at least the C# editor available before
+        // any diagram tab opens. VB editor will join in Phase 1.5.
+        WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.Abstractions.RoundTripEditorRegistry.Register(
+            new WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.CSharpRoundTripEditor());
+        // Phase A (ADR-037) — VB.NET parity. Registered at the same point as
+        // the C# editor so any tab can resolve by .vb extension.
+        WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.Abstractions.RoundTripEditorRegistry.Register(
+            new WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.VisualBasicRoundTripEditor());
+
+        // ADR-032 Phase 4: register built-in DSL importers (Mermaid, PlantUML).
+        WpfHexEditor.Editor.ClassDiagram.Core.Import.DiagramImporterRegistry.Register(
+            new WpfHexEditor.Editor.ClassDiagram.Core.Import.MermaidImporter());
+        WpfHexEditor.Editor.ClassDiagram.Core.Import.DiagramImporterRegistry.Register(
+            new WpfHexEditor.Editor.ClassDiagram.Core.Import.PlantUmlImporter());
+
+        // ADR-034 Phase 1B-6: wire RoundTripScope to the actual Roslyn pipeline.
+        // The editor assembly can't reference DiagramCodeEditService (Plugins ←
+        // Editor would be a layering violation), so we install a delegate here.
+        WpfHexEditor.Editor.ClassDiagram.Services.RoundTripScope.Applier =
+            (path, edit, ct) => Analysis.DiagramCodeEditService.ApplyEditAsync(
+                path, edit, liveSync: null, confirmBeforeWrite: null, ct: ct);
+        WpfHexEditor.Editor.ClassDiagram.Services.RoundTripScope.ErrorReporter =
+            msg => System.Diagnostics.Debug.WriteLine($"[ClassDiagram RoundTrip] {msg}");
+
         // Build panel instances.
         _outlinePanel    = new ClassOutlinePanel();
         _propertiesPanel = new ClassPropertiesPanel();
@@ -1660,6 +1685,9 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         if (_liveSyncEnabled && File.Exists(csharpFilePath))
         {
             var svc = new DiagramLiveSyncService([csharpFilePath], doc, _options);
+            // Phase F (ADR-036) — expose the service to the host so round-trip
+            // writes triggered from the diagram can suppress the watcher.
+            host.LiveSyncCoordinator = svc;
             svc.DocumentPatched += (_, e) =>
             {
                 if (_openTabs.ContainsValue(uiId))

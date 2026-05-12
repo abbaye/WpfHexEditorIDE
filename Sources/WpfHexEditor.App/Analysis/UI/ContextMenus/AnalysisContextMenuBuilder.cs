@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfHexEditor.App.Analysis.Models;
+using WpfHexEditor.App.Analysis.Suppressions;
 using WpfHexEditor.App.Analysis.UI.ViewModels;
 using WpfHexEditor.App.Properties;
 using WpfHexEditor.SDK.Contracts.Services;
@@ -27,15 +28,18 @@ internal sealed class AnalysisContextMenuBuilder
     private readonly IDocumentHostService?         _docHost;
     private readonly CodeAnalysisReportViewModel   _vm;
     private readonly Func<string, Task>?           _scopedReRun;  // (path) → re-run scoped
+    private readonly SuppressionApplyService?      _suppress;
 
     internal AnalysisContextMenuBuilder(
         IDocumentHostService?       docHost,
         CodeAnalysisReportViewModel vm,
-        Func<string, Task>?         scopedReRun = null)
+        Func<string, Task>?         scopedReRun = null,
+        SuppressionApplyService?    suppress    = null)
     {
         _docHost     = docHost;
         _vm          = vm;
         _scopedReRun = scopedReRun;
+        _suppress    = suppress;
     }
 
     // ── Project row ─────────────────────────────────────────────────────────
@@ -109,11 +113,33 @@ internal sealed class AnalysisContextMenuBuilder
         Add(menu, AppResources.CodeAnalysis_ContextMenu_FilterByRule,          () => _vm.IssueFilter = issue.Id);
         Add(menu, AppResources.CodeAnalysis_ContextMenu_FilterByFile,          () => _vm.IssueFilter = issue.FileName);
         AddSeparator(menu);
-        Add(menu, AppResources.CodeAnalysis_ContextMenu_SuppressInline,
-            () => AnalysisContextMenuActions.AddInlineSuppressMarker(issue.FilePath, issue.Line, issue.Id));
+        if (_suppress is not null)
+        {
+            Add(menu, AppResources.CodeAnalysis_Suppress_InSource,
+                () => _ = _suppress.ApplyAsync(issue, SuppressionMode.InSource));
+            Add(menu, AppResources.CodeAnalysis_Suppress_InFile,
+                () => _ = _suppress.ApplyAsync(issue, SuppressionMode.InFile));
+            Add(menu, AppResources.CodeAnalysis_Suppress_InBaseline,
+                () => _ = _suppress.ApplyAsync(issue, SuppressionMode.InBaseline));
+            Add(menu, AppResources.CodeAnalysis_Suppress_Disable,
+                () => _ = _suppress.ApplyAsync(issue, SuppressionMode.DisableRule));
+        }
+        else
+        {
+            Add(menu, AppResources.CodeAnalysis_ContextMenu_SuppressInline,
+                () => AnalysisContextMenuActions.AddInlineSuppressMarker(issue.FilePath, issue.Line, issue.Id));
+        }
         AddSeparator(menu);
         Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyAsMarkdown,        () => AnalysisContextMenuActions.Copy(AnalysisContextMenuActions.FormatIssueAsMarkdown(issue)));
         Add(menu, AppResources.CodeAnalysis_ContextMenu_CopyIssueId,           () => AnalysisContextMenuActions.Copy(issue.Id));
+
+        var info = RuleMetadata.Get(issue.Id);
+        if (info is not null)
+        {
+            AddSeparator(menu);
+            Add(menu, AppResources.CodeAnalysis_ContextMenu_OpenRuleHelp,
+                () => AnalysisContextMenuActions.OpenUrl(info.HelpUri));
+        }
         return menu;
     }
 
@@ -143,6 +169,65 @@ internal sealed class AnalysisContextMenuBuilder
         Add(menu, string.Format(AppResources.CodeAnalysis_ContextMenu_CopyLocations, group.Occurrences.Count),
             () => AnalysisContextMenuActions.Copy(string.Join("\n", group.Occurrences.Select(o => $"{o.FilePath}:{o.StartLine}"))));
         return menu;
+    }
+
+    /// <summary>Phase 10B — enriched menu for the DuplicationGroupViewModel rows in the master grid.</summary>
+    internal ContextMenu BuildForDuplicationVm(DuplicationGroupViewModel dvm)
+    {
+        var menu = new ContextMenu();
+        var occs = dvm.Occurrences;
+        if (occs.Count == 0) return menu;
+
+        if (dvm.OccurrenceA is { } a)
+            Add(menu, AppResources.CodeAnalysis_Duplication_Menu_OpenA,
+                () => AnalysisContextMenuActions.OpenFile(_docHost, a.FilePath, a.StartLine));
+
+        if (dvm.OccurrenceB is { } b && occs.Count > 1)
+            Add(menu, AppResources.CodeAnalysis_Duplication_Menu_OpenB,
+                () => AnalysisContextMenuActions.OpenFile(_docHost, b.FilePath, b.StartLine));
+
+        Add(menu, string.Format(AppResources.CodeAnalysis_Duplication_Menu_OpenAll, occs.Count),
+            () => { foreach (var o in occs) AnalysisContextMenuActions.OpenFile(_docHost, o.FilePath, o.StartLine); });
+        AddSeparator(menu);
+
+        Add(menu, AppResources.CodeAnalysis_Duplication_Menu_CopyMarkdown,
+            () => AnalysisContextMenuActions.Copy(FormatAsMarkdown(dvm)));
+        Add(menu, string.Format(AppResources.CodeAnalysis_ContextMenu_CopyLocations, occs.Count),
+            () => AnalysisContextMenuActions.Copy(string.Join("\n", occs.Select(o => $"{o.FilePath}:{o.StartLine}"))));
+
+        AddSeparator(menu);
+        Add(menu, AppResources.CodeAnalysis_Duplication_Menu_SuggestExtract,
+            () => AnalysisContextMenuActions.Copy(BuildExtractSuggestion(dvm)));
+        Add(menu, AppResources.CodeAnalysis_Duplication_Menu_SuppressFile,
+            () => SuppressInAllFiles(occs));
+        return menu;
+    }
+
+    private static string FormatAsMarkdown(DuplicationGroupViewModel d)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"## Clone group — {d.LineCount} lines · {d.OccurrenceCount} occurrences · {d.Severity}");
+        foreach (var o in d.Occurrences)
+            sb.AppendLine($"- `{o.FilePath}:{o.StartLine}-{o.EndLine}`");
+        return sb.ToString();
+    }
+
+    private static string BuildExtractSuggestion(DuplicationGroupViewModel d)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"// Suggested refactor for clone group ({d.LineCount} lines × {d.OccurrenceCount} occurrences):");
+        sb.AppendLine("// 1. Identify the common contract (inputs / outputs / side effects).");
+        sb.AppendLine("// 2. Extract a static helper or instance method on a shared base class.");
+        sb.AppendLine("// 3. Replace each occurrence below with a call to the new method:");
+        foreach (var o in d.Occurrences)
+            sb.AppendLine($"//    - {o.FilePath}:{o.StartLine}-{o.EndLine}");
+        return sb.ToString();
+    }
+
+    private static void SuppressInAllFiles(IReadOnlyList<DuplicationOccurrence> occs)
+    {
+        foreach (var unique in occs.Select(o => o.FilePath).Distinct(StringComparer.OrdinalIgnoreCase))
+            Suppressions.InlineSuppressionWriter.WriteInFile(unique, Models.RuleIds.DuplicationClone);
     }
 
     // ── Dead symbol ────────────────────────────────────────────────────────

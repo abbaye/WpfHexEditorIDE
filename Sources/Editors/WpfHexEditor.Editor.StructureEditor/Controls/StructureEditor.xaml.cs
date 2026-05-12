@@ -33,6 +33,8 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
 
     private readonly StructureEditorViewModel         _vm          = new();
     private readonly FormatSchemaValidator            _schemaValidator = new();
+    private readonly Services.TemplateSemanticValidator _semanticValidator = new();
+    private readonly Services.StructureHexSyncService _hexSync     = new();
     private readonly ViewModels.TestTabViewModel      _testVm      = new();
     private readonly ViewModels.BinaryPreviewViewModel _previewVm   = new();
     private string _filePath = string.Empty;
@@ -67,7 +69,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         _vm.SetValidator(async json =>
         {
             var errors = await Task.Run(() => _schemaValidator.Validate(json));
-            return errors.Select(e => new ValidationSummaryItem
+            var items  = errors.Select(e => new ValidationSummaryItem
             {
                 Severity = (ValidationSeverity)(int)e.Severity,
                 Message  = e.Message,
@@ -75,7 +77,22 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
                 Column   = e.Column,
                 Layer    = e.Layer.ToString(),
             }).ToList();
+
+            // Layer 4 — semantic validation runs on the deserialized model.
+            try
+            {
+                var def = System.Text.Json.JsonSerializer.Deserialize<WpfHexEditor.Core.FormatDetection.FormatDefinition>(
+                    json, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if (def is not null)
+                    items.AddRange(_semanticValidator.Validate(def));
+            }
+            catch { /* JSON already flagged by schema layer */ }
+
+            return items;
         });
+
+        // Wire structure-edit → hex sync to the preview view-model.
+        _previewVm.SyncService = _hexSync;
 
         // Register variable source for autocomplete in all ExpressionTextBox controls
         ExpressionContextService.Register(this, _vm.VariableSource);
@@ -157,6 +174,8 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         PopToolbar.AddBlockRequested       += (_, _) => BlocksTabCtrl.RequestAddBlock();
         PopToolbar.DuplicateRequested      += (_, _) => _vm.Blocks.DuplicateCommand.Execute(null);
         PopToolbar.ToggleCodeViewRequested += (_, _) => ToggleCodeView();
+        PopToolbar.ImportRequested         += async (_, _) => await ImportTemplateAsync();
+        PopToolbar.ExportRequested         += async (_, e) => await ExportTemplateAsync(e.Format);
 
         // Preload schema for tooltips
         WhfmtSchemaProvider.Instance.EnsureLoaded();
@@ -446,5 +465,56 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         if (_liveBuffer is null || !_codeViewVisible) return;
         var line = FindLineInJson(searchText);
         ((INavigableDocument)_codeView).NavigateTo(line, 1);
+    }
+
+    // ── Template Import / Export ─────────────────────────────────────────────
+
+    private async Task ImportTemplateAsync()
+    {
+        var ofd = new Microsoft.Win32.OpenFileDialog
+        {
+            Title  = "Import .whfmt template",
+            Filter = "Whfmt template (*.whfmt;*.json)|*.whfmt;*.json|All files (*.*)|*.*",
+        };
+        if (ofd.ShowDialog() != true) return;
+
+        var svc = new Services.TemplatePackageService();
+        var def = await svc.ImportAsync(ofd.FileName);
+        if (def is null) return;
+
+        var json = System.Text.Json.JsonSerializer.Serialize(def,
+            new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+        _liveBuffer?.SetText(json);
+        _vm.LoadFromJson(json);
+    }
+
+    private async Task ExportTemplateAsync(Services.TemplateExportFormat format)
+    {
+        var defaultExt = format switch
+        {
+            Services.TemplateExportFormat.CStruct     => ".h",
+            Services.TemplateExportFormat.PythonBytes => ".py",
+            _                                         => ".whfmt",
+        };
+
+        var sfd = new Microsoft.Win32.SaveFileDialog
+        {
+            Title    = $"Export as {format}",
+            FileName = $"{_vm.Metadata.FormatName}{defaultExt}",
+            Filter   = $"{format} (*{defaultExt})|*{defaultExt}|All files (*.*)|*.*",
+        };
+        if (sfd.ShowDialog() != true) return;
+
+        try
+        {
+            var json = _vm.SerializeToJson();
+            var def  = System.Text.Json.JsonSerializer.Deserialize<WpfHexEditor.Core.FormatDetection.FormatDefinition>(
+                json, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (def is null) return;
+
+            var svc = new Services.TemplatePackageService();
+            await svc.ExportAsync(def, sfd.FileName, format);
+        }
+        catch { /* non-fatal; status bar will reflect via validation pane */ }
     }
 }

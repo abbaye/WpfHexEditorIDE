@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>ОК</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Скасувати</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>Відкрити URL у браузері</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>Відкрити URL у браузері</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Введіть дійсну URL-адресу (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>Вставити таблицю</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Рядки</value></data>
@@ -285,31 +285,31 @@
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>ОК</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Скасувати</value></data>
 
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Увімкнути перевірку правопису</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Словники</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Мова</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Стан</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>Завантажити</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Огляд...</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Видалити</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Словник користувача</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Редагувати словник користувача</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Встановлено</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Не встановлено</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Ігнорувати</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Додати до словника</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>Вибрати файл словника</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>Вибрати файл афіксів</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Не вдалося завантажити словник.</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Помилка завантаження</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Словник перевірки правопису</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Словник перевірки правопису не знайдено. Завантажити зараз?</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Встановити</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Пізніше</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Більше не показувати</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>Увімкнути перевірку правопису</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>Словники</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>Мова</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>Стан</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>Завантажити</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>Огляд...</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>Видалити</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>Словник користувача</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>Редагувати словник користувача</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>Встановлено</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>Не встановлено</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>Ігнорувати</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>Додати до словника</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>Вибрати файл словника</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>Вибрати файл афіксів</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>Не вдалося завантажити словник.</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>Помилка завантаження</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>Словник перевірки правопису</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>Словник перевірки правопису не знайдено. Завантажити зараз?</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Встановити</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Пізніше</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Більше не показувати</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>Властивості зображення</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>Розмір і позиція</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Обтікання текстом</value></data>
@@ -393,4 +393,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>Зображення</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>Анонімізувати метадані</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>Видаляє автора, мітки часу, користувацькі властивості та макроси з цього документа. Зміна залишається в пам'яті до збереження.</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>Анонімізувати метадані</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>Видалити автора, мітки часу, користувацькі властивості та макроси з цього документа?
+
+Зміна застосовується відразу в пам'яті та записується у файл при наступному Збереженні.</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>Анонімізацію завершено.
+
+Автора видалено: {0}
+Мітки часу видалено: {1}
+Макроси видалено: {2}
+Користувацькі властивості очищено: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>Перегляд вбудованих об'єктів (зображення, OLE, макроси)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>Вбудовані об'єкти</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>Тип</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>Назва</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>Розмір</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>Джерело</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>Витягти…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>Зберегти вибраний вбудований об'єкт у файл</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>Відкрити в Hex</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>Витягти у тимчасовий файл і відкрити в Hex-редакторі</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>Закрити</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>{0} вбудованих об'єктів</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>Запис ZIP не знайдено: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>У вбудованого об'єкта немає доступних байтів джерела.</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>SHA-256 джерела:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>обчислюється…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>Скопіювати хеш у буфер обміну</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>Хешувати всі</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>Обчислити SHA-256 для кожного вбудованого об'єкта</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>Друкувати або експортувати як PDF (використовуйте принтер "Microsoft Print to PDF" для створення PDF)</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>Порівняти з іншим документом…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>Порівняння документів</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>Ліворуч:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>Праворуч:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>Огляд…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(натисніть Огляд, щоб вибрати файл)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>Тип</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>Зміна</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>Текст</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} додано, −{1} вилучено, ~{2} змінено, {3} без змін</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>Не зареєстровано завантажувачів документів.</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>Немає завантажувача для розширення {0}.</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>Закрити</value></data></root>

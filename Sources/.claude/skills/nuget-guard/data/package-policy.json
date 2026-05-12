@@ -1,0 +1,77 @@
+{
+  "_comment": "nuget-guard policy. Only the packages listed here are protected. Any csproj not matching one of these PackageIds is ignored by the skill.",
+  "_categories": {
+    "core-xplat": "net8.0 only, zero WPF, zero WinForms, no IDE refs, no Windows-only APIs",
+    "wpf-control": "net8.0-windows, WPF allowed, but no IDE-only refs (App, Editor.*, Plugins.*)"
+  },
+  "packages": {
+    "WpfHexEditor.Core.ByteProvider": {
+      "category": "core-xplat",
+      "tfm": ["net8.0"],
+      "use_wpf": false,
+      "use_winforms": false
+    },
+    "WpfHexEditor.Core.BinaryAnalysis": {
+      "category": "core-xplat",
+      "tfm": ["net8.0"],
+      "use_wpf": false,
+      "use_winforms": false
+    },
+    "WPFHexaEditor": {
+      "category": "wpf-control",
+      "tfm": ["net8.0-windows"],
+      "use_wpf": true,
+      "use_winforms": false
+    },
+    "WpfCodeEditor": {
+      "category": "wpf-control",
+      "tfm": ["net8.0-windows"],
+      "use_wpf": true,
+      "use_winforms": false
+    },
+    "WpfDocking": {
+      "category": "wpf-control",
+      "tfm": ["net8.0-windows"],
+      "use_wpf": true,
+      "use_winforms": false
+    },
+    "whfmt.Analysis":          { "category": "core-xplat", "tfm": ["net8.0"], "use_wpf": false, "use_winforms": false },
+    "whfmt.Backfill":          { "category": "core-xplat", "tfm": ["net8.0"], "use_wpf": false, "use_winforms": false },
+    "whfmt.CodeGen":           { "category": "core-xplat", "tfm": ["net8.0"], "use_wpf": false, "use_winforms": false },
+    "whfmt.Fuzz":              { "category": "core-xplat", "tfm": ["net8.0"], "use_wpf": false, "use_winforms": false },
+    "whfmt.Validate":          { "category": "core-xplat", "tfm": ["net8.0"], "use_wpf": false, "use_winforms": false },
+    "whfmt.FileFormatCatalog": { "category": "core-xplat", "tfm": ["net8.0"], "use_wpf": false, "use_winforms": false },
+    "WpfColorPicker":          { "category": "wpf-control", "tfm": ["net8.0-windows"], "use_wpf": true, "use_winforms": false },
+    "WpfTerminal":             { "category": "wpf-control", "tfm": ["net8.0-windows"], "use_wpf": true, "use_winforms": false }
+  },
+  "ide_only_assembly_prefixes": [
+    "WpfHexEditor.App",
+    "WpfHexEditor.Editor.",
+    "WpfHexEditor.Plugins."
+  ],
+  "_ide_only_assembly_prefixes_exceptions": [
+    "Editor.*.Core assemblies are intentionally NOT considered IDE-only (they are reusable contracts). Match is by full prefix only — `WpfHexEditor.Editor.` matches all of them, so listing exceptions here would require negation. Instead, the script checks: prefix-match AND NOT endswith '.Core'."
+  ],
+  "ide_only_types": [
+    "IDEHostContext",
+    "IdeMessageBox",
+    "IDialogService",
+    "DockManager",
+    "IDockManager",
+    "IIdeShell",
+    "IDocumentService",
+    "IModuleManager"
+  ],
+  "wpf_usings_forbidden_in_xplat": [
+    "System.Windows",
+    "System.Windows.Controls",
+    "System.Windows.Media",
+    "System.Windows.Input",
+    "System.Windows.Shapes",
+    "System.Windows.Documents",
+    "System.Windows.Data",
+    "System.Windows.Forms",
+    "Microsoft.Web.WebView2"
+  ],
+  "ignore_inline_marker": "// nuget-ignore:"
+}

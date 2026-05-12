@@ -22,7 +22,7 @@ public class TabGroupSettingsTests
         Assert.Equal(150,  settings.MinGroupHeightPx);
         Assert.True(settings.EnforceEqualSize);
         Assert.True(settings.PersistTabGroupLayout);
-        Assert.True(settings.ShowGroupNumberBadge);
+        Assert.False(settings.ShowGroupNumberBadge);
     }
 
     [Fact]

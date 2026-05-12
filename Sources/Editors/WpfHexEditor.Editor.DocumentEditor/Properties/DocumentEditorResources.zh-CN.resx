@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>确定</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>取消</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>在浏览器中打开链接</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>在浏览器中打开链接</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>请输入有效的URL（https://、http://、mailto:、ftp://）</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>插入表格</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>行</value></data>
@@ -285,31 +285,31 @@
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>确定</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>取消</value></data>
 
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>启用拼写检查</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>词典</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>语言</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>状态</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>下载</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>浏览...</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>删除</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>用户词典</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>编辑用户词典</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>已安装</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>未安装</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>忽略</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>添加到词典</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>选择词典文件</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>选择词缀文件</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>词典下载失败。</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>下载错误</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>拼写检查词典</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>未找到拼写检查词典。立即下载？</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>安装</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>稍后</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>不再显示</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>启用拼写检查</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>词典</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>语言</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>状态</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>下载</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>浏览...</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>删除</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>用户词典</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>编辑用户词典</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>已安装</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>未安装</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>忽略</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>添加到词典</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>选择词典文件</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>选择词缀文件</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>词典下载失败。</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>下载错误</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>拼写检查词典</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>未找到拼写检查词典。立即下载？</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>安装</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>稍后</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>不再显示</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>图像属性</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>大小和位置</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>文字环绕</value></data>
@@ -393,4 +393,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>图像</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>匿名化元数据</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>从此文档中删除作者、时间戳、自定义属性和宏。更改保留在内存中，直到保存。</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>匿名化元数据</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>从此文档中删除作者、时间戳、自定义属性和宏？
+
+更改立即在内存中应用，并在下次保存时写入文件。</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>匿名化完成。
+
+作者已删除：{0}
+时间戳已删除：{1}
+宏已删除：{2}
+自定义属性已清除：{3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>查看嵌入对象（图像、OLE、宏）</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>嵌入对象</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>类型</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>名称</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>大小</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>源</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>提取…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>将所选嵌入对象保存到文件</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>在 Hex 中打开</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>提取到临时文件并在 Hex 编辑器中打开</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>关闭</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>{0} 个嵌入对象</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>未找到 ZIP 条目：{0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>嵌入对象没有可用的源字节。</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>源 SHA-256：</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>计算中…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>将哈希复制到剪贴板</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>全部哈希</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>为每个嵌入对象计算 SHA-256</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>打印或导出为 PDF（使用"Microsoft Print to PDF"打印机生成 PDF）</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>与其他文档比较…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>比较文档</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>左：</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>右：</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>浏览…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>（单击浏览选择文件）</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>类型</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>变更</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>文本</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} 新增，−{1} 删除，~{2} 修改，{3} 未变更</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>未注册文档加载器。</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>扩展名 {0} 未注册任何加载器。</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>关闭</value></data></root>

@@ -34,6 +34,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using WpfHexEditor.Editor.ClassDiagram.Core.Layout;
+using WpfHexEditor.Editor.ClassDiagram.Core.RoundTrip.Abstractions;
 using WpfHexEditor.Editor.ClassDiagram.Options;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Editor.ClassDiagram.Core.Parser;
@@ -136,6 +137,25 @@ public sealed class ClassDiagramSplitHost : Grid,
     // ---------------------------------------------------------------------------
 
     private readonly ClassDiagramUndoManager   _undoManager;
+
+    /// <summary>
+    /// Phase F (ADR-036) — coordinator the plugin installs to push
+    /// watcher cycle-prevention when the round-trip pipeline writes the
+    /// .cs file. Null when no live-sync service is attached (e.g. DSL-
+    /// only diagrams, unit tests). Propagated to <see cref="_canvas"/> so
+    /// canvas-side round-trips (DeleteNode_Internal, AddNodeAtMenuPoint)
+    /// share the same coordinator.
+    /// </summary>
+    public ILiveSyncCoordinator? LiveSyncCoordinator
+    {
+        get => _liveSyncCoordinator;
+        set
+        {
+            _liveSyncCoordinator = value;
+            _canvas?.SetLiveSyncCoordinator(value);
+        }
+    }
+    private ILiveSyncCoordinator? _liveSyncCoordinator;
     private readonly ClassSnapEngineService    _snap;
     private readonly ClassInteractionService   _interactionService;
     private readonly ClassToSyncService        _syncService;
@@ -210,6 +230,10 @@ public sealed class ClassDiagramSplitHost : Grid,
         _canvas.SelectedClassChanged     += OnCanvasSelectedClassChanged;
         _canvas.HoveredClassChanged      += OnCanvasHoveredClassChanged;
         _canvas.RenameNodeRequested      += (_, args) => BeginRenameNode(args.Node);
+        _canvas.RenameMemberRequested    += (_, args) => BeginRenameMember(args.Node, args.Member);
+        _canvas.AddMemberRequested       += (_, args) => AddNewMember(args.Node, args.Kind);
+        _canvas.DeleteMemberRequested    += (_, args) => DeleteMember(args.Node, args.Member);
+        _canvas.ChangeMemberVisibilityRequested += (_, args) => ChangeMemberVisibility(args.Node, args.Member, args.NewVisibility);
         _canvas.ExportRequested          += OnCanvasExportRequested;
         _canvas.LayoutStrategyRequested  += (_, strategy) => _ = ApplyLayoutAsync(strategy);
         _canvas.FitToContentRequested    += (_, _) => _zoomPan.FitToContent();
@@ -1663,6 +1687,8 @@ public sealed class ClassDiagramSplitHost : Grid,
         var copy = ClassNode.Create(original.Name + "_Copy", original.Kind);
         copy.X = original.X + 20;
         copy.Y = original.Y + 20;
+        copy.Namespace      = original.Namespace;
+        copy.SourceFilePath = original.SourceFilePath;
         foreach (var m in original.Members) copy.Members.Add(m);
         _document.Classes.Add(copy);
 
@@ -1670,10 +1696,19 @@ public sealed class ClassDiagramSplitHost : Grid,
         _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
             $"Duplicate {original.Name}", ApplyDslSnapshot));
 
+        // Round-trip: append a new type declaration to the original's source file.
+        RoundTripScope.TryApply(
+            copy,
+            new AddType(TypeSnippetBuilder.ForLanguage(copy)) { TargetTypeFullName = copy.Name },
+            _undoManager,
+            $"Source duplicate {original.Name}",
+            liveSync: LiveSyncCoordinator);
+
         _canvas.ApplyDocument(_document);
         SyncDslPane();
         SetDirty(true);
     }
+
 
     private void AddNewClass(ClassKind kind)
     {
@@ -1684,18 +1719,66 @@ public sealed class ClassDiagramSplitHost : Grid,
         var node = ClassNode.Create(name, kind);
         node.X = 50 + (_document.Classes.Count % 5) * 210.0;
         node.Y = 50 + (_document.Classes.Count / 5) * 120.0;
+
+        // Phase 1B-7: try to inherit a source-file target from the diagram
+        // so the AddType round-trip can write the new declaration.
+        string? targetFile = DiagramTargetFileResolver.Resolve(_document, _canvas.SelectedNode);
+        if (targetFile is not null)
+        {
+            node.SourceFilePath = targetFile;
+            // Inherit namespace from a sibling on the same file when possible.
+            node.Namespace = _document.Classes
+                .FirstOrDefault(c => string.Equals(c.SourceFilePath, targetFile, StringComparison.OrdinalIgnoreCase))?
+                .Namespace ?? string.Empty;
+        }
         _document.Classes.Add(node);
 
         string afterDsl = ClassDiagramSerializer.Serialize(_document);
         _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
             $"Add {kindLabel} {name}", ApplyDslSnapshot));
 
+        // Round-trip: write the new type declaration to the inferred source file.
+        RoundTripScope.TryApply(
+            node,
+            new AddType(TypeSnippetBuilder.ForLanguage(node)) { TargetTypeFullName = node.Name },
+            _undoManager,
+            $"Source add {kindLabel} {name}",
+            liveSync: LiveSyncCoordinator);
+
         _canvas.ApplyDocument(_document);
         SyncDslPane();
         SetDirty(true);
     }
 
-    private void BeginRename() => BeginRenameNode(_canvas.SelectedNode);
+    /// <summary>
+    /// F2 entry point. If a member is selected inside a node, renames the member;
+    /// otherwise renames the selected node. Bugfix 2026-05-10: previous version
+    /// always renamed the node and mispositioned the popup outside the canvas.
+    /// </summary>
+    private void BeginRename()
+    {
+        if (_canvas.SelectedMember is { } m && _canvas.SelectedMemberNode is { } owner)
+        {
+            BeginRenameMember(owner, m);
+            return;
+        }
+        BeginRenameNode(_canvas.SelectedNode);
+    }
+
+    /// <summary>
+    /// Converts a diagram-space rectangle into coordinates relative to <c>this</c>
+    /// control, honouring ZoomPanCanvas's RenderTransform. Bugfix 2026-05-11:
+    /// passing the raw diagram point to <c>TranslatePoint(local, this)</c> is
+    /// correct because WPF walks the visual-tree transform chain — the previous
+    /// manual <c>x * zoom + offset</c> double-applied the transform and threw the
+    /// popup far off-screen.
+    /// </summary>
+    private (Point Origin, double Width, double Height) DiagramRectToScreen(Rect diagramRect)
+    {
+        double zoom = _zoomPan.ZoomFactor;
+        var screen  = _zoomPan.TranslatePoint(new Point(diagramRect.X, diagramRect.Y), this);
+        return (screen, diagramRect.Width * zoom, diagramRect.Height * zoom);
+    }
 
     /// <summary>
     /// Shows an inline TextBox popup positioned over the node header so the user
@@ -1705,29 +1788,69 @@ public sealed class ClassDiagramSplitHost : Grid,
     {
         if (node is null) return;
 
-        // Convert the node header's diagram-space top-left to screen coords.
-        double zoom    = _zoomPan.ZoomFactor;
-        double offsetX = _zoomPan.OffsetX;
-        double offsetY = _zoomPan.OffsetY;
+        // The Add Class / Add Interface flow raises RenameNodeRequested in the
+        // same UI tick as it adds the node; layout / RenderAll have queued but
+        // not yet flushed, so reading bounds now would use stale screen coords.
+        // Defer via Dispatcher (Render priority) so the visual tree settles
+        // before we sample positions.
+        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, () =>
+        {
+            var headerRect = _canvas.GetHeaderBoundsOf(node);
+            var (origin, width, height) = DiagramRectToScreen(headerRect);
 
-        // screen_pt = diagram_pt * zoom + offset (ZoomPanCanvas internal transform)
-        var screenOrigin = _zoomPan.TranslatePoint(
-            new Point(node.X * zoom + offsetX, node.Y * zoom + offsetY),
-            this);
+            ShowRenameOverlay(
+                initialText:  node.Name,
+                origin:       origin,
+                width:        Math.Max(width, 160),
+                height:       Math.Max(height, 24),
+                isBold:       true,
+                onCommit:     newName => CommitNodeRename(node, newName));
+        });
+    }
 
-        double popupW = Math.Max(node.Width * zoom, 160);
+    /// <summary>
+    /// Shows an inline TextBox popup positioned over the member row so the user
+    /// can rename the member in-place. Pre-fills with the member name, not the
+    /// class name (bugfix 2026-05-10).
+    /// </summary>
+    private void BeginRenameMember(ClassNode owner, ClassMember member)
+    {
+        // Deferred to Render priority so any pending layout pass from a
+        // preceding _canvas.ApplyDocument settles before sampling the row rect.
+        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, () =>
+        {
+            var memberRect = _canvas.GetMemberBoundsOf(owner, member);
+            if (memberRect is null) return; // member section is collapsed
 
+            var (origin, width, height) = DiagramRectToScreen(memberRect.Value);
+
+            ShowRenameOverlay(
+                initialText:  member.Name,
+                origin:       origin,
+                width:        Math.Max(width, 160),
+                height:       Math.Max(height, 22),
+                isBold:       false,
+                onCommit:     newName => CommitMemberRename(owner, member, newName));
+        });
+    }
+
+    /// <summary>Generic inline rename overlay shared by node and member rename.</summary>
+    private void ShowRenameOverlay(
+        string initialText, Point origin, double width, double height,
+        bool isBold, Action<string> onCommit)
+    {
         var tb = new TextBox
         {
-            Text            = node.Name,
-            MinWidth        = popupW,
-            MaxWidth        = 320,
-            FontWeight      = FontWeights.Bold,
-            FontSize        = 13,
-            Padding         = new Thickness(6, 4, 6, 4),
+            Text            = initialText,
+            MinWidth        = width,
+            MaxWidth        = 480,
+            Height          = height,
+            FontWeight      = isBold ? FontWeights.Bold : FontWeights.Normal,
+            FontSize        = isBold ? 13 : 12,
+            Padding         = new Thickness(6, 2, 6, 2),
             BorderThickness = new Thickness(1),
             SelectionStart  = 0,
-            SelectionLength = node.Name.Length
+            SelectionLength = initialText.Length
         };
         tb.SetResourceReference(TextBox.BackgroundProperty,  "CD_ClassBoxHeaderBackground");
         tb.SetResourceReference(TextBox.ForegroundProperty,  "CD_ClassNameForeground");
@@ -1736,9 +1859,10 @@ public sealed class ClassDiagramSplitHost : Grid,
         var popup = new System.Windows.Controls.Primitives.Popup
         {
             Child              = new Border { Child = tb, CornerRadius = new CornerRadius(3), Padding = new Thickness(0) },
-            Placement          = System.Windows.Controls.Primitives.PlacementMode.AbsolutePoint,
-            HorizontalOffset   = screenOrigin.X,
-            VerticalOffset     = screenOrigin.Y,
+            Placement          = System.Windows.Controls.Primitives.PlacementMode.Relative,
+            PlacementTarget    = this,
+            HorizontalOffset   = origin.X,
+            VerticalOffset     = origin.Y,
             AllowsTransparency = true,
             StaysOpen          = true,
             IsOpen             = true
@@ -1750,49 +1874,9 @@ public sealed class ClassDiagramSplitHost : Grid,
         {
             if (!popup.IsOpen) return;
             popup.IsOpen = false;
-
-            string newName = tb.Text.Trim();
-            if (newName.Length == 0 || newName == node.Name) return;
-
-            string beforeDsl = ClassDiagramSerializer.Serialize(_document);
-
-            // ClassNode.Name is init-only — replace with a cloned node carrying the new name.
-            var renamed = node.DeepClone();
-            renamed.Id = node.Id; // preserve stable ID so relationships remain valid
-            // patch Name by creating a new instance (init-only property)
-            var renamedFinal = new ClassNode
-            {
-                Name               = newName,
-                Kind               = renamed.Kind,
-                IsAbstract         = renamed.IsAbstract,
-                IsPartial          = renamed.IsPartial,
-                IsRecord           = renamed.IsRecord,
-                IsSealed           = renamed.IsSealed,
-                Namespace          = renamed.Namespace,
-                XmlDocSummary      = renamed.XmlDocSummary,
-                SourceFilePath     = renamed.SourceFilePath,
-                SourceLineOneBased = renamed.SourceLineOneBased,
-                Metrics            = renamed.Metrics,
-                X                  = renamed.X,
-                Y                  = renamed.Y,
-                Width              = renamed.Width,
-                Height             = renamed.Height,
-                CustomColor        = renamed.CustomColor
-            };
-            renamedFinal.Id = node.Id;
-            renamedFinal.Members.AddRange(renamed.Members);
-            renamedFinal.Attributes.AddRange(renamed.Attributes);
-
-            int idx = _document.Classes.IndexOf(node);
-            if (idx >= 0) _document.Classes[idx] = renamedFinal;
-
-            string afterDsl = ClassDiagramSerializer.Serialize(_document);
-            _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
-                $"Rename → {newName}", ApplyDslSnapshot));
-
-            _canvas.ApplyDocument(_document);
-            SyncDslPane();
-            SetDirty(true);
+            string text = tb.Text.Trim();
+            if (text.Length == 0 || text == initialText) return;
+            onCommit(text);
         }
 
         tb.KeyDown   += (_, ke) =>
@@ -1801,6 +1885,238 @@ public sealed class ClassDiagramSplitHost : Grid,
             if (ke.Key == Key.Escape)  { popup.IsOpen = false;  ke.Handled = true; }
         };
         tb.LostFocus += (_, _) => Commit();
+    }
+
+    private void CommitNodeRename(ClassNode node, string newName)
+    {
+        string beforeDsl = ClassDiagramSerializer.Serialize(_document);
+
+        var renamedFinal = node.DeepClone(newName);
+
+        int idx = _document.Classes.IndexOf(node);
+        if (idx >= 0) _document.Classes[idx] = renamedFinal;
+
+        string afterDsl = ClassDiagramSerializer.Serialize(_document);
+        _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
+            $"Rename → {newName}", ApplyDslSnapshot));
+
+        // Use the node's OLD name as TargetTypeFullName: Roslyn must locate
+        // the type declaration BEFORE the rename to apply RenameType.
+        RoundTripScope.TryApply(
+            renamedFinal,
+            new RenameType(newName) { TargetTypeFullName = node.Name },
+            _undoManager,
+            $"Source rename → {newName}",
+            liveSync: LiveSyncCoordinator);
+
+        _canvas.ApplyDocument(_document);
+        SyncDslPane();
+        SetDirty(true);
+    }
+
+    /// <summary>
+    /// Context-menu "Add Member → {Field|Property|Method|Event}" entry point.
+    /// Creates a sensibly-defaulted member of the requested kind, appends it to
+    /// <paramref name="owner"/>, pushes an undo snapshot, syncs DSL, then opens
+    /// the inline rename overlay so the user can immediately name it.
+    /// </summary>
+    private void AddNewMember(ClassNode owner, MemberKind kind)
+    {
+        if (owner is null) return;
+
+        string baseName = kind switch
+        {
+            MemberKind.Field    => "newField",
+            MemberKind.Property => "NewProperty",
+            MemberKind.Method   => "NewMethod",
+            MemberKind.Event    => "NewEvent",
+            _                   => "NewMember"
+        };
+        string unique = UniqueMemberName(owner, baseName);
+
+        var newMember = new ClassMember
+        {
+            Name        = unique,
+            Kind        = kind,
+            Visibility  = MemberVisibility.Public,
+            TypeName    = kind switch
+            {
+                MemberKind.Field    => "object",
+                MemberKind.Property => "object",
+                MemberKind.Method   => "void",
+                MemberKind.Event    => "EventHandler",
+                _                   => "object"
+            }
+        };
+
+        string beforeDsl = ClassDiagramSerializer.Serialize(_document);
+        owner.Members.Add(newMember);
+        string afterDsl = ClassDiagramSerializer.Serialize(_document);
+
+        _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
+            $"Add {kind.ToString().ToLowerInvariant()} → {unique}", ApplyDslSnapshot));
+
+        // Round-trip: append the new member to the owning type in source.
+        string snippet = BuildMemberSnippet(newMember);
+        RoundTripScope.TryApply(
+            owner,
+            new AddMember(snippet) { TargetTypeFullName = owner.Name },
+            _undoManager,
+            $"Source add {kind.ToString().ToLowerInvariant()} → {unique}",
+            liveSync: LiveSyncCoordinator);
+
+        _canvas.ApplyDocument(_document);
+        SyncDslPane();
+        SetDirty(true);
+
+        // Immediately open the inline rename overlay so the user can name it.
+        BeginRenameMember(owner, newMember);
+    }
+
+    /// <summary>
+    /// Builds a minimal C# member-declaration snippet for the round-trip
+    /// AddMember edit. The snippet is parsed by Roslyn's <c>ParseMemberDeclaration</c>
+    /// in <see cref="CSharpRoundTripEditor.ApplyAddMember"/> so it must be a
+    /// syntactically valid member.
+    /// </summary>
+    private static string BuildMemberSnippet(ClassMember m)
+    {
+        string vis = m.Visibility switch
+        {
+            MemberVisibility.Private    => "private",
+            MemberVisibility.Protected  => "protected",
+            MemberVisibility.Internal   => "internal",
+            _                           => "public"
+        };
+        string staticKw = m.IsStatic ? " static" : string.Empty;
+        return m.Kind switch
+        {
+            MemberKind.Field    => $"{vis}{staticKw} {m.TypeName} {m.Name};",
+            MemberKind.Property => $"{vis}{staticKw} {m.TypeName} {m.Name} {{ get; set; }}",
+            MemberKind.Method   => $"{vis}{staticKw} {m.TypeName} {m.Name}() {{ }}",
+            MemberKind.Event    => $"{vis}{staticKw} event {m.TypeName} {m.Name};",
+            _                   => $"{vis}{staticKw} {m.TypeName} {m.Name};"
+        };
+    }
+
+    /// <summary>
+    /// Context-menu "Delete" on a member row. Removes the member from the
+    /// owning node, snapshots undo, and patches the source file when one
+    /// is associated with the node.
+    /// </summary>
+    private void DeleteMember(ClassNode owner, ClassMember member)
+    {
+        if (owner is null || member is null) return;
+        int idx = owner.Members.IndexOf(member);
+        if (idx < 0) return;
+
+        string beforeDsl = ClassDiagramSerializer.Serialize(_document);
+        owner.Members.RemoveAt(idx);
+        string afterDsl = ClassDiagramSerializer.Serialize(_document);
+
+        _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
+            $"Delete member → {member.Name}", ApplyDslSnapshot));
+
+        RoundTripScope.TryApply(
+            owner, member,
+            new RemoveMember(member.Name) { TargetTypeFullName = owner.Name },
+            _undoManager,
+            $"Source delete member → {member.Name}",
+            liveSync: LiveSyncCoordinator);
+
+        _canvas.ApplyDocument(_document);
+        SyncDslPane();
+        SetDirty(true);
+    }
+
+    /// <summary>
+    /// Context-menu "Visibility →" on a member row. Replaces the member with
+    /// a clone carrying the new visibility, snapshots undo, patches source.
+    /// </summary>
+    private void ChangeMemberVisibility(ClassNode owner, ClassMember member, MemberVisibility newVis)
+    {
+        if (owner is null || member is null) return;
+        if (member.Visibility == newVis) return;
+
+        string beforeDsl = ClassDiagramSerializer.Serialize(_document);
+
+        var replaced = member with
+        {
+            Visibility = newVis,
+            Parameters = [.. member.Parameters],
+            Attributes = [.. member.Attributes]
+        };
+
+        int idx = owner.Members.IndexOf(member);
+        if (idx < 0) return;
+        owner.Members[idx] = replaced;
+
+        string afterDsl = ClassDiagramSerializer.Serialize(_document);
+        _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
+            $"Change {member.Name} visibility → {newVis}", ApplyDslSnapshot));
+
+        MemberVisibilityKind kind = newVis switch
+        {
+            MemberVisibility.Public    => MemberVisibilityKind.Public,
+            MemberVisibility.Internal  => MemberVisibilityKind.Internal,
+            MemberVisibility.Protected => MemberVisibilityKind.Protected,
+            MemberVisibility.Private   => MemberVisibilityKind.Private,
+            _                          => MemberVisibilityKind.Public
+        };
+        RoundTripScope.TryApply(
+            owner, replaced,
+            new ChangeVisibility(member.Name, kind) { TargetTypeFullName = owner.Name },
+            _undoManager,
+            $"Source change {member.Name} visibility → {newVis}",
+            liveSync: LiveSyncCoordinator);
+
+        _canvas.ApplyDocument(_document);
+        SyncDslPane();
+        SetDirty(true);
+    }
+
+    private static string UniqueMemberName(ClassNode owner, string baseName)
+    {
+        var taken = new HashSet<string>(owner.Members.Select(m => m.Name), StringComparer.Ordinal);
+        if (!taken.Contains(baseName)) return baseName;
+        for (int i = 2; i < 1000; i++)
+        {
+            string candidate = baseName + i;
+            if (!taken.Contains(candidate)) return candidate;
+        }
+        return baseName + Guid.NewGuid().ToString("N")[..6];
+    }
+
+    private void CommitMemberRename(ClassNode owner, ClassMember member, string newName)
+    {
+        string beforeDsl = ClassDiagramSerializer.Serialize(_document);
+
+        var replaced = member with
+        {
+            Name       = newName,
+            Parameters = [.. member.Parameters],
+            Attributes = [.. member.Attributes]
+        };
+
+        int idx = owner.Members.IndexOf(member);
+        if (idx < 0) return;
+        owner.Members[idx] = replaced;
+
+        string afterDsl = ClassDiagramSerializer.Serialize(_document);
+        _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
+            $"Rename member → {newName}", ApplyDslSnapshot));
+
+        // Round-trip: patch the source file's member identifier.
+        RoundTripScope.TryApply(
+            owner, replaced,
+            new RenameMember(member.Name, newName) { TargetTypeFullName = owner.Name },
+            _undoManager,
+            $"Source rename member → {newName}",
+            liveSync: LiveSyncCoordinator);
+
+        _canvas.ApplyDocument(_document);
+        SyncDslPane();
+        SetDirty(true);
     }
 
     // ---------------------------------------------------------------------------

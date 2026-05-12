@@ -126,7 +126,23 @@ internal sealed class OdtXmlMapper
 
         var styleAttr = elem.Attribute(TextNs + "style-name") ??
                         elem.Attribute(StyleNs + "style-name");
-        if (styleAttr is not null) para.Attributes["style"] = styleAttr.Value;
+
+        IReadOnlyDictionary<string, object>? paraStyleProps = null;
+        if (styleAttr is not null)
+        {
+            para.Attributes["style"] = styleAttr.Value;
+            if (_styleProps.TryGetValue(styleAttr.Value, out var props))
+            {
+                paraStyleProps = props;
+                // Apply paragraph-level font defaults (text-only kinds — runs inherit too).
+                foreach (var kv in props)
+                {
+                    if (kv.Key.StartsWith("__", StringComparison.Ordinal)) continue;
+                    if (!para.Attributes.ContainsKey(kv.Key))
+                        para.Attributes[kv.Key] = kv.Value;
+                }
+            }
+        }
 
         var outlineLvl = elem.Attribute(TextNs + "outline-level");
         if (outlineLvl is not null) para.Attributes["level"] = outlineLvl.Value;
@@ -137,7 +153,7 @@ internal sealed class OdtXmlMapper
         {
             if (child.Name.Namespace == TextNs && child.Name.LocalName == "span")
             {
-                var run = MapRun(child, baseOffset, mapBuilder);
+                var run = MapRun(child, baseOffset, mapBuilder, paraStyleProps);
                 para.Children.Add(run);
                 sb.Append(run.Text);
             }
@@ -165,20 +181,38 @@ internal sealed class OdtXmlMapper
         return para;
     }
 
-    private DocumentBlock MapRun(XElement rElem, long baseOffset, BinaryMapBuilder mapBuilder)
+    private DocumentBlock MapRun(
+        XElement rElem,
+        long baseOffset,
+        BinaryMapBuilder mapBuilder,
+        IReadOnlyDictionary<string, object>? paraStyleProps = null)
     {
         long off = ResolveOffset(rElem, baseOffset);
         int  len = EstimateLength(rElem);
 
         var run = new DocumentBlock { Kind = "run", RawOffset = off, RawLength = len, Text = rElem.Value };
 
+        // Paragraph style → run cascade (parent first, run-level overrides).
+        if (paraStyleProps is not null)
+        {
+            foreach (var kv in paraStyleProps)
+            {
+                if (kv.Key.StartsWith("__", StringComparison.Ordinal)) continue;
+                run.Attributes[kv.Key] = kv.Value;
+            }
+        }
+
         var styleName = rElem.Attribute(TextNs + "style-name")?.Value;
         if (styleName is not null)
         {
             run.Attributes["style"] = styleName;
-            // Resolve formatting properties from style map (bold, italic, underline, fontSize, fontFamily)
+            // Direct run style overrides cascaded paragraph defaults.
             if (_styleProps.TryGetValue(styleName, out var props))
-                foreach (var kv in props) run.Attributes[kv.Key] = kv.Value;
+                foreach (var kv in props)
+                {
+                    if (kv.Key.StartsWith("__", StringComparison.Ordinal)) continue;
+                    run.Attributes[kv.Key] = kv.Value;
+                }
         }
 
         mapBuilder.AddZipRelative("content.xml", run, off, len);

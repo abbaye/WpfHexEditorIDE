@@ -20,6 +20,9 @@
             <conv:ScoreToProgressConverter   x:Key="ScoreToProgress"/>
             <conv:ThresholdToBrushConverter  x:Key="ThresholdToBrush"/>
             <conv:RiskLevelToBrushConverter  x:Key="RiskToBrush"/>
+            <conv:DuplicationSeverityToBrushConverter x:Key="DupSevToBrush"/>
+            <conv:NullToVisibilityConverter  x:Key="NullToVis"/>
+            <conv:NullToVisibilityConverter  x:Key="NullToVisInverse" Invert="True"/>
             <BooleanToVisibilityConverter    x:Key="BoolToVis"/>
 
             <Style TargetType="TabItem">
@@ -291,7 +294,7 @@
                     <!-- Phase 3 — Radar visualization -->
                     <controls:ScoreRadarChart
                         Width="180" Height="180"
-                        Foreground="{DynamicResource DockForegroundBrush}"
+                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                         ToolTip="{DynamicResource CodeAnalysis_Tooltip_Radar}"
                         Volume="{Binding VolumeScore,        Mode=OneWay}"
                         Complexity="{Binding ComplexityScore, Mode=OneWay}"
@@ -314,6 +317,30 @@
                 <TabItem Header="{DynamicResource CodeAnalysis_Tab_Overview}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Overview}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="12">
                         <StackPanel>
+                            <!-- ── Phase 10 — score trending sparkline ─────────────── -->
+                            <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource CodeAnalysis_History_Title}"/>
+                            <Border Background="{DynamicResource DockWindowBackgroundBrush}"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="3"
+                                    Padding="10,8"
+                                    Margin="0,0,0,16">
+                                <StackPanel>
+                                    <controls:Sparkline ItemsSource="{Binding HistoryScores, Mode=OneWay}"
+                                                        Stroke="{DynamicResource AccentBrush}"
+                                                        Fill="{DynamicResource DockBorderBrush}"
+                                                        MinY="0"
+                                                        MaxY="100"
+                                                        Height="48"
+                                                        Margin="0,0,0,6"
+                                                        Visibility="{Binding HasHistory, Mode=OneWay, Converter={StaticResource BoolToVis}}"/>
+                                    <TextBlock Text="{Binding HistorySummaryText, Mode=OneWay}"
+                                               FontStyle="Italic"
+                                               Opacity="0.7"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+
                             <TextBlock Style="{StaticResource SectionHeader}" Text="{DynamicResource CodeAnalysis_Overview_ByProject}"/>
                             <DataGrid x:Name="ProjectsGrid"
                                       ItemsSource="{Binding Projects, Mode=OneWay}"
@@ -465,7 +492,32 @@
                 <!-- ── Coupling ──────────────────────────────────────────── -->
                 <TabItem Header="{DynamicResource CodeAnalysis_Tab_Coupling}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Coupling}">
                     <Grid Margin="8">
-                        <DataGrid ItemsSource="{Binding TopCouplings, Mode=OneWay}"
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Expander Grid.Row="0"
+                                  Header="{DynamicResource CodeAnalysis_Cycles_Title}"
+                                  IsExpanded="True"
+                                  Margin="0,0,0,8"
+                                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                  Background="Transparent"
+                                  BorderBrush="{DynamicResource DockBorderBrush}"
+                                  TextElement.Foreground="{DynamicResource DockMenuForegroundBrush}">
+                            <Border Padding="4"
+                                    BorderThickness="1"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    CornerRadius="3">
+                                <controls:CyclicDepGraph
+                                    Cycles="{Binding ProjectCycles, Mode=OneWay}"
+                                    Height="240"
+                                    ToolTip="{DynamicResource CodeAnalysis_Cycles_Tooltip}"/>
+                            </Border>
+                        </Expander>
+
+                        <DataGrid Grid.Row="1"
+                                  ItemsSource="{Binding TopCouplings, Mode=OneWay}"
                                   AutoGenerateColumns="False"
                                   IsReadOnly="True"
                                   CanUserReorderColumns="False"
@@ -501,45 +553,155 @@
                     </Grid>
                 </TabItem>
 
-                <!-- ── Duplication ───────────────────────────────────────── -->
+                <!-- ── Duplication (Phase 10B — master/detail redesign) ─── -->
                 <TabItem Header="{DynamicResource CodeAnalysis_Tab_Duplication}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Duplication}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8">
-                        <ItemsControl ItemsSource="{Binding Duplications, Mode=OneWay}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Margin="0,0,0,8" Padding="8"
-                                            BorderThickness="1"
-                                            BorderBrush="{DynamicResource DockBorderBrush}">
-                                        <StackPanel>
-                                            <TextBlock FontWeight="SemiBold">
-                                                <Run Text="{DynamicResource CodeAnalysis_Duplication_CloneGroup}"/>
-                                                <Run Text="{Binding LineCount,          Mode=OneWay}"/>
-                                                <Run Text="{DynamicResource CodeAnalysis_Duplication_Lines}"/>
-                                                <Run Text="{Binding Occurrences.Count,  Mode=OneWay}"/>
-                                                <Run Text="{DynamicResource CodeAnalysis_Duplication_Occurrences}"/>
-                                                <Run Text="{Binding TokenCount,         Mode=OneWay}"/>
-                                                <Run Text="{DynamicResource CodeAnalysis_Duplication_Tokens}"/>
-                                            </TextBlock>
-                                            <ItemsControl ItemsSource="{Binding Occurrences, Mode=OneWay}"
-                                                          Margin="12,4,0,0">
-                                                <ItemsControl.ItemTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" Padding="8,6"
+                                BorderThickness="0,0,0,1"
+                                BorderBrush="{DynamicResource DockBorderBrush}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox x:Name="DupFilterBox" Grid.Column="0"
+                                         Width="200" Margin="0,0,8,0"
+                                         VerticalContentAlignment="Center"
+                                         ToolTip="{DynamicResource CodeAnalysis_Duplication_Filter_Placeholder}"
+                                         TextChanged="OnDupFilterChanged"/>
+
+                                <ComboBox x:Name="DupSortCombo" Grid.Column="1"
+                                          Width="160" Margin="0,0,8,0"
+                                          SelectedIndex="0"
+                                          SelectionChanged="OnDupSortChanged">
+                                    <ComboBoxItem Content="{DynamicResource CodeAnalysis_Duplication_Sort_Lines}"/>
+                                    <ComboBoxItem Content="{DynamicResource CodeAnalysis_Duplication_Sort_Tokens}"/>
+                                    <ComboBoxItem Content="{DynamicResource CodeAnalysis_Duplication_Sort_Occurrences}"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Column="2"
+                                           Text="{Binding DuplicationSummaryText, Mode=OneWay}"
+                                           VerticalAlignment="Center"
+                                           Opacity="0.75"/>
+
+                                <Button Grid.Column="3"
+                                        Content="{DynamicResource CodeAnalysis_Duplication_Export_Button}"
+                                        Click="OnDupExportClicked"
+                                        Padding="8,2"/>
+                            </Grid>
+                        </Border>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="340" MinWidth="220"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*" MinWidth="240"/>
+                            </Grid.ColumnDefinitions>
+
+                            <DataGrid x:Name="DupGroupsGrid" Grid.Column="0"
+                                      ItemsSource="{Binding DuplicationGroups, Mode=OneWay}"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      CanUserReorderColumns="False"
+                                      GridLinesVisibility="Horizontal"
+                                      HeadersVisibility="Column"
+                                      RowHeaderWidth="0"
+                                      EnableRowVirtualization="True"
+                                      EnableColumnVirtualization="True"
+                                      VirtualizingPanel.IsVirtualizing="True"
+                                      VirtualizingPanel.VirtualizationMode="Recycling"
+                                      SelectionMode="Single"
+                                      ContextMenuOpening="OnGridContextMenuOpening">
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="{DynamicResource CodeAnalysis_Duplication_Header_Severity}" Width="74">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Background="{Binding Severity, Converter={StaticResource DupSevToBrush}}"
+                                                        CornerRadius="3" Padding="4,1" Margin="2"
+                                                        ToolTip="{Binding Severity}">
+                                                    <TextBlock Text="{Binding Severity}" FontSize="10" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Duplication_Header_Lines}"       Binding="{Binding LineCount,       Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Duplication_Header_Occurrences}" Binding="{Binding OccurrenceCount, Mode=OneWay}" Width="50"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Duplication_Header_Tokens}"      Binding="{Binding TokenCount,      Mode=OneWay}" Width="60"/>
+                                    <DataGridTextColumn Header="{DynamicResource CodeAnalysis_Duplication_Header_PrimaryFile}" Binding="{Binding PrimaryFileName, Mode=OneWay}" Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <GridSplitter Grid.Column="1" Width="4"
+                                          HorizontalAlignment="Stretch"
+                                          Background="{DynamicResource DockBorderBrush}"/>
+
+                            <Grid Grid.Column="2">
+                                <TextBlock Text="{DynamicResource CodeAnalysis_Duplication_Preview_NoSelection}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Opacity="0.5" FontStyle="Italic"
+                                           Visibility="{Binding SelectedItem, ElementName=DupGroupsGrid,
+                                                        Converter={StaticResource NullToVisInverse}}"/>
+
+                                <DockPanel Visibility="{Binding SelectedItem, ElementName=DupGroupsGrid,
+                                                        Converter={StaticResource NullToVis}}">
+                                    <Border DockPanel.Dock="Top" Padding="8,4"
+                                            BorderThickness="0,0,0,1"
+                                            BorderBrush="{DynamicResource DockBorderBrush}"
+                                            DataContext="{Binding SelectedItem, ElementName=DupGroupsGrid}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="A:" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                            <ComboBox Width="260" Margin="0,0,12,0"
+                                                      ItemsSource="{Binding Occurrences}"
+                                                      SelectedIndex="{Binding SelectedIndexA, Mode=TwoWay}">
+                                                <ComboBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock FontFamily="Consolas" FontSize="11">
-                                                            <Run Text="{Binding FilePath,  Mode=OneWay}"/>
-                                                            <Run Text=" : "/>
                                                             <Run Text="{Binding StartLine, Mode=OneWay}"/>
                                                             <Run Text="–"/>
-                                                            <Run Text="{Binding EndLine,   Mode=OneWay}"/>
+                                                            <Run Text="{Binding EndLine, Mode=OneWay}"/>
+                                                            <Run Text=" · "/>
+                                                            <Run Text="{Binding FilePath, Mode=OneWay}"/>
                                                         </TextBlock>
                                                     </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+
+                                            <TextBlock Text="B:" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                            <ComboBox Width="260"
+                                                      ItemsSource="{Binding Occurrences}"
+                                                      SelectedIndex="{Binding SelectedIndexB, Mode=TwoWay}">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock FontFamily="Consolas" FontSize="11">
+                                                            <Run Text="{Binding StartLine, Mode=OneWay}"/>
+                                                            <Run Text="–"/>
+                                                            <Run Text="{Binding EndLine, Mode=OneWay}"/>
+                                                            <Run Text=" · "/>
+                                                            <Run Text="{Binding FilePath, Mode=OneWay}"/>
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
                                         </StackPanel>
                                     </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
+
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                        <controls:DuplicationCodePreview
+                                            Group="{Binding SelectedItem, ElementName=DupGroupsGrid}"
+                                            Height="600"/>
+                                    </ScrollViewer>
+                                </DockPanel>
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </TabItem>
 
                 <!-- ── Treemap (Phase 3) ─────────────────────────────────── -->
@@ -601,6 +763,21 @@
                 </TabItem>
 
                 <!-- ── Dead Code ─────────────────────────────────────────── -->
+                <TabItem Header="{DynamicResource CodeAnalysis_Tab_Dependencies}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Dependencies}">
+                    <Grid Margin="8">
+                        <controls:DependencyGraphCanvas x:Name="PART_DependencyGraph"
+                                                        Nodes="{Binding DependencyNodes, Mode=OneWay}"
+                                                        Edges="{Binding DependencyEdges, Mode=OneWay}"/>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="{DynamicResource CodeAnalysis_Tab_Trends}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_Trends}">
+                    <Grid Margin="8">
+                        <controls:TrendChartControl x:Name="PART_TrendChart"
+                                                    Series="{Binding TrendSeries, Mode=OneWay}"/>
+                    </Grid>
+                </TabItem>
+
                 <TabItem Header="{DynamicResource CodeAnalysis_Tab_DeadCode}" ToolTip="{DynamicResource CodeAnalysis_Tooltip_Tab_DeadCode}">
                     <Grid Margin="8">
                         <DataGrid ItemsSource="{Binding DeadSymbols, Mode=OneWay}"

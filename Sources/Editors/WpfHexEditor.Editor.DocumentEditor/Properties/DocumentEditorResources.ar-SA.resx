@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>عنوان URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>موافق</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>إلغاء</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>Open URL in browser</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>Open URL in browser</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Please enter a valid URL (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>إدراج جدول</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>صفوف</value></data>
@@ -284,31 +284,31 @@
   <data name="PageStyleDlg_Apply" xml:space="preserve"><value>تطبيق</value></data>
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>موافق</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>إلغاء</value></data>
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>تفعيل التدقيق الإملائي</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>القواميس</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>اللغة</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>الحالة</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>تنزيل</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>استعراض…</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>إزالة</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>قاموس مخصص</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>تعديل…</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>مثبت</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>غير مثبت</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>تجاهل</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>إضافة إلى القاموس</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>اختر ملف القاموس .dic</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>اختر ملف اللواحق .aff</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>فشل التنزيل: {0}</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>خطأ في تنزيل القاموس</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>قاموس التدقيق الإملائي متاح</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>هل تريد تثبيت قاموس {0} للتدقيق الإملائي؟ (~2 MB)</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>تثبيت</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>ليس الآن</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>لا تسأل مجددًا</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>تفعيل التدقيق الإملائي</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>القواميس</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>اللغة</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>الحالة</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>تنزيل</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>استعراض…</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>إزالة</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>قاموس مخصص</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>تعديل…</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>مثبت</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>غير مثبت</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>تجاهل</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>إضافة إلى القاموس</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>اختر ملف القاموس .dic</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>اختر ملف اللواحق .aff</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>فشل التنزيل: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>خطأ في تنزيل القاموس</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>قاموس التدقيق الإملائي متاح</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>هل تريد تثبيت قاموس {0} للتدقيق الإملائي؟ (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>تثبيت</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>ليس الآن</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>لا تسأل مجددًا</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>خصائص الصورة</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>الحجم والموضع</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>التفاف النص</value></data>
@@ -392,4 +392,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>الصور</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>إخفاء هوية البيانات الوصفية</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>إزالة المؤلف والطوابع الزمنية والخصائص المخصصة ووحدات الماكرو من هذا المستند. يبقى التغيير في الذاكرة حتى الحفظ.</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>إخفاء هوية البيانات الوصفية</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>هل تريد إزالة المؤلف والطوابع الزمنية والخصائص المخصصة ووحدات الماكرو من هذا المستند؟
+
+يُطبَّق التغيير في الذاكرة فورًا ويُحفَظ في الملف عند الحفظ التالي.</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>اكتمل إخفاء الهوية.
+
+تمت إزالة المؤلف: {0}
+تمت إزالة الطوابع الزمنية: {1}
+تمت إزالة وحدات الماكرو: {2}
+الخصائص المخصصة التي تم مسحها: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>مراجعة الكائنات المضمنة (صور، OLE، وحدات الماكرو)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>الكائنات المضمنة</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>النوع</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>الاسم</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>الحجم</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>المصدر</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>استخراج…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>حفظ الكائن المضمن المحدد إلى ملف</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>فتح في Hex</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>استخراج إلى ملف مؤقت وفتحه في محرر Hex</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>إغلاق</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>{0} كائن(ات) مضمن(ة)</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>لم يتم العثور على إدخال ZIP: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>لا يحتوي الكائن المضمن على وحدات بايتة مصدر متاحة.</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>SHA-256 للمصدر:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>جارٍ الحساب…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>نسخ التجزئة إلى الحافظة</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>تجزئة الكل</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>حساب SHA-256 لكل كائن مضمن</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>طباعة أو تصدير كملف PDF (استخدم طابعة "Microsoft Print to PDF" لإنشاء PDF)</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>مقارنة بمستند آخر…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>مقارنة المستندات</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>اليسار:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>اليمين:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>استعراض…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(انقر استعراض لاختيار ملف)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>النوع</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>التغيير</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>النص</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} مضاف، −{1} محذوف، ~{2} معدّل، {3} غير مغير</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>لا توجد محملات مستندات مسجلة.</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>لا يوجد محمل مسجل للامتداد {0}.</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>إغلاق</value></data></root>

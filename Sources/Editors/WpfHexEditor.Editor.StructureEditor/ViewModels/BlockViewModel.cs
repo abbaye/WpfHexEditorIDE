@@ -195,6 +195,7 @@ internal sealed class BlockViewModel : ViewModelBase
     public ICommand AddColorCycleCommand  => new RelayCommand(AddColorCycle);
     public ICommand AddValueMapCommand    => new RelayCommand(AddValueMapItem);
     public ICommand AddChildCommand       => new RelayCommand(AddChild);
+    public ICommand AddUnionVariantCommand => new RelayCommand(AddUnionVariant);
 
     /// <summary>Raised when the host should open a raw JSON popup for this block.</summary>
     public event EventHandler? OpenRawRequested;
@@ -270,6 +271,8 @@ internal sealed class BlockViewModel : ViewModelBase
         LoadChildBlocks(b.Else   ?? []);
         LoadChildBlocks(b.Body   ?? []);
         LoadChildBlocks(b.Fields ?? []);
+
+        LoadUnionVariants(b.Variants);
     }
 
     internal BlockDefinition Build()
@@ -313,6 +316,7 @@ internal sealed class BlockViewModel : ViewModelBase
 
         b.Condition       = Condition.Build();
         b.ValidationRules = ValidationRules.Build();
+        b.Variants        = BuildUnionVariants();
 
         b.Bitfields = Bitfields.Count > 0 ? [..Bitfields.Select(vm => vm.Build())] : null;
 
@@ -469,6 +473,59 @@ internal sealed class BlockViewModel : ViewModelBase
         if (string.IsNullOrEmpty(s)) return null;
         if (long.TryParse(s, out var n)) return n;
         return s;
+    }
+
+    private void AddUnionVariant()
+    {
+        var vm = new UnionVariantViewModel { Key = "case_" + (UnionVariants.Count + 1), Length = "0", ValueType = "uint8" };
+        WireUnionVariant(vm);
+        UnionVariants.Add(vm);
+        RaiseChanged();
+    }
+
+    private void WireUnionVariant(UnionVariantViewModel vm)
+    {
+        vm.Changed         += (_, _) => RaiseChanged();
+        vm.RemoveRequested += (s, _) => { UnionVariants.Remove((UnionVariantViewModel)s!); RaiseChanged(); };
+    }
+
+    private void LoadUnionVariants(Dictionary<string, UnionVariant>? variants)
+    {
+        UnionVariants.Clear();
+        if (variants is null) return;
+        foreach (var (key, v) in variants)
+        {
+            var vm = new UnionVariantViewModel
+            {
+                Key         = key,
+                Length      = DisplayObj(v.Length),
+                ValueType   = v.ValueType ?? "",
+                Color       = v.Color ?? StructureEditorConstants.DefaultBlockColor,
+                Opacity     = v.Opacity > 0 ? v.Opacity : 0.3,
+                Description = v.Description ?? "",
+            };
+            WireUnionVariant(vm);
+            UnionVariants.Add(vm);
+        }
+    }
+
+    private Dictionary<string, UnionVariant>? BuildUnionVariants()
+    {
+        if (UnionVariants.Count == 0) return null;
+        var dict = new Dictionary<string, UnionVariant>();
+        foreach (var vm in UnionVariants)
+        {
+            if (string.IsNullOrWhiteSpace(vm.Key)) continue;
+            dict[vm.Key] = new UnionVariant
+            {
+                Length      = ParseObj(vm.Length),
+                ValueType   = string.IsNullOrEmpty(vm.ValueType) ? null : vm.ValueType,
+                Color       = string.IsNullOrEmpty(vm.Color) ? null : vm.Color,
+                Opacity     = vm.Opacity,
+                Description = string.IsNullOrEmpty(vm.Description) ? null : vm.Description,
+            };
+        }
+        return dict.Count > 0 ? dict : null;
     }
 
     private void RaiseChanged() => Changed?.Invoke(this, EventArgs.Empty);

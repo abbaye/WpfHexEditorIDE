@@ -62,6 +62,16 @@ public sealed class PluginDevLoader : IDisposable
         _log = logger ?? (_ => { });
     }
 
+    // Test-only ctor: builds a disarmed loader that exposes the public API surface
+    // (Watch/StopWatching/StopAll/Dispose) without performing real reload work.
+    // Reload paths that call _host/_dispatcher are not exercised by these tests.
+    internal PluginDevLoader()
+    {
+        _host = null!;
+        _dispatcher = null!;
+        _log = _ => { };
+    }
+
     // ── Public API ────────────────────────────────────────────────────────────
 
     /// <summary>
@@ -126,6 +136,7 @@ public sealed class PluginDevLoader : IDisposable
 
     private void OnFileChanged(string pluginId)
     {
+        if (_dispatcher is null) return;
         // All UI/timer operations must be on the Dispatcher thread
         _dispatcher.InvokeAsync(() => ScheduleReload(pluginId));
     }

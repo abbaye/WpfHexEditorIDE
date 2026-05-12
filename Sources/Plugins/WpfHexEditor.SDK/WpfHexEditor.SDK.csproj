@@ -80,6 +80,11 @@
     <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.ResxEditor\WpfHexEditor.Editor.ResxEditor.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
+    <!-- ADR-033 Phase 7E — ClassDiagram public surface: round-trip editors,
+         DSL importers, code-gen, layout strategies, and the diagram model. -->
+    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.ClassDiagram.Core\WpfHexEditor.Editor.ClassDiagram.Core.csproj">
+      <PrivateAssets>none</PrivateAssets>
+    </ProjectReference>
     <!-- Terminal contracts (zero-dep micro-assembly, transitive to plugins) -->
     <ProjectReference Include="..\..\Core\WpfHexEditor.SDK.Terminal.Abstractions\WpfHexEditor.SDK.Terminal.Abstractions.csproj">
       <PrivateAssets>none</PrivateAssets>

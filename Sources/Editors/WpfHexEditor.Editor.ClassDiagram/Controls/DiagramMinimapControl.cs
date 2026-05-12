@@ -45,11 +45,15 @@ public sealed class DiagramMinimapControl : FrameworkElement
     private double           _scale       = 1.0;
     private Vector           _offset;                     // diagram-space top-left corner
 
-    // Unified drag state — drag anywhere on minimap repositions it; click navigates viewport
+    // Drag state — depends on where the mouse-down landed:
+    //  - inside the viewport rect → "pan view" mode: emit ViewportNavigateRequested continuously
+    //  - outside the viewport rect (on minimap background) → "reposition panel" mode after threshold
+    private enum MinimapDragMode { None, PanView, RepositionPanel }
+    private MinimapDragMode _dragMode = MinimapDragMode.None;
     private bool   _mouseDown;
     private Point  _mouseDownParentPt;   // parent-canvas coords at mouse-down
     private Point  _lastParentPt;        // last parent-canvas coords during drag
-    private bool   _repositionConfirmed; // true once drag exceeds DragThreshold
+    private bool   _repositionConfirmed; // true once drag exceeds DragThreshold (reposition mode only)
     private const double DragThreshold = 5.0;
 
     // ── Events ────────────────────────────────────────────────────────────────
@@ -200,6 +204,20 @@ public sealed class DiagramMinimapControl : FrameworkElement
         _repositionConfirmed = false;
         _mouseDownParentPt   = e.GetPosition(Parent as IInputElement ?? this);
         _lastParentPt        = _mouseDownParentPt;
+
+        // Bugfix 2026-05-10: discriminate between "drag viewport rect → pan view"
+        // and "drag minimap background → reposition the panel". Without this,
+        // any drag on the minimap moved the panel even when the user intended
+        // to pan via the viewport rectangle handle.
+        Point  mapPt = e.GetPosition(this);
+        Rect   vrect = _viewport.IsEmpty ? Rect.Empty : ToMapRect(_viewport);
+        _dragMode = !vrect.IsEmpty && vrect.Contains(mapPt)
+            ? MinimapDragMode.PanView
+            : MinimapDragMode.RepositionPanel;
+
+        if (_dragMode == MinimapDragMode.PanView)
+            Cursor = Cursors.SizeAll;
+
         CaptureMouse();
         e.Handled = true;
     }
@@ -208,6 +226,19 @@ public sealed class DiagramMinimapControl : FrameworkElement
     {
         if (!_mouseDown) { e.Handled = false; return; }
 
+        if (_dragMode == MinimapDragMode.PanView)
+        {
+            // Pan view: feed the canvas with the current minimap point as a
+            // diagram-space target every frame. The canvas will scroll so that
+            // point becomes the viewport center.
+            Point mapPt  = e.GetPosition(this);
+            Point diagPt = ToDiagramPoint(mapPt);
+            ViewportNavigateRequested?.Invoke(this, diagPt);
+            e.Handled = true;
+            return;
+        }
+
+        // Reposition panel (drag started on minimap background, not on viewport)
         Point  cur   = e.GetPosition(Parent as IInputElement ?? this);
         Vector delta = cur - _lastParentPt;
 
@@ -232,11 +263,20 @@ public sealed class DiagramMinimapControl : FrameworkElement
 
     protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
     {
-        bool wasRepo = _repositionConfirmed;
+        bool wasRepo    = _repositionConfirmed;
+        bool wasPanView = _dragMode == MinimapDragMode.PanView;
         _mouseDown           = false;
         _repositionConfirmed = false;
+        _dragMode            = MinimapDragMode.None;
         ReleaseMouseCapture();
         Cursor = Cursors.Hand;
+
+        if (wasPanView)
+        {
+            // Already streamed pan events during the drag — nothing to commit on release.
+            e.Handled = true;
+            return;
+        }
 
         if (!wasRepo)
         {

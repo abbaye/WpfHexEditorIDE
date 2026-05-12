@@ -278,9 +278,14 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         var author      = GetString(root, "author")      ?? "";
         int quality     = 0;
 
-        if (root.TryGetProperty("QualityMetrics", out var qm) &&
+        if (root.ValueKind == JsonValueKind.Object &&
+            root.TryGetProperty("QualityMetrics", out var qm) &&
+            qm.ValueKind == JsonValueKind.Object &&
             qm.TryGetProperty("CompletenessScore", out var qs))
-            quality = qs.GetInt32();
+        {
+            if (qs.ValueKind == JsonValueKind.Number) quality = qs.GetInt32();
+            else if (qs.ValueKind == JsonValueKind.String && int.TryParse(qs.GetString(), out var qInt)) quality = qInt;
+        }
 
         var extensions = new List<string>();
         if (root.TryGetProperty("extensions", out var ext) && ext.ValueKind == JsonValueKind.Array)
@@ -337,6 +342,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
 
     private static string? GetString(JsonElement root, string property)
     {
+        if (root.ValueKind != JsonValueKind.Object) return null;
         if (root.TryGetProperty(property, out var el) && el.ValueKind == JsonValueKind.String)
             return el.GetString();
         return null;

@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "PlayStation 4 Package",
   "formatId": "ROM_PS4",
-  "version": "2.42",
+  "version": "2.42.1",
   "extensions": [
     ".pkg"
   ],
@@ -29,7 +29,8 @@
     "required": true,
     "validation": {
       "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "maxSignatureOffset": 1024,
+      "note": "Shares Sony CNT magic 7F434E54 with PS5 CNT. Discriminate via pkg_content_type uint32-BE at offset 0x74: PS4 values 0x1A (Game), 0x1B (DLC), 0x1C (License), 0x1D (Patch), 0x1E (Theme). See psdevwiki.com/ps4/PKG_files."
     }
   },
   "variables": {

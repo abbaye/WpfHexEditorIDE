@@ -1017,6 +1017,85 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         }
     }
 
+    private void OnDiffClicked(object sender, RoutedEventArgs e)
+    {
+        var model = _vm?.Model;
+        if (model is null) return;
+        var dlg = new WpfHexEditor.Editor.DocumentEditor.Dialogs.DocumentDiffDialog(model, _ideContext)
+        {
+            Owner = Window.GetWindow(this)
+        };
+        dlg.ShowDialog();
+    }
+
+    private void OnPrintClicked(object sender, RoutedEventArgs e)
+    {
+        var model = _vm?.Model;
+        if (model is null) return;
+        try
+        {
+            var flowDoc = WpfHexEditor.Editor.DocumentEditor.Services
+                .DocumentFlowDocumentBuilder.Build(model);
+            var dlg = new System.Windows.Controls.PrintDialog();
+            // Sync FlowDocument page size to the selected printer.
+            flowDoc.PageHeight = dlg.PrintableAreaHeight;
+            flowDoc.PageWidth  = dlg.PrintableAreaWidth;
+            if (dlg.ShowDialog() != true) return;
+            System.Windows.Documents.IDocumentPaginatorSource paginator = flowDoc;
+            dlg.PrintDocument(paginator.DocumentPaginator,
+                model.Metadata?.Title ?? "Document");
+        }
+        catch (Exception ex)
+        {
+            WpfHexEditor.Editor.Core.Dialogs.IdeMessageBox.Show(
+                ex.Message, DocumentEditorResources.DocEditorHost_PrintToolTip,
+                MessageBoxButton.OK, MessageBoxImage.Error, Window.GetWindow(this));
+        }
+    }
+
+    private void OnEmbeddedClicked(object sender, RoutedEventArgs e)
+    {
+        var model = _vm?.Model;
+        if (model is null) return;
+        var dlg = new WpfHexEditor.Editor.DocumentEditor.Dialogs.EmbeddedObjectsDialog(model, _ideContext)
+        {
+            Owner = Window.GetWindow(this)
+        };
+        dlg.ShowDialog();
+    }
+
+    private void OnAnonymizeClicked(object sender, RoutedEventArgs e)
+    {
+        var model = _vm?.Model;
+        if (model is null) return;
+
+        var confirm = WpfHexEditor.Editor.Core.Dialogs.IdeMessageBox.Show(
+            DocumentEditorResources.DocEditorHost_AnonymizeConfirm,
+            DocumentEditorResources.DocEditorHost_AnonymizeTitle,
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning,
+            Window.GetWindow(this));
+        if (confirm != MessageBoxResult.Yes) return;
+
+        var result = WpfHexEditor.Editor.DocumentEditor.Services.DocumentAnonymizer.Anonymize(model);
+
+        // Refresh popup view to reflect stripped metadata immediately.
+        OnMetadataClicked(sender, e);
+
+        string yes = DocumentEditorResources.DocEditorHost_MetaYesValue;
+        string no  = DocumentEditorResources.DocEditorHost_MetaNoValue;
+        WpfHexEditor.Editor.Core.Dialogs.IdeMessageBox.Show(
+            string.Format(DocumentEditorResources.DocEditorHost_AnonymizeDoneFmt,
+                result.HadAuthor                              ? yes : no,
+                result.HadCreated || result.HadModified       ? yes : no,
+                result.HadMacros                              ? yes : no,
+                result.ExtraKeysRemoved),
+            DocumentEditorResources.DocEditorHost_AnonymizeTitle,
+            MessageBoxButton.OK,
+            MessageBoxImage.Information,
+            Window.GetWindow(this));
+    }
+
     private void OnMetadataClicked(object sender, RoutedEventArgs e)
     {
         var meta = _vm?.Model?.Metadata;

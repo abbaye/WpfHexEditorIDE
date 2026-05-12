@@ -569,6 +569,24 @@
                            ToolTip="{DynamicResource DocEditorHost_ReadOnlyToolTip}"
                            Visibility="Collapsed"/>
 
+                <Button x:Name="PART_DiffBtn"
+                        Style="{StaticResource DocActionButtonStyle}"
+                        DockPanel.Dock="Right"
+                        Margin="0,0,2,0"
+                        ToolTip="{DynamicResource DocEditorHost_DiffToolTip}"
+                        Click="OnDiffClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F5;" FontSize="13"/>
+                </Button>
+
+                <Button x:Name="PART_EmbeddedBtn"
+                        Style="{StaticResource DocActionButtonStyle}"
+                        DockPanel.Dock="Right"
+                        Margin="0,0,2,0"
+                        ToolTip="{DynamicResource DocEditorHost_EmbeddedToolTip}"
+                        Click="OnEmbeddedClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7B8;" FontSize="13"/>
+                </Button>
+
                 <Button x:Name="PART_MetadataBtn"
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Right"
@@ -602,6 +620,8 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="8"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <!-- Row 0: Title -->
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource DocEditorHost_MetaTitle}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
@@ -624,9 +644,26 @@
                             <!-- Row 6: Macros badge -->
                             <TextBlock Grid.Row="6" Grid.Column="0" Text="{DynamicResource DocEditorHost_MetaMacros}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
                             <TextBlock Grid.Row="6" Grid.Column="2" x:Name="PART_Meta_Macros" Margin="0,4,0,0"/>
+                            <!-- Row 8: Anonymize action (forensic strip) -->
+                            <Button Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3"
+                                    x:Name="PART_AnonymizeBtn"
+                                    Content="{DynamicResource DocEditorHost_AnonymizeBtn}"
+                                    ToolTip="{DynamicResource DocEditorHost_AnonymizeToolTip}"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="8,4"
+                                    Click="OnAnonymizeClicked"/>
                         </Grid>
                     </Border>
                 </Popup>
+
+                <Button x:Name="PART_PrintBtn"
+                        Style="{StaticResource DocActionButtonStyle}"
+                        DockPanel.Dock="Right"
+                        Margin="0,0,2,0"
+                        ToolTip="{DynamicResource DocEditorHost_PrintToolTip}"
+                        Click="OnPrintClicked">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE749;" FontSize="13"/>
+                </Button>
 
                 <Button x:Name="PART_ExportBtn"
                         Style="{StaticResource DocActionButtonStyle}"

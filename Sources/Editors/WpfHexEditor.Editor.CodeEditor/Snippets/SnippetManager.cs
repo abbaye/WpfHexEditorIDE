@@ -79,8 +79,20 @@ public sealed class SnippetManager
     /// <returns>Descriptor consumed by the editor to apply the text change and move the caret.</returns>
     public static SnippetExpansion BuildExpansion(
         Snippet snippet, int insertLine, int insertColumn, int triggerLength)
+        => BuildExpansion(snippet, insertLine, insertColumn, triggerLength, context: null);
+
+    /// <summary>
+    /// Variable-aware overload. When <paramref name="context"/> is non-null,
+    /// <c>${VariableName}</c> tokens in the body are replaced before locating
+    /// the cursor marker.
+    /// </summary>
+    public static SnippetExpansion BuildExpansion(
+        Snippet snippet, int insertLine, int insertColumn, int triggerLength,
+        SnippetVariableContext? context)
     {
-        string body = snippet.Body;
+        string body = context is not null
+            ? SnippetVariableExpander.Expand(snippet.Body, context)
+            : snippet.Body;
 
         // Locate $cursor marker and remove it from the body text.
         int cursorMarkerPos = body.IndexOf(Snippet.CursorMarker, StringComparison.Ordinal);

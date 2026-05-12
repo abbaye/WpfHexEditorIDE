@@ -92,6 +92,43 @@ public sealed record SnapshotClassDiagramUndoEntry(
     public void Redo() => ApplyDsl(AfterDsl);
 }
 
+/// <summary>
+/// ADR-022 Phase 1B — Wraps a diagram-side undo entry with a snapshot of the
+/// source file's bytes BEFORE and AFTER the round-trip patch. Undo restores
+/// the bytes via <paramref name="WriteSource"/> (which is expected to push
+/// the cycle-prevention window into DiagramLiveSyncService so the watcher
+/// does not re-trigger an analyze) and then calls the inner entry's Undo.
+/// Redo applies the inverse.
+/// </summary>
+/// <param name="FilePath">Absolute source path that was patched.</param>
+/// <param name="ContentBefore">File bytes prior to the patch.</param>
+/// <param name="ContentAfter">File bytes after the patch.</param>
+/// <param name="WriteSource">Callback that writes the given content to <paramref name="FilePath"/>; must handle watcher suppression.</param>
+/// <param name="Inner">Diagram-side undo entry to chain after the source restore.</param>
+/// <param name="Description">Human-readable label.</param>
+public sealed record SourceFileBackupUndoEntry(
+    string                       FilePath,
+    string                       ContentBefore,
+    string                       ContentAfter,
+    Action<string, string>       WriteSource,
+    IClassDiagramUndoEntry?      Inner,
+    string                       Description) : IClassDiagramUndoEntry
+{
+    public DateTime Timestamp { get; } = DateTime.UtcNow;
+
+    public void Undo()
+    {
+        WriteSource(FilePath, ContentBefore);
+        Inner?.Undo();
+    }
+
+    public void Redo()
+    {
+        WriteSource(FilePath, ContentAfter);
+        Inner?.Redo();
+    }
+}
+
 // ---------------------------------------------------------------------------
 // Undo manager
 // ---------------------------------------------------------------------------
@@ -102,7 +139,10 @@ public sealed record SnapshotClassDiagramUndoEntry(
 /// </summary>
 public sealed class ClassDiagramUndoManager
 {
-    private const int MaxEntries = 200;
+    // Phase 3B (ADR-031): industrial undo depth. 2000 entries cover a multi-hour
+    // editing session even with fine-grained operations; the cap is a soft ring
+    // (oldest entry drops on overflow). Memory cost ~2000*sizeof(record) ≈ negligible.
+    private const int MaxEntries = 2000;
 
     private readonly List<IClassDiagramUndoEntry> _stack = new(MaxEntries + 1);
     private int _pointer;

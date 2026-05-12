@@ -344,6 +344,70 @@
   <data name="DocEditorHost_MetadataToolTip" xml:space="preserve">
     <value>Document metadata</value>
   </data>
+  <data name="DocEditorHost_AnonymizeBtn" xml:space="preserve">
+    <value>Anonymize metadata</value>
+  </data>
+  <data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve">
+    <value>Review embedded objects (images, OLE, macros)</value>
+  </data>
+  <data name="EmbeddedDlg_Title" xml:space="preserve">
+    <value>Embedded Objects</value>
+  </data>
+  <data name="EmbeddedDlg_ColKind" xml:space="preserve">
+    <value>Kind</value>
+  </data>
+  <data name="EmbeddedDlg_ColName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="EmbeddedDlg_ColSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="EmbeddedDlg_ColSource" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="EmbeddedDlg_Extract" xml:space="preserve">
+    <value>Extract…</value>
+  </data>
+  <data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve">
+    <value>Save the selected embedded object to a file</value>
+  </data>
+  <data name="EmbeddedDlg_OpenHex" xml:space="preserve">
+    <value>Open in Hex</value>
+  </data>
+  <data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve">
+    <value>Extract to a temporary file and open in the Hex Editor</value>
+  </data>
+  <data name="EmbeddedDlg_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="EmbeddedDlg_CountFmt" xml:space="preserve">
+    <value>{0} embedded object(s)</value>
+  </data>
+  <data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve">
+    <value>ZIP entry not found: {0}</value>
+  </data>
+  <data name="EmbeddedDlg_NoSource" xml:space="preserve">
+    <value>The embedded object has no available source bytes (no inline data and the original file is missing).</value>
+  </data>
+  <data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve">
+    <value>Strip author, timestamps, custom properties and macros from this document. The change is in-memory until you save.</value>
+  </data>
+  <data name="DocEditorHost_AnonymizeTitle" xml:space="preserve">
+    <value>Anonymize metadata</value>
+  </data>
+  <data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve">
+    <value>Remove author, timestamps, custom properties and macros from this document?
+
+The change applies in memory immediately and is persisted to the file on the next Save.</value>
+  </data>
+  <data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve">
+    <value>Anonymization complete.
+
+Author removed: {0}
+Timestamps removed: {1}
+Macros removed: {2}
+Custom properties cleared: {3}</value>
+  </data>
   <data name="DocEditorHost_ExportToolTip" xml:space="preserve">
     <value>Export document</value>
   </data>
@@ -905,4 +969,45 @@
   <data name="ImgCtx_Wrap"                   xml:space="preserve"><value>Text wrapping</value></data>
   <data name="ImgCtx_InspectHex"             xml:space="preserve"><value>Inspect in Hex Editor</value></data>
   <data name="ImgCtx_Properties"             xml:space="preserve"><value>Image properties…</value></data>
+
+  <!-- Embedded Objects dialog (P3) -->
+  <data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>Review embedded objects (images, OLE, macros)</value></data>
+  <data name="EmbeddedDlg_Title"             xml:space="preserve"><value>Embedded Objects</value></data>
+  <data name="EmbeddedDlg_ColKind"           xml:space="preserve"><value>Kind</value></data>
+  <data name="EmbeddedDlg_ColName"           xml:space="preserve"><value>Name</value></data>
+  <data name="EmbeddedDlg_ColSize"           xml:space="preserve"><value>Size</value></data>
+  <data name="EmbeddedDlg_ColSource"         xml:space="preserve"><value>Source</value></data>
+  <data name="EmbeddedDlg_Extract"           xml:space="preserve"><value>Extract…</value></data>
+  <data name="EmbeddedDlg_ExtractToolTip"    xml:space="preserve"><value>Save the selected embedded object to a file</value></data>
+  <data name="EmbeddedDlg_OpenHex"           xml:space="preserve"><value>Open in Hex</value></data>
+  <data name="EmbeddedDlg_OpenHexToolTip"    xml:space="preserve"><value>Extract to a temporary file and open in the Hex Editor</value></data>
+  <data name="EmbeddedDlg_Close"             xml:space="preserve"><value>Close</value></data>
+  <data name="EmbeddedDlg_CountFmt"          xml:space="preserve"><value>{0} embedded object(s)</value></data>
+  <data name="EmbeddedDlg_EntryNotFoundFmt"  xml:space="preserve"><value>ZIP entry not found: {0}</value></data>
+  <data name="EmbeddedDlg_NoSource"          xml:space="preserve"><value>The embedded object has no available source bytes (no inline data and the original file is missing).</value></data>
+
+  <!-- Hash signing (T3.1) -->
+  <data name="EmbeddedDlg_SourceSha"         xml:space="preserve"><value>Source SHA-256:</value></data>
+  <data name="EmbeddedDlg_ShaComputing"      xml:space="preserve"><value>computing…</value></data>
+  <data name="EmbeddedDlg_CopySha"           xml:space="preserve"><value>Copy hash to clipboard</value></data>
+  <data name="EmbeddedDlg_HashAll"           xml:space="preserve"><value>Hash All</value></data>
+  <data name="EmbeddedDlg_HashAllToolTip"    xml:space="preserve"><value>Compute SHA-256 over every embedded object</value></data>
+
+  <!-- Print / Export PDF (T1.3) -->
+  <data name="DocEditorHost_PrintToolTip"    xml:space="preserve"><value>Print or export as PDF (use the "Microsoft Print to PDF" printer to generate a PDF)</value></data>
+
+  <!-- Document Diff (T1.2) -->
+  <data name="DocEditorHost_DiffToolTip"     xml:space="preserve"><value>Compare with another document…</value></data>
+  <data name="DocDiffDlg_Title"              xml:space="preserve"><value>Compare documents</value></data>
+  <data name="DocDiffDlg_LabelLeft"          xml:space="preserve"><value>Left:</value></data>
+  <data name="DocDiffDlg_LabelRight"         xml:space="preserve"><value>Right:</value></data>
+  <data name="DocDiffDlg_PickRight"          xml:space="preserve"><value>Browse…</value></data>
+  <data name="DocDiffDlg_PickHint"           xml:space="preserve"><value>(click Browse to pick a file)</value></data>
+  <data name="DocDiffDlg_ColKind"            xml:space="preserve"><value>Kind</value></data>
+  <data name="DocDiffDlg_ColChange"          xml:space="preserve"><value>Change</value></data>
+  <data name="DocDiffDlg_ColText"            xml:space="preserve"><value>Text</value></data>
+  <data name="DocDiffDlg_SummaryFmt"         xml:space="preserve"><value>+{0} added, −{1} removed, ~{2} modified, {3} unchanged</value></data>
+  <data name="DocDiffDlg_NoLoaders"          xml:space="preserve"><value>No document loaders are registered.</value></data>
+  <data name="DocDiffDlg_NoLoaderForFmt"     xml:space="preserve"><value>No loader registered for extension {0}.</value></data>
+  <data name="DocDiffDlg_Close"              xml:space="preserve"><value>Close</value></data>
 </root>

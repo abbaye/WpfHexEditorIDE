@@ -2,17 +2,15 @@
   "diffMode": "text",
   "formatName": "Flat ODF Text Document",
   "formatId": "FODT",
-  "version": "1.1",
+  "version": "1.2",
   "extensions": [
     ".fodt",
-    ".fods",
-    ".fodp",
-    ".fodg"
+    ".fott"
   ],
-  "description": "Flat ODF (Open Document Format) — single-file XML variant of ODF. Unlike standard ODF (ZIP-based .odt/.ods/.odp), Flat ODF stores the entire document as a single uncompressed XML file. Root element: <office:document> with namespace declarations for office:, style:, text:, draw:, fo: and others. Contains all ODF sections inline: <office:meta> (title, author, creation date), <office:settings>, <office:scripts>, <office:font-face-decls>, <office:styles>, <office:automatic-styles>, <office:master-styles>, <office:body> (actual document content). Supported by LibreOffice and OpenOffice. Easier to diff and version-control than ZIP-based ODF. MIME types: application/vnd.oasis.opendocument.text (.fodt), spreadsheet (.fods), presentation (.fodp), drawing (.fodg).",
+  "description": "Flat ODF Text — single-file XML variant of OpenDocument Text (.fodt) and its template variant (.fott). Unlike standard ODT (ZIP-based), Flat ODT stores the entire document as a single uncompressed XML file. Root element: <office:document> with namespace declarations for office:, style:, text:, draw:, fo: and others. Contains all ODF sections inline: <office:meta>, <office:settings>, <office:scripts>, <office:font-face-decls>, <office:styles>, <office:automatic-styles>, <office:master-styles>, <office:body>. Supported by LibreOffice and OpenOffice. Easier to diff and version-control than ZIP-based ODT. Note: .fods/.fodp/.fodg (spreadsheet/presentation/drawing flat variants) are NOT covered by this format — they need dedicated loaders.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "text-editor",
+  "preferredEditor": "document-editor",
   "references": {
     "specifications": [
       "OASIS ODF 1.3 Specification — docs.oasis-open.org/office/OpenDocument/v1.3/",
@@ -185,23 +183,16 @@
     "category": "Documents",
     "extensions": [
       ".fodt",
-      ".fods",
-      ".fodp",
-      ".fodg"
+      ".fott"
     ],
     "relatedFormats": [
       "ODT",
-      "ODS",
-      "ODP",
       "DOCX"
     ],
-    "containerVariant": "Standard ODF: ZIP archive of XML files (.odt/.ods/.odp)"
+    "containerVariant": "Standard ODT: ZIP archive of XML files (.odt/.ott)"
   },
   "MimeTypes": [
-    "application/vnd.oasis.opendocument.text-flat-xml",
-    "application/vnd.oasis.opendocument.spreadsheet-flat-xml",
-    "application/vnd.oasis.opendocument.presentation-flat-xml",
-    "application/vnd.oasis.opendocument.graphics-flat-xml"
+    "application/vnd.oasis.opendocument.text-flat-xml"
   ],
   "UseCases": [
     "Version-controlled document management (git-friendly vs .odt ZIP)",
@@ -214,7 +205,7 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 2,
     "ValidationRules": 2,
-    "LastUpdated": "2026-04-15",
+    "LastUpdated": "2026-05-10",
     "PriorityFormat": false,
     "AutoRefined": false
   },
@@ -284,12 +275,10 @@
       ]
     },
     "id": "fodt",
-    "name": "Flat OpenDocument (XML)",
+    "name": "Flat OpenDocument Text (XML)",
     "extensions": [
       ".fodt",
-      ".fods",
-      ".fodp",
-      ".fodg"
+      ".fott"
     ]
   },
   "diff": {

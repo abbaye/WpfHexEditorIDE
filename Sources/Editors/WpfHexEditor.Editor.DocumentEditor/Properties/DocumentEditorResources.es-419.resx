@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>Aceptar</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Cancelar</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>Abrir URL en el navegador</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>Abrir URL en el navegador</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Ingrese una URL válida (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>Insertar tabla</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Filas</value></data>
@@ -284,31 +284,31 @@
   <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Aplicar</value></data>
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>Aceptar</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Cancelar</value></data>
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Activar corrección ortográfica</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Diccionarios</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Idioma</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Estado</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>Descargar</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Examinar…</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Quitar</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Diccionario personalizado</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Editar…</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Instalado</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>No instalado</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Ignorar</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Agregar al diccionario</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>Seleccionar archivo de diccionario .dic</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>Seleccionar archivo de afijos .aff</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Error de descarga: {0}</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Error al descargar diccionario</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Diccionario de corrección disponible</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>¿Instalar el diccionario {0} para la corrección ortográfica? (~2 MB)</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Instalar</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Ahora no</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>No preguntar de nuevo</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>Activar corrección ortográfica</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>Diccionarios</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>Idioma</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>Estado</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>Descargar</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>Examinar…</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>Quitar</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>Diccionario personalizado</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>Editar…</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>Instalado</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>No instalado</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>Ignorar</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>Agregar al diccionario</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>Seleccionar archivo de diccionario .dic</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>Seleccionar archivo de afijos .aff</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>Error de descarga: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>Error al descargar diccionario</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>Diccionario de corrección disponible</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>¿Instalar el diccionario {0} para la corrección ortográfica? (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Instalar</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Ahora no</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>No preguntar de nuevo</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>Propiedades de imagen</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>Tamaño y posición</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Ajuste de texto</value></data>
@@ -392,4 +392,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>Imágenes</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>Anonimizar metadatos</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>Elimina autor, marcas de tiempo, propiedades personalizadas y macros de este documento. El cambio queda en memoria hasta guardar.</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>Anonimizar metadatos</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>¿Eliminar autor, marcas de tiempo, propiedades personalizadas y macros de este documento?
+
+El cambio se aplica de inmediato en memoria y se guarda en el archivo en el próximo Guardar.</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>Anonimización completa.
+
+Autor eliminado: {0}
+Marcas de tiempo eliminadas: {1}
+Macros eliminadas: {2}
+Propiedades personalizadas borradas: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>Revisar objetos incrustados (imágenes, OLE, macros)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>Objetos incrustados</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>Tipo</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>Nombre</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>Tamaño</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>Origen</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>Extraer…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>Guardar el objeto incrustado seleccionado en un archivo</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>Abrir en Hex</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>Extraer a un archivo temporal y abrir en el Editor Hex</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>Cerrar</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>{0} objeto(s) incrustado(s)</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>Entrada ZIP no encontrada: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>El objeto incrustado no tiene bytes de origen disponibles.</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>SHA-256 de origen:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>calculando…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>Copiar hash al portapapeles</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>Calcular hashes</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>Calcular SHA-256 sobre cada objeto incrustado</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>Imprimir o exportar como PDF (usa la impresora "Microsoft Print to PDF" para generar un PDF)</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>Comparar con otro documento…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>Comparar documentos</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>Izquierda:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>Derecha:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>Examinar…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(haz clic en Examinar para elegir un archivo)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>Tipo</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>Cambio</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>Texto</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} agregadas, −{1} eliminadas, ~{2} modificadas, {3} sin cambios</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>No hay cargadores de documentos registrados.</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>No hay cargador registrado para la extensión {0}.</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>Cerrar</value></data></root>

@@ -33,6 +33,16 @@ internal sealed class CodeAnalysisOptionsService
                 if (!_options.Rules.Any(r => r.RuleId == defaultRule.RuleId))
                     _options.Rules.Add(defaultRule);
             }
+
+            // Phase 11 migration — back-fill or correct any rule whose Category
+            // disagrees with the canonical mapping from RuleId. Tolerates both
+            // pre-Phase-11 JSON (no Category field → enum default applies) and
+            // user-edited rows where the value drifted.
+            foreach (var r in _options.Rules)
+            {
+                var canonical = RuleCategoryHelper.FromRuleId(r.RuleId);
+                if (r.Category != canonical) r.Category = canonical;
+            }
         }
         catch
         {

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -199,117 +199,117 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Tekstweergave</value>
   </data>
-  <data name="DocCanvas_Paragraph"           xml:space="preserve"><value>Alinea</value></data>
-  <data name="DocCanvas_Para_Normal"         xml:space="preserve"><value>Normaal</value></data>
-  <data name="DocCanvas_Para_Heading1"       xml:space="preserve"><value>Kop 1</value></data>
-  <data name="DocCanvas_Para_Heading2"       xml:space="preserve"><value>Kop 2</value></data>
-  <data name="DocCanvas_Para_Heading3"       xml:space="preserve"><value>Kop 3</value></data>
-  <data name="DocCanvas_Para_Quote"          xml:space="preserve"><value>Citaat</value></data>
-  <data name="DocCanvas_Para_Code"           xml:space="preserve"><value>Codeblok</value></data>
-  <data name="DocCanvas_List"                xml:space="preserve"><value>Lijst</value></data>
-  <data name="DocCanvas_List_Bullet"         xml:space="preserve"><value>Opsommingslijst  •</value></data>
-  <data name="DocCanvas_List_Numbered"       xml:space="preserve"><value>Genummerde lijst  1, 2, 3</value></data>
-  <data name="DocCanvas_List_UpperAlpha"     xml:space="preserve"><value>Alfabetisch  A, B, C</value></data>
-  <data name="DocCanvas_List_LowerAlpha"     xml:space="preserve"><value>Alfabetisch  a, b, c</value></data>
-  <data name="DocCanvas_List_UpperRoman"     xml:space="preserve"><value>Romeins  I, II, III</value></data>
-  <data name="DocCanvas_List_LowerRoman"     xml:space="preserve"><value>Romeins  i, ii, iii</value></data>
-  <data name="DocCanvas_List_None"           xml:space="preserve"><value>Geen lijst</value></data>
-  <data name="DocCanvas_SelectBlock"         xml:space="preserve"><value>Blok selecteren</value></data>
-  <data name="DocCanvas_InsertPageBreak"     xml:space="preserve"><value>Pagina-einde invoegen</value></data>
-  <data name="DocCanvas_InsertHyperlink"     xml:space="preserve"><value>Hyperlink invoegen…</value></data>
-  <data name="DocCanvas_InsertTable"         xml:space="preserve"><value>Tabel invoegen…</value></data>
-  <data name="DocCanvas_Table"              xml:space="preserve"><value>Tabel</value></data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>Alinea</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>Normaal</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>Kop 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>Kop 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>Kop 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>Citaat</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>Codeblok</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>Lijst</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>Opsommingslijst  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>Genummerde lijst  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>Alfabetisch  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>Alfabetisch  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>Romeins  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>Romeins  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>Geen lijst</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>Blok selecteren</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>Pagina-einde invoegen</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>Hyperlink invoegen…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>Tabel invoegen…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>Tabel</value></data>
   <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>Rij erboven invoegen</value></data>
-  <data name="DocCanvas_TableInsertRow"      xml:space="preserve"><value>Rij eronder invoegen</value></data>
-  <data name="DocCanvas_TableDeleteRow"      xml:space="preserve"><value>Rij verwijderen</value></data>
-  <data name="DocCanvas_TableInsertColLeft"  xml:space="preserve"><value>Kolom links invoegen</value></data>
-  <data name="DocCanvas_TableInsertCol"      xml:space="preserve"><value>Kolom rechts invoegen</value></data>
-  <data name="DocCanvas_TableDeleteCol"      xml:space="preserve"><value>Kolom verwijderen</value></data>
-  <data name="DocEditorHost_BulletListToolTip"    xml:space="preserve"><value>Opsommingslijst (Ctrl+Shift+8)</value></data>
-  <data name="DocEditorHost_NumberedListToolTip"  xml:space="preserve"><value>Genummerde lijst (Ctrl+Shift+7)</value></data>
-  <data name="DocEditorHost_IndentMoreToolTip"    xml:space="preserve"><value>Inspringing vergroten (Ctrl+])</value></data>
-  <data name="DocEditorHost_IndentLessToolTip"    xml:space="preserve"><value>Inspringing verkleinen (Ctrl+[)</value></data>
-  <data name="DocEditorHost_AlignJustifyToolTip"  xml:space="preserve"><value>Uitvullen (Ctrl+J)</value></data>
-  <data name="DocEditorHost_InsertTableToolTip"   xml:space="preserve"><value>Tabel invoegen</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>Rij eronder invoegen</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>Rij verwijderen</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>Kolom links invoegen</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>Kolom rechts invoegen</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>Kolom verwijderen</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>Opsommingslijst (Ctrl+Shift+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>Genummerde lijst (Ctrl+Shift+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>Inspringing vergroten (Ctrl+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>Inspringing verkleinen (Ctrl+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>Uitvullen (Ctrl+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>Tabel invoegen</value></data>
   <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>Hyperlink invoegen (Ctrl+K)</value></data>
   <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>Pagina-einde invoegen (Ctrl+Enter)</value></data>
-  <data name="DocEditorHost_PageStyleToolTip"     xml:space="preserve"><value>Paginaopmaak</value></data>
-  <data name="HyperlinkDlg_Title"      xml:space="preserve"><value>Hyperlink invoegen</value></data>
-  <data name="HyperlinkDlg_LabelText"  xml:space="preserve"><value>Weergavetekst</value></data>
-  <data name="HyperlinkDlg_LabelUrl"   xml:space="preserve"><value>URL</value></data>
-  <data name="HyperlinkDlg_OK"         xml:space="preserve"><value>OK</value></data>
-  <data name="HyperlinkDlg_Cancel"     xml:space="preserve"><value>Annuleren</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>URL openen in browser</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>Paginaopmaak</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>Hyperlink invoegen</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>Weergavetekst</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>URL openen in browser</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Voer een geldige URL in (https://, http://, mailto:, ftp://)</value></data>
-  <data name="InsertTableDlg_Title"    xml:space="preserve"><value>Tabel invoegen</value></data>
-  <data name="InsertTableDlg_Rows"     xml:space="preserve"><value>Rijen</value></data>
-  <data name="InsertTableDlg_Columns"  xml:space="preserve"><value>Kolommen</value></data>
-  <data name="InsertTableDlg_OK"       xml:space="preserve"><value>Invoegen</value></data>
-  <data name="InsertTableDlg_Cancel"   xml:space="preserve"><value>Annuleren</value></data>
-  <data name="PageStyleDlg_Title"          xml:space="preserve"><value>Paginaopmaak</value></data>
-  <data name="PageStyleDlg_TabPage"        xml:space="preserve"><value>Pagina</value></data>
-  <data name="PageStyleDlg_TabBackground"  xml:space="preserve"><value>Achtergrond</value></data>
-  <data name="PageStyleDlg_TabHeader"      xml:space="preserve"><value>Koptekst</value></data>
-  <data name="PageStyleDlg_TabFooter"      xml:space="preserve"><value>Voettekst</value></data>
-  <data name="PageStyleDlg_TabBorder"      xml:space="preserve"><value>Rand</value></data>
-  <data name="PageStyleDlg_TabColumns"     xml:space="preserve"><value>Kolommen</value></data>
-  <data name="PageStyleDlg_PaperFormat"    xml:space="preserve"><value>Papierformaat</value></data>
-  <data name="PageStyleDlg_Format"         xml:space="preserve"><value>Formaat</value></data>
-  <data name="PageStyleDlg_Width"          xml:space="preserve"><value>Breedte</value></data>
-  <data name="PageStyleDlg_Height"         xml:space="preserve"><value>Hoogte</value></data>
-  <data name="PageStyleDlg_Orientation"    xml:space="preserve"><value>Afdrukstand</value></data>
-  <data name="PageStyleDlg_Portrait"       xml:space="preserve"><value>Staand</value></data>
-  <data name="PageStyleDlg_Landscape"      xml:space="preserve"><value>Liggend</value></data>
-  <data name="PageStyleDlg_Margins"        xml:space="preserve"><value>Marges</value></data>
-  <data name="PageStyleDlg_MarginLeft"     xml:space="preserve"><value>Links</value></data>
-  <data name="PageStyleDlg_MarginRight"    xml:space="preserve"><value>Rechts</value></data>
-  <data name="PageStyleDlg_MarginTop"      xml:space="preserve"><value>Boven</value></data>
-  <data name="PageStyleDlg_MarginBottom"   xml:space="preserve"><value>Onder</value></data>
-  <data name="PageStyleDlg_BgColor"        xml:space="preserve"><value>Achtergrondkleur</value></data>
-  <data name="PageStyleDlg_EnableHeader"   xml:space="preserve"><value>Koptekst inschakelen</value></data>
-  <data name="PageStyleDlg_EnableFooter"   xml:space="preserve"><value>Voettekst inschakelen</value></data>
-  <data name="PageStyleDlg_HdrHeight"      xml:space="preserve"><value>Hoogte</value></data>
-  <data name="PageStyleDlg_HdrMargin"      xml:space="preserve"><value>Afstand tot inhoud</value></data>
-  <data name="PageStyleDlg_HdrDiffFirst"   xml:space="preserve"><value>Andere inhoud op eerste pagina</value></data>
-  <data name="PageStyleDlg_HdrSameLR"      xml:space="preserve"><value>Zelfde inhoud op linker- en rechterpagina's</value></data>
-  <data name="PageStyleDlg_BorderStyle"    xml:space="preserve"><value>Randstijl</value></data>
-  <data name="PageStyleDlg_BorderNone"     xml:space="preserve"><value>Geen</value></data>
-  <data name="PageStyleDlg_BorderBox"      xml:space="preserve"><value>Kader</value></data>
-  <data name="PageStyleDlg_BorderShadow"   xml:space="preserve"><value>Schaduw</value></data>
-  <data name="PageStyleDlg_BorderColor"    xml:space="preserve"><value>Kleur</value></data>
-  <data name="PageStyleDlg_BorderWidth"    xml:space="preserve"><value>Breedte</value></data>
-  <data name="PageStyleDlg_ColCount"       xml:space="preserve"><value>Kolommen</value></data>
-  <data name="PageStyleDlg_ColGap"         xml:space="preserve"><value>Ruimte tussen kolommen</value></data>
-  <data name="PageStyleDlg_ColSeparator"   xml:space="preserve"><value>Scheidingslijn weergeven</value></data>
-  <data name="PageStyleDlg_Apply"          xml:space="preserve"><value>Toepassen</value></data>
-  <data name="PageStyleDlg_OK"             xml:space="preserve"><value>OK</value></data>
-  <data name="PageStyleDlg_Cancel"         xml:space="preserve"><value>Annuleren</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>Tabel invoegen</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Rijen</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Kolommen</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>Invoegen</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>Paginaopmaak</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>Pagina</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>Achtergrond</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>Koptekst</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>Voettekst</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>Rand</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>Kolommen</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>Papierformaat</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>Formaat</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>Breedte</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>Hoogte</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>Afdrukstand</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>Staand</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>Liggend</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>Marges</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>Links</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>Rechts</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>Boven</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>Onder</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>Achtergrondkleur</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>Koptekst inschakelen</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>Voettekst inschakelen</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>Hoogte</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>Afstand tot inhoud</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>Andere inhoud op eerste pagina</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>Zelfde inhoud op linker- en rechterpagina's</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>Randstijl</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>Geen</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>Kader</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>Schaduw</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>Kleur</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>Breedte</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>Kolommen</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>Ruimte tussen kolommen</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>Scheidingslijn weergeven</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Toepassen</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Annuleren</value></data>
 
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Spellingcontrole inschakelen</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Woordenboeken</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Taal</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Status</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>Downloaden</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Bladeren...</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Verwijderen</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Gebruikerswoordenboek</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Gebruikerswoordenboek bewerken</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Geïnstalleerd</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Niet geïnstalleerd</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Negeren</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Toevoegen aan woordenboek</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>Selecteer woordenboekbestand</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>Selecteer affixbestand</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Het woordenboek kon niet worden gedownload.</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Downloadfout</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Spellingwoordenboek</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Er is geen spellingwoordenboek gevonden. Nu downloaden?</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Installeren</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Later</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Nooit meer weergeven</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>Spellingcontrole inschakelen</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>Woordenboeken</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>Taal</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>Status</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>Downloaden</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>Bladeren...</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>Verwijderen</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>Gebruikerswoordenboek</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>Gebruikerswoordenboek bewerken</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>Geïnstalleerd</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>Niet geïnstalleerd</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>Negeren</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>Toevoegen aan woordenboek</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>Selecteer woordenboekbestand</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>Selecteer affixbestand</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>Het woordenboek kon niet worden gedownload.</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>Downloadfout</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>Spellingwoordenboek</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>Er is geen spellingwoordenboek gevonden. Nu downloaden?</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Installeren</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Later</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Nooit meer weergeven</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>Afbeeldingseigenschappen</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>Grootte en positie</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Tekstterugloop</value></data>
@@ -393,4 +393,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>Afbeeldingen</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>Metadata anonimiseren</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>Verwijdert auteur, tijdstempels, aangepaste eigenschappen en macro's uit dit document. De wijziging blijft in het geheugen tot opslaan.</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>Metadata anonimiseren</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>Auteur, tijdstempels, aangepaste eigenschappen en macro's uit dit document verwijderen?
+
+De wijziging wordt direct in het geheugen toegepast en bij het volgende Opslaan in het bestand bewaard.</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>Anonimisering voltooid.
+
+Auteur verwijderd: {0}
+Tijdstempels verwijderd: {1}
+Macro's verwijderd: {2}
+Aangepaste eigenschappen gewist: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>Ingebedde objecten controleren (afbeeldingen, OLE, macro's)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>Ingebedde objecten</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>Soort</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>Naam</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>Grootte</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>Bron</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>Extraheren…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>Het geselecteerde ingebedde object opslaan in een bestand</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>Openen in Hex</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>Extraheren naar tijdelijk bestand en openen in Hex Editor</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>Sluiten</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>{0} ingebedde objecten</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>ZIP-vermelding niet gevonden: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>Het ingebedde object heeft geen beschikbare bronbytes.</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>Bron SHA-256:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>berekenen…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>Hash naar klembord kopiëren</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>Alles hashen</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>SHA-256 berekenen over elk ingebed object</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>Afdrukken of exporteren als PDF (gebruik de printer "Microsoft Print to PDF" om een PDF te maken)</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>Vergelijken met ander document…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>Documenten vergelijken</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>Links:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>Rechts:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>Bladeren…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(klik op Bladeren om een bestand te kiezen)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>Soort</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>Wijziging</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>Tekst</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} toegevoegd, −{1} verwijderd, ~{2} gewijzigd, {3} ongewijzigd</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>Geen documentladers geregistreerd.</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>Geen lader geregistreerd voor extensie {0}.</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>Sluiten</value></data></root>

@@ -53,13 +53,8 @@ public sealed class RtfDocumentSaver : IDocumentSaver
         sb.AppendLine(@"{\fonttbl{\f0 Times New Roman;}}");
         sb.AppendLine(@"\f0\fs24");
         foreach (var block in model.Blocks)
-            sb.AppendLine($@"\pard\plain {EscapeRtf(block.Text)}\par");
+            sb.AppendLine($@"\pard\plain {RtfSchemaEngine.EscapeText(block.Text)}\par");
         sb.Append('}');
         return sb.ToString();
-    }
-
-    private static string EscapeRtf(string text)
-    {
-        return text.Replace("\\", "\\\\").Replace("{", "\\{").Replace("}", "\\}");
     }
 }

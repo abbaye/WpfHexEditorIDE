@@ -79,8 +79,7 @@ namespace WpfHexEditor.Tests
             var stats = provider.GetCacheStatistics();
 
             // Assert - Check for expected sections
-            Assert.IsTrue(stats.Contains("Cache") || stats.Contains("Line Cache"),
-                "Should contain cache information");
+            StringAssert.Contains(stats, "ByteReader");
 
             Console.WriteLine(stats);
         }
@@ -176,21 +175,20 @@ namespace WpfHexEditor.Tests
             // Arrange
             var provider = CreateProviderWithData(10000);
 
-            // Act - Make various modifications
+            // Disjoint position ranges + ~original keeps Modified/Inserted/Deleted accounting independent
+            // and avoids the revert-to-original optimization that drops the marker.
             for (int i = 0; i < 50; i++)
             {
-                provider.ModifyByte(i * 10, 0xFF);
+                long pos = i * 10;
+                byte original = (byte)(pos % 256);
+                provider.ModifyByte(pos, (byte)~original);
             }
 
             for (int i = 0; i < 20; i++)
-            {
-                provider.InsertByte(i * 100, 0xAA);
-            }
+                provider.InsertByte(1000 + i * 100, 0xAA);
 
             for (int i = 0; i < 10; i++)
-            {
-                provider.DeleteBytes(i * 200, 1);
-            }
+                provider.DeleteBytes(5000 + i * 200, 1);
 
             // Assert
             var modified = provider.GetByteModifieds(ByteAction.Modified);
@@ -300,9 +298,12 @@ namespace WpfHexEditor.Tests
             var provider = CreateProviderWithData(50000);
 
             // Act - Make many modifications
+            // ~original avoids the no-op-modification optimization (revert-to-original removes the marker)
             for (int i = 0; i < 1000; i++)
             {
-                provider.ModifyByte(i * 50, (byte)(i % 256));
+                long pos = i * 50;
+                byte original = (byte)(pos % 256);
+                provider.ModifyByte(pos, (byte)~original);
             }
 
             // Get modification counts

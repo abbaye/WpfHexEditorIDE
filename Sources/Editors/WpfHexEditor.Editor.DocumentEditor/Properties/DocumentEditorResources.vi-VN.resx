@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Hủy</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>Mở URL trong trình duyệt</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>Mở URL trong trình duyệt</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Vui lòng nhập URL hợp lệ (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>Chèn bảng</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Hàng</value></data>
@@ -285,31 +285,31 @@
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Hủy</value></data>
 
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Bật kiểm tra chính tả</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Từ điển</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Ngôn ngữ</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Trạng thái</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>Tải xuống</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Duyệt...</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Xóa</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Từ điển người dùng</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Chỉnh sửa từ điển người dùng</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Đã cài đặt</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Chưa cài đặt</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Bỏ qua</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Thêm vào từ điển</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>Chọn tệp từ điển</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>Chọn tệp affix</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Không thể tải xuống từ điển.</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Lỗi tải xuống</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Từ điển kiểm tra chính tả</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Không tìm thấy từ điển kiểm tra chính tả. Tải xuống ngay bây giờ?</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Cài đặt</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Để sau</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Không hiển thị lại</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>Bật kiểm tra chính tả</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>Từ điển</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>Ngôn ngữ</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>Trạng thái</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>Tải xuống</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>Duyệt...</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>Xóa</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>Từ điển người dùng</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>Chỉnh sửa từ điển người dùng</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>Đã cài đặt</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>Chưa cài đặt</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>Bỏ qua</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>Thêm vào từ điển</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>Chọn tệp từ điển</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>Chọn tệp affix</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>Không thể tải xuống từ điển.</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>Lỗi tải xuống</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>Từ điển kiểm tra chính tả</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>Không tìm thấy từ điển kiểm tra chính tả. Tải xuống ngay bây giờ?</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Cài đặt</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Để sau</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Không hiển thị lại</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>Thuộc tính hình ảnh</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>Kích thước và vị trí</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Bọc văn bản</value></data>
@@ -393,4 +393,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>Hình ảnh</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>Ẩn danh siêu dữ liệu</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>Xóa tác giả, dấu thời gian, thuộc tính tùy chỉnh và macro khỏi tài liệu này. Thay đổi sẽ ở trong bộ nhớ cho đến khi lưu.</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>Ẩn danh siêu dữ liệu</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>Xóa tác giả, dấu thời gian, thuộc tính tùy chỉnh và macro khỏi tài liệu này?
+
+Thay đổi được áp dụng ngay trong bộ nhớ và được lưu vào tệp khi Lưu tiếp theo.</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>Ẩn danh hoàn tất.
+
+Tác giả đã xóa: {0}
+Dấu thời gian đã xóa: {1}
+Macro đã xóa: {2}
+Thuộc tính tùy chỉnh đã xóa: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>Xem các đối tượng nhúng (hình ảnh, OLE, macro)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>Đối tượng nhúng</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>Loại</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>Tên</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>Kích thước</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>Nguồn</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>Trích xuất…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>Lưu đối tượng nhúng đã chọn vào tệp</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>Mở trong Hex</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>Trích xuất vào tệp tạm và mở trong Hex Editor</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>Đóng</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>{0} đối tượng nhúng</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>Không tìm thấy mục ZIP: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>Đối tượng nhúng không có byte nguồn khả dụng.</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>SHA-256 nguồn:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>đang tính toán…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>Sao chép hash vào clipboard</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>Hash tất cả</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>Tính SHA-256 cho mọi đối tượng nhúng</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>In hoặc xuất dưới dạng PDF (sử dụng máy in "Microsoft Print to PDF" để tạo PDF)</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>So sánh với tài liệu khác…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>So sánh tài liệu</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>Trái:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>Phải:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>Duyệt…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(nhấp Duyệt để chọn tệp)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>Loại</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>Thay đổi</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>Văn bản</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} thêm, −{1} xóa, ~{2} sửa đổi, {3} không đổi</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>Không có trình tải tài liệu đăng ký.</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>Không có trình tải nào đăng ký cho phần mở rộng {0}.</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>Đóng</value></data></root>

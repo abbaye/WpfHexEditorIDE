@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>확인</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>취소</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>브라우저에서 URL 열기</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>브라우저에서 URL 열기</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>올바른 URL을 입력하세요 (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>표 삽입</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>행</value></data>
@@ -285,31 +285,31 @@
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>확인</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>취소</value></data>
 
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>맞춤법 검사 사용</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>사전</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>언어</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>상태</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>다운로드</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>찾아보기...</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>제거</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>사용자 사전</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>사용자 사전 편집</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>설치됨</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>설치되지 않음</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>무시</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>사전에 추가</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>사전 파일 선택</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>어미 파일 선택</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>사전을 다운로드하지 못했습니다.</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>다운로드 오류</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>맞춤법 검사 사전</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>맞춤법 검사 사전을 찾을 수 없습니다. 지금 다운로드하시겠습니까?</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>설치</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>나중에</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>다시 표시 안 함</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>맞춤법 검사 사용</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>사전</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>언어</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>상태</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>다운로드</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>찾아보기...</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>제거</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>사용자 사전</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>사용자 사전 편집</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>설치됨</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>설치되지 않음</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>무시</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>사전에 추가</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>사전 파일 선택</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>어미 파일 선택</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>사전을 다운로드하지 못했습니다.</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>다운로드 오류</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>맞춤법 검사 사전</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>맞춤법 검사 사전을 찾을 수 없습니다. 지금 다운로드하시겠습니까?</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>설치</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>나중에</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>다시 표시 안 함</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>이미지 속성</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>크기 및 위치</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>텍스트 줄 바꿈</value></data>
@@ -393,4 +393,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>이미지</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>메타데이터 익명화</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>이 문서에서 작성자, 타임스탬프, 사용자 지정 속성 및 매크로를 제거합니다. 저장 전까지 변경 사항은 메모리에 유지됩니다.</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>메타데이터 익명화</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>이 문서에서 작성자, 타임스탬프, 사용자 지정 속성 및 매크로를 제거하시겠습니까?
+
+변경 사항은 즉시 메모리에 적용되며 다음 저장 시 파일에 기록됩니다.</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>익명화가 완료되었습니다.
+
+작성자 제거됨: {0}
+타임스탬프 제거됨: {1}
+매크로 제거됨: {2}
+사용자 지정 속성 지워짐: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>포함된 개체 검토 (이미지, OLE, 매크로)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>포함된 개체</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>종류</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>이름</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>크기</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>원본</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>추출…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>선택한 포함 개체를 파일에 저장</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>Hex에서 열기</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>임시 파일로 추출하고 Hex 편집기에서 열기</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>닫기</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>포함된 개체 {0}개</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>ZIP 항목을 찾을 수 없습니다: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>포함된 개체에 사용 가능한 원본 바이트가 없습니다.</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>원본 SHA-256:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>계산 중…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>해시를 클립보드에 복사</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>모두 해시</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>각 포함된 개체에 대해 SHA-256 계산</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>인쇄 또는 PDF로 내보내기 (PDF를 생성하려면 "Microsoft Print to PDF" 프린터 사용)</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>다른 문서와 비교…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>문서 비교</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>왼쪽:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>오른쪽:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>찾아보기…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(파일을 선택하려면 찾아보기를 클릭하세요)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>종류</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>변경</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>텍스트</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} 추가, −{1} 제거, ~{2} 수정, {3} 변경 없음</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>등록된 문서 로더가 없습니다.</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>확장자 {0}에 대해 등록된 로더가 없습니다.</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>닫기</value></data></root>

@@ -21,6 +21,17 @@ public sealed class AppSettingsService
     // -- State -------------------------------------------------------------
     public AppSettings Current { get; private set; } = new();
 
+    /// <summary>
+    /// Replaces the entire <see cref="Current"/> snapshot — typically called
+    /// by the import-preferences flow. Callers are expected to <see cref="Save"/>
+    /// afterwards; <paramref name="snapshot"/> must not be null.
+    /// </summary>
+    public void Replace(AppSettings snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        Current = snapshot;
+    }
+
     // -- Path --------------------------------------------------------------
     private static readonly string SettingsPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),

@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 using WpfHexEditor.App.Analysis.Models;
 using WpfHexEditor.App.Analysis.Services;
 using WpfHexEditor.Core.Options;
@@ -114,38 +116,28 @@ public sealed class CodeAnalysisOptionsPage : UserControl, IOptionsPage
         var rulesPanel = new StackPanel { Tag = "RulesPanel" };
         root.Children.Add(rulesPanel);
 
-        foreach (var rule in CodeAnalysisOptions.DefaultRules())
+        // Phase 11 — group rules by RuleCategory inside Expanders so the user
+        // can scan / bulk-toggle a whole category quickly.
+        foreach (var group in CodeAnalysisOptions.DefaultRules().GroupBy(r => r.Category))
         {
-            var row = new DockPanel { Margin = new Thickness(0, 2, 0, 2) };
-
-            var sev = new ComboBox
+            var categoryPanel = new StackPanel();
+            var expander = new Expander
             {
-                Width  = 90,
-                Margin = new Thickness(8, 0, 0, 0),
+                Header     = CategoryHeaderFor(group.Key, group.Count()),
+                IsExpanded = true,
+                Margin     = new Thickness(0, 4, 0, 4),
+                Content    = categoryPanel,
             };
-            sev.Items.Add("Disabled");
-            sev.Items.Add("Info");
-            sev.Items.Add("Warning");
-            sev.Items.Add("Error");
-            DockPanel.SetDock(sev, Dock.Right);
-            sev.SelectionChanged += (_, _) => { if (!_loading) Changed?.Invoke(this, EventArgs.Empty); };
+            // WPF's default Expander header ignores inherited Foreground — set explicitly
+            // so the label follows the dock theme instead of going black on dark surfaces.
+            expander.SetResourceReference(Control.ForegroundProperty, "DockMenuForegroundBrush");
+            expander.SetResourceReference(Control.BorderBrushProperty, "DockBorderBrush");
+            TextElement.SetForeground(expander, (Brush)Application.Current.FindResource("DockMenuForegroundBrush"));
 
-            var chk = new CheckBox
-            {
-                Content = $"{rule.RuleId}  {rule.Description}",
-                VerticalAlignment = VerticalAlignment.Center,
-            };
-            chk.Checked   += (_, _) => { if (!_loading) Changed?.Invoke(this, EventArgs.Empty); };
-            chk.Unchecked += (_, _) =>
-            {
-                if (!_loading) { sev.SelectedItem = "Disabled"; Changed?.Invoke(this, EventArgs.Empty); }
-            };
+            foreach (var rule in group)
+                categoryPanel.Children.Add(BuildRuleRow(rule));
 
-            row.Children.Add(sev);
-            row.Children.Add(chk);
-
-            _ruleRows.Add((rule.RuleId, chk, sev));
-            rulesPanel.Children.Add(row);
+            rulesPanel.Children.Add(expander);
         }
 
         // ── Reset button ─────────────────────────────────────────────────────
@@ -259,10 +251,22 @@ public sealed class CodeAnalysisOptionsPage : UserControl, IOptionsPage
             if (child is StackPanel sp && "RulesPanel".Equals(sp.Tag)) { rulesPanel = sp; break; }
         if (rulesPanel is null) return;
 
+        // Children are Expanders (Phase 11). Walk Expander.Content (StackPanel of rows)
+        // and apply the filter per-row; collapse the Expander when every row is hidden.
         foreach (UIElement child in rulesPanel.Children)
-            if (child is DockPanel row && row.Children.Count > 0 && row.Children[1] is CheckBox cb)
-                row.Visibility = string.IsNullOrWhiteSpace(text) || cb.Content?.ToString()?.Contains(text, StringComparison.OrdinalIgnoreCase) == true
-                    ? Visibility.Visible : Visibility.Collapsed;
+        {
+            if (child is not Expander exp || exp.Content is not StackPanel rows) continue;
+            int visibleInGroup = 0;
+            foreach (UIElement rowEl in rows.Children)
+            {
+                if (rowEl is not DockPanel row || row.Children.Count == 0 || row.Children[1] is not CheckBox cb) continue;
+                bool show = string.IsNullOrWhiteSpace(text)
+                         || cb.Content?.ToString()?.Contains(text, StringComparison.OrdinalIgnoreCase) == true;
+                row.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+                if (show) visibleInGroup++;
+            }
+            exp.Visibility = visibleInGroup > 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
     }
 
     private void OnChanged(object sender, RoutedEventArgs e)
@@ -331,4 +335,47 @@ public sealed class CodeAnalysisOptionsPage : UserControl, IOptionsPage
 
     private static int ParseRetention(string s)
         => int.TryParse(s.Split(' ')[0], out var v) ? v : 30;
+
+    private FrameworkElement BuildRuleRow(RuleConfiguration rule)
+    {
+        var row = new DockPanel { Margin = new Thickness(8, 2, 0, 2) };
+
+        var sev = new ComboBox { Width = 90, Margin = new Thickness(8, 0, 0, 0) };
+        sev.Items.Add("Disabled");
+        sev.Items.Add("Info");
+        sev.Items.Add("Warning");
+        sev.Items.Add("Error");
+        DockPanel.SetDock(sev, Dock.Right);
+        sev.SelectionChanged += (_, _) => { if (!_loading) Changed?.Invoke(this, EventArgs.Empty); };
+
+        var chk = new CheckBox
+        {
+            Content           = $"{rule.RuleId}  {rule.Description}",
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        chk.Checked   += (_, _) => { if (!_loading) Changed?.Invoke(this, EventArgs.Empty); };
+        chk.Unchecked += (_, _) =>
+        {
+            if (!_loading) { sev.SelectedItem = "Disabled"; Changed?.Invoke(this, EventArgs.Empty); }
+        };
+
+        row.Children.Add(sev);
+        row.Children.Add(chk);
+
+        _ruleRows.Add((rule.RuleId, chk, sev));
+        return row;
+    }
+
+    private static string CategoryHeaderFor(RuleCategory category, int count) => category switch
+    {
+        RuleCategory.Complexity   => $"Complexity ({count})",
+        RuleCategory.DeadCode     => $"Dead code ({count})",
+        RuleCategory.Duplication  => $"Duplication ({count})",
+        RuleCategory.Conventions  => $"Conventions ({count})",
+        RuleCategory.Architecture => $"Architecture ({count})",
+        RuleCategory.Project      => $"Project ({count})",
+        RuleCategory.AsyncCode    => $"Async ({count})",
+        RuleCategory.Linq         => $"LINQ ({count})",
+        _                         => $"Other ({count})",
+    };
 }

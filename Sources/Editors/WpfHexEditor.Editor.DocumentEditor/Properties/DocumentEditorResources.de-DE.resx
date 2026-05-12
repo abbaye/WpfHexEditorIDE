@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -199,116 +199,116 @@
   <data name="DocTb_TextView" xml:space="preserve">
     <value>Textansicht</value>
   </data>
-  <data name="DocCanvas_Paragraph"           xml:space="preserve"><value>Absatz</value></data>
-  <data name="DocCanvas_Para_Normal"         xml:space="preserve"><value>Normal</value></data>
-  <data name="DocCanvas_Para_Heading1"       xml:space="preserve"><value>Überschrift 1</value></data>
-  <data name="DocCanvas_Para_Heading2"       xml:space="preserve"><value>Überschrift 2</value></data>
-  <data name="DocCanvas_Para_Heading3"       xml:space="preserve"><value>Überschrift 3</value></data>
-  <data name="DocCanvas_Para_Quote"          xml:space="preserve"><value>Zitat</value></data>
-  <data name="DocCanvas_Para_Code"           xml:space="preserve"><value>Codeblock</value></data>
-  <data name="DocCanvas_List"                xml:space="preserve"><value>Liste</value></data>
-  <data name="DocCanvas_List_Bullet"         xml:space="preserve"><value>Aufzählungsliste  •</value></data>
-  <data name="DocCanvas_List_Numbered"       xml:space="preserve"><value>Nummerierte Liste  1, 2, 3</value></data>
-  <data name="DocCanvas_List_UpperAlpha"     xml:space="preserve"><value>Alphabetisch  A, B, C</value></data>
-  <data name="DocCanvas_List_LowerAlpha"     xml:space="preserve"><value>Alphabetisch  a, b, c</value></data>
-  <data name="DocCanvas_List_UpperRoman"     xml:space="preserve"><value>Römisch  I, II, III</value></data>
-  <data name="DocCanvas_List_LowerRoman"     xml:space="preserve"><value>Römisch  i, ii, iii</value></data>
-  <data name="DocCanvas_List_None"           xml:space="preserve"><value>Keine Liste</value></data>
-  <data name="DocCanvas_SelectBlock"         xml:space="preserve"><value>Block auswählen</value></data>
-  <data name="DocCanvas_InsertPageBreak"     xml:space="preserve"><value>Seitenumbruch einfügen</value></data>
-  <data name="DocCanvas_InsertHyperlink"     xml:space="preserve"><value>Hyperlink einfügen…</value></data>
-  <data name="DocCanvas_InsertTable"         xml:space="preserve"><value>Tabelle einfügen…</value></data>
-  <data name="DocCanvas_Table"              xml:space="preserve"><value>Tabelle</value></data>
+  <data name="DocCanvas_Paragraph" xml:space="preserve"><value>Absatz</value></data>
+  <data name="DocCanvas_Para_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocCanvas_Para_Heading1" xml:space="preserve"><value>Überschrift 1</value></data>
+  <data name="DocCanvas_Para_Heading2" xml:space="preserve"><value>Überschrift 2</value></data>
+  <data name="DocCanvas_Para_Heading3" xml:space="preserve"><value>Überschrift 3</value></data>
+  <data name="DocCanvas_Para_Quote" xml:space="preserve"><value>Zitat</value></data>
+  <data name="DocCanvas_Para_Code" xml:space="preserve"><value>Codeblock</value></data>
+  <data name="DocCanvas_List" xml:space="preserve"><value>Liste</value></data>
+  <data name="DocCanvas_List_Bullet" xml:space="preserve"><value>Aufzählungsliste  •</value></data>
+  <data name="DocCanvas_List_Numbered" xml:space="preserve"><value>Nummerierte Liste  1, 2, 3</value></data>
+  <data name="DocCanvas_List_UpperAlpha" xml:space="preserve"><value>Alphabetisch  A, B, C</value></data>
+  <data name="DocCanvas_List_LowerAlpha" xml:space="preserve"><value>Alphabetisch  a, b, c</value></data>
+  <data name="DocCanvas_List_UpperRoman" xml:space="preserve"><value>Römisch  I, II, III</value></data>
+  <data name="DocCanvas_List_LowerRoman" xml:space="preserve"><value>Römisch  i, ii, iii</value></data>
+  <data name="DocCanvas_List_None" xml:space="preserve"><value>Keine Liste</value></data>
+  <data name="DocCanvas_SelectBlock" xml:space="preserve"><value>Block auswählen</value></data>
+  <data name="DocCanvas_InsertPageBreak" xml:space="preserve"><value>Seitenumbruch einfügen</value></data>
+  <data name="DocCanvas_InsertHyperlink" xml:space="preserve"><value>Hyperlink einfügen…</value></data>
+  <data name="DocCanvas_InsertTable" xml:space="preserve"><value>Tabelle einfügen…</value></data>
+  <data name="DocCanvas_Table" xml:space="preserve"><value>Tabelle</value></data>
   <data name="DocCanvas_TableInsertRowAbove" xml:space="preserve"><value>Zeile oberhalb einfügen</value></data>
-  <data name="DocCanvas_TableInsertRow"      xml:space="preserve"><value>Zeile unterhalb einfügen</value></data>
-  <data name="DocCanvas_TableDeleteRow"      xml:space="preserve"><value>Zeile löschen</value></data>
-  <data name="DocCanvas_TableInsertColLeft"  xml:space="preserve"><value>Spalte links einfügen</value></data>
-  <data name="DocCanvas_TableInsertCol"      xml:space="preserve"><value>Spalte rechts einfügen</value></data>
-  <data name="DocCanvas_TableDeleteCol"      xml:space="preserve"><value>Spalte löschen</value></data>
-  <data name="DocEditorHost_BulletListToolTip"    xml:space="preserve"><value>Aufzählungsliste (Strg+Umschalt+8)</value></data>
-  <data name="DocEditorHost_NumberedListToolTip"  xml:space="preserve"><value>Nummerierte Liste (Strg+Umschalt+7)</value></data>
-  <data name="DocEditorHost_IndentMoreToolTip"    xml:space="preserve"><value>Einzug vergrößern (Strg+])</value></data>
-  <data name="DocEditorHost_IndentLessToolTip"    xml:space="preserve"><value>Einzug verkleinern (Strg+[)</value></data>
-  <data name="DocEditorHost_AlignJustifyToolTip"  xml:space="preserve"><value>Blocksatz (Strg+J)</value></data>
-  <data name="DocEditorHost_InsertTableToolTip"   xml:space="preserve"><value>Tabelle einfügen</value></data>
+  <data name="DocCanvas_TableInsertRow" xml:space="preserve"><value>Zeile unterhalb einfügen</value></data>
+  <data name="DocCanvas_TableDeleteRow" xml:space="preserve"><value>Zeile löschen</value></data>
+  <data name="DocCanvas_TableInsertColLeft" xml:space="preserve"><value>Spalte links einfügen</value></data>
+  <data name="DocCanvas_TableInsertCol" xml:space="preserve"><value>Spalte rechts einfügen</value></data>
+  <data name="DocCanvas_TableDeleteCol" xml:space="preserve"><value>Spalte löschen</value></data>
+  <data name="DocEditorHost_BulletListToolTip" xml:space="preserve"><value>Aufzählungsliste (Strg+Umschalt+8)</value></data>
+  <data name="DocEditorHost_NumberedListToolTip" xml:space="preserve"><value>Nummerierte Liste (Strg+Umschalt+7)</value></data>
+  <data name="DocEditorHost_IndentMoreToolTip" xml:space="preserve"><value>Einzug vergrößern (Strg+])</value></data>
+  <data name="DocEditorHost_IndentLessToolTip" xml:space="preserve"><value>Einzug verkleinern (Strg+[)</value></data>
+  <data name="DocEditorHost_AlignJustifyToolTip" xml:space="preserve"><value>Blocksatz (Strg+J)</value></data>
+  <data name="DocEditorHost_InsertTableToolTip" xml:space="preserve"><value>Tabelle einfügen</value></data>
   <data name="DocEditorHost_InsertHyperlinkToolTip" xml:space="preserve"><value>Hyperlink einfügen (Strg+K)</value></data>
   <data name="DocEditorHost_InsertPageBreakToolTip" xml:space="preserve"><value>Seitenumbruch einfügen (Strg+Eingabe)</value></data>
-  <data name="DocEditorHost_PageStyleToolTip"     xml:space="preserve"><value>Seitenformat</value></data>
-  <data name="HyperlinkDlg_Title"      xml:space="preserve"><value>Hyperlink einfügen</value></data>
-  <data name="HyperlinkDlg_LabelText"  xml:space="preserve"><value>Anzeigetext</value></data>
-  <data name="HyperlinkDlg_LabelUrl"   xml:space="preserve"><value>URL</value></data>
-  <data name="HyperlinkDlg_OK"         xml:space="preserve"><value>OK</value></data>
-  <data name="HyperlinkDlg_Cancel"     xml:space="preserve"><value>Abbrechen</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>URL im Browser öffnen</value></data>
+  <data name="DocEditorHost_PageStyleToolTip" xml:space="preserve"><value>Seitenformat</value></data>
+  <data name="HyperlinkDlg_Title" xml:space="preserve"><value>Hyperlink einfügen</value></data>
+  <data name="HyperlinkDlg_LabelText" xml:space="preserve"><value>Anzeigetext</value></data>
+  <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
+  <data name="HyperlinkDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>URL im Browser öffnen</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Bitte eine gültige URL eingeben (https://, http://, mailto:, ftp://)</value></data>
-  <data name="InsertTableDlg_Title"    xml:space="preserve"><value>Tabelle einfügen</value></data>
-  <data name="InsertTableDlg_Rows"     xml:space="preserve"><value>Zeilen</value></data>
-  <data name="InsertTableDlg_Columns"  xml:space="preserve"><value>Spalten</value></data>
-  <data name="InsertTableDlg_OK"       xml:space="preserve"><value>Einfügen</value></data>
-  <data name="InsertTableDlg_Cancel"   xml:space="preserve"><value>Abbrechen</value></data>
-  <data name="PageStyleDlg_Title"          xml:space="preserve"><value>Seitenformat</value></data>
-  <data name="PageStyleDlg_TabPage"        xml:space="preserve"><value>Seite</value></data>
-  <data name="PageStyleDlg_TabBackground"  xml:space="preserve"><value>Hintergrund</value></data>
-  <data name="PageStyleDlg_TabHeader"      xml:space="preserve"><value>Kopfzeile</value></data>
-  <data name="PageStyleDlg_TabFooter"      xml:space="preserve"><value>Fußzeile</value></data>
-  <data name="PageStyleDlg_TabBorder"      xml:space="preserve"><value>Umrandung</value></data>
-  <data name="PageStyleDlg_TabColumns"     xml:space="preserve"><value>Spalten</value></data>
-  <data name="PageStyleDlg_PaperFormat"    xml:space="preserve"><value>Papierformat</value></data>
-  <data name="PageStyleDlg_Format"         xml:space="preserve"><value>Format</value></data>
-  <data name="PageStyleDlg_Width"          xml:space="preserve"><value>Breite</value></data>
-  <data name="PageStyleDlg_Height"         xml:space="preserve"><value>Höhe</value></data>
-  <data name="PageStyleDlg_Orientation"    xml:space="preserve"><value>Ausrichtung</value></data>
-  <data name="PageStyleDlg_Portrait"       xml:space="preserve"><value>Hochformat</value></data>
-  <data name="PageStyleDlg_Landscape"      xml:space="preserve"><value>Querformat</value></data>
-  <data name="PageStyleDlg_Margins"        xml:space="preserve"><value>Ränder</value></data>
-  <data name="PageStyleDlg_MarginLeft"     xml:space="preserve"><value>Links</value></data>
-  <data name="PageStyleDlg_MarginRight"    xml:space="preserve"><value>Rechts</value></data>
-  <data name="PageStyleDlg_MarginTop"      xml:space="preserve"><value>Oben</value></data>
-  <data name="PageStyleDlg_MarginBottom"   xml:space="preserve"><value>Unten</value></data>
-  <data name="PageStyleDlg_BgColor"        xml:space="preserve"><value>Hintergrundfarbe</value></data>
-  <data name="PageStyleDlg_EnableHeader"   xml:space="preserve"><value>Kopfzeile aktivieren</value></data>
-  <data name="PageStyleDlg_EnableFooter"   xml:space="preserve"><value>Fußzeile aktivieren</value></data>
-  <data name="PageStyleDlg_HdrHeight"      xml:space="preserve"><value>Höhe</value></data>
-  <data name="PageStyleDlg_HdrMargin"      xml:space="preserve"><value>Abstand zum Inhalt</value></data>
-  <data name="PageStyleDlg_HdrDiffFirst"   xml:space="preserve"><value>Andere Kopfzeile auf der ersten Seite</value></data>
-  <data name="PageStyleDlg_HdrSameLR"      xml:space="preserve"><value>Gleicher Inhalt auf linken und rechten Seiten</value></data>
-  <data name="PageStyleDlg_BorderStyle"    xml:space="preserve"><value>Rahmenstil</value></data>
-  <data name="PageStyleDlg_BorderNone"     xml:space="preserve"><value>Kein</value></data>
-  <data name="PageStyleDlg_BorderBox"      xml:space="preserve"><value>Umrahmung</value></data>
-  <data name="PageStyleDlg_BorderShadow"   xml:space="preserve"><value>Schatten</value></data>
-  <data name="PageStyleDlg_BorderColor"    xml:space="preserve"><value>Farbe</value></data>
-  <data name="PageStyleDlg_BorderWidth"    xml:space="preserve"><value>Breite</value></data>
-  <data name="PageStyleDlg_ColCount"       xml:space="preserve"><value>Spalten</value></data>
-  <data name="PageStyleDlg_ColGap"         xml:space="preserve"><value>Abstand zwischen Spalten</value></data>
-  <data name="PageStyleDlg_ColSeparator"   xml:space="preserve"><value>Trennlinie anzeigen</value></data>
-  <data name="PageStyleDlg_Apply"          xml:space="preserve"><value>Übernehmen</value></data>
-  <data name="PageStyleDlg_OK"             xml:space="preserve"><value>OK</value></data>
-  <data name="PageStyleDlg_Cancel"         xml:space="preserve"><value>Abbrechen</value></data>
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Rechtschreibprüfung aktivieren</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Wörterbücher</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Sprache</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Status</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>Herunterladen</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Durchsuchen…</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Entfernen</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Benutzerwörterbuch</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Bearbeiten…</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Installiert</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Nicht installiert</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Ignorieren</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Zum Wörterbuch hinzufügen</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>.dic Wörterbuchdatei auswählen</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>.aff Affix-Datei auswählen</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Download fehlgeschlagen: {0}</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Fehler beim Wörterbuch-Download</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Rechtschreibwörterbuch verfügbar</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Wörterbuch {0} für die Rechtschreibprüfung installieren? (~2 MB)</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Installieren</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Nicht jetzt</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Nicht mehr fragen</value></data>
+  <data name="InsertTableDlg_Title" xml:space="preserve"><value>Tabelle einfügen</value></data>
+  <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Zeilen</value></data>
+  <data name="InsertTableDlg_Columns" xml:space="preserve"><value>Spalten</value></data>
+  <data name="InsertTableDlg_OK" xml:space="preserve"><value>Einfügen</value></data>
+  <data name="InsertTableDlg_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="PageStyleDlg_Title" xml:space="preserve"><value>Seitenformat</value></data>
+  <data name="PageStyleDlg_TabPage" xml:space="preserve"><value>Seite</value></data>
+  <data name="PageStyleDlg_TabBackground" xml:space="preserve"><value>Hintergrund</value></data>
+  <data name="PageStyleDlg_TabHeader" xml:space="preserve"><value>Kopfzeile</value></data>
+  <data name="PageStyleDlg_TabFooter" xml:space="preserve"><value>Fußzeile</value></data>
+  <data name="PageStyleDlg_TabBorder" xml:space="preserve"><value>Umrandung</value></data>
+  <data name="PageStyleDlg_TabColumns" xml:space="preserve"><value>Spalten</value></data>
+  <data name="PageStyleDlg_PaperFormat" xml:space="preserve"><value>Papierformat</value></data>
+  <data name="PageStyleDlg_Format" xml:space="preserve"><value>Format</value></data>
+  <data name="PageStyleDlg_Width" xml:space="preserve"><value>Breite</value></data>
+  <data name="PageStyleDlg_Height" xml:space="preserve"><value>Höhe</value></data>
+  <data name="PageStyleDlg_Orientation" xml:space="preserve"><value>Ausrichtung</value></data>
+  <data name="PageStyleDlg_Portrait" xml:space="preserve"><value>Hochformat</value></data>
+  <data name="PageStyleDlg_Landscape" xml:space="preserve"><value>Querformat</value></data>
+  <data name="PageStyleDlg_Margins" xml:space="preserve"><value>Ränder</value></data>
+  <data name="PageStyleDlg_MarginLeft" xml:space="preserve"><value>Links</value></data>
+  <data name="PageStyleDlg_MarginRight" xml:space="preserve"><value>Rechts</value></data>
+  <data name="PageStyleDlg_MarginTop" xml:space="preserve"><value>Oben</value></data>
+  <data name="PageStyleDlg_MarginBottom" xml:space="preserve"><value>Unten</value></data>
+  <data name="PageStyleDlg_BgColor" xml:space="preserve"><value>Hintergrundfarbe</value></data>
+  <data name="PageStyleDlg_EnableHeader" xml:space="preserve"><value>Kopfzeile aktivieren</value></data>
+  <data name="PageStyleDlg_EnableFooter" xml:space="preserve"><value>Fußzeile aktivieren</value></data>
+  <data name="PageStyleDlg_HdrHeight" xml:space="preserve"><value>Höhe</value></data>
+  <data name="PageStyleDlg_HdrMargin" xml:space="preserve"><value>Abstand zum Inhalt</value></data>
+  <data name="PageStyleDlg_HdrDiffFirst" xml:space="preserve"><value>Andere Kopfzeile auf der ersten Seite</value></data>
+  <data name="PageStyleDlg_HdrSameLR" xml:space="preserve"><value>Gleicher Inhalt auf linken und rechten Seiten</value></data>
+  <data name="PageStyleDlg_BorderStyle" xml:space="preserve"><value>Rahmenstil</value></data>
+  <data name="PageStyleDlg_BorderNone" xml:space="preserve"><value>Kein</value></data>
+  <data name="PageStyleDlg_BorderBox" xml:space="preserve"><value>Umrahmung</value></data>
+  <data name="PageStyleDlg_BorderShadow" xml:space="preserve"><value>Schatten</value></data>
+  <data name="PageStyleDlg_BorderColor" xml:space="preserve"><value>Farbe</value></data>
+  <data name="PageStyleDlg_BorderWidth" xml:space="preserve"><value>Breite</value></data>
+  <data name="PageStyleDlg_ColCount" xml:space="preserve"><value>Spalten</value></data>
+  <data name="PageStyleDlg_ColGap" xml:space="preserve"><value>Abstand zwischen Spalten</value></data>
+  <data name="PageStyleDlg_ColSeparator" xml:space="preserve"><value>Trennlinie anzeigen</value></data>
+  <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Übernehmen</value></data>
+  <data name="PageStyleDlg_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>Rechtschreibprüfung aktivieren</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>Wörterbücher</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>Sprache</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>Status</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>Herunterladen</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>Durchsuchen…</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>Entfernen</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>Benutzerwörterbuch</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>Bearbeiten…</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>Installiert</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>Nicht installiert</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>Ignorieren</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>Zum Wörterbuch hinzufügen</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>.dic Wörterbuchdatei auswählen</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>.aff Affix-Datei auswählen</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>Download fehlgeschlagen: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>Fehler beim Wörterbuch-Download</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>Rechtschreibwörterbuch verfügbar</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>Wörterbuch {0} für die Rechtschreibprüfung installieren? (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Installieren</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Nicht jetzt</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Nicht mehr fragen</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>Bildeigenschaften</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>Größe und Position</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Textfluss</value></data>
@@ -392,4 +392,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>Bilder</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>Metadaten anonymisieren</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>Entfernt Autor, Zeitstempel, benutzerdefinierte Eigenschaften und Makros aus diesem Dokument. Die Änderung bleibt im Speicher bis zum Speichern.</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>Metadaten anonymisieren</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>Autor, Zeitstempel, benutzerdefinierte Eigenschaften und Makros aus diesem Dokument entfernen?
+
+Die Änderung wird sofort im Speicher angewendet und beim nächsten Speichern in die Datei übernommen.</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>Anonymisierung abgeschlossen.
+
+Autor entfernt: {0}
+Zeitstempel entfernt: {1}
+Makros entfernt: {2}
+Benutzerdefinierte Eigenschaften gelöscht: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>Eingebettete Objekte überprüfen (Bilder, OLE, Makros)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>Eingebettete Objekte</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>Art</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>Name</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>Größe</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>Quelle</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>Extrahieren…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>Das ausgewählte eingebettete Objekt in eine Datei speichern</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>In Hex öffnen</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>In temporäre Datei extrahieren und im Hex-Editor öffnen</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>Schließen</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>{0} eingebettete Objekte</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>ZIP-Eintrag nicht gefunden: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>Das eingebettete Objekt verfügt über keine verfügbaren Quellbytes.</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>Quell-SHA-256:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>wird berechnet…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>Hash in die Zwischenablage kopieren</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>Alle hashen</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>SHA-256 für jedes eingebettete Objekt berechnen</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>Drucken oder als PDF exportieren (verwenden Sie den Drucker "Microsoft Print to PDF" zum Erstellen einer PDF)</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>Mit einem anderen Dokument vergleichen…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>Dokumente vergleichen</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>Links:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>Rechts:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>Durchsuchen…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(auf Durchsuchen klicken, um eine Datei zu wählen)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>Art</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>Änderung</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>Text</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} hinzugefügt, −{1} entfernt, ~{2} geändert, {3} unverändert</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>Keine Dokumentlader registriert.</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>Kein Lader für Endung {0} registriert.</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>Schließen</value></data></root>

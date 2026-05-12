@@ -14,11 +14,14 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
+using WpfHexEditor.App.Analysis.CodeFixes;
 using WpfHexEditor.App.Analysis.IDE;
 using WpfHexEditor.App.Analysis.Models;
 using WpfHexEditor.App.Analysis.Services;
+using WpfHexEditor.App.Analysis.Suppressions;
 using WpfHexEditor.App.Analysis.UI;
 using WpfHexEditor.App.Analysis.UI.ViewModels;
+using WpfHexEditor.Editor.CodeEditor.Providers;
 using WpfHexEditor.Core.Commands;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.PluginHost.Adapters;
@@ -41,8 +44,11 @@ internal sealed class CodeAnalysisModule
     private IMenuAdapter?              _menuAdapter;
     private Dispatcher?                _dispatcher;
 
-    private CodeAnalysisOptionsService _optionsService  = new();
-    private AnalysisSnapshotService    _snapshotService = new();
+    private CodeAnalysisOptionsService    _optionsService    = new();
+    private AnalysisSnapshotService       _snapshotService   = new();
+    private AnalysisBaselineService       _baselineService   = new();
+    private AnalysisHistoryService        _historyService    = new();
+    private CodeAnalysisCodeActionProvider _codeActionProvider = new();
     private AnalysisScope              _lastScope       = AnalysisScope.Solution;
     private string                     _lastPath        = string.Empty;
     private CodeAnalysisRunner?        _runner;
@@ -71,6 +77,9 @@ internal sealed class CodeAnalysisModule
         _dispatcher       = dispatcher;
 
         _optionsService.Load();
+
+        // Make inline Code Actions (Ctrl+. / lightbulb) available in every CodeEditor.
+        CodeActionRegistry.Register(_codeActionProvider);
 
         _runner      = new CodeAnalysisRunner(_optionsService, _snapshotService);
         _logger      = new AnalysisOutputLogger(context.Output, _optionsService.Options.OutputVerbosity);
@@ -124,7 +133,7 @@ internal sealed class CodeAnalysisModule
         {
             var snapshot = _snapshotService.LoadLatest();
             if (snapshot is not null)
-                _statusBar.ShowScore(snapshot.Score, ScoreToGrade(snapshot.Score));
+                _statusBar.ShowScore(snapshot.Score, QualityScore.ToGrade(snapshot.Score));
         }
 
         // Pre-build the report pane so a layout-restored Code Analysis tab
@@ -144,6 +153,7 @@ internal sealed class CodeAnalysisModule
 
         // Cancel any in-flight run
         _cts?.Cancel();
+        _cts?.Dispose();
         _cts = new CancellationTokenSource();
         var ct = _cts.Token;
 
@@ -156,6 +166,8 @@ internal sealed class CodeAnalysisModule
         var solutionDir = Directory.Exists(path) ? path : (Path.GetDirectoryName(path) ?? path);
         _optionsService.SetSolutionDirectory(solutionDir);
         _snapshotService.SetSolutionDirectory(solutionDir);
+        _baselineService.SetSolutionDirectory(solutionDir);
+        _historyService.SetSolutionDirectory(solutionDir);
 
         // UI: show running state
         await _dispatcher!.InvokeAsync(() =>
@@ -163,7 +175,7 @@ internal sealed class CodeAnalysisModule
             _statusBar?.ShowRunning();
             EnsureReportPane();
             _reportVm!.IsRunning  = true;
-            _reportVm.StatusText  = "Analysis running…";
+            _reportVm.StatusText  = Properties.AppResources.CodeAnalysis_Status_Running;
         });
 
         if (opts.PushToErrorPanel)
@@ -192,7 +204,7 @@ internal sealed class CodeAnalysisModule
             {
                 _statusBar?.Hide();
                 _reportVm!.IsRunning  = false;
-                _reportVm.StatusText  = $"Analysis failed: {ex.GetType().Name}: {ex.Message}";
+                _reportVm.StatusText  = string.Format(Properties.AppResources.CodeAnalysis_Status_Failed, ex.GetType().Name, ex.Message);
             });
             return;
         }
@@ -210,6 +222,12 @@ internal sealed class CodeAnalysisModule
             EnsureReportPane();
             _reportVm!.SetScope(scope, path);
             _reportVm.SetReport(report);
+            _codeActionProvider.SetDiagnostics(report.Diagnostics);
+
+            // Phase 10 — trending: append this run, prune by retention, refresh VM
+            _historyService.Append(report);
+            _historyService.Prune(opts.SnapshotRetentionDays);
+            _reportVm.SetHistory(_historyService.LoadAll());
         });
     }
 
@@ -226,7 +244,7 @@ internal sealed class CodeAnalysisModule
     private void ClearSnapshot()
     {
         _snapshotService.Clear();
-        _context?.Output.Info("[Code Analysis] Snapshot cleared.");
+        _context?.Output.Info(Properties.AppResources.CodeAnalysis_Snapshot_Cleared);
     }
 
     // ── Report pane ──────────────────────────────────────────────────────────
@@ -245,6 +263,19 @@ internal sealed class CodeAnalysisModule
             rerun:       () => RunAsync(_lastScope, string.IsNullOrEmpty(_lastPath) ? GetSolutionPath() : _lastPath),
             runSolution: () => RunAsync(AnalysisScope.Solution, GetSolutionPath()),
             runFile:     path => RunAsync(AnalysisScope.File, path));
+
+        // Phase 10 — restore the trending sparkline as soon as the pane shows up.
+        var initDir = string.IsNullOrEmpty(_lastPath) ? GetSolutionPath() : _lastPath;
+        _historyService.SetSolutionDirectory(initDir);
+        _reportVm.SetHistory(_historyService.LoadAll());
+
+        // Suppressions UX — uses the same re-run callback so the row disappears after apply.
+        _baselineService.SetSolutionDirectory(initDir);
+        var suppress = new SuppressionApplyService(
+            _optionsService,
+            _baselineService,
+            () => RunAsync(_lastScope, string.IsNullOrEmpty(_lastPath) ? GetSolutionPath() : _lastPath));
+        _reportPane.SetSuppressionService(suppress);
     }
 
     private void EnsureReportPane()
@@ -259,8 +290,8 @@ internal sealed class CodeAnalysisModule
             _reportPane!,
             new DocumentDescriptor
             {
-                Title   = "Code Analysis",
-                ToolTip = "Code Analysis Report",
+                Title   = Properties.AppResources.CodeAnalysis_Tab_Title,
+                ToolTip = Properties.AppResources.CodeAnalysis_Tab_ToolTip,
             });
         _docking.ShowDockablePanel(ReportTabUiId);
     }
@@ -289,9 +320,4 @@ internal sealed class CodeAnalysisModule
         return AppDomain.CurrentDomain.BaseDirectory;
     }
 
-    private static string ScoreToGrade(int score) => score switch
-    {
-        >= 93 => "A", >= 87 => "B+", >= 80 => "B",
-        >= 70 => "C", >= 60 => "D",  _ => "F",
-    };
 }

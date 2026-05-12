@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>ΟΚ</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Άκυρο</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>Άνοιγμα URL στο πρόγραμμα περιήγησης</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>Άνοιγμα URL στο πρόγραμμα περιήγησης</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Εισάγετε έγκυρη διεύθυνση URL (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>Εισαγωγή πίνακα</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Γραμμές</value></data>
@@ -284,31 +284,31 @@
   <data name="PageStyleDlg_Apply" xml:space="preserve"><value>Εφαρμογή</value></data>
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>ΟΚ</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Άκυρο</value></data>
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Ενεργοποίηση ορθογραφικού ελέγχου</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Λεξικά</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Γλώσσα</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Κατάσταση</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>Λήψη</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Αναζήτηση…</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Κατάργηση</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Προσαρμοσμένο λεξικό</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Επεξεργασία…</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Εγκατεστημένο</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Μη εγκατεστημένο</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Παράβλεψη</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Προσθήκη στο λεξικό</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>Επιλέξτε αρχείο λεξικού .dic</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>Επιλέξτε αρχείο προθέματος .aff</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Η λήψη απέτυχε: {0}</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Σφάλμα λήψης λεξικού</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Διαθέσιμο λεξικό ορθογραφικού ελέγχου</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Εγκατάσταση λεξικού {0} για ορθογραφικό έλεγχο; (~2 MB)</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Εγκατάσταση</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Όχι τώρα</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Να μην ερωτηθώ ξανά</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>Ενεργοποίηση ορθογραφικού ελέγχου</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>Λεξικά</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>Γλώσσα</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>Κατάσταση</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>Λήψη</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>Αναζήτηση…</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>Κατάργηση</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>Προσαρμοσμένο λεξικό</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>Επεξεργασία…</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>Εγκατεστημένο</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>Μη εγκατεστημένο</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>Παράβλεψη</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>Προσθήκη στο λεξικό</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>Επιλέξτε αρχείο λεξικού .dic</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>Επιλέξτε αρχείο προθέματος .aff</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>Η λήψη απέτυχε: {0}</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>Σφάλμα λήψης λεξικού</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>Διαθέσιμο λεξικό ορθογραφικού ελέγχου</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>Εγκατάσταση λεξικού {0} για ορθογραφικό έλεγχο; (~2 MB)</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Εγκατάσταση</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Όχι τώρα</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Να μην ερωτηθώ ξανά</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>Ιδιότητες εικόνας</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>Μέγεθος και θέση</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Αναδίπλωση</value></data>
@@ -392,4 +392,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>Εικόνες</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>Ανωνυμοποίηση μεταδεδομένων</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>Καταργεί τον συντάκτη, τις χρονικές σημάνσεις, τις προσαρμοσμένες ιδιότητες και τις μακροεντολές από αυτό το έγγραφο.</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>Ανωνυμοποίηση μεταδεδομένων</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>Κατάργηση συντάκτη, χρονικών σημάνσεων, προσαρμοσμένων ιδιοτήτων και μακροεντολών από αυτό το έγγραφο;
+
+Η αλλαγή εφαρμόζεται αμέσως στη μνήμη και αποθηκεύεται στο αρχείο στην επόμενη Αποθήκευση.</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>Η ανωνυμοποίηση ολοκληρώθηκε.
+
+Καταργήθηκε συντάκτης: {0}
+Καταργήθηκαν χρονικές σημάνσεις: {1}
+Καταργήθηκαν μακροεντολές: {2}
+Εκκαθαρίστηκαν προσαρμοσμένες ιδιότητες: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>Επιθεώρηση ενσωματωμένων αντικειμένων (εικόνες, OLE, μακροεντολές)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>Ενσωματωμένα αντικείμενα</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>Είδος</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>Όνομα</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>Μέγεθος</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>Προέλευση</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>Εξαγωγή…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>Αποθήκευση του επιλεγμένου ενσωματωμένου αντικειμένου σε αρχείο</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>Άνοιγμα σε Hex</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>Εξαγωγή σε προσωρινό αρχείο και άνοιγμα στον επεξεργαστή Hex</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>Κλείσιμο</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>{0} ενσωματωμένα αντικείμενα</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>Η εγγραφή ZIP δεν βρέθηκε: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>Το ενσωματωμένο αντικείμενο δεν διαθέτει διαθέσιμα bytes πηγής.</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>SHA-256 πηγής:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>υπολογισμός…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>Αντιγραφή κατακερματισμού στο πρόχειρο</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>Κατακερματισμός όλων</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>Υπολογισμός SHA-256 για κάθε ενσωματωμένο αντικείμενο</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>Εκτύπωση ή εξαγωγή ως PDF (χρησιμοποιήστε τον εκτυπωτή "Microsoft Print to PDF")</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>Σύγκριση με άλλο έγγραφο…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>Σύγκριση εγγράφων</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>Αριστερά:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>Δεξιά:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>Αναζήτηση…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(κάντε κλικ στην Αναζήτηση για να επιλέξετε αρχείο)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>Είδος</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>Αλλαγή</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>Κείμενο</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} προστέθηκαν, −{1} αφαιρέθηκαν, ~{2} τροποποιήθηκαν, {3} χωρίς αλλαγές</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>Δεν έχουν καταχωριστεί φορτωτές εγγράφων.</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>Δεν έχει καταχωριστεί φορτωτής για την επέκταση {0}.</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>Κλείσιμο</value></data></root>

@@ -500,6 +500,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Properties {
                 return ResourceManager.GetString("CodeEditor_ContextMenuRenameSymbol", resourceCulture);
             }
         }
+
+        internal static string CodeEditor_ContextMenuRefactor      { get { return ResourceManager.GetString("CodeEditor_ContextMenuRefactor",      resourceCulture); } }
+        internal static string CodeEditor_RefactorRename           { get { return ResourceManager.GetString("CodeEditor_RefactorRename",           resourceCulture); } }
+        internal static string CodeEditor_RefactorExtractMethod    { get { return ResourceManager.GetString("CodeEditor_RefactorExtractMethod",    resourceCulture); } }
+        internal static string CodeEditor_RefactorExtractClass     { get { return ResourceManager.GetString("CodeEditor_RefactorExtractClass",     resourceCulture); } }
+        internal static string CodeEditor_RefactorIntroduceVariable{ get { return ResourceManager.GetString("CodeEditor_RefactorIntroduceVariable",resourceCulture); } }
+        internal static string CodeEditor_RefactorInlineMethod     { get { return ResourceManager.GetString("CodeEditor_RefactorInlineMethod",     resourceCulture); } }
         
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Replace....

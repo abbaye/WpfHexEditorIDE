@@ -2,11 +2,12 @@
   "diffMode": "binary",
   "formatName": "OpenDocument Text",
   "formatId": "ODT",
-  "version": "2.02",
+  "version": "2.03",
   "extensions": [
-    ".odt"
+    ".odt",
+    ".ott"
   ],
-  "description": "OpenDocument Text - a ZIP-based open standard word processing document format used by LibreOffice and OpenOffice. The first entry is typically 'mimetype' (stored uncompressed) containing 'application/vnd.oasis.opendocument.text'.",
+  "description": "OpenDocument Text - a ZIP-based open standard word processing document format used by LibreOffice and OpenOffice (.odt) plus its template variant (.ott). The first entry is typically 'mimetype' (stored uncompressed) containing 'application/vnd.oasis.opendocument.text' or '.text-template'.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "document-editor",
@@ -269,7 +270,8 @@
     }
   ],
   "MimeTypes": [
-    "application/vnd.oasis.opendocument.text"
+    "application/vnd.oasis.opendocument.text",
+    "application/vnd.oasis.opendocument.text-template"
   ],
   "Software": [
     "LibreOffice Writer",
@@ -288,7 +290,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 19,
     "ValidationRules": 3,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-05-10",
     "PriorityFormat": false,
     "AutoRefined": false
   },

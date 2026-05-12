@@ -1,12 +1,15 @@
 ﻿{
   "diffMode": "binary",
-  "formatName": "Word Document",
+  "formatName": "Word Document (OOXML family)",
   "formatId": "DOCX",
-  "version": "2.02",
+  "version": "2.03",
   "extensions": [
-    ".docx"
+    ".docx",
+    ".docm",
+    ".dotx",
+    ".dotm"
   ],
-  "description": "Microsoft Word Open XML document stored as a ZIP container. The file begins with a ZIP Local File Header containing the first entry of the Office Open XML package, typically [Content_Types].xml.",
+  "description": "Microsoft Word Open XML document family (DOCX/DOCM/DOTX/DOTM). All four share the same wordprocessingml schema inside a ZIP container starting with a ZIP Local File Header. DOCM/DOTM additionally embed a vbaProject.bin macro stream; DOTX/DOTM are template variants.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "document-editor",
@@ -292,7 +295,10 @@
     ]
   },
   "MimeTypes": [
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-word.document.macroEnabled.12",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+    "application/vnd.ms-word.template.macroEnabled.12"
   ],
   "Software": [
     "Microsoft Word",
@@ -311,7 +317,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 19,
     "ValidationRules": 3,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-05-10",
     "PriorityFormat": true,
     "AutoRefined": false
   },

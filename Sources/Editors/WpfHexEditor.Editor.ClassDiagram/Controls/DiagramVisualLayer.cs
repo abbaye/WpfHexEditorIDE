@@ -28,6 +28,12 @@ using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 
 namespace WpfHexEditor.Editor.ClassDiagram.Controls;
 
+/// <summary>Edge identifier for the 8-way node resize gripper hit-test.</summary>
+public enum ResizeEdge
+{
+    N, S, E, W, NE, NW, SE, SW
+}
+
 /// <summary>
 /// Renders all diagram nodes and arrows using a pool of <see cref="DrawingVisual"/> children.
 /// </summary>
@@ -108,8 +114,9 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     // ── Performance: node size caches ────────────────────────────────────────
     // Keyed by node.Id. Invalidated on state changes (collapse/expand/section/resize).
-    private readonly Dictionary<string, double> _heightCache = new(StringComparer.Ordinal);
-    private readonly Dictionary<string, double> _widthCache  = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, double> _heightCache       = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, double> _widthCache        = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, double> _headerHeightCache = new(StringComparer.Ordinal);
 
     // ── Performance: viewport culling ────────────────────────────────────────
     // When set, nodes and arrows outside this rect are not painted.
@@ -163,6 +170,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
         _doc = doc;
         _heightCache.Clear();
         _widthCache.Clear();
+        _headerHeightCache.Clear();
         _blankNodeIds.Clear();
         _arrowsDirty = true;
 
@@ -688,6 +696,48 @@ public sealed class DiagramVisualLayer : FrameworkElement
         return null;
     }
 
+    /// <summary>
+    /// Returns the rectangle (in diagram coordinates) occupied by <paramref name="member"/>
+    /// inside <paramref name="node"/>, or null when the member belongs to a collapsed section.
+    /// Mirrors the layout computed by <see cref="HitTestMember"/> and the renderer so
+    /// callers (e.g. inline rename overlay) can place a popup exactly over the row.
+    /// </summary>
+    public Rect? GetMemberBounds(ClassNode node, ClassMember member)
+    {
+        double baseY     = node.Y + ComputeHeaderHeight(node) + MemberPadding;
+        double memberY   = 0;
+        MemberKind? lastKind = null;
+
+        foreach (var m in node.Members)
+        {
+            if (lastKind.HasValue && m.Kind != lastKind)
+            {
+                memberY += 14.0;
+                if (IsSectionCollapsed(node.Id, GetSectionName(m.Kind)))
+                {
+                    lastKind = m.Kind;
+                    continue;
+                }
+            }
+            lastKind = m.Kind;
+            if (IsSectionCollapsed(node.Id, GetSectionName(m.Kind))) continue;
+
+            if (ReferenceEquals(m, member))
+                return new Rect(node.X, baseY + memberY, ComputeNodeWidth(node), MemberHeight);
+
+            memberY += MemberHeight;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Returns the rectangle (in diagram coordinates) occupied by the header strip
+    /// of <paramref name="node"/>. Used by inline rename overlay to place the class
+    /// rename popup precisely over the header.
+    /// </summary>
+    public Rect GetHeaderBounds(ClassNode node) =>
+        new(node.X, node.Y, ComputeNodeWidth(node), ComputeHeaderHeight(node));
+
     /// <summary>Returns the relationship whose line is within 6px of <paramref name="pt"/>, or null.</summary>
     public ClassRelationship? HitTestArrow(Point pt)
     {
@@ -755,7 +805,7 @@ public sealed class DiagramVisualLayer : FrameworkElement
             dc.DrawRectangle(lodAccentBrush, null, new Rect(0, 0, AccentBarWidth, HeaderBaseHeight));
             dc.Pop();
             Brush lodName = Res("CD_ClassNameForeground", Color.FromRgb(220, 220, 255));
-            var lodFt = MakeFT(node.Name, lodName, 10.0, bold: true);
+            var lodFt = MakeFT(GetDisplayName(node), lodName, 10.0, bold: true);
             dc.DrawText(lodFt, new Point((width - lodFt.Width) / 2,
                 (HeaderBaseHeight - lodFt.Height) / 2));
             if (isDimmed) dc.Pop();
@@ -823,8 +873,8 @@ public sealed class DiagramVisualLayer : FrameworkElement
         dc.DrawRectangle(accentGrad, null, new Rect(0, 0, AccentBarWidth, headerH));
         dc.Pop();
 
-        // ── Row 1: [icon] Name ───────────────────────────────────────────────
-        var nameFt = MakeFT(node.Name, nameColor, 13.0, bold: true);
+        // ── Row 1: [icon] Name<Generics> ─────────────────────────────────────
+        var nameFt = MakeFT(GetDisplayName(node), nameColor, 13.0, bold: true);
         double nameRowH = Math.Max(TypeIconSize, nameFt.Height);
         double nameRowY = 6.0;
 
@@ -1406,8 +1456,18 @@ public sealed class DiagramVisualLayer : FrameworkElement
     /// </summary>
     private void InvalidateNodeSizeCache(string? nodeId)
     {
-        if (nodeId is null) { _heightCache.Clear(); _widthCache.Clear(); }
-        else { _heightCache.Remove(nodeId); _widthCache.Remove(nodeId); }
+        if (nodeId is null)
+        {
+            _heightCache.Clear();
+            _widthCache.Clear();
+            _headerHeightCache.Clear();
+        }
+        else
+        {
+            _heightCache.Remove(nodeId);
+            _widthCache.Remove(nodeId);
+            _headerHeightCache.Remove(nodeId);
+        }
     }
 
     // ── Node height/width computation (with caching) ──────────────────────────
@@ -1467,6 +1527,8 @@ public sealed class DiagramVisualLayer : FrameworkElement
     /// <summary>
     /// Returns the node whose bottom-edge gripper is at <paramref name="pt"/>, or null.
     /// The gripper zone is GripperHeight pixels above and below the node bottom edge.
+    /// Kept for backwards compatibility with the bottom-only resize flow; new code
+    /// should use <see cref="HitTestResizeHandle"/> which supports all 8 directions.
     /// </summary>
     public ClassNode? IsGripperHit(IReadOnlyList<ClassNode> nodes, Point pt)
     {
@@ -1480,6 +1542,41 @@ public sealed class DiagramVisualLayer : FrameworkElement
         }
         return null;
     }
+
+    /// <summary>
+    /// Returns the node + edge whose 8-way resize handle is at <paramref name="pt"/>, or null.
+    /// Corners win over edges (smaller hit zone but higher priority). Hit zone is
+    /// GripperHeight pixels around each anchor point. Used by canvas hover/drag
+    /// for the selected node.
+    /// </summary>
+    public (ClassNode Node, ResizeEdge Edge)? HitTestResizeHandle(ClassNode node, Point pt)
+    {
+        const double slack = GripperHeight;
+
+        double h    = ComputeNodeHeight(node);
+        double left = node.X, right = node.X + node.Width;
+        double top  = node.Y, bottom = node.Y + h;
+        double midX = node.X + node.Width / 2.0;
+        double midY = node.Y + h          / 2.0;
+
+        // 4 corners first (smaller zones, higher priority)
+        if (HitZone(pt, left,  top,    slack)) return (node, ResizeEdge.NW);
+        if (HitZone(pt, right, top,    slack)) return (node, ResizeEdge.NE);
+        if (HitZone(pt, left,  bottom, slack)) return (node, ResizeEdge.SW);
+        if (HitZone(pt, right, bottom, slack)) return (node, ResizeEdge.SE);
+
+        // 4 edge mid-points
+        if (HitZone(pt, midX, top,    slack)) return (node, ResizeEdge.N);
+        if (HitZone(pt, midX, bottom, slack)) return (node, ResizeEdge.S);
+        if (HitZone(pt, left,  midY,  slack)) return (node, ResizeEdge.W);
+        if (HitZone(pt, right, midY,  slack)) return (node, ResizeEdge.E);
+
+        return null;
+    }
+
+    private static bool HitZone(Point pt, double cx, double cy, double half) =>
+        pt.X >= cx - half && pt.X <= cx + half &&
+        pt.Y >= cy - half && pt.Y <= cy + half;
 
     private int CountHiddenMembers(ClassNode node, double displayHeight)
     {
@@ -1592,6 +1689,10 @@ public sealed class DiagramVisualLayer : FrameworkElement
 
     private static string GetStereotype(ClassNode node)
     {
+        // Phase 2B — user-supplied stereotypes win over auto-derived ones.
+        if (node.Stereotypes is { Count: > 0 })
+            return string.Concat(node.Stereotypes.Select(s => $"«{s}»"));
+
         if (node.IsRecord)  return "«record»";
         if (node.IsSealed && node.Kind == ClassKind.Class) return "«sealed»";
         return node.Kind switch
@@ -1603,6 +1704,20 @@ public sealed class DiagramVisualLayer : FrameworkElement
             ClassKind.Class when node.IsAbstract => "«abstract»",
             _ => string.Empty
         };
+    }
+
+    /// <summary>
+    /// Phase 2A — returns the display name with generic parameters in angle
+    /// brackets when the node has any. Constraints are not included in the
+    /// header (rendered in tooltip / properties panel instead) to keep the
+    /// header readable on small nodes.
+    /// </summary>
+    internal static string GetDisplayName(ClassNode node)
+    {
+        if (node.TypeParameters is not { Count: > 0 }) return node.Name;
+        var parts = node.TypeParameters.Select(tp =>
+            string.IsNullOrEmpty(tp.Variance) ? tp.Name : $"{tp.Variance} {tp.Name}");
+        return $"{node.Name}<{string.Join(", ", parts)}>";
     }
 
     /// <summary>Builds the merged stereotype + attributes label for a node header.</summary>
@@ -1620,11 +1735,23 @@ public sealed class DiagramVisualLayer : FrameworkElement
         return "«" + sterCore + " · " + attrs + "»";
     }
 
-    /// <summary>Computes dynamic header height: Row1=icon+name, Row2=stereotype, Row3=namespace.</summary>
+    /// <summary>
+    /// Computes dynamic header height: Row1=icon+name, Row2=stereotype, Row3=namespace.
+    /// Result is cached per node id; invalidated by <see cref="InvalidateNodeSizeCache"/>
+    /// when any header-affecting property changes (name, stereotypes, namespace, attributes).
+    /// </summary>
     public double ComputeHeaderHeight(ClassNode node)
     {
-        // Row 1: icon + name
-        var nameFt = MakeFT(node.Name, Brushes.White, 13.0, bold: true);
+        if (_headerHeightCache.TryGetValue(node.Id, out double cached)) return cached;
+        double result = ComputeHeaderHeightCore(node);
+        _headerHeightCache[node.Id] = result;
+        return result;
+    }
+
+    private double ComputeHeaderHeightCore(ClassNode node)
+    {
+        // Row 1: icon + name (with generics if any, so the row height matches the renderer)
+        var nameFt = MakeFT(GetDisplayName(node), Brushes.White, 13.0, bold: true);
         double y = 6.0 + Math.Max(TypeIconSize, nameFt.Height) + 2.0;
 
         // Row 2: merged stereotype + attributes

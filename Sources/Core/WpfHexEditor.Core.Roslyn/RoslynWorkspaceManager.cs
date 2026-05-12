@@ -30,7 +30,7 @@ namespace WpfHexEditor.Core.Roslyn;
 /// Supports <see cref="AdhocWorkspace"/> (standalone) and <see cref="MSBuildWorkspace"/>
 /// (full solution). Thread-safe via immutable Solution snapshots.
 /// </summary>
-internal sealed class RoslynWorkspaceManager : IDisposable
+public sealed class RoslynWorkspaceManager : IDisposable
 {
     private AdhocWorkspace _adhocWorkspace;
     private MSBuildWorkspace? _msbuildWorkspace;

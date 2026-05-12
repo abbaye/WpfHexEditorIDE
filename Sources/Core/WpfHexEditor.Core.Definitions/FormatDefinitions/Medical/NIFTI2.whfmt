@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "NIfTI-2 Medical Image",
   "formatId": "NIFTI2",
-  "version": "1.14",
+  "version": "1.14.1",
   "extensions": [
     ".nii",
     ".hdr",
@@ -20,7 +20,7 @@
     "signature": "1C020000",
     "offset": 0,
     "weight": 0.8,
-    "strength": "Moderate",
+    "strength": "Medium",
     "required": true,
     "validation": {
       "minFileSize": 540,

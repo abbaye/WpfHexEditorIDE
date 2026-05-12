@@ -309,19 +309,14 @@ namespace WpfHexEditor.Core.Services
         public int ClearAll()
         {
             var count = _backgroundBlocks.Count;
+            _backgroundBlocks.Clear();
 
-            if (count > 0)
+            OnBlocksCleared(new CustomBackgroundBlockEventArgs
             {
-                _backgroundBlocks.Clear();
-
-                // Raise event
-                OnBlocksCleared(new CustomBackgroundBlockEventArgs
-                {
-                    ChangeType = BlockChangeType.Cleared,
-                    AffectedCount = count,
-                    TotalBlockCount = 0
-                });
-            }
+                ChangeType = BlockChangeType.Cleared,
+                AffectedCount = count,
+                TotalBlockCount = 0
+            });
 
             return count;
         }

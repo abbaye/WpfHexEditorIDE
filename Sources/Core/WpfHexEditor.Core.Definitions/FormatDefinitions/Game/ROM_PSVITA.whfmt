@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "PlayStation Vita Package",
   "formatId": "ROM_PSVITA",
-  "version": "2.42",
+  "version": "2.42.1",
   "extensions": [
     ".vpk",
     ".pkg"
@@ -30,7 +30,8 @@
     "required": false,
     "validation": {
       "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "maxSignatureOffset": 1024,
+      "note": "Shares Sony PKG magic 7F504B47 with PS3/PSP PKG. Discriminate via pkg_type uint16-BE at offset 0x06: PSP/Vita = 0x0002; Vita further confirmed via pkg_revision 0x8000 at offset 0x04 and CONTENT_ID prefix in PARAM.SFO. See psdevwiki.com/vita/Packages."
     }
   },
   "variables": {

@@ -35,6 +35,14 @@ public sealed class ScoreRadarChart : Control
         DependencyProperty.Register(name, typeof(int), typeof(ScoreRadarChart),
             new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsRender));
 
+    static ScoreRadarChart()
+    {
+        // Force re-render when the inherited Foreground brush changes (theme switch).
+        ForegroundProperty.OverrideMetadata(typeof(ScoreRadarChart),
+            new FrameworkPropertyMetadata(SystemColors.ControlTextBrush,
+                FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.Inherits));
+    }
+
     private static readonly string[] Labels = ["Vol", "CC", "Coup", "Dup", "Dead", "Conv"];
 
     protected override void OnRender(DrawingContext dc)
@@ -48,7 +56,9 @@ public sealed class ScoreRadarChart : Control
         var axis    = new Pen(new SolidColorBrush(Color.FromArgb(120, 128, 128, 128)), 1);
         var fill    = new SolidColorBrush(Color.FromArgb(110, 0, 122, 204));
         var stroke  = new Pen(new SolidColorBrush(Color.FromArgb(255, 0, 122, 204)), 2);
-        var labelBr = (Foreground as SolidColorBrush) ?? Brushes.Gray;
+        // Use the inherited Foreground for labels. Any Brush subtype works for DrawText,
+        // not just SolidColorBrush — never silently downgrade to gray on theme aliases.
+        var labelBr = Foreground ?? SystemColors.ControlTextBrush;
 
         // Concentric grid rings
         for (int ring = 1; ring <= 4; ring++)

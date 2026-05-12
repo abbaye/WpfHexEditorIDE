@@ -32,6 +32,17 @@ internal static class AnalysisContextMenuActions
         docHost.ActivateAndNavigateTo(filePath, Math.Max(1, line), 1);
     }
 
+    /// <summary>Open an http/https URL in the user's default browser. Silent on failure;
+    /// refuses any other scheme (file://, javascript:, etc.) defence-in-depth.</summary>
+    internal static void OpenUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return;
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return;
+        if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps) return;
+        try { Process.Start(new ProcessStartInfo(uri.AbsoluteUri) { UseShellExecute = true }); }
+        catch { /* browser missing — never crash the menu */ }
+    }
+
     internal static void RevealInExplorer(string filePath)
     {
         if (string.IsNullOrEmpty(filePath)) return;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -239,7 +239,7 @@
   <data name="HyperlinkDlg_LabelUrl" xml:space="preserve"><value>URL</value></data>
   <data name="HyperlinkDlg_OK" xml:space="preserve"><value>ОК</value></data>
   <data name="HyperlinkDlg_Cancel" xml:space="preserve"><value>Отмена</value></data>
-  <data name="HyperlinkDlg_TestUrl"    xml:space="preserve"><value>Открыть URL в браузере</value></data>
+  <data name="HyperlinkDlg_TestUrl" xml:space="preserve"><value>Открыть URL в браузере</value></data>
   <data name="HyperlinkDlg_InvalidUrl" xml:space="preserve"><value>Введите корректный URL (https://, http://, mailto:, ftp://)</value></data>
   <data name="InsertTableDlg_Title" xml:space="preserve"><value>Вставить таблицу</value></data>
   <data name="InsertTableDlg_Rows" xml:space="preserve"><value>Строки</value></data>
@@ -285,31 +285,31 @@
   <data name="PageStyleDlg_OK" xml:space="preserve"><value>ОК</value></data>
   <data name="PageStyleDlg_Cancel" xml:space="preserve"><value>Отмена</value></data>
 
-  <!-- SPELL CHECKER -->
-  <data name="SpellCheck_Enable"              xml:space="preserve"><value>Включить проверку орфографии</value></data>
-  <data name="SpellCheck_DictSection"         xml:space="preserve"><value>Словари</value></data>
-  <data name="SpellCheck_ColLanguage"         xml:space="preserve"><value>Язык</value></data>
-  <data name="SpellCheck_ColStatus"           xml:space="preserve"><value>Состояние</value></data>
-  <data name="SpellCheck_Download"            xml:space="preserve"><value>Загрузить</value></data>
-  <data name="SpellCheck_Browse"              xml:space="preserve"><value>Обзор...</value></data>
-  <data name="SpellCheck_Remove"              xml:space="preserve"><value>Удалить</value></data>
-  <data name="SpellCheck_UserDictSection"     xml:space="preserve"><value>Пользовательский словарь</value></data>
-  <data name="SpellCheck_EditUserDict"        xml:space="preserve"><value>Изменить пользовательский словарь</value></data>
-  <data name="SpellCheck_StatusInstalled"     xml:space="preserve"><value>Установлен</value></data>
-  <data name="SpellCheck_StatusNotInstalled"  xml:space="preserve"><value>Не установлен</value></data>
-  <data name="SpellCheck_Ignore"              xml:space="preserve"><value>Игнорировать</value></data>
-  <data name="SpellCheck_AddToDict"           xml:space="preserve"><value>Добавить в словарь</value></data>
-  <data name="SpellCheck_BrowseDicTitle"      xml:space="preserve"><value>Выбрать файл словаря</value></data>
-  <data name="SpellCheck_BrowseAffTitle"      xml:space="preserve"><value>Выбрать файл аффиксов</value></data>
-  <data name="SpellCheck_DownloadError"       xml:space="preserve"><value>Не удалось загрузить словарь.</value></data>
-  <data name="SpellCheck_DownloadErrorTitle"  xml:space="preserve"><value>Ошибка загрузки</value></data>
-  <data name="SpellCheck_NotifTitle"          xml:space="preserve"><value>Словарь проверки орфографии</value></data>
-  <data name="SpellCheck_NotifMessage"        xml:space="preserve"><value>Словарь проверки орфографии не найден. Загрузить сейчас?</value></data>
-  <data name="SpellCheck_NotifInstall"        xml:space="preserve"><value>Установить</value></data>
-  <data name="SpellCheck_NotifLater"          xml:space="preserve"><value>Позже</value></data>
-  <data name="SpellCheck_NotifNever"          xml:space="preserve"><value>Не показывать снова</value></data>
+  
+  <data name="SpellCheck_Enable" xml:space="preserve"><value>Включить проверку орфографии</value></data>
+  <data name="SpellCheck_DictSection" xml:space="preserve"><value>Словари</value></data>
+  <data name="SpellCheck_ColLanguage" xml:space="preserve"><value>Язык</value></data>
+  <data name="SpellCheck_ColStatus" xml:space="preserve"><value>Состояние</value></data>
+  <data name="SpellCheck_Download" xml:space="preserve"><value>Загрузить</value></data>
+  <data name="SpellCheck_Browse" xml:space="preserve"><value>Обзор...</value></data>
+  <data name="SpellCheck_Remove" xml:space="preserve"><value>Удалить</value></data>
+  <data name="SpellCheck_UserDictSection" xml:space="preserve"><value>Пользовательский словарь</value></data>
+  <data name="SpellCheck_EditUserDict" xml:space="preserve"><value>Изменить пользовательский словарь</value></data>
+  <data name="SpellCheck_StatusInstalled" xml:space="preserve"><value>Установлен</value></data>
+  <data name="SpellCheck_StatusNotInstalled" xml:space="preserve"><value>Не установлен</value></data>
+  <data name="SpellCheck_Ignore" xml:space="preserve"><value>Игнорировать</value></data>
+  <data name="SpellCheck_AddToDict" xml:space="preserve"><value>Добавить в словарь</value></data>
+  <data name="SpellCheck_BrowseDicTitle" xml:space="preserve"><value>Выбрать файл словаря</value></data>
+  <data name="SpellCheck_BrowseAffTitle" xml:space="preserve"><value>Выбрать файл аффиксов</value></data>
+  <data name="SpellCheck_DownloadError" xml:space="preserve"><value>Не удалось загрузить словарь.</value></data>
+  <data name="SpellCheck_DownloadErrorTitle" xml:space="preserve"><value>Ошибка загрузки</value></data>
+  <data name="SpellCheck_NotifTitle" xml:space="preserve"><value>Словарь проверки орфографии</value></data>
+  <data name="SpellCheck_NotifMessage" xml:space="preserve"><value>Словарь проверки орфографии не найден. Загрузить сейчас?</value></data>
+  <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Установить</value></data>
+  <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Позже</value></data>
+  <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Не показывать снова</value></data>
 
-  <!-- Image dialog & context menu -->
+  
   <data name="ImgDlg_Title" xml:space="preserve"><value>Свойства изображения</value></data>
   <data name="ImgDlg_TabSize" xml:space="preserve"><value>Размер и позиция</value></data>
   <data name="ImgDlg_TabWrap" xml:space="preserve"><value>Обтекание текстом</value></data>
@@ -393,4 +393,11 @@
   <data name="DocStructure_KindFilter_ImagesOnly" xml:space="preserve">
     <value>Изображения</value>
   </data>
-</root>
+<data name="DocEditorHost_AnonymizeBtn" xml:space="preserve"><value>Анонимизировать метаданные</value></data><data name="DocEditorHost_AnonymizeToolTip" xml:space="preserve"><value>Удаляет автора, метки времени, пользовательские свойства и макросы из этого документа. Изменение сохраняется в памяти до сохранения файла.</value></data><data name="DocEditorHost_AnonymizeTitle" xml:space="preserve"><value>Анонимизировать метаданные</value></data><data name="DocEditorHost_AnonymizeConfirm" xml:space="preserve"><value>Удалить автора, метки времени, пользовательские свойства и макросы из этого документа?
+
+Изменение применяется немедленно в памяти и записывается в файл при следующем Сохранении.</value></data><data name="DocEditorHost_AnonymizeDoneFmt" xml:space="preserve"><value>Анонимизация завершена.
+
+Автор удалён: {0}
+Метки времени удалены: {1}
+Макросы удалены: {2}
+Пользовательские свойства очищены: {3}</value></data><data name="DocEditorHost_EmbeddedToolTip" xml:space="preserve"><value>Просмотр встроенных объектов (изображения, OLE, макросы)</value></data><data name="EmbeddedDlg_Title" xml:space="preserve"><value>Встроенные объекты</value></data><data name="EmbeddedDlg_ColKind" xml:space="preserve"><value>Тип</value></data><data name="EmbeddedDlg_ColName" xml:space="preserve"><value>Имя</value></data><data name="EmbeddedDlg_ColSize" xml:space="preserve"><value>Размер</value></data><data name="EmbeddedDlg_ColSource" xml:space="preserve"><value>Источник</value></data><data name="EmbeddedDlg_Extract" xml:space="preserve"><value>Извлечь…</value></data><data name="EmbeddedDlg_ExtractToolTip" xml:space="preserve"><value>Сохранить выбранный встроенный объект в файл</value></data><data name="EmbeddedDlg_OpenHex" xml:space="preserve"><value>Открыть в Hex</value></data><data name="EmbeddedDlg_OpenHexToolTip" xml:space="preserve"><value>Извлечь во временный файл и открыть в Hex-редакторе</value></data><data name="EmbeddedDlg_Close" xml:space="preserve"><value>Закрыть</value></data><data name="EmbeddedDlg_CountFmt" xml:space="preserve"><value>{0} встроенных объектов</value></data><data name="EmbeddedDlg_EntryNotFoundFmt" xml:space="preserve"><value>Запись ZIP не найдена: {0}</value></data><data name="EmbeddedDlg_NoSource" xml:space="preserve"><value>У встроенного объекта нет доступных байтов источника.</value></data><data name="EmbeddedDlg_SourceSha" xml:space="preserve"><value>SHA-256 источника:</value></data><data name="EmbeddedDlg_ShaComputing" xml:space="preserve"><value>вычисление…</value></data><data name="EmbeddedDlg_CopySha" xml:space="preserve"><value>Скопировать хэш в буфер обмена</value></data><data name="EmbeddedDlg_HashAll" xml:space="preserve"><value>Хэшировать все</value></data><data name="EmbeddedDlg_HashAllToolTip" xml:space="preserve"><value>Вычислить SHA-256 для каждого встроенного объекта</value></data><data name="DocEditorHost_PrintToolTip" xml:space="preserve"><value>Печать или экспорт в PDF (используйте принтер "Microsoft Print to PDF" для создания PDF)</value></data><data name="DocEditorHost_DiffToolTip" xml:space="preserve"><value>Сравнить с другим документом…</value></data><data name="DocDiffDlg_Title" xml:space="preserve"><value>Сравнение документов</value></data><data name="DocDiffDlg_LabelLeft" xml:space="preserve"><value>Слева:</value></data><data name="DocDiffDlg_LabelRight" xml:space="preserve"><value>Справа:</value></data><data name="DocDiffDlg_PickRight" xml:space="preserve"><value>Обзор…</value></data><data name="DocDiffDlg_PickHint" xml:space="preserve"><value>(нажмите Обзор для выбора файла)</value></data><data name="DocDiffDlg_ColKind" xml:space="preserve"><value>Тип</value></data><data name="DocDiffDlg_ColChange" xml:space="preserve"><value>Изменение</value></data><data name="DocDiffDlg_ColText" xml:space="preserve"><value>Текст</value></data><data name="DocDiffDlg_SummaryFmt" xml:space="preserve"><value>+{0} добавлено, −{1} удалено, ~{2} изменено, {3} без изменений</value></data><data name="DocDiffDlg_NoLoaders" xml:space="preserve"><value>Нет зарегистрированных загрузчиков документов.</value></data><data name="DocDiffDlg_NoLoaderForFmt" xml:space="preserve"><value>Нет загрузчика, зарегистрированного для расширения {0}.</value></data><data name="DocDiffDlg_Close" xml:space="preserve"><value>Закрыть</value></data></root>
