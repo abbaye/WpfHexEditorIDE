@@ -477,10 +477,12 @@ public bool CanRedo(ByteProvider provider);
 
 ### Shared-undo contract — `IUndoAwareEditor`
 
-Editors that share a single undo engine across views (HexEditor ↔ CodeEditor)
-implement `IUndoAwareEditor` in the consumer assembly. `ByteProvider.UndoRedoManager`
-is exposed as a property so a host can push `HexByteUndoEntry` instances into a
-shared `UndoEngine`. See the HexEditor source for the canonical adapter.
+Consumers that want multiple views (or multiple controls) to share the same
+undo stack implement `IUndoAwareEditor`. `ByteProvider.UndoRedoManager` is
+exposed as a property so any host can push `HexByteUndoEntry` instances into
+a shared `UndoEngine`. Typical scenarios: two viewports of the same buffer,
+or a text-side adapter wanting its edits to participate in the same undo
+history as byte-level edits.
 
 ---
 

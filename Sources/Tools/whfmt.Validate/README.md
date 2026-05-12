@@ -9,6 +9,22 @@
 
 ---
 
+## What's New in 1.0.1
+
+- **Catalog bump** to `whfmt.FileFormatCatalog 1.3.2` — 799 definitions, schema v3 canonical, runtime expression engine.
+- **Phase B bug fixes** (catalog-side, surfaced through `whfmt.Validate`):
+  - Negative-offset magic byte signatures (SHEBANG, FAT_BINARY, NE, LE, TRUECRYPT) now match correctly.
+  - Assertions over `.whfmt` files with `bool` / `null` variables (e.g. `PNG.crc32Valid`) no longer throw.
+- **UTF-8 console output** forced via `Console.OutputEncoding` so emoji status glyphs render on Windows consoles.
+- **Comprehensive guide** bundled (`whfmt-Validate-guide.md`).
+- **No CLI changes** since 1.0.0 — drop-in upgrade.
+
+## What's New in 1.0.0
+
+- Initial public release. Commands: `validate`, `list`, `info`, `repair`, `lint-expressions` with `--format`, `--report text|json|html`, `--output`, `--recursive`, `--fail-fast` flags.
+
+---
+
 ## Install
 
 ```bash

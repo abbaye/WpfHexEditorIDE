@@ -14,13 +14,13 @@
 
 ## What's New in 1.1.1
 
-- **Undo/redo unification completed** (issue #107) — `HexEditor` ↔ `CodeEditor` now share a single `UndoEngine` instance through the `IUndoAwareEditor` contract. Drop-in upgrade from 1.1.0.
+- **`IUndoAwareEditor` contract finalized** — any editor or view-model can plug into the `ByteProvider` undo stack with a uniform interface; multiple subscribers can now share a single `UndoEngine` instance. Drop-in upgrade from 1.1.0.
 - **No public API changes.**
 
 ## What's New in 1.1.0
 
-- **`IUndoAwareEditor` contract** + `HexByteUndoEntry` — share the undo engine across `HexEditor` and `CodeEditor`.
-- **`DocumentBuffer` undo wiring** — text edits now participate in the same undo stack as byte edits.
+- **`IUndoAwareEditor` interface** + `HexByteUndoEntry` typed entry — public extension point for any consumer that wants to participate in the `ByteProvider` undo stack.
+- **`UndoEngine` shareable across consumers** — multiple `IUndoAwareEditor` subscribers can be wired to a single `ByteProvider` instance and observe the same undo/redo events.
 - **Regression test suite added** — `ByteProvider`, `UndoRedoManager`, `SearchEngine`, `EditsManager`, `ChangesetSnapshot`.
 
 ## Features
@@ -165,15 +165,6 @@ WpfHexEditor.Core.ByteProvider/
 └── Changesets/
     └── ChangesetSnapshot.cs         ← ModifiedRange, InsertedBlock, DeletedRange
 ```
-
----
-
-## What's New in 1.1.0
-
-- **New**: `IUndoAwareEditor` interface — editors (HexEditor, CodeEditor) register with the `ByteProvider` undo stack via a common contract.
-- **New**: `HexByteUndoEntry` — typed undo entry for individual byte modifications; participates in the shared `UndoEngine` across editor types.
-- **New**: `DocumentBuffer` undo wiring — `ByteProvider` undo/redo events now propagate to `IUndoAwareEditor` subscribers.
-- **Test**: Regression test suite added — `ByteProviderTests`, `UndoRedoManagerTests`, `SearchEngineTests`, `EditsManagerTests`, `ChangesetSnapshotTests`.
 
 ---
 
