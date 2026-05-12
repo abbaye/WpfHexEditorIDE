@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "WebP Image",
   "formatId": "WEBP",
-  "version": "2.02",
+  "version": "2.02.1",
   "extensions": [
     ".webp"
   ],
@@ -140,7 +140,7 @@
       "opacity": 0.3,
       "description": "For VP8 lossy: 3-byte frame tag containing frame type (bit 0: 0=key frame), version (bits 1-3), show_frame (bit 4), and partition size (bits 5-23). For VP8X extended: single flags byte at offset 20 followed by 2 reserved bytes. VP8X flags: bit 1=Animation, bit 2=XMP, bit 3=EXIF, bit 4=Alpha, bit 5=ICC Profile.",
       "storeAs": "vp8FrameTag",
-      "valueType": "uint24",
+      "valueType": "uint32",
       "endianness": "little",
       "bitfields": [
         {
@@ -208,7 +208,7 @@
       "opacity": 0.3,
       "description": "For VP8 lossy: 3-byte start code (0x9D012A) that marks the beginning of the VP8 frame header. This magic number is always present in VP8 key frames. For VP8X: reserved bytes (must be 0). For VP8L: signature byte 0x2F followed by image size data.",
       "storeAs": "vp8StartCode",
-      "valueType": "uint24",
+      "valueType": "uint32",
       "endianness": "big"
     },
     {

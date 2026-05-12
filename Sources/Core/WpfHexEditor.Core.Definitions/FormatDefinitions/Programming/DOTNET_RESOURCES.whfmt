@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": ".NET Resources File",
   "formatId": "DOTNET_RESOURCES",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "extensions": [ ".resources" ],
   "description": "Binary .NET resource file compiled from .resx XML by ResGen or MSBuild; starts with magic 0xBEEFCACE and contains typed key-value resource pairs for System.Resources.ResourceManager.",
   "category": "Programming",
@@ -126,7 +126,7 @@
       "opacity": 0.75,
       "description": "BinaryReader-style 7-bit length-encoded string containing the assembly-qualified name of the IResourceReader implementation, typically 'System.Resources.ResourceReader, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.",
       "storeAs": "resourceReaderClassName",
-      "valueType": "dotnet7bitstring"
+      "valueType": "utf8"
     },
     {
       "type": "field",
@@ -137,7 +137,7 @@
       "opacity": 0.7,
       "description": "BinaryReader-style 7-bit length-encoded string containing the assembly-qualified name of the IResourceSet implementation, typically 'System.Resources.RuntimeResourceSet, mscorlib, ...'.",
       "storeAs": "resourceSetClassName",
-      "valueType": "dotnet7bitstring"
+      "valueType": "utf8"
     },
     {
       "type": "signature",

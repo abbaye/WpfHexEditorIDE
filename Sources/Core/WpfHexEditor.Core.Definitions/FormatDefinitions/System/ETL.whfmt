@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Event Trace Log (ETW)",
   "formatId": "ETL",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "extensions": [ ".etl" ],
   "description": "Windows Event Tracing for Windows (ETW) log file produced by System.Diagnostics.Tracing, xperf, WPR, or the NT kernel logger; begins with one or more WMI_BUFFER_HEADER structures of 0x138 bytes each.",
   "category": "System",
@@ -83,7 +83,7 @@
       "opacity": 0.8,
       "description": "First WMI_BUFFER_HEADER structure (0x138 = 312 bytes) at the start of the ETL file; contains session metadata, timing info, logger name, and buffer accounting fields used by the ETW runtime.",
       "storeAs": "firstBufferHeader",
-      "valueType": "struct"
+      "valueType": "bytes"
     },
     {
       "type": "field",
@@ -130,7 +130,7 @@
       "opacity": 0.7,
       "description": "Buffer creation timestamp as a Windows LARGE_INTEGER (100-nanosecond intervals since January 1, 1601 UTC); determines the absolute time base for events in this buffer.",
       "storeAs": "timestamp",
-      "valueType": "filetime",
+      "valueType": "int64",
       "endianness": "little"
     },
     {
@@ -189,7 +189,7 @@
       "opacity": 0.75,
       "description": "Null-terminated UTF-16LE string holding the ETW session name, e.g. 'NT Kernel Logger', 'EventLog-System', or a custom provider session name up to 31 characters.",
       "storeAs": "loggerName",
-      "valueType": "utf16string",
+      "valueType": "utf16le",
       "endianness": "little"
     },
     {

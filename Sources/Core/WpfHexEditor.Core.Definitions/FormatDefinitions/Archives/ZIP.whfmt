@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "ZIP Archive",
   "formatId": "ZIP",
-  "version": "1.14",
+  "version": "1.14.1",
   "extensions": [
     ".zip",
     ".jar",
@@ -179,7 +179,7 @@
       "opacity": 0.3,
       "description": "MS-DOS packed time format: bits 15-11 = hours (0-23), bits 10-5 = minutes (0-59), bits 4-0 = seconds/2 (0-29, i.e. 2-second resolution). Stored in local time of the creating system.",
       "storeAs": "lastModTime",
-      "valueType": "dostime",
+      "valueType": "uint16",
       "endianness": "little"
     },
     {
@@ -191,7 +191,7 @@
       "opacity": 0.3,
       "description": "MS-DOS packed date format: bits 15-9 = year offset from 1980 (0 = 1980, 119 = 2099), bits 8-5 = month (1-12), bits 4-0 = day (1-31). Year range limited to 1980-2107 in standard ZIP. Use ZIP64 or NTFS extra field for other dates.",
       "storeAs": "lastModDate",
-      "valueType": "dosdate",
+      "valueType": "uint16",
       "endianness": "little"
     },
     {

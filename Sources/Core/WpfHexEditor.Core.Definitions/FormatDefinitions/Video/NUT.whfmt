@@ -1,7 +1,7 @@
 {
   "formatName": "NUT Multimedia Container",
   "formatId": "NUT",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "extensions": [ ".nut" ],
   "diffMode": "binary",
   "description": "NUT is an open multimedia container format developed by the FFmpeg project. Designed for simplicity and seeking efficiency with variable-length integer encoding throughout.",
@@ -43,13 +43,13 @@
       "description": "NUT file identifier: F6 E2 F4 AD EC 3B 2B 00" },
     { "name": "nutFirstType",    "offset": 8, "size": 1, "type": "uint8", "storeAs": "nutFirstType",
       "description": "First byte after magic, identifies first packet type prefix" },
-    { "name": "nutVersion",      "offset": "variable", "size": "vint", "type": "vint", "storeAs": "nutVersion",
+    { "name": "nutVersion",      "offset": "variable", "size": "vint", "type": "int64", "storeAs": "nutVersion",
       "description": "NUT stream version (variable-length integer, typically 3)" },
-    { "name": "nutStreamCount",  "offset": "variable", "size": "vint", "type": "vint", "storeAs": "nutStreamCount",
+    { "name": "nutStreamCount",  "offset": "variable", "size": "vint", "type": "int64", "storeAs": "nutStreamCount",
       "description": "Number of streams in the container" },
-    { "name": "nutMaxDistance",  "offset": "variable", "size": "vint", "type": "vint", "storeAs": "nutMaxDistance",
+    { "name": "nutMaxDistance",  "offset": "variable", "size": "vint", "type": "int64", "storeAs": "nutMaxDistance",
       "description": "Maximum distance between keyframes for seeking" },
-    { "name": "nutTimeBaseCount","offset": "variable", "size": "vint", "type": "vint", "storeAs": "nutTimeBaseCount",
+    { "name": "nutTimeBaseCount","offset": "variable", "size": "vint", "type": "int64", "storeAs": "nutTimeBaseCount",
       "description": "Number of time bases defined in main header" }
   ],
   "blocks": [
