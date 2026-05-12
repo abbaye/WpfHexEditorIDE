@@ -6,17 +6,17 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.5.225-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.5.8-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](docs/ROADMAP.md)
-  [![NuGet](https://img.shields.io/badge/NuGet-6%20packages-004880?logo=nuget)](README.md#-ui-controls--nuget-packages)
+  [![NuGet](https://img.shields.io/badge/NuGet-13%20packages-004880?logo=nuget)](README.md#-ui-controls--nuget-packages)
 
   <br/>
 
   > 🚧 **Active Development** — New features, editors and panels are added regularly. Contributions welcome!
   >
-  > 📅 *Last revised: 2026-05-05*
+  > 📅 *Last revised: 2026-05-12*
 
   <br/>
 
@@ -271,6 +271,7 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 
 | Feature | Version |
 |---------|---------|
+| **Build-number scheme reset** — `WpfHexEditor.App` realigned from `0.6.5.225` to `0.6.5.8` (small monotonic build counter in the `0.6.5.*` revision slot); no functional regression; published NuGet packages unchanged | v0.6.5.8 |
 | **Code Analysis scope UX + SplitButton re-run** — scope label (Solution/Project/File) in toolbar; SplitButton with same-scope re-run + dropdown (Run Solution / Run Project… / Run File…); `_lastScope/_lastPath` persisted across tab switches | v0.6.5.225 |
 | **Code Analysis Treemap context menu** — right-click: Open File, Copy Path, Copy Metrics, Run Analysis on File, Filter to This Project, Highlight Top 10 Hotspots (toggle dims non-hotspot tiles); 15 new keys × 28 satellite languages | v0.6.5.225 |
 | **Code Analysis localization fixes** — `AppLocalizedDictionary` in `UserControl.Resources.MergedDictionaries` fixes empty DataGridTextColumn headers; matches WatchesPanel / AssemblyDetailPane pattern | v0.6.5.225 |
