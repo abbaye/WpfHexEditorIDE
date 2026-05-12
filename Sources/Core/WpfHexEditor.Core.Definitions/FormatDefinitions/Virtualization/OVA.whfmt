@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Open Virtual Appliance (OVA)",
   "formatId": "OVA",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [".ova"],
   "description": "Open Virtual Appliance archive format — an uncompressed TAR container packaging an OVF XML descriptor, one or more VMDK virtual disk images, and optional manifest/certificate files. The first entry in the TAR is typically the .ovf descriptor file. OVA is standardized by DMTF as part of the OVF specification and is widely used for VM distribution across hypervisors.",
   "category": "Virtualization",
@@ -22,7 +22,7 @@
         "weight": 0.3
       }
     ],
-    "matchMode": "Best",
+    "matchMode": "best",
     "MinimumScore": 0.3,
     "Strength": "Weak",
     "EntropyHint": "Low — TAR headers are mostly ASCII; VMDK payload sections have higher entropy"

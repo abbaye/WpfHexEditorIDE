@@ -16,7 +16,7 @@
     <AssemblyName>WpfHexEditor.Core.Localization</AssemblyName>
     <Title>WpfHexEditor.Core.Localization - Shared localization infrastructure</Title>
     <PackageId>WpfHexEditor.Core.Localization</PackageId>
-    <IsPackable>true</IsPackable>
+    <IsPackable>false</IsPackable>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>

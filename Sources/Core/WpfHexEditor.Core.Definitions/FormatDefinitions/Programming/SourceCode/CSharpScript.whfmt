@@ -1,5 +1,8 @@
 {
   "formatId": "CSharpScript",
+  "formatName": "C# Script",
+  "category": "Programming",
+  "description": "C# Script (.csx) — top-level C# code for dotnet-script and CSI REPL. Syntax inherits the csharp language definition via syntaxDefinition.includes.",
   "name": "C# Script",
   "extensions": [
     ".csx"

@@ -2,7 +2,7 @@
   "diffMode": "text",
   "formatName": "Emacs Lisp Compiled (ELC)",
   "formatId": "EMACS_ELC",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [".elc"],
   "description": "Emacs Lisp compiled bytecode file — a byte-compiled form of Emacs Lisp (.el) source files produced by the Emacs byte compiler. ELC files start with ';ELC' header comment followed by bytecode version information and compiled Lisp forms. The bytecode is interpreted by Emacs's bytecode interpreter for faster execution than source evaluation.",
   "category": "Programming",
@@ -28,7 +28,7 @@
         "weight": 0.3
       }
     ],
-    "matchMode": "Best",
+    "matchMode": "best",
     "MinimumScore": 0.3,
     "Strength": "Medium",
     "EntropyHint": "Low-Moderate — Lisp forms are text-based; bytecode strings have moderate entropy"

@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "VP9/VP8 Superframe Index",
   "formatId": "VPX_SUPERFRAME",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [
     ".vpx",
     ".ivf"
@@ -31,7 +31,7 @@
         "weight": 0.4
       }
     ],
-    "matchMode": "allOf",
+    "matchMode": "all",
     "MinimumScore": 82,
     "Strength": "Weak",
     "EntropyHint": { "min": 5.0, "max": 7.95 },

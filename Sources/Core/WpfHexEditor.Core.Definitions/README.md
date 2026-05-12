@@ -1,6 +1,6 @@
 # whfmt.FileFormatCatalog
 
-790+ embedded file format and language definitions for automatic format detection and syntax highlighting.  
+799 embedded file format and language definitions for automatic format detection and syntax highlighting.  
 Cross-platform `net8.0` — works in any .NET 8 application. Zero external NuGet dependencies.
 
 ```
@@ -19,7 +19,7 @@ dotnet add package whfmt.FileFormatCatalog
 
 ## What's New in 1.3.0
 
-- **Schema v2.5** — four new root blocks: `diff`, `repair`, `fuzz`, `migration`. Each declares format-specific semantics for the new companion packages.
+- **Schema v3** — four new root blocks: `diff`, `repair`, `fuzz`, `migration`. Each declares format-specific semantics for the new companion packages.
 - **6 priority formats enriched** — ZIP, PNG, PE/EXE, PDF, MP3, SQLite now carry complete `diff` key-fields, `repair` rules, and 5–7 `fuzz` strategies with weights and descriptions.
 - **`whfmt.Analysis`** *(new companion package)* — `FormatDiff.Compare()` performs field-level semantic diff using the `diff` block; outputs text / JSON / dark HTML.
 - **`whfmt.Fuzz`** *(new companion package)* — `FormatFuzzer.Generate()` produces format-aware mutant files using the `fuzz` strategies (BoundaryValues, EnumSweep, CorruptSignature, BitFlip, ZeroField, Overflow, RandomBytes, Truncate, Duplicate) with automatic checksum recomputation.
@@ -28,7 +28,7 @@ dotnet add package whfmt.FileFormatCatalog
 
 ## What's New in 1.2.0
 
-- **Catalog**: 790+ definitions — schema v2.4, `formatId` on every entry, 57 language grammars.
+- **Catalog**: 799 definitions — schema v3, `formatId` on every entry, 57 language grammars.
 - **`FormatFileAnalyzer`**: `AnalyzeDirectory()` lazy batch scan now supports async enumeration (`IAsyncEnumerable`) in addition to the synchronous overload.
 - **`CatalogQuery`**: new `WithFormatId(string)` filter for exact `formatId` lookup; `Execute()` now returns `IReadOnlyList<EmbeddedFormatEntry>` (was `List<>`).
 - **`FormatMetadataExtensions`**: `GetAllMetadata()` exposed as a public API; `FormatMetadata` record now implements `IEquatable<FormatMetadata>`.
@@ -44,12 +44,12 @@ dotnet add package whfmt.FileFormatCatalog
 
 ## What's New in 1.1.0
 
-### Catalog — 790+ definitions, schema v2.4, 57 language grammars
+### Catalog — 799 definitions, schema v3, 57 language grammars
 
-- **790+ definitions** (782 `.whfmt` + 10 `.grammar`) — up from 675 in v1.0
+- **799 definitions** (789 `.whfmt` + 10 `.grammar`) — up from 675 in v1.0
 - **57 language grammars** with `syntaxDefinition` blocks — up from 35 (+22 new: Dockerfile, `.env`, Nginx, HCL/Terraform, WAT, MSBuild, SourceMap, WebManifest, CSON, NDJSON, iCal, vCard, DocBook, AbiWord, WML, FODT, FB2, MHT, OpenDoc Flat, Config/INI, RESW, RESX)
 - **`formatId` field** — every `.whfmt` now carries a stable machine-readable identifier (e.g. `"APFS"`, `"ZIP"`) for unambiguous cross-reference
-- **whfmt schema v2.4** — new block types (`group`, `header`, `data`), `until` / `maxLength` / `untilInclusive` sentinel scanning, `imports` array for cross-format struct references, `SyntaxDefinition` promoted to first-class property
+- **whfmt schema v3** — new block types (`group`, `header`, `data`), `until` / `maxLength` / `untilInclusive` sentinel scanning, `imports` array for cross-format struct references, `SyntaxDefinition` promoted to first-class property
 - **Duplicate cleanup** — removed redundant entries: `Firmware/CPIO`, `Firmware/NRG`, `Firmware/SQUASHFS`, `Game/PATCH_IPS`, `Game/PATCH_UPS`, `Programming/Markdown`, `Programming/TOML`
 - **Tolerant JSON deserialisation** — new converters (`FormatRelationshipsConverter`, `TechnicalDetailsConverter`, `BoolFromAnyConverter`, `BlockDefinitionListFromMixedConverter`) handle real-world schema variation without throwing
 - **Disambiguated entries** — `System/JOURNAL` renamed to `"systemd Journal (Legacy)"` to avoid collision with `SYSTEMD_JOURNAL`; extensionless formats (`FAT_BINARY`, `SHEBANG`, `ELF`) now declare `extensions: [""]` for consistent catalog lookup
@@ -74,7 +74,7 @@ Before this release, consuming the catalog required 15–20 lines of boilerplate
 
 This catalog grew out of the format detection engine inside **WpfHexEditorIDE** — a full-featured binary/text IDE built on WPF. Every time a file is opened, the IDE needs to know what it is, which editor to route it to, and how to syntax-highlight it. Rather than hardcoding rules, we built a declarative `.whfmt` format — a JSON definition file that captures magic bytes, extensions, MIME types, entropy hints, quality scores, syntax grammars, forensic intelligence, AI hints, and export templates in one place.
 
-Over time the catalog grew to 790+ definitions covering everything from Nintendo ROMs and audio codecs to machine learning models and certificate formats. The syntax grammar side expanded to 57 languages to drive the built-in code editor.
+Over time the catalog grew to 799 definitions covering everything from Nintendo ROMs and audio codecs to machine learning models and certificate formats. The syntax grammar side expanded to 57 languages to drive the built-in code editor.
 
 This package extracts that catalog as a standalone, cross-platform library — useful for any application that needs to identify files, route them to the right handler, provide syntax highlighting, or perform forensic triage.
 
@@ -195,7 +195,7 @@ await Task.Run(() => EmbeddedFormatCatalog.Instance.PreWarm());
 | Member | Returns | Description |
 |---|---|---|
 | `Instance` | `EmbeddedFormatCatalog` | Thread-safe lazy singleton |
-| `GetAll()` | `IReadOnlySet<EmbeddedFormatEntry>` | All 790+ entries |
+| `GetAll()` | `IReadOnlySet<EmbeddedFormatEntry>` | All 799 entries |
 | `GetByExtension(string)` | `EmbeddedFormatEntry?` | Extension lookup (case-insensitive, dot optional) |
 | `GetByMimeType(string)` | `EmbeddedFormatEntry?` | MIME type lookup |
 | `GetByCategory(FormatCategory)` | `IReadOnlyList<EmbeddedFormatEntry>` | Category browsing (enum overload) |
@@ -455,10 +455,10 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 ## Features
 
 ### Core Detection
-- **790+ embedded definitions** (782 `.whfmt` + 10 `.grammar`) — extension, MIME type, and magic-byte lookup
+- **799 embedded definitions** (789 `.whfmt` + 10 `.grammar`) — extension, MIME type, and magic-byte lookup
 - `DetectFromBytes(ReadOnlySpan<byte>)` — zero-alloc magic-byte scoring
 - `formatId` field on every entry — stable machine-readable identifier for cross-reference
-- 27 categories: Archives, Audio, Images, Game, Documents, Video, System, 3D, Disk, Crypto, and more
+- 29 categories: Archives, Audio, Images, Game, Documents, Video, System, 3D, Disk, Crypto, and more
 
 ### Utility Layer *(v1.1)*
 - `FormatFileAnalyzer` — one-line file analysis from path / `FileInfo` / `Stream` / bytes, sync and async
@@ -472,7 +472,7 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 - `GetSyntaxDefinitionJson(resourceKey)` — raw grammar JSON ready for a tokenizer
 - `HasSyntaxDefinition` flag + `.Query().HasSyntaxDefinition()` for fast filtering
 
-### whfmt Schema v2.4
+### whfmt Schema v3
 - `formatId` — stable machine-readable identifier on every definition
 - `SyntaxDefinition` — promoted to first-class property; drives code-editor grammar registration
 - New block types: `group`, `header`, `data` — structural grouping for binary parsers
@@ -499,7 +499,7 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 
 ### 1.3.0
 
-- **Schema v2.5** — `diff`, `repair`, `fuzz`, `migration` root blocks added to `whfmt.schema.json`.
+- **Schema v3** — `diff`, `repair`, `fuzz`, `migration` root blocks added to `whfmt-schema-canonical-v3.json`.
 - **6 formats enriched** — ZIP, PNG, PE/EXE, PDF, MP3, SQLite: `diff.keyFields`, `repair[]` rules, `fuzz.strategies[]` with weights.
 - **whfmt.Analysis 1.0.0** — new companion NuGet: `FormatDiff.Compare()`, `DiffRenderer` (text/JSON/HTML).
 - **whfmt.Fuzz 1.0.0** — new companion NuGet: `FormatFuzzer.Generate()`, 9 mutation strategies, checksum recomputation.
@@ -508,7 +508,7 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 
 ### 1.2.0
 
-- **Catalog**: 790+ definitions, schema v2.4, `formatId` on every entry, 57 language grammars.
+- **Catalog**: 799 definitions, schema v3, `formatId` on every entry, 57 language grammars.
 - **`FormatFileAnalyzer`**: `AnalyzeDirectory()` supports async enumeration.
 - **`CatalogQuery`**: `WithFormatId(string)` filter; `Execute()` returns `IReadOnlyList<>`.
 - **`FormatMetadataExtensions`**: `FormatMetadata` record now implements `IEquatable<FormatMetadata>`.
@@ -535,10 +535,10 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 ### 1.1.0
 
 #### Catalog
-- **790+ definitions** — 782 `.whfmt` + 10 `.grammar` (up from 675 in v1.0)
+- **799 definitions** — 789 `.whfmt` + 10 `.grammar` (up from 675 in v1.0)
 - **57 language grammars** — `syntaxDefinition` blocks added to 22 new formats: Dockerfile, `.env`, Nginx, HCL/Terraform, WAT, MSBuild, SourceMap, WebManifest, CSON, NDJSON, iCal, vCard, DocBook, AbiWord, WML, FODT, FB2, MHT, OpenDoc Flat, Config/INI, RESW, RESX
 - **`formatId`** — stable machine-readable identifier injected into all 788 `.whfmt` files
-- **Schema v2.4** — new block types (`group`, `header`, `data`), `until`/`maxLength`/`untilInclusive` sentinel fields, `imports` array, `SyntaxDefinition` as first-class property; `whfmt.schema.json` updated accordingly
+- **Schema v3** — new block types (`group`, `header`, `data`), `until`/`maxLength`/`untilInclusive` sentinel fields, `imports` array, `SyntaxDefinition` as first-class property; `whfmt-schema-canonical-v3.json` updated accordingly
 - **Duplicate cleanup** — removed 7 redundant entries: `Firmware/CPIO`, `Firmware/NRG`, `Firmware/SQUASHFS`, `Game/PATCH_IPS`, `Game/PATCH_UPS`, `Programming/Markdown`, `Programming/TOML`
 - **Tolerant JSON deserialisation** — `FormatRelationshipsConverter` (array→object), `TechnicalDetailsConverter` (string→RawDescription), `BoolFromAnyConverter`, `BlockDefinitionListFromMixedConverter` — all 6 EmbeddedWhfmt_Tests green
 - **`System/JOURNAL`** renamed to `"systemd Journal (Legacy)"` to disambiguate from `SYSTEMD_JOURNAL`
@@ -560,7 +560,7 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 
 - Initial NuGet release — cross-platform `net8.0`
 - `EmbeddedFormatCatalog` singleton: `GetAll`, `GetByExtension`, `GetByMimeType`, `GetByCategory`, `DetectFromBytes`, `GetCompatibleEditorIds`, `GetJson`, `GetSyntaxDefinitionJson`, `GetSchemaJson`, `PreWarm`
-- `FormatCategory` enum — 27 categories with type-safe overload
+- `FormatCategory` enum — 29 categories with type-safe overload
 - `SchemaName` enum — 5 embedded JSON schemas
 - 675 `.whfmt` definitions + 35 language grammars
 
@@ -572,7 +572,7 @@ Both bundled inside the package — zero external NuGet dependencies:
 
 | Assembly | Purpose |
 |---|---|
-| WpfHexEditor.Core.Definitions | `EmbeddedFormatCatalog` + utility layer + 790+ embedded definitions (782 `.whfmt` + 10 `.grammar`) |
+| WpfHexEditor.Core.Definitions | `EmbeddedFormatCatalog` + utility layer + 799 embedded definitions (789 `.whfmt` + 10 `.grammar`) |
 | WpfHexEditor.Core.Contracts | `IEmbeddedFormatCatalog`, `EmbeddedFormatEntry`, `FormatMatchResult`, `MatchSource`, `FormatCategory`, `SchemaName` |
 
 ---

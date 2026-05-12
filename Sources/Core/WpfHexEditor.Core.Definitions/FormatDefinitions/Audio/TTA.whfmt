@@ -2,8 +2,10 @@
   "diffMode": "binary",
   "formatName": "True Audio",
   "formatId": "TTA",
-  "version": "1.0",
-  "extensions": [".tta"],
+  "version": "1.0.2",
+  "extensions": [
+    ".tta"
+  ],
   "description": "True Audio (TTA) is a real-time lossless audio compression format that achieves compression ratios typically comparable to FLAC. Files begin with a 4-byte ASCII magic: 'TTA1' (0x54544131) for version 1 files or 'TTA2' (0x54544132) for the rarer version 2 variant. The fixed-length 22-byte header contains all essential stream parameters including audio format (PCM or IEEE float), channel count, bits per sample, sample rate, and total sample count. A 32-bit CRC at byte 18 protects the header from corruption. TTA operates on fixed-length 256-sample frames for predictable memory use.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
@@ -33,7 +35,7 @@
         "weight": 0.9
       }
     ],
-    "matchMode": "Any",
+    "matchMode": "any",
     "MinimumScore": 0.9,
     "required": [],
     "Strength": "Strong",
@@ -76,7 +78,8 @@
       "opacity": 0.75,
       "description": "Audio data format code (little-endian uint16): value 1 indicates PCM integer samples, value 3 indicates IEEE 754 32-bit floating point samples",
       "storeAs": "audioFormat",
-      "valueType": "uint16LE"
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -87,7 +90,8 @@
       "opacity": 0.75,
       "description": "Number of audio channels (little-endian uint16): 1=mono, 2=stereo; True Audio supports multi-channel configurations up to the channel limit",
       "storeAs": "numChannels",
-      "valueType": "uint16LE"
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -98,7 +102,8 @@
       "opacity": 0.75,
       "description": "Bit depth of each audio sample (little-endian uint16): typical values are 8, 16, or 24 bits per sample; 24-bit is common for high-resolution archiving",
       "storeAs": "bitsPerSample",
-      "valueType": "uint16LE"
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -109,7 +114,8 @@
       "opacity": 0.75,
       "description": "Audio sample rate in Hz (little-endian uint32); common values are 44100 and 48000 Hz for CD and professional audio respectively",
       "storeAs": "sampleRate",
-      "valueType": "uint32LE"
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -120,7 +126,8 @@
       "opacity": 0.75,
       "description": "Total number of uncompressed PCM samples in the stream (little-endian uint32); used by decoders to allocate output buffers and verify stream completeness",
       "storeAs": "dataLength",
-      "valueType": "uint32LE"
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -131,38 +138,84 @@
       "opacity": 0.6,
       "description": "CRC-32 checksum of the preceding 18 header bytes (little-endian uint32); used to validate header integrity before beginning audio decoding",
       "storeAs": "headerCRC",
-      "valueType": "uint32LE"
+      "valueType": "uint32",
+      "endianness": "little"
     }
   ],
   "assertions": [
     {
       "field": "ttaMagic",
       "op": "in",
-      "value": ["TTA1", "TTA2"],
+      "value": [
+        "TTA1",
+        "TTA2"
+      ],
       "message": "TTA magic must be 'TTA1' or 'TTA2'"
     },
     {
       "field": "audioFormat",
       "op": "in",
-      "value": [1, 3],
+      "value": [
+        1,
+        3
+      ],
       "message": "Audio format must be 1 (PCM) or 3 (IEEE float)"
     },
     {
       "field": "bitsPerSample",
       "op": "in",
-      "value": [8, 16, 24],
+      "value": [
+        8,
+        16,
+        24
+      ],
       "message": "Bits per sample must be 8, 16, or 24"
     }
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "TTA Magic", "offset": 0, "length": 4, "color": "#FF6B6B" },
-      { "name": "Audio Format", "offset": 4, "length": 2, "color": "#4ECDC4" },
-      { "name": "Channels", "offset": 6, "length": 2, "color": "#95E1D3" },
-      { "name": "Bits Per Sample", "offset": 8, "length": 2, "color": "#FFE66D" },
-      { "name": "Sample Rate", "offset": 10, "length": 4, "color": "#A8E6CF" },
-      { "name": "Total Samples", "offset": 14, "length": 4, "color": "#DDA0DD" },
-      { "name": "Header CRC-32", "offset": 18, "length": 4, "color": "#FF6B6B" }
+      {
+        "name": "TTA Magic",
+        "offset": 0,
+        "length": 4,
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Audio Format",
+        "offset": 4,
+        "length": 2,
+        "color": "#4ECDC4"
+      },
+      {
+        "name": "Channels",
+        "offset": 6,
+        "length": 2,
+        "color": "#95E1D3"
+      },
+      {
+        "name": "Bits Per Sample",
+        "offset": 8,
+        "length": 2,
+        "color": "#FFE66D"
+      },
+      {
+        "name": "Sample Rate",
+        "offset": 10,
+        "length": 4,
+        "color": "#A8E6CF"
+      },
+      {
+        "name": "Total Samples",
+        "offset": 14,
+        "length": 4,
+        "color": "#DDA0DD"
+      },
+      {
+        "name": "Header CRC-32",
+        "offset": 18,
+        "length": 4,
+        "color": "#FF6B6B"
+      }
     ]
   },
   "inspector": {
@@ -172,15 +225,25 @@
     "groups": [
       {
         "name": "File Identity",
-        "fields": ["ttaMagic", "audioFormat"]
+        "fields": [
+          "ttaMagic",
+          "audioFormat"
+        ]
       },
       {
         "name": "Audio Properties",
-        "fields": ["numChannels", "bitsPerSample", "sampleRate", "dataLength"]
+        "fields": [
+          "numChannels",
+          "bitsPerSample",
+          "sampleRate",
+          "dataLength"
+        ]
       },
       {
         "name": "Integrity",
-        "fields": ["headerCRC"]
+        "fields": [
+          "headerCRC"
+        ]
       }
     ]
   },
@@ -226,11 +289,22 @@
   ],
   "formatRelationships": {
     "category": "Audio",
-    "extensions": [".tta"],
-    "relatedFormats": ["FLAC", "APE", "WavPack", "WAV", "AIFF"],
+    "extensions": [
+      ".tta"
+    ],
+    "relatedFormats": [
+      "FLAC",
+      "APE",
+      "WavPack",
+      "WAV",
+      "AIFF"
+    ],
     "note": "TTA is real-time lossless with fixed frame size; FLAC offers better compression but is more complex"
   },
-  "MimeTypes": ["audio/x-tta", "audio/tta"],
+  "MimeTypes": [
+    "audio/x-tta",
+    "audio/tta"
+  ],
   "UseCases": [
     "Lossless audio archiving with real-time decode capability",
     "CD ripping for audiophile quality preservation",
@@ -249,7 +323,10 @@
   "TechnicalDetails": {
     "headerSize": 22,
     "frameSizeSamples": 256,
-    "supportedFormats": { "1": "PCM integer", "3": "IEEE 754 float" },
+    "supportedFormats": {
+      "1": "PCM integer",
+      "3": "IEEE 754 float"
+    },
     "crcAlgorithm": "CRC-32 over first 18 header bytes",
     "lossless": true,
     "realTimeDecoding": true

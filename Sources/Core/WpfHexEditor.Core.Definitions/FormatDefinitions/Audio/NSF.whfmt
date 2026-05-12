@@ -1,7 +1,7 @@
 {
   "formatName": "NES Sound Format (NSF)",
   "formatId": "NSF",
-  "version": "1.1",
+  "version": "1.1.1",
   "extensions": [ ".nsf", ".nsfe" ],
   "diffMode": "binary",
   "description": "NES Sound Format stores NES/Famicom music as 6502 machine code with a 128-byte header. NSFe is an extended variant with chunk-based metadata. Supports multiple expansion chips.",
@@ -34,7 +34,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 88,
     "Strength": "Strong",
     "EntropyHint": { "min": 2.5, "max": 6.5 }

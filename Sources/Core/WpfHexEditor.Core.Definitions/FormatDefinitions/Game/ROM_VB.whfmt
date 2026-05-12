@@ -2,8 +2,11 @@
   "diffMode": "binary",
   "formatName": "Nintendo Virtual Boy ROM",
   "formatId": "ROM_VB",
-  "version": "1.0",
-  "extensions": [ ".vb", ".vboy" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".vb",
+    ".vboy"
+  ],
   "description": "Nintendo Virtual Boy cartridge ROM image. The ROM header is located in the last 544 bytes of the ROM. For a standard 1MB (1048576 byte) ROM, the header starts at offset 0xFFFE0 (1048544). Header fields: game_title (21B ASCII padded with spaces), reserved (4B), game_code (4B ASCII), maker_code (2B ASCII), game_version (1B), country (1B). The Virtual Boy had a very small commercial library of approximately 22 games, all released in 1995. Detection is extension-based due to no magic at offset 0.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
@@ -32,16 +35,18 @@
       "name": "firstByte",
       "offset": 0,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "First byte of ROM data at offset 0 — initial byte of the Virtual Boy ROM payload; typically 0x00 due to ROM padding at the beginning of cartridge images before the executable code region",
-      "storeAs": "firstByte"
+      "storeAs": "firstByte",
+      "valueType": "uint8"
     },
     {
       "name": "secondByte",
       "offset": 1,
       "size": 1,
-      "type": "uint8",
-      "description": "Second byte of ROM data at offset 1 — second byte of the ROM payload; used alongside firstByte for very weak content-based fingerprinting when extension matching is ambiguous"
+      "type": "field",
+      "description": "Second byte of ROM data at offset 1 — second byte of the ROM payload; used alongside firstByte for very weak content-based fingerprinting when extension matching is ambiguous",
+      "valueType": "uint8"
     }
   ],
   "assertions": [
@@ -54,7 +59,12 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "ROM Start", "offset": 0, "size": -1, "description": "Full ROM data; header is located at the end of the file (last 544 bytes)" }
+      {
+        "name": "ROM Start",
+        "offset": 0,
+        "size": -1,
+        "description": "Full ROM data; header is located at the end of the file (last 544 bytes)"
+      }
     ]
   },
   "inspector": {
@@ -64,7 +74,10 @@
     "groups": [
       {
         "name": "ROM Start",
-        "fields": [ "firstByte", "secondByte" ]
+        "fields": [
+          "firstByte",
+          "secondByte"
+        ]
       }
     ]
   },
@@ -96,13 +109,26 @@
     ]
   },
   "software": [
-    { "name": "Mednafen", "url": "https://mednafen.github.io/", "role": "emulator" },
-    { "name": "Reality Boy", "url": "https://www.goliathindustries.com/vb/", "role": "emulator" }
+    {
+      "name": "Mednafen",
+      "url": "https://mednafen.github.io/",
+      "role": "emulator"
+    },
+    {
+      "name": "Reality Boy",
+      "url": "https://www.goliathindustries.com/vb/",
+      "role": "emulator"
+    }
   ],
   "formatRelationships": [
-    { "format": "ROM_GBA", "relation": "successor hardware — Game Boy Advance used a similar end-of-header approach and shares the same developer ecosystem" }
+    {
+      "format": "ROM_GBA",
+      "relation": "successor hardware — Game Boy Advance used a similar end-of-header approach and shares the same developer ecosystem"
+    }
   ],
-  "MimeTypes": [ "application/x-virtual-boy-rom" ],
+  "MimeTypes": [
+    "application/x-virtual-boy-rom"
+  ],
   "UseCases": [
     "Nintendo Virtual Boy game preservation",
     "Emulation of the Virtual Boy stereoscopic display hardware",

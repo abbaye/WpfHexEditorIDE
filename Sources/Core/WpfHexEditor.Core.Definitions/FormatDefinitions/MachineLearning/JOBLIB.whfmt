@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Joblib / scikit-learn Serialized Model",
   "formatId": "JOBLIB",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [".joblib", ".pkl"],
   "description": "Joblib serialization format used by scikit-learn and other Python ML libraries. Joblib files use Python's pickle protocol (versions 2-5) for object serialization, optionally with numpy array mmap files for large arrays. The magic bytes are 0x80 followed by the protocol version byte. WARNING: Pickle deserialization executes arbitrary Python code — loading untrusted .joblib or .pkl files is a critical security risk.",
   "category": "MachineLearning",
@@ -40,7 +40,7 @@
         "weight": 0.7
       }
     ],
-    "matchMode": "Best",
+    "matchMode": "best",
     "MinimumScore": 0.7,
     "Strength": "Medium",
     "EntropyHint": "High — pickled numpy arrays and model weights have near-random byte distributions in raw_data sections"

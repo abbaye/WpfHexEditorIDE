@@ -2,8 +2,11 @@
   "diffMode": "binary",
   "formatName": "bsdiff Binary Patch",
   "formatId": "BSDIFF",
-  "version": "1.0",
-  "extensions": [ ".bsdiff", ".patch" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".bsdiff",
+    ".patch"
+  ],
   "description": "bsdiff binary patch format (Colin Percival, 2003). Used for software update diffs and ROM patches. The 32-byte header consists of: 'BSDIFF40' magic (8B ASCII), ctrl_length (8B LE int64 — byte length of the bzip2-compressed control block), diff_length (8B LE int64 — byte length of the bzip2-compressed diff block), and new_size (8B LE int64 — output file size after patching). After the header: bzip2(ctrl_data) + bzip2(diff_data) + bzip2(extra_data). Applied using bspatch: bspatch old_file new_file patch.bsdiff.",
   "category": "RomHacking",
   "author": "WPFHexaEditor Team",
@@ -32,43 +35,48 @@
       "name": "bsdiffMagic",
       "offset": 0,
       "size": 8,
-      "type": "ascii",
+      "type": "field",
       "description": "bsdiff magic string — 8-byte ASCII identifier at offset 0; value must be exactly 'BSDIFF40' (without null terminator); this string uniquely identifies bsdiff version 4.0 patch files",
-      "storeAs": "bsdiffMagic"
+      "storeAs": "bsdiffMagic",
+      "valueType": "ascii"
     },
     {
       "name": "ctrlLength",
       "offset": 8,
       "size": 8,
-      "type": "int64",
+      "type": "field",
       "endian": "LE",
       "description": "Control block compressed length — 8-byte little-endian signed 64-bit integer at offset 8; byte length of the bzip2-compressed control block that follows the 32-byte header; must be non-negative",
-      "storeAs": "ctrlLength"
+      "storeAs": "ctrlLength",
+      "valueType": "int64"
     },
     {
       "name": "diffLength",
       "offset": 16,
       "size": 8,
-      "type": "int64",
+      "type": "field",
       "endian": "LE",
       "description": "Diff block compressed length — 8-byte little-endian signed 64-bit integer at offset 16; byte length of the bzip2-compressed diff block that follows the control block; must be non-negative",
-      "storeAs": "diffLength"
+      "storeAs": "diffLength",
+      "valueType": "int64"
     },
     {
       "name": "newSize",
       "offset": 24,
       "size": 8,
-      "type": "int64",
+      "type": "field",
       "endian": "LE",
       "description": "Output file size — 8-byte little-endian signed 64-bit integer at offset 24; the expected byte size of the patched output file after applying the diff; must be greater than zero to produce valid output",
-      "storeAs": "newSize"
+      "storeAs": "newSize",
+      "valueType": "int64"
     },
     {
       "name": "ctrlData",
       "offset": 32,
       "size": -1,
-      "type": "bytes",
-      "description": "Compressed data blocks — bzip2-compressed payload beginning at offset 32; organized as three sequential bzip2 streams: control data (ctrlLength bytes), diff data (diffLength bytes), and extra data (remainder); must be decompressed for patching"
+      "type": "field",
+      "description": "Compressed data blocks — bzip2-compressed payload beginning at offset 32; organized as three sequential bzip2 streams: control data (ctrlLength bytes), diff data (diffLength bytes), and extra data (remainder); must be decompressed for patching",
+      "valueType": "bytes"
     }
   ],
   "assertions": [
@@ -93,8 +101,18 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "Header", "offset": 0, "size": 32, "description": "32-byte bsdiff header containing magic, block lengths, and output size" },
-      { "name": "Control Block", "offset": 32, "size": -1, "description": "bzip2-compressed control data immediately following the header" }
+      {
+        "name": "Header",
+        "offset": 0,
+        "size": 32,
+        "description": "32-byte bsdiff header containing magic, block lengths, and output size"
+      },
+      {
+        "name": "Control Block",
+        "offset": 32,
+        "size": -1,
+        "description": "bzip2-compressed control data immediately following the header"
+      }
     ]
   },
   "inspector": {
@@ -104,7 +122,12 @@
     "groups": [
       {
         "name": "Header",
-        "fields": [ "bsdiffMagic", "ctrlLength", "diffLength", "newSize" ]
+        "fields": [
+          "bsdiffMagic",
+          "ctrlLength",
+          "diffLength",
+          "newSize"
+        ]
       }
     ]
   },
@@ -136,13 +159,26 @@
     ]
   },
   "software": [
-    { "name": "bspatch", "url": "https://www.daemonology.net/bsdiff/", "role": "patch applicator" },
-    { "name": "bsdiff", "url": "https://www.daemonology.net/bsdiff/", "role": "patch creator" }
+    {
+      "name": "bspatch",
+      "url": "https://www.daemonology.net/bsdiff/",
+      "role": "patch applicator"
+    },
+    {
+      "name": "bsdiff",
+      "url": "https://www.daemonology.net/bsdiff/",
+      "role": "patch creator"
+    }
   ],
   "formatRelationships": [
-    { "format": "VCDIFF", "relation": "alternative — VCDIFF is a competing delta format (RFC 3284) with different algorithm and structure" }
+    {
+      "format": "VCDIFF",
+      "relation": "alternative — VCDIFF is a competing delta format (RFC 3284) with different algorithm and structure"
+    }
   ],
-  "MimeTypes": [ "application/x-bsdiff" ],
+  "MimeTypes": [
+    "application/x-bsdiff"
+  ],
   "UseCases": [
     "Software update delta patches (macOS, BSD)",
     "ROM patching for game modifications and translations",

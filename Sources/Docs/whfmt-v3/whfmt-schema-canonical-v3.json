@@ -1,0 +1,535 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "whfmt-v3-canonical",
+  "title": "whfmt v3 — Canonical Format Definition Schema",
+  "description": "Schema for WpfHexEditor .whfmt format definition files v3. All fields use camelCase. PascalCase aliases are accepted for backward compatibility but deprecated.",
+  "type": "object",
+
+  "required": ["formatName", "formatId", "version", "extensions", "description", "category", "author"],
+
+  "properties": {
+
+    "formatName": { "type": "string", "description": "Human-readable name of the format" },
+    "formatId":   { "type": "string", "description": "Canonical identifier (no spaces, PascalCase)" },
+    "version":    { "type": "string", "pattern": "^\\d+\\.\\d+(\\.\\d+)?$" },
+    "extensions": { "type": "array", "items": { "type": "string" } },
+    "description": { "type": "string" },
+    "category": {
+      "type": "string",
+      "description": "Canonical category. v3.1 (2026-05): aligned to the on-disk category directories of FormatDefinitions/*.",
+      "enum": ["3D", "Archives", "Audio", "CAD", "Certificates", "Crypto", "Data", "Database",
+               "Disk", "Documents", "Executables", "Firmware", "Fonts", "Game", "GIS",
+               "Images", "IoT", "MachineLearning", "Medical", "Network", "Programming",
+               "RomHacking", "Science", "Security", "Subtitles", "Synalysis", "System",
+               "Text", "Video", "Virtualization", "Other"]
+    },
+    "author": { "type": "string" },
+    "preferredEditor": {
+      "type": "string",
+      "enum": ["hex-editor", "code-editor", "text-editor", "structure-editor", "image-viewer", "audio-viewer"]
+    },
+    "diffMode": {
+      "type": "string",
+      "enum": ["binary", "text", "semantic"]
+    },
+    "references": {
+      "oneOf": [
+        { "type": "array", "items": { "type": "string" } },
+        {
+          "type": "object",
+          "properties": {
+            "specifications": { "type": "array", "items": { "type": "string" } },
+            "webLinks": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      ],
+      "description": "v3: normalize to array form. Object form deprecated."
+    },
+
+    "detection": {
+      "type": "object",
+      "properties": {
+        "signatures": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["value", "offset"],
+            "properties": {
+              "value":  { "type": "string", "description": "Hex bytes" },
+              "offset": { "type": "integer" },
+              "label":  { "type": "string" },
+              "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+            }
+          }
+        },
+        "matchMode": { "type": "string", "enum": ["any", "best", "all"], "default": "best" },
+        "minimumScore": { "type": "number", "description": "camelCase. Was MinimumScore." },
+        "strength": { "type": "string", "enum": ["Strong", "Medium", "Weak"], "description": "camelCase. Was Strength." },
+        "entropyHint": {
+          "type": "object",
+          "description": "camelCase. Was EntropyHint.",
+          "properties": {
+            "min": { "type": "number" },
+            "max": { "type": "number" },
+            "note": { "type": "string" }
+          }
+        },
+        "required": { "type": "boolean" },
+        "isTextFormat": { "type": "boolean" },
+        "validation": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "minFileSize": { "type": "integer" },
+                "maxSignatureOffset": { "type": "integer" },
+                "discriminator": {
+                  "type": "object",
+                  "description": "NEW in v3 — resolves magic collisions",
+                  "properties": {
+                    "offset": { "type": "integer" },
+                    "length": { "type": "integer" },
+                    "endian": { "type": "string", "enum": ["little", "big"] },
+                    "values": { "type": "object", "description": "hex-string → formatId mappings" },
+                    "note": { "type": "string" }
+                  }
+                },
+                "note": { "type": "string" }
+              }
+            },
+            { "type": "string", "description": "Deprecated plain-string form" }
+          ]
+        }
+      }
+    },
+
+    "variables": {
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Dict schema (v2): key → initial value",
+          "additionalProperties": { "type": ["string", "number", "boolean"] }
+        },
+        {
+          "type": "array",
+          "description": "Typed schema (v2 new / v3 preferred)",
+          "items": {
+            "type": "object",
+            "required": ["name", "type", "offset", "length"],
+            "properties": {
+              "name":        { "type": "string" },
+              "type":        { "type": "string", "description": "uint8|uint16|uint32|uint64|int8|int16|int32|int64|float32|float64|ascii|utf8|bytes|hex" },
+              "offset":      { "type": "integer" },
+              "length":      { "type": "integer" },
+              "endian":      { "type": "string", "enum": ["little", "big"] },
+              "description": { "type": "string" },
+              "initialValue": {}
+            }
+          }
+        }
+      ]
+    },
+
+    "functions": {
+      "type": "object",
+      "description": "Named function registry. v2: doc strings. v3: executable descriptors.",
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string", "description": "v2 doc-string form" },
+          {
+            "type": "object",
+            "description": "v3 executable form",
+            "properties": {
+              "params": { "type": "array", "items": { "type": "string" } },
+              "returns": { "type": "string" },
+              "body": { "type": "string", "description": "expression or built-in name" },
+              "builtIn": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        ]
+      }
+    },
+
+    "blocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "name"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["signature", "field", "metadata", "header", "data", "conditional",
+                     "computeFromVariables", "loop", "repeating", "action", "sentinel",
+                     "union", "nested", "pointer", "bitfield"]
+          },
+          "name":        { "type": "string" },
+          "offset":      { "type": ["integer", "string"] },
+          "length":      { "type": ["integer", "string"] },
+          "color":       { "type": "string" },
+          "opacity":     { "type": "number" },
+          "description": { "type": "string" },
+          "hidden":      { "type": "boolean" },
+          "endianness":  { "type": "string", "enum": ["little", "big"] },
+          "storeAs":     { "type": "string" },
+          "valueType":   { "type": "string" },
+          "valueMap":    { "type": "object", "additionalProperties": { "type": "string" } },
+          "validationRules": {
+            "type": "object",
+            "properties": {
+              "allowedValues": { "type": "array" },
+              "min": { "type": "number" },
+              "max": { "type": "number" }
+            }
+          },
+          "bitfields":   { "type": "array" },
+          "expression":  { "type": "string" },
+          "condition":   { "type": "string" },
+          "trueLabel":   { "type": "string" },
+          "falseLabel":  { "type": "string" },
+          "count":       { "type": ["integer", "string"] },
+          "maxIterations": { "type": "integer" },
+          "action":      { "type": "string" },
+          "actionVariable": { "type": "string" },
+          "actionValue": { "type": "string" },
+          "until":       { "type": "string" },
+          "maxLength":   { "type": "integer" },
+          "untilInclusive": { "type": "boolean" },
+          "entrySize":   { "type": ["integer", "string"] },
+          "indexVar":    { "type": "string" },
+          "structRef":   { "type": "string" },
+          "targetVar":   { "type": "string" },
+          "label":       { "type": "string" },
+          "variable":    { "type": "string" },
+          "fields":      { "type": "array" },
+          "offsetFrom":  { "type": "string" },
+          "offsetAdd":   { "type": ["integer", "string"] }
+        }
+      }
+    },
+
+    "assertions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "expression", "severity"],
+        "properties": {
+          "id":          { "type": "string" },
+          "name":        { "type": "string" },
+          "description": { "type": "string" },
+          "expression":  { "type": "string" },
+          "severity":    { "type": "string", "enum": ["error", "warning", "info"] },
+          "message":     { "type": "string" }
+        }
+      }
+    },
+
+    "inspector": {
+      "type": "object",
+      "properties": {
+        "badge":          { "type": "string" },
+        "primaryField":   { "type": "string" },
+        "showQualityScore": { "type": "boolean" },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name":   { "type": "string", "description": "v3 canonical (was also 'title')" },
+              "title":  { "type": "string", "description": "Deprecated alias for 'name'" },
+              "icon":   { "type": "string" },
+              "fields": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+
+    "navigation": {
+      "type": "object",
+      "properties": {
+        "entryPoint": { "type": "string" },
+        "structure":  { "type": "array", "items": { "type": "string" } },
+        "notes":      { "type": "string" },
+        "bookmarks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name":      { "type": "string" },
+              "offset":    { "type": "integer" },
+              "offsetVar": { "type": "string" },
+              "icon":      { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "forensic": {
+      "type": "object",
+      "properties": {
+        "category":  { "type": "string" },
+        "riskLevel": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+        "notes":     { "type": "string" },
+        "suspiciousPatterns": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              {
+                "type": "object",
+                "properties": {
+                  "name":        { "type": "string" },
+                  "description": { "type": "string" },
+                  "condition":   { "type": "string" }
+                }
+              }
+            ]
+          }
+        },
+        "knownMaliciousPatterns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name":        { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "aiHints": {
+      "type": "object",
+      "properties": {
+        "analysisContext":      { "type": "string" },
+        "suggestedInspections": { "type": "array", "items": { "type": "string" } },
+        "knownVulnerabilities": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "diff": {
+      "type": "object",
+      "properties": {
+        "keyFields":    { "type": "array", "items": { "type": "string" } },
+        "ignoreFields": { "type": "array", "items": { "type": "string" } },
+        "groupBy":      { "type": "string" },
+        "note":         { "type": "string" }
+      }
+    },
+
+    "fuzz": {
+      "type": "object",
+      "properties": {
+        "preserveChecksums":    { "type": "boolean" },
+        "maxMutationsPerFile":  { "type": "integer" },
+        "note":                 { "type": "string" },
+        "strategies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field":       { "type": "string" },
+              "mutation":    { "type": "string", "enum": ["corrupt_signature", "enum_sweep", "boundary_values", "bit_flip", "overflow", "random_bytes"] },
+              "weight":      { "type": "number" },
+              "rate":        { "type": "number" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "repair": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name":        { "type": "string" },
+          "trigger":     { "type": "string" },
+          "action":      { "type": "string" },
+          "target":      { "type": "string" },
+          "algorithm":   { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+
+    "migration": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from":        { "type": "string" },
+          "to":          { "type": "string" },
+          "description": { "type": "string" },
+          "changes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field":       { "type": "string" },
+                "changeType":  { "type": "string" },
+                "value":       {},
+                "description": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "exportTemplates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name":   { "type": "string" },
+          "format": { "type": "string", "enum": ["csv", "json", "xml", "text"] },
+          "fields": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+
+    "formatRelationships": {
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Dict form (most files)",
+          "additionalProperties": true
+        },
+        {
+          "type": "array",
+          "description": "Array form (A_OUT style). v3 canonical.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "format":       { "type": "string" },
+              "relationship": { "type": "string" }
+            }
+          }
+        }
+      ]
+    },
+
+    "qualityMetrics": {
+      "type": "object",
+      "description": "camelCase in v3. Was QualityMetrics.",
+      "properties": {
+        "completenessScore":  { "type": "integer" },
+        "documentationLevel": { "type": "string" },
+        "blocksDefined":      { "type": "integer" },
+        "validationRules":    { "type": "integer" },
+        "lastUpdated":        { "type": "string" },
+        "priorityFormat":     { "type": "boolean" },
+        "autoRefined":        { "type": "boolean" },
+        "reviewedBy":         { "type": "string" }
+      }
+    },
+
+    "technicalDetails": {
+      "type": "object",
+      "description": "camelCase in v3. Was TechnicalDetails.",
+      "additionalProperties": { "type": ["string", "number", "boolean"] }
+    },
+
+    "mimeTypes":  { "type": "array", "items": { "type": "string" }, "description": "camelCase in v3. Was MimeTypes." },
+    "software":   { "type": "array", "items": { "oneOf": [{ "type": "string" }, { "type": "object" }] }, "description": "Normalized to camelCase. Was Software." },
+    "useCases":   { "type": "array", "items": { "type": "string" }, "description": "camelCase in v3. Was UseCases." },
+
+    "syntaxDefinition": {
+      "type": "object",
+      "description": "Language definition for CodeEditor. Only present in Programming/* and some text format definitions.",
+      "properties": {
+        "id":   { "type": "string" },
+        "name": { "type": "string" },
+        "extensions": { "type": "array", "items": { "type": "string" } },
+        "diagnosticPrefix": { "type": "string" },
+        "lineCommentPrefix": { "type": "string" },
+        "blockCommentStart": { "type": "string" },
+        "blockCommentEnd":   { "type": "string" },
+        "enableInlineHints": { "type": "boolean" },
+        "enableCtrlClickNavigation": { "type": "boolean" },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "pattern"],
+            "properties": {
+              "type":     { "type": "string" },
+              "colorKey": { "type": "string" },
+              "pattern":  { "type": "string" }
+            }
+          }
+        },
+        "snippets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "trigger":     { "type": "string" },
+              "body":        { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "completions": {
+          "type": "array",
+          "description": "NEW in v3 — keyword/symbol completions for standalone mode",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label":      { "type": "string" },
+              "kind":       { "type": "string", "enum": ["keyword", "class", "method", "property", "variable", "module", "snippet"] },
+              "detail":     { "type": "string" },
+              "insertText": { "type": "string" }
+            }
+          }
+        },
+        "outlineRules": {
+          "type": "array",
+          "description": "NEW in v3 — source outline / symbol list for standalone mode",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type":    { "type": "string" },
+              "pattern": { "type": "string" },
+              "group":   { "type": "integer" }
+            }
+          }
+        },
+        "diagnosticRules": {
+          "type": "array",
+          "description": "NEW in v3 — pattern-based diagnostics for standalone mode",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id":       { "type": "string" },
+              "pattern":  { "type": "string" },
+              "severity": { "type": "string", "enum": ["error", "warning", "info", "hint"] },
+              "message":  { "type": "string" }
+            }
+          }
+        },
+        "foldingRules":     { "type": "object" },
+        "breakpointRules":  { "type": "object" },
+        "bracketPairs":     { "type": "array" },
+        "columnRulers":     { "type": "array", "items": { "type": "integer" } },
+        "formattingRules":  { "type": "object" },
+        "colorLiteralPatterns": { "type": "array", "items": { "type": "string" } },
+        "previewSnippet":   { "type": "string" },
+        "previewSamples":   { "type": "object" },
+        "ideMetadata":      { "type": "object" },
+        "scriptGlobals":    { "type": "object" },
+        "includes":         { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+
+  "deprecated_pascal_aliases": {
+    "note": "These are PascalCase field names accepted during v2→v3 migration via WhfmtVersionMigrator. They will be removed in v4.",
+    "aliases": ["QualityMetrics", "MimeTypes", "Software", "UseCases", "TechnicalDetails", "Strength", "EntropyHint", "MinimumScore"]
+  }
+}

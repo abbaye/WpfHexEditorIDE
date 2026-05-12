@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "NumPy Array",
   "formatId": "NPY",
-  "version": "1.14",
+  "version": "1.14.1",
   "extensions": [
     ".npy"
   ],
@@ -70,7 +70,8 @@
       "opacity": 0.4,
       "description": "Little-endian uint16 (v1.x) or uint32 (v2.x) byte length of the Python dict header string that follows; total header size = 6+2+2+HEADER_LEN padded to 64 bytes",
       "storeAs": "headerLength",
-      "valueType": "uint16le"
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "field",

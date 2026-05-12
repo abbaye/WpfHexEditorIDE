@@ -2,7 +2,7 @@
   "diffMode": "text",
   "formatName": "DFXP/TTML Subtitles",
   "formatId": "DFXP",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [
     ".dfxp",
     ".xml"
@@ -38,7 +38,7 @@
         "weight": 0.3
       }
     ],
-    "matchMode": "anyOf",
+    "matchMode": "any",
     "MinimumScore": 82,
     "Strength": "Medium",
     "EntropyHint": { "min": 1.5, "max": 5.0 },

@@ -2,10 +2,8 @@
   "diffMode": "binary",
   "formatName": "Unix WTMP",
   "formatId": "WTMP",
-  "version": "1.14",
-  "extensions": [
-    ""
-  ],
+  "version": "1.14.1",
+  "extensions": [".wtmp"],
   "description": "Unix WTMP file - Historical user login records",
   "category": "System",
   "author": "WPFHexaEditor Team",
@@ -171,9 +169,7 @@
   ],
   "formatRelationships": {
     "category": "System",
-    "extensions": [
-      ""
-    ]
+    "extensions": [".wtmp"]
   },
   "MimeTypes": [
     "application/octet-stream"

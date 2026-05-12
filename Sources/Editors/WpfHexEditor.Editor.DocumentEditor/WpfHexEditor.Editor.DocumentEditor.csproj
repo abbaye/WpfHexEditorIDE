@@ -25,6 +25,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageId>WpfHexEditor.Editor.DocumentEditor</PackageId>
+    <IsPackable>false</IsPackable>
     <Version>1.0.0</Version>
     <Authors>WpfHexEditor Contributors</Authors>
     <Description>Multi-format document editor (RTF/DOCX/ODT) for WpfHexEditor IDE. Provides split Text+Structure+Hex view with binary-map synchronisation and forensic overlay.</Description>

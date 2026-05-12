@@ -1,7 +1,7 @@
 {
   "formatName": "PC Screen Font v2 (PSF2)",
   "formatId": "PSF2",
-  "version": "1.1",
+  "version": "1.1.1",
   "extensions": [ ".psf", ".psfu" ],
   "diffMode": "binary",
   "description": "PC Screen Font version 2 is the standard Linux kernel console bitmap font format. Contains a fixed-size header, an array of fixed-size glyph bitmaps and an optional Unicode mapping table.",
@@ -34,7 +34,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 88,
     "Strength": "Strong",
     "EntropyHint": { "min": 3.0, "max": 6.5 }

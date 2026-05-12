@@ -1,8 +1,8 @@
 {
   "diffMode": "binary",
   "formatName": "PKCS#7 Certificate",
-  "formatId": "PKCS7",
-  "version": "1.14",
+  "formatId": "PKCS7_CRYPTO",
+  "version": "1.14.1",
   "extensions": [
     ".p7b",
     ".p7c",

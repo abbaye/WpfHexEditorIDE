@@ -2,8 +2,11 @@
   "diffMode": "binary",
   "formatName": "Dolby AC-3 Audio",
   "formatId": "AC3",
-  "version": "1.0",
-  "extensions": [".ac3", ".a52"],
+  "version": "1.0.2",
+  "extensions": [
+    ".ac3",
+    ".a52"
+  ],
   "description": "Dolby AC-3 (Audio Coding 3) is a lossy audio compression format developed by Dolby Laboratories. It is widely used in DVD-Video, Blu-ray, digital broadcast television, and streaming services. Each AC-3 bitstream is organized into synchronization frames starting with the 16-bit big-endian syncword 0x0B77. The bitstream ID (bsid) field identifies the variant: value 8 indicates standard AC-3, value 11 indicates E-AC-3 (Dolby Digital Plus). Sample rates are encoded in the upper 2 bits of the combined fscod/frmsizecod byte.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
@@ -27,9 +30,11 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "First",
+    "matchMode": "any",
     "MinimumScore": 0.9,
-    "required": ["AC-3 sync word 0x0B77"],
+    "required": [
+      "AC-3 sync word 0x0B77"
+    ],
     "Strength": "Strong",
     "EntropyHint": {
       "min": 5.5,
@@ -57,7 +62,8 @@
       "opacity": 0.85,
       "description": "AC-3 synchronization word — always 0x0B77 in big-endian; identifies the start of each AC-3 audio frame in the bitstream",
       "storeAs": "syncWord",
-      "valueType": "uint16BE"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -68,7 +74,8 @@
       "opacity": 0.75,
       "description": "CRC-16 checksum covering the first 5/8 of the AC-3 frame payload; used by decoders for error detection and frame validation",
       "storeAs": "crc1",
-      "valueType": "uint16BE"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -116,10 +123,30 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "Frame Sync", "offset": 0, "length": 2, "color": "#FF6B6B" },
-      { "name": "Frame CRC", "offset": 2, "length": 2, "color": "#4ECDC4" },
-      { "name": "Sample Rate / Frame Size", "offset": 4, "length": 1, "color": "#95E1D3" },
-      { "name": "Bitstream ID", "offset": 5, "length": 1, "color": "#FFE66D" }
+      {
+        "name": "Frame Sync",
+        "offset": 0,
+        "length": 2,
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Frame CRC",
+        "offset": 2,
+        "length": 2,
+        "color": "#4ECDC4"
+      },
+      {
+        "name": "Sample Rate / Frame Size",
+        "offset": 4,
+        "length": 1,
+        "color": "#95E1D3"
+      },
+      {
+        "name": "Bitstream ID",
+        "offset": 5,
+        "length": 1,
+        "color": "#FFE66D"
+      }
     ]
   },
   "inspector": {
@@ -129,11 +156,18 @@
     "groups": [
       {
         "name": "Sync and CRC",
-        "fields": ["syncWord", "crc1"]
+        "fields": [
+          "syncWord",
+          "crc1"
+        ]
       },
       {
         "name": "Audio Parameters",
-        "fields": ["fscod", "frmsizecod", "bsid"]
+        "fields": [
+          "fscod",
+          "frmsizecod",
+          "bsid"
+        ]
       }
     ]
   },
@@ -179,11 +213,24 @@
   ],
   "formatRelationships": {
     "category": "Audio",
-    "extensions": [".ac3", ".a52"],
-    "relatedFormats": ["EAC3", "DTS", "AAC", "MP3", "TrueHD"],
+    "extensions": [
+      ".ac3",
+      ".a52"
+    ],
+    "relatedFormats": [
+      "EAC3",
+      "DTS",
+      "AAC",
+      "MP3",
+      "TrueHD"
+    ],
     "note": "AC-3 is the base Dolby Digital format; E-AC-3 (bsid=11) is a backward-compatible extension with higher channel counts and bitrates"
   },
-  "MimeTypes": ["audio/ac3", "audio/x-ac3", "audio/vnd.dolby.dd-raw"],
+  "MimeTypes": [
+    "audio/ac3",
+    "audio/x-ac3",
+    "audio/vnd.dolby.dd-raw"
+  ],
   "UseCases": [
     "DVD-Video surround sound audio tracks",
     "Blu-ray audio encoding (mandatory codec)",
@@ -202,7 +249,11 @@
   },
   "TechnicalDetails": {
     "frameSize": "variable (128 to 3840 bytes depending on frmsizecod and fscod)",
-    "sampleRates": ["48000 Hz (fscod=0)", "44100 Hz (fscod=1)", "32000 Hz (fscod=2)"],
+    "sampleRates": [
+      "48000 Hz (fscod=0)",
+      "44100 Hz (fscod=1)",
+      "32000 Hz (fscod=2)"
+    ],
     "maxBitrate": "640 kbps",
     "maxChannels": "5.1",
     "bsidVariants": {

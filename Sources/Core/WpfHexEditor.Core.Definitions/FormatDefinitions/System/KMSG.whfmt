@@ -1,7 +1,7 @@
 {
   "formatName": "Kernel Message Log (kmsg)",
   "formatId": "KMSG",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "text",
   "extensions": [
     ".kmsg"
@@ -61,7 +61,7 @@
         "weight": 0.5
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 82,
     "Strength": "Weak",
     "EntropyHint": {

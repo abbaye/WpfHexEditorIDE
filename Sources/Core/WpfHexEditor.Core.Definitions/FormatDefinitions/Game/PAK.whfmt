@@ -1,8 +1,8 @@
 {
   "diffMode": "binary",
   "formatName": "Quake PAK Archive",
-  "formatId": "PAK",
-  "version": "1.15",
+  "formatId": "PAK_GAME",
+  "version": "1.15.1",
   "extensions": [
     ".pak"
   ],

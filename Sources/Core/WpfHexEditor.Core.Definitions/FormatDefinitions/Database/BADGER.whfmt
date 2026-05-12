@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Badger Key-Value Database",
   "formatId": "BADGER",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [".badger"],
   "description": "Badger is a fast, embeddable key-value database written in Go by Dgraph Labs. Files use the 8-byte magic header 'BADGER\\u0000\\u0000' (0x4241444745520000) at offset 0, followed by a 4-byte little-endian version number. Badger stores keys and values in LSM trees with a value log for large values, optimized for SSD workloads.",
   "category": "Database",
@@ -22,7 +22,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 0.9,
     "Strength": "Strong",
     "validation": {

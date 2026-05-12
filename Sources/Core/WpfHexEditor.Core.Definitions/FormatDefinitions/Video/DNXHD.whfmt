@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Avid DNxHD/DNxHR",
   "formatId": "DNXHD",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [
     ".dnxhd",
     ".mxf"
@@ -31,7 +31,7 @@
         "weight": 0.9
       }
     ],
-    "matchMode": "allOf",
+    "matchMode": "all",
     "MinimumScore": 82,
     "Strength": "Strong",
     "EntropyHint": { "min": 5.5, "max": 7.9 },

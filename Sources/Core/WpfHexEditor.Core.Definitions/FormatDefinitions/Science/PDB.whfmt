@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Protein Data Bank",
   "formatId": "PDB",
-  "version": "1.14",
+  "version": "1.14.2",
   "extensions": [
     ".pdb",
     ".ent"

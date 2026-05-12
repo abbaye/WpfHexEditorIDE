@@ -2,8 +2,12 @@
   "diffMode": "binary",
   "formatName": "Blu-ray MPEG-2 Transport Stream",
   "formatId": "M2TS",
-  "version": "1.0",
-  "extensions": [".m2ts", ".mts", ".ts"],
+  "version": "1.0.2",
+  "extensions": [
+    ".m2ts",
+    ".mts",
+    ".ts"
+  ],
   "description": "M2TS is the Blu-ray Disc container format based on MPEG-2 Transport Stream with a 4-byte Blu-ray source packet (timestamp) prefix prepended to each standard 188-byte TS packet, yielding 192-byte source packets. The MPEG-2 TS sync byte 0x47 appears at offset 4 of each 192-byte packet. Plain TS files (without Blu-ray header) have 0x47 at offset 0. The PID field (13 bits at bits 3-15 of the two bytes after the sync byte) identifies the elementary stream. M2TS is used on Blu-ray Discs and AVCHD camcorders for H.264 and VC-1 encoded high-definition video.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
@@ -33,7 +37,7 @@
         "weight": 0.7
       }
     ],
-    "matchMode": "Any",
+    "matchMode": "any",
     "MinimumScore": 0.5,
     "required": [],
     "Strength": "Medium",
@@ -62,7 +66,8 @@
       "opacity": 0.75,
       "description": "Blu-ray 4-byte source packet timestamp (big-endian uint32) — encodes a 30-bit arrival time stamp (ATS) in units of 1/27000000 seconds; present only in M2TS files, not in plain TS",
       "storeAs": "timestamp",
-      "valueType": "uint32BE"
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -84,7 +89,8 @@
       "opacity": 0.75,
       "description": "Packet Identifier (PID) — 13-bit value in bits 0-12 of the uint16BE at offset 5 (after masking upper 3 flag bits); identifies the elementary stream; PAT is PID 0x0000, PMT is defined in PAT",
       "storeAs": "pid",
-      "valueType": "uint16BE"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -121,11 +127,36 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "Blu-ray Timestamp", "offset": 0, "length": 4, "color": "#4ECDC4" },
-      { "name": "TS Sync Byte (0x47)", "offset": 4, "length": 1, "color": "#FF6B6B" },
-      { "name": "PID", "offset": 5, "length": 2, "color": "#95E1D3" },
-      { "name": "Continuity Counter", "offset": 7, "length": 1, "color": "#FFE66D" },
-      { "name": "Packet 2 Start", "offset": 192, "length": 4, "color": "#4ECDC4" }
+      {
+        "name": "Blu-ray Timestamp",
+        "offset": 0,
+        "length": 4,
+        "color": "#4ECDC4"
+      },
+      {
+        "name": "TS Sync Byte (0x47)",
+        "offset": 4,
+        "length": 1,
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "PID",
+        "offset": 5,
+        "length": 2,
+        "color": "#95E1D3"
+      },
+      {
+        "name": "Continuity Counter",
+        "offset": 7,
+        "length": 1,
+        "color": "#FFE66D"
+      },
+      {
+        "name": "Packet 2 Start",
+        "offset": 192,
+        "length": 4,
+        "color": "#4ECDC4"
+      }
     ]
   },
   "inspector": {
@@ -135,11 +166,17 @@
     "groups": [
       {
         "name": "Blu-ray Header",
-        "fields": ["timestamp"]
+        "fields": [
+          "timestamp"
+        ]
       },
       {
         "name": "TS Packet",
-        "fields": ["tsSyncByte", "pid", "continuityCounter"]
+        "fields": [
+          "tsSyncByte",
+          "pid",
+          "continuityCounter"
+        ]
       }
     ]
   },
@@ -186,11 +223,24 @@
   ],
   "formatRelationships": {
     "category": "Video",
-    "extensions": [".m2ts", ".mts", ".ts"],
-    "relatedFormats": ["MPEG-TS", "MP4", "MKV", "VOB", "BDMV"],
+    "extensions": [
+      ".m2ts",
+      ".mts",
+      ".ts"
+    ],
+    "relatedFormats": [
+      "MPEG-TS",
+      "MP4",
+      "MKV",
+      "VOB",
+      "BDMV"
+    ],
     "note": "M2TS adds 4-byte Blu-ray timestamp to standard 188-byte MPEG-2 TS; .mts extension is used by Sony and Panasonic AVCHD camcorders"
   },
-  "MimeTypes": ["video/mp2t", "video/x-m2ts"],
+  "MimeTypes": [
+    "video/mp2t",
+    "video/x-m2ts"
+  ],
   "UseCases": [
     "Blu-ray Disc video storage and playback",
     "AVCHD camcorder HD recording format",

@@ -2,10 +2,8 @@
   "diffMode": "binary",
   "formatName": "Unix lastlog",
   "formatId": "LASTLOG",
-  "version": "2.43",
-  "extensions": [
-    ""
-  ],
+  "version": "2.43.1",
+  "extensions": [".lastlog"],
   "description": "Unix lastlog file - Last login information per user",
   "category": "System",
   "author": "WPFHexaEditor Team",
@@ -112,9 +110,7 @@
   ],
   "formatRelationships": {
     "category": "System",
-    "extensions": [
-      ""
-    ]
+    "extensions": [".lastlog"]
   },
   "MimeTypes": [
     "application/octet-stream"

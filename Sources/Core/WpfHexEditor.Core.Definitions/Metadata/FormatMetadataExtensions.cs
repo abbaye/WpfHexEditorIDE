@@ -6,6 +6,7 @@
 
 using System.Text.Json;
 using WpfHexEditor.Core.Contracts;
+using WpfHexEditor.Core.Definitions.Models;
 
 namespace WpfHexEditor.Core.Definitions.Metadata;
 
@@ -100,12 +101,6 @@ public sealed record FormatMetadata(
 /// </summary>
 public static class FormatMetadataExtensions
 {
-    private static readonly JsonDocumentOptions s_opts = new()
-    {
-        CommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
-    };
-
     // ------------------------------------------------------------------
     // Bulk — single parse, all blocks
     // ------------------------------------------------------------------
@@ -118,7 +113,7 @@ public static class FormatMetadataExtensions
     public static FormatMetadata GetAllMetadata(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
 
         return new FormatMetadata(
@@ -142,7 +137,7 @@ public static class FormatMetadataExtensions
     public static ForensicSummary? GetForensicSummary(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseForensic(doc.RootElement);
     }
 
@@ -160,7 +155,7 @@ public static class FormatMetadataExtensions
     public static AiHints? GetAiHints(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseAiHints(doc.RootElement);
     }
 
@@ -175,7 +170,7 @@ public static class FormatMetadataExtensions
     public static IReadOnlyList<NavigationBookmark> GetNavigationBookmarks(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseBookmarks(doc.RootElement);
     }
 
@@ -190,7 +185,7 @@ public static class FormatMetadataExtensions
     public static IReadOnlyList<AssertionRule> GetAssertions(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseAssertions(doc.RootElement);
     }
 
@@ -205,7 +200,7 @@ public static class FormatMetadataExtensions
     public static IReadOnlyList<InspectorGroup> GetInspectorGroups(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseInspectorGroups(doc.RootElement);
     }
 
@@ -220,9 +215,42 @@ public static class FormatMetadataExtensions
     public static IReadOnlyList<ExportTemplate> GetExportTemplates(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseExportTemplates(doc.RootElement);
     }
+
+    // ------------------------------------------------------------------
+    // Variables (P2 — handles both dict and typed-array schemas)
+    // ------------------------------------------------------------------
+
+    /// <summary>
+    /// Returns all variable declarations from the <c>variables</c> block.
+    /// Returns an empty list when the block is absent.
+    /// <para>
+    /// Both whfmt v2 schemas are supported transparently:
+    /// dict (<c>"variables": { "magic": "" }</c>) is auto-migrated to typed form
+    /// by inferring the type from the literal initial value.
+    /// </para>
+    /// </summary>
+    public static IReadOnlyList<VariableDefinition> GetVariables(
+        this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
+        => WhfmtVariableParser.ParseDocument(catalog.GetJson(entry.ResourceKey));
+
+    /// <summary>
+    /// Builds a fresh <see cref="WhfmtVariableStore"/> populated with all
+    /// variable definitions from <paramref name="entry"/>.
+    /// </summary>
+    public static WhfmtVariableStore BuildVariableStore(
+        this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
+        => WhfmtVariableParser.BuildStore(catalog.GetJson(entry.ResourceKey));
+
+    /// <summary>
+    /// Builds a ready-to-use <see cref="Models.Expressions.WhfmtExpressionEvaluator"/>
+    /// with the entry's variables pre-loaded and the default function registry. Added P4.
+    /// </summary>
+    public static Models.Expressions.WhfmtExpressionEvaluator BuildEvaluator(
+        this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
+        => new(entry.BuildVariableStore(catalog));
 
     // ------------------------------------------------------------------
     // Technical details
@@ -235,7 +263,7 @@ public static class FormatMetadataExtensions
     public static TechnicalDetails? GetTechnicalDetails(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseTechnicalDetails(doc.RootElement);
     }
 
@@ -301,8 +329,13 @@ public static class FormatMetadataExtensions
         if (!ins.TryGetProperty("groups", out var groups) || groups.ValueKind != JsonValueKind.Array) return [];
         var list = new List<InspectorGroup>(groups.GetArrayLength());
         foreach (var g in groups.EnumerateArray())
-            list.Add(new InspectorGroup(Str(g, "title"), StrN(g, "icon"),
+        {
+            // P1: accept both "title" (legacy) and "name" (v3 canonical) for group label.
+            var title = Str(g, "title");
+            if (string.IsNullOrEmpty(title)) title = Str(g, "name");
+            list.Add(new InspectorGroup(title, StrN(g, "icon"),
                 g.TryGetProperty("fields", out var f) ? ReadStringArray(f) : []));
+        }
         return list;
     }
 
@@ -318,7 +351,10 @@ public static class FormatMetadataExtensions
 
     internal static TechnicalDetails? ParseTechnicalDetails(JsonElement root)
     {
-        if (!root.TryGetProperty("TechnicalDetails", out var td)) return null;
+        // Accept both v3 canonical "technicalDetails" and legacy PascalCase "TechnicalDetails"
+        // so this reader works whether the caller went through GetJson (raw) or GetJsonV3 (migrated).
+        if (!root.TryGetProperty("technicalDetails", out var td) &&
+            !root.TryGetProperty("TechnicalDetails", out td)) return null;
         bool? supportsEncryption = td.TryGetProperty("supportsEncryption", out var se)
             ? se.ValueKind == JsonValueKind.True : null;
         return new TechnicalDetails(

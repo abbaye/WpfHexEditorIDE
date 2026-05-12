@@ -1,8 +1,8 @@
 {
   "diffMode": "text",
   "formatName": "PEM Certificate / Key",
-  "formatId": "PEM",
-  "version": "1.0",
+  "formatId": "PEM_CRYPTO",
+  "version": "1.0.1",
   "extensions": [".pem", ".crt", ".cer", ".key", ".pub"],
   "description": "Privacy Enhanced Mail (PEM) is a Base64-encoded container format for cryptographic objects defined in RFC 7468. PEM files are text files delimited by '-----BEGIN <label>-----' and '-----END <label>-----' markers. Common labels: CERTIFICATE, PRIVATE KEY, PUBLIC KEY, RSA PRIVATE KEY, EC PRIVATE KEY, CERTIFICATE REQUEST, X509 CRL, TRUSTED CERTIFICATE. Each PEM block contains Base64-encoded DER data. PEM files may contain multiple concatenated blocks (e.g., a full certificate chain). RFC 7468 standardized the label names; legacy labels (RSA PRIVATE KEY, CERTIFICATE) are widely used by OpenSSL. PKCS#8 unencrypted private keys use 'PRIVATE KEY'; PKCS#1 RSA keys use 'RSA PRIVATE KEY'.",
   "category": "Crypto",

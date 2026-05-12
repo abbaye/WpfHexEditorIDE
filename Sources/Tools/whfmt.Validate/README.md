@@ -1,8 +1,8 @@
 # whfmt.Validate
 
-> **Binary file validator** — validate any file against 790+ format definitions in seconds.
+> **Binary file validator** — validate any file against 799 format definitions in seconds.
 
-`whfmt.Validate` is a **dotnet global tool** that detects file formats and validates them for structural integrity, checksum correctness, and forensic anomalies — all powered by the [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) library with 790+ embedded `.whfmt` definitions.
+`whfmt.Validate` is a **dotnet global tool** that detects file formats and validates them for structural integrity, checksum correctness, and forensic anomalies — all powered by the [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) library with 799 embedded `.whfmt` definitions.
 
 ---
 
@@ -188,7 +188,7 @@ A self-contained dark-themed HTML report — suitable for CI artifacts or sharin
 
 ## Supported format categories
 
-The tool validates files across **27 categories** and **790+ formats**:
+The tool validates files across **29 categories** and **790+ formats**:
 
 | Category | Count | Examples |
 |----------|-------|---------|

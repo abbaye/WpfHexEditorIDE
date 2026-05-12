@@ -139,7 +139,37 @@ public sealed record EmbeddedFormatEntry(
     /// <summary>MIME types declared in the .whfmt file (e.g. ["application/zip"]).</summary>
     IReadOnlyList<string>? MimeTypes = null,
     /// <summary>Magic byte signatures for binary detection. Each entry: hex value + byte offset.</summary>
-    IReadOnlyList<FormatSignature>? Signatures = null);
+    IReadOnlyList<FormatSignature>? Signatures = null,
+    /// <summary>
+    /// Canonical format identifier from the <c>formatId</c> field, e.g. "CSharp", "ROM_GBC".
+    /// Empty string when absent. Added in whfmt v3 (P1). Stable across renames of <see cref="Name"/>.
+    /// </summary>
+    string FormatId = "",
+    /// <summary>
+    /// Detection match mode: "any" stops on first hit, "best" returns highest-scoring,
+    /// "all" requires every signature to match. Default "best" when absent. Added P3.
+    /// </summary>
+    string MatchMode = "best",
+    /// <summary>
+    /// Minimum aggregate signature score required to consider this format detected.
+    /// Values seen in catalog range from 0.5 (loose) to ~90 (strict). 0 = no threshold. Added P3.
+    /// </summary>
+    double MinimumScore = 0.0,
+    /// <summary>
+    /// Minimum file size in bytes for detection to apply, from
+    /// <c>detection.validation.minFileSize</c>. 0 = no minimum. Added P3.
+    /// </summary>
+    int MinFileSize = 0,
+    /// <summary>
+    /// Optional lower bound on Shannon entropy for detection (0.0–8.0 bits/byte).
+    /// From <c>detection.EntropyHint.min</c>. NaN = unset. Added P3.
+    /// </summary>
+    double EntropyMin = double.NaN,
+    /// <summary>
+    /// Optional upper bound on Shannon entropy for detection (0.0–8.0 bits/byte).
+    /// From <c>detection.EntropyHint.max</c>. NaN = unset. Added P3.
+    /// </summary>
+    double EntropyMax = double.NaN);
 
 /// <summary>
 /// Read-only catalog of the embedded format definitions shipped with the assembly.
@@ -171,6 +201,24 @@ public interface IEmbeddedFormatCatalog
     /// Returns <c>null</c> if no matching format is registered.
     /// </summary>
     EmbeddedFormatEntry? GetByExtension(string extension);
+
+    /// <summary>
+    /// O(1) lookup by <see cref="EmbeddedFormatEntry.Name"/> (case-insensitive).
+    /// Default implementation falls back to a linear scan for legacy implementations;
+    /// <see cref="EmbeddedFormatCatalog"/> overrides with a dictionary lookup.
+    /// </summary>
+    EmbeddedFormatEntry? GetByName(string name)
+        => GetAll().FirstOrDefault(e => e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// O(1) lookup by <see cref="EmbeddedFormatEntry.FormatId"/> (case-insensitive).
+    /// Default implementation falls back to a linear scan for legacy implementations;
+    /// <see cref="EmbeddedFormatCatalog"/> overrides with a dictionary lookup.
+    /// </summary>
+    EmbeddedFormatEntry? GetByFormatId(string formatId)
+        => GetAll().FirstOrDefault(e =>
+            !string.IsNullOrEmpty(e.FormatId) &&
+            e.FormatId.Equals(formatId, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
     /// Returns the set of editor factory IDs that are semantically compatible with

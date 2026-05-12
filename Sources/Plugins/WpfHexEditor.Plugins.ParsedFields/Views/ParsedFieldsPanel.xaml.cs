@@ -15,6 +15,9 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.Definitions.Metadata;
+using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.ViewModels;
@@ -261,9 +264,37 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         public void SetEnrichedFormat(FormatDefinition? format)
         {
             _enrichedVm.CurrentFormat = format;
+            EnrichV3Fields(format?.FormatName);
             RemoveEnrichedFields();
             if (format != null)
                 InjectEnrichedFields();
+        }
+
+        // Resolves the v3 documentary bundle (Navigation/Inspector/Forensic.Notes)
+        // that the legacy FormatDefinition doesn't carry. user-loaded formats and
+        // unknown names fall through to empty, which clears the VM.
+        private void EnrichV3Fields(string? formatName)
+        {
+            _enrichedVm.NavigationStructure = string.Empty;
+            _enrichedVm.NavigationNotes     = string.Empty;
+            _enrichedVm.InspectorBadge      = string.Empty;
+            _enrichedVm.ForensicNotes       = string.Empty;
+
+            if (string.IsNullOrEmpty(formatName)) return;
+
+            var catalog = EmbeddedFormatCatalog.Instance;
+            var entry   = catalog.GetByName(formatName);
+            if (entry is null) return;
+
+            var (hdr, nav, forensic) = entry.GetDocumentationBundle(catalog);
+            if (nav is not null)
+            {
+                _enrichedVm.NavigationStructure = nav.Structure is { Count: > 0 } s
+                    ? string.Join(" → ", s) : string.Empty;
+                _enrichedVm.NavigationNotes = nav.Notes ?? string.Empty;
+            }
+            if (hdr is not null) _enrichedVm.InspectorBadge = hdr.Badge ?? string.Empty;
+            if (forensic is not null) _enrichedVm.ForensicNotes = forensic;
         }
 
         /// <summary>
@@ -296,7 +327,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         {
             var fields = new System.Collections.Generic.List<ParsedFieldViewModel>();
 
-            void Add(string name, string? value, string icon = "â„¹", string? desc = null)
+            void Add(string name, string? value, string icon = "ℹ", string? desc = null)
             {
                 if (string.IsNullOrWhiteSpace(value) || value == "N/A") return;
                 fields.Add(new ParsedFieldViewModel
@@ -313,27 +344,36 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 });
             }
 
-            Add("Category",      _enrichedVm.FormatCategory,          "ðŸ·");
-            Add("MIME Types",    _enrichedVm.MimeTypesDisplay,         "ðŸ“„");
-            Add("Extensions",    _enrichedVm.ExtensionsDisplay,        "ðŸ”–");
-            Add("Software",      _enrichedVm.SoftwareDisplay,          "ðŸ’¾");
-            Add("Use Cases",     _enrichedVm.UseCasesDisplay,          "ðŸ“‹");
-            Add("Doc Level",     _enrichedVm.DocumentationLevel,       "ðŸ“š");
-            Add("Quality",       _enrichedVm.CompletenessScoreDisplay, "â­");
+            Add("Category",      _enrichedVm.FormatCategory,          "🏷");
+            Add("MIME Types",    _enrichedVm.MimeTypesDisplay,         "📄");
+            Add("Extensions",    _enrichedVm.ExtensionsDisplay,        "🔖");
+            Add("Software",      _enrichedVm.SoftwareDisplay,          "💾");
+            Add("Use Cases",     _enrichedVm.UseCasesDisplay,          "📋");
+            Add("Doc Level",     _enrichedVm.DocumentationLevel,       "📚");
+            Add("Quality",       _enrichedVm.CompletenessScoreDisplay, "⭐");
             if (_enrichedVm.HasDetectionInfo)
-                Add("Signature", _enrichedVm.SignatureHex,             "ðŸ”", "Magic bytes");
+                Add("Signature", _enrichedVm.SignatureHex,             "🔏", "Magic bytes");
             if (_enrichedVm.HasRelatedFormats)
-                Add("Related",   _enrichedVm.RelatedFormatsDisplay,    "ðŸ”—");
+                Add("Related",   _enrichedVm.RelatedFormatsDisplay,    "🔗");
             if (_enrichedVm.HasTechnicalDetails)
-                Add("Technical", _enrichedVm.TechnicalSummary,         "âš™");
+                Add("Technical", _enrichedVm.TechnicalSummary,         "⚙");
             if (_enrichedVm.HasSpecifications)
-                Add("Specs",      _enrichedVm.SpecificationsDisplay,                           "ðŸ“‘");
+                Add("Specs",      _enrichedVm.SpecificationsDisplay,                           "📑");
             if (_enrichedVm.HasWebLinks)
-                Add("References", string.Join(" Â· ", _enrichedVm.WebLinks.Select(u =>
+                Add("References", string.Join(" · ", _enrichedVm.WebLinks.Select(u =>
                 {
                     if (Uri.TryCreate(u, UriKind.Absolute, out var uri)) return uri.Host;
-                    return u.Length > 40 ? u[..37] + "â€¦" : u;
-                })), "ðŸŒ");
+                    return u.Length > 40 ? u[..37] + "…" : u;
+                })), "🌐");
+
+            if (_enrichedVm.HasNavigationStructure)
+                Add("Structure",   _enrichedVm.NavigationStructure, "🧭", "Ordered top-level sections");  // 🧭
+            if (_enrichedVm.HasNavigationNotes)
+                Add("Nav Notes",   _enrichedVm.NavigationNotes,     "📝");                                 // 📝
+            if (_enrichedVm.HasInspectorBadge)
+                Add("Badge Field", _enrichedVm.InspectorBadge,      "🏷", "Variable shown as inspector badge"); // 🏷
+            if (_enrichedVm.HasForensicNotes)
+                Add("Forensic",    _enrichedVm.ForensicNotes,       "🔍");                                 // 🔍
 
             // Insert in reverse so they stay in declaration order at the top
             for (int i = fields.Count - 1; i >= 0; i--)
@@ -2195,7 +2235,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
             foreach (var field in ParsedFields)
             {
                 var indent = new string(' ', field.IndentLevel * 2);
-                var bookmark = field.IsBookmarked ? "â­ " : "";
+                var bookmark = field.IsBookmarked ? "⭐ " : "";
                 var name = EscapeMarkdown(field.Name);
                 var value = EscapeMarkdown(field.FormattedValue);
                 var type = EscapeMarkdown(field.ValueType);

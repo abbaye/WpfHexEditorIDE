@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "RED Digital Cinema RAW",
   "formatId": "REDCODE",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [
     ".r3d"
   ],
@@ -30,7 +30,7 @@
         "weight": 0.9
       }
     ],
-    "matchMode": "allOf",
+    "matchMode": "all",
     "MinimumScore": 82,
     "Strength": "Strong",
     "EntropyHint": { "min": 6.0, "max": 7.95 },

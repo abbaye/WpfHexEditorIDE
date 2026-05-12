@@ -90,6 +90,7 @@ public static class FormatMatcher
     /// <summary>
     /// Returns all entries that score above zero against <paramref name="header"/>,
     /// ordered by descending confidence. Useful for debugging ambiguous files.
+    /// Honors detection v3 fields (matchMode, minimumScore, minFileSize).
     /// </summary>
     /// <param name="catalog">The catalog to query.</param>
     /// <param name="header">File header bytes.</param>
@@ -103,17 +104,7 @@ public static class FormatMatcher
 
         foreach (var entry in catalog.GetAll())
         {
-            if (entry.Signatures is not { Count: > 0 }) continue;
-
-            double score = 0;
-            foreach (var sig in entry.Signatures)
-            {
-                var bytes = Convert.FromHexString(sig.Value);
-                if (sig.Offset + bytes.Length > header.Length) continue;
-                if (header.Slice(sig.Offset, bytes.Length).SequenceEqual(bytes))
-                    score += sig.Weight;
-            }
-
+            var score = ScoreEntry(entry, header);
             if (score <= 0) continue;
 
             var conf = Math.Min(0.99, 0.5 + score * 0.49);
@@ -153,18 +144,54 @@ public static class FormatMatcher
 
         foreach (var entry in catalog.GetAll())
         {
-            if (entry.Signatures is not { Count: > 0 }) continue;
-            double score = 0;
-            foreach (var sig in entry.Signatures)
-            {
-                var bytes = Convert.FromHexString(sig.Value);
-                if (sig.Offset + bytes.Length > header.Length) continue;
-                if (header.Slice(sig.Offset, bytes.Length).SequenceEqual(bytes))
-                    score += sig.Weight;
-            }
+            var score = ScoreEntry(entry, header);
             if (score > bestScore) { bestScore = score; best = entry; }
         }
 
         return (best, bestScore);
+    }
+
+    /// <summary>
+    /// Computes the magic-byte score for a single catalog entry against
+    /// <paramref name="header"/>. Honors detection v3 fields:
+    /// <list type="bullet">
+    ///   <item><c>MinFileSize</c> — entries requiring a larger header are skipped.</item>
+    ///   <item><c>MatchMode</c> — "any" short-circuits, "all" requires every signature, "best" sums weights.</item>
+    ///   <item><c>MinimumScore</c> — score below the declared threshold is discarded.</item>
+    /// </list>
+    /// Returns 0 when no match. Malformed hex signatures are skipped (do not throw).
+    /// </summary>
+    internal static double ScoreEntry(EmbeddedFormatEntry entry, ReadOnlySpan<byte> header)
+    {
+        if (entry.Signatures is not { Count: > 0 }) return 0;
+        if (entry.MinFileSize > 0 && header.Length < entry.MinFileSize) return 0;
+
+        bool isAny = string.Equals(entry.MatchMode, "any", StringComparison.OrdinalIgnoreCase);
+        bool isAll = string.Equals(entry.MatchMode, "all", StringComparison.OrdinalIgnoreCase);
+
+        int matched = 0;
+        double score = 0;
+        foreach (var sig in entry.Signatures)
+        {
+            if (sig.Value.Length == 0 || (sig.Value.Length & 1) != 0) continue;
+            byte[] bytes;
+            try { bytes = Convert.FromHexString(sig.Value); }
+            catch (FormatException) { continue; }
+
+            // Negative offset = relative from end of file (e.g. -4 means "last 4 bytes").
+            int absOffset = sig.Offset < 0 ? header.Length + sig.Offset : sig.Offset;
+            if (absOffset < 0 || absOffset + bytes.Length > header.Length) continue;
+            if (header.Slice(absOffset, bytes.Length).SequenceEqual(bytes))
+            {
+                matched++;
+                score += sig.Weight;
+                if (isAny) break;
+            }
+        }
+
+        if (matched == 0) return 0;
+        if (isAll && matched != entry.Signatures.Count) return 0;
+        if (entry.MinimumScore > 0 && score < entry.MinimumScore) return 0;
+        return score;
     }
 }

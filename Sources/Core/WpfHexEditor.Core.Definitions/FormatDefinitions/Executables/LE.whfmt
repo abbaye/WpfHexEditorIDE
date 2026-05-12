@@ -2,8 +2,13 @@
   "diffMode": "binary",
   "formatName": "Linear Executable (VxD/OS2)",
   "formatId": "LE",
-  "version": "1.0",
-  "extensions": [ ".exe", ".vxd", ".386", ".w3" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".exe",
+    ".vxd",
+    ".386",
+    ".w3"
+  ],
   "description": "LE (Linear Executable) format — Windows 9x VxD virtual device drivers and OS/2 32-bit executables. A DOS MZ stub is followed by the LE header at the e_lfanew offset. LE magic: 'LE' (0x4C 0x45). The LX variant ('LX', 0x4C 0x58) is used for OS/2 2.x. LE header: magic (2B), byte_order (1B: 0=LE), word_order (1B: 0=LE), format_level (4B), cpu_type (2B: 1=286, 2=386, 3=486, 4=Pentium), os_type (2B: 1=OS/2, 2=Windows, 3=DOS, 4=Win386), module_version (4B), module_flags (4B), pages_count (4B), eip and esp objects and values (16B), page_size (4B: typically 4096 bytes). Windows VxD files (extension .386 or .vxd) use LE format with VxD loader flags.",
   "category": "Executables",
   "author": "WPFHexaEditor Team",
@@ -32,33 +37,36 @@
       "name": "mzMagic",
       "offset": 0,
       "size": 2,
-      "type": "ascii",
+      "type": "field",
       "description": "DOS MZ magic — 2-byte ASCII string at offset 0; must be 'MZ' (0x4D 0x5A) indicating a valid DOS MZ stub header that precedes the LE or LX header in all Linear Executable format files",
-      "storeAs": "mzMagic"
+      "storeAs": "mzMagic",
+      "valueType": "ascii"
     },
     {
       "name": "e_lfanew",
       "offset": 60,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "description": "LE header file offset — 2-byte little-endian unsigned integer at DOS header offset 60 (e_lfanew field); byte offset from the start of the file to the LE or LX header; the magic 'LE' or 'LX' should be found at this position",
-      "storeAs": "leOffset"
+      "storeAs": "leOffset",
+      "valueType": "uint16"
     },
     {
       "name": "leMagic",
       "offset": -1,
       "size": 2,
-      "type": "ascii",
+      "type": "field",
       "offsetVar": "leOffset",
       "description": "LE or LX format magic — 2-byte ASCII string at the e_lfanew offset; 'LE' (0x4C 0x45) identifies Windows 9x VxD and general LE files; 'LX' (0x4C 0x58) identifies OS/2 2.x LX variant",
-      "storeAs": "leMagic"
+      "storeAs": "leMagic",
+      "valueType": "ascii"
     },
     {
       "name": "cpuType",
       "offset": -1,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "offsetRelative": "leOffset+10",
       "description": "CPU type — 2-byte little-endian value at LE header offset 10 identifying the minimum required processor; 1=Intel 80286, 2=Intel 80386, 3=Intel 80486, 4=Intel Pentium (80586)",
@@ -68,13 +76,14 @@
         "2": "80386",
         "3": "80486",
         "4": "Pentium (80586)"
-      }
+      },
+      "valueType": "uint16"
     },
     {
       "name": "osType",
       "offset": -1,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "offsetRelative": "leOffset+12",
       "description": "Target OS type — 2-byte little-endian value at LE header offset 12 identifying the operating system for which this module was built; 1=OS/2, 2=Windows, 3=DOS 4.x, 4=Windows/386 (Win386 VxD)",
@@ -84,7 +93,8 @@
         "2": "Windows",
         "3": "DOS",
         "4": "Win386"
-      }
+      },
+      "valueType": "uint16"
     }
   ],
   "assertions": [
@@ -109,8 +119,18 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "DOS Stub", "offset": 0, "size": 64, "description": "DOS MZ stub header with e_lfanew pointer to the LE/LX header" },
-      { "name": "LE/LX Header", "offset": -1, "size": 196, "description": "Linear Executable header at e_lfanew offset" }
+      {
+        "name": "DOS Stub",
+        "offset": 0,
+        "size": 64,
+        "description": "DOS MZ stub header with e_lfanew pointer to the LE/LX header"
+      },
+      {
+        "name": "LE/LX Header",
+        "offset": -1,
+        "size": 196,
+        "description": "Linear Executable header at e_lfanew offset"
+      }
     ]
   },
   "inspector": {
@@ -120,11 +140,18 @@
     "groups": [
       {
         "name": "DOS Stub",
-        "fields": [ "mzMagic", "leOffset" ]
+        "fields": [
+          "mzMagic",
+          "leOffset"
+        ]
       },
       {
         "name": "LE Header",
-        "fields": [ "leMagic", "cpuType", "osType" ]
+        "fields": [
+          "leMagic",
+          "cpuType",
+          "osType"
+        ]
       }
     ]
   },
@@ -156,14 +183,31 @@
     ]
   },
   "software": [
-    { "name": "Windows 9x", "url": "https://en.wikipedia.org/wiki/Windows_9x", "role": "target platform" },
-    { "name": "OS/2 2.x", "url": "https://en.wikipedia.org/wiki/OS/2", "role": "target platform" }
+    {
+      "name": "Windows 9x",
+      "url": "https://en.wikipedia.org/wiki/Windows_9x",
+      "role": "target platform"
+    },
+    {
+      "name": "OS/2 2.x",
+      "url": "https://en.wikipedia.org/wiki/OS/2",
+      "role": "target platform"
+    }
   ],
   "formatRelationships": [
-    { "format": "NE", "relation": "predecessor — NE (New Executable) is the 16-bit predecessor; LE is the 32-bit flat-model successor" },
-    { "format": "PE_EXE", "relation": "sibling — PE32 replaced LE for 32-bit Windows applications; LE remained for VxD drivers until Windows XP" }
+    {
+      "format": "NE",
+      "relation": "predecessor — NE (New Executable) is the 16-bit predecessor; LE is the 32-bit flat-model successor"
+    },
+    {
+      "format": "PE_EXE",
+      "relation": "sibling — PE32 replaced LE for 32-bit Windows applications; LE remained for VxD drivers until Windows XP"
+    }
   ],
-  "MimeTypes": [ "application/x-msdownload", "application/x-vxd" ],
+  "MimeTypes": [
+    "application/x-msdownload",
+    "application/x-vxd"
+  ],
   "UseCases": [
     "Windows 9x VxD virtual device driver analysis",
     "OS/2 32-bit application executable inspection",

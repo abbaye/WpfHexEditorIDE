@@ -11,9 +11,9 @@
 
     <!-- NuGet metadata -->
     <PackageId>WpfHexEditor.Core.ByteProvider</PackageId>
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0</FileVersion>
+    <Version>1.1.1</Version>
+    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <FileVersion>1.1.1</FileVersion>
     <Authors>Derek Tremblay;Claude Sonnet 4.6</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfHexEditor.Core.ByteProvider</Product>
@@ -47,7 +47,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>1.1.0 — IUndoAwareEditor contract + HexByteUndoEntry for shared undo engine across HexEditor/CodeEditor; DocumentBuffer undo wiring; regression test suite added (ByteProvider, UndoRedo, Search, Edits, Changeset).</PackageReleaseNotes>
+    <PackageReleaseNotes>1.1.1 — Completed undo/redo unification (issue #107): HexEditor ↔ CodeEditor now share a single UndoEngine via the IUndoAwareEditor contract. Bundled with the NuGet wave v0.6.5.15. No public API changes. 1.1.0 — IUndoAwareEditor contract + HexByteUndoEntry for shared undo engine; DocumentBuffer undo wiring; regression test suite added (ByteProvider, UndoRedo, Search, Edits, Changeset).</PackageReleaseNotes>
 
     <!-- SourceLink: enables step-through debugging for NuGet consumers -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

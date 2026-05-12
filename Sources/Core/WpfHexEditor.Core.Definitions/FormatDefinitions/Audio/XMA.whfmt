@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Xbox XMA Audio",
   "formatId": "XMA",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [
     ".xma",
     ".xma2"
@@ -37,7 +37,7 @@
         "weight": 0.8
       }
     ],
-    "matchMode": "allOf",
+    "matchMode": "all",
     "MinimumScore": 82,
     "Strength": "Strong",
     "EntropyHint": { "min": 5.0, "max": 7.9 },

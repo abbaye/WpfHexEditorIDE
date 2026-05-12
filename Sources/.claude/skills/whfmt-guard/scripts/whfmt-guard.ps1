@@ -4,13 +4,25 @@
 
 .DESCRIPTION
   Rules:
-    R1 whfmt-jsonc-parse      (ERR)  JSONC parse, /* */ header tolerated
-    R2 whfmt-version-monotone (ERR)  version >= HEAD version
-    R3 whfmt-schema-required  (ERR)  formatName/formatId/extensions/category/description
-    R4 whfmt-id-uniqueness    (ERR)  formatId unique across catalog
-    R5 whfmt-magic-collision  (WARN) sig+offset+ext overlap with another file
-    R6 whfmt-strength-enum    (WARN) detection.strength in allowed set
-    R7 whfmt-placeholder-drift(WARN) {{var}} not in variables{}
+    R1  whfmt-jsonc-parse      (ERR)  JSONC parse, /* */ header tolerated
+    R2  whfmt-version-monotone (ERR)  version >= HEAD version
+    R3  whfmt-schema-required  (ERR)  formatName/formatId/extensions/category/description
+    R4  whfmt-id-uniqueness    (ERR)  formatId unique across catalog
+    R5  whfmt-magic-collision  (WARN) sig+offset+ext overlap with another file
+    R6  whfmt-strength-enum    (WARN) detection.strength in allowed set
+    R7  whfmt-placeholder-drift(WARN) {{var}} not in variables{}
+    R10 whfmt-expression-refs  (WARN) expression references undeclared identifier
+                                       (lightweight identifier-scan; full AST
+                                       validation lives in C# whfmt.Validate)
+    R11 whfmt-enum-values      (WARN) closed-set field has unrecognized value
+                                       (blocks[].type/.valueType, variables[].type,
+                                       assertions[].severity, detection.matchMode,
+                                       fuzz.strategies[].mutation, repair[].action)
+    R14 whfmt-enum-values      (WARN) (same rule id as R11)
+                                       forensic.suspiciousPatterns[].severity +
+                                       forensic.riskLevel — union of the assertions
+                                       trio (error/warning/info) and the risk-level
+                                       vocabulary (critical/high/medium/low)
 
   Exit code = ERR count (0 if WARN-only).
 #>
@@ -41,10 +53,77 @@ if (-not (Test-Path $CatalogRoot)) {
 $AllowedStrengths = @('None','Weak','Medium','Strong','VeryStrong')
 $RequiredFields   = @('formatName','formatId','extensions','category','description')
 
+# R11 — closed-set enum allow-lists. SYNC with the C# runtime contracts:
+#   blocks[].type            → StructureEditor/Models/BlockType (15 values)
+#   blocks[].valueType       → Models/WhfmtValueType (14 canonical + aliases)
+#   assertions[].severity    → Models/Validation/WhfmtIssueSeverity (mirrors error/warning/info)
+#   detection.matchMode      → EmbeddedFormatCatalog.DetectFromBytes
+#   fuzz.strategies[].mutation → Metadata/FormatDiffFuzzExtensions/FuzzMutation
+#   repair[].action          → Metadata/FormatRepairExtensions/RepairAction (free-form;
+#                              this allow-list is empirical from the catalog).
+$AllowedBlockTypes      = @('signature','field','metadata','header','data','conditional',
+                            'computeFromVariables','loop','repeating','action','sentinel',
+                            'union','nested','pointer','bitfield',
+                            # Recognized v3 additions (catalog-driven):
+                            'group')
+$AllowedValueTypes      = @('uint8','uint16','uint32','uint64','int8','int16','int32','int64',
+                            'float32','float64','ascii','utf8','utf16le','utf16be','bytes','hex',
+                            # aliases recognized by WhfmtValueTypes.Parse:
+                            'u8','u16','u32','u64','i8','i16','i32','i64','f32','f64',
+                            'byte','ushort','uint','ulong','sbyte','short','int','long',
+                            'single','float','double','utf-8','utf-16le','utf-16be')
+$AllowedSeverities      = @('error','warning','info')
+# Forensic uses both the assertions vocabulary AND the riskLevel vocabulary
+# (critical/high/medium/low). Allow-list = union of the 7 values observed in
+# the catalog. Catches typos like "warn"/"critcal" while tolerating both styles.
+$AllowedForensicSeverities = @('error','warning','info','critical','high','medium','low')
+$AllowedMatchModes      = @('any','best','all')
+$AllowedFuzzMutations   = @('corrupt_signature','enum_sweep','boundary_values',
+                            'bit_flip','overflow','random_bytes',
+                            'truncate','zero_field')
+# Empirical: actions observed in the catalog (grep "action": "X"). Add new values
+# here when the C# RepairAction interface gains support — the runtime accepts
+# any string today so this is a lint-level check, not a runtime contract.
+$AllowedRepairActions   = @('recompute_checksum','rebuild_index','set_value',
+                            'truncate','zero_field')
+
+# R10 — built-in functions + reserved keywords known to the whfmt expression engine.
+# Identifiers in expressions that are NOT in this set AND not declared in
+# variables{} / functions{} are flagged.
+# SYNC: keep the function names in lock-step with WhfmtBuiltinFunctions.All in
+#       Sources/Core/WpfHexEditor.Core.Definitions/Models/Functions/WhfmtBuiltinFunctions.cs
+$ExprBuiltins = [System.Collections.Generic.HashSet[string]]::new([string[]]@(
+    # built-in functions registered in WhfmtBuiltinFunctions (C#)
+    'min','max','abs','length','hex','toUpper','toLower',
+    # string instance methods (called as receiver.method())
+    'startsWith','endsWith','includes','contains','trim',
+    # literal keywords
+    'true','false','null'
+))
+
 $findings = New-Object System.Collections.Generic.List[object]
 function Add-Finding($sev, $rule, $file, $detail) {
     $findings.Add([pscustomobject]@{ Sev=$sev; Rule=$rule; File=$file; Detail=$detail })
 }
+
+# R10 — locate the whfmt-validate CLI (built from Tools/whfmt.Validate). If present,
+# R10 delegates to the C# WhfmtExpressionValidator (full AST walk, R10-000…R10-003).
+# Otherwise the PowerShell identifier-scan fallback runs as before.
+function Find-WhfmtValidateBinary {
+    # Built locally? Look for the standard MSBuild output paths first.
+    $candidates = @(
+        (Join-Path $RepoRoot 'Sources/Tools/whfmt.Validate/bin/Debug/net8.0/whfmt-validate.dll'),
+        (Join-Path $RepoRoot 'Sources/Tools/whfmt.Validate/bin/Release/net8.0/whfmt-validate.dll')
+    )
+    foreach ($c in $candidates) {
+        if (Test-Path -LiteralPath $c) { return $c }
+    }
+    # Installed as a global tool?
+    $cmd = Get-Command 'whfmt' -ErrorAction SilentlyContinue
+    if ($cmd) { return $cmd.Source }
+    return $null
+}
+$WhfmtCli = Find-WhfmtValidateBinary
 
 # ----- filter input -----
 $targets = @()
@@ -77,6 +156,166 @@ function Get-PropNames($obj) {
     if ($obj -is [System.Collections.IDictionary]) { return @($obj.Keys) }
     if ($obj -is [psobject]) { return @($obj.PSObject.Properties.Name) }
     return @()
+}
+
+# R10 helper: a string is an expression candidate when it carries an operator.
+# Long letter-heavy strings with very few operators are treated as prose (the
+# catalog uses forensic.suspiciousPatterns[].condition for both shapes).
+function Test-LooksLikeExpression([string]$s) {
+    if (-not $s) { return $false }
+    $hasOp = ($s -match '==|!=|<=|>=|<<|>>|&&|\|\||[<>+\-*/%^~?()\[\]]|(?<![A-Za-z])(?:&|\|)(?![A-Za-z])')
+    if (-not $hasOp) { return $false }
+    $letters = ([regex]::Matches($s, '[A-Za-z]')).Count
+    $opChars = ([regex]::Matches($s, '[=<>!&|+\-*/%^~?()\[\]]')).Count
+    if ($opChars -eq 0) { return $false }
+    if ($letters -gt 80 -and ($letters / [Math]::Max($opChars,1)) -gt 25) { return $false }
+    return $true
+}
+
+# R10 helper: collects every expression-bearing string in the document.
+function Get-ExprStrings($p) {
+    $out = [System.Collections.Generic.List[object]]::new()
+    if ((Test-Prop $p 'assertions') -and $p.assertions) {
+        foreach ($a in @($p.assertions)) {
+            if ((Test-Prop $a 'expression') -and $a.expression) {
+                $out.Add([pscustomobject]@{ Src=[string]$a.expression; Path='assertions[].expression' })
+            }
+        }
+    }
+    if ((Test-Prop $p 'blocks') -and $p.blocks) {
+        foreach ($b in @($p.blocks)) {
+            if ((Test-Prop $b 'expression') -and $b.expression) {
+                $out.Add([pscustomobject]@{ Src=[string]$b.expression; Path='blocks[].expression' })
+            }
+            if ((Test-Prop $b 'condition') -and $b.condition) {
+                $out.Add([pscustomobject]@{ Src=[string]$b.condition; Path='blocks[].condition' })
+            }
+        }
+    }
+    if ((Test-Prop $p 'forensic') -and $p.forensic -and (Test-Prop $p.forensic 'suspiciousPatterns')) {
+        foreach ($s in @($p.forensic.suspiciousPatterns)) {
+            if ($s -is [psobject] -and (Test-Prop $s 'condition') -and $s.condition `
+                -and (Test-LooksLikeExpression $s.condition)) {
+                $out.Add([pscustomobject]@{ Src=[string]$s.condition; Path='forensic.suspiciousPatterns[].condition' })
+            }
+        }
+    }
+    return ,$out
+}
+
+# R11 — closed-set enum validation. Walks the parsed document and flags any
+# value found at a known-closed enum path that isn't in the canonical allow-list.
+# All comparisons are case-insensitive (-contains on lowercased value vs lowercased list).
+function Invoke-R11EnumCheck($parsed, $rel) {
+    function CheckOne([string]$value, [string]$path, $allowed, [string]$enumName) {
+        if (-not $value) { return }
+        if ($allowed -notcontains $value.ToLowerInvariant() -and $allowed -notcontains $value) {
+            $sample = if ($allowed.Count -gt 6) { ($allowed[0..5] -join ', ') + ', ...' } else { $allowed -join ', ' }
+            Add-Finding 'WARN' 'whfmt-enum-values' $rel ("{0}: '{1}' not in {2} allow-list ({3})" -f $path, $value, $enumName, $sample)
+        }
+    }
+
+    # blocks[].type and blocks[].valueType
+    if ((Test-Prop $parsed 'blocks') -and $parsed.blocks) {
+        $i = 0
+        foreach ($b in @($parsed.blocks)) {
+            if ((Test-Prop $b 'type')      -and $b.type)      { CheckOne ([string]$b.type)      "blocks[$i].type"      $AllowedBlockTypes 'BlockType' }
+            if ((Test-Prop $b 'valueType') -and $b.valueType) { CheckOne ([string]$b.valueType) "blocks[$i].valueType" $AllowedValueTypes 'ValueType' }
+            $i++
+        }
+    }
+
+    # variables[] typed-array — type field per item
+    if ((Test-Prop $parsed 'variables') -and ($parsed.variables -is [System.Array] -or
+        ($parsed.variables -is [System.Collections.IList] -and -not ($parsed.variables -is [System.Collections.IDictionary])))) {
+        $i = 0
+        foreach ($v in @($parsed.variables)) {
+            if ($v -is [psobject] -and (Test-Prop $v 'type') -and $v.type) {
+                CheckOne ([string]$v.type) "variables[$i].type" $AllowedValueTypes 'ValueType'
+            }
+            $i++
+        }
+    }
+
+    # assertions[].severity
+    if ((Test-Prop $parsed 'assertions') -and $parsed.assertions) {
+        $i = 0
+        foreach ($a in @($parsed.assertions)) {
+            if ((Test-Prop $a 'severity') -and $a.severity) {
+                CheckOne ([string]$a.severity) "assertions[$i].severity" $AllowedSeverities 'Severity'
+            }
+            $i++
+        }
+    }
+
+    # detection.matchMode
+    if ((Test-Prop $parsed 'detection') -and $parsed.detection -and (Test-Prop $parsed.detection 'matchMode')) {
+        CheckOne ([string]$parsed.detection.matchMode) 'detection.matchMode' $AllowedMatchModes 'MatchMode'
+    }
+
+    # fuzz.strategies[].mutation
+    if ((Test-Prop $parsed 'fuzz') -and $parsed.fuzz -and (Test-Prop $parsed.fuzz 'strategies')) {
+        $i = 0
+        foreach ($s in @($parsed.fuzz.strategies)) {
+            if ($s -is [psobject] -and (Test-Prop $s 'mutation') -and $s.mutation) {
+                CheckOne ([string]$s.mutation) "fuzz.strategies[$i].mutation" $AllowedFuzzMutations 'FuzzMutation'
+            }
+            $i++
+        }
+    }
+
+    # repair[].action
+    if ((Test-Prop $parsed 'repair') -and $parsed.repair) {
+        $i = 0
+        foreach ($r in @($parsed.repair)) {
+            if ($r -is [psobject] -and (Test-Prop $r 'action') -and $r.action) {
+                CheckOne ([string]$r.action) "repair[$i].action" $AllowedRepairActions 'RepairAction'
+            }
+            $i++
+        }
+    }
+
+    # R14 — forensic.suspiciousPatterns[].severity (separate enum from assertions —
+    # the catalog mixes two conventions: error/warning/info AND critical/high/medium/low).
+    if ((Test-Prop $parsed 'forensic') -and $parsed.forensic -and (Test-Prop $parsed.forensic 'suspiciousPatterns')) {
+        $i = 0
+        foreach ($p in @($parsed.forensic.suspiciousPatterns)) {
+            if ($p -is [psobject] -and (Test-Prop $p 'severity') -and $p.severity) {
+                CheckOne ([string]$p.severity) "forensic.suspiciousPatterns[$i].severity" $AllowedForensicSeverities 'ForensicSeverity'
+            }
+            $i++
+        }
+    }
+
+    # R14 — forensic.riskLevel (top-level, vocabulary = critical/high/medium/low + the assertions trio).
+    if ((Test-Prop $parsed 'forensic') -and $parsed.forensic -and (Test-Prop $parsed.forensic 'riskLevel') -and $parsed.forensic.riskLevel) {
+        CheckOne ([string]$parsed.forensic.riskLevel) 'forensic.riskLevel' $AllowedForensicSeverities 'ForensicSeverity'
+    }
+}
+
+# R10 PowerShell fallback when the C# whfmt-validate binary isn't built. Same
+# heuristic identifier-scan as before but hoisted to module scope (was nested
+# inside the per-target foreach which broke declaration-order under StrictMode).
+function Invoke-R10PowerShellFallback($parsed, $declared, $rel) {
+    $declaredFns = @()
+    if ((Test-Prop $parsed 'functions') -and $parsed.functions) {
+        $declaredFns = Get-PropNames $parsed.functions
+    }
+    $known = [System.Collections.Generic.HashSet[string]]::new($ExprBuiltins)
+    foreach ($n in $declared)    { [void]$known.Add($n) }
+    foreach ($n in $declaredFns) { [void]$known.Add($n) }
+
+    foreach ($expr in (Get-ExprStrings $parsed)) {
+        $stripped = [regex]::Replace($expr.Src, "'(?:[^'\\]|\\.)*'", "''")
+        $stripped = [regex]::Replace($stripped,  '"(?:[^"\\]|\\.)*"', '""')
+        $reported = [System.Collections.Generic.HashSet[string]]::new()
+        foreach ($m in [regex]::Matches($stripped, '(?<![.\w])([A-Za-z_][A-Za-z0-9_]*)')) {
+            $id = $m.Groups[1].Value
+            if ($known.Contains($id)) { continue }
+            if (-not $reported.Add($id)) { continue }
+            Add-Finding 'WARN' 'whfmt-expression-refs' $rel ("{0}: '{1}' not declared in variables{{}} / functions{{}} / builtins" -f $expr.Path, $id)
+        }
+    }
 }
 
 function Read-Whfmt([string]$path) {
@@ -245,10 +484,21 @@ foreach ($path in $targets) {
         }
     }
 
-    # R7 — placeholder drift
+    # R7 — placeholder drift. Variables come in two schemas:
+    #   dict       : { "magic": "" }
+    #   typed array: [ { "name": "magic", ... } ]
     $declared = @()
     if ((Test-Prop $parsed 'variables') -and $parsed.variables) {
-        $declared = Get-PropNames $parsed.variables
+        $vars = $parsed.variables
+        $isTypedArray = ($vars -is [System.Array]) -or
+                        ($vars -is [System.Collections.IList] -and -not ($vars -is [System.Collections.IDictionary]))
+        if ($isTypedArray) {
+            foreach ($v in @($vars)) {
+                if ((Test-Prop $v 'name') -and $v.name) { $declared += [string]$v.name }
+            }
+        } else {
+            $declared = Get-PropNames $vars
+        }
     }
     $texts = @()
     if ((Test-Prop $parsed 'description') -and $parsed.description) {
@@ -272,8 +522,49 @@ foreach ($path in $targets) {
             Add-Finding 'WARN' 'whfmt-placeholder-drift' $rel "{{$v}} referenced but not declared in variables{}"
         }
     }
+
+    # R11 — closed-set enum validation (per-file).
+    Invoke-R11EnumCheck $parsed $rel
+
+    # R10 PS fallback only (per-file scan). The C# binary path runs in a single
+    # batched call AFTER the foreach loop — see post-loop section below.
+    if (-not $WhfmtCli) {
+        Invoke-R10PowerShellFallback $parsed $declared $rel
+    }
     } catch {
         Add-Finding 'ERR' 'whfmt-guard-internal' $rel ("rule evaluation failed: " + $_.Exception.Message)
+    }
+}
+
+# R10 — batched C# binary invocation. ONE process start for all targets instead
+# of N (saves ~200 ms cold-start per file). Skipped when the binary isn't built;
+# the PS fallback already ran per-file inside the loop above in that case.
+if ($WhfmtCli -and $targets.Count -gt 0) {
+    try {
+        $cliArgs = @('lint-expressions', '--json') + $targets
+        if ($WhfmtCli -like '*.dll') {
+            $output = & dotnet $WhfmtCli @cliArgs 2>&1
+        } else {
+            $output = & $WhfmtCli @cliArgs 2>&1
+        }
+        $sawAny = $false
+        foreach ($line in @($output)) {
+            $text = [string]$line
+            if (-not $text.StartsWith('{')) { continue }
+            try {
+                $obj = ConvertFrom-Json -InputObject $text -ErrorAction Stop
+                $sawAny = $true
+                $rel    = [System.IO.Path]::GetRelativePath($RepoRoot, $obj.file).Replace('\','/')
+                Add-Finding 'WARN' 'whfmt-expression-refs' $rel ("{0}: {1} [{2}]" -f $obj.path, $obj.message, $obj.ruleId)
+            } catch { }
+        }
+        # Defensive: surface a single internal finding when the binary exited
+        # non-zero but emitted no parseable JSON (otherwise the failure is invisible).
+        if ($LASTEXITCODE -ne 0 -and -not $sawAny) {
+            Add-Finding 'WARN' 'whfmt-guard-internal' '' ("whfmt-validate exited {0} with no JSON output" -f $LASTEXITCODE)
+        }
+    } catch {
+        Add-Finding 'WARN' 'whfmt-guard-internal' '' ("whfmt-validate invocation failed: " + $_.Exception.Message)
     }
 }
 

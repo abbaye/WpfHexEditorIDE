@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "AIFF Audio",
   "formatId": "AIFF",
-  "version": "1.14",
+  "version": "1.14.1",
   "extensions": [
     ".aiff",
     ".aif",
@@ -32,7 +32,7 @@
       { "value": "41494646", "offset": 8, "label": "AIFF file type marker", "weight": 1.0 },
       { "value": "41494643", "offset": 8, "label": "AIFC file type marker (compressed AIFF)", "weight": 1.0 }
     ],
-    "matchMode": "all-of-first-then-any",
+    "matchMode": "best",
     "Strength": "Strong",
     "required": true,
     "EntropyHint": { "min": 3.0, "max": 7.0 },

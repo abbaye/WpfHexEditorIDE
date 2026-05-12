@@ -2,8 +2,11 @@
   "diffMode": "binary",
   "formatName": "SNK Neo Geo Pocket ROM",
   "formatId": "ROM_NGP",
-  "version": "1.0",
-  "extensions": [ ".ngp", ".ngc" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".ngp",
+    ".ngc"
+  ],
   "description": "SNK Neo Geo Pocket and Neo Geo Pocket Color ROM image. No fixed binary magic — identified primarily by extension and header field values. Game title appears as a 12-byte ASCII string at offset 0. Fixed marker bytes at offsets 18-19 (0xAD, 0x01) serve as weak structural identifiers. NGP is the monochrome model (1998); NGC (Neo Geo Pocket Color) supports full color palette (1999). Both share the same ROM header format. Publisher code at offset 16.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
@@ -32,41 +35,46 @@
       "name": "gameTitle",
       "offset": 0,
       "size": 12,
-      "type": "ascii",
+      "type": "field",
       "description": "Game title — 12-byte ASCII string at offset 0 containing the cartridge game name as programmed by the developer; right-padded with null bytes if the title is fewer than 12 characters long",
-      "storeAs": "gameTitle"
+      "storeAs": "gameTitle",
+      "valueType": "ascii"
     },
     {
       "name": "gameCode",
       "offset": 12,
       "size": 4,
-      "type": "ascii",
+      "type": "field",
       "description": "Game code — 4-byte ASCII product identifier at offset 12 assigned by SNK to uniquely identify this cartridge in their product catalog; format is typically alphanumeric",
-      "storeAs": "gameCode"
+      "storeAs": "gameCode",
+      "valueType": "ascii"
     },
     {
       "name": "publisherCode",
       "offset": 16,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "description": "Publisher code — 2-byte little-endian unsigned integer at offset 16 identifying the publisher or licensee; value 0x0000 indicates SNK as the publisher",
-      "storeAs": "publisherCode"
+      "storeAs": "publisherCode",
+      "valueType": "uint16"
     },
     {
       "name": "fixedMarker",
       "offset": 18,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "Fixed header marker byte — 1-byte value at offset 18 that is always 0xAD (173 decimal) in valid Neo Geo Pocket ROM headers; used as a weak structural check to distinguish NGP ROMs from random data",
-      "storeAs": "fixedMarker"
+      "storeAs": "fixedMarker",
+      "valueType": "uint8"
     },
     {
       "name": "fixedMarker2",
       "offset": 19,
       "size": 1,
-      "type": "uint8",
-      "description": "Secondary fixed marker byte — 1-byte value at offset 19 that is always 0x01 in valid Neo Geo Pocket ROM headers; together with the byte at offset 18, forms a 2-byte structural marker 0xAD 0x01"
+      "type": "field",
+      "description": "Secondary fixed marker byte — 1-byte value at offset 19 that is always 0x01 in valid Neo Geo Pocket ROM headers; together with the byte at offset 18, forms a 2-byte structural marker 0xAD 0x01",
+      "valueType": "uint8"
     }
   ],
   "assertions": [
@@ -85,8 +93,18 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "ROM Header", "offset": 0, "size": 64, "description": "Neo Geo Pocket ROM header containing identity and metadata fields" },
-      { "name": "ROM Code", "offset": 64, "size": -1, "description": "Executable ROM code and data following the header region" }
+      {
+        "name": "ROM Header",
+        "offset": 0,
+        "size": 64,
+        "description": "Neo Geo Pocket ROM header containing identity and metadata fields"
+      },
+      {
+        "name": "ROM Code",
+        "offset": 64,
+        "size": -1,
+        "description": "Executable ROM code and data following the header region"
+      }
     ]
   },
   "inspector": {
@@ -96,11 +114,17 @@
     "groups": [
       {
         "name": "Identity",
-        "fields": [ "gameTitle", "gameCode", "publisherCode" ]
+        "fields": [
+          "gameTitle",
+          "gameCode",
+          "publisherCode"
+        ]
       },
       {
         "name": "Structural Markers",
-        "fields": [ "fixedMarker" ]
+        "fields": [
+          "fixedMarker"
+        ]
       }
     ]
   },
@@ -132,13 +156,27 @@
     ]
   },
   "software": [
-    { "name": "Mednafen", "url": "https://mednafen.github.io/", "role": "emulator" },
-    { "name": "RACE!", "url": "https://sourceforge.net/projects/race/", "role": "emulator" }
+    {
+      "name": "Mednafen",
+      "url": "https://mednafen.github.io/",
+      "role": "emulator"
+    },
+    {
+      "name": "RACE!",
+      "url": "https://sourceforge.net/projects/race/",
+      "role": "emulator"
+    }
   ],
   "formatRelationships": [
-    { "format": "ROM_LYNX", "relation": "similar era — both are late-1990s handheld cartridge ROM formats with small commercial libraries" }
+    {
+      "format": "ROM_LYNX",
+      "relation": "similar era — both are late-1990s handheld cartridge ROM formats with small commercial libraries"
+    }
   ],
-  "MimeTypes": [ "application/x-ngp-rom", "application/x-ngc-rom" ],
+  "MimeTypes": [
+    "application/x-ngp-rom",
+    "application/x-ngc-rom"
+  ],
   "UseCases": [
     "Game preservation of SNK Neo Geo Pocket cartridges",
     "Emulation and ROM research",

@@ -166,7 +166,7 @@ Merge once in `App.xaml` so themes and brushes resolve correctly:
 ## What's New in 3.1.3
 
 - **Feat**: 155+ new `.whfmt` format definitions added (Groups C–J) — total now exceeds 600 definitions.
-- **Feat**: `FormatSchemaValidator` wired — `.whfmt` files are now validated against schema v2.3 at load time; violations are reported via `FormatLoadFailure`.
+- **Feat**: `FormatSchemaValidator` wired — `.whfmt` files are now validated against schema v3 at load time; violations are reported via `FormatLoadFailure`.
 - **Feat**: `.whfmt` schema bumped to v2.3 — `references` and `detection` fields unified across all categories.
 - **Fix**: Stream operations — contributor enhancements to stream-backed byte provider edge cases.
 - **Fix**: `ForensicPattern` tolerant converter — invalid pattern values no longer throw; fallback to `null` with log entry.
@@ -222,7 +222,7 @@ All bundled inside the package — zero external NuGet dependencies:
 | WpfHexEditor.HexEditor | `HexEditor` UserControl — main entry point |
 | WpfHexEditor.Core | Byte providers, format detection, search, undo/redo |
 | WpfHexEditor.Core.BinaryAnalysis | Cross-platform binary analysis (no WPF dependency) |
-| WpfHexEditor.Core.Definitions | 790+ embedded format definitions (.whfmt) |
+| WpfHexEditor.Core.Definitions | 799 embedded format definitions (.whfmt) |
 | WpfHexEditor.Editor.Core | Shared editor abstractions |
 | WpfHexEditor.ColorPicker | Color picker control (settings panel) |
 | WpfHexEditor.HexBox | Hex display rendering control |

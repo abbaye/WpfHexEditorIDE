@@ -1,7 +1,7 @@
 {
   "formatName": "Impulse Tracker Module (IT)",
   "formatId": "IT",
-  "version": "1.1",
+  "version": "1.1.1",
   "extensions": [ ".it" ],
   "diffMode": "binary",
   "description": "Impulse Tracker module format created by Jeffrey Lim. Supports up to 64 channels, advanced envelopes, NNA (New Note Actions), filters and compressed samples.",
@@ -34,7 +34,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 88,
     "Strength": "Strong",
     "EntropyHint": { "min": 3.5, "max": 7.5 }

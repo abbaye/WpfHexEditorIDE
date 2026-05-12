@@ -1,7 +1,7 @@
 {
   "formatName": "Android Sparse Image",
   "formatId": "ANDROID_SPARSE",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "binary",
   "extensions": [
     ".simg",
@@ -61,7 +61,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 90,
     "Strength": "Strong",
     "EntropyHint": {

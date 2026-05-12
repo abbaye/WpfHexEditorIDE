@@ -1,7 +1,7 @@
 {
   "formatName": "BLE Packet",
   "formatId": "BLE_PACKET",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "binary",
   "extensions": [
     ".ble"
@@ -60,7 +60,7 @@
         "weight": 0.4
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 82,
     "Strength": "Weak",
     "EntropyHint": {

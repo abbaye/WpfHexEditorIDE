@@ -2,8 +2,10 @@
   "diffMode": "text",
   "formatName": "LRC Lyrics",
   "formatId": "LRC",
-  "version": "1.0",
-  "extensions": [ ".lrc" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".lrc"
+  ],
   "description": "LRC (Lyric) synchronized lyrics format. Plain UTF-8 text where each line begins with a timestamp tag in the format [mm:ss.xx] followed by lyric text. Enhanced LRC (A2 extension) adds word-level timestamps in angle brackets. Header metadata tags: [ar:Artist], [ti:Title], [al:Album], [by:Creator of LRC file], [offset:+/-ms for global timing adjustment]. The first non-empty non-comment character is typically '['. Widely supported in music players, karaoke software, and streaming services including Apple Music and Spotify for synchronized lyric display.",
   "category": "Subtitles",
   "author": "WPFHexaEditor Team",
@@ -44,17 +46,19 @@
       "name": "firstByte",
       "offset": 0,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "First byte of the LRC file at offset 0 — expected to be 0x5B (ASCII '[') at the start of a metadata tag or timestamp; presence of this bracket is the primary content-based detection indicator for LRC files",
-      "storeAs": "firstByte"
+      "storeAs": "firstByte",
+      "valueType": "uint8"
     },
     {
       "name": "firstTag",
       "offset": 0,
       "size": 4,
-      "type": "ascii",
+      "type": "field",
       "description": "First 4-byte string at offset 0 — typically the beginning of a metadata tag such as '[ar:' (artist), '[ti:' (title), '[al:' (album), or '[00:' (first lyric timestamp); used for more precise format identification",
-      "storeAs": "firstTag"
+      "storeAs": "firstTag",
+      "valueType": "ascii"
     }
   ],
   "assertions": [
@@ -73,7 +77,12 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "File Start", "offset": 0, "size": 256, "description": "Opening tags and metadata header section of the LRC file" }
+      {
+        "name": "File Start",
+        "offset": 0,
+        "size": 256,
+        "description": "Opening tags and metadata header section of the LRC file"
+      }
     ]
   },
   "inspector": {
@@ -83,7 +92,10 @@
     "groups": [
       {
         "name": "File Header",
-        "fields": [ "firstByte", "firstTag" ]
+        "fields": [
+          "firstByte",
+          "firstTag"
+        ]
       }
     ]
   },
@@ -115,14 +127,32 @@
     ]
   },
   "software": [
-    { "name": "foobar2000", "url": "https://www.foobar2000.org/", "role": "music player" },
-    { "name": "AIMP", "url": "https://www.aimp.ru/", "role": "music player" },
-    { "name": "Winamp", "url": "https://www.winamp.com/", "role": "music player" }
+    {
+      "name": "foobar2000",
+      "url": "https://www.foobar2000.org/",
+      "role": "music player"
+    },
+    {
+      "name": "AIMP",
+      "url": "https://www.aimp.ru/",
+      "role": "music player"
+    },
+    {
+      "name": "Winamp",
+      "url": "https://www.winamp.com/",
+      "role": "music player"
+    }
   ],
   "formatRelationships": [
-    { "format": "SMI", "relation": "alternative — SAMI uses HTML-like syntax for video subtitles; LRC is simpler plain-text for music lyrics" }
+    {
+      "format": "SMI",
+      "relation": "alternative — SAMI uses HTML-like syntax for video subtitles; LRC is simpler plain-text for music lyrics"
+    }
   ],
-  "MimeTypes": [ "text/plain", "application/x-lrc" ],
+  "MimeTypes": [
+    "text/plain",
+    "application/x-lrc"
+  ],
   "UseCases": [
     "Synchronized lyric display in music players",
     "Karaoke software timing files",

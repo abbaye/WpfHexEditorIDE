@@ -23,7 +23,7 @@
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>whfmt.Validate</Product>
     <Title>whfmt.Validate — Binary File Validator dotnet global tool</Title>
-    <Description>Validate binary files against 790+ whfmt format definitions. Checks magic bytes, checksums (CRC32/MD5/SHA1/SHA256/Adler32), structural assertions, and forensic patterns. Outputs plain text, JSON, or HTML reports. Install: dotnet tool install -g whfmt.Validate</Description>
+    <Description>Validate binary files against 799 whfmt format definitions (schema v3). Detects format via magic bytes (with negative-offset support), runs structural assertions through the runtime expression engine, verifies checksums (CRC32/MD5/SHA1/SHA256/Adler32), and reports forensic patterns. Includes lint-expressions subcommand for static .whfmt validation. Outputs plain text (UTF-8), JSON, or HTML reports. Install: dotnet tool install -g whfmt.Validate</Description>
     <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
     <PackageTags>whfmt;binary;validate;format;detection;checksum;forensic;cli;tool;dotnet-tool</PackageTags>
     <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorIDE</PackageProjectUrl>
@@ -33,7 +33,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageReleaseNotes>1.0.0 — Initial release. validate command with --format, --report (text/json/html), --output, --recursive flags. 790+ format definitions via whfmt.FileFormatCatalog.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.0.0 — Initial public release. Commands: validate (with --format / --report text|json|html / --output / --recursive / --fail-fast), list, info, repair, lint-expressions. Powered by whfmt.FileFormatCatalog 1.3.2 (799 format definitions, schema v3). Phase B bug fixes: negative-offset magic byte signatures (SHEBANG, FAT_BINARY, NE, LE, TRUECRYPT) now match correctly; assertions over .whfmt files with boolean/null variables (e.g. PNG.crc32Valid) no longer throw. UTF-8 console output forced via Console.OutputEncoding so emoji status glyphs render on Windows.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -43,8 +43,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="whfmt.FileFormatCatalog" Version="1.2.0" />
+    <PackageReference Include="whfmt.FileFormatCatalog" Version="1.3.2" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <!-- ProjectReference kept for local dev (pre-1.3.2-publication). When packing for
+         nuget.org, MSBuild prefers the PackageReference; once 1.3.2 is live this block
+         can be safely deleted. -->
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Contracts\WpfHexEditor.Core.Contracts.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
   </ItemGroup>
 
 </Project>

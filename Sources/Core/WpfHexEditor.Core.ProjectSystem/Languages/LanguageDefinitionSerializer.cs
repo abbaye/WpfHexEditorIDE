@@ -255,6 +255,10 @@ public static class LanguageDefinitionSerializer
             Aliases               = (IReadOnlyList<string>?)dto.IdeMetadata?.Aliases ?? [],
             IconGlyph             = dto.IdeMetadata?.IconGlyph,
             IdeDiffMode           = dto.IdeMetadata?.DiffMode,
+            // P8 — standalone CodeEditor features
+            Completions           = MapCompletions(dto.Completions),
+            OutlineRules          = MapOutlineRules(dto.OutlineRules),
+            DiagnosticRules       = MapDiagnosticRules(dto.DiagnosticRules),
         };
     }
 
@@ -431,6 +435,39 @@ public static class LanguageDefinitionSerializer
 
         [JsonPropertyName("ideMetadata")]
         public IdeMetadataDto? IdeMetadata { get; set; }
+
+        // P8 — Standalone CodeEditor features (no-Roslyn path)
+        [JsonPropertyName("completions")]
+        public CompletionItemDto[]?  Completions      { get; set; }
+
+        [JsonPropertyName("outlineRules")]
+        public OutlineRuleDto[]?     OutlineRules     { get; set; }
+
+        [JsonPropertyName("diagnosticRules")]
+        public DiagnosticRuleDto[]?  DiagnosticRules  { get; set; }
+    }
+
+    private sealed class CompletionItemDto
+    {
+        [JsonPropertyName("label")]      public string? Label      { get; set; }
+        [JsonPropertyName("kind")]       public string? Kind       { get; set; }
+        [JsonPropertyName("detail")]     public string? Detail     { get; set; }
+        [JsonPropertyName("insertText")] public string? InsertText { get; set; }
+    }
+
+    private sealed class OutlineRuleDto
+    {
+        [JsonPropertyName("type")]    public string? Type    { get; set; }
+        [JsonPropertyName("pattern")] public string? Pattern { get; set; }
+        [JsonPropertyName("group")]   public int     Group   { get; set; } = 1;
+    }
+
+    private sealed class DiagnosticRuleDto
+    {
+        [JsonPropertyName("id")]       public string? Id       { get; set; }
+        [JsonPropertyName("pattern")]  public string? Pattern  { get; set; }
+        [JsonPropertyName("severity")] public string? Severity { get; set; }
+        [JsonPropertyName("message")]  public string? Message  { get; set; }
     }
 
     private sealed class IdeMetadataDto
@@ -712,4 +749,89 @@ public static class LanguageDefinitionSerializer
         }
         return regexes.Count > 0 ? regexes : null;
     }
+
+    // P8 — standalone CodeEditor features ------------------------------------
+
+    private static IReadOnlyList<WhfmtCompletionItem> MapCompletions(CompletionItemDto[]? dtos)
+    {
+        if (dtos is null or { Length: 0 }) return [];
+        var list = new List<WhfmtCompletionItem>(dtos.Length);
+        foreach (var d in dtos)
+        {
+            if (string.IsNullOrEmpty(d.Label)) continue;
+            list.Add(new WhfmtCompletionItem
+            {
+                Label      = d.Label,
+                Kind       = ParseCompletionKind(d.Kind),
+                Detail     = d.Detail,
+                InsertText = d.InsertText,
+            });
+        }
+        return list;
+    }
+
+    private static WhfmtCompletionKind ParseCompletionKind(string? raw) => raw?.ToLowerInvariant() switch
+    {
+        "keyword"  => WhfmtCompletionKind.Keyword,
+        "class"    => WhfmtCompletionKind.Class,
+        "method"   => WhfmtCompletionKind.Method,
+        "property" => WhfmtCompletionKind.Property,
+        "variable" => WhfmtCompletionKind.Variable,
+        "module"   => WhfmtCompletionKind.Module,
+        "snippet"  => WhfmtCompletionKind.Snippet,
+        _          => WhfmtCompletionKind.Other,
+    };
+
+    private static IReadOnlyList<WhfmtOutlineRule> MapOutlineRules(OutlineRuleDto[]? dtos)
+    {
+        if (dtos is null or { Length: 0 }) return [];
+        var list = new List<WhfmtOutlineRule>(dtos.Length);
+        foreach (var d in dtos)
+        {
+            if (string.IsNullOrEmpty(d.Type) || string.IsNullOrEmpty(d.Pattern)) continue;
+            try
+            {
+                list.Add(new WhfmtOutlineRule
+                {
+                    Kind    = d.Type,
+                    Pattern = new Regex(d.Pattern, RegexOptions.Compiled | RegexOptions.Multiline),
+                    Group   = d.Group <= 0 ? 1 : d.Group,
+                });
+            }
+            catch { /* skip malformed patterns */ }
+        }
+        return list;
+    }
+
+    private static IReadOnlyList<WhfmtDiagnosticRule> MapDiagnosticRules(DiagnosticRuleDto[]? dtos)
+    {
+        if (dtos is null or { Length: 0 }) return [];
+        var list = new List<WhfmtDiagnosticRule>(dtos.Length);
+        foreach (var d in dtos)
+        {
+            if (string.IsNullOrEmpty(d.Id) || string.IsNullOrEmpty(d.Pattern) ||
+                string.IsNullOrEmpty(d.Message)) continue;
+            try
+            {
+                list.Add(new WhfmtDiagnosticRule
+                {
+                    Id       = d.Id,
+                    Pattern  = new Regex(d.Pattern, RegexOptions.Compiled | RegexOptions.Multiline),
+                    Severity = ParseSeverity(d.Severity),
+                    Message  = d.Message,
+                });
+            }
+            catch { /* skip malformed patterns */ }
+        }
+        return list;
+    }
+
+    private static WhfmtDiagnosticSeverity ParseSeverity(string? raw) => raw?.ToLowerInvariant() switch
+    {
+        "error"   => WhfmtDiagnosticSeverity.Error,
+        "warning" => WhfmtDiagnosticSeverity.Warning,
+        "info"    => WhfmtDiagnosticSeverity.Info,
+        "hint"    => WhfmtDiagnosticSeverity.Hint,
+        _         => WhfmtDiagnosticSeverity.Info,
+    };
 }

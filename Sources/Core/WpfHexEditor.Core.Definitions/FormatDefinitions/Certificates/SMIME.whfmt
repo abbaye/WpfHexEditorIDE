@@ -2,8 +2,13 @@
   "diffMode": "binary",
   "formatName": "S/MIME Signed or Encrypted Message (PKCS#7 / CMS)",
   "formatId": "SMIME",
-  "version": "1.0",
-  "extensions": [ ".p7s", ".p7m", ".p7c", ".p7b" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".p7s",
+    ".p7m",
+    ".p7c",
+    ".p7b"
+  ],
   "description": "S/MIME (Secure/Multipurpose Internet Mail Extensions) cryptographic message format based on PKCS#7 / CMS (Cryptographic Message Syntax, RFC 5652). Used for email signing, encryption, and certificate distribution. File variants by extension: .p7s = detached signature (SignedData), .p7m = enveloped/encrypted message (EnvelopedData or AuthEnvelopedData), .p7c = certificates-only (degenerate SignedData with no content), .p7b = certificate chain or CRL. Two encoding formats: PEM ('-----BEGIN PKCS7-----' header) or DER binary. CMS ContentTypes: SignedData (1.2.840.113549.1.7.2), EnvelopedData (1.2.840.113549.1.7.3), DigestedData (1.2.840.113549.1.7.5), EncryptedData (1.2.840.113549.1.7.6), AuthenticatedData (1.2.840.113549.1.9.16.1.2), AuthEnvelopedData (1.2.840.113549.1.9.16.1.23). SignedData contains: version, digestAlgorithms, encapContentInfo, certificates, CRLs, signerInfos. EnvelopedData contains: version, originatorInfo, recipientInfos, encryptedContentInfo.",
   "category": "Certificates",
   "author": "WPFHexaEditor Team",
@@ -39,48 +44,56 @@
       "name": "smimePemOrDer",
       "offset": 0,
       "size": 16,
-      "type": "ascii",
+      "type": "field",
       "description": "Encoding format indicator — 16 ASCII bytes at offset 0; for PEM encoding: '-----BEGIN PKCS7' (16 chars) followed by '-----\\n'; for DER encoding: first byte is 0x30 followed by ASN.1 DER structure; presence of '-----' confirms PEM wrapping around a DER payload",
-      "storeAs": "smimePemOrDer"
+      "storeAs": "smimePemOrDer",
+      "valueType": "ascii"
     },
     {
       "name": "smimeFirstByte",
       "offset": 0,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "First byte — 1-byte unsigned integer at offset 0; 0x2D (45) for PEM-encoded PKCS#7, 0x30 (48) for DER-encoded PKCS#7 (ASN.1 SEQUENCE tag)",
-      "storeAs": "smimeFirstByte"
+      "storeAs": "smimeFirstByte",
+      "valueType": "uint8"
     },
     {
       "name": "smimeContentTypeOid",
       "offset": 4,
       "size": 11,
-      "type": "bytes",
+      "type": "field",
       "description": "ContentType OID — 11 bytes at approximately offset 4 in DER ContentInfo; DER-encoded OID for SignedData: 06 09 2A 86 48 86 F7 0D 01 07 02 (1.2.840.113549.1.7.2); for EnvelopedData: 06 09 2A 86 48 86 F7 0D 01 07 03 (1.2.840.113549.1.7.3); identifies the CMS content type",
-      "storeAs": "smimeContentTypeOid"
+      "storeAs": "smimeContentTypeOid",
+      "valueType": "bytes"
     },
     {
       "name": "smimeDerLength",
       "offset": 1,
       "size": 3,
-      "type": "bytes",
+      "type": "field",
       "description": "DER outer length — bytes at offset 1; 0x82 followed by 2-byte big-endian content length for structures > 127 bytes; typical S/MIME structures range from 1 KB to several MB depending on content and attached certificates",
-      "storeAs": "smimeDerLength"
+      "storeAs": "smimeDerLength",
+      "valueType": "bytes"
     },
     {
       "name": "smimeCmsVersion",
       "offset": 0,
       "size": 3,
-      "type": "bytes",
+      "type": "field",
       "description": "CMS version integer — 3 bytes at variable offset within SignedData or EnvelopedData; ASN.1 INTEGER encoding: 0x02 0x01 followed by version value; SignedData versions: 1=no attribute certs, 3=attribute certs, 4=KEK recipients, 5=PasswordRecipientInfo; EnvelopedData versions: 0=v0, 2=originator, 3=KEK, 4=PWRI",
-      "storeAs": "smimeCmsVersion"
+      "storeAs": "smimeCmsVersion",
+      "valueType": "bytes"
     }
   ],
   "assertions": [
     {
       "field": "smimeFirstByte",
       "op": "in",
-      "value": [ 45, 48 ],
+      "value": [
+        45,
+        48
+      ],
       "description": "First byte must be 0x2D (PEM '-') or 0x30 (DER SEQUENCE); no other values are valid for PKCS#7/CMS files"
     },
     {
@@ -99,9 +112,21 @@
   "navigation": {
     "entryPoint": "smimeFirstByte",
     "sections": [
-      { "name": "PEM Header / DER Outer ContentInfo", "offset": 0, "size": 4 },
-      { "name": "ContentType OID", "offset": 4, "size": 11 },
-      { "name": "CMS Content (SignedData / EnvelopedData)", "offset": 15, "description": "Main CMS payload — variable length" }
+      {
+        "name": "PEM Header / DER Outer ContentInfo",
+        "offset": 0,
+        "size": 4
+      },
+      {
+        "name": "ContentType OID",
+        "offset": 4,
+        "size": 11
+      },
+      {
+        "name": "CMS Content (SignedData / EnvelopedData)",
+        "offset": 15,
+        "description": "Main CMS payload — variable length"
+      }
     ]
   },
   "inspector": {
@@ -110,11 +135,18 @@
     "groups": [
       {
         "name": "Encoding",
-        "fields": [ "smimeFirstByte", "smimePemOrDer" ]
+        "fields": [
+          "smimeFirstByte",
+          "smimePemOrDer"
+        ]
       },
       {
         "name": "CMS Structure",
-        "fields": [ "smimeDerLength", "smimeContentTypeOid", "smimeCmsVersion" ]
+        "fields": [
+          "smimeDerLength",
+          "smimeContentTypeOid",
+          "smimeCmsVersion"
+        ]
       }
     ]
   },
@@ -154,17 +186,49 @@
     ]
   },
   "software": [
-    { "name": "OpenSSL (smime command)", "vendor": "OpenSSL Software Foundation", "url": "https://www.openssl.org/docs/man3.0/man1/openssl-smime.html" },
-    { "name": "Mozilla Thunderbird", "vendor": "Mozilla Foundation", "url": "https://www.thunderbird.net" },
-    { "name": "Microsoft Outlook", "vendor": "Microsoft", "url": "https://www.microsoft.com/en-us/microsoft-365/outlook" },
-    { "name": "Bouncy Castle CMS API", "vendor": "Legion of the Bouncy Castle", "url": "https://www.bouncycastle.org" },
-    { "name": "ASN.1 Decoder (lapo.it)", "vendor": "Various", "url": "https://www.lapo.it/asn1js/" }
+    {
+      "name": "OpenSSL (smime command)",
+      "vendor": "OpenSSL Software Foundation",
+      "url": "https://www.openssl.org/docs/man3.0/man1/openssl-smime.html"
+    },
+    {
+      "name": "Mozilla Thunderbird",
+      "vendor": "Mozilla Foundation",
+      "url": "https://www.thunderbird.net"
+    },
+    {
+      "name": "Microsoft Outlook",
+      "vendor": "Microsoft",
+      "url": "https://www.microsoft.com/en-us/microsoft-365/outlook"
+    },
+    {
+      "name": "Bouncy Castle CMS API",
+      "vendor": "Legion of the Bouncy Castle",
+      "url": "https://www.bouncycastle.org"
+    },
+    {
+      "name": "ASN.1 Decoder (lapo.it)",
+      "vendor": "Various",
+      "url": "https://www.lapo.it/asn1js/"
+    }
   ],
   "formatRelationships": [
-    { "format": "X509", "relationship": "S/MIME uses X.509 certificates for signing and encryption; certificates are embedded in SignedData and referenced in EnvelopedData" },
-    { "format": "OCSP", "relationship": "S/MIME clients use OCSP to verify certificate validity before trusting signatures" },
-    { "format": "CSR", "relationship": "S/MIME certificates are obtained via CSR submission to an email CA (e.g., Comodo, GlobalSign)" },
-    { "format": "GPG_KEYRING", "relationship": "GPG/PGP provides equivalent email encryption functionality to S/MIME but uses a different format and trust model (web of trust vs PKI)" }
+    {
+      "format": "X509",
+      "relationship": "S/MIME uses X.509 certificates for signing and encryption; certificates are embedded in SignedData and referenced in EnvelopedData"
+    },
+    {
+      "format": "OCSP",
+      "relationship": "S/MIME clients use OCSP to verify certificate validity before trusting signatures"
+    },
+    {
+      "format": "CSR",
+      "relationship": "S/MIME certificates are obtained via CSR submission to an email CA (e.g., Comodo, GlobalSign)"
+    },
+    {
+      "format": "GPG_KEYRING",
+      "relationship": "GPG/PGP provides equivalent email encryption functionality to S/MIME but uses a different format and trust model (web of trust vs PKI)"
+    }
   ],
   "MimeTypes": [
     "application/pkcs7-mime",
@@ -192,7 +256,14 @@
       "1.2.840.113549.1.7.6": "EncryptedData",
       "1.2.840.113549.1.9.16.1.23": "AuthEnvelopedData"
     },
-    "encodingFormats": [ "DER (binary)", "PEM (base64 with '-----BEGIN PKCS7-----' header)" ],
-    "rfcs": [ "RFC 5652 (CMS)", "RFC 8551 (S/MIME v4)", "RFC 2315 (PKCS#7 legacy)" ]
+    "encodingFormats": [
+      "DER (binary)",
+      "PEM (base64 with '-----BEGIN PKCS7-----' header)"
+    ],
+    "rfcs": [
+      "RFC 5652 (CMS)",
+      "RFC 8551 (S/MIME v4)",
+      "RFC 2315 (PKCS#7 legacy)"
+    ]
   }
 }

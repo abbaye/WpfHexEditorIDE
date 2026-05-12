@@ -13,7 +13,7 @@ Unlike naive byte-flippers, `whfmt.Fuzz` understands the *structure* of binary f
 - **`FuzzReport`** — field coverage, strategy distribution, and untested fields analysis
 - Weighted random strategy picker ensures coverage of the most dangerous fields first
 
-Powered by **757 binary whfmt format definitions** with dedicated `fuzz` blocks for ZIP, PNG, PE/EXE, PDF, MP3, SQLite, and more.
+Powered by **789 binary whfmt format definitions** with dedicated `fuzz` blocks for ZIP, PNG, PE/EXE, PDF, MP3, SQLite, and more.
 
 ---
 
@@ -302,7 +302,7 @@ Depends on: `whfmt.FileFormatCatalog 1.3.0+` — cross-platform net8.0.
 
 | Package | Description |
 |---|---|
-| [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) | 790+ format definitions — required dependency |
+| [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) | 799 format definitions — required dependency |
 | [whfmt.Validate](https://www.nuget.org/packages/whfmt.Validate) | `dotnet tool` — validate binary files from the CLI |
 | [whfmt.Analysis](https://www.nuget.org/packages/whfmt.Analysis) | Semantic field-level diff between binary files |
 | [whfmt.CodeGen](https://www.nuget.org/packages/whfmt.CodeGen) | `dotnet tool` — generate C# parser classes from .whfmt |

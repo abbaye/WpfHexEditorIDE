@@ -12,7 +12,7 @@ Instead of comparing raw bytes, `whfmt.Analysis` understands the *structure* of 
 - **Structural diff** — block-level OnlyInA / OnlyInB / InBoth using MD5 hashes
 - Outputs rich text, JSON, CSV, Markdown, or dark-themed HTML reports
 
-Powered by **757 binary whfmt format definitions** covering Archives, Images, Executables, Documents, Audio, Databases, and more.
+Powered by **789 binary whfmt format definitions** covering Archives, Images, Executables, Documents, Audio, Databases, and more.
 
 ---
 
@@ -193,7 +193,7 @@ whfmt.Analysis — Semantic Binary Diff
 | **MP3** | mpeg_version, bitrate, sample_rate, id3 tags | - |
 | **SQLite** | page_size, schema_format, user_version | change_counter |
 
-All 757 binary catalog formats are supported for raw-byte fallback. Formats with a `diff` block in their .whfmt definition get full semantic key-field comparison.
+All 789 binary catalog formats are supported for raw-byte fallback. Formats with a `diff` block in their .whfmt definition get full semantic key-field comparison.
 
 ---
 
@@ -239,7 +239,7 @@ Depends on: `whfmt.FileFormatCatalog 1.3.0+` (zero other dependencies, cross-pla
 
 | Package | Description |
 |---|---|
-| [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) | 790+ format definitions — required dependency |
+| [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) | 799 format definitions — required dependency |
 | [whfmt.Validate](https://www.nuget.org/packages/whfmt.Validate) | `dotnet tool` — validate binary files from the CLI |
 | [whfmt.Fuzz](https://www.nuget.org/packages/whfmt.Fuzz) | Format-aware binary fuzzer for parser testing |
 | [whfmt.CodeGen](https://www.nuget.org/packages/whfmt.CodeGen) | `dotnet tool` — generate C# parser classes from .whfmt |

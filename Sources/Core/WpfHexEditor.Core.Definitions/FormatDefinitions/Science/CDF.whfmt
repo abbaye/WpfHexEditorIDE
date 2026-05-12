@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Common Data Format",
   "formatId": "CDF",
-  "version": "1.14",
+  "version": "1.14.1",
   "extensions": [
     ".cdf"
   ],
@@ -88,7 +88,8 @@
       "opacity": 0.35,
       "description": "4-byte big-endian encoding type: 1 = Network (XDR/big-endian), 6 = IBMPC (little-endian), 2 = SGI (native BE); determines byte order for all data values",
       "storeAs": "encoding",
-      "valueType": "uint32be"
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -99,7 +100,8 @@
       "opacity": 0.3,
       "description": "Array majority flag: 1 = row-major (C order), 2 = column-major (Fortran order); determines memory layout of multidimensional variable arrays",
       "storeAs": "majority",
-      "valueType": "uint32be"
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "metadata",

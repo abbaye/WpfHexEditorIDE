@@ -13,6 +13,7 @@
     <!-- NuGet packaging -->
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageId>WpfHexEditor.Editor.DisassemblyViewer</PackageId>
+    <IsPackable>false</IsPackable>
     <Version>0.1.0</Version>
     <Authors>WpfHexEditor Contributors</Authors>
     <Description>Disassembly viewer stub for WpfHexEditor — implements IDocumentEditor. Planned for a future sprint (requires Iced/Capstone.NET).</Description>

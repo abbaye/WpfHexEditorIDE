@@ -1,7 +1,7 @@
 {
   "formatName": "IVF Container (VP8/VP9/AV1)",
   "formatId": "IVF",
-  "version": "1.1",
+  "version": "1.1.1",
   "extensions": [ ".ivf" ],
   "diffMode": "binary",
   "description": "Indeo Video Frame (IVF) container is a simple format used by libvpx and the AOM codec library to encapsulate VP8, VP9 and AV1 bitstreams with minimal overhead.",
@@ -34,7 +34,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 88,
     "Strength": "Strong",
     "EntropyHint": { "min": 5.0, "max": 7.8 }

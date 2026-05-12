@@ -2,8 +2,10 @@
   "diffMode": "binary",
   "formatName": "Amiga Disk Format (ADF)",
   "formatId": "ROM_AMIGA_ADF",
-  "version": "1.0",
-  "extensions": [ ".adf" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".adf"
+  ],
   "description": "Amiga floppy disk image in ADF (Amiga Disk Format). Standard double-density disk: 80 tracks × 2 sides × 11 sectors × 512 bytes = 901120 bytes. High-density variant: 80 × 2 × 22 × 512 = 1802240 bytes. OFS (Old Filing System) disks start with 'DOS' followed by 0x00-0x03. FFS (Fast Filing System) uses 0x01 or 0x05. The bootblock occupies the first two sectors (1024 bytes). The rootblock is at sector 880 (track 40, offset 450560). Disk type is in the first 4 bytes.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
@@ -44,15 +46,16 @@
       "name": "diskTypeMagic",
       "offset": 0,
       "size": 3,
-      "type": "ascii",
+      "type": "field",
       "description": "Disk type magic — 3-byte ASCII string at offset 0, always 'DOS' in all AmigaOS filesystem variants; the following byte distinguishes OFS from FFS and other filesystem flags",
-      "storeAs": "diskTypeMagic"
+      "storeAs": "diskTypeMagic",
+      "valueType": "ascii"
     },
     {
       "name": "fsFlag",
       "offset": 3,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "Filesystem type flag — 1-byte value at offset 3 indicating the filesystem variant and features; bit 0 = FFS (1) vs OFS (0), bit 1 = INTL directory cache, bit 2 = DIRCACHE enabled",
       "storeAs": "fsFlag",
       "valueMap": {
@@ -62,31 +65,35 @@
         "3": "FFS+INTL",
         "4": "OFS+DIRCACHE",
         "5": "FFS+DIRCACHE"
-      }
+      },
+      "valueType": "uint8"
     },
     {
       "name": "bootChecksum",
       "offset": 4,
       "size": 4,
-      "type": "uint32",
+      "type": "field",
       "endian": "BE",
       "description": "Boot block checksum — 4-byte big-endian unsigned integer at offset 4; computed as the one's complement sum of all 32-bit words in the 1024-byte boot block with this field itself set to 0; used by Kickstart to verify boot block integrity",
-      "storeAs": "bootChecksum"
+      "storeAs": "bootChecksum",
+      "valueType": "uint32"
     },
     {
       "name": "rootBlockSector",
       "offset": 8,
       "size": 4,
-      "type": "uint32",
+      "type": "field",
       "endian": "BE",
-      "description": "Root block sector number — 4-byte big-endian value at offset 8 in the boot block; for standard DD disks this is always sector 880 (offset 450560); the root block contains the disk name and the top-level directory hash table"
+      "description": "Root block sector number — 4-byte big-endian value at offset 8 in the boot block; for standard DD disks this is always sector 880 (offset 450560); the root block contains the disk name and the top-level directory hash table",
+      "valueType": "uint32"
     },
     {
       "name": "bootCode",
       "offset": 12,
       "size": 1012,
-      "type": "bytes",
-      "description": "Boot code — 1012 bytes of 68000 executable boot code at offset 12 within the 1024-byte boot block; this code is loaded and executed by Kickstart if the disk type magic and checksum are valid"
+      "type": "field",
+      "description": "Boot code — 1012 bytes of 68000 executable boot code at offset 12 within the 1024-byte boot block; this code is loaded and executed by Kickstart if the disk type magic and checksum are valid",
+      "valueType": "bytes"
     }
   ],
   "assertions": [
@@ -111,8 +118,18 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "Bootblock", "offset": 0, "size": 1024, "description": "Sectors 0-1: boot block containing DOS magic, checksum, and optional boot code" },
-      { "name": "Rootblock", "offset": 450560, "size": 512, "description": "Sector 880: root block containing disk name and top-level directory hash table" }
+      {
+        "name": "Bootblock",
+        "offset": 0,
+        "size": 1024,
+        "description": "Sectors 0-1: boot block containing DOS magic, checksum, and optional boot code"
+      },
+      {
+        "name": "Rootblock",
+        "offset": 450560,
+        "size": 512,
+        "description": "Sector 880: root block containing disk name and top-level directory hash table"
+      }
     ]
   },
   "inspector": {
@@ -122,11 +139,17 @@
     "groups": [
       {
         "name": "Filesystem",
-        "fields": [ "diskTypeMagic", "fsFlag", "bootChecksum" ]
+        "fields": [
+          "diskTypeMagic",
+          "fsFlag",
+          "bootChecksum"
+        ]
       },
       {
         "name": "Structure",
-        "fields": [ "rootBlockSector" ]
+        "fields": [
+          "rootBlockSector"
+        ]
       }
     ]
   },
@@ -158,14 +181,31 @@
     ]
   },
   "software": [
-    { "name": "WinUAE", "url": "https://www.winuae.net/", "role": "emulator" },
-    { "name": "ADFOpus", "url": "https://adfopus.sourceforge.net/", "role": "disk image tool" },
-    { "name": "FS-UAE", "url": "https://fs-uae.net/", "role": "emulator" }
+    {
+      "name": "WinUAE",
+      "url": "https://www.winuae.net/",
+      "role": "emulator"
+    },
+    {
+      "name": "ADFOpus",
+      "url": "https://adfopus.sourceforge.net/",
+      "role": "disk image tool"
+    },
+    {
+      "name": "FS-UAE",
+      "url": "https://fs-uae.net/",
+      "role": "emulator"
+    }
   ],
   "formatRelationships": [
-    { "format": "ROM_AMIGA_HDF", "relation": "sibling — HDF is the Amiga hard disk image format with similar block structure" }
+    {
+      "format": "ROM_AMIGA_HDF",
+      "relation": "sibling — HDF is the Amiga hard disk image format with similar block structure"
+    }
   ],
-  "MimeTypes": [ "application/x-amiga-disk-format" ],
+  "MimeTypes": [
+    "application/x-amiga-disk-format"
+  ],
   "UseCases": [
     "Amiga software and game preservation",
     "Emulation with WinUAE and FS-UAE",

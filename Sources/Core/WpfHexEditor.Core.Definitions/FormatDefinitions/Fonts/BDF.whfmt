@@ -1,7 +1,7 @@
 {
   "formatName": "Bitmap Distribution Format (BDF)",
   "formatId": "BDF",
-  "version": "1.1",
+  "version": "1.1.1",
   "extensions": [ ".bdf" ],
   "diffMode": "text",
   "description": "Bitmap Distribution Format is a text-based X11 bitmap font format developed by Adobe. Each glyph is described as a named block with bounding box and hexadecimal bitmap rows.",
@@ -34,7 +34,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 88,
     "Strength": "Strong",
     "EntropyHint": { "min": 3.5, "max": 5.5 }

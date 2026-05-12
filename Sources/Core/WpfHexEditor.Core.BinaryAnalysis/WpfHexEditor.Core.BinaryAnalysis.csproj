@@ -10,12 +10,13 @@
 
     <!-- NuGet metadata -->
     <PackageId>WpfHexEditor.Core.BinaryAnalysis</PackageId>
-    <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0</FileVersion>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1</FileVersion>
     <Authors>Derek Tremblay;Claude Sonnet 4.6</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfHexEditor.Core.BinaryAnalysis</Product>
+    <Title>WpfHexEditor.Core.BinaryAnalysis — Cross-platform Binary Analysis Library</Title>
     <Copyright>GNU Affero General Public License v3.0 - 2026</Copyright>
     <Description>
       Cross-platform binary analysis library — zero WPF dependency.
@@ -47,7 +48,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>Initial public release — cross-platform binary analysis with zero WPF dependency.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.0.1 — Added Title metadata. ViewModelBase introduced + LINQ allocation fixes in shared code paths. Repository reorganized into group subfolders (no source-level changes). No public API changes. 1.0.0 — Initial public release: cross-platform binary analysis with zero WPF dependency.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

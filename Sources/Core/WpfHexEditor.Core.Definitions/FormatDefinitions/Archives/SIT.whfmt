@@ -1,7 +1,7 @@
 {
   "formatName": "StuffIt Archive",
   "formatId": "SIT",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "binary",
   "extensions": [ ".sit", ".sitx" ],
   "description": "StuffIt is a proprietary compression and archive format developed by Aladdin Systems (later Smith Micro). Classic .sit files begin with 'StuffIt ' (0x5374756666497420); the newer StuffIt X format uses 'STUFFITX' (0x5354554646495458).",
@@ -87,7 +87,7 @@
     }
   ],
   "assertions": [
-    { "id": "A1", "description": "Magic must start with 'StuffIt' or 'STUFFITX'", "expression": "sitMagic starts with 'StuffIt' || sitMagic == 'STUFFITX'" },
+    { "id": "A1", "description": "Magic must start with 'StuffIt' or 'STUFFITX'", "expression": "sitMagic.startsWith('StuffIt') || sitMagic == 'STUFFITX'" },
     { "id": "A2", "description": "NumFiles must be greater than 0 (classic .sit)",  "expression": "sitNumFiles > 0" },
     { "id": "A3", "description": "ArchiveSize should be non-zero and consistent with file size", "expression": "sitArchiveSize > 0" }
   ],

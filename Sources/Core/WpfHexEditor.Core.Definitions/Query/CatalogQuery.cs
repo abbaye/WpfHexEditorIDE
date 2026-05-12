@@ -125,6 +125,26 @@ public sealed class CatalogQuery
     public CatalogQuery WithName(string name)
         => Where(e => e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
+    /// <summary>
+    /// Keeps only entries whose <c>formatId</c> matches <paramref name="formatId"/> (case-insensitive).
+    /// Added in P1 — stable identifier survives renames of the human-readable Name.
+    /// </summary>
+    public CatalogQuery WithFormatId(string formatId)
+        => Where(e => e.FormatId.Equals(formatId, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// Keeps only entries whose detection <c>matchMode</c> equals <paramref name="mode"/>
+    /// (case-insensitive). Values: "any", "best", "all". Added in P3.
+    /// </summary>
+    public CatalogQuery WithMatchMode(string mode)
+        => Where(e => e.MatchMode.Equals(mode, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// Keeps only entries that declare a non-zero detection score threshold. Added in P3.
+    /// </summary>
+    public CatalogQuery HasMinimumScore()
+        => Where(e => e.MinimumScore > 0);
+
     // ------------------------------------------------------------------
     // Full-text search
     // ------------------------------------------------------------------

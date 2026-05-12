@@ -2,8 +2,11 @@
   "diffMode": "text",
   "formatName": "SAMI Subtitle",
   "formatId": "SMI",
-  "version": "1.0",
-  "extensions": [ ".smi", ".sami" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".smi",
+    ".sami"
+  ],
   "description": "SAMI (Synchronized Accessible Media Interchange) subtitle format, developed by Microsoft. Text file encoded in UTF-8 or Windows-1252. Begins with the '<SAMI>' or '<sami>' tag. Structure: HEAD section containing a STYLE block with CSS class definitions (e.g. .ENCC for English Closed Captions). BODY section contains SYNC tags with START attribute in milliseconds, each containing a P element with a CLASS attribute matching a CSS language class. Supports multiple language tracks via distinct CSS classes. Commonly used with Windows Media Player.",
   "category": "Subtitles",
   "author": "WPFHexaEditor Team",
@@ -38,17 +41,19 @@
       "name": "firstByte",
       "offset": 0,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "First byte of the SAMI file at offset 0 — must be 0x3C (ASCII less-than sign '<') indicating the start of the SAMI opening tag; presence of this byte is the primary content-based detection cue",
-      "storeAs": "firstByte"
+      "storeAs": "firstByte",
+      "valueType": "uint8"
     },
     {
       "name": "smiTag",
       "offset": 0,
       "size": 5,
-      "type": "ascii",
+      "type": "field",
       "description": "SAMI opening tag prefix — 5-byte ASCII string at offset 0 expected to be '<SAMI' or '<sami'; this tag-like prefix is the unique identifier for the SAMI subtitle format and distinguishes it from HTML and XML files",
-      "storeAs": "smiTag"
+      "storeAs": "smiTag",
+      "valueType": "ascii"
     }
   ],
   "assertions": [
@@ -67,7 +72,12 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "File Start", "offset": 0, "size": 64, "description": "Opening tag and beginning of SAMI document structure" }
+      {
+        "name": "File Start",
+        "offset": 0,
+        "size": 64,
+        "description": "Opening tag and beginning of SAMI document structure"
+      }
     ]
   },
   "inspector": {
@@ -77,7 +87,10 @@
     "groups": [
       {
         "name": "File Header",
-        "fields": [ "firstByte", "smiTag" ]
+        "fields": [
+          "firstByte",
+          "smiTag"
+        ]
       }
     ]
   },
@@ -109,15 +122,36 @@
     ]
   },
   "software": [
-    { "name": "Windows Media Player", "url": "https://support.microsoft.com/en-us/windows/windows-media-player", "role": "media player" },
-    { "name": "VLC", "url": "https://www.videolan.org/vlc/", "role": "media player" },
-    { "name": "Subtitle Edit", "url": "https://www.nikse.dk/subtitleedit", "role": "subtitle editor" }
+    {
+      "name": "Windows Media Player",
+      "url": "https://support.microsoft.com/en-us/windows/windows-media-player",
+      "role": "media player"
+    },
+    {
+      "name": "VLC",
+      "url": "https://www.videolan.org/vlc/",
+      "role": "media player"
+    },
+    {
+      "name": "Subtitle Edit",
+      "url": "https://www.nikse.dk/subtitleedit",
+      "role": "subtitle editor"
+    }
   ],
   "formatRelationships": [
-    { "format": "LRC", "relation": "alternative — LRC uses simpler timestamp syntax for music lyrics; SAMI is richer and HTML-based" },
-    { "format": "SRT", "relation": "alternative — SRT is simpler sequential subtitle format without multi-language CSS support" }
+    {
+      "format": "LRC",
+      "relation": "alternative — LRC uses simpler timestamp syntax for music lyrics; SAMI is richer and HTML-based"
+    },
+    {
+      "format": "SRT",
+      "relation": "alternative — SRT is simpler sequential subtitle format without multi-language CSS support"
+    }
   ],
-  "MimeTypes": [ "text/sami", "application/x-sami" ],
+  "MimeTypes": [
+    "text/sami",
+    "application/x-sami"
+  ],
   "UseCases": [
     "Windows Media Player subtitle and closed caption display",
     "Multi-language subtitle track distribution",

@@ -2,8 +2,12 @@
   "diffMode": "binary",
   "formatName": "VeraCrypt Encrypted Volume",
   "formatId": "VERACRYPT",
-  "version": "1.0",
-  "extensions": [ ".vc", ".hc", ".tc" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".vc",
+    ".hc",
+    ".tc"
+  ],
   "description": "VeraCrypt (and TrueCrypt) encrypted volume. Designed for plausible deniability — the first 64KB of the outer volume is random-looking encrypted data with no binary magic, no identifiable header, and no file system signatures. The volume header is encrypted with AES-256-XTS using a key derived from the user passphrase via PBKDF2. Hidden volumes occupy the last 64KB of the outer volume protected by a second passphrase. Both file containers and full-partition volumes are indistinguishable from random data without the correct passphrase. Detection relies solely on file extension and near-maximum Shannon entropy (approximately 7.9-8.0 bits per byte). Used in high-security contexts by journalists, activists, and forensic-aware users.",
   "category": "Crypto",
   "author": "WPFHexaEditor Team",
@@ -30,17 +34,19 @@
       "name": "firstByte",
       "offset": 0,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "First byte of the VeraCrypt volume at offset 0 — this byte is part of the encrypted volume header ciphertext; it appears random and carries no structural meaning without the correct decryption key and passphrase",
-      "storeAs": "firstByte"
+      "storeAs": "firstByte",
+      "valueType": "uint8"
     },
     {
       "name": "secondByte",
       "offset": 1,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "Second byte of the VeraCrypt volume at offset 1 — this byte is part of the encrypted volume header ciphertext; no structural significance without decryption; appears statistically random",
-      "storeAs": "secondByte"
+      "storeAs": "secondByte",
+      "valueType": "uint8"
     }
   ],
   "assertions": [
@@ -53,8 +59,18 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "Encrypted Header Area", "offset": 0, "size": 65536, "description": "First 64KB — contains the encrypted outer volume header; appears as random data without passphrase" },
-      { "name": "Encrypted Data", "offset": 65536, "size": -1, "description": "Main encrypted payload data; all bytes are AES-XTS ciphertext indistinguishable from random" }
+      {
+        "name": "Encrypted Header Area",
+        "offset": 0,
+        "size": 65536,
+        "description": "First 64KB — contains the encrypted outer volume header; appears as random data without passphrase"
+      },
+      {
+        "name": "Encrypted Data",
+        "offset": 65536,
+        "size": -1,
+        "description": "Main encrypted payload data; all bytes are AES-XTS ciphertext indistinguishable from random"
+      }
     ]
   },
   "inspector": {
@@ -64,7 +80,10 @@
     "groups": [
       {
         "name": "Volume Start",
-        "fields": [ "firstByte", "secondByte" ]
+        "fields": [
+          "firstByte",
+          "secondByte"
+        ]
       }
     ]
   },
@@ -96,13 +115,26 @@
     ]
   },
   "software": [
-    { "name": "VeraCrypt", "url": "https://www.veracrypt.fr/", "role": "volume manager" },
-    { "name": "TrueCrypt", "url": "https://truecrypt.sourceforge.net/", "role": "predecessor volume manager" }
+    {
+      "name": "VeraCrypt",
+      "url": "https://www.veracrypt.fr/",
+      "role": "volume manager"
+    },
+    {
+      "name": "TrueCrypt",
+      "url": "https://truecrypt.sourceforge.net/",
+      "role": "predecessor volume manager"
+    }
   ],
   "formatRelationships": [
-    { "format": "LUKS", "relation": "alternative — LUKS stores plaintext metadata in the header; VeraCrypt encrypts everything including the header for plausible deniability" }
+    {
+      "format": "LUKS",
+      "relation": "alternative — LUKS stores plaintext metadata in the header; VeraCrypt encrypts everything including the header for plausible deniability"
+    }
   ],
-  "MimeTypes": [ "application/x-veracrypt" ],
+  "MimeTypes": [
+    "application/x-veracrypt"
+  ],
   "UseCases": [
     "High-security file container encryption with plausible deniability",
     "Full-disk and full-partition encryption",

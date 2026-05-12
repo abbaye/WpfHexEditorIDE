@@ -14,14 +14,14 @@
     <ToolCommandName>whfmt-codegen</ToolCommandName>
 
     <PackageId>whfmt.CodeGen</PackageId>
-    <Version>1.1.1</Version>
-    <AssemblyVersion>1.1.1</AssemblyVersion>
-    <FileVersion>1.1.1</FileVersion>
+    <Version>1.1.2</Version>
+    <AssemblyVersion>1.1.2</AssemblyVersion>
+    <FileVersion>1.1.2</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>whfmt.CodeGen</Product>
     <Title>whfmt.CodeGen — Binary Parser Generator (C# · F# · Rust · VB.NET)</Title>
-    <Description>Generate strongly-typed parsers from .whfmt binary format definitions — C#, zero-alloc Span&lt;byte&gt;, F#, or Rust. 757 binary formats supported. Rich types: enums for valueMap, [Flags] enum for bitfields, List&lt;T&gt; for repeating, nullable for conditionals. Typed exceptions: InvalidSignatureException, ChecksumMismatchException, TruncatedFileException. New: dump command for structured binary inspection. Install: dotnet tool install -g whfmt.CodeGen</Description>
+    <Description>Generate strongly-typed parsers from .whfmt binary format definitions — C#, zero-alloc Span&lt;byte&gt;, F#, Rust, or VB.NET. 789 binary formats supported (whfmt schema v3). Rich types: enums for valueMap, [Flags] enum for bitfields, List&lt;T&gt; for repeating, nullable for conditionals. Typed exceptions: InvalidSignatureException, ChecksumMismatchException, TruncatedFileException. Commands: gen, dump. Install: dotnet tool install -g whfmt.CodeGen</Description>
     <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
     <PackageTags>whfmt;codegen;parser;generator;binary;format;c#;dotnet-tool;net8</PackageTags>
     <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorIDE</PackageProjectUrl>
@@ -31,7 +31,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageReleaseNotes>1.1.1 — Added VB.NET output language (--lang vb): Public Class with BinaryReader, typed enums for valueMap, &lt;Flags&gt; enum for bitfields, List(Of T) for repeating fields, nullable for conditionals, big-endian ReverseBytes helpers. 1.1.0 — dump command, rich types, typed exceptions, C#-Span/F#/Rust output, --project flag.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.1.2 — Catalog bump to whfmt.FileFormatCatalog 1.3.2 (Phase B audit + bug fixes, 799 definitions, schema v3 canonical). No CodeGen API changes. 1.1.1 — VB.NET output language (--lang vb): Public Class with BinaryReader, typed enums for valueMap, &lt;Flags&gt; enum for bitfields, List(Of T) for repeating fields, nullable for conditionals, big-endian ReverseBytes helpers. 1.1.0 — dump command, rich types, typed exceptions, C#-Span / F# / Rust output, --project flag.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -41,8 +41,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="whfmt.FileFormatCatalog" Version="1.3.1" />
+    <PackageReference Include="whfmt.FileFormatCatalog" Version="1.3.2" />
     <PackageReference Include="System.CommandLine"      Version="2.0.0-beta4.22272.1" />
+    <!-- Local project references for pre-1.3.2-publication dev/test.
+         MSBuild prefers ProjectReference at build time; the PackageReference
+         above is what consumers see. Remove this block once 1.3.2 is live. -->
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Contracts\WpfHexEditor.Core.Contracts.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
   </ItemGroup>
 
 </Project>

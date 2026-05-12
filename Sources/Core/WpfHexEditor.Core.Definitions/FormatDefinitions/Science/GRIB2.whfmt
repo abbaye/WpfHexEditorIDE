@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "GRIB2 Weather Data",
   "formatId": "GRIB2",
-  "version": "1.14",
+  "version": "1.14.1",
   "extensions": [
     ".grib2",
     ".grb2"
@@ -93,7 +93,8 @@
       "opacity": 0.35,
       "description": "8-byte big-endian uint64 total GRIB2 message length in bytes including the 'GRIB' identifier and the '7777' end marker",
       "storeAs": "totalLength",
-      "valueType": "uint64be"
+      "valueType": "uint64",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -115,7 +116,8 @@
       "opacity": 0.3,
       "description": "2-byte big-endian WMO originating center in Section 1: 7 = NCEP/US, 98 = ECMWF, 84 = Météo-France; identifies data producer",
       "storeAs": "originatingCenter",
-      "valueType": "uint16be"
+      "valueType": "uint16",
+      "endianness": "big"
     }
   ],
   "assertions": [

@@ -1,8 +1,8 @@
 {
   "diffMode": "binary",
   "formatName": "Program Database",
-  "formatId": "PDB",
-  "version": "1.15",
+  "formatId": "PDB_DEBUG",
+  "version": "1.15.1",
   "extensions": [
     ".pdb"
   ],

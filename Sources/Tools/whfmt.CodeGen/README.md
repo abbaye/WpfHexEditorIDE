@@ -21,7 +21,7 @@ Every `BlockDefinition` in a `.whfmt` file becomes a **typed property**.
 Big-endian fields emit BSwap helpers automatically.  
 `--validate` adds `InvalidSignatureException`, `ChecksumMismatchException`, `TruncatedFileException`.
 
-Powered by **757 binary format definitions** from `whfmt.FileFormatCatalog` (790+ total; 757 binary formats available for code generation — text-format grammars excluded).
+Powered by **789 binary format definitions** from `whfmt.FileFormatCatalog` (790+ total; 789 binary formats available for code generation — text-format grammars excluded).
 
 ---
 
@@ -96,7 +96,7 @@ whfmt-codegen dump <file> [options]
 whfmt-codegen list [--search <term>] [--category <name>]
 ```
 
-Lists all 757 binary formats available for code generation grouped by category.
+Lists all 789 binary formats available for code generation grouped by category.
 
 ---
 
@@ -389,9 +389,9 @@ End Namespace
 
 ---
 
-## Supported Formats (757 binary)
+## Supported Formats (789 binary)
 
-Run `whfmt-codegen list` to browse all 757 binary formats by category. Key formats:
+Run `whfmt-codegen list` to browse all 789 binary formats by category. Key formats:
 
 | Category | Formats |
 |---|---|
@@ -410,7 +410,7 @@ Run `whfmt-codegen list` to browse all 757 binary formats by category. Key forma
 | Disk | VMDK, VHD, QCOW2, ISO... |
 | Network | PCAP, PCAPNG, DNS... |
 
-> **790+ total definitions** in `whfmt.FileFormatCatalog`. 757 binary formats are available for code generation; 33 text-format grammars (C#, Python, Rust, etc.) are excluded from `list` and `generate`.
+> **790+ total definitions** in `whfmt.FileFormatCatalog`. 789 binary formats are available for code generation; 33 text-format grammars (C#, Python, Rust, etc.) are excluded from `list` and `generate`.
 
 ---
 
@@ -439,7 +439,7 @@ Depends on: `whfmt.FileFormatCatalog 1.3.1+` · `System.CommandLine 2.0.0-beta4`
 
 | Package | Description |
 |---|---|
-| [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) | 790+ format definitions — required dependency |
+| [whfmt.FileFormatCatalog](https://www.nuget.org/packages/whfmt.FileFormatCatalog) | 799 format definitions — required dependency |
 | [whfmt.Validate](https://www.nuget.org/packages/whfmt.Validate) | `dotnet tool` — validate + repair binary files from the CLI |
 | [whfmt.Analysis](https://www.nuget.org/packages/whfmt.Analysis) | Semantic field-level diff between binary files |
 | [whfmt.Fuzz](https://www.nuget.org/packages/whfmt.Fuzz) | Format-aware binary fuzzer for parser testing |

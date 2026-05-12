@@ -1,7 +1,7 @@
 {
   "formatName": "Lzip Compressed File",
   "formatId": "LZIP",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "binary",
   "extensions": [ ".lz" ],
   "description": "Lzip is a lossless data compressor based on the LZMA algorithm. Files begin with a 4-byte ASCII magic 'LZIP' followed by a version byte and a dictionary-size byte encoding both base exponent and mantissa in bits 0-4 and 5-7 respectively.",
@@ -38,7 +38,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 82,
     "Strength": "Strong",
     "EntropyHint": { "min": 7.5, "max": 8.0, "note": "Compressed LZMA payload yields near-maximum entropy" },

@@ -8,6 +8,7 @@ using System.Collections.Frozen;
 using System.Reflection;
 using System.Text.Json;
 using WpfHexEditor.Core.Contracts;
+using WpfHexEditor.Core.Definitions.Models;
 
 namespace WpfHexEditor.Core.Definitions;
 
@@ -25,13 +26,6 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
 {
     // -- Singleton -------------------------------------------------------------
 
-    // JSONC support: .whfmt files contain // comment headers — skip them during parse.
-    private static readonly JsonDocumentOptions s_jsonOptions = new()
-    {
-        CommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
-    };
-
     /// <summary>
     /// The singleton instance.
     /// </summary>
@@ -42,6 +36,25 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
     // -- Lazy cache ------------------------------------------------------------
     private IReadOnlySet<EmbeddedFormatEntry> Entries => LazyInitializer.EnsureInitialized(ref field, () => MakeEntries());
     private IReadOnlySet<string> Categories => LazyInitializer.EnsureInitialized(ref field, () => MakeCategories(Entries));
+    private IReadOnlyDictionary<string, EmbeddedFormatEntry> ByName =>
+        LazyInitializer.EnsureInitialized(ref field, () => BuildByName(Entries));
+    private IReadOnlyDictionary<string, EmbeddedFormatEntry> ByFormatId =>
+        LazyInitializer.EnsureInitialized(ref field, () => BuildByFormatId(Entries));
+
+    private static IReadOnlyDictionary<string, EmbeddedFormatEntry> BuildByName(IReadOnlySet<EmbeddedFormatEntry> entries)
+    {
+        var dict = new Dictionary<string, EmbeddedFormatEntry>(StringComparer.OrdinalIgnoreCase);
+        foreach (var e in entries) dict.TryAdd(e.Name, e);
+        return dict;
+    }
+
+    private static IReadOnlyDictionary<string, EmbeddedFormatEntry> BuildByFormatId(IReadOnlySet<EmbeddedFormatEntry> entries)
+    {
+        var dict = new Dictionary<string, EmbeddedFormatEntry>(StringComparer.OrdinalIgnoreCase);
+        foreach (var e in entries)
+            if (!string.IsNullOrEmpty(e.FormatId)) dict.TryAdd(e.FormatId, e);
+        return dict;
+    }
 
     /// <summary>
     /// Thread-safe cache: embedded resource key → raw JSON text.
@@ -126,6 +139,21 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         return json;
     }
 
+    /// <summary>
+    /// Returns the v3-normalized JSON for the given .whfmt resource — runs the
+    /// raw JSON through <see cref="WhfmtVersionMigrator.Migrate"/> so callers
+    /// see canonical camelCase root keys. Falls back to the raw JSON on
+    /// migration errors (catalog entries with duplicate-case property collisions
+    /// are kept as-is and surfaced to whfmt-guard for cleanup).
+    /// </summary>
+    public string GetJsonV3(string resourceKey)
+    {
+        var raw = GetJson(resourceKey);
+        if (!resourceKey.EndsWith(".whfmt", StringComparison.OrdinalIgnoreCase)) return raw;
+        try { return WhfmtVersionMigrator.Migrate(raw); }
+        catch { return raw; }
+    }
+
     /// <inheritdoc/>
     public EmbeddedFormatEntry? GetByExtension(string extension)
     {
@@ -134,6 +162,16 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         return GetAll().FirstOrDefault(e =>
             e.Extensions.Any(x => x.Equals(ext, StringComparison.OrdinalIgnoreCase)));
     }
+
+    /// <inheritdoc/>
+    public EmbeddedFormatEntry? GetByName(string name)
+        => string.IsNullOrEmpty(name) ? null
+         : ByName.TryGetValue(name, out var e) ? e : null;
+
+    /// <inheritdoc/>
+    public EmbeddedFormatEntry? GetByFormatId(string formatId)
+        => string.IsNullOrEmpty(formatId) ? null
+         : ByFormatId.TryGetValue(formatId, out var e) ? e : null;
 
     /// <inheritdoc/>
     public IReadOnlyList<string> GetCompatibleEditorIds(string filePath)
@@ -206,7 +244,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         using var stream = DefinitionsAssembly.GetManifestResourceStream(resourceKey);
         if (stream is null) return null;
 
-        using var doc  = JsonDocument.Parse(stream, s_jsonOptions);
+        using var doc  = JsonDocument.Parse(stream, WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
 
         if (!root.TryGetProperty("syntaxDefinition", out var syntaxBlock)) return null;
@@ -230,15 +268,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
 
         foreach (var entry in GetAll())
         {
-            if (entry.Signatures is not { Count: > 0 }) continue;
-            double score = 0;
-            foreach (var sig in entry.Signatures)
-            {
-                var bytes = Convert.FromHexString(sig.Value);
-                if (sig.Offset + bytes.Length > header.Length) continue;
-                if (header.Slice(sig.Offset, bytes.Length).SequenceEqual(bytes))
-                    score += sig.Weight;
-            }
+            var score = Matching.FormatMatcher.ScoreEntry(entry, header);
             if (score > bestScore) { bestScore = score; best = entry; }
         }
         return bestScore > 0 ? best : null;
@@ -268,10 +298,11 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         using var stream = DefinitionsAssembly.GetManifestResourceStream(resourceKey);
         if (stream is null) return null;
 
-        using var doc = JsonDocument.Parse(stream, s_jsonOptions);
+        using var doc = JsonDocument.Parse(stream, WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
 
         var name        = GetString(root, "formatName") ?? ExtractNameFromKey(resourceKey);
+        var formatId    = GetString(root, "formatId")   ?? "";
         var description = GetString(root, "description") ?? "";
         var category    = GetString(root, "category")    ?? ExtractCategoryFromKey(resourceKey);
         var version     = GetString(root, "version")     ?? "";
@@ -319,25 +350,80 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
             foreach (var m in mt.EnumerateArray())
                 if (m.GetString() is { } ms) mimeTypes.Add(ms);
 
-        // Signatures (detection.signatures)
+        // Signatures: prefer new schema (detection.signatures[]), fall back to legacy
+        // single-signature schema (detection.signature/offset/weight) — normalized into
+        // the same FormatSignature list so downstream consumers see a single shape.
         var signatures = new List<FormatSignature>();
-        if (root.TryGetProperty("detection", out var det2) &&
-            det2.TryGetProperty("signatures", out var sigs) &&
-            sigs.ValueKind == JsonValueKind.Array)
-            foreach (var sig in sigs.EnumerateArray())
+
+        // P3: detection v2 fields — matchMode / MinimumScore / EntropyHint / minFileSize.
+        // Both camelCase (canonical v3) and PascalCase (legacy) accepted at read time.
+        var matchMode    = "best";
+        var minimumScore = 0.0;
+        var minFileSize  = 0;
+        var entropyMin   = double.NaN;
+        var entropyMax   = double.NaN;
+
+        if (root.TryGetProperty("detection", out var det2))
+        {
+            if (det2.TryGetProperty("signatures", out var sigs) && sigs.ValueKind == JsonValueKind.Array)
             {
-                var val    = sig.TryGetProperty("value",  out var v) ? v.GetString() ?? "" : "";
-                var off    = sig.TryGetProperty("offset", out var o) ? o.GetInt32()       : 0;
-                var weight = sig.TryGetProperty("weight", out var w) ? w.GetDouble()      : 1.0;
+                foreach (var sig in sigs.EnumerateArray())
+                {
+                    var val    = sig.TryGetProperty("value",  out var v) ? v.GetString() ?? "" : "";
+                    var off    = sig.TryGetProperty("offset", out var o) ? o.GetInt32()       : 0;
+                    var weight = sig.TryGetProperty("weight", out var w) ? w.GetDouble()      : 1.0;
+                    if (val.Length > 0) signatures.Add(new FormatSignature(val, off, weight));
+                }
+            }
+            else if (det2.TryGetProperty("signature", out var legacySig) && legacySig.ValueKind == JsonValueKind.String)
+            {
+                var val    = legacySig.GetString() ?? "";
+                var off    = det2.TryGetProperty("offset", out var o2) && o2.ValueKind == JsonValueKind.Number ? o2.GetInt32() : 0;
+                var weight = det2.TryGetProperty("weight", out var w2) && w2.ValueKind == JsonValueKind.Number ? w2.GetDouble() : 1.0;
                 if (val.Length > 0) signatures.Add(new FormatSignature(val, off, weight));
             }
+
+            // matchMode (string)
+            matchMode = GetString(det2, "matchMode") ?? "best";
+
+            // MinimumScore (number) — both casings
+            if (det2.TryGetProperty("MinimumScore", out var ms) && ms.ValueKind == JsonValueKind.Number)
+                minimumScore = ms.GetDouble();
+            else if (det2.TryGetProperty("minimumScore", out var msc) && msc.ValueKind == JsonValueKind.Number)
+                minimumScore = msc.GetDouble();
+
+            // EntropyHint.min / .max — PascalCase wrapper, camelCase children
+            if (det2.TryGetProperty("EntropyHint", out var eh) && eh.ValueKind == JsonValueKind.Object)
+            {
+                if (eh.TryGetProperty("min", out var emn) && emn.ValueKind == JsonValueKind.Number)
+                    entropyMin = emn.GetDouble();
+                if (eh.TryGetProperty("max", out var emx) && emx.ValueKind == JsonValueKind.Number)
+                    entropyMax = emx.GetDouble();
+            }
+            else if (det2.TryGetProperty("entropyHint", out var ehc) && ehc.ValueKind == JsonValueKind.Object)
+            {
+                if (ehc.TryGetProperty("min", out var emn) && emn.ValueKind == JsonValueKind.Number)
+                    entropyMin = emn.GetDouble();
+                if (ehc.TryGetProperty("max", out var emx) && emx.ValueKind == JsonValueKind.Number)
+                    entropyMax = emx.GetDouble();
+            }
+
+            // validation.minFileSize (validation may also be a plain string in legacy files)
+            if (det2.TryGetProperty("validation", out var validation) && validation.ValueKind == JsonValueKind.Object)
+            {
+                if (validation.TryGetProperty("minFileSize", out var mfs) && mfs.ValueKind == JsonValueKind.Number && mfs.TryGetInt32(out var mfsInt))
+                    minFileSize = mfsInt;
+            }
+        }
 
         return new EmbeddedFormatEntry(
             resourceKey, name, category, description, extensions,
             quality, version, author, platform, preferredEditor,
             isTextFormat, hasSyntaxDef, diffMode,
             mimeTypes.Count > 0 ? mimeTypes : null,
-            signatures.Count > 0 ? signatures : null);
+            signatures.Count > 0 ? signatures : null,
+            formatId,
+            matchMode, minimumScore, minFileSize, entropyMin, entropyMax);
     }
 
     private static string? GetString(JsonElement root, string property)

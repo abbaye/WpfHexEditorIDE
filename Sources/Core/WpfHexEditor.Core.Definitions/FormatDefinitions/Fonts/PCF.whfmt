@@ -1,7 +1,7 @@
 {
   "formatName": "Portable Compiled Format Font (PCF)",
   "formatId": "PCF",
-  "version": "1.1",
+  "version": "1.1.1",
   "extensions": [ ".pcf", ".pcf.gz" ],
   "diffMode": "binary",
   "description": "Portable Compiled Format is the compiled binary form of BDF bitmap fonts used by the X Window System. Supports multiple tables for glyph bitmaps, metrics, encodings and accelerators.",
@@ -34,7 +34,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 88,
     "Strength": "Strong",
     "EntropyHint": { "min": 3.5, "max": 6.5 }

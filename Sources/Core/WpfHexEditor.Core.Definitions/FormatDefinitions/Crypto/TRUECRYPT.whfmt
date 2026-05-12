@@ -2,8 +2,11 @@
   "diffMode": "binary",
   "formatName": "TrueCrypt / VeraCrypt Legacy Container",
   "formatId": "TRUECRYPT",
-  "version": "1.0",
-  "extensions": [ ".tc", ".truecrypt" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".tc",
+    ".truecrypt"
+  ],
   "description": "TrueCrypt encrypted volume container format. The entire 512-byte header is encrypted — there is no plaintext magic. The first 64 bytes are a PBKDF2 salt used for key derivation with SHA-512, Whirlpool, or RIPEMD-160. The remaining 448 bytes of the header are encrypted with the derived key using AES, Serpent, or Twofish (or cascades: AES-Twofish, Serpent-AES, Twofish-Serpent, AES-Twofish-Serpent, Serpent-Twofish-AES). After decryption the header contains: magic 'TRUE' (bytes 64-67 decrypted), format version uint16 BE, minimum version to open, CRC-32 of decrypted header bytes 256-511, two 256-bit keys for data encryption, master key checksum, data area size, flags, sector size, and a 192-byte reserved area. Hidden volumes embed a second encrypted header in the last 512 bytes of the volume. VeraCrypt uses the same layout with increased PBKDF2 iterations (500000 for SHA-512 vs 1000 in TrueCrypt) and a different decrypted magic 'VERA'.",
   "category": "Crypto",
   "author": "WPFHexaEditor Team",
@@ -31,41 +34,46 @@
       "name": "tcSaltBlock",
       "offset": 0,
       "size": 64,
-      "type": "bytes",
+      "type": "field",
       "description": "PBKDF2 salt — 64 bytes at offset 0; cryptographically random salt used as input to the PBKDF2 key derivation function together with the user passphrase; hash algorithm may be SHA-512, Whirlpool, or RIPEMD-160; this is the only portion of the encrypted header that has a defined structural role, though it is indistinguishable from random bytes without a known passphrase",
-      "storeAs": "tcSaltBlock"
+      "storeAs": "tcSaltBlock",
+      "valueType": "bytes"
     },
     {
       "name": "tcEncryptedHeader",
       "offset": 64,
       "size": 448,
-      "type": "bytes",
+      "type": "field",
       "description": "Encrypted header payload — 448 bytes at offset 64; this region is encrypted with the master key derived from PBKDF2(salt, passphrase); after decryption it contains: magic 'TRUE' or 'VERA' (4B), format version uint16 BE, minimum compatible version uint16 BE, CRC-32 of header bytes 256-511, two 256-bit (32B each) encryption keys, volume size uint64 BE, data area offset uint64 BE, flags uint32, sector size uint32",
-      "storeAs": "tcEncryptedHeader"
+      "storeAs": "tcEncryptedHeader",
+      "valueType": "bytes"
     },
     {
       "name": "tcFirstByte",
       "offset": 0,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "First byte of the salt block — 1-byte unsigned integer at offset 0; no defined meaning as the entire header is encrypted; present for entropy sampling and format identification purposes",
-      "storeAs": "tcFirstByte"
+      "storeAs": "tcFirstByte",
+      "valueType": "uint8"
     },
     {
       "name": "tcVolumePayload",
       "offset": 512,
       "size": 65536,
-      "type": "bytes",
+      "type": "field",
       "description": "Volume payload sample — first 65536 bytes of encrypted data beginning at offset 512 (offset of actual data may differ based on header layout); all bytes are encrypted and indistinguishable from random data; used for entropy measurement and statistical analysis",
-      "storeAs": "tcVolumePayload"
+      "storeAs": "tcVolumePayload",
+      "valueType": "bytes"
     },
     {
       "name": "tcHiddenVolumeHeaderRegion",
       "offset": -512,
       "size": 512,
-      "type": "bytes",
+      "type": "field",
       "description": "Hidden volume header region — last 512 bytes of the container file (offset = fileSize - 512); TrueCrypt and VeraCrypt store a second encrypted header here for the optional hidden volume; forensically significant because possession of a second passphrase may decrypt a concealed volume with different content",
-      "storeAs": "tcHiddenVolumeHeaderRegion"
+      "storeAs": "tcHiddenVolumeHeaderRegion",
+      "valueType": "bytes"
     }
   ],
   "assertions": [
@@ -91,10 +99,26 @@
   "navigation": {
     "entryPoint": "tcSaltBlock",
     "sections": [
-      { "name": "PBKDF2 Salt", "offset": 0, "size": 64 },
-      { "name": "Encrypted Header", "offset": 64, "size": 448 },
-      { "name": "Encrypted Volume Data", "offset": 512, "description": "Remainder of file — fully encrypted payload" },
-      { "name": "Hidden Volume Header (if present)", "offset": -512, "size": 512 }
+      {
+        "name": "PBKDF2 Salt",
+        "offset": 0,
+        "size": 64
+      },
+      {
+        "name": "Encrypted Header",
+        "offset": 64,
+        "size": 448
+      },
+      {
+        "name": "Encrypted Volume Data",
+        "offset": 512,
+        "description": "Remainder of file — fully encrypted payload"
+      },
+      {
+        "name": "Hidden Volume Header (if present)",
+        "offset": -512,
+        "size": 512
+      }
     ]
   },
   "inspector": {
@@ -103,15 +127,23 @@
     "groups": [
       {
         "name": "Header Region",
-        "fields": [ "tcSaltBlock", "tcEncryptedHeader" ]
+        "fields": [
+          "tcSaltBlock",
+          "tcEncryptedHeader"
+        ]
       },
       {
         "name": "Entropy Sampling",
-        "fields": [ "tcFirstByte", "tcVolumePayload" ]
+        "fields": [
+          "tcFirstByte",
+          "tcVolumePayload"
+        ]
       },
       {
         "name": "Hidden Volume",
-        "fields": [ "tcHiddenVolumeHeaderRegion" ]
+        "fields": [
+          "tcHiddenVolumeHeaderRegion"
+        ]
       }
     ]
   },
@@ -151,18 +183,49 @@
     ]
   },
   "software": [
-    { "name": "VeraCrypt", "vendor": "IDRIX", "url": "https://www.veracrypt.fr" },
-    { "name": "TrueCrypt (archived)", "vendor": "TrueCrypt Foundation (discontinued 2014)", "url": "https://github.com/DrWhax/truecrypt-archive" },
-    { "name": "TCHunt-ng", "vendor": "Open Source", "url": "https://github.com/keydet89/TCHunt-ng" },
-    { "name": "Passware Kit Forensic", "vendor": "Passware", "url": "https://www.passware.com/kit-forensic/" },
-    { "name": "Elcomsoft Forensic Disk Decryptor", "vendor": "Elcomsoft", "url": "https://www.elcomsoft.com/efdd.html" }
+    {
+      "name": "VeraCrypt",
+      "vendor": "IDRIX",
+      "url": "https://www.veracrypt.fr"
+    },
+    {
+      "name": "TrueCrypt (archived)",
+      "vendor": "TrueCrypt Foundation (discontinued 2014)",
+      "url": "https://github.com/DrWhax/truecrypt-archive"
+    },
+    {
+      "name": "TCHunt-ng",
+      "vendor": "Open Source",
+      "url": "https://github.com/keydet89/TCHunt-ng"
+    },
+    {
+      "name": "Passware Kit Forensic",
+      "vendor": "Passware",
+      "url": "https://www.passware.com/kit-forensic/"
+    },
+    {
+      "name": "Elcomsoft Forensic Disk Decryptor",
+      "vendor": "Elcomsoft",
+      "url": "https://www.elcomsoft.com/efdd.html"
+    }
   ],
   "formatRelationships": [
-    { "format": "VERACRYPT", "relationship": "VeraCrypt is the direct successor to TrueCrypt using the same container format with stronger PBKDF2 iteration counts and a different decrypted magic ('VERA' vs 'TRUE')" },
-    { "format": "LUKS", "relationship": "LUKS is the Linux equivalent full-volume encryption format; LUKS has a plaintext magic while TrueCrypt does not" },
-    { "format": "BITLOCKER", "relationship": "BitLocker is the Windows equivalent; BitLocker has a plaintext boot sector magic ('-FVE-FS-') unlike TrueCrypt's fully encrypted header" }
+    {
+      "format": "VERACRYPT",
+      "relationship": "VeraCrypt is the direct successor to TrueCrypt using the same container format with stronger PBKDF2 iteration counts and a different decrypted magic ('VERA' vs 'TRUE')"
+    },
+    {
+      "format": "LUKS",
+      "relationship": "LUKS is the Linux equivalent full-volume encryption format; LUKS has a plaintext magic while TrueCrypt does not"
+    },
+    {
+      "format": "BITLOCKER",
+      "relationship": "BitLocker is the Windows equivalent; BitLocker has a plaintext boot sector magic ('-FVE-FS-') unlike TrueCrypt's fully encrypted header"
+    }
   ],
-  "MimeTypes": [ "application/octet-stream" ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
   "UseCases": [
     "Deniable encrypted container storage with hidden volume capability",
     "Cross-platform portable encrypted drives (Windows/macOS/Linux)",
@@ -181,8 +244,21 @@
     "encryptedHeaderSize": 448,
     "minimumFileSize": 512,
     "endianness": "BigEndian",
-    "pbkdf2Algorithms": [ "SHA-512", "Whirlpool", "RIPEMD-160" ],
-    "encryptionAlgorithms": [ "AES-256-XTS", "Serpent-256-XTS", "Twofish-256-XTS", "AES-Twofish", "Serpent-AES", "Twofish-Serpent", "AES-Twofish-Serpent", "Serpent-Twofish-AES" ],
+    "pbkdf2Algorithms": [
+      "SHA-512",
+      "Whirlpool",
+      "RIPEMD-160"
+    ],
+    "encryptionAlgorithms": [
+      "AES-256-XTS",
+      "Serpent-256-XTS",
+      "Twofish-256-XTS",
+      "AES-Twofish",
+      "Serpent-AES",
+      "Twofish-Serpent",
+      "AES-Twofish-Serpent",
+      "Serpent-Twofish-AES"
+    ],
     "pbkdf2Iterations": {
       "TrueCrypt": 1000,
       "VeraCrypt_SHA512": 500000,

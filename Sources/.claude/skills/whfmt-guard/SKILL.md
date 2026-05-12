@@ -53,6 +53,8 @@ regressions before they reach CI.
 | `whfmt-magic-collision`    | warn     | Same `detection.signature` + `detection.offset` + overlapping `extensions[]` as another file. Add a `detection.validation.note` to silence. |
 | `whfmt-strength-enum`      | warn     | `detection.strength` not in {None, Weak, Medium, Strong, VeryStrong}. Prevents `SignatureStrength` converter surprises. |
 | `whfmt-placeholder-drift`  | warn     | `{{var}}` token used in `description` or `blocks[].description` but `var` not declared in `variables{}`. |
+| `whfmt-expression-refs`    | warn     | Identifier in `assertions[].expression`, `blocks[].expression`, `blocks[].condition`, or `forensic.suspiciousPatterns[].condition` is not in `variables{}` / `functions{}` / built-ins. Full AST validation lives in C# `WhfmtExpressionValidator`. |
+| `whfmt-enum-values`        | warn     | Closed-set field has an unrecognized value. Checks: `blocks[].type` (15 types), `blocks[].valueType` + `variables[].type` (canonical + aliases), `assertions[].severity` (error/warning/info), `detection.matchMode` (any/best/all), `fuzz.strategies[].mutation` (6 mutation kinds), `repair[].action`, `forensic.suspiciousPatterns[].severity` + `forensic.riskLevel` (union: error/warning/info/critical/high/medium/low). Catches typos like `"fild"` for `"field"`, `"warn"` for `"warning"`, `"first"` for `"any"`. |
 
 ## What this skill does NOT do
 
@@ -60,6 +62,22 @@ regressions before they reach CI.
 - Does not run signature accuracy fuzzing (that's `whfmt.Fuzz`).
 - Does not check the schema JSON itself for well-formedness — assumes
   `whfmt.schema.json` is authoritative.
+
+## Known limitations
+
+These are deliberate gaps where the v3 contract tolerates multiple shapes and
+adding a rule would produce more false positives than real findings:
+
+- **`references`** can be either a flat string array OR a named-bucket object
+  (`{specifications, webLinks}`). Both forms are widespread in the catalog
+  (24% array, 76% object). No shape check is run — a typo in a bucket key
+  (e.g. `"refernces"` or `"weblnks"`) will silently make the entries invisible
+  in the IDE references pane.
+- **`formatRelationships`** has the same dual shape (28% array of
+  `{format, relationship}` objects, 72% object with named buckets). Same trade-off.
+- **`syntaxDefinition.rules[].colorKey`** is read by the serializer's DTO but
+  not projected to the domain `SyntaxRule` model. The skill does not flag
+  unknown colorKey values because the runtime ignores them anyway.
 
 ## Suppression
 

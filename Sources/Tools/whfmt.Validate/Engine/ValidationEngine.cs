@@ -226,9 +226,17 @@ internal sealed class ValidationEngine
         };
 
         // Populate variables declared in the format root
-        if (root.TryGetProperty("variables", out var varBlock))
+        if (root.TryGetProperty("variables", out var varBlock) && varBlock.ValueKind == JsonValueKind.Object)
             foreach (var v in varBlock.EnumerateObject())
-                vars[v.Name] = v.Value.ValueKind == JsonValueKind.Number ? (object)v.Value.GetInt64() : v.Value.GetString() ?? "";
+                vars[v.Name] = v.Value.ValueKind switch
+                {
+                    JsonValueKind.Number => v.Value.TryGetInt64(out var i) ? (object)i : v.Value.GetDouble(),
+                    JsonValueKind.String => v.Value.GetString() ?? "",
+                    JsonValueKind.True   => true,
+                    JsonValueKind.False  => false,
+                    JsonValueKind.Null   => "",
+                    _                    => v.Value.GetRawText()
+                };
 
         foreach (var asr in arr.EnumerateArray())
         {

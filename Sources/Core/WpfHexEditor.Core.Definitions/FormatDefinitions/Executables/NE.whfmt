@@ -2,8 +2,13 @@
   "diffMode": "binary",
   "formatName": "New Executable (16-bit Windows)",
   "formatId": "NE",
-  "version": "1.0",
-  "extensions": [ ".exe", ".dll", ".drv", ".fon" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".exe",
+    ".dll",
+    ".drv",
+    ".fon"
+  ],
   "description": "NE (New Executable) format — 16-bit Windows 3.x and OS/2 1.x executable. A DOS MZ stub precedes the NE header at the offset stored in e_lfanew (at DOS offset 60). NE magic bytes are 'NE' (0x4E 0x45). The 64-byte NE header contains: magic (2B), linker version and revision (2B), entry table and size offsets (4B), CRC (4B), module flags (2B including SINGLEDATA, MULTIPLEDATA, WINDOWSCOMPAT, WINDOWSAPI), auto_data_seg (2B), heap and stack sizes (4B), initial IP:CS (4B), initial SP:SS (4B), segment count, module reference count, non-resident name table size, and various table offsets. Target OS byte identifies OS/2 (1), Windows (2), or MS-DOS (3-4).",
   "category": "Executables",
   "author": "WPFHexaEditor Team",
@@ -32,33 +37,36 @@
       "name": "mzMagic",
       "offset": 0,
       "size": 2,
-      "type": "ascii",
+      "type": "field",
       "description": "DOS MZ magic — 2-byte ASCII string at offset 0; must be 'MZ' (0x4D 0x5A) indicating a valid DOS MZ stub header prefixing the NE executable; all NE files begin with this DOS stub for backward compatibility",
-      "storeAs": "mzMagic"
+      "storeAs": "mzMagic",
+      "valueType": "ascii"
     },
     {
       "name": "e_lfanew",
       "offset": 60,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "description": "NE header file offset — 2-byte little-endian unsigned integer at DOS header offset 60 (e_lfanew); indicates the byte offset within the file where the NE header begins; the NE magic 'NE' should be found at this offset",
-      "storeAs": "neOffset"
+      "storeAs": "neOffset",
+      "valueType": "uint16"
     },
     {
       "name": "neMagic",
       "offset": -1,
       "size": 2,
-      "type": "ascii",
+      "type": "field",
       "offsetVar": "neOffset",
       "description": "NE format magic — 2-byte ASCII string at the offset indicated by e_lfanew; must be 'NE' (0x4E 0x45) confirming this is a New Executable format file and not PE32, LE, or LX",
-      "storeAs": "neMagic"
+      "storeAs": "neMagic",
+      "valueType": "ascii"
     },
     {
       "name": "targetOS",
       "offset": -1,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "offsetRelative": "neOffset+54",
       "description": "Target operating system — 1-byte value at NE header offset 54 indicating the OS for which this executable was built; 1=OS/2, 2=Windows, 3=European DOS 4.x, 4=Multitasking (Windows/386); determines loader behavior",
       "storeAs": "targetOS",
@@ -67,16 +75,18 @@
         "2": "Windows",
         "3": "European DOS",
         "4": "Multitasking DOS"
-      }
+      },
+      "valueType": "uint8"
     },
     {
       "name": "moduleFlags",
       "offset": -1,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "offsetRelative": "neOffset+12",
-      "description": "Module flags — 2-byte little-endian bitmask at NE header offset 12; flags include: bit 0=SINGLEDATA, bit 1=MULTIPLEDATA, bit 2=NOTWINDOWCOMPAT, bit 3=WINDOWSCOMPAT, bit 4=WINDOWSAPI; determines memory and segment behavior"
+      "description": "Module flags — 2-byte little-endian bitmask at NE header offset 12; flags include: bit 0=SINGLEDATA, bit 1=MULTIPLEDATA, bit 2=NOTWINDOWCOMPAT, bit 3=WINDOWSCOMPAT, bit 4=WINDOWSAPI; determines memory and segment behavior",
+      "valueType": "uint16"
     }
   ],
   "assertions": [
@@ -101,8 +111,18 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "DOS Stub", "offset": 0, "size": 64, "description": "DOS MZ stub header containing e_lfanew pointer to the NE header" },
-      { "name": "NE Header", "offset": -1, "size": 64, "description": "64-byte NE header at e_lfanew offset containing all module metadata" }
+      {
+        "name": "DOS Stub",
+        "offset": 0,
+        "size": 64,
+        "description": "DOS MZ stub header containing e_lfanew pointer to the NE header"
+      },
+      {
+        "name": "NE Header",
+        "offset": -1,
+        "size": 64,
+        "description": "64-byte NE header at e_lfanew offset containing all module metadata"
+      }
     ]
   },
   "inspector": {
@@ -112,11 +132,18 @@
     "groups": [
       {
         "name": "DOS Stub",
-        "fields": [ "mzMagic", "neOffset" ]
+        "fields": [
+          "mzMagic",
+          "neOffset"
+        ]
       },
       {
         "name": "NE Header",
-        "fields": [ "neMagic", "targetOS", "moduleFlags" ]
+        "fields": [
+          "neMagic",
+          "targetOS",
+          "moduleFlags"
+        ]
       }
     ]
   },
@@ -148,14 +175,30 @@
     ]
   },
   "software": [
-    { "name": "Windows 3.1", "url": "https://en.wikipedia.org/wiki/Windows_3.1x", "role": "target platform" },
-    { "name": "WINE", "url": "https://www.winehq.org/", "role": "compatibility layer" }
+    {
+      "name": "Windows 3.1",
+      "url": "https://en.wikipedia.org/wiki/Windows_3.1x",
+      "role": "target platform"
+    },
+    {
+      "name": "WINE",
+      "url": "https://www.winehq.org/",
+      "role": "compatibility layer"
+    }
   ],
   "formatRelationships": [
-    { "format": "PE_EXE", "relation": "successor — PE32 replaced NE for 32-bit Windows executables; uses same DOS MZ stub with e_lfanew pointing to PE header" },
-    { "format": "LE", "relation": "sibling — LE (Linear Executable) was used for 32-bit OS/2 and Windows 9x VxD drivers; same DOS stub approach" }
+    {
+      "format": "PE_EXE",
+      "relation": "successor — PE32 replaced NE for 32-bit Windows executables; uses same DOS MZ stub with e_lfanew pointing to PE header"
+    },
+    {
+      "format": "LE",
+      "relation": "sibling — LE (Linear Executable) was used for 32-bit OS/2 and Windows 9x VxD drivers; same DOS stub approach"
+    }
   ],
-  "MimeTypes": [ "application/x-msdownload" ],
+  "MimeTypes": [
+    "application/x-msdownload"
+  ],
   "UseCases": [
     "Legacy Windows 3.x application analysis",
     "Historical OS/2 1.x executable inspection",

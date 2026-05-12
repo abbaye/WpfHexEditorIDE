@@ -2,7 +2,7 @@
   "diffMode": "text",
   "formatName": "WARC Web Archive",
   "formatId": "WARC",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [".warc", ".warc.gz"],
   "description": "WARC (Web ARChive) is an ISO 28500 standard format for storing web crawl data, used by the Internet Archive's Wayback Machine, Common Crawl, and web preservation projects worldwide. A WARC file is a sequence of records, each consisting of a text header followed by a content block. Each record starts with the version line 'WARC/1.0' or 'WARC/1.1' (ASCII). WARC headers are key-value pairs including WARC-Type (warcinfo, request, response, resource, metadata, revisit, conversion, continuation), WARC-Date (ISO 8601), WARC-Record-ID (URN UUID), Content-Length, Content-Type, and WARC-Target-URI. A blank CRLF line separates header from content, and two blank CRLF lines separate consecutive records. Response records contain the full HTTP response including status line, headers, and body.",
   "category": "Archives",
@@ -160,19 +160,16 @@
     "suspiciousPatterns": [
       {
         "name": "Sensitive HTTP headers in archived responses",
-        "condition": "response records may contain Set-Cookie, Authorization, or session tokens",
         "severity": "warning",
         "description": "WARC response records capture complete HTTP responses including authentication cookies, session tokens, Authorization headers, and CSRF tokens. These credentials may still be valid or reveal authentication patterns."
       },
       {
         "name": "Personal data in captured form submissions",
-        "condition": "request records with POST data may contain personal information",
         "severity": "warning",
         "description": "WARC request records can contain HTTP POST body data including form submissions with personal information, passwords, credit card numbers, and other sensitive user input captured during the web crawl."
       },
       {
         "name": "Private or restricted page content",
-        "condition": "response records may contain content from authenticated sessions",
         "severity": "info",
         "description": "WARC archives may contain web pages captured from authenticated sessions, including private dashboards, internal tools, email content, and documents not intended for public access."
       }

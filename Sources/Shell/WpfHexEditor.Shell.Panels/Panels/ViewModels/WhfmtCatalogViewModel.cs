@@ -196,7 +196,7 @@ public sealed class WhfmtCatalogViewModel : ViewModelBase, IDisposable
         if (_catalogSvc is not null)
         {
             foreach (var def in _catalogSvc.GetAllFormats()
-                .Where(d => !_embCatalog.Query().WithName(d.FormatName ?? "").Any()))
+                .Where(d => _embCatalog.GetByName(d.FormatName ?? "") is null))
             {
                 var vm = new WhfmtFormatItemVm
                 {

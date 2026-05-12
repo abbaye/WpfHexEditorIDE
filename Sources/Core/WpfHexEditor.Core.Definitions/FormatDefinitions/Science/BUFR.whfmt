@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "BUFR Weather Data",
   "formatId": "BUFR",
-  "version": "1.14",
+  "version": "1.14.2",
   "extensions": [
     ".bufr",
     ".bfr"
@@ -60,7 +60,7 @@
       "opacity": 0.5,
       "description": "3-byte big-endian unsigned integer giving the total BUFR message length in bytes including all sections and the 'BUFR' identifier",
       "storeAs": "totalLength",
-      "valueType": "uint24be"
+      "valueType": "uint32"
     },
     {
       "type": "field",
@@ -82,7 +82,7 @@
       "opacity": 0.35,
       "description": "3-byte big-endian length of Section 1 (identification section) in bytes; Section 1 contains originating center, subcenter, master table, data category, date, and time",
       "storeAs": "section1Length",
-      "valueType": "uint24be"
+      "valueType": "uint32"
     },
     {
       "type": "field",
@@ -104,7 +104,8 @@
       "opacity": 0.3,
       "description": "2-byte big-endian WMO originating/generating center number identifying the data producer (e.g. 98 = ECMWF, 7 = NCEP/US)",
       "storeAs": "originatingCenter",
-      "valueType": "uint16be"
+      "valueType": "uint16",
+      "endianness": "big"
     }
   ],
   "assertions": [

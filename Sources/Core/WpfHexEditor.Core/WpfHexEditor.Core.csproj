@@ -6,7 +6,8 @@
     <RootNamespace>WpfHexEditor.Core</RootNamespace>
     <AssemblyName>WpfHexEditor.Core</AssemblyName>
     <Title>WpfHexEditor.Core - Low-level hex editing services and data layer</Title>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>Derek Tremblay;ehsan69h;Janus Tida;Claude Sonnet 4.5</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Description>

@@ -2,8 +2,12 @@
   "diffMode": "binary",
   "formatName": "Certificate Signing Request (CSR / PKCS#10)",
   "formatId": "CSR",
-  "version": "1.0",
-  "extensions": [ ".csr", ".req", ".p10" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".csr",
+    ".req",
+    ".p10"
+  ],
   "description": "Certificate Signing Request as defined in PKCS#10 (RFC 2986). A CSR is submitted to a Certificate Authority (CA) to request a signed X.509 certificate. It contains the applicant's public key, distinguished name (DN), optional extensions, and a signature using the corresponding private key. Two encoding formats: PEM (base64-encoded DER wrapped in '-----BEGIN CERTIFICATE REQUEST-----' / '-----END CERTIFICATE REQUEST-----' headers) or DER (raw binary ASN.1 BER/DER encoding). The ASN.1 structure: CertificationRequest ::= SEQUENCE { certificationRequestInfo SEQUENCE { version INTEGER (0 = v1), subject Name, subjectPKInfo SubjectPublicKeyInfo, attributes [0] IMPLICIT SET }, signatureAlgorithm AlgorithmIdentifier, signature BIT STRING }. Common signature algorithms: sha256WithRSAEncryption (OID 1.2.840.113549.1.1.11), ecdsa-with-SHA256 (OID 1.2.840.10045.4.3.2), sha384WithRSAEncryption. Extensions in attributes include Subject Alternative Names (SAN), key usage, extended key usage.",
   "category": "Certificates",
   "author": "WPFHexaEditor Team",
@@ -39,48 +43,56 @@
       "name": "csrPemHeader",
       "offset": 0,
       "size": 30,
-      "type": "ascii",
+      "type": "field",
       "description": "PEM header line start — 30 ASCII bytes at offset 0 for PEM-encoded CSRs; expected value is '-----BEGIN CERTIFICATE REQUEST' (30 characters) followed by '-----\\n'; presence of this string conclusively identifies a PEM-format PKCS#10 CSR",
-      "storeAs": "csrPemHeader"
+      "storeAs": "csrPemHeader",
+      "valueType": "ascii"
     },
     {
       "name": "csrFirstByte",
       "offset": 0,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "First byte — 1-byte unsigned integer at offset 0; for DER-encoded CSRs must be 0x30 (ASN.1 SEQUENCE tag); for PEM-encoded CSRs is 0x2D (ASCII '-'); used to distinguish encoding format",
-      "storeAs": "csrFirstByte"
+      "storeAs": "csrFirstByte",
+      "valueType": "uint8"
     },
     {
       "name": "csrDerLength",
       "offset": 1,
       "size": 3,
-      "type": "bytes",
+      "type": "field",
       "description": "DER SEQUENCE length — bytes at offset 1; for DER CSRs: 0x82 followed by 2-byte big-endian total content length; for PEM CSRs: ASCII '--' (next chars of header); used to calculate total structure size",
-      "storeAs": "csrDerLength"
+      "storeAs": "csrDerLength",
+      "valueType": "bytes"
     },
     {
       "name": "csrAsn1Version",
       "offset": 4,
       "size": 4,
-      "type": "bytes",
+      "type": "field",
       "description": "ASN.1 version integer — 4 bytes at offset 4 in DER encoding; expected: 0x02 0x01 0x00 (INTEGER value 0 = v1) confirming CertificationRequestInfo version; version 0 is the only defined version in PKCS#10",
-      "storeAs": "csrAsn1Version"
+      "storeAs": "csrAsn1Version",
+      "valueType": "bytes"
     },
     {
       "name": "csrSubjectStart",
       "offset": 8,
       "size": 2,
-      "type": "bytes",
+      "type": "field",
       "description": "Subject Name SEQUENCE start — 2 bytes at offset 8 in DER; expected 0x30 0xXX (ASN.1 SEQUENCE) beginning the distinguished name (DN) structure containing CN, O, C, ST, L, emailAddress attributes",
-      "storeAs": "csrSubjectStart"
+      "storeAs": "csrSubjectStart",
+      "valueType": "bytes"
     }
   ],
   "assertions": [
     {
       "field": "csrFirstByte",
       "op": "in",
-      "value": [ 45, 48 ],
+      "value": [
+        45,
+        48
+      ],
       "description": "First byte must be 0x2D (45, ASCII '-' for PEM) or 0x30 (48, ASN.1 SEQUENCE for DER)"
     },
     {
@@ -99,10 +111,26 @@
   "navigation": {
     "entryPoint": "csrFirstByte",
     "sections": [
-      { "name": "PEM Header / DER Outer Sequence", "offset": 0, "size": 4 },
-      { "name": "CertificationRequestInfo", "offset": 4, "description": "Inner SEQUENCE with version, subject, public key" },
-      { "name": "SignatureAlgorithm", "offset": 0, "description": "AlgorithmIdentifier SEQUENCE — offset depends on subject DN length" },
-      { "name": "Signature", "offset": 0, "description": "BIT STRING containing the CSR signature" }
+      {
+        "name": "PEM Header / DER Outer Sequence",
+        "offset": 0,
+        "size": 4
+      },
+      {
+        "name": "CertificationRequestInfo",
+        "offset": 4,
+        "description": "Inner SEQUENCE with version, subject, public key"
+      },
+      {
+        "name": "SignatureAlgorithm",
+        "offset": 0,
+        "description": "AlgorithmIdentifier SEQUENCE — offset depends on subject DN length"
+      },
+      {
+        "name": "Signature",
+        "offset": 0,
+        "description": "BIT STRING containing the CSR signature"
+      }
     ]
   },
   "inspector": {
@@ -111,11 +139,18 @@
     "groups": [
       {
         "name": "Encoding",
-        "fields": [ "csrFirstByte", "csrPemHeader" ]
+        "fields": [
+          "csrFirstByte",
+          "csrPemHeader"
+        ]
       },
       {
         "name": "ASN.1 Structure",
-        "fields": [ "csrDerLength", "csrAsn1Version", "csrSubjectStart" ]
+        "fields": [
+          "csrDerLength",
+          "csrAsn1Version",
+          "csrSubjectStart"
+        ]
       }
     ]
   },
@@ -154,19 +189,55 @@
     ]
   },
   "software": [
-    { "name": "OpenSSL", "vendor": "OpenSSL Software Foundation", "url": "https://www.openssl.org" },
-    { "name": "Let's Encrypt / certbot", "vendor": "ISRG", "url": "https://certbot.eff.org" },
-    { "name": "XCA (X Certificate and Key management)", "vendor": "Christian Hohnstädt", "url": "https://hohnstaedt.de/xca/" },
-    { "name": "mkcert", "vendor": "Filippo Valsorda", "url": "https://github.com/FiloSottile/mkcert" },
-    { "name": "Microsoft Certificate Services (AD CS)", "vendor": "Microsoft", "url": "https://docs.microsoft.com/en-us/windows-server/networking/core-network-guide/cncg/server-certs/server-certificate-deployment" }
+    {
+      "name": "OpenSSL",
+      "vendor": "OpenSSL Software Foundation",
+      "url": "https://www.openssl.org"
+    },
+    {
+      "name": "Let's Encrypt / certbot",
+      "vendor": "ISRG",
+      "url": "https://certbot.eff.org"
+    },
+    {
+      "name": "XCA (X Certificate and Key management)",
+      "vendor": "Christian Hohnstädt",
+      "url": "https://hohnstaedt.de/xca/"
+    },
+    {
+      "name": "mkcert",
+      "vendor": "Filippo Valsorda",
+      "url": "https://github.com/FiloSottile/mkcert"
+    },
+    {
+      "name": "Microsoft Certificate Services (AD CS)",
+      "vendor": "Microsoft",
+      "url": "https://docs.microsoft.com/en-us/windows-server/networking/core-network-guide/cncg/server-certs/server-certificate-deployment"
+    }
   ],
   "formatRelationships": [
-    { "format": "X509", "relationship": "A CSR is submitted to a CA to obtain a signed X.509 certificate; the certificate contains the same public key and DN as the CSR" },
-    { "format": "PKCS12", "relationship": "PKCS#12 bundles the resulting certificate with the private key; CSR is the precursor to this bundle" },
-    { "format": "OCSP", "relationship": "OCSP responses validate the status of certificates issued after CSR processing" },
-    { "format": "SMIME", "relationship": "S/MIME certificates are issued based on CSRs for email encryption and signing" }
+    {
+      "format": "X509",
+      "relationship": "A CSR is submitted to a CA to obtain a signed X.509 certificate; the certificate contains the same public key and DN as the CSR"
+    },
+    {
+      "format": "PKCS12",
+      "relationship": "PKCS#12 bundles the resulting certificate with the private key; CSR is the precursor to this bundle"
+    },
+    {
+      "format": "OCSP",
+      "relationship": "OCSP responses validate the status of certificates issued after CSR processing"
+    },
+    {
+      "format": "SMIME",
+      "relationship": "S/MIME certificates are issued based on CSRs for email encryption and signing"
+    }
   ],
-  "MimeTypes": [ "application/pkcs10", "application/x-pem-file", "text/plain" ],
+  "MimeTypes": [
+    "application/pkcs10",
+    "application/x-pem-file",
+    "text/plain"
+  ],
   "UseCases": [
     "Requesting TLS/SSL certificates from public or private CAs",
     "S/MIME email certificate enrollment",
@@ -181,9 +252,23 @@
   },
   "TechnicalDetails": {
     "asn1Structure": "CertificationRequest ::= SEQUENCE { certificationRequestInfo SEQUENCE, signatureAlgorithm AlgorithmIdentifier, signature BIT STRING }",
-    "encodingFormats": [ "PEM (base64 + headers)", "DER (binary ASN.1)" ],
-    "signatureAlgorithms": [ "sha256WithRSAEncryption", "sha384WithRSAEncryption", "sha512WithRSAEncryption", "ecdsa-with-SHA256", "ecdsa-with-SHA384", "id-Ed25519" ],
+    "encodingFormats": [
+      "PEM (base64 + headers)",
+      "DER (binary ASN.1)"
+    ],
+    "signatureAlgorithms": [
+      "sha256WithRSAEncryption",
+      "sha384WithRSAEncryption",
+      "sha512WithRSAEncryption",
+      "ecdsa-with-SHA256",
+      "ecdsa-with-SHA384",
+      "id-Ed25519"
+    ],
     "version": "v1 (INTEGER 0) — only defined version",
-    "rfcs": [ "RFC 2986", "RFC 5280", "RFC 8410" ]
+    "rfcs": [
+      "RFC 2986",
+      "RFC 5280",
+      "RFC 8410"
+    ]
   }
 }

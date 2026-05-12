@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Sony ATRAC Audio",
   "formatId": "ATRAC",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [
     ".at3",
     ".at9",
@@ -32,7 +32,7 @@
         "weight": 0.5
       }
     ],
-    "matchMode": "allOf",
+    "matchMode": "all",
     "MinimumScore": 82,
     "Strength": "Medium",
     "EntropyHint": { "min": 5.0, "max": 7.9 },

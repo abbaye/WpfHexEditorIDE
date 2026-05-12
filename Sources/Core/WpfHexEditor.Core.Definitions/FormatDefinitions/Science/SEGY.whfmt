@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "SEG-Y Seismic Data",
   "formatId": "SEGY",
-  "version": "1.14",
+  "version": "1.14.1",
   "extensions": [
     ".sgy",
     ".segy"
@@ -79,7 +79,8 @@
       "opacity": 0.4,
       "description": "Big-endian uint16 sample interval in microseconds (e.g. 2000 = 2 ms); defines the temporal sampling rate of all traces in this file",
       "storeAs": "sampleInterval",
-      "valueType": "uint16be"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -90,7 +91,8 @@
       "opacity": 0.35,
       "description": "Big-endian uint16 number of data samples per seismic trace; constant for all traces in classic SEG-Y; combined with sample interval gives trace length",
       "storeAs": "samplesPerTrace",
-      "valueType": "uint16be"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -101,7 +103,8 @@
       "opacity": 0.35,
       "description": "Big-endian uint16 data format: 1=IBM 4-byte float, 2=int32, 3=int16, 5=IEEE float32, 6=IEEE float64, 8=int8; critical for amplitude decoding",
       "storeAs": "dataFormatCode",
-      "valueType": "uint16be"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "field",

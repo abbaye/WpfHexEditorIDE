@@ -220,6 +220,29 @@ public sealed class LanguageDefinition
     /// </summary>
     public IReadOnlyList<ScriptGlobalEntry> ScriptGlobals { get; init; } = [];
 
+    // ── Standalone CodeEditor features (whfmt v3 P8) ────────────────────────
+
+    /// <summary>
+    /// Keyword / symbol completion items declared in <c>syntaxDefinition.completions[]</c>.
+    /// Used by CodeEditor's standalone path (no Roslyn workspace) to power IntelliSense.
+    /// Empty list = no completions declared; the CodeEditor falls back to snippet triggers.
+    /// </summary>
+    public IReadOnlyList<WhfmtCompletionItem> Completions { get; init; } = [];
+
+    /// <summary>
+    /// Pattern-based source-outline rules from <c>syntaxDefinition.outlineRules[]</c>.
+    /// Used by the standalone source-outline provider to extract class / method / field
+    /// symbols when no semantic parser is available.
+    /// </summary>
+    public IReadOnlyList<WhfmtOutlineRule> OutlineRules { get; init; } = [];
+
+    /// <summary>
+    /// Pattern-based diagnostics from <c>syntaxDefinition.diagnosticRules[]</c>.
+    /// Used by the standalone diagnostics engine to surface lightweight issues
+    /// (TODO comments, deprecated API usage, etc.) without a full type checker.
+    /// </summary>
+    public IReadOnlyList<WhfmtDiagnosticRule> DiagnosticRules { get; init; } = [];
+
     // ── Formatting preview (whfmt-driven) ───────────────────────────────────
 
     /// <summary>
