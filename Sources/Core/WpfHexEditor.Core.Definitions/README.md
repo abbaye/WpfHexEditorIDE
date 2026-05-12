@@ -216,6 +216,110 @@ string markdown = FormatSummaryBuilder.BuildMarkdown(entry, catalog);
 // Full Markdown card with magic bytes, forensic section, assertions, bookmarks
 ```
 
+### 9 — Lookup by `formatId` (v3)
+
+Every entry now carries a stable, machine-readable `formatId` (e.g. `"PNG"`,
+`"ZIP"`, `"DER_CRYPTO"`). Use it for O(1) deterministic lookups instead of
+extension-based search:
+
+```csharp
+var png = catalog.GetByFormatId("PNG");
+var der = catalog.GetByFormatId("DER_CRYPTO");   // Lot 5 disambiguated DER → DER_CRYPTO
+
+// Fluent variant
+var entry = catalog.Query().WithFormatId("PNG").First();
+```
+
+### 10 — Live assertions: validate a parsed file (v3)
+
+`.whfmt` `assertions[]` blocks are now executable expressions evaluated against
+a `WhfmtVariableStore` you populate from the parsed payload.
+
+```csharp
+using System.Buffers.Binary;
+using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.Definitions.Metadata;
+using WpfHexEditor.Core.Definitions.Models.Expressions;
+using WpfHexEditor.Core.Definitions.Models.Functions;
+
+byte[] data    = File.ReadAllBytes("photo.png");
+var    catalog = EmbeddedFormatCatalog.Instance;
+var    entry   = catalog.GetByFormatId("PNG")!;
+
+// 1) Populate variables from the parsed bytes.
+var store = new WhfmtVariableStore();
+store.Set("fileSize",        (long)data.Length);
+store.Set("pngSignature",    Convert.ToHexString(data.AsSpan(0, 8)));
+store.Set("ihdrChunkLength", BinaryPrimitives.ReadInt32BigEndian(data.AsSpan(8, 4)));
+store.Set("imageWidth",      BinaryPrimitives.ReadInt32BigEndian(data.AsSpan(16, 4)));
+store.Set("imageHeight",     BinaryPrimitives.ReadInt32BigEndian(data.AsSpan(20, 4)));
+store.Set("crc32Valid",      true);
+
+// 2) Run all assertions in one pass.
+var evaluator = new WhfmtExpressionEvaluator(store, WhfmtFunctionRegistry.CreateDefault());
+var results   = FormatAssertionEvaluator.EvaluateAll(evaluator, entry.GetAssertions(catalog));
+
+// 3) Surface failures.
+foreach (var r in results.Where(r => r.Status == AssertionStatus.Fail))
+    Console.WriteLine($"  [{r.Rule.Severity}] {r.Rule.Name}: {r.Rule.Message ?? r.Rule.Expression}");
+```
+
+`FormatAssertionEvaluator.EvaluateAll` returns one `AssertionResult` per rule with
+`Status = Pass | Fail | Skipped` (skipped when a required variable hasn't been set —
+useful when running mid-parse).
+
+### 11 — Evaluate an arbitrary expression (v3)
+
+`WhfmtExpressionEvaluator` is reusable for any `.whfmt` expression — `blocks[].condition`,
+`forensic.suspiciousPatterns[].condition`, or your own DSL embedded in metadata.
+
+```csharp
+var store = new WhfmtVariableStore();
+store.Set("magic",            "PK");
+store.Set("compressionRatio", 1500.0);
+
+var ev = new WhfmtExpressionEvaluator(store, WhfmtFunctionRegistry.CreateDefault());
+
+bool   isZip   = ev.EvaluateBool("magic == 'PK'");                     // true
+bool   bomb    = ev.EvaluateBool("compressionRatio > 1000");           // true
+long   doubled = ev.EvaluateInt ("compressionRatio * 2");              // 3000
+object? label  = ev.Evaluate    ("bomb ? 'danger' : 'ok'");            // (set bomb first)
+```
+
+Register a custom function:
+
+```csharp
+public sealed class Crc32Fn : IWhfmtFunction
+{
+    public string  Name => "crc32";
+    public object? Invoke(IReadOnlyList<object?> args) => Crc32.Compute((byte[])args[0]!);
+}
+
+ev.Functions.Register(new Crc32Fn());
+ev.EvaluateBool("crc32(payload) == expectedCrc");
+```
+
+### 12 — Static expression lint (v3)
+
+Catch parse errors, undeclared identifiers, and unknown function calls **without
+executing** — exactly what `whfmt.Validate lint-expressions` does in CI.
+
+```csharp
+using WpfHexEditor.Core.Definitions.Models.Validation;
+using WpfHexEditor.Core.Definitions.Models.Functions;
+
+var issues = WhfmtExpressionValidator.Validate(
+    expression:    "fileSize > 0 && unknownVar < 100 && weirdFn(x)",
+    declaredVars:  ["fileSize"],
+    declaredFns:   [],
+    fnRegistry:    WhfmtFunctionRegistry.CreateDefault());
+
+foreach (var i in issues)
+    Console.WriteLine($"  [{i.Severity}] {i.Code}: {i.Message}");
+// [Warning] WH-EX-002: Undeclared identifier 'unknownVar'
+// [Error]   WH-EX-003: Unknown function 'weirdFn'
+```
+
 ### Fast Startup — PreWarm
 
 ```csharp
@@ -514,6 +618,74 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 - `until` / `maxLength` / `untilInclusive` — sentinel-based field scanning (Boyer-Moore-Horspool)
 - `imports` — cross-format struct references (`$ref` + alias)
 - `forensic`, `aiHints`, `assertions`, `navigation.bookmarks`, `inspector.groups`, `exportTemplates`, `TechnicalDetails` — full rich metadata surface
+
+### What a v3 `.whfmt` looks like
+
+Minimal example highlighting the v3-only additions: `formatId`, typed `variables`
+array, executable `functions` block, negative-offset signature, runnable `assertion`,
+and the `diff` / `fuzz` blocks consumed by the companion NuGets.
+
+```jsonc
+{
+  "formatName":    "ZIP Archive",
+  "formatId":      "ZIP",                    // v3 — unique, machine-readable
+  "version":       "1.14",
+  "category":      "Archives",
+  "extensions":    [".zip", ".jar", ".apk"],
+  "mimeTypes":     ["application/zip"],
+  "preferredEditor": "hex-editor",
+
+  // Detection — supports negative offsets in v3 (offset-from-end)
+  "detection": {
+    "signatures": [
+      { "value": "504B0304", "offset":  0, "weight": 1.0, "label": "Local File Header" },
+      { "value": "504B0506", "offset":  0, "weight": 0.8, "label": "End of Central Directory" },
+      { "value": "55AA",     "offset": -2, "weight": 0.5, "label": "Tail marker" }
+    ],
+    "matchMode":    "best",
+    "minimumScore": 0.5,
+    "minFileSize":  22
+  },
+
+  // Typed variables (v3 preferred form) — feed WhfmtVariableStore
+  "variables": [
+    { "name": "magic",             "type": "ascii",  "offset": 0, "length": 4 },
+    { "name": "compressionMethod", "type": "uint16", "offset": 8, "length": 2, "endian": "little" }
+  ],
+
+  // Executable functions (v3) — invokable from expressions
+  "functions": {
+    "isZipMagic": { "params": [], "returns": "bool", "body": "magic == 'PK'" },
+    "crc32":      { "params": ["bytes"], "returns": "uint32", "builtIn": "crc32" }
+  },
+
+  // Runtime assertions — evaluated by FormatAssertionEvaluator
+  "assertions": [
+    { "name": "magic valid",
+      "expression": "magic == 'PK'",
+      "severity":   "error",
+      "message":    "Missing ZIP magic bytes" },
+    { "name": "supported compression",
+      "expression": "compressionMethod == 0 || compressionMethod == 8",
+      "severity":   "warning" }
+  ],
+
+  // Consumed by whfmt.Analysis (semantic diff)
+  "diff": { "keyFields": ["centralDirectoryEntries"], "ignoreFields": ["timestamp"] },
+
+  // Consumed by whfmt.Fuzz (mutation engine)
+  "fuzz": {
+    "preserveChecksums": true,
+    "strategies": [
+      { "field": "compressionMethod", "mutation": "enum_sweep",      "weight": 1.0 },
+      { "field": "fileSize",          "mutation": "boundary_values", "weight": 0.7 }
+    ]
+  }
+}
+```
+
+See the [full guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Core/WpfHexEditor.Core.Definitions/whfmt-FileFormatCatalog-guide.md#the-whfmt-format-schema-v3) for the complete annotated schema (29 categories,
+15 block types, `repair` / `migration` / `formatRelationships` / `syntaxDefinition`).
 
 ### Quality & Performance
 - `FormatCategory` and `SchemaName` enums — IntelliSense, no string typos
