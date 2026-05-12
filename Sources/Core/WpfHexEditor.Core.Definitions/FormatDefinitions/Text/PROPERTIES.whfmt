@@ -2,8 +2,10 @@
   "diffMode": "text",
   "formatName": "Java Properties File",
   "formatId": "PROPERTIES",
-  "version": "1.0",
-  "extensions": [ ".properties" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".properties"
+  ],
   "description": "Java .properties file format (java.util.Properties). ISO 8859-1 or UTF-8 encoded plain text. Each line is a key=value or key:value pair. Comments are lines beginning with '#' (hash) or '!' (exclamation). Unicode escape sequences ('\\uXXXX') are used for non-Latin characters in ISO 8859-1 files. Continuation lines are indicated by a trailing backslash. Whitespace around delimiters is trimmed. Used extensively in Java applications, Spring Framework (application.properties), Maven, Apache configurations, and Android resources. Keys and values may use '=' or ':' as delimiters.",
   "category": "Text",
   "author": "WPFHexaEditor Team",
@@ -38,16 +40,18 @@
       "name": "firstByte",
       "offset": 0,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "First byte of the .properties file at offset 0 — commonly 0x23 ('#') for a comment header block at the start of the file, 0x21 ('!') for an exclamation comment, or a printable ASCII character starting the first key name; helps confirm the file is plain text",
-      "storeAs": "firstByte"
+      "storeAs": "firstByte",
+      "valueType": "uint8"
     },
     {
       "name": "secondByte",
       "offset": 1,
       "size": 1,
-      "type": "uint8",
-      "description": "Second byte of the .properties file at offset 1 — the second character of either a comment marker line or the beginning of a key name; used alongside firstByte for encoding and content validation"
+      "type": "field",
+      "description": "Second byte of the .properties file at offset 1 — the second character of either a comment marker line or the beginning of a key name; used alongside firstByte for encoding and content validation",
+      "valueType": "uint8"
     }
   ],
   "assertions": [
@@ -66,7 +70,12 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "File Start", "offset": 0, "size": 512, "description": "Opening comment block and first key-value properties" }
+      {
+        "name": "File Start",
+        "offset": 0,
+        "size": 512,
+        "description": "Opening comment block and first key-value properties"
+      }
     ]
   },
   "inspector": {
@@ -76,7 +85,10 @@
     "groups": [
       {
         "name": "File Start",
-        "fields": [ "firstByte", "secondByte" ]
+        "fields": [
+          "firstByte",
+          "secondByte"
+        ]
       }
     ]
   },
@@ -108,14 +120,31 @@
     ]
   },
   "software": [
-    { "name": "IntelliJ IDEA", "url": "https://www.jetbrains.com/idea/", "role": "Java IDE" },
-    { "name": "Eclipse", "url": "https://www.eclipse.org/", "role": "Java IDE" }
+    {
+      "name": "IntelliJ IDEA",
+      "url": "https://www.jetbrains.com/idea/",
+      "role": "Java IDE"
+    },
+    {
+      "name": "Eclipse",
+      "url": "https://www.eclipse.org/",
+      "role": "Java IDE"
+    }
   ],
   "formatRelationships": [
-    { "format": "INI", "relation": "sibling — INI files use [Section] headers while .properties files are flat key-value without sections" },
-    { "format": "YAML", "relation": "successor — application.yml is the modern Spring Framework alternative to application.properties" }
+    {
+      "format": "INI",
+      "relation": "sibling — INI files use [Section] headers while .properties files are flat key-value without sections"
+    },
+    {
+      "format": "YAML",
+      "relation": "successor — application.yml is the modern Spring Framework alternative to application.properties"
+    }
   ],
-  "MimeTypes": [ "text/x-java-properties", "text/plain" ],
+  "MimeTypes": [
+    "text/x-java-properties",
+    "text/plain"
+  ],
   "UseCases": [
     "Java application configuration and externalized settings",
     "Spring Framework application.properties configuration",

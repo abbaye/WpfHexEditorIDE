@@ -2,8 +2,10 @@
   "diffMode": "binary",
   "formatName": "Atari Lynx ROM",
   "formatId": "ROM_LYNX",
-  "version": "1.0",
-  "extensions": [ ".lnx" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".lnx"
+  ],
   "description": "Atari Lynx cartridge ROM image. 64-byte header followed by ROM data. Header contains 'LYNX' magic (4 bytes), version (2B uint16 LE), page_size_bank0 (2B), page_size_bank1 (2B), a second version field (2B), cartName (32B ASCII), manufacturer (16B ASCII), and rotation byte (0=none, 1=rotate left, 2=rotate right), followed by 5 spare bytes.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
@@ -32,88 +34,98 @@
       "name": "signature",
       "offset": 0,
       "size": 4,
-      "type": "ascii",
+      "type": "field",
       "description": "LYNX magic identifier — 4-byte ASCII string at offset 0 confirming this is an Atari Lynx ROM header; expected value is the ASCII text LYNX (0x4C 0x59 0x4E 0x58)",
-      "storeAs": "lnxMagic"
+      "storeAs": "lnxMagic",
+      "valueType": "ascii"
     },
     {
       "name": "version",
       "offset": 4,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "description": "ROM version field — 16-bit unsigned little-endian integer at offset 4 indicating the version number embedded in the cartridge header by the developer",
-      "storeAs": "version"
+      "storeAs": "version",
+      "valueType": "uint16"
     },
     {
       "name": "page_size_bank0",
       "offset": 6,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "description": "Page size for bank 0 — 16-bit unsigned little-endian value at offset 6 indicating the number of 256-byte pages in ROM bank 0; typical values are powers of two",
-      "storeAs": "pageSizeBank0"
+      "storeAs": "pageSizeBank0",
+      "valueType": "uint16"
     },
     {
       "name": "page_size_bank1",
       "offset": 8,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "description": "Page size for bank 1 — 16-bit unsigned little-endian value at offset 8 indicating the number of 256-byte pages in ROM bank 1; 0 if bank 1 is not used by the cartridge",
-      "storeAs": "pageSizeBank1"
+      "storeAs": "pageSizeBank1",
+      "valueType": "uint16"
     },
     {
       "name": "version2",
       "offset": 10,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "description": "Secondary version field — 16-bit unsigned little-endian integer at offset 10; secondary version or revision indicator duplicated in some headers for verification purposes",
-      "storeAs": "version2"
+      "storeAs": "version2",
+      "valueType": "uint16"
     },
     {
       "name": "cartName",
       "offset": 12,
       "size": 32,
-      "type": "ascii",
+      "type": "field",
       "description": "Cartridge name — 32-byte ASCII string at offset 12 containing the game or cartridge title as defined by the publisher; null-padded on the right if shorter than 32 characters",
-      "storeAs": "cartName"
+      "storeAs": "cartName",
+      "valueType": "ascii"
     },
     {
       "name": "manufacturer",
       "offset": 44,
       "size": 16,
-      "type": "ascii",
+      "type": "field",
       "description": "Manufacturer string — 16-byte ASCII field at offset 44 containing the publisher or manufacturer name; null-padded; commonly 'Atari' or third-party licensee names",
-      "storeAs": "manufacturer"
+      "storeAs": "manufacturer",
+      "valueType": "ascii"
     },
     {
       "name": "rotation",
       "offset": 60,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "Screen rotation hint — 1-byte unsigned integer at offset 60 indicating how the Lynx hardware should orient the display for this cartridge; 0=no rotation, 1=rotate left, 2=rotate right",
       "storeAs": "rotation",
       "valueMap": {
         "0": "No rotation",
         "1": "Rotate left",
         "2": "Rotate right"
-      }
+      },
+      "valueType": "uint8"
     },
     {
       "name": "spare",
       "offset": 61,
       "size": 5,
-      "type": "bytes",
-      "description": "Spare bytes — 5 reserved bytes at offset 61 following the rotation field; these bytes are unused in the standard header specification and should be zeroed in valid Lynx ROM dumps"
+      "type": "field",
+      "description": "Spare bytes — 5 reserved bytes at offset 61 following the rotation field; these bytes are unused in the standard header specification and should be zeroed in valid Lynx ROM dumps",
+      "valueType": "bytes"
     },
     {
       "name": "romData",
       "offset": 64,
       "size": -1,
-      "type": "bytes",
-      "description": "ROM data payload — raw cartridge ROM bytes beginning at offset 64 immediately after the 64-byte header; actual size depends on the cartridge capacity as indicated by page_size_bank0 and page_size_bank1"
+      "type": "field",
+      "description": "ROM data payload — raw cartridge ROM bytes beginning at offset 64 immediately after the 64-byte header; actual size depends on the cartridge capacity as indicated by page_size_bank0 and page_size_bank1",
+      "valueType": "bytes"
     }
   ],
   "assertions": [
@@ -138,8 +150,18 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "Header", "offset": 0, "size": 64, "description": "64-byte Lynx ROM header containing all metadata fields" },
-      { "name": "ROM Data", "offset": 64, "size": -1, "description": "Raw ROM data beginning immediately after the header" }
+      {
+        "name": "Header",
+        "offset": 0,
+        "size": 64,
+        "description": "64-byte Lynx ROM header containing all metadata fields"
+      },
+      {
+        "name": "ROM Data",
+        "offset": 64,
+        "size": -1,
+        "description": "Raw ROM data beginning immediately after the header"
+      }
     ]
   },
   "inspector": {
@@ -149,15 +171,26 @@
     "groups": [
       {
         "name": "Identity",
-        "fields": [ "lnxMagic", "cartName", "manufacturer" ]
+        "fields": [
+          "lnxMagic",
+          "cartName",
+          "manufacturer"
+        ]
       },
       {
         "name": "ROM Layout",
-        "fields": [ "version", "pageSizeBank0", "pageSizeBank1", "version2" ]
+        "fields": [
+          "version",
+          "pageSizeBank0",
+          "pageSizeBank1",
+          "version2"
+        ]
       },
       {
         "name": "Display",
-        "fields": [ "rotation" ]
+        "fields": [
+          "rotation"
+        ]
       }
     ]
   },
@@ -189,13 +222,26 @@
     ]
   },
   "software": [
-    { "name": "Mednafen", "url": "https://mednafen.github.io/", "role": "emulator" },
-    { "name": "Handy", "url": "http://handy.sourceforge.net/", "role": "emulator" }
+    {
+      "name": "Mednafen",
+      "url": "https://mednafen.github.io/",
+      "role": "emulator"
+    },
+    {
+      "name": "Handy",
+      "url": "http://handy.sourceforge.net/",
+      "role": "emulator"
+    }
   ],
   "formatRelationships": [
-    { "format": "ROM_GG", "relation": "similar — both are 8-bit handheld cartridge ROM formats with fixed headers" }
+    {
+      "format": "ROM_GG",
+      "relation": "similar — both are 8-bit handheld cartridge ROM formats with fixed headers"
+    }
   ],
-  "MimeTypes": [ "application/x-lynx-rom" ],
+  "MimeTypes": [
+    "application/x-lynx-rom"
+  ],
   "UseCases": [
     "Game preservation and archival of Atari Lynx cartridges",
     "Emulation of Lynx hardware",

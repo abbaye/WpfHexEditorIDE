@@ -2,8 +2,11 @@
   "diffMode": "binary",
   "formatName": "COFF Object File",
   "formatId": "COFF",
-  "version": "1.0",
-  "extensions": [ ".obj", ".o" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".obj",
+    ".o"
+  ],
   "description": "COFF (Common Object File Format) — compiled object file produced by a compiler before linking. Used by MSVC (.obj) and GCC/Binutils (.o on Windows via MinGW/Cygwin). The first 2 bytes are the Machine type (uint16 LE). Common values: 0x014C=i386, 0x8664=x86_64 (AMD64), 0xAA64=ARM64 (AArch64), 0x01C4=ARM Thumb-2, 0x0EBC=EFI Byte Code. COFF header is 20 bytes: Machine (2B), NumberOfSections (2B), TimeDateStamp (4B), PointerToSymbolTable (4B), NumberOfSymbols (4B), SizeOfOptionalHeader (2B), Characteristics (2B). For standalone .obj files, SizeOfOptionalHeader is 0. If non-zero, a PE optional header follows and this is the beginning of a PE image.",
   "category": "Executables",
   "author": "WPFHexaEditor Team",
@@ -50,70 +53,77 @@
       "name": "machine",
       "offset": 0,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "description": "Machine type — 2-byte little-endian unsigned integer at offset 0 identifying the target CPU architecture; 0x014C=x86, 0x8664=x86-64, 0xAA64=ARM64, 0x01C4=ARM Thumb-2, 0x0EBC=EFI Byte Code, 0x0200=Intel Itanium IA-64",
       "storeAs": "machine",
       "valueMap": {
-        "332":   "x86 (i386)",
+        "332": "x86 (i386)",
         "34404": "x86-64 (AMD64)",
         "43620": "ARM64 (AArch64)",
-        "452":   "ARM (Thumb-2)",
-        "3772":  "EFI Byte Code",
-        "512":   "Intel Itanium"
-      }
+        "452": "ARM (Thumb-2)",
+        "3772": "EFI Byte Code",
+        "512": "Intel Itanium"
+      },
+      "valueType": "uint16"
     },
     {
       "name": "numberOfSections",
       "offset": 2,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "description": "Number of sections — 2-byte little-endian unsigned integer at offset 2 indicating how many section headers follow the COFF header and optional header; typical sections include .text, .data, .bss, .rdata, and .pdata",
-      "storeAs": "sectionCount"
+      "storeAs": "sectionCount",
+      "valueType": "uint16"
     },
     {
       "name": "timeDateStamp",
       "offset": 4,
       "size": 4,
-      "type": "uint32",
+      "type": "field",
       "endian": "LE",
       "description": "Compilation timestamp — 4-byte little-endian Unix timestamp at offset 4 recording the time this object file was created by the compiler; value is seconds since January 1, 1970 00:00:00 UTC",
-      "storeAs": "timeDateStamp"
+      "storeAs": "timeDateStamp",
+      "valueType": "uint32"
     },
     {
       "name": "pointerToSymbolTable",
       "offset": 8,
       "size": 4,
-      "type": "uint32",
+      "type": "field",
       "endian": "LE",
-      "description": "Symbol table file offset — 4-byte little-endian unsigned integer at offset 8; file offset of the COFF symbol table; 0 if no symbol table is present (stripped object); symbol table entries are 18 bytes each"
+      "description": "Symbol table file offset — 4-byte little-endian unsigned integer at offset 8; file offset of the COFF symbol table; 0 if no symbol table is present (stripped object); symbol table entries are 18 bytes each",
+      "valueType": "uint32"
     },
     {
       "name": "numberOfSymbols",
       "offset": 12,
       "size": 4,
-      "type": "uint32",
+      "type": "field",
       "endian": "LE",
-      "description": "Number of symbol table entries — 4-byte little-endian unsigned integer at offset 12; count of COFF symbol table entries each 18 bytes in size; 0 for stripped objects; string table immediately follows the symbol table"
+      "description": "Number of symbol table entries — 4-byte little-endian unsigned integer at offset 12; count of COFF symbol table entries each 18 bytes in size; 0 for stripped objects; string table immediately follows the symbol table",
+      "valueType": "uint32"
     },
     {
       "name": "sizeOfOptionalHeader",
       "offset": 16,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "description": "Optional header size — 2-byte little-endian unsigned integer at offset 16; for standalone COFF object files this is always 0; non-zero values indicate a PE optional header follows and this file is beginning of a PE image rather than a raw object",
-      "storeAs": "optHeaderSize"
+      "storeAs": "optHeaderSize",
+      "valueType": "uint16"
     },
     {
       "name": "characteristics",
       "offset": 18,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
       "description": "Characteristics flags — 2-byte little-endian bitmask at offset 18; for object files bit 0 (IMAGE_FILE_RELOCS_STRIPPED) is typically 0; for images, bits indicate relocations, executable, large address aware, 32-bit machine, DLL, and system file attributes",
-      "storeAs": "characteristics"
+      "storeAs": "characteristics",
+      "valueType": "uint16"
     }
   ],
   "assertions": [
@@ -138,8 +148,18 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "COFF Header", "offset": 0, "size": 20, "description": "20-byte COFF file header containing machine, section count, timestamp, and symbol table pointer" },
-      { "name": "Section Headers", "offset": 20, "size": -1, "description": "Array of 40-byte section headers beginning at offset 20 (assuming no optional header)" }
+      {
+        "name": "COFF Header",
+        "offset": 0,
+        "size": 20,
+        "description": "20-byte COFF file header containing machine, section count, timestamp, and symbol table pointer"
+      },
+      {
+        "name": "Section Headers",
+        "offset": 20,
+        "size": -1,
+        "description": "Array of 40-byte section headers beginning at offset 20 (assuming no optional header)"
+      }
     ]
   },
   "inspector": {
@@ -149,11 +169,20 @@
     "groups": [
       {
         "name": "COFF Header",
-        "fields": [ "machine", "sectionCount", "timeDateStamp", "optHeaderSize", "characteristics" ]
+        "fields": [
+          "machine",
+          "sectionCount",
+          "timeDateStamp",
+          "optHeaderSize",
+          "characteristics"
+        ]
       },
       {
         "name": "Symbol Table",
-        "fields": [ "pointerToSymbolTable", "numberOfSymbols" ]
+        "fields": [
+          "pointerToSymbolTable",
+          "numberOfSymbols"
+        ]
       }
     ]
   },
@@ -185,15 +214,36 @@
     ]
   },
   "software": [
-    { "name": "MSVC (cl.exe)", "url": "https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options", "role": "compiler" },
-    { "name": "GCC (MinGW)", "url": "https://www.mingw-w64.org/", "role": "compiler" },
-    { "name": "dumpbin", "url": "https://learn.microsoft.com/en-us/cpp/build/reference/dumpbin-reference", "role": "object file inspector" }
+    {
+      "name": "MSVC (cl.exe)",
+      "url": "https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options",
+      "role": "compiler"
+    },
+    {
+      "name": "GCC (MinGW)",
+      "url": "https://www.mingw-w64.org/",
+      "role": "compiler"
+    },
+    {
+      "name": "dumpbin",
+      "url": "https://learn.microsoft.com/en-us/cpp/build/reference/dumpbin-reference",
+      "role": "object file inspector"
+    }
   ],
   "formatRelationships": [
-    { "format": "PE_EXE", "relation": "parent — PE32 image files begin with a COFF header; COFF is the object-level predecessor of the PE image format" },
-    { "format": "ELF", "relation": "alternative — ELF is the Unix/Linux equivalent of COFF for object files and executables" }
+    {
+      "format": "PE_EXE",
+      "relation": "parent — PE32 image files begin with a COFF header; COFF is the object-level predecessor of the PE image format"
+    },
+    {
+      "format": "ELF",
+      "relation": "alternative — ELF is the Unix/Linux equivalent of COFF for object files and executables"
+    }
   ],
-  "MimeTypes": [ "application/x-object", "application/x-coff" ],
+  "MimeTypes": [
+    "application/x-object",
+    "application/x-coff"
+  ],
   "UseCases": [
     "Compiled object file inspection before linking",
     "Symbol table analysis and exported function discovery",

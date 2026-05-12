@@ -2,8 +2,13 @@
   "diffMode": "text",
   "formatName": "INI Configuration File",
   "formatId": "INI",
-  "version": "1.0",
-  "extensions": [ ".ini", ".cfg", ".conf", ".inf" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".ini",
+    ".cfg",
+    ".conf",
+    ".inf"
+  ],
   "description": "INI configuration file format. Sections delimited by [SectionName] headers, key-value pairs written as key=value or key:value, with comments introduced by semicolons (;) or hash symbols (#). No binary magic — pure text. Encoding: typically ASCII or UTF-8, sometimes UTF-16 LE (Windows with BOM FF FE). Used extensively in Windows application configuration, game settings, Windows Setup .inf files, and system configuration files. No formal specification — implementations vary in case sensitivity, multiline support, and duplicate handling.",
   "category": "Text",
   "author": "WPFHexaEditor Team",
@@ -50,17 +55,19 @@
       "name": "firstByte",
       "offset": 0,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "First byte of the INI file at offset 0 — typically 0x5B ('[') for a file beginning with a section header, 0x3B (';') for a comment, 0x23 ('#') for a hash comment, or 0xFF for UTF-16 BOM; printable ASCII characters indicate a key-value pair before the first section",
-      "storeAs": "firstByte"
+      "storeAs": "firstByte",
+      "valueType": "uint8"
     },
     {
       "name": "secondByte",
       "offset": 1,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "Second byte of the INI file at offset 1 — part of the BOM sequence for UTF-16 LE files (0xFE following 0xFF), or the second character of the first section header, comment, or key name",
-      "storeAs": "secondByte"
+      "storeAs": "secondByte",
+      "valueType": "uint8"
     }
   ],
   "assertions": [
@@ -79,7 +86,12 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "File Start", "offset": 0, "size": 512, "description": "Opening comments, first section header, and initial key-value pairs" }
+      {
+        "name": "File Start",
+        "offset": 0,
+        "size": 512,
+        "description": "Opening comments, first section header, and initial key-value pairs"
+      }
     ]
   },
   "inspector": {
@@ -89,7 +101,10 @@
     "groups": [
       {
         "name": "File Start",
-        "fields": [ "firstByte", "secondByte" ]
+        "fields": [
+          "firstByte",
+          "secondByte"
+        ]
       }
     ]
   },
@@ -121,14 +136,31 @@
     ]
   },
   "software": [
-    { "name": "Notepad", "url": "https://apps.microsoft.com/store/detail/windows-notepad/", "role": "text editor" },
-    { "name": "Notepad++", "url": "https://notepad-plus-plus.org/", "role": "text editor" }
+    {
+      "name": "Notepad",
+      "url": "https://apps.microsoft.com/store/detail/windows-notepad/",
+      "role": "text editor"
+    },
+    {
+      "name": "Notepad++",
+      "url": "https://notepad-plus-plus.org/",
+      "role": "text editor"
+    }
   ],
   "formatRelationships": [
-    { "format": "PROPERTIES", "relation": "sibling — Java .properties files use similar key=value syntax without section headers" },
-    { "format": "CSV", "relation": "sibling text format — CSV uses columnar structure, INI uses hierarchical sections" }
+    {
+      "format": "PROPERTIES",
+      "relation": "sibling — Java .properties files use similar key=value syntax without section headers"
+    },
+    {
+      "format": "CSV",
+      "relation": "sibling text format — CSV uses columnar structure, INI uses hierarchical sections"
+    }
   ],
-  "MimeTypes": [ "text/plain", "application/x-ini" ],
+  "MimeTypes": [
+    "text/plain",
+    "application/x-ini"
+  ],
   "UseCases": [
     "Windows application configuration storage",
     "Game settings and preferences files",

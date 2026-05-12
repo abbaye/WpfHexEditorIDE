@@ -2,8 +2,12 @@
   "diffMode": "binary",
   "formatName": "VCDIFF Delta Compression",
   "formatId": "VCDIFF",
-  "version": "1.0",
-  "extensions": [ ".vcdiff", ".xdelta", ".patch" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".vcdiff",
+    ".xdelta",
+    ".patch"
+  ],
   "description": "VCDIFF delta compression format as defined in RFC 3284. Used by xdelta3, Google open-vcdiff, and many ROM patching tools. Magic: 3 bytes 0xD6 0xC3 0xC4 followed by version byte (0x00=standard RFC 3284). Header continues with hdr_indicator byte: bit 0 = VCD_DECOMPRESS (secondary compressor), bit 1 = VCD_CODETABLE (custom code table). If VCD_DECOMPRESS is set, an application-specific compressor ID follows as a variable-length field. Used in Chrome auto-updates, game ROM translation and hack patches.",
   "category": "RomHacking",
   "author": "WPFHexaEditor Team",
@@ -38,39 +42,49 @@
       "name": "vcdMagic",
       "offset": 0,
       "size": 3,
-      "type": "bytes",
+      "type": "field",
       "description": "VCDIFF magic identifier — 3 bytes at offset 0 with values 0xD6 0xC3 0xC4; these are the mandatory magic bytes defined in RFC 3284 that identify all VCDIFF-format delta files regardless of version",
-      "storeAs": "vcdMagic"
+      "storeAs": "vcdMagic",
+      "valueType": "bytes"
     },
     {
       "name": "vcdVersion",
       "offset": 3,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "VCDIFF format version — 1-byte value at offset 3; 0x00 indicates standard RFC 3284 format; non-zero values indicate format extensions such as those used by xdelta3 or Google open-vcdiff",
       "storeAs": "vcdVersion",
       "valueMap": {
         "0": "RFC 3284 standard VCDIFF"
-      }
+      },
+      "valueType": "uint8"
     },
     {
       "name": "hdrIndicator",
       "offset": 4,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "Header indicator flags — 1-byte bitmask at offset 4; bit 0 (VCD_DECOMPRESS) = secondary compressor present, bit 1 (VCD_CODETABLE) = custom code table present; all other bits must be 0 in standard RFC 3284",
       "storeAs": "hdrIndicator",
       "bitfields": [
-        { "name": "VCD_DECOMPRESS", "bit": 0 },
-        { "name": "VCD_CODETABLE", "bit": 1 }
-      ]
+        {
+          "name": "VCD_DECOMPRESS",
+          "bit": 0
+        },
+        {
+          "name": "VCD_CODETABLE",
+          "bit": 1
+        }
+      ],
+      "valueType": "uint8"
     },
     {
       "name": "deltaWindows",
       "offset": 5,
       "size": -1,
-      "type": "bytes",
-      "description": "VCDIFF delta windows — variable-length sequence of delta window records beginning at offset 5 (or later if VCD_DECOMPRESS or VCD_CODETABLE flags require additional header data); each window encodes a portion of the target file using copy, add, and run instructions"
+      "type": "field",
+      "description": "VCDIFF delta windows — variable-length sequence of delta window records beginning at offset 5 (or later if VCD_DECOMPRESS or VCD_CODETABLE flags require additional header data); each window encodes a portion of the target file using copy, add, and run instructions",
+      "valueType": "bytes"
     }
   ],
   "assertions": [
@@ -95,8 +109,18 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "File Header", "offset": 0, "size": 5, "description": "5-byte VCDIFF header: magic (3B), version (1B), hdr_indicator (1B)" },
-      { "name": "Delta Windows", "offset": 5, "size": -1, "description": "Sequence of VCDIFF delta window records containing the compressed delta instructions" }
+      {
+        "name": "File Header",
+        "offset": 0,
+        "size": 5,
+        "description": "5-byte VCDIFF header: magic (3B), version (1B), hdr_indicator (1B)"
+      },
+      {
+        "name": "Delta Windows",
+        "offset": 5,
+        "size": -1,
+        "description": "Sequence of VCDIFF delta window records containing the compressed delta instructions"
+      }
     ]
   },
   "inspector": {
@@ -106,7 +130,11 @@
     "groups": [
       {
         "name": "Header",
-        "fields": [ "vcdMagic", "vcdVersion", "hdrIndicator" ]
+        "fields": [
+          "vcdMagic",
+          "vcdVersion",
+          "hdrIndicator"
+        ]
       }
     ]
   },
@@ -138,13 +166,26 @@
     ]
   },
   "software": [
-    { "name": "xdelta3", "url": "https://github.com/jmacd/xdelta", "role": "encoder/decoder" },
-    { "name": "open-vcdiff", "url": "https://github.com/google/open-vcdiff", "role": "encoder/decoder" }
+    {
+      "name": "xdelta3",
+      "url": "https://github.com/jmacd/xdelta",
+      "role": "encoder/decoder"
+    },
+    {
+      "name": "open-vcdiff",
+      "url": "https://github.com/google/open-vcdiff",
+      "role": "encoder/decoder"
+    }
   ],
   "formatRelationships": [
-    { "format": "BSDIFF", "relation": "alternative delta format — bsdiff uses suffix arrays and bzip2 compression while VCDIFF uses copy/add/run instruction windows" }
+    {
+      "format": "BSDIFF",
+      "relation": "alternative delta format — bsdiff uses suffix arrays and bzip2 compression while VCDIFF uses copy/add/run instruction windows"
+    }
   ],
-  "MimeTypes": [ "application/x-vcdiff" ],
+  "MimeTypes": [
+    "application/x-vcdiff"
+  ],
   "UseCases": [
     "ROM patching for game modifications and translations",
     "Software update delta packages (Chrome browser updates)",

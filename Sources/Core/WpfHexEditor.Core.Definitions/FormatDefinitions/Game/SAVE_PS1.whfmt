@@ -2,8 +2,13 @@
   "diffMode": "binary",
   "formatName": "PlayStation 1 Memory Card",
   "formatId": "SAVE_PS1",
-  "version": "1.0",
-  "extensions": [ ".mcr", ".mcd", ".mc", ".vmp" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".mcr",
+    ".mcd",
+    ".mc",
+    ".vmp"
+  ],
   "description": "PlayStation 1 memory card image. Total size: 128KB (131072 bytes). The first frame (128 bytes) is the header: 'MC' magic (2B) followed by 125 reserved bytes and a final XOR checksum byte. The next 15 frames (128 bytes each) are directory frames describing each save slot: frame_type (1B), file_size (4B LE), next_frame pointer (2B LE), filename (21B ASCII, format 'BASCUS-XXXXX'), padding (96B), XOR checksum (1B). Each save occupies 8KB of data in subsequent blocks. Used by all PS1 consoles and compatible third-party accessories.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
@@ -32,66 +37,73 @@
       "name": "mcMagic",
       "offset": 0,
       "size": 2,
-      "type": "ascii",
+      "type": "field",
       "description": "Memory card magic — 2-byte ASCII string at offset 0; value is always 'MC' (0x4D 0x43) in a valid PlayStation 1 memory card image; this is the primary identification signature",
-      "storeAs": "mcMagic"
+      "storeAs": "mcMagic",
+      "valueType": "ascii"
     },
     {
       "name": "reserved",
       "offset": 2,
       "size": 125,
-      "type": "bytes",
-      "description": "Reserved header bytes — 125 bytes at offset 2 reserved in the first frame of the memory card; should be all zeros in a standard card but some third-party cards may populate these bytes"
+      "type": "field",
+      "description": "Reserved header bytes — 125 bytes at offset 2 reserved in the first frame of the memory card; should be all zeros in a standard card but some third-party cards may populate these bytes",
+      "valueType": "bytes"
     },
     {
       "name": "xorChecksum",
       "offset": 127,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "Header XOR checksum — 1-byte value at offset 127 (last byte of the first frame); computed as the XOR of all preceding bytes in the 128-byte header frame; used to verify header integrity",
-      "storeAs": "xorChecksum"
+      "storeAs": "xorChecksum",
+      "valueType": "uint8"
     },
     {
       "name": "dir1Type",
       "offset": 128,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "First directory frame type — 1-byte value at offset 128 (start of first directory frame) indicating the status of save slot 1; 0x51=first block of a multi-block file, 0x52=middle block, 0x53=last block, 0xA0=deleted first block, 0xFF=free slot",
       "storeAs": "dir1Type",
       "valueMap": {
-        "81":  "0x51 First block of file",
-        "82":  "0x52 Middle block of file",
-        "83":  "0x53 Last block of file",
+        "81": "0x51 First block of file",
+        "82": "0x52 Middle block of file",
+        "83": "0x53 Last block of file",
         "160": "0xA0 Deleted first block",
         "161": "0xA1 Deleted middle block",
         "162": "0xA2 Deleted last block",
         "255": "0xFF Free block"
-      }
+      },
+      "valueType": "uint8"
     },
     {
       "name": "dir1FileSize",
       "offset": 132,
       "size": 4,
-      "type": "uint32",
+      "type": "field",
       "endian": "LE",
       "description": "First directory frame file size — 4-byte little-endian unsigned integer at offset 132 indicating the total file size in bytes for the save game occupying slot 1; must be a multiple of 8192 (8KB) for valid saves",
-      "storeAs": "fileSize"
+      "storeAs": "fileSize",
+      "valueType": "uint32"
     },
     {
       "name": "dir1NextFrame",
       "offset": 136,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
-      "description": "Next frame pointer — 2-byte little-endian unsigned integer at offset 136 pointing to the next directory frame for multi-block saves; 0xFFFF indicates this is the last or only block of the save file"
+      "description": "Next frame pointer — 2-byte little-endian unsigned integer at offset 136 pointing to the next directory frame for multi-block saves; 0xFFFF indicates this is the last or only block of the save file",
+      "valueType": "uint16"
     },
     {
       "name": "dir1Filename",
       "offset": 138,
       "size": 21,
-      "type": "ascii",
+      "type": "field",
       "description": "Save filename — 21-byte ASCII string at offset 138 containing the save identifier in the format 'BASCUS-XXXXXYYYYY' where BASCUS is the region prefix, XXXXX is the product code, and YYYYY is the save slot identifier within the game",
-      "storeAs": "filename"
+      "storeAs": "filename",
+      "valueType": "ascii"
     }
   ],
   "assertions": [
@@ -116,10 +128,30 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "Header Frame", "offset": 0, "size": 128, "description": "Frame 0: memory card header with MC magic and XOR checksum" },
-      { "name": "Directory Frame 1", "offset": 128, "size": 128, "description": "Frame 1: first directory entry describing save slot 1" },
-      { "name": "Directory Frame 2", "offset": 256, "size": 128, "description": "Frame 2: second directory entry describing save slot 2" },
-      { "name": "Save Data Start", "offset": 8192, "size": 122880, "description": "Frames 64+: raw 8KB save data blocks for each slot" }
+      {
+        "name": "Header Frame",
+        "offset": 0,
+        "size": 128,
+        "description": "Frame 0: memory card header with MC magic and XOR checksum"
+      },
+      {
+        "name": "Directory Frame 1",
+        "offset": 128,
+        "size": 128,
+        "description": "Frame 1: first directory entry describing save slot 1"
+      },
+      {
+        "name": "Directory Frame 2",
+        "offset": 256,
+        "size": 128,
+        "description": "Frame 2: second directory entry describing save slot 2"
+      },
+      {
+        "name": "Save Data Start",
+        "offset": 8192,
+        "size": 122880,
+        "description": "Frames 64+: raw 8KB save data blocks for each slot"
+      }
     ]
   },
   "inspector": {
@@ -129,11 +161,18 @@
     "groups": [
       {
         "name": "Card Header",
-        "fields": [ "mcMagic", "xorChecksum" ]
+        "fields": [
+          "mcMagic",
+          "xorChecksum"
+        ]
       },
       {
         "name": "Slot 1",
-        "fields": [ "dir1Type", "fileSize", "filename" ]
+        "fields": [
+          "dir1Type",
+          "fileSize",
+          "filename"
+        ]
       }
     ]
   },
@@ -165,14 +204,31 @@
     ]
   },
   "software": [
-    { "name": "MemcardRex", "url": "https://github.com/ShendoXT/memcardrex", "role": "memory card manager" },
-    { "name": "PCSX2", "url": "https://pcsx2.net/", "role": "emulator" },
-    { "name": "DuckStation", "url": "https://www.duckstation.org/", "role": "emulator" }
+    {
+      "name": "MemcardRex",
+      "url": "https://github.com/ShendoXT/memcardrex",
+      "role": "memory card manager"
+    },
+    {
+      "name": "PCSX2",
+      "url": "https://pcsx2.net/",
+      "role": "emulator"
+    },
+    {
+      "name": "DuckStation",
+      "url": "https://www.duckstation.org/",
+      "role": "emulator"
+    }
   ],
   "formatRelationships": [
-    { "format": "SAVE_PS2_MC", "relation": "successor — PlayStation 2 memory cards use a more complex filesystem-based format" }
+    {
+      "format": "SAVE_PS2_MC",
+      "relation": "successor — PlayStation 2 memory cards use a more complex filesystem-based format"
+    }
   ],
-  "MimeTypes": [ "application/x-ps1-memory-card" ],
+  "MimeTypes": [
+    "application/x-ps1-memory-card"
+  ],
   "UseCases": [
     "PlayStation 1 save game backup and restoration",
     "Memory card analysis and forensics",

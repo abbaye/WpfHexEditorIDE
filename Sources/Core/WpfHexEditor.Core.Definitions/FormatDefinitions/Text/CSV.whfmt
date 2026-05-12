@@ -2,8 +2,11 @@
   "diffMode": "text",
   "formatName": "Comma-Separated Values",
   "formatId": "CSV",
-  "version": "1.0",
-  "extensions": [ ".csv", ".tsv" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".csv",
+    ".tsv"
+  ],
   "description": "CSV (Comma-Separated Values) — RFC 4180 plain text tabular format. Each line is a record with fields separated by commas (CSV) or tabs (TSV). Fields containing delimiters or newlines may be enclosed in double-quotes; embedded double-quotes are escaped as two consecutive double-quotes. An optional header row names each column. Encoding: UTF-8 (with or without BOM), UTF-16, or legacy codepages. Used universally for data exchange in spreadsheets, databases, and analytics pipelines. BOM signatures: UTF-8 = EF BB BF, UTF-16 LE = FF FE, UTF-16 BE = FE FF.",
   "category": "Text",
   "author": "WPFHexaEditor Team",
@@ -38,16 +41,18 @@
       "name": "firstByte",
       "offset": 0,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "First byte of the CSV file at offset 0 — should be a printable ASCII character (0x20-0x7E) for UTF-8 encoded files, or 0xEF for UTF-8 BOM files, or 0xFF/0xFE for UTF-16 BOM files; binary values suggest this is not a CSV",
-      "storeAs": "firstByte"
+      "storeAs": "firstByte",
+      "valueType": "uint8"
     },
     {
       "name": "secondByte",
       "offset": 1,
       "size": 1,
-      "type": "uint8",
-      "description": "Second byte of the CSV file at offset 1 — part of the BOM sequence if the first byte is a BOM marker, or the second character of the first field or header row; used alongside firstByte for encoding detection"
+      "type": "field",
+      "description": "Second byte of the CSV file at offset 1 — part of the BOM sequence if the first byte is a BOM marker, or the second character of the first field or header row; used alongside firstByte for encoding detection",
+      "valueType": "uint8"
     }
   ],
   "assertions": [
@@ -66,7 +71,12 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "File Start", "offset": 0, "size": 512, "description": "First 512 bytes containing BOM (if present) and initial header row or first data record" }
+      {
+        "name": "File Start",
+        "offset": 0,
+        "size": 512,
+        "description": "First 512 bytes containing BOM (if present) and initial header row or first data record"
+      }
     ]
   },
   "inspector": {
@@ -76,7 +86,10 @@
     "groups": [
       {
         "name": "Encoding Markers",
-        "fields": [ "firstByte", "secondByte" ]
+        "fields": [
+          "firstByte",
+          "secondByte"
+        ]
       }
     ]
   },
@@ -108,13 +121,27 @@
     ]
   },
   "software": [
-    { "name": "Microsoft Excel", "url": "https://www.microsoft.com/en-us/microsoft-365/excel", "role": "spreadsheet" },
-    { "name": "LibreOffice Calc", "url": "https://www.libreoffice.org/", "role": "spreadsheet" }
+    {
+      "name": "Microsoft Excel",
+      "url": "https://www.microsoft.com/en-us/microsoft-365/excel",
+      "role": "spreadsheet"
+    },
+    {
+      "name": "LibreOffice Calc",
+      "url": "https://www.libreoffice.org/",
+      "role": "spreadsheet"
+    }
   ],
   "formatRelationships": [
-    { "format": "INI", "relation": "sibling text format — INI uses key=value structure, CSV uses delimited columns" }
+    {
+      "format": "INI",
+      "relation": "sibling text format — INI uses key=value structure, CSV uses delimited columns"
+    }
   ],
-  "MimeTypes": [ "text/csv", "text/tab-separated-values" ],
+  "MimeTypes": [
+    "text/csv",
+    "text/tab-separated-values"
+  ],
   "UseCases": [
     "Data exchange between spreadsheet applications and databases",
     "Analytics pipeline input and output",

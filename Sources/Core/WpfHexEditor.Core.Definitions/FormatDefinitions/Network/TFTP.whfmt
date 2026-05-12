@@ -2,8 +2,10 @@
   "diffMode": "binary",
   "formatName": "TFTP Packet (Trivial File Transfer Protocol)",
   "formatId": "TFTP",
-  "version": "1.0",
-  "extensions": [ ".tftp" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".tftp"
+  ],
   "description": "Trivial File Transfer Protocol packet format as defined in RFC 1350 (updated by RFC 2347, 2348, 2349). TFTP is a simple UDP-based file transfer protocol using port 69 for initial requests. All multi-byte fields are big-endian. Packet types: opcode 1=RRQ Read Request (filename + mode), 2=WRQ Write Request (filename + mode), 3=DATA (block number uint16 BE + up to 512 bytes of data), 4=ACK Acknowledgement (block number uint16 BE), 5=ERROR (error code uint16 BE + error message string + NUL). RRQ/WRQ packets contain: opcode uint16 BE, filename (NUL-terminated ASCII), mode (NUL-terminated ASCII: 'netascii', 'octet', 'mail'). RFC 2347 adds OACK (option acknowledgment, opcode 6) for options negotiation (blksize, timeout, tsize, windowsize). TFTP uses a stop-and-wait protocol — each DATA packet must be ACKed before the next is sent. Transfer ends when a DATA packet smaller than blksize (default 512) is received. Error codes: 0=not defined, 1=file not found, 2=access violation, 3=disk full, 4=illegal TFTP operation, 5=unknown transfer ID, 6=file already exists, 7=no such user.",
   "category": "Network",
   "author": "WPFHexaEditor Team",
@@ -57,7 +59,7 @@
       "name": "tftpOpcode",
       "offset": 0,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "BE",
       "description": "TFTP opcode — 2-byte big-endian unsigned integer at offset 0; identifies the packet type: 1=RRQ Read Request, 2=WRQ Write Request, 3=DATA data block, 4=ACK acknowledgement, 5=ERROR error notification, 6=OACK options acknowledgment (RFC 2347)",
       "storeAs": "tftpOpcode",
@@ -68,22 +70,24 @@
         "4": "ACK — acknowledgement of block",
         "5": "ERROR — error notification",
         "6": "OACK — options acknowledgment (RFC 2347)"
-      }
+      },
+      "valueType": "uint16"
     },
     {
       "name": "tftpBlock",
       "offset": 2,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "BE",
       "description": "Block number — 2-byte big-endian unsigned integer at offset 2; present in DATA packets (block number of this data block, starting at 1) and ACK packets (block number being acknowledged, 0 = initial WRQ ACK); wraps around from 65535 to 0 for large transfers (RFC 2347 rollover option)",
-      "storeAs": "tftpBlock"
+      "storeAs": "tftpBlock",
+      "valueType": "uint16"
     },
     {
       "name": "tftpErrorCode",
       "offset": 2,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "BE",
       "description": "Error code — 2-byte big-endian unsigned integer at offset 2 in ERROR packets (opcode=5); specifies the error type: 0=not defined, 1=file not found, 2=access violation, 3=disk full or allocation exceeded, 4=illegal TFTP operation, 5=unknown transfer ID, 6=file already exists, 7=no such user",
       "storeAs": "tftpErrorCode",
@@ -96,30 +100,40 @@
         "5": "Unknown transfer ID",
         "6": "File already exists",
         "7": "No such user"
-      }
+      },
+      "valueType": "uint16"
     },
     {
       "name": "tftpFilename",
       "offset": 2,
       "size": 64,
-      "type": "ascii",
+      "type": "field",
       "description": "Filename — NUL-terminated ASCII string at offset 2 in RRQ (opcode=1) and WRQ (opcode=2) packets; contains the name of the file to be read or written; followed by the transfer mode string ('netascii', 'octet', or 'mail') after the NUL terminator",
-      "storeAs": "tftpFilename"
+      "storeAs": "tftpFilename",
+      "valueType": "ascii"
     },
     {
       "name": "tftpData",
       "offset": 4,
       "size": 512,
-      "type": "bytes",
+      "type": "field",
       "description": "Data payload — up to 512 bytes at offset 4 in DATA packets (opcode=3); the last DATA packet in a transfer is identified by having fewer than 512 bytes (or exactly 512 bytes only if OACK blksize was negotiated to a different value); used to reconstruct file content by sequencing DATA packets by block number",
-      "storeAs": "tftpData"
+      "storeAs": "tftpData",
+      "valueType": "bytes"
     }
   ],
   "assertions": [
     {
       "field": "tftpOpcode",
       "op": "in",
-      "value": [ 1, 2, 3, 4, 5, 6 ],
+      "value": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
       "description": "Opcode must be 1 (RRQ), 2 (WRQ), 3 (DATA), 4 (ACK), 5 (ERROR), or 6 (OACK)"
     },
     {
@@ -131,16 +145,37 @@
     {
       "field": "tftpErrorCode",
       "op": "in",
-      "value": [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+      "value": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
       "description": "Error code in ERROR packets must be 0-7 as defined in RFC 1350"
     }
   ],
   "navigation": {
     "entryPoint": "tftpOpcode",
     "sections": [
-      { "name": "Opcode", "offset": 0, "size": 2 },
-      { "name": "Block/Error/Filename Field", "offset": 2, "size": 2 },
-      { "name": "Data / Error Message / Mode", "offset": 4, "description": "Content depends on opcode — data bytes, NUL-terminated strings, or error message" }
+      {
+        "name": "Opcode",
+        "offset": 0,
+        "size": 2
+      },
+      {
+        "name": "Block/Error/Filename Field",
+        "offset": 2,
+        "size": 2
+      },
+      {
+        "name": "Data / Error Message / Mode",
+        "offset": 4,
+        "description": "Content depends on opcode — data bytes, NUL-terminated strings, or error message"
+      }
     ]
   },
   "inspector": {
@@ -149,15 +184,23 @@
     "groups": [
       {
         "name": "Packet Type",
-        "fields": [ "tftpOpcode" ]
+        "fields": [
+          "tftpOpcode"
+        ]
       },
       {
         "name": "Transfer Control",
-        "fields": [ "tftpBlock", "tftpErrorCode" ]
+        "fields": [
+          "tftpBlock",
+          "tftpErrorCode"
+        ]
       },
       {
         "name": "Payload",
-        "fields": [ "tftpFilename", "tftpData" ]
+        "fields": [
+          "tftpFilename",
+          "tftpData"
+        ]
       }
     ]
   },
@@ -197,17 +240,45 @@
     ]
   },
   "software": [
-    { "name": "Wireshark (TFTP dissector)", "vendor": "Wireshark Foundation", "url": "https://www.wireshark.org" },
-    { "name": "tftpd-hpa", "vendor": "H. Peter Anvin", "url": "https://git.kernel.org/pub/scm/network/tftp/tftp-hpa.git" },
-    { "name": "Cisco TFTP Server", "vendor": "Cisco", "url": "https://www.cisco.com" },
-    { "name": "SolarWinds TFTP Server", "vendor": "SolarWinds", "url": "https://www.solarwinds.com/free-tools/free-tftp-server" },
-    { "name": "PumpKIN (TFTP client/server)", "vendor": "Klever Group", "url": "http://kin.klever.net/pumpkin/" }
+    {
+      "name": "Wireshark (TFTP dissector)",
+      "vendor": "Wireshark Foundation",
+      "url": "https://www.wireshark.org"
+    },
+    {
+      "name": "tftpd-hpa",
+      "vendor": "H. Peter Anvin",
+      "url": "https://git.kernel.org/pub/scm/network/tftp/tftp-hpa.git"
+    },
+    {
+      "name": "Cisco TFTP Server",
+      "vendor": "Cisco",
+      "url": "https://www.cisco.com"
+    },
+    {
+      "name": "SolarWinds TFTP Server",
+      "vendor": "SolarWinds",
+      "url": "https://www.solarwinds.com/free-tools/free-tftp-server"
+    },
+    {
+      "name": "PumpKIN (TFTP client/server)",
+      "vendor": "Klever Group",
+      "url": "http://kin.klever.net/pumpkin/"
+    }
   ],
   "formatRelationships": [
-    { "format": "PCAP", "relationship": "TFTP packets are typically analyzed within pcap/pcapng captures; they appear as UDP datagrams" },
-    { "format": "RADIUS_PACKET", "relationship": "RADIUS and TFTP are both UDP-based protocols used in network device management infrastructure" }
+    {
+      "format": "PCAP",
+      "relationship": "TFTP packets are typically analyzed within pcap/pcapng captures; they appear as UDP datagrams"
+    },
+    {
+      "format": "RADIUS_PACKET",
+      "relationship": "RADIUS and TFTP are both UDP-based protocols used in network device management infrastructure"
+    }
   ],
-  "MimeTypes": [ "application/octet-stream" ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
   "UseCases": [
     "PXE network boot file serving",
     "Network device configuration backup and restore",
@@ -226,7 +297,12 @@
     "endianness": "BigEndian",
     "authentication": "none",
     "encryption": "none",
-    "rfcs": [ "RFC 1350", "RFC 2347 (options)", "RFC 2348 (block size)", "RFC 2349 (timeout/tsize)" ]
+    "rfcs": [
+      "RFC 1350",
+      "RFC 2347 (options)",
+      "RFC 2348 (block size)",
+      "RFC 2349 (timeout/tsize)"
+    ]
   },
   "diff": {
     "keyFields": [

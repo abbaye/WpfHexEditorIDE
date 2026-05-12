@@ -2,8 +2,11 @@
   "diffMode": "binary",
   "formatName": "OCSP Response (Online Certificate Status Protocol)",
   "formatId": "OCSP",
-  "version": "1.0",
-  "extensions": [ ".ocsp", ".der" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".ocsp",
+    ".der"
+  ],
   "description": "Online Certificate Status Protocol response as defined in RFC 6960 (updated from RFC 2560). OCSP enables real-time certificate revocation checking without downloading full CRLs. The response is a DER-encoded ASN.1 structure: OCSPResponse ::= SEQUENCE { responseStatus ENUMERATED { good(0), revoked(1), unknown(2) }, ... } — wait, the outer is: OCSPResponse ::= SEQUENCE { responseStatus OCSPResponseStatus, responseBytes [0] EXPLICIT ResponseBytes OPTIONAL }. ResponseStatus ENUMERATED: 0=successful, 1=malformedRequest, 2=internalError, 3=tryLater, 4=(unused), 5=sigRequired, 6=unauthorized. The ResponseBytes contain a responseType OID (id-pkix-ocsp-basic = 1.3.6.1.5.5.7.48.1.1) and a BasicOCSPResponse DER blob. BasicOCSPResponse contains: tbsResponseData (version, responderID, producedAt, responses array with certStatus and thisUpdate/nextUpdate/revocationTime), signatureAlgorithm, signature, and optional certs. OCSP stapling (TLS Certificate Status Request extension) embeds OCSP responses in TLS handshakes.",
   "category": "Certificates",
   "author": "WPFHexaEditor Team",
@@ -33,23 +36,25 @@
       "name": "ocspSequence",
       "offset": 0,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "ASN.1 outer SEQUENCE tag — 1-byte unsigned integer at offset 0; must be 0x30 (decimal 48) which is the ASN.1 SEQUENCE/SEQUENCE-OF universal tag; this is the opening byte of the OCSPResponse DER structure",
-      "storeAs": "ocspSequence"
+      "storeAs": "ocspSequence",
+      "valueType": "uint8"
     },
     {
       "name": "ocspLength",
       "offset": 1,
       "size": 3,
-      "type": "bytes",
+      "type": "field",
       "description": "DER length encoding — bytes at offset 1; if first byte is 0x82 then the following 2 bytes are the big-endian content length; if 0x81 then one length byte follows; if < 0x80 then this byte itself is the length; typical OCSP responses have lengths in the range 200-4000 bytes",
-      "storeAs": "ocspLength"
+      "storeAs": "ocspLength",
+      "valueType": "bytes"
     },
     {
       "name": "ocspStatus",
       "offset": 4,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "OCSP response status — 1-byte ENUMERATED value at approximately offset 4 (after outer SEQUENCE header); actual offset may vary by 1-2 bytes based on length encoding; values: 0=successful (response contains certificate status), 1=malformedRequest, 2=internalError, 3=tryLater (retry later), 5=sigRequired (request must be signed), 6=unauthorized (responder not authorized for this certificate)",
       "storeAs": "ocspStatus",
       "valueMap": {
@@ -59,23 +64,26 @@
         "3": "tryLater — service unavailable, retry",
         "5": "sigRequired — request must be signed",
         "6": "unauthorized — responder not authorized"
-      }
+      },
+      "valueType": "uint8"
     },
     {
       "name": "ocspResponseTypeOid",
       "offset": 8,
       "size": 11,
-      "type": "bytes",
+      "type": "field",
       "description": "Response type OID — 11 bytes at approximately offset 8 (after responseStatus and ResponseBytes SEQUENCE header); DER-encoded OID for id-pkix-ocsp-basic: 06 09 2B 06 01 05 05 07 30 01 01 (OID 1.3.6.1.5.5.7.48.1.1); this identifies the BasicOCSPResponse format which is the standard response type",
-      "storeAs": "ocspResponseTypeOid"
+      "storeAs": "ocspResponseTypeOid",
+      "valueType": "bytes"
     },
     {
       "name": "ocspProducedAt",
       "offset": 0,
       "size": 15,
-      "type": "ascii",
+      "type": "field",
       "description": "producedAt timestamp — 15-byte ASN.1 GeneralizedTime at variable offset within BasicOCSPResponse tbsResponseData; format: YYYYMMDDHHMMSSZ (e.g., '20260415120000Z'); indicates when the OCSP responder generated the response; forensically important for validity window analysis",
-      "storeAs": "ocspProducedAt"
+      "storeAs": "ocspProducedAt",
+      "valueType": "ascii"
     }
   ],
   "assertions": [
@@ -88,7 +96,14 @@
     {
       "field": "ocspStatus",
       "op": "in",
-      "value": [ 0, 1, 2, 3, 5, 6 ],
+      "value": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
       "description": "ResponseStatus ENUMERATED value must be one of the defined values: 0 (successful), 1 (malformedRequest), 2 (internalError), 3 (tryLater), 5 (sigRequired), 6 (unauthorized); value 4 is explicitly not used"
     },
     {
@@ -101,10 +116,26 @@
   "navigation": {
     "entryPoint": "ocspSequence",
     "sections": [
-      { "name": "Outer OCSPResponse SEQUENCE", "offset": 0, "size": 4 },
-      { "name": "ResponseStatus", "offset": 4, "size": 3 },
-      { "name": "ResponseBytes", "offset": 7, "description": "Explicit [0] wrapper containing responseType OID and BasicOCSPResponse" },
-      { "name": "BasicOCSPResponse", "offset": 0, "description": "tbsResponseData, signatureAlgorithm, signature, optional certs" }
+      {
+        "name": "Outer OCSPResponse SEQUENCE",
+        "offset": 0,
+        "size": 4
+      },
+      {
+        "name": "ResponseStatus",
+        "offset": 4,
+        "size": 3
+      },
+      {
+        "name": "ResponseBytes",
+        "offset": 7,
+        "description": "Explicit [0] wrapper containing responseType OID and BasicOCSPResponse"
+      },
+      {
+        "name": "BasicOCSPResponse",
+        "offset": 0,
+        "description": "tbsResponseData, signatureAlgorithm, signature, optional certs"
+      }
     ]
   },
   "inspector": {
@@ -113,15 +144,23 @@
     "groups": [
       {
         "name": "Response Status",
-        "fields": [ "ocspSequence", "ocspStatus" ]
+        "fields": [
+          "ocspSequence",
+          "ocspStatus"
+        ]
       },
       {
         "name": "Structure",
-        "fields": [ "ocspLength", "ocspResponseTypeOid" ]
+        "fields": [
+          "ocspLength",
+          "ocspResponseTypeOid"
+        ]
       },
       {
         "name": "Validity",
-        "fields": [ "ocspProducedAt" ]
+        "fields": [
+          "ocspProducedAt"
+        ]
       }
     ]
   },
@@ -161,18 +200,50 @@
     ]
   },
   "software": [
-    { "name": "OpenSSL (ocsp command)", "vendor": "OpenSSL Software Foundation", "url": "https://www.openssl.org/docs/man3.0/man1/openssl-ocsp.html" },
-    { "name": "Wireshark (TLS dissector)", "vendor": "Wireshark Foundation", "url": "https://www.wireshark.org" },
-    { "name": "Bouncy Castle", "vendor": "Legion of the Bouncy Castle", "url": "https://www.bouncycastle.org" },
-    { "name": "ASN.1 Editor (BER/DER viewer)", "vendor": "Various", "url": "https://www.lapo.it/asn1js/" },
-    { "name": "certutil (Windows)", "vendor": "Microsoft", "url": "https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/certutil" }
+    {
+      "name": "OpenSSL (ocsp command)",
+      "vendor": "OpenSSL Software Foundation",
+      "url": "https://www.openssl.org/docs/man3.0/man1/openssl-ocsp.html"
+    },
+    {
+      "name": "Wireshark (TLS dissector)",
+      "vendor": "Wireshark Foundation",
+      "url": "https://www.wireshark.org"
+    },
+    {
+      "name": "Bouncy Castle",
+      "vendor": "Legion of the Bouncy Castle",
+      "url": "https://www.bouncycastle.org"
+    },
+    {
+      "name": "ASN.1 Editor (BER/DER viewer)",
+      "vendor": "Various",
+      "url": "https://www.lapo.it/asn1js/"
+    },
+    {
+      "name": "certutil (Windows)",
+      "vendor": "Microsoft",
+      "url": "https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/certutil"
+    }
   ],
   "formatRelationships": [
-    { "format": "X509", "relationship": "OCSP responses carry revocation status for X.509 certificates; the certID in the request references the serial number and issuer of an X.509 cert" },
-    { "format": "CSR", "relationship": "OCSP is used to verify the status of certificates that were originally issued following a CSR" },
-    { "format": "SMIME", "relationship": "S/MIME clients query OCSP to verify certificate validity before encrypting or verifying signatures" }
+    {
+      "format": "X509",
+      "relationship": "OCSP responses carry revocation status for X.509 certificates; the certID in the request references the serial number and issuer of an X.509 cert"
+    },
+    {
+      "format": "CSR",
+      "relationship": "OCSP is used to verify the status of certificates that were originally issued following a CSR"
+    },
+    {
+      "format": "SMIME",
+      "relationship": "S/MIME clients query OCSP to verify certificate validity before encrypting or verifying signatures"
+    }
   ],
-  "MimeTypes": [ "application/ocsp-response", "application/octet-stream" ],
+  "MimeTypes": [
+    "application/ocsp-response",
+    "application/octet-stream"
+  ],
   "UseCases": [
     "Real-time TLS certificate revocation checking",
     "OCSP stapling in TLS/HTTPS servers",
@@ -190,7 +261,11 @@
     "outerStructure": "OCSPResponse SEQUENCE containing responseStatus ENUMERATED and optional responseBytes",
     "innerStructure": "BasicOCSPResponse SEQUENCE containing tbsResponseData, signatureAlgorithm, signature",
     "typicalSize": "500 to 5000 bytes",
-    "rfcs": [ "RFC 6960", "RFC 2560", "RFC 5019" ]
+    "rfcs": [
+      "RFC 6960",
+      "RFC 2560",
+      "RFC 5019"
+    ]
   },
   "diff": {
     "keyFields": [

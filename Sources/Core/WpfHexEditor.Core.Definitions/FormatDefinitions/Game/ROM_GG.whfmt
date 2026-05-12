@@ -2,8 +2,10 @@
   "diffMode": "binary",
   "formatName": "Sega Game Gear ROM",
   "formatId": "ROM_GG",
-  "version": "1.0",
-  "extensions": [ ".gg" ],
+  "version": "1.0.1",
+  "extensions": [
+    ".gg"
+  ],
   "description": "Sega Game Gear cartridge ROM image. Contains the standard 'TMR SEGA' header at offset 0x7FF0 (32752) within the ROM's last 16KB bank. The header layout is: 'TMR SEGA' (8B ASCII), product_code (3B BCD-encoded), version nibble, region/size byte (region bits 7-4, size bits 3-0), and checksum (2B LE). Identical header structure to the Sega Master System (SMS) format but the ROM executes only on Game Gear hardware.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
@@ -32,41 +34,46 @@
       "name": "firstByte",
       "offset": 0,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "First byte of ROM data at offset 0 — initial byte of the cartridge ROM payload before the header region; typically part of the ROM code or a jump instruction at the reset vector entry point",
-      "storeAs": "firstByte"
+      "storeAs": "firstByte",
+      "valueType": "uint8"
     },
     {
       "name": "tmrSega",
       "offset": 32752,
       "size": 8,
-      "type": "ascii",
+      "type": "field",
       "description": "TMR SEGA header magic — 8-byte ASCII string at offset 0x7FF0 (32752) marking the beginning of the standard Sega ROM header; this string 'TMR SEGA' is required by the BIOS for cartridge validation",
-      "storeAs": "tmrSega"
+      "storeAs": "tmrSega",
+      "valueType": "ascii"
     },
     {
       "name": "productCode",
       "offset": 32760,
       "size": 3,
-      "type": "bytes",
+      "type": "field",
       "description": "Product code — 3 bytes at offset 32760 encoding the Sega product number in BCD (Binary-Coded Decimal) format; upper nibble of last byte encodes version; identifies the game title in Sega's catalog",
-      "storeAs": "productCode"
+      "storeAs": "productCode",
+      "valueType": "bytes"
     },
     {
       "name": "versionRegion",
       "offset": 32763,
       "size": 1,
-      "type": "uint8",
+      "type": "field",
       "description": "Version and region byte — 1-byte field at offset 32763; bits 7-4 encode the region code (3=SMS Japan, 4=SMS Export, 5=GG Japan, 6=GG Export, 7=GG International), bits 3-0 encode the ROM size code",
-      "storeAs": "versionByte"
+      "storeAs": "versionByte",
+      "valueType": "uint8"
     },
     {
       "name": "checksum",
       "offset": 32764,
       "size": 2,
-      "type": "uint16",
+      "type": "field",
       "endian": "LE",
-      "description": "ROM checksum — 2-byte little-endian unsigned integer at offset 32764; computed as the sum of all ROM bytes excluding the header region, used by the BIOS to verify ROM integrity on startup"
+      "description": "ROM checksum — 2-byte little-endian unsigned integer at offset 32764; computed as the sum of all ROM bytes excluding the header region, used by the BIOS to verify ROM integrity on startup",
+      "valueType": "uint16"
     }
   ],
   "assertions": [
@@ -91,8 +98,18 @@
   ],
   "navigation": {
     "anchors": [
-      { "name": "ROM Start", "offset": 0, "size": 32752, "description": "ROM code and data before the header region" },
-      { "name": "TMR Header", "offset": 32752, "size": 16, "description": "16-byte Sega standard ROM header at offset 0x7FF0" }
+      {
+        "name": "ROM Start",
+        "offset": 0,
+        "size": 32752,
+        "description": "ROM code and data before the header region"
+      },
+      {
+        "name": "TMR Header",
+        "offset": 32752,
+        "size": 16,
+        "description": "16-byte Sega standard ROM header at offset 0x7FF0"
+      }
     ]
   },
   "inspector": {
@@ -102,11 +119,17 @@
     "groups": [
       {
         "name": "Header",
-        "fields": [ "tmrSega", "productCode", "versionByte" ]
+        "fields": [
+          "tmrSega",
+          "productCode",
+          "versionByte"
+        ]
       },
       {
         "name": "Integrity",
-        "fields": [ "checksum" ]
+        "fields": [
+          "checksum"
+        ]
       }
     ]
   },
@@ -138,13 +161,26 @@
     ]
   },
   "software": [
-    { "name": "Mednafen", "url": "https://mednafen.github.io/", "role": "emulator" },
-    { "name": "Gens/GS", "url": "http://segaretro.org/Gens/GS", "role": "emulator" }
+    {
+      "name": "Mednafen",
+      "url": "https://mednafen.github.io/",
+      "role": "emulator"
+    },
+    {
+      "name": "Gens/GS",
+      "url": "http://segaretro.org/Gens/GS",
+      "role": "emulator"
+    }
   ],
   "formatRelationships": [
-    { "format": "ROM_SMS", "relation": "identical header structure — Game Gear uses the same TMR SEGA header as the Sega Master System; distinguished by region byte" }
+    {
+      "format": "ROM_SMS",
+      "relation": "identical header structure — Game Gear uses the same TMR SEGA header as the Sega Master System; distinguished by region byte"
+    }
   ],
-  "MimeTypes": [ "application/x-gamegear-rom" ],
+  "MimeTypes": [
+    "application/x-gamegear-rom"
+  ],
   "UseCases": [
     "Game preservation of Sega Game Gear cartridges",
     "Emulation and ROM research",
