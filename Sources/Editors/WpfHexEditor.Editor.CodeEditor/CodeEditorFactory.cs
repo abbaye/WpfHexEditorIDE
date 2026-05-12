@@ -111,11 +111,29 @@ public sealed class CodeEditorFactory : IEditorFactory
             language.BlockCommentEnd);
     }
 
+    private static readonly UserSnippetStore SharedUserSnippets = new();
+
+    /// <summary>
+    /// Builds the SnippetManager for <paramref name="language"/> by layering
+    /// three tiers in increasing priority:
+    ///  1. Built-in <see cref="DefaultSnippetPack"/> shipped with the IDE.
+    ///  2. <c>.whlang</c> language-specific snippets (override the defaults).
+    ///  3. User-defined snippets persisted in
+    ///     <see cref="UserSnippetStore"/> (final override).
+    /// </summary>
     private static SnippetManager BuildSnippetManager(LanguageDefinition language)
     {
         var mgr = new SnippetManager();
+
+        foreach (var s in DefaultSnippetPack.GetFor(language.Id))
+            mgr.Register(s);
+
         foreach (var def in language.Snippets)
             mgr.Register(new Snippet(def.Trigger, def.Body, def.Description));
+
+        foreach (var us in SharedUserSnippets.GetForLanguage(language.Id))
+            mgr.Register(new Snippet(us.Trigger, us.Body, us.Description));
+
         return mgr;
     }
 

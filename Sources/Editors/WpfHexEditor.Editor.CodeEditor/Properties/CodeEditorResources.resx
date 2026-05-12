@@ -854,5 +854,14 @@
   <data name="Snippet_Var_Year"            xml:space="preserve"><value>Current year</value></data>
   <data name="Snippet_Var_UserName"        xml:space="preserve"><value>Logged-in user name</value></data>
   <data name="Snippet_Var_MachineName"     xml:space="preserve"><value>Local machine name</value></data>
+  <data name="Snippets_Page_Title"               xml:space="preserve"><value>Code Snippets</value></data>
+  <data name="Snippets_Page_Add"                 xml:space="preserve"><value>+ Add</value></data>
+  <data name="Snippets_Page_Remove"              xml:space="preserve"><value>— Remove</value></data>
+  <data name="Snippets_Page_ColLanguage"         xml:space="preserve"><value>Language</value></data>
+  <data name="Snippets_Page_ColTrigger"          xml:space="preserve"><value>Trigger</value></data>
+  <data name="Snippets_Page_ColDescription"      xml:space="preserve"><value>Description</value></data>
+  <data name="Snippets_Page_BodyLabel"           xml:space="preserve"><value>Body — use $cursor for the caret position; supports ${Variable} tokens.</value></data>
+  <data name="Snippets_Page_VariablesHint"       xml:space="preserve"><value>Available variables: ${FileName}, ${FileNameBase}, ${FilePath}, ${FileExt}, ${FileDir}, ${SelectedText}, ${CurrentLine}, ${LineNumber}, ${CursorPosition}, ${Indent}, ${ProjectName}, ${ClipboardText}, ${Date}, ${Time}, ${Year}, ${UserName}, ${MachineName}.</value></data>
+  <data name="Snippets_Page_DefaultDescription"  xml:space="preserve"><value>New snippet</value></data>
 
 </root>
