@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Philips PAR/REC",
   "formatId": "PAR_REC",
-  "version": "1.13",
+  "version": "1.13.1",
   "extensions": [
     ".par",
     ".rec"
@@ -19,7 +19,7 @@
     "signature": "2320205041",
     "offset": 0,
     "weight": 0.7,
-    "strength": "Moderate",
+    "strength": "Medium",
     "required": true,
     "validation": {
       "minFileSize": 5,

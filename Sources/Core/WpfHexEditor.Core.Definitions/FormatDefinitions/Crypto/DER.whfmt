@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "DER Certificate / ASN.1",
   "formatId": "DER",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [".der", ".cer", ".crt", ".key"],
   "description": "Distinguished Encoding Rules (DER) is the binary serialization of ASN.1 data structures, defined in ITU-T X.690. DER is a canonical subset of BER (Basic Encoding Rules) that guarantees a unique encoding for every ASN.1 value, enabling reliable digital signatures. DER is used for X.509 certificates (RFC 5280), PKCS#8 private keys, PKCS#10 certificate signing requests, PKCS#12 (P12/PFX), PKCS#7 signed data (CMS), and CRL structures. Every DER file begins with an ASN.1 SEQUENCE tag (0x30) followed by a length in DER length encoding: short form (0x00-0x7F for 0-127 bytes), or long form (0x81 nn for up to 255 bytes, 0x82 nn nn for up to 65535 bytes). For TLS certificates the typical first bytes are 30 82 (SEQUENCE with 2-byte length). DER files have no unique magic number — detection relies on 0x30 at offset 0 and plausible length values.",
   "category": "Crypto",
@@ -29,7 +29,7 @@
     "matchMode": "any",
     "MinimumScore": 0.4,
     "required": true,
-    "Strength": "Moderate",
+    "Strength": "Medium",
     "validation": {
       "minFileSize": 4,
       "maxSignatureOffset": 0,

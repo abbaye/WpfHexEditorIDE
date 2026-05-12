@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Analyze 7.5 Image",
   "formatId": "ANALYZE",
-  "version": "1.14",
+  "version": "1.14.1",
   "extensions": [
     ".hdr",
     ".img"
@@ -19,7 +19,7 @@
     "signature": "5C010000",
     "offset": 0,
     "weight": 0.6,
-    "strength": "Moderate",
+    "strength": "Medium",
     "required": true,
     "validation": {
       "minFileSize": 348,

@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "GPG Binary Packet",
   "formatId": "GPG",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [".gpg", ".pgp"],
   "description": "GPG (GNU Privacy Guard) binary packet format as defined in RFC 4880 (OpenPGP) and RFC 9580 (OpenPGP 2024). GPG binary files consist of a self-delimiting sequence of typed packets. Each packet begins with a Packet Tag byte where bit 7 is always 1 (0x80 mask). Bit 6 determines the format: 0=old format (bits 5-2=packet type, bits 1-0=length type), 1=new format (bits 5-0=packet type). Old-format public key packet: 0x99 (tag type 6, 2-byte length); old-format secret key: 0x95 (tag type 5); new-format: 0xC6 (public key), 0xC5 (secret key), 0xCB (literal data), 0xC8 (compressed data). Key version byte at the start of key packet body: 3=PGP 2.x legacy (MD5+RSA), 4=RFC 4880 current (SHA-1 fingerprint), 5=RFC 9580 draft (SHA-256). Creation timestamp (4B BE) and algorithm identifier byte follow the version in key packets. GPG binary files have no unique magic number — detected by packet tag structure with bit 7 set. Files may be encrypted messages, signed messages, encrypted+signed, public keyrings, or secret keyrings.",
   "category": "Crypto",
@@ -33,7 +33,7 @@
     "matchMode": "any",
     "MinimumScore": 0.5,
     "required": false,
-    "Strength": "Moderate",
+    "Strength": "Medium",
     "EntropyHint": { "min": 4.0, "max": 8.0 },
     "validation": {
       "minFileSize": 3,
