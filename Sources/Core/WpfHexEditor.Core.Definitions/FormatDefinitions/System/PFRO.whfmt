@@ -2,10 +2,8 @@
   "diffMode": "binary",
   "formatName": "PFRO Registry Data",
   "formatId": "PFRO",
-  "version": "1.15",
-  "extensions": [
-    ""
-  ],
+  "version": "1.15.1",
+  "extensions": [".pfro"],
   "description": "PendingFileRenameOperations - Delayed file operations",
   "category": "System",
   "author": "WPFHexaEditor Team",
@@ -141,9 +139,7 @@
   ],
   "formatRelationships": {
     "category": "System",
-    "extensions": [
-      ""
-    ]
+    "extensions": [".pfro"]
   },
   "MimeTypes": [
     "application/octet-stream"

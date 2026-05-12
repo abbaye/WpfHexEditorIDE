@@ -2,10 +2,8 @@
   "diffMode": "binary",
   "formatName": "Unix UTMP",
   "formatId": "UTMP",
-  "version": "1.14",
-  "extensions": [
-    ""
-  ],
+  "version": "1.14.1",
+  "extensions": [".utmp"],
   "description": "Unix UTMP file - Current user login records",
   "category": "System",
   "author": "WPFHexaEditor Team",
@@ -171,9 +169,7 @@
   ],
   "formatRelationships": {
     "category": "System",
-    "extensions": [
-      ""
-    ]
+    "extensions": [".utmp"]
   },
   "MimeTypes": [
     "application/octet-stream"

@@ -1,9 +1,9 @@
 {
   "formatName": "Fat/Universal Binary",
   "formatId": "FAT_BINARY",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "diffMode": "binary",
-  "extensions": [""],
+  "extensions": [".fat"],
   "description": "Apple Fat/Universal binary format allows a single file to contain executables for multiple CPU architectures (e.g., x86_64 and ARM64). The CAFEBABE magic is shared with Java .class files but distinguished by the nfat_arch field.",
   "category": "Executables",
   "author": "WPFHexaEditor Team",
