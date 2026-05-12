@@ -27,12 +27,6 @@ namespace WpfHexEditor.Core.Definitions.Models;
 /// </summary>
 public static class WhfmtVariableParser
 {
-    private static readonly JsonDocumentOptions s_opts = new()
-    {
-        CommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
-    };
-
     /// <summary>
     /// Parses variables from a full whfmt JSON document. Returns an empty list
     /// when the document has no <c>variables</c> property.
@@ -40,7 +34,7 @@ public static class WhfmtVariableParser
     public static IReadOnlyList<VariableDefinition> ParseDocument(string whfmtJson)
     {
         ArgumentNullException.ThrowIfNull(whfmtJson);
-        using var doc = JsonDocument.Parse(whfmtJson, s_opts);
+        using var doc = JsonDocument.Parse(whfmtJson, WhfmtJsonOptions.Jsonc);
         return ParseElement(doc.RootElement);
     }
 

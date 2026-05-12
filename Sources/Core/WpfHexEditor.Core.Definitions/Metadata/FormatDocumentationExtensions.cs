@@ -18,6 +18,7 @@
 
 using System.Text.Json;
 using WpfHexEditor.Core.Contracts;
+using WpfHexEditor.Core.Definitions.Models;
 
 namespace WpfHexEditor.Core.Definitions.Metadata;
 
@@ -53,12 +54,6 @@ public sealed record NavigationOverview(
 /// </summary>
 public static class FormatDocumentationExtensions
 {
-    private static readonly JsonDocumentOptions s_opts = new()
-    {
-        CommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
-    };
-
     // ----- Software -----------------------------------------------------------
 
     /// <summary>
@@ -68,7 +63,7 @@ public static class FormatDocumentationExtensions
     public static IReadOnlyList<SoftwareReference> GetSoftware(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
         // Prefer camelCase ("software") then fall back to PascalCase ("Software").
         if (TryGetArray(root, "software", out var arr) || TryGetArray(root, "Software", out arr))
@@ -102,7 +97,7 @@ public static class FormatDocumentationExtensions
     public static IReadOnlyList<string> GetUseCases(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
         if (TryGetArray(root, "useCases", out var arr) || TryGetArray(root, "UseCases", out arr))
             return ReadStringArray(arr);
@@ -118,7 +113,7 @@ public static class FormatDocumentationExtensions
     public static IReadOnlyList<DocReference> GetReferences(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
         if (!root.TryGetProperty("references", out var refs)) return [];
 
@@ -154,7 +149,7 @@ public static class FormatDocumentationExtensions
     public static IReadOnlyList<FormatRelationship> GetFormatRelationships(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
         if (!root.TryGetProperty("formatRelationships", out var rel)) return [];
 
@@ -196,7 +191,7 @@ public static class FormatDocumentationExtensions
     public static InspectorHeader? GetInspectorHeader(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
         if (!root.TryGetProperty("inspector", out var ins) || ins.ValueKind != JsonValueKind.Object)
             return null;
@@ -213,7 +208,7 @@ public static class FormatDocumentationExtensions
     public static NavigationOverview? GetNavigationOverview(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
         if (!root.TryGetProperty("navigation", out var nav) || nav.ValueKind != JsonValueKind.Object)
             return null;
@@ -235,7 +230,7 @@ public static class FormatDocumentationExtensions
     public static string? GetForensicNotes(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
         if (!root.TryGetProperty("forensic", out var f)) return null;
         return StrN(f, "notes");

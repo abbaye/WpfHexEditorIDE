@@ -127,6 +127,19 @@ namespace WpfHexEditor.Tests.Unit
         }
 
         [TestMethod]
+        public void DryRun_ReportsDropWhenBothCasingsPresent()
+        {
+            // Honors the same conflict policy as Migrate: when both forms exist,
+            // the legacy key is dropped, not renamed.
+            const string json = """
+            { "MimeTypes": ["a"], "mimeTypes": ["b"] }
+            """;
+            var report = WhfmtVersionMigrator.DryRun(json);
+            Assert.AreEqual(1, report.Count);
+            Assert.IsTrue(report[0].Contains("dropped"));
+        }
+
+        [TestMethod]
         public void DryRun_EmptyReportWhenAlreadyV3()
         {
             const string json = """{ "mimeTypes": [], "detection": { "strength": "Medium" } }""";

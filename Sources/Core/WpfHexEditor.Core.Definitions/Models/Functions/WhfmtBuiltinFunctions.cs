@@ -14,6 +14,8 @@ using System.Globalization;
 
 namespace WpfHexEditor.Core.Definitions.Models.Functions;
 
+// SYNC: keep this list in lock-step with $ExprBuiltins in
+//       Sources/.claude/skills/whfmt-guard/scripts/whfmt-guard.ps1
 internal static class WhfmtBuiltinFunctions
 {
     public static IReadOnlyList<IWhfmtFunction> All { get; } =

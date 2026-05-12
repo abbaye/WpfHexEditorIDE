@@ -30,18 +30,8 @@ namespace WpfHexEditor.Core.Definitions.Models;
 /// </summary>
 public static class WhfmtVersionMigrator
 {
-    private static readonly JsonNodeOptions s_nodeOpts = new() { PropertyNameCaseInsensitive = false };
-
-    private static readonly JsonDocumentOptions s_docOpts = new()
-    {
-        CommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
-    };
-
     /// <summary>
     /// Maps legacy PascalCase root field name → v3 canonical camelCase.
-    /// Order matters for fields that may exist under both names already —
-    /// we never overwrite an existing camelCase value.
     /// </summary>
     private static readonly Dictionary<string, string> s_rootRenames =
         new(StringComparer.Ordinal)
@@ -61,6 +51,11 @@ public static class WhfmtVersionMigrator
             { "EntropyHint",  "entropyHint" },
             { "MinimumScore", "minimumScore" },
         };
+
+    /// <summary>Pre-quoted legacy keys for the fast-path substring scan.</summary>
+    private static readonly string[] s_legacyQuotedKeys =
+        s_rootRenames.Keys.Concat(s_detectionRenames.Keys)
+            .Select(k => '"' + k + '"').ToArray();
 
     /// <summary>
     /// Migrates <paramref name="whfmtJson"/> in memory and returns the normalized
@@ -87,21 +82,21 @@ public static class WhfmtVersionMigrator
 
     /// <summary>
     /// Returns the migration report (list of renames that would be applied) without
-    /// producing the new JSON. Useful for diagnostic UIs.
+    /// producing the new JSON. Honors the same "don't overwrite an existing
+    /// camelCase value" policy as <see cref="Migrate"/> — collisions are reported
+    /// as drops rather than renames.
     /// </summary>
     public static IReadOnlyList<string> DryRun(string whfmtJson)
     {
-        var report = new List<string>();
+        if (!HasAnyLegacyField(whfmtJson)) return Array.Empty<string>();
+
         var root = ParseToNode(whfmtJson);
-        if (root is not JsonObject obj) return report;
+        if (root is not JsonObject obj) return Array.Empty<string>();
 
-        foreach (var (from, to) in s_rootRenames)
-            if (obj.ContainsKey(from)) report.Add($"root: {from} → {to}");
-
+        var report = new List<string>();
+        AppendPlan(obj, s_rootRenames, "root", report);
         if (obj["detection"] is JsonObject det)
-            foreach (var (from, to) in s_detectionRenames)
-                if (det.ContainsKey(from)) report.Add($"detection: {from} → {to}");
-
+            AppendPlan(det, s_detectionRenames, "detection", report);
         return report;
     }
 
@@ -109,18 +104,15 @@ public static class WhfmtVersionMigrator
 
     private static JsonNode? ParseToNode(string json)
     {
-        // System.Text.Json's JsonNode parser does not consume JsonDocumentOptions,
-        // so we round-trip through JsonDocument first to absorb comments + trailing commas,
-        // then re-serialize via a Writer so the emitted JSON is strict (no comments,
-        // no trailing commas) for the JsonNode parse to consume.
-        using var doc = JsonDocument.Parse(json, s_docOpts);
+        // JsonNode.Parse(string) does not consume JsonDocumentOptions, so we
+        // route through JsonDocument (which strips comments + trailing commas)
+        // and re-emit strict JSON into a stream that JsonNode reads directly.
+        using var doc = JsonDocument.Parse(json, WhfmtJsonOptions.Jsonc);
         using var ms  = new MemoryStream();
         using (var writer = new Utf8JsonWriter(ms))
-        {
             doc.RootElement.WriteTo(writer);
-        }
-        var strictJson = System.Text.Encoding.UTF8.GetString(ms.ToArray());
-        return JsonNode.Parse(strictJson, s_nodeOpts);
+        ms.Position = 0;
+        return JsonNode.Parse(ms);
     }
 
     private static bool RenameKeys(JsonObject obj, IReadOnlyDictionary<string, string> renames)
@@ -129,34 +121,40 @@ public static class WhfmtVersionMigrator
         foreach (var (from, to) in renames)
         {
             if (!obj.ContainsKey(from)) continue;
-            // Don't overwrite an existing camelCase value — that one is authoritative.
             if (obj.ContainsKey(to))
             {
+                // Existing camelCase value is authoritative; drop the legacy duplicate.
                 obj.Remove(from);
                 changed = true;
                 continue;
             }
-            // Move the value: detach + reattach under the new key.
             var node = obj[from];
-            obj.Remove(from);
-            obj[to] = node?.DeepClone();
+            obj.Remove(from);   // detaches node from parent — safe to re-attach
+            obj[to] = node;
             changed = true;
         }
         return changed;
     }
 
-    /// <summary>
-    /// Fast-path check: does the raw text contain any of the known legacy keys
-    /// inside JSON property positions? Avoids paying for a full parse when nothing
-    /// will change. Conservative — false positives are OK (they just cause a parse),
-    /// false negatives are not. We just look for the substrings prefixed by '"'.
-    /// </summary>
+    private static void AppendPlan(
+        JsonObject obj,
+        IReadOnlyDictionary<string, string> renames,
+        string scope,
+        List<string> report)
+    {
+        foreach (var (from, to) in renames)
+        {
+            if (!obj.ContainsKey(from)) continue;
+            report.Add(obj.ContainsKey(to)
+                ? $"{scope}: {from} dropped (camelCase '{to}' already present)"
+                : $"{scope}: {from} → {to}");
+        }
+    }
+
     private static bool HasAnyLegacyField(string json)
     {
-        foreach (var key in s_rootRenames.Keys)
-            if (json.Contains('"' + key + '"', StringComparison.Ordinal)) return true;
-        foreach (var key in s_detectionRenames.Keys)
-            if (json.Contains('"' + key + '"', StringComparison.Ordinal)) return true;
+        foreach (var quoted in s_legacyQuotedKeys)
+            if (json.Contains(quoted, StringComparison.Ordinal)) return true;
         return false;
     }
 }

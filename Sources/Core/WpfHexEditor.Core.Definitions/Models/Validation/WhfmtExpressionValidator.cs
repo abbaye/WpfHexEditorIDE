@@ -26,12 +26,6 @@ namespace WpfHexEditor.Core.Definitions.Models.Validation;
 /// </summary>
 public static class WhfmtExpressionValidator
 {
-    private static readonly JsonDocumentOptions s_opts = new()
-    {
-        CommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
-    };
-
     /// <summary>
     /// Validates every expression-bearing field in <paramref name="whfmtJson"/>:
     /// <c>assertions[].expression</c>, <c>blocks[].expression</c>,
@@ -46,7 +40,7 @@ public static class WhfmtExpressionValidator
         functions ??= WhfmtFunctionRegistry.CreateDefault();
 
         JsonDocument doc;
-        try { doc = JsonDocument.Parse(whfmtJson, s_opts); }
+        try { doc = JsonDocument.Parse(whfmtJson, WhfmtJsonOptions.Jsonc); }
         catch (JsonException ex)
         {
             issues.Add(new WhfmtValidationIssue(

@@ -16,6 +16,7 @@
 
 using System.Text.Json;
 using WpfHexEditor.Core.Contracts;
+using WpfHexEditor.Core.Definitions.Models;
 
 namespace WpfHexEditor.Core.Definitions.Metadata;
 
@@ -65,19 +66,13 @@ public sealed record FuzzConfig(
 /// <summary>Diff + fuzz model extensions on <see cref="EmbeddedFormatEntry"/>.</summary>
 public static class FormatDiffFuzzExtensions
 {
-    private static readonly JsonDocumentOptions s_opts = new()
-    {
-        CommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
-    };
-
     /// <summary>
     /// Returns the <c>diff</c> configuration. Returns null when the block is absent.
     /// </summary>
     public static DiffConfig? GetDiffConfig(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
         if (!root.TryGetProperty("diff", out var d) || d.ValueKind != JsonValueKind.Object) return null;
 
@@ -94,7 +89,7 @@ public static class FormatDiffFuzzExtensions
     public static FuzzConfig? GetFuzzConfig(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
         if (!root.TryGetProperty("fuzz", out var f) || f.ValueKind != JsonValueKind.Object) return null;
 

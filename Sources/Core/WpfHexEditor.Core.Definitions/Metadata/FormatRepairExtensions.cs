@@ -17,6 +17,7 @@
 
 using System.Text.Json;
 using WpfHexEditor.Core.Contracts;
+using WpfHexEditor.Core.Definitions.Models;
 
 namespace WpfHexEditor.Core.Definitions.Metadata;
 
@@ -52,12 +53,6 @@ public sealed record ChecksumSpec(
 /// </summary>
 public static class FormatRepairExtensions
 {
-    private static readonly JsonDocumentOptions s_opts = new()
-    {
-        CommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
-    };
-
     /// <summary>
     /// Returns the repair actions from the <c>repair[]</c> array.
     /// Returns an empty list when absent.
@@ -65,7 +60,7 @@ public static class FormatRepairExtensions
     public static IReadOnlyList<RepairAction> GetRepairs(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
         if (!root.TryGetProperty("repair", out var arr) || arr.ValueKind != JsonValueKind.Array) return [];
 
@@ -95,7 +90,7 @@ public static class FormatRepairExtensions
     public static IReadOnlyList<ChecksumSpec> GetChecksums(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
         if (!root.TryGetProperty("checksums", out var checks) || checks.ValueKind != JsonValueKind.Object)
             return [];

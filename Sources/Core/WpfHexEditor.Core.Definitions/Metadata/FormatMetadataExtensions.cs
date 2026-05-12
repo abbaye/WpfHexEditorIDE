@@ -101,12 +101,6 @@ public sealed record FormatMetadata(
 /// </summary>
 public static class FormatMetadataExtensions
 {
-    private static readonly JsonDocumentOptions s_opts = new()
-    {
-        CommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
-    };
-
     // ------------------------------------------------------------------
     // Bulk — single parse, all blocks
     // ------------------------------------------------------------------
@@ -119,7 +113,7 @@ public static class FormatMetadataExtensions
     public static FormatMetadata GetAllMetadata(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         var root = doc.RootElement;
 
         return new FormatMetadata(
@@ -143,7 +137,7 @@ public static class FormatMetadataExtensions
     public static ForensicSummary? GetForensicSummary(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseForensic(doc.RootElement);
     }
 
@@ -161,7 +155,7 @@ public static class FormatMetadataExtensions
     public static AiHints? GetAiHints(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseAiHints(doc.RootElement);
     }
 
@@ -176,7 +170,7 @@ public static class FormatMetadataExtensions
     public static IReadOnlyList<NavigationBookmark> GetNavigationBookmarks(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseBookmarks(doc.RootElement);
     }
 
@@ -191,7 +185,7 @@ public static class FormatMetadataExtensions
     public static IReadOnlyList<AssertionRule> GetAssertions(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseAssertions(doc.RootElement);
     }
 
@@ -206,7 +200,7 @@ public static class FormatMetadataExtensions
     public static IReadOnlyList<InspectorGroup> GetInspectorGroups(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseInspectorGroups(doc.RootElement);
     }
 
@@ -221,7 +215,7 @@ public static class FormatMetadataExtensions
     public static IReadOnlyList<ExportTemplate> GetExportTemplates(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseExportTemplates(doc.RootElement);
     }
 
@@ -269,7 +263,7 @@ public static class FormatMetadataExtensions
     public static TechnicalDetails? GetTechnicalDetails(
         this EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
     {
-        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), s_opts);
+        using var doc = JsonDocument.Parse(catalog.GetJson(entry.ResourceKey), WhfmtJsonOptions.Jsonc);
         return ParseTechnicalDetails(doc.RootElement);
     }
 
