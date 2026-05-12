@@ -13,9 +13,7 @@ dotnet add package whfmt.FileFormatCatalog
 
 ## What's New in 1.3.2 (whfmt v3 GA)
 
-First public NuGet release of the whfmt v3 family — consolidates the work of the
-internal 1.3.0 and 1.3.1 milestones (never published) plus the Phase B
-pre-publication audit and 2 catalog bug fixes.
+First public NuGet release of the whfmt v3 family.
 
 ### Schema v3 — declarative becomes executable
 
@@ -530,8 +528,7 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 
 ### 1.3.2 (whfmt v3 GA)
 
-First public release of the whfmt v3 family. Consolidates the internal 1.3.0 and 1.3.1
-milestones (never published) + Phase B audit + 2 bug fixes.
+First public release of the whfmt v3 family.
 
 **Schema v3 — declarative becomes executable**
 
