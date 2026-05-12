@@ -144,7 +144,32 @@ public sealed record EmbeddedFormatEntry(
     /// Canonical format identifier from the <c>formatId</c> field, e.g. "CSharp", "ROM_GBC".
     /// Empty string when absent. Added in whfmt v3 (P1). Stable across renames of <see cref="Name"/>.
     /// </summary>
-    string FormatId = "");
+    string FormatId = "",
+    /// <summary>
+    /// Detection match mode: "any" stops on first hit, "best" returns highest-scoring,
+    /// "all" requires every signature to match. Default "best" when absent. Added P3.
+    /// </summary>
+    string MatchMode = "best",
+    /// <summary>
+    /// Minimum aggregate signature score required to consider this format detected.
+    /// Values seen in catalog range from 0.5 (loose) to ~90 (strict). 0 = no threshold. Added P3.
+    /// </summary>
+    double MinimumScore = 0.0,
+    /// <summary>
+    /// Minimum file size in bytes for detection to apply, from
+    /// <c>detection.validation.minFileSize</c>. 0 = no minimum. Added P3.
+    /// </summary>
+    int MinFileSize = 0,
+    /// <summary>
+    /// Optional lower bound on Shannon entropy for detection (0.0–8.0 bits/byte).
+    /// From <c>detection.EntropyHint.min</c>. NaN = unset. Added P3.
+    /// </summary>
+    double EntropyMin = double.NaN,
+    /// <summary>
+    /// Optional upper bound on Shannon entropy for detection (0.0–8.0 bits/byte).
+    /// From <c>detection.EntropyHint.max</c>. NaN = unset. Added P3.
+    /// </summary>
+    double EntropyMax = double.NaN);
 
 /// <summary>
 /// Read-only catalog of the embedded format definitions shipped with the assembly.

@@ -231,14 +231,41 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         foreach (var entry in GetAll())
         {
             if (entry.Signatures is not { Count: > 0 }) continue;
+
+            // P3: minFileSize gate — when set, the file header must be at least that big.
+            if (entry.MinFileSize > 0 && header.Length < entry.MinFileSize) continue;
+
+            // P3: matchMode controls how individual signature hits accumulate into a score.
+            //   "all"  — every signature must match; score is the sum of weights.
+            //   "any"  — first matching signature wins (its weight is the score).
+            //   "best" — default; sum of weights of every matching signature.
+            int matched = 0;
             double score = 0;
             foreach (var sig in entry.Signatures)
             {
-                var bytes = Convert.FromHexString(sig.Value);
+                // Guard: signature value must be valid hex (even-length). Skip malformed
+                // catalog entries rather than crashing the entire detection pass.
+                if (sig.Value.Length == 0 || (sig.Value.Length & 1) != 0) continue;
+                byte[] bytes;
+                try { bytes = Convert.FromHexString(sig.Value); }
+                catch (FormatException) { continue; }
+
                 if (sig.Offset + bytes.Length > header.Length) continue;
                 if (header.Slice(sig.Offset, bytes.Length).SequenceEqual(bytes))
+                {
+                    matched++;
                     score += sig.Weight;
+                    if (entry.MatchMode.Equals("any", StringComparison.OrdinalIgnoreCase)) break;
+                }
             }
+
+            if (matched == 0) continue;
+            if (entry.MatchMode.Equals("all", StringComparison.OrdinalIgnoreCase) &&
+                matched != entry.Signatures.Count) continue;
+
+            // P3: MinimumScore gate — skip entries that didn't reach their declared threshold.
+            if (entry.MinimumScore > 0 && score < entry.MinimumScore) continue;
+
             if (score > bestScore) { bestScore = score; best = entry; }
         }
         return bestScore > 0 ? best : null;
@@ -324,6 +351,15 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         // single-signature schema (detection.signature/offset/weight) — normalized into
         // the same FormatSignature list so downstream consumers see a single shape.
         var signatures = new List<FormatSignature>();
+
+        // P3: detection v2 fields — matchMode / MinimumScore / EntropyHint / minFileSize.
+        // Both camelCase (canonical v3) and PascalCase (legacy) accepted at read time.
+        var matchMode    = "best";
+        var minimumScore = 0.0;
+        var minFileSize  = 0;
+        var entropyMin   = double.NaN;
+        var entropyMax   = double.NaN;
+
         if (root.TryGetProperty("detection", out var det2))
         {
             if (det2.TryGetProperty("signatures", out var sigs) && sigs.ValueKind == JsonValueKind.Array)
@@ -343,6 +379,38 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
                 var weight = det2.TryGetProperty("weight", out var w2) && w2.ValueKind == JsonValueKind.Number ? w2.GetDouble() : 1.0;
                 if (val.Length > 0) signatures.Add(new FormatSignature(val, off, weight));
             }
+
+            // matchMode (string)
+            matchMode = GetString(det2, "matchMode") ?? "best";
+
+            // MinimumScore (number) — both casings
+            if (det2.TryGetProperty("MinimumScore", out var ms) && ms.ValueKind == JsonValueKind.Number)
+                minimumScore = ms.GetDouble();
+            else if (det2.TryGetProperty("minimumScore", out var msc) && msc.ValueKind == JsonValueKind.Number)
+                minimumScore = msc.GetDouble();
+
+            // EntropyHint.min / .max — PascalCase wrapper, camelCase children
+            if (det2.TryGetProperty("EntropyHint", out var eh) && eh.ValueKind == JsonValueKind.Object)
+            {
+                if (eh.TryGetProperty("min", out var emn) && emn.ValueKind == JsonValueKind.Number)
+                    entropyMin = emn.GetDouble();
+                if (eh.TryGetProperty("max", out var emx) && emx.ValueKind == JsonValueKind.Number)
+                    entropyMax = emx.GetDouble();
+            }
+            else if (det2.TryGetProperty("entropyHint", out var ehc) && ehc.ValueKind == JsonValueKind.Object)
+            {
+                if (ehc.TryGetProperty("min", out var emn) && emn.ValueKind == JsonValueKind.Number)
+                    entropyMin = emn.GetDouble();
+                if (ehc.TryGetProperty("max", out var emx) && emx.ValueKind == JsonValueKind.Number)
+                    entropyMax = emx.GetDouble();
+            }
+
+            // validation.minFileSize (validation may also be a plain string in legacy files)
+            if (det2.TryGetProperty("validation", out var validation) && validation.ValueKind == JsonValueKind.Object)
+            {
+                if (validation.TryGetProperty("minFileSize", out var mfs) && mfs.ValueKind == JsonValueKind.Number && mfs.TryGetInt32(out var mfsInt))
+                    minFileSize = mfsInt;
+            }
         }
 
         return new EmbeddedFormatEntry(
@@ -351,7 +419,8 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
             isTextFormat, hasSyntaxDef, diffMode,
             mimeTypes.Count > 0 ? mimeTypes : null,
             signatures.Count > 0 ? signatures : null,
-            formatId);
+            formatId,
+            matchMode, minimumScore, minFileSize, entropyMin, entropyMax);
     }
 
     private static string? GetString(JsonElement root, string property)
