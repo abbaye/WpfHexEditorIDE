@@ -11,6 +11,15 @@ dotnet add package whfmt.FileFormatCatalog
 
 ---
 
+## What's New in 1.3.2
+
+- **2 catalog bug fixes caught by the new B8 smoke test before publication**:
+  - `FormatMatcher.ScoreEntry` now handles **negative offsets** (offset-from-end signatures used by SHEBANG, FAT_BINARY, NE, LE, TRUECRYPT). Previously threw `ArgumentOutOfRangeException`.
+  - Assertion engine accepts `.whfmt` variables of type `bool` and `null` (e.g. `PNG.crc32Valid = false`). Previously crashed on `InvalidOperationException`.
+- **Phase B pre-publication audit** — `WhfmtExprNode` AST surface internalized (consumers go through `WhfmtExpressionEvaluator.Evaluate(string)` returning `object?`), enabling future bytecode lowering without ABI break. Schema v3 `category` enum extended to 31 values (matches the 29 on-disk directories + Programming + Other). Direct unit tests added for `GetJsonV3`, `FormatSummaryBuilder`, `GetDocumentationBundle`, and `FormatMatcher`.
+- **Catalog cleanup Lots 1-7**: 131 `matchMode` normalizations, 32 block-type swaps, 20 endian-suffixed valueType splits, 9 formatId collision renames (DER→DER_CRYPTO, PAK→PAK_GAME, YAML→YAML_LANG, …), 8 Unix-style fictive extensions, 12 exotic valueType mappings to canonical (uint24→uint32, vint→int64, filetime→int64, …).
+- See [audit-pre-publication](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Docs/whfmt-v3/audit-pre-publication/audit-SYNTHESE.md) for the full 4-axis audit report.
+
 ## What's New in 1.3.1
 
 - **101 formats enriched** — `diff`, `repair`, `fuzz`, `migration` blocks added across 15 categories: Audio (10), Images (10), Archives (9), Executables (5), Video (10), Documents (10), Game/ROM (10), Crypto (4), Network (3), Firmware (3), 3D (5), Fonts (5), Disk (5), System (3), GIS (2).
@@ -490,6 +499,13 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 ---
 
 ## Changelog
+
+### 1.3.2
+
+- **Bug fix**: `FormatMatcher.ScoreEntry` handles negative-offset signatures (offset-from-end convention).
+- **Bug fix**: assertion engine ingests `bool` and `null` variables without throwing.
+- **Phase B audit**: `WhfmtExprNode` AST internalized; schema v3 `category` enum aligned to 31 values; direct unit tests added.
+- **Catalog cleanup**: Lots 1-7 (matchMode normalization, block-type swaps, endian splits, formatId collision renames, fictive extensions, exotic valueType canonicalization).
 
 ### 1.3.1
 
