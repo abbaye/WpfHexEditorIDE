@@ -1,7 +1,7 @@
 {
   "formatName": "NUT Multimedia Container",
   "formatId": "NUT",
-  "version": "1.1",
+  "version": "1.1.1",
   "extensions": [ ".nut" ],
   "diffMode": "binary",
   "description": "NUT is an open multimedia container format developed by the FFmpeg project. Designed for simplicity and seeking efficiency with variable-length integer encoding throughout.",
@@ -33,7 +33,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 88,
     "Strength": "Strong",
     "EntropyHint": { "min": 4.5, "max": 7.5 }

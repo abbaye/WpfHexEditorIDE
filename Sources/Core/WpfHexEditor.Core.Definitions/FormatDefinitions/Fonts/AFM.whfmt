@@ -1,7 +1,7 @@
 {
   "formatName": "Adobe Font Metrics",
   "formatId": "AFM",
-  "version": "1.0",
+  "version": "1.0.1",
   "author": "WPFHexaEditor Team",
   "lastUpdated": "2026-04-15",
   "description": "Adobe Font Metrics (.afm) — a plain-text sidecar format accompanying PostScript Type 1 and Type 3 fonts; stores per-glyph advance widths, bounding boxes, kerning pairs, and composite character definitions used by PostScript interpreters, PDF generators, and typesetting engines.",
@@ -18,7 +18,7 @@
       "strength": "Strong"
     }
   ],
-  "matchMode": "first",
+  "matchMode": "any",
   "maxSignatureOffset": 15,
   "detection": {
     "signatures": [

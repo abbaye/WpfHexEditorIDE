@@ -1,7 +1,7 @@
 {
   "formatName": "Debian Package",
   "formatId": "DEB",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "binary",
   "extensions": [ ".deb", ".udeb" ],
   "description": "Debian package format (.deb) is an AR archive containing a debian-binary version file, a control.tar archive, and a data.tar archive. The AR magic '!<arch>\n' (0x21 0x3C 0x61 0x72 0x63 0x68 0x3E 0x0A) appears at offset 0.",
@@ -39,7 +39,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 82,
     "Strength": "Strong",
     "EntropyHint": { "min": 5.0, "max": 8.0, "note": "AR header has low entropy; compressed inner archives have high entropy" },

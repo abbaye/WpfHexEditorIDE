@@ -1,7 +1,7 @@
 {
   "formatName": "RPM Package",
   "formatId": "RPM",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "binary",
   "extensions": [ ".rpm" ],
   "description": "RPM is the recursive package manager format used by Red Hat, Fedora, CentOS, SUSE, and related Linux distributions. The file begins with a 4-byte magic (0xED 0xAB 0xEE 0xDB) followed by major/minor version bytes and a 2-byte big-endian package type.",
@@ -38,7 +38,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 85,
     "Strength": "Strong",
     "EntropyHint": { "min": 6.0, "max": 8.0, "note": "Compressed payload raises overall entropy; header sections have lower entropy" },

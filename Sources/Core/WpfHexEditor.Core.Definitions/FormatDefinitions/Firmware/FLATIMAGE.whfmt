@@ -1,7 +1,7 @@
 {
   "formatName": "FlatImage",
   "formatId": "FLATIMAGE",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "binary",
   "extensions": [
     ".flatimg"
@@ -53,7 +53,7 @@
   ],
   "detection": {
     "signatures": [],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 82,
     "Strength": "Weak",
     "EntropyHint": {

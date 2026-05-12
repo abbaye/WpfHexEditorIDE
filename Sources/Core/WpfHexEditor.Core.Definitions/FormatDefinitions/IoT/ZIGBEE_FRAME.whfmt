@@ -1,7 +1,7 @@
 {
   "formatName": "ZigBee Frame",
   "formatId": "ZIGBEE_FRAME",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "binary",
   "extensions": [
     ".zbee",
@@ -61,7 +61,7 @@
         "weight": 0.3
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 82,
     "Strength": "Weak",
     "EntropyHint": {

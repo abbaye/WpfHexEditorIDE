@@ -1,7 +1,7 @@
 {
   "formatName": "UBIFS Filesystem",
   "formatId": "UBIFS",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "binary",
   "extensions": [
     ".ubifs",
@@ -64,7 +64,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 85,
     "Strength": "Strong",
     "EntropyHint": {

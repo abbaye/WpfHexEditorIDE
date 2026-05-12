@@ -1,7 +1,7 @@
 {
   "formatName": "ELF Process Core Dump",
   "formatId": "COREDUMP_ELF",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "binary",
   "extensions": [
     ".core",
@@ -65,7 +65,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 82,
     "Strength": "Strong",
     "EntropyHint": {

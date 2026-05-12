@@ -1,7 +1,7 @@
 {
   "formatName": "Windows Imaging Format",
   "formatId": "WIM",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "diffMode": "binary",
   "extensions": [ ".wim", ".esd", ".swm" ],
   "description": "Windows Imaging Format (WIM) is a file-based disk image format used by Microsoft for deploying Windows OS installations. The header begins with an 8-byte ASCII magic 'MSWIM\u0000\u0000\u0000' followed by header size, image count, and compression type fields.",
@@ -38,7 +38,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 85,
     "Strength": "Strong",
     "EntropyHint": { "min": 5.5, "max": 8.0, "note": "Compressed WIM data has high entropy; metadata sections have low entropy" },

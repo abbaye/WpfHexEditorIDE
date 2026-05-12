@@ -2,7 +2,7 @@
   "diffMode": "text",
   "formatName": "age Encryption Key",
   "formatId": "AGE_KEY",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [".key", ".txt"],
   "description": "age encryption private key file — a text file containing an age identity (secret key) prefixed with 'AGE-SECRET-KEY-' followed by a Bech32-encoded X25519 private key. The age tool by Filippo Valsorda is a modern, simple file encryption tool designed to replace GPG for symmetric and asymmetric encryption workflows.",
   "category": "Crypto",
@@ -22,7 +22,7 @@
         "weight": 1.0
       }
     ],
-    "matchMode": "Best",
+    "matchMode": "best",
     "MinimumScore": 0.9,
     "Strength": "Strong",
     "EntropyHint": "Low — text file with Bech32-encoded key data"

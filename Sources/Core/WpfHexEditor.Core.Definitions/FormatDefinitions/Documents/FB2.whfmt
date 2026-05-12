@@ -2,7 +2,7 @@
   "diffMode": "text",
   "formatName": "FictionBook 2 e-Book",
   "formatId": "FB2",
-  "version": "1.1",
+  "version": "1.1.1",
   "extensions": [
     ".fb2",
     ".fb2.zip"
@@ -38,7 +38,7 @@
         "weight": 0.4
       }
     ],
-    "matchMode": "Best",
+    "matchMode": "best",
     "MinimumScore": 0.4,
     "Strength": "Weak",
     "EntropyHint": "Low to moderate — plain UTF-8 XML text with base64-encoded image sections at higher entropy"

@@ -1,7 +1,7 @@
 {
   "formatName": "systemd-coredump (zstd-wrapped)",
   "formatId": "COREDUMPCTL",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "binary",
   "extensions": [
     ".zst"
@@ -61,7 +61,7 @@
         "weight": 0.6
       }
     ],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 82,
     "Strength": "Medium",
     "EntropyHint": {

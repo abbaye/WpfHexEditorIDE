@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "Apple ProRes",
   "formatId": "PRORES",
-  "version": "1.0",
+  "version": "1.0.1",
   "extensions": [
     ".mov"
   ],
@@ -30,7 +30,7 @@
         "weight": 0.9
       }
     ],
-    "matchMode": "allOf",
+    "matchMode": "all",
     "MinimumScore": 85,
     "Strength": "Strong",
     "EntropyHint": { "min": 5.5, "max": 7.9 },

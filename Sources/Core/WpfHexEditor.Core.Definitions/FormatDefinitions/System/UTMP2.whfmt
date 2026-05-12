@@ -1,7 +1,7 @@
 {
   "formatName": "utmpx/wtmpx Login Records",
   "formatId": "UTMP2",
-  "version": "1.0",
+  "version": "1.0.1",
   "diffMode": "binary",
   "extensions": [
     ".wtmpx",
@@ -54,7 +54,7 @@
   ],
   "detection": {
     "signatures": [],
-    "matchMode": "first",
+    "matchMode": "any",
     "MinimumScore": 82,
     "Strength": "Weak",
     "EntropyHint": {
