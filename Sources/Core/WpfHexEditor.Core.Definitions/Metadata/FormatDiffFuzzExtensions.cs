@@ -41,6 +41,10 @@ public enum FuzzMutation
     BitFlip,
     Overflow,
     RandomBytes,
+    /// <summary>Truncate the file to a shorter length (catalog: timestamp/log formats).</summary>
+    Truncate,
+    /// <summary>Zero out the field's bytes (catalog: checksum/length integrity tests).</summary>
+    ZeroField,
 }
 
 /// <summary>A single fuzz mutation strategy from a format's <c>fuzz.strategies[]</c> array.</summary>
@@ -125,6 +129,8 @@ public static class FormatDiffFuzzExtensions
         "bit_flip"          => FuzzMutation.BitFlip,
         "overflow"          => FuzzMutation.Overflow,
         "random_bytes"      => FuzzMutation.RandomBytes,
+        "truncate"          => FuzzMutation.Truncate,
+        "zero_field"        => FuzzMutation.ZeroField,
         _                   => FuzzMutation.Unknown,
     };
 

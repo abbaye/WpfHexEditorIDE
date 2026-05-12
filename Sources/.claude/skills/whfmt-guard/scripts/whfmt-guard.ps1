@@ -63,7 +63,9 @@ $RequiredFields   = @('formatName','formatId','extensions','category','descripti
 #                              this allow-list is empirical from the catalog).
 $AllowedBlockTypes      = @('signature','field','metadata','header','data','conditional',
                             'computeFromVariables','loop','repeating','action','sentinel',
-                            'union','nested','pointer','bitfield')
+                            'union','nested','pointer','bitfield',
+                            # Recognized v3 additions (catalog-driven):
+                            'group')
 $AllowedValueTypes      = @('uint8','uint16','uint32','uint64','int8','int16','int32','int64',
                             'float32','float64','ascii','utf8','utf16le','utf16be','bytes','hex',
                             # aliases recognized by WhfmtValueTypes.Parse:
@@ -77,7 +79,8 @@ $AllowedSeverities      = @('error','warning','info')
 $AllowedForensicSeverities = @('error','warning','info','critical','high','medium','low')
 $AllowedMatchModes      = @('any','best','all')
 $AllowedFuzzMutations   = @('corrupt_signature','enum_sweep','boundary_values',
-                            'bit_flip','overflow','random_bytes')
+                            'bit_flip','overflow','random_bytes',
+                            'truncate','zero_field')
 # Empirical: actions observed in the catalog (grep "action": "X"). Add new values
 # here when the C# RepairAction interface gains support — the runtime accepts
 # any string today so this is a lint-level check, not a runtime contract.
