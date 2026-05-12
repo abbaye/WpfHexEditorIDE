@@ -497,6 +497,76 @@
                         </ScrollViewer>
                     </TabItem>
 
+                    <!-- ════ Tab 5: Documentation (Piste A — Software/UseCases/Relationships/Navigation) ════ -->
+                    <!-- TODO loc: replace "Docs" with DynamicResource WhfmtDetail_DocumentationTab once string is added to ShellPanelsResources.resx -->
+                    <TabItem Header="Docs">
+                        <TabItem.Style>
+                            <Style TargetType="TabItem" BasedOn="{StaticResource WE_DetailTabItem}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasDocumentation}" Value="False">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Setter Property="Opacity"   Value="0.4"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabItem.Style>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Margin="8,6">
+
+                                <!-- Software (empty ItemsControl renders nothing — no visibility binding needed) -->
+                                <TextBlock Text="Software" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                <ItemsControl ItemsSource="{Binding SoftwareDisplay}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                                <TextBlock Text="{Binding Name}" FontSize="10"
+                                                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                                <TextBlock Text="{Binding Role, StringFormat=' — {0}'}" FontSize="10"
+                                                           Foreground="{DynamicResource SE_MutedBrush}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Use Cases -->
+                                <TextBlock Text="Use Cases" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
+                                <ItemsControl ItemsSource="{Binding UseCasesDisplay}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" FontSize="10" TextWrapping="Wrap" Margin="0,0,0,2"
+                                                       Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Format Relationships -->
+                                <TextBlock Text="Related Formats" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
+                                <ItemsControl ItemsSource="{Binding RelationshipsDisplay}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                                <TextBlock Text="{Binding Format}" FontSize="10" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource SE_AccentBrush}"/>
+                                                <TextBlock Text="{Binding Relationship, StringFormat=' — {0}'}" FontSize="10" TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource SE_MutedBrush}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Navigation Structure -->
+                                <TextBlock Text="Structure" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
+                                <TextBlock Text="{Binding NavigationStructure}" FontSize="10" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
+
+                                <!-- Navigation Notes -->
+                                <TextBlock Text="Notes" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
+                                <TextBlock Text="{Binding NavigationNotes}" FontSize="10" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource SE_MutedBrush}"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
                 </TabControl>
 
                 <!-- GridSplitter -->
