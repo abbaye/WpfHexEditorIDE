@@ -2,8 +2,12 @@
   "diffMode": "binary",
   "formatName": "Flash Video (FLV/F4V)",
   "formatId": "FLV",
-  "version": "1.0.1",
-  "extensions": [".flv", ".f4v", ".f4a"],
+  "version": "1.0.2",
+  "extensions": [
+    ".flv",
+    ".f4v",
+    ".f4a"
+  ],
   "description": "Flash Video (FLV) is a container format used to deliver video content via Adobe Flash Player. FLV files begin with the 4-byte magic sequence 'FLV' (ASCII 46 4C 56) followed by a version byte (0x01 for version 1). The flags byte at offset 4 uses bit 0 to indicate audio presence and bit 2 to indicate video presence. The data offset field at offset 5 (uint32BE) declares the byte offset to the first tag, typically 9. FLV tags consist of header, payload, and a previous tag size footer. F4V is an evolution using the ISO BMFF container with 'f4v ' brand. FLV was the dominant web video format prior to HTML5.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
@@ -29,7 +33,9 @@
     ],
     "matchMode": "any",
     "MinimumScore": 0.9,
-    "required": ["FLV magic 'FLV' + version 1 at offset 0"],
+    "required": [
+      "FLV magic 'FLV' + version 1 at offset 0"
+    ],
     "Strength": "Strong",
     "EntropyHint": {
       "min": 5.0,
@@ -89,7 +95,8 @@
       "opacity": 0.75,
       "description": "Byte offset to first FLV tag (big-endian uint32) — always 9 for standard FLV files; any value other than 9 indicates a non-standard or extended FLV header with additional data before the first tag",
       "storeAs": "dataOffset",
-      "valueType": "uint32BE"
+      "valueType": "uint32",
+      "endianness": "big"
     }
   ],
   "assertions": [
@@ -114,11 +121,36 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "FLV Magic", "offset": 0, "length": 3, "color": "#FF6B6B" },
-      { "name": "Version", "offset": 3, "length": 1, "color": "#4ECDC4" },
-      { "name": "Stream Flags", "offset": 4, "length": 1, "color": "#95E1D3" },
-      { "name": "Data Offset", "offset": 5, "length": 4, "color": "#FFE66D" },
-      { "name": "First Tag (offset 9)", "offset": 9, "length": 11, "color": "#A8E6CF" }
+      {
+        "name": "FLV Magic",
+        "offset": 0,
+        "length": 3,
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Version",
+        "offset": 3,
+        "length": 1,
+        "color": "#4ECDC4"
+      },
+      {
+        "name": "Stream Flags",
+        "offset": 4,
+        "length": 1,
+        "color": "#95E1D3"
+      },
+      {
+        "name": "Data Offset",
+        "offset": 5,
+        "length": 4,
+        "color": "#FFE66D"
+      },
+      {
+        "name": "First Tag (offset 9)",
+        "offset": 9,
+        "length": 11,
+        "color": "#A8E6CF"
+      }
     ]
   },
   "inspector": {
@@ -128,11 +160,17 @@
     "groups": [
       {
         "name": "File Header",
-        "fields": ["flvMagic", "flvVersion"]
+        "fields": [
+          "flvMagic",
+          "flvVersion"
+        ]
       },
       {
         "name": "Stream Configuration",
-        "fields": ["flvFlags", "dataOffset"]
+        "fields": [
+          "flvFlags",
+          "dataOffset"
+        ]
       }
     ]
   },
@@ -178,11 +216,23 @@
   ],
   "formatRelationships": {
     "category": "Video",
-    "extensions": [".flv", ".f4v", ".f4a"],
-    "relatedFormats": ["F4V", "MP4", "RTMP streams", "SWF"],
+    "extensions": [
+      ".flv",
+      ".f4v",
+      ".f4a"
+    ],
+    "relatedFormats": [
+      "F4V",
+      "MP4",
+      "RTMP streams",
+      "SWF"
+    ],
     "note": "F4V superseded FLV for H.264 content by using ISO BMFF container with 'f4v ' brand; FLV is largely legacy but widespread in archived web video"
   },
-  "MimeTypes": ["video/x-flv", "video/x-f4v"],
+  "MimeTypes": [
+    "video/x-flv",
+    "video/x-f4v"
+  ],
   "UseCases": [
     "Legacy web video streaming via Flash Player",
     "Video platform archives (YouTube early era)",
@@ -201,13 +251,29 @@
   },
   "TechnicalDetails": {
     "headerSizeBytes": 9,
-    "tagTypes": { "8": "Audio", "9": "Video", "18": "Script/Metadata" },
-    "videoCodecs": { "2": "Sorenson Spark (H.263)", "4": "VP6", "5": "VP6 with alpha", "7": "H.264 (AVC)" },
-    "audioCodecs": { "2": "MP3", "10": "AAC" },
+    "tagTypes": {
+      "8": "Audio",
+      "9": "Video",
+      "18": "Script/Metadata"
+    },
+    "videoCodecs": {
+      "2": "Sorenson Spark (H.263)",
+      "4": "VP6",
+      "5": "VP6 with alpha",
+      "7": "H.264 (AVC)"
+    },
+    "audioCodecs": {
+      "2": "MP3",
+      "10": "AAC"
+    },
     "legacyFormat": true
   },
   "diff": {
-    "keyFields": ["flvVersion", "flvFlags", "dataOffset"],
+    "keyFields": [
+      "flvVersion",
+      "flvFlags",
+      "dataOffset"
+    ],
     "ignoreFields": [],
     "groupBy": "flvFlags",
     "note": "flvVersion identifies the FLV spec level; flvFlags declares audio/video stream presence; dataOffset must equal 9 for standard files — all three are meaningful discriminators"
@@ -242,11 +308,37 @@
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "flvMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupting 'FLV' at offset 0-2 tests Flash Player and FFmpeg magic-byte rejection and format-identification fallback" },
-      { "field": "dataOffset", "mutation": "boundary_values", "weight": 2, "description": "dataOffset values 0, 1, and 0xFFFFFFFF test tag-location arithmetic overflow in FLV demuxers that skip to the first tag offset" },
-      { "field": "flvFlags", "mutation": "enum_sweep", "weight": 2, "description": "Sweeping flags byte values exercises audio-only, video-only, and combined stream detection paths" },
-      { "field": "flvVersion", "mutation": "overflow", "weight": 2, "description": "Non-1 version values (2, 255) test version-guard branches in FLV parsers that reject unknown versions" },
-      { "field": "flvFlags", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit flips in the flags byte test robustness of audio/video presence detection in FLV readers" }
+      {
+        "field": "flvMagic",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupting 'FLV' at offset 0-2 tests Flash Player and FFmpeg magic-byte rejection and format-identification fallback"
+      },
+      {
+        "field": "dataOffset",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "dataOffset values 0, 1, and 0xFFFFFFFF test tag-location arithmetic overflow in FLV demuxers that skip to the first tag offset"
+      },
+      {
+        "field": "flvFlags",
+        "mutation": "enum_sweep",
+        "weight": 2,
+        "description": "Sweeping flags byte values exercises audio-only, video-only, and combined stream detection paths"
+      },
+      {
+        "field": "flvVersion",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Non-1 version values (2, 255) test version-guard branches in FLV parsers that reject unknown versions"
+      },
+      {
+        "field": "flvFlags",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Bit flips in the flags byte test robustness of audio/video presence detection in FLV readers"
+      }
     ]
   },
   "migration": [
@@ -255,7 +347,12 @@
       "to": "FLV-audio-video",
       "description": "Update stream flags to declare both audio and video streams present when re-muxing audio into an existing video-only FLV",
       "changes": [
-        { "field": "flvFlags", "changeType": "set_value", "value": "05", "description": "Set bit 0 (audio) and bit 2 (video) in flags byte to declare combined audio/video FLV" }
+        {
+          "field": "flvFlags",
+          "changeType": "set_value",
+          "value": "05",
+          "description": "Set bit 0 (audio) and bit 2 (video) in flags byte to declare combined audio/video FLV"
+        }
       ]
     }
   ]

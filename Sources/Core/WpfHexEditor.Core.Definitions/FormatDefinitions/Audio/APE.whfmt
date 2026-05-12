@@ -2,8 +2,11 @@
   "diffMode": "binary",
   "formatName": "Monkey's Audio",
   "formatId": "APE",
-  "version": "1.0.1",
-  "extensions": [".ape", ".mac"],
+  "version": "1.0.2",
+  "extensions": [
+    ".ape",
+    ".mac"
+  ],
   "description": "Monkey's Audio (APE) is a lossless audio compression format developed by Matthew T. Welch. Files begin with the four-byte ASCII magic 'MAC ' (0x4D414320) followed by a 16-bit little-endian version number. Compression levels range from 1000 (Fast) to 5000 (Insane). The descriptor block records size information allowing decoders to seek directly to the header, seektable, and audio data sections. APE is widely used among audiophiles for archival quality audio storage without any quality loss.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
@@ -29,7 +32,9 @@
     ],
     "matchMode": "any",
     "MinimumScore": 0.9,
-    "required": ["MAC  — Monkey's Audio magic bytes"],
+    "required": [
+      "MAC  — Monkey's Audio magic bytes"
+    ],
     "Strength": "Strong",
     "EntropyHint": {
       "min": 3.0,
@@ -69,7 +74,8 @@
       "opacity": 0.75,
       "description": "APE format version as a little-endian uint16 multiplied by 1000; common values are 3800-3990+; version determines which header fields are present and their layout",
       "storeAs": "apeVersion",
-      "valueType": "uint16LE"
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -80,7 +86,8 @@
       "opacity": 0.75,
       "description": "Size of the APE descriptor block in bytes (little-endian); used to locate the header block which immediately follows the descriptor",
       "storeAs": "descriptorBytes",
-      "valueType": "uint16LE"
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -91,7 +98,8 @@
       "opacity": 0.75,
       "description": "APE compression level: 1000=Fast, 2000=Normal, 3000=High, 4000=Extra High, 5000=Insane; higher levels yield smaller files at cost of encoding/decoding speed",
       "storeAs": "compressionLevel",
-      "valueType": "uint16LE"
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -102,7 +110,8 @@
       "opacity": 0.75,
       "description": "Number of audio channels in the stream (little-endian uint16); 1=mono, 2=stereo; Monkey's Audio supports multi-channel in newer versions",
       "storeAs": "channels",
-      "valueType": "uint16LE"
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -113,7 +122,8 @@
       "opacity": 0.75,
       "description": "Audio sample rate in Hz stored as a little-endian uint32; common values are 44100, 48000, 88200, 96000 Hz for high-fidelity audio archiving",
       "storeAs": "sampleRate",
-      "valueType": "uint32LE"
+      "valueType": "uint32",
+      "endianness": "little"
     }
   ],
   "assertions": [
@@ -133,18 +143,54 @@
     {
       "field": "compressionLevel",
       "op": "in",
-      "value": [1000, 2000, 3000, 4000, 5000],
+      "value": [
+        1000,
+        2000,
+        3000,
+        4000,
+        5000
+      ],
       "message": "Compression level must be one of 1000/2000/3000/4000/5000"
     }
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "APE Magic", "offset": 0, "length": 4, "color": "#FF6B6B" },
-      { "name": "Format Version", "offset": 4, "length": 2, "color": "#4ECDC4" },
-      { "name": "Descriptor Size", "offset": 6, "length": 2, "color": "#95E1D3" },
-      { "name": "Compression Level", "offset": 8, "length": 2, "color": "#FFE66D" },
-      { "name": "Channels", "offset": 10, "length": 2, "color": "#A8E6CF" },
-      { "name": "Sample Rate", "offset": 12, "length": 4, "color": "#DDA0DD" }
+      {
+        "name": "APE Magic",
+        "offset": 0,
+        "length": 4,
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Format Version",
+        "offset": 4,
+        "length": 2,
+        "color": "#4ECDC4"
+      },
+      {
+        "name": "Descriptor Size",
+        "offset": 6,
+        "length": 2,
+        "color": "#95E1D3"
+      },
+      {
+        "name": "Compression Level",
+        "offset": 8,
+        "length": 2,
+        "color": "#FFE66D"
+      },
+      {
+        "name": "Channels",
+        "offset": 10,
+        "length": 2,
+        "color": "#A8E6CF"
+      },
+      {
+        "name": "Sample Rate",
+        "offset": 12,
+        "length": 4,
+        "color": "#DDA0DD"
+      }
     ]
   },
   "inspector": {
@@ -154,11 +200,18 @@
     "groups": [
       {
         "name": "File Identity",
-        "fields": ["apeMagic", "apeVersion"]
+        "fields": [
+          "apeMagic",
+          "apeVersion"
+        ]
       },
       {
         "name": "Audio Properties",
-        "fields": ["compressionLevel", "channels", "sampleRate"]
+        "fields": [
+          "compressionLevel",
+          "channels",
+          "sampleRate"
+        ]
       }
     ]
   },
@@ -204,11 +257,23 @@
   ],
   "formatRelationships": {
     "category": "Audio",
-    "extensions": [".ape", ".mac"],
-    "relatedFormats": ["FLAC", "WavPack", "TTA", "WAV", "AIFF"],
+    "extensions": [
+      ".ape",
+      ".mac"
+    ],
+    "relatedFormats": [
+      "FLAC",
+      "WavPack",
+      "TTA",
+      "WAV",
+      "AIFF"
+    ],
     "note": "APE is a proprietary lossless format; FLAC is the open-source alternative with wider software support"
   },
-  "MimeTypes": ["audio/x-ape", "audio/ape"],
+  "MimeTypes": [
+    "audio/x-ape",
+    "audio/ape"
+  ],
   "UseCases": [
     "Audiophile lossless music archiving",
     "CD ripping with perfect reconstruction",
@@ -233,14 +298,27 @@
       "4000": "Extra High",
       "5000": "Insane"
     },
-    "typicalSampleRates": [44100, 48000, 88200, 96000],
+    "typicalSampleRates": [
+      44100,
+      48000,
+      88200,
+      96000
+    ],
     "minVersion": 3800,
     "lossless": true,
     "seekTableSupport": true
   },
   "diff": {
-    "keyFields": ["apeMagic", "apeVersion", "compressionLevel", "channels", "sampleRate"],
-    "ignoreFields": ["descriptorBytes"],
+    "keyFields": [
+      "apeMagic",
+      "apeVersion",
+      "compressionLevel",
+      "channels",
+      "sampleRate"
+    ],
+    "ignoreFields": [
+      "descriptorBytes"
+    ],
     "groupBy": "compressionLevel",
     "note": "Magic, version, compression level, channel count and sample rate together define the encoding parameters; descriptor size is layout metadata"
   },
@@ -274,11 +352,37 @@
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "apeMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt 'MAC ' magic (including trailing space) to test APE parser rejection" },
-      { "field": "compressionLevel", "mutation": "enum_sweep", "weight": 2, "description": "Sweep all uint16 compression level values beyond the 5 defined levels to test validation" },
-      { "field": "apeVersion", "mutation": "boundary_values", "weight": 2, "description": "Test versions below 3800 and near uint16 max to probe version-dependent header parsing" },
-      { "field": "sampleRate", "mutation": "overflow", "weight": 2, "description": "Max uint32 sample rate stresses duration and DMA buffer allocation" },
-      { "field": "channels", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in channel count to produce unusual multichannel configurations" }
+      {
+        "field": "apeMagic",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupt 'MAC ' magic (including trailing space) to test APE parser rejection"
+      },
+      {
+        "field": "compressionLevel",
+        "mutation": "enum_sweep",
+        "weight": 2,
+        "description": "Sweep all uint16 compression level values beyond the 5 defined levels to test validation"
+      },
+      {
+        "field": "apeVersion",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Test versions below 3800 and near uint16 max to probe version-dependent header parsing"
+      },
+      {
+        "field": "sampleRate",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Max uint32 sample rate stresses duration and DMA buffer allocation"
+      },
+      {
+        "field": "channels",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Flip bits in channel count to produce unusual multichannel configurations"
+      }
     ]
   },
   "migration": [
@@ -287,7 +391,12 @@
       "to": "APE-High",
       "description": "Increase compression level from Fast (1000) to High (3000) for better compression ratio at cost of encode/decode speed; requires full re-encode",
       "changes": [
-        { "field": "compressionLevel", "changeType": "set_value", "value": 3000, "description": "Set compression level to High (3000)" }
+        {
+          "field": "compressionLevel",
+          "changeType": "set_value",
+          "value": 3000,
+          "description": "Set compression level to High (3000)"
+        }
       ]
     },
     {
@@ -295,7 +404,12 @@
       "to": "3990+",
       "description": "APE format version upgrade to descriptor-based layout; older files (pre-3980) lack the descriptor block and must be re-encoded with a modern encoder",
       "changes": [
-        { "field": "apeVersion", "changeType": "set_value", "value": 3990, "description": "Update format version to 3990 to signal descriptor-based layout support" }
+        {
+          "field": "apeVersion",
+          "changeType": "set_value",
+          "value": 3990,
+          "description": "Update format version to 3990 to signal descriptor-based layout support"
+        }
       ]
     }
   ]

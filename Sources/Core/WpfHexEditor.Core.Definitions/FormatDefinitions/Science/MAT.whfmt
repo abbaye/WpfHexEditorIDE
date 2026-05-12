@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "MATLAB Data File",
   "formatId": "MAT",
-  "version": "1.14",
+  "version": "1.14.1",
   "extensions": [
     ".mat"
   ],
@@ -58,7 +58,8 @@
       "opacity": 0.5,
       "description": "8-byte offset to the subsystem-specific data in the file; used by MATLAB internally; zero means no subsystem data",
       "storeAs": "subsystemOffset",
-      "valueType": "uint64le"
+      "valueType": "uint64",
+      "endianness": "little"
     },
     {
       "type": "field",
@@ -69,7 +70,8 @@
       "opacity": 0.4,
       "description": "MAT-file version: 0x0100 (256) for Level 5 files; this value is always 0x0100 in all current MATLAB versions",
       "storeAs": "version",
-      "valueType": "uint16le"
+      "valueType": "uint16",
+      "endianness": "little"
     },
     {
       "type": "field",

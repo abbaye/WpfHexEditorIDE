@@ -2,7 +2,7 @@
   "diffMode": "binary",
   "formatName": "BUFR Weather Data",
   "formatId": "BUFR",
-  "version": "1.14",
+  "version": "1.14.1",
   "extensions": [
     ".bufr",
     ".bfr"
@@ -104,7 +104,8 @@
       "opacity": 0.3,
       "description": "2-byte big-endian WMO originating/generating center number identifying the data producer (e.g. 98 = ECMWF, 7 = NCEP/US)",
       "storeAs": "originatingCenter",
-      "valueType": "uint16be"
+      "valueType": "uint16",
+      "endianness": "big"
     }
   ],
   "assertions": [

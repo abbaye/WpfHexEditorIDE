@@ -2,8 +2,15 @@
   "diffMode": "binary",
   "formatName": "SGI RGB Image",
   "formatId": "SGI_RGB",
-  "version": "1.0",
-  "extensions": [".rgb", ".rgba", ".sgi", ".bw", ".int", ".inta"],
+  "version": "1.0.1",
+  "extensions": [
+    ".rgb",
+    ".rgba",
+    ".sgi",
+    ".bw",
+    ".int",
+    ".inta"
+  ],
   "description": "SGI RGB image format created by Silicon Graphics (SGI) for their IRIX workstation graphics systems. The 2-byte big-endian magic number 0x01DA (bytes: 01 DA) appears at offset 0. The fixed 512-byte header contains: magic (2B BE) + storage format (1B: 0=verbatim uncompressed, 1=RLE compressed per scanline) + bytes per channel (1B: 1=8-bit, 2=16-bit) + dimensions (2B BE: 1=1D scanline, 2=2D image, 3=3D volume) + x_size (2B BE) + y_size (2B BE) + z_size (2B BE: 1=grayscale .bw, 3=RGB .rgb, 4=RGBA .rgba) + pix_min (4B BE) + pix_max (4B BE) + dummy (4B) + image_name (80B ASCII null-padded) + colormap (4B BE: 0=NORMAL, 1=DITHERED, 2=SCREEN, 3=COLORMAP) + 404 zero bytes padding. For RLE files a scan-line offset table follows the header. RLE encoding: each channel encoded separately, scanline runs use a 127-byte count for literal runs and a negative count for replicated runs. Widely used in SGI workstations for early 3D graphics, scientific visualization, and DCC tools.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
@@ -23,13 +30,21 @@
   },
   "detection": {
     "signatures": [
-      { "value": "01DA", "offset": 0, "label": "0x01DA — SGI RGB image format big-endian magic number", "weight": 1.0 }
+      {
+        "value": "01DA",
+        "offset": 0,
+        "label": "0x01DA — SGI RGB image format big-endian magic number",
+        "weight": 1.0
+      }
     ],
     "matchMode": "any",
     "MinimumScore": 0.9,
     "required": true,
     "Strength": "Strong",
-    "EntropyHint": { "min": 2.5, "max": 7.5 },
+    "EntropyHint": {
+      "min": 2.5,
+      "max": 7.5
+    },
     "validation": {
       "minFileSize": 512,
       "maxSignatureOffset": 0,
@@ -57,7 +72,8 @@
       "opacity": 0.45,
       "description": "2-byte big-endian magic number 0x01DA (bytes: 01 DA) at the absolute start of every SGI RGB image file. This value is unique to the SGI format and provides reliable identification. The value 0x01DA was chosen by Silicon Graphics as an internal magic for their native image format.",
       "storeAs": "sgiMagic",
-      "valueType": "uint16be"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -69,7 +85,10 @@
       "description": "1-byte storage format flag: 0 = verbatim (uncompressed, raw pixel data stored sequentially per channel per scanline), 1 = RLE (run-length encoded per scanline, each channel compressed independently). RLE files have a scanline offset table after the 512-byte header. Verbatim is simpler but produces larger files.",
       "storeAs": "storageFormat",
       "valueType": "uint8",
-      "valueMap": { "0": "Verbatim (uncompressed)", "1": "RLE compressed per scanline" }
+      "valueMap": {
+        "0": "Verbatim (uncompressed)",
+        "1": "RLE compressed per scanline"
+      }
     },
     {
       "type": "field",
@@ -81,7 +100,10 @@
       "description": "1-byte value specifying the number of bytes used per pixel per channel: 1 = 8-bit per channel (standard, most common), 2 = 16-bit per channel (high precision, less common). This determines the total size of each pixel component and affects the interpretation of pix_min and pix_max.",
       "storeAs": "bytesPerChannel",
       "valueType": "uint8",
-      "valueMap": { "1": "8-bit per channel", "2": "16-bit per channel" }
+      "valueMap": {
+        "1": "8-bit per channel",
+        "2": "16-bit per channel"
+      }
     },
     {
       "type": "field",
@@ -92,8 +114,13 @@
       "opacity": 0.35,
       "description": "2-byte big-endian value indicating the number of dimensions in the image: 1 = 1D data (single scanline, height=1), 2 = 2D image (standard 2D raster image), 3 = 3D volume data (x_size * y_size * z_size voxels). Most images are 2D; grayscale uses z_size=1, RGB uses z_size=3.",
       "storeAs": "dimensions",
-      "valueType": "uint16be",
-      "valueMap": { "1": "1D scanline", "2": "2D image", "3": "3D volume" }
+      "valueType": "uint16",
+      "valueMap": {
+        "1": "1D scanline",
+        "2": "2D image",
+        "3": "3D volume"
+      },
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -104,7 +131,8 @@
       "opacity": 0.35,
       "description": "2-byte big-endian unsigned integer specifying the pixel width of the image (number of columns). For 1D images this is the length of the single scanline.",
       "storeAs": "xSize",
-      "valueType": "uint16be"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -115,7 +143,8 @@
       "opacity": 0.35,
       "description": "2-byte big-endian unsigned integer specifying the pixel height of the image (number of rows / scanlines). For 1D images this is 1. Note: SGI images are stored bottom-up (first scanline in file is the bottom row of the displayed image).",
       "storeAs": "ySize",
-      "valueType": "uint16be"
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -126,8 +155,13 @@
       "opacity": 0.35,
       "description": "2-byte big-endian unsigned integer specifying the number of channels (depth): 1 = grayscale (.bw extension), 3 = RGB color (.rgb extension), 4 = RGBA with alpha channel (.rgba extension). For 3D volume data this is the number of slices.",
       "storeAs": "zSize",
-      "valueType": "uint16be",
-      "valueMap": { "1": "Grayscale (.bw)", "3": "RGB color (.rgb)", "4": "RGBA with alpha (.rgba)" }
+      "valueType": "uint16",
+      "valueMap": {
+        "1": "Grayscale (.bw)",
+        "3": "RGB color (.rgb)",
+        "4": "RGBA with alpha (.rgba)"
+      },
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -169,10 +203,30 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "SGI Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
-      { "name": "Image Dimensions", "offset": 4, "icon": "\uE946", "color": "#4ECDC4" },
-      { "name": "Image Name Field", "offset": 24, "icon": "\uE8B7", "color": "#FFE66D" },
-      { "name": "Pixel Data", "offset": 512, "icon": "\uE946", "color": "#95E1D3" }
+      {
+        "name": "SGI Header",
+        "offset": 0,
+        "icon": "",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Image Dimensions",
+        "offset": 4,
+        "icon": "",
+        "color": "#4ECDC4"
+      },
+      {
+        "name": "Image Name Field",
+        "offset": 24,
+        "icon": "",
+        "color": "#FFE66D"
+      },
+      {
+        "name": "Pixel Data",
+        "offset": 512,
+        "icon": "",
+        "color": "#95E1D3"
+      }
     ]
   },
   "inspector": {
@@ -182,18 +236,30 @@
     "groups": [
       {
         "title": "File Header",
-        "icon": "\uE71B",
-        "fields": ["sgiMagic", "storageFormat", "bytesPerChannel", "dimensions"]
+        "icon": "",
+        "fields": [
+          "sgiMagic",
+          "storageFormat",
+          "bytesPerChannel",
+          "dimensions"
+        ]
       },
       {
         "title": "Image Dimensions",
-        "icon": "\uE946",
-        "fields": ["xSize", "ySize", "zSize"]
+        "icon": "",
+        "fields": [
+          "xSize",
+          "ySize",
+          "zSize"
+        ]
       },
       {
         "title": "Metadata",
-        "icon": "\uE8B7",
-        "fields": ["imageName", "colormap"]
+        "icon": "",
+        "fields": [
+          "imageName",
+          "colormap"
+        ]
       }
     ]
   },
@@ -201,12 +267,27 @@
     {
       "name": "SGI Header (JSON)",
       "format": "json",
-      "fields": ["sgiMagic", "storageFormat", "bytesPerChannel", "dimensions", "xSize", "ySize", "zSize", "imageName"]
+      "fields": [
+        "sgiMagic",
+        "storageFormat",
+        "bytesPerChannel",
+        "dimensions",
+        "xSize",
+        "ySize",
+        "zSize",
+        "imageName"
+      ]
     },
     {
       "name": "SGI Dimensions (CSV)",
       "format": "csv",
-      "fields": ["xSize", "ySize", "zSize", "storageFormat", "bytesPerChannel"]
+      "fields": [
+        "xSize",
+        "ySize",
+        "zSize",
+        "storageFormat",
+        "bytesPerChannel"
+      ]
     }
   ],
   "forensic": {
@@ -237,11 +318,26 @@
   ],
   "formatRelationships": {
     "category": "Images",
-    "extensions": [".rgb", ".rgba", ".sgi", ".bw", ".int", ".inta"],
-    "relatedFormats": ["TIFF", "PNG", "EXR"],
+    "extensions": [
+      ".rgb",
+      ".rgba",
+      ".sgi",
+      ".bw",
+      ".int",
+      ".inta"
+    ],
+    "relatedFormats": [
+      "TIFF",
+      "PNG",
+      "EXR"
+    ],
     "note": "Legacy SGI workstation format; effectively superseded by TIFF and EXR for scientific/VFX use"
   },
-  "MimeTypes": ["image/sgi", "image/x-sgi", "image/x-rgb"],
+  "MimeTypes": [
+    "image/sgi",
+    "image/x-sgi",
+    "image/x-rgb"
+  ],
   "UseCases": [
     "Legacy SGI IRIX workstation image compatibility",
     "Early 3D graphics and DCC application texture maps",
@@ -261,9 +357,15 @@
     "encoding": "binary-big-endian",
     "magic": "0x01DA",
     "headerSize": 512,
-    "storageFormats": ["verbatim (0)", "RLE per scanline (1)"],
+    "storageFormats": [
+      "verbatim (0)",
+      "RLE per scanline (1)"
+    ],
     "channelOrdering": "planar (each channel stored separately, bottom-up row order)",
-    "bitDepths": ["8-bit per channel", "16-bit per channel"]
+    "bitDepths": [
+      "8-bit per channel",
+      "16-bit per channel"
+    ]
   },
   "diff": {
     "keyFields": [

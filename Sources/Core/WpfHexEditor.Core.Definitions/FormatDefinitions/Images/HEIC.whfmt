@@ -2,8 +2,13 @@
   "diffMode": "binary",
   "formatName": "HEIF/HEIC Image",
   "formatId": "HEIC",
-  "version": "1.0",
-  "extensions": [".heic", ".heif", ".hif", ".avci"],
+  "version": "1.0.1",
+  "extensions": [
+    ".heic",
+    ".heif",
+    ".hif",
+    ".avci"
+  ],
   "description": "HEIC/HEIF (High Efficiency Image File Format) is an ISOBMFF container for HEVC-encoded still images and image sequences, standardized as ISO 23008-12. The file begins with an ftyp box at offset 0: box_size (4 bytes, big-endian) + 'ftyp' (4 bytes, 0x66 0x74 0x79 0x70) + major_brand (4 bytes). HEIC brands: 'heic' (0x68 0x65 0x69 0x63) for HEVC single still image, 'heis' for HEVC single image with HDR, 'avci' (0x61 0x76 0x63 0x69) for AVC/H.264 still image. Compatible brands list: 'mif1', 'hevc', 'heic'. Image sequence brands: 'hevc', 'hevs'. The container holds an mdat box with compressed image data and meta/moov boxes for metadata. Exif and XMP metadata stored in iinf/iloc boxes. Apple uses HEIC for iPhone camera output (iOS 11+). Supports alpha channel, burst photography, depth maps, HDR (PQ/HLG transfer functions), wide color gamut (Display P3), and Live Photos ('qtff' compatible brand).",
   "category": "Images",
   "author": "WPFHexaEditor Team",
@@ -23,15 +28,33 @@
   },
   "detection": {
     "signatures": [
-      { "value": "68656963", "offset": 8, "label": "heic — HEIC ftyp major brand at offset 8 (HEVC still image)", "weight": 1.0 },
-      { "value": "68656966", "offset": 8, "label": "heif — HEIF ftyp major brand at offset 8", "weight": 0.9 },
-      { "value": "61766369", "offset": 8, "label": "avci — AVC Image ftyp brand at offset 8 (H.264 still)", "weight": 0.8 }
+      {
+        "value": "68656963",
+        "offset": 8,
+        "label": "heic — HEIC ftyp major brand at offset 8 (HEVC still image)",
+        "weight": 1.0
+      },
+      {
+        "value": "68656966",
+        "offset": 8,
+        "label": "heif — HEIF ftyp major brand at offset 8",
+        "weight": 0.9
+      },
+      {
+        "value": "61766369",
+        "offset": 8,
+        "label": "avci — AVC Image ftyp brand at offset 8 (H.264 still)",
+        "weight": 0.8
+      }
     ],
     "matchMode": "any",
     "MinimumScore": 0.7,
     "required": true,
     "Strength": "Strong",
-    "EntropyHint": { "min": 4.0, "max": 7.8 },
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 7.8
+    },
     "validation": {
       "minFileSize": 16,
       "maxSignatureOffset": 8,
@@ -55,7 +78,8 @@
       "opacity": 0.45,
       "description": "4-byte big-endian unsigned integer specifying the total byte size of the ftyp box including this 4-byte size field. For a standard ftyp box the size is typically 20-28 bytes depending on the number of compatible brand entries listed. A value of 0 means the box extends to end of file; a value of 1 signals a 64-bit extended size follows.",
       "storeAs": "boxSize",
-      "valueType": "uint32be"
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -88,7 +112,8 @@
       "opacity": 0.35,
       "description": "4-byte big-endian minor version number of the ftyp box. Typically 0 for HEIC files. This field follows immediately after the major brand and precedes the list of compatible brands. Compatible brands extend the ftyp box until its declared size is reached.",
       "storeAs": "minorVersion",
-      "valueType": "uint32be"
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "metadata",
@@ -125,9 +150,24 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "ftyp Box", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
-      { "name": "Major Brand", "offset": 8, "icon": "\uE946", "color": "#4ECDC4" },
-      { "name": "Compatible Brands", "offset": 16, "icon": "\uE8B7", "color": "#FFE66D" }
+      {
+        "name": "ftyp Box",
+        "offset": 0,
+        "icon": "",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Major Brand",
+        "offset": 8,
+        "icon": "",
+        "color": "#4ECDC4"
+      },
+      {
+        "name": "Compatible Brands",
+        "offset": 16,
+        "icon": "",
+        "color": "#FFE66D"
+      }
     ]
   },
   "inspector": {
@@ -137,13 +177,20 @@
     "groups": [
       {
         "title": "ftyp Box",
-        "icon": "\uE71B",
-        "fields": ["boxSize", "boxType", "majorBrand", "minorVersion"]
+        "icon": "",
+        "fields": [
+          "boxSize",
+          "boxType",
+          "majorBrand",
+          "minorVersion"
+        ]
       },
       {
         "title": "Format Flags",
-        "icon": "\uE946",
-        "fields": ["ftypValid"]
+        "icon": "",
+        "fields": [
+          "ftypValid"
+        ]
       }
     ]
   },
@@ -151,12 +198,21 @@
     {
       "name": "HEIC ftyp (JSON)",
       "format": "json",
-      "fields": ["boxSize", "boxType", "majorBrand", "minorVersion"]
+      "fields": [
+        "boxSize",
+        "boxType",
+        "majorBrand",
+        "minorVersion"
+      ]
     },
     {
       "name": "HEIC Brands (CSV)",
       "format": "csv",
-      "fields": ["majorBrand", "minorVersion", "boxSize"]
+      "fields": [
+        "majorBrand",
+        "minorVersion",
+        "boxSize"
+      ]
     }
   ],
   "forensic": {
@@ -188,11 +244,25 @@
   ],
   "formatRelationships": {
     "category": "Images",
-    "extensions": [".heic", ".heif", ".hif", ".avci"],
-    "relatedFormats": ["AVIF", "JXL", "JPEG", "MP4"],
+    "extensions": [
+      ".heic",
+      ".heif",
+      ".hif",
+      ".avci"
+    ],
+    "relatedFormats": [
+      "AVIF",
+      "JXL",
+      "JPEG",
+      "MP4"
+    ],
     "note": "HEIC uses HEVC compression in ISOBMFF; AVIF uses AV1 codec in the same ISOBMFF container model"
   },
-  "MimeTypes": ["image/heic", "image/heif", "image/heic-sequence"],
+  "MimeTypes": [
+    "image/heic",
+    "image/heif",
+    "image/heic-sequence"
+  ],
   "UseCases": [
     "iPhone camera output (iOS 11+ default format)",
     "Apple Live Photos and burst photography storage",
@@ -212,13 +282,34 @@
     "standard": "ISO/IEC 23008-12",
     "container": "ISOBMFF (ISO/IEC 14496-12)",
     "compression": "HEVC (H.265) for heic; AVC (H.264) for avci",
-    "colorSpaces": ["sRGB", "Display P3", "Rec.2020"],
-    "hdrTransferFunctions": ["PQ (SMPTE ST 2084)", "HLG (ARIB STD-B67)"],
-    "features": ["alpha", "depth-map", "burst", "live-photo", "HDR", "wide-gamut"]
+    "colorSpaces": [
+      "sRGB",
+      "Display P3",
+      "Rec.2020"
+    ],
+    "hdrTransferFunctions": [
+      "PQ (SMPTE ST 2084)",
+      "HLG (ARIB STD-B67)"
+    ],
+    "features": [
+      "alpha",
+      "depth-map",
+      "burst",
+      "live-photo",
+      "HDR",
+      "wide-gamut"
+    ]
   },
   "diff": {
-    "keyFields": ["boxType", "majorBrand", "minorVersion", "boxSize"],
-    "ignoreFields": ["ftypValid"],
+    "keyFields": [
+      "boxType",
+      "majorBrand",
+      "minorVersion",
+      "boxSize"
+    ],
+    "ignoreFields": [
+      "ftypValid"
+    ],
     "groupBy": "majorBrand",
     "note": "Major brand is the primary discriminator between HEIC, HEIF, and AVC-I variants; box size and minor version track container spec revisions; ftypValid is a derived flag"
   },
@@ -260,11 +351,37 @@
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "boxType",      "mutation": "corrupt_signature", "weight": 3, "description": "Replace 'ftyp' with unknown box type to test ISOBMFF box-dispatch and unknown-box skip logic" },
-      { "field": "boxSize",      "mutation": "boundary_values",   "weight": 2, "description": "Zero, 1, and very large ftyp box sizes to probe box-size bounds checking in HEIF parsers" },
-      { "field": "majorBrand",   "mutation": "enum_sweep",        "weight": 2, "description": "Sweep unknown 4-byte brand codes to test brand-matching and format-fallback behaviour" },
-      { "field": "minorVersion", "mutation": "overflow",          "weight": 2, "description": "Overflow minor version field to test version-gating and future-version handling" },
-      { "field": "boxType",      "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip bits in the box type field to generate subtly corrupted four-character codes" }
+      {
+        "field": "boxType",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Replace 'ftyp' with unknown box type to test ISOBMFF box-dispatch and unknown-box skip logic"
+      },
+      {
+        "field": "boxSize",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Zero, 1, and very large ftyp box sizes to probe box-size bounds checking in HEIF parsers"
+      },
+      {
+        "field": "majorBrand",
+        "mutation": "enum_sweep",
+        "weight": 2,
+        "description": "Sweep unknown 4-byte brand codes to test brand-matching and format-fallback behaviour"
+      },
+      {
+        "field": "minorVersion",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Overflow minor version field to test version-gating and future-version handling"
+      },
+      {
+        "field": "boxType",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Flip bits in the box type field to generate subtly corrupted four-character codes"
+      }
     ]
   },
   "migration": [
@@ -273,7 +390,12 @@
       "to": "HEIF multi-image (majorBrand='mif1')",
       "description": "Upgrade a single-still HEIC file to a HEIF multi-image container that can store burst sequences, depth maps, and alpha planes as separate image items",
       "changes": [
-        { "field": "majorBrand", "changeType": "set_value", "value": "6D696631", "description": "Change major brand from 'heic' (0x68656963) to 'mif1' (0x6D696631) for multi-image HEIF container" }
+        {
+          "field": "majorBrand",
+          "changeType": "set_value",
+          "value": "6D696631",
+          "description": "Change major brand from 'heic' (0x68656963) to 'mif1' (0x6D696631) for multi-image HEIF container"
+        }
       ]
     }
   ]

@@ -2,8 +2,11 @@
   "diffMode": "binary",
   "formatName": "DTS Audio",
   "formatId": "DTS",
-  "version": "1.0.1",
-  "extensions": [".dts", ".cpt"],
+  "version": "1.0.2",
+  "extensions": [
+    ".dts",
+    ".cpt"
+  ],
   "description": "DTS (Digital Theater Systems) is a multichannel audio compression format used in cinema, DVD, Blu-ray, and broadcast applications. DTS bitstreams begin with one of three sync word variants depending on bit depth and byte order: 0x7FFE8001 (14-bit big-endian), 0xFE7F0180 (14-bit little-endian byte-swapped), or 0x1FFFE800 (16-bit big-endian). DTS supports up to 5.1 channels natively and extends to DTS-HD Master Audio for lossless high-resolution delivery. Each frame carries audio blocks (NBLKS) and a declared frame size (FSIZE).",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
@@ -68,7 +71,8 @@
       "opacity": 0.85,
       "description": "DTS frame synchronization word — one of 0x7FFE8001 (14-bit BE), 0xFE7F0180 (14-bit LE), or 0x1FFFE800 (16-bit BE); identifies start of each DTS audio frame",
       "storeAs": "dtsSyncWord",
-      "valueType": "uint32BE"
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "field",
@@ -101,14 +105,19 @@
       "opacity": 0.75,
       "description": "Frame size field (14-bit value) — declares the total byte length of this DTS audio frame minus 1; used for frame boundary navigation",
       "storeAs": "fsize",
-      "valueType": "uint16BE"
+      "valueType": "uint16",
+      "endianness": "big"
     }
   ],
   "assertions": [
     {
       "field": "dtsSyncWord",
       "op": "in",
-      "value": ["0x7FFE8001", "0xFE7F0180", "0x1FFFE800"],
+      "value": [
+        "0x7FFE8001",
+        "0xFE7F0180",
+        "0x1FFFE800"
+      ],
       "message": "DTS sync word must be one of the three known variants"
     },
     {
@@ -126,10 +135,30 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "DTS Sync Word", "offset": 0, "length": 4, "color": "#FF6B6B" },
-      { "name": "Frame Type", "offset": 4, "length": 1, "color": "#4ECDC4" },
-      { "name": "Block Count (NBLKS)", "offset": 5, "length": 1, "color": "#95E1D3" },
-      { "name": "Frame Size (FSIZE)", "offset": 6, "length": 2, "color": "#FFE66D" }
+      {
+        "name": "DTS Sync Word",
+        "offset": 0,
+        "length": 4,
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Frame Type",
+        "offset": 4,
+        "length": 1,
+        "color": "#4ECDC4"
+      },
+      {
+        "name": "Block Count (NBLKS)",
+        "offset": 5,
+        "length": 1,
+        "color": "#95E1D3"
+      },
+      {
+        "name": "Frame Size (FSIZE)",
+        "offset": 6,
+        "length": 2,
+        "color": "#FFE66D"
+      }
     ]
   },
   "inspector": {
@@ -139,11 +168,17 @@
     "groups": [
       {
         "name": "Frame Header",
-        "fields": ["dtsSyncWord", "frameTypeByte"]
+        "fields": [
+          "dtsSyncWord",
+          "frameTypeByte"
+        ]
       },
       {
         "name": "Frame Parameters",
-        "fields": ["nblks", "fsize"]
+        "fields": [
+          "nblks",
+          "fsize"
+        ]
       }
     ]
   },
@@ -189,11 +224,23 @@
   ],
   "formatRelationships": {
     "category": "Audio",
-    "extensions": [".dts", ".cpt"],
-    "relatedFormats": ["AC3", "EAC3", "TrueHD", "DTS-HD MA", "FLAC"],
+    "extensions": [
+      ".dts",
+      ".cpt"
+    ],
+    "relatedFormats": [
+      "AC3",
+      "EAC3",
+      "TrueHD",
+      "DTS-HD MA",
+      "FLAC"
+    ],
     "note": "DTS core is extended by DTS-HD Master Audio which appends lossless extension substreams after the core payload"
   },
-  "MimeTypes": ["audio/vnd.dts", "audio/x-dts"],
+  "MimeTypes": [
+    "audio/vnd.dts",
+    "audio/x-dts"
+  ],
   "UseCases": [
     "DVD-Video optional DTS audio track",
     "Blu-ray DTS-HD Master Audio delivery",
