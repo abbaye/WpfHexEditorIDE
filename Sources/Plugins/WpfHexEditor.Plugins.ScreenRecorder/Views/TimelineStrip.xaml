@@ -17,6 +17,19 @@
             <ResourceDictionary.MergedDictionaries>
                 <svc:ScreenRecorderLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="TextBox">
+                <Setter Property="Background"               Value="{DynamicResource DockWindowBackgroundBrush}"/>
+                <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="BorderBrush"              Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="BorderThickness"          Value="1"/>
+                <Setter Property="CaretBrush"               Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="SelectionBrush"           Value="{DynamicResource DockTabActiveBrush}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                        <Setter Property="BorderBrush" Value="{DynamicResource DockTabActiveBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -32,7 +45,7 @@
                 BorderThickness="0,0,0,1"
                 Padding="8,4">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{DynamicResource ScreenRecorder_GlobalDelay}"
+                <TextBlock Text="{StaticResource ScreenRecorder_GlobalDelay}"
                            VerticalAlignment="Center"
                            FontSize="11"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -42,19 +55,19 @@
                          VerticalContentAlignment="Center"
                          FontSize="11"
                          Padding="4,2"
-                         ToolTip="{DynamicResource ScreenRecorder_GlobalDelay}" />
+                         ToolTip="{StaticResource ScreenRecorder_GlobalDelay}" />
                 <TextBlock Text="ms" VerticalAlignment="Center" Margin="3,0,12,0"
                            FontSize="10" Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-                <Button Content="{DynamicResource ScreenRecorder_DeleteSelected}"
+                <Button Content="{StaticResource ScreenRecorder_DeleteSelected}"
                         Command="{Binding DeleteSelectedCommand}"
                         Style="{DynamicResource PM_ActionButtonStyle}"
                         Padding="8,3" FontSize="11" Margin="0,0,4,0" />
-                <Button Content="{DynamicResource ScreenRecorder_InsertBlank}"
+                <Button Content="{StaticResource ScreenRecorder_InsertBlank}"
                         Command="{Binding InsertBlankCommand}"
                         Style="{DynamicResource PM_ActionButtonStyle}"
                         Padding="8,3" FontSize="11" Margin="0,0,4,0" />
-                <Button Content="{DynamicResource ScreenRecorder_DuplicateFrame}"
+                <Button Content="{StaticResource ScreenRecorder_DuplicateFrame}"
                         Command="{Binding DuplicateFrameCommand}"
                         Style="{DynamicResource PM_ActionButtonStyle}"
                         Padding="8,3" FontSize="11" />
@@ -86,7 +99,7 @@
 
         <!-- Empty state -->
         <TextBlock Grid.Row="1"
-                   Text="{DynamicResource ScreenRecorder_NoFrameSelected}"
+                   Text="{StaticResource ScreenRecorder_NoFrameSelected}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"

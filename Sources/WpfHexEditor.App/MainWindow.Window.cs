@@ -33,6 +33,8 @@ public partial class MainWindow
     /// PreviewKeyDown intercepts F11 before any focused child (code editor, DockHost)
     /// can consume the KeyDown event. Tunneling ensures Window-level shortcuts work
     /// regardless of which control has keyboard focus.
+    /// Also dispatches plugin-registered gestures from the CommandRegistry so that
+    /// gestures like F9 / Escape registered by plugins actually fire their commands.
     /// </summary>
     private void OnMainWindowPreviewKeyDown(object sender, KeyEventArgs e)
     {
@@ -40,7 +42,57 @@ public partial class MainWindow
         {
             OnToggleFullScreen();
             e.Handled = true;
+            return;
         }
+
+        DispatchRegisteredGesture(e);
+    }
+
+    /// <summary>
+    /// Walks all commands in the registry and executes the first one whose effective
+    /// gesture matches the current key event and whose CanExecute returns true.
+    /// </summary>
+    private void DispatchRegisteredGesture(KeyEventArgs e)
+    {
+        var key       = e.Key == Key.System ? e.SystemKey : e.Key;
+        var modifiers = Keyboard.Modifiers;
+
+        foreach (var cmd in _commandRegistry.GetAll())
+        {
+            var gesture = _keyBindingService.ResolveGesture(cmd.Id);
+            if (gesture is null) continue;
+            if (!GestureMatches(gesture, key, modifiers)) continue;
+            if (!cmd.Command.CanExecute(null)) continue;
+
+            cmd.Command.Execute(null);
+            e.Handled = true;
+            return;
+        }
+    }
+
+    /// <summary>Parses a gesture string like "F9", "Shift+F9", "Ctrl+S" and checks against the current key event.</summary>
+    private static bool GestureMatches(string gesture, Key key, ModifierKeys modifiers)
+    {
+        var parts     = gesture.Split('+');
+        var keyPart   = parts[^1].Trim();
+        var mods      = ModifierKeys.None;
+
+        for (int i = 0; i < parts.Length - 1; i++)
+        {
+            mods |= parts[i].Trim().ToLowerInvariant() switch
+            {
+                "ctrl"  or "control" => ModifierKeys.Control,
+                "shift"              => ModifierKeys.Shift,
+                "alt"                => ModifierKeys.Alt,
+                "win"   or "windows" => ModifierKeys.Windows,
+                _                    => ModifierKeys.None
+            };
+        }
+
+        if (!Enum.TryParse<Key>(keyPart, ignoreCase: true, out var targetKey))
+            return false;
+
+        return key == targetKey && modifiers == mods;
     }
 
     /// <summary>

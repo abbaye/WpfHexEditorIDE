@@ -15,6 +15,19 @@
             <ResourceDictionary.MergedDictionaries>
                 <svc:ScreenRecorderLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="TextBox">
+                <Setter Property="Background"               Value="{DynamicResource DockWindowBackgroundBrush}"/>
+                <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="BorderBrush"              Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="BorderThickness"          Value="1"/>
+                <Setter Property="CaretBrush"               Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="SelectionBrush"           Value="{DynamicResource DockTabActiveBrush}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                        <Setter Property="BorderBrush" Value="{DynamicResource DockTabActiveBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -22,28 +35,28 @@
         <StackPanel Margin="16">
 
             <!-- ── Capture ───────────────────────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource ScreenRecorder_Options_Capture}"
+            <TextBlock Text="{StaticResource ScreenRecorder_Options_Capture}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Margin="0,0,0,6"/>
 
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_HotkeyCapture}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_HotkeyCapture}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <TextBox Grid.Column="1" Text="{Binding HotkeyCapture, UpdateSourceTrigger=PropertyChanged}"
                          FontSize="11" Padding="4,2" IsReadOnly="True"/>
             </Grid>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_HotkeyStop}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_HotkeyStop}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <TextBox Grid.Column="1" Text="{Binding HotkeyStop, UpdateSourceTrigger=PropertyChanged}"
                          FontSize="11" Padding="4,2" IsReadOnly="True"/>
             </Grid>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_TimerInterval}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_TimerInterval}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <TextBox Width="60" Text="{Binding TimerInterval, UpdateSourceTrigger=PropertyChanged}"
@@ -56,20 +69,20 @@
             <Separator Margin="0,10"/>
 
             <!-- ── Overlay ───────────────────────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource ScreenRecorder_Options_Overlay}"
+            <TextBlock Text="{StaticResource ScreenRecorder_Options_Overlay}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Margin="0,0,0,6"/>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_OverlayColor}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_OverlayColor}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <TextBox Grid.Column="1" Text="{Binding OverlayColor, UpdateSourceTrigger=PropertyChanged}"
                          FontSize="11" Padding="4,2"/>
             </Grid>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_OverlayOpacity}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_OverlayOpacity}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <Slider Grid.Column="1" Minimum="0.1" Maximum="1.0"
                         Value="{Binding OverlayOpacity, UpdateSourceTrigger=PropertyChanged}"
@@ -77,7 +90,7 @@
             </Grid>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_ShowHud}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_ShowHud}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <CheckBox Grid.Column="1" IsChecked="{Binding ShowHud}" VerticalAlignment="Center"/>
             </Grid>
@@ -85,20 +98,20 @@
             <Separator Margin="0,10"/>
 
             <!-- ── Export ────────────────────────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource ScreenRecorder_Options_Export}"
+            <TextBlock Text="{StaticResource ScreenRecorder_Options_Export}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Margin="0,0,0,6"/>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_DefaultOutputPath}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_DefaultOutputPath}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <TextBox Grid.Column="1" Text="{Binding DefaultOutputPath, UpdateSourceTrigger=PropertyChanged}"
                          FontSize="11" Padding="4,2"/>
             </Grid>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_DefaultLoopCount}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_DefaultLoopCount}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <TextBox Grid.Column="1" Width="60" HorizontalAlignment="Left"
                          Text="{Binding DefaultLoopCount, UpdateSourceTrigger=PropertyChanged}"
@@ -106,7 +119,7 @@
             </Grid>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_RepeatLastFrameDelay}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_RepeatLastFrameDelay}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <TextBox Width="60" Text="{Binding RepeatLastFrameDelay, UpdateSourceTrigger=PropertyChanged}"
@@ -119,26 +132,26 @@
             <Separator Margin="0,10"/>
 
             <!-- ── Session ───────────────────────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource ScreenRecorder_Options_Session}"
+            <TextBlock Text="{StaticResource ScreenRecorder_Options_Session}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Margin="0,0,0,6"/>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_SaveFolder}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_SaveFolder}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <TextBox Grid.Column="1" Text="{Binding DefaultSaveFolder, UpdateSourceTrigger=PropertyChanged}"
                          FontSize="11" Padding="4,2"/>
             </Grid>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_ConfirmDiscard}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_ConfirmDiscard}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <CheckBox Grid.Column="1" IsChecked="{Binding ConfirmDiscard}" VerticalAlignment="Center"/>
             </Grid>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_MaxFrames}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_MaxFrames}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <TextBox Grid.Column="1" Width="70" HorizontalAlignment="Left"
                          Text="{Binding MaxFrames, UpdateSourceTrigger=PropertyChanged}"
@@ -148,17 +161,17 @@
             <Separator Margin="0,10"/>
 
             <!-- ── ffmpeg ─────────────────────────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource ScreenRecorder_Options_Ffmpeg}"
+            <TextBlock Text="{StaticResource ScreenRecorder_Options_Ffmpeg}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Margin="0,0,0,6"/>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ScreenRecorder_Options_FfmpegPath}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ScreenRecorder_Options_FfmpegPath}"
                            FontSize="11" Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 <TextBox Grid.Column="1" Text="{Binding FfmpegPath, UpdateSourceTrigger=PropertyChanged}"
                          FontSize="11" Padding="4,2" Margin="0,0,4,0"/>
-                <Button Grid.Column="2" Content="{DynamicResource ScreenRecorder_Options_FfmpegBrowse}"
+                <Button Grid.Column="2" Content="{StaticResource ScreenRecorder_Options_FfmpegBrowse}"
                         Style="{DynamicResource PM_ActionButtonStyle}"
                         Padding="8,3" FontSize="11" Click="OnBrowseFfmpeg"/>
             </Grid>

@@ -38,11 +38,7 @@ public class LocalizedResourceDictionary : ResourceDictionary
 {
     // ─── Static culture state ────────────────────────────────────────────────
 
-    // Default to en-US so that plugin dictionaries instantiated before the host app
-    // calls ChangeCulture() get English strings rather than the OS locale.
-    // The host app's App() ctor always calls ChangeCulture() (even for the OS-default
-    // case) which overwrites this with the correct effective culture.
-    private static CultureInfo _currentCulture = new CultureInfo("en-US");
+    private static CultureInfo _currentCulture = CultureInfo.CurrentUICulture;
 
     /// <summary>Fired after all registered dictionaries have been refreshed.</summary>
     public static event EventHandler<CultureChangedEventArgs>? CultureChanged;
