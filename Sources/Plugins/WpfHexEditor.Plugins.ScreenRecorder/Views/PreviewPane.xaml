@@ -1,0 +1,18 @@
+<!--
+    Project: WpfHexEditor.Plugins.ScreenRecorder
+    File: Views/PreviewPane.xaml
+    Description: Preview pane — shows selected frame at zoom-to-fit or 1:1.
+                 Full implementation in Phase 7.
+-->
+<UserControl x:Class="WpfHexEditor.Plugins.ScreenRecorder.Views.PreviewPane"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource Panel_Background}">
+    <Grid>
+        <TextBlock Text="{StaticResource ScreenRecorder_NoFrameSelected}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Foreground="{DynamicResource Panel_ForegroundMuted}"
+                   FontSize="13" />
+    </Grid>
+</UserControl>

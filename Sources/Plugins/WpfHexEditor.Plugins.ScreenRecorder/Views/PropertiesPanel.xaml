@@ -1,0 +1,19 @@
+<!--
+    Project: WpfHexEditor.Plugins.ScreenRecorder
+    File: Views/PropertiesPanel.xaml
+    Description: Collapsible right panel showing capture region, FPS, scale, loop settings.
+                 Full implementation in Phase 10.
+-->
+<UserControl x:Class="WpfHexEditor.Plugins.ScreenRecorder.Views.PropertiesPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource Panel_Background}">
+    <Expander Header="{StaticResource ScreenRecorder_Properties}"
+              IsExpanded="True"
+              Foreground="{DynamicResource Panel_Foreground}">
+        <TextBlock Text="Properties — coming in Phase 10"
+                   Margin="8"
+                   Foreground="{DynamicResource Panel_ForegroundMuted}"
+                   FontSize="11" />
+    </Expander>
+</UserControl>

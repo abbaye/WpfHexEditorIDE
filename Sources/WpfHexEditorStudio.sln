@@ -227,6 +227,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Localizat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.SpellCheck", "Core\WpfHexEditor.Core.SpellCheck\WpfHexEditor.Core.SpellCheck.csproj", "{50A60FE4-AA00-469F-B598-7CAD47E7D014}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{07D57EEB-2F50-60C4-C011-FE4FA775C9A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.ScreenRecorder", "Plugins\WpfHexEditor.Plugins.ScreenRecorder\WpfHexEditor.Plugins.ScreenRecorder.csproj", "{FE986DE6-EB35-4030-B71B-87BC531B41A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1449,6 +1453,18 @@ Global
 		{50A60FE4-AA00-469F-B598-7CAD47E7D014}.Release|x64.Build.0 = Release|Any CPU
 		{50A60FE4-AA00-469F-B598-7CAD47E7D014}.Release|x86.ActiveCfg = Release|Any CPU
 		{50A60FE4-AA00-469F-B598-7CAD47E7D014}.Release|x86.Build.0 = Release|Any CPU
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1}.Debug|x64.Build.0 = Debug|Any CPU
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1}.Debug|x86.Build.0 = Debug|Any CPU
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1}.Release|x64.ActiveCfg = Release|Any CPU
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1}.Release|x64.Build.0 = Release|Any CPU
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1}.Release|x86.ActiveCfg = Release|Any CPU
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1557,6 +1573,7 @@ Global
 		{AA1F47A9-E8F2-4D92-A63F-CBC2A4C555E1} = {AD6546B8-31D6-4732-8E50-4490C2C5E889}
 		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD} = {250FC96D-F272-4DA2-9454-5817440CB125}
 		{50A60FE4-AA00-469F-B598-7CAD47E7D014} = {250FC96D-F272-4DA2-9454-5817440CB125}
+		{FE986DE6-EB35-4030-B71B-87BC531B41A1} = {07D57EEB-2F50-60C4-C011-FE4FA775C9A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B382CAE-4846-466E-A3D3-0842043B4012}

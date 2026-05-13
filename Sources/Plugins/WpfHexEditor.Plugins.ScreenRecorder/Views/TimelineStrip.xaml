@@ -1,0 +1,18 @@
+<!--
+    Project: WpfHexEditor.Plugins.ScreenRecorder
+    File: Views/TimelineStrip.xaml
+    Description: Horizontal scrollable timeline of frame thumbnails.
+                 Full implementation in Phase 6.
+-->
+<UserControl x:Class="WpfHexEditor.Plugins.ScreenRecorder.Views.TimelineStrip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource Panel_Background}">
+    <Grid>
+        <TextBlock Text="Timeline — no frames"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Foreground="{DynamicResource Panel_ForegroundMuted}"
+                   FontSize="12" />
+    </Grid>
+</UserControl>
