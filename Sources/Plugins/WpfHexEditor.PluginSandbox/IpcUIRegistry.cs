@@ -170,7 +170,7 @@ internal sealed class IpcUIRegistry : IUIRegistry
             Payload = JsonSerializer.Serialize(new RegisterMenuItemNotificationPayload
             {
                 ContentId = uiId,
-                Header = descriptor.Header,
+                Header = descriptor.ResolveHeader(),
                 ParentPath = descriptor.ParentPath,
                 Group = descriptor.Group,
                 IconGlyph = descriptor.IconGlyph,

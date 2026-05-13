@@ -109,7 +109,7 @@ public sealed class MenuAdapter : IMenuAdapter
         // Non-View items: create WPF MenuItem and add to parent as before
         var item = new MenuItem
         {
-            Header             = descriptor.Header,
+            Header             = descriptor.ResolveHeader(),
             Command            = descriptor.Command,
             CommandParameter   = descriptor.CommandParameter,
             ToolTip            = descriptor.ToolTip

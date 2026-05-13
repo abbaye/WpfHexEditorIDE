@@ -17,6 +17,17 @@ public sealed class MenuItemDescriptor
     public string Header { get; init; } = string.Empty;
 
     /// <summary>
+    /// Optional localized header factory, evaluated at menu-build time.
+    /// When set, takes precedence over <see cref="Header"/>.
+    /// Use for plugins that need live language switching:
+    /// <c>HeaderFactory = () => MyResources.MyKey</c>
+    /// </summary>
+    public Func<string>? HeaderFactory { get; init; }
+
+    /// <summary>Resolves the effective display header: factory if provided, else static Header.</summary>
+    internal string ResolveHeader() => HeaderFactory?.Invoke() ?? Header;
+
+    /// <summary>
     /// Slash-separated path of the parent menu where this item is inserted.
     /// Examples: "Tools", "View/Panels", "Edit/Find".
     /// Root-level menus: "File", "Edit", "View", "Tools", "Help".

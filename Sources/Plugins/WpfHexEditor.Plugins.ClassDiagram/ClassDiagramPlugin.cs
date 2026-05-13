@@ -133,6 +133,8 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
     {
         _context = context;
+        WpfHexEditor.Editor.ClassDiagram.Controls.DiagramVisualLayer.DiagnosticOutput =
+            msg => context.Output.Info(msg);
 
         // ADR-022 Phase 1B-3: register built-in round-trip editors so the
         // RoundTripEditorRegistry has at least the C# editor available before

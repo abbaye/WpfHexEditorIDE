@@ -90,7 +90,7 @@ public partial class MainWindow
     {
         var item = new MenuItem
         {
-            Header           = descriptor.Header,
+            Header           = descriptor.ResolveHeader(),
             Command          = descriptor.Command,
             CommandParameter = descriptor.CommandParameter,
             ToolTip          = descriptor.ToolTip,

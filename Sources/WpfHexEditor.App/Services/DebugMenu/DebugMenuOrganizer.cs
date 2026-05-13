@@ -102,13 +102,13 @@ public sealed class DebugMenuOrganizer
         // Add plugin-contributed Debug items from MenuAdapter (dedup by header)
         foreach (var (uiId, descriptor) in _menuAdapter.GetAllDebugMenuItems())
         {
-            var strippedHeader = StripAccessKey(descriptor.Header);
+            var strippedHeader = StripAccessKey(descriptor.ResolveHeader());
             if (builtInHeaders.Contains(strippedHeader))
                 continue; // Built-in always wins — skip duplicate plugin item
 
             entries.Add(new DebugMenuEntry(
                 Id:               uiId,
-                Header:           descriptor.Header,
+                Header:           descriptor.ResolveHeader(),
                 GestureText:      descriptor.GestureText,
                 IconGlyph:        descriptor.IconGlyph,
                 Command:          descriptor.Command,

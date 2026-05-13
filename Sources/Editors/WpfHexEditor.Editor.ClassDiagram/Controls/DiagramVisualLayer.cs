@@ -39,6 +39,9 @@ public enum ResizeEdge
 /// </summary>
 public sealed class DiagramVisualLayer : FrameworkElement
 {
+    /// <summary>Optional sink wired by ClassDiagramPlugin to forward arrow diagnostics to the IDE Output panel.</summary>
+    public static Action<string>? DiagnosticOutput { get; set; }
+
     // ── Layout constants (same as ClassBoxControl for visual consistency) ────
     private const double HeaderBaseHeight = 44.0;  // minimum header height (name only)
     private const double MemberHeight  = 20.0;
@@ -1141,10 +1144,18 @@ public sealed class DiagramVisualLayer : FrameworkElement
         var vp = _cullingViewport;
         using var dc = _arrowLayer.RenderOpen();
 
+        if (DiagnosticOutput is { } log)
+        {
+            log($"[Arrows] {_doc.Relationships.Count} rels, {_doc.Classes.Count} nodes");
+            foreach (var n in _doc.Classes)
+                log($"  node '{n.Id}' X={n.X:F0} Y={n.Y:F0} W={n.Width:F0} H={n.Height:F0} computedH={ComputeNodeHeight(n):F0}");
+        }
+
         foreach (var rel in _doc.Relationships)
         {
             var src = _doc.FindById(rel.SourceId);
             var tgt = _doc.FindById(rel.TargetId);
+            DiagnosticOutput?.Invoke($"  rel {rel.SourceId} -> {rel.TargetId}: src={(src is null ? "NULL" : $"({src.X:F0},{src.Y:F0})")}, tgt={(tgt is null ? "NULL" : $"({tgt.X:F0},{tgt.Y:F0})")}");
             if (src is null || tgt is null) continue;
 
             var srcRect = new Rect(src.X, src.Y, ComputeNodeWidth(src), ComputeNodeHeight(src));

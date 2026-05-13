@@ -194,7 +194,7 @@ public sealed class ViewMenuOrganizer
             var dockSide = _dockSideResolver(uiId);
             entries.Add(new ViewMenuEntry(
                 Id:               uiId,
-                Header:           descriptor.Header,
+                Header:           descriptor.ResolveHeader(),
                 GestureText:      descriptor.GestureText,
                 IconGlyph:        descriptor.IconGlyph,
                 Command:          descriptor.Command,

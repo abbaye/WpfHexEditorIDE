@@ -74,7 +74,7 @@ public partial class MainWindow
                     ? "Plugins"
                     : StripAccessKey(descriptor.ParentPath);
                 entries.Add(new CommandPaletteEntry(
-                    Name:             StripAccessKey(descriptor.Header?.ToString() ?? uiId),
+                    Name:             StripAccessKey(descriptor.ResolveHeader()?.ToString() ?? uiId),
                     Category:         category,
                     GestureText:      descriptor.GestureText,
                     IconGlyph:        descriptor.IconGlyph,
@@ -195,7 +195,7 @@ public partial class MainWindow
                     ? "Plugins"
                     : StripAccessKey(descriptor.ParentPath);
 
-                var name = StripAccessKey(descriptor.Header?.ToString() ?? uiId);
+                var name = StripAccessKey(descriptor.ResolveHeader()?.ToString() ?? uiId);
 
                 // Skip if already contributed by the central command registry.
                 if (registryKeys.Contains($"{name.Trim()}|{category.Trim()}"))
