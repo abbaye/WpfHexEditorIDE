@@ -12,6 +12,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:resxlocaSvc="clr-namespace:WpfHexEditor.Plugins.ResxLocalization.Services"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.ResxLocalization.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="280"
@@ -31,7 +32,7 @@
                 BorderBrush="{DynamicResource RES_SeparatorBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="6,4">
-            <TextBlock Text="{DynamicResource RX_LocaleBrowser}"
+            <TextBlock Text="{StaticResource RX_LocaleBrowser}"
                        Foreground="{DynamicResource RES_HeaderForegroundBrush}"
                        FontSize="11" FontWeight="SemiBold"/>
         </Border>
@@ -100,9 +101,14 @@
     </Grid>
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <resxlocaSvc:ResxLocalizationLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <!-- Simple bool→FontWeight converter declared as a static resource below -->
         <local:BoolToFontWeightConverter x:Key="BoolToWeight"
             xmlns:local="clr-namespace:WpfHexEditor.Plugins.ResxLocalization.Panels"/>
+        </ResourceDictionary>
     </UserControl.Resources>
 </UserControl>

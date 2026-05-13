@@ -12,7 +12,15 @@
 <UserControl x:Class="WpfHexEditor.Plugins.ClassDiagram.Panels.RelationshipsPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cdSvc="clr-namespace:WpfHexEditor.Plugins.ClassDiagram.Services"
              Background="{DynamicResource DockMenuBackgroundBrush}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <cdSvc:ClassDiagramLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <DockPanel>
 
@@ -22,7 +30,7 @@
                 Background="{DynamicResource DockMenuBackgroundBrush}"
                 BorderBrush="{DynamicResource DockToolBarBorderBrush}"
                 Padding="6,3">
-            <TextBlock Text="{DynamicResource CD_Relationships}"
+            <TextBlock Text="{StaticResource CD_Relationships}"
                        FontSize="11" FontWeight="SemiBold"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>

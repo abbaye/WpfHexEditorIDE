@@ -7,7 +7,15 @@
 <UserControl x:Class="WpfHexEditor.Editor.ScriptEditor.Controls.ScriptEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:scriptSvc="clr-namespace:WpfHexEditor.Editor.ScriptEditor.Services"
              xmlns:ce="clr-namespace:WpfHexEditor.Editor.CodeEditor.Controls;assembly=WpfHexEditor.Editor.CodeEditor">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <scriptSvc:ScriptEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -33,7 +41,7 @@
                            VerticalAlignment="Center"
                            FontSize="11"
                            Foreground="{DynamicResource TE_LineNumberForeground}"
-                           Text="{DynamicResource SCR_F5Help}" />
+                           Text="{StaticResource SCR_F5Help}" />
             </StackPanel>
         </Border>
 
@@ -76,7 +84,7 @@
                        Margin="8,0"
                        FontSize="11"
                        Foreground="{DynamicResource TE_LineNumberForeground}"
-                       Text="{DynamicResource SCR_StatusReady}" />
+                       Text="{StaticResource SCR_StatusReady}" />
         </Border>
     </Grid>
 </UserControl>

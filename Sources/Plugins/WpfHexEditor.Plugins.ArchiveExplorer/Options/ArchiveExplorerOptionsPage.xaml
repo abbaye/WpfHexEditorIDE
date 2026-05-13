@@ -15,32 +15,39 @@
              Background="Transparent"
              Foreground="{DynamicResource PFP_TextBrush}"
              Padding="12">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <aeSvc:ArchiveExplorerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <StackPanel>
 
         <!-- Section: Behaviour -->
-        <TextBlock Text="{DynamicResource AE_BehaviourSection}"
+        <TextBlock Text="{StaticResource AE_BehaviourSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
 
         <CheckBox x:Name="ChkAutoShow"
-                  Content="{DynamicResource AE_AutoShowPanel}"
+                  Content="{StaticResource AE_AutoShowPanel}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,2,0,2"/>
 
         <CheckBox x:Name="ChkShowRatio"
-                  Content="{DynamicResource AE_ShowCompressionBadge}"
+                  Content="{StaticResource AE_ShowCompressionBadge}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,2,0,2"/>
 
         <CheckBox x:Name="ChkShowBadge"
-                  Content="{DynamicResource AE_ShowFormatBadge}"
+                  Content="{StaticResource AE_ShowFormatBadge}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,2,0,12"/>
 
         <!-- Section: Preview -->
-        <TextBlock Text="{DynamicResource AE_PreviewSection}"
+        <TextBlock Text="{StaticResource AE_PreviewSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
@@ -50,7 +57,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{DynamicResource AE_MaxPreviewSize}"
+            <TextBlock Grid.Column="0" Text="{StaticResource AE_MaxPreviewSize}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <TextBox x:Name="TxtPreviewMaxKb"
@@ -64,7 +71,7 @@
         </Grid>
 
         <!-- Section: Extraction -->
-        <TextBlock Text="{DynamicResource AE_ExtractionSection}"
+        <TextBlock Text="{StaticResource AE_ExtractionSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
@@ -74,7 +81,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{DynamicResource AE_MaxFormatDetectionSize}"
+            <TextBlock Grid.Column="0" Text="{StaticResource AE_MaxFormatDetectionSize}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <TextBox x:Name="TxtMaxDetectKb"
@@ -93,7 +100,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{DynamicResource AE_DefaultExtractFolder}"
+            <TextBlock Grid.Column="0" Text="{StaticResource AE_DefaultExtractFolder}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <TextBox x:Name="TxtExtractFolder"
@@ -105,7 +112,7 @@
                      Margin="0,0,4,0"/>
             <Button x:Name="BtnBrowse"
                     Grid.Column="2"
-                    Content="{DynamicResource AE_Browse}"
+                    Content="{StaticResource AE_Browse}"
                     Width="70" Height="22"
                     Click="OnBrowseClick"/>
         </Grid>
