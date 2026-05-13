@@ -116,7 +116,7 @@
                             HorizontalAlignment="Right">
                     <Button Content="{StaticResource ScreenRecorder_ZoomOut}"
                             Command="{Binding ZoomOutCommand}"
-                            Style="{DynamicResource DockDarkButtonStyle}"
+                            Style="{DynamicResource PM_ActionButtonStyle}"
                             Padding="6,2" FontSize="11" Margin="0,0,2,0"
                             ToolTip="{StaticResource ScreenRecorder_ZoomOut}"/>
                     <TextBlock VerticalAlignment="Center"
@@ -136,17 +136,17 @@
                     </TextBlock>
                     <Button Content="{StaticResource ScreenRecorder_ZoomIn}"
                             Command="{Binding ZoomInCommand}"
-                            Style="{DynamicResource DockDarkButtonStyle}"
+                            Style="{DynamicResource PM_ActionButtonStyle}"
                             Padding="6,2" FontSize="11" Margin="0,0,6,0"
                             ToolTip="{StaticResource ScreenRecorder_ZoomIn}"/>
                     <Button Content="1:1"
                             Command="{Binding Zoom1To1Command}"
-                            Style="{DynamicResource DockDarkButtonStyle}"
+                            Style="{DynamicResource PM_ActionButtonStyle}"
                             Padding="6,2" FontSize="11" Margin="0,0,2,0"
                             ToolTip="{StaticResource ScreenRecorder_Zoom1To1}"/>
                     <Button Content="{StaticResource ScreenRecorder_ZoomFit}"
                             Command="{Binding ZoomFitCommand}"
-                            Style="{DynamicResource DockDarkButtonStyle}"
+                            Style="{DynamicResource PM_ActionButtonStyle}"
                             Padding="6,2" FontSize="11"
                             ToolTip="{StaticResource ScreenRecorder_ZoomFit}"/>
                 </StackPanel>

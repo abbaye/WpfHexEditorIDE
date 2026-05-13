@@ -60,7 +60,13 @@ public partial class App : Application
 
         try
         {
-            LocalizedResourceDictionary.ChangeCulture(new CultureInfo(cultureName));
+            var culture = new CultureInfo(cultureName);
+            // Also set the UI thread's CurrentUICulture directly so that resx string lookups
+            // on the UI thread (e.g. in plugin InitializeAsync dispatched via Dispatcher.InvokeAsync)
+            // use the correct language — DefaultThreadCurrentUICulture only covers new threads.
+            System.Threading.Thread.CurrentThread.CurrentUICulture = culture;
+            System.Threading.Thread.CurrentThread.CurrentCulture   = culture;
+            LocalizedResourceDictionary.ChangeCulture(culture);
         }
         catch (CultureNotFoundException)
         {

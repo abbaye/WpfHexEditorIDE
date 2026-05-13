@@ -159,7 +159,7 @@
                 <TextBox Grid.Column="1" Text="{Binding FfmpegPath, UpdateSourceTrigger=PropertyChanged}"
                          FontSize="11" Padding="4,2" Margin="0,0,4,0"/>
                 <Button Grid.Column="2" Content="{StaticResource ScreenRecorder_Options_FfmpegBrowse}"
-                        Style="{DynamicResource DockDarkButtonStyle}"
+                        Style="{DynamicResource PM_ActionButtonStyle}"
                         Padding="8,3" FontSize="11" Click="OnBrowseFfmpeg"/>
             </Grid>
 

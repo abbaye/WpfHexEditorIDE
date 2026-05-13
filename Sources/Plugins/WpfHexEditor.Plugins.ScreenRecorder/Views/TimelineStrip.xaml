@@ -48,15 +48,15 @@
 
                 <Button Content="{StaticResource ScreenRecorder_DeleteSelected}"
                         Command="{Binding DeleteSelectedCommand}"
-                        Style="{DynamicResource DockDarkButtonStyle}"
+                        Style="{DynamicResource PM_ActionButtonStyle}"
                         Padding="8,3" FontSize="11" Margin="0,0,4,0" />
                 <Button Content="{StaticResource ScreenRecorder_InsertBlank}"
                         Command="{Binding InsertBlankCommand}"
-                        Style="{DynamicResource DockDarkButtonStyle}"
+                        Style="{DynamicResource PM_ActionButtonStyle}"
                         Padding="8,3" FontSize="11" Margin="0,0,4,0" />
                 <Button Content="{StaticResource ScreenRecorder_DuplicateFrame}"
                         Command="{Binding DuplicateFrameCommand}"
-                        Style="{DynamicResource DockDarkButtonStyle}"
+                        Style="{DynamicResource PM_ActionButtonStyle}"
                         Padding="8,3" FontSize="11" />
             </StackPanel>
         </Border>
