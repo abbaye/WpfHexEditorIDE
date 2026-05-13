@@ -38,7 +38,13 @@ public class LocalizedResourceDictionary : ResourceDictionary
 {
     // ─── Static culture state ────────────────────────────────────────────────
 
-    private static CultureInfo _currentCulture = CultureInfo.CurrentUICulture;
+    // Default to en-US — the neutral/authoring language of all resource files.
+    // When the host app has a saved preferredLanguage, it calls ChangeCulture() before
+    // any plugin dictionary is constructed, overwriting this value.
+    // Without this default, plugin tabs opened lazily would inherit the OS UI culture
+    // (e.g. es-MX) and display strings in that language even when the IDE shows English
+    // because it falls back to the neutral en-US satellite.
+    private static CultureInfo _currentCulture = new CultureInfo("en-US");
 
     /// <summary>Fired after all registered dictionaries have been refreshed.</summary>
     public static event EventHandler<CultureChangedEventArgs>? CultureChanged;
