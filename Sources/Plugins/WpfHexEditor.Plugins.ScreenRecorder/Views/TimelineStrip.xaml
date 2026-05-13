@@ -1,18 +1,96 @@
 <!--
     Project: WpfHexEditor.Plugins.ScreenRecorder
     File: Views/TimelineStrip.xaml
-    Description: Horizontal scrollable timeline of frame thumbnails.
-                 Full implementation in Phase 6.
+    Description: Horizontal scrollable timeline of frame thumbnail cards.
+                 Supports drag-to-reorder, multi-select, global delay spinner,
+                 and Delete/Insert/Duplicate keyboard shortcuts.
 -->
 <UserControl x:Class="WpfHexEditor.Plugins.ScreenRecorder.Views.TimelineStrip"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="{DynamicResource Panel_Background}">
+             xmlns:views="clr-namespace:WpfHexEditor.Plugins.ScreenRecorder.Views"
+             Background="{DynamicResource Panel_Background}"
+             AllowDrop="True">
     <Grid>
-        <TextBlock Text="Timeline — no frames"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Timeline toolbar: global delay + action buttons -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource Panel_Background}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="8,4">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{StaticResource ScreenRecorder_GlobalDelay}"
+                           VerticalAlignment="Center"
+                           FontSize="11"
+                           Foreground="{DynamicResource Panel_Foreground}"
+                           Margin="0,0,6,0" />
+                <TextBox Width="50"
+                         Text="{Binding GlobalDelay, UpdateSourceTrigger=PropertyChanged}"
+                         VerticalContentAlignment="Center"
+                         FontSize="11"
+                         Padding="4,2"
+                         ToolTip="{StaticResource ScreenRecorder_GlobalDelay}" />
+                <TextBlock Text="ms" VerticalAlignment="Center" Margin="3,0,12,0"
+                           FontSize="10" Foreground="{DynamicResource Panel_ForegroundMuted}" />
+
+                <Button Content="{StaticResource ScreenRecorder_DeleteSelected}"
+                        Command="{Binding DeleteSelectedCommand}"
+                        Padding="8,3" FontSize="11" Margin="0,0,4,0" />
+                <Button Content="{StaticResource ScreenRecorder_InsertBlank}"
+                        Command="{Binding InsertBlankCommand}"
+                        Padding="8,3" FontSize="11" Margin="0,0,4,0" />
+                <Button Content="{StaticResource ScreenRecorder_DuplicateFrame}"
+                        Command="{Binding DuplicateFrameCommand}"
+                        Padding="8,3" FontSize="11" />
+            </StackPanel>
+        </Border>
+
+        <!-- Frame cards scroll area -->
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled"
+                      x:Name="FrameScroll">
+            <ItemsControl x:Name="FrameList"
+                          ItemsSource="{Binding Frames}"
+                          AllowDrop="True"
+                          Drop="OnFrameDrop"
+                          DragOver="OnFrameDragOver">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <views:FrameCard DataContext="{Binding}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Empty state -->
+        <TextBlock Grid.Row="1"
+                   Text="{StaticResource ScreenRecorder_NoFrameSelected}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Foreground="{DynamicResource Panel_ForegroundMuted}"
-                   FontSize="12" />
+                   FontSize="12"
+                   IsHitTestVisible="False">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Frames.Count}" Value="0">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
     </Grid>
 </UserControl>
