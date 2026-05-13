@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Project     : WpfHexEditor.Plugins.ScreenRecorder
+    File        : ScreenRecorderResources.el.resx
+    Description : Localized UI strings for the Screen Recorder plugin (el).
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Plugin metadata -->
+  <data name="ScreenRecorder_PluginName" xml:space="preserve"><value>Εγγραφή οθόνης</value></data>
+  <data name="ScreenRecorder_MenuItem" xml:space="preserve"><value>_Εγγραφή οθόνης...</value></data>
+  <data name="ScreenRecorder_DocumentTitle" xml:space="preserve"><value>Εγγραφή οθόνης</value></data>
+  <data name="ScreenRecorder_UntitledSession" xml:space="preserve"><value>Εγγραφή χωρίς τίτλο</value></data>
+
+  <!-- Toolbar actions -->
+  <data name="ScreenRecorder_Start" xml:space="preserve"><value>Έναρξη</value></data>
+  <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Διακοπή</value></data>
+  <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Παύση</value></data>
+  <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Συνέχιση</value></data>
+  <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Λήψη καρέ</value></data>
+  <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Επιλογή περιοχής</value></data>
+  <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Αποθήκευση συνεδρίας</value></data>
+  <data name="ScreenRecorder_OpenSession" xml:space="preserve"><value>Άνοιγμα συνεδρίας...</value></data>
+  <data name="ScreenRecorder_ExportGif" xml:space="preserve"><value>Εξαγωγή ως GIF</value></data>
+  <data name="ScreenRecorder_ExportPng" xml:space="preserve"><value>Εξαγωγή ακολουθίας PNG</value></data>
+  <data name="ScreenRecorder_ExportMp4" xml:space="preserve"><value>Εξαγωγή ως MP4</value></data>
+
+  <!-- Capture modes -->
+  <data name="ScreenRecorder_ModeScreenshot" xml:space="preserve"><value>Στιγμιότυπο οθόνης (F9)</value></data>
+  <data name="ScreenRecorder_ModeTimed" xml:space="preserve"><value>Χρονικό διάστημα</value></data>
+  <data name="ScreenRecorder_ModeBoth" xml:space="preserve"><value>Στιγμιότυπο + Χρονόμετρο</value></data>
+
+  <!-- Status bar -->
+  <data name="ScreenRecorder_StatusRecording" xml:space="preserve"><value>&#x23FA; Εγγραφή</value></data>
+  <data name="ScreenRecorder_StatusPaused" xml:space="preserve"><value>&#x23F8; Σε παύση</value></data>
+  <data name="ScreenRecorder_StatusFrames" xml:space="preserve"><value>{0} καρέ</value></data>
+  <data name="ScreenRecorder_StatusHotkeys" xml:space="preserve"><value>F9 Λήψη  Shift+F9 Διακοπή  ESC Ακύρωση</value></data>
+
+  <!-- HUD overlay -->
+  <data name="ScreenRecorder_HudRecording" xml:space="preserve"><value>Εγγραφή</value></data>
+  <data name="ScreenRecorder_HudPaused" xml:space="preserve"><value>Σε παύση</value></data>
+  <data name="ScreenRecorder_HudFrameCount" xml:space="preserve"><value>{0} καρέ</value></data>
+  <data name="ScreenRecorder_HudEscCancel" xml:space="preserve"><value>ESC για ακύρωση</value></data>
+
+  <!-- Timeline -->
+  <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Διαγραφή επιλεγμένων</value></data>
+  <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>Εισαγωγή κενού καρέ</value></data>
+  <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>Αντιγραφή καρέ</value></data>
+  <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>Ορισμός καθυστέρησης...</value></data>
+  <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>Καθολική καθυστέρηση (ms):</value></data>
+  <data name="ScreenRecorder_FrameLabel" xml:space="preserve"><value>Καρέ {0}</value></data>
+
+  <!-- Preview -->
+  <data name="ScreenRecorder_ZoomIn" xml:space="preserve"><value>Μεγέθυνση</value></data>
+  <data name="ScreenRecorder_ZoomOut" xml:space="preserve"><value>Σμίκρυνση</value></data>
+  <data name="ScreenRecorder_Zoom1To1" xml:space="preserve"><value>1:1 (Πραγματικό μέγεθος)</value></data>
+  <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Προσαρμογή στο παράθυρο</value></data>
+  <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
+  <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Δεν έχει επιλεγεί καρέ</value></data>
+
+  <!-- Properties panel -->
+  <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Ιδιότητες</value></data>
+  <data name="ScreenRecorder_CaptureRegion" xml:space="preserve"><value>Περιοχή λήψης</value></data>
+  <data name="ScreenRecorder_OutputScale" xml:space="preserve"><value>Κλίμακα εξόδου</value></data>
+  <data name="ScreenRecorder_LoopCount" xml:space="preserve"><value>Αριθμός επαναλήψεων (0=άπειρο)</value></data>
+  <data name="ScreenRecorder_RepeatLastFrame" xml:space="preserve"><value>Επανάληψη τελευταίου καρέ (ms)</value></data>
+  <data name="ScreenRecorder_Interval" xml:space="preserve"><value>Διάστημα (ms)</value></data>
+
+  <!-- Options page -->
+  <data name="ScreenRecorder_Options" xml:space="preserve"><value>Εγγραφή οθόνης</value></data>
+  <data name="ScreenRecorder_Options_Capture" xml:space="preserve"><value>Λήψη</value></data>
+  <data name="ScreenRecorder_Options_Overlay" xml:space="preserve"><value>Επικάλυψη</value></data>
+  <data name="ScreenRecorder_Options_Export" xml:space="preserve"><value>Εξαγωγή</value></data>
+  <data name="ScreenRecorder_Options_Session" xml:space="preserve"><value>Συνεδρία</value></data>
+  <data name="ScreenRecorder_Options_Ffmpeg" xml:space="preserve"><value>ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_HotkeyCapture" xml:space="preserve"><value>Πλήκτρο λήψης</value></data>
+  <data name="ScreenRecorder_Options_HotkeyStop" xml:space="preserve"><value>Πλήκτρο διακοπής</value></data>
+  <data name="ScreenRecorder_Options_DefaultMode" xml:space="preserve"><value>Προεπιλεγμένη λειτουργία</value></data>
+  <data name="ScreenRecorder_Options_TimerInterval" xml:space="preserve"><value>Διάστημα χρονόμετρου (ms)</value></data>
+  <data name="ScreenRecorder_Options_OverlayColor" xml:space="preserve"><value>Χρώμα επικάλυψης</value></data>
+  <data name="ScreenRecorder_Options_OverlayOpacity" xml:space="preserve"><value>Αδιαφάνεια επικάλυψης</value></data>
+  <data name="ScreenRecorder_Options_ShowHud" xml:space="preserve"><value>Εμφάνιση HUD κατά τη λήψη</value></data>
+  <data name="ScreenRecorder_Options_DefaultOutputPath" xml:space="preserve"><value>Προεπιλεγμένος φάκελος εξόδου</value></data>
+  <data name="ScreenRecorder_Options_DefaultScale" xml:space="preserve"><value>Προεπιλεγμένη κλίμακα εξόδου</value></data>
+  <data name="ScreenRecorder_Options_DefaultLoopCount" xml:space="preserve"><value>Προεπιλεγμένος αριθμός επαναλήψεων GIF</value></data>
+  <data name="ScreenRecorder_Options_RepeatLastFrameDelay" xml:space="preserve"><value>Καθυστέρηση επανάληψης τελευταίου καρέ (ms)</value></data>
+  <data name="ScreenRecorder_Options_SaveFolder" xml:space="preserve"><value>Προεπιλεγμένος φάκελος αποθήκευσης</value></data>
+  <data name="ScreenRecorder_Options_ConfirmDiscard" xml:space="preserve"><value>Επιβεβαίωση πριν από την απόρριψη συνεδρίας</value></data>
+  <data name="ScreenRecorder_Options_MaxFrames" xml:space="preserve"><value>Μέγ. καρέ ανά συνεδρία</value></data>
+  <data name="ScreenRecorder_Options_FfmpegPath" xml:space="preserve"><value>Διαδρομή εκτελέσιμου αρχείου ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_FfmpegBrowse" xml:space="preserve"><value>Αναζήτηση...</value></data>
+  <data name="ScreenRecorder_Options_FfmpegNotFound" xml:space="preserve"><value>Το ffmpeg δεν βρέθηκε — εξαγωγή MP4 απενεργοποιημένη</value></data>
+
+  <!-- Dialogs -->
+  <data name="ScreenRecorder_SaveFilter" xml:space="preserve"><value>Λήψη οθόνης WpfHexEditor (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_OpenFilter" xml:space="preserve"><value>Λήψη οθόνης WpfHexEditor (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_GifFilter" xml:space="preserve"><value>Κινούμενο GIF (*.gif)|*.gif</value></data>
+  <data name="ScreenRecorder_Mp4Filter" xml:space="preserve"><value>Βίντεο MP4 (*.mp4)|*.mp4</value></data>
+  <data name="ScreenRecorder_ConfirmCancelTitle" xml:space="preserve"><value>Ακύρωση εγγραφής</value></data>
+  <data name="ScreenRecorder_ConfirmCancelMsg" xml:space="preserve"><value>Απόρριψη της τρέχουσας συνεδρίας εγγραφής;</value></data>
+  <data name="ScreenRecorder_ExportProgress" xml:space="preserve"><value>Εξαγωγή... {0}%</value></data>
+  <data name="ScreenRecorder_FileAssocAdvisory" xml:space="preserve"><value>Δεν ήταν δυνατή η καταχώριση της συσχέτισης αρχείου .whscr (ανεπαρκή δικαιώματα).</value></data>
+</root>

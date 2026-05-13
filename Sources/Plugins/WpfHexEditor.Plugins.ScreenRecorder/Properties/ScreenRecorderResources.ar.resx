@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Project     : WpfHexEditor.Plugins.ScreenRecorder
+    File        : ScreenRecorderResources.ar.resx
+    Description : Localized UI strings for the Screen Recorder plugin (ar).
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Plugin metadata -->
+  <data name="ScreenRecorder_PluginName" xml:space="preserve"><value>مسجّل الشاشة</value></data>
+  <data name="ScreenRecorder_MenuItem" xml:space="preserve"><value>_مسجّل الشاشة...</value></data>
+  <data name="ScreenRecorder_DocumentTitle" xml:space="preserve"><value>مسجّل الشاشة</value></data>
+  <data name="ScreenRecorder_UntitledSession" xml:space="preserve"><value>تسجيل بلا عنوان</value></data>
+
+  <!-- Toolbar actions -->
+  <data name="ScreenRecorder_Start" xml:space="preserve"><value>بدء</value></data>
+  <data name="ScreenRecorder_Stop" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="ScreenRecorder_Pause" xml:space="preserve"><value>إيقاف مؤقت</value></data>
+  <data name="ScreenRecorder_Resume" xml:space="preserve"><value>استئناف</value></data>
+  <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>التقاط إطار</value></data>
+  <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>تحديد منطقة</value></data>
+  <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>حفظ الجلسة</value></data>
+  <data name="ScreenRecorder_OpenSession" xml:space="preserve"><value>فتح جلسة...</value></data>
+  <data name="ScreenRecorder_ExportGif" xml:space="preserve"><value>تصدير بتنسيق GIF</value></data>
+  <data name="ScreenRecorder_ExportPng" xml:space="preserve"><value>تصدير تسلسل PNG</value></data>
+  <data name="ScreenRecorder_ExportMp4" xml:space="preserve"><value>تصدير بتنسيق MP4</value></data>
+
+  <!-- Capture modes -->
+  <data name="ScreenRecorder_ModeScreenshot" xml:space="preserve"><value>لقطة شاشة (F9)</value></data>
+  <data name="ScreenRecorder_ModeTimed" xml:space="preserve"><value>فاصل زمني</value></data>
+  <data name="ScreenRecorder_ModeBoth" xml:space="preserve"><value>لقطة + مؤقت</value></data>
+
+  <!-- Status bar -->
+  <data name="ScreenRecorder_StatusRecording" xml:space="preserve"><value>&#x23FA; جارٍ التسجيل</value></data>
+  <data name="ScreenRecorder_StatusPaused" xml:space="preserve"><value>&#x23F8; متوقف مؤقتاً</value></data>
+  <data name="ScreenRecorder_StatusFrames" xml:space="preserve"><value>{0} إطار</value></data>
+  <data name="ScreenRecorder_StatusHotkeys" xml:space="preserve"><value>F9 التقاط  Shift+F9 إيقاف  ESC إلغاء</value></data>
+
+  <!-- HUD overlay -->
+  <data name="ScreenRecorder_HudRecording" xml:space="preserve"><value>جارٍ التسجيل</value></data>
+  <data name="ScreenRecorder_HudPaused" xml:space="preserve"><value>متوقف مؤقتاً</value></data>
+  <data name="ScreenRecorder_HudFrameCount" xml:space="preserve"><value>{0} إطار</value></data>
+  <data name="ScreenRecorder_HudEscCancel" xml:space="preserve"><value>ESC للإلغاء</value></data>
+
+  <!-- Timeline -->
+  <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>حذف المحدد</value></data>
+  <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>إدراج إطار فارغ</value></data>
+  <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>تكرار الإطار</value></data>
+  <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>تعيين التأخير...</value></data>
+  <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>التأخير الإجمالي (ms):</value></data>
+  <data name="ScreenRecorder_FrameLabel" xml:space="preserve"><value>إطار {0}</value></data>
+
+  <!-- Preview -->
+  <data name="ScreenRecorder_ZoomIn" xml:space="preserve"><value>تكبير</value></data>
+  <data name="ScreenRecorder_ZoomOut" xml:space="preserve"><value>تصغير</value></data>
+  <data name="ScreenRecorder_Zoom1To1" xml:space="preserve"><value>1:1 (الحجم الفعلي)</value></data>
+  <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>ملاءمة النافذة</value></data>
+  <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
+  <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>لم يُحدَّد أي إطار</value></data>
+
+  <!-- Properties panel -->
+  <data name="ScreenRecorder_Properties" xml:space="preserve"><value>الخصائص</value></data>
+  <data name="ScreenRecorder_CaptureRegion" xml:space="preserve"><value>منطقة الالتقاط</value></data>
+  <data name="ScreenRecorder_OutputScale" xml:space="preserve"><value>مقياس الإخراج</value></data>
+  <data name="ScreenRecorder_LoopCount" xml:space="preserve"><value>عدد التكرارات (0=لانهائي)</value></data>
+  <data name="ScreenRecorder_RepeatLastFrame" xml:space="preserve"><value>تكرار آخر إطار (ms)</value></data>
+  <data name="ScreenRecorder_Interval" xml:space="preserve"><value>الفاصل الزمني (ms)</value></data>
+
+  <!-- Options page -->
+  <data name="ScreenRecorder_Options" xml:space="preserve"><value>مسجّل الشاشة</value></data>
+  <data name="ScreenRecorder_Options_Capture" xml:space="preserve"><value>الالتقاط</value></data>
+  <data name="ScreenRecorder_Options_Overlay" xml:space="preserve"><value>التراكب</value></data>
+  <data name="ScreenRecorder_Options_Export" xml:space="preserve"><value>تصدير</value></data>
+  <data name="ScreenRecorder_Options_Session" xml:space="preserve"><value>الجلسة</value></data>
+  <data name="ScreenRecorder_Options_Ffmpeg" xml:space="preserve"><value>ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_HotkeyCapture" xml:space="preserve"><value>مفتاح الالتقاط السريع</value></data>
+  <data name="ScreenRecorder_Options_HotkeyStop" xml:space="preserve"><value>مفتاح الإيقاف السريع</value></data>
+  <data name="ScreenRecorder_Options_DefaultMode" xml:space="preserve"><value>الوضع الافتراضي</value></data>
+  <data name="ScreenRecorder_Options_TimerInterval" xml:space="preserve"><value>فاصل المؤقت (ms)</value></data>
+  <data name="ScreenRecorder_Options_OverlayColor" xml:space="preserve"><value>لون التراكب</value></data>
+  <data name="ScreenRecorder_Options_OverlayOpacity" xml:space="preserve"><value>شفافية التراكب</value></data>
+  <data name="ScreenRecorder_Options_ShowHud" xml:space="preserve"><value>عرض HUD أثناء الالتقاط</value></data>
+  <data name="ScreenRecorder_Options_DefaultOutputPath" xml:space="preserve"><value>مجلد الإخراج الافتراضي</value></data>
+  <data name="ScreenRecorder_Options_DefaultScale" xml:space="preserve"><value>مقياس الإخراج الافتراضي</value></data>
+  <data name="ScreenRecorder_Options_DefaultLoopCount" xml:space="preserve"><value>عدد تكرارات GIF الافتراضي</value></data>
+  <data name="ScreenRecorder_Options_RepeatLastFrameDelay" xml:space="preserve"><value>تأخير تكرار آخر إطار (ms)</value></data>
+  <data name="ScreenRecorder_Options_SaveFolder" xml:space="preserve"><value>مجلد الحفظ الافتراضي</value></data>
+  <data name="ScreenRecorder_Options_ConfirmDiscard" xml:space="preserve"><value>تأكيد قبل تجاهل الجلسة</value></data>
+  <data name="ScreenRecorder_Options_MaxFrames" xml:space="preserve"><value>الحد الأقصى للإطارات لكل جلسة</value></data>
+  <data name="ScreenRecorder_Options_FfmpegPath" xml:space="preserve"><value>مسار ملف ffmpeg التنفيذي</value></data>
+  <data name="ScreenRecorder_Options_FfmpegBrowse" xml:space="preserve"><value>استعراض...</value></data>
+  <data name="ScreenRecorder_Options_FfmpegNotFound" xml:space="preserve"><value>لم يُعثر على ffmpeg — تصدير MP4 معطَّل</value></data>
+
+  <!-- Dialogs -->
+  <data name="ScreenRecorder_SaveFilter" xml:space="preserve"><value>تسجيل شاشة WpfHexEditor (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_OpenFilter" xml:space="preserve"><value>تسجيل شاشة WpfHexEditor (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_GifFilter" xml:space="preserve"><value>صورة GIF متحركة (*.gif)|*.gif</value></data>
+  <data name="ScreenRecorder_Mp4Filter" xml:space="preserve"><value>فيديو MP4 (*.mp4)|*.mp4</value></data>
+  <data name="ScreenRecorder_ConfirmCancelTitle" xml:space="preserve"><value>إلغاء التسجيل</value></data>
+  <data name="ScreenRecorder_ConfirmCancelMsg" xml:space="preserve"><value>هل تريد تجاهل جلسة التسجيل الحالية؟</value></data>
+  <data name="ScreenRecorder_ExportProgress" xml:space="preserve"><value>جارٍ التصدير... {0}%</value></data>
+  <data name="ScreenRecorder_FileAssocAdvisory" xml:space="preserve"><value>تعذّر تسجيل اقتران الملف .whscr (أذونات غير كافية).</value></data>
+</root>

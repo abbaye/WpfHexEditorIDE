@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Project     : WpfHexEditor.Plugins.ScreenRecorder
+    File        : ScreenRecorderResources.sl.resx
+    Description : Localized UI strings for the Screen Recorder plugin (sl).
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Plugin metadata -->
+  <data name="ScreenRecorder_PluginName" xml:space="preserve"><value>Snemalnik zaslona</value></data>
+  <data name="ScreenRecorder_MenuItem" xml:space="preserve"><value>_Snemalnik zaslona...</value></data>
+  <data name="ScreenRecorder_DocumentTitle" xml:space="preserve"><value>Snemalnik zaslona</value></data>
+  <data name="ScreenRecorder_UntitledSession" xml:space="preserve"><value>Posnetek brez naslova</value></data>
+
+  <!-- Toolbar actions -->
+  <data name="ScreenRecorder_Start" xml:space="preserve"><value>Začni</value></data>
+  <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Ustavi</value></data>
+  <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Premor</value></data>
+  <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Nadaljuj</value></data>
+  <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Zajemi sličico</value></data>
+  <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Izberi območje</value></data>
+  <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Shrani sejo</value></data>
+  <data name="ScreenRecorder_OpenSession" xml:space="preserve"><value>Odpri sejo...</value></data>
+  <data name="ScreenRecorder_ExportGif" xml:space="preserve"><value>Izvozi kot GIF</value></data>
+  <data name="ScreenRecorder_ExportPng" xml:space="preserve"><value>Izvozi zaporedje PNG</value></data>
+  <data name="ScreenRecorder_ExportMp4" xml:space="preserve"><value>Izvozi kot MP4</value></data>
+
+  <!-- Capture modes -->
+  <data name="ScreenRecorder_ModeScreenshot" xml:space="preserve"><value>Posnetek zaslona (F9)</value></data>
+  <data name="ScreenRecorder_ModeTimed" xml:space="preserve"><value>Časovni interval</value></data>
+  <data name="ScreenRecorder_ModeBoth" xml:space="preserve"><value>Posnetek + Časovnik</value></data>
+
+  <!-- Status bar -->
+  <data name="ScreenRecorder_StatusRecording" xml:space="preserve"><value>&#x23FA; Snemanje</value></data>
+  <data name="ScreenRecorder_StatusPaused" xml:space="preserve"><value>&#x23F8; V premoru</value></data>
+  <data name="ScreenRecorder_StatusFrames" xml:space="preserve"><value>{0} sličic</value></data>
+  <data name="ScreenRecorder_StatusHotkeys" xml:space="preserve"><value>F9 Zajemi  Shift+F9 Ustavi  ESC Prekliči</value></data>
+
+  <!-- HUD overlay -->
+  <data name="ScreenRecorder_HudRecording" xml:space="preserve"><value>Snemanje</value></data>
+  <data name="ScreenRecorder_HudPaused" xml:space="preserve"><value>V premoru</value></data>
+  <data name="ScreenRecorder_HudFrameCount" xml:space="preserve"><value>{0} sličic</value></data>
+  <data name="ScreenRecorder_HudEscCancel" xml:space="preserve"><value>ESC za preklic</value></data>
+
+  <!-- Timeline -->
+  <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Izbriši izbrano</value></data>
+  <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>Vstavi prazno sličico</value></data>
+  <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>Podvoji sličico</value></data>
+  <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>Nastavi zamudo...</value></data>
+  <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>Globalna zamuda (ms):</value></data>
+  <data name="ScreenRecorder_FrameLabel" xml:space="preserve"><value>Sličica {0}</value></data>
+
+  <!-- Preview -->
+  <data name="ScreenRecorder_ZoomIn" xml:space="preserve"><value>Povečaj</value></data>
+  <data name="ScreenRecorder_ZoomOut" xml:space="preserve"><value>Pomanjšaj</value></data>
+  <data name="ScreenRecorder_Zoom1To1" xml:space="preserve"><value>1:1 (Dejanska velikost)</value></data>
+  <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Prilagodi oknu</value></data>
+  <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
+  <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Nobena sličica ni izbrana</value></data>
+
+  <!-- Properties panel -->
+  <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Lastnosti</value></data>
+  <data name="ScreenRecorder_CaptureRegion" xml:space="preserve"><value>Območje zajema</value></data>
+  <data name="ScreenRecorder_OutputScale" xml:space="preserve"><value>Izhodno merilo</value></data>
+  <data name="ScreenRecorder_LoopCount" xml:space="preserve"><value>Število zank (0=neskončno)</value></data>
+  <data name="ScreenRecorder_RepeatLastFrame" xml:space="preserve"><value>Ponovi zadnjo sličico (ms)</value></data>
+  <data name="ScreenRecorder_Interval" xml:space="preserve"><value>Interval (ms)</value></data>
+
+  <!-- Options page -->
+  <data name="ScreenRecorder_Options" xml:space="preserve"><value>Snemalnik zaslona</value></data>
+  <data name="ScreenRecorder_Options_Capture" xml:space="preserve"><value>Zajem</value></data>
+  <data name="ScreenRecorder_Options_Overlay" xml:space="preserve"><value>Prekrivanje</value></data>
+  <data name="ScreenRecorder_Options_Export" xml:space="preserve"><value>Izvoz</value></data>
+  <data name="ScreenRecorder_Options_Session" xml:space="preserve"><value>Seja</value></data>
+  <data name="ScreenRecorder_Options_Ffmpeg" xml:space="preserve"><value>ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_HotkeyCapture" xml:space="preserve"><value>Bližnjica za zajem</value></data>
+  <data name="ScreenRecorder_Options_HotkeyStop" xml:space="preserve"><value>Bližnjica za ustavitev</value></data>
+  <data name="ScreenRecorder_Options_DefaultMode" xml:space="preserve"><value>Privzeti način</value></data>
+  <data name="ScreenRecorder_Options_TimerInterval" xml:space="preserve"><value>Interval časovnika (ms)</value></data>
+  <data name="ScreenRecorder_Options_OverlayColor" xml:space="preserve"><value>Barva prekrivanja</value></data>
+  <data name="ScreenRecorder_Options_OverlayOpacity" xml:space="preserve"><value>Neprozornost prekrivanja</value></data>
+  <data name="ScreenRecorder_Options_ShowHud" xml:space="preserve"><value>Prikaži HUD med zajemom</value></data>
+  <data name="ScreenRecorder_Options_DefaultOutputPath" xml:space="preserve"><value>Privzeta izhodna mapa</value></data>
+  <data name="ScreenRecorder_Options_DefaultScale" xml:space="preserve"><value>Privzeto izhodno merilo</value></data>
+  <data name="ScreenRecorder_Options_DefaultLoopCount" xml:space="preserve"><value>Privzeto število GIF zank</value></data>
+  <data name="ScreenRecorder_Options_RepeatLastFrameDelay" xml:space="preserve"><value>Zamuda pri ponavljanju zadnje sličice (ms)</value></data>
+  <data name="ScreenRecorder_Options_SaveFolder" xml:space="preserve"><value>Privzeta mapa za shranjevanje</value></data>
+  <data name="ScreenRecorder_Options_ConfirmDiscard" xml:space="preserve"><value>Potrditev pred opustitvijo seje</value></data>
+  <data name="ScreenRecorder_Options_MaxFrames" xml:space="preserve"><value>Največ sličic na sejo</value></data>
+  <data name="ScreenRecorder_Options_FfmpegPath" xml:space="preserve"><value>Pot do izvršne datoteke ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_FfmpegBrowse" xml:space="preserve"><value>Prebrskaj...</value></data>
+  <data name="ScreenRecorder_Options_FfmpegNotFound" xml:space="preserve"><value>ffmpeg ni najden — izvoz MP4 je onemogočen</value></data>
+
+  <!-- Dialogs -->
+  <data name="ScreenRecorder_SaveFilter" xml:space="preserve"><value>WpfHexEditor posnetek zaslona (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_OpenFilter" xml:space="preserve"><value>WpfHexEditor posnetek zaslona (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_GifFilter" xml:space="preserve"><value>Animirani GIF (*.gif)|*.gif</value></data>
+  <data name="ScreenRecorder_Mp4Filter" xml:space="preserve"><value>MP4 video (*.mp4)|*.mp4</value></data>
+  <data name="ScreenRecorder_ConfirmCancelTitle" xml:space="preserve"><value>Prekliči snemanje</value></data>
+  <data name="ScreenRecorder_ConfirmCancelMsg" xml:space="preserve"><value>Zavreči trenutno sejo snemanja?</value></data>
+  <data name="ScreenRecorder_ExportProgress" xml:space="preserve"><value>Izvažanje... {0}%</value></data>
+  <data name="ScreenRecorder_FileAssocAdvisory" xml:space="preserve"><value>Ni mogoče registrirati povezave datoteke .whscr (nezadostna dovoljenja).</value></data>
+</root>

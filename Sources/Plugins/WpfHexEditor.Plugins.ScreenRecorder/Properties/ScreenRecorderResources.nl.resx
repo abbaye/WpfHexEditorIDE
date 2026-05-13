@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Project     : WpfHexEditor.Plugins.ScreenRecorder
+    File        : ScreenRecorderResources.nl.resx
+    Description : Localized UI strings for the Screen Recorder plugin (nl).
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Plugin metadata -->
+  <data name="ScreenRecorder_PluginName" xml:space="preserve"><value>Schermrecorder</value></data>
+  <data name="ScreenRecorder_MenuItem" xml:space="preserve"><value>_Schermrecorder...</value></data>
+  <data name="ScreenRecorder_DocumentTitle" xml:space="preserve"><value>Schermrecorder</value></data>
+  <data name="ScreenRecorder_UntitledSession" xml:space="preserve"><value>Naamloze opname</value></data>
+
+  <!-- Toolbar actions -->
+  <data name="ScreenRecorder_Start" xml:space="preserve"><value>Starten</value></data>
+  <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Stoppen</value></data>
+  <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Pauzeren</value></data>
+  <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Hervatten</value></data>
+  <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Frame vastleggen</value></data>
+  <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Regio selecteren</value></data>
+  <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Sessie opslaan</value></data>
+  <data name="ScreenRecorder_OpenSession" xml:space="preserve"><value>Sessie openen...</value></data>
+  <data name="ScreenRecorder_ExportGif" xml:space="preserve"><value>Exporteren als GIF</value></data>
+  <data name="ScreenRecorder_ExportPng" xml:space="preserve"><value>PNG-reeks exporteren</value></data>
+  <data name="ScreenRecorder_ExportMp4" xml:space="preserve"><value>Exporteren als MP4</value></data>
+
+  <!-- Capture modes -->
+  <data name="ScreenRecorder_ModeScreenshot" xml:space="preserve"><value>Screenshot (F9)</value></data>
+  <data name="ScreenRecorder_ModeTimed" xml:space="preserve"><value>Tijdsinterval</value></data>
+  <data name="ScreenRecorder_ModeBoth" xml:space="preserve"><value>Screenshot + Timer</value></data>
+
+  <!-- Status bar -->
+  <data name="ScreenRecorder_StatusRecording" xml:space="preserve"><value>&#x23FA; Opname</value></data>
+  <data name="ScreenRecorder_StatusPaused" xml:space="preserve"><value>&#x23F8; Gepauzeerd</value></data>
+  <data name="ScreenRecorder_StatusFrames" xml:space="preserve"><value>{0} frames</value></data>
+  <data name="ScreenRecorder_StatusHotkeys" xml:space="preserve"><value>F9 Vastleggen  Shift+F9 Stoppen  ESC Annuleren</value></data>
+
+  <!-- HUD overlay -->
+  <data name="ScreenRecorder_HudRecording" xml:space="preserve"><value>Opname</value></data>
+  <data name="ScreenRecorder_HudPaused" xml:space="preserve"><value>Gepauzeerd</value></data>
+  <data name="ScreenRecorder_HudFrameCount" xml:space="preserve"><value>{0} frames</value></data>
+  <data name="ScreenRecorder_HudEscCancel" xml:space="preserve"><value>ESC om te annuleren</value></data>
+
+  <!-- Timeline -->
+  <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Selectie verwijderen</value></data>
+  <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>Leeg frame invoegen</value></data>
+  <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>Frame dupliceren</value></data>
+  <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>Vertraging instellen...</value></data>
+  <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>Globale vertraging (ms):</value></data>
+  <data name="ScreenRecorder_FrameLabel" xml:space="preserve"><value>Frame {0}</value></data>
+
+  <!-- Preview -->
+  <data name="ScreenRecorder_ZoomIn" xml:space="preserve"><value>Inzoomen</value></data>
+  <data name="ScreenRecorder_ZoomOut" xml:space="preserve"><value>Uitzoomen</value></data>
+  <data name="ScreenRecorder_Zoom1To1" xml:space="preserve"><value>1:1 (Werkelijke grootte)</value></data>
+  <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Aanpassen aan venster</value></data>
+  <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
+  <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Geen frame geselecteerd</value></data>
+
+  <!-- Properties panel -->
+  <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Eigenschappen</value></data>
+  <data name="ScreenRecorder_CaptureRegion" xml:space="preserve"><value>Vastleggebied</value></data>
+  <data name="ScreenRecorder_OutputScale" xml:space="preserve"><value>Uitvoerschaal</value></data>
+  <data name="ScreenRecorder_LoopCount" xml:space="preserve"><value>Herhalingen (0=oneindig)</value></data>
+  <data name="ScreenRecorder_RepeatLastFrame" xml:space="preserve"><value>Laatste frame herhalen (ms)</value></data>
+  <data name="ScreenRecorder_Interval" xml:space="preserve"><value>Interval (ms)</value></data>
+
+  <!-- Options page -->
+  <data name="ScreenRecorder_Options" xml:space="preserve"><value>Schermrecorder</value></data>
+  <data name="ScreenRecorder_Options_Capture" xml:space="preserve"><value>Vastleggen</value></data>
+  <data name="ScreenRecorder_Options_Overlay" xml:space="preserve"><value>Overlay</value></data>
+  <data name="ScreenRecorder_Options_Export" xml:space="preserve"><value>Exporteren</value></data>
+  <data name="ScreenRecorder_Options_Session" xml:space="preserve"><value>Sessie</value></data>
+  <data name="ScreenRecorder_Options_Ffmpeg" xml:space="preserve"><value>ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_HotkeyCapture" xml:space="preserve"><value>Sneltoets vastleggen</value></data>
+  <data name="ScreenRecorder_Options_HotkeyStop" xml:space="preserve"><value>Sneltoets stoppen</value></data>
+  <data name="ScreenRecorder_Options_DefaultMode" xml:space="preserve"><value>Standaardmodus</value></data>
+  <data name="ScreenRecorder_Options_TimerInterval" xml:space="preserve"><value>Timerinterval (ms)</value></data>
+  <data name="ScreenRecorder_Options_OverlayColor" xml:space="preserve"><value>Overlaykleur</value></data>
+  <data name="ScreenRecorder_Options_OverlayOpacity" xml:space="preserve"><value>Overlayopaciteit</value></data>
+  <data name="ScreenRecorder_Options_ShowHud" xml:space="preserve"><value>HUD weergeven tijdens vastleggen</value></data>
+  <data name="ScreenRecorder_Options_DefaultOutputPath" xml:space="preserve"><value>Standaard uitvoermap</value></data>
+  <data name="ScreenRecorder_Options_DefaultScale" xml:space="preserve"><value>Standaard uitvoerschaal</value></data>
+  <data name="ScreenRecorder_Options_DefaultLoopCount" xml:space="preserve"><value>Standaard GIF-herhalingen</value></data>
+  <data name="ScreenRecorder_Options_RepeatLastFrameDelay" xml:space="preserve"><value>Vertraging herhaling laatste frame (ms)</value></data>
+  <data name="ScreenRecorder_Options_SaveFolder" xml:space="preserve"><value>Standaard opslagmap</value></data>
+  <data name="ScreenRecorder_Options_ConfirmDiscard" xml:space="preserve"><value>Bevestigen voor het verwijderen van de sessie</value></data>
+  <data name="ScreenRecorder_Options_MaxFrames" xml:space="preserve"><value>Max. frames per sessie</value></data>
+  <data name="ScreenRecorder_Options_FfmpegPath" xml:space="preserve"><value>Pad naar ffmpeg-programma</value></data>
+  <data name="ScreenRecorder_Options_FfmpegBrowse" xml:space="preserve"><value>Bladeren...</value></data>
+  <data name="ScreenRecorder_Options_FfmpegNotFound" xml:space="preserve"><value>ffmpeg niet gevonden — MP4-export uitgeschakeld</value></data>
+
+  <!-- Dialogs -->
+  <data name="ScreenRecorder_SaveFilter" xml:space="preserve"><value>WpfHexEditor schermopname (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_OpenFilter" xml:space="preserve"><value>WpfHexEditor schermopname (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_GifFilter" xml:space="preserve"><value>Geanimeerde GIF (*.gif)|*.gif</value></data>
+  <data name="ScreenRecorder_Mp4Filter" xml:space="preserve"><value>MP4-video (*.mp4)|*.mp4</value></data>
+  <data name="ScreenRecorder_ConfirmCancelTitle" xml:space="preserve"><value>Opname annuleren</value></data>
+  <data name="ScreenRecorder_ConfirmCancelMsg" xml:space="preserve"><value>De huidige opnamesessie verwijderen?</value></data>
+  <data name="ScreenRecorder_ExportProgress" xml:space="preserve"><value>Exporteren... {0}%</value></data>
+  <data name="ScreenRecorder_FileAssocAdvisory" xml:space="preserve"><value>Kan .whscr-bestandskoppeling niet registreren (onvoldoende machtigingen).</value></data>
+</root>

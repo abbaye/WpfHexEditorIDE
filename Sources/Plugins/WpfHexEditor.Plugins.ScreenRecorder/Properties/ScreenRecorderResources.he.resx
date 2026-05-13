@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Project     : WpfHexEditor.Plugins.ScreenRecorder
+    File        : ScreenRecorderResources.he.resx
+    Description : Localized UI strings for the Screen Recorder plugin (he).
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Plugin metadata -->
+  <data name="ScreenRecorder_PluginName" xml:space="preserve"><value>מקליט מסך</value></data>
+  <data name="ScreenRecorder_MenuItem" xml:space="preserve"><value>_מקליט מסך...</value></data>
+  <data name="ScreenRecorder_DocumentTitle" xml:space="preserve"><value>מקליט מסך</value></data>
+  <data name="ScreenRecorder_UntitledSession" xml:space="preserve"><value>הקלטה ללא שם</value></data>
+
+  <!-- Toolbar actions -->
+  <data name="ScreenRecorder_Start" xml:space="preserve"><value>התחל</value></data>
+  <data name="ScreenRecorder_Stop" xml:space="preserve"><value>עצור</value></data>
+  <data name="ScreenRecorder_Pause" xml:space="preserve"><value>השהה</value></data>
+  <data name="ScreenRecorder_Resume" xml:space="preserve"><value>המשך</value></data>
+  <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>לכוד פריים</value></data>
+  <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>בחר אזור</value></data>
+  <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>שמור סשן</value></data>
+  <data name="ScreenRecorder_OpenSession" xml:space="preserve"><value>פתח סשן...</value></data>
+  <data name="ScreenRecorder_ExportGif" xml:space="preserve"><value>ייצא כ-GIF</value></data>
+  <data name="ScreenRecorder_ExportPng" xml:space="preserve"><value>ייצא רצף PNG</value></data>
+  <data name="ScreenRecorder_ExportMp4" xml:space="preserve"><value>ייצא כ-MP4</value></data>
+
+  <!-- Capture modes -->
+  <data name="ScreenRecorder_ModeScreenshot" xml:space="preserve"><value>צילום מסך (F9)</value></data>
+  <data name="ScreenRecorder_ModeTimed" xml:space="preserve"><value>מרווח זמן</value></data>
+  <data name="ScreenRecorder_ModeBoth" xml:space="preserve"><value>צילום + טיימר</value></data>
+
+  <!-- Status bar -->
+  <data name="ScreenRecorder_StatusRecording" xml:space="preserve"><value>&#x23FA; מקליט</value></data>
+  <data name="ScreenRecorder_StatusPaused" xml:space="preserve"><value>&#x23F8; מושהה</value></data>
+  <data name="ScreenRecorder_StatusFrames" xml:space="preserve"><value>{0} פריימים</value></data>
+  <data name="ScreenRecorder_StatusHotkeys" xml:space="preserve"><value>F9 לכידה  Shift+F9 עצור  ESC ביטול</value></data>
+
+  <!-- HUD overlay -->
+  <data name="ScreenRecorder_HudRecording" xml:space="preserve"><value>מקליט</value></data>
+  <data name="ScreenRecorder_HudPaused" xml:space="preserve"><value>מושהה</value></data>
+  <data name="ScreenRecorder_HudFrameCount" xml:space="preserve"><value>{0} פריימים</value></data>
+  <data name="ScreenRecorder_HudEscCancel" xml:space="preserve"><value>ESC לביטול</value></data>
+
+  <!-- Timeline -->
+  <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>מחק נבחרים</value></data>
+  <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>הכנס פריים ריק</value></data>
+  <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>שכפל פריים</value></data>
+  <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>הגדר השהייה...</value></data>
+  <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>השהייה גלובלית (ms):</value></data>
+  <data name="ScreenRecorder_FrameLabel" xml:space="preserve"><value>פריים {0}</value></data>
+
+  <!-- Preview -->
+  <data name="ScreenRecorder_ZoomIn" xml:space="preserve"><value>הגדל</value></data>
+  <data name="ScreenRecorder_ZoomOut" xml:space="preserve"><value>הקטן</value></data>
+  <data name="ScreenRecorder_Zoom1To1" xml:space="preserve"><value>1:1 (גודל אמיתי)</value></data>
+  <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>התאם לחלון</value></data>
+  <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
+  <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>לא נבחר פריים</value></data>
+
+  <!-- Properties panel -->
+  <data name="ScreenRecorder_Properties" xml:space="preserve"><value>מאפיינים</value></data>
+  <data name="ScreenRecorder_CaptureRegion" xml:space="preserve"><value>אזור לכידה</value></data>
+  <data name="ScreenRecorder_OutputScale" xml:space="preserve"><value>קנה מידה פלט</value></data>
+  <data name="ScreenRecorder_LoopCount" xml:space="preserve"><value>מספר לולאות (0=אינסוף)</value></data>
+  <data name="ScreenRecorder_RepeatLastFrame" xml:space="preserve"><value>חזור על הפריים האחרון (ms)</value></data>
+  <data name="ScreenRecorder_Interval" xml:space="preserve"><value>מרווח (ms)</value></data>
+
+  <!-- Options page -->
+  <data name="ScreenRecorder_Options" xml:space="preserve"><value>מקליט מסך</value></data>
+  <data name="ScreenRecorder_Options_Capture" xml:space="preserve"><value>לכידה</value></data>
+  <data name="ScreenRecorder_Options_Overlay" xml:space="preserve"><value>שכבת-על</value></data>
+  <data name="ScreenRecorder_Options_Export" xml:space="preserve"><value>ייצוא</value></data>
+  <data name="ScreenRecorder_Options_Session" xml:space="preserve"><value>סשן</value></data>
+  <data name="ScreenRecorder_Options_Ffmpeg" xml:space="preserve"><value>ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_HotkeyCapture" xml:space="preserve"><value>מקש קיצור ללכידה</value></data>
+  <data name="ScreenRecorder_Options_HotkeyStop" xml:space="preserve"><value>מקש קיצור לעצירה</value></data>
+  <data name="ScreenRecorder_Options_DefaultMode" xml:space="preserve"><value>מצב ברירת מחדל</value></data>
+  <data name="ScreenRecorder_Options_TimerInterval" xml:space="preserve"><value>מרווח טיימר (ms)</value></data>
+  <data name="ScreenRecorder_Options_OverlayColor" xml:space="preserve"><value>צבע שכבת-על</value></data>
+  <data name="ScreenRecorder_Options_OverlayOpacity" xml:space="preserve"><value>אטימות שכבת-על</value></data>
+  <data name="ScreenRecorder_Options_ShowHud" xml:space="preserve"><value>הצג HUD בזמן לכידה</value></data>
+  <data name="ScreenRecorder_Options_DefaultOutputPath" xml:space="preserve"><value>תיקיית פלט ברירת מחדל</value></data>
+  <data name="ScreenRecorder_Options_DefaultScale" xml:space="preserve"><value>קנה מידה פלט ברירת מחדל</value></data>
+  <data name="ScreenRecorder_Options_DefaultLoopCount" xml:space="preserve"><value>מספר לולאות GIF ברירת מחדל</value></data>
+  <data name="ScreenRecorder_Options_RepeatLastFrameDelay" xml:space="preserve"><value>השהיית חזרה על הפריים האחרון (ms)</value></data>
+  <data name="ScreenRecorder_Options_SaveFolder" xml:space="preserve"><value>תיקיית שמירה ברירת מחדל</value></data>
+  <data name="ScreenRecorder_Options_ConfirmDiscard" xml:space="preserve"><value>אשר לפני מחיקת הסשן</value></data>
+  <data name="ScreenRecorder_Options_MaxFrames" xml:space="preserve"><value>מקסימום פריימים לסשן</value></data>
+  <data name="ScreenRecorder_Options_FfmpegPath" xml:space="preserve"><value>נתיב קובץ ההפעלה של ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_FfmpegBrowse" xml:space="preserve"><value>עיין...</value></data>
+  <data name="ScreenRecorder_Options_FfmpegNotFound" xml:space="preserve"><value>ffmpeg לא נמצא — ייצוא MP4 מושבת</value></data>
+
+  <!-- Dialogs -->
+  <data name="ScreenRecorder_SaveFilter" xml:space="preserve"><value>הקלטת מסך WpfHexEditor (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_OpenFilter" xml:space="preserve"><value>הקלטת מסך WpfHexEditor (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_GifFilter" xml:space="preserve"><value>GIF מונפש (*.gif)|*.gif</value></data>
+  <data name="ScreenRecorder_Mp4Filter" xml:space="preserve"><value>וידאו MP4 (*.mp4)|*.mp4</value></data>
+  <data name="ScreenRecorder_ConfirmCancelTitle" xml:space="preserve"><value>בטל הקלטה</value></data>
+  <data name="ScreenRecorder_ConfirmCancelMsg" xml:space="preserve"><value>למחוק את סשן ההקלטה הנוכחי?</value></data>
+  <data name="ScreenRecorder_ExportProgress" xml:space="preserve"><value>מייצא... {0}%</value></data>
+  <data name="ScreenRecorder_FileAssocAdvisory" xml:space="preserve"><value>לא ניתן לרשום שיוך קובץ .whscr (הרשאות לא מספיקות).</value></data>
+</root>

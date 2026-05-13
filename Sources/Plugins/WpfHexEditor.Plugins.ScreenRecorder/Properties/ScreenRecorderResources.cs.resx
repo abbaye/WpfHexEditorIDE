@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Project     : WpfHexEditor.Plugins.ScreenRecorder
+    File        : ScreenRecorderResources.cs.resx
+    Description : Localized UI strings for the Screen Recorder plugin (cs).
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Plugin metadata -->
+  <data name="ScreenRecorder_PluginName" xml:space="preserve"><value>Záznamník obrazovky</value></data>
+  <data name="ScreenRecorder_MenuItem" xml:space="preserve"><value>_Záznamník obrazovky...</value></data>
+  <data name="ScreenRecorder_DocumentTitle" xml:space="preserve"><value>Záznamník obrazovky</value></data>
+  <data name="ScreenRecorder_UntitledSession" xml:space="preserve"><value>Záznam bez názvu</value></data>
+
+  <!-- Toolbar actions -->
+  <data name="ScreenRecorder_Start" xml:space="preserve"><value>Spustit</value></data>
+  <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Zastavit</value></data>
+  <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Pozastavit</value></data>
+  <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Pokračovat</value></data>
+  <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Zachytit snímek</value></data>
+  <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Vybrat oblast</value></data>
+  <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Uložit relaci</value></data>
+  <data name="ScreenRecorder_OpenSession" xml:space="preserve"><value>Otevřít relaci...</value></data>
+  <data name="ScreenRecorder_ExportGif" xml:space="preserve"><value>Exportovat jako GIF</value></data>
+  <data name="ScreenRecorder_ExportPng" xml:space="preserve"><value>Exportovat sekvenci PNG</value></data>
+  <data name="ScreenRecorder_ExportMp4" xml:space="preserve"><value>Exportovat jako MP4</value></data>
+
+  <!-- Capture modes -->
+  <data name="ScreenRecorder_ModeScreenshot" xml:space="preserve"><value>Snímek obrazovky (F9)</value></data>
+  <data name="ScreenRecorder_ModeTimed" xml:space="preserve"><value>Časový interval</value></data>
+  <data name="ScreenRecorder_ModeBoth" xml:space="preserve"><value>Snímek + Časovač</value></data>
+
+  <!-- Status bar -->
+  <data name="ScreenRecorder_StatusRecording" xml:space="preserve"><value>&#x23FA; Nahrávání</value></data>
+  <data name="ScreenRecorder_StatusPaused" xml:space="preserve"><value>&#x23F8; Pozastaveno</value></data>
+  <data name="ScreenRecorder_StatusFrames" xml:space="preserve"><value>{0} snímků</value></data>
+  <data name="ScreenRecorder_StatusHotkeys" xml:space="preserve"><value>F9 Zachytit  Shift+F9 Zastavit  ESC Zrušit</value></data>
+
+  <!-- HUD overlay -->
+  <data name="ScreenRecorder_HudRecording" xml:space="preserve"><value>Nahrávání</value></data>
+  <data name="ScreenRecorder_HudPaused" xml:space="preserve"><value>Pozastaveno</value></data>
+  <data name="ScreenRecorder_HudFrameCount" xml:space="preserve"><value>{0} snímků</value></data>
+  <data name="ScreenRecorder_HudEscCancel" xml:space="preserve"><value>ESC pro zrušení</value></data>
+
+  <!-- Timeline -->
+  <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Odstranit vybrané</value></data>
+  <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>Vložit prázdný snímek</value></data>
+  <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>Duplikovat snímek</value></data>
+  <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>Nastavit zpoždění...</value></data>
+  <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>Globální zpoždění (ms):</value></data>
+  <data name="ScreenRecorder_FrameLabel" xml:space="preserve"><value>Snímek {0}</value></data>
+
+  <!-- Preview -->
+  <data name="ScreenRecorder_ZoomIn" xml:space="preserve"><value>Přiblížit</value></data>
+  <data name="ScreenRecorder_ZoomOut" xml:space="preserve"><value>Oddálit</value></data>
+  <data name="ScreenRecorder_Zoom1To1" xml:space="preserve"><value>1:1 (Skutečná velikost)</value></data>
+  <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Přizpůsobit oknu</value></data>
+  <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
+  <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Není vybrán žádný snímek</value></data>
+
+  <!-- Properties panel -->
+  <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Vlastnosti</value></data>
+  <data name="ScreenRecorder_CaptureRegion" xml:space="preserve"><value>Oblast zachycení</value></data>
+  <data name="ScreenRecorder_OutputScale" xml:space="preserve"><value>Měřítko výstupu</value></data>
+  <data name="ScreenRecorder_LoopCount" xml:space="preserve"><value>Počet opakování (0=nekonečno)</value></data>
+  <data name="ScreenRecorder_RepeatLastFrame" xml:space="preserve"><value>Opakovat poslední snímek (ms)</value></data>
+  <data name="ScreenRecorder_Interval" xml:space="preserve"><value>Interval (ms)</value></data>
+
+  <!-- Options page -->
+  <data name="ScreenRecorder_Options" xml:space="preserve"><value>Záznamník obrazovky</value></data>
+  <data name="ScreenRecorder_Options_Capture" xml:space="preserve"><value>Zachycení</value></data>
+  <data name="ScreenRecorder_Options_Overlay" xml:space="preserve"><value>Překrytí</value></data>
+  <data name="ScreenRecorder_Options_Export" xml:space="preserve"><value>Export</value></data>
+  <data name="ScreenRecorder_Options_Session" xml:space="preserve"><value>Relace</value></data>
+  <data name="ScreenRecorder_Options_Ffmpeg" xml:space="preserve"><value>ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_HotkeyCapture" xml:space="preserve"><value>Zkratka zachycení</value></data>
+  <data name="ScreenRecorder_Options_HotkeyStop" xml:space="preserve"><value>Zkratka zastavení</value></data>
+  <data name="ScreenRecorder_Options_DefaultMode" xml:space="preserve"><value>Výchozí režim</value></data>
+  <data name="ScreenRecorder_Options_TimerInterval" xml:space="preserve"><value>Interval časovače (ms)</value></data>
+  <data name="ScreenRecorder_Options_OverlayColor" xml:space="preserve"><value>Barva překrytí</value></data>
+  <data name="ScreenRecorder_Options_OverlayOpacity" xml:space="preserve"><value>Průhlednost překrytí</value></data>
+  <data name="ScreenRecorder_Options_ShowHud" xml:space="preserve"><value>Zobrazit HUD během zachycení</value></data>
+  <data name="ScreenRecorder_Options_DefaultOutputPath" xml:space="preserve"><value>Výchozí výstupní složka</value></data>
+  <data name="ScreenRecorder_Options_DefaultScale" xml:space="preserve"><value>Výchozí měřítko výstupu</value></data>
+  <data name="ScreenRecorder_Options_DefaultLoopCount" xml:space="preserve"><value>Výchozí počet opakování GIF</value></data>
+  <data name="ScreenRecorder_Options_RepeatLastFrameDelay" xml:space="preserve"><value>Zpoždění opakování posledního snímku (ms)</value></data>
+  <data name="ScreenRecorder_Options_SaveFolder" xml:space="preserve"><value>Výchozí složka pro uložení</value></data>
+  <data name="ScreenRecorder_Options_ConfirmDiscard" xml:space="preserve"><value>Potvrdit před zahozením relace</value></data>
+  <data name="ScreenRecorder_Options_MaxFrames" xml:space="preserve"><value>Max. snímků na relaci</value></data>
+  <data name="ScreenRecorder_Options_FfmpegPath" xml:space="preserve"><value>Cesta ke spustitelnému souboru ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_FfmpegBrowse" xml:space="preserve"><value>Procházet...</value></data>
+  <data name="ScreenRecorder_Options_FfmpegNotFound" xml:space="preserve"><value>ffmpeg nenalezen — export MP4 je zakázán</value></data>
+
+  <!-- Dialogs -->
+  <data name="ScreenRecorder_SaveFilter" xml:space="preserve"><value>Záznam obrazovky WpfHexEditor (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_OpenFilter" xml:space="preserve"><value>Záznam obrazovky WpfHexEditor (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_GifFilter" xml:space="preserve"><value>Animovaný GIF (*.gif)|*.gif</value></data>
+  <data name="ScreenRecorder_Mp4Filter" xml:space="preserve"><value>Video MP4 (*.mp4)|*.mp4</value></data>
+  <data name="ScreenRecorder_ConfirmCancelTitle" xml:space="preserve"><value>Zrušit nahrávání</value></data>
+  <data name="ScreenRecorder_ConfirmCancelMsg" xml:space="preserve"><value>Zahodit aktuální relaci nahrávání?</value></data>
+  <data name="ScreenRecorder_ExportProgress" xml:space="preserve"><value>Exportování... {0}%</value></data>
+  <data name="ScreenRecorder_FileAssocAdvisory" xml:space="preserve"><value>Nelze registrovat přidružení souboru .whscr (nedostatečná oprávnění).</value></data>
+</root>

@@ -1,0 +1,35 @@
+{
+  "formatName": "WpfHexEditor Screen Capture Session",
+  "formatId": "WHSCR",
+  "version": "1.0",
+  "extensions": [
+    ".whscr"
+  ],
+  "description": "Proprietary screen recording session format for WpfHexEditor IDE. Container: ZIP archive (PK structure) preceded by an 8-byte magic signature 'WHSCR1\\x00\\x00'. Contents: manifest.json (session metadata), frames/meta.json (per-frame delay and label), frames/0000.png…NNNN.png (lossless PNG frames). Supports GIF/PNG/MP4 export and session round-trip editing.",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "screen-recorder",
+  "references": {
+    "specifications": [
+      "WpfHexEditor ScreenRecorder Plugin ADR-039"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "57485343", "offset": 0, "label": "WHSC magic (WpfHexEditor Screen Capture)", "weight": 1.0 },
+      { "value": "5231", "offset": 4, "label": "R1 format revision", "weight": 0.5 }
+    ],
+    "matchMode": "all",
+    "MinimumScore": 1.0,
+    "strength": "Definitive"
+  },
+  "structure": {
+    "endianness": "little",
+    "fields": [
+      { "name": "Magic", "offset": 0, "size": 4, "type": "magic", "description": "WHSC — WpfHexEditor Screen Capture" },
+      { "name": "Revision", "offset": 4, "size": 2, "type": "magic", "description": "R1 — format revision 1" },
+      { "name": "Reserved", "offset": 6, "size": 2, "type": "bytes", "description": "Reserved, must be 0x0000" },
+      { "name": "ZipStream", "offset": 8, "size": -1, "type": "container", "description": "Standard ZIP/PK archive containing manifest.json, frames/meta.json, and PNG frame files" }
+    ]
+  }
+}

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Project     : WpfHexEditor.Plugins.ScreenRecorder
+    File        : ScreenRecorderResources.ko.resx
+    Description : Localized UI strings for the Screen Recorder plugin (ko).
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Plugin metadata -->
+  <data name="ScreenRecorder_PluginName" xml:space="preserve"><value>화면 녹화</value></data>
+  <data name="ScreenRecorder_MenuItem" xml:space="preserve"><value>화면 녹화(_R)...</value></data>
+  <data name="ScreenRecorder_DocumentTitle" xml:space="preserve"><value>화면 녹화</value></data>
+  <data name="ScreenRecorder_UntitledSession" xml:space="preserve"><value>제목 없는 녹화</value></data>
+
+  <!-- Toolbar actions -->
+  <data name="ScreenRecorder_Start" xml:space="preserve"><value>시작</value></data>
+  <data name="ScreenRecorder_Stop" xml:space="preserve"><value>중지</value></data>
+  <data name="ScreenRecorder_Pause" xml:space="preserve"><value>일시 중지</value></data>
+  <data name="ScreenRecorder_Resume" xml:space="preserve"><value>재개</value></data>
+  <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>프레임 캡처</value></data>
+  <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>영역 선택</value></data>
+  <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>세션 저장</value></data>
+  <data name="ScreenRecorder_OpenSession" xml:space="preserve"><value>세션 열기...</value></data>
+  <data name="ScreenRecorder_ExportGif" xml:space="preserve"><value>GIF로 내보내기</value></data>
+  <data name="ScreenRecorder_ExportPng" xml:space="preserve"><value>PNG 시퀀스 내보내기</value></data>
+  <data name="ScreenRecorder_ExportMp4" xml:space="preserve"><value>MP4로 내보내기</value></data>
+
+  <!-- Capture modes -->
+  <data name="ScreenRecorder_ModeScreenshot" xml:space="preserve"><value>스크린샷 (F9)</value></data>
+  <data name="ScreenRecorder_ModeTimed" xml:space="preserve"><value>타이머 간격</value></data>
+  <data name="ScreenRecorder_ModeBoth" xml:space="preserve"><value>스크린샷 + 타이머</value></data>
+
+  <!-- Status bar -->
+  <data name="ScreenRecorder_StatusRecording" xml:space="preserve"><value>&#x23FA; 녹화 중</value></data>
+  <data name="ScreenRecorder_StatusPaused" xml:space="preserve"><value>&#x23F8; 일시 중지됨</value></data>
+  <data name="ScreenRecorder_StatusFrames" xml:space="preserve"><value>{0}프레임</value></data>
+  <data name="ScreenRecorder_StatusHotkeys" xml:space="preserve"><value>F9 캡처  Shift+F9 중지  ESC 취소</value></data>
+
+  <!-- HUD overlay -->
+  <data name="ScreenRecorder_HudRecording" xml:space="preserve"><value>녹화 중</value></data>
+  <data name="ScreenRecorder_HudPaused" xml:space="preserve"><value>일시 중지됨</value></data>
+  <data name="ScreenRecorder_HudFrameCount" xml:space="preserve"><value>{0}프레임</value></data>
+  <data name="ScreenRecorder_HudEscCancel" xml:space="preserve"><value>ESC로 취소</value></data>
+
+  <!-- Timeline -->
+  <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>선택 항목 삭제</value></data>
+  <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>빈 프레임 삽입</value></data>
+  <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>프레임 복제</value></data>
+  <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>지연 시간 설정...</value></data>
+  <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>전역 지연 (ms):</value></data>
+  <data name="ScreenRecorder_FrameLabel" xml:space="preserve"><value>프레임 {0}</value></data>
+
+  <!-- Preview -->
+  <data name="ScreenRecorder_ZoomIn" xml:space="preserve"><value>확대</value></data>
+  <data name="ScreenRecorder_ZoomOut" xml:space="preserve"><value>축소</value></data>
+  <data name="ScreenRecorder_Zoom1To1" xml:space="preserve"><value>1:1 (실제 크기)</value></data>
+  <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>창에 맞추기</value></data>
+  <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
+  <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>선택된 프레임 없음</value></data>
+
+  <!-- Properties panel -->
+  <data name="ScreenRecorder_Properties" xml:space="preserve"><value>속성</value></data>
+  <data name="ScreenRecorder_CaptureRegion" xml:space="preserve"><value>캡처 영역</value></data>
+  <data name="ScreenRecorder_OutputScale" xml:space="preserve"><value>출력 배율</value></data>
+  <data name="ScreenRecorder_LoopCount" xml:space="preserve"><value>반복 횟수 (0=무한)</value></data>
+  <data name="ScreenRecorder_RepeatLastFrame" xml:space="preserve"><value>마지막 프레임 반복 (ms)</value></data>
+  <data name="ScreenRecorder_Interval" xml:space="preserve"><value>간격 (ms)</value></data>
+
+  <!-- Options page -->
+  <data name="ScreenRecorder_Options" xml:space="preserve"><value>화면 녹화</value></data>
+  <data name="ScreenRecorder_Options_Capture" xml:space="preserve"><value>캡처</value></data>
+  <data name="ScreenRecorder_Options_Overlay" xml:space="preserve"><value>오버레이</value></data>
+  <data name="ScreenRecorder_Options_Export" xml:space="preserve"><value>내보내기</value></data>
+  <data name="ScreenRecorder_Options_Session" xml:space="preserve"><value>세션</value></data>
+  <data name="ScreenRecorder_Options_Ffmpeg" xml:space="preserve"><value>ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_HotkeyCapture" xml:space="preserve"><value>캡처 단축키</value></data>
+  <data name="ScreenRecorder_Options_HotkeyStop" xml:space="preserve"><value>중지 단축키</value></data>
+  <data name="ScreenRecorder_Options_DefaultMode" xml:space="preserve"><value>기본 모드</value></data>
+  <data name="ScreenRecorder_Options_TimerInterval" xml:space="preserve"><value>타이머 간격 (ms)</value></data>
+  <data name="ScreenRecorder_Options_OverlayColor" xml:space="preserve"><value>오버레이 색상</value></data>
+  <data name="ScreenRecorder_Options_OverlayOpacity" xml:space="preserve"><value>오버레이 불투명도</value></data>
+  <data name="ScreenRecorder_Options_ShowHud" xml:space="preserve"><value>캡처 중 HUD 표시</value></data>
+  <data name="ScreenRecorder_Options_DefaultOutputPath" xml:space="preserve"><value>기본 출력 폴더</value></data>
+  <data name="ScreenRecorder_Options_DefaultScale" xml:space="preserve"><value>기본 출력 배율</value></data>
+  <data name="ScreenRecorder_Options_DefaultLoopCount" xml:space="preserve"><value>기본 GIF 반복 횟수</value></data>
+  <data name="ScreenRecorder_Options_RepeatLastFrameDelay" xml:space="preserve"><value>마지막 프레임 반복 지연 (ms)</value></data>
+  <data name="ScreenRecorder_Options_SaveFolder" xml:space="preserve"><value>기본 저장 폴더</value></data>
+  <data name="ScreenRecorder_Options_ConfirmDiscard" xml:space="preserve"><value>세션 삭제 전 확인</value></data>
+  <data name="ScreenRecorder_Options_MaxFrames" xml:space="preserve"><value>세션당 최대 프레임 수</value></data>
+  <data name="ScreenRecorder_Options_FfmpegPath" xml:space="preserve"><value>ffmpeg 실행 파일 경로</value></data>
+  <data name="ScreenRecorder_Options_FfmpegBrowse" xml:space="preserve"><value>찾아보기...</value></data>
+  <data name="ScreenRecorder_Options_FfmpegNotFound" xml:space="preserve"><value>ffmpeg를 찾을 수 없습니다 — MP4 내보내기가 비활성화됨</value></data>
+
+  <!-- Dialogs -->
+  <data name="ScreenRecorder_SaveFilter" xml:space="preserve"><value>WpfHexEditor 화면 캡처 (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_OpenFilter" xml:space="preserve"><value>WpfHexEditor 화면 캡처 (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_GifFilter" xml:space="preserve"><value>애니메이션 GIF (*.gif)|*.gif</value></data>
+  <data name="ScreenRecorder_Mp4Filter" xml:space="preserve"><value>MP4 동영상 (*.mp4)|*.mp4</value></data>
+  <data name="ScreenRecorder_ConfirmCancelTitle" xml:space="preserve"><value>녹화 취소</value></data>
+  <data name="ScreenRecorder_ConfirmCancelMsg" xml:space="preserve"><value>현재 녹화 세션을 삭제하시겠습니까?</value></data>
+  <data name="ScreenRecorder_ExportProgress" xml:space="preserve"><value>내보내는 중... {0}%</value></data>
+  <data name="ScreenRecorder_FileAssocAdvisory" xml:space="preserve"><value>.whscr 파일 연결을 등록할 수 없습니다(권한이 부족합니다).</value></data>
+</root>

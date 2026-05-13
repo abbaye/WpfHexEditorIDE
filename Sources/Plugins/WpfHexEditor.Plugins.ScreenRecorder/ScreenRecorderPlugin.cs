@@ -11,6 +11,7 @@
 
 using System.Windows;
 using WpfHexEditor.Plugins.ScreenRecorder.Properties;
+using WpfHexEditor.Plugins.ScreenRecorder.Services;
 using WpfHexEditor.Plugins.ScreenRecorder.ViewModels;
 using WpfHexEditor.Plugins.ScreenRecorder.Views;
 using WpfHexEditor.SDK.Commands;
@@ -48,6 +49,7 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
     {
         _context = context;
 
+        FileAssociationService.RegisterIfNeeded();
         context.UIRegistry.RegisterMenuItem(
             $"{Id}.Menu.Show",
             Id,

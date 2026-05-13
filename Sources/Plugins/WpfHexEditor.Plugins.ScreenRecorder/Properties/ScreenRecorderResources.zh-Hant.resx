@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Project     : WpfHexEditor.Plugins.ScreenRecorder
+    File        : ScreenRecorderResources.zh-Hant.resx
+    Description : Localized UI strings for the Screen Recorder plugin (zh-Hant).
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Plugin metadata -->
+  <data name="ScreenRecorder_PluginName" xml:space="preserve"><value>螢幕錄製</value></data>
+  <data name="ScreenRecorder_MenuItem" xml:space="preserve"><value>螢幕錄製(_R)...</value></data>
+  <data name="ScreenRecorder_DocumentTitle" xml:space="preserve"><value>螢幕錄製</value></data>
+  <data name="ScreenRecorder_UntitledSession" xml:space="preserve"><value>未命名錄製</value></data>
+
+  <!-- Toolbar actions -->
+  <data name="ScreenRecorder_Start" xml:space="preserve"><value>開始</value></data>
+  <data name="ScreenRecorder_Stop" xml:space="preserve"><value>停止</value></data>
+  <data name="ScreenRecorder_Pause" xml:space="preserve"><value>暫停</value></data>
+  <data name="ScreenRecorder_Resume" xml:space="preserve"><value>繼續</value></data>
+  <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>擷取畫格</value></data>
+  <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>選取區域</value></data>
+  <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>儲存工作階段</value></data>
+  <data name="ScreenRecorder_OpenSession" xml:space="preserve"><value>開啟工作階段...</value></data>
+  <data name="ScreenRecorder_ExportGif" xml:space="preserve"><value>匯出為 GIF</value></data>
+  <data name="ScreenRecorder_ExportPng" xml:space="preserve"><value>匯出 PNG 序列</value></data>
+  <data name="ScreenRecorder_ExportMp4" xml:space="preserve"><value>匯出為 MP4</value></data>
+
+  <!-- Capture modes -->
+  <data name="ScreenRecorder_ModeScreenshot" xml:space="preserve"><value>螢幕擷圖 (F9)</value></data>
+  <data name="ScreenRecorder_ModeTimed" xml:space="preserve"><value>定時間隔</value></data>
+  <data name="ScreenRecorder_ModeBoth" xml:space="preserve"><value>螢幕擷圖 + 定時器</value></data>
+
+  <!-- Status bar -->
+  <data name="ScreenRecorder_StatusRecording" xml:space="preserve"><value>&#x23FA; 錄製中</value></data>
+  <data name="ScreenRecorder_StatusPaused" xml:space="preserve"><value>&#x23F8; 已暫停</value></data>
+  <data name="ScreenRecorder_StatusFrames" xml:space="preserve"><value>{0} 格</value></data>
+  <data name="ScreenRecorder_StatusHotkeys" xml:space="preserve"><value>F9 擷取  Shift+F9 停止  ESC 取消</value></data>
+
+  <!-- HUD overlay -->
+  <data name="ScreenRecorder_HudRecording" xml:space="preserve"><value>錄製中</value></data>
+  <data name="ScreenRecorder_HudPaused" xml:space="preserve"><value>已暫停</value></data>
+  <data name="ScreenRecorder_HudFrameCount" xml:space="preserve"><value>{0} 格</value></data>
+  <data name="ScreenRecorder_HudEscCancel" xml:space="preserve"><value>按 ESC 取消</value></data>
+
+  <!-- Timeline -->
+  <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>刪除選取項目</value></data>
+  <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>插入空白畫格</value></data>
+  <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>複製畫格</value></data>
+  <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>設定延遲...</value></data>
+  <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>全域延遲 (ms)：</value></data>
+  <data name="ScreenRecorder_FrameLabel" xml:space="preserve"><value>第 {0} 格</value></data>
+
+  <!-- Preview -->
+  <data name="ScreenRecorder_ZoomIn" xml:space="preserve"><value>放大</value></data>
+  <data name="ScreenRecorder_ZoomOut" xml:space="preserve"><value>縮小</value></data>
+  <data name="ScreenRecorder_Zoom1To1" xml:space="preserve"><value>1:1（實際大小）</value></data>
+  <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>符合視窗</value></data>
+  <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
+  <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>未選取任何畫格</value></data>
+
+  <!-- Properties panel -->
+  <data name="ScreenRecorder_Properties" xml:space="preserve"><value>屬性</value></data>
+  <data name="ScreenRecorder_CaptureRegion" xml:space="preserve"><value>擷取區域</value></data>
+  <data name="ScreenRecorder_OutputScale" xml:space="preserve"><value>輸出比例</value></data>
+  <data name="ScreenRecorder_LoopCount" xml:space="preserve"><value>循環次數 (0=無限)</value></data>
+  <data name="ScreenRecorder_RepeatLastFrame" xml:space="preserve"><value>重複最後一格 (ms)</value></data>
+  <data name="ScreenRecorder_Interval" xml:space="preserve"><value>間隔 (ms)</value></data>
+
+  <!-- Options page -->
+  <data name="ScreenRecorder_Options" xml:space="preserve"><value>螢幕錄製</value></data>
+  <data name="ScreenRecorder_Options_Capture" xml:space="preserve"><value>擷取</value></data>
+  <data name="ScreenRecorder_Options_Overlay" xml:space="preserve"><value>覆疊</value></data>
+  <data name="ScreenRecorder_Options_Export" xml:space="preserve"><value>匯出</value></data>
+  <data name="ScreenRecorder_Options_Session" xml:space="preserve"><value>工作階段</value></data>
+  <data name="ScreenRecorder_Options_Ffmpeg" xml:space="preserve"><value>ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_HotkeyCapture" xml:space="preserve"><value>擷取快速鍵</value></data>
+  <data name="ScreenRecorder_Options_HotkeyStop" xml:space="preserve"><value>停止快速鍵</value></data>
+  <data name="ScreenRecorder_Options_DefaultMode" xml:space="preserve"><value>預設模式</value></data>
+  <data name="ScreenRecorder_Options_TimerInterval" xml:space="preserve"><value>定時器間隔 (ms)</value></data>
+  <data name="ScreenRecorder_Options_OverlayColor" xml:space="preserve"><value>覆疊色彩</value></data>
+  <data name="ScreenRecorder_Options_OverlayOpacity" xml:space="preserve"><value>覆疊不透明度</value></data>
+  <data name="ScreenRecorder_Options_ShowHud" xml:space="preserve"><value>擷取時顯示 HUD</value></data>
+  <data name="ScreenRecorder_Options_DefaultOutputPath" xml:space="preserve"><value>預設輸出資料夾</value></data>
+  <data name="ScreenRecorder_Options_DefaultScale" xml:space="preserve"><value>預設輸出比例</value></data>
+  <data name="ScreenRecorder_Options_DefaultLoopCount" xml:space="preserve"><value>預設 GIF 循環次數</value></data>
+  <data name="ScreenRecorder_Options_RepeatLastFrameDelay" xml:space="preserve"><value>最後一格重複延遲 (ms)</value></data>
+  <data name="ScreenRecorder_Options_SaveFolder" xml:space="preserve"><value>預設儲存資料夾</value></data>
+  <data name="ScreenRecorder_Options_ConfirmDiscard" xml:space="preserve"><value>捨棄工作階段前先確認</value></data>
+  <data name="ScreenRecorder_Options_MaxFrames" xml:space="preserve"><value>每個工作階段的最大畫格數</value></data>
+  <data name="ScreenRecorder_Options_FfmpegPath" xml:space="preserve"><value>ffmpeg 可執行檔路徑</value></data>
+  <data name="ScreenRecorder_Options_FfmpegBrowse" xml:space="preserve"><value>瀏覽...</value></data>
+  <data name="ScreenRecorder_Options_FfmpegNotFound" xml:space="preserve"><value>找不到 ffmpeg — MP4 匯出已停用</value></data>
+
+  <!-- Dialogs -->
+  <data name="ScreenRecorder_SaveFilter" xml:space="preserve"><value>WpfHexEditor 螢幕錄製 (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_OpenFilter" xml:space="preserve"><value>WpfHexEditor 螢幕錄製 (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_GifFilter" xml:space="preserve"><value>動態 GIF (*.gif)|*.gif</value></data>
+  <data name="ScreenRecorder_Mp4Filter" xml:space="preserve"><value>MP4 影片 (*.mp4)|*.mp4</value></data>
+  <data name="ScreenRecorder_ConfirmCancelTitle" xml:space="preserve"><value>取消錄製</value></data>
+  <data name="ScreenRecorder_ConfirmCancelMsg" xml:space="preserve"><value>要放棄目前的錄製工作階段嗎？</value></data>
+  <data name="ScreenRecorder_ExportProgress" xml:space="preserve"><value>匯出中... {0}%</value></data>
+  <data name="ScreenRecorder_FileAssocAdvisory" xml:space="preserve"><value>無法登錄 .whscr 檔案關聯（權限不足）。</value></data>
+</root>

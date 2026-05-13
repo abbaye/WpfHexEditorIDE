@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Project     : WpfHexEditor.Plugins.ScreenRecorder
+    File        : ScreenRecorderResources.ru.resx
+    Description : Localized UI strings for the Screen Recorder plugin (ru).
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Plugin metadata -->
+  <data name="ScreenRecorder_PluginName" xml:space="preserve"><value>Запись экрана</value></data>
+  <data name="ScreenRecorder_MenuItem" xml:space="preserve"><value>_Запись экрана...</value></data>
+  <data name="ScreenRecorder_DocumentTitle" xml:space="preserve"><value>Запись экрана</value></data>
+  <data name="ScreenRecorder_UntitledSession" xml:space="preserve"><value>Безымянная запись</value></data>
+
+  <!-- Toolbar actions -->
+  <data name="ScreenRecorder_Start" xml:space="preserve"><value>Начать</value></data>
+  <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Остановить</value></data>
+  <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Пауза</value></data>
+  <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Продолжить</value></data>
+  <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Захватить кадр</value></data>
+  <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Выбрать область</value></data>
+  <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Сохранить сеанс</value></data>
+  <data name="ScreenRecorder_OpenSession" xml:space="preserve"><value>Открыть сеанс...</value></data>
+  <data name="ScreenRecorder_ExportGif" xml:space="preserve"><value>Экспортировать в GIF</value></data>
+  <data name="ScreenRecorder_ExportPng" xml:space="preserve"><value>Экспортировать последовательность PNG</value></data>
+  <data name="ScreenRecorder_ExportMp4" xml:space="preserve"><value>Экспортировать в MP4</value></data>
+
+  <!-- Capture modes -->
+  <data name="ScreenRecorder_ModeScreenshot" xml:space="preserve"><value>Снимок экрана (F9)</value></data>
+  <data name="ScreenRecorder_ModeTimed" xml:space="preserve"><value>Временной интервал</value></data>
+  <data name="ScreenRecorder_ModeBoth" xml:space="preserve"><value>Снимок + Таймер</value></data>
+
+  <!-- Status bar -->
+  <data name="ScreenRecorder_StatusRecording" xml:space="preserve"><value>&#x23FA; Запись</value></data>
+  <data name="ScreenRecorder_StatusPaused" xml:space="preserve"><value>&#x23F8; На паузе</value></data>
+  <data name="ScreenRecorder_StatusFrames" xml:space="preserve"><value>{0} кадров</value></data>
+  <data name="ScreenRecorder_StatusHotkeys" xml:space="preserve"><value>F9 Захватить  Shift+F9 Стоп  ESC Отмена</value></data>
+
+  <!-- HUD overlay -->
+  <data name="ScreenRecorder_HudRecording" xml:space="preserve"><value>Запись</value></data>
+  <data name="ScreenRecorder_HudPaused" xml:space="preserve"><value>На паузе</value></data>
+  <data name="ScreenRecorder_HudFrameCount" xml:space="preserve"><value>{0} кадров</value></data>
+  <data name="ScreenRecorder_HudEscCancel" xml:space="preserve"><value>ESC для отмены</value></data>
+
+  <!-- Timeline -->
+  <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Удалить выбранное</value></data>
+  <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>Вставить пустой кадр</value></data>
+  <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>Дублировать кадр</value></data>
+  <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>Задать задержку...</value></data>
+  <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>Глобальная задержка (мс):</value></data>
+  <data name="ScreenRecorder_FrameLabel" xml:space="preserve"><value>Кадр {0}</value></data>
+
+  <!-- Preview -->
+  <data name="ScreenRecorder_ZoomIn" xml:space="preserve"><value>Увеличить</value></data>
+  <data name="ScreenRecorder_ZoomOut" xml:space="preserve"><value>Уменьшить</value></data>
+  <data name="ScreenRecorder_Zoom1To1" xml:space="preserve"><value>1:1 (Реальный размер)</value></data>
+  <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>По размеру окна</value></data>
+  <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
+  <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Кадр не выбран</value></data>
+
+  <!-- Properties panel -->
+  <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Свойства</value></data>
+  <data name="ScreenRecorder_CaptureRegion" xml:space="preserve"><value>Область захвата</value></data>
+  <data name="ScreenRecorder_OutputScale" xml:space="preserve"><value>Масштаб вывода</value></data>
+  <data name="ScreenRecorder_LoopCount" xml:space="preserve"><value>Число повторений (0=бесконечно)</value></data>
+  <data name="ScreenRecorder_RepeatLastFrame" xml:space="preserve"><value>Повторять последний кадр (мс)</value></data>
+  <data name="ScreenRecorder_Interval" xml:space="preserve"><value>Интервал (мс)</value></data>
+
+  <!-- Options page -->
+  <data name="ScreenRecorder_Options" xml:space="preserve"><value>Запись экрана</value></data>
+  <data name="ScreenRecorder_Options_Capture" xml:space="preserve"><value>Захват</value></data>
+  <data name="ScreenRecorder_Options_Overlay" xml:space="preserve"><value>Наложение</value></data>
+  <data name="ScreenRecorder_Options_Export" xml:space="preserve"><value>Экспорт</value></data>
+  <data name="ScreenRecorder_Options_Session" xml:space="preserve"><value>Сеанс</value></data>
+  <data name="ScreenRecorder_Options_Ffmpeg" xml:space="preserve"><value>ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_HotkeyCapture" xml:space="preserve"><value>Горячая клавиша захвата</value></data>
+  <data name="ScreenRecorder_Options_HotkeyStop" xml:space="preserve"><value>Горячая клавиша остановки</value></data>
+  <data name="ScreenRecorder_Options_DefaultMode" xml:space="preserve"><value>Режим по умолчанию</value></data>
+  <data name="ScreenRecorder_Options_TimerInterval" xml:space="preserve"><value>Интервал таймера (мс)</value></data>
+  <data name="ScreenRecorder_Options_OverlayColor" xml:space="preserve"><value>Цвет наложения</value></data>
+  <data name="ScreenRecorder_Options_OverlayOpacity" xml:space="preserve"><value>Непрозрачность наложения</value></data>
+  <data name="ScreenRecorder_Options_ShowHud" xml:space="preserve"><value>Показывать HUD во время захвата</value></data>
+  <data name="ScreenRecorder_Options_DefaultOutputPath" xml:space="preserve"><value>Папка вывода по умолчанию</value></data>
+  <data name="ScreenRecorder_Options_DefaultScale" xml:space="preserve"><value>Масштаб вывода по умолчанию</value></data>
+  <data name="ScreenRecorder_Options_DefaultLoopCount" xml:space="preserve"><value>Число повторений GIF по умолчанию</value></data>
+  <data name="ScreenRecorder_Options_RepeatLastFrameDelay" xml:space="preserve"><value>Задержка повтора последнего кадра (мс)</value></data>
+  <data name="ScreenRecorder_Options_SaveFolder" xml:space="preserve"><value>Папка сохранения по умолчанию</value></data>
+  <data name="ScreenRecorder_Options_ConfirmDiscard" xml:space="preserve"><value>Подтвердить перед удалением сеанса</value></data>
+  <data name="ScreenRecorder_Options_MaxFrames" xml:space="preserve"><value>Макс. кадров на сеанс</value></data>
+  <data name="ScreenRecorder_Options_FfmpegPath" xml:space="preserve"><value>Путь к исполняемому файлу ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_FfmpegBrowse" xml:space="preserve"><value>Обзор...</value></data>
+  <data name="ScreenRecorder_Options_FfmpegNotFound" xml:space="preserve"><value>ffmpeg не найден — экспорт MP4 отключён</value></data>
+
+  <!-- Dialogs -->
+  <data name="ScreenRecorder_SaveFilter" xml:space="preserve"><value>Запись экрана WpfHexEditor (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_OpenFilter" xml:space="preserve"><value>Запись экрана WpfHexEditor (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_GifFilter" xml:space="preserve"><value>Анимированный GIF (*.gif)|*.gif</value></data>
+  <data name="ScreenRecorder_Mp4Filter" xml:space="preserve"><value>Видео MP4 (*.mp4)|*.mp4</value></data>
+  <data name="ScreenRecorder_ConfirmCancelTitle" xml:space="preserve"><value>Отменить запись</value></data>
+  <data name="ScreenRecorder_ConfirmCancelMsg" xml:space="preserve"><value>Удалить текущий сеанс записи?</value></data>
+  <data name="ScreenRecorder_ExportProgress" xml:space="preserve"><value>Экспорт... {0}%</value></data>
+  <data name="ScreenRecorder_FileAssocAdvisory" xml:space="preserve"><value>Не удалось зарегистрировать ассоциацию файла .whscr (недостаточно прав).</value></data>
+</root>

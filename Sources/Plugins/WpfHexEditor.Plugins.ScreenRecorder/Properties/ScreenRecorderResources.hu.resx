@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Project     : WpfHexEditor.Plugins.ScreenRecorder
+    File        : ScreenRecorderResources.hu.resx
+    Description : Localized UI strings for the Screen Recorder plugin (hu).
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Plugin metadata -->
+  <data name="ScreenRecorder_PluginName" xml:space="preserve"><value>Képernyőfelvevő</value></data>
+  <data name="ScreenRecorder_MenuItem" xml:space="preserve"><value>_Képernyőfelvevő...</value></data>
+  <data name="ScreenRecorder_DocumentTitle" xml:space="preserve"><value>Képernyőfelvevő</value></data>
+  <data name="ScreenRecorder_UntitledSession" xml:space="preserve"><value>Cím nélküli felvétel</value></data>
+
+  <!-- Toolbar actions -->
+  <data name="ScreenRecorder_Start" xml:space="preserve"><value>Indítás</value></data>
+  <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Leállítás</value></data>
+  <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Szünet</value></data>
+  <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Folytatás</value></data>
+  <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Keret rögzítése</value></data>
+  <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Terület kijelölése</value></data>
+  <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Munkamenet mentése</value></data>
+  <data name="ScreenRecorder_OpenSession" xml:space="preserve"><value>Munkamenet megnyitása...</value></data>
+  <data name="ScreenRecorder_ExportGif" xml:space="preserve"><value>Exportálás GIF-ként</value></data>
+  <data name="ScreenRecorder_ExportPng" xml:space="preserve"><value>PNG-sorozat exportálása</value></data>
+  <data name="ScreenRecorder_ExportMp4" xml:space="preserve"><value>Exportálás MP4-ként</value></data>
+
+  <!-- Capture modes -->
+  <data name="ScreenRecorder_ModeScreenshot" xml:space="preserve"><value>Képernyőkép (F9)</value></data>
+  <data name="ScreenRecorder_ModeTimed" xml:space="preserve"><value>Időzített intervallum</value></data>
+  <data name="ScreenRecorder_ModeBoth" xml:space="preserve"><value>Képernyőkép + Időzítő</value></data>
+
+  <!-- Status bar -->
+  <data name="ScreenRecorder_StatusRecording" xml:space="preserve"><value>&#x23FA; Felvétel</value></data>
+  <data name="ScreenRecorder_StatusPaused" xml:space="preserve"><value>&#x23F8; Szüneteltetve</value></data>
+  <data name="ScreenRecorder_StatusFrames" xml:space="preserve"><value>{0} keret</value></data>
+  <data name="ScreenRecorder_StatusHotkeys" xml:space="preserve"><value>F9 Rögzítés  Shift+F9 Leállítás  ESC Mégse</value></data>
+
+  <!-- HUD overlay -->
+  <data name="ScreenRecorder_HudRecording" xml:space="preserve"><value>Felvétel</value></data>
+  <data name="ScreenRecorder_HudPaused" xml:space="preserve"><value>Szüneteltetve</value></data>
+  <data name="ScreenRecorder_HudFrameCount" xml:space="preserve"><value>{0} keret</value></data>
+  <data name="ScreenRecorder_HudEscCancel" xml:space="preserve"><value>ESC a megszakításhoz</value></data>
+
+  <!-- Timeline -->
+  <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Kijelöltek törlése</value></data>
+  <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>Üres keret beszúrása</value></data>
+  <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>Keret másolása</value></data>
+  <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>Késleltetés beállítása...</value></data>
+  <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>Globális késleltetés (ms):</value></data>
+  <data name="ScreenRecorder_FrameLabel" xml:space="preserve"><value>{0}. keret</value></data>
+
+  <!-- Preview -->
+  <data name="ScreenRecorder_ZoomIn" xml:space="preserve"><value>Nagyítás</value></data>
+  <data name="ScreenRecorder_ZoomOut" xml:space="preserve"><value>Kicsinyítés</value></data>
+  <data name="ScreenRecorder_Zoom1To1" xml:space="preserve"><value>1:1 (Tényleges méret)</value></data>
+  <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Illeszkedés ablakhoz</value></data>
+  <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
+  <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Nincs keret kijelölve</value></data>
+
+  <!-- Properties panel -->
+  <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Tulajdonságok</value></data>
+  <data name="ScreenRecorder_CaptureRegion" xml:space="preserve"><value>Rögzítési terület</value></data>
+  <data name="ScreenRecorder_OutputScale" xml:space="preserve"><value>Kimeneti méretarány</value></data>
+  <data name="ScreenRecorder_LoopCount" xml:space="preserve"><value>Ismétlések száma (0=végtelen)</value></data>
+  <data name="ScreenRecorder_RepeatLastFrame" xml:space="preserve"><value>Utolsó keret ismétlése (ms)</value></data>
+  <data name="ScreenRecorder_Interval" xml:space="preserve"><value>Intervallum (ms)</value></data>
+
+  <!-- Options page -->
+  <data name="ScreenRecorder_Options" xml:space="preserve"><value>Képernyőfelvevő</value></data>
+  <data name="ScreenRecorder_Options_Capture" xml:space="preserve"><value>Rögzítés</value></data>
+  <data name="ScreenRecorder_Options_Overlay" xml:space="preserve"><value>Átfedés</value></data>
+  <data name="ScreenRecorder_Options_Export" xml:space="preserve"><value>Exportálás</value></data>
+  <data name="ScreenRecorder_Options_Session" xml:space="preserve"><value>Munkamenet</value></data>
+  <data name="ScreenRecorder_Options_Ffmpeg" xml:space="preserve"><value>ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_HotkeyCapture" xml:space="preserve"><value>Rögzítési gyorsbillentyű</value></data>
+  <data name="ScreenRecorder_Options_HotkeyStop" xml:space="preserve"><value>Leállítási gyorsbillentyű</value></data>
+  <data name="ScreenRecorder_Options_DefaultMode" xml:space="preserve"><value>Alapértelmezett mód</value></data>
+  <data name="ScreenRecorder_Options_TimerInterval" xml:space="preserve"><value>Időzítő intervalluma (ms)</value></data>
+  <data name="ScreenRecorder_Options_OverlayColor" xml:space="preserve"><value>Átfedés színe</value></data>
+  <data name="ScreenRecorder_Options_OverlayOpacity" xml:space="preserve"><value>Átfedés átlátszatlansága</value></data>
+  <data name="ScreenRecorder_Options_ShowHud" xml:space="preserve"><value>HUD megjelenítése rögzítés közben</value></data>
+  <data name="ScreenRecorder_Options_DefaultOutputPath" xml:space="preserve"><value>Alapértelmezett kimeneti mappa</value></data>
+  <data name="ScreenRecorder_Options_DefaultScale" xml:space="preserve"><value>Alapértelmezett kimeneti méretarány</value></data>
+  <data name="ScreenRecorder_Options_DefaultLoopCount" xml:space="preserve"><value>Alapértelmezett GIF-ismétlések száma</value></data>
+  <data name="ScreenRecorder_Options_RepeatLastFrameDelay" xml:space="preserve"><value>Utolsó keret ismétlési késleltetése (ms)</value></data>
+  <data name="ScreenRecorder_Options_SaveFolder" xml:space="preserve"><value>Alapértelmezett mentési mappa</value></data>
+  <data name="ScreenRecorder_Options_ConfirmDiscard" xml:space="preserve"><value>Megerősítés a munkamenet elvetése előtt</value></data>
+  <data name="ScreenRecorder_Options_MaxFrames" xml:space="preserve"><value>Munkamenetenkénti max. keretek</value></data>
+  <data name="ScreenRecorder_Options_FfmpegPath" xml:space="preserve"><value>ffmpeg végrehajtható fájl elérési útja</value></data>
+  <data name="ScreenRecorder_Options_FfmpegBrowse" xml:space="preserve"><value>Tallózás...</value></data>
+  <data name="ScreenRecorder_Options_FfmpegNotFound" xml:space="preserve"><value>Az ffmpeg nem található — MP4-exportálás letiltva</value></data>
+
+  <!-- Dialogs -->
+  <data name="ScreenRecorder_SaveFilter" xml:space="preserve"><value>WpfHexEditor képernyőfelvétel (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_OpenFilter" xml:space="preserve"><value>WpfHexEditor képernyőfelvétel (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_GifFilter" xml:space="preserve"><value>Animált GIF (*.gif)|*.gif</value></data>
+  <data name="ScreenRecorder_Mp4Filter" xml:space="preserve"><value>MP4 videó (*.mp4)|*.mp4</value></data>
+  <data name="ScreenRecorder_ConfirmCancelTitle" xml:space="preserve"><value>Felvétel megszakítása</value></data>
+  <data name="ScreenRecorder_ConfirmCancelMsg" xml:space="preserve"><value>Elveti az aktuális felvételi munkamenetet?</value></data>
+  <data name="ScreenRecorder_ExportProgress" xml:space="preserve"><value>Exportálás... {0}%</value></data>
+  <data name="ScreenRecorder_FileAssocAdvisory" xml:space="preserve"><value>Nem sikerült regisztrálni a .whscr fájltársítást (elégtelen jogosultságok).</value></data>
+</root>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Project     : WpfHexEditor.Plugins.ScreenRecorder
+    File        : ScreenRecorderResources.ja.resx
+    Description : Localized UI strings for the Screen Recorder plugin (ja).
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence><xsd:any minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Plugin metadata -->
+  <data name="ScreenRecorder_PluginName" xml:space="preserve"><value>スクリーンレコーダー</value></data>
+  <data name="ScreenRecorder_MenuItem" xml:space="preserve"><value>スクリーンレコーダー(_R)...</value></data>
+  <data name="ScreenRecorder_DocumentTitle" xml:space="preserve"><value>スクリーンレコーダー</value></data>
+  <data name="ScreenRecorder_UntitledSession" xml:space="preserve"><value>無題の録画</value></data>
+
+  <!-- Toolbar actions -->
+  <data name="ScreenRecorder_Start" xml:space="preserve"><value>開始</value></data>
+  <data name="ScreenRecorder_Stop" xml:space="preserve"><value>停止</value></data>
+  <data name="ScreenRecorder_Pause" xml:space="preserve"><value>一時停止</value></data>
+  <data name="ScreenRecorder_Resume" xml:space="preserve"><value>再開</value></data>
+  <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>フレームをキャプチャ</value></data>
+  <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>領域を選択</value></data>
+  <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>セッションを保存</value></data>
+  <data name="ScreenRecorder_OpenSession" xml:space="preserve"><value>セッションを開く...</value></data>
+  <data name="ScreenRecorder_ExportGif" xml:space="preserve"><value>GIF としてエクスポート</value></data>
+  <data name="ScreenRecorder_ExportPng" xml:space="preserve"><value>PNG シーケンスをエクスポート</value></data>
+  <data name="ScreenRecorder_ExportMp4" xml:space="preserve"><value>MP4 としてエクスポート</value></data>
+
+  <!-- Capture modes -->
+  <data name="ScreenRecorder_ModeScreenshot" xml:space="preserve"><value>スクリーンショット (F9)</value></data>
+  <data name="ScreenRecorder_ModeTimed" xml:space="preserve"><value>タイマー間隔</value></data>
+  <data name="ScreenRecorder_ModeBoth" xml:space="preserve"><value>スクリーンショット + タイマー</value></data>
+
+  <!-- Status bar -->
+  <data name="ScreenRecorder_StatusRecording" xml:space="preserve"><value>&#x23FA; 録画中</value></data>
+  <data name="ScreenRecorder_StatusPaused" xml:space="preserve"><value>&#x23F8; 一時停止</value></data>
+  <data name="ScreenRecorder_StatusFrames" xml:space="preserve"><value>{0} フレーム</value></data>
+  <data name="ScreenRecorder_StatusHotkeys" xml:space="preserve"><value>F9 キャプチャ  Shift+F9 停止  ESC キャンセル</value></data>
+
+  <!-- HUD overlay -->
+  <data name="ScreenRecorder_HudRecording" xml:space="preserve"><value>録画中</value></data>
+  <data name="ScreenRecorder_HudPaused" xml:space="preserve"><value>一時停止</value></data>
+  <data name="ScreenRecorder_HudFrameCount" xml:space="preserve"><value>{0} フレーム</value></data>
+  <data name="ScreenRecorder_HudEscCancel" xml:space="preserve"><value>ESC でキャンセル</value></data>
+
+  <!-- Timeline -->
+  <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>選択項目を削除</value></data>
+  <data name="ScreenRecorder_InsertBlank" xml:space="preserve"><value>空白フレームを挿入</value></data>
+  <data name="ScreenRecorder_DuplicateFrame" xml:space="preserve"><value>フレームを複製</value></data>
+  <data name="ScreenRecorder_SetDelay" xml:space="preserve"><value>遅延を設定...</value></data>
+  <data name="ScreenRecorder_GlobalDelay" xml:space="preserve"><value>グローバル遅延 (ms)：</value></data>
+  <data name="ScreenRecorder_FrameLabel" xml:space="preserve"><value>フレーム {0}</value></data>
+
+  <!-- Preview -->
+  <data name="ScreenRecorder_ZoomIn" xml:space="preserve"><value>拡大</value></data>
+  <data name="ScreenRecorder_ZoomOut" xml:space="preserve"><value>縮小</value></data>
+  <data name="ScreenRecorder_Zoom1To1" xml:space="preserve"><value>1:1（実際のサイズ）</value></data>
+  <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>ウィンドウに合わせる</value></data>
+  <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
+  <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>フレームが選択されていません</value></data>
+
+  <!-- Properties panel -->
+  <data name="ScreenRecorder_Properties" xml:space="preserve"><value>プロパティ</value></data>
+  <data name="ScreenRecorder_CaptureRegion" xml:space="preserve"><value>キャプチャ領域</value></data>
+  <data name="ScreenRecorder_OutputScale" xml:space="preserve"><value>出力スケール</value></data>
+  <data name="ScreenRecorder_LoopCount" xml:space="preserve"><value>ループ回数 (0=無限)</value></data>
+  <data name="ScreenRecorder_RepeatLastFrame" xml:space="preserve"><value>最後のフレームを繰り返す (ms)</value></data>
+  <data name="ScreenRecorder_Interval" xml:space="preserve"><value>間隔 (ms)</value></data>
+
+  <!-- Options page -->
+  <data name="ScreenRecorder_Options" xml:space="preserve"><value>スクリーンレコーダー</value></data>
+  <data name="ScreenRecorder_Options_Capture" xml:space="preserve"><value>キャプチャ</value></data>
+  <data name="ScreenRecorder_Options_Overlay" xml:space="preserve"><value>オーバーレイ</value></data>
+  <data name="ScreenRecorder_Options_Export" xml:space="preserve"><value>エクスポート</value></data>
+  <data name="ScreenRecorder_Options_Session" xml:space="preserve"><value>セッション</value></data>
+  <data name="ScreenRecorder_Options_Ffmpeg" xml:space="preserve"><value>ffmpeg</value></data>
+  <data name="ScreenRecorder_Options_HotkeyCapture" xml:space="preserve"><value>キャプチャのショートカットキー</value></data>
+  <data name="ScreenRecorder_Options_HotkeyStop" xml:space="preserve"><value>停止のショートカットキー</value></data>
+  <data name="ScreenRecorder_Options_DefaultMode" xml:space="preserve"><value>既定のモード</value></data>
+  <data name="ScreenRecorder_Options_TimerInterval" xml:space="preserve"><value>タイマー間隔 (ms)</value></data>
+  <data name="ScreenRecorder_Options_OverlayColor" xml:space="preserve"><value>オーバーレイの色</value></data>
+  <data name="ScreenRecorder_Options_OverlayOpacity" xml:space="preserve"><value>オーバーレイの不透明度</value></data>
+  <data name="ScreenRecorder_Options_ShowHud" xml:space="preserve"><value>キャプチャ中に HUD を表示</value></data>
+  <data name="ScreenRecorder_Options_DefaultOutputPath" xml:space="preserve"><value>既定の出力フォルダー</value></data>
+  <data name="ScreenRecorder_Options_DefaultScale" xml:space="preserve"><value>既定の出力スケール</value></data>
+  <data name="ScreenRecorder_Options_DefaultLoopCount" xml:space="preserve"><value>GIF の既定ループ回数</value></data>
+  <data name="ScreenRecorder_Options_RepeatLastFrameDelay" xml:space="preserve"><value>最後のフレーム繰り返し遅延 (ms)</value></data>
+  <data name="ScreenRecorder_Options_SaveFolder" xml:space="preserve"><value>既定の保存フォルダー</value></data>
+  <data name="ScreenRecorder_Options_ConfirmDiscard" xml:space="preserve"><value>セッションを破棄する前に確認</value></data>
+  <data name="ScreenRecorder_Options_MaxFrames" xml:space="preserve"><value>セッションあたりの最大フレーム数</value></data>
+  <data name="ScreenRecorder_Options_FfmpegPath" xml:space="preserve"><value>ffmpeg 実行ファイルのパス</value></data>
+  <data name="ScreenRecorder_Options_FfmpegBrowse" xml:space="preserve"><value>参照...</value></data>
+  <data name="ScreenRecorder_Options_FfmpegNotFound" xml:space="preserve"><value>ffmpeg が見つかりません — MP4 エクスポートは無効です</value></data>
+
+  <!-- Dialogs -->
+  <data name="ScreenRecorder_SaveFilter" xml:space="preserve"><value>WpfHexEditor スクリーンキャプチャ (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_OpenFilter" xml:space="preserve"><value>WpfHexEditor スクリーンキャプチャ (*.whscr)|*.whscr</value></data>
+  <data name="ScreenRecorder_GifFilter" xml:space="preserve"><value>アニメーション GIF (*.gif)|*.gif</value></data>
+  <data name="ScreenRecorder_Mp4Filter" xml:space="preserve"><value>MP4 ビデオ (*.mp4)|*.mp4</value></data>
+  <data name="ScreenRecorder_ConfirmCancelTitle" xml:space="preserve"><value>録画をキャンセル</value></data>
+  <data name="ScreenRecorder_ConfirmCancelMsg" xml:space="preserve"><value>現在の録画セッションを破棄しますか？</value></data>
+  <data name="ScreenRecorder_ExportProgress" xml:space="preserve"><value>エクスポート中... {0}%</value></data>
+  <data name="ScreenRecorder_FileAssocAdvisory" xml:space="preserve"><value>.whscr ファイルの関連付けを登録できませんでした（権限が不足しています）。</value></data>
+</root>
