@@ -307,6 +307,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Instalovat</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Teď ne</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Neptat se znovu</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Ignorovana slova</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Odebrat vybrane</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Chovani</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Vicejazykovy rezim (prijmout slovo, pokud ho rozpozna jakykoli nainstalowany slovnik)</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Uzitecne pro dokumenty kombinujici vice jazyku.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Zpozeni analyzy</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Maximalni pocet navrhu</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Spolehlivost detekce jazyka</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Upresnit</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>URL zrcadla slovniku</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Slozka slovniku</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Vybrat slozku slovniku</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Obnovit vychozi nastaveni</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Vlastnosti obrázku</value></data>

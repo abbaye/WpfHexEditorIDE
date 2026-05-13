@@ -307,6 +307,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Asenna</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Ei nyt</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Älä kysy uudelleen</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Ohitetut sanat</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Poista valittu</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Toiminta</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Monikielinen tila</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Hyodyllinen useita kielia yhdistelevissa asiakirjoissa.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Analyysin viive</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Enimmaissuositukset</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Kielen tunnistuksen luottamus</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Lisaasetukset</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>Sanakirjan peilin URL</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Sanakirjakansio</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Valitse sanakirjakansio</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Palauta oletukset</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Kuvan ominaisuudet</value></data>

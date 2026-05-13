@@ -308,6 +308,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>インストール</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>後で</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>表示しない</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>無視した単語</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>選択を削除</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>動作</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>多言語モード（インストール済みの辞書が認識する場合に単語を受け入れる）</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>複数の言語が混在するドキュメントに役立ちます。</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>分析遅延</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>候補の最大数</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>言語検出の信頼度</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>詳細</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>辞書ミラーURL</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>辞書フォルダー</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>辞書フォルダーを選択</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>デフォルトにリセット</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>画像のプロパティ</value></data>

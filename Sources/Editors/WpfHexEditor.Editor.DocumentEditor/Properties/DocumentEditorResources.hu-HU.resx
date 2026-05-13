@@ -307,6 +307,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Telepítés</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Most nem</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Ne kérdezzen újra</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Figyelmen kivul hagyott szavak</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Kijelolt eltavolitasa</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Viselkedes</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Tobbnyelvue mod</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Hasznos tobb nyelvet otvozo dokumentumokhoz.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Elemzesi kesleletes</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Maximum javaslatok</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Nyelvfelismeresi bizalom</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Specialis</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>Szotar tukor URL</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Szotarak mappa</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Szotarak mappa kivalasztasa</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Visszaallitas alapertekekre</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Képtulajdonságok</value></data>

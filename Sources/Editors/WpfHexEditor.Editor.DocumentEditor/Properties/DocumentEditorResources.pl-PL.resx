@@ -308,6 +308,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Zainstaluj</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Później</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Nie pokazuj ponownie</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Ignorowane slowa</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Usun zaznaczone</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Zachowanie</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Tryb wielojezyczny</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Przydatne w dokumentach laczacych kilka jezykow.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Opoznienie analizy</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Maksymalna liczba sugestii</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Pewnosc wykrywania jezyka</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Zaawansowane</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>URL serwera lustrzanego slownika</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Folder slownikow</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Wybierz folder slownikow</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Przywroc wartosci domyslne</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Właściwości obrazu</value></data>

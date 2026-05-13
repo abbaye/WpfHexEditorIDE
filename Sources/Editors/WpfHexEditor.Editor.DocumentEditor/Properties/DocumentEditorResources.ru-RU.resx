@@ -308,6 +308,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Установить</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Позже</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Не показывать снова</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Игнорируемые слова</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Удалить выбранное</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Поведение</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Многоязычный режим (принимать слово, если его распознаёт хотя бы один установленный словарь)</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Полезно для документов на нескольких языках.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Задержка анализа</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Максимум подсказок</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Уверенность определения языка</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Дополнительно</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>URL-адрес зеркала словаря</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Папка словарей</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Выбрать папку словарей</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Сбросить до значений по умолчанию</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Свойства изображения</value></data>

@@ -307,6 +307,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Εγκατάσταση</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Όχι τώρα</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Να μην ερωτηθώ ξανά</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Αγνοημένες λέξεις</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Κατάργηση επιλεγμένων</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Συμπεριφορά</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Πολύγλωσσος τρόπος (αποδοχή λέξης αν την αναγνωρίζει οποιοδήποτε εγκατεστημένο λεξικό)</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Χρήσιμο για έγγραφα με πολλές γλώσσες.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Καθυστέρηση ανάλυσης</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Μέγιστες προτάσεις</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Εμπιστοσύνη ανίχνευσης γλώσσας</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Για προχωρημένους</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>URL καθρέφτη λεξικού</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Φάκελος λεξικών</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Επιλογή φακέλου λεξικών</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Επαναφορά προεπιλογών</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Ιδιότητες εικόνας</value></data>

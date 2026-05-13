@@ -307,6 +307,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Pasang</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Nanti saja</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Jangan tanya lagi</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Kata yang diabaikan</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Hapus yang dipilih</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Perilaku</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Mode multibahasa</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Berguna untuk dokumen yang menggabungkan beberapa bahasa.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Penundaan analisis</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Saran maksimum</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Kepercayaan deteksi bahasa</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Lanjutan</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>URL cermin kamus</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Folder kamus</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Pilih folder kamus</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Setel ulang ke default</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Properti Gambar</value></data>

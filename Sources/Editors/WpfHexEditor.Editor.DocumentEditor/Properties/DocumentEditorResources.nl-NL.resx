@@ -308,6 +308,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Installeren</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Later</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Nooit meer weergeven</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Genegeerde woorden</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Geselecteerde verwijderen</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Gedrag</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Meertalige modus</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Handig voor documenten met meerdere talen.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Analysevertraging</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Maximale suggesties</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Betrouwbaarheid taaldetectie</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Geavanceerd</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>Woordenboek spiegel-URL</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Woordenboekmap</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Selecteer woordenboekmap</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Standaardinstellingen herstellen</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Afbeeldingseigenschappen</value></data>

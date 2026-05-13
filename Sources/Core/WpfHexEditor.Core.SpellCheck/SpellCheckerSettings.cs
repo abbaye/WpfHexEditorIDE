@@ -47,6 +47,26 @@ public sealed class SpellCheckerSettings
     [JsonPropertyName("suppressedLanguagePrompts")]
     public HashSet<string> SuppressedLanguagePrompts { get; set; } = [];
 
+    /// <summary>Accept a word if ANY installed dictionary recognizes it.</summary>
+    [JsonPropertyName("multiLanguageMode")]
+    public bool MultiLanguageMode { get; set; } = true;
+
+    /// <summary>Milliseconds to wait after document changes before re-analyzing.</summary>
+    [JsonPropertyName("analysisDebounceMs")]
+    public int AnalysisDebounceMs { get; set; } = 800;
+
+    /// <summary>Maximum number of spelling suggestions returned per misspelled word.</summary>
+    [JsonPropertyName("maxSuggestions")]
+    public int MaxSuggestions { get; set; } = 5;
+
+    /// <summary>Minimum confidence (0–100) required for automatic language detection.</summary>
+    [JsonPropertyName("detectionConfidencePercent")]
+    public int DetectionConfidencePercent { get; set; } = 4;
+
+    /// <summary>Words permanently ignored by the user (persisted across sessions).</summary>
+    [JsonPropertyName("ignoredWords")]
+    public HashSet<string> IgnoredWords { get; set; } = [];
+
     public static SpellCheckerSettings Load()
     {
         try

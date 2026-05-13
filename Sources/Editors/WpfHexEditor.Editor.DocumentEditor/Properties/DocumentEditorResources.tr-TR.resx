@@ -308,6 +308,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Yükle</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Daha sonra</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Bir daha gösterme</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Yoksayilan kelimeler</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Seçileni kaldir</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Davranis</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Cok dilli mod</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Birden fazla dil iceren belgeler icin kullanislidir.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Analiz gecikmesi</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Maksimum oneri</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Dil algilama guveni</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Gelismis</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>Sozluk yansilatma URL'si</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Sozlukler klasoru</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Sozlukler klasorunu sec</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Varsayilanlara sifirla</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Resim Özellikleri</value></data>

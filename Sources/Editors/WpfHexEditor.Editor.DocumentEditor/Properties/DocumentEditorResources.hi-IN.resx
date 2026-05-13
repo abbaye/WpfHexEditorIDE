@@ -307,6 +307,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>स्थापित करें</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>अभी नहीं</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>फिर मत पूछें</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>अनदेखे शब्द</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>चयनित हटाएं</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>व्यवहार</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>बहु-भाषा मोड (यदि कोई स्थापित शब्दकोश शब्द को पहचाने तो स्वीकार करें)</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>कई भाषाओं वाले दस्तावेज़ों के लिए उपयोगी।</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>विश्लेषण विलंब</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>अधिकतम सुझाव</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>भाषा पहचान विश्वास</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>उन्नत</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>शब्दकोश मिरर URL</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>शब्दकोश फ़ोल्डर</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>शब्दकोश फ़ोल्डर चुनें</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>डिफ़ॉल्ट पर रीसेट करें</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>छवि गुण</value></data>

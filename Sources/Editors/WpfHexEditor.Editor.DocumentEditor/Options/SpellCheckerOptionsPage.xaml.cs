@@ -42,9 +42,20 @@ public sealed partial class SpellCheckerOptionsPage : UserControl, WpfHexEditor.
         _vm           = new SpellCheckerOptionsViewModel(settings, dictManager);
         DataContext   = _vm;
 
-        DictGrid.ItemsSource = _vm.Languages;
-        ChkEnabled.IsChecked = _vm.IsEnabled;
-        TxtUserDictPath.Text = _vm.UserDictPath;
+        DictGrid.ItemsSource          = _vm.Languages;
+        LstIgnoredWords.ItemsSource   = _vm.IgnoredWords;
+        ChkEnabled.IsChecked          = _vm.IsEnabled;
+        ChkMultiLanguage.IsChecked    = _vm.MultiLanguageMode;
+        TxtUserDictPath.Text          = _vm.UserDictPath;
+        TxtMirrorUrl.Text             = _vm.MirrorUrl;
+        TxtDictPath.Text              = _vm.DictionariesPath;
+
+        SldrDebounce.Value        = _vm.AnalysisDebounceMs;
+        SldrMaxSuggestions.Value  = _vm.MaxSuggestions;
+        SldrConfidence.Value      = _vm.DetectionConfidencePercent;
+        UpdateDebounceLabel();
+        UpdateMaxSuggestionsLabel();
+        UpdateConfidenceLabel();
     }
 
     private void OnEnabledChanged(object sender, RoutedEventArgs e)
@@ -52,6 +63,97 @@ public sealed partial class SpellCheckerOptionsPage : UserControl, WpfHexEditor.
         if (_vm is null) return;
         _vm.IsEnabled = ChkEnabled.IsChecked == true;
     }
+
+    private void OnMultiLanguageChanged(object sender, RoutedEventArgs e)
+    {
+        if (_vm is null) return;
+        _vm.MultiLanguageMode = ChkMultiLanguage.IsChecked == true;
+    }
+
+    private void OnDebounceChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (_vm is null) return;
+        _vm.AnalysisDebounceMs = (int)SldrDebounce.Value;
+        UpdateDebounceLabel();
+    }
+
+    private void OnMaxSuggestionsChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (_vm is null) return;
+        _vm.MaxSuggestions = (int)SldrMaxSuggestions.Value;
+        UpdateMaxSuggestionsLabel();
+    }
+
+    private void OnConfidenceChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (_vm is null) return;
+        _vm.DetectionConfidencePercent = (int)SldrConfidence.Value;
+        UpdateConfidenceLabel();
+    }
+
+    private void OnMirrorUrlChanged(object sender, RoutedEventArgs e)
+    {
+        if (_vm is null) return;
+        _vm.MirrorUrl = TxtMirrorUrl.Text.Trim();
+    }
+
+    private void OnDictPathChanged(object sender, RoutedEventArgs e)
+    {
+        if (_vm is null) return;
+        _vm.DictionariesPath = TxtDictPath.Text.Trim();
+        TxtUserDictPath.Text = _vm.UserDictPath;
+    }
+
+    private void OnBrowseDictPathClick(object sender, RoutedEventArgs e)
+    {
+        // Use a dummy OpenFileDialog pointed at a placeholder file so the user
+        // can navigate to the desired folder without requiring WinForms.
+        var dlg = new OpenFileDialog
+        {
+            Title            = TryFindResource("SpellCheck_BrowseDictPathTitle") as string ?? "Select dictionaries folder",
+            Filter           = "Folder|*.nofile",
+            FileName         = "Select Folder",
+            CheckFileExists  = false,
+            CheckPathExists  = true,
+            ValidateNames    = false,
+            InitialDirectory = Directory.Exists(TxtDictPath.Text) ? TxtDictPath.Text : string.Empty
+        };
+        if (dlg.ShowDialog(Window.GetWindow(this)) != true) return;
+        var folder = Path.GetDirectoryName(dlg.FileName);
+        if (string.IsNullOrEmpty(folder)) return;
+        TxtDictPath.Text = folder;
+        OnDictPathChanged(sender, e);
+    }
+
+    private void OnRemoveIgnoredWordClick(object sender, RoutedEventArgs e)
+    {
+        if (_vm is null || LstIgnoredWords.SelectedItem is not string word) return;
+        _vm.RemoveIgnoredWord(word);
+    }
+
+    private void OnResetAdvancedClick(object sender, RoutedEventArgs e)
+    {
+        if (_vm is null) return;
+        _vm.ResetAdvancedToDefaults();
+        ChkMultiLanguage.IsChecked = _vm.MultiLanguageMode;
+        SldrDebounce.Value         = _vm.AnalysisDebounceMs;
+        SldrMaxSuggestions.Value   = _vm.MaxSuggestions;
+        SldrConfidence.Value       = _vm.DetectionConfidencePercent;
+        TxtMirrorUrl.Text          = _vm.MirrorUrl;
+        TxtDictPath.Text           = _vm.DictionariesPath;
+        UpdateDebounceLabel();
+        UpdateMaxSuggestionsLabel();
+        UpdateConfidenceLabel();
+    }
+
+    private void UpdateDebounceLabel() =>
+        TxtDebounceValue.Text = $"{_vm?.AnalysisDebounceMs ?? 800} ms";
+
+    private void UpdateMaxSuggestionsLabel() =>
+        TxtMaxSuggestionsValue.Text = $"{_vm?.MaxSuggestions ?? 5}";
+
+    private void UpdateConfidenceLabel() =>
+        TxtConfidenceValue.Text = $"{_vm?.DetectionConfidencePercent ?? 4} %";
 
     private async void OnDownloadClick(object sender, RoutedEventArgs e)
     {

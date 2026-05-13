@@ -38,8 +38,9 @@ public sealed class HunspellSpellChecker : ISpellChecker
 
     public HunspellSpellChecker(SpellCheckerSettings settings, DictionaryManager dictManager)
     {
-        _settings    = settings;
-        _dictManager = dictManager;
+        _settings         = settings;
+        _dictManager      = dictManager;
+        MultiLanguageMode = settings.MultiLanguageMode;
         LoadUserWords();
     }
 

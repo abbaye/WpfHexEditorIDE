@@ -308,6 +308,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>설치</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>나중에</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>다시 표시 안 함</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>무시된 단어</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>선택 항목 제거</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>동작</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>다국어 모드(설치된 사전이 단어를 인식하면 수락)</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>여러 언어가 혼합된 문서에 유용합니다.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>분석 지연</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>최대 제안 수</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>언어 감지 신뢰도</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>고급</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>사전 미러 URL</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>사전 폴더</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>사전 폴더 선택</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>기본값으로 재설정</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>이미지 속성</value></data>

@@ -307,6 +307,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Installer</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Ikke nu</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Spørg ikke igen</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Ignorerede ord</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Fjern valgte</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Adfaerd</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Flersproget tilstand</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Nyttigt til dokumenter med flere sprog.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Analysefortovning</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Maks. forslag</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Sproggenkendelsessikkerhed</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Avanceret</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>Ordbog spejl URL</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Ordbogsmappe</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Vaelg ordbogsmappe</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Nulstil til standard</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Billedegenskaber</value></data>

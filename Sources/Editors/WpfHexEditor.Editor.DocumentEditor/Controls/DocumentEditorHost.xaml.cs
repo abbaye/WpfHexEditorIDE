@@ -1385,7 +1385,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     {
         if (_spellService is not null) return;
         var layer = new SpellCheckLayer();
-        _spellService = new SpellCheckService(_spellChecker!, _dictManager!, layer);
+        _spellService = new SpellCheckService(_spellChecker!, _dictManager!, layer, _spellSettings!);
         _spellService.UninstalledLanguageDetected += code =>
             Dispatcher.BeginInvoke(() => PostDictionaryInstallNotification(code));
         _spellService.Attach(PART_TextPane.PART_Renderer);

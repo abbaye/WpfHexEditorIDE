@@ -308,6 +308,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Instalar</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Mais tarde</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Nunca mostrar</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Palavras ignoradas</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Remover selecionada</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Comportamento</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Modo multilingue</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Util para documentos que mesclam varios idiomas.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Atraso de analise</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Maximo de sugestoes</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Confianca de deteccao de idioma</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Avancado</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>URL do espelho de dicionario</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Pasta de dicionarios</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Selecionar pasta de dicionarios</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Redefinir padroes</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Propriedades da imagem</value></data>

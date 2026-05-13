@@ -43,7 +43,7 @@ internal sealed class SpellCheckService : IDisposable
     // Cache: blockId → (text snapshot, errors)
     private readonly Dictionary<string, (string Text, List<SpellCheckError> Errors)> _cache = [];
 
-    private readonly HashSet<string> _ignoredWords = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _ignoredWords;
 
     // Captures words including typographic (') and straight (') apostrophes so
     // elided forms like "aujourd'hui", "c'est", "j'ai" are one token.
@@ -67,15 +67,19 @@ internal sealed class SpellCheckService : IDisposable
         @"|^(.)\1{3,}$",                                   // repeated single char artefacts (wwwww)
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-    public SpellCheckService(ISpellChecker checker, DictionaryManager dictManager, SpellCheckLayer layer)
+    private readonly SpellCheckerSettings _settings;
+
+    public SpellCheckService(ISpellChecker checker, DictionaryManager dictManager, SpellCheckLayer layer, SpellCheckerSettings settings)
     {
         _checker     = checker;
         _dictManager = dictManager;
         _layer       = layer;
+        _settings     = settings;
+        _ignoredWords = new HashSet<string>(settings.IgnoredWords, StringComparer.OrdinalIgnoreCase);
 
         _debounce = new DispatcherTimer(DispatcherPriority.Background)
         {
-            Interval = TimeSpan.FromMilliseconds(800)
+            Interval = TimeSpan.FromMilliseconds(settings.AnalysisDebounceMs)
         };
         _debounce.Tick += (_, _) =>
         {
@@ -112,9 +116,15 @@ internal sealed class SpellCheckService : IDisposable
         _layer.Clear();
     }
 
-    public ISpellChecker Checker => _checker;
+    public ISpellChecker Checker        => _checker;
+    public int           MaxSuggestions => _settings.MaxSuggestions;
 
-    public void IgnoreWord(string word) => _ignoredWords.Add(word);
+    public void IgnoreWord(string word)
+    {
+        _ignoredWords.Add(word);
+        _settings.IgnoredWords.Add(word);
+        _settings.Save();
+    }
 
     public void InvalidateAll()
     {
@@ -191,7 +201,8 @@ internal sealed class SpellCheckService : IDisposable
 
                 // If the detected language is not among installed ones, raise the event
                 var detectedAny = LanguageDetector.Detect(
-                    sample, LanguageCatalog.Languages.Select(l => l.Code), minConfidence: 0.04);
+                    sample, LanguageCatalog.Languages.Select(l => l.Code),
+                    minConfidence: _settings.DetectionConfidencePercent / 100.0);
 
                 if (detectedAny is not null
                     && !installedCodes.Contains(detectedAny, StringComparer.OrdinalIgnoreCase)

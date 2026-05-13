@@ -308,6 +308,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Встановити</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Пізніше</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Більше не показувати</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Ігноровані слова</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Видалити вибране</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Поведінка</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Багатомовний режим (прийняти слово, якщо будь-який встановлений словник його розпізнає)</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Корисно для документів, що поєднують кілька мов.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Затримка аналізу</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Максимум підказок</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Впевненість у визначенні мови</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Розширений</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>URL дзеркала словника</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Папка словників</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Вибрати папку словників</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Скинути до стандартних</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Властивості зображення</value></data>

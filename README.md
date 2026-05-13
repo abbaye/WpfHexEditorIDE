@@ -6,17 +6,17 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.5.225-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.5.8-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](docs/ROADMAP.md)
-  [![NuGet](https://img.shields.io/badge/NuGet-6%20packages-004880?logo=nuget)](README.md#-ui-controls--nuget-packages)
+  [![NuGet](https://img.shields.io/badge/NuGet-13%20packages-004880?logo=nuget)](README.md#-ui-controls--nuget-packages)
 
   <br/>
 
   > 🚧 **Active Development** — New features, editors and panels are added regularly. Contributions welcome!
   >
-  > 📅 *Last revised: 2026-05-05*
+  > 📅 *Last revised: 2026-05-12*
 
   <br/>
 

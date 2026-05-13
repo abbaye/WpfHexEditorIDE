@@ -635,7 +635,7 @@ public sealed class DocumentCanvasRenderer : FrameworkElement, IScrollInfo
             cm.Items.Insert(insertAt++, label);
 
             var checker     = SpellCheckService.Checker;
-            var suggestions = checker.Suggest(spellErr.Source.Word);
+            var suggestions = checker.Suggest(spellErr.Source.Word, SpellCheckService.MaxSuggestions);
             foreach (var sug in suggestions)
             {
                 var s = sug; // capture

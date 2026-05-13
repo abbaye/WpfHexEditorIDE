@@ -308,6 +308,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Installera</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Senare</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Visa aldrig</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Ignorerade ord</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Ta bort markerat</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Beteende</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Flersprakigt lage</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Anvandbart for dokument som blandar flera sprak.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Analysfordrojning</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Maximala forslag</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Konfidens for sprakidentifiering</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Avancerat</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>URL for ordboksspegel</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Ordbocker-mapp</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Valj ordbocker-mapp</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Aterstall till standard</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Bildegenskaper</value></data>

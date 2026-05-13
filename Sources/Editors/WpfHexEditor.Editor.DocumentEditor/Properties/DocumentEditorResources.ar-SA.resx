@@ -307,6 +307,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>تثبيت</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>ليس الآن</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>لا تسأل مجددًا</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>الكلمات المتجاهلة</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>إزالة المحدد</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>السلوك</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>وضع متعدد اللغات (قبول الكلمة إذا تعرفت عليها أي قاموس مثبت)</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>مفيد للمستندات التي تمزج لغات متعددة.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>تأخير التحليل</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>الحد الأقصى للاقتراحات</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>ثقة الكشف عن اللغة</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>متقدم</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>عنوان URL لمصدر القواميس</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>مجلد القواميس</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>حدد مجلد القواميس</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>إعادة التعيين إلى الافتراضي</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>خصائص الصورة</value></data>

@@ -238,5 +238,198 @@
                     Click="OnEditUserDictClick"/>
         </StackPanel>
 
+        <!-- Ignored words list -->
+        <TextBlock Text="{DynamicResource SpellCheck_IgnoredWordsSection}"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource PFP_AccentBrush}"
+                   Margin="0,12,0,6"/>
+
+        <Border BorderBrush="{DynamicResource PFP_BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="2"
+                Margin="0,0,0,4">
+            <ListBox x:Name="LstIgnoredWords"
+                     MaxHeight="120"
+                     Background="{DynamicResource DockWindowBackgroundBrush}"
+                     Foreground="{DynamicResource PFP_TextBrush}"
+                     FontSize="12"
+                     BorderThickness="0"
+                     SelectionMode="Single"/>
+        </Border>
+        <Button Content="{DynamicResource SpellCheck_RemoveIgnoredWord}"
+                Style="{StaticResource IdeButtonStyle}"
+                Padding="8,3"
+                FontSize="11"
+                HorizontalAlignment="Left"
+                Margin="0,0,0,4"
+                Click="OnRemoveIgnoredWordClick"/>
+
+        <!-- Separator -->
+        <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,8,0,8"/>
+
+        <!-- Behavior section -->
+        <TextBlock Text="{DynamicResource SpellCheck_BehaviorSection}"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource PFP_AccentBrush}"
+                   Margin="0,0,0,8"/>
+
+        <CheckBox x:Name="ChkMultiLanguage"
+                  Content="{DynamicResource SpellCheck_MultiLanguageMode}"
+                  Foreground="{DynamicResource PFP_TextBrush}"
+                  FontSize="12"
+                  Margin="0,0,0,4"
+                  Checked="OnMultiLanguageChanged"
+                  Unchecked="OnMultiLanguageChanged"/>
+
+        <TextBlock Text="{DynamicResource SpellCheck_MultiLanguageModeHint}"
+                   Foreground="{DynamicResource PFP_SubTextBrush}"
+                   FontSize="11"
+                   Margin="20,0,0,10"
+                   TextWrapping="Wrap"/>
+
+        <!-- Analysis delay -->
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                       Text="{DynamicResource SpellCheck_AnalysisDelay}"
+                       Foreground="{DynamicResource PFP_TextBrush}"
+                       FontSize="12"
+                       VerticalAlignment="Center"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Slider x:Name="SldrDebounce"
+                        Minimum="100" Maximum="5000"
+                        TickFrequency="100"
+                        IsSnapToTickEnabled="True"
+                        Width="160"
+                        VerticalAlignment="Center"
+                        ValueChanged="OnDebounceChanged"/>
+                <TextBlock x:Name="TxtDebounceValue"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"
+                           FontSize="11"
+                           Width="52"
+                           TextAlignment="Right"
+                           VerticalAlignment="Center"
+                           Margin="6,0,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Max suggestions -->
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                       Text="{DynamicResource SpellCheck_MaxSuggestions}"
+                       Foreground="{DynamicResource PFP_TextBrush}"
+                       FontSize="12"
+                       VerticalAlignment="Center"/>
+            <Slider x:Name="SldrMaxSuggestions"
+                    Grid.Column="1"
+                    Minimum="1" Maximum="20"
+                    TickFrequency="1"
+                    IsSnapToTickEnabled="True"
+                    Width="160"
+                    VerticalAlignment="Center"
+                    ValueChanged="OnMaxSuggestionsChanged"/>
+        </Grid>
+        <TextBlock x:Name="TxtMaxSuggestionsValue"
+                   Foreground="{DynamicResource PFP_SubTextBrush}"
+                   FontSize="11"
+                   HorizontalAlignment="Right"
+                   Margin="0,-6,0,8"/>
+
+        <!-- Detection confidence -->
+        <Grid Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                       Text="{DynamicResource SpellCheck_DetectionConfidence}"
+                       Foreground="{DynamicResource PFP_TextBrush}"
+                       FontSize="12"
+                       VerticalAlignment="Center"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Slider x:Name="SldrConfidence"
+                        Minimum="1" Maximum="50"
+                        TickFrequency="1"
+                        IsSnapToTickEnabled="True"
+                        Width="160"
+                        VerticalAlignment="Center"
+                        ValueChanged="OnConfidenceChanged"/>
+                <TextBlock x:Name="TxtConfidenceValue"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"
+                           FontSize="11"
+                           Width="40"
+                           TextAlignment="Right"
+                           VerticalAlignment="Center"
+                           Margin="6,0,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Separator -->
+        <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,8,0,8"/>
+
+        <!-- Advanced section -->
+        <TextBlock Text="{DynamicResource SpellCheck_AdvancedSection}"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource PFP_AccentBrush}"
+                   Margin="0,0,0,8"/>
+
+        <!-- Mirror URL -->
+        <TextBlock Text="{DynamicResource SpellCheck_MirrorUrl}"
+                   Foreground="{DynamicResource PFP_TextBrush}"
+                   FontSize="12"
+                   Margin="0,0,0,4"/>
+        <TextBox x:Name="TxtMirrorUrl"
+                 FontSize="11"
+                 Padding="4,3"
+                 Margin="0,0,0,10"
+                 Background="{DynamicResource DockWindowBackgroundBrush}"
+                 Foreground="{DynamicResource PFP_TextBrush}"
+                 BorderBrush="{DynamicResource PFP_BorderBrush}"
+                 BorderThickness="1"
+                 LostFocus="OnMirrorUrlChanged"/>
+
+        <!-- Dictionaries path -->
+        <TextBlock Text="{DynamicResource SpellCheck_DictPath}"
+                   Foreground="{DynamicResource PFP_TextBrush}"
+                   FontSize="12"
+                   Margin="0,0,0,4"/>
+        <Grid Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="TxtDictPath"
+                     Grid.Column="0"
+                     FontSize="11"
+                     Padding="4,3"
+                     Margin="0,0,6,0"
+                     Background="{DynamicResource DockWindowBackgroundBrush}"
+                     Foreground="{DynamicResource PFP_TextBrush}"
+                     BorderBrush="{DynamicResource PFP_BorderBrush}"
+                     BorderThickness="1"
+                     LostFocus="OnDictPathChanged"/>
+            <Button Grid.Column="1"
+                    Content="{DynamicResource SpellCheck_Browse}"
+                    Style="{StaticResource IdeButtonStyle}"
+                    Padding="8,3"
+                    FontSize="11"
+                    Click="OnBrowseDictPathClick"/>
+        </Grid>
+
+        <!-- Reset to defaults -->
+        <Button Content="{DynamicResource SpellCheck_ResetDefaults}"
+                Style="{StaticResource IdeButtonStyle}"
+                Padding="10,4"
+                FontSize="11"
+                HorizontalAlignment="Left"
+                Click="OnResetAdvancedClick"/>
+
     </StackPanel>
 </UserControl>

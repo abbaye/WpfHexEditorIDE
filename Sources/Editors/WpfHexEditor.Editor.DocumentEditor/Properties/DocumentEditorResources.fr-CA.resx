@@ -356,6 +356,19 @@
   <data name="SpellCheck_NotifInstall" xml:space="preserve"><value>Installer</value></data>
   <data name="SpellCheck_NotifLater" xml:space="preserve"><value>Pas maintenant</value></data>
   <data name="SpellCheck_NotifNever" xml:space="preserve"><value>Ne plus demander</value></data>
+  <data name="SpellCheck_IgnoredWordsSection" xml:space="preserve"><value>Mots ignores</value></data>
+  <data name="SpellCheck_RemoveIgnoredWord" xml:space="preserve"><value>Supprimer la selection</value></data>
+  <data name="SpellCheck_BehaviorSection" xml:space="preserve"><value>Comportement</value></data>
+  <data name="SpellCheck_MultiLanguageMode" xml:space="preserve"><value>Mode multilingue (accepter un mot si un dictionnaire installe le reconnait)</value></data>
+  <data name="SpellCheck_MultiLanguageModeHint" xml:space="preserve"><value>Utile pour les documents combinant plusieurs langues.</value></data>
+  <data name="SpellCheck_AnalysisDelay" xml:space="preserve"><value>Delai d'analyse</value></data>
+  <data name="SpellCheck_MaxSuggestions" xml:space="preserve"><value>Suggestions maximales</value></data>
+  <data name="SpellCheck_DetectionConfidence" xml:space="preserve"><value>Confiance de detection de langue</value></data>
+  <data name="SpellCheck_AdvancedSection" xml:space="preserve"><value>Avance</value></data>
+  <data name="SpellCheck_MirrorUrl" xml:space="preserve"><value>URL du miroir de dictionnaire</value></data>
+  <data name="SpellCheck_DictPath" xml:space="preserve"><value>Dossier des dictionnaires</value></data>
+  <data name="SpellCheck_BrowseDictPathTitle" xml:space="preserve"><value>Selectionner le dossier des dictionnaires</value></data>
+  <data name="SpellCheck_ResetDefaults" xml:space="preserve"><value>Reinitialiser les valeurs par defaut</value></data>
 
   
   <data name="ImgDlg_Title" xml:space="preserve"><value>Propriétés de l'image</value></data>
