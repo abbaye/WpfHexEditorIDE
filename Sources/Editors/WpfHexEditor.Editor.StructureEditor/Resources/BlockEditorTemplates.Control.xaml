@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Block editor DataTemplates: conditional, loop
 -->
@@ -21,11 +21,11 @@
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
 
             <!-- Condition -->
-            <TextBlock Text="{DynamicResource SE_BE_Condition}" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{StaticResource SE_BE_Condition}" Style="{StaticResource SectionHeader}"/>
             <ctrl:ConditionEditorRow DataContext="{Binding Condition}" Margin="0,0,0,4"/>
 
             <!-- Labels -->
-            <TextBlock Text="{DynamicResource SE_BE_BranchLabels}" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{StaticResource SE_BE_BranchLabels}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -35,15 +35,15 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_TrueLabel}"  Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{StaticResource SE_BE_TrueLabel}"  Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
                            Text="{Binding TrueLabel, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_FalseLabel}" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{StaticResource SE_BE_FalseLabel}" Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
                            Text="{Binding FalseLabel, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
 
-            <TextBlock Text="{DynamicResource SE_BE_BranchHint}"
+            <TextBlock Text="{StaticResource SE_BE_BranchHint}"
                        FontSize="10" Margin="0,6,0,0"
                        Foreground="{DynamicResource TE_LineNumberForeground}"
                        FontStyle="Italic"/>
@@ -57,11 +57,11 @@
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
 
             <!-- Condition -->
-            <TextBlock Text="{DynamicResource SE_BE_LoopCondition}" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{StaticResource SE_BE_LoopCondition}" Style="{StaticResource SectionHeader}"/>
             <ctrl:ConditionEditorRow DataContext="{Binding Condition}" Margin="0,0,0,4"/>
 
             <!-- Count / MaxIterations / IndexVar -->
-            <TextBlock Text="{DynamicResource SE_BE_Bounds}" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{StaticResource SE_BE_Bounds}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -73,29 +73,29 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_Count}"          Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{StaticResource SE_BE_Count}"          Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding CountText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"
-                           ToolTip="{DynamicResource SE_BE_Tip_LoopCount}"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_MaxIterations}" Style="{StaticResource PropLabel}"/>
+                           ToolTip="{StaticResource SE_BE_Tip_LoopCount}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{StaticResource SE_BE_MaxIterations}" Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
                            ctrl:InputFilter.NumericOnly="True"
                            Text="{Binding MaxIterations, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="{DynamicResource SE_BE_Tip_LoopMaxCap}"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_IndexVar}"      Style="{StaticResource PropLabel}"/>
+                           ToolTip="{StaticResource SE_BE_Tip_LoopMaxCap}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{StaticResource SE_BE_IndexVar}"      Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding IndexVar, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="i"
-                           ToolTip="{DynamicResource SE_BE_Tip_LoopIdxStore}"/>
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource SE_BE_StoreAs}"       Style="{StaticResource PropLabel}"/>
+                           ToolTip="{StaticResource SE_BE_Tip_LoopIdxStore}"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="{StaticResource SE_BE_StoreAs}"       Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="3" Grid.Column="1" Margin="0,2"
                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
-                           ToolTip="{DynamicResource SE_BE_Tip_LoopCountStore}"/>
+                           ToolTip="{StaticResource SE_BE_Tip_LoopCountStore}"/>
             </Grid>
 
-            <TextBlock Text="{DynamicResource SE_BE_LoopBodyHint}"
+            <TextBlock Text="{StaticResource SE_BE_LoopBodyHint}"
                        FontSize="10" Margin="0,6,0,0"
                        Foreground="{DynamicResource TE_LineNumberForeground}"
                        FontStyle="Italic"/>

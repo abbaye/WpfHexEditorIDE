@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project: WpfHexEditor.Plugins.ClassDiagram
     File: Panels/ClassPropertiesPanel.xaml
     Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -32,7 +32,7 @@
 
         <!-- No selection placeholder -->
         <TextBlock DockPanel.Dock="Top"
-                   Text="{DynamicResource CD_NoSelection}"
+                   Text="{StaticResource CD_NoSelection}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Margin="0,24,0,0"
@@ -70,7 +70,7 @@
                         <ColumnDefinition Width="90"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="{DynamicResource CD_PropName}"
+                    <TextBlock Grid.Column="0" Text="{StaticResource CD_PropName}"
                                FontSize="11" VerticalAlignment="Center"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     <TextBlock Grid.Column="1"
@@ -86,7 +86,7 @@
                         <ColumnDefinition Width="90"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="{DynamicResource CD_PropKind}"
+                    <TextBlock Grid.Column="0" Text="{StaticResource CD_PropKind}"
                                FontSize="11" VerticalAlignment="Center"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     <TextBlock Grid.Column="1"
@@ -102,7 +102,7 @@
                         <ColumnDefinition Width="90"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="{DynamicResource CD_PropAbstract}"
+                    <TextBlock Grid.Column="0" Text="{StaticResource CD_PropAbstract}"
                                FontSize="11" VerticalAlignment="Center"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     <CheckBox Grid.Column="1"

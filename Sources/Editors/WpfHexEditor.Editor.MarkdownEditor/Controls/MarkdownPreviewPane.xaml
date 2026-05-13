@@ -1,4 +1,4 @@
-<!-- ==========================================================
+﻿<!-- ==========================================================
      Project: WpfHexEditor.Editor.MarkdownEditor
      File: Controls/MarkdownPreviewPane.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -44,7 +44,7 @@
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        FontSize="12"
-                       Text="{DynamicResource MdPrev_InitializingPreview}" />
+                       Text="{StaticResource MdPrev_InitializingPreview}" />
         </Border>
 
         <!-- Fallback: shown when WebView2 runtime is not installed -->
@@ -60,14 +60,14 @@
                            FontWeight="SemiBold"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            TextAlignment="Center"
-                           Text="{DynamicResource MdPrev_RuntimeNotFoundTitle}" />
+                           Text="{StaticResource MdPrev_RuntimeNotFoundTitle}" />
                 <TextBlock Margin="0,8,0,0"
                            FontSize="12"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            TextAlignment="Center"
                            TextWrapping="Wrap"
                            MaxWidth="320"
-                           Text="{DynamicResource MdPrev_RuntimeNotFoundMsg}" />
+                           Text="{StaticResource MdPrev_RuntimeNotFoundMsg}" />
             </StackPanel>
         </Border>
     </Grid>

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -142,7 +142,7 @@
                 <StackPanel Grid.Column="0">
 
                     <!-- QUICK ACTIONS -->
-                    <TextBlock Text="{DynamicResource APP_QuickActionsSection}" Style="{StaticResource WelcomeSectionTitle}" />
+                    <TextBlock Text="{StaticResource APP_QuickActionsSection}" Style="{StaticResource WelcomeSectionTitle}" />
 
                     <Button x:Name="NewFileButton"
                             Style="{StaticResource WelcomeActionButton}">
@@ -153,7 +153,7 @@
                                        Foreground="{DynamicResource DockTabActiveBrush}"
                                        VerticalAlignment="Center"
                                        Margin="0,0,10,0" />
-                            <TextBlock Text="{DynamicResource APP_NewFileButton}"
+                            <TextBlock Text="{StaticResource APP_NewFileButton}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
@@ -167,7 +167,7 @@
                                        Foreground="{DynamicResource DockTabActiveBrush}"
                                        VerticalAlignment="Center"
                                        Margin="0,0,10,0" />
-                            <TextBlock Text="{DynamicResource APP_OpenFileButton}"
+                            <TextBlock Text="{StaticResource APP_OpenFileButton}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
@@ -181,7 +181,7 @@
                                        Foreground="{DynamicResource DockTabActiveBrush}"
                                        VerticalAlignment="Center"
                                        Margin="0,0,10,0" />
-                            <TextBlock Text="{DynamicResource APP_OpenProjectButton}"
+                            <TextBlock Text="{StaticResource APP_OpenProjectButton}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
@@ -196,7 +196,7 @@
                                        Foreground="{DynamicResource DockTabActiveBrush}"
                                        VerticalAlignment="Center"
                                        Margin="0,0,10,0" />
-                            <TextBlock Text="{DynamicResource APP_OptionsButton}"
+                            <TextBlock Text="{StaticResource APP_OptionsButton}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
@@ -207,12 +207,12 @@
                                Margin="0,0,0,16" />
 
                     <!-- RECENT FILES -->
-                    <TextBlock Text="{DynamicResource APP_RecentSection}" Style="{StaticResource WelcomeSectionTitle}" />
+                    <TextBlock Text="{StaticResource APP_RecentSection}" Style="{StaticResource WelcomeSectionTitle}" />
 
                     <StackPanel x:Name="RecentFilesPanel" />
 
                     <TextBlock x:Name="NoRecentText"
-                               Text="{DynamicResource APP_NoRecentFiles}"
+                               Text="{StaticResource APP_NoRecentFiles}"
                                FontSize="12"
                                Foreground="{DynamicResource DockTabTextBrush}"
                                Opacity="0.5"
@@ -220,14 +220,14 @@
                                Visibility="Collapsed" />
 
                     <!-- RECENT SOLUTIONS -->
-                    <TextBlock Text="{DynamicResource APP_RecentProjectsSection}"
+                    <TextBlock Text="{StaticResource APP_RecentProjectsSection}"
                                Style="{StaticResource WelcomeSectionTitle}"
                                Margin="0,20,0,8" />
 
                     <StackPanel x:Name="RecentSolutionsPanel" />
 
                     <TextBlock x:Name="NoRecentSolutionsText"
-                               Text="{DynamicResource APP_NoRecentProjects}"
+                               Text="{StaticResource APP_NoRecentProjects}"
                                FontSize="12"
                                Foreground="{DynamicResource DockTabTextBrush}"
                                Opacity="0.5"
@@ -240,7 +240,7 @@
                                Margin="0,20,0,16" />
 
                     <!-- RESOURCES -->
-                    <TextBlock Text="{DynamicResource APP_ResourcesSection}"
+                    <TextBlock Text="{StaticResource APP_ResourcesSection}"
                                Style="{StaticResource WelcomeSectionTitle}" />
 
                     <Button x:Name="GitHubButton"
@@ -252,7 +252,7 @@
                                        Foreground="{DynamicResource DockTabActiveBrush}"
                                        VerticalAlignment="Center"
                                        Margin="0,0,10,0" />
-                            <TextBlock Text="{DynamicResource APP_GitHubLink}"
+                            <TextBlock Text="{StaticResource APP_GitHubLink}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
@@ -266,7 +266,7 @@
                                        Foreground="{DynamicResource DockTabActiveBrush}"
                                        VerticalAlignment="Center"
                                        Margin="0,0,10,0" />
-                            <TextBlock Text="{DynamicResource APP_WikiLink}"
+                            <TextBlock Text="{StaticResource APP_WikiLink}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
@@ -280,7 +280,7 @@
                                        Foreground="{DynamicResource DockTabActiveBrush}"
                                        VerticalAlignment="Center"
                                        Margin="0,0,10,0" />
-                            <TextBlock Text="{DynamicResource APP_ReportIssueLink}"
+                            <TextBlock Text="{StaticResource APP_ReportIssueLink}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
@@ -290,12 +290,12 @@
                 <!-- ── RIGHT COLUMN: CHANGELOG ─────────────────────────── -->
                 <StackPanel Grid.Column="2">
 
-                    <TextBlock Text="{DynamicResource APP_WhatsNewSection}"
+                    <TextBlock Text="{StaticResource APP_WhatsNewSection}"
                                Style="{StaticResource WelcomeSectionTitle}" />
 
                     <!-- Loading placeholder (hidden once data arrives) -->
                     <TextBlock x:Name="ChangelogLoadingText"
-                               Text="{DynamicResource APP_LoadingChangelog}"
+                               Text="{StaticResource APP_LoadingChangelog}"
                                FontSize="12"
                                Foreground="{DynamicResource DockTabTextBrush}"
                                Opacity="0.55"
@@ -306,7 +306,7 @@
                     <StackPanel x:Name="ChangelogPanel" />
 
                     <TextBlock x:Name="NoChangelogText"
-                               Text="{DynamicResource APP_ChangelogNotAvailable}"
+                               Text="{StaticResource APP_ChangelogNotAvailable}"
                                FontSize="12"
                                Foreground="{DynamicResource DockTabTextBrush}"
                                Opacity="0.5"
@@ -332,7 +332,7 @@
                             <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
                                        RequestNavigate="OnHyperlinkNavigate"
                                        NavigateUri="https://github.com/abbaye/WpfHexEditorControl">
-                                <Run Text="{DynamicResource APP_GitHubButton}"/>
+                                <Run Text="{StaticResource APP_GitHubButton}"/>
                             </Hyperlink>
                         </TextBlock>
 
@@ -342,7 +342,7 @@
                             <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
                                        RequestNavigate="OnHyperlinkNavigate"
                                        NavigateUri="https://github.com/abbaye/WpfHexEditorIDE/wiki">
-                                <Run Text="{DynamicResource APP_WikiButton}"/>
+                                <Run Text="{StaticResource APP_WikiButton}"/>
                             </Hyperlink>
                         </TextBlock>
 
@@ -352,7 +352,7 @@
                             <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
                                        RequestNavigate="OnHyperlinkNavigate"
                                        NavigateUri="https://github.com/abbaye/WpfHexEditorControl/issues">
-                                <Run Text="{DynamicResource APP_ReportIssueButton}"/>
+                                <Run Text="{StaticResource APP_ReportIssueButton}"/>
                             </Hyperlink>
                         </TextBlock>
 
@@ -362,7 +362,7 @@
                             <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
                                        RequestNavigate="OnHyperlinkNavigate"
                                        NavigateUri="https://github.com/abbaye/WpfHexEditorControl/blob/master/docs/CHANGELOG.md">
-                                <Run Text="{DynamicResource APP_FullChangelogButton}"/>
+                                <Run Text="{StaticResource APP_FullChangelogButton}"/>
                             </Hyperlink>
                         </TextBlock>
 

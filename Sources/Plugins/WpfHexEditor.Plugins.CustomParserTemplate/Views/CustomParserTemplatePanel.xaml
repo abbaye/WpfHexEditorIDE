@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -128,7 +128,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="{DynamicResource CustomParser_TemplatesLabel}"
+                <TextBlock Grid.Row="0" Text="{StaticResource CustomParser_TemplatesLabel}"
                            FontSize="14" FontWeight="Bold"
                            Foreground="{DynamicResource PFP_TextBrush}"
                            Margin="0,0,0,12"/>
@@ -161,11 +161,11 @@
                 </ListBox>
 
                 <StackPanel Grid.Row="2" Margin="0,8,0,0">
-                    <Button Content="{DynamicResource CustomParser_NewTemplate}"    Height="28" Margin="0,0,0,4"
+                    <Button Content="{StaticResource CustomParser_NewTemplate}"    Height="28" Margin="0,0,0,4"
                             Style="{StaticResource PanelDropdownButtonStyle}"
                             Padding="8,3"
                             Click="NewTemplate_Click"/>
-                    <Button Content="{DynamicResource CustomParser_DeleteTemplate}" Height="28"
+                    <Button Content="{StaticResource CustomParser_DeleteTemplate}" Height="28"
                             Style="{StaticResource PanelDropdownButtonStyle}"
                             Padding="8,3"
                             Click="DeleteTemplate_Click"/>
@@ -178,7 +178,7 @@
                       Background="{DynamicResource PFP_PanelBackgroundBrush}">
             <StackPanel Margin="12">
 
-                <TextBlock Text="{DynamicResource CustomParser_TemplateEditor}"
+                <TextBlock Text="{StaticResource CustomParser_TemplateEditor}"
                            FontSize="14" FontWeight="Bold"
                            Foreground="{DynamicResource PFP_TextBrush}"
                            Margin="0,0,0,12"/>
@@ -197,19 +197,19 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource CustomParser_NameLabel}"        Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{StaticResource CustomParser_NameLabel}"        Style="{StaticResource LabelStyle}"/>
                         <TextBox   Grid.Row="0" Grid.Column="1" x:Name="TemplateNameBox"
                                    Style="{StaticResource InputBoxStyle}" Margin="0,0,0,4"/>
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource CustomParser_DescriptionLabel}" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{StaticResource CustomParser_DescriptionLabel}" Style="{StaticResource LabelStyle}"/>
                         <TextBox   Grid.Row="1" Grid.Column="1" x:Name="TemplateDescriptionBox"
                                    Style="{StaticResource InputBoxStyle}" Margin="0,0,0,4"/>
 
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource CustomParser_ExtensionsLabel}"  Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{StaticResource CustomParser_ExtensionsLabel}"  Style="{StaticResource LabelStyle}"/>
                         <TextBox   Grid.Row="2" Grid.Column="1" x:Name="TemplateExtensionsBox"
-                                   Style="{StaticResource InputBoxStyle}" Margin="0,0,0,4" ToolTip="{DynamicResource CustomParser_ExtensionsHint}"/>
+                                   Style="{StaticResource InputBoxStyle}" Margin="0,0,0,4" ToolTip="{StaticResource CustomParser_ExtensionsHint}"/>
 
-                        <Button Grid.Row="3" Grid.Column="1" Content="{DynamicResource CustomParser_SaveTemplate}" Height="28" Margin="0,8,0,0"
+                        <Button Grid.Row="3" Grid.Column="1" Content="{StaticResource CustomParser_SaveTemplate}" Height="28" Margin="0,8,0,0"
                                 Style="{StaticResource PanelDropdownButtonStyle}"
                                 Padding="8,3"
                                 Click="SaveTemplate_Click"/>
@@ -217,7 +217,7 @@
                 </Border>
 
                 <!-- Blocks Section -->
-                <TextBlock Text="{DynamicResource CustomParser_FormatBlocks}" Style="{StaticResource SectionHeaderStyle}"/>
+                <TextBlock Text="{StaticResource CustomParser_FormatBlocks}" Style="{StaticResource SectionHeaderStyle}"/>
 
                 <Border Style="{StaticResource CardStyle}">
                     <Grid>
@@ -234,10 +234,10 @@
                                   Height="250"
                                   Margin="0,0,0,8">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="{DynamicResource CustomParser_ColName}"        Binding="{Binding Name}"        Width="150"/>
-                                <DataGridTextColumn Header="{DynamicResource Common_ColOffset}"      Binding="{Binding Offset}"      Width="80"/>
-                                <DataGridTextColumn Header="{DynamicResource CustomParser_ColLength}"      Binding="{Binding Length}"      Width="80"/>
-                                <DataGridComboBoxColumn Header="{DynamicResource CustomParser_ColType}"    SelectedItemBinding="{Binding ValueType}" Width="100">
+                                <DataGridTextColumn Header="{StaticResource CustomParser_ColName}"        Binding="{Binding Name}"        Width="150"/>
+                                <DataGridTextColumn Header="{StaticResource Common_ColOffset}"      Binding="{Binding Offset}"      Width="80"/>
+                                <DataGridTextColumn Header="{StaticResource CustomParser_ColLength}"      Binding="{Binding Length}"      Width="80"/>
+                                <DataGridComboBoxColumn Header="{StaticResource CustomParser_ColType}"    SelectedItemBinding="{Binding ValueType}" Width="100">
                                     <DataGridComboBoxColumn.ElementStyle>
                                         <Style TargetType="ComboBox">
                                             <Setter Property="ItemsSource" Value="{Binding DataContext.ValueTypes, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
@@ -249,16 +249,16 @@
                                         </Style>
                                     </DataGridComboBoxColumn.EditingElementStyle>
                                 </DataGridComboBoxColumn>
-                                <DataGridTextColumn Header="{DynamicResource CustomParser_ColColor}"       Binding="{Binding Color}"       Width="100"/>
-                                <DataGridTextColumn Header="{DynamicResource CustomParser_ColDescription}" Binding="{Binding Description}" Width="*"/>
+                                <DataGridTextColumn Header="{StaticResource CustomParser_ColColor}"       Binding="{Binding Color}"       Width="100"/>
+                                <DataGridTextColumn Header="{StaticResource CustomParser_ColDescription}" Binding="{Binding Description}" Width="*"/>
                             </DataGrid.Columns>
                         </DataGrid>
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <Button Content="{DynamicResource CustomParser_AddBlock}"    Width="100" Height="26" Margin="0,0,8,0"
+                            <Button Content="{StaticResource CustomParser_AddBlock}"    Width="100" Height="26" Margin="0,0,8,0"
                                     Style="{StaticResource PanelDropdownButtonStyle}"
                                     Click="AddBlock_Click"/>
-                            <Button Content="{DynamicResource CustomParser_RemoveBlock}" Width="120" Height="26"
+                            <Button Content="{StaticResource CustomParser_RemoveBlock}" Width="120" Height="26"
                                     Style="{StaticResource PanelDropdownButtonStyle}"
                                     Click="RemoveBlock_Click"/>
                         </StackPanel>
@@ -266,16 +266,16 @@
                 </Border>
 
                 <!-- Apply Section -->
-                <TextBlock Text="{DynamicResource CustomParser_ApplyToFile}" Style="{StaticResource SectionHeaderStyle}"/>
+                <TextBlock Text="{StaticResource CustomParser_ApplyToFile}" Style="{StaticResource SectionHeaderStyle}"/>
 
                 <Border Style="{StaticResource CardStyle}">
                     <StackPanel>
-                        <TextBlock Text="{DynamicResource CustomParser_ApplyDesc}"
+                        <TextBlock Text="{StaticResource CustomParser_ApplyDesc}"
                                    FontSize="10"
                                    Foreground="{DynamicResource PFP_SubTextBrush}"
                                    TextWrapping="Wrap"
                                    Margin="0,0,0,8"/>
-                        <Button Content="{DynamicResource CustomParser_ApplyButton}" Height="32"
+                        <Button Content="{StaticResource CustomParser_ApplyButton}" Height="32"
                                 Style="{StaticResource PanelDropdownButtonStyle}"
                                 FontWeight="SemiBold"
                                 Padding="12,3"
@@ -284,14 +284,14 @@
                 </Border>
 
                 <!-- Export/Import Section -->
-                <TextBlock Text="{DynamicResource CustomParser_ExportImport}" Style="{StaticResource SectionHeaderStyle}"/>
+                <TextBlock Text="{StaticResource CustomParser_ExportImport}" Style="{StaticResource SectionHeaderStyle}"/>
 
                 <Border Style="{StaticResource CardStyle}">
                     <StackPanel Orientation="Horizontal">
-                        <Button Content="{DynamicResource CustomParser_ExportJson}"   Width="130" Height="28" Margin="0,0,8,0"
+                        <Button Content="{StaticResource CustomParser_ExportJson}"   Width="130" Height="28" Margin="0,0,8,0"
                                 Style="{StaticResource PanelDropdownButtonStyle}"
                                 Click="ExportTemplate_Click"/>
-                        <Button Content="{DynamicResource CustomParser_ImportJson}" Width="140" Height="28"
+                        <Button Content="{StaticResource CustomParser_ImportJson}" Width="140" Height="28"
                                 Style="{StaticResource PanelDropdownButtonStyle}"
                                 Click="ImportTemplate_Click"/>
                     </StackPanel>

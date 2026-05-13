@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -14,7 +14,7 @@
 <Window x:Class="WpfHexEditor.App.Build.ConfigurationManagerDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        ToolTip="{DynamicResource APP_ConfigMgrTitle}"
+        ToolTip="{StaticResource APP_ConfigMgrTitle}"
         Width="640" Height="400"
         MinWidth="520" MinHeight="300"
         ResizeMode="CanResize"
@@ -73,16 +73,16 @@
         </Grid.RowDefinitions>
 
         <!-- Active configuration selectors -->
-        <TextBlock Grid.Row="0" Text="{DynamicResource APP_ActiveSolutionConfig}"
+        <TextBlock Grid.Row="0" Text="{StaticResource APP_ActiveSolutionConfig}"
                    FontSize="13" FontWeight="SemiBold"
                    Margin="0,0,0,8" />
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,16">
-            <Label Content="{DynamicResource APP_ConfigLabel}" />
+            <Label Content="{StaticResource APP_ConfigLabel}" />
             <ComboBox x:Name="CbActiveConfig" Width="130"
                       SelectionChanged="OnActiveConfigChanged" />
 
-            <Label Content="{DynamicResource APP_PlatformLabel}" />
+            <Label Content="{StaticResource APP_PlatformLabel}" />
             <ComboBox x:Name="CbActivePlatform" Width="110"
                       SelectionChanged="OnActivePlatformChanged" />
         </StackPanel>
@@ -90,17 +90,17 @@
         <!-- Per-project grid -->
         <DataGrid Grid.Row="2" x:Name="ProjectGrid" Margin="0,0,0,0">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="{DynamicResource APP_ProjectCol}"
+                <DataGridTextColumn Header="{StaticResource APP_ProjectCol}"
                                     Binding="{Binding ProjectName}"
                                     Width="*"
                                     IsReadOnly="True" />
-                <DataGridTextColumn Header="{DynamicResource APP_ConfigCol}"
+                <DataGridTextColumn Header="{StaticResource APP_ConfigCol}"
                                     Binding="{Binding Configuration}"
                                     Width="130" />
-                <DataGridTextColumn Header="{DynamicResource APP_PlatformCol}"
+                <DataGridTextColumn Header="{StaticResource APP_PlatformCol}"
                                     Binding="{Binding Platform}"
                                     Width="100" />
-                <DataGridCheckBoxColumn Header="{DynamicResource APP_BuildCol}"
+                <DataGridCheckBoxColumn Header="{StaticResource APP_BuildCol}"
                                         Binding="{Binding Build}"
                                         Width="60" />
             </DataGrid.Columns>
@@ -111,8 +111,8 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Margin="0,12,0,0">
-            <Button Content="{DynamicResource APP_ApplyButton}" Click="OnApply" Margin="0,0,8,0" />
-            <Button Content="{DynamicResource APP_CloseButton}" IsCancel="True" IsDefault="True" />
+            <Button Content="{StaticResource APP_ApplyButton}" Click="OnApply" Margin="0,0,8,0" />
+            <Button Content="{StaticResource APP_CloseButton}" IsCancel="True" IsDefault="True" />
         </StackPanel>
     </Grid>
 </Window>

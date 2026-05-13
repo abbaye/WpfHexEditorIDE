@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.App.Controls.DocumentTabHeader"
+﻿<UserControl x:Class="WpfHexEditor.App.Controls.DocumentTabHeader"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -45,7 +45,7 @@
                    FontSize="8"
                    VerticalAlignment="Center"
                    Foreground="{DynamicResource DockAccentBrush}"
-                   ToolTip="{DynamicResource APP_UnsavedChanges}">
+                   ToolTip="{StaticResource APP_UnsavedChanges}">
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -64,7 +64,7 @@
                    FontSize="8"
                    VerticalAlignment="Center"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
-                   ToolTip="{DynamicResource APP_ReadOnly}">
+                   ToolTip="{StaticResource APP_ReadOnly}">
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
                     <Setter Property="Visibility" Value="Collapsed" />

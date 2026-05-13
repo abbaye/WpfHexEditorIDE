@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Contributors: Claude Sonnet 4.6
 -->
@@ -39,8 +39,8 @@
                           CanUserAddRows="False"
                           CanUserDeleteRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="{DynamicResource Common_ColOffset}" Binding="{Binding Offset}" Width="120"/>
-                        <DataGridTextColumn Header="{DynamicResource ChangesetEditor_ColValuesHex}"  Binding="{Binding Values}" Width="*"/>
+                        <DataGridTextColumn Header="{StaticResource Common_ColOffset}" Binding="{Binding Offset}" Width="120"/>
+                        <DataGridTextColumn Header="{StaticResource ChangesetEditor_ColValuesHex}"  Binding="{Binding Values}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -58,8 +58,8 @@
                           CanUserAddRows="False"
                           CanUserDeleteRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="{DynamicResource ChangesetEditor_ColAfterOffset}" Binding="{Binding Offset}" Width="120"/>
-                        <DataGridTextColumn Header="{DynamicResource ChangesetEditor_ColBytesHex}"  Binding="{Binding Bytes}"  Width="*"/>
+                        <DataGridTextColumn Header="{StaticResource ChangesetEditor_ColAfterOffset}" Binding="{Binding Offset}" Width="120"/>
+                        <DataGridTextColumn Header="{StaticResource ChangesetEditor_ColBytesHex}"  Binding="{Binding Bytes}"  Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -77,8 +77,8 @@
                           CanUserAddRows="False"
                           CanUserDeleteRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="{DynamicResource ChangesetEditor_ColStart}"  Binding="{Binding Start}" Width="120"/>
-                        <DataGridTextColumn Header="{DynamicResource ChangesetEditor_ColCount}"  Binding="{Binding Count}" Width="80"/>
+                        <DataGridTextColumn Header="{StaticResource ChangesetEditor_ColStart}"  Binding="{Binding Start}" Width="120"/>
+                        <DataGridTextColumn Header="{StaticResource ChangesetEditor_ColCount}"  Binding="{Binding Count}" Width="80"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -84,7 +84,7 @@
             <DockPanel Margin="4,0" LastChildFill="True" VerticalAlignment="Center">
 
                 <Button DockPanel.Dock="Left"
-                        Style="{DynamicResource PanelIconButtonStyle}" ToolTip="{DynamicResource LspTools_RefreshTooltip}"
+                        Style="{DynamicResource PanelIconButtonStyle}" ToolTip="{StaticResource LspTools_RefreshTooltip}"
                         Click="OnRefreshClicked"
                         Margin="0,0,4,0">
                     <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
@@ -100,11 +100,11 @@
                                   Style="{StaticResource CH_ModeButton}"
                                   IsChecked="True"
                                   Checked="OnModeChanged"
-                                  Unchecked="OnModeChanged" ToolTip="{DynamicResource LspTools_ShowIncoming}">
+                                  Unchecked="OnModeChanged" ToolTip="{StaticResource LspTools_ShowIncoming}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                        Margin="0,0,4,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="{DynamicResource LspTools_Incoming}" FontSize="11" VerticalAlignment="Center"/>
+                            <TextBlock Text="{StaticResource LspTools_Incoming}" FontSize="11" VerticalAlignment="Center"/>
                         </StackPanel>
                     </ToggleButton>
                     <ToggleButton x:Name="OutgoingToggle"
@@ -112,12 +112,12 @@
                                   IsChecked="False"
                                   Checked="OnModeChanged"
                                   Unchecked="OnModeChanged"
-                                  ToolTip="{DynamicResource LspTools_ShowOutgoing}"
+                                  ToolTip="{StaticResource LspTools_ShowOutgoing}"
                                   Margin="4,0,0,0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE74B;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                        Margin="0,0,4,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="{DynamicResource LspTools_Outgoing}" FontSize="11" VerticalAlignment="Center"/>
+                            <TextBlock Text="{StaticResource LspTools_Outgoing}" FontSize="11" VerticalAlignment="Center"/>
                         </StackPanel>
                     </ToggleButton>
                 </StackPanel>
@@ -168,7 +168,7 @@
         </TreeView>
 
         <TextBlock x:Name="EmptyPlaceholder"
-                   Grid.Row="1" Text="{DynamicResource LspTools_NoCallHierarchy}"
+                   Grid.Row="1" Text="{StaticResource LspTools_NoCallHierarchy}"
                    Foreground="{DynamicResource CH_ForegroundBrush}"
                    Opacity="0.5"
                    FontSize="11"

@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.Core.ProjectSystem.Documents.References.ReferenceManagerDocument"
+﻿<UserControl x:Class="WpfHexEditor.Core.ProjectSystem.Documents.References.ReferenceManagerDocument"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WpfHexEditor.Core.ProjectSystem.Documents.References"
@@ -118,23 +118,23 @@
 
                 <Button Style="{StaticResource RM_ToolbarButton}"
                         Command="{Binding AddProjectReferenceCommand}"
-                        ToolTip="{DynamicResource PS_AddProjectRef}"
+                        ToolTip="{StaticResource PS_AddProjectRef}"
                         Margin="0,0,6,0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEA3C;" FontSize="13"
                                    Foreground="#6CA8C4" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                        <TextBlock Text="{DynamicResource PS_AddProjectRef}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{StaticResource PS_AddProjectRef}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
                 <Button Style="{StaticResource RM_ToolbarButton}"
                         Command="{Binding AddAssemblyReferenceCommand}"
-                        ToolTip="{DynamicResource PS_AddAssemblyRef}"
+                        ToolTip="{StaticResource PS_AddAssemblyRef}"
                         Margin="0,0,6,0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7EE;" FontSize="13"
                                    Foreground="#9AABB5" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                        <TextBlock Text="{DynamicResource PS_AddAssemblyRef}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{StaticResource PS_AddAssemblyRef}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
@@ -142,22 +142,22 @@
 
                 <Button Style="{StaticResource RM_ToolbarButton}"
                         Command="{Binding RemoveSelectedCommand}"
-                        ToolTip="{DynamicResource PS_RemoveRef}"
+                        ToolTip="{StaticResource PS_RemoveRef}"
                         Margin="0,0,6,0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" FontSize="13"
                                    VerticalAlignment="Center" Margin="0,0,5,0"/>
-                        <TextBlock Text="{DynamicResource PS_RemoveRef}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{StaticResource PS_RemoveRef}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
                 <Button Style="{StaticResource RM_ToolbarButton}"
                         Command="{Binding RemoveUnusedCommand}"
-                        ToolTip="{DynamicResource PS_RemoveUnused}">
+                        ToolTip="{StaticResource PS_RemoveUnused}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE72F;" FontSize="13"
                                    VerticalAlignment="Center" Margin="0,0,5,0"/>
-                        <TextBlock Text="{DynamicResource PS_RemoveUnused}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{StaticResource PS_RemoveUnused}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
@@ -193,7 +193,7 @@
                                                                Opacity="0.4"
                                                                FontFamily="Segoe MDL2 Assets, Segoe UI"
                                                                Margin="6,0,0,0">
-                                                        <Run Text="&#xE71E;  "/><Run Text="{DynamicResource PS_SearchReferences}"/>
+                                                        <Run Text="&#xE71E;  "/><Run Text="{StaticResource PS_SearchReferences}"/>
                                                     </TextBlock>
                                                 </VisualBrush.Visual>
                                             </VisualBrush>
@@ -297,7 +297,7 @@
                                                         x:Name="RemoveBtn"
                                                         Style="{StaticResource RM_RemoveButton}"
                                                         Visibility="{Binding IsRemovable, Converter={StaticResource BoolToVisibility}}"
-                                                        ToolTip="{DynamicResource PS_RemoveRef}"
+                                                        ToolTip="{StaticResource PS_RemoveRef}"
                                                         Command="{Binding DataContext.RemoveEntryCommand,
                                                                   RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=2}}"
                                                         CommandParameter="{Binding}">

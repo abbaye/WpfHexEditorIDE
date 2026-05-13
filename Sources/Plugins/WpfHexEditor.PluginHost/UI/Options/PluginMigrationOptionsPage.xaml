@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project: WpfHexEditor.PluginHost
     File: PluginMigrationOptionsPage.xaml
     Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -28,13 +28,13 @@
         <StackPanel Margin="0,0,0,16">
 
             <!-- ── Section: Migration Mode ─────────────────────────────── -->
-            <TextBlock Text="{DynamicResource PH_MigrationMode}"
+            <TextBlock Text="{StaticResource PH_MigrationMode}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        Margin="0,0,0,8"/>
 
             <DockPanel Margin="0,0,0,16">
-                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_ModeLabel}"
+                <TextBlock DockPanel.Dock="Left" Text="{StaticResource PH_ModeLabel}"
                            VerticalAlignment="Center"
                            Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
@@ -44,32 +44,32 @@
                           Foreground="{DynamicResource PFP_TextBrush}"
                           BorderBrush="{DynamicResource PFP_BorderBrush}"
                           SelectionChanged="OnModeChanged">
-                    <ComboBoxItem Content="{DynamicResource PH_ModeDisabled}"     Tag="Disabled"/>
-                    <ComboBoxItem Content="{DynamicResource PH_ModeSuggestOnly}" Tag="SuggestOnly"/>
-                    <ComboBoxItem Content="{DynamicResource PH_ModeAutoMigrate}" Tag="AutoMigrate"/>
+                    <ComboBoxItem Content="{StaticResource PH_ModeDisabled}"     Tag="Disabled"/>
+                    <ComboBoxItem Content="{StaticResource PH_ModeSuggestOnly}" Tag="SuggestOnly"/>
+                    <ComboBoxItem Content="{StaticResource PH_ModeAutoMigrate}" Tag="AutoMigrate"/>
                 </ComboBox>
             </DockPanel>
 
             <TextBlock TextWrapping="Wrap" FontSize="11" Opacity="0.75"
                        Foreground="{DynamicResource PFP_TextBrush}" Margin="0,0,0,20">
-                <Run FontWeight="Bold" Text="{DynamicResource PH_ModeDisabled}"/><Run Text="{DynamicResource PH_DisabledDesc}"/>
+                <Run FontWeight="Bold" Text="{StaticResource PH_ModeDisabled}"/><Run Text="{StaticResource PH_DisabledDesc}"/>
                 <LineBreak/>
-                <Run FontWeight="Bold" Text="{DynamicResource PH_ModeSuggestOnly}"/><Run Text="{DynamicResource PH_SuggestOnlyDesc}"/>
+                <Run FontWeight="Bold" Text="{StaticResource PH_ModeSuggestOnly}"/><Run Text="{StaticResource PH_SuggestOnlyDesc}"/>
                 <LineBreak/>
-                <Run FontWeight="Bold" Text="{DynamicResource PH_ModeAutoMigrate}"/><Run Text="{DynamicResource PH_AutoMigrateDesc}"/>
+                <Run FontWeight="Bold" Text="{StaticResource PH_ModeAutoMigrate}"/><Run Text="{StaticResource PH_AutoMigrateDesc}"/>
             </TextBlock>
 
             <!-- Separator -->
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,16"/>
 
             <!-- ── Section: Memory Thresholds ──────────────────────────── -->
-            <TextBlock Text="{DynamicResource PH_MemoryThresholds}"
+            <TextBlock Text="{StaticResource PH_MemoryThresholds}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        Margin="0,0,0,8"/>
 
             <DockPanel Margin="0,0,0,8">
-                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_SuggestAtMb}"
+                <TextBlock DockPanel.Dock="Left" Text="{StaticResource PH_SuggestAtMb}"
                            VerticalAlignment="Center" Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBox x:Name="MemorySuggestTextBox"
@@ -82,7 +82,7 @@
             </DockPanel>
 
             <DockPanel Margin="0,0,0,16">
-                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_AutoMigrateAtMb}"
+                <TextBlock DockPanel.Dock="Left" Text="{StaticResource PH_AutoMigrateAtMb}"
                            VerticalAlignment="Center" Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBox x:Name="MemoryAutoTextBox"
@@ -98,13 +98,13 @@
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,16"/>
 
             <!-- ── Section: CPU Thresholds ──────────────────────────────── -->
-            <TextBlock Text="{DynamicResource PH_CpuThresholds}"
+            <TextBlock Text="{StaticResource PH_CpuThresholds}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        Margin="0,0,0,8"/>
 
             <DockPanel Margin="0,0,0,8">
-                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_SuggestAtPct}"
+                <TextBlock DockPanel.Dock="Left" Text="{StaticResource PH_SuggestAtPct}"
                            VerticalAlignment="Center" Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBox x:Name="CpuSuggestTextBox"
@@ -117,7 +117,7 @@
             </DockPanel>
 
             <DockPanel Margin="0,0,0,8">
-                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_AutoMigrateAtPct}"
+                <TextBlock DockPanel.Dock="Left" Text="{StaticResource PH_AutoMigrateAtPct}"
                            VerticalAlignment="Center" Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBox x:Name="CpuAutoTextBox"
@@ -130,7 +130,7 @@
             </DockPanel>
 
             <DockPanel Margin="0,0,0,16">
-                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_SustainedWindow}"
+                <TextBlock DockPanel.Dock="Left" Text="{StaticResource PH_SustainedWindow}"
                            VerticalAlignment="Center" Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBox x:Name="CpuWindowTextBox"
@@ -146,13 +146,13 @@
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,16"/>
 
             <!-- ── Section: Crash Threshold ──────────────────────────────── -->
-            <TextBlock Text="{DynamicResource PH_CrashThreshold}"
+            <TextBlock Text="{StaticResource PH_CrashThreshold}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        Margin="0,0,0,8"/>
 
             <DockPanel Margin="0,0,0,20">
-                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_MigrateAfterCrashes}"
+                <TextBlock DockPanel.Dock="Left" Text="{StaticResource PH_MigrateAfterCrashes}"
                            VerticalAlignment="Center" Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBox x:Name="CrashCountTextBox"
@@ -169,14 +169,14 @@
 
             <!-- ── Action buttons ─────────────────────────────────────────── -->
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="SaveButton" Content="{DynamicResource PH_SaveButton}"
+                <Button x:Name="SaveButton" Content="{StaticResource PH_SaveButton}"
                         Click="OnSave"
                         Padding="16,5" Margin="0,0,8,0"
                         Background="{DynamicResource DockAccentBrush}"
                         Foreground="White"
                         BorderThickness="0"
                         FontSize="12"/>
-                <Button x:Name="ResetButton" Content="{DynamicResource PH_ResetToDefaults}"
+                <Button x:Name="ResetButton" Content="{StaticResource PH_ResetToDefaults}"
                         Click="OnResetDefaults"
                         Padding="12,5"
                         Background="{DynamicResource PFP_SectionBackgroundBrush}"
@@ -194,7 +194,7 @@
 
             <!-- Save confirmation message -->
             <TextBlock x:Name="SavedMessage"
-                       Text="{DynamicResource PH_SettingsSaved}" FontSize="11"
+                       Text="{StaticResource PH_SettingsSaved}" FontSize="11"
                        Foreground="{DynamicResource DockAccentBrush}"
                        Visibility="Collapsed" Margin="0,8,0,0"/>
 

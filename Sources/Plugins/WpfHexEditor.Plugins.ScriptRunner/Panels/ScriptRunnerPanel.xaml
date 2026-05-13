@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.Plugins.ScriptRunner.Panels.ScriptRunnerPanel"
+﻿<UserControl x:Class="WpfHexEditor.Plugins.ScriptRunner.Panels.ScriptRunnerPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.ScriptRunner.ViewModels"
@@ -38,7 +38,7 @@
 
                 <!-- Run (F5) -->
                 <Button Command="{Binding RunCommand}"
-                        ToolTip="{DynamicResource SR_TipRunScript}"
+                        ToolTip="{StaticResource SR_TipRunScript}"
                         Width="28" Height="24" Margin="0,0,2,0"
                         Background="Transparent" BorderThickness="0"
                         Foreground="{DynamicResource ForegroundBrush}">
@@ -47,7 +47,7 @@
 
                 <!-- Cancel -->
                 <Button Command="{Binding CancelCommand}"
-                        ToolTip="{DynamicResource SR_TipCancel}"
+                        ToolTip="{StaticResource SR_TipCancel}"
                         Width="28" Height="24" Margin="0,0,2,0"
                         Background="Transparent" BorderThickness="0"
                         Foreground="{DynamicResource ForegroundBrush}">
@@ -58,7 +58,7 @@
 
                 <!-- Clear output -->
                 <Button Command="{Binding ClearCommand}"
-                        ToolTip="{DynamicResource SR_TipClearOutput}"
+                        ToolTip="{StaticResource SR_TipClearOutput}"
                         Width="28" Height="24" Margin="0,0,2,0"
                         Background="Transparent" BorderThickness="0"
                         Foreground="{DynamicResource ForegroundBrush}">

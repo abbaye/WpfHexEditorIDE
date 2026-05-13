@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 // ==========================================================
 // Project: WpfHexEditor.Editor.DocumentEditor
 // File: Controls/DocumentStatisticsDialog.xaml
@@ -11,7 +11,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
-        Title="{DynamicResource DocStats_Title}"
+        Title="{StaticResource DocStats_Title}"
         Width="320" SizeToContent="Height"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
@@ -32,7 +32,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocStats_WordCount}"
+            <TextBlock Text="{StaticResource DocStats_WordCount}"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBlock x:Name="TxtWordCount" Grid.Column="1"
                        FontWeight="SemiBold"
@@ -44,7 +44,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocStats_CharCount}"
+            <TextBlock Text="{StaticResource DocStats_CharCount}"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBlock x:Name="TxtCharCount" Grid.Column="1"
                        FontWeight="SemiBold"
@@ -56,7 +56,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocStats_CharNoSpaceCount}"
+            <TextBlock Text="{StaticResource DocStats_CharNoSpaceCount}"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBlock x:Name="TxtCharNoSpaceCount" Grid.Column="1"
                        FontWeight="SemiBold"
@@ -68,7 +68,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocStats_BlockCount}"
+            <TextBlock Text="{StaticResource DocStats_BlockCount}"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBlock x:Name="TxtBlockCount" Grid.Column="1"
                        FontWeight="SemiBold"
@@ -80,7 +80,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocStats_LineCount}"
+            <TextBlock Text="{StaticResource DocStats_LineCount}"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBlock x:Name="TxtLineCount" Grid.Column="1"
                        FontWeight="SemiBold"
@@ -88,7 +88,7 @@
         </Grid>
 
         <Button x:Name="BtnClose"
-                Content="{DynamicResource DocStats_Close}"
+                Content="{StaticResource DocStats_Close}"
                 HorizontalAlignment="Right"
                 MinWidth="80"
                 Padding="12,4"

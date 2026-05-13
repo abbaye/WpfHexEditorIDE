@@ -1,4 +1,4 @@
-<Popup
+﻿<Popup
     x:Class="WpfHexEditor.Plugins.Git.Views.BranchPickerPopup"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -31,7 +31,7 @@
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      Style="{DynamicResource DockDarkTextBoxStyle}"
                      Margin="0,0,0,4"
-                     ToolTip="{DynamicResource Git_FilterBranches}"/>
+                     ToolTip="{StaticResource Git_FilterBranches}"/>
 
             <!-- Branch list -->
             <ListBox Grid.Row="1"
@@ -99,7 +99,7 @@
             <!-- New branch row -->
             <Grid Grid.Row="2" Margin="0,4,0,0">
                 <!-- Create new branch button -->
-                <Button Content="{DynamicResource Git_NewBranch}"
+                <Button Content="{StaticResource Git_NewBranch}"
                         Command="{Binding BeginCreateCommand}"
                         HorizontalAlignment="Left" Padding="6,4">
                     <Button.Style>
@@ -134,13 +134,13 @@
                     <TextBox Grid.Column="0"
                              Text="{Binding NewBranchName, UpdateSourceTrigger=PropertyChanged}"
                              Style="{DynamicResource DockDarkTextBoxStyle}"
-                             ToolTip="{DynamicResource Git_NewBranchTooltip}">
+                             ToolTip="{StaticResource Git_NewBranchTooltip}">
                         <TextBox.InputBindings>
                             <KeyBinding Key="Return" Command="{Binding CreateCommand}"/>
                             <KeyBinding Key="Escape" Command="{Binding CancelCreateCommand}"/>
                         </TextBox.InputBindings>
                     </TextBox>
-                    <Button Grid.Column="1" Content="{DynamicResource Git_CreateBranch}"
+                    <Button Grid.Column="1" Content="{StaticResource Git_CreateBranch}"
                             Command="{Binding CreateCommand}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             Padding="8,4" Margin="4,0,0,0"/>

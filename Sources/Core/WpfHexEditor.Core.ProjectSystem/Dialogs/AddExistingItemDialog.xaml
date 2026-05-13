@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -12,7 +12,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:psSvc="clr-namespace:WpfHexEditor.Core.ProjectSystem.Services"
-        Title="{DynamicResource PS_AddExistingItemTitle}"
+        Title="{StaticResource PS_AddExistingItemTitle}"
         Width="580" Height="540"
         MinWidth="480" MinHeight="460"
         ResizeMode="CanResizeWithGrip"
@@ -74,13 +74,13 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="{DynamicResource PS_FilesLabel}" />
+            <Label Grid.Column="0" Content="{StaticResource PS_FilesLabel}" />
             <TextBox x:Name="FilePathBox" Grid.Column="1"
                      IsReadOnly="True"
                      Background="{DynamicResource DockBackgroundBrush}" />
-            <Button Grid.Column="2" Content="{DynamicResource PS_Browse}" Margin="6,0,0,0"
+            <Button Grid.Column="2" Content="{StaticResource PS_Browse}" Margin="6,0,0,0"
                     Padding="10,5" MinWidth="70"
-                    ToolTip="{DynamicResource PS_AddExistingItemTooltip}"
+                    ToolTip="{StaticResource PS_AddExistingItemTooltip}"
                     Click="OnBrowse" />
         </Grid>
 
@@ -136,7 +136,7 @@
                                         Width="20" Height="20"
                                         Padding="0"
                                         VerticalAlignment="Center"
-                                        ToolTip="{DynamicResource PS_RemoveFileTooltip}"
+                                        ToolTip="{StaticResource PS_RemoveFileTooltip}"
                                         Tag="{Binding}"
                                         Click="OnRemoveFileEntry"
                                         Style="{DynamicResource PanelIconButtonStyle}" />
@@ -153,7 +153,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="{DynamicResource PS_DetectedTypeLabel}" />
+            <Label Grid.Column="0" Content="{StaticResource PS_DetectedTypeLabel}" />
             <ComboBox x:Name="TypeCombo" Grid.Column="1"
                       MinWidth="140"
                       SelectionChanged="OnTypeChanged" />
@@ -165,7 +165,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{DynamicResource PS_CopyOptionsSection}" FontWeight="SemiBold" Margin="0,0,8,0"
+            <TextBlock Grid.Column="0" Text="{StaticResource PS_CopyOptionsSection}" FontWeight="SemiBold" Margin="0,0,8,0"
                        VerticalAlignment="Center" />
             <Rectangle Grid.Column="1" Height="1"
                        Fill="{DynamicResource Panel_ToolbarBorderBrush}"
@@ -174,12 +174,12 @@
 
         <StackPanel Grid.Row="7">
             <RadioButton x:Name="KeepOriginalRadio"
-                         Content="{DynamicResource PS_KeepOriginalLocation}"
+                         Content="{StaticResource PS_KeepOriginalLocation}"
                          GroupName="CopyMode"
                          Checked="OnCopyModeChanged"
                          Margin="0,0,0,6" />
             <RadioButton x:Name="CopyToProjectRadio"
-                         Content="{DynamicResource PS_CopyIntoProject}"
+                         Content="{StaticResource PS_CopyIntoProject}"
                          GroupName="CopyMode"
                          IsChecked="True"
                          Checked="OnCopyModeChanged"
@@ -192,7 +192,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{DynamicResource PS_DestinationFolder}" FontWeight="SemiBold" Margin="0,0,8,0"
+            <TextBlock Grid.Column="0" Text="{StaticResource PS_DestinationFolder}" FontWeight="SemiBold" Margin="0,0,8,0"
                        VerticalAlignment="Center" />
             <Rectangle Grid.Column="1" Height="1"
                        Fill="{DynamicResource Panel_ToolbarBorderBrush}"
@@ -202,12 +202,12 @@
         <!-- Mode toggle: Physical subfolder | Keep in place -->
         <StackPanel Grid.Row="10" Orientation="Horizontal">
             <RadioButton x:Name="ManualFolderRadio"
-                         Content="{DynamicResource PS_PhysicalSubfolder}"
+                         Content="{StaticResource PS_PhysicalSubfolder}"
                          GroupName="PlacementMode"
                          IsChecked="True"
                          Checked="OnPlacementModeChanged" />
             <RadioButton x:Name="AutoFolderRadio"
-                         Content="{DynamicResource PS_KeepInPlace}"
+                         Content="{StaticResource PS_KeepInPlace}"
                          GroupName="PlacementMode"
                          Margin="16,0,0,0"
                          Checked="OnPlacementModeChanged" />
@@ -232,7 +232,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Button Content="&#xE8F4;"
                                 FontFamily="Segoe MDL2 Assets"
-                                ToolTip="{DynamicResource PS_NewFolderTooltip}"
+                                ToolTip="{StaticResource PS_NewFolderTooltip}"
                                 Style="{DynamicResource PanelIconButtonStyle}"
                                 Click="OnNewFolder" />
                     </StackPanel>
@@ -263,17 +263,17 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{DynamicResource PS_NameLabel}" VerticalAlignment="Center" Margin="0,0,6,0" />
+                        <TextBlock Grid.Column="0" Text="{StaticResource PS_NameLabel}" VerticalAlignment="Center" Margin="0,0,6,0" />
                         <TextBox   Grid.Column="1" x:Name="NewFolderNameBox"
                                    KeyDown="OnNewFolderNameKeyDown" />
                         <Button    Grid.Column="2"
                                    Content="&#xE73E;" FontFamily="Segoe MDL2 Assets"
-                                   ToolTip="{DynamicResource PS_ConfirmNewFolder}"
+                                   ToolTip="{StaticResource PS_ConfirmNewFolder}"
                                    Style="{DynamicResource PanelIconButtonStyle}"
                                    Click="OnConfirmNewFolder" Margin="4,0,0,0" />
                         <Button    Grid.Column="3"
                                    Content="&#xE711;" FontFamily="Segoe MDL2 Assets"
-                                   ToolTip="{DynamicResource PS_Cancel}"
+                                   ToolTip="{StaticResource PS_Cancel}"
                                    Style="{DynamicResource PanelIconButtonStyle}"
                                    Click="OnCancelNewFolder" />
                     </Grid>
@@ -296,7 +296,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{DynamicResource PS_PreviewSection}" FontWeight="SemiBold" Margin="0,0,8,0"
+            <TextBlock Grid.Column="0" Text="{StaticResource PS_PreviewSection}" FontWeight="SemiBold" Margin="0,0,8,0"
                        VerticalAlignment="Center" />
             <Rectangle Grid.Column="1" Height="1"
                        Fill="{DynamicResource Panel_ToolbarBorderBrush}"
@@ -309,7 +309,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource PS_DestinationLabel}"
+                <TextBlock Grid.Column="0" Text="{StaticResource PS_DestinationLabel}"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Opacity="0.7" />
                 <TextBlock x:Name="PhysicalPreviewText" Grid.Column="1"
@@ -321,9 +321,9 @@
 
         <!-- ── Buttons ────────────────────────────────────────────────────── -->
         <StackPanel Grid.Row="16" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="AddButton" Content="{DynamicResource PS_Add}" IsDefault="True"
+            <Button x:Name="AddButton" Content="{StaticResource PS_Add}" IsDefault="True"
                     IsEnabled="False" Click="OnAdd" Margin="0,0,8,0" />
-            <Button Content="{DynamicResource PS_Cancel}" IsCancel="True" />
+            <Button Content="{StaticResource PS_Cancel}" IsCancel="True" />
         </StackPanel>
     </Grid>
 </ec:ThemedDialog>

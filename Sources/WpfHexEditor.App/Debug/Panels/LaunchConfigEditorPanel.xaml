@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 // ===========================================================
 // Project: WpfHexEditor.App.Debug
 // File: Panels/LaunchConfigEditorPanel.xaml
@@ -37,51 +37,51 @@
             <StackPanel Orientation="Horizontal">
 
                 <Button x:Name="BtnOpen"
-                        ToolTip="{DynamicResource DBG_OpenWhdbgTooltip}"
+                        ToolTip="{StaticResource DBG_OpenWhdbgTooltip}"
                         Padding="6,3" Margin="0,0,4,0"
                         Click="OnOpen">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,4,0"/>
-                        <TextBlock Text="{DynamicResource DBG_OpenButton}" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        <TextBlock Text="{StaticResource DBG_OpenButton}" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="BtnSave" ToolTip="{DynamicResource DBG_SaveTooltip}"
+                <Button x:Name="BtnSave" ToolTip="{StaticResource DBG_SaveTooltip}"
                         Padding="6,3" Margin="0,0,4,0"
                         Click="OnSave">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,4,0"/>
-                        <TextBlock Text="{DynamicResource DBG_SaveButton}" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        <TextBlock Text="{StaticResource DBG_SaveButton}" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="BtnEditInIde" ToolTip="{DynamicResource DBG_EditInIdeTooltip}"
+                <Button x:Name="BtnEditInIde" ToolTip="{StaticResource DBG_EditInIdeTooltip}"
                         Padding="6,3" Margin="0,0,4,0"
                         Click="OnEditInIde">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,4,0"/>
-                        <TextBlock Text="{DynamicResource DBG_EditInIde}" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        <TextBlock Text="{StaticResource DBG_EditInIde}" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     </StackPanel>
                 </Button>
 
                 <Separator Width="1" Margin="4,2" Background="{DynamicResource DockBorderBrush}"/>
 
-                <Button x:Name="BtnLaunch" ToolTip="{DynamicResource DBG_LaunchTooltip}"
+                <Button x:Name="BtnLaunch" ToolTip="{StaticResource DBG_LaunchTooltip}"
                         Padding="6,3" Margin="0,0,8,0"
                         Click="OnLaunch">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xF5B0;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="#55CC55" Margin="0,0,4,0"/>
-                        <TextBlock Text="{DynamicResource DBG_LaunchButton}" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        <TextBlock Text="{StaticResource DBG_LaunchButton}" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     </StackPanel>
                 </Button>
 
                 <Separator Width="1" Margin="0,2,8,2" Background="{DynamicResource DockBorderBrush}"/>
 
-                <TextBlock Text="{DynamicResource DBG_ConfigLabel}"
+                <TextBlock Text="{StaticResource DBG_ConfigLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Margin="0,0,4,0"/>
@@ -104,7 +104,7 @@
                            Opacity="0.2"
                            HorizontalAlignment="Center"
                            Margin="0,0,0,12"/>
-                <TextBlock Text="{DynamicResource DBG_LaunchConfigTitle}"
+                <TextBlock Text="{StaticResource DBG_LaunchConfigTitle}"
                            FontSize="18" FontWeight="SemiBold"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            HorizontalAlignment="Center"
@@ -113,7 +113,7 @@
                            FontSize="12"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Opacity="0.6"
-                           Text="{DynamicResource DBG_LaunchHint}"/>
+                           Text="{StaticResource DBG_LaunchHint}"/>
             </StackPanel>
         </Border>
 
@@ -125,7 +125,7 @@
                 Padding="8,2">
             <TextBlock x:Name="StatusText"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
-                       FontSize="11" Text="{DynamicResource DBG_NoFileOpen}"/>
+                       FontSize="11" Text="{StaticResource DBG_NoFileOpen}"/>
         </Border>
     </Grid>
 </UserControl>

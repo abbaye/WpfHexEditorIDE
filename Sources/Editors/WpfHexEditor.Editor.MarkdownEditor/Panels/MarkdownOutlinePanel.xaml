@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project  : WpfHexEditor.Editor.MarkdownEditor
     File     : Panels/MarkdownOutlinePanel.xaml
     Desc     : Dockable panel showing a H1–H6 heading outline for the active
@@ -107,7 +107,7 @@
                 BorderBrush="{DynamicResource SE_SeparatorBrush}"
                 Background="{DynamicResource SE_ToolbarBrush}">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
-                <TextBlock Text="{DynamicResource Md_OutlineTitle}"
+                <TextBlock Text="{StaticResource Md_OutlineTitle}"
                            FontWeight="SemiBold"
                            FontSize="11"
                            VerticalAlignment="Center"
@@ -115,7 +115,7 @@
                            Foreground="{DynamicResource SE_ForegroundBrush}"/>
                 <Button x:Name="RefreshButton"
                         Style="{StaticResource MDO_IconButton}"
-                        ToolTip="{DynamicResource MdOut_RefreshTooltip}"
+                        ToolTip="{StaticResource MdOut_RefreshTooltip}"
                         Click="OnRefreshClick">
                     <TextBlock Text="&#xE72C;"
                                FontFamily="Segoe MDL2 Assets"
@@ -127,7 +127,7 @@
         <!-- ── Empty-state overlay ──────────────────────────────────────── -->
         <Grid Grid.Row="1">
             <TextBlock x:Name="EmptyLabel"
-                       Text="{DynamicResource MdOut_NoActiveFile}"
+                       Text="{StaticResource MdOut_NoActiveFile}"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        FontSize="11"

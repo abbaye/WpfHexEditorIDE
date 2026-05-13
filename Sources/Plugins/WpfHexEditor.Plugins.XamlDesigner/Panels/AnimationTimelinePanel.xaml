@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="WpfHexEditor.Plugins.XamlDesigner.Panels.AnimationTimelinePanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -179,7 +179,7 @@
                               Background="Transparent"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
                               BorderBrush="{DynamicResource DockBorderBrush}"
-                              ToolTip="{DynamicResource XamlDesigner_ActiveStoryboard}"
+                              ToolTip="{StaticResource XamlDesigner_ActiveStoryboard}"
                               Margin="4,0"/>
 
                     <Separator Style="{StaticResource TlSepStyle}"/>
@@ -187,7 +187,7 @@
                     <!-- Duration display -->
                     <TextBlock VerticalAlignment="Center" FontSize="10"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="4,0,0,0">
-                        <Run Text="{DynamicResource XamlDesigner_DurLabel}"/>
+                        <Run Text="{StaticResource XamlDesigner_DurLabel}"/>
                         <Run Text="{Binding Duration, StringFormat={}{0:mm\\:ss\\.ff}, Mode=OneWay}"/>
                     </TextBlock>
 
@@ -204,11 +204,11 @@
 
                     <!-- Stop -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE71A;" ToolTip="{DynamicResource XamlDesigner_Stop}"
+                            Content="&#xE71A;" ToolTip="{StaticResource XamlDesigner_Stop}"
                             Command="{Binding StopCommand}"/>
 
                     <!-- Play / Pause toggle -->
-                    <Button Style="{StaticResource TlButtonStyle}" ToolTip="{DynamicResource XamlDesigner_PlayPause}"
+                    <Button Style="{StaticResource TlButtonStyle}" ToolTip="{StaticResource XamlDesigner_PlayPause}"
                             Command="{Binding PlayCommand}"
                             x:Name="BtnPlay">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12">
@@ -229,13 +229,13 @@
 
                     <!-- Add Keyframe -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE710;" ToolTip="{DynamicResource XamlDesigner_AddKeyframe}"
+                            Content="&#xE710;" ToolTip="{StaticResource XamlDesigner_AddKeyframe}"
                             Command="{Binding AddKeyframeCommand}"
                             Click="OnAddKeyframeClick"/>
 
                     <!-- Delete Keyframe -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE74D;" ToolTip="{DynamicResource XamlDesigner_DeleteKeyframe}"
+                            Content="&#xE74D;" ToolTip="{StaticResource XamlDesigner_DeleteKeyframe}"
                             Command="{Binding DeleteKeyframeCommand}"
                             Click="OnDeleteKeyframeClick"/>
 
@@ -243,12 +243,12 @@
 
                     <!-- Loop toggle -->
                     <ToggleButton Style="{StaticResource TlToggleButtonStyle}"
-                                  Content="&#xE8EE;" ToolTip="{DynamicResource XamlDesigner_LoopPlayback}"
+                                  Content="&#xE8EE;" ToolTip="{StaticResource XamlDesigner_LoopPlayback}"
                                   IsChecked="{Binding IsLooping, Mode=TwoWay}"/>
 
                     <!-- AutoReverse toggle -->
                     <ToggleButton Style="{StaticResource TlToggleButtonStyle}"
-                                  Content="&#xE7C4;" ToolTip="{DynamicResource XamlDesigner_AutoReverse}"
+                                  Content="&#xE7C4;" ToolTip="{StaticResource XamlDesigner_AutoReverse}"
                                   IsChecked="{Binding AutoReverse, Mode=TwoWay}"/>
 
                     <Separator Style="{StaticResource TlSepStyle}"/>
@@ -257,7 +257,7 @@
                     <ComboBox x:Name="CbxPlaybackSpeed"
                               Width="55"
                               VerticalAlignment="Center"
-                              ToolTip="{DynamicResource XamlDesigner_PlaybackSpeed}"
+                              ToolTip="{StaticResource XamlDesigner_PlaybackSpeed}"
                               ItemsSource="{x:Static vm:AnimationTimelinePanelViewModel.AvailablePlaybackSpeeds}"
                               SelectedItem="{Binding PlaybackSpeed, Mode=TwoWay}"
                               Height="18" FontSize="10"
@@ -276,14 +276,14 @@
 
                     <!-- Zoom in timeline -->
                     <Button x:Name="BtnZoomIn"
-                            Style="{StaticResource TlButtonStyle}" ToolTip="{DynamicResource XamlDesigner_ZoomInTimeline}"
+                            Style="{StaticResource TlButtonStyle}" ToolTip="{StaticResource XamlDesigner_ZoomInTimeline}"
                             Command="{Binding ZoomInCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE8A3;"/>
                     </Button>
 
                     <!-- Zoom out timeline -->
                     <Button x:Name="BtnZoomOut"
-                            Style="{StaticResource TlButtonStyle}" ToolTip="{DynamicResource XamlDesigner_ZoomOutTimeline}"
+                            Style="{StaticResource TlButtonStyle}" ToolTip="{StaticResource XamlDesigner_ZoomOutTimeline}"
                             Command="{Binding ZoomOutCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE71F;"/>
                     </Button>
@@ -296,7 +296,7 @@
                               Height="18" Width="54" FontSize="10"
                               Background="Transparent"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
-                              BorderBrush="{DynamicResource DockBorderBrush}" ToolTip="{DynamicResource XamlDesigner_FrameRate}">
+                              BorderBrush="{DynamicResource DockBorderBrush}" ToolTip="{StaticResource XamlDesigner_FrameRate}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock FontSize="10">
@@ -311,12 +311,12 @@
 
                     <!-- Export to clipboard -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE8C8;" ToolTip="{DynamicResource XamlDesigner_ExportStoryboard}"
+                            Content="&#xE8C8;" ToolTip="{StaticResource XamlDesigner_ExportStoryboard}"
                             Command="{Binding ExportStoryboardCommand}"/>
 
                     <!-- Add track -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE948;" ToolTip="{DynamicResource XamlDesigner_AddTrack}"
+                            Content="&#xE948;" ToolTip="{StaticResource XamlDesigner_AddTrack}"
                             Command="{Binding AddTrackCommand}"/>
 
                 </StackPanel>
@@ -386,7 +386,7 @@
                                     Content="&#xE8BB;"
                                     Background="Transparent" BorderThickness="0"
                                     Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                    Cursor="Hand" Visibility="Hidden" ToolTip="{DynamicResource XamlDesigner_RemoveTrack}"
+                                    Cursor="Hand" Visibility="Hidden" ToolTip="{StaticResource XamlDesigner_RemoveTrack}"
                                     Command="{Binding DataContext.RemoveTrackCommand,
                                               RelativeSource={RelativeSource AncestorType=ListBox}}"
                                     CommandParameter="{Binding}"/>

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project: WpfHexEditor.Plugins.SynalysisGrammar
     File: Options/GrammarExplorerOptionsPage.xaml
     Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -29,12 +29,12 @@
         <StackPanel>
 
         <!-- Section: Behaviour -->
-        <TextBlock Text="{DynamicResource Synalysis_BehaviourSection}"
+        <TextBlock Text="{StaticResource Synalysis_BehaviourSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
 
-        <CheckBox x:Name="ChkAutoApply" Content="{DynamicResource Synalysis_AutoApplyOnOpen}"
+        <CheckBox x:Name="ChkAutoApply" Content="{StaticResource Synalysis_AutoApplyOnOpen}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
@@ -43,7 +43,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{DynamicResource Synalysis_MaxSampleSize}"
+            <TextBlock Grid.Column="0" Text="{StaticResource Synalysis_MaxSampleSize}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -62,30 +62,30 @@
         </Grid>
 
         <!-- Section: Filter -->
-        <TextBlock Text="{DynamicResource Synalysis_GrammarListFilter}"
+        <TextBlock Text="{StaticResource Synalysis_GrammarListFilter}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
 
-        <CheckBox x:Name="ChkShowEmbedded" Content="{DynamicResource Synalysis_ShowBuiltIn}"
+        <CheckBox x:Name="ChkShowEmbedded" Content="{StaticResource Synalysis_ShowBuiltIn}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
-        <CheckBox x:Name="ChkShowFile" Content="{DynamicResource Synalysis_ShowFromDisk}"
+        <CheckBox x:Name="ChkShowFile" Content="{StaticResource Synalysis_ShowFromDisk}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
-        <CheckBox x:Name="ChkShowPlugin" Content="{DynamicResource Synalysis_ShowFromPlugins}"
+        <CheckBox x:Name="ChkShowPlugin" Content="{StaticResource Synalysis_ShowFromPlugins}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,16"/>
 
         <!-- Section: Overlay -->
-        <TextBlock Text="{DynamicResource Synalysis_OverlaySection}"
+        <TextBlock Text="{StaticResource Synalysis_OverlaySection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
 
-        <CheckBox x:Name="ChkClearOverlayOnRemoval" Content="{DynamicResource Synalysis_ClearOnRemove}"
+        <CheckBox x:Name="ChkClearOverlayOnRemoval" Content="{StaticResource Synalysis_ClearOnRemove}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 

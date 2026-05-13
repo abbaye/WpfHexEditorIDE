@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -68,7 +68,7 @@
                            Margin="0,0,0,14"/>
 
                 <!-- Cancel Button -->
-                <Button Content="{DynamicResource ProgressButtonCancel}"
+                <Button Content="{StaticResource ProgressButtonCancel}"
                         Command="{Binding CancelCommand}"
                         Visibility="{Binding CanCancel, Converter={StaticResource BoolToVisibilityConverter}}"
                         Padding="20,6"

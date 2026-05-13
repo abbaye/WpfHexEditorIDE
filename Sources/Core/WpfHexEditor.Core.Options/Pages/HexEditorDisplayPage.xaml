@@ -19,7 +19,7 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="0,0,0,16">
 
-        <TextBlock Text="{DynamicResource HexDisplay_DisplaySection}"
+        <TextBlock Text="{StaticResource HexDisplay_DisplaySection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -30,7 +30,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource HexDisplay_BytesPerLineLabel}"
+            <TextBlock Text="{StaticResource HexDisplay_BytesPerLineLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="BytePerLineCombo" Grid.Column="1"
@@ -45,14 +45,14 @@
 
         <!-- Colonnes visibles -->
         <CheckBox x:Name="CheckShowOffset"
-                  Content="{DynamicResource HexDisplay_ShowOffset}"
+                  Content="{StaticResource HexDisplay_ShowOffset}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowAscii"
-                  Content="{DynamicResource HexDisplay_ShowAscii}"
+                  Content="{StaticResource HexDisplay_ShowAscii}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,10"
                   Checked="OnCheckChanged"
@@ -64,7 +64,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource HexDisplay_MouseWheelLabel}"
+            <TextBlock Text="{StaticResource HexDisplay_MouseWheelLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="MouseWheelSpeedCombo" Grid.Column="1"
@@ -77,7 +77,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource HexDisplay_ByteTooltipLabel}"
+            <TextBlock Text="{StaticResource HexDisplay_ByteTooltipLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="ByteToolTipModeCombo" Grid.Column="1"
@@ -87,7 +87,7 @@
         <Separator Margin="0,0,0,16"
                    Background="{DynamicResource DockBorderBrush}"/>
 
-        <TextBlock Text="{DynamicResource HexDisplay_FormatSection}"
+        <TextBlock Text="{StaticResource HexDisplay_FormatSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -98,7 +98,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource HexDisplay_ValueFormatLabel}"
+            <TextBlock Text="{StaticResource HexDisplay_ValueFormatLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="DataVisualCombo" Grid.Column="1"
@@ -111,7 +111,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource HexDisplay_OffsetFormatLabel}"
+            <TextBlock Text="{StaticResource HexDisplay_OffsetFormatLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="OffsetVisualCombo" Grid.Column="1"
@@ -124,7 +124,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource HexDisplay_ByteGroupingLabel}"
+            <TextBlock Text="{StaticResource HexDisplay_ByteGroupingLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="ByteGroupingCombo" Grid.Column="1"
@@ -137,7 +137,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource HexDisplay_SpacerPositionLabel}"
+            <TextBlock Text="{StaticResource HexDisplay_SpacerPositionLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="SpacerPositionCombo" Grid.Column="1"
@@ -147,41 +147,41 @@
         <Separator Margin="0,8,0,16"
                    Background="{DynamicResource DockBorderBrush}"/>
 
-        <TextBlock Text="{DynamicResource HexDisplay_ScrollMarkersSection}"
+        <TextBlock Text="{StaticResource HexDisplay_ScrollMarkersSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckShowBookmarkMarkers"
-                  Content="{DynamicResource HexDisplay_ShowBookmarkMarkers}"
+                  Content="{StaticResource HexDisplay_ShowBookmarkMarkers}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowModifiedMarkers"
-                  Content="{DynamicResource HexDisplay_ShowModifiedMarkers}"
+                  Content="{StaticResource HexDisplay_ShowModifiedMarkers}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowInsertedMarkers"
-                  Content="{DynamicResource HexDisplay_ShowInsertedMarkers}"
+                  Content="{StaticResource HexDisplay_ShowInsertedMarkers}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowDeletedMarkers"
-                  Content="{DynamicResource HexDisplay_ShowDeletedMarkers}"
+                  Content="{StaticResource HexDisplay_ShowDeletedMarkers}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowSearchResultMarkers"
-                  Content="{DynamicResource HexDisplay_ShowSearchResultMarkers}"
+                  Content="{StaticResource HexDisplay_ShowSearchResultMarkers}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,0"
                   Checked="OnCheckChanged"
@@ -190,34 +190,34 @@
         <Separator Margin="0,16,0,16"
                    Background="{DynamicResource DockBorderBrush}"/>
 
-        <TextBlock Text="{DynamicResource HexDisplay_ColumnRowSection}"
+        <TextBlock Text="{StaticResource HexDisplay_ColumnRowSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckShowColumnHighlight"
-                  Content="{DynamicResource HexDisplay_ShowColumnHighlight}"
+                  Content="{StaticResource HexDisplay_ShowColumnHighlight}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowAsciiColumnHighlight"
-                  Content="{DynamicResource HexDisplay_ShowAsciiColumnHighlight}"
+                  Content="{StaticResource HexDisplay_ShowAsciiColumnHighlight}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowRowHighlight"
-                  Content="{DynamicResource HexDisplay_ShowRowHighlight}"
+                  Content="{StaticResource HexDisplay_ShowRowHighlight}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowSplitToggleButton"
-                  Content="{DynamicResource HexDisplay_ShowSplitToggleButton}"
+                  Content="{StaticResource HexDisplay_ShowSplitToggleButton}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,0"
                   Checked="OnCheckChanged"

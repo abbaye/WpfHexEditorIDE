@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -9,7 +9,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:psSvc="clr-namespace:WpfHexEditor.Core.ProjectSystem.Services"
-        Title="{DynamicResource PS_ConvertTblTitle}"
+        Title="{StaticResource PS_ConvertTblTitle}"
         Width="520" Height="460"
         MinWidth="420" MinHeight="420"
         ResizeMode="CanResizeWithGrip"
@@ -37,7 +37,7 @@
         </Grid.RowDefinitions>
 
         <!-- Source → Target banner -->
-        <GroupBox Grid.Row="0" Header="{DynamicResource PS_ConversionSection}">
+        <GroupBox Grid.Row="0" Header="{StaticResource PS_ConversionSection}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -45,7 +45,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Content="{DynamicResource PS_SourceLabel}"/>
+                <Label Grid.Column="0" Content="{StaticResource PS_SourceLabel}"/>
                 <TextBlock x:Name="SourceFileText" Grid.Column="1"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
@@ -59,7 +59,7 @@
         </GroupBox>
 
         <!-- Game metadata -->
-        <GroupBox Grid.Row="2" Header="{DynamicResource PS_GameMetadataSection}">
+        <GroupBox Grid.Row="2" Header="{StaticResource PS_GameMetadataSection}">
             <StackPanel>
 
                 <!-- Auto-fill hint strip — visible only when ROM(s) are detected in the solution -->
@@ -74,15 +74,15 @@
                     <DockPanel LastChildFill="True">
                         <Button DockPanel.Dock="Right"
                                 x:Name="AutoFillButton"
-                                Content="{DynamicResource PS_AutoFill}"
+                                Content="{StaticResource PS_AutoFill}"
                                 Click="OnAutoFill"
                                 Padding="10,3"
                                 MinWidth="0"
                                 Margin="8,0,0,0"
-                                ToolTip="{DynamicResource PS_AutoFillTooltip}"/>
+                                ToolTip="{StaticResource PS_AutoFillTooltip}"/>
                         <!-- ROM selector: single item = read-only label; multiple = editable combo -->
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{DynamicResource PS_RomDetectedLabel}"
+                            <TextBlock Text="{StaticResource PS_RomDetectedLabel}"
                                        FontSize="11"
                                        VerticalAlignment="Center"
                                        Foreground="{DynamicResource DockTabTextBrush}"
@@ -113,11 +113,11 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Row 0: Game Title -->
-                    <Label Grid.Row="0" Grid.Column="0" Content="{DynamicResource PS_GameTitleLabel}"/>
+                    <Label Grid.Row="0" Grid.Column="0" Content="{StaticResource PS_GameTitleLabel}"/>
                     <TextBox x:Name="GameTitleBox" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4"/>
 
                     <!-- Row 2: Platform / Region -->
-                    <Label Grid.Row="2" Grid.Column="0" Content="{DynamicResource PS_PlatformLabel}"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="{StaticResource PS_PlatformLabel}"/>
                     <ComboBox x:Name="PlatformCombo" Grid.Row="2" Grid.Column="1"
                               IsEditable="True"
                               Text="{Binding SelectedItem, RelativeSource={RelativeSource Self}, Mode=OneWay}">
@@ -156,7 +156,7 @@
                         <ComboBoxItem>Atari 7800</ComboBoxItem>
                         <ComboBoxItem>Other</ComboBoxItem>
                     </ComboBox>
-                    <Label Grid.Row="2" Grid.Column="3" Content="{DynamicResource PS_RegionLabel}"/>
+                    <Label Grid.Row="2" Grid.Column="3" Content="{StaticResource PS_RegionLabel}"/>
                     <ComboBox x:Name="RegionCombo" Grid.Row="2" Grid.Column="4" IsEditable="True">
                         <ComboBoxItem>Japan</ComboBoxItem>
                         <ComboBoxItem>USA</ComboBoxItem>
@@ -165,9 +165,9 @@
                     </ComboBox>
 
                     <!-- Row 4: Author / Year -->
-                    <Label Grid.Row="4" Grid.Column="0" Content="{DynamicResource PS_AuthorLabel}"/>
+                    <Label Grid.Row="4" Grid.Column="0" Content="{StaticResource PS_AuthorLabel}"/>
                     <TextBox x:Name="AuthorBox" Grid.Row="4" Grid.Column="1"/>
-                    <Label Grid.Row="4" Grid.Column="3" Content="{DynamicResource PS_YearLabel}"/>
+                    <Label Grid.Row="4" Grid.Column="3" Content="{StaticResource PS_YearLabel}"/>
                     <TextBox x:Name="YearBox" Grid.Row="4" Grid.Column="4"
                              PreviewTextInput="OnYearPreviewTextInput"/>
                 </Grid>
@@ -175,14 +175,14 @@
         </GroupBox>
 
         <!-- Output options -->
-        <GroupBox Grid.Row="4" Header="{DynamicResource PS_OutputSection}">
+        <GroupBox Grid.Row="4" Header="{StaticResource PS_OutputSection}">
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                    <RadioButton x:Name="SameFolderRadio" Content="{DynamicResource PS_SameFolderAsSource}"
+                    <RadioButton x:Name="SameFolderRadio" Content="{StaticResource PS_SameFolderAsSource}"
                                  GroupName="OutputLocation" IsChecked="True"
                                  Checked="OnOutputLocationChanged"
                                  Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                    <RadioButton x:Name="CustomFolderRadio" Content="{DynamicResource PS_CustomFolder}"
+                    <RadioButton x:Name="CustomFolderRadio" Content="{StaticResource PS_CustomFolder}"
                                  GroupName="OutputLocation" Margin="16,0,0,0"
                                  Checked="OnOutputLocationChanged"
                                  Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -196,22 +196,22 @@
                     <TextBox x:Name="CustomFolderBox" Grid.Column="0"
                              TextChanged="OnCustomFolderChanged"/>
                     <Button Grid.Column="2" Content="..." Width="30" Padding="0"
-                            Click="OnBrowseCustomFolder" ToolTip="{DynamicResource PS_BrowseForFolder}"/>
+                            Click="OnBrowseCustomFolder" ToolTip="{StaticResource PS_BrowseForFolder}"/>
                 </Grid>
             </StackPanel>
         </GroupBox>
 
         <!-- Post-conversion actions (fills remaining space) -->
         <StackPanel Grid.Row="5" VerticalAlignment="Top">
-            <CheckBox x:Name="AddToProjectCheck" Content="{DynamicResource PS_AddConvertedToProject}" IsChecked="True" Margin="0,0,0,6"/>
-            <CheckBox x:Name="OpenAfterCheck" Content="{DynamicResource PS_OpenAfterConversion}" IsChecked="True"/>
+            <CheckBox x:Name="AddToProjectCheck" Content="{StaticResource PS_AddConvertedToProject}" IsChecked="True" Margin="0,0,0,6"/>
+            <CheckBox x:Name="OpenAfterCheck" Content="{StaticResource PS_OpenAfterConversion}" IsChecked="True"/>
         </StackPanel>
 
         <!-- OK / Cancel buttons -->
         <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="ConvertButton" Content="{DynamicResource PS_Convert}" IsDefault="True"
+            <Button x:Name="ConvertButton" Content="{StaticResource PS_Convert}" IsDefault="True"
                     Click="OnConvert" Margin="0,0,8,0"/>
-            <Button Content="{DynamicResource PS_Cancel}" IsCancel="True"/>
+            <Button Content="{StaticResource PS_Cancel}" IsCancel="True"/>
         </StackPanel>
     </Grid>
 </ec:ThemedDialog>

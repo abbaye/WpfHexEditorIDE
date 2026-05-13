@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentPopToolbar"
+﻿<UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentPopToolbar"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
@@ -62,21 +62,21 @@
             <!-- Group 1: Formatting -->
             <Button x:Name="PART_BoldBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{DynamicResource DocPopToolbar_TooltipBold}"
+                    ToolTip="{StaticResource DocPopToolbar_TooltipBold}"
                     Click="OnBoldClicked">
                 <TextBlock Text="B" FontWeight="Bold" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_ItalicBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{DynamicResource DocPopToolbar_TooltipItalic}"
+                    ToolTip="{StaticResource DocPopToolbar_TooltipItalic}"
                     Click="OnItalicClicked">
                 <TextBlock Text="I" FontStyle="Italic" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_UnderlineBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{DynamicResource DocPopToolbar_TooltipUnderline}"
+                    ToolTip="{StaticResource DocPopToolbar_TooltipUnderline}"
                     Click="OnUnderlineClicked">
                 <TextBlock Text="U" FontSize="13">
                     <TextBlock.TextDecorations>
@@ -90,14 +90,14 @@
             <!-- Group 1b: List -->
             <Button x:Name="PART_BulletListBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{DynamicResource DocPopToolbar_TooltipBulletList}"
+                    ToolTip="{StaticResource DocPopToolbar_TooltipBulletList}"
                     Click="OnBulletListClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8FD;" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_NumberedListBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{DynamicResource DocPopToolbar_TooltipNumberedList}"
+                    ToolTip="{StaticResource DocPopToolbar_TooltipNumberedList}"
                     Click="OnNumberedListClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8FC;" FontSize="13"/>
             </Button>
@@ -107,14 +107,14 @@
             <!-- Group 2: Copy -->
             <Button x:Name="PART_CopyTextBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{DynamicResource DocPopToolbar_TooltipCopyText}"
+                    ToolTip="{StaticResource DocPopToolbar_TooltipCopyText}"
                     Click="OnCopyTextClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C8;" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_CopyHexBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{DynamicResource DocPopToolbar_TooltipCopyHex}"
+                    ToolTip="{StaticResource DocPopToolbar_TooltipCopyHex}"
                     Click="OnCopyHexClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F4;" FontSize="13"/>
             </Button>
@@ -124,14 +124,14 @@
             <!-- Group 3: Navigation -->
             <Button x:Name="PART_InspectBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{DynamicResource DocPopToolbar_TooltipInspect}"
+                    ToolTip="{StaticResource DocPopToolbar_TooltipInspect}"
                     Click="OnInspectClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C9;" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_JumpHexBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{DynamicResource DocPopToolbar_TooltipJumpHex}"
+                    ToolTip="{StaticResource DocPopToolbar_TooltipJumpHex}"
                     Click="OnJumpHexClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C4;" FontSize="13"/>
             </Button>

@@ -1,4 +1,4 @@
-<!-- ==========================================================
+﻿<!-- ==========================================================
      Project: WpfHexEditor.Plugins.AIAssistant
      GNU Affero General Public License v3.0  2026
      Description: Main assistant panel — toolbar + tab strip + conversation area.
@@ -37,7 +37,7 @@
                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="2,0,4,0">
                     <!-- Provider/Model chip -->
                     <Border Height="20" CornerRadius="3" Cursor="Hand" Padding="6,0"
-                            ToolTip="{DynamicResource AIAssistant_SwitchProvider}"
+                            ToolTip="{StaticResource AIAssistant_SwitchProvider}"
                             MouseLeftButtonUp="OnProviderChipClick">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -64,7 +64,7 @@
                     </Border>
                     <!-- Usage button -->
                     <Border Width="22" Height="22" CornerRadius="2" Cursor="Hand" Margin="2,0,0,0"
-                            ToolTip="{DynamicResource AIAssistant_AccountUsage}"
+                            ToolTip="{StaticResource AIAssistant_AccountUsage}"
                             MouseLeftButtonDown="OnUsageClick">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -86,7 +86,7 @@
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="2,0,4,0">
                     <!-- History button -->
                     <Border Width="22" Height="22" CornerRadius="2" Cursor="Hand"
-                            ToolTip="{DynamicResource AIAssistant_ConversationHistory}"
+                            ToolTip="{StaticResource AIAssistant_ConversationHistory}"
                             MouseLeftButtonDown="OnHistoryClick">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -104,7 +104,7 @@
                     </Border>
                     <!-- New tab button -->
                     <Border Width="22" Height="22" CornerRadius="2" Cursor="Hand"
-                            ToolTip="{DynamicResource AIAssistant_NewConversation}"
+                            ToolTip="{StaticResource AIAssistant_NewConversation}"
                             MouseLeftButtonDown="OnNewTabClick">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -122,7 +122,7 @@
                     </Border>
                     <!-- More menu button -->
                     <Border x:Name="MoreMenuButton" Width="22" Height="22" CornerRadius="2" Cursor="Hand"
-                            ToolTip="{DynamicResource AIAssistant_MoreActions}"
+                            ToolTip="{StaticResource AIAssistant_MoreActions}"
                             MouseLeftButtonDown="OnMoreMenuClick">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -136,18 +136,18 @@
                         </Border.Style>
                         <Border.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="{DynamicResource AIAssistant_ManageConnections}" Click="OnMoreConnectionsClick">
+                                <MenuItem Header="{StaticResource AIAssistant_ManageConnections}" Click="OnMoreConnectionsClick">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="{DynamicResource AIAssistant_PromptPresets}" Click="OnMorePresetsClick">
+                                <MenuItem Header="{StaticResource AIAssistant_PromptPresets}" Click="OnMorePresetsClick">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
-                                <MenuItem Header="{DynamicResource AIAssistant_Options}" Click="OnMoreOptionsClick">
+                                <MenuItem Header="{StaticResource AIAssistant_Options}" Click="OnMoreOptionsClick">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
                                     </MenuItem.Icon>
@@ -186,23 +186,23 @@
                                 MouseRightButtonDown="OnTabRightClick">
                             <Border.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="{DynamicResource AIAssistant_Rename}" Click="OnRenameTabClick">
+                                    <MenuItem Header="{StaticResource AIAssistant_Rename}" Click="OnRenameTabClick">
                                         <MenuItem.Icon>
                                             <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                                         </MenuItem.Icon>
                                     </MenuItem>
                                     <Separator/>
-                                    <MenuItem Header="{DynamicResource AIAssistant_Close}" Click="OnCloseTabFromMenuClick">
+                                    <MenuItem Header="{StaticResource AIAssistant_Close}" Click="OnCloseTabFromMenuClick">
                                         <MenuItem.Icon>
                                             <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                                         </MenuItem.Icon>
                                     </MenuItem>
-                                    <MenuItem Header="{DynamicResource AIAssistant_CloseOthers}" Click="OnCloseOtherTabsClick">
+                                    <MenuItem Header="{StaticResource AIAssistant_CloseOthers}" Click="OnCloseOtherTabsClick">
                                         <MenuItem.Icon>
                                             <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                                         </MenuItem.Icon>
                                     </MenuItem>
-                                    <MenuItem Header="{DynamicResource AIAssistant_CloseAll}" Click="OnCloseAllTabsClick">
+                                    <MenuItem Header="{StaticResource AIAssistant_CloseAll}" Click="OnCloseAllTabsClick">
                                         <MenuItem.Icon>
                                             <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                                         </MenuItem.Icon>

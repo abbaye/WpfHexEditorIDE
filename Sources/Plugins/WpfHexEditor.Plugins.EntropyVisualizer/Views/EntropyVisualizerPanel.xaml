@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.Plugins.EntropyVisualizer.Views.EntropyVisualizerPanel"
+﻿<UserControl x:Class="WpfHexEditor.Plugins.EntropyVisualizer.Views.EntropyVisualizerPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:svc="clr-namespace:WpfHexEditor.Plugins.EntropyVisualizer.Services"
@@ -40,8 +40,8 @@
 
                 <Button Grid.Column="0"
                         x:Name="AnalyzeButton"
-                        Content="{DynamicResource EntropyVisualizer_AnalyzeButton}"
-                        ToolTip="{DynamicResource EntropyVisualizer_Tooltip_Analyze}"
+                        Content="{StaticResource EntropyVisualizer_AnalyzeButton}"
+                        ToolTip="{StaticResource EntropyVisualizer_Tooltip_Analyze}"
                         IsEnabled="{Binding IsIdle}"
                         Style="{DynamicResource ToolbarButtonStyle}"
                         Padding="8,3"
@@ -50,7 +50,7 @@
 
                 <Button Grid.Column="1"
                         x:Name="CancelButton"
-                        Content="{DynamicResource EntropyVisualizer_CancelButton}"
+                        Content="{StaticResource EntropyVisualizer_CancelButton}"
                         IsEnabled="{Binding IsAnalyzing}"
                         Style="{DynamicResource ToolbarButtonStyle}"
                         Padding="8,3"
@@ -59,7 +59,7 @@
                 <Separator Grid.Column="2" Style="{DynamicResource ToolbarSeparatorStyle}"/>
 
                 <TextBlock Grid.Column="3"
-                           Text="{DynamicResource EntropyVisualizer_ChunkSizeLabel}"
+                           Text="{StaticResource EntropyVisualizer_ChunkSizeLabel}"
                            VerticalAlignment="Center"
                            Margin="0,0,4,0"
                            Foreground="{DynamicResource PanelForeground}"/>
@@ -69,7 +69,7 @@
                          Text="256"
                          Width="50"
                          VerticalAlignment="Center"
-                         ToolTip="{DynamicResource EntropyVisualizer_Tooltip_ChunkSize}"
+                         ToolTip="{StaticResource EntropyVisualizer_Tooltip_ChunkSize}"
                          TextAlignment="Center"
                          Style="{DynamicResource ToolbarTextBoxStyle}"/>
             </Grid>
@@ -94,7 +94,7 @@
                     Opacity="0.85"
                     Visibility="{Binding IsAnalyzing, Converter={StaticResource BoolToVis}}">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="{DynamicResource EntropyVisualizer_Analyzing}"
+                    <TextBlock Text="{StaticResource EntropyVisualizer_Analyzing}"
                                HorizontalAlignment="Center"
                                Foreground="{DynamicResource PanelForeground}"
                                Margin="0,0,0,8"/>
@@ -107,7 +107,7 @@
             <!-- Entropy graph -->
             <views:EntropyGraphControl x:Name="Graph"
                                        Chunks="{Binding Chunks}"
-                                       ToolTip="{DynamicResource EntropyVisualizer_Tooltip_Navigate}"
+                                       ToolTip="{StaticResource EntropyVisualizer_Tooltip_Navigate}"
                                        Cursor="Hand"/>
 
             <!-- Legend (top-right corner) -->
@@ -117,13 +117,13 @@
                         Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
                     <Rectangle Width="12" Height="3" Fill="#56D577" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                    <TextBlock Text="{DynamicResource EntropyVisualizer_LegendLow}"
+                    <TextBlock Text="{StaticResource EntropyVisualizer_LegendLow}"
                                Foreground="{DynamicResource PanelForeground}"
                                FontSize="10" Opacity="0.7"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="12" Height="3" Fill="#F44747" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                    <TextBlock Text="{DynamicResource EntropyVisualizer_LegendHigh}"
+                    <TextBlock Text="{StaticResource EntropyVisualizer_LegendHigh}"
                                Foreground="{DynamicResource PanelForeground}"
                                FontSize="10" Opacity="0.7"/>
                 </StackPanel>

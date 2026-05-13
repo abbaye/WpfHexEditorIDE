@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentEditorHost"
+﻿<UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentEditorHost"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
@@ -117,11 +117,11 @@
                 <ToggleButton x:Name="PART_TextModeBtn"
                               Style="{StaticResource DocViewToggleStyle}"
                               DockPanel.Dock="Left"
-                              ToolTip="{DynamicResource DocEditorHost_TextViewToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_TextViewToolTip}"
                               Click="OnTextModeClicked">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A5;" FontSize="13" VerticalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource DocEditorHost_LabelText}" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                        <TextBlock Text="{StaticResource DocEditorHost_LabelText}" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
                     </StackPanel>
                 </ToggleButton>
 
@@ -129,11 +129,11 @@
                               Style="{StaticResource DocViewToggleStyle}"
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
-                              ToolTip="{DynamicResource DocEditorHost_StructureViewToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_StructureViewToolTip}"
                               Click="OnStructureModeClicked">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C9;" FontSize="13" VerticalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource DocEditorHost_LabelStructure}" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                        <TextBlock Text="{StaticResource DocEditorHost_LabelStructure}" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
                     </StackPanel>
                 </ToggleButton>
 
@@ -141,11 +141,11 @@
                               Style="{StaticResource DocViewToggleStyle}"
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
-                              ToolTip="{DynamicResource DocEditorHost_FocusModeToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_FocusModeToolTip}"
                               Click="OnFocusModeClicked">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8D4;" FontSize="13" VerticalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource DocEditorHost_LabelFocus}" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                        <TextBlock Text="{StaticResource DocEditorHost_LabelFocus}" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
                     </StackPanel>
                 </ToggleButton>
 
@@ -156,7 +156,7 @@
                               Style="{StaticResource DocViewToggleStyle}"
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
-                              ToolTip="{DynamicResource DocEditorHost_PageViewToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_PageViewToolTip}"
                               Click="OnPageModeClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A8;" FontSize="13" VerticalAlignment="Center"/>
                 </ToggleButton>
@@ -165,7 +165,7 @@
                               Style="{StaticResource DocViewToggleStyle}"
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
-                              ToolTip="{DynamicResource DocEditorHost_DraftViewToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_DraftViewToolTip}"
                               Click="OnDraftModeClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E9;" FontSize="13" VerticalAlignment="Center"/>
                 </ToggleButton>
@@ -174,7 +174,7 @@
                               Style="{StaticResource DocViewToggleStyle}"
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
-                              ToolTip="{DynamicResource DocEditorHost_OutlineViewToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_OutlineViewToolTip}"
                               Click="OnOutlineModeClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F1;" FontSize="13" VerticalAlignment="Center"/>
                 </ToggleButton>
@@ -185,11 +185,11 @@
                 <ToggleButton x:Name="PART_ForensicBtn"
                               Style="{StaticResource DocViewToggleStyle}"
                               DockPanel.Dock="Left"
-                              ToolTip="{DynamicResource DocEditorHost_ForensicModeToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_ForensicModeToolTip}"
                               Click="OnForensicModeClicked">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C3;" FontSize="13" VerticalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource DocEditorHost_LabelForensic}" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                        <TextBlock Text="{StaticResource DocEditorHost_LabelForensic}" FontSize="12" VerticalAlignment="Center" Margin="3,0,0,0"/>
                     </StackPanel>
                 </ToggleButton>
 
@@ -201,7 +201,7 @@
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
                               Focusable="False"
-                              ToolTip="{DynamicResource DocEditorHost_BoldToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_BoldToolTip}"
                               Click="OnBoldClicked">
                     <TextBlock FontFamily="Segoe UI" Text="B" FontSize="13" FontWeight="Bold" VerticalAlignment="Center"/>
                 </ToggleButton>
@@ -211,7 +211,7 @@
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
                               Focusable="False"
-                              ToolTip="{DynamicResource DocEditorHost_ItalicToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_ItalicToolTip}"
                               Click="OnItalicClicked">
                     <TextBlock FontFamily="Segoe UI" Text="I" FontSize="13" FontStyle="Italic" VerticalAlignment="Center"/>
                 </ToggleButton>
@@ -221,7 +221,7 @@
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
                               Focusable="False"
-                              ToolTip="{DynamicResource DocEditorHost_UnderlineToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_UnderlineToolTip}"
                               Click="OnUnderlineClicked">
                     <TextBlock FontFamily="Segoe UI" Text="U" FontSize="13"
                                TextDecorations="Underline" VerticalAlignment="Center"/>
@@ -232,7 +232,7 @@
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
                               Focusable="False"
-                              ToolTip="{DynamicResource DocEditorHost_StrikethroughToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_StrikethroughToolTip}"
                               Click="OnStrikethroughClicked">
                     <TextBlock FontFamily="Segoe UI" Text="S" FontSize="13"
                                TextDecorations="Strikethrough" VerticalAlignment="Center"/>
@@ -248,7 +248,7 @@
                           FontSize="11"
                           Margin="2,0"
                           IsEditable="True"
-                          ToolTip="{DynamicResource DocEditorHost_FontFamilyToolTip}"
+                          ToolTip="{StaticResource DocEditorHost_FontFamilyToolTip}"
                           SelectionChanged="OnFontFamilyChanged"
                           KeyDown="OnFontFamilyKeyDown"
                           LostFocus="OnFontFamilyLostFocus">
@@ -270,7 +270,7 @@
                           FontSize="11"
                           Margin="2,0"
                           IsEditable="True"
-                          ToolTip="{DynamicResource DocEditorHost_FontSizeToolTip}"
+                          ToolTip="{StaticResource DocEditorHost_FontSizeToolTip}"
                           SelectionChanged="OnFontSizeChanged"
                           LostFocus="OnFontSizeCommit">
                     <ComboBoxItem Content="8"  Tag="8"/>
@@ -295,7 +295,7 @@
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
                         Focusable="False"
-                        ToolTip="{DynamicResource DocEditorHost_TextColorToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_TextColorToolTip}"
                         Click="OnTextColorBtnClicked">
                     <Grid Width="18" Height="18">
                         <TextBlock Text="A" FontSize="13" FontWeight="Bold"
@@ -336,16 +336,16 @@
                           FontSize="11"
                           Margin="2,0"
                           SelectionChanged="OnStyleDropdownChanged"
-                          ToolTip="{DynamicResource DocEditorHost_StyleDropdownToolTip}">
-                    <ComboBoxItem Content="{DynamicResource DocEditorHost_StyleNormal}"  IsSelected="True"/>
-                    <ComboBoxItem Content="{DynamicResource DocEditorHost_StyleH1}"/>
-                    <ComboBoxItem Content="{DynamicResource DocEditorHost_StyleH2}"/>
-                    <ComboBoxItem Content="{DynamicResource DocEditorHost_StyleH3}"/>
-                    <ComboBoxItem Content="{DynamicResource DocEditorHost_StyleH4}"/>
-                    <ComboBoxItem Content="{DynamicResource DocEditorHost_StyleH5}"/>
-                    <ComboBoxItem Content="{DynamicResource DocEditorHost_StyleH6}"/>
-                    <ComboBoxItem Content="{DynamicResource DocEditorHost_StyleQuote}"/>
-                    <ComboBoxItem Content="{DynamicResource DocEditorHost_StyleCode}"/>
+                          ToolTip="{StaticResource DocEditorHost_StyleDropdownToolTip}">
+                    <ComboBoxItem Content="{StaticResource DocEditorHost_StyleNormal}"  IsSelected="True"/>
+                    <ComboBoxItem Content="{StaticResource DocEditorHost_StyleH1}"/>
+                    <ComboBoxItem Content="{StaticResource DocEditorHost_StyleH2}"/>
+                    <ComboBoxItem Content="{StaticResource DocEditorHost_StyleH3}"/>
+                    <ComboBoxItem Content="{StaticResource DocEditorHost_StyleH4}"/>
+                    <ComboBoxItem Content="{StaticResource DocEditorHost_StyleH5}"/>
+                    <ComboBoxItem Content="{StaticResource DocEditorHost_StyleH6}"/>
+                    <ComboBoxItem Content="{StaticResource DocEditorHost_StyleQuote}"/>
+                    <ComboBoxItem Content="{StaticResource DocEditorHost_StyleCode}"/>
                 </ComboBox>
 
                 <Button x:Name="PART_AlignLeftBtn"
@@ -353,7 +353,7 @@
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
                         Focusable="False"
-                        ToolTip="{DynamicResource DocEditorHost_AlignLeftToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_AlignLeftToolTip}"
                         Click="OnAlignLeftClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E4;" FontSize="13"/>
                 </Button>
@@ -363,7 +363,7 @@
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
                         Focusable="False"
-                        ToolTip="{DynamicResource DocEditorHost_AlignCenterToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_AlignCenterToolTip}"
                         Click="OnAlignCenterClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E3;" FontSize="13"/>
                 </Button>
@@ -373,7 +373,7 @@
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
                         Focusable="False"
-                        ToolTip="{DynamicResource DocEditorHost_AlignRightToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_AlignRightToolTip}"
                         Click="OnAlignRightClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E2;" FontSize="13"/>
                 </Button>
@@ -383,7 +383,7 @@
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
                         Focusable="False"
-                        ToolTip="{DynamicResource DocEditorHost_AlignJustifyToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_AlignJustifyToolTip}"
                         Click="OnAlignJustifyClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8E5;" FontSize="13"/>
                 </Button>
@@ -396,7 +396,7 @@
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
                               Focusable="False"
-                              ToolTip="{DynamicResource DocEditorHost_BulletListToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_BulletListToolTip}"
                               Click="OnBulletListClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8FD;" FontSize="13"/>
                 </ToggleButton>
@@ -406,7 +406,7 @@
                               DockPanel.Dock="Left"
                               Margin="2,0,0,0"
                               Focusable="False"
-                              ToolTip="{DynamicResource DocEditorHost_NumberedListToolTip}"
+                              ToolTip="{StaticResource DocEditorHost_NumberedListToolTip}"
                               Click="OnNumberedListClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8FE;" FontSize="13"/>
                 </ToggleButton>
@@ -416,7 +416,7 @@
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
                         Focusable="False"
-                        ToolTip="{DynamicResource DocEditorHost_IndentLessToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_IndentLessToolTip}"
                         Click="OnIndentLessClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8FF;" FontSize="13"/>
                 </Button>
@@ -426,7 +426,7 @@
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
                         Focusable="False"
-                        ToolTip="{DynamicResource DocEditorHost_IndentMoreToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_IndentMoreToolTip}"
                         Click="OnIndentMoreClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE900;" FontSize="13"/>
                 </Button>
@@ -439,7 +439,7 @@
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
                         Focusable="False"
-                        ToolTip="{DynamicResource DocEditorHost_InsertTableToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_InsertTableToolTip}"
                         Click="OnInsertTableClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE9D2;" FontSize="13"/>
                 </Button>
@@ -449,7 +449,7 @@
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
                         Focusable="False"
-                        ToolTip="{DynamicResource DocEditorHost_InsertHyperlinkToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_InsertHyperlinkToolTip}"
                         Click="OnInsertHyperlinkClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE71B;" FontSize="13"/>
                 </Button>
@@ -459,7 +459,7 @@
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
                         Focusable="False"
-                        ToolTip="{DynamicResource DocEditorHost_InsertPageBreakToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_InsertPageBreakToolTip}"
                         Click="OnInsertPageBreakClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE77B;" FontSize="13"/>
                 </Button>
@@ -469,7 +469,7 @@
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
                         Focusable="False"
-                        ToolTip="{DynamicResource DocEditorHost_PageStyleToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_PageStyleToolTip}"
                         Click="OnPageStyleClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C3;" FontSize="13"/>
                 </Button>
@@ -482,7 +482,7 @@
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
                         Focusable="False"
-                        ToolTip="{DynamicResource DocEditorHost_StylesPanelToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_StylesPanelToolTip}"
                         Click="OnStylesBtnClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8EC;" FontSize="13"/>
                 </Button>
@@ -509,7 +509,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Left"
                         Margin="2,0,0,0"
-                        ToolTip="{DynamicResource DocEditorHost_PageSetupToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_PageSetupToolTip}"
                         Click="OnPageSetupBtnClick">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE713;" FontSize="13"/>
                 </Button>
@@ -532,7 +532,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Left"
                         Padding="6,4"
-                        ToolTip="{DynamicResource DocEditorHost_ZoomOutToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_ZoomOutToolTip}"
                         Click="OnZoomOutClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE71F;" FontSize="13"/>
                 </Button>
@@ -551,7 +551,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Left"
                         Padding="6,4"
-                        ToolTip="{DynamicResource DocEditorHost_ZoomInToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_ZoomInToolTip}"
                         Click="OnZoomInClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A3;" FontSize="13"/>
                 </Button>
@@ -566,14 +566,14 @@
                            VerticalAlignment="Center"
                            Margin="0,0,6,0"
                            Foreground="{DynamicResource DE_ForensicBadgeWarnBg}"
-                           ToolTip="{DynamicResource DocEditorHost_ReadOnlyToolTip}"
+                           ToolTip="{StaticResource DocEditorHost_ReadOnlyToolTip}"
                            Visibility="Collapsed"/>
 
                 <Button x:Name="PART_DiffBtn"
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Right"
                         Margin="0,0,2,0"
-                        ToolTip="{DynamicResource DocEditorHost_DiffToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_DiffToolTip}"
                         Click="OnDiffClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F5;" FontSize="13"/>
                 </Button>
@@ -582,7 +582,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Right"
                         Margin="0,0,2,0"
-                        ToolTip="{DynamicResource DocEditorHost_EmbeddedToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_EmbeddedToolTip}"
                         Click="OnEmbeddedClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7B8;" FontSize="13"/>
                 </Button>
@@ -591,7 +591,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Right"
                         Margin="0,0,2,0"
-                        ToolTip="{DynamicResource DocEditorHost_MetadataToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_MetadataToolTip}"
                         Click="OnMetadataClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE946;" FontSize="13"/>
                 </Button>
@@ -624,31 +624,31 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <!-- Row 0: Title -->
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource DocEditorHost_MetaTitle}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{StaticResource DocEditorHost_MetaTitle}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                             <TextBlock Grid.Row="0" Grid.Column="2" x:Name="PART_Meta_Title" TextWrapping="Wrap"/>
                             <!-- Row 1: Author -->
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource DocEditorHost_MetaAuthor}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{StaticResource DocEditorHost_MetaAuthor}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
                             <TextBlock Grid.Row="1" Grid.Column="2" x:Name="PART_Meta_Author" Margin="0,4,0,0"/>
                             <!-- Row 2: Format -->
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource DocEditorHost_MetaFormat}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="{StaticResource DocEditorHost_MetaFormat}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
                             <TextBlock Grid.Row="2" Grid.Column="2" x:Name="PART_Meta_Format" Margin="0,4,0,0"/>
                             <!-- Row 3: MIME -->
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource DocEditorHost_MetaMime}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="{StaticResource DocEditorHost_MetaMime}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
                             <TextBlock Grid.Row="3" Grid.Column="2" x:Name="PART_Meta_Mime" Margin="0,4,0,0"/>
                             <!-- Row 4: Created -->
-                            <TextBlock Grid.Row="4" Grid.Column="0" Text="{DynamicResource DocEditorHost_MetaCreated}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="{StaticResource DocEditorHost_MetaCreated}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
                             <TextBlock Grid.Row="4" Grid.Column="2" x:Name="PART_Meta_Created" Margin="0,4,0,0"/>
                             <!-- Row 5: Modified -->
-                            <TextBlock Grid.Row="5" Grid.Column="0" Text="{DynamicResource DocEditorHost_MetaModified}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="{StaticResource DocEditorHost_MetaModified}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
                             <TextBlock Grid.Row="5" Grid.Column="2" x:Name="PART_Meta_Modified" Margin="0,4,0,0"/>
                             <!-- Row 6: Macros badge -->
-                            <TextBlock Grid.Row="6" Grid.Column="0" Text="{DynamicResource DocEditorHost_MetaMacros}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="{StaticResource DocEditorHost_MetaMacros}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
                             <TextBlock Grid.Row="6" Grid.Column="2" x:Name="PART_Meta_Macros" Margin="0,4,0,0"/>
                             <!-- Row 8: Anonymize action (forensic strip) -->
                             <Button Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3"
                                     x:Name="PART_AnonymizeBtn"
-                                    Content="{DynamicResource DocEditorHost_AnonymizeBtn}"
-                                    ToolTip="{DynamicResource DocEditorHost_AnonymizeToolTip}"
+                                    Content="{StaticResource DocEditorHost_AnonymizeBtn}"
+                                    ToolTip="{StaticResource DocEditorHost_AnonymizeToolTip}"
                                     HorizontalAlignment="Stretch"
                                     Padding="8,4"
                                     Click="OnAnonymizeClicked"/>
@@ -660,7 +660,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Right"
                         Margin="0,0,2,0"
-                        ToolTip="{DynamicResource DocEditorHost_PrintToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_PrintToolTip}"
                         Click="OnPrintClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE749;" FontSize="13"/>
                 </Button>
@@ -669,7 +669,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Right"
                         Margin="0,0,2,0"
-                        ToolTip="{DynamicResource DocEditorHost_ExportToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_ExportToolTip}"
                         Click="OnExportClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEDE1;" FontSize="13"/>
                 </Button>
@@ -678,7 +678,7 @@
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Right"
                         Margin="0,0,2,0"
-                        ToolTip="{DynamicResource DocEditorHost_SaveToolTip}"
+                        ToolTip="{StaticResource DocEditorHost_SaveToolTip}"
                         Click="OnSaveClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74E;" FontSize="13"/>
                 </Button>

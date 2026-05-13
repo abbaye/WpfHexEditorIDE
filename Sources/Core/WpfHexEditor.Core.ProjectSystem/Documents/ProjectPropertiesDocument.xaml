@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -560,7 +560,7 @@
                            VerticalAlignment="Center" />
                 <Button Grid.Column="1"
                         x:Name="BtnSave"
-                        Content="{DynamicResource PP_Save}"
+                        Content="{StaticResource PP_Save}"
                         Command="{Binding SaveCommand}"
                         Style="{StaticResource PP_PrimaryButtonStyle}" />
             </Grid>
@@ -588,7 +588,7 @@
                              Margin="8,8,8,4"
                              Padding="6,3"
                              FontSize="11"
-                             ToolTip="{DynamicResource PP_FilterSections}" />
+                             ToolTip="{StaticResource PP_FilterSections}" />
 
                     <ListBox x:Name="NavListBox"
                              ItemsSource="{Binding FilteredNavItems}"
@@ -635,39 +635,39 @@
                              Section: app-general  (Application > Général)
                              ================================================ -->
                         <StackPanel x:Name="SectionAppGeneral">
-                            <TextBlock Text="{DynamicResource PP_NavApplication}" Style="{StaticResource PP_SectionTitleStyle}" />
-                            <TextBlock Text="{DynamicResource PP_NavGeneral}" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,8" />
+                            <TextBlock Text="{StaticResource PP_NavApplication}" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <TextBlock Text="{StaticResource PP_NavGeneral}" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,8" />
                             <Separator />
 
                             <!-- Nom du projet -->
-                            <TextBlock Text="{DynamicResource PP_ProjectName}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_ProjectName}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <TextBox Text="{Binding ProjectName, UpdateSourceTrigger=LostFocus}"
                                      MaxWidth="400" HorizontalAlignment="Left" />
                             <TextBlock Text="{Binding ProjectNameError}"
                                        Style="{StaticResource PP_ValidationErrorStyle}"
                                        Visibility="{Binding ProjectNameError, Converter={x:Static local:NullToCollapsedConverter.Instance}}" />
-                            <TextBlock Text="{DynamicResource PP_ProjectNameDesc}"
+                            <TextBlock Text="{StaticResource PP_ProjectNameDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
 
                             <!-- Nom d'assembly -->
-                            <TextBlock Text="{DynamicResource PP_AssemblyName}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_AssemblyName}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <TextBox Text="{Binding AssemblyName, UpdateSourceTrigger=LostFocus}"
                                      MaxWidth="400" HorizontalAlignment="Left" />
                             <TextBlock Text="{Binding AssemblyNameError}"
                                        Style="{StaticResource PP_ValidationErrorStyle}"
                                        Visibility="{Binding AssemblyNameError, Converter={x:Static local:NullToCollapsedConverter.Instance}}" />
-                            <TextBlock Text="{DynamicResource PP_AssemblyNameDesc}"
+                            <TextBlock Text="{StaticResource PP_AssemblyNameDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
 
                             <!-- Espace de noms par défaut -->
-                            <TextBlock Text="{DynamicResource PP_DefaultNamespace}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_DefaultNamespace}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <TextBox Text="{Binding DefaultNamespace, UpdateSourceTrigger=LostFocus}"
                                      MaxWidth="400" HorizontalAlignment="Left" />
-                            <TextBlock Text="{DynamicResource PP_DefaultNamespaceDesc}"
+                            <TextBlock Text="{StaticResource PP_DefaultNamespaceDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
 
                             <!-- Framework cible -->
-                            <TextBlock Text="{DynamicResource PP_TargetFramework}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_TargetFramework}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <ComboBox x:Name="CbTargetFramework"
                                       Text="{Binding TargetFramework, UpdateSourceTrigger=PropertyChanged}"
                                       Style="{StaticResource PP_ComboBoxStyle}"
@@ -681,36 +681,36 @@
                                 <ComboBoxItem Content=".NET 8.0" />
                                 <ComboBoxItem Content=".NET 9.0" />
                             </ComboBox>
-                            <TextBlock Text="{DynamicResource PP_TargetFrameworkDesc}"
+                            <TextBlock Text="{StaticResource PP_TargetFrameworkDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
 
                             <!-- Type de sortie -->
-                            <TextBlock Text="{DynamicResource PP_OutputType}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_OutputType}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <ComboBox x:Name="CbOutputType"
                                       Text="{Binding OutputType, UpdateSourceTrigger=PropertyChanged}"
                                       Style="{StaticResource PP_ComboBoxStyle}"
                                       ItemContainerStyle="{StaticResource PP_ComboBoxItemStyle}"
                                       IsEditable="True"
                                       MaxWidth="300" HorizontalAlignment="Left">
-                                <ComboBoxItem Content="{DynamicResource PP_OutputTypeLibrary}" />
-                                <ComboBoxItem Content="{DynamicResource PP_OutputTypeConsole}" />
-                                <ComboBoxItem Content="{DynamicResource PP_OutputTypeWinApp}" />
+                                <ComboBoxItem Content="{StaticResource PP_OutputTypeLibrary}" />
+                                <ComboBoxItem Content="{StaticResource PP_OutputTypeConsole}" />
+                                <ComboBoxItem Content="{StaticResource PP_OutputTypeWinApp}" />
                                 
                                 
                                 
                             </ComboBox>
-                            <TextBlock Text="{DynamicResource PP_OutputTypeDesc}"
+                            <TextBlock Text="{StaticResource PP_OutputTypeDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
 
                             <!-- Read-only info -->
                             <Separator />
-                            <TextBlock Text="{DynamicResource PP_ProjectFile}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_ProjectFile}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <TextBox Text="{Binding ProjectFilePath, Mode=OneWay}"
                                      IsReadOnly="True" MaxWidth="460" HorizontalAlignment="Left" />
-                            <TextBlock Text="{DynamicResource PP_Directory}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_Directory}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <TextBox Text="{Binding ProjectDirectory, Mode=OneWay}"
                                      IsReadOnly="True" MaxWidth="460" HorizontalAlignment="Left" />
-                            <TextBlock Text="{DynamicResource PP_ProjectType}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_ProjectType}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <TextBox Text="{Binding ProjectType, Mode=OneWay}"
                                      IsReadOnly="True" MaxWidth="300" HorizontalAlignment="Left" />
                         </StackPanel>
@@ -719,11 +719,11 @@
                              Section: build
                              ================================================ -->
                         <StackPanel x:Name="SectionBuild" Visibility="Collapsed">
-                            <TextBlock Text="{DynamicResource PP_NavBuild}" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <TextBlock Text="{StaticResource PP_NavBuild}" Style="{StaticResource PP_SectionTitleStyle}" />
                             <Separator />
 
                             <!-- Configuration -->
-                            <TextBlock Text="{DynamicResource PP_Configuration}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_Configuration}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <ComboBox x:Name="CbConfig"
                                       Text="{Binding Configuration, UpdateSourceTrigger=PropertyChanged}"
                                       Style="{StaticResource PP_ComboBoxStyle}"
@@ -733,11 +733,11 @@
                                 <ComboBoxItem Content="Debug" />
                                 <ComboBoxItem Content="Release" />
                             </ComboBox>
-                            <TextBlock Text="{DynamicResource PP_ConfigurationDesc}"
+                            <TextBlock Text="{StaticResource PP_ConfigurationDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
 
                             <!-- Plateforme -->
-                            <TextBlock Text="{DynamicResource PP_Platform}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_Platform}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <ComboBox x:Name="CbPlatform"
                                       Text="{Binding Platform, UpdateSourceTrigger=PropertyChanged}"
                                       Style="{StaticResource PP_ComboBoxStyle}"
@@ -749,11 +749,11 @@
                                 <ComboBoxItem Content="x86" />
                                 <ComboBoxItem Content="ARM64" />
                             </ComboBox>
-                            <TextBlock Text="{DynamicResource PP_PlatformDesc}"
+                            <TextBlock Text="{StaticResource PP_PlatformDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
 
                             <!-- Chemin de sortie -->
-                            <TextBlock Text="{DynamicResource PP_OutputPath}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_OutputPath}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <Grid Margin="0,2,0,0" MaxWidth="460" HorizontalAlignment="Left">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -768,15 +768,15 @@
                                         Padding="8,4" Margin="6,0,0,0"
                                         Click="OnBrowseOutputPath" />
                             </Grid>
-                            <TextBlock Text="{DynamicResource PP_OutputPathDesc}"
+                            <TextBlock Text="{StaticResource PP_OutputPathDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
 
                             <!-- Options -->
-                            <CheckBox Content="{DynamicResource PP_OptimizeCode}"
+                            <CheckBox Content="{StaticResource PP_OptimizeCode}"
                                       IsChecked="{Binding OptimizeCode}" />
-                            <TextBlock Text="{DynamicResource PP_OptimizeCodeDesc}"
+                            <TextBlock Text="{StaticResource PP_OptimizeCodeDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
-                            <CheckBox Content="{DynamicResource PP_WarningsAsErrors}"
+                            <CheckBox Content="{StaticResource PP_WarningsAsErrors}"
                                       IsChecked="{Binding TreatWarningsAsErrors}" />
                         </StackPanel>
 
@@ -784,17 +784,17 @@
                              Section: app-dependencies
                              ================================================ -->
                         <StackPanel x:Name="SectionDependencies" Visibility="Collapsed">
-                            <TextBlock Text="{DynamicResource PP_NavDependencies}" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <TextBlock Text="{StaticResource PP_NavDependencies}" Style="{StaticResource PP_SectionTitleStyle}" />
                             <Separator />
-                            <TextBlock Text="{DynamicResource PP_DependenciesDesc}"
+                            <TextBlock Text="{StaticResource PP_DependenciesDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}"
                                        Margin="0,0,0,12" />
                             <ListView x:Name="DepsListView" MaxHeight="400">
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Header="{DynamicResource PS_NameLabel}"  Width="260"
+                                        <GridViewColumn Header="{StaticResource PS_NameLabel}"  Width="260"
                                                         DisplayMemberBinding="{Binding Name}" />
-                                        <GridViewColumn Header="{DynamicResource PP_TypeColumn}" Width="120"
+                                        <GridViewColumn Header="{StaticResource PP_TypeColumn}" Width="120"
                                                         DisplayMemberBinding="{Binding RefType}" />
                                     </GridView>
                                 </ListView.View>
@@ -805,15 +805,15 @@
                              Section: global-usings  (VS only)
                              ================================================ -->
                         <StackPanel x:Name="SectionGlobalUsings" Visibility="Collapsed">
-                            <TextBlock Text="{DynamicResource PP_NavGlobalUsings}" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <TextBlock Text="{StaticResource PP_NavGlobalUsings}" Style="{StaticResource PP_SectionTitleStyle}" />
                             <Separator />
-                            <TextBlock Text="{DynamicResource PP_GlobalUsingsDesc}"
+                            <TextBlock Text="{StaticResource PP_GlobalUsingsDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}"
                                        Margin="0,0,0,12" />
                             <ListView x:Name="GlobalUsingsListView" MaxHeight="350">
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Header="{DynamicResource PP_NamespaceColumn}" Width="400"
+                                        <GridViewColumn Header="{StaticResource PP_NamespaceColumn}" Width="400"
                                                         DisplayMemberBinding="{Binding}" />
                                     </GridView>
                                 </ListView.View>
@@ -824,17 +824,17 @@
                              Section: items
                              ================================================ -->
                         <StackPanel x:Name="SectionItems" Visibility="Collapsed">
-                            <TextBlock Text="{DynamicResource PP_NavItems}" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <TextBlock Text="{StaticResource PP_NavItems}" Style="{StaticResource PP_SectionTitleStyle}" />
                             <Separator />
                             <TextBlock x:Name="ItemCountLabel" Margin="0,0,0,10" />
                             <ListView x:Name="ItemsListView" MaxHeight="500">
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Header="{DynamicResource PS_NameLabel}"    Width="200"
+                                        <GridViewColumn Header="{StaticResource PS_NameLabel}"    Width="200"
                                                         DisplayMemberBinding="{Binding Name}" />
-                                        <GridViewColumn Header="{DynamicResource PP_TypeColumn}"   Width="100"
+                                        <GridViewColumn Header="{StaticResource PP_TypeColumn}"   Width="100"
                                                         DisplayMemberBinding="{Binding ItemType}" />
-                                        <GridViewColumn Header="{DynamicResource PP_PathColumn}" Width="300"
+                                        <GridViewColumn Header="{StaticResource PP_PathColumn}" Width="300"
                                                         DisplayMemberBinding="{Binding RelativePath}" />
                                     </GridView>
                                 </ListView.View>
@@ -845,19 +845,19 @@
                              Section: references  (with Add / Remove toolbar)
                              ================================================ -->
                         <StackPanel x:Name="SectionReferences" Visibility="Collapsed">
-                            <TextBlock Text="{DynamicResource PP_NavReferences}" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <TextBlock Text="{StaticResource PP_NavReferences}" Style="{StaticResource PP_SectionTitleStyle}" />
                             <Separator />
                             <!-- Action toolbar -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <Button Content="{DynamicResource PP_AddNuGet}"
+                                <Button Content="{StaticResource PP_AddNuGet}"
                                         Style="{StaticResource PP_SecondaryButtonStyle}"
                                         Command="{Binding AddNuGetCommand}"
                                         Margin="0,0,6,0" />
-                                <Button Content="{DynamicResource PP_AddProject}"
+                                <Button Content="{StaticResource PP_AddProject}"
                                         Style="{StaticResource PP_SecondaryButtonStyle}"
                                         Command="{Binding AddProjectRefCommand}"
                                         Margin="0,0,6,0" />
-                                <Button Content="{DynamicResource PS_Remove}"
+                                <Button Content="{StaticResource PS_Remove}"
                                         Style="{StaticResource PP_SecondaryButtonStyle}"
                                         Command="{Binding RemoveReferenceCommand}" />
                             </StackPanel>
@@ -866,9 +866,9 @@
                                       MaxHeight="450">
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Header="{DynamicResource PS_NameLabel}"  Width="280"
+                                        <GridViewColumn Header="{StaticResource PS_NameLabel}"  Width="280"
                                                         DisplayMemberBinding="{Binding Name}" />
-                                        <GridViewColumn Header="{DynamicResource PP_TypeColumn}" Width="120"
+                                        <GridViewColumn Header="{StaticResource PP_TypeColumn}" Width="120"
                                                         DisplayMemberBinding="{Binding RefType}" />
                                     </GridView>
                                 </ListView.View>
@@ -879,11 +879,11 @@
                              Section: app-win32  (Ressources Win32 — VS only)
                              ================================================ -->
                         <StackPanel x:Name="SectionWin32Resources" Visibility="Collapsed">
-                            <TextBlock Text="{DynamicResource PP_NavWin32Resources}" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <TextBlock Text="{StaticResource PP_NavWin32Resources}" Style="{StaticResource PP_SectionTitleStyle}" />
                             <Separator />
 
                             <!-- App icon -->
-                            <TextBlock Text="{DynamicResource PP_AppIcon}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_AppIcon}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <Grid Margin="0,2,0,0" MaxWidth="460" HorizontalAlignment="Left">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -893,25 +893,25 @@
                                          Text="{Binding AppIconPath, UpdateSourceTrigger=PropertyChanged}"
                                          IsReadOnly="True" Margin="0" />
                                 <Button Grid.Column="1"
-                                        Content="{DynamicResource PS_Browse}"
+                                        Content="{StaticResource PS_Browse}"
                                         Style="{StaticResource PP_SecondaryButtonStyle}"
                                         Padding="8,4" Margin="6,0,0,0"
                                         Click="OnBrowseAppIcon" />
                             </Grid>
-                            <TextBlock Text="{DynamicResource PP_AppIconDesc}"
+                            <TextBlock Text="{StaticResource PP_AppIconDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
 
                             <!-- App manifest -->
-                            <TextBlock Text="{DynamicResource PP_AppManifest}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_AppManifest}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <ComboBox SelectedItem="{Binding AppManifest}"
                                       Style="{StaticResource PP_ComboBoxStyle}"
                                       ItemContainerStyle="{StaticResource PP_ComboBoxItemStyle}"
                                       MaxWidth="320" HorizontalAlignment="Left">
-                                <ComboBoxItem Content="{DynamicResource PP_ManifestDefault}" />
-                                <ComboBoxItem Content="{DynamicResource PP_ManifestCreate}" />
-                                <ComboBoxItem Content="{DynamicResource PP_ManifestNone}" />
+                                <ComboBoxItem Content="{StaticResource PP_ManifestDefault}" />
+                                <ComboBoxItem Content="{StaticResource PP_ManifestCreate}" />
+                                <ComboBoxItem Content="{StaticResource PP_ManifestNone}" />
                             </ComboBox>
-                            <TextBlock Text="{DynamicResource PP_AppManifestDesc}"
+                            <TextBlock Text="{StaticResource PP_AppManifestDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
                         </StackPanel>
 
@@ -919,26 +919,26 @@
                              Section: package  (VS only)
                              ================================================ -->
                         <StackPanel x:Name="SectionPackage" Visibility="Collapsed">
-                            <TextBlock Text="{DynamicResource PP_NavPackage}" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <TextBlock Text="{StaticResource PP_NavPackage}" Style="{StaticResource PP_SectionTitleStyle}" />
                             <Separator />
-                            <TextBlock Text="{DynamicResource PP_PackageDesc}"
+                            <TextBlock Text="{StaticResource PP_PackageDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}"
                                        Margin="0,0,0,12" />
-                            <TextBlock Text="{DynamicResource PP_PackageId}"      Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_PackageId}"      Style="{StaticResource PP_FieldLabelStyle}" />
                             <TextBox x:Name="TbPackageId"
                                      Text="{Binding PackageId, UpdateSourceTrigger=PropertyChanged}"
                                      MaxWidth="400" HorizontalAlignment="Left" />
-                            <TextBlock Text="{DynamicResource PP_PackageIdDesc}"
+                            <TextBlock Text="{StaticResource PP_PackageIdDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
-                            <TextBlock Text="{DynamicResource PP_VersionLabel}"            Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_VersionLabel}"            Style="{StaticResource PP_FieldLabelStyle}" />
                             <TextBox x:Name="TbPackageVersion"
                                      Text="{Binding PackageVersion, UpdateSourceTrigger=PropertyChanged}"
                                      MaxWidth="200" HorizontalAlignment="Left" />
-                            <TextBlock Text="{DynamicResource PP_AuthorsLabel}"            Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_AuthorsLabel}"            Style="{StaticResource PP_FieldLabelStyle}" />
                             <TextBox x:Name="TbPackageAuthors"
                                      Text="{Binding PackageAuthors, UpdateSourceTrigger=PropertyChanged}"
                                      MaxWidth="400" HorizontalAlignment="Left" />
-                            <TextBlock Text="{DynamicResource PP_DescriptionLabel}"        Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_DescriptionLabel}"        Style="{StaticResource PP_FieldLabelStyle}" />
                             <TextBox x:Name="TbPackageDescription"
                                      Text="{Binding PackageDescription, UpdateSourceTrigger=PropertyChanged}"
                                      AcceptsReturn="True" Height="70"
@@ -951,34 +951,34 @@
                              Section: debug  (VS only)
                              ================================================ -->
                         <StackPanel x:Name="SectionDebug" Visibility="Collapsed">
-                            <TextBlock Text="{DynamicResource PP_NavDebug}" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <TextBlock Text="{StaticResource PP_NavDebug}" Style="{StaticResource PP_SectionTitleStyle}" />
                             <Separator />
-                            <TextBlock Text="{DynamicResource PP_DebugDesc}"
+                            <TextBlock Text="{StaticResource PP_DebugDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}"
                                        Margin="0,0,0,12" />
 
                             <!-- Launch profile selector -->
-                            <TextBlock Text="{DynamicResource PP_LaunchProfile}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_LaunchProfile}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <ComboBox ItemsSource="{Binding LaunchProfiles}"
                                       SelectedItem="{Binding ActiveLaunchProfile}"
                                       Style="{StaticResource PP_ComboBoxStyle}"
                                       ItemContainerStyle="{StaticResource PP_ComboBoxItemStyle}"
                                       MaxWidth="300" HorizontalAlignment="Left" />
-                            <TextBlock Text="{DynamicResource PP_LaunchProfileDesc}"
+                            <TextBlock Text="{StaticResource PP_LaunchProfileDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
 
                             <!-- Command line args + working dir -->
-                            <TextBlock Text="{DynamicResource PP_CommandLineArgs}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_CommandLineArgs}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <TextBox x:Name="TbLaunchArgs"
                                      Text="{Binding LaunchArgs, UpdateSourceTrigger=PropertyChanged}"
                                      MaxWidth="460" HorizontalAlignment="Left" />
-                            <TextBlock Text="{DynamicResource PP_WorkingDirectory}" Style="{StaticResource PP_FieldLabelStyle}" />
+                            <TextBlock Text="{StaticResource PP_WorkingDirectory}" Style="{StaticResource PP_FieldLabelStyle}" />
                             <TextBox x:Name="TbWorkDir"
                                      Text="{Binding WorkingDirectory, UpdateSourceTrigger=PropertyChanged}"
                                      MaxWidth="460" HorizontalAlignment="Left" />
 
                             <!-- Environment variables DataGrid -->
-                            <TextBlock Text="{DynamicResource PP_EnvVars}"
+                            <TextBlock Text="{StaticResource PP_EnvVars}"
                                        FontWeight="SemiBold"
                                        Margin="0,16,0,6" />
                             <DataGrid x:Name="EnvVarsGrid"
@@ -987,8 +987,8 @@
                                       MaxWidth="560"
                                       HorizontalAlignment="Left">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="{DynamicResource PS_NameLabel}"    Binding="{Binding Name}"  Width="*" />
-                                    <DataGridTextColumn Header="{DynamicResource PP_ValueColumn}" Binding="{Binding Value}" Width="*" />
+                                    <DataGridTextColumn Header="{StaticResource PS_NameLabel}"    Binding="{Binding Name}"  Width="*" />
+                                    <DataGridTextColumn Header="{StaticResource PP_ValueColumn}" Binding="{Binding Value}" Width="*" />
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>
@@ -997,18 +997,18 @@
                              Section: code-analysis  (VS only)
                              ================================================ -->
                         <StackPanel x:Name="SectionCodeAnalysis" Visibility="Collapsed">
-                            <TextBlock Text="{DynamicResource PP_NavCodeAnalysis}" Style="{StaticResource PP_SectionTitleStyle}" />
+                            <TextBlock Text="{StaticResource PP_NavCodeAnalysis}" Style="{StaticResource PP_SectionTitleStyle}" />
                             <Separator />
-                            <TextBlock Text="{DynamicResource PP_CodeAnalysisDesc}"
+                            <TextBlock Text="{StaticResource PP_CodeAnalysisDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}"
                                        Margin="0,0,0,12" />
                             <CheckBox x:Name="CbAnalysisAll"
-                                      Content="{DynamicResource PP_EnableCodeAnalysis}"
+                                      Content="{StaticResource PP_EnableCodeAnalysis}"
                                       IsChecked="{Binding EnableCodeAnalysis}" />
-                            <TextBlock Text="{DynamicResource PP_EnableCodeAnalysisDesc}"
+                            <TextBlock Text="{StaticResource PP_EnableCodeAnalysisDesc}"
                                        Style="{StaticResource PP_FieldDescStyle}" />
                             <CheckBox x:Name="CbAnalysisRelease"
-                                      Content="{DynamicResource PP_ReleaseOnlyAnalysis}"
+                                      Content="{StaticResource PP_ReleaseOnlyAnalysis}"
                                       IsChecked="{Binding CodeAnalysisReleaseOnly}"
                                       Margin="0,4,0,0" />
                         </StackPanel>
@@ -1026,7 +1026,7 @@
                         Margin="0,0,16,16"
                         Visibility="Collapsed"
                         Panel.ZIndex="99">
-                    <TextBlock Text="{DynamicResource PP_ChangesSaved}"
+                    <TextBlock Text="{StaticResource PP_ChangesSaved}"
                                Foreground="White"
                                FontSize="12"
                                VerticalAlignment="Center" />

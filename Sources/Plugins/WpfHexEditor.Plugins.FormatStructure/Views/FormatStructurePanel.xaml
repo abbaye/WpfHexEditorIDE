@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.Plugins.FormatStructure.Views.FormatStructurePanel"
+﻿<UserControl x:Class="WpfHexEditor.Plugins.FormatStructure.Views.FormatStructurePanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WpfHexEditor.Plugins.FormatStructure.Views"
@@ -79,7 +79,7 @@
                            Foreground="{DynamicResource DockMenuForegroundBrush}" Opacity="0.7"/>
                 <TextBlock x:Name="FormatNameText"
                            DockPanel.Dock="Left"
-                           Text="{DynamicResource FormatStruct_NoFormatDetected}"
+                           Text="{StaticResource FormatStruct_NoFormatDetected}"
                            FontSize="11" FontWeight="SemiBold"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -107,11 +107,11 @@
                     <ColumnDefinition Width="70"/>
                     <ColumnDefinition Width="44"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="1" Text="{DynamicResource FormatStruct_ColName}" FontSize="10" Opacity="0.5"
+                <TextBlock Grid.Column="1" Text="{StaticResource FormatStruct_ColName}" FontSize="10" Opacity="0.5"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                <TextBlock Grid.Column="2" Text="{DynamicResource FormatStruct_ColOffset}" FontSize="10" Opacity="0.5"
+                <TextBlock Grid.Column="2" Text="{StaticResource FormatStruct_ColOffset}" FontSize="10" Opacity="0.5"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                <TextBlock Grid.Column="3" Text="{DynamicResource FormatStruct_ColSize}" FontSize="10" Opacity="0.5"
+                <TextBlock Grid.Column="3" Text="{StaticResource FormatStruct_ColSize}" FontSize="10" Opacity="0.5"
                            HorizontalAlignment="Right" Margin="0,0,4,0"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             </Grid>

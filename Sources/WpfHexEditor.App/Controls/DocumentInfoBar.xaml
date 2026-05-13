@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -129,7 +129,7 @@
                         Orientation="Horizontal"
                         VerticalAlignment="Center">
                 <TextBlock x:Name="ViewInLabel"
-                           Text="{DynamicResource APP_ViewIn}"
+                           Text="{StaticResource APP_ViewIn}"
                            FontSize="12"
                            Foreground="{DynamicResource InfoBar_ForegroundBrush}"
                            VerticalAlignment="Center"

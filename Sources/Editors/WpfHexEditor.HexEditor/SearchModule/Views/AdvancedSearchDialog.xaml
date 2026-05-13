@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
@@ -16,7 +16,7 @@
         xmlns:models="clr-namespace:WpfHexEditor.Core.Search.Models;assembly=WpfHexEditor.Core"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         mc:Ignorable="d"
-        Title="{DynamicResource HE_SearchDialogTitle}"
+        Title="{StaticResource HE_SearchDialogTitle}"
         Height="460" Width="560"
         MinHeight="380" MinWidth="480"
         ResizeMode="CanResizeWithGrip"
@@ -310,14 +310,14 @@
                               Width="130"
                               Style="{DynamicResource DockComboBoxStyle}"
                               SelectedIndex="{Binding SelectedModeIndex}"
-                              ToolTip="{DynamicResource HE_SearchModeTooltip}">
-                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeText}"/>
-                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeHex}"/>
-                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeWildcard}"/>
-                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeTbl}"
+                              ToolTip="{StaticResource HE_SearchModeTooltip}">
+                        <ComboBoxItem Content="{StaticResource HE_SearchTypeText}"/>
+                        <ComboBoxItem Content="{StaticResource HE_SearchTypeHex}"/>
+                        <ComboBoxItem Content="{StaticResource HE_SearchTypeWildcard}"/>
+                        <ComboBoxItem Content="{StaticResource HE_SearchTypeTbl}"
                                       IsEnabled="{Binding IsTblLoaded}"
                                       ToolTip="{Binding TblInfo}"/>
-                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeRelative}"/>
+                        <ComboBoxItem Content="{StaticResource HE_SearchTypeRelative}"/>
                     </ComboBox>
 
                     <!-- Separator -->
@@ -329,7 +329,7 @@
                                   Content="Ab"
                                   Style="{StaticResource SmallToggleStyle}"
                                   IsChecked="{Binding CaseSensitive}"
-                                  ToolTip="{DynamicResource HE_CaseSensitiveTooltip}"
+                                  ToolTip="{StaticResource HE_CaseSensitiveTooltip}"
                                   Visibility="{Binding IsTextMode, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                     <!-- .* — Use wildcard -->
@@ -337,7 +337,7 @@
                                   Content=".*"
                                   Style="{StaticResource SmallToggleStyle}"
                                   IsChecked="{Binding UseWildcard}"
-                                  ToolTip="{DynamicResource HE_WildcardTooltip}"/>
+                                  ToolTip="{StaticResource HE_WildcardTooltip}"/>
 
                     <!-- Separator -->
                     <Rectangle DockPanel.Dock="Left" Width="1" Margin="8,4" Opacity="0.35"
@@ -345,7 +345,7 @@
 
                     <!-- Wrap -->
                     <CheckBox DockPanel.Dock="Left"
-                              Content="{DynamicResource HE_LoopSearch}"
+                              Content="{StaticResource HE_LoopSearch}"
                               Style="{DynamicResource DockCheckBoxStyle}"
                               IsChecked="{Binding WrapAround}"
                               VerticalAlignment="Center"
@@ -359,7 +359,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0"
-                               Text="{DynamicResource HE_FindLabel}"
+                               Text="{StaticResource HE_FindLabel}"
                                VerticalAlignment="Center"
                                FontSize="12"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -390,7 +390,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0"
-                               Text="{DynamicResource HE_ReplaceLabel}"
+                               Text="{StaticResource HE_ReplaceLabel}"
                                VerticalAlignment="Center"
                                FontSize="12"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -403,7 +403,7 @@
                 <StackPanel Grid.Row="6"
                             Orientation="Horizontal"
                             Visibility="{Binding IsTextMode, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <TextBlock Text="{DynamicResource HE_EncodingLabel}"
+                    <TextBlock Text="{StaticResource HE_EncodingLabel}"
                                VerticalAlignment="Center"
                                FontSize="12"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -413,7 +413,7 @@
                               Style="{DynamicResource DockComboBoxStyle}"
                               DisplayMemberPath="Name"
                               Width="155"/>
-                    <TextBlock Text="{DynamicResource HE_MaxLabel}"
+                    <TextBlock Text="{StaticResource HE_MaxLabel}"
                                VerticalAlignment="Center"
                                FontSize="12"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -427,7 +427,7 @@
                 <StackPanel Grid.Row="6"
                             Orientation="Horizontal"
                             Visibility="{Binding IsTextMode, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                    <TextBlock Text="{DynamicResource HE_MaxLabel}"
+                    <TextBlock Text="{StaticResource HE_MaxLabel}"
                                VerticalAlignment="Center"
                                FontSize="12"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -456,7 +456,7 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    VerticalAlignment="Center" Margin="0,0,5,0"/>
-                        <TextBlock Text="{DynamicResource HE_StopButton}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{StaticResource HE_StopButton}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
@@ -478,14 +478,14 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE70E;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    VerticalAlignment="Center" Margin="0,0,4,0"/>
-                        <TextBlock Text="{DynamicResource HE_PrevButton}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{StaticResource HE_PrevButton}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button DockPanel.Dock="Left"
                         Command="{Binding FindNextCommand}"
                         Style="{StaticResource DialogButtonStyle}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{DynamicResource HE_NextButton}" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBlock Text="{StaticResource HE_NextButton}" VerticalAlignment="Center" Margin="0,0,4,0"/>
                         <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
@@ -497,18 +497,18 @@
 
                 <!-- Find All -->
                 <Button DockPanel.Dock="Left"
-                        Content="{DynamicResource HE_FindAllButton}"
+                        Content="{StaticResource HE_FindAllButton}"
                         Command="{Binding FindAllCommand}"
                         Style="{StaticResource PrimaryButtonStyle}"/>
 
                 <!-- Replace / Replace All (hidden in RELATIVE mode) -->
                 <Button DockPanel.Dock="Left"
-                        Content="{DynamicResource HE_ReplaceButton}"
+                        Content="{StaticResource HE_ReplaceButton}"
                         Command="{Binding ReplaceSelectedCommand}"
                         Style="{StaticResource DialogButtonStyle}"
                         Visibility="{Binding ShowReplaceControls, Converter={StaticResource BoolToVisibilityConverter}}"/>
                 <Button DockPanel.Dock="Left"
-                        Content="{DynamicResource HE_ReplaceAllButton}"
+                        Content="{StaticResource HE_ReplaceAllButton}"
                         Command="{Binding ReplaceAllCommand}"
                         Style="{StaticResource DialogButtonStyle}"
                         Visibility="{Binding ShowReplaceControls, Converter={StaticResource BoolToVisibilityConverter}}"/>
@@ -531,12 +531,12 @@
                            FontSize="12"
                            FontWeight="SemiBold"
                            Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <Run Text="{DynamicResource HE_ResultsLabel}"/>
+                    <Run Text="{StaticResource HE_ResultsLabel}"/>
                     <Run Text="{Binding TotalResultCount, Mode=OneWay}"/>
                     <Run Text=")"/>
                 </TextBlock>
                 <Button DockPanel.Dock="Right"
-                        Content="{DynamicResource HE_ExportButton}"
+                        Content="{StaticResource HE_ExportButton}"
                         Command="{Binding ExportResultsCommand}"
                         Style="{StaticResource DialogButtonStyle}"
                         MinWidth="80"/>
@@ -560,10 +560,10 @@
                 <ListView.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle}">
                         <GridViewColumn Header="#"              Width="44"  DisplayMemberBinding="{Binding Index}"/>
-                        <GridViewColumn Header="{DynamicResource HE_OffsetHexColumn}"  Width="100" DisplayMemberBinding="{Binding PositionHex}"/>
-                        <GridViewColumn Header="{DynamicResource HE_OffsetDecColumn}"  Width="100" DisplayMemberBinding="{Binding PositionDec}"/>
-                        <GridViewColumn Header="{DynamicResource HE_PreviewColumn}"   Width="230" DisplayMemberBinding="{Binding HexContext}"/>
-                        <GridViewColumn Header="{DynamicResource HE_LengthColumn}"         Width="60"  DisplayMemberBinding="{Binding Length}"/>
+                        <GridViewColumn Header="{StaticResource HE_OffsetHexColumn}"  Width="100" DisplayMemberBinding="{Binding PositionHex}"/>
+                        <GridViewColumn Header="{StaticResource HE_OffsetDecColumn}"  Width="100" DisplayMemberBinding="{Binding PositionDec}"/>
+                        <GridViewColumn Header="{StaticResource HE_PreviewColumn}"   Width="230" DisplayMemberBinding="{Binding HexContext}"/>
+                        <GridViewColumn Header="{StaticResource HE_LengthColumn}"         Width="60"  DisplayMemberBinding="{Binding Length}"/>
                     </GridView>
                 </ListView.View>
             </ListView>
@@ -586,22 +586,22 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="{DynamicResource HE_ColOffset}"    Width="66"  DisplayMemberBinding="{Binding Offset, StringFormat='+{0}'}"/>
-                        <GridViewColumn Header="{DynamicResource HE_OccColumn}"     Width="58"  DisplayMemberBinding="{Binding Score, StringFormat=F1}"/>
-                        <GridViewColumn Header="{DynamicResource HE_OccColumn}"      Width="54"  DisplayMemberBinding="{Binding MatchCount}"/>
-                        <GridViewColumn Header="{DynamicResource HE_PreviewColumn}" Width="240" DisplayMemberBinding="{Binding SampleText}"/>
-                        <GridViewColumn Header="{DynamicResource HE_PrintPctColumn}" Width="70"  DisplayMemberBinding="{Binding PrintableCharPercentage, StringFormat=F1}"/>
-                        <GridViewColumn Header="{DynamicResource HE_ActionsColumn}"   Width="130">
+                        <GridViewColumn Header="{StaticResource HE_ColOffset}"    Width="66"  DisplayMemberBinding="{Binding Offset, StringFormat='+{0}'}"/>
+                        <GridViewColumn Header="{StaticResource HE_OccColumn}"     Width="58"  DisplayMemberBinding="{Binding Score, StringFormat=F1}"/>
+                        <GridViewColumn Header="{StaticResource HE_OccColumn}"      Width="54"  DisplayMemberBinding="{Binding MatchCount}"/>
+                        <GridViewColumn Header="{StaticResource HE_PreviewColumn}" Width="240" DisplayMemberBinding="{Binding SampleText}"/>
+                        <GridViewColumn Header="{StaticResource HE_PrintPctColumn}" Width="70"  DisplayMemberBinding="{Binding PrintableCharPercentage, StringFormat=F1}"/>
+                        <GridViewColumn Header="{StaticResource HE_ActionsColumn}"   Width="130">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <Button Content="{DynamicResource HE_ExportTblButton}"
+                                        <Button Content="{StaticResource HE_ExportTblButton}"
                                                 Command="{Binding DataContext.ExportProposalToTblCommand,
                                                           RelativeSource={RelativeSource AncestorType=Window}}"
                                                 CommandParameter="{Binding}"
                                                 Style="{StaticResource DialogButtonStyle}"
                                                 MinWidth="64" Height="20" Margin="0,0,4,0"/>
-                                        <Button Content="{DynamicResource HE_ApplyButton}"
+                                        <Button Content="{StaticResource HE_ApplyButton}"
                                                 Command="{Binding DataContext.ApplyEncodingCommand,
                                                           RelativeSource={RelativeSource AncestorType=Window}}"
                                                 CommandParameter="{Binding}"
@@ -632,11 +632,11 @@
                         Height="18" Padding="6,0"
                         Margin="0"
                         Visibility="{Binding IsTblLoaded, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                        ToolTip="{DynamicResource HE_LoadTblTooltip}">
+                        ToolTip="{StaticResource HE_LoadTblTooltip}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xED25;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                                    VerticalAlignment="Center" Margin="0,0,4,0"/>
-                        <TextBlock Text="{DynamicResource HE_LoadTblButton}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{StaticResource HE_LoadTblButton}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
@@ -645,17 +645,17 @@
                             Visibility="{Binding IsTblLoaded, Converter={StaticResource BoolToVisibilityConverter}}">
                     <TextBlock VerticalAlignment="Center" Margin="0,0,6,0" FontSize="11"
                                Foreground="{DynamicResource DockMenuForegroundBrush}">
-                        <Run Text="{DynamicResource HE_TblLabel}"/>
+                        <Run Text="{StaticResource HE_TblLabel}"/>
                         <Run Text="{Binding TblInfo, Mode=OneWay}"/>
                     </TextBlock>
                     <Button Command="{Binding CloseTblCommand}"
                             Style="{StaticResource DialogButtonStyle}"
                             Height="18" Padding="6,0" Margin="0"
-                            ToolTip="{DynamicResource HE_CloseTblTooltip}">
+                            ToolTip="{StaticResource HE_CloseTblTooltip}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                                        VerticalAlignment="Center" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource HE_CloseSearchTooltip}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{StaticResource HE_CloseSearchTooltip}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -673,9 +673,9 @@
                                VerticalAlignment="Stretch"/>
                     <TextBlock FontSize="11" Margin="8,0,0,0"
                                Foreground="{DynamicResource DockMenuForegroundBrush}">
-                        <Run Text="{DynamicResource HE_SizeLabel}"/>
+                        <Run Text="{StaticResource HE_SizeLabel}"/>
                         <Run Text="{Binding FileLength, StringFormat=N0, Mode=OneWay}"/>
-                        <Run Text="{DynamicResource HE_BytesLabel}"/>
+                        <Run Text="{StaticResource HE_BytesLabel}"/>
                     </TextBlock>
                 </StackPanel>
             </DockPanel>

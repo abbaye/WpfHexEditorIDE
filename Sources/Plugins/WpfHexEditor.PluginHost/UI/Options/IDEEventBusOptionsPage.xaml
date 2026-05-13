@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project: WpfHexEditor.PluginHost
     File: UI/Options/IDEEventBusOptionsPage.xaml
     Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -66,7 +66,7 @@
         <!-- ── Section: Subscriber Counts ────────────────────────────── -->
         <StackPanel Grid.Row="0" Margin="0,0,0,8">
 
-            <TextBlock Text="{DynamicResource PH_RegisteredEventTypes}"
+            <TextBlock Text="{StaticResource PH_RegisteredEventTypes}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        Margin="0,0,0,8"/>
@@ -139,7 +139,7 @@
                     </ListView.Resources>
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="{DynamicResource PH_ColEventType}" Width="220"
+                            <GridViewColumn Header="{StaticResource PH_ColEventType}" Width="220"
                                             DisplayMemberBinding="{Binding DisplayName}"/>
                             <GridViewColumn Header="Producer" Width="160"
                                             DisplayMemberBinding="{Binding ProducerLabel}"/>
@@ -157,18 +157,18 @@
         <!-- ── Section: Event Log ─────────────────────────────────────── -->
         <StackPanel Grid.Row="1" Margin="0,0,0,6">
             <DockPanel>
-                <TextBlock Text="{DynamicResource PH_EventLog}"
+                <TextBlock Text="{StaticResource PH_EventLog}"
                            FontWeight="SemiBold" FontSize="13"
                            Foreground="{DynamicResource PFP_TextBrush}"
                            VerticalAlignment="Center"/>
                 <Button x:Name="RefreshButton"
-                        Content="{DynamicResource PH_Refresh}"
+                        Content="{StaticResource PH_Refresh}"
                         Click="OnRefresh"
                         DockPanel.Dock="Right"
                         Padding="10,3" Margin="4,0,0,0"
                         Style="{StaticResource ToolbarButtonStyle}"/>
                 <Button x:Name="ClearLogButton"
-                        Content="{DynamicResource PH_ClearLog}"
+                        Content="{StaticResource PH_ClearLog}"
                         Click="OnClearLog"
                         DockPanel.Dock="Right"
                         Padding="10,3"

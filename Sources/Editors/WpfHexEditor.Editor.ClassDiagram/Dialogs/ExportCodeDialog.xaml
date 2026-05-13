@@ -1,11 +1,11 @@
-<core:ThemedDialog x:Class="WpfHexEditor.Editor.ClassDiagram.Dialogs.ExportCodeDialog"
+﻿<core:ThemedDialog x:Class="WpfHexEditor.Editor.ClassDiagram.Dialogs.ExportCodeDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:core="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:options="clr-namespace:WpfHexEditor.Editor.ClassDiagram.Core.CodeGen.Options;assembly=WpfHexEditor.Editor.ClassDiagram.Core"
         xmlns:abs="clr-namespace:WpfHexEditor.Editor.ClassDiagram.Core.CodeGen.Abstractions;assembly=WpfHexEditor.Editor.ClassDiagram.Core"
-        Title="{DynamicResource ExportCode_Title}"
+        Title="{StaticResource ExportCode_Title}"
         Width="900" Height="640"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
@@ -36,9 +36,9 @@
         <!-- Left: options -->
         <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                <TextBlock Text="{DynamicResource ExportCode_GeneralOptions}" FontWeight="Bold" Margin="0,0,0,6"/>
+                <TextBlock Text="{StaticResource ExportCode_GeneralOptions}" FontWeight="Bold" Margin="0,0,0,6"/>
 
-                <TextBlock Text="{DynamicResource ExportCode_Language}"/>
+                <TextBlock Text="{StaticResource ExportCode_Language}"/>
                 <ComboBox x:Name="LanguageCombo"
                           ItemsSource="{Binding AvailableLanguages}"
                           SelectedValuePath="LanguageId"
@@ -46,63 +46,63 @@
                           DisplayMemberPath="DisplayName"
                           Margin="0,2,0,8"/>
 
-                <TextBlock Text="{DynamicResource ExportCode_RootNamespace}"/>
+                <TextBlock Text="{StaticResource ExportCode_RootNamespace}"/>
                 <TextBox Text="{Binding RootNamespace, UpdateSourceTrigger=PropertyChanged}"
                          Margin="0,2,0,8"/>
 
-                <TextBlock Text="{DynamicResource ExportCode_IndentStyle}"/>
+                <TextBlock Text="{StaticResource ExportCode_IndentStyle}"/>
                 <ComboBox ItemsSource="{Binding Source={StaticResource IndentStyleValues}}"
                           SelectedItem="{Binding IndentStyle, UpdateSourceTrigger=PropertyChanged}"
                           Margin="0,2,0,8"/>
 
-                <TextBlock Text="{DynamicResource ExportCode_IndentSize}"/>
+                <TextBlock Text="{StaticResource ExportCode_IndentSize}"/>
                 <TextBox Text="{Binding IndentSize, UpdateSourceTrigger=PropertyChanged}"
                          Margin="0,2,0,8"/>
 
                 <CheckBox IsChecked="{Binding EmitHeader}"
-                          Content="{DynamicResource ExportCode_Header}"
+                          Content="{StaticResource ExportCode_Header}"
                           Margin="0,4"/>
                 <CheckBox IsChecked="{Binding EmitXmlDocs}"
-                          Content="{DynamicResource ExportCode_XmlDocs}"
+                          Content="{StaticResource ExportCode_XmlDocs}"
                           Margin="0,4"/>
                 <CheckBox IsChecked="{Binding EmitAttributes}"
-                          Content="{DynamicResource ExportCode_Attributes}"
+                          Content="{StaticResource ExportCode_Attributes}"
                           Margin="0,4"/>
 
-                <TextBlock Text="{DynamicResource ExportCode_CSharpOptions}"
+                <TextBlock Text="{StaticResource ExportCode_CSharpOptions}"
                            FontWeight="Bold"
                            Margin="0,16,0,6"
                            Visibility="{Binding IsCSharpSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                 <StackPanel Visibility="{Binding IsCSharpSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock Text="{DynamicResource ExportCode_CSharpVersion}"/>
+                    <TextBlock Text="{StaticResource ExportCode_CSharpVersion}"/>
                     <ComboBox ItemsSource="{Binding Source={StaticResource CSharpVersionValues}}"
                               SelectedItem="{Binding CSharpVersion, UpdateSourceTrigger=PropertyChanged}"
                               Margin="0,2,0,8"/>
 
                     <CheckBox IsChecked="{Binding UseFileScopedNamespace}"
-                              Content="{DynamicResource ExportCode_FileScopedNamespace}"
+                              Content="{StaticResource ExportCode_FileScopedNamespace}"
                               Margin="0,4"/>
                     <CheckBox IsChecked="{Binding NullableContextEnabled}"
-                              Content="{DynamicResource ExportCode_Nullable}"
+                              Content="{StaticResource ExportCode_Nullable}"
                               Margin="0,4"/>
                     <CheckBox IsChecked="{Binding PreferRecords}"
-                              Content="{DynamicResource ExportCode_PreferRecords}"
+                              Content="{StaticResource ExportCode_PreferRecords}"
                               Margin="0,4"/>
                     <CheckBox IsChecked="{Binding EmitAsyncSignatures}"
-                              Content="{DynamicResource ExportCode_AsyncSignatures}"
+                              Content="{StaticResource ExportCode_AsyncSignatures}"
                               Margin="0,4"/>
                 </StackPanel>
 
-                <TextBlock Text="{DynamicResource ExportCode_Preset}"
+                <TextBlock Text="{StaticResource ExportCode_Preset}"
                            FontWeight="Bold"
                            Margin="0,16,0,6"/>
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="{DynamicResource ExportCode_PresetDefault}"
+                    <Button Content="{StaticResource ExportCode_PresetDefault}"
                             Margin="0,0,4,0" Padding="8,3" Click="OnPresetDefaultClick"/>
-                    <Button Content="{DynamicResource ExportCode_PresetModern}"
+                    <Button Content="{StaticResource ExportCode_PresetModern}"
                             Margin="0,0,4,0" Padding="8,3" Click="OnPresetModernClick"/>
-                    <Button Content="{DynamicResource ExportCode_PresetLegacy}"
+                    <Button Content="{StaticResource ExportCode_PresetLegacy}"
                             Padding="8,3" Click="OnPresetLegacyClick"/>
                 </StackPanel>
             </StackPanel>
@@ -115,7 +115,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0"
-                       Text="{DynamicResource ExportCode_Preview}"
+                       Text="{StaticResource ExportCode_Preview}"
                        FontWeight="Bold"
                        Margin="0,0,0,6"/>
             <Border Grid.Row="1" BorderBrush="#FF7F7F7F" BorderThickness="1">
@@ -139,13 +139,13 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Margin="0,12,0,0">
-            <Button Content="{DynamicResource ExportCode_OK}"
+            <Button Content="{StaticResource ExportCode_OK}"
                     IsDefault="True"
                     MinWidth="90"
                     Padding="6,4"
                     Margin="0,0,8,0"
                     Click="OnOkClick"/>
-            <Button Content="{DynamicResource ExportCode_Cancel}"
+            <Button Content="{StaticResource ExportCode_Cancel}"
                     IsCancel="True"
                     MinWidth="90"
                     Padding="6,4"

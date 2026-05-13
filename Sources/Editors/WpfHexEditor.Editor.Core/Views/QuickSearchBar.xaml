@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -206,7 +206,7 @@
                                   Style="{StaticResource QuickToggleStyle}"
                                   Width="22" Height="22"
                                   Margin="3,0,2,0"
-                                  ToolTip="{DynamicResource EC_ShowReplaceTooltip}">
+                                  ToolTip="{StaticResource EC_ShowReplaceTooltip}">
                         <TextBlock x:Name="ExpandIcon"
                                    Text="&#xE8AC;"
                                    FontFamily="Segoe MDL2 Assets"
@@ -242,7 +242,7 @@
 
                             <!-- Placeholder (shown when empty) -->
                             <TextBlock Grid.Column="1"
-                                       Text="{DynamicResource EC_SearchPlaceholder}"
+                                       Text="{StaticResource EC_SearchPlaceholder}"
                                        FontFamily="Segoe UI"
                                        FontSize="12"
                                        VerticalAlignment="Center"
@@ -284,14 +284,14 @@
                             Content="&#xE70E;"
                             Style="{StaticResource QuickButtonStyle}"
                             Command="{Binding FindPreviousCommand}"
-                            ToolTip="{DynamicResource EC_PrevResultTooltip}"/>
+                            ToolTip="{StaticResource EC_PrevResultTooltip}"/>
 
                     <!-- ── Col 4: Next ▼ (MDL2 ChevronDown &#xE70D;) ── -->
                     <Button Grid.Column="4"
                             Content="&#xE70D;"
                             Style="{StaticResource QuickButtonStyle}"
                             Command="{Binding FindNextCommand}"
-                            ToolTip="{DynamicResource EC_NextResultTooltip}"/>
+                            ToolTip="{StaticResource EC_NextResultTooltip}"/>
 
                     <!-- ── Col 5: Separator before actions ── -->
                     <Rectangle x:Name="ActionsSeparator"
@@ -305,7 +305,7 @@
                             Content="&#xE712;"
                             x:Name="AdvancedSearchButton"
                             Style="{StaticResource QuickButtonStyle}"
-                            ToolTip="{DynamicResource EC_AdvancedSearchTooltip}"
+                            ToolTip="{StaticResource EC_AdvancedSearchTooltip}"
                             Margin="1,0"/>
 
                     <!-- ── Col 7: Close ✕ (MDL2 ChromeClose &#xE8BB;) ── -->
@@ -313,7 +313,7 @@
                             Content="&#xE8BB;"
                             x:Name="CloseButton"
                             Style="{StaticResource QuickButtonStyle}"
-                            ToolTip="{DynamicResource EC_CloseSearchTooltip}"
+                            ToolTip="{StaticResource EC_CloseSearchTooltip}"
                             Margin="1,0,4,0"/>
 
                     <!-- ── Progress indicator (bottom edge of Row 0) ── -->
@@ -380,7 +380,7 @@
 
                             <!-- Placeholder -->
                             <TextBlock Grid.Column="1"
-                                       Text="{DynamicResource EC_ReplacePlaceholder}"
+                                       Text="{StaticResource EC_ReplacePlaceholder}"
                                        FontFamily="Segoe UI"
                                        FontSize="12"
                                        VerticalAlignment="Center"
@@ -421,7 +421,7 @@
                             x:Name="ReplaceNextButton"
                             Style="{StaticResource QuickReplaceButtonStyle}"
                             Command="{Binding ReplaceNextCommand}"
-                            ToolTip="{DynamicResource EC_ReplaceOneTooltip}"
+                            ToolTip="{StaticResource EC_ReplaceOneTooltip}"
                             Margin="1,0">
                         <TextBlock FontFamily="Segoe UI" FontSize="11" Text="&#x2192;1"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -432,7 +432,7 @@
                             x:Name="ReplaceAllButton"
                             Style="{StaticResource QuickReplaceButtonStyle}"
                             Command="{Binding ReplaceAllCommand}"
-                            ToolTip="{DynamicResource EC_ReplaceAllTooltip}"
+                            ToolTip="{StaticResource EC_ReplaceAllTooltip}"
                             Margin="1,0,4,0">
                         <TextBlock FontFamily="Segoe UI" FontSize="11" Text="&#x2192;&#x2200;"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -482,7 +482,7 @@
                                   Content="Ab"
                                   Style="{StaticResource QuickToggleStyle}"
                                   IsChecked="{Binding CaseSensitive}"
-                                  ToolTip="{DynamicResource EC_CaseSensitiveTooltip}"/>
+                                  ToolTip="{StaticResource EC_CaseSensitiveTooltip}"/>
 
                     <!-- ── Col 2: ab — Whole Word (alias for Wildcard in the ViewModel) ── -->
                     <ToggleButton Grid.Column="2"
@@ -490,14 +490,14 @@
                                   Content="ab"
                                   Style="{StaticResource QuickToggleStyle}"
                                   IsChecked="{Binding UseWildcard}"
-                                  ToolTip="{DynamicResource EC_WholeWordTooltip}"/>
+                                  ToolTip="{StaticResource EC_WholeWordTooltip}"/>
 
                     <!-- ── Col 3: .* — Regex ── -->
                     <ToggleButton Grid.Column="3"
                                   x:Name="RegexToggle"
                                   Content=".*"
                                   Style="{StaticResource QuickToggleStyle}"
-                                  ToolTip="{DynamicResource EC_RegexTooltip}"/>
+                                  ToolTip="{StaticResource EC_RegexTooltip}"/>
 
                     <!-- ── Col 4: 0x — Hex Mode (HexEditor only) ── -->
                     <ToggleButton Grid.Column="4"
@@ -505,7 +505,7 @@
                                   Content="0x"
                                   Style="{StaticResource QuickToggleStyle}"
                                   IsChecked="{Binding IsHexMode}"
-                                  ToolTip="{DynamicResource EC_HexModeTooltip}"/>
+                                  ToolTip="{StaticResource EC_HexModeTooltip}"/>
 
                     <!-- ── Col 5: Separator ── -->
                     <Rectangle x:Name="OptionsSeparator"
@@ -556,7 +556,7 @@
                VerticalAlignment="Bottom"
                Cursor="SizeAll"
                Panel.ZIndex="12"
-               ToolTip="{DynamicResource EC_MoveBarTooltip}">
+               ToolTip="{StaticResource EC_MoveBarTooltip}">
             <Thumb.Template>
                 <ControlTemplate TargetType="Thumb">
                     <Border x:Name="GripBd"

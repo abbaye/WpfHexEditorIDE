@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project: WpfHexEditor.Editor.DocumentEditor
     File: Options/SpellCheckerOptionsPage.xaml
     Description:
@@ -64,7 +64,7 @@
 
         <!-- Enable toggle -->
         <CheckBox x:Name="ChkEnabled"
-                  Content="{DynamicResource SpellCheck_Enable}"
+                  Content="{StaticResource SpellCheck_Enable}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   FontSize="13"
                   Margin="0,0,0,12"
@@ -72,7 +72,7 @@
                   Unchecked="OnEnabledChanged"/>
 
         <!-- Section header -->
-        <TextBlock Text="{DynamicResource SpellCheck_DictSection}"
+        <TextBlock Text="{StaticResource SpellCheck_DictSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
@@ -148,12 +148,12 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <!-- Language name -->
-                    <DataGridTextColumn Header="{DynamicResource SpellCheck_ColLanguage}"
+                    <DataGridTextColumn Header="{StaticResource SpellCheck_ColLanguage}"
                                         Binding="{Binding DisplayName}"
                                         Width="*"
                                         IsReadOnly="True"/>
                     <!-- Status badge -->
-                    <DataGridTemplateColumn Header="{DynamicResource SpellCheck_ColStatus}" Width="110">
+                    <DataGridTemplateColumn Header="{StaticResource SpellCheck_ColStatus}" Width="110">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Border CornerRadius="3"
@@ -185,7 +185,7 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,2">
                                     <!-- Download button (when not installed) -->
-                                    <Button Content="{DynamicResource SpellCheck_Download}"
+                                    <Button Content="{StaticResource SpellCheck_Download}"
                                             Style="{StaticResource IdeButtonStyle}"
                                             Padding="6,2"
                                             FontSize="10"
@@ -194,7 +194,7 @@
                                             IsEnabled="{Binding IsNotInstalling}"
                                             Click="OnDownloadClick"/>
                                     <!-- Browse button -->
-                                    <Button Content="{DynamicResource SpellCheck_Browse}"
+                                    <Button Content="{StaticResource SpellCheck_Browse}"
                                             Style="{StaticResource IdeButtonStyle}"
                                             Padding="6,2"
                                             FontSize="10"
@@ -202,7 +202,7 @@
                                             Visibility="{Binding BrowseVisible}"
                                             Click="OnBrowseClick"/>
                                     <!-- Remove button (when installed) -->
-                                    <Button Content="{DynamicResource SpellCheck_Remove}"
+                                    <Button Content="{StaticResource SpellCheck_Remove}"
                                             Style="{StaticResource IdeButtonStyle}"
                                             Padding="6,2"
                                             FontSize="10"
@@ -220,7 +220,7 @@
         <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
 
         <!-- User dictionary -->
-        <TextBlock Text="{DynamicResource SpellCheck_UserDictSection}"
+        <TextBlock Text="{StaticResource SpellCheck_UserDictSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
@@ -231,7 +231,7 @@
                        Foreground="{DynamicResource PFP_SubTextBrush}"
                        FontSize="11"
                        Margin="0,0,8,0"/>
-            <Button Content="{DynamicResource SpellCheck_EditUserDict}"
+            <Button Content="{StaticResource SpellCheck_EditUserDict}"
                     Style="{StaticResource IdeButtonStyle}"
                     Padding="8,3"
                     FontSize="11"
@@ -239,7 +239,7 @@
         </StackPanel>
 
         <!-- Ignored words list -->
-        <TextBlock Text="{DynamicResource SpellCheck_IgnoredWordsSection}"
+        <TextBlock Text="{StaticResource SpellCheck_IgnoredWordsSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,12,0,6"/>
@@ -256,7 +256,7 @@
                      BorderThickness="0"
                      SelectionMode="Single"/>
         </Border>
-        <Button Content="{DynamicResource SpellCheck_RemoveIgnoredWord}"
+        <Button Content="{StaticResource SpellCheck_RemoveIgnoredWord}"
                 Style="{StaticResource IdeButtonStyle}"
                 Padding="8,3"
                 FontSize="11"
@@ -268,20 +268,20 @@
         <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,8,0,8"/>
 
         <!-- Behavior section -->
-        <TextBlock Text="{DynamicResource SpellCheck_BehaviorSection}"
+        <TextBlock Text="{StaticResource SpellCheck_BehaviorSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,8"/>
 
         <CheckBox x:Name="ChkMultiLanguage"
-                  Content="{DynamicResource SpellCheck_MultiLanguageMode}"
+                  Content="{StaticResource SpellCheck_MultiLanguageMode}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   FontSize="12"
                   Margin="0,0,0,4"
                   Checked="OnMultiLanguageChanged"
                   Unchecked="OnMultiLanguageChanged"/>
 
-        <TextBlock Text="{DynamicResource SpellCheck_MultiLanguageModeHint}"
+        <TextBlock Text="{StaticResource SpellCheck_MultiLanguageModeHint}"
                    Foreground="{DynamicResource PFP_SubTextBrush}"
                    FontSize="11"
                    Margin="20,0,0,10"
@@ -294,7 +294,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"
-                       Text="{DynamicResource SpellCheck_AnalysisDelay}"
+                       Text="{StaticResource SpellCheck_AnalysisDelay}"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        FontSize="12"
                        VerticalAlignment="Center"/>
@@ -324,7 +324,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"
-                       Text="{DynamicResource SpellCheck_MaxSuggestions}"
+                       Text="{StaticResource SpellCheck_MaxSuggestions}"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        FontSize="12"
                        VerticalAlignment="Center"/>
@@ -351,7 +351,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"
-                       Text="{DynamicResource SpellCheck_DetectionConfidence}"
+                       Text="{StaticResource SpellCheck_DetectionConfidence}"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        FontSize="12"
                        VerticalAlignment="Center"/>
@@ -378,13 +378,13 @@
         <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,8,0,8"/>
 
         <!-- Advanced section -->
-        <TextBlock Text="{DynamicResource SpellCheck_AdvancedSection}"
+        <TextBlock Text="{StaticResource SpellCheck_AdvancedSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,8"/>
 
         <!-- Mirror URL -->
-        <TextBlock Text="{DynamicResource SpellCheck_MirrorUrl}"
+        <TextBlock Text="{StaticResource SpellCheck_MirrorUrl}"
                    Foreground="{DynamicResource PFP_TextBrush}"
                    FontSize="12"
                    Margin="0,0,0,4"/>
@@ -399,7 +399,7 @@
                  LostFocus="OnMirrorUrlChanged"/>
 
         <!-- Dictionaries path -->
-        <TextBlock Text="{DynamicResource SpellCheck_DictPath}"
+        <TextBlock Text="{StaticResource SpellCheck_DictPath}"
                    Foreground="{DynamicResource PFP_TextBrush}"
                    FontSize="12"
                    Margin="0,0,0,4"/>
@@ -419,7 +419,7 @@
                      BorderThickness="1"
                      LostFocus="OnDictPathChanged"/>
             <Button Grid.Column="1"
-                    Content="{DynamicResource SpellCheck_Browse}"
+                    Content="{StaticResource SpellCheck_Browse}"
                     Style="{StaticResource IdeButtonStyle}"
                     Padding="8,3"
                     FontSize="11"
@@ -427,7 +427,7 @@
         </Grid>
 
         <!-- Reset to defaults -->
-        <Button Content="{DynamicResource SpellCheck_ResetDefaults}"
+        <Button Content="{StaticResource SpellCheck_ResetDefaults}"
                 Style="{StaticResource IdeButtonStyle}"
                 Padding="10,4"
                 FontSize="11"

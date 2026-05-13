@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.Core.ProjectSystem.Documents.NuGet.NuGetSolutionManagerDocument"
+﻿<UserControl x:Class="WpfHexEditor.Core.ProjectSystem.Documents.NuGet.NuGetSolutionManagerDocument"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
@@ -307,7 +307,7 @@
                 BorderThickness="0,0,0,1">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0">
 
-                <TextBlock Text="{DynamicResource PS_PackageSourceLabel}" VerticalAlignment="Center"
+                <TextBlock Text="{StaticResource PS_PackageSourceLabel}" VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Margin="0,0,6,0" FontSize="12"/>
 
@@ -324,7 +324,7 @@
 
                 <CheckBox Style="{StaticResource NSM_CheckBoxStyle}"
                           IsChecked="{Binding IncludePrerelease}"
-                          Content="{DynamicResource PS_IncludePrerelease}"
+                          Content="{StaticResource PS_IncludePrerelease}"
                           VerticalAlignment="Center"/>
             </StackPanel>
         </Border>
@@ -357,13 +357,13 @@
                             SelectedIndex="{Binding ActiveTabIndex}"
                             Background="{DynamicResource DockWindowBackgroundBrush}"
                             Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <TabItem Header="{DynamicResource PS_NuGetBrowseTab}"/>
-                    <TabItem Header="{DynamicResource PS_NuGetInstalledTab}"/>
-                    <TabItem Header="{DynamicResource PS_NuGetConsolidateTab}"/>
+                    <TabItem Header="{StaticResource PS_NuGetBrowseTab}"/>
+                    <TabItem Header="{StaticResource PS_NuGetInstalledTab}"/>
+                    <TabItem Header="{StaticResource PS_NuGetConsolidateTab}"/>
                     <TabItem>
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="{DynamicResource PS_NuGetUpdatesTab}" VerticalAlignment="Center"/>
+                                <TextBlock Text="{StaticResource PS_NuGetUpdatesTab}" VerticalAlignment="Center"/>
                                 <Border CornerRadius="9" MinWidth="18" Height="18"
                                         Margin="5,0,0,0" Padding="4,0"
                                         Background="{DynamicResource DockTabActiveBrush}"
@@ -415,7 +415,7 @@
                                 Background="Transparent"
                                 BorderThickness="0"
                                 Cursor="Hand"
-                                ToolTip="{DynamicResource NG_TipSearch}">
+                                ToolTip="{StaticResource NG_TipSearch}">
                             <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -458,13 +458,13 @@
                                     <Border Background="#2DD68910" CornerRadius="2"
                                             Margin="6,0,0,0" Padding="4,1"
                                             Visibility="{Binding HasConflict, Converter={StaticResource BoolToVis}}">
-                                        <TextBlock Text="{DynamicResource PS_Conflict}" FontSize="10" Foreground="#D68910"/>
+                                        <TextBlock Text="{StaticResource PS_Conflict}" FontSize="10" Foreground="#D68910"/>
                                     </Border>
                                     <!-- Update badge -->
                                     <Border Background="#2D4EC9B0" CornerRadius="2"
                                             Margin="4,0,0,0" Padding="4,1"
                                             Visibility="{Binding HasUpdate, Converter={StaticResource BoolToVis}}">
-                                        <TextBlock Text="{DynamicResource PS_Update}" FontSize="10" Foreground="#4EC9B0"/>
+                                        <TextBlock Text="{StaticResource PS_Update}" FontSize="10" Foreground="#4EC9B0"/>
                                     </Border>
                                 </StackPanel>
 
@@ -482,7 +482,7 @@
 
                 <!-- Load more (Browse tab only) -->
                 <Button Grid.Row="3"
-                        Content="{DynamicResource PS_NuGetLoadMore}"
+                        Content="{StaticResource PS_NuGetLoadMore}"
                         Style="{StaticResource NSM_SecondaryButtonStyle}"
                         Command="{Binding LoadMoreCommand}"
                         Visibility="{Binding HasMoreResults, Converter={StaticResource BoolToVis}}"
@@ -504,7 +504,7 @@
                   Background="{DynamicResource DockMenuBackgroundBrush}">
 
                 <!-- Placeholder when nothing is selected -->
-                <TextBlock Text="{DynamicResource PS_SelectPackageHint}"
+                <TextBlock Text="{StaticResource PS_SelectPackageHint}"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -617,7 +617,7 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0"
-                                       Text="{DynamicResource PS_ProjectsLabel}"
+                                       Text="{StaticResource PS_ProjectsLabel}"
                                        FontWeight="SemiBold"
                                        FontSize="12"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -685,7 +685,7 @@
                             BorderThickness="0,0,0,1"
                             Padding="14,8">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{DynamicResource PS_VersionLabel}"
+                            <TextBlock Text="{StaticResource PS_VersionLabel}"
                                        VerticalAlignment="Center"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        Margin="0,0,8,0"/>
@@ -705,13 +705,13 @@
                                 Margin="14,10">
 
                         <!-- Install (to selected projects that don't have it) -->
-                        <Button Content="{DynamicResource PS_Install}"
+                        <Button Content="{StaticResource PS_Install}"
                                 Command="{Binding InstallCommand}"
                                 Style="{StaticResource NSM_PrimaryButtonStyle}"
                                 Margin="0,0,6,0"/>
 
                         <!-- Update (selected projects that have it) -->
-                        <Button Content="{DynamicResource PS_Update}"
+                        <Button Content="{StaticResource PS_Update}"
                                 Command="{Binding UpdateCommand}"
                                 Margin="0,0,6,0">
                             <Button.Style>
@@ -722,7 +722,7 @@
                         </Button>
 
                         <!-- Uninstall (from selected projects that have it) -->
-                        <Button Content="{DynamicResource PS_Uninstall}"
+                        <Button Content="{StaticResource PS_Uninstall}"
                                 Command="{Binding UninstallCommand}">
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource NSM_PrimaryButtonStyle}">
@@ -773,7 +773,7 @@
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockTabTextBrush}">
                     <Run Text="{Binding PackageList.Count, Mode=OneWay}"/>
-                    <Run Text="{DynamicResource PS_PackagesLabel}"/>
+                    <Run Text="{StaticResource PS_PackagesLabel}"/>
                 </TextBlock>
             </Grid>
         </Border>

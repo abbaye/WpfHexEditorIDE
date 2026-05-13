@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -13,7 +13,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:psSvc="clr-namespace:WpfHexEditor.Core.ProjectSystem.Services"
-        Title="{DynamicResource PS_ProjectPropertiesTitle}"
+        Title="{StaticResource PS_ProjectPropertiesTitle}"
         Width="640" Height="480"
         MinWidth="500" MinHeight="380"
         ResizeMode="CanResize"
@@ -102,7 +102,7 @@
         <TabControl Grid.Row="1">
 
             <!-- ── Tab 1 : Application ──────────────────────────────────── -->
-            <TabItem Header="{DynamicResource PP_NavApplication}">
+            <TabItem Header="{StaticResource PP_NavApplication}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                               Background="{DynamicResource DockMenuBackgroundBrush}">
                     <Grid Margin="12">
@@ -120,10 +120,10 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <Label Grid.Row="0" Grid.Column="0" Content="{DynamicResource PS_NameLabel}" />
+                        <Label Grid.Row="0" Grid.Column="0" Content="{StaticResource PS_NameLabel}" />
                         <TextBox x:Name="TbName" Grid.Row="0" Grid.Column="1" />
 
-                        <Label Grid.Row="1" Grid.Column="0" Content="{DynamicResource PP_ProjectFile}" />
+                        <Label Grid.Row="1" Grid.Column="0" Content="{StaticResource PP_ProjectFile}" />
                         <TextBlock x:Name="FilePathText" Grid.Row="1" Grid.Column="1"
                                    TextTrimming="CharacterEllipsis"
                                    ToolTipService.ShowDuration="10000">
@@ -134,27 +134,27 @@
                             </TextBlock.ToolTip>
                         </TextBlock>
 
-                        <Label Grid.Row="2" Grid.Column="0" Content="{DynamicResource PP_Directory}" />
+                        <Label Grid.Row="2" Grid.Column="0" Content="{StaticResource PP_Directory}" />
                         <TextBlock x:Name="DirectoryText" Grid.Row="2" Grid.Column="1"
                                    TextTrimming="CharacterEllipsis" />
 
-                        <Label Grid.Row="3" Grid.Column="0" Content="{DynamicResource PP_ProjectType}" />
+                        <Label Grid.Row="3" Grid.Column="0" Content="{StaticResource PP_ProjectType}" />
                         <TextBlock x:Name="ProjectTypeText" Grid.Row="3" Grid.Column="1" />
 
-                        <Label Grid.Row="4" Grid.Column="0" Content="{DynamicResource PP_TargetFramework}" />
+                        <Label Grid.Row="4" Grid.Column="0" Content="{StaticResource PP_TargetFramework}" />
                         <TextBlock x:Name="TargetFrameworkText" Grid.Row="4" Grid.Column="1" />
 
-                        <Label Grid.Row="5" Grid.Column="0" Content="{DynamicResource PP_AssemblyName}" />
+                        <Label Grid.Row="5" Grid.Column="0" Content="{StaticResource PP_AssemblyName}" />
                         <TextBlock x:Name="AssemblyNameText" Grid.Row="5" Grid.Column="1" />
 
-                        <Label Grid.Row="6" Grid.Column="0" Content="{DynamicResource PP_OutputType}" />
+                        <Label Grid.Row="6" Grid.Column="0" Content="{StaticResource PP_OutputType}" />
                         <TextBlock x:Name="OutputTypeText" Grid.Row="6" Grid.Column="1" />
                     </Grid>
                 </ScrollViewer>
             </TabItem>
 
             <!-- ── Tab 2 : Build ─────────────────────────────────────────── -->
-            <TabItem Header="{DynamicResource PP_NavBuild}">
+            <TabItem Header="{StaticResource PP_NavBuild}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                               Background="{DynamicResource DockMenuBackgroundBrush}">
                     <Grid Margin="12">
@@ -169,24 +169,24 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <Label Grid.Row="0" Grid.Column="0" Content="{DynamicResource PP_Configuration}" />
+                        <Label Grid.Row="0" Grid.Column="0" Content="{StaticResource PP_Configuration}" />
                         <TextBlock x:Name="BuildConfigText" Grid.Row="0" Grid.Column="1" />
 
-                        <Label Grid.Row="1" Grid.Column="0" Content="{DynamicResource PP_Platform}" />
+                        <Label Grid.Row="1" Grid.Column="0" Content="{StaticResource PP_Platform}" />
                         <TextBlock x:Name="BuildPlatformText" Grid.Row="1" Grid.Column="1" />
 
-                        <Label Grid.Row="2" Grid.Column="0" Content="{DynamicResource PP_OutputPath}" />
+                        <Label Grid.Row="2" Grid.Column="0" Content="{StaticResource PP_OutputPath}" />
                         <TextBlock x:Name="OutputPathText" Grid.Row="2" Grid.Column="1"
                                    TextTrimming="CharacterEllipsis" />
 
-                        <Label Grid.Row="3" Grid.Column="0" Content="{DynamicResource PP_OptimizeCode}" />
+                        <Label Grid.Row="3" Grid.Column="0" Content="{StaticResource PP_OptimizeCode}" />
                         <TextBlock x:Name="OptimiseText" Grid.Row="3" Grid.Column="1" />
                     </Grid>
                 </ScrollViewer>
             </TabItem>
 
             <!-- ── Tab 3 : Items ─────────────────────────────────────────── -->
-            <TabItem Header="{DynamicResource PP_NavItems}">
+            <TabItem Header="{StaticResource PP_NavItems}">
                 <Grid Margin="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -200,11 +200,11 @@
                     <ListView x:Name="ItemsListView" Grid.Row="1">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="{DynamicResource PS_NameLabel}"   Width="200"
+                                <GridViewColumn Header="{StaticResource PS_NameLabel}"   Width="200"
                                                 DisplayMemberBinding="{Binding Name}" />
-                                <GridViewColumn Header="{DynamicResource PP_TypeColumn}"   Width="100"
+                                <GridViewColumn Header="{StaticResource PP_TypeColumn}"   Width="100"
                                                 DisplayMemberBinding="{Binding ItemType}" />
-                                <GridViewColumn Header="{DynamicResource PP_PathColumn}"   Width="300"
+                                <GridViewColumn Header="{StaticResource PP_PathColumn}"   Width="300"
                                                 DisplayMemberBinding="{Binding RelativePath}" />
                             </GridView>
                         </ListView.View>
@@ -213,7 +213,7 @@
             </TabItem>
 
             <!-- ── Tab 4 : References ────────────────────────────────────── -->
-            <TabItem Header="{DynamicResource PP_NavReferences}" x:Name="ReferencesTab">
+            <TabItem Header="{StaticResource PP_NavReferences}" x:Name="ReferencesTab">
                 <Grid Margin="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -221,15 +221,15 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0"
-                               Text="{DynamicResource PP_ReferencesLabel}"
+                               Text="{StaticResource PP_ReferencesLabel}"
                                Margin="4,0,0,6" />
 
                     <ListView x:Name="ReferencesListView" Grid.Row="1">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="{DynamicResource PS_NameLabel}"   Width="280"
+                                <GridViewColumn Header="{StaticResource PS_NameLabel}"   Width="280"
                                                 DisplayMemberBinding="{Binding Name}" />
-                                <GridViewColumn Header="{DynamicResource PP_TypeColumn}"   Width="120"
+                                <GridViewColumn Header="{StaticResource PP_TypeColumn}"   Width="120"
                                                 DisplayMemberBinding="{Binding RefType}" />
                             </GridView>
                         </ListView.View>
@@ -244,10 +244,10 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Margin="0,12,0,0">
-            <Button x:Name="BtnSave" Content="{DynamicResource PS_Save}"
+            <Button x:Name="BtnSave" Content="{StaticResource PS_Save}"
                     IsDefault="True" Margin="0,0,8,0"
                     Click="OnSave" />
-            <Button Content="{DynamicResource PS_Close}" IsCancel="True" />
+            <Button Content="{StaticResource PS_Close}" IsCancel="True" />
         </StackPanel>
     </Grid>
 </ec:ThemedDialog>

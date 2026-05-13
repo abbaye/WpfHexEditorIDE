@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.App.Debug.Panels.ImmediateWindowPanel"
+﻿<UserControl x:Class="WpfHexEditor.App.Debug.Panels.ImmediateWindowPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:dbgSvc="clr-namespace:WpfHexEditor.App.Debug.Services">
@@ -16,7 +16,7 @@
         <Border DockPanel.Dock="Top" Style="{DynamicResource PanelToolbarStyle}">
             <StackPanel Orientation="Horizontal" Margin="4,0" VerticalAlignment="Center">
                 <Button Command="{Binding ClearCommand}"
-                        ToolTip="{DynamicResource DBG_ClearTooltip}"
+                        ToolTip="{StaticResource DBG_ClearTooltip}"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Content="&#xE74D;"/>
             </StackPanel>
@@ -35,7 +35,7 @@
                      Foreground="{DynamicResource DockMenuForegroundBrush}"
                      BorderBrush="{DynamicResource DockBorderBrush}"/>
             <Button Grid.Column="1" Margin="4,0,0,0" Padding="8,2"
-                    Content="{DynamicResource DBG_RunButton}"
+                    Content="{StaticResource DBG_RunButton}"
                     Command="{Binding ExecuteCommand}"/>
         </Grid>
 

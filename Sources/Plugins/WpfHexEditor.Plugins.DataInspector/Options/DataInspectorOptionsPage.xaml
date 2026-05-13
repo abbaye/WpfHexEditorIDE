@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -26,26 +26,26 @@
 
         <!-- Auto-refresh -->
         <CheckBox x:Name="AutoRefreshCheckBox"
-                  Content="{DynamicResource DI_AutoRefresh}"
+                  Content="{StaticResource DI_AutoRefresh}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,12"/>
 
         <!-- Little-endian default -->
         <CheckBox x:Name="LittleEndianCheckBox"
-                  Content="{DynamicResource DI_DefaultByteOrder}"
+                  Content="{StaticResource DI_DefaultByteOrder}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,12"/>
 
         <!-- Show ByteChart -->
         <CheckBox x:Name="ShowByteChartCheckBox"
-                  Content="{DynamicResource DI_ShowByteChart}"
+                  Content="{StaticResource DI_ShowByteChart}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,12"/>
 
         <!-- Chart position -->
         <DockPanel Margin="0,0,0,16">
             <TextBlock DockPanel.Dock="Left"
-                       Text="{DynamicResource DI_ChartPosition}"
+                       Text="{StaticResource DI_ChartPosition}"
                        VerticalAlignment="Center"
                        Width="180"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
@@ -54,17 +54,17 @@
                       Background="{DynamicResource PFP_SectionBackgroundBrush}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       BorderBrush="{DynamicResource PFP_BorderBrush}">
-                <ComboBoxItem Content="{DynamicResource DI_PositionLeft}"   Tag="Left"/>
-                <ComboBoxItem Content="{DynamicResource DI_PositionRight}"  Tag="Right"/>
-                <ComboBoxItem Content="{DynamicResource DI_PositionTop}"    Tag="Top"/>
-                <ComboBoxItem Content="{DynamicResource DI_PositionBottom}" Tag="Bottom"/>
+                <ComboBoxItem Content="{StaticResource DI_PositionLeft}"   Tag="Left"/>
+                <ComboBoxItem Content="{StaticResource DI_PositionRight}"  Tag="Right"/>
+                <ComboBoxItem Content="{StaticResource DI_PositionTop}"    Tag="Top"/>
+                <ComboBoxItem Content="{StaticResource DI_PositionBottom}" Tag="Bottom"/>
             </ComboBox>
         </DockPanel>
 
         <!-- Max string bytes -->
         <DockPanel Margin="0,0,0,4" LastChildFill="False">
             <TextBlock DockPanel.Dock="Left"
-                       Text="{DynamicResource DI_MaxStringPreview}"
+                       Text="{StaticResource DI_MaxStringPreview}"
                        VerticalAlignment="Center"
                        Width="180"
                        Foreground="{DynamicResource PFP_TextBrush}"/>

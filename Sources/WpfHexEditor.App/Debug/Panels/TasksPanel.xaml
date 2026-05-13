@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.App.Debug.Panels.TasksPanel"
+﻿<UserControl x:Class="WpfHexEditor.App.Debug.Panels.TasksPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:dbgSvc="clr-namespace:WpfHexEditor.App.Debug.Services">
@@ -18,7 +18,7 @@
                 <Button Command="{Binding RefreshCommand}"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Content="&#xE72C;"
-                        ToolTip="{DynamicResource DBG_RefreshTooltip}"/>
+                        ToolTip="{StaticResource DBG_RefreshTooltip}"/>
             </StackPanel>
         </Border>
 
@@ -28,19 +28,19 @@
                   BorderThickness="0">
             <ListView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="{DynamicResource DBG_CopyTaskInfo}" InputGestureText="Ctrl+C"
+                    <MenuItem Header="{StaticResource DBG_CopyTaskInfo}" InputGestureText="Ctrl+C"
                               Command="{Binding PlacementTarget.DataContext.CopyTaskCommand,  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                               CommandParameter="{Binding PlacementTarget.SelectedItem,        RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource DBG_Refresh}" InputGestureText="F5"
+                    <MenuItem Header="{StaticResource DBG_Refresh}" InputGestureText="F5"
                               Command="{Binding PlacementTarget.DataContext.RefreshCommand,   RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="{DynamicResource DBG_ColName}"  Width="200" DisplayMemberBinding="{Binding Name}"/>
-                    <GridViewColumn Header="{DynamicResource DBG_ColStatus}"  Width="140" DisplayMemberBinding="{Binding Status}"/>
-                    <GridViewColumn Header="{DynamicResource DBG_ColType}"  Width="200" DisplayMemberBinding="{Binding Type}"/>
+                    <GridViewColumn Header="{StaticResource DBG_ColName}"  Width="200" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="{StaticResource DBG_ColStatus}"  Width="140" DisplayMemberBinding="{Binding Status}"/>
+                    <GridViewColumn Header="{StaticResource DBG_ColType}"  Width="200" DisplayMemberBinding="{Binding Type}"/>
                 </GridView>
             </ListView.View>
         </ListView>

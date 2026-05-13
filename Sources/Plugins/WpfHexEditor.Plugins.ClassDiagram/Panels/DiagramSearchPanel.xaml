@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project: WpfHexEditor.Plugins.ClassDiagram
     File: Panels/DiagramSearchPanel.xaml
     Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -36,7 +36,7 @@
                          Width="160"
                          Style="{DynamicResource PanelSearchBoxStyle}"
                          Tag="Search classes and members..."
-                         ToolTip="{DynamicResource CD_TipSearchClasses}"
+                         ToolTip="{StaticResource CD_TipSearchClasses}"
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          KeyDown="OnSearchBoxKeyDown" />
                 <Button Content="&#xE721;" FontFamily="Segoe MDL2 Assets"
@@ -48,7 +48,7 @@
                         Foreground="{DynamicResource DockMenuForegroundBrush}"
                         BorderBrush="{DynamicResource DockToolBarBorderBrush}"
                         Click="OnSearchClick"
-                        ToolTip="{DynamicResource CD_TipRunSearch}"/>
+                        ToolTip="{StaticResource CD_TipRunSearch}"/>
             </StackPanel>
         </Border>
 
@@ -59,7 +59,7 @@
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Opacity="0.7">
             <Run Text="{Binding Results.Count, Mode=OneWay}"/>
-            <Run Text="{DynamicResource CD_Results}"/>
+            <Run Text="{StaticResource CD_Results}"/>
         </TextBlock>
 
         <!-- Results list -->

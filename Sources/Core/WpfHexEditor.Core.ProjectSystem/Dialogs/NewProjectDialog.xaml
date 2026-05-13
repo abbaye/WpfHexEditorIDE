@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -9,7 +9,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:psSvc="clr-namespace:WpfHexEditor.Core.ProjectSystem.Services"
-        Title="{DynamicResource PS_NewProjectTitle}"
+        Title="{StaticResource PS_NewProjectTitle}"
         Width="720" Height="520"
         MinWidth="580" MinHeight="420"
         ResizeMode="CanResizeWithGrip"
@@ -82,7 +82,7 @@
                                         <Setter.Value>
                                             <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
                                                 <VisualBrush.Visual>
-                                                    <TextBlock Text="{DynamicResource PS_SearchTemplates}"
+                                                    <TextBlock Text="{StaticResource PS_SearchTemplates}"
                                                                Foreground="{DynamicResource DockTabTextBrush}"
                                                                FontStyle="Italic"
                                                                Margin="6,0,0,0" />
@@ -132,7 +132,7 @@
                 <ColumnDefinition Width="110" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="{DynamicResource PS_NameLabel}" Target="{Binding ElementName=NameBox}" />
+            <Label Grid.Column="0" Content="{StaticResource PS_NameLabel}" Target="{Binding ElementName=NameBox}" />
             <TextBox x:Name="NameBox" Grid.Column="1" TextChanged="OnNameOrLocationChanged" />
         </Grid>
 
@@ -144,10 +144,10 @@
                 <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="{DynamicResource PS_LocationLabel}" Target="{Binding ElementName=LocationBox}" />
+            <Label Grid.Column="0" Content="{StaticResource PS_LocationLabel}" Target="{Binding ElementName=LocationBox}" />
             <TextBox x:Name="LocationBox" Grid.Column="1" TextChanged="OnNameOrLocationChanged" />
             <Button Grid.Column="3" Content="..." Width="30" Padding="0"
-                    Click="OnBrowseLocation" ToolTip="{DynamicResource PS_BrowseForFolder}" />
+                    Click="OnBrowseLocation" ToolTip="{StaticResource PS_BrowseForFolder}" />
         </Grid>
 
         <!-- Preview path -->
@@ -156,7 +156,7 @@
                 <ColumnDefinition Width="110" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="{DynamicResource PS_WillCreateLabel}" />
+            <Label Grid.Column="0" Content="{StaticResource PS_WillCreateLabel}" />
             <TextBlock x:Name="PreviewText" Grid.Column="1"
                        Foreground="{DynamicResource DockTabTextBrush}"
                        VerticalAlignment="Center"
@@ -166,9 +166,9 @@
 
         <!-- Buttons -->
         <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="OkButton" Content="{DynamicResource PS_OK}" IsDefault="True"
+            <Button x:Name="OkButton" Content="{StaticResource PS_OK}" IsDefault="True"
                     IsEnabled="False" Click="OnOk" Margin="0,0,8,0" />
-            <Button Content="{DynamicResource PS_Cancel}" IsCancel="True" />
+            <Button Content="{StaticResource PS_Cancel}" IsCancel="True" />
         </StackPanel>
     </Grid>
 </ec:ThemedDialog>

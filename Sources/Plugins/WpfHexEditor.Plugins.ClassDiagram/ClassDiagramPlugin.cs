@@ -580,8 +580,11 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     private void OnRenameNode(object? sender, (ClassNode Node, string? NewName) e)
     {
-        // Show a simple WPF input dialog.
-        string? newName = ShowInputDialog($"Rename '{e.Node.Name}' to:", "Rename", e.Node.Name);
+        string? newName = IdeInputDialog.Show(
+            $"Rename '{e.Node.Name}' to:",
+            "Rename",
+            defaultValue: e.Node.Name,
+            confirmLabel: "Rename");
 
         if (string.IsNullOrWhiteSpace(newName) || newName == e.Node.Name) return;
 
@@ -1795,9 +1798,14 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     private async Task OpenAIGeneratedDiagramAsync(IIDEHostContext context)
     {
-        string? prompt = ShowInputDialog(
-            "Describe the classes to generate (e.g. 'Repository pattern for User entity'):",
-            "✨ AI Generate Diagram");
+        string? prompt = IdeInputDialog.Show(
+            "Describe the classes to generate:",
+            "✨ AI Generate Diagram",
+            placeholder: "e.g. Repository pattern for User entity",
+            hint:        "Powered by Claude API · API key from AI Assistant settings",
+            confirmLabel: "Generate",
+            iconGlyph:   "",
+            iconColor:   new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xA0, 0x70, 0xD0)));
 
         if (string.IsNullOrWhiteSpace(prompt)) return;
 
@@ -1826,41 +1834,6 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
-
-    private static string? ShowInputDialog(string prompt, string title, string defaultValue = "")
-    {
-        var tb  = new TextBox { Text = defaultValue, MinWidth = 200, Margin = new Thickness(0, 6, 0, 0) };
-        tb.SelectAll();
-
-        var ok     = new Button { Content = "OK",     IsDefault = true,  Width = 60, Margin = new Thickness(0, 0, 4, 0) };
-        var cancel = new Button { Content = "Cancel", IsCancel  = true,  Width = 60 };
-        var btns   = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
-        btns.Children.Add(ok);
-        btns.Children.Add(cancel);
-
-        var panel = new StackPanel { Margin = new Thickness(8) };
-        panel.Children.Add(new TextBlock { Text = prompt });
-        panel.Children.Add(tb);
-        panel.Children.Add(btns);
-
-        var dlg = new Window
-        {
-            Title           = title,
-            Content         = panel,
-            SizeToContent   = SizeToContent.WidthAndHeight,
-            WindowStartupLocation = WindowStartupLocation.CenterScreen,
-            ResizeMode      = ResizeMode.NoResize,
-            ShowInTaskbar   = false,
-            Owner           = Application.Current.MainWindow
-        };
-
-        string? result = null;
-        ok.Click     += (_, _) => { result = tb.Text; dlg.DialogResult = true; };
-        cancel.Click += (_, _) => { dlg.DialogResult = false; };
-
-        dlg.Loaded += (_, _) => tb.Focus();
-        return dlg.ShowDialog() == true ? result : null;
-    }
 
     private static bool HasActiveClassDiagramSource(IIDEHostContext context)
     {

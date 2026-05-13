@@ -1,4 +1,4 @@
-<!-- ==========================================================
+﻿<!-- ==========================================================
      Project: WpfHexEditor.PluginDev
      File: Panels/PluginDevLogPanel.xaml
      Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -73,7 +73,7 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
 
                 <!-- Clear -->
-                <Button x:Name="BtnClear" Style="{StaticResource TbBtnStyle}" ToolTip="{DynamicResource PluginDev_ClearLog}"
+                <Button x:Name="BtnClear" Style="{StaticResource TbBtnStyle}" ToolTip="{StaticResource PluginDev_ClearLog}"
                         Click="OnClear">
                     <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </Button>
@@ -82,14 +82,14 @@
 
                 <!-- Level filter toggles -->
                 <ToggleButton x:Name="TbgDebug" Style="{StaticResource TbToggleStyle}"
-                              IsChecked="{Binding ShowDebug}" Content="{DynamicResource PluginDev_LogDebug}" FontSize="10"/>
+                              IsChecked="{Binding ShowDebug}" Content="{StaticResource PluginDev_LogDebug}" FontSize="10"/>
                 <ToggleButton x:Name="TbgInfo" Style="{StaticResource TbToggleStyle}"
-                              IsChecked="{Binding ShowInfo}" Content="{DynamicResource PluginDev_LogInfo}" FontSize="10"/>
+                              IsChecked="{Binding ShowInfo}" Content="{StaticResource PluginDev_LogInfo}" FontSize="10"/>
                 <ToggleButton x:Name="TbgWarning" Style="{StaticResource TbToggleStyle}"
-                              IsChecked="{Binding ShowWarning}" Content="{DynamicResource PluginDev_LogInfo}" FontSize="10"
+                              IsChecked="{Binding ShowWarning}" Content="{StaticResource PluginDev_LogInfo}" FontSize="10"
                               Foreground="#DCDCAA"/>
                 <ToggleButton x:Name="TbgError" Style="{StaticResource TbToggleStyle}"
-                              IsChecked="{Binding ShowError}" Content="{DynamicResource PluginDev_LogError}" FontSize="10"
+                              IsChecked="{Binding ShowError}" Content="{StaticResource PluginDev_LogError}" FontSize="10"
                               Foreground="#F48771"/>
 
                 <Separator Width="1" Background="{DynamicResource DockBorderBrush}" Margin="4,4"/>
@@ -101,13 +101,13 @@
                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                          BorderBrush="{DynamicResource DockBorderBrush}"
                          Text="{Binding FilterSource, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="{DynamicResource PluginDev_FilterBySource}"
+                         ToolTip="{StaticResource PluginDev_FilterBySource}"
                          VerticalContentAlignment="Center" Padding="4,0"/>
 
                 <Separator Width="1" Background="{DynamicResource DockBorderBrush}" Margin="4,4"/>
 
                 <!-- Export -->
-                <Button x:Name="BtnExport" Style="{StaticResource TbBtnStyle}" ToolTip="{DynamicResource PluginDev_ExportLog}"
+                <Button x:Name="BtnExport" Style="{StaticResource TbBtnStyle}" ToolTip="{StaticResource PluginDev_ExportLog}"
                         Click="OnExport">
                     <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </Button>
@@ -115,7 +115,7 @@
                 <!-- Auto-scroll toggle -->
                 <ToggleButton x:Name="TbgAutoScroll" Style="{StaticResource TbToggleStyle}"
                               IsChecked="{Binding AutoScroll}"
-                              ToolTip="{DynamicResource PluginDev_AutoScroll}"
+                              ToolTip="{StaticResource PluginDev_AutoScroll}"
                               Margin="4,0,0,0">
                     <TextBlock Text="&#xE74C;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </ToggleButton>
@@ -140,9 +140,9 @@
 
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="{DynamicResource PluginDev_ColTime}"    Width="80"
+                    <GridViewColumn Header="{StaticResource PluginDev_ColTime}"    Width="80"
                                     DisplayMemberBinding="{Binding Timestamp, StringFormat=HH:mm:ss.fff}"/>
-                    <GridViewColumn Header="{DynamicResource PluginDev_ColLevel}"   Width="60">
+                    <GridViewColumn Header="{StaticResource PluginDev_ColLevel}"   Width="60">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Level}"
@@ -151,9 +151,9 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="{DynamicResource PluginDev_ColSource}"  Width="100"
+                    <GridViewColumn Header="{StaticResource PluginDev_ColSource}"  Width="100"
                                     DisplayMemberBinding="{Binding Source}"/>
-                    <GridViewColumn Header="{DynamicResource PluginDev_ColMessage}" Width="600"
+                    <GridViewColumn Header="{StaticResource PluginDev_ColMessage}" Width="600"
                                     DisplayMemberBinding="{Binding Message}"/>
                 </GridView>
             </ListView.View>

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project      : WpfHexEditorControl
     File         : Dialogs/FormatSelectionDialog.xaml
     Description  : Dialog shown when multiple whfmt formats match a file.
@@ -18,7 +18,7 @@
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services"
         mc:Ignorable="d"
-        Title="{DynamicResource FileComparison_FormatSelectionTitle}"
+        Title="{StaticResource FileComparison_FormatSelectionTitle}"
         Height="500" Width="650"
         Background="{DynamicResource DockWindowBackgroundBrush}">
 
@@ -42,12 +42,12 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Margin="0,0,0,15">
-            <TextBlock Text="{DynamicResource FileComparison_MultipleFormatsHeader}"
+            <TextBlock Text="{StaticResource FileComparison_MultipleFormatsHeader}"
                        FontSize="16"
                        FontWeight="Bold"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBlock x:Name="MessageText"
-                       Text="{DynamicResource FileComparison_MultipleFormatsMessage}"
+                       Text="{StaticResource FileComparison_MultipleFormatsMessage}"
                        TextWrapping="Wrap"
                        Margin="0,5,0,0"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -62,10 +62,10 @@
                 Padding="10"
                 Margin="0,0,0,10">
             <StackPanel>
-                <TextBlock Text="{DynamicResource FileComparison_ConfidenceTip}"
+                <TextBlock Text="{StaticResource FileComparison_ConfidenceTip}"
                            FontSize="12"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                <TextBlock Text="{DynamicResource FileComparison_SelectFormatInfo}"
+                <TextBlock Text="{StaticResource FileComparison_SelectFormatInfo}"
                            FontSize="12"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Margin="0,2,0,0"/>
@@ -140,11 +140,11 @@
                                        Margin="0,5,0,0"
                                        FontSize="11"
                                        Foreground="{DynamicResource PFP_SubTextBrush}">
-                                <Run Text="{DynamicResource FileComparison_TierLabel}"/>
+                                <Run Text="{StaticResource FileComparison_TierLabel}"/>
                                 <Run Text="{Binding Tier}" FontWeight="SemiBold"/>
                                 <Run Text=" • "/>
                                 <Run Text="{Binding Blocks.Count, Mode=OneWay}" FontWeight="SemiBold"/>
-                                <Run Text="{DynamicResource FileComparison_BlocksParsed}"/>
+                                <Run Text="{StaticResource FileComparison_BlocksParsed}"/>
                             </TextBlock>
 
                             <!-- Confidence Factors -->
@@ -172,7 +172,7 @@
                     HorizontalAlignment="Right"
                     Margin="0,15,0,0">
             <Button x:Name="SelectButton"
-                    Content="{DynamicResource FileComparison_SelectFormatButton}"
+                    Content="{StaticResource FileComparison_SelectFormatButton}"
                     Width="120"
                     Height="30"
                     Margin="0,0,10,0"
@@ -180,7 +180,7 @@
                     IsEnabled="{Binding SelectedItem, ElementName=CandidatesListView, Converter={StaticResource NullToBoolConverter}}"
                     Click="SelectButton_Click"/>
             <Button x:Name="CancelButton"
-                    Content="{DynamicResource FileComparison_CancelButton}"
+                    Content="{StaticResource FileComparison_CancelButton}"
                     Width="100"
                     Height="30"
                     IsCancel="True"

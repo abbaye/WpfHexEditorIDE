@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Advanced Color Picker Control with HSV selector, RGB sliders, hex input, and palette
     Author : Derek Tremblay (derektremblay666@gmail.com)
@@ -78,13 +78,13 @@
                             Foreground="{DynamicResource DockMenuForegroundBrush}"
                             BorderBrush="{DynamicResource DockBorderBrush}">
                     <!-- Custom Color Tab -->
-                    <TabItem Header="{DynamicResource ColorPicker_Tab_Custom}">
+                    <TabItem Header="{StaticResource ColorPicker_Tab_Custom}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto"
                                       Background="{DynamicResource DockMenuBackgroundBrush}">
                             <StackPanel Margin="8">
 
                                 <!-- HSV Color Selector -->
-                                <TextBlock Text="{DynamicResource ColorPicker_Section_ColorSelector}" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,8"/>
+                                <TextBlock Text="{StaticResource ColorPicker_Section_ColorSelector}" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,8"/>
 
                                 <Grid Height="200" Margin="0,0,0,12">
                                     <Grid.ColumnDefinitions>
@@ -159,7 +159,7 @@
                                     <Border Grid.Column="0" BorderBrush="#999999" BorderThickness="1,1,0,1" CornerRadius="3,0,0,3">
                                         <Grid>
                                             <Border x:Name="OriginalColorPreview" Background="Blue"/>
-                                            <TextBlock Text="{DynamicResource ColorPicker_Preview_Original}" FontSize="10" Foreground="White"
+                                            <TextBlock Text="{StaticResource ColorPicker_Preview_Original}" FontSize="10" Foreground="White"
                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
                                                       Background="#80000000" Padding="4,2"/>
                                         </Grid>
@@ -168,7 +168,7 @@
                                     <Border Grid.Column="1" BorderBrush="#999999" BorderThickness="1" CornerRadius="0,3,3,0">
                                         <Grid>
                                             <Border Background="{Binding SelectedColor, Converter={StaticResource ColorToBrushConverter}}"/>
-                                            <TextBlock Text="{DynamicResource ColorPicker_Preview_New}" FontSize="10" Foreground="White"
+                                            <TextBlock Text="{StaticResource ColorPicker_Preview_New}" FontSize="10" Foreground="White"
                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
                                                       Background="#80000000" Padding="4,2"/>
                                         </Grid>
@@ -176,7 +176,7 @@
                                 </Grid>
 
                                 <!-- RGBA Sliders -->
-                                <TextBlock Text="{DynamicResource ColorPicker_Section_RGBValues}" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,8"/>
+                                <TextBlock Text="{StaticResource ColorPicker_Section_RGBValues}" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,8"/>
 
                                 <!-- Red -->
                                 <Grid Margin="0,0,0,8">
@@ -251,7 +251,7 @@
                                 </Grid>
 
                                 <!-- Hex Input -->
-                                <TextBlock Text="{DynamicResource ColorPicker_Section_HexColor}" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,8"/>
+                                <TextBlock Text="{StaticResource ColorPicker_Section_HexColor}" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,8"/>
                                 <Grid Margin="0,0,0,12">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -280,13 +280,13 @@
                     </TabItem>
 
                     <!-- Palette Tab -->
-                    <TabItem Header="{DynamicResource ColorPicker_Tab_Palette}">
+                    <TabItem Header="{StaticResource ColorPicker_Tab_Palette}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto"
                                       Background="{DynamicResource DockMenuBackgroundBrush}">
                             <StackPanel Margin="8">
 
                                 <!-- Standard Colors -->
-                                <TextBlock Text="{DynamicResource ColorPicker_Section_StandardColors}" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,8"/>
+                                <TextBlock Text="{StaticResource ColorPicker_Section_StandardColors}" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,8"/>
                                 <ItemsControl x:Name="StandardColorsPanel" Margin="0,0,0,16">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -309,7 +309,7 @@
                                 </ItemsControl>
 
                                 <!-- Recent Colors -->
-                                <TextBlock Text="{DynamicResource ColorPicker_Section_RecentColors}" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,8"/>
+                                <TextBlock Text="{StaticResource ColorPicker_Section_RecentColors}" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,8"/>
                                 <ItemsControl x:Name="RecentColorsPanel">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>

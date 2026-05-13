@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
@@ -215,7 +215,7 @@
                                   Style="{StaticResource QuickToggleStyle}"
                                   Width="22" Height="22"
                                   Margin="3,0,1,0"
-                                  ToolTip="{DynamicResource HE_ShowReplaceTooltip}">
+                                  ToolTip="{StaticResource HE_ShowReplaceTooltip}">
                         <!-- ChevronDown icon rotated −90° = pointing right when collapsed -->
                         <TextBlock x:Name="ExpandIcon"
                                    Text="&#xE70D;"
@@ -256,7 +256,7 @@
 
                             <!-- Placeholder (shown when empty and not focused) -->
                             <TextBlock Grid.Column="1"
-                                       Text="{DynamicResource HE_SearchPlaceholder}"
+                                       Text="{StaticResource HE_SearchPlaceholder}"
                                        FontFamily="Segoe UI"
                                        FontSize="12"
                                        VerticalAlignment="Center"
@@ -297,21 +297,21 @@
                                   Content="Ab"
                                   Style="{StaticResource QuickToggleStyle}"
                                   IsChecked="{Binding CaseSensitive}"
-                                  ToolTip="{DynamicResource HE_CaseSensitiveTooltip}"/>
+                                  ToolTip="{StaticResource HE_CaseSensitiveTooltip}"/>
 
                     <!-- ── .* — Use Wildcard ── -->
                     <ToggleButton Grid.Column="4"
                                   Content=".*"
                                   Style="{StaticResource QuickToggleStyle}"
                                   IsChecked="{Binding UseWildcard}"
-                                  ToolTip="{DynamicResource HE_WildcardTooltip}"/>
+                                  ToolTip="{StaticResource HE_WildcardTooltip}"/>
 
                     <!-- ── 0x — Hex Mode ── -->
                     <ToggleButton Grid.Column="5"
                                   Content="0x"
                                   Style="{StaticResource QuickToggleStyle}"
                                   IsChecked="{Binding IsHexMode}"
-                                  ToolTip="{DynamicResource HE_HexModeTooltip}"/>
+                                  ToolTip="{StaticResource HE_HexModeTooltip}"/>
 
                     <!-- ── Separator ── -->
                     <Rectangle Grid.Column="6"
@@ -342,14 +342,14 @@
                             Content="&#xE70E;"
                             Style="{StaticResource QuickButtonStyle}"
                             Command="{Binding FindPreviousCommand}"
-                            ToolTip="{DynamicResource HE_PrevResultTooltip}"/>
+                            ToolTip="{StaticResource HE_PrevResultTooltip}"/>
 
                     <!-- ── Next ▼ (MDL2 ChevronDown &#xE70D;) ── -->
                     <Button Grid.Column="10"
                             Content="&#xE70D;"
                             Style="{StaticResource QuickButtonStyle}"
                             Command="{Binding FindNextCommand}"
-                            ToolTip="{DynamicResource HE_NextResultTooltip}"/>
+                            ToolTip="{StaticResource HE_NextResultTooltip}"/>
 
                     <!-- ── Separator ── -->
                     <Rectangle Grid.Column="11"
@@ -362,7 +362,7 @@
                             Content="&#xE712;"
                             x:Name="AdvancedSearchButton"
                             Style="{StaticResource QuickButtonStyle}"
-                            ToolTip="{DynamicResource HE_AdvancedSearchTooltip}"
+                            ToolTip="{StaticResource HE_AdvancedSearchTooltip}"
                             Margin="1,0"/>
 
                     <!-- ── Close ✕ (MDL2 ChromeClose &#xE8BB;) ── -->
@@ -370,7 +370,7 @@
                             Content="&#xE8BB;"
                             x:Name="CloseButton"
                             Style="{StaticResource QuickButtonStyle}"
-                            ToolTip="{DynamicResource HE_CloseSearchTooltip}"
+                            ToolTip="{StaticResource HE_CloseSearchTooltip}"
                             Margin="1,0,4,0"/>
 
                     <!-- ── Progress indicator (bottom edge, visible during search) ── -->
@@ -436,7 +436,7 @@
 
                             <!-- Placeholder -->
                             <TextBlock Grid.Column="1"
-                                       Text="{DynamicResource HE_ReplacePlaceholder}"
+                                       Text="{StaticResource HE_ReplacePlaceholder}"
                                        FontFamily="Segoe UI"
                                        FontSize="12"
                                        VerticalAlignment="Center"
@@ -476,7 +476,7 @@
                             x:Name="ReplaceNextButton"
                             Style="{StaticResource QuickReplaceButtonStyle}"
                             Command="{Binding ReplaceNextCommand}"
-                            ToolTip="{DynamicResource HE_ReplaceOneTooltip}"
+                            ToolTip="{StaticResource HE_ReplaceOneTooltip}"
                             Margin="1,0">
                         <TextBlock FontFamily="Segoe UI" FontSize="11" Text="→1"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -487,7 +487,7 @@
                             x:Name="ReplaceAllButton"
                             Style="{StaticResource QuickReplaceButtonStyle}"
                             Command="{Binding ReplaceAllCommand}"
-                            ToolTip="{DynamicResource HE_ReplaceAllTooltip}"
+                            ToolTip="{StaticResource HE_ReplaceAllTooltip}"
                             Margin="1,0,4,0">
                         <TextBlock FontFamily="Segoe UI" FontSize="11" Text="→∀"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -35,18 +35,18 @@
                 Padding="8,5">
             <DockPanel>
                 <Button DockPanel.Dock="Right"
-                        Content="{DynamicResource FileComparison_LoadFile2}"
+                        Content="{StaticResource FileComparison_LoadFile2}"
                         Style="{StaticResource PanelDropdownButtonStyle}"
                         Padding="12,3" Height="22" Margin="0,0,4,0"
                         Click="LoadFile2_Click"/>
                 <Button DockPanel.Dock="Right"
-                        Content="{DynamicResource FileComparison_LoadFile1}"
+                        Content="{StaticResource FileComparison_LoadFile1}"
                         Style="{StaticResource PanelDropdownButtonStyle}"
                         Padding="12,3" Height="22" Margin="0,0,8,0"
                         Click="LoadFile1_Click"/>
                 <Rectangle DockPanel.Dock="Right" Width="1" Margin="0,4,8,4"
                            Fill="{DynamicResource PFP_BorderBrush}"/>
-                <TextBlock x:Name="ComparisonInfoText" Text="{DynamicResource FileComparison_SelectFiles}"
+                <TextBlock x:Name="ComparisonInfoText" Text="{StaticResource FileComparison_SelectFiles}"
                            VerticalAlignment="Center"
                            Margin="4,0,0,0" FontSize="11"
                            Foreground="{DynamicResource PFP_SubTextBrush}"/>
@@ -76,7 +76,7 @@
                             BorderBrush="{DynamicResource PFP_BorderBrush}"
                             BorderThickness="0,0,0,1"
                             Padding="8,5">
-                        <TextBlock x:Name="File1NameText" Text="{DynamicResource FileComparison_File1}"
+                        <TextBlock x:Name="File1NameText" Text="{StaticResource FileComparison_File1}"
                                    FontWeight="SemiBold" FontSize="11"
                                    Foreground="{DynamicResource PFP_TextBrush}"/>
                     </Border>
@@ -163,7 +163,7 @@
                             BorderBrush="{DynamicResource PFP_BorderBrush}"
                             BorderThickness="0,0,0,1"
                             Padding="8,5">
-                        <TextBlock x:Name="File2NameText" Text="{DynamicResource FileComparison_File2}"
+                        <TextBlock x:Name="File2NameText" Text="{StaticResource FileComparison_File2}"
                                    FontWeight="SemiBold" FontSize="11"
                                    Foreground="{DynamicResource PFP_TextBrush}"/>
                     </Border>

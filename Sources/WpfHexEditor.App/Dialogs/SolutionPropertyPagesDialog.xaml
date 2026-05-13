@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -12,7 +12,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:appSvc="clr-namespace:WpfHexEditor.App.Services"
-        ToolTip="{DynamicResource APP_SolutionPropertiesTitle}"
+        ToolTip="{StaticResource APP_SolutionPropertiesTitle}"
         Width="940" Height="640"
         MinWidth="700" MinHeight="480"
         ResizeMode="CanResize"
@@ -41,14 +41,14 @@
                 Background="{DynamicResource DockMenuBackgroundBrush}"
                 BorderBrush="{DynamicResource DockBorderBrush}">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{DynamicResource APP_SolutionConfigLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBlock Text="{StaticResource APP_SolutionConfigLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
                 <ComboBox x:Name="CbHeaderConfig" Width="150" Margin="0,0,12,0"/>
 
-                <TextBlock Text="{DynamicResource APP_SolutionPlatformLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBlock Text="{StaticResource APP_SolutionPlatformLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
                 <ComboBox x:Name="CbHeaderPlatform" Width="150" Margin="0,0,16,0"/>
 
-                <Button x:Name="BtnConfigMgr" Content="{DynamicResource APP_ConfigurationManager}"
-                        IsEnabled="False" ToolTip="{DynamicResource APP_ConfigManagerTooltip}"/>
+                <Button x:Name="BtnConfigMgr" Content="{StaticResource APP_ConfigurationManager}"
+                        IsEnabled="False" ToolTip="{StaticResource APP_ConfigManagerTooltip}"/>
             </StackPanel>
         </Border>
 
@@ -71,27 +71,27 @@
 
                     <!-- ▼ Propriétés communes -->
                     <TreeViewItem x:Name="TviCommon"
-                                  ToolTip="{DynamicResource APP_CommonProperties}"
+                                  ToolTip="{StaticResource APP_CommonProperties}"
                                   IsExpanded="True"
                                   FontWeight="SemiBold">
                         <TreeViewItem x:Name="TviStartup"
-                                      ToolTip="{DynamicResource APP_StartupProjects}"
+                                      ToolTip="{StaticResource APP_StartupProjects}"
                                       FontWeight="Normal"/>
                         <TreeViewItem x:Name="TviBuildDeps"
-                                      ToolTip="{DynamicResource APP_ProjectBuildDeps}"
+                                      ToolTip="{StaticResource APP_ProjectBuildDeps}"
                                       FontWeight="Normal"/>
                         <TreeViewItem x:Name="TviSourceFiles"
-                                      ToolTip="{DynamicResource APP_DebugSourceFiles}"
+                                      ToolTip="{StaticResource APP_DebugSourceFiles}"
                                       FontWeight="Normal"/>
                     </TreeViewItem>
 
                     <!-- ▼ Propriétés de configuration -->
                     <TreeViewItem x:Name="TviConfigProps"
-                                  ToolTip="{DynamicResource APP_ConfigProperties}"
+                                  ToolTip="{StaticResource APP_ConfigProperties}"
                                   IsExpanded="True"
                                   FontWeight="SemiBold">
                         <TreeViewItem x:Name="TviConfig"
-                                      ToolTip="{DynamicResource APP_ConfigCol}"
+                                      ToolTip="{StaticResource APP_ConfigCol}"
                                       FontWeight="Normal"/>
                     </TreeViewItem>
                 </TreeView>
@@ -116,11 +116,11 @@
                 Background="{DynamicResource DockMenuBackgroundBrush}"
                 BorderBrush="{DynamicResource DockBorderBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="BtnAccept" Content="{DynamicResource APP_AcceptButton}"  Width="80" Margin="0,0,6,0"
+                <Button x:Name="BtnAccept" Content="{StaticResource APP_AcceptButton}"  Width="80" Margin="0,0,6,0"
                         IsDefault="True"  Click="OnAccept"/>
-                <Button x:Name="BtnCancel" Content="{DynamicResource APP_CancelButton}"   Width="80" Margin="0,0,6,0"
+                <Button x:Name="BtnCancel" Content="{StaticResource APP_CancelButton}"   Width="80" Margin="0,0,6,0"
                         IsCancel="True"   Click="OnCancel"/>
-                <Button x:Name="BtnApply" Content="{DynamicResource APP_ApplyButton}" Width="80"
+                <Button x:Name="BtnApply" Content="{StaticResource APP_ApplyButton}" Width="80"
                         Click="OnApply"/>
             </StackPanel>
         </Border>

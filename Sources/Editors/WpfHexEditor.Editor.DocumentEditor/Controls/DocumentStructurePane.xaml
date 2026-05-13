@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentStructurePane"
+﻿<UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentStructurePane"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
@@ -108,7 +108,7 @@
                 <!-- Title + block count -->
                 <TextBlock x:Name="PART_Header"
                            DockPanel.Dock="Left"
-                           Text="{DynamicResource DocStructure_Header}"
+                           Text="{StaticResource DocStructure_Header}"
                            FontWeight="SemiBold"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DE_StructureNodeFg}"/>
@@ -128,7 +128,7 @@
                 <Button x:Name="PART_CollapseAllBtn"
                         Style="{StaticResource StructToolBtnStyle}"
                         DockPanel.Dock="Right"
-                        ToolTip="{DynamicResource DocStructure_CollapseAllToolTip}"
+                        ToolTip="{StaticResource DocStructure_CollapseAllToolTip}"
                         Click="OnCollapseAllClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70D;" FontSize="11"/>
                 </Button>
@@ -136,7 +136,7 @@
                 <Button x:Name="PART_ExpandAllBtn"
                         Style="{StaticResource StructToolBtnStyle}"
                         DockPanel.Dock="Right"
-                        ToolTip="{DynamicResource DocStructure_ExpandAllToolTip}"
+                        ToolTip="{StaticResource DocStructure_ExpandAllToolTip}"
                         Click="OnExpandAllClicked">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70E;" FontSize="11"/>
                 </Button>
@@ -150,7 +150,7 @@
                 <ToggleButton x:Name="PART_OutlineBtn"
                               Style="{StaticResource StructToolToggleStyle}"
                               DockPanel.Dock="Right"
-                              ToolTip="{DynamicResource DocStructure_OutlineModeToolTip}"
+                              ToolTip="{StaticResource DocStructure_OutlineModeToolTip}"
                               Checked="OnOutlineModeToggled"
                               Unchecked="OnOutlineModeToggled">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE71D;" FontSize="11"/>
@@ -159,7 +159,7 @@
                 <ToggleButton x:Name="PART_ShowRunsBtn"
                               Style="{StaticResource StructToolToggleStyle}"
                               DockPanel.Dock="Right"
-                              ToolTip="{DynamicResource DocStructure_ShowRunsToggleToolTip}"
+                              ToolTip="{StaticResource DocStructure_ShowRunsToggleToolTip}"
                               Checked="OnShowRunsToggled"
                               Unchecked="OnShowRunsToggled">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7BA;" FontSize="11"/>
@@ -190,14 +190,14 @@
                           Background="{DynamicResource DockBackgroundBrush}"
                           Foreground="{DynamicResource DockMenuForegroundBrush}"
                           BorderBrush="{DynamicResource DockBorderBrush}"
-                          ToolTip="{DynamicResource DocStructure_KindFilterToolTip}"
+                          ToolTip="{StaticResource DocStructure_KindFilterToolTip}"
                           SelectionChanged="OnKindFilterChanged"
                           SelectedIndex="0">
-                    <ComboBoxItem Tag="all"       Content="{DynamicResource DocStructure_KindFilter_All}"/>
-                    <ComboBoxItem Tag="heading"   Content="{DynamicResource DocStructure_KindFilter_HeadingsOnly}"/>
-                    <ComboBoxItem Tag="list-item" Content="{DynamicResource DocStructure_KindFilter_ListsOnly}"/>
-                    <ComboBoxItem Tag="table"     Content="{DynamicResource DocStructure_KindFilter_TablesOnly}"/>
-                    <ComboBoxItem Tag="image"     Content="{DynamicResource DocStructure_KindFilter_ImagesOnly}"/>
+                    <ComboBoxItem Tag="all"       Content="{StaticResource DocStructure_KindFilter_All}"/>
+                    <ComboBoxItem Tag="heading"   Content="{StaticResource DocStructure_KindFilter_HeadingsOnly}"/>
+                    <ComboBoxItem Tag="list-item" Content="{StaticResource DocStructure_KindFilter_ListsOnly}"/>
+                    <ComboBoxItem Tag="table"     Content="{StaticResource DocStructure_KindFilter_TablesOnly}"/>
+                    <ComboBoxItem Tag="image"     Content="{StaticResource DocStructure_KindFilter_ImagesOnly}"/>
                 </ComboBox>
 
                 <TextBox x:Name="PART_SearchBox"
@@ -215,7 +215,7 @@
                             <Style.Resources>
                                 <VisualBrush x:Key="HintBrush" Stretch="None" AlignmentX="Left">
                                     <VisualBrush.Visual>
-                                        <TextBlock Text="{DynamicResource DocStructure_FilterPlaceholder}"
+                                        <TextBlock Text="{StaticResource DocStructure_FilterPlaceholder}"
                                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                    Opacity="0.4"
                                                    FontSize="12"
@@ -240,7 +240,7 @@
                         Style="{StaticResource StructToolBtnStyle}"
                         Width="20" Height="20"
                         Margin="2,0,0,0"
-                        ToolTip="{DynamicResource DocStructure_ClearFilterToolTip}"
+                        ToolTip="{StaticResource DocStructure_ClearFilterToolTip}"
                         Click="OnClearSearchClicked"
                         Visibility="{Binding Text.Length, ElementName=PART_SearchBox,
                                      Converter={StaticResource BoolToVis}}">
@@ -327,14 +327,14 @@
             <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="PART_MenuNavigate"
-                              Header="{DynamicResource DocStructure_NavigateMenuHeader}"
+                              Header="{StaticResource DocStructure_NavigateMenuHeader}"
                               Click="OnMenuNavigateClicked">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A5;" FontSize="12"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="PART_MenuJumpHex"
-                              Header="{DynamicResource DocStructure_JumpHexMenuHeader}"
+                              Header="{StaticResource DocStructure_JumpHexMenuHeader}"
                               Click="OnMenuJumpHexClicked">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C4;" FontSize="12"/>
@@ -342,14 +342,14 @@
                     </MenuItem>
                     <Separator/>
                     <MenuItem x:Name="PART_MenuCopyText"
-                              Header="{DynamicResource DocStructure_CopyTextMenuHeader}"
+                              Header="{StaticResource DocStructure_CopyTextMenuHeader}"
                               Click="OnMenuCopyTextClicked">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C8;" FontSize="12"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="PART_MenuCopyOffset"
-                              Header="{DynamicResource DocStructure_CopyOffsetMenuHeader}"
+                              Header="{StaticResource DocStructure_CopyOffsetMenuHeader}"
                               Click="OnMenuCopyOffsetClicked">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8F4;" FontSize="12"/>

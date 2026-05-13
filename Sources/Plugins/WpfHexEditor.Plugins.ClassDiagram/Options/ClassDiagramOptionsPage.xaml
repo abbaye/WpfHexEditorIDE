@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project: WpfHexEditor.Plugins.ClassDiagram
     File: Options/ClassDiagramOptionsPage.xaml
     Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -30,16 +30,16 @@
         <StackPanel>
 
             <!-- ── Section: Layout ──────────────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource ClassDiagram_LayoutSection}"
+            <TextBlock Text="{StaticResource ClassDiagram_LayoutSection}"
                        FontSize="12" FontWeight="SemiBold"
                        Foreground="{DynamicResource PFP_AccentBrush}"
                        Margin="0,0,0,6"/>
 
-            <CheckBox x:Name="ChkAutoLayout" Content="{DynamicResource ClassDiagram_AutoLayout}"
+            <CheckBox x:Name="ChkAutoLayout" Content="{StaticResource ClassDiagram_AutoLayout}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,4"/>
 
-            <CheckBox x:Name="ChkGroupByNamespace" Content="{DynamicResource ClassDiagram_GroupByNamespace}"
+            <CheckBox x:Name="ChkGroupByNamespace" Content="{StaticResource ClassDiagram_GroupByNamespace}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,4"/>
 
@@ -49,7 +49,7 @@
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ClassDiagram_DefaultNodeWidth}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ClassDiagram_DefaultNodeWidth}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -65,7 +65,7 @@
                              FontSize="12"
                              MaxLength="5"
                              TextAlignment="Right"/>
-                    <TextBlock Text="{DynamicResource CD_PxUnit}"
+                    <TextBlock Text="{StaticResource CD_PxUnit}"
                                Margin="6,0,0,0"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource PFP_SubTextBrush}"
@@ -79,7 +79,7 @@
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ClassDiagram_DefaultNodeHeight}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ClassDiagram_DefaultNodeHeight}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -95,7 +95,7 @@
                              FontSize="12"
                              MaxLength="5"
                              TextAlignment="Right"/>
-                    <TextBlock Text="{DynamicResource CD_PxUnit}"
+                    <TextBlock Text="{StaticResource CD_PxUnit}"
                                Margin="6,0,0,0"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource PFP_SubTextBrush}"
@@ -107,16 +107,16 @@
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
 
             <!-- ── Section: Canvas ───────────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource ClassDiagram_CanvasSection}"
+            <TextBlock Text="{StaticResource ClassDiagram_CanvasSection}"
                        FontSize="12" FontWeight="SemiBold"
                        Foreground="{DynamicResource PFP_AccentBrush}"
                        Margin="0,0,0,6"/>
 
-            <CheckBox x:Name="ChkShowGrid" Content="{DynamicResource ClassDiagram_ShowDotGrid}"
+            <CheckBox x:Name="ChkShowGrid" Content="{StaticResource ClassDiagram_ShowDotGrid}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,4"/>
 
-            <CheckBox x:Name="ChkSnapEnabled" Content="{DynamicResource ClassDiagram_SnapToGrid}"
+            <CheckBox x:Name="ChkSnapEnabled" Content="{StaticResource ClassDiagram_SnapToGrid}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,4"/>
 
@@ -126,7 +126,7 @@
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ClassDiagram_GridSnapSize}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ClassDiagram_GridSnapSize}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -148,22 +148,22 @@
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
 
             <!-- ── Section: Source Analysis ──────────────────────────────── -->
-            <TextBlock Text="{DynamicResource ClassDiagram_SourceAnalysis}"
+            <TextBlock Text="{StaticResource ClassDiagram_SourceAnalysis}"
                        FontSize="12" FontWeight="SemiBold"
                        Foreground="{DynamicResource PFP_AccentBrush}"
                        Margin="0,0,0,6"/>
 
-            <TextBlock Text="{DynamicResource CD_ParseHintFile}"
+            <TextBlock Text="{StaticResource CD_ParseHintFile}"
                        TextWrapping="Wrap"
                        Foreground="{DynamicResource PFP_SubTextBrush}"
                        FontSize="11"
                        Margin="0,0,0,8"/>
 
-            <CheckBox x:Name="ChkIncludePrivate" Content="{DynamicResource ClassDiagram_IncludePrivate}"
+            <CheckBox x:Name="ChkIncludePrivate" Content="{StaticResource ClassDiagram_IncludePrivate}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,4"/>
 
-            <CheckBox x:Name="ChkIncludeInherited" Content="{DynamicResource ClassDiagram_IncludeInherited}"
+            <CheckBox x:Name="ChkIncludeInherited" Content="{StaticResource ClassDiagram_IncludeInherited}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,12"/>
 
@@ -171,12 +171,12 @@
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
 
             <!-- ── Section: Minimap ──────────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource ClassDiagram_MinimapSection}"
+            <TextBlock Text="{StaticResource ClassDiagram_MinimapSection}"
                        FontSize="12" FontWeight="SemiBold"
                        Foreground="{DynamicResource PFP_AccentBrush}"
                        Margin="0,0,0,6"/>
 
-            <CheckBox x:Name="ChkShowMinimapByDefault" Content="{DynamicResource ClassDiagram_ShowMinimap}"
+            <CheckBox x:Name="ChkShowMinimapByDefault" Content="{StaticResource ClassDiagram_ShowMinimap}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,12"/>
 
@@ -184,17 +184,17 @@
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
 
             <!-- ── Section: Outline Panel ────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource ClassDiagram_OutlinePanel}"
+            <TextBlock Text="{StaticResource ClassDiagram_OutlinePanel}"
                        FontSize="12" FontWeight="SemiBold"
                        Foreground="{DynamicResource PFP_AccentBrush}"
                        Margin="0,0,0,6"/>
 
-            <CheckBox x:Name="ChkOutlineShowMembers" Content="{DynamicResource ClassDiagram_ShowMemberSubItems}"
+            <CheckBox x:Name="ChkOutlineShowMembers" Content="{StaticResource ClassDiagram_ShowMemberSubItems}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,4"/>
 
             <CheckBox x:Name="ChkOutlineColorByVisibility"
-                      Content="{DynamicResource ClassDiagram_ColorMemberDots}"
+                      Content="{StaticResource ClassDiagram_ColorMemberDots}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,12"/>
 
@@ -202,12 +202,12 @@
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
 
             <!-- ── Section: Hover Tooltips ───────────────────────────────── -->
-            <TextBlock Text="{DynamicResource ClassDiagram_HoverTooltips}"
+            <TextBlock Text="{StaticResource ClassDiagram_HoverTooltips}"
                        FontSize="12" FontWeight="SemiBold"
                        Foreground="{DynamicResource PFP_AccentBrush}"
                        Margin="0,0,0,6"/>
 
-            <CheckBox x:Name="ChkShowHoverTooltips" Content="{DynamicResource ClassDiagram_ShowDetailTooltip}"
+            <CheckBox x:Name="ChkShowHoverTooltips" Content="{StaticResource ClassDiagram_ShowDetailTooltip}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,4"/>
 
@@ -217,7 +217,7 @@
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ClassDiagram_TooltipDelay}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ClassDiagram_TooltipDelay}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -239,12 +239,12 @@
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
 
             <!-- ── Section: Session ──────────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource ClassDiagram_SessionSection}"
+            <TextBlock Text="{StaticResource ClassDiagram_SessionSection}"
                        FontSize="12" FontWeight="SemiBold"
                        Foreground="{DynamicResource PFP_AccentBrush}"
                        Margin="0,0,0,6"/>
 
-            <CheckBox x:Name="ChkRestoreLastState" Content="{DynamicResource ClassDiagram_RestoreSession}"
+            <CheckBox x:Name="ChkRestoreLastState" Content="{StaticResource ClassDiagram_RestoreSession}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,12"/>
 
@@ -252,31 +252,31 @@
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
 
             <!-- ── Section: Solution Generation ─────────────────────────── -->
-            <TextBlock Text="{DynamicResource ClassDiagram_SolutionGeneration}"
+            <TextBlock Text="{StaticResource ClassDiagram_SolutionGeneration}"
                        FontSize="12" FontWeight="SemiBold"
                        Foreground="{DynamicResource PFP_AccentBrush}"
                        Margin="0,0,0,6"/>
 
-            <TextBlock Text="{DynamicResource CD_SolutionHint}"
+            <TextBlock Text="{StaticResource CD_SolutionHint}"
                        TextWrapping="Wrap"
                        Foreground="{DynamicResource PFP_SubTextBrush}"
                        FontSize="11"
                        Margin="0,0,0,8"/>
 
-            <CheckBox x:Name="ChkSolutionShowSwimLanes" Content="{DynamicResource ClassDiagram_ShowSwimlanes}"
+            <CheckBox x:Name="ChkSolutionShowSwimLanes" Content="{StaticResource ClassDiagram_ShowSwimlanes}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,4"/>
 
             <CheckBox x:Name="ChkSolutionIncludePrivate"
-                      Content="{DynamicResource ClassDiagram_IncludePrivate}"
+                      Content="{StaticResource ClassDiagram_IncludePrivate}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,4"/>
 
-            <CheckBox x:Name="ChkSolutionIncludeInternal" Content="{DynamicResource ClassDiagram_IncludeInternal}"
+            <CheckBox x:Name="ChkSolutionIncludeInternal" Content="{StaticResource ClassDiagram_IncludeInternal}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,4"/>
 
-            <CheckBox x:Name="ChkSolutionExcludeTestProjects" Content="{DynamicResource ClassDiagram_ExcludeTestProjects}"
+            <CheckBox x:Name="ChkSolutionExcludeTestProjects" Content="{StaticResource ClassDiagram_ExcludeTestProjects}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       Margin="0,0,0,8"/>
 
@@ -286,7 +286,7 @@
                     <ColumnDefinition Width="240"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource ClassDiagram_WarnThreshold}"
+                <TextBlock Grid.Column="0" Text="{StaticResource ClassDiagram_WarnThreshold}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -302,7 +302,7 @@
                              FontSize="12"
                              MaxLength="5"
                              TextAlignment="Right"/>
-                    <TextBlock Text="{DynamicResource ClassDiagram_FilesNeverLabel}"
+                    <TextBlock Text="{StaticResource ClassDiagram_FilesNeverLabel}"
                                Margin="6,0,0,0"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource PFP_SubTextBrush}"

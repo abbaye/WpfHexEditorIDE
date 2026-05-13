@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.App.Debug.Panels.ExceptionSettingsPanel"
+﻿<UserControl x:Class="WpfHexEditor.App.Debug.Panels.ExceptionSettingsPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.App.Debug.ViewModels"
@@ -19,12 +19,12 @@
                 <TextBox Width="160"
                          Style="{DynamicResource PanelSearchBoxStyle}"
                          Tag="{DynamicResource DBG_EXC_SearchPlaceholder}"
-                         ToolTip="{DynamicResource DBG_EXC_SearchPlaceholder}"
+                         ToolTip="{StaticResource DBG_EXC_SearchPlaceholder}"
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
                 <Rectangle Width="1" Height="16" Margin="6,0"
                            Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 <Button Command="{Binding ApplyCommand}"
-                        ToolTip="{DynamicResource DBG_ApplyTooltip}"
+                        ToolTip="{StaticResource DBG_ApplyTooltip}"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Content="&#xE74E;"/>
             </StackPanel>
@@ -44,9 +44,9 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="{DynamicResource DBG_ColException}" Width="220"
+                    <GridViewColumn Header="{StaticResource DBG_ColException}" Width="220"
                                     DisplayMemberBinding="{Binding Label}"/>
-                    <GridViewColumn Header="{DynamicResource DBG_ColCondition}" Width="400">
+                    <GridViewColumn Header="{StaticResource DBG_ColCondition}" Width="400">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type vm:ExceptionFilterItem}">
                                 <TextBox Text="{Binding Condition, UpdateSourceTrigger=LostFocus}"

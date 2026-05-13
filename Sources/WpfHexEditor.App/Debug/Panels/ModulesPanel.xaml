@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.App.Debug.Panels.ModulesPanel"
+﻿<UserControl x:Class="WpfHexEditor.App.Debug.Panels.ModulesPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:dbgSvc="clr-namespace:WpfHexEditor.App.Debug.Services">
@@ -18,13 +18,13 @@
                 <TextBox Width="160"
                          Style="{DynamicResource PanelSearchBoxStyle}"
                          Tag="{DynamicResource DBG_MOD_SearchPlaceholder}"
-                         ToolTip="{DynamicResource DBG_MOD_SearchPlaceholder}"
+                         ToolTip="{StaticResource DBG_MOD_SearchPlaceholder}"
                          Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
                 <Rectangle Width="1" Height="16" Margin="6,0"
                            Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 <Button Style="{DynamicResource PanelIconButtonStyle}"
                         Content="&#xE72C;"
-                        ToolTip="{DynamicResource DBG_RefreshTooltip}"
+                        ToolTip="{StaticResource DBG_RefreshTooltip}"
                         Click="OnRefreshClick"/>
             </StackPanel>
         </Border>
@@ -35,10 +35,10 @@
                   BorderThickness="0">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="{DynamicResource DBG_ColName}"         Width="180" DisplayMemberBinding="{Binding Name}"/>
-                    <GridViewColumn Header="{DynamicResource DBG_ColVersion}"       Width="80"  DisplayMemberBinding="{Binding Version}"/>
-                    <GridViewColumn Header="{DynamicResource DBG_ColSymbolStatus}"  Width="120" DisplayMemberBinding="{Binding SymbolStatus}"/>
-                    <GridViewColumn Header="{DynamicResource DBG_ColOptimized}"     Width="70">
+                    <GridViewColumn Header="{StaticResource DBG_ColName}"         Width="180" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="{StaticResource DBG_ColVersion}"       Width="80"  DisplayMemberBinding="{Binding Version}"/>
+                    <GridViewColumn Header="{StaticResource DBG_ColSymbolStatus}"  Width="120" DisplayMemberBinding="{Binding SymbolStatus}"/>
+                    <GridViewColumn Header="{StaticResource DBG_ColOptimized}"     Width="70">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <CheckBox IsChecked="{Binding IsOptimized, Mode=OneWay}" IsEnabled="False"
@@ -46,7 +46,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="{DynamicResource DBG_ColUserCode}"      Width="70">
+                    <GridViewColumn Header="{StaticResource DBG_ColUserCode}"      Width="70">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <CheckBox IsChecked="{Binding IsUserCode, Mode=OneWay}" IsEnabled="False"
@@ -54,7 +54,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="{DynamicResource DBG_ColPath}"          Width="300" DisplayMemberBinding="{Binding Path}"/>
+                    <GridViewColumn Header="{StaticResource DBG_ColPath}"          Width="300" DisplayMemberBinding="{Binding Path}"/>
                 </GridView>
             </ListView.View>
         </ListView>

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project: WpfHexEditor.App.AssemblyExplorer
     File: Views/AssemblyDetailPane.xaml
     Author: Derek Tremblay
@@ -143,14 +143,14 @@
                         Padding="6,1"
                         Background="Transparent"
                         BorderBrush="{DynamicResource PFP_BorderBrush}"
-                        Foreground="{DynamicResource PFP_TextBrush}" ToolTip="{DynamicResource AsmExplorer_ExtractCode}"
+                        Foreground="{DynamicResource PFP_TextBrush}" ToolTip="{StaticResource AsmExplorer_ExtractCode}"
                         Visibility="{Binding IsExtractAvailable, Converter={StaticResource BoolToVisibilityConverter}}"
                         Click="OnExtractButtonClick">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets"
                                    FontSize="10" Margin="0,0,3,0"
                                    VerticalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource AsmExplorer_Extract}" FontSize="10" VerticalAlignment="Center"/>
+                        <TextBlock Text="{StaticResource AsmExplorer_Extract}" FontSize="10" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <!-- Title info (fills remaining space) -->
@@ -182,7 +182,7 @@
                     ItemContainerStyle="{StaticResource DetailTabItemStyle}">
 
             <!-- Tab 0: Code — C# structural skeleton -->
-            <TabItem Header="{DynamicResource AsmExplorer_TabCode}">
+            <TabItem Header="{StaticResource AsmExplorer_TabCode}">
                 <ScrollViewer Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Auto">
@@ -192,10 +192,10 @@
             </TabItem>
 
             <!-- Tab 1: IL — raw IL disassembly (methods only) -->
-            <TabItem Header="{DynamicResource AsmExplorer_TabIL}">
+            <TabItem Header="{StaticResource AsmExplorer_TabIL}">
                 <Grid Background="{DynamicResource PFP_SectionBackgroundBrush}">
                     <!-- Shown when no IL text is available -->
-                    <TextBlock Text="{DynamicResource AsmExplorer_ILPlaceholder}"
+                    <TextBlock Text="{StaticResource AsmExplorer_ILPlaceholder}"
                                Foreground="{DynamicResource PFP_SubTextBrush}"
                                FontFamily="Consolas"
                                FontSize="11"
@@ -232,7 +232,7 @@
             </TabItem>
 
             <!-- Tab 2: Info — structured metadata key/value grid -->
-            <TabItem Header="{DynamicResource AsmExplorer_TabInfo}">
+            <TabItem Header="{StaticResource AsmExplorer_TabInfo}">
                 <ScrollViewer Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled">
@@ -264,7 +264,7 @@
             </TabItem>
 
             <!-- Tab 3: Hex — 64-byte raw hex dump at PE offset -->
-            <TabItem Header="{DynamicResource AsmExplorer_TabHex}">
+            <TabItem Header="{StaticResource AsmExplorer_TabHex}">
                 <ScrollViewer Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Auto">
@@ -274,11 +274,11 @@
             </TabItem>
 
             <!-- Tab 4: CFG — Control Flow Graph (method nodes only) -->
-            <TabItem Header="{DynamicResource AsmExplorer_TabCfg}">
+            <TabItem Header="{StaticResource AsmExplorer_TabCfg}">
                 <Grid Background="{DynamicResource PFP_SectionBackgroundBrush}">
 
                     <!-- Placeholder shown when no CFG is available -->
-                    <TextBlock Text="{DynamicResource AsmExplorer_CfgPlaceholder}"
+                    <TextBlock Text="{StaticResource AsmExplorer_CfgPlaceholder}"
                                Foreground="{DynamicResource PFP_SubTextBrush}"
                                FontFamily="Consolas" FontSize="11"
                                Margin="8,4" VerticalAlignment="Top">
@@ -317,7 +317,7 @@
                                 Visibility="{Binding CfgViewModel.IsBuilding,
                                              Converter={StaticResource BoolToVisibilityConverter}}">
                         <pb:LinearProgressBar IsIndeterminate="True" Width="160" Height="3" BarHeight="3"/>
-                        <TextBlock Text="{DynamicResource AsmExplorer_BuildingCfg}" Margin="0,6,0,0"
+                        <TextBlock Text="{StaticResource AsmExplorer_BuildingCfg}" Margin="0,6,0,0"
                                    Foreground="{DynamicResource PFP_SubTextBrush}"
                                    FontSize="11" FontFamily="Segoe UI"
                                    HorizontalAlignment="Center"/>
@@ -332,11 +332,11 @@
             </TabItem>
 
             <!-- Tab 5: XRefs — cross-reference analysis (method and field nodes) -->
-            <TabItem Header="{DynamicResource AsmExplorer_TabXRefs}">
+            <TabItem Header="{StaticResource AsmExplorer_TabXRefs}">
                 <Grid Background="{DynamicResource PFP_SectionBackgroundBrush}">
 
                     <!-- Placeholder when no XRefs loaded -->
-                    <TextBlock Text="{DynamicResource AsmExplorer_XRefsPlaceholder}"
+                    <TextBlock Text="{StaticResource AsmExplorer_XRefsPlaceholder}"
                                Foreground="{DynamicResource PFP_SubTextBrush}"
                                FontFamily="Consolas" FontSize="11"
                                Margin="8,4" VerticalAlignment="Top">
@@ -357,7 +357,7 @@
                                 Visibility="{Binding XRefViewModel.IsLoading,
                                              Converter={StaticResource BoolToVisibilityConverter}}">
                         <pb:LinearProgressBar IsIndeterminate="True" Width="160" Height="3" BarHeight="3"/>
-                        <TextBlock Text="{DynamicResource AsmExplorer_ScanningXRefs}" Margin="0,6,0,0"
+                        <TextBlock Text="{StaticResource AsmExplorer_ScanningXRefs}" Margin="0,6,0,0"
                                    Foreground="{DynamicResource PFP_SubTextBrush}"
                                    FontSize="11" FontFamily="Segoe UI"
                                    HorizontalAlignment="Center"/>
@@ -418,7 +418,7 @@
             </TabItem>
 
             <!-- Tab 6: Source — PDB sequence points + SourceLink integration -->
-            <TabItem Header="{DynamicResource AsmExplorer_TabSource}">
+            <TabItem Header="{StaticResource AsmExplorer_TabSource}">
                 <Grid Background="{DynamicResource PFP_SectionBackgroundBrush}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>  <!-- Status bar + action buttons -->
@@ -442,12 +442,12 @@
                                         Background="Transparent"
                                         BorderBrush="{DynamicResource PFP_BorderBrush}"
                                         Foreground="{DynamicResource PFP_TextBrush}"
-                                        Command="{Binding SourceViewModel.OpenSourceLinkCommand}" ToolTip="{DynamicResource AsmExplorer_OpenSourceLink}">
+                                        Command="{Binding SourceViewModel.OpenSourceLinkCommand}" ToolTip="{StaticResource AsmExplorer_OpenSourceLink}">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets"
                                                    FontSize="10" Margin="0,0,3,0"
                                                    VerticalAlignment="Center"/>
-                                        <TextBlock Text="{DynamicResource AsmExplorer_SourceLink}" FontSize="10" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{StaticResource AsmExplorer_SourceLink}" FontSize="10" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
                                 <!-- Go to Source button -->
@@ -455,12 +455,12 @@
                                         Background="Transparent"
                                         BorderBrush="{DynamicResource PFP_BorderBrush}"
                                         Foreground="{DynamicResource PFP_TextBrush}"
-                                        Command="{Binding SourceViewModel.GoToSourceCommand}" ToolTip="{DynamicResource AsmExplorer_OpenLocalSource}">
+                                        Command="{Binding SourceViewModel.GoToSourceCommand}" ToolTip="{StaticResource AsmExplorer_OpenLocalSource}">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets"
                                                    FontSize="10" Margin="0,0,3,0"
                                                    VerticalAlignment="Center"/>
-                                        <TextBlock Text="{DynamicResource AsmExplorer_GoToSource}" FontSize="10" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{StaticResource AsmExplorer_GoToSource}" FontSize="10" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
                             </StackPanel>
@@ -480,7 +480,7 @@
                                 Visibility="{Binding SourceViewModel.IsLoading,
                                              Converter={StaticResource BoolToVisibilityConverter}}">
                         <pb:LinearProgressBar IsIndeterminate="True" Width="160" Height="3" BarHeight="3"/>
-                        <TextBlock Text="{DynamicResource AsmExplorer_ReadingPdb}" Margin="0,4,0,0"
+                        <TextBlock Text="{StaticResource AsmExplorer_ReadingPdb}" Margin="0,4,0,0"
                                    Foreground="{DynamicResource PFP_SubTextBrush}"
                                    FontSize="11" FontFamily="Segoe UI"
                                    HorizontalAlignment="Center"/>
@@ -565,15 +565,15 @@
                             </Style>
                         </DataGrid.RowStyle>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColILOffset}"   Binding="{Binding IlOffset}"   Width="75"/>
-                            <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColLine}"        Binding="{Binding Line}"        Width="55"/>
-                            <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColCol}"         Binding="{Binding Column}"      Width="45"/>
-                            <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColSourceFile}" Binding="{Binding SourceFile}"  Width="*"/>
+                            <DataGridTextColumn Header="{StaticResource AsmExplorer_ColILOffset}"   Binding="{Binding IlOffset}"   Width="75"/>
+                            <DataGridTextColumn Header="{StaticResource AsmExplorer_ColLine}"        Binding="{Binding Line}"        Width="55"/>
+                            <DataGridTextColumn Header="{StaticResource AsmExplorer_ColCol}"         Binding="{Binding Column}"      Width="45"/>
+                            <DataGridTextColumn Header="{StaticResource AsmExplorer_ColSourceFile}" Binding="{Binding SourceFile}"  Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
                     <!-- Placeholder: no PDB available -->
-                    <TextBlock Grid.Row="3" Text="{DynamicResource AsmExplorer_NoPdbMethod}"
+                    <TextBlock Grid.Row="3" Text="{StaticResource AsmExplorer_NoPdbMethod}"
                                Foreground="{DynamicResource PFP_SubTextBrush}"
                                FontFamily="Consolas" FontSize="11"
                                Margin="8,8" VerticalAlignment="Top">

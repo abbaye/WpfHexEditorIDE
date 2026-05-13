@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project: WpfHexEditor.App.AssemblyExplorer
     File: Views/OpenAssemblyDialog.xaml
     Author: Derek Tremblay
@@ -24,7 +24,7 @@
     xmlns:core="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
     xmlns:local="clr-namespace:WpfHexEditor.App.AssemblyExplorer.Views"
     xmlns:aeSvc="clr-namespace:WpfHexEditor.App.AssemblyExplorer.Services"
-    Title="{DynamicResource AsmExplorer_OpenAssemblyTitle}"
+    Title="{StaticResource AsmExplorer_OpenAssemblyTitle}"
     Width="620" Height="520"
     MinWidth="480" MinHeight="400"
     ResizeMode="CanResizeWithGrip"
@@ -116,11 +116,11 @@
                          BorderThickness="1"
                          CaretBrush="{DynamicResource DockMenuForegroundBrush}"
                          TextChanged="OnPathTextChanged"
-                         KeyDown="OnPathBoxKeyDown" ToolTip="{DynamicResource AsmExplorer_AssemblyPathHint}"/>
+                         KeyDown="OnPathBoxKeyDown" ToolTip="{StaticResource AsmExplorer_AssemblyPathHint}"/>
 
                 <!-- Browse button -->
                 <Button x:Name="BrowseButton"
-                        Grid.Column="3" Content="{DynamicResource AsmExplorer_BrowseButton}"
+                        Grid.Column="3" Content="{StaticResource AsmExplorer_BrowseButton}"
                         Height="26"
                         MinWidth="72"
                         Padding="10,0"
@@ -232,13 +232,13 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets"
                                    FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                        <TextBlock Text="{DynamicResource AsmExplorer_RecentLabel}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{StaticResource AsmExplorer_RecentLabel}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </TabItem.Header>
 
                 <Grid>
                     <!-- Empty state -->
-                    <TextBlock x:Name="RecentEmptyLabel" Text="{DynamicResource AsmExplorer_NoRecentAssemblies}"
+                    <TextBlock x:Name="RecentEmptyLabel" Text="{StaticResource AsmExplorer_NoRecentAssemblies}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                FontSize="12"
@@ -297,7 +297,7 @@
                                             BorderThickness="0"
                                             Foreground="{DynamicResource PFP_SubTextBrush}"
                                             VerticalAlignment="Center"
-                                            Cursor="Hand" ToolTip="{DynamicResource AsmExplorer_RemoveFromRecent}"
+                                            Cursor="Hand" ToolTip="{StaticResource AsmExplorer_RemoveFromRecent}"
                                             Tag="{Binding FullPath}"
                                             Click="OnRemoveRecentClick"/>
                                 </Grid>
@@ -313,7 +313,7 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xECAA;" FontFamily="Segoe MDL2 Assets"
                                    FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                        <TextBlock Text="{DynamicResource AsmExplorer_DotNetRuntimes}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{StaticResource AsmExplorer_DotNetRuntimes}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </TabItem.Header>
 
@@ -349,7 +349,7 @@
                                      BorderBrush="{DynamicResource DockBorderBrush}"
                                      BorderThickness="1"
                                      CaretBrush="{DynamicResource DockMenuForegroundBrush}"
-                                     TextChanged="OnRuntimeFilterChanged" ToolTip="{DynamicResource AsmExplorer_FilterAssemblies}"/>
+                                     TextChanged="OnRuntimeFilterChanged" ToolTip="{StaticResource AsmExplorer_FilterAssemblies}"/>
                         </Grid>
                     </Border>
 
@@ -485,7 +485,7 @@
 
                     <!-- Empty / no-runtimes label -->
                     <TextBlock x:Name="RuntimeEmptyLabel"
-                               Grid.Row="1" Text="{DynamicResource AsmExplorer_NoRuntimes}"
+                               Grid.Row="1" Text="{StaticResource AsmExplorer_NoRuntimes}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                FontSize="12"
@@ -515,7 +515,7 @@
                                Margin="0,0,6,0"
                                Opacity="0.35"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                    <TextBlock Text="{DynamicResource AsmExplorer_DropHint}"
+                    <TextBlock Text="{StaticResource AsmExplorer_DropHint}"
                                FontSize="11"
                                Opacity="0.4"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -524,7 +524,7 @@
 
                 <!-- Action buttons (right) -->
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                    <Button Content="{DynamicResource AsmExplorer_Cancel}"
+                    <Button Content="{StaticResource AsmExplorer_Cancel}"
                             IsCancel="True"
                             Height="26"
                             MinWidth="72"
@@ -536,7 +536,7 @@
                             BorderThickness="1"
                             Margin="0,0,8,0"
                             Click="OnCancelClick"/>
-                    <Button x:Name="OpenButton" Content="{DynamicResource AsmExplorer_OpenAssembly}"
+                    <Button x:Name="OpenButton" Content="{StaticResource AsmExplorer_OpenAssembly}"
                             IsDefault="True"
                             IsEnabled="False"
                             Height="26"
@@ -564,13 +564,13 @@
                            FontSize="52"
                            HorizontalAlignment="Center"
                            Foreground="{DynamicResource PFP_AccentBrush}"/>
-                <TextBlock Text="{DynamicResource AsmExplorer_DropHint}"
+                <TextBlock Text="{StaticResource AsmExplorer_DropHint}"
                            FontSize="17"
                            FontWeight="SemiBold"
                            HorizontalAlignment="Center"
                            Margin="0,14,0,0"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
-                <TextBlock Text="{DynamicResource AsmExplorer_AssemblyPathHint}"
+                <TextBlock Text="{StaticResource AsmExplorer_AssemblyPathHint}"
                            FontSize="12"
                            HorizontalAlignment="Center"
                            Margin="0,5,0,0"

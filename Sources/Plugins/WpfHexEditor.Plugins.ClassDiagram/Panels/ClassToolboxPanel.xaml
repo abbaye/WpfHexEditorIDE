@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project: WpfHexEditor.Plugins.ClassDiagram
     File: Panels/ClassToolboxPanel.xaml
     Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -45,7 +45,7 @@
                          BorderBrush="{DynamicResource DockToolBarBorderBrush}"
                          CaretBrush="{DynamicResource DockMenuForegroundBrush}"
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="{DynamicResource CD_TipFilterToolbox}"/>
+                         ToolTip="{StaticResource CD_TipFilterToolbox}"/>
             </StackPanel>
         </Border>
 

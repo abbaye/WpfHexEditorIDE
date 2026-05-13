@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -33,7 +33,7 @@
                            VerticalAlignment="Center"
                            FontSize="11"
                            Foreground="{DynamicResource TE_LineNumberForeground}"
-                           Text="{DynamicResource SCR_F5Help}" />
+                           Text="{StaticResource SCR_F5Help}" />
             </StackPanel>
         </Border>
 
@@ -76,7 +76,7 @@
                        Margin="8,0"
                        FontSize="11"
                        Foreground="{DynamicResource TE_LineNumberForeground}"
-                       Text="{DynamicResource SCR_StatusReady}" />
+                       Text="{StaticResource SCR_StatusReady}" />
         </Border>
     </Grid>
 </UserControl>

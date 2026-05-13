@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.App.Debug.Panels.ParallelWatchPanel"
+﻿<UserControl x:Class="WpfHexEditor.App.Debug.Panels.ParallelWatchPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:dbgSvc="clr-namespace:WpfHexEditor.App.Debug.Services">
@@ -16,11 +16,11 @@
         <Border DockPanel.Dock="Top" Style="{DynamicResource PanelToolbarStyle}">
             <StackPanel Orientation="Horizontal" Margin="4,0" VerticalAlignment="Center">
                 <Button Content="&#xE109;"
-                        ToolTip="{DynamicResource DBG_AddExpression}"
+                        ToolTip="{StaticResource DBG_AddExpression}"
                         Command="{Binding AddRowCommand}"
                         Style="{DynamicResource PanelIconButtonStyle}"/>
                 <Button Content="&#xE72C;"
-                        ToolTip="{DynamicResource DBG_RefreshTooltip}"
+                        ToolTip="{StaticResource DBG_RefreshTooltip}"
                         Command="{Binding RefreshCommand}"
                         Style="{DynamicResource PanelIconButtonStyle}"/>
             </StackPanel>
@@ -33,7 +33,7 @@
                   VirtualizingPanel.IsVirtualizing="True">
             <ListView.View>
                 <GridView x:Name="DynamicGridView">
-                    <GridViewColumn Header="{DynamicResource DBG_ColExpression}" Width="200">
+                    <GridViewColumn Header="{StaticResource DBG_ColExpression}" Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding Expression, UpdateSourceTrigger=PropertyChanged}"

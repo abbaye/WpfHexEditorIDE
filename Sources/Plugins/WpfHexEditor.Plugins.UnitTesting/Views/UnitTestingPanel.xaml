@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.Plugins.UnitTesting.Views.UnitTestingPanel"
+﻿<UserControl x:Class="WpfHexEditor.Plugins.UnitTesting.Views.UnitTestingPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
@@ -334,12 +334,12 @@
                     <Button x:Name="RunButton"
                             Style="{StaticResource PanelIconButtonStyle}"
                             Width="Auto" Padding="6,0"
-                            ToolTip="{DynamicResource UT_RunAllButton}"
+                            ToolTip="{StaticResource UT_RunAllButton}"
                             Click="OnRunAllClicked">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets"
                                        FontSize="12" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="{DynamicResource UT_RunAllLabel}" FontSize="11" VerticalAlignment="Center"
+                            <TextBlock Text="{StaticResource UT_RunAllLabel}" FontSize="11" VerticalAlignment="Center"
                                        FontFamily="Segoe UI"/>
                         </StackPanel>
                     </Button>
@@ -347,30 +347,30 @@
                             Style="{StaticResource PanelIconButtonStyle}"
                             Width="Auto" Padding="6,0"
                             IsEnabled="{Binding CanRunFailed}"
-                            ToolTip="{DynamicResource UT_RunFailedButton}"
+                            ToolTip="{StaticResource UT_RunFailedButton}"
                             Click="OnRunFailedClicked">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xEB90;" FontFamily="Segoe MDL2 Assets"
                                        FontSize="11" Margin="0,0,4,0" VerticalAlignment="Center"
                                        Foreground="{DynamicResource UT_FailForegroundBrush}"/>
-                            <TextBlock Text="{DynamicResource UT_RunFailedLabel}" FontSize="11" VerticalAlignment="Center"
+                            <TextBlock Text="{StaticResource UT_RunFailedLabel}" FontSize="11" VerticalAlignment="Center"
                                        FontFamily="Segoe UI"/>
                         </StackPanel>
                     </Button>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
-                            ToolTip="{DynamicResource UT_RefreshButton}"
+                            ToolTip="{StaticResource UT_RefreshButton}"
                             Click="OnRefreshClicked">
                         <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                     </Button>
                     <Button x:Name="StopButton"
                             Style="{StaticResource PanelIconButtonStyle}"
                             IsEnabled="False"
-                            ToolTip="{DynamicResource UT_StopButton}"
+                            ToolTip="{StaticResource UT_StopButton}"
                             Click="OnStopClicked">
                         <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                     </Button>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
-                            ToolTip="{DynamicResource UT_ClearButton}"
+                            ToolTip="{StaticResource UT_ClearButton}"
                             Click="OnClearClicked">
                         <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                     </Button>
@@ -388,7 +388,7 @@
                     <ToggleButton Style="{StaticResource FilterToggleStyle}"
                                   IsChecked="{Binding FilterAll, Mode=OneWay}"
                                   Click="OnFilterAll"
-                                  ToolTip="{DynamicResource UT_FilterAllTooltip}">
+                                  ToolTip="{StaticResource UT_FilterAllTooltip}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE9E6;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                                        Margin="0,0,3,0" VerticalAlignment="Center"
@@ -401,7 +401,7 @@
                     <ToggleButton Style="{StaticResource FilterToggleStyle}"
                                   IsChecked="{Binding FilterPassed, Mode=OneWay}"
                                   Click="OnFilterPassed"
-                                  ToolTip="{DynamicResource UT_FilterPassedTooltip}">
+                                  ToolTip="{StaticResource UT_FilterPassedTooltip}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE930;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                                        Margin="0,0,3,0" VerticalAlignment="Center"
@@ -414,7 +414,7 @@
                     <ToggleButton Style="{StaticResource FilterToggleStyle}"
                                   IsChecked="{Binding FilterFailed, Mode=OneWay}"
                                   Click="OnFilterFailed"
-                                  ToolTip="{DynamicResource UT_FilterFailedTooltip}">
+                                  ToolTip="{StaticResource UT_FilterFailedTooltip}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xEB90;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                                        Margin="0,0,3,0" VerticalAlignment="Center"
@@ -427,7 +427,7 @@
                     <ToggleButton Style="{StaticResource FilterToggleStyle}"
                                   IsChecked="{Binding FilterSkipped, Mode=OneWay}"
                                   Click="OnFilterSkipped"
-                                  ToolTip="{DynamicResource UT_FilterSkippedTooltip}">
+                                  ToolTip="{StaticResource UT_FilterSkippedTooltip}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE89A;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                                        Margin="0,0,3,0" VerticalAlignment="Center"
@@ -441,18 +441,18 @@
                 <!-- RIGHT: tree actions + settings gear -->
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                     <Button Style="{StaticResource PanelIconButtonStyle}"
-                            ToolTip="{DynamicResource UT_CollapseAllButton}"
+                            ToolTip="{StaticResource UT_CollapseAllButton}"
                             Click="OnCollapseAllClicked">
                         <TextBlock Text="&#xE96D;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                     </Button>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
-                            ToolTip="{DynamicResource UT_ExpandAllButton}"
+                            ToolTip="{StaticResource UT_ExpandAllButton}"
                             Click="OnExpandAllClicked">
                         <TextBlock Text="&#xE96E;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                     </Button>
                     <Button x:Name="LayoutButton"
                             Style="{StaticResource PanelIconButtonStyle}"
-                            ToolTip="{DynamicResource UT_LayoutButton}"
+                            ToolTip="{StaticResource UT_LayoutButton}"
                             Click="OnLayoutButtonClicked">
                         <TextBlock x:Name="LayoutGlyph" Text="&#xE8BC;"
                                    FontFamily="Segoe MDL2 Assets" FontSize="13"/>
@@ -461,11 +461,11 @@
                                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                                          BorderBrush="{DynamicResource DockBorderBrush}">
                                 <MenuItem x:Name="MiLayoutTopBottom"
-                                          Header="{DynamicResource UT_LayoutTopBottom}"
+                                          Header="{StaticResource UT_LayoutTopBottom}"
                                           IsCheckable="True" IsChecked="True"
                                           Click="OnLayoutChanged"/>
                                 <MenuItem x:Name="MiLayoutLeftRight"
-                                          Header="{DynamicResource UT_LayoutLeftRight}"
+                                          Header="{StaticResource UT_LayoutLeftRight}"
                                           IsCheckable="True"
                                           Click="OnLayoutChanged"/>
                             </ContextMenu>
@@ -473,7 +473,7 @@
                     </Button>
                     <Button x:Name="SettingsButton"
                             Style="{StaticResource PanelIconButtonStyle}"
-                            ToolTip="{DynamicResource UT_SettingsButton}"
+                            ToolTip="{StaticResource UT_SettingsButton}"
                             Click="OnSettingsClicked">
                         <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                         <Button.ContextMenu>
@@ -481,16 +481,16 @@
                                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                                          BorderBrush="{DynamicResource DockBorderBrush}">
                                 <MenuItem x:Name="MiAutoRun"
-                                          Header="{DynamicResource UT_AutoRunOption}"
+                                          Header="{StaticResource UT_AutoRunOption}"
                                           IsCheckable="True"
                                           Click="OnOptionChanged"/>
                                 <MenuItem x:Name="MiAutoExpand"
-                                          Header="{DynamicResource UT_AutoExpandOption}"
+                                          Header="{StaticResource UT_AutoExpandOption}"
                                           IsCheckable="True"
                                           Click="OnOptionChanged"/>
                                 <Separator/>
                                 <MenuItem x:Name="MiRatioBar"
-                                          Header="{DynamicResource UT_RatioBarOption}"
+                                          Header="{StaticResource UT_RatioBarOption}"
                                           IsCheckable="True"
                                           Click="OnOptionChanged"/>
                             </ContextMenu>
@@ -512,7 +512,7 @@
                     <Button HorizontalAlignment="Right" VerticalAlignment="Center"
                             Width="18" Height="18" Margin="0,0,2,0"
                             Background="Transparent" BorderThickness="0"
-                            Cursor="Hand" Click="OnClearSearch" ToolTip="{DynamicResource UT_ClearSearchButton}">
+                            Cursor="Hand" Click="OnClearSearch" ToolTip="{StaticResource UT_ClearSearchButton}">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -543,16 +543,16 @@
                                                   Opacity="0.35" Direction="270"/>
                             </Border.Effect>
                             <StackPanel>
-                                <TextBlock Text="{DynamicResource UT_AddSearchFilter}"
+                                <TextBlock Text="{StaticResource UT_AddSearchFilter}"
                                            FontSize="10" Opacity="0.55" Margin="3,0,0,6"
                                            Foreground="{DynamicResource PFP_TextBrush}"/>
                                 <WrapPanel>
-                                    <Button Content="{DynamicResource UT_FilterState}"             Tag="état:"   Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
-                                    <Button Content="{DynamicResource UT_FilterFullName}"      Tag="nom:"    Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
-                                    <Button Content="{DynamicResource UT_FilterClass}"           Tag="classe:" Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
-                                    <Button Content="{DynamicResource UT_FilterProject}"           Tag="projet:" Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
-                                    <Button Content="{DynamicResource UT_FilterError}" Tag="erreur:" Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
-                                    <Button Content="{DynamicResource UT_FilterNamespace}"   Tag="espace:" Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
+                                    <Button Content="{StaticResource UT_FilterState}"             Tag="état:"   Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
+                                    <Button Content="{StaticResource UT_FilterFullName}"      Tag="nom:"    Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
+                                    <Button Content="{StaticResource UT_FilterClass}"           Tag="classe:" Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
+                                    <Button Content="{StaticResource UT_FilterProject}"           Tag="projet:" Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
+                                    <Button Content="{StaticResource UT_FilterError}" Tag="erreur:" Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
+                                    <Button Content="{StaticResource UT_FilterNamespace}"   Tag="espace:" Style="{StaticResource SearchChipStyle}" Click="OnFilterChipClicked"/>
                                 </WrapPanel>
                             </StackPanel>
                         </Border>
@@ -597,18 +597,18 @@
                             <ColumnDefinition Width="90"/>
                             <ColumnDefinition Width="170"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{DynamicResource UT_TestColumn}"
+                        <TextBlock Grid.Column="0" Text="{StaticResource UT_TestColumn}"
                                    FontSize="11" FontWeight="SemiBold" Opacity="0.75"
                                    Foreground="{DynamicResource PFP_TextBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{DynamicResource UT_DurationColumn}"
+                        <TextBlock Grid.Column="1" Text="{StaticResource UT_DurationColumn}"
                                    FontSize="11" FontWeight="SemiBold" Opacity="0.75"
                                    HorizontalAlignment="Right" Margin="0,0,4,0"
                                    Foreground="{DynamicResource PFP_TextBrush}"/>
-                        <TextBlock Grid.Column="2" Text="{DynamicResource UT_CharacteristicsColumn}"
+                        <TextBlock Grid.Column="2" Text="{StaticResource UT_CharacteristicsColumn}"
                                    FontSize="11" FontWeight="SemiBold" Opacity="0.75"
                                    Margin="4,0,0,0" TextTrimming="CharacterEllipsis"
                                    Foreground="{DynamicResource PFP_TextBrush}"/>
-                        <TextBlock Grid.Column="3" Text="{DynamicResource UT_ErrorMessageColumn}"
+                        <TextBlock Grid.Column="3" Text="{StaticResource UT_ErrorMessageColumn}"
                                    FontSize="11" FontWeight="SemiBold" Opacity="0.75"
                                    Margin="4,0,0,0" TextTrimming="CharacterEllipsis"
                                    Foreground="{DynamicResource PFP_TextBrush}"/>
@@ -750,10 +750,10 @@
 
                 <TreeView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="{DynamicResource UT_RunThisMenu}"    Click="OnRunThisTestClicked"/>
+                        <MenuItem Header="{StaticResource UT_RunThisMenu}"    Click="OnRunThisTestClicked"/>
                         <Separator/>
-                        <MenuItem Header="{DynamicResource UT_CopyNameMenu}"   Click="OnCopyTestNameClicked"/>
-                        <MenuItem Header="{DynamicResource UT_CopyStackMenu}" Click="OnCopyStackTraceClicked"/>
+                        <MenuItem Header="{StaticResource UT_CopyNameMenu}"   Click="OnCopyTestNameClicked"/>
+                        <MenuItem Header="{StaticResource UT_CopyStackMenu}" Click="OnCopyStackTraceClicked"/>
                     </ContextMenu>
                 </TreeView.ContextMenu>
 
@@ -795,19 +795,19 @@
                                                 <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets"
                                                            FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
                                                            Foreground="{DynamicResource UT_PassForegroundBrush}"/>
-                                                <TextBlock Text="{DynamicResource UT_RunButton}" FontSize="11" FontFamily="Segoe UI"/>
+                                                <TextBlock Text="{StaticResource UT_RunButton}" FontSize="11" FontFamily="Segoe UI"/>
                                             </StackPanel>
                                         </Button>
                                     </StackPanel>
 
-                                    <TextBlock DockPanel.Dock="Top" Text="{DynamicResource UT_GroupSummaryLabel}"
+                                    <TextBlock DockPanel.Dock="Top" Text="{StaticResource UT_GroupSummaryLabel}"
                                                FontSize="11" FontWeight="SemiBold" Margin="0,0,0,4"
                                                Foreground="{DynamicResource PFP_TextBrush}"/>
                                     <TextBlock DockPanel.Dock="Top" Text="{Binding ProjectName}"
                                                FontSize="12" Margin="8,0,0,2"
                                                Foreground="{DynamicResource PFP_TextBrush}"/>
                                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,2">
-                                        <TextBlock Text="{DynamicResource UT_TestsInGroupLabel}" FontSize="11" Opacity="0.75"
+                                        <TextBlock Text="{StaticResource UT_TestsInGroupLabel}" FontSize="11" Opacity="0.75"
                                                    Foreground="{DynamicResource PFP_TextBrush}"/>
                                         <TextBlock Text="{Binding TotalCount}" FontSize="11" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource PFP_TextBrush}"/>
@@ -816,12 +816,12 @@
                                         <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets"
                                                    FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
                                                    Foreground="{DynamicResource PFP_TextBrush}" Opacity="0.6"/>
-                                        <TextBlock Text="{DynamicResource UT_TotalDurationLabel}" FontSize="11" Opacity="0.75"
+                                        <TextBlock Text="{StaticResource UT_TotalDurationLabel}" FontSize="11" Opacity="0.75"
                                                    Foreground="{DynamicResource PFP_TextBrush}"/>
                                         <TextBlock Text="{Binding TotalDurationText}" FontSize="11" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource PFP_TextBrush}"/>
                                     </StackPanel>
-                                    <TextBlock DockPanel.Dock="Top" Text="{DynamicResource UT_ResultsLabel}"
+                                    <TextBlock DockPanel.Dock="Top" Text="{StaticResource UT_ResultsLabel}"
                                                FontSize="11" FontWeight="SemiBold" Margin="0,0,0,2"
                                                Foreground="{DynamicResource PFP_TextBrush}"/>
                                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,1">
@@ -830,7 +830,7 @@
                                                    Foreground="{DynamicResource UT_PassForegroundBrush}"/>
                                         <TextBlock FontSize="11" Foreground="{DynamicResource UT_PassForegroundBrush}">
                                             <Run Text="{Binding PassCount, Mode=OneWay}"/>
-                                            <Run Text="{DynamicResource UT_PassedLabel}"/>
+                                            <Run Text="{StaticResource UT_PassedLabel}"/>
                                         </TextBlock>
                                     </StackPanel>
                                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,1"
@@ -840,7 +840,7 @@
                                                    Foreground="{DynamicResource UT_FailForegroundBrush}"/>
                                         <TextBlock FontSize="11" Foreground="{DynamicResource UT_FailForegroundBrush}">
                                             <Run Text="{Binding FailCount, Mode=OneWay}"/>
-                                            <Run Text="{DynamicResource UT_FailedLabel}"/>
+                                            <Run Text="{StaticResource UT_FailedLabel}"/>
                                         </TextBlock>
                                     </StackPanel>
                                 </DockPanel>
@@ -858,18 +858,18 @@
                                                 <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets"
                                                            FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
                                                            Foreground="{DynamicResource UT_PassForegroundBrush}"/>
-                                                <TextBlock Text="{DynamicResource UT_RunButton}" FontSize="11" FontFamily="Segoe UI"/>
+                                                <TextBlock Text="{StaticResource UT_RunButton}" FontSize="11" FontFamily="Segoe UI"/>
                                             </StackPanel>
                                         </Button>
                                     </StackPanel>
-                                    <TextBlock DockPanel.Dock="Top" Text="{DynamicResource UT_GroupSummaryLabel}"
+                                    <TextBlock DockPanel.Dock="Top" Text="{StaticResource UT_GroupSummaryLabel}"
                                                FontSize="11" FontWeight="SemiBold" Margin="0,0,0,4"
                                                Foreground="{DynamicResource PFP_TextBrush}"/>
                                     <TextBlock DockPanel.Dock="Top" Text="{Binding ShortClassName}"
                                                FontSize="12" Margin="8,0,0,2"
                                                Foreground="{DynamicResource PFP_TextBrush}"/>
                                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,2">
-                                        <TextBlock Text="{DynamicResource UT_TestsInGroupLabel}" FontSize="11" Opacity="0.75"
+                                        <TextBlock Text="{StaticResource UT_TestsInGroupLabel}" FontSize="11" Opacity="0.75"
                                                    Foreground="{DynamicResource PFP_TextBrush}"/>
                                         <TextBlock Text="{Binding TotalCount}" FontSize="11" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource PFP_TextBrush}"/>
@@ -878,12 +878,12 @@
                                         <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets"
                                                    FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
                                                    Foreground="{DynamicResource PFP_TextBrush}" Opacity="0.6"/>
-                                        <TextBlock Text="{DynamicResource UT_TotalDurationLabel}" FontSize="11" Opacity="0.75"
+                                        <TextBlock Text="{StaticResource UT_TotalDurationLabel}" FontSize="11" Opacity="0.75"
                                                    Foreground="{DynamicResource PFP_TextBrush}"/>
                                         <TextBlock Text="{Binding TotalDurationText}" FontSize="11" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource PFP_TextBrush}"/>
                                     </StackPanel>
-                                    <TextBlock DockPanel.Dock="Top" Text="{DynamicResource UT_ResultsLabel}"
+                                    <TextBlock DockPanel.Dock="Top" Text="{StaticResource UT_ResultsLabel}"
                                                FontSize="11" FontWeight="SemiBold" Margin="0,0,0,2"
                                                Foreground="{DynamicResource PFP_TextBrush}"/>
                                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,1">
@@ -892,7 +892,7 @@
                                                    Foreground="{DynamicResource UT_PassForegroundBrush}"/>
                                         <TextBlock FontSize="11" Foreground="{DynamicResource UT_PassForegroundBrush}">
                                             <Run Text="{Binding PassCount, Mode=OneWay}"/>
-                                            <Run Text="{DynamicResource UT_PassedLabel}"/>
+                                            <Run Text="{StaticResource UT_PassedLabel}"/>
                                         </TextBlock>
                                     </StackPanel>
                                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,1"
@@ -902,7 +902,7 @@
                                                    Foreground="{DynamicResource UT_FailForegroundBrush}"/>
                                         <TextBlock FontSize="11" Foreground="{DynamicResource UT_FailForegroundBrush}">
                                             <Run Text="{Binding FailCount, Mode=OneWay}"/>
-                                            <Run Text="{DynamicResource UT_FailedLabel}"/>
+                                            <Run Text="{StaticResource UT_FailedLabel}"/>
                                         </TextBlock>
                                     </StackPanel>
                                 </DockPanel>
@@ -920,18 +920,18 @@
                                             <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets"
                                                        FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
                                                        Foreground="{DynamicResource UT_PassForegroundBrush}"/>
-                                            <TextBlock Text="{DynamicResource UT_RunButton}" FontSize="11" FontFamily="Segoe UI"/>
+                                            <TextBlock Text="{StaticResource UT_RunButton}" FontSize="11" FontFamily="Segoe UI"/>
                                         </StackPanel>
                                     </Button>
                                     <Button Style="{StaticResource PanelIconButtonStyle}" Padding="6,2" Margin="2,0,0,0"
-                                            Click="OnCopyStackTraceClicked" ToolTip="{DynamicResource UT_CopyStackMenu}">
+                                            Click="OnCopyStackTraceClicked" ToolTip="{StaticResource UT_CopyStackMenu}">
                                         <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets"
                                                    FontSize="12" VerticalAlignment="Center"
                                                    Foreground="{DynamicResource PFP_TextBrush}"/>
                                     </Button>
                                 </StackPanel>
 
-                                <TextBlock DockPanel.Dock="Top" Text="{DynamicResource UT_TestDetailLabel}"
+                                <TextBlock DockPanel.Dock="Top" Text="{StaticResource UT_TestDetailLabel}"
                                            FontSize="11" FontWeight="SemiBold" Margin="0,0,0,4"
                                            Foreground="{DynamicResource PFP_TextBrush}"/>
 
@@ -965,7 +965,7 @@
                                     <TextBlock Text="&#xE8F4;" FontFamily="Segoe MDL2 Assets"
                                                FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
                                                Foreground="{DynamicResource PFP_TextBrush}" Opacity="0.6"/>
-                                    <TextBlock Text="{DynamicResource UT_SourceLabel}" FontSize="11" Opacity="0.75"
+                                    <TextBlock Text="{StaticResource UT_SourceLabel}" FontSize="11" Opacity="0.75"
                                                Foreground="{DynamicResource PFP_TextBrush}"/>
                                     <Button Content="{Binding ShortClassName}"
                                             Tag="{Binding}"
@@ -979,7 +979,7 @@
                                     <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets"
                                                FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"
                                                Foreground="{DynamicResource PFP_TextBrush}" Opacity="0.6"/>
-                                    <TextBlock Text="{DynamicResource UT_DurationLabel}" FontSize="11" Opacity="0.75"
+                                    <TextBlock Text="{StaticResource UT_DurationLabel}" FontSize="11" Opacity="0.75"
                                                Foreground="{DynamicResource PFP_TextBrush}"/>
                                     <TextBlock Text="{Binding DurationMs, StringFormat='{}{0} ms'}"
                                                FontSize="11" FontWeight="SemiBold"

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -167,7 +167,7 @@
                 <hexSvc:HexEditorLocalizedDictionary/>
             </ContextMenu.Resources>
             <!-- Undo -->
-            <MenuItem x:Name="UndoMenuItem" Header="{DynamicResource UndoString}" Click="UndoMenuItem_Click">
+            <MenuItem x:Name="UndoMenuItem" Header="{StaticResource UndoString}" Click="UndoMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE7A7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -177,15 +177,15 @@
             <Separator/>
 
             <!-- Bookmarks -->
-            <MenuItem x:Name="BookmarksMenuItem" Header="{DynamicResource BookmarksString}">
-                <MenuItem x:Name="SetBookmarkMenuItem" Header="{DynamicResource SetBookMarkString}" Click="SetBookmarkMenuItem_Click">
+            <MenuItem x:Name="BookmarksMenuItem" Header="{StaticResource BookmarksString}">
+                <MenuItem x:Name="SetBookmarkMenuItem" Header="{StaticResource SetBookMarkString}" Click="SetBookmarkMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="&#xE718;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem x:Name="ClearBookmarksMenuItem" Header="{DynamicResource ClearBookMarkString}" Click="ClearBookmarksMenuItem_Click">
+                <MenuItem x:Name="ClearBookmarksMenuItem" Header="{StaticResource ClearBookMarkString}" Click="ClearBookmarksMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -196,7 +196,7 @@
             <Separator/>
 
             <!-- Copy (default mode) -->
-            <MenuItem x:Name="CopyMenuItem" Header="{DynamicResource CopyString}" Click="CopyMenuItem_Click">
+            <MenuItem x:Name="CopyMenuItem" Header="{StaticResource CopyString}" Click="CopyMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -205,43 +205,43 @@
             </MenuItem>
 
             <!-- Copy submenu -->
-            <MenuItem x:Name="CopyAsMenuItem" Header="{DynamicResource CopySelectionAsString}">
-                <MenuItem x:Name="CopyHexaMenuItem" Header="{DynamicResource CopyAsHexadecimalString}" Click="CopyHexaMenuItem_Click">
+            <MenuItem x:Name="CopyAsMenuItem" Header="{StaticResource CopySelectionAsString}">
+                <MenuItem x:Name="CopyHexaMenuItem" Header="{StaticResource CopyAsHexadecimalString}" Click="CopyHexaMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem x:Name="CopyAsciiMenuItem" Header="{DynamicResource CopyAsASCIIString}" Click="CopyAsciiMenuItem_Click">
+                <MenuItem x:Name="CopyAsciiMenuItem" Header="{StaticResource CopyAsASCIIString}" Click="CopyAsciiMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="&#xE8A4;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem x:Name="CopyCSharpMenuItem" Header="{DynamicResource CopyAsCSharpCodeString}" Click="CopyCSharpMenuItem_Click">
+                <MenuItem x:Name="CopyCSharpMenuItem" Header="{StaticResource CopyAsCSharpCodeString}" Click="CopyCSharpMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem x:Name="CopyCMenuItem" Header="{DynamicResource CopyAsCCodeString}" Click="CopyCMenuItem_Click">
+                <MenuItem x:Name="CopyCMenuItem" Header="{StaticResource CopyAsCCodeString}" Click="CopyCMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem x:Name="CopyTblMenuItem" Header="{DynamicResource CopyAsTBLString}" Click="CopyTblMenuItem_Click">
+                <MenuItem x:Name="CopyTblMenuItem" Header="{StaticResource CopyAsTBLString}" Click="CopyTblMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="&#xE9D5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem x:Name="CopyFormattedViewMenuItem" Header="{DynamicResource CopyAsFormattedViewString}" Click="CopyFormattedViewMenuItem_Click">
+                <MenuItem x:Name="CopyFormattedViewMenuItem" Header="{StaticResource CopyAsFormattedViewString}" Click="CopyFormattedViewMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="&#xE8EF;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -253,7 +253,7 @@
             <Separator/>
 
             <!-- Find All (Async with Progress) -->
-            <MenuItem x:Name="FindAllMenuItem" Header="{DynamicResource FindAllString}" Click="FindAllMenuItemAsync_Click" ToolTip="{DynamicResource HE_TipSearchAllOccurrences}">
+            <MenuItem x:Name="FindAllMenuItem" Header="{StaticResource FindAllString}" Click="FindAllMenuItemAsync_Click" ToolTip="{StaticResource HE_TipSearchAllOccurrences}">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -264,7 +264,7 @@
             <Separator/>
 
             <!-- Paste -->
-            <MenuItem x:Name="PasteMenuItem" Header="{DynamicResource PasteString}" Click="PasteMenuItem_Click">
+            <MenuItem x:Name="PasteMenuItem" Header="{StaticResource PasteString}" Click="PasteMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE77F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -273,7 +273,7 @@
             </MenuItem>
 
             <!-- Paste without inserting (Overwrite mode) -->
-            <MenuItem x:Name="PasteOverwriteMenuItem" Header="{DynamicResource PasteNotInsertString}" Click="PasteOverwriteMenuItem_Click">
+            <MenuItem x:Name="PasteOverwriteMenuItem" Header="{StaticResource PasteNotInsertString}" Click="PasteOverwriteMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE932;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -282,7 +282,7 @@
             </MenuItem>
 
             <!-- Delete -->
-            <MenuItem x:Name="DeleteMenuItem" Header="{DynamicResource DeleteString}" Click="DeleteMenuItem_Click">
+            <MenuItem x:Name="DeleteMenuItem" Header="{StaticResource DeleteString}" Click="DeleteMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -291,7 +291,7 @@
             </MenuItem>
 
             <!-- Fill -->
-            <MenuItem x:Name="FillByteMenuItem" Header="{DynamicResource FillWithByteString}" Click="FillByteMenuItem_Click" ToolTip="{DynamicResource FillWithByteTooltipString}">
+            <MenuItem x:Name="FillByteMenuItem" Header="{StaticResource FillWithByteString}" Click="FillByteMenuItem_Click" ToolTip="{StaticResource FillWithByteTooltipString}">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE771;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -300,7 +300,7 @@
             </MenuItem>
 
             <!-- Replace -->
-            <MenuItem x:Name="ReplaceByteMenuItem" Header="{DynamicResource ReplaceByteMenuString}" Click="ReplaceByteMenuItem_Click" ToolTip="{DynamicResource ReplaceByteTooltipString}">
+            <MenuItem x:Name="ReplaceByteMenuItem" Header="{StaticResource ReplaceByteMenuString}" Click="ReplaceByteMenuItem_Click" ToolTip="{StaticResource ReplaceByteTooltipString}">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8AB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -309,7 +309,7 @@
             </MenuItem>
 
             <!-- Reverse Selection -->
-            <MenuItem x:Name="ReverseSelectionMenuItem" Header="{DynamicResource ReverseSelectionString}" Click="ReverseSelectionMenuItem_Click" ToolTip="{DynamicResource ReverseSelectionTooltipString}">
+            <MenuItem x:Name="ReverseSelectionMenuItem" Header="{StaticResource ReverseSelectionString}" Click="ReverseSelectionMenuItem_Click" ToolTip="{StaticResource ReverseSelectionTooltipString}">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -318,7 +318,7 @@
             </MenuItem>
 
             <!-- Invert Selection -->
-            <MenuItem x:Name="InvertSelectionMenuItem" Header="{DynamicResource InvertSelectionString}" Click="InvertSelectionMenuItem_Click" ToolTip="{DynamicResource InvertSelectionTooltipString}">
+            <MenuItem x:Name="InvertSelectionMenuItem" Header="{StaticResource InvertSelectionString}" Click="InvertSelectionMenuItem_Click" ToolTip="{StaticResource InvertSelectionTooltipString}">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xEA37;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -329,7 +329,7 @@
             <Separator/>
 
             <!-- Select All -->
-            <MenuItem x:Name="SelectAllMenuItem" Header="{DynamicResource SelectAllString}" Click="SelectAllMenuItem_Click">
+            <MenuItem x:Name="SelectAllMenuItem" Header="{StaticResource SelectAllString}" Click="SelectAllMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8B3;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -340,7 +340,7 @@
             <Separator/>
 
             <!-- Compare File with… (always enabled when a file is open) -->
-            <MenuItem x:Name="CompareFileMenuItem" Header="{DynamicResource HE_CompareFileWith}"
+            <MenuItem x:Name="CompareFileMenuItem" Header="{StaticResource HE_CompareFileWith}"
                       Click="CompareFileMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -350,7 +350,7 @@
             </MenuItem>
 
             <!-- Compare Selection as Left… (enabled only when selection is active) -->
-            <MenuItem x:Name="CompareSelectionMenuItem" Header="{DynamicResource HE_CompareSelectionLeft}"
+            <MenuItem x:Name="CompareSelectionMenuItem" Header="{StaticResource HE_CompareSelectionLeft}"
                       Click="CompareSelectionMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -382,7 +382,7 @@
                     <ColumnDefinition Width="*"/> <!-- Scrollable hex + ASCII headers -->
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="{DynamicResource OffsetString}" Style="{StaticResource HeaderTextStyle}" Margin="8,0,0,0"/>
+                <TextBlock Grid.Column="0" Text="{StaticResource OffsetString}" Style="{StaticResource HeaderTextStyle}" Margin="8,0,0,0"/>
 
                 <!-- Clipping area: scrolls in sync with ContentScroller via TranslateTransform -->
                 <Border Grid.Column="1" ClipToBounds="True">
@@ -454,7 +454,7 @@
                           FontFamily="Segoe MDL2 Assets"
                           FontSize="10"
                           Content="&#xE7F4;"
-                          ToolTip="{DynamicResource HexEditor_SplitView_Tooltip}"
+                          ToolTip="{StaticResource HexEditor_SplitView_Tooltip}"
                           Cursor="Hand"
                           Panel.ZIndex="3"
                           Foreground="{DynamicResource ScrollBarThumbBrush}"
@@ -519,18 +519,18 @@
                    DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:HexEditor}}">
             <StatusBar.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                    <MenuItem Header="{DynamicResource StatusMessageString}" IsCheckable="True" IsChecked="{Binding ShowStatusMessage, Mode=TwoWay}"/>
-                    <MenuItem Header="{DynamicResource FileSizeString}" IsCheckable="True" IsChecked="{Binding ShowFileSizeInStatusBar, Mode=TwoWay}"/>
-                    <MenuItem Header="{DynamicResource SelectionInfoString}" IsCheckable="True" IsChecked="{Binding ShowSelectionInStatusBar, Mode=TwoWay}"/>
-                    <MenuItem Header="{DynamicResource PositionString}" IsCheckable="True" IsChecked="{Binding ShowPositionInStatusBar, Mode=TwoWay}"/>
-                    <MenuItem Header="{DynamicResource EditModeString}" IsCheckable="True" IsChecked="{Binding ShowEditModeInStatusBar, Mode=TwoWay}"/>
-                    <MenuItem Header="{DynamicResource BytesPerLineString}" IsCheckable="True" IsChecked="{Binding ShowBytesPerLineInStatusBar, Mode=TwoWay}"/>
-                    <MenuItem Header="{DynamicResource RefreshTimeString}" IsCheckable="True" IsChecked="{Binding ShowRefreshTimeInStatusBar, Mode=TwoWay}"/>
+                    <MenuItem Header="{StaticResource StatusMessageString}" IsCheckable="True" IsChecked="{Binding ShowStatusMessage, Mode=TwoWay}"/>
+                    <MenuItem Header="{StaticResource FileSizeString}" IsCheckable="True" IsChecked="{Binding ShowFileSizeInStatusBar, Mode=TwoWay}"/>
+                    <MenuItem Header="{StaticResource SelectionInfoString}" IsCheckable="True" IsChecked="{Binding ShowSelectionInStatusBar, Mode=TwoWay}"/>
+                    <MenuItem Header="{StaticResource PositionString}" IsCheckable="True" IsChecked="{Binding ShowPositionInStatusBar, Mode=TwoWay}"/>
+                    <MenuItem Header="{StaticResource EditModeString}" IsCheckable="True" IsChecked="{Binding ShowEditModeInStatusBar, Mode=TwoWay}"/>
+                    <MenuItem Header="{StaticResource BytesPerLineString}" IsCheckable="True" IsChecked="{Binding ShowBytesPerLineInStatusBar, Mode=TwoWay}"/>
+                    <MenuItem Header="{StaticResource RefreshTimeString}" IsCheckable="True" IsChecked="{Binding ShowRefreshTimeInStatusBar, Mode=TwoWay}"/>
                 </ContextMenu>
             </StatusBar.ContextMenu>
 
             <StatusBarItem Visibility="{Binding ShowStatusMessage, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock x:Name="StatusText" Text="{DynamicResource ReadyString}"/>
+                <TextBlock x:Name="StatusText" Text="{StaticResource ReadyString}"/>
             </StatusBarItem>
             <Separator Visibility="{Binding ShowStatusMessage, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
@@ -540,7 +540,7 @@
             <Separator Visibility="{Binding ShowFileSizeInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
             <StatusBarItem Visibility="{Binding ShowSelectionInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock x:Name="SelectionInfo" Text="{DynamicResource NoSelectionString}"/>
+                <TextBlock x:Name="SelectionInfo" Text="{StaticResource NoSelectionString}"/>
             </StatusBarItem>
             <Separator Visibility="{Binding ShowSelectionInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
@@ -550,7 +550,7 @@
             <Separator Visibility="{Binding ShowPositionInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
             <StatusBarItem Visibility="{Binding ShowEditModeInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock x:Name="EditModeText" Text="{DynamicResource ModeOverwriteString}"/>
+                <TextBlock x:Name="EditModeText" Text="{StaticResource ModeOverwriteString}"/>
             </StatusBarItem>
             <Separator Visibility="{Binding ShowEditModeInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
@@ -574,7 +574,7 @@
                            Cursor="Hand">
                     <TextBlock.ToolTip>
                         <ToolTip x:Name="TblStatusTooltip">
-                            <TextBlock x:Name="TblStatusTooltipText" Text="{DynamicResource HE_NoTblLoaded}"/>
+                            <TextBlock x:Name="TblStatusTooltipText" Text="{StaticResource HE_NoTblLoaded}"/>
                         </ToolTip>
                     </TextBlock.ToolTip>
                 </TextBlock>

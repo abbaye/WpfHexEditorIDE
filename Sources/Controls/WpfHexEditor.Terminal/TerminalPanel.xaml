@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -159,27 +159,27 @@
                             Orientation="Horizontal"
                             DockPanel.Dock="Left"
                             VerticalAlignment="Center">
-                    <TextBlock Text="{DynamicResource Terminal_Title}"
+                    <TextBlock Text="{StaticResource Terminal_Title}"
                                FontWeight="SemiBold"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                VerticalAlignment="Center"
                                Margin="8,0,8,0"/>
                     <Button Style="{DynamicResource PanelDropdownButtonStyle}"
-                            ToolTip="{DynamicResource Terminal_SwitchShell}"
+                            ToolTip="{StaticResource Terminal_SwitchShell}"
                             MinWidth="90"
                             Click="OnShellSelectorClick">
                         <Button.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="{DynamicResource Terminal_TabHxTerminal}"
+                                <MenuItem Header="{StaticResource Terminal_TabHxTerminal}"
                                           Command="{Binding SwitchModeCommand}"
                                           CommandParameter="HxTerminal"/>
-                                <MenuItem Header="{DynamicResource Terminal_TabPowerShell}"
+                                <MenuItem Header="{StaticResource Terminal_TabPowerShell}"
                                           Command="{Binding SwitchModeCommand}"
                                           CommandParameter="PowerShell"/>
-                                <MenuItem Header="{DynamicResource Terminal_TabBash}"
+                                <MenuItem Header="{StaticResource Terminal_TabBash}"
                                           Command="{Binding SwitchModeCommand}"
                                           CommandParameter="Bash"/>
-                                <MenuItem Header="{DynamicResource Terminal_TabCmd}"
+                                <MenuItem Header="{StaticResource Terminal_TabCmd}"
                                           Command="{Binding SwitchModeCommand}"
                                           CommandParameter="CMD"/>
                             </ContextMenu>
@@ -208,7 +208,7 @@
                               BorderBrush="{DynamicResource DockBorderBrush}"
                               Margin="4,0,0,0"
                               Visibility="{Binding IsPowerShellMode, Converter={StaticResource BoolToVis}}"
-                              ToolTip="{DynamicResource Terminal_PsEncoding}"/>
+                              ToolTip="{StaticResource Terminal_PsEncoding}"/>
                 </StackPanel>
 
                 <!-- Right: always-visible actions (Save, Clear, Cancel) -->
@@ -221,19 +221,19 @@
                     <!-- Save output -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding SaveOutputCommand}"
-                            ToolTip="{DynamicResource Terminal_SaveOutput}">
+                            ToolTip="{StaticResource Terminal_SaveOutput}">
                         <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding ClearOutputCommand}"
-                            ToolTip="{DynamicResource Terminal_ClearOutput}">
+                            ToolTip="{StaticResource Terminal_ClearOutput}">
                         <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding CancelCommand}"
-                            ToolTip="{DynamicResource Terminal_CancelCommand}">
+                            ToolTip="{StaticResource Terminal_CancelCommand}">
                         <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
@@ -244,34 +244,34 @@
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
                         Style="{DynamicResource PanelIconButtonStyle}"
-                        ToolTip="{DynamicResource Terminal_MoreOptions}"
+                        ToolTip="{StaticResource Terminal_MoreOptions}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
                             <!-- TbgScrollNav -->
-                            <MenuItem x:Name="OvfScrollTop"    Header="{DynamicResource Terminal_ScrollToTop}"    Tag="TbgScrollNav" Click="OnScrollToTop"/>
-                            <MenuItem x:Name="OvfScrollBottom" Header="{DynamicResource Terminal_ScrollToBottom}" Tag="TbgScrollNav" Click="OnScrollToBottom"/>
+                            <MenuItem x:Name="OvfScrollTop"    Header="{StaticResource Terminal_ScrollToTop}"    Tag="TbgScrollNav" Click="OnScrollToTop"/>
+                            <MenuItem x:Name="OvfScrollBottom" Header="{StaticResource Terminal_ScrollToBottom}" Tag="TbgScrollNav" Click="OnScrollToBottom"/>
                             <Separator Tag="TbgScrollNav"/>
                             <!-- TbgOutputControl -->
-                            <MenuItem x:Name="OvfAutoScroll"  Header="{DynamicResource Terminal_AutoScroll}"  IsCheckable="True" Tag="TbgOutputControl" Click="OvfAutoScroll_Click"/>
-                            <MenuItem x:Name="OvfPauseOutput" Header="{DynamicResource Terminal_PauseOutput}" IsCheckable="True" Tag="TbgOutputControl" Click="OvfPauseOutput_Click"/>
+                            <MenuItem x:Name="OvfAutoScroll"  Header="{StaticResource Terminal_AutoScroll}"  IsCheckable="True" Tag="TbgOutputControl" Click="OvfAutoScroll_Click"/>
+                            <MenuItem x:Name="OvfPauseOutput" Header="{StaticResource Terminal_PauseOutput}" IsCheckable="True" Tag="TbgOutputControl" Click="OvfPauseOutput_Click"/>
                             <Separator Tag="TbgOutputControl"/>
                             <!-- TbgTextOptions -->
-                            <MenuItem x:Name="OvfTimestamps"   Header="{DynamicResource Terminal_ShowTimestamps}" IsCheckable="True" Tag="TbgTextOptions" Click="OvfTimestamps_Click"/>
-                            <MenuItem x:Name="OvfWordWrap"     Header="{DynamicResource Terminal_WordWrap}"       IsCheckable="True" Tag="TbgTextOptions" Click="OvfWordWrap_Click"/>
-                            <MenuItem x:Name="OvfCopyOnSelect" Header="{DynamicResource Terminal_CopyOnSelect}"  IsCheckable="True" Tag="TbgTextOptions" Click="OvfCopyOnSelect_Click"/>
+                            <MenuItem x:Name="OvfTimestamps"   Header="{StaticResource Terminal_ShowTimestamps}" IsCheckable="True" Tag="TbgTextOptions" Click="OvfTimestamps_Click"/>
+                            <MenuItem x:Name="OvfWordWrap"     Header="{StaticResource Terminal_WordWrap}"       IsCheckable="True" Tag="TbgTextOptions" Click="OvfWordWrap_Click"/>
+                            <MenuItem x:Name="OvfCopyOnSelect" Header="{StaticResource Terminal_CopyOnSelect}"  IsCheckable="True" Tag="TbgTextOptions" Click="OvfCopyOnSelect_Click"/>
                             <Separator Tag="TbgTextOptions"/>
                             <!-- TbgFont -->
-                            <MenuItem x:Name="OvfFontIncrease" Header="{DynamicResource Terminal_IncreaseFontSize}" Tag="TbgFont" Click="OvfFontIncrease_Click"/>
-                            <MenuItem x:Name="OvfFontDecrease" Header="{DynamicResource Terminal_DecreaseFontSize}" Tag="TbgFont" Click="OvfFontDecrease_Click"/>
+                            <MenuItem x:Name="OvfFontIncrease" Header="{StaticResource Terminal_IncreaseFontSize}" Tag="TbgFont" Click="OvfFontIncrease_Click"/>
+                            <MenuItem x:Name="OvfFontDecrease" Header="{StaticResource Terminal_DecreaseFontSize}" Tag="TbgFont" Click="OvfFontDecrease_Click"/>
                             <Separator Tag="TbgFont"/>
                             <!-- TbgMacro -->
-                            <MenuItem x:Name="OvfRecord"    Header="{DynamicResource Terminal_StartRecording}"  Tag="TbgMacro" Click="OvfRecord_Click"/>
-                            <MenuItem x:Name="OvfStop"      Header="{DynamicResource Terminal_StopRecording}"   Tag="TbgMacro" Click="OvfStop_Click"/>
-                            <MenuItem x:Name="OvfReplay"    Header="{DynamicResource Terminal_ReplayMacro}"     Tag="TbgMacro" Click="OvfReplay_Click"/>
-                            <MenuItem x:Name="OvfSaveMacro" Header="{DynamicResource Terminal_SaveMacroAs}"  Tag="TbgMacro" Click="OvfSaveMacro_Click"/>
+                            <MenuItem x:Name="OvfRecord"    Header="{StaticResource Terminal_StartRecording}"  Tag="TbgMacro" Click="OvfRecord_Click"/>
+                            <MenuItem x:Name="OvfStop"      Header="{StaticResource Terminal_StopRecording}"   Tag="TbgMacro" Click="OvfStop_Click"/>
+                            <MenuItem x:Name="OvfReplay"    Header="{StaticResource Terminal_ReplayMacro}"     Tag="TbgMacro" Click="OvfReplay_Click"/>
+                            <MenuItem x:Name="OvfSaveMacro" Header="{StaticResource Terminal_SaveMacroAs}"  Tag="TbgMacro" Click="OvfSaveMacro_Click"/>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
@@ -286,7 +286,7 @@
                     <!-- Record (hidden while recording) -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding StartRecordingCommand}"
-                            ToolTip="{DynamicResource Terminal_StartMacroRecording}">
+                            ToolTip="{StaticResource Terminal_StartMacroRecording}">
                         <Button.Visibility>
                             <Binding Path="IsRecording">
                                 <Binding.Converter>
@@ -301,7 +301,7 @@
                     <Button x:Name="BtnStopRecord"
                             Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding StopRecordingCommand}"
-                            ToolTip="{DynamicResource Terminal_StopRecording}"
+                            ToolTip="{StaticResource Terminal_StopRecording}"
                             Visibility="{Binding IsRecording, Converter={StaticResource BoolToVis}}">
                         <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource ErrorForegroundBrush}"/>
@@ -309,14 +309,14 @@
                     <!-- Replay -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding ReplayMacroCommand}"
-                            ToolTip="{DynamicResource Terminal_ReplayLastMacro}">
+                            ToolTip="{StaticResource Terminal_ReplayLastMacro}">
                         <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
                     <!-- Save .hxscript -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding SaveMacroCommand}"
-                            ToolTip="{DynamicResource Terminal_SaveMacro}">
+                            ToolTip="{StaticResource Terminal_SaveMacro}">
                         <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
@@ -331,13 +331,13 @@
                                Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding IncreaseFontCommand}"
-                            ToolTip="{DynamicResource Terminal_IncreaseFontSizeTip}">
+                            ToolTip="{StaticResource Terminal_IncreaseFontSizeTip}">
                         <TextBlock Text="&#xE8A3;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding DecreaseFontCommand}"
-                            ToolTip="{DynamicResource Terminal_DecreaseFontSizeTip}">
+                            ToolTip="{StaticResource Terminal_DecreaseFontSizeTip}">
                         <TextBlock Text="&#xE71F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
@@ -352,19 +352,19 @@
                                Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding ShowTimestamps}"
-                                  ToolTip="{DynamicResource Terminal_ShowTimestamps}">
+                                  ToolTip="{StaticResource Terminal_ShowTimestamps}">
                         <TextBlock Text="&#xE121;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </ToggleButton>
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding IsWordWrap}"
-                                  ToolTip="{DynamicResource Terminal_WordWrap}">
+                                  ToolTip="{StaticResource Terminal_WordWrap}">
                         <TextBlock Text="&#xE8AC;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </ToggleButton>
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding CopyOnSelect}"
-                                  ToolTip="{DynamicResource Terminal_CopyOnSelect}">
+                                  ToolTip="{StaticResource Terminal_CopyOnSelect}">
                         <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </ToggleButton>
@@ -379,13 +379,13 @@
                                Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding IsAutoScrollEnabled}"
-                                  ToolTip="{DynamicResource Terminal_AutoScrollTip}">
+                                  ToolTip="{StaticResource Terminal_AutoScrollTip}">
                         <TextBlock Text="&#xF0AF;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </ToggleButton>
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding IsOutputPaused}"
-                                  ToolTip="{DynamicResource Terminal_PauseOutput}">
+                                  ToolTip="{StaticResource Terminal_PauseOutput}">
                         <TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </ToggleButton>
@@ -401,13 +401,13 @@
                     <!-- Scroll to Top -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Click="OnScrollToTop"
-                            ToolTip="{DynamicResource Terminal_ScrollToTop}">
+                            ToolTip="{StaticResource Terminal_ScrollToTop}">
                         <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Click="OnScrollToBottom"
-                            ToolTip="{DynamicResource Terminal_ScrollToBottom}">
+                            ToolTip="{StaticResource Terminal_ScrollToBottom}">
                         <TextBlock Text="&#xE74B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
@@ -424,15 +424,15 @@
                 <!-- "+" new session button at far right -->
                 <Button DockPanel.Dock="Right"
                         Style="{DynamicResource PanelIconButtonStyle}"
-                        ToolTip="{DynamicResource Terminal_NewSession}"
+                        ToolTip="{StaticResource Terminal_NewSession}"
                         Click="OnNewSessionMenuClick"
                         Width="28" Height="28">
                     <Button.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="{DynamicResource Terminal_TabHxTerminal}" Command="{Binding AddHxTerminalCommand}"/>
-                            <MenuItem Header="{DynamicResource Terminal_TabPowerShell}" Command="{Binding AddPowerShellCommand}"/>
-                            <MenuItem Header="{DynamicResource Terminal_TabBash}"       Command="{Binding AddBashCommand}"/>
-                            <MenuItem Header="{DynamicResource Terminal_TabCmd}"        Command="{Binding AddCmdCommand}"/>
+                            <MenuItem Header="{StaticResource Terminal_TabHxTerminal}" Command="{Binding AddHxTerminalCommand}"/>
+                            <MenuItem Header="{StaticResource Terminal_TabPowerShell}" Command="{Binding AddPowerShellCommand}"/>
+                            <MenuItem Header="{StaticResource Terminal_TabBash}"       Command="{Binding AddBashCommand}"/>
+                            <MenuItem Header="{StaticResource Terminal_TabCmd}"        Command="{Binding AddCmdCommand}"/>
                         </ContextMenu>
                     </Button.ContextMenu>
                     <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="11"
@@ -466,7 +466,7 @@
                                         VerticalAlignment="Center"
                                         Margin="4,0,0,0"
                                         Padding="1"
-                                        ToolTip="{DynamicResource Terminal_CloseSession}">
+                                        ToolTip="{StaticResource Terminal_CloseSession}">
                                     <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="9"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                                 </Button>
@@ -495,7 +495,7 @@
                 <Button DockPanel.Dock="Right"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Click="OnCloseFindBar"
-                        ToolTip="{DynamicResource Terminal_CloseFindBar}">
+                        ToolTip="{StaticResource Terminal_CloseFindBar}">
                     <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 </Button>
@@ -509,19 +509,19 @@
                 <Button DockPanel.Dock="Right"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Click="OnFindPrev"
-                        ToolTip="{DynamicResource Terminal_PreviousMatch}">
+                        ToolTip="{StaticResource Terminal_PreviousMatch}">
                     <TextBlock Text="&#xE76B;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 </Button>
                 <Button DockPanel.Dock="Right"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Click="OnFindNext"
-                        ToolTip="{DynamicResource Terminal_NextMatch}">
+                        ToolTip="{StaticResource Terminal_NextMatch}">
                     <TextBlock Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 </Button>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="{DynamicResource Terminal_FindLabel}"
+                    <TextBlock Text="{StaticResource Terminal_FindLabel}"
                                FontFamily="Segoe UI" FontSize="11"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                VerticalAlignment="Center"
@@ -558,48 +558,48 @@
                      SelectionChanged="OnOutputSelectionChanged">
             <RichTextBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="{DynamicResource Terminal_Copy}"      Command="ApplicationCommands.Copy"/>
-                    <MenuItem Header="{DynamicResource Terminal_CopyAll}"   Command="{Binding PlacementTarget.DataContext.CopyAllCommand,
+                    <MenuItem Header="{StaticResource Terminal_Copy}"      Command="ApplicationCommands.Copy"/>
+                    <MenuItem Header="{StaticResource Terminal_CopyAll}"   Command="{Binding PlacementTarget.DataContext.CopyAllCommand,
                                                              RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                    <MenuItem Header="{DynamicResource Terminal_SelectAll}" Command="ApplicationCommands.SelectAll"/>
+                    <MenuItem Header="{StaticResource Terminal_SelectAll}" Command="ApplicationCommands.SelectAll"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource Terminal_ClearOutput}" Command="{Binding PlacementTarget.DataContext.ClearOutputCommand,
+                    <MenuItem Header="{StaticResource Terminal_ClearOutput}" Command="{Binding PlacementTarget.DataContext.ClearOutputCommand,
                                                                RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                    <MenuItem Header="{DynamicResource Terminal_SaveOutput}"  Command="{Binding PlacementTarget.DataContext.SaveOutputCommand,
+                    <MenuItem Header="{StaticResource Terminal_SaveOutput}"  Command="{Binding PlacementTarget.DataContext.SaveOutputCommand,
                                                                RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource Terminal_Find}"
+                    <MenuItem Header="{StaticResource Terminal_Find}"
                               Command="{Binding PlacementTarget.DataContext.ToggleFindCommand,
                                         RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                               InputGestureText="Ctrl+F"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource Terminal_WordWrap}"
+                    <MenuItem Header="{StaticResource Terminal_WordWrap}"
                               IsCheckable="True"
                               IsChecked="{Binding PlacementTarget.DataContext.IsWordWrap,
                                           RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                    <MenuItem Header="{DynamicResource Terminal_ShowTimestamps}"
+                    <MenuItem Header="{StaticResource Terminal_ShowTimestamps}"
                               IsCheckable="True"
                               IsChecked="{Binding PlacementTarget.DataContext.ShowTimestamps,
                                           RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                    <MenuItem Header="{DynamicResource Terminal_CopyOnSelect}"
+                    <MenuItem Header="{StaticResource Terminal_CopyOnSelect}"
                               IsCheckable="True"
                               IsChecked="{Binding PlacementTarget.DataContext.CopyOnSelect,
                                           RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource Terminal_IncreaseFontSize}"
+                    <MenuItem Header="{StaticResource Terminal_IncreaseFontSize}"
                               Command="{Binding PlacementTarget.DataContext.IncreaseFontCommand,
                                         RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                               InputGestureText="Ctrl++"/>
-                    <MenuItem Header="{DynamicResource Terminal_DecreaseFontSize}"
+                    <MenuItem Header="{StaticResource Terminal_DecreaseFontSize}"
                               Command="{Binding PlacementTarget.DataContext.DecreaseFontCommand,
                                         RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                               InputGestureText="Ctrl+-"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource Terminal_StartRecording}" Command="{Binding PlacementTarget.DataContext.StartRecordingCommand,
+                    <MenuItem Header="{StaticResource Terminal_StartRecording}" Command="{Binding PlacementTarget.DataContext.StartRecordingCommand,
                                                                  RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                    <MenuItem Header="{DynamicResource Terminal_StopRecording}"  Command="{Binding PlacementTarget.DataContext.StopRecordingCommand,
+                    <MenuItem Header="{StaticResource Terminal_StopRecording}"  Command="{Binding PlacementTarget.DataContext.StopRecordingCommand,
                                                                  RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                    <MenuItem Header="{DynamicResource Terminal_ReplayMacro}"    Command="{Binding PlacementTarget.DataContext.ReplayMacroCommand,
+                    <MenuItem Header="{StaticResource Terminal_ReplayMacro}"    Command="{Binding PlacementTarget.DataContext.ReplayMacroCommand,
                                                                  RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                 </ContextMenu>
             </RichTextBox.ContextMenu>
@@ -659,7 +659,7 @@
 
                 <Button Grid.Column="3"
                         Style="{StaticResource TerminalTextButtonStyle}"
-                        Content="{DynamicResource Terminal_Run}"
+                        Content="{StaticResource Terminal_Run}"
                         Command="{Binding RunCommand}"
                         Padding="10,3"
                         Margin="4,0,2,0"/>

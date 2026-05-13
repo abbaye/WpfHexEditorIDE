@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.App.Debug.Panels.RegistersPanel"
+﻿<UserControl x:Class="WpfHexEditor.App.Debug.Panels.RegistersPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.App.Debug.ViewModels"
@@ -19,12 +19,12 @@
                 <Button Command="{Binding RefreshCommand}"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Content="&#xE72C;"
-                        ToolTip="{DynamicResource DBG_RefreshTooltip}"/>
+                        ToolTip="{StaticResource DBG_RefreshTooltip}"/>
                 <Rectangle Width="1" Height="16" Margin="6,0"
                            Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 <ToggleButton IsChecked="{Binding HexDisplay}"
                               Style="{DynamicResource PanelIconToggleStyle}"
-                              ToolTip="{DynamicResource DBG_ShowAsHex}">
+                              ToolTip="{StaticResource DBG_ShowAsHex}">
                     <TextBlock Text="0x" FontWeight="SemiBold" FontSize="11"
                                VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </ToggleButton>
@@ -40,23 +40,23 @@
                   VirtualizingPanel.IsVirtualizing="True">
             <ListView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="{DynamicResource DBG_CopyValue}"        InputGestureText="Ctrl+C"
+                    <MenuItem Header="{StaticResource DBG_CopyValue}"        InputGestureText="Ctrl+C"
                               Command="{Binding PlacementTarget.DataContext.CopyValueCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                               CommandParameter="{Binding PlacementTarget.SelectedItem,        RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                    <MenuItem Header="{DynamicResource DBG_CopyName}"
+                    <MenuItem Header="{StaticResource DBG_CopyName}"
                               Command="{Binding PlacementTarget.DataContext.CopyNameCommand,  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                               CommandParameter="{Binding PlacementTarget.SelectedItem,        RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource DBG_ToggleHexDecimal}"
+                    <MenuItem Header="{StaticResource DBG_ToggleHexDecimal}"
                               Command="{Binding PlacementTarget.DataContext.ToggleHexCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                    <MenuItem Header="{DynamicResource DBG_Refresh}"          InputGestureText="F5"
+                    <MenuItem Header="{StaticResource DBG_Refresh}"          InputGestureText="F5"
                               Command="{Binding PlacementTarget.DataContext.RefreshCommand,   RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="{DynamicResource DBG_ColName}"  Width="120" DisplayMemberBinding="{Binding Name}"/>
-                    <GridViewColumn Header="{DynamicResource DBG_ColValue}" Width="200">
+                    <GridViewColumn Header="{StaticResource DBG_ColName}"  Width="120" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="{StaticResource DBG_ColValue}" Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type vm:RegisterItem}">
                                 <TextBlock Text="{Binding Value}">
@@ -75,7 +75,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="{DynamicResource DBG_ColType}" Width="80"
+                    <GridViewColumn Header="{StaticResource DBG_ColType}" Width="80"
                                     DisplayMemberBinding="{Binding Type}"/>
                 </GridView>
             </ListView.View>

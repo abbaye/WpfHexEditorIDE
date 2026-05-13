@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Project: WpfHexEditor.Plugins.ClassDiagram
     File: Panels/ClassHistoryPanel.xaml
     Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -22,7 +22,7 @@
                 Background="{DynamicResource DockMenuBackgroundBrush}"
                 BorderBrush="{DynamicResource DockToolBarBorderBrush}"
                 Padding="6,3">
-            <TextBlock Text="{DynamicResource CD_DiagramHistory}"
+            <TextBlock Text="{StaticResource CD_DiagramHistory}"
                        FontSize="11" FontWeight="SemiBold"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>

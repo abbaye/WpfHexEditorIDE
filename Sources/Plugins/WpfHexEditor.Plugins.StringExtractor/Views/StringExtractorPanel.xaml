@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.Plugins.StringExtractor.Views.StringExtractorPanel"
+﻿<UserControl x:Class="WpfHexEditor.Plugins.StringExtractor.Views.StringExtractorPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:svc="clr-namespace:WpfHexEditor.Plugins.StringExtractor.Services"
@@ -43,8 +43,8 @@
 
                 <Button Grid.Column="0"
                         x:Name="ExtractButton"
-                        Content="{DynamicResource StringExtractor_ExtractButton}"
-                        ToolTip="{DynamicResource StringExtractor_Tooltip_Extract}"
+                        Content="{StaticResource StringExtractor_ExtractButton}"
+                        ToolTip="{StaticResource StringExtractor_Tooltip_Extract}"
                         IsEnabled="{Binding IsIdle}"
                         Style="{DynamicResource ToolbarButtonStyle}"
                         Padding="8,3"
@@ -52,7 +52,7 @@
                         Click="OnExtractClick"/>
 
                 <TextBlock Grid.Column="1"
-                           Text="{DynamicResource StringExtractor_MinLength}"
+                           Text="{StaticResource StringExtractor_MinLength}"
                            VerticalAlignment="Center"
                            Margin="0,0,4,0"
                            Foreground="{DynamicResource PanelForeground}"/>
@@ -62,7 +62,7 @@
                          Text="4"
                          Width="40"
                          VerticalAlignment="Center"
-                         ToolTip="{DynamicResource StringExtractor_Tooltip_MinLength}"
+                         ToolTip="{StaticResource StringExtractor_Tooltip_MinLength}"
                          TextAlignment="Center"
                          Margin="0,0,4,0"
                          Style="{DynamicResource ToolbarTextBoxStyle}"/>
@@ -71,7 +71,7 @@
 
                 <CheckBox Grid.Column="4"
                           x:Name="AsciiCheck"
-                          Content="{DynamicResource StringExtractor_Enc_ASCII}"
+                          Content="{StaticResource StringExtractor_Enc_ASCII}"
                           IsChecked="True"
                           VerticalAlignment="Center"
                           Margin="0,0,6,0"
@@ -79,7 +79,7 @@
 
                 <CheckBox Grid.Column="5"
                           x:Name="Utf8Check"
-                          Content="{DynamicResource StringExtractor_Enc_UTF8}"
+                          Content="{StaticResource StringExtractor_Enc_UTF8}"
                           IsChecked="True"
                           VerticalAlignment="Center"
                           Margin="0,0,6,0"
@@ -87,15 +87,15 @@
 
                 <CheckBox Grid.Column="6"
                           x:Name="Utf16LeCheck"
-                          Content="{DynamicResource StringExtractor_Enc_UTF16LE}"
+                          Content="{StaticResource StringExtractor_Enc_UTF16LE}"
                           IsChecked="True"
                           VerticalAlignment="Center"
                           Foreground="{DynamicResource PanelForeground}"/>
 
                 <Button Grid.Column="8"
                         x:Name="ExportButton"
-                        Content="{DynamicResource StringExtractor_ExportButton}"
-                        ToolTip="{DynamicResource StringExtractor_Tooltip_Export}"
+                        Content="{StaticResource StringExtractor_ExportButton}"
+                        ToolTip="{StaticResource StringExtractor_Tooltip_Export}"
                         IsEnabled="{Binding HasResults}"
                         Style="{DynamicResource ToolbarButtonStyle}"
                         Padding="8,3"
@@ -132,7 +132,7 @@
                     Opacity="0.85"
                     Visibility="{Binding IsExtracting, Converter={StaticResource BoolToVis}}">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="{DynamicResource StringExtractor_Extracting}"
+                    <TextBlock Text="{StaticResource StringExtractor_Extracting}"
                                HorizontalAlignment="Center"
                                Foreground="{DynamicResource PanelForeground}"
                                Margin="0,0,0,8"/>
@@ -155,17 +155,17 @@
                       BorderThickness="0">
                 <ListView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="{DynamicResource StringExtractor_NavigateTo}" Click="OnNavigateTo"/>
-                        <MenuItem Header="{DynamicResource StringExtractor_CopyValue}"  Click="OnCopyValue"/>
-                        <MenuItem Header="{DynamicResource StringExtractor_CopyOffset}" Click="OnCopyOffset"/>
+                        <MenuItem Header="{StaticResource StringExtractor_NavigateTo}" Click="OnNavigateTo"/>
+                        <MenuItem Header="{StaticResource StringExtractor_CopyValue}"  Click="OnCopyValue"/>
+                        <MenuItem Header="{StaticResource StringExtractor_CopyOffset}" Click="OnCopyOffset"/>
                     </ContextMenu>
                 </ListView.ContextMenu>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Width="110" Header="{DynamicResource StringExtractor_ColOffset}"   DisplayMemberBinding="{Binding OffsetHex}"/>
-                        <GridViewColumn Width="60"  Header="{DynamicResource StringExtractor_ColLength}"   DisplayMemberBinding="{Binding Length}"/>
-                        <GridViewColumn Width="80"  Header="{DynamicResource StringExtractor_ColEncoding}" DisplayMemberBinding="{Binding Encoding}"/>
-                        <GridViewColumn Width="400" Header="{DynamicResource StringExtractor_ColValue}"    DisplayMemberBinding="{Binding Value}"/>
+                        <GridViewColumn Width="110" Header="{StaticResource StringExtractor_ColOffset}"   DisplayMemberBinding="{Binding OffsetHex}"/>
+                        <GridViewColumn Width="60"  Header="{StaticResource StringExtractor_ColLength}"   DisplayMemberBinding="{Binding Length}"/>
+                        <GridViewColumn Width="80"  Header="{StaticResource StringExtractor_ColEncoding}" DisplayMemberBinding="{Binding Encoding}"/>
+                        <GridViewColumn Width="400" Header="{StaticResource StringExtractor_ColValue}"    DisplayMemberBinding="{Binding Value}"/>
                     </GridView>
                 </ListView.View>
             </ListView>

@@ -1,8 +1,8 @@
-<Window x:Class="WpfHexEditor.Editor.DocumentEditor.Dialogs.PageStyleDialog"
+﻿<Window x:Class="WpfHexEditor.Editor.DocumentEditor.Dialogs.PageStyleDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
-        Title="{DynamicResource PageStyleDlg_Title}"
+        Title="{StaticResource PageStyleDlg_Title}"
         Width="480" Height="520"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
@@ -36,11 +36,11 @@
         <TabControl Grid.Row="0" Margin="8,8,8,0">
 
             <!-- ── Tab 1: Page ─────────────────────────────────────────────── -->
-            <TabItem Header="{DynamicResource PageStyleDlg_TabPage}">
+            <TabItem Header="{StaticResource PageStyleDlg_TabPage}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="12">
                         <TextBlock Style="{StaticResource SectionLabel}"
-                                   Text="{DynamicResource PageStyleDlg_PaperFormat}"/>
+                                   Text="{StaticResource PageStyleDlg_PaperFormat}"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -56,7 +56,7 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                       Text="{DynamicResource PageStyleDlg_Format}"/>
+                                       Text="{StaticResource PageStyleDlg_Format}"/>
                             <ComboBox  Grid.Row="0" Grid.Column="2" x:Name="PART_PageFormat" Width="140"
                                        HorizontalAlignment="Left" SelectionChanged="OnPageFormatChanged">
                                 <ComboBoxItem Tag="A4"     Content="A4"/>
@@ -68,13 +68,13 @@
                             </ComboBox>
 
                             <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                       Text="{DynamicResource PageStyleDlg_Orientation}"/>
+                                       Text="{StaticResource PageStyleDlg_Orientation}"/>
                             <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
                                 <RadioButton x:Name="PART_Portrait"
-                                             Content="{DynamicResource PageStyleDlg_Portrait}"
+                                             Content="{StaticResource PageStyleDlg_Portrait}"
                                              GroupName="Orientation" IsChecked="True" Margin="0,0,12,0"/>
                                 <RadioButton x:Name="PART_Landscape"
-                                             Content="{DynamicResource PageStyleDlg_Landscape}"
+                                             Content="{StaticResource PageStyleDlg_Landscape}"
                                              GroupName="Orientation"/>
                             </StackPanel>
 
@@ -89,16 +89,16 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                           Text="{DynamicResource PageStyleDlg_Width}"/>
+                                           Text="{StaticResource PageStyleDlg_Width}"/>
                                 <TextBox   Grid.Column="2" x:Name="PART_PageWidth" Style="{StaticResource NumBox}"/>
                                 <TextBlock Grid.Column="4" Style="{StaticResource FieldLabel}"
-                                           Text="{DynamicResource PageStyleDlg_Height}"/>
+                                           Text="{StaticResource PageStyleDlg_Height}"/>
                                 <TextBox   Grid.Column="6" x:Name="PART_PageHeight" Style="{StaticResource NumBox}"/>
                             </Grid>
                         </Grid>
 
                         <TextBlock Style="{StaticResource SectionLabel}"
-                                   Text="{DynamicResource PageStyleDlg_Margins}"/>
+                                   Text="{StaticResource PageStyleDlg_Margins}"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -115,17 +115,17 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                       Text="{DynamicResource PageStyleDlg_MarginLeft}"/>
+                                       Text="{StaticResource PageStyleDlg_MarginLeft}"/>
                             <TextBox   Grid.Row="0" Grid.Column="2" x:Name="PART_MarginLeft" Style="{StaticResource NumBox}"/>
                             <TextBlock Grid.Row="0" Grid.Column="4" Style="{StaticResource FieldLabel}"
-                                       Text="{DynamicResource PageStyleDlg_MarginRight}"/>
+                                       Text="{StaticResource PageStyleDlg_MarginRight}"/>
                             <TextBox   Grid.Row="0" Grid.Column="6" x:Name="PART_MarginRight" Style="{StaticResource NumBox}"/>
 
                             <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                       Text="{DynamicResource PageStyleDlg_MarginTop}"/>
+                                       Text="{StaticResource PageStyleDlg_MarginTop}"/>
                             <TextBox   Grid.Row="2" Grid.Column="2" x:Name="PART_MarginTop" Style="{StaticResource NumBox}"/>
                             <TextBlock Grid.Row="2" Grid.Column="4" Style="{StaticResource FieldLabel}"
-                                       Text="{DynamicResource PageStyleDlg_MarginBottom}"/>
+                                       Text="{StaticResource PageStyleDlg_MarginBottom}"/>
                             <TextBox   Grid.Row="2" Grid.Column="6" x:Name="PART_MarginBottom" Style="{StaticResource NumBox}"/>
                         </Grid>
                     </StackPanel>
@@ -133,10 +133,10 @@
             </TabItem>
 
             <!-- ── Tab 2: Background ───────────────────────────────────────── -->
-            <TabItem Header="{DynamicResource PageStyleDlg_TabBackground}">
+            <TabItem Header="{StaticResource PageStyleDlg_TabBackground}">
                 <StackPanel Margin="12">
                     <TextBlock Style="{StaticResource SectionLabel}"
-                               Text="{DynamicResource PageStyleDlg_BgColor}"/>
+                               Text="{StaticResource PageStyleDlg_BgColor}"/>
                     <StackPanel Orientation="Horizontal">
                         <Border x:Name="PART_BgColorPreview"
                                 Width="32" Height="24"
@@ -152,10 +152,10 @@
             </TabItem>
 
             <!-- ── Tab 3: Header ───────────────────────────────────────────── -->
-            <TabItem Header="{DynamicResource PageStyleDlg_TabHeader}">
+            <TabItem Header="{StaticResource PageStyleDlg_TabHeader}">
                 <StackPanel Margin="12">
                     <CheckBox x:Name="PART_HeaderEnabled"
-                              Content="{DynamicResource PageStyleDlg_EnableHeader}"
+                              Content="{StaticResource PageStyleDlg_EnableHeader}"
                               Margin="0,0,0,8"
                               Checked="OnHeaderEnabledChanged" Unchecked="OnHeaderEnabledChanged"/>
                     <Grid x:Name="PART_HeaderOptions" IsEnabled="False">
@@ -174,24 +174,24 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                   Text="{DynamicResource PageStyleDlg_HdrHeight}"/>
+                                   Text="{StaticResource PageStyleDlg_HdrHeight}"/>
                         <TextBox   Grid.Row="0" Grid.Column="2" x:Name="PART_HdrHeight" Style="{StaticResource NumBox}"/>
                         <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                   Text="{DynamicResource PageStyleDlg_HdrMargin}"/>
+                                   Text="{StaticResource PageStyleDlg_HdrMargin}"/>
                         <TextBox   Grid.Row="2" Grid.Column="2" x:Name="PART_HdrMargin" Style="{StaticResource NumBox}"/>
                         <CheckBox  Grid.Row="4" Grid.ColumnSpan="3" x:Name="PART_HdrDiffFirst"
-                                   Content="{DynamicResource PageStyleDlg_HdrDiffFirst}"/>
+                                   Content="{StaticResource PageStyleDlg_HdrDiffFirst}"/>
                         <CheckBox  Grid.Row="6" Grid.ColumnSpan="3" x:Name="PART_HdrSameLR"
-                                   Content="{DynamicResource PageStyleDlg_HdrSameLR}"/>
+                                   Content="{StaticResource PageStyleDlg_HdrSameLR}"/>
                     </Grid>
                 </StackPanel>
             </TabItem>
 
             <!-- ── Tab 4: Footer ───────────────────────────────────────────── -->
-            <TabItem Header="{DynamicResource PageStyleDlg_TabFooter}">
+            <TabItem Header="{StaticResource PageStyleDlg_TabFooter}">
                 <StackPanel Margin="12">
                     <CheckBox x:Name="PART_FooterEnabled"
-                              Content="{DynamicResource PageStyleDlg_EnableFooter}"
+                              Content="{StaticResource PageStyleDlg_EnableFooter}"
                               Margin="0,0,0,8"
                               Checked="OnFooterEnabledChanged" Unchecked="OnFooterEnabledChanged"/>
                     <Grid x:Name="PART_FooterOptions" IsEnabled="False">
@@ -210,28 +210,28 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                   Text="{DynamicResource PageStyleDlg_HdrHeight}"/>
+                                   Text="{StaticResource PageStyleDlg_HdrHeight}"/>
                         <TextBox   Grid.Row="0" Grid.Column="2" x:Name="PART_FtrHeight" Style="{StaticResource NumBox}"/>
                         <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                   Text="{DynamicResource PageStyleDlg_HdrMargin}"/>
+                                   Text="{StaticResource PageStyleDlg_HdrMargin}"/>
                         <TextBox   Grid.Row="2" Grid.Column="2" x:Name="PART_FtrMargin" Style="{StaticResource NumBox}"/>
                         <CheckBox  Grid.Row="4" Grid.ColumnSpan="3" x:Name="PART_FtrDiffFirst"
-                                   Content="{DynamicResource PageStyleDlg_HdrDiffFirst}"/>
+                                   Content="{StaticResource PageStyleDlg_HdrDiffFirst}"/>
                         <CheckBox  Grid.Row="6" Grid.ColumnSpan="3" x:Name="PART_FtrSameLR"
-                                   Content="{DynamicResource PageStyleDlg_HdrSameLR}"/>
+                                   Content="{StaticResource PageStyleDlg_HdrSameLR}"/>
                     </Grid>
                 </StackPanel>
             </TabItem>
 
             <!-- ── Tab 5: Border ───────────────────────────────────────────── -->
-            <TabItem Header="{DynamicResource PageStyleDlg_TabBorder}">
+            <TabItem Header="{StaticResource PageStyleDlg_TabBorder}">
                 <StackPanel Margin="12">
                     <TextBlock Style="{StaticResource SectionLabel}"
-                               Text="{DynamicResource PageStyleDlg_BorderStyle}"/>
+                               Text="{StaticResource PageStyleDlg_BorderStyle}"/>
                     <ComboBox x:Name="PART_BorderStyle" Width="140" HorizontalAlignment="Left">
-                        <ComboBoxItem Tag="None"   Content="{DynamicResource PageStyleDlg_BorderNone}"   IsSelected="True"/>
-                        <ComboBoxItem Tag="Box"    Content="{DynamicResource PageStyleDlg_BorderBox}"/>
-                        <ComboBoxItem Tag="Shadow" Content="{DynamicResource PageStyleDlg_BorderShadow}"/>
+                        <ComboBoxItem Tag="None"   Content="{StaticResource PageStyleDlg_BorderNone}"   IsSelected="True"/>
+                        <ComboBoxItem Tag="Box"    Content="{StaticResource PageStyleDlg_BorderBox}"/>
+                        <ComboBoxItem Tag="Shadow" Content="{StaticResource PageStyleDlg_BorderShadow}"/>
                     </ComboBox>
                     <Grid Margin="0,8,0,0">
                         <Grid.ColumnDefinitions>
@@ -245,7 +245,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                   Text="{DynamicResource PageStyleDlg_BorderColor}"/>
+                                   Text="{StaticResource PageStyleDlg_BorderColor}"/>
                         <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
                             <Border x:Name="PART_BorderColorPreview"
                                     Width="32" Height="24"
@@ -256,14 +256,14 @@
                             <Button Content="…" Width="30" Click="OnPickBorderColorClicked"/>
                         </StackPanel>
                         <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                   Text="{DynamicResource PageStyleDlg_BorderWidth}"/>
+                                   Text="{StaticResource PageStyleDlg_BorderWidth}"/>
                         <TextBox   Grid.Row="2" Grid.Column="2" x:Name="PART_BorderWidth" Style="{StaticResource NumBox}"/>
                     </Grid>
                 </StackPanel>
             </TabItem>
 
             <!-- ── Tab 6: Columns ──────────────────────────────────────────── -->
-            <TabItem Header="{DynamicResource PageStyleDlg_TabColumns}">
+            <TabItem Header="{StaticResource PageStyleDlg_TabColumns}">
                 <StackPanel Margin="12">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -277,7 +277,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                   Text="{DynamicResource PageStyleDlg_ColCount}"/>
+                                   Text="{StaticResource PageStyleDlg_ColCount}"/>
                         <ComboBox  Grid.Row="0" Grid.Column="2" x:Name="PART_ColCount" Width="60"
                                    HorizontalAlignment="Left">
                             <ComboBoxItem Content="1" IsSelected="True"/>
@@ -287,11 +287,11 @@
                             <ComboBoxItem Content="5"/>
                         </ComboBox>
                         <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabel}"
-                                   Text="{DynamicResource PageStyleDlg_ColGap}"/>
+                                   Text="{StaticResource PageStyleDlg_ColGap}"/>
                         <TextBox   Grid.Row="2" Grid.Column="2" x:Name="PART_ColGap" Style="{StaticResource NumBox}"/>
                     </Grid>
                     <CheckBox x:Name="PART_ColSeparator"
-                              Content="{DynamicResource PageStyleDlg_ColSeparator}"
+                              Content="{StaticResource PageStyleDlg_ColSeparator}"
                               Margin="0,10,0,0"/>
                 </StackPanel>
             </TabItem>
@@ -300,11 +300,11 @@
         <!-- Bottom button bar -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right"
                     Margin="8,8,8,8">
-            <Button Content="{DynamicResource PageStyleDlg_Apply}"
+            <Button Content="{StaticResource PageStyleDlg_Apply}"
                     Width="80" Margin="0,0,8,0" Click="OnApplyClicked"/>
-            <Button Content="{DynamicResource PageStyleDlg_OK}"
+            <Button Content="{StaticResource PageStyleDlg_OK}"
                     Width="80" Margin="0,0,8,0" IsDefault="True" Click="OnOkClicked"/>
-            <Button Content="{DynamicResource PageStyleDlg_Cancel}"
+            <Button Content="{StaticResource PageStyleDlg_Cancel}"
                     Width="80" IsCancel="True" Click="OnCancelClicked"/>
         </StackPanel>
     </Grid>

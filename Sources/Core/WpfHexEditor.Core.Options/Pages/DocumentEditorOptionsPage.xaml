@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 // ==========================================================
 // Project: WpfHexEditor.Core.Options
 // File: Pages/DocumentEditorOptionsPage.xaml
@@ -26,7 +26,7 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Appearance ────────────────────────────────────────────────── -->
-        <TextBlock Text="{DynamicResource DocOpt_AppearanceSection}"
+        <TextBlock Text="{StaticResource DocOpt_AppearanceSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -36,7 +36,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocOpt_FontSizeLabel}"
+            <TextBlock Text="{StaticResource DocOpt_FontSizeLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TxtFontSize" Grid.Column="1"
@@ -49,7 +49,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="180"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocOpt_ViewModeLabel}"
+            <TextBlock Text="{StaticResource DocOpt_ViewModeLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="ViewModeCombo" Grid.Column="1"
@@ -61,7 +61,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="180"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocOpt_RenderModeLabel}"
+            <TextBlock Text="{StaticResource DocOpt_RenderModeLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="RenderModeCombo" Grid.Column="1"
@@ -69,21 +69,21 @@
         </Grid>
 
         <CheckBox x:Name="CheckScrollMarkers"
-                  Content="{DynamicResource DocOpt_ShowScrollMarkers}"
+                  Content="{StaticResource DocOpt_ShowScrollMarkers}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckMiniMap"
-                  Content="{DynamicResource DocOpt_ShowMiniMap}"
+                  Content="{StaticResource DocOpt_ShowMiniMap}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckForensicGutter"
-                  Content="{DynamicResource DocOpt_ShowForensicGutter}"
+                  Content="{StaticResource DocOpt_ShowForensicGutter}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
@@ -93,7 +93,7 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Synchronisation ───────────────────────────────────────────── -->
-        <TextBlock Text="{DynamicResource DocOpt_SyncSection}"
+        <TextBlock Text="{StaticResource DocOpt_SyncSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -103,7 +103,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocOpt_SyncThrottleLabel}"
+            <TextBlock Text="{StaticResource DocOpt_SyncThrottleLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TxtSyncThrottle" Grid.Column="1"
@@ -112,14 +112,14 @@
         </Grid>
 
         <CheckBox x:Name="CheckSyncTextToHex"
-                  Content="{DynamicResource DocOpt_SyncTextToHex}"
+                  Content="{StaticResource DocOpt_SyncTextToHex}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckSyncHexToText"
-                  Content="{DynamicResource DocOpt_SyncHexToText}"
+                  Content="{StaticResource DocOpt_SyncHexToText}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
@@ -129,13 +129,13 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Hover ─────────────────────────────────────────────────────── -->
-        <TextBlock Text="{DynamicResource DocOpt_HoverSection}"
+        <TextBlock Text="{StaticResource DocOpt_HoverSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckHoverTooltip"
-                  Content="{DynamicResource DocOpt_ShowBlockHoverTooltip}"
+                  Content="{StaticResource DocOpt_ShowBlockHoverTooltip}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
@@ -146,7 +146,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocOpt_HoverDelayLabel}"
+            <TextBlock Text="{StaticResource DocOpt_HoverDelayLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TxtHoverDelay" Grid.Column="1"
@@ -158,13 +158,13 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Auto-save ─────────────────────────────────────────────────── -->
-        <TextBlock Text="{DynamicResource DocOpt_AutoSaveSection}"
+        <TextBlock Text="{StaticResource DocOpt_AutoSaveSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckAutoSave"
-                  Content="{DynamicResource DocOpt_AutoSaveEnabled}"
+                  Content="{StaticResource DocOpt_AutoSaveEnabled}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
@@ -175,7 +175,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocOpt_AutoSaveIntervalLabel}"
+            <TextBlock Text="{StaticResource DocOpt_AutoSaveIntervalLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TxtAutoSaveInterval" Grid.Column="1"
@@ -187,7 +187,7 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Editing ────────────────────────────────────────────────────── -->
-        <TextBlock Text="{DynamicResource DocOpt_EditingSection}"
+        <TextBlock Text="{StaticResource DocOpt_EditingSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -197,7 +197,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocOpt_IndentWidthLabel}"
+            <TextBlock Text="{StaticResource DocOpt_IndentWidthLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TxtIndentWidth" Grid.Column="1"
@@ -209,7 +209,7 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Hex Highlight Colors ───────────────────────────────────────── -->
-        <TextBlock Text="{DynamicResource DocOpt_ColorsSection}"
+        <TextBlock Text="{StaticResource DocOpt_ColorsSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -221,7 +221,7 @@
                 <ColumnDefinition Width="24"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocOpt_BlockHighlightColor}"
+            <TextBlock Text="{StaticResource DocOpt_BlockHighlightColor}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <CheckBox x:Name="ChkBlockHighlight" Grid.Column="1"
@@ -241,7 +241,7 @@
                 <ColumnDefinition Width="24"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocOpt_SelectedBlockColor}"
+            <TextBlock Text="{StaticResource DocOpt_SelectedBlockColor}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <CheckBox x:Name="ChkSelectedBlock" Grid.Column="1"
@@ -261,7 +261,7 @@
                 <ColumnDefinition Width="24"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource DocOpt_ForensicAlertColor}"
+            <TextBlock Text="{StaticResource DocOpt_ForensicAlertColor}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <CheckBox x:Name="ChkForensicAlert" Grid.Column="1"

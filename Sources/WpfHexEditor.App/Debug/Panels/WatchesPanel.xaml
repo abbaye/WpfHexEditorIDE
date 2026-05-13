@@ -1,4 +1,4 @@
-<UserControl x:Class="WpfHexEditor.App.Debug.Panels.WatchesPanel"
+﻿<UserControl x:Class="WpfHexEditor.App.Debug.Panels.WatchesPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.App.Debug.ViewModels"
@@ -23,11 +23,11 @@
                 <Button Command="{Binding AddCommand}"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Content="&#xE710;"
-                        ToolTip="{DynamicResource DBG_AddWatch}"/>
+                        ToolTip="{StaticResource DBG_AddWatch}"/>
                 <Button Command="{Binding ClearCommand}"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Content="&#xE74D;"
-                        ToolTip="{DynamicResource DBG_ClearAll}"/>
+                        ToolTip="{StaticResource DBG_ClearAll}"/>
             </StackPanel>
         </Border>
 
@@ -39,24 +39,24 @@
                   BorderThickness="0">
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="{DynamicResource DBG_AddWatch}"   InputGestureText="Insert"
+                    <MenuItem Header="{StaticResource DBG_AddWatch}"   InputGestureText="Insert"
                               Command="{Binding PlacementTarget.DataContext.AddCommand,    RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                    <MenuItem Header="{DynamicResource DBG_Remove}"     InputGestureText="Delete"
+                    <MenuItem Header="{StaticResource DBG_Remove}"     InputGestureText="Delete"
                               Command="{Binding PlacementTarget.DataContext.RemoveCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                               CommandParameter="{Binding PlacementTarget.SelectedItem,     RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource DBG_CopyValue}"  InputGestureText="Ctrl+C"
+                    <MenuItem Header="{StaticResource DBG_CopyValue}"  InputGestureText="Ctrl+C"
                               Command="{Binding PlacementTarget.DataContext.CopyCommand,   RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                               CommandParameter="{Binding PlacementTarget.SelectedItem,     RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                     <Separator/>
-                    <MenuItem Header="{DynamicResource DBG_ClearAll}"
+                    <MenuItem Header="{StaticResource DBG_ClearAll}"
                               Command="{Binding PlacementTarget.DataContext.ClearCommand,  RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="{DynamicResource DBG_ColName}" Width="*"
+                <DataGridTextColumn Header="{StaticResource DBG_ColName}" Width="*"
                                     Binding="{Binding Expression, UpdateSourceTrigger=LostFocus}" />
-                <DataGridTextColumn Header="{DynamicResource DBG_ColValue}" Width="200"
+                <DataGridTextColumn Header="{StaticResource DBG_ColValue}" Width="200"
                                     Binding="{Binding Value}" IsReadOnly="True">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
@@ -68,7 +68,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="{DynamicResource DBG_ColType}" Width="120"
+                <DataGridTextColumn Header="{StaticResource DBG_ColType}" Width="120"
                                     Binding="{Binding Type}" IsReadOnly="True" />
                 <DataGridTemplateColumn Width="28">
                     <DataGridTemplateColumn.CellTemplate>

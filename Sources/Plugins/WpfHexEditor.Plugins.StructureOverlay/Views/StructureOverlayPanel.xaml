@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -34,19 +34,19 @@
                 </Grid.ColumnDefinitions>
 
                 <CheckBox Grid.Column="0" IsChecked="{Binding IsVisible, Mode=TwoWay}"
-                          Margin="0,0,5,0" VerticalAlignment="Center" Content="{DynamicResource StructureOverlay_ToggleVisibility}"/>
+                          Margin="0,0,5,0" VerticalAlignment="Center" Content="{StaticResource StructureOverlay_ToggleVisibility}"/>
 
                 <StackPanel Grid.Column="1" Orientation="Vertical">
                     <TextBlock Text="{Binding Name}" FontWeight="Bold"
                                Foreground="{DynamicResource PFP_TextBrush}"/>
                     <TextBlock FontSize="10" Foreground="{DynamicResource PFP_SubTextBrush}">
-                        <Run Text="{DynamicResource StructureOverlay_FormatLabel}"/>
+                        <Run Text="{StaticResource StructureOverlay_FormatLabel}"/>
                         <Run Text="{Binding FormatType, Mode=OneWay}"/>
                         <Run Text=" | "/>
-                        <Run Text="{DynamicResource SO_OffsetLabel}"/>
+                        <Run Text="{StaticResource SO_OffsetLabel}"/>
                         <Run Text="{Binding StartOffset, Mode=OneWay, StringFormat='{}{0:X}'}"/>
                         <Run Text=" | "/>
-                        <Run Text="{DynamicResource SO_LengthLabel}"/>
+                        <Run Text="{StaticResource SO_LengthLabel}"/>
                         <Run Text="{Binding TotalLength, Mode=OneWay}"/>
                     </TextBlock>
                 </StackPanel>
@@ -101,10 +101,10 @@
                                    Foreground="{DynamicResource PFP_ValueBrush}"/>
 
                         <TextBlock FontSize="9" Foreground="{DynamicResource PFP_SubTextBrush}">
-                            <Run Text="{DynamicResource SO_OffsetLabel}"/>
+                            <Run Text="{StaticResource SO_OffsetLabel}"/>
                             <Run Text="{Binding Offset, Mode=OneWay, StringFormat='{}{0:X}'}"/>
                             <Run Text=" | "/>
-                            <Run Text="{DynamicResource SO_LengthLabel}"/>
+                            <Run Text="{StaticResource SO_LengthLabel}"/>
                             <Run Text="{Binding Length, Mode=OneWay}"/>
                         </TextBlock>
 
@@ -144,13 +144,13 @@
                 <Button x:Name="ToolbarOverflowButton"
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
-                        Style="{StaticResource PanelIconButtonStyle}" ToolTip="{DynamicResource StructureOverlay_MoreOptions}"
+                        Style="{StaticResource PanelIconButtonStyle}" ToolTip="{StaticResource StructureOverlay_MoreOptions}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
-                            <MenuItem Header="{DynamicResource StructureOverlay_AddOverlayHeader}"
+                            <MenuItem Header="{StaticResource StructureOverlay_AddOverlayHeader}"
                                       Tag="TbgStructureAdd"
                                       Click="AddStructureButton_Click"/>
                         </ContextMenu>
@@ -164,11 +164,11 @@
                             VerticalAlignment="Center">
                     <Button x:Name="AddStructureButton"
                             Content="&#xE710;"
-                            Style="{StaticResource PanelIconButtonStyle}" ToolTip="{DynamicResource StructureOverlay_AddOverlayTooltip}"
+                            Style="{StaticResource PanelIconButtonStyle}" ToolTip="{StaticResource StructureOverlay_AddOverlayTooltip}"
                             Click="AddStructureButton_Click"/>
                 </StackPanel>
 
-                <TextBlock Text="{DynamicResource StructureOverlay_StructureOverlayLabel}"
+                <TextBlock Text="{StaticResource StructureOverlay_StructureOverlayLabel}"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0"
                            FontWeight="SemiBold"
@@ -183,14 +183,14 @@
                 BorderThickness="0,0,0,1"
                 Padding="6,4">
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="LoadFormatButton" Content="{DynamicResource StructureOverlay_LoadFormat}"
+                <Button x:Name="LoadFormatButton" Content="{StaticResource StructureOverlay_LoadFormat}"
                         Style="{StaticResource PanelDropdownButtonStyle}"
                         Padding="8,3" Height="22" Margin="0,0,5,0"
-                        Click="LoadFormatButton_Click" ToolTip="{DynamicResource StructureOverlay_LoadFormatTooltip}"/>
-                <Button x:Name="ClearAllButton" Content="{DynamicResource StructureOverlay_ClearAll}"
+                        Click="LoadFormatButton_Click" ToolTip="{StaticResource StructureOverlay_LoadFormatTooltip}"/>
+                <Button x:Name="ClearAllButton" Content="{StaticResource StructureOverlay_ClearAll}"
                         Style="{StaticResource PanelDropdownButtonStyle}"
                         Padding="8,3" Height="22"
-                        Click="ClearAllButton_Click" ToolTip="{DynamicResource StructureOverlay_ClearAllTooltip}"/>
+                        Click="ClearAllButton_Click" ToolTip="{StaticResource StructureOverlay_ClearAllTooltip}"/>
             </StackPanel>
         </Border>
 
@@ -222,7 +222,7 @@
                 BorderThickness="0,1,0,0"
                 Padding="8,4">
             <TextBlock FontSize="10" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
-                <Run Text="{DynamicResource StructureOverlay_StructuresLabel}"/>
+                <Run Text="{StaticResource StructureOverlay_StructuresLabel}"/>
                 <Run Text="{Binding Structures.Count, Mode=OneWay}" FontWeight="Bold"/>
             </TextBlock>
         </Border>
