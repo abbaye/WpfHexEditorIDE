@@ -40,11 +40,11 @@
             </Ellipse>
 
             <TextBlock Foreground="White" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center">
-                <Run Text="{Binding StatusLabel}" />
+                <Run Text="{Binding StatusLabel, Mode=OneWay}" />
                 <Run Text=" · " Foreground="#88FFFFFF"/>
-                <Run Text="{Binding FrameCount, StringFormat={}{0} frames}" />
+                <Run Text="{Binding FrameCount, Mode=OneWay, StringFormat={}{0} frames}" />
                 <Run Text=" · " Foreground="#88FFFFFF"/>
-                <Run Text="{Binding Elapsed}" />
+                <Run Text="{Binding Elapsed, Mode=OneWay}" />
             </TextBlock>
 
             <TextBlock Text=" · " Foreground="#88FFFFFF" FontSize="12" VerticalAlignment="Center"/>
