@@ -164,11 +164,10 @@ public class LocalizedResourceDictionary : ResourceDictionary
         _cultureCache = new();
 
     /// <summary>
-    /// Finds the most specific culture that both <paramref name="manager"/> AND
-    /// <see cref="CommonResources"/> can serve for <paramref name="requested"/>.
-    /// Walking up the parent chain (e.g. es-MX → es → en-US) and returning the
-    /// first match in CommonResources ensures plugin satellite languages never
-    /// diverge from the IDE's effective display language.
+    /// Finds the culture CommonResources would actually serve for <paramref name="requested"/>,
+    /// mirroring the .NET satellite probe order: exact → neutral parent → regional siblings.
+    /// Every plugin dictionary uses this same effective culture, keeping all assemblies in sync.
+    /// Example: es-MX → no es-MX sat → no es sat → finds es-ES → return es-ES.
     /// </summary>
     private static CultureInfo ResolveManagerCulture(ResourceManager manager, CultureInfo requested)
     {
@@ -177,24 +176,36 @@ public class LocalizedResourceDictionary : ResourceDictionary
             return new CultureInfo(cached);
 
         var commonRm = CommonResources.ResourceManager;
-        var culture   = requested;
 
-        while (!culture.Equals(CultureInfo.InvariantCulture))
+        // Build probe list: exact, neutral parent, then all regional siblings sharing
+        // the same neutral parent (e.g. for es-MX also try es-ES, es-419, etc.).
+        var probes = new System.Collections.Generic.List<CultureInfo> { requested };
+
+        var neutral = requested.Parent;
+        if (!neutral.Equals(CultureInfo.InvariantCulture))
         {
-            // A culture is usable only if CommonResources also has a satellite for it.
-            // This keeps all assemblies in sync: if the IDE shows en-US for es-MX,
-            // every plugin falls back to en-US regardless of its own satellite list.
+            probes.Add(neutral);
+
+            // Regional siblings: any satellite of CommonResources whose parent == neutral.
+            foreach (var sibling in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
+            {
+                if (sibling.Parent.Name.Equals(neutral.Name, StringComparison.OrdinalIgnoreCase)
+                    && !sibling.Name.Equals(requested.Name, StringComparison.OrdinalIgnoreCase))
+                    probes.Add(sibling);
+            }
+        }
+
+        foreach (var probe in probes)
+        {
             bool commonHas = false;
-            try { commonHas = commonRm.GetResourceSet(culture, createIfNotExists: true, tryParents: false) is not null; }
+            try { commonHas = commonRm.GetResourceSet(probe, createIfNotExists: true, tryParents: false) is not null; }
             catch { }
 
             if (commonHas)
             {
-                _cultureCache[cacheKey] = culture.Name;
-                return culture;
+                _cultureCache[cacheKey] = probe.Name;
+                return probe;
             }
-
-            culture = culture.Parent;
         }
 
         // No common satellite found → use en-US (the IDE's neutral language).
