@@ -9,16 +9,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:hexSvc="clr-namespace:WpfHexEditor.HexEditor.Services"
     xmlns:p="clr-namespace:WpfHexEditor.Core.Properties;assembly=WpfHexEditor.Core">
-    <ResourceDictionary.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <hexSvc:HexEditorLocalizedDictionary/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </ResourceDictionary.Resources>
-
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="./MiscelanousDictionary.xaml" />
+        <hexSvc:HexEditorLocalizedDictionary/>
     </ResourceDictionary.MergedDictionaries>
 
     <!--  USED FOR TOOLTIP OF IBYTECONTROL  -->

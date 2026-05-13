@@ -5,7 +5,7 @@
         xmlns:core="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:options="clr-namespace:WpfHexEditor.Editor.ClassDiagram.Core.CodeGen.Options;assembly=WpfHexEditor.Editor.ClassDiagram.Core"
         xmlns:abs="clr-namespace:WpfHexEditor.Editor.ClassDiagram.Core.CodeGen.Abstractions;assembly=WpfHexEditor.Editor.ClassDiagram.Core"
-             xmlns:cdSvc="clr-namespace:WpfHexEditor.Plugins.ClassDiagram.Services"
+             xmlns:cdSvc="clr-namespace:WpfHexEditor.Editor.ClassDiagram.Services"
         Title="{StaticResource ExportCode_Title}"
         Width="900" Height="640"
         WindowStartupLocation="CenterOwner"
@@ -14,7 +14,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <cdSvc:ClassDiagramLocalizedDictionary/>
+                <cdSvc:ClassDiagramEditorLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         <ObjectDataProvider x:Key="IndentStyleValues" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>

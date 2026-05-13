@@ -1,7 +1,7 @@
 ﻿<Window x:Class="WpfHexEditor.Editor.ClassDiagram.Dialogs.RoundTripPreviewDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:cdSvc="clr-namespace:WpfHexEditor.Plugins.ClassDiagram.Services"
+             xmlns:cdSvc="clr-namespace:WpfHexEditor.Editor.ClassDiagram.Services"
         Title="{StaticResource ClassDiagEd_RoundTripPreview_Title}"
         Width="900" Height="600"
         WindowStartupLocation="CenterOwner"
@@ -11,7 +11,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <cdSvc:ClassDiagramLocalizedDictionary/>
+                <cdSvc:ClassDiagramEditorLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

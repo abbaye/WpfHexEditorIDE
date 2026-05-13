@@ -9,13 +9,9 @@
                     xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls"
              xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services"
                     xmlns:cp="clr-namespace:WpfHexEditor.ColorPicker.Controls;assembly=WpfHexEditor.ColorPicker">
-    <ResourceDictionary.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <structSvc:StructureEditorLocalizedDictionary/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </ResourceDictionary.Resources>
+    <ResourceDictionary.MergedDictionaries>
+        <structSvc:StructureEditorLocalizedDictionary/>
+    </ResourceDictionary.MergedDictionaries>
 
     <!-- ── Layout styles ──────────────────────────────────────────────────── -->
 
