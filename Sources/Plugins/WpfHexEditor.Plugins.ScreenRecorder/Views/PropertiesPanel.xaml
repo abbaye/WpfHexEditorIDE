@@ -36,7 +36,7 @@
                 <Setter Property="TextAlignment"            Value="Right"/>
                 <Setter Property="MinWidth"                 Value="56"/>
                 <Setter Property="MaxWidth"                 Value="72"/>
-                <Setter Property="Background"               Value="{DynamicResource DockWindowBackgroundBrush}"/>
+                <Setter Property="Background"               Value="{DynamicResource DockBackgroundBrush}"/>
                 <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}"/>
                 <Setter Property="BorderBrush"              Value="{DynamicResource DockBorderBrush}"/>
                 <Setter Property="BorderThickness"          Value="1"/>

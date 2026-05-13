@@ -18,7 +18,7 @@
                 <svc:ScreenRecorderLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="TextBox">
-                <Setter Property="Background"               Value="{DynamicResource DockWindowBackgroundBrush}"/>
+                <Setter Property="Background"               Value="{DynamicResource DockBackgroundBrush}"/>
                 <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}"/>
                 <Setter Property="BorderBrush"              Value="{DynamicResource DockBorderBrush}"/>
                 <Setter Property="BorderThickness"          Value="1"/>
