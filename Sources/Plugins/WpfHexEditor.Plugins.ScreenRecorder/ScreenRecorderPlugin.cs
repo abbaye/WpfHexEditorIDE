@@ -7,9 +7,11 @@
 // Architecture Notes:
 //     Document tab is lazy — created on first open, then activated on subsequent calls.
 //     IPluginWithOptions wires the Options page into the IDE settings panel.
+//     IWorkspacePersistable saves/restores the open-tab state across IDE restarts.
 // ==========================================================
 
 using System.Text.Json;
+using System.Threading;
 using System.Windows;
 using WpfHexEditor.Core.Localization.Services;
 using WpfHexEditor.Plugins.ScreenRecorder.Properties;
@@ -26,11 +28,11 @@ namespace WpfHexEditor.Plugins.ScreenRecorder;
 
 public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptions, IWorkspacePersistable
 {
-    private const string DocUiId      = "WpfHexEditor.Plugins.ScreenRecorder.Document";
-    private const string CmdCapture   = "ScreenRecorder.CaptureFrame";
-    private const string CmdStop      = "ScreenRecorder.StopSession";
-    private const string CmdCancel    = "ScreenRecorder.CancelSession";
-    private const string CmdStart     = "ScreenRecorder.StartSession";
+    private const string DocUiId    = "WpfHexEditor.Plugins.ScreenRecorder.Document";
+    private const string CmdCapture = "ScreenRecorder.CaptureFrame";
+    private const string CmdStop    = "ScreenRecorder.StopSession";
+    private const string CmdCancel  = "ScreenRecorder.CancelSession";
+    private const string CmdStart   = "ScreenRecorder.StartSession";
 
     public string  Id      => "WpfHexEditor.Plugins.ScreenRecorder";
     public string  Name    => ScreenRecorderResources.ScreenRecorder_PluginName;
@@ -52,9 +54,13 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
     {
         _context = context;
 
-        // Sync with IDE language (overrides OS locale that may differ from IDE setting).
-        if (LocalizationService.Instance is { } loc)
-            LocalizedResourceDictionary.ChangeCulture(loc.CurrentCulture);
+        // Apply the IDE's active language to this thread so resx string lookups
+        // (ScreenRecorderResources.*) use the correct culture instead of the OS locale.
+        // LocalizedResourceDictionary.ChangeCulture sets DefaultThreadCurrentUICulture
+        // but not the already-running plugin-loader thread's CurrentUICulture.
+        var ideCulture = LocalizedResourceDictionary.CurrentCulture;
+        Thread.CurrentThread.CurrentUICulture = ideCulture;
+        Thread.CurrentThread.CurrentCulture   = ideCulture;
 
         FileAssociationService.RegisterIfNeeded();
         context.UIRegistry.RegisterMenuItem(
@@ -65,7 +71,7 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
                 Header     = ScreenRecorderResources.ScreenRecorder_MenuItem,
                 ParentPath = "Tools",
                 Group      = "MediaTools",
-                IconGlyph  = "",
+                IconGlyph  = "",
                 Command    = new RelayCommand(_ => OpenOrFocusDocument())
             });
 
@@ -111,7 +117,7 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
     public void SaveOptions() => Options.ScreenRecorderOptions.Instance.Save();
     public void LoadOptions() => Options.ScreenRecorderOptions.Reload();
     public string GetOptionsCategory()     => "Tools";
-    public string GetOptionsCategoryIcon() => "";
+    public string GetOptionsCategoryIcon() => "";
 
     // ── Document tab management ───────────────────────────────────────────────
 
@@ -152,13 +158,13 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
         context.CommandRegistry.Register(new SdkCommandDefinition(
             CmdStart,
             ScreenRecorderResources.ScreenRecorder_Start,
-            Name, null, "",
+            Name, null, "",
             new RelayCommand(_ => OpenOrFocusDocument())));
 
         context.CommandRegistry.Register(new SdkCommandDefinition(
             CmdCapture,
             ScreenRecorderResources.ScreenRecorder_CaptureFrame,
-            Name, "F9", "",
+            Name, "F9", "",
             new RelayCommand(
                 _ => _vm?.CaptureFrameCommand.Execute(null),
                 _ => _vm?.IsSessionActive ?? false)));
@@ -166,7 +172,7 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
         context.CommandRegistry.Register(new SdkCommandDefinition(
             CmdStop,
             ScreenRecorderResources.ScreenRecorder_Stop,
-            Name, "Shift+F9", "",
+            Name, "Shift+F9", "",
             new RelayCommand(
                 _ => _vm?.StopCaptureCommand.Execute(null),
                 _ => _vm?.IsSessionActive ?? false)));
@@ -174,7 +180,7 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
         context.CommandRegistry.Register(new SdkCommandDefinition(
             CmdCancel,
             ScreenRecorderResources.ScreenRecorder_ConfirmCancelTitle,
-            Name, "Escape", "",
+            Name, "Escape", "",
             new RelayCommand(
                 _ => _vm?.StopCaptureCommand.Execute(null),
                 _ => _vm?.IsSessionActive ?? false)));
