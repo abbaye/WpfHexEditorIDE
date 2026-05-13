@@ -10,7 +10,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:views="clr-namespace:WpfHexEditor.Plugins.ScreenRecorder.Views"
              xmlns:svc="clr-namespace:WpfHexEditor.Plugins.ScreenRecorder.Services"
-             Background="{DynamicResource Panel_Background}"
+             Background="{DynamicResource DockMenuBackgroundBrush}"
              AllowDrop="True">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -27,7 +27,7 @@
 
         <!-- Timeline toolbar: global delay + action buttons -->
         <Border Grid.Row="0"
-                Background="{DynamicResource Panel_Background}"
+                Background="{DynamicResource DockMenuBackgroundBrush}"
                 BorderBrush="{DynamicResource DockBorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="8,4">
@@ -35,7 +35,7 @@
                 <TextBlock Text="{StaticResource ScreenRecorder_GlobalDelay}"
                            VerticalAlignment="Center"
                            FontSize="11"
-                           Foreground="{DynamicResource Panel_Foreground}"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Margin="0,0,6,0" />
                 <TextBox Width="50"
                          Text="{Binding GlobalDelay, UpdateSourceTrigger=PropertyChanged}"
@@ -44,7 +44,7 @@
                          Padding="4,2"
                          ToolTip="{StaticResource ScreenRecorder_GlobalDelay}" />
                 <TextBlock Text="ms" VerticalAlignment="Center" Margin="3,0,12,0"
-                           FontSize="10" Foreground="{DynamicResource Panel_ForegroundMuted}" />
+                           FontSize="10" Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
                 <Button Content="{StaticResource ScreenRecorder_DeleteSelected}"
                         Command="{Binding DeleteSelectedCommand}"
@@ -86,7 +86,7 @@
                    Text="{StaticResource ScreenRecorder_NoFrameSelected}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
-                   Foreground="{DynamicResource Panel_ForegroundMuted}"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                    FontSize="12"
                    IsHitTestVisible="False">
             <TextBlock.Style>

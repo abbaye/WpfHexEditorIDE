@@ -36,7 +36,7 @@
         <StackPanel>
             <!-- Thumbnail -->
             <Border Height="64"
-                    Background="{DynamicResource Panel_Background}"
+                    Background="{DynamicResource DockMenuBackgroundBrush}"
                     BorderBrush="{DynamicResource DockBorderBrush}"
                     BorderThickness="1">
                 <Image Source="{Binding Thumbnail}"
@@ -47,7 +47,7 @@
             <!-- Frame label -->
             <TextBlock Text="{Binding DisplayLabel}"
                        FontSize="10"
-                       Foreground="{DynamicResource Panel_Foreground}"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                        HorizontalAlignment="Center"
                        Margin="0,3,0,0"
                        TextTrimming="CharacterEllipsis" />
@@ -67,7 +67,7 @@
                 <TextBlock Grid.Column="1"
                            Text="ms"
                            FontSize="9"
-                           Foreground="{DynamicResource Panel_ForegroundMuted}"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
                            VerticalAlignment="Center"
                            Margin="2,0,0,0" />
             </Grid>

@@ -13,7 +13,7 @@
              xmlns:svc="clr-namespace:WpfHexEditor.Plugins.ScreenRecorder.Services"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="900"
-             Background="{DynamicResource Panel_Background}">
+             Background="{DynamicResource DockMenuBackgroundBrush}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -43,7 +43,7 @@
 
             <!-- Preview pane (placeholder — wired in Phase 7) -->
             <Border Grid.Column="0"
-                    Background="{DynamicResource Panel_Background}"
+                    Background="{DynamicResource DockMenuBackgroundBrush}"
                     BorderBrush="{DynamicResource DockBorderBrush}"
                     BorderThickness="0,0,0,0">
                 <views:PreviewPane x:Name="PreviewPane" />
@@ -66,7 +66,7 @@
 
         <!-- Row 2: Timeline strip -->
         <Border Grid.Row="2"
-                Background="{DynamicResource Panel_Background}"
+                Background="{DynamicResource DockMenuBackgroundBrush}"
                 BorderBrush="{DynamicResource DockBorderBrush}"
                 BorderThickness="0,1,0,0">
             <views:TimelineStrip x:Name="TimelineStrip" />
