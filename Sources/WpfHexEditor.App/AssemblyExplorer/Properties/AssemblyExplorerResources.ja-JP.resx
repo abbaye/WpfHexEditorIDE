@@ -137,4 +137,7 @@
   <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>逆コンパイルされたファイルを追加するプロジェクトを選択:</value></data>
   <data name="Common_ColOffset" xml:space="preserve"><value>オフセット</value></data>
   <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>フィルターをクリア</value></data>
+  <data name="AsmExplorer_GoToDefinition" xml:space="preserve">
+    <value>Go to Definition</value>
+  </data>
 </root>

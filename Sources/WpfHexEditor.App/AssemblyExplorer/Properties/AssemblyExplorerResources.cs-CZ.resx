@@ -173,4 +173,7 @@
   <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>Vyberte projekt, do kterého přidat souborcompilé :</value></data>
   <data name="Common_ColOffset" xml:space="preserve"><value>Posun</value></data>
   <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>Vymazat filtr</value></data>
+  <data name="AsmExplorer_GoToDefinition" xml:space="preserve">
+    <value>Go to Definition</value>
+  </data>
 </root>

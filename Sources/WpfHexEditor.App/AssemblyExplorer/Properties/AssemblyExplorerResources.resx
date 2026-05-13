@@ -261,6 +261,9 @@
   <data name="AsmExplorer_ScanningXRefs" xml:space="preserve">
     <value>Scanning XRefs…</value>
   </data>
+  <data name="AsmExplorer_GoToDefinition" xml:space="preserve">
+    <value>Go to Definition</value>
+  </data>
   <data name="AsmExplorer_OpenSourceLink" xml:space="preserve">
     <value>Open in browser via SourceLink</value>
   </data>

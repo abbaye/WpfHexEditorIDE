@@ -14,7 +14,11 @@
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:asmSvc="clr-namespace:WpfHexEditor.App.AssemblyExplorer.Services"
                         xmlns:local="clr-namespace:WpfHexEditor.App.AssemblyExplorer.Views"
-                        Title="{StaticResource AsmExplorer_ExtractToProject}">
+                        Title="{StaticResource AsmExplorer_ExtractToProject}"
+                        Width="360"
+                        Height="260"
+                        ResizeMode="NoResize"
+                        WindowStartupLocation="CenterOwner">
     <local:ThemedDialogBase.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -22,10 +26,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </local:ThemedDialogBase.Resources>
-                        Width="360"
-                        Height="260"
-                        ResizeMode="NoResize"
-                        WindowStartupLocation="CenterOwner">
 
     <Grid Background="{DynamicResource DockMenuBackgroundBrush}">
         <Grid.RowDefinitions>

@@ -173,4 +173,7 @@
   <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>Chọn dự án để thêm tệp đã dịch ngược vào :</value></data>
   <data name="Common_ColOffset" xml:space="preserve"><value>Offset</value></data>
   <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>Xóa bộ lọc</value></data>
+  <data name="AsmExplorer_GoToDefinition" xml:space="preserve">
+    <value>Go to Definition</value>
+  </data>
 </root>

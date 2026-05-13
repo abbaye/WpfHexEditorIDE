@@ -137,4 +137,7 @@
   <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>Sélectionnez le projet auquel ajouter le fichier décompilé :</value></data>
   <data name="Common_ColOffset" xml:space="preserve"><value>Décalage</value></data>
   <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>Effacer le filtre</value></data>
+  <data name="AsmExplorer_GoToDefinition" xml:space="preserve">
+    <value>Go to Definition</value>
+  </data>
 </root>

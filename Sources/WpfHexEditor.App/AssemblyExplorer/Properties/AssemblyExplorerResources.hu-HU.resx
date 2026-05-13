@@ -142,4 +142,7 @@
   <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>Válassza ki a projektet, amelyhez hozzá kívánja adni a visszafordított fájlt:</value></data>
   <data name="Common_ColOffset" xml:space="preserve"><value>Eltolás</value></data>
   <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>Szűrő törlése</value></data>
+  <data name="AsmExplorer_GoToDefinition" xml:space="preserve">
+    <value>Go to Definition</value>
+  </data>
 </root>
