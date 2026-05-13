@@ -82,6 +82,55 @@ public sealed partial class IdeMessageBox : ThemedDialog
     }
 
     /// <summary>
+    /// Shows a themed message dialog with fully custom button labels.
+    /// Returns the 0-based index of the button clicked, or -1 if cancelled via X.
+    /// The first button is styled as the primary action.
+    /// </summary>
+    public static int ShowCustom(
+        string          message,
+        string          title,
+        string[]        buttonLabels,
+        MessageBoxImage icon  = MessageBoxImage.None,
+        Window?         owner = null)
+    {
+        var dlg = new IdeMessageBox
+        {
+            Title = title,
+            Owner = owner ?? TryGetMainWindow(),
+        };
+        dlg.MessageText.Text = message;
+        dlg.ApplyIcon(icon);
+
+        int clicked = -1;
+        for (int i = 0; i < buttonLabels.Length; i++)
+        {
+            int index = i; // capture
+            var btn = new Button
+            {
+                Content   = buttonLabels[i],
+                IsDefault = i == 0,
+                IsCancel  = i == buttonLabels.Length - 1,
+            };
+            if (i == 0)
+            {
+                btn.Background  = new SolidColorBrush(Color.FromRgb(0x6B, 0x3F, 0xA0));
+                btn.Foreground  = Brushes.White;
+                btn.BorderBrush = new SolidColorBrush(Color.FromRgb(0x7B, 0x4F, 0xB0));
+            }
+            btn.Click += (_, _) =>
+            {
+                clicked            = index;
+                dlg.DialogResult   = true;
+                dlg.Close();
+            };
+            dlg.ButtonPanel.Children.Add(btn);
+        }
+
+        dlg.ShowDialog();
+        return clicked;
+    }
+
+    /// <summary>
     /// Async version — marshals to the UI thread.
     /// Safe to call from background tasks or async ViewModels.
     /// </summary>
