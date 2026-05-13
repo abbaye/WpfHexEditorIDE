@@ -9,7 +9,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.App.Scripting.ViewModels;
-using WpfHexEditor.SDK.Contracts;
 
 namespace WpfHexEditor.App.Scripting.Panels;
 
@@ -46,10 +45,7 @@ public sealed class ScriptingConsolePanel : UserControl
         _inputBox.SetBinding(TextBox.TextProperty, new Binding(nameof(_vm.Code)) { Source = _vm, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         _inputBox.KeyDown += OnInputKeyDown;
 
-        var outputList = new ItemsControl
-        {
-            ItemsSource = _vm.Output,
-        };
+        var outputList = new ItemsControl { ItemsSource = _vm.Output };
         outputList.ItemTemplate = BuildOutputTemplate();
 
         var scroll = new ScrollViewer
@@ -59,9 +55,13 @@ public sealed class ScriptingConsolePanel : UserControl
             Margin                      = new Thickness(4, 0, 4, 4),
         };
 
-        _vm.Output.CollectionChanged += (_, _) =>
-            scroll.Dispatcher.InvokeAsync(() => scroll.ScrollToBottom(),
+        NotifyCollectionChangedEventHandler scrollHandler =
+            (_, _) => scroll.Dispatcher.InvokeAsync(
+                scroll.ScrollToBottom,
                 System.Windows.Threading.DispatcherPriority.Background);
+
+        _vm.Output.CollectionChanged += scrollHandler;
+        Unloaded += (_, _) => _vm.Output.CollectionChanged -= scrollHandler;
 
         var root = new DockPanel();
         DockPanel.SetDock(toolbar,   Dock.Top);
@@ -69,7 +69,7 @@ public sealed class ScriptingConsolePanel : UserControl
         root.Children.Add(toolbar);
         root.Children.Add(_inputBox);
         root.Children.Add(scroll);
-        Content    = root;
+        Content     = root;
         DataContext = _vm;
 
         runBtn.Click    += async (_, _) => await _vm.RunAsync();
@@ -81,8 +81,6 @@ public sealed class ScriptingConsolePanel : UserControl
         cancelBtn.SetBinding(UIElement.IsEnabledProperty,
             new Binding(nameof(_vm.IsBusy)) { Source = _vm });
     }
-
-    public void SetContext(IIDEHostContext _) { }
 
     private void OnInputKeyDown(object sender, KeyEventArgs e)
     {
@@ -118,11 +116,8 @@ public sealed class ScriptingConsolePanel : UserControl
         factory.SetBinding(TextBlock.TextProperty, new Binding(nameof(OutputEntry.Text)));
         factory.SetBinding(TextBlock.ForegroundProperty,
             new Binding(nameof(OutputEntry.IsError)) { Converter = new ErrorForegroundConverter() });
-
         return new DataTemplate { VisualTree = factory };
     }
-
-    // ── Local converters ──────────────────────────────────────────────────────
 
     private sealed class InverseBoolConverter : System.Windows.Data.IValueConverter
     {

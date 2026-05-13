@@ -44,6 +44,5 @@ internal sealed class ScriptingModule
 
         var vm = new ScriptingConsolePanelViewModel(_context.Scripting);
         _panel  = new ScriptingConsolePanel(vm);
-        _panel.SetContext(_context);
     }
 }

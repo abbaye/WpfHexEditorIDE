@@ -1,10 +1,11 @@
 // Project      : WpfHexEditor.App
 // File         : Scripting/ViewModels/ScriptingConsolePanelViewModel.cs
 // Description  : VM for the Scripting Console panel.
-// Architecture : Delegates execution to IScriptingService; maintains a ring-buffer
-//                command history (20 entries) and a flat output log.
+// Architecture : Delegates execution to IScriptingService; history delegated to
+//                CommandHistory (Core.Terminal); output capped at MaxOutputLines.
 
 using System.Collections.ObjectModel;
+using WpfHexEditor.Core.Terminal;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.SDK.Contracts.Services;
 
@@ -12,14 +13,14 @@ namespace WpfHexEditor.App.Scripting.ViewModels;
 
 public sealed class ScriptingConsolePanelViewModel : ViewModelBase
 {
-    private const int HistoryCapacity = 20;
+    private const int MaxOutputLines = 2000;
 
-    private readonly IScriptingService?      _scripting;
-    private readonly List<string>            _history = [];
-    private int                              _historyIndex = -1;
-    private string                           _code       = string.Empty;
-    private bool                             _isBusy;
-    private CancellationTokenSource?         _cts;
+    private readonly IScriptingService? _scripting;
+    private readonly CommandHistory     _history = new();
+    private string                      _code    = string.Empty;
+    private bool                        _isBusy;
+    private CancellationTokenSource?    _cts;
+    private readonly object             _ctsLock = new();
 
     public ObservableCollection<OutputEntry> Output { get; } = [];
 
@@ -45,13 +46,20 @@ public sealed class ScriptingConsolePanelViewModel : ViewModelBase
         var code = _code.Trim();
         if (string.IsNullOrEmpty(code) || _scripting is null) return;
 
-        PushHistory(code);
-        IsBusy = true;
-        _cts   = new CancellationTokenSource();
+        _history.Push(code);
 
+        CancellationTokenSource cts;
+        lock (_ctsLock)
+        {
+            _cts?.Dispose();
+            _cts = new CancellationTokenSource();
+            cts  = _cts;
+        }
+
+        IsBusy = true;
         try
         {
-            var result = await _scripting.RunAsync(code, _cts.Token).ConfigureAwait(true);
+            var result = await _scripting.RunAsync(code, cts.Token).ConfigureAwait(true);
 
             if (!string.IsNullOrEmpty(result.Output))
                 Append(result.Output, isError: false);
@@ -75,42 +83,30 @@ public sealed class ScriptingConsolePanelViewModel : ViewModelBase
         }
         finally
         {
-            _cts?.Dispose();
-            _cts   = null;
+            lock (_ctsLock) { _cts = null; }
+            cts.Dispose();
             IsBusy = false;
         }
     }
 
-    public void Cancel() => _cts?.Cancel();
+    public void Cancel()
+    {
+        CancellationTokenSource? cts;
+        lock (_ctsLock) { cts = _cts; }
+        cts?.Cancel();
+    }
 
     public void ClearOutput() => Output.Clear();
 
-    public string? HistoryUp()
-    {
-        if (_history.Count == 0) return null;
-        _historyIndex = Math.Min(_historyIndex + 1, _history.Count - 1);
-        return _history[_history.Count - 1 - _historyIndex];
-    }
-
-    public string? HistoryDown()
-    {
-        if (_historyIndex <= 0) { _historyIndex = -1; return string.Empty; }
-        _historyIndex--;
-        return _history[_history.Count - 1 - _historyIndex];
-    }
-
-    private void PushHistory(string code)
-    {
-        // Remove duplicate if already at top; ring-cap.
-        if (_history.Count > 0 && _history[^1] == code) { _historyIndex = -1; return; }
-        _history.Add(code);
-        if (_history.Count > HistoryCapacity)
-            _history.RemoveAt(0);
-        _historyIndex = -1;
-    }
+    public string? HistoryUp()    => _history.NavigatePrevious();
+    public string? HistoryDown()  => _history.NavigateNext();
 
     private void Append(string text, bool isError)
-        => Output.Add(new OutputEntry(text, isError));
+    {
+        if (Output.Count >= MaxOutputLines)
+            Output.RemoveAt(0);
+        Output.Add(new OutputEntry(text, isError));
+    }
 }
 
 public sealed record OutputEntry(string Text, bool IsError);
