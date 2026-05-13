@@ -80,8 +80,11 @@ public sealed class HexDiffViewModel : ViewModelBase
 
         try
         {
-            var bytesA = await Task.Run(() => ReadGuarded(_fileAPath));
-            var bytesB = await Task.Run(() => ReadGuarded(_fileBPath));
+            var taskA = Task.Run(() => ReadGuarded(_fileAPath));
+            var taskB = Task.Run(() => ReadGuarded(_fileBPath));
+            await Task.WhenAll(taskA, taskB);
+            var bytesA = taskA.Result;
+            var bytesB = taskB.Result;
 
             if (bytesA is null || bytesB is null) return;
 
@@ -128,9 +131,12 @@ public sealed class HexDiffViewModel : ViewModelBase
     {
         try
         {
-            var info = new FileInfo(path);
-            if (!info.Exists)           { StatusText = $"File not found: {path}"; return null; }
-            if (info.Length > FileDiffService.MaxFileSizeBytes) { StatusText = "File exceeds 256 MB limit."; return null; }
+            // Check size before reading to avoid loading multi-GB files into memory.
+            if (new FileInfo(path).Length > FileDiffService.MaxFileSizeBytes)
+            {
+                StatusText = "File exceeds 256 MB limit.";
+                return null;
+            }
             return File.ReadAllBytes(path);
         }
         catch (Exception ex)

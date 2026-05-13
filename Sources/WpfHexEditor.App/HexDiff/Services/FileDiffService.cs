@@ -15,17 +15,17 @@ public static class FileDiffService
     public static IReadOnlyList<DiffRecord> Diff(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b)
     {
         var results = new List<DiffRecord>();
-        long common = Math.Min(a.Length, b.Length);
+        int common  = Math.Min(a.Length, b.Length);
 
-        for (long i = 0; i < common; i++)
-            if (a[(int)i] != b[(int)i])
-                results.Add(new DiffRecord(i, a[(int)i], b[(int)i], DiffKind.Substitution));
+        for (int i = 0; i < common; i++)
+            if (a[i] != b[i])
+                results.Add(new DiffRecord(i, a[i], b[i], DiffKind.Substitution));
 
-        for (long i = common; i < a.Length; i++)
-            results.Add(new DiffRecord(i, a[(int)i], 0, DiffKind.Deletion));
+        for (int i = common; i < a.Length; i++)
+            results.Add(new DiffRecord(i, a[i], 0, DiffKind.Deletion));
 
-        for (long i = common; i < b.Length; i++)
-            results.Add(new DiffRecord(i, 0, b[(int)i], DiffKind.Insertion));
+        for (int i = common; i < b.Length; i++)
+            results.Add(new DiffRecord(i, 0, b[i], DiffKind.Insertion));
 
         return results;
     }

@@ -62,7 +62,6 @@ public sealed class HexDiffPanel : UserControl
         grid.Columns.Add(new DataGridTextColumn { Header = "File B",   Binding = new Binding(nameof(DiffRecord.NewByte)) { StringFormat = "{0:X2}" }, Width = 60 });
         grid.ItemsSource = _vm.Results;
 
-        // Color rows by diff kind
         var rowStyle = new Style(typeof(DataGridRow));
         rowStyle.Triggers.Add(MakeKindTrigger(DiffKind.Substitution, Color.FromArgb(60, 255, 200, 0)));
         rowStyle.Triggers.Add(MakeKindTrigger(DiffKind.Insertion,    Color.FromArgb(60, 0,   200, 80)));
@@ -75,7 +74,6 @@ public sealed class HexDiffPanel : UserControl
         root.Children.Add(grid);
         Content = root;
 
-        // Bindings
         fileABox.SetBinding(TextBox.TextProperty, new Binding(nameof(_vm.FileAPath)) { Source = _vm });
         fileBBox.SetBinding(TextBox.TextProperty, new Binding(nameof(_vm.FileBPath)) { Source = _vm });
         statusTxt.SetBinding(TextBlock.TextProperty, new Binding(nameof(_vm.StatusText)) { Source = _vm });
@@ -90,7 +88,7 @@ public sealed class HexDiffPanel : UserControl
     }
 
     public void SetContext(IIDEHostContext context) => _vm.SetContext(context);
-    public void OnFileOpened() { _vm.Results.Clear(); _vm.FileAPath = string.Empty; }
+    public void OnFileOpened() => _vm.Results.Clear();
 
     private void OnExport()
     {
@@ -118,8 +116,7 @@ public sealed class HexDiffPanel : UserControl
             Binding = new Binding(nameof(DiffRecord.Kind)),
             Value   = kind,
         };
-        trigger.Setters.Add(new Setter(BackgroundProperty,
-            new SolidColorBrush(color) { Opacity = 1 }));
+        trigger.Setters.Add(new Setter(BackgroundProperty, new SolidColorBrush(color)));
         return trigger;
     }
 }
