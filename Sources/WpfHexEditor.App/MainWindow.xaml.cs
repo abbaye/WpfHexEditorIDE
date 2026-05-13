@@ -1699,6 +1699,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             WpfHexEditor.App.Analysis.CodeAnalysisModule.ReportTabUiId
                                                                     => GetOrDeferModulePanel(item, () => _codeAnalysisModule?.GetReportPane(), () => _codeAnalysisModule?.GetReportPane() is not null),
             _ when item.ContentId.StartsWith("doc-class-diagram-") => CreateClassDiagramGhostContent(item),
+            "WpfHexEditor.Plugins.ScreenRecorder.Document"          => CreatePluginDocumentGhostContent(item),
             _ when item.ContentId.StartsWith("doc-new-text-")   => CreateEmptyTextEditorContent(item),
             _ when item.ContentId.StartsWith("doc-new-code-")  => CreateEmptyCodeEditorContent(item),
             _ when item.ContentId.StartsWith("doc-file-")      => CreateSmartFileEditorContent(item),
@@ -1716,6 +1717,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         // Class diagram tabs are reopened by the plugin on startup via BeginInvoke(ApplicationIdle).
         // Close this stale layout entry silently so the plugin can create a fresh tab.
+        Dispatcher.InvokeAsync(() => CloseTab(item, promptIfDirty: false),
+            System.Windows.Threading.DispatcherPriority.Background);
+        return new Border();
+    }
+
+    private UIElement CreatePluginDocumentGhostContent(DockItem item)
+    {
+        // Plugin document tabs are reopened by the plugin's InitializeAsync via BeginInvoke(ApplicationIdle).
+        // Close this stale layout entry silently so the plugin can register a fresh tab.
         Dispatcher.InvokeAsync(() => CloseTab(item, promptIfDirty: false),
             System.Windows.Threading.DispatcherPriority.Background);
         return new Border();

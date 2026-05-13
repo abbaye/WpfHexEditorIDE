@@ -45,6 +45,9 @@ public sealed class ScreenRecorderOptions
     // ── ffmpeg ────────────────────────────────────────────────────────────────
     public string FfmpegPath { get; set; } = string.Empty;
 
+    // ── UI state ──────────────────────────────────────────────────────────────
+    public bool DocumentTabOpen { get; set; } = false;
+
     public static ScreenRecorderOptions Load()
     {
         try
