@@ -1230,12 +1230,15 @@ public sealed class DiagramCanvas : Canvas
     protected override void OnLostMouseCapture(MouseEventArgs e)
     {
         base.OnLostMouseCapture(e);
+        bool wasDragging = _dragNode is not null || _draggingGroupNs is not null || _resizingNode is not null;
         _dragNode = null;
         _draggingGroupNs = null;
         _dragStartPositions.Clear();
         _resizingNode    = null;
         _isRubberBanding = false;
         Cursor = null;
+        if (wasDragging)
+            _layer.RefreshArrows();
     }
 
     protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
