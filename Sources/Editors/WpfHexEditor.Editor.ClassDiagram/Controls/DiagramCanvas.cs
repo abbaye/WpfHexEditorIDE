@@ -969,6 +969,9 @@ public sealed class DiagramCanvas : Canvas
         e.Handled = true;
     }
 
+    // Arrows redraw live during drag when the diagram is small enough to be smooth.
+    private bool LiveArrowsEnabled => (_doc?.Relationships.Count ?? 0) <= 60;
+
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
@@ -990,7 +993,7 @@ public sealed class DiagramCanvas : Canvas
                 }
                 else { n.X = rawX; n.Y = rawY; }
             }
-            ApplyPatch(_dragStartPositions.Keys, refreshArrows: false);
+            ApplyPatch(_dragStartPositions.Keys, refreshArrows: LiveArrowsEnabled);
             e.Handled = true;
             return;
         }
@@ -1028,7 +1031,7 @@ public sealed class DiagramCanvas : Canvas
                     }
                     else { n.X = rawX; n.Y = rawY; }
                 }
-                ApplyPatch(_selectedIds, refreshArrows: false);
+                ApplyPatch(_selectedIds, refreshArrows: LiveArrowsEnabled);
             }
             else
             {
@@ -1040,7 +1043,7 @@ public sealed class DiagramCanvas : Canvas
                     _dragNode.X = snapped.X; _dragNode.Y = snapped.Y;
                 }
                 else { _dragNode.X = rawX; _dragNode.Y = rawY; }
-                ApplyPatch([_dragNode.Id], refreshArrows: false);
+                ApplyPatch([_dragNode.Id], refreshArrows: LiveArrowsEnabled);
             }
         }
         else if (_isRubberBanding)
