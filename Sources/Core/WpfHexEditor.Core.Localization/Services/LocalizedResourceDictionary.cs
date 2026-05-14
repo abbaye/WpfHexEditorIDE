@@ -197,11 +197,7 @@ public class LocalizedResourceDictionary : ResourceDictionary
 
         foreach (var probe in probes)
         {
-            bool commonHas = false;
-            try { commonHas = commonRm.GetResourceSet(probe, createIfNotExists: true, tryParents: false) is not null; }
-            catch { }
-
-            if (commonHas)
+            if (HasSatellite(commonRm, probe))
             {
                 _cultureCache[cacheKey] = probe.Name;
                 return probe;
@@ -212,5 +208,21 @@ public class LocalizedResourceDictionary : ResourceDictionary
         var fallback = new CultureInfo("en-US");
         _cultureCache[cacheKey] = fallback.Name;
         return fallback;
+    }
+
+    private static readonly System.Reflection.Assembly _commonAsm =
+        System.Reflection.Assembly.GetAssembly(typeof(CommonResources))!;
+
+    /// <summary>
+    /// Returns true only if a physical satellite assembly for CommonResources exists for
+    /// <paramref name="culture"/>. Uses Assembly.GetSatelliteAssembly — throws on miss —
+    /// to avoid .NET returning a synthetic empty ResourceSet for cultures whose DLL was
+    /// never shipped, which would incorrectly signal satellite presence.
+    /// </summary>
+    private static bool HasSatellite(ResourceManager _, CultureInfo culture)
+    {
+        if (culture.Equals(CultureInfo.InvariantCulture)) return false;
+        try   { _commonAsm.GetSatelliteAssembly(culture); return true; }
+        catch { return false; }
     }
 }
