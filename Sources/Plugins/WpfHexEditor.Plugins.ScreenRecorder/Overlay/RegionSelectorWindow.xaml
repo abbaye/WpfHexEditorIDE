@@ -12,6 +12,7 @@
         Background="#44000000"
         Topmost="True"
         ShowInTaskbar="False"
+        WindowStartupLocation="Manual"
         Cursor="Cross">
     <Canvas x:Name="RootCanvas"
             MouseLeftButtonDown="OnMouseDown"

@@ -5,7 +5,9 @@
 //              Registers the Tools menu item and opens a document tab on demand.
 //              Commands (F9/Shift+F9/ESC) are registered via ICommandRegistry.
 // Architecture Notes:
-//     Document tab is lazy — created on first open, then activated on subsequent calls.
+//     Multi-document: each Tools > Screen Recorder invocation opens a new tab with a unique uiId.
+//     Tabs are tracked in _entries; DocumentDescriptor.OnClosed removes the entry when the tab closes.
+//     F9/Shift+F9/ESC target the last opened document (ActiveVm = _entries[^1]).
 //     IPluginWithOptions wires the Options page into the IDE settings panel.
 //     IWorkspacePersistable saves/restores the open-tab state across IDE restarts.
 // ==========================================================
@@ -45,10 +47,13 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
         WriteOutput      = true
     };
 
-    private IIDEHostContext?         _context;
-    private ScreenRecorderDocument?  _document;
-    private ScreenRecorderViewModel? _vm;
-    private bool                     _documentOpen;
+    private readonly record struct ScreenRecorderEntry(
+        string UiId,
+        ScreenRecorderDocument Document,
+        ScreenRecorderViewModel Vm);
+
+    private IIDEHostContext?                    _context;
+    private readonly List<ScreenRecorderEntry>  _entries = [];
 
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
     {
@@ -96,21 +101,19 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
         _context?.CommandRegistry?.Unregister(CmdCancel);
         _context?.CommandRegistry?.Unregister(CmdStart);
 
-        // Persist whether the tab was open so InitializeAsync can restore it next session.
-        Options.ScreenRecorderOptions.Instance.DocumentTabOpen = _documentOpen;
+        // Persist whether any tab was open so InitializeAsync can restore it next session.
+        Options.ScreenRecorderOptions.Instance.DocumentTabOpen = _entries.Count > 0;
         Options.ScreenRecorderOptions.Instance.Save();
 
-        _document     = null;
-        _vm           = null;
-        _documentOpen = false;
-        _context      = null;
+        _entries.Clear();
+        _context = null;
         return Task.CompletedTask;
     }
 
     // ── Workspace persistence (IWorkspacePersistable) ─────────────────────────
 
     public object? CaptureWorkspaceState()
-        => _documentOpen ? new { isOpen = true } : null;
+        => _entries.Count > 0 ? new { isOpen = true } : null;
 
     public Task RestoreWorkspaceStateAsync(string json, CancellationToken ct = default)
     {
@@ -138,31 +141,41 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
     {
         if (_context is null) return;
 
-        if (!_documentOpen)
+        var uiId = $"{DocUiId}_{Guid.NewGuid():N}";
+        var vm   = new ScreenRecorderViewModel();
+        var doc  = new ScreenRecorderDocument();
+        doc.SetViewModel(vm);
+
+        var entry = new ScreenRecorderEntry(uiId, doc, vm);
+        _entries.Add(entry);
+
+        _context.UIRegistry.RegisterDocumentTab(
+            uiId,
+            doc,
+            Id,
+            new DocumentDescriptor
+            {
+                Title    = ScreenRecorderResources.ScreenRecorder_DocumentTitle,
+                CanClose = true,
+                OnClosed = () => RemoveEntry(uiId)
+            });
+
+        Options.ScreenRecorderOptions.Instance.DocumentTabOpen = true;
+        Options.ScreenRecorderOptions.Instance.Save();
+    }
+
+    private void RemoveEntry(string uiId)
+    {
+        _entries.RemoveAll(e => e.UiId == uiId);
+        if (_entries.Count == 0)
         {
-            _vm       = new ScreenRecorderViewModel();
-            _document = new ScreenRecorderDocument();
-            _document.SetViewModel(_vm);
-
-            _context.UIRegistry.RegisterDocumentTab(
-                DocUiId,
-                _document,
-                Id,
-                new DocumentDescriptor
-                {
-                    Title    = ScreenRecorderResources.ScreenRecorder_DocumentTitle,
-                    CanClose = true
-                });
-
-            _documentOpen = true;
-            Options.ScreenRecorderOptions.Instance.DocumentTabOpen = true;
+            Options.ScreenRecorderOptions.Instance.DocumentTabOpen = false;
             Options.ScreenRecorderOptions.Instance.Save();
         }
-        else
-        {
-            _context.UIRegistry.ShowPanel(DocUiId);
-        }
     }
+
+    // The last opened document's VM receives keyboard shortcuts (F9 / Shift+F9 / ESC).
+    private ScreenRecorderViewModel? ActiveVm => _entries.Count > 0 ? _entries[^1].Vm : null;
 
     // ── Command registration ──────────────────────────────────────────────────
 
@@ -181,23 +194,23 @@ public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptio
             ScreenRecorderResources.ScreenRecorder_CaptureFrame,
             Name, "F9", "",
             new RelayCommand(
-                _ => _vm?.CaptureFrameCommand.Execute(null),
-                _ => _vm?.IsSessionActive ?? false)));
+                _ => ActiveVm?.CaptureFrameCommand.Execute(null),
+                _ => ActiveVm?.IsSessionActive ?? false)));
 
         context.CommandRegistry.Register(new SdkCommandDefinition(
             CmdStop,
             ScreenRecorderResources.ScreenRecorder_Stop,
             Name, "Shift+F9", "",
             new RelayCommand(
-                _ => _vm?.StopCaptureCommand.Execute(null),
-                _ => _vm?.IsSessionActive ?? false)));
+                _ => ActiveVm?.StopCaptureCommand.Execute(null),
+                _ => ActiveVm?.IsSessionActive ?? false)));
 
         context.CommandRegistry.Register(new SdkCommandDefinition(
             CmdCancel,
             ScreenRecorderResources.ScreenRecorder_ConfirmCancelTitle,
             Name, "Escape", "",
             new RelayCommand(
-                _ => _vm?.StopCaptureCommand.Execute(null),
-                _ => _vm?.IsSessionActive ?? false)));
+                _ => ActiveVm?.StopCaptureCommand.Execute(null),
+                _ => ActiveVm?.IsSessionActive ?? false)));
     }
 }

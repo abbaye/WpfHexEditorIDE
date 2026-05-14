@@ -5,6 +5,7 @@
 //              Returns screen-coordinate CaptureRegion on mouse-up; null on ESC.
 // ==========================================================
 
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -19,12 +20,28 @@ public partial class RegionSelectorWindow : Window
     private Point _startPoint;
     private bool  _dragging;
 
+    [DllImport("user32.dll")] private static extern int GetSystemMetrics(int n);
+    private const int SM_XVIRTUALSCREEN  = 76;
+    private const int SM_YVIRTUALSCREEN  = 77;
+    private const int SM_CXVIRTUALSCREEN = 78;
+    private const int SM_CYVIRTUALSCREEN = 79;
+
     public RegionSelectorWindow()
     {
         InitializeComponent();
-        WindowState = WindowState.Maximized;
-        Left = SystemParameters.VirtualScreenLeft;
-        Top  = SystemParameters.VirtualScreenTop;
+
+        // Use physical pixel dimensions so the overlay truly covers all monitors
+        // regardless of DPI scaling. WPF device-independent units equal physical pixels
+        // at 96 Dpi; we compensate via the visual's DPI transform when needed.
+        // GetSystemMetrics returns physical pixels — divide by DPI factor for WPF coords.
+        var source = PresentationSource.FromVisual(Application.Current.MainWindow);
+        var dpiX   = source?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
+        var dpiY   = source?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+
+        Left   = GetSystemMetrics(SM_XVIRTUALSCREEN)  / dpiX;
+        Top    = GetSystemMetrics(SM_YVIRTUALSCREEN)  / dpiY;
+        Width  = GetSystemMetrics(SM_CXVIRTUALSCREEN) / dpiX;
+        Height = GetSystemMetrics(SM_CYVIRTUALSCREEN) / dpiY;
     }
 
     protected override void OnContentRendered(EventArgs e)

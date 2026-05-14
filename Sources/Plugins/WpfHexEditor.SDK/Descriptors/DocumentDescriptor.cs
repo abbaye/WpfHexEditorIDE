@@ -25,4 +25,10 @@ public sealed class DocumentDescriptor
 
     /// <summary>Whether the tab can be closed by the user (default: true).</summary>
     public bool CanClose { get; init; } = true;
+
+    /// <summary>
+    /// Invoked by the host when the user closes this document tab.
+    /// Use this to clean up resources or update plugin state.
+    /// </summary>
+    public Action? OnClosed { get; init; }
 }

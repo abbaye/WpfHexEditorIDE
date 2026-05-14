@@ -61,6 +61,9 @@ public interface IDockingAdapter
     /// <summary>Raised when a panel transitions from visible to hidden/closed.</summary>
     event EventHandler<string>? PanelHidden;
 
+    /// <summary>Raised when a document tab is closed by the user (not via UnregisterDocumentTab).</summary>
+    event EventHandler<string>? DocumentTabClosed;
+
     // ── Tab Group extensions (default: no-op; overridden by DockingAdapter) ──
 
     /// <summary>Opens a new vertical tab group containing the active document.</summary>

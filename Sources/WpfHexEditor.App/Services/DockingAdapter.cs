@@ -49,6 +49,9 @@ public sealed class DockingAdapter : IDockingAdapter
     // A single rebuild is performed by ResumeRebuild() at the end of the batch.
     private bool _rebuildSuspended;
 
+    // OnClosed callbacks registered by document tabs via DocumentDescriptor.OnClosed.
+    private readonly Dictionary<string, Action> _documentClosedCallbacks = new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>
     /// When set, overrides <see cref="PanelDescriptor.DefaultDockSide"/> for newly docked panels.
     /// Set by the Customize Layout popup's "Panel Default Side" option.
@@ -75,6 +78,17 @@ public sealed class DockingAdapter : IDockingAdapter
         // Forward dock engine show/hide events as PanelShown/PanelHidden
         _engine.ItemShown  += item => PanelShown?.Invoke(this, item.ContentId);
         _engine.ItemHidden += item => PanelHidden?.Invoke(this, item.ContentId);
+
+        // Fire OnClosed callbacks registered by document tabs, and raise DocumentTabClosed.
+        _engine.ItemClosed += item =>
+        {
+            if (_documentClosedCallbacks.TryGetValue(item.ContentId, out var cb))
+            {
+                _documentClosedCallbacks.Remove(item.ContentId);
+                cb();
+            }
+            DocumentTabClosed?.Invoke(this, item.ContentId);
+        };
     }
 
     /// <inheritdoc />
@@ -82,6 +96,9 @@ public sealed class DockingAdapter : IDockingAdapter
 
     /// <inheritdoc />
     public event EventHandler<string>? PanelHidden;
+
+    /// <inheritdoc />
+    public event EventHandler<string>? DocumentTabClosed;
 
     /// <summary>
     /// Suppresses <see cref="DockControl.RebuildVisualTree"/> calls during a bulk operation
@@ -261,12 +278,15 @@ public sealed class DockingAdapter : IDockingAdapter
         _storeContent(uiId, content);
         _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
         if (item.Owner is { } docOwner) docOwner.ActiveItem = item;
+        if (descriptor.OnClosed is not null)
+            _documentClosedCallbacks[uiId] = descriptor.OnClosed;
         if (!_rebuildSuspended) _dockHost.RebuildVisualTree();
     }
 
     /// <inheritdoc />
     public void RemoveDocumentTab(string uiId)
     {
+        _documentClosedCallbacks.Remove(uiId);
         var item = _layout.FindItemByContentId(uiId);
         if (item is not null) _engine.Close(item);
     }

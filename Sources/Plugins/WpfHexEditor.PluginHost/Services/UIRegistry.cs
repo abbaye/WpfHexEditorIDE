@@ -36,6 +36,13 @@ public sealed class UIRegistry : IUIRegistry
         _dockingAdapter = dockingAdapter ?? throw new ArgumentNullException(nameof(dockingAdapter));
         _menuAdapter = menuAdapter ?? throw new ArgumentNullException(nameof(menuAdapter));
         _statusBarAdapter = statusBarAdapter ?? throw new ArgumentNullException(nameof(statusBarAdapter));
+
+        // Clean up stale registrations when a document tab is closed by the user.
+        _dockingAdapter.DocumentTabClosed += (_, uiId) =>
+        {
+            lock (_lock)
+                _registrations.Remove(uiId);
+        };
     }
 
     /// <inheritdoc />
