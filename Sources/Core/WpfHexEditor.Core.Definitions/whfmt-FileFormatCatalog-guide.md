@@ -62,12 +62,14 @@ for the full 4-axis audit report.
 
 The package ships two assemblies:
 
-```
-whfmt.FileFormatCatalog.nupkg
-└── lib/net8.0/
-    ├── WpfHexEditor.Core.Definitions.dll   — catalog engine + 799 embedded definitions
-    │                                         + runtime expression engine + utility layer
-    └── WpfHexEditor.Core.Contracts.dll     — public types (interfaces, records, enums)
+```mermaid
+graph TD
+    pkg["📦 whfmt.FileFormatCatalog.nupkg"]
+    def["WpfHexEditor.Core.Definitions.dll<br/><small>catalog engine · 799 embedded definitions<br/>runtime expression engine · utility layer</small>"]
+    con["WpfHexEditor.Core.Contracts.dll<br/><small>public types · interfaces · records · enums</small>"]
+    pkg --> def
+    pkg --> con
+    def -- "depends on (transitive)" --> con
 ```
 
 Consumers reference `WpfHexEditor.Core.Definitions`. `WpfHexEditor.Core.Contracts` is
@@ -99,17 +101,16 @@ bundled and flows transitively — no separate package reference needed.
 
 ### Initialization and caching
 
-```
-First call to EmbeddedFormatCatalog.Instance
-    └── LazyInitializer creates the singleton (thread-safe)
-        └── First call to GetAll()
-            └── Scans all manifest resource names in the assembly
-                └── Filters *.whfmt and *.grammar resources
-                    └── LoadHeader() / LoadGrammarHeader() per resource
-                        └── Extracts: name, category, extensions, MIME,
-                                      signatures, preferredEditor, flags
-                    └── Sorted by category then name
-                    └── Stored as FrozenSet<EmbeddedFormatEntry>
+```mermaid
+flowchart TD
+    A["First call to<br/>EmbeddedFormatCatalog.Instance"] --> B["LazyInitializer creates singleton<br/>(thread-safe)"]
+    B --> C["First call to GetAll()"]
+    C --> D["Scan manifest resource names"]
+    D --> E["Filter *.whfmt + *.grammar"]
+    E --> F["LoadHeader() / LoadGrammarHeader()<br/>per resource"]
+    F --> G["Extract: name, category, extensions,<br/>MIME, signatures, preferredEditor, flags"]
+    G --> H["Sort by category then name"]
+    H --> I["Store as FrozenSet&lt;EmbeddedFormatEntry&gt;<br/>— all subsequent calls are O(1)"]
 ```
 
 `GetJson(resourceKey)` uses a separate `Dictionary<string, string>` cache — each
@@ -136,11 +137,11 @@ at startup to absorb this cost before the first user action.
 
 ### Dependency graph
 
-```
-Your app
-  └── WpfHexEditor.Core.Definitions   (net8.0)
-        └── WpfHexEditor.Core.Contracts  (net8.0)
-              └── [BCL only — System.*]
+```mermaid
+graph LR
+    app["Your app"] --> def["WpfHexEditor.Core.Definitions<br/>(net8.0)"]
+    def --> con["WpfHexEditor.Core.Contracts<br/>(net8.0)"]
+    con --> bcl["BCL only<br/>System.*"]
 ```
 
 Zero external NuGet dependencies. No WPF, no platform-specific APIs.
@@ -1136,6 +1137,18 @@ Subtitles, Synalysis, System, Text, Video, Virtualization, Other
 ## Companion NuGet Packages
 
 The catalog is the ground truth. Several companion packages consume it for higher-level tasks:
+
+```mermaid
+graph TD
+    cat["whfmt.FileFormatCatalog 1.3.2<br/><small>catalog · expression engine · utilities</small>"]
+
+    cat --> ana["whfmt.Analysis 1.1.1<br/><small>semantic field diff</small>"]
+    cat --> fuz["whfmt.Fuzz 1.1.1<br/><small>format-aware mutation</small>"]
+    cat --> cg["whfmt.CodeGen 1.1.2<br/><small>typed parser generation</small>"]
+    cat --> val["whfmt.Validate 1.0.0<br/><small>dotnet global tool</small>"]
+    cat --> bp["WpfHexEditor.Core.ByteProvider 1.1.1<br/><small>byte provider · undo · search</small>"]
+    cat --> ba["WpfHexEditor.Core.BinaryAnalysis 1.0.1<br/><small>entropy · Intel HEX · 010 templates</small>"]
+```
 
 | Package | Version | Role |
 |---|---|---|
