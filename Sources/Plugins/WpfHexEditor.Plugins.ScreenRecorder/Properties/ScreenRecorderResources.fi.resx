@@ -55,6 +55,9 @@
   <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Pysäytä</value></data>
   <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Tauko</value></data>
   <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Jatka</value></data>
+  <data name="ScreenRecorder_Play" xml:space="preserve"><value>Toista</value></data>
+  <data name="ScreenRecorder_StopPlayback" xml:space="preserve"><value>Pysäytä toisto</value></data>
+  <data name="ScreenRecorder_ImportImages" xml:space="preserve"><value>Tuo kuvia...</value></data>
   <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Tallenna kuva</value></data>
   <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Valitse alue</value></data>
   <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Tallenna istunto</value></data>

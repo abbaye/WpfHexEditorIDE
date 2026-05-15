@@ -55,6 +55,9 @@
   <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Διακοπή</value></data>
   <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Παύση</value></data>
   <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Συνέχιση</value></data>
+  <data name="ScreenRecorder_Play" xml:space="preserve"><value>Αναπαραγωγή</value></data>
+  <data name="ScreenRecorder_StopPlayback" xml:space="preserve"><value>Διακοπή αναπαραγωγής</value></data>
+  <data name="ScreenRecorder_ImportImages" xml:space="preserve"><value>Εισαγωγή εικόνων...</value></data>
   <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Λήψη καρέ</value></data>
   <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Επιλογή περιοχής</value></data>
   <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Αποθήκευση συνεδρίας</value></data>

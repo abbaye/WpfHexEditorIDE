@@ -29,6 +29,7 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
 {
     private RecordingMode _selectedMode   = RecordingMode.Screenshot;
     private bool          _isSessionActive;
+    private bool          _isPlaying;
     private string        _sessionPath    = string.Empty;
 
     public TimelineViewModel   Timeline   { get; }
@@ -36,8 +37,15 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
     public PropertiesViewModel Properties { get; }
     public CaptureHudViewModel Hud        { get; }
 
-    private readonly CaptureService _captureService;
+    private readonly CaptureService    _captureService;
+    private readonly PlaybackService   _playbackService;
     private CaptureOverlayWindow? _overlay;
+
+    public bool IsPlaying
+    {
+        get => _isPlaying;
+        private set { if (_isPlaying == value) return; _isPlaying = value; OnPropertyChanged(); RefreshCanExecute(); }
+    }
 
     public RecordingMode SelectedMode
     {
@@ -53,16 +61,19 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
 
     // ── Commands ──────────────────────────────────────────────────────────────
 
-    public ICommand StartCaptureCommand  { get; }
-    public ICommand StopCaptureCommand   { get; }
-    public ICommand PauseCaptureCommand  { get; }
-    public ICommand CaptureFrameCommand  { get; }
-    public ICommand SelectRegionCommand  { get; }
-    public ICommand SaveSessionCommand   { get; }
-    public ICommand OpenSessionCommand   { get; }
-    public ICommand ExportGifCommand     { get; }
-    public ICommand ExportPngCommand     { get; }
-    public ICommand ExportMp4Command     { get; }
+    public ICommand StartCaptureCommand   { get; }
+    public ICommand StopCaptureCommand    { get; }
+    public ICommand PauseCaptureCommand   { get; }
+    public ICommand CaptureFrameCommand   { get; }
+    public ICommand SelectRegionCommand   { get; }
+    public ICommand SaveSessionCommand    { get; }
+    public ICommand OpenSessionCommand    { get; }
+    public ICommand ImportImagesCommand   { get; }
+    public ICommand ExportGifCommand      { get; }
+    public ICommand ExportPngCommand      { get; }
+    public ICommand ExportMp4Command      { get; }
+    public ICommand PlayCommand           { get; }
+    public ICommand StopPlaybackCommand   { get; }
 
     public ScreenRecorderViewModel()
     {
@@ -75,20 +86,29 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         Properties.SelectRegionCommand = new RelayCommand(_ => _ = SelectRegionAsync());
         Properties.ResetRegionCommand  = new RelayCommand(_ => Properties.CaptureRegion = default);
 
-        _captureService                = new CaptureService();
-        _captureService.FrameCaptured  += OnFrameCaptured;
-        _captureService.SessionStopped += OnSessionStopped;
+        _captureService                  = new CaptureService();
+        _captureService.FrameCaptured   += OnFrameCaptured;
+        _captureService.SessionStopped  += OnSessionStopped;
 
-        StartCaptureCommand = new RelayCommand(_ => StartCapture(),  _ => !IsSessionActive);
-        StopCaptureCommand  = new RelayCommand(_ => StopCapture(),   _ => IsSessionActive);
-        PauseCaptureCommand = new RelayCommand(_ => _captureService.PauseSession(), _ => IsSessionActive);
-        CaptureFrameCommand = new RelayCommand(_ => TriggerF9());
-        SelectRegionCommand = new RelayCommand(_ => _ = SelectRegionAsync());
-        SaveSessionCommand  = new RelayCommand(_ => _ = SaveSessionAsync());
-        OpenSessionCommand  = new RelayCommand(_ => _ = OpenSessionAsync());
-        ExportGifCommand    = new RelayCommand(_ => _ = ExportGifAsync(), _ => Timeline.Frames.Count > 0);
-        ExportPngCommand    = new RelayCommand(_ => _ = ExportPngAsync(), _ => Timeline.Frames.Count > 0);
-        ExportMp4Command    = new RelayCommand(_ => _ = ExportMp4Async(), _ => Timeline.Frames.Count > 0 && FfmpegExportService.IsAvailable);
+        _playbackService                 = new PlaybackService();
+        _playbackService.FrameAdvanced  += OnPlaybackFrameAdvanced;
+        _playbackService.PlaybackStopped += OnPlaybackStopped;
+
+        StartCaptureCommand  = new RelayCommand(_ => StartCapture(),  _ => !IsSessionActive && !IsPlaying);
+        StopCaptureCommand   = new RelayCommand(_ => StopCapture(),   _ => IsSessionActive);
+        PauseCaptureCommand  = new RelayCommand(_ => _captureService.PauseSession(), _ => IsSessionActive);
+        CaptureFrameCommand  = new RelayCommand(_ => TriggerF9());
+        SelectRegionCommand  = new RelayCommand(_ => _ = SelectRegionAsync());
+        SaveSessionCommand   = new RelayCommand(_ => _ = SaveSessionAsync());
+        OpenSessionCommand   = new RelayCommand(_ => _ = OpenSessionAsync());
+        ImportImagesCommand  = new RelayCommand(_ => _ = ImportImagesAsync());
+        ExportGifCommand     = new RelayCommand(_ => _ = ExportGifAsync(), _ => Timeline.Frames.Count > 0);
+        ExportPngCommand     = new RelayCommand(_ => _ = ExportPngAsync(), _ => Timeline.Frames.Count > 0);
+        ExportMp4Command     = new RelayCommand(_ => _ = ExportMp4Async(), _ => Timeline.Frames.Count > 0 && FfmpegExportService.IsAvailable);
+        PlayCommand          = new RelayCommand(_ => StartPlayback(),  _ => Timeline.Frames.Count > 0 && !IsSessionActive && !IsPlaying);
+        StopPlaybackCommand  = new RelayCommand(_ => _playbackService.Stop(), _ => IsPlaying);
+        // UndoCommand / RedoCommand are wired via ApplicationCommands.Undo/Redo
+        // CommandBindings in ScreenRecorderDocument.xaml.cs — routes to Timeline.Undo/Redo.
     }
 
     // ── Session ────────────────────────────────────────────────────────────────
@@ -285,6 +305,58 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         await FfmpegExportService.ExportAsync(BuildFrameList(), options);
     }
 
+    // ── Playback ───────────────────────────────────────────────────────────────
+
+    private void StartPlayback()
+    {
+        if (Timeline.Frames.Count == 0) return;
+        var delays = Timeline.Frames.Select(f => f.Delay).ToList();
+        var start  = Timeline.SelectedFrame is { } sel ? Timeline.Frames.IndexOf(sel) : 0;
+        IsPlaying = true;
+        _playbackService.Play(delays, start);
+    }
+
+    private void OnPlaybackFrameAdvanced(object? sender, int index)
+    {
+        if (index < Timeline.Frames.Count)
+            Timeline.SelectedFrame = Timeline.Frames[index];
+    }
+
+    private void OnPlaybackStopped(object? sender, EventArgs e) => IsPlaying = false;
+
+    // ── Import ─────────────────────────────────────────────────────────────────
+
+    private async Task ImportImagesAsync()
+    {
+        var dlg = new OpenFileDialog
+        {
+            Title      = ScreenRecorderResources.ScreenRecorder_ImportImages,
+            Filter     = "Images (*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff)|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff",
+            Multiselect = true
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        foreach (var path in dlg.FileNames.OrderBy(p => p))
+        {
+            var bitmap = await Task.Run(() =>
+            {
+                var img = new System.Windows.Media.Imaging.BitmapImage();
+                img.BeginInit();
+                img.UriSource     = new Uri(path);
+                img.CacheOption   = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                img.EndInit();
+                img.Freeze();
+                return (System.Windows.Media.Imaging.BitmapSource)img;
+            });
+
+            var thumb = FrameCaptureEngine.CreateThumbnail(bitmap);
+            var idx   = Timeline.Frames.Count;
+            var card  = new FrameCardViewModel(idx, thumb, Properties.TimerInterval, bitmap);
+            Timeline.AddFrame(card);
+        }
+        RefreshCanExecute();
+    }
+
     // ── Helpers ────────────────────────────────────────────────────────────────
 
     private CaptureSession BuildCaptureSession()
@@ -315,17 +387,23 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         (StopCaptureCommand   as RelayCommand)?.RaiseCanExecuteChanged();
         (PauseCaptureCommand  as RelayCommand)?.RaiseCanExecuteChanged();
         (CaptureFrameCommand  as RelayCommand)?.RaiseCanExecuteChanged();
+        (PlayCommand          as RelayCommand)?.RaiseCanExecuteChanged();
+        (StopPlaybackCommand  as RelayCommand)?.RaiseCanExecuteChanged();
         (ExportGifCommand     as RelayCommand)?.RaiseCanExecuteChanged();
         (ExportPngCommand     as RelayCommand)?.RaiseCanExecuteChanged();
         (ExportMp4Command     as RelayCommand)?.RaiseCanExecuteChanged();
+        (ImportImagesCommand  as RelayCommand)?.RaiseCanExecuteChanged();
     }
 
 
     public void Dispose()
     {
-        _captureService.FrameCaptured  -= OnFrameCaptured;
-        _captureService.SessionStopped -= OnSessionStopped;
+        _captureService.FrameCaptured   -= OnFrameCaptured;
+        _captureService.SessionStopped  -= OnSessionStopped;
         _captureService.Dispose();
+        _playbackService.FrameAdvanced  -= OnPlaybackFrameAdvanced;
+        _playbackService.PlaybackStopped -= OnPlaybackStopped;
+        _playbackService.Dispose();
         _overlay?.Close();
     }
 

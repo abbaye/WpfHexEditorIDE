@@ -55,6 +55,9 @@
   <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Stoppa</value></data>
   <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Pausa</value></data>
   <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Återuppta</value></data>
+  <data name="ScreenRecorder_Play" xml:space="preserve"><value>Spela upp</value></data>
+  <data name="ScreenRecorder_StopPlayback" xml:space="preserve"><value>Stoppa uppspelning</value></data>
+  <data name="ScreenRecorder_ImportImages" xml:space="preserve"><value>Importera bilder...</value></data>
   <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Fånga bild</value></data>
   <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Välj område</value></data>
   <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Spara session</value></data>

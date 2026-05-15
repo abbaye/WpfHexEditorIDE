@@ -15,6 +15,11 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
     private FrameCardViewModel? _selectedFrame;
     private int                 _globalDelay = 100;
 
+    // Undo/Redo — each entry is a full snapshot of Frames list (shallow clone).
+    // Cheap because BitmapSource is frozen (shared reference, no copy).
+    private readonly Stack<List<FrameCardViewModel>> _undoStack = new();
+    private readonly Stack<List<FrameCardViewModel>> _redoStack = new();
+
     public ObservableCollection<FrameCardViewModel> Frames { get; } = [];
 
     public FrameCardViewModel? SelectedFrame
@@ -25,9 +30,15 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
             if (_selectedFrame == value) return;
             _selectedFrame = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(SelectedIndex));
             Preview?.SetFrame(value);
         }
     }
+
+    public int SelectedIndex => _selectedFrame is null ? -1 : Frames.IndexOf(_selectedFrame);
+
+    public bool CanUndo => _undoStack.Count > 0;
+    public bool CanRedo => _redoStack.Count > 0;
 
     public int GlobalDelay
     {
@@ -54,6 +65,44 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
         DuplicateFrameCommand = new RelayCommand(_ => DuplicateSelected(), _ => SelectedFrame is not null);
     }
 
+    // ── Undo / Redo ────────────────────────────────────────────────────────────
+
+    private void PushUndo()
+    {
+        _undoStack.Push(Frames.ToList());
+        _redoStack.Clear();
+        OnPropertyChanged(nameof(CanUndo));
+        OnPropertyChanged(nameof(CanRedo));
+    }
+
+    public void Undo()
+    {
+        if (!CanUndo) return;
+        _redoStack.Push(Frames.ToList());
+        RestoreSnapshot(_undoStack.Pop());
+        OnPropertyChanged(nameof(CanUndo));
+        OnPropertyChanged(nameof(CanRedo));
+    }
+
+    public void Redo()
+    {
+        if (!CanRedo) return;
+        _undoStack.Push(Frames.ToList());
+        RestoreSnapshot(_redoStack.Pop());
+        OnPropertyChanged(nameof(CanUndo));
+        OnPropertyChanged(nameof(CanRedo));
+    }
+
+    private void RestoreSnapshot(List<FrameCardViewModel> snapshot)
+    {
+        Frames.Clear();
+        foreach (var f in snapshot) { WireContextMenuCommands(f); Frames.Add(f); }
+        RenumberFrames();
+        SelectedFrame = Frames.LastOrDefault();
+    }
+
+    // ── Mutations ──────────────────────────────────────────────────────────────
+
     public void AddFrame(FrameCardViewModel frame)
     {
         WireContextMenuCommands(frame);
@@ -73,6 +122,7 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
         if (fromIndex < 0 || fromIndex >= Frames.Count) return;
         if (toIndex   < 0 || toIndex   >= Frames.Count) return;
         if (fromIndex == toIndex) return;
+        PushUndo();
         Frames.Move(fromIndex, toIndex);
         RenumberFrames();
     }
@@ -82,6 +132,7 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
 
     private void DeleteSelected()
     {
+        PushUndo();
         foreach (var f in SelectedFrames().ToList()) Frames.Remove(f);
         RenumberFrames();
         SelectedFrame = Frames.LastOrDefault();
@@ -89,6 +140,7 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
 
     private void InsertBlank()
     {
+        PushUndo();
         var idx = SelectedFrame is null ? Frames.Count : Frames.IndexOf(SelectedFrame) + 1;
         var blank = new FrameCardViewModel(idx, null, _globalDelay);
         WireContextMenuCommands(blank);
@@ -100,6 +152,7 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
     private void DuplicateSelected()
     {
         if (SelectedFrame is null) return;
+        PushUndo();
         var idx  = Frames.IndexOf(SelectedFrame) + 1;
         var copy = SelectedFrame.Clone(idx);
         WireContextMenuCommands(copy);

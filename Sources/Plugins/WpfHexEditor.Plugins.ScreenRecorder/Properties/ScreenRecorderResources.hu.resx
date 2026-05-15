@@ -55,6 +55,9 @@
   <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Leállítás</value></data>
   <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Szünet</value></data>
   <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Folytatás</value></data>
+  <data name="ScreenRecorder_Play" xml:space="preserve"><value>Lejátszás</value></data>
+  <data name="ScreenRecorder_StopPlayback" xml:space="preserve"><value>Lejátszás leállítása</value></data>
+  <data name="ScreenRecorder_ImportImages" xml:space="preserve"><value>Képek importálása...</value></data>
   <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Keret rögzítése</value></data>
   <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Terület kijelölése</value></data>
   <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Munkamenet mentése</value></data>

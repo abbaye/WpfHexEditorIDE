@@ -55,6 +55,9 @@
   <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Зупинити</value></data>
   <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Пауза</value></data>
   <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Продовжити</value></data>
+  <data name="ScreenRecorder_Play" xml:space="preserve"><value>Відтворити</value></data>
+  <data name="ScreenRecorder_StopPlayback" xml:space="preserve"><value>Зупинити відтворення</value></data>
+  <data name="ScreenRecorder_ImportImages" xml:space="preserve"><value>Імпортувати зображення...</value></data>
   <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Захопити кадр</value></data>
   <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Вибрати область</value></data>
   <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Зберегти сеанс</value></data>

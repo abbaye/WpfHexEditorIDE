@@ -36,6 +36,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="6" />
         </Grid.RowDefinitions>
 
         <!-- Timeline toolbar: global delay + action buttons -->
@@ -96,6 +97,18 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+
+        <!-- Scrubber: clickable progress track at the bottom of the strip -->
+        <Grid Grid.Row="2" x:Name="ScrubberTrack"
+              Background="{DynamicResource DockBackgroundBrush}"
+              MouseLeftButtonDown="OnScrubberClick"
+              Cursor="Hand">
+            <!-- Track fill (progress up to current frame) -->
+            <Rectangle x:Name="ScrubberFill"
+                       HorizontalAlignment="Left"
+                       Fill="{DynamicResource DockTabActiveBrush}"
+                       Height="6" />
+        </Grid>
 
         <!-- Empty state -->
         <TextBlock Grid.Row="1"

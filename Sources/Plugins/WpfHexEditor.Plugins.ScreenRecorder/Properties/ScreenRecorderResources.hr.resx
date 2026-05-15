@@ -55,6 +55,9 @@
   <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Zaustavi</value></data>
   <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Pauziraj</value></data>
   <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Nastavi</value></data>
+  <data name="ScreenRecorder_Play" xml:space="preserve"><value>Reproduciraj</value></data>
+  <data name="ScreenRecorder_StopPlayback" xml:space="preserve"><value>Zaustavi reprodukciju</value></data>
+  <data name="ScreenRecorder_ImportImages" xml:space="preserve"><value>Uvezi slike...</value></data>
   <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Snimi okvir</value></data>
   <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Odaberi regiju</value></data>
   <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Spremi sesiju</value></data>

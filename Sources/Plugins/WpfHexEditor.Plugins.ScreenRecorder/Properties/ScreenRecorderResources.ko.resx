@@ -55,6 +55,9 @@
   <data name="ScreenRecorder_Stop" xml:space="preserve"><value>중지</value></data>
   <data name="ScreenRecorder_Pause" xml:space="preserve"><value>일시 중지</value></data>
   <data name="ScreenRecorder_Resume" xml:space="preserve"><value>재개</value></data>
+  <data name="ScreenRecorder_Play" xml:space="preserve"><value>재생</value></data>
+  <data name="ScreenRecorder_StopPlayback" xml:space="preserve"><value>재생 중지</value></data>
+  <data name="ScreenRecorder_ImportImages" xml:space="preserve"><value>이미지 가져오기...</value></data>
   <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>프레임 캡처</value></data>
   <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>영역 선택</value></data>
   <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>세션 저장</value></data>

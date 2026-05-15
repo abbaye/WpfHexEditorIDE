@@ -55,6 +55,9 @@
   <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Zastaviť</value></data>
   <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Pozastaviť</value></data>
   <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Pokračovať</value></data>
+  <data name="ScreenRecorder_Play" xml:space="preserve"><value>Prehrať</value></data>
+  <data name="ScreenRecorder_StopPlayback" xml:space="preserve"><value>Zastaviť prehrávanie</value></data>
+  <data name="ScreenRecorder_ImportImages" xml:space="preserve"><value>Importovať obrázky...</value></data>
   <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Zachytiť snímku</value></data>
   <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Vybrať oblasť</value></data>
   <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Uložiť reláciu</value></data>

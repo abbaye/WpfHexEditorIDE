@@ -55,6 +55,9 @@
   <data name="ScreenRecorder_Stop" xml:space="preserve"><value>停止</value></data>
   <data name="ScreenRecorder_Pause" xml:space="preserve"><value>暫停</value></data>
   <data name="ScreenRecorder_Resume" xml:space="preserve"><value>繼續</value></data>
+  <data name="ScreenRecorder_Play" xml:space="preserve"><value>播放</value></data>
+  <data name="ScreenRecorder_StopPlayback" xml:space="preserve"><value>停止播放</value></data>
+  <data name="ScreenRecorder_ImportImages" xml:space="preserve"><value>匯入圖像...</value></data>
   <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>擷取畫格</value></data>
   <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>選取區域</value></data>
   <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>儲存工作階段</value></data>

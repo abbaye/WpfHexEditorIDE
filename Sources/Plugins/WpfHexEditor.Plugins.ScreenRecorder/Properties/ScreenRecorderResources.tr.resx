@@ -55,6 +55,9 @@
   <data name="ScreenRecorder_Stop" xml:space="preserve"><value>Durdur</value></data>
   <data name="ScreenRecorder_Pause" xml:space="preserve"><value>Duraklat</value></data>
   <data name="ScreenRecorder_Resume" xml:space="preserve"><value>Devam Et</value></data>
+  <data name="ScreenRecorder_Play" xml:space="preserve"><value>Oynat</value></data>
+  <data name="ScreenRecorder_StopPlayback" xml:space="preserve"><value>Oynatmayı Durdur</value></data>
+  <data name="ScreenRecorder_ImportImages" xml:space="preserve"><value>Görsel İçe Aktar...</value></data>
   <data name="ScreenRecorder_CaptureFrame" xml:space="preserve"><value>Kare Yakala</value></data>
   <data name="ScreenRecorder_SelectRegion" xml:space="preserve"><value>Bölge Seç</value></data>
   <data name="ScreenRecorder_SaveSession" xml:space="preserve"><value>Oturumu Kaydet</value></data>

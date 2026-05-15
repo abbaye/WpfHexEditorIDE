@@ -33,6 +33,9 @@ internal static class ScreenRecorderResources
     public static string ScreenRecorder_Stop             => Get(nameof(ScreenRecorder_Stop));
     public static string ScreenRecorder_Pause            => Get(nameof(ScreenRecorder_Pause));
     public static string ScreenRecorder_Resume           => Get(nameof(ScreenRecorder_Resume));
+    public static string ScreenRecorder_Play             => Get(nameof(ScreenRecorder_Play));
+    public static string ScreenRecorder_StopPlayback     => Get(nameof(ScreenRecorder_StopPlayback));
+    public static string ScreenRecorder_ImportImages     => Get(nameof(ScreenRecorder_ImportImages));
     public static string ScreenRecorder_CaptureFrame     => Get(nameof(ScreenRecorder_CaptureFrame));
     public static string ScreenRecorder_SelectRegion     => Get(nameof(ScreenRecorder_SelectRegion));
     public static string ScreenRecorder_SaveSession      => Get(nameof(ScreenRecorder_SaveSession));

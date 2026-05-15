@@ -7,10 +7,15 @@
 // Architecture Notes:
 //     IEditorToolbarContributor swap is driven by MainWindow.OnActiveDocumentChanged.
 //     ViewModel is injected after construction via SetViewModel().
+//     Undo/Redo are wired via ApplicationCommands so the IDE Edit menu + Ctrl+Z/Y work.
+//     Ctrl+C/V are wired via ApplicationCommands for clipboard image paste.
 // ==========================================================
 
 using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Input;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Plugins.ScreenRecorder.Services;
 using WpfHexEditor.Plugins.ScreenRecorder.ViewModels;
 using WpfHexEditor.SDK.Commands;
 
@@ -23,19 +28,54 @@ public partial class ScreenRecorderDocument : System.Windows.Controls.UserContro
 
     private ScreenRecorderViewModel? _vm;
 
-    public ScreenRecorderDocument() => InitializeComponent();
+    public ScreenRecorderDocument()
+    {
+        InitializeComponent();
+
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Undo,
+            (_, _) => _vm?.Timeline.Undo(),
+            (_, e)  => e.CanExecute = _vm?.Timeline.CanUndo == true));
+
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Redo,
+            (_, _) => _vm?.Timeline.Redo(),
+            (_, e)  => e.CanExecute = _vm?.Timeline.CanRedo == true));
+
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy,
+            (_, _) => { if (_vm?.Timeline.SelectedFrame?.FullBitmap is { } bmp) Clipboard.SetImage(bmp); },
+            (_, e)  => e.CanExecute = _vm?.Timeline.SelectedFrame?.FullBitmap is not null));
+
+        CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste,
+            OnPaste,
+            (_, e)  => e.CanExecute = _vm is not null && Clipboard.ContainsImage()));
+    }
 
     public void SetViewModel(ScreenRecorderViewModel vm)
     {
-        _vm      = vm;
+        _vm         = vm;
         DataContext = vm;
 
-        PreviewPane.DataContext   = vm.Preview;
-        TimelineStrip.DataContext = vm.Timeline;
+        PreviewPane.DataContext     = vm.Preview;
+        TimelineStrip.DataContext   = vm.Timeline;
         PropertiesPanel.DataContext = vm.Properties;
 
         BuildToolbarItems();
     }
+
+    // ── Clipboard ─────────────────────────────────────────────────────────────
+
+    private void OnPaste(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_vm is null) return;
+        var bmp = Clipboard.GetImage();
+        if (bmp is null) return;
+
+        bmp.Freeze();
+        var thumb = FrameCaptureEngine.CreateThumbnail(bmp);
+        var idx   = _vm.Timeline.Frames.Count;
+        _vm.Timeline.AddFrame(new FrameCardViewModel(idx, thumb, _vm.Properties.TimerInterval, bmp));
+    }
+
+    // ── Toolbar ───────────────────────────────────────────────────────────────
 
     private void BuildToolbarItems()
     {
@@ -49,14 +89,22 @@ public partial class ScreenRecorderDocument : System.Windows.Controls.UserContro
         };
 
         ToolbarItems.Clear();
-        ToolbarItems.Add(new() { Icon = "", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Start,         IsToggle = true, Command = _vm.StartCaptureCommand  });
-        ToolbarItems.Add(new() { Icon = "", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Stop,          IsToggle = true, Command = _vm.StopCaptureCommand   });
-        ToolbarItems.Add(new() { Icon = "", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Pause,         IsToggle = true, Command = _vm.PauseCaptureCommand  });
+        ToolbarItems.Add(new() { Icon = "⏺", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Start,        IsToggle = true, Command = _vm.StartCaptureCommand });
+        ToolbarItems.Add(new() { Icon = "⏹", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Stop,         IsToggle = true, Command = _vm.StopCaptureCommand  });
+        ToolbarItems.Add(new() { Icon = "⏸", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Pause,        IsToggle = true, Command = _vm.PauseCaptureCommand });
         ToolbarItems.Add(new() { IsSeparator = true });
-        ToolbarItems.Add(new() { Icon = "", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_CaptureFrame,  Command  = _vm.CaptureFrameCommand                 });
-        ToolbarItems.Add(new() { Icon = "", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_SelectRegion,  Command  = _vm.SelectRegionCommand                 });
+        ToolbarItems.Add(new() { Icon = "▶", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Play,         IsToggle = true, Command = _vm.PlayCommand         });
+        ToolbarItems.Add(new() { Icon = "⏹", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_StopPlayback, Command  = _vm.StopPlaybackCommand               });
         ToolbarItems.Add(new() { IsSeparator = true });
-        ToolbarItems.Add(new() { Icon = "", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_SaveSession,   Command  = _vm.SaveSessionCommand,   DropdownItems = new ObservableCollection<EditorToolbarItem> { new() { Label = Properties.ScreenRecorderResources.ScreenRecorder_OpenSession, Command = _vm.OpenSessionCommand } } });
-        ToolbarItems.Add(new() { Label = "Export",                                                                           DropdownItems = exportItems });
+        ToolbarItems.Add(new() { Icon = "📷", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_CaptureFrame, Command  = _vm.CaptureFrameCommand               });
+        ToolbarItems.Add(new() { Icon = "📐", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_SelectRegion, Command  = _vm.SelectRegionCommand               });
+        ToolbarItems.Add(new() { Icon = "📂", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_ImportImages, Command  = _vm.ImportImagesCommand               });
+        ToolbarItems.Add(new() { IsSeparator = true });
+        ToolbarItems.Add(new() { Icon = "💾", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_SaveSession,  Command  = _vm.SaveSessionCommand,
+            DropdownItems = new ObservableCollection<EditorToolbarItem>
+            {
+                new() { Label = Properties.ScreenRecorderResources.ScreenRecorder_OpenSession, Command = _vm.OpenSessionCommand }
+            }});
+        ToolbarItems.Add(new() { Label = "Export", DropdownItems = exportItems });
     }
 }
