@@ -17,9 +17,10 @@ public sealed class FrameCardViewModel : INotifyPropertyChanged
     private bool    _isSelected;
     private string? _label;
 
-    // Full-resolution bitmap stored externally (ZipEntry path); thumbnail held here.
-    public BitmapSource? Thumbnail  { get; }
-    public string?       SourcePath { get; init; }  // path inside .whscr ZIP
+    // Thumbnail (120px) for the timeline card; FullBitmap for preview and export.
+    public BitmapSource? Thumbnail   { get; }
+    public BitmapSource? FullBitmap  { get; }
+    public string?       SourcePath  { get; init; }  // path inside .whscr ZIP
 
     // Delegated context-menu commands wired by TimelineViewModel.
     public ICommand? DuplicateCommand  { get; set; }
@@ -54,15 +55,16 @@ public sealed class FrameCardViewModel : INotifyPropertyChanged
         ? _label
         : string.Format(Properties.ScreenRecorderResources.ScreenRecorder_FrameLabel, _index);
 
-    public FrameCardViewModel(int index, BitmapSource? thumbnail, int delay)
+    public FrameCardViewModel(int index, BitmapSource? thumbnail, int delay, BitmapSource? fullBitmap = null)
     {
         _index     = index;
         Thumbnail  = thumbnail;
+        FullBitmap = fullBitmap ?? thumbnail;
         _delay     = delay;
     }
 
     public FrameCardViewModel Clone(int newIndex) =>
-        new(newIndex, Thumbnail, _delay) { SourcePath = SourcePath, Label = _label };
+        new(newIndex, Thumbnail, _delay, FullBitmap) { SourcePath = SourcePath, Label = _label };
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? p = null)

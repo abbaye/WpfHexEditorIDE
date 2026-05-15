@@ -153,7 +153,7 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         Application.Current.Dispatcher.BeginInvoke(() =>
         {
             var thumb = FrameCaptureEngine.CreateThumbnail(frame.Bitmap);
-            var card  = new FrameCardViewModel(frame.Index, thumb, frame.Delay_ms);
+            var card  = new FrameCardViewModel(frame.Index, thumb, frame.Delay_ms, frame.Bitmap);
             Timeline.AddFrame(card);
             Hud.FrameCount = Timeline.Frames.Count;
             Hud.Elapsed    = _captureService.Elapsed.ToString(@"mm\:ss");
@@ -236,7 +236,7 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         foreach (var frame in session.Frames)
         {
             var thumb = FrameCaptureEngine.CreateThumbnail(frame.Bitmap);
-            var card  = new FrameCardViewModel(frame.Index, thumb, frame.Delay_ms);
+            var card  = new FrameCardViewModel(frame.Index, thumb, frame.Delay_ms, frame.Bitmap);
             Timeline.AddFrame(card);
         }
 
@@ -305,8 +305,8 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
 
     private List<CaptureFrame> BuildFrameList() =>
         Timeline.Frames
-            .Where(f => f.Thumbnail is not null)
-            .Select(f => new CaptureFrame(f.Index, f.Thumbnail!, f.Delay, f.Label, DateTimeOffset.UtcNow))
+            .Where(f => f.FullBitmap is not null)
+            .Select(f => new CaptureFrame(f.Index, f.FullBitmap!, f.Delay, f.Label, DateTimeOffset.UtcNow))
             .ToList();
 
     private void RefreshCanExecute()

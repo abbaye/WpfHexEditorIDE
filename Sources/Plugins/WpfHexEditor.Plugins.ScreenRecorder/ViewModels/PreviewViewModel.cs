@@ -72,7 +72,7 @@ public sealed class PreviewViewModel : INotifyPropertyChanged
 
     public void SetFrame(FrameCardViewModel? card)
     {
-        CurrentBitmap = card?.Thumbnail;
+        CurrentBitmap = card?.FullBitmap;
         FrameLabel    = card?.DisplayLabel;
     }
 
