@@ -42,14 +42,26 @@ public static class FrameCaptureEngine
             var hBitmap = await Task.Run(() => BitBltToHBitmap(region));
 
             // BitmapSource must be created on the UI thread (Dispatcher).
+            // Use the screen DPI so WPF does not upscale the bitmap on high-DPI displays.
             return await Application.Current.Dispatcher.InvokeAsync(() =>
             {
+                var screenDpi = GetScreenDpi();
                 var bmp = Imaging.CreateBitmapSourceFromHBitmap(
                     hBitmap, IntPtr.Zero, Int32Rect.Empty,
                     BitmapSizeOptions.FromEmptyOptions());
                 DeleteObject(hBitmap);
-                bmp.Freeze();
-                return bmp;
+
+                // Wrap in WriteableBitmap at true screen DPI so WPF renders at 1:1 pixels.
+                var wb = new WriteableBitmap(
+                    bmp.PixelWidth, bmp.PixelHeight,
+                    screenDpi, screenDpi,
+                    bmp.Format, bmp.Palette);
+                var stride = (bmp.PixelWidth * bmp.Format.BitsPerPixel + 7) / 8;
+                var pixels = new byte[bmp.PixelHeight * stride];
+                bmp.CopyPixels(pixels, stride, 0);
+                wb.WritePixels(new Int32Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight), pixels, stride, 0);
+                wb.Freeze();
+                return (BitmapSource)wb;
             });
         }
         finally
@@ -121,6 +133,17 @@ public static class FrameCaptureEngine
         return rtb;
     }
 
+    // ── DPI helpers ───────────────────────────────────────────────────────────
+
+    private const int LOGPIXELSX = 88;
+
+    private static double GetScreenDpi()
+    {
+        var dc = GetDC(IntPtr.Zero);
+        try   { return GetDeviceCaps(dc, LOGPIXELSX); }
+        finally { ReleaseDC(IntPtr.Zero, dc); }
+    }
+
     // ── Win32 P/Invoke ────────────────────────────────────────────────────────
 
     private const int SW_HIDE = 0;
@@ -129,6 +152,7 @@ public static class FrameCaptureEngine
 
     [DllImport("user32.dll")] private static extern IntPtr GetDC(IntPtr hwnd);
     [DllImport("user32.dll")] private static extern int    ReleaseDC(IntPtr hwnd, IntPtr hdc);
+    [DllImport("gdi32.dll")]  private static extern int    GetDeviceCaps(IntPtr hdc, int idx);
     [DllImport("user32.dll")] private static extern bool   IsWindowVisible(IntPtr hwnd);
     [DllImport("user32.dll")] private static extern bool   ShowWindow(IntPtr hwnd, int cmd);
     [DllImport("gdi32.dll")]  private static extern IntPtr CreateCompatibleDC(IntPtr hdc);

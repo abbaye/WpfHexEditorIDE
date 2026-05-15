@@ -96,7 +96,7 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
     private void StartCapture()
     {
         var region = Properties.CaptureRegion.IsEmpty
-            ? CaptureRegion.FullScreen()
+            ? CaptureRegion.PrimaryScreen()
             : Properties.CaptureRegion;
 
         var session = new CaptureSession
@@ -127,7 +127,7 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
     public void TriggerF9()
     {
         var region = Properties.CaptureRegion.IsEmpty
-            ? CaptureRegion.FullScreen()
+            ? CaptureRegion.PrimaryScreen()
             : Properties.CaptureRegion;
 
         if (!IsSessionActive)
