@@ -1,4 +1,4 @@
-# WpfDocking — Documentation (v0.9.8.0)
+# WpfDocking — Documentation
 
 ## Table of Contents
 
@@ -16,12 +16,14 @@
 
 ### Assembly structure
 
-```
-WpfDocking.nupkg
-└── lib/net8.0-windows/
-    ├── WpfHexEditor.Docking.Wpf.dll      — DockControl, panels, documents, drag-drop, chrome
-    ├── WpfHexEditor.Docking.Core.dll     — platform-agnostic layout engine (no WPF dependency)
-    └── WpfHexEditor.Core.Localization.dll — localized strings (28 languages)
+```mermaid
+graph TD
+    pkg["📦 WpfDocking.nupkg"]
+    wpf["WpfHexEditor.Docking.Wpf.dll\nDockControl · panels · documents · drag-drop · chrome"]
+    core["WpfHexEditor.Docking.Core.dll\nplatform-agnostic layout engine (no WPF)"]
+    loc["WpfHexEditor.Core.Localization.dll\nlocalized strings (28 languages)"]
+    pkg --> wpf & core & loc
+    wpf --> core
 ```
 
 Zero external NuGet dependencies. All assemblies are bundled inside the package.
@@ -42,15 +44,21 @@ Zero external NuGet dependencies. All assemblies are bundled inside the package.
 
 ### Layout model
 
-```
-DockControl
-├── Left edge       — auto-hide or pinned DockPanel list
-├── Right edge      — auto-hide or pinned DockPanel list
-├── Top edge        — auto-hide or pinned DockPanel list
-├── Bottom edge     — auto-hide or pinned DockPanel list
-└── Center (DocumentHost)
-    ├── TabGroup[0]  — primary document tabs
-    └── TabGroup[1]  — split document tabs (horizontal or vertical)
+```mermaid
+graph TD
+    DC["DockControl"]
+    L["Left edge\nauto-hide or pinned DockPanel"]
+    R["Right edge\nauto-hide or pinned DockPanel"]
+    T["Top edge\nauto-hide or pinned DockPanel"]
+    B["Bottom edge\nauto-hide or pinned DockPanel"]
+    DH["Center — DocumentHost"]
+    TG0["TabGroup[0]\nprimary document tabs"]
+    TG1["TabGroup[1]\nsplit tabs (H or V)"]
+    FW["Floating Window\n(top-level Window + DockControl subtree)"]
+
+    DC --> L & R & T & B & DH
+    DH --> TG0 & TG1
+    DC -.-> FW
 ```
 
 Floating windows are top-level `Window` instances that each host a `DockControl` subtree.

@@ -56,24 +56,24 @@ The assembly ships as `WpfHexEditor.Core.ByteProvider.dll` with namespaces:
 
 ### Component Diagram
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  ByteProvider (sealed partial)                                   │
-│  ┌────────────┐  ┌──────────────┐  ┌──────────────┐  ┌────────┐ │
-│  │FileProvider│  │EditsManager  │  │PositionMapper│  │ByteRead│ │
-│  │  – Stream  │  │  – Modified  │  │  – V↔P map   │  │  – LRU │ │
-│  │  – 64 KB $ │  │  – Inserted  │  │  – cache     │  │  – $   │ │
-│  │            │  │  – Deleted   │  │              │  │        │ │
-│  └─────┬──────┘  └──────┬───────┘  └──────┬───────┘  └───┬────┘ │
-│        │                │                  │              │      │
-│        └────────────────┴──────────────────┴──────────────┘      │
-│                                │                                  │
-│                       UndoRedoManager (1000-deep)                 │
-│                       (coalescence + batch transactions)          │
-│                                                                   │
-│  Partials: ByteProvider.Search.cs    → SearchEngine integration   │
-│            ByteProvider.Changeset.cs → ChangesetSnapshot capture  │
-└──────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    BP["ByteProvider (sealed partial)"]
+    FP["FileProvider\n– Stream\n– 64 KB cache"]
+    EM["EditsManager\n– Modified\n– Inserted\n– Deleted"]
+    PM["PositionMapper\n– V↔P map\n– LRU cache"]
+    BR["ByteReader\n– LRU cache"]
+    UR["UndoRedoManager\n(1000-deep)\ncoalescence + batch"]
+    SRC["ByteProvider.Search.cs\n→ SearchEngine"]
+    CSC["ByteProvider.Changeset.cs\n→ ChangesetSnapshot"]
+
+    BP --> FP
+    BP --> EM
+    BP --> PM
+    BP --> BR
+    FP & EM & PM & BR --> UR
+    BP -.-> SRC
+    BP -.-> CSC
 ```
 
 ### Design Principles

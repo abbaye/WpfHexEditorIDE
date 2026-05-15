@@ -55,25 +55,29 @@ Assembly: `WpfHexEditor.Core.BinaryAnalysis.dll`. Namespaces:
 
 ### Component Diagram
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│  WpfHexEditor.Core.BinaryAnalysis                             │
-│                                                               │
-│  Services/                                                    │
-│   ├─ DataInspectorService     → 35+ format interpretations   │
-│   ├─ DataStatisticsService    → entropy, byte distribution   │
-│   ├─ AnomalyDetectionService  → rolling-window entropy scan  │
-│   ├─ BinaryTemplateCompiler   → C-like templates → JSON      │
-│   ├─ IntelHexService          → .hex (16-bit + ELA)          │
-│   └─ SRecordService           → .s19/.s28/.s37               │
-│                                                               │
-│  Models/                                                      │
-│   ├─ DataInspector/InspectorValue                             │
-│   ├─ Visualization/FileStatistics + ChartData                 │
-│   ├─ Patterns/DetectedPattern + PatternType                   │
-│   ├─ BinaryTemplates/TemplateStructure                        │
-│   └─ ExportImport/IntelHexRecord + SRecord                    │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    subgraph Services
+        DI["DataInspectorService\n35+ format interpretations"]
+        DS["DataStatisticsService\nentropy · byte distribution"]
+        AD["AnomalyDetectionService\nrolling-window entropy scan"]
+        BT["BinaryTemplateCompiler\nC-like templates → JSON"]
+        IH["IntelHexService\n.hex (16-bit + ELA)"]
+        SR["SRecordService\n.s19 / .s28 / .s37"]
+    end
+    subgraph Models
+        IV["DataInspector / InspectorValue"]
+        FS["Visualization / FileStatistics + ChartData"]
+        DP["Patterns / DetectedPattern + PatternType"]
+        TS["BinaryTemplates / TemplateStructure"]
+        EI["ExportImport / IntelHexRecord + SRecord"]
+    end
+    DI --> IV
+    DS --> FS
+    AD --> DP
+    BT --> TS
+    IH --> EI
+    SR --> EI
 ```
 
 ### Design Principles
@@ -153,6 +157,21 @@ Categories returned (depending on input length):
 `Unknown`, `Text`, `Binary`, `Compressed`, `Encrypted`, `Sparse`, `Image`, `Executable`.
 
 Heuristic mapping (in `DataStatisticsService.EstimateDataType`):
+
+```mermaid
+flowchart TD
+    A["byte buffer"] --> B{"Entropy < 1\nNullByte% > 50?"}
+    B -- yes --> Sparse
+    B -- no  --> C{"PrintableAscii% > 70?"}
+    C -- yes --> Text
+    C -- no  --> D{"Entropy > 7.9?"}
+    D -- yes --> Encrypted
+    D -- no  --> E{"Entropy > 7.0?"}
+    E -- yes --> Compressed
+    E -- no  --> F{"Entropy > 4.0\nPrintableAscii% < 30?"}
+    F -- yes --> Binary
+    F -- no  --> Unknown
+```
 
 | Condition | Result |
 |---|---|

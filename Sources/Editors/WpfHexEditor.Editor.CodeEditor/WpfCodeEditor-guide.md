@@ -1,4 +1,4 @@
-# WpfCodeEditor — Documentation (v0.9.9.0)
+# WpfCodeEditor — Documentation
 
 ## Table of Contents
 
@@ -17,19 +17,23 @@
 
 ### Assembly structure
 
-```
-WpfCodeEditor.nupkg
-└── lib/net8.0/
-    ├── WpfHexEditor.Editor.CodeEditor.dll   — CodeEditorSplitHost, CodeEditor, MinimapControl
-    ├── WpfHexEditor.Editor.TextEditor.dll   — TextEditor (plain-text base)
-    ├── WpfHexEditor.Editor.Core.dll         — shared editor abstractions
-    ├── WpfHexEditor.Core.dll                — settings, services, format detection
-    ├── WpfHexEditor.Core.BinaryAnalysis.dll — binary analysis utilities
-    ├── WpfHexEditor.Core.Definitions.dll    — 57 language grammars for syntax highlighting + format detection catalog
-    ├── WpfHexEditor.Core.Events.dll         — internal event bus
-    ├── WpfHexEditor.Core.ProjectSystem.dll  — language registry
-    ├── WpfHexEditor.ColorPicker.dll         — color picker (settings panel)
-    └── WpfHexEditor.SDK.dll                 — plugin contracts
+```mermaid
+graph TD
+    pkg["📦 WpfCodeEditor.nupkg"]
+    ce["Editor.CodeEditor.dll\nCodeEditorSplitHost · CodeEditor · MinimapControl"]
+    te["Editor.TextEditor.dll\nTextEditor (plain-text base)"]
+    ec["Editor.Core.dll\nshared editor abstractions"]
+    c["Core.dll\nsettings · services · format detection"]
+    ba["Core.BinaryAnalysis.dll\nbinary analysis utilities"]
+    def["Core.Definitions.dll\n57 language grammars + format catalog"]
+    ev["Core.Events.dll\ninternal event bus"]
+    ps["Core.ProjectSystem.dll\nlanguage registry"]
+    cp["ColorPicker.dll\nsettings panel"]
+    sdk["SDK.dll\nplugin contracts"]
+
+    pkg --> ce & te & ec & c & ba & def & ev & ps & cp & sdk
+    ce --> te & ec
+    te --> ec
 ```
 
 Zero external NuGet dependencies. All assemblies are bundled inside the package.
@@ -50,23 +54,15 @@ Zero external NuGet dependencies. All assemblies are bundled inside the package.
 
 ### Scroll and virtualization model
 
-```
-_verticalScrollOffset  (pixels, fold-compressed)
-        │
-        ▼
-VirtualizationEngine.CalculateVisibleRange()
-   → first = ScrollOffset / lineHeight   (visible rank)
-   → last  = first + viewportLines
-        │
-        ▼  forward-scan non-hidden lines
-_firstVisibleLine  (physical index)        _firstVisibleRank  (visible rank → pixel math)
-_lastVisibleLine   (physical index, extended by forward-scan)
-        │
-        ▼
-ComputeVisibleLinePositions()  →  _lineYLookup[physicalLine] = Y
-        │
-        ▼
-OnRender — all subsystems use _lineYLookup for Y coordinates
+```mermaid
+flowchart TD
+    A["_verticalScrollOffset\n(pixels, fold-compressed)"]
+    B["VirtualizationEngine.CalculateVisibleRange()\nfirst = ScrollOffset / lineHeight\nlast  = first + viewportLines"]
+    C["forward-scan non-hidden lines\n→ _firstVisibleLine / _lastVisibleLine (physical)\n→ _firstVisibleRank (visible rank → pixel math)"]
+    D["ComputeVisibleLinePositions()\n→ _lineYLookup[physicalLine] = Y"]
+    E["OnRender\nall subsystems use _lineYLookup for Y coordinates"]
+
+    A --> B --> C --> D --> E
 ```
 
 Hidden lines are tracked in `FoldingEngine._hiddenLines` (HashSet — O(1) lookup). The scrollbar `Maximum` is reduced by `TotalHiddenLineCount * lineHeight` so the scroll space is always fold-compressed.

@@ -50,29 +50,18 @@ The assembly ships as `WpfHexEditor.ColorPicker.dll` with namespaces:
 
 ### Component Diagram
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│  ColorPicker (UserControl)                                   │
-│  ┌────────────────────────┐    ┌─────────────────────────┐   │
-│  │  ColorPicker.xaml      │    │  ColorPickerViewModel    │   │
-│  │  – HSV Canvas          │◄──►│  – Red/Green/Blue/Alpha │   │
-│  │  – RGB/HSV/Alpha slid. │    │  – Hue/Saturation/Value │   │
-│  │  – Hex TextBox         │    │  – HexColor + IsHexValid│   │
-│  │  – Standard palette    │    │  – SetColor(Color)       │   │
-│  │  – Recent strip (×10)  │    └──────────┬──────────────┘   │
-│  └────────────────────────┘               │                  │
-│                                            ▼                  │
-│                              ┌────────────────────────────┐   │
-│                              │  ColorSpaceConverter        │   │
-│                              │  – RgbToHsv / HsvToRgb      │   │
-│                              └────────────────────────────┘   │
-│                                                               │
-│  ┌────────────────────────┐    ┌─────────────────────────┐   │
-│  │  RecentColorManager    │◄──►│ %LOCALAPPDATA%\         │   │
-│  │  (static, file persist)│    │ WpfHexaEditor\          │   │
-│  │                        │    │ RecentColors.txt        │   │
-│  └────────────────────────┘    └─────────────────────────┘   │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    View["ColorPicker.xaml\n– HSV Canvas\n– RGB/HSV/Alpha sliders\n– Hex TextBox\n– Standard palette\n– Recent strip ×10"]
+    VM["ColorPickerViewModel\n– Red/Green/Blue/Alpha\n– Hue/Saturation/Value\n– HexColor + IsHexValid\n– SetColor(Color)"]
+    Conv["ColorSpaceConverter\nRgbToHsv / HsvToRgb"]
+    RCM["RecentColorManager\n(static, file persist)"]
+    File["%LOCALAPPDATA%\\WpfHexaEditor\\RecentColors.txt"]
+
+    View <--> VM
+    VM --> Conv
+    RCM <--> File
+    View --> RCM
 ```
 
 ### Design Principles

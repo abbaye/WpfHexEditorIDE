@@ -1,4 +1,4 @@
-# WpfTerminal — Documentation (v0.9.7.1)
+# WpfTerminal — Documentation
 
 ## Table of Contents
 
@@ -17,15 +17,19 @@
 
 ### Assembly structure
 
-```
-WpfTerminal.nupkg
-└── lib/net8.0-windows/
-    ├── WpfHexEditor.Terminal.dll                — TerminalPanel UserControl, main entry point
-    ├── WpfHexEditor.Core.Terminal.dll           — command engine, macros, HxScript scripting
-    ├── WpfHexEditor.SDK.Terminal.Abstractions.dll — terminal plugin contracts
-    ├── WpfHexEditor.Core.dll                    — shared services and infrastructure
-    ├── WpfHexEditor.Core.Events.dll             — internal event bus
-    └── WpfHexEditor.SDK.dll                     — plugin contracts and interfaces
+```mermaid
+graph TD
+    pkg["📦 WpfTerminal.nupkg"]
+    t["Terminal.dll\nTerminalPanel UserControl · main entry point"]
+    ct["Core.Terminal.dll\ncommand engine · macros · HxScript"]
+    ab["SDK.Terminal.Abstractions.dll\nterminal plugin contracts"]
+    c["Core.dll\nshared services and infrastructure"]
+    ev["Core.Events.dll\ninternal event bus"]
+    sdk["SDK.dll\nplugin contracts and interfaces"]
+
+    pkg --> t & ct & ab & c & ev & sdk
+    t --> ct & sdk
+    ct --> ab & c & ev
 ```
 
 Zero external NuGet dependencies. All assemblies are bundled inside the package.
@@ -44,14 +48,22 @@ Zero external NuGet dependencies. All assemblies are bundled inside the package.
 
 ### MVVM model
 
-```
-TerminalPanel  (View)
-    └── TerminalViewModel  (ViewModel)
-        ├── Sessions : ObservableCollection<TerminalSession>
-        ├── ActiveSession : TerminalSession
-        └── CommandEngine
-              ├── Built-in handlers (39 commands)
-              └── Plugin handlers (ITerminalPlugin)
+```mermaid
+graph TD
+    TP["TerminalPanel (View)"]
+    TV["TerminalViewModel (ViewModel)"]
+    SC["Sessions : ObservableCollection&lt;TerminalSession&gt;"]
+    AS["ActiveSession : TerminalSession"]
+    CE["CommandEngine"]
+    BI["Built-in handlers\n(39 commands)"]
+    PI["Plugin handlers\n(ITerminalPlugin)"]
+    PR["Process\n(cmd / PowerShell / bash)"]
+    BUF["Output StringBuilder\n→ UI via Dispatcher.BeginInvoke"]
+
+    TP --> TV
+    TV --> SC & AS & CE
+    CE --> BI & PI
+    AS --> PR & BUF
 ```
 
 Each `TerminalSession` owns a `Process` (cmd, PowerShell, bash) and an output `StringBuilder`. Output lines stream to the UI via `Dispatcher.BeginInvoke`.
