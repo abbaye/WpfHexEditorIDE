@@ -70,9 +70,10 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
     private void PushUndo()
     {
         _undoStack.Push(Frames.ToList());
+        var hadRedo = _redoStack.Count > 0;
         _redoStack.Clear();
         OnPropertyChanged(nameof(CanUndo));
-        OnPropertyChanged(nameof(CanRedo));
+        if (hadRedo) OnPropertyChanged(nameof(CanRedo));
     }
 
     public void Undo()
@@ -96,7 +97,7 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
     private void RestoreSnapshot(List<FrameCardViewModel> snapshot)
     {
         Frames.Clear();
-        foreach (var f in snapshot) { WireContextMenuCommands(f); Frames.Add(f); }
+        foreach (var f in snapshot) Frames.Add(f);
         RenumberFrames();
         SelectedFrame = Frames.LastOrDefault();
     }

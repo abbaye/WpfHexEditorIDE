@@ -18,12 +18,15 @@ namespace WpfHexEditor.Plugins.ScreenRecorder.Views;
 
 public partial class TimelineStrip : System.Windows.Controls.UserControl
 {
+    private const double FrameCardWidth = 104.0; // FrameCard Width(100) + Margin(2+2)
+
     public TimelineStrip()
     {
         InitializeComponent();
-        KeyDown      += OnKeyDown;
-        SizeChanged  += (_, _) => UpdateScrubber();
+        KeyDown            += OnKeyDown;
+        SizeChanged        += (_, _) => UpdateScrubber();
         DataContextChanged += OnDataContextChanged;
+        Unloaded           += (_, _) => UnsubscribeTimeline();
         Focusable = true;
     }
 
@@ -42,6 +45,12 @@ public partial class TimelineStrip : System.Windows.Controls.UserControl
         if (e.NewValue is TimelineViewModel tvm)
             tvm.PropertyChanged += OnTimelinePropertyChanged;
         UpdateScrubber();
+    }
+
+    private void UnsubscribeTimeline()
+    {
+        if (DataContext is TimelineViewModel tvm)
+            tvm.PropertyChanged -= OnTimelinePropertyChanged;
     }
 
     private void OnTimelinePropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -128,7 +137,6 @@ public partial class TimelineStrip : System.Windows.Controls.UserControl
     private int ComputeDropIndex(Point position)
     {
         if (DataContext is not TimelineViewModel tvm || tvm.Frames.Count == 0) return 0;
-        var cardWidth = 104.0; // FrameCard Width(100) + Margin(2+2)
-        return Math.Clamp((int)(position.X / cardWidth), 0, tvm.Frames.Count - 1);
+        return Math.Clamp((int)(position.X / FrameCardWidth), 0, tvm.Frames.Count - 1);
     }
 }

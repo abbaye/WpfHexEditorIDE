@@ -29,7 +29,6 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
 {
     private RecordingMode _selectedMode   = RecordingMode.Screenshot;
     private bool          _isSessionActive;
-    private bool          _isPlaying;
     private string        _sessionPath    = string.Empty;
 
     public TimelineViewModel   Timeline   { get; }
@@ -41,11 +40,7 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
     private readonly PlaybackService   _playbackService;
     private CaptureOverlayWindow? _overlay;
 
-    public bool IsPlaying
-    {
-        get => _isPlaying;
-        private set { if (_isPlaying == value) return; _isPlaying = value; OnPropertyChanged(); RefreshCanExecute(); }
-    }
+    public bool IsPlaying => _playbackService.IsPlaying;
 
     public RecordingMode SelectedMode
     {
@@ -107,8 +102,6 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         ExportMp4Command     = new RelayCommand(_ => _ = ExportMp4Async(), _ => Timeline.Frames.Count > 0 && FfmpegExportService.IsAvailable);
         PlayCommand          = new RelayCommand(_ => StartPlayback(),  _ => Timeline.Frames.Count > 0 && !IsSessionActive && !IsPlaying);
         StopPlaybackCommand  = new RelayCommand(_ => _playbackService.Stop(), _ => IsPlaying);
-        // UndoCommand / RedoCommand are wired via ApplicationCommands.Undo/Redo
-        // CommandBindings in ScreenRecorderDocument.xaml.cs — routes to Timeline.Undo/Redo.
     }
 
     // ── Session ────────────────────────────────────────────────────────────────
@@ -312,8 +305,9 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         if (Timeline.Frames.Count == 0) return;
         var delays = Timeline.Frames.Select(f => f.Delay).ToList();
         var start  = Timeline.SelectedFrame is { } sel ? Timeline.Frames.IndexOf(sel) : 0;
-        IsPlaying = true;
         _playbackService.Play(delays, start);
+        OnPropertyChanged(nameof(IsPlaying));
+        RefreshCanExecute();
     }
 
     private void OnPlaybackFrameAdvanced(object? sender, int index)
@@ -322,7 +316,11 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
             Timeline.SelectedFrame = Timeline.Frames[index];
     }
 
-    private void OnPlaybackStopped(object? sender, EventArgs e) => IsPlaying = false;
+    private void OnPlaybackStopped(object? sender, EventArgs e)
+    {
+        OnPropertyChanged(nameof(IsPlaying));
+        RefreshCanExecute();
+    }
 
     // ── Import ─────────────────────────────────────────────────────────────────
 
@@ -336,22 +334,25 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         };
         if (dlg.ShowDialog() != true) return;
 
-        foreach (var path in dlg.FileNames.OrderBy(p => p))
-        {
-            var bitmap = await Task.Run(() =>
+        // Load all images in parallel (FileStream releases lock immediately after OnLoad).
+        var loadTasks = dlg.FileNames.OrderBy(p => p)
+            .Select(path => Task.Run<System.Windows.Media.Imaging.BitmapSource>(() =>
             {
                 var img = new System.Windows.Media.Imaging.BitmapImage();
                 img.BeginInit();
-                img.UriSource     = new Uri(path);
-                img.CacheOption   = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                img.StreamSource = System.IO.File.OpenRead(path);
+                img.CacheOption  = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
                 img.EndInit();
                 img.Freeze();
-                return (System.Windows.Media.Imaging.BitmapSource)img;
-            });
+                return img;
+            }))
+            .ToList();
 
+        var bitmaps = await Task.WhenAll(loadTasks);
+        foreach (var bitmap in bitmaps)
+        {
             var thumb = FrameCaptureEngine.CreateThumbnail(bitmap);
-            var idx   = Timeline.Frames.Count;
-            var card  = new FrameCardViewModel(idx, thumb, Properties.TimerInterval, bitmap);
+            var card  = new FrameCardViewModel(Timeline.Frames.Count, thumb, Properties.TimerInterval, bitmap);
             Timeline.AddFrame(card);
         }
         RefreshCanExecute();

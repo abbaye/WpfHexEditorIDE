@@ -13,7 +13,7 @@ public sealed class PlaybackService : IDisposable
     private IReadOnlyList<int>?      _delays;
     private int                      _index;
 
-    public event EventHandler<int>? FrameAdvanced;  // arg = new frame index
+    public event EventHandler<int>? FrameAdvanced;
     public event EventHandler?      PlaybackStopped;
 
     public bool IsPlaying => _timer.IsEnabled;
