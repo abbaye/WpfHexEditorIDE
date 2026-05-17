@@ -25,14 +25,14 @@ public partial class ScreenRecorderDocument : System.Windows.Controls.UserContro
                                                IEditorToolbarContributor
 {
     // Segoe MDL2 Assets glyph codes used in the contextual toolbar pod.
-    private const string IcoRecord  = ""; // Record
-    private const string IcoStop    = ""; // Stop
-    private const string IcoPause   = ""; // Pause
-    private const string IcoPlay    = ""; // Play
-    private const string IcoCamera  = ""; // Camera (Capture Frame)
-    private const string IcoCrop    = ""; // Crop (Select Region)
-    private const string IcoImport  = ""; // Import (Import Images)
-    private const string IcoSave    = ""; // Save
+    private const string IcoRecord= "\uE9D9"; // Record
+    private const string IcoStop = "\uE71C"; // Stop
+    private const string IcoPause= "\uE769"; // Pause
+    private const string IcoPlay = "\uE768"; // Play
+    private const string IcoCamera= "\uE722"; // Camera
+    private const string IcoCrop = "\uE7A8"; // Crop
+    private const string IcoImport= "\uE8B7"; // Import
+    private const string IcoSave = "\uE74E"; // Save
 
     public ObservableCollection<EditorToolbarItem> ToolbarItems { get; } = [];
 
