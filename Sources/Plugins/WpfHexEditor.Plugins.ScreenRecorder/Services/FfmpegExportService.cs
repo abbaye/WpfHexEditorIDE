@@ -85,7 +85,6 @@ public static class FfmpegExportService
 
     private static async Task RunFfmpegAsync(string ffmpeg, string framesDir, string outputPath, int fps, CancellationToken ct)
     {
-
         var args = $"-y -framerate {fps} -i \"{Path.Combine(framesDir, "%04d.png")}\" " +
                    $"-c:v libx264 -pix_fmt yuv420p -movflags +faststart \"{outputPath}\"";
 
@@ -93,13 +92,14 @@ public static class FfmpegExportService
         {
             StartInfo = new ProcessStartInfo(ffmpeg, args)
             {
-                UseShellExecute        = false,
-                RedirectStandardError  = true,
-                CreateNoWindow         = true
+                UseShellExecute       = false,
+                RedirectStandardError = true,
+                CreateNoWindow        = true
             }
         };
 
-        process.Start();
+        if (!process.Start())
+            throw new InvalidOperationException($"Failed to start ffmpeg process at '{ffmpeg}'.");
 
         // Read stderr to prevent deadlock; content is only used for error reporting.
         var stderr = await process.StandardError.ReadToEndAsync(ct);

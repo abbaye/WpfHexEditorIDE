@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>适应窗口</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>未选择帧</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>按 F9 捕获第一帧，或导入图像</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>属性</value></data>

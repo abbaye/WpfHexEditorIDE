@@ -30,7 +30,7 @@ public sealed class CaptureService : IDisposable
     private readonly Stopwatch _elapsed = new();
     private int          _frameIndex;
     private SessionState _state = SessionState.Stopped;
-    private bool         _capturingFrame;
+    private volatile bool _capturingFrame;
     private IntPtr       _overlayHwnd;
 
 
@@ -54,19 +54,18 @@ public sealed class CaptureService : IDisposable
 
     public void PauseSession()
     {
-        if (_state == SessionState.Stopped) return;
-        if (_state == SessionState.Active)
-        {
-            _state = SessionState.Paused;
-            _timer?.Stop();
-            _elapsed.Stop();
-        }
-        else
-        {
-            _state = SessionState.Active;
-            _timer?.Start();
-            _elapsed.Start();
-        }
+        if (_state != SessionState.Active) return;
+        _state = SessionState.Paused;
+        _timer?.Stop();
+        _elapsed.Stop();
+    }
+
+    public void ResumeSession()
+    {
+        if (_state != SessionState.Paused) return;
+        _state = SessionState.Active;
+        _timer?.Start();
+        _elapsed.Start();
     }
 
     public void StopSession()

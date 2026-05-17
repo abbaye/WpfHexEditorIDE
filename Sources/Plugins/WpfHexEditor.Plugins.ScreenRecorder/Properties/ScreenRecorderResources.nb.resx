@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Tilpass vindu</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Ingen bilde valgt</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Trykk F9 for å ta det første bildet, eller importer bilder</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Egenskaper</value></data>

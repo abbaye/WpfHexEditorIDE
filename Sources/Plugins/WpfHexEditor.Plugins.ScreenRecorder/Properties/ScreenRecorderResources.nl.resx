@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Aanpassen aan venster</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Geen frame geselecteerd</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Druk op F9 om uw eerste frame vast te leggen of importeer afbeeldingen</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Eigenschappen</value></data>

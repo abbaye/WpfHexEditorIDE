@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Προσαρμογή στο παράθυρο</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Δεν έχει επιλεγεί καρέ</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Πατήστε F9 για να καταγράψετε το πρώτο καρέ ή εισάγετε εικόνες</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Ιδιότητες</value></data>

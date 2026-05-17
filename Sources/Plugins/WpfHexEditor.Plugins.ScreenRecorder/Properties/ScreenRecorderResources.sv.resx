@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Anpassa till fönster</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Ingen bild vald</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Tryck F9 för att fånga din första bildruta, eller importera bilder</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Egenskaper</value></data>

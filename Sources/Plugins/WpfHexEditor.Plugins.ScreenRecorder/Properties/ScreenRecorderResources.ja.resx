@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>ウィンドウに合わせる</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>フレームが選択されていません</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>F9を押して最初のフレームをキャプチャするか、画像をインポートしてください</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>プロパティ</value></data>

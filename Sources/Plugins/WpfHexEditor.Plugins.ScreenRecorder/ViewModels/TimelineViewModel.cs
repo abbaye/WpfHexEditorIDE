@@ -69,10 +69,19 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
 
     private const int MaxUndoDepth = 50;
 
+    public void PushUndoPublic() => PushUndo();
+
     private void PushUndo()
     {
         _undoStack.Push(Frames.ToList());
-        while (_undoStack.Count > MaxUndoDepth) _undoStack.TryPop(out _);
+        if (_undoStack.Count > MaxUndoDepth)
+        {
+            // Rebuild without the oldest entry (Stack has no direct remove-bottom).
+            var items = _undoStack.ToArray(); // newest-first
+            _undoStack.Clear();
+            for (var i = items.Length - 2; i >= 0; i--) // skip oldest (last index)
+                _undoStack.Push(items[i]);
+        }
         var hadRedo = _redoStack.Count > 0;
         _redoStack.Clear();
         OnPropertyChanged(nameof(CanUndo));
@@ -136,8 +145,10 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
 
     private void DeleteSelected()
     {
+        var toDelete = SelectedFrames();
+        if (toDelete.Count == 0) return;
         PushUndo();
-        foreach (var f in SelectedFrames().ToList()) Frames.Remove(f);
+        foreach (var f in toDelete) Frames.Remove(f);
         RenumberFrames();
         SelectedFrame = Frames.LastOrDefault();
     }

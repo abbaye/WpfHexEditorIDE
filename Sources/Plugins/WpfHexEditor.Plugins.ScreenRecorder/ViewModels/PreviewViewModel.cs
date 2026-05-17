@@ -78,7 +78,7 @@ public sealed class PreviewViewModel : INotifyPropertyChanged
 
     public void ZoomIn()   => ZoomLevel *= ZoomStep;
     public void ZoomOut()  => ZoomLevel /= ZoomStep;
-    public void Zoom1To1() { _zoomLevel = 1.0; FitToContainer = false; OnPropertyChanged(nameof(ZoomLevel)); }
+    public void Zoom1To1() => ZoomLevel = 1.0;
     public void ZoomFit()  { FitToContainer = true; OnPropertyChanged(nameof(ZoomLevel)); }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Prilagodi prozoru</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Nije odabran okvir</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Pritisnite F9 za snimanje prvog okvira ili uvezite slike</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Svojstva</value></data>

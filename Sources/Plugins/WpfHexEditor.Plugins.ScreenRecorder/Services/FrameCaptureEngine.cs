@@ -52,14 +52,13 @@ public static class FrameCaptureEngine
                 DeleteObject(hBitmap);
 
                 // Wrap in WriteableBitmap at true screen DPI so WPF renders at 1:1 pixels.
-                var wb = new WriteableBitmap(
-                    bmp.PixelWidth, bmp.PixelHeight,
-                    screenDpi, screenDpi,
-                    bmp.Format, bmp.Palette);
+                // Write directly into the back buffer to avoid a large managed byte[] allocation.
                 var stride = (bmp.PixelWidth * bmp.Format.BitsPerPixel + 7) / 8;
-                var pixels = new byte[bmp.PixelHeight * stride];
-                bmp.CopyPixels(pixels, stride, 0);
-                wb.WritePixels(new Int32Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight), pixels, stride, 0);
+                var wb = new WriteableBitmap(bmp.PixelWidth, bmp.PixelHeight, screenDpi, screenDpi, bmp.Format, bmp.Palette);
+                wb.Lock();
+                bmp.CopyPixels(new Int32Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight), wb.BackBuffer, wb.BackBufferStride * bmp.PixelHeight, wb.BackBufferStride);
+                wb.AddDirtyRect(new Int32Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight));
+                wb.Unlock();
                 wb.Freeze();
                 return (BitmapSource)wb;
             });
@@ -136,11 +135,13 @@ public static class FrameCaptureEngine
     // ── DPI helpers ───────────────────────────────────────────────────────────
 
     private const int LOGPIXELSX = 88;
+    private static double? _cachedDpi;
 
     private static double GetScreenDpi()
     {
+        if (_cachedDpi.HasValue) return _cachedDpi.Value;
         var dc = GetDC(IntPtr.Zero);
-        try   { return GetDeviceCaps(dc, LOGPIXELSX); }
+        try   { return (_cachedDpi = GetDeviceCaps(dc, LOGPIXELSX)).Value; }
         finally { ReleaseDC(IntPtr.Zero, dc); }
     }
 

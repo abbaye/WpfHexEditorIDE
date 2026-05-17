@@ -39,7 +39,8 @@ public partial class CaptureOverlayWindow : Window
 
     public IntPtr OverlayHwnd { get; private set; }
 
-    public Brush OverlayBrush { get; private set; } =
+    private Brush? _overlayBrush;
+    public Brush OverlayBrush => _overlayBrush ??=
         ColorConverter.ConvertFromString(ScreenRecorderOptions.Instance.OverlayColor) is Color c
             ? new SolidColorBrush(c)
             : new SolidColorBrush(Colors.Red);

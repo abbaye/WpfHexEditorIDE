@@ -101,12 +101,17 @@ public partial class RegionSelectorWindow : Window
 
     private CaptureRegion? BuildRegion()
     {
-        var w = (int)SelectionRect.Width;
-        var h = (int)SelectionRect.Height;
-        if (w < 10 || h < 10) return null;
+        var logW = SelectionRect.Width;
+        var logH = SelectionRect.Height;
+        if (logW < 10 || logH < 10) return null;
 
-        // Convert canvas coords to screen coords
+        var source = PresentationSource.FromVisual(this);
+        var dpiX   = source?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
+        var dpiY   = source?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+
         var screenPt = PointToScreen(new Point(Canvas.GetLeft(SelectionRect), Canvas.GetTop(SelectionRect)));
-        return new CaptureRegion((int)screenPt.X, (int)screenPt.Y, w, h);
+        return new CaptureRegion(
+            (int)screenPt.X, (int)screenPt.Y,
+            (int)(logW * dpiX), (int)(logH * dpiY));
     }
 }

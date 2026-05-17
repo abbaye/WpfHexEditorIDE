@@ -53,12 +53,9 @@ public partial class FrameCard : System.Windows.Controls.UserControl
 
     private TimelineStrip? FindParentTimeline()
     {
-        var p = Parent as DependencyObject;
-        while (p is not null)
-        {
+        DependencyObject? p = this;
+        while ((p = System.Windows.Media.VisualTreeHelper.GetParent(p)) is not null)
             if (p is TimelineStrip ts) return ts;
-            p = System.Windows.Media.VisualTreeHelper.GetParent(p);
-        }
         return null;
     }
 
@@ -75,8 +72,10 @@ public partial class FrameCard : System.Windows.Controls.UserControl
         var anchor = tvm.Frames.FirstOrDefault(f => f.IsSelected);
         if (anchor is null) { current.IsSelected = true; return; }
 
-        var from = Math.Min(tvm.Frames.IndexOf(anchor), tvm.Frames.IndexOf(current));
-        var to   = Math.Max(tvm.Frames.IndexOf(anchor), tvm.Frames.IndexOf(current));
+        var ai   = tvm.Frames.IndexOf(anchor);
+        var ci   = tvm.Frames.IndexOf(current);
+        var from = Math.Min(ai, ci);
+        var to   = Math.Max(ai, ci);
         for (var i = from; i <= to; i++) tvm.Frames[i].IsSelected = true;
     }
 }

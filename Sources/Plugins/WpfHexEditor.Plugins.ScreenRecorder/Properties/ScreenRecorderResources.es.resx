@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Ajustar a la ventana</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Ningún fotograma seleccionado</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Pulse F9 para capturar su primer fotograma o importe imágenes</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Propiedades</value></data>

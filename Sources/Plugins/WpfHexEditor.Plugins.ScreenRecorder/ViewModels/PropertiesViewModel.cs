@@ -17,7 +17,7 @@ public sealed class PropertiesViewModel : INotifyPropertyChanged
     public ICommand? ResetRegionCommand  { get; set; }
 
     public string RegionSummary => _captureRegion.IsEmpty
-        ? "Primary Screen"
+        ? Properties.ScreenRecorderResources.ScreenRecorder_FullScreen
         : $"{_captureRegion.Width} × {_captureRegion.Height}  @  ({_captureRegion.X}, {_captureRegion.Y})";
     private double        _outputScale    = 1.0;
     private int           _loopCount;

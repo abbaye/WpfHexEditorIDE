@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Sovita ikkunaan</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Kuvaa ei ole valittu</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Paina F9 ottaaksesi ensimmäisen kuvan tai tuo kuvia</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Ominaisuudet</value></data>

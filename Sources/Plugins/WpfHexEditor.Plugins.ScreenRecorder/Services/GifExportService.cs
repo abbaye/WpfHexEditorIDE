@@ -111,11 +111,16 @@ public static class GifExportService
         output.WriteByte(0x3B);
     }
 
-    // Scan for Image Descriptor marker (0x2C) — signature-based, never fixed offset.
-    // Start at i=6 to skip the GIF header ("GIF87a") where 0x2C cannot appear as a descriptor.
+    // Scan for Image Descriptor marker (0x2C).
+    // Skip header(6) + LSD(7) + GCT (if present) to avoid false positives inside palette data.
     private static int FindImageDescriptor(byte[] raw)
     {
-        for (var i = 6; i < raw.Length; i++)
+        if (raw.Length < 13) return -1;
+        var packed  = raw[10];
+        var hasGct  = (packed & 0x80) != 0;
+        var gctSize = hasGct ? 3 * (1 << ((packed & 0x07) + 1)) : 0;
+        var start   = 13 + gctSize; // past header+LSD+GCT
+        for (var i = start; i < raw.Length; i++)
             if (raw[i] == 0x2C) return i;
         return -1;
     }

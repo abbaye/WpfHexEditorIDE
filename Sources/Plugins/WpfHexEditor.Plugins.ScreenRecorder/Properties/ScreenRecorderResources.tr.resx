@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Pencereye Sığdır</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Kare seçilmedi</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>İlk kareyi yakalamak için F9'a basın veya görsel içe aktarın</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Özellikler</value></data>

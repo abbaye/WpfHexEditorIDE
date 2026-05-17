@@ -91,7 +91,7 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
 
         StartCaptureCommand  = new RelayCommand(_ => StartCapture(),  _ => !IsSessionActive && !IsPlaying);
         StopCaptureCommand   = new RelayCommand(_ => StopCapture(),   _ => IsSessionActive);
-        PauseCaptureCommand  = new RelayCommand(_ => _captureService.PauseSession(), _ => IsSessionActive);
+        PauseCaptureCommand  = new RelayCommand(_ => TogglePause(), _ => IsSessionActive);
         CaptureFrameCommand  = new RelayCommand(_ => TriggerF9());
         SelectRegionCommand  = new RelayCommand(_ => _ = SelectRegionAsync());
         SaveSessionCommand   = new RelayCommand(_ => _ = SaveSessionAsync());
@@ -129,6 +129,12 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
     }
 
     private void StopCapture() => _captureService.StopSession();
+
+    private void TogglePause()
+    {
+        if (_captureService.IsPaused) _captureService.ResumeSession();
+        else                          _captureService.PauseSession();
+    }
 
     /// <summary>
     /// Called by F9. Behaviour depends on the selected mode:
@@ -244,6 +250,7 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         _sessionPath = dlg.FileName;
         var session  = await SessionSerializer.LoadAsync(_sessionPath);
 
+        if (Timeline.Frames.Count > 0) Timeline.PushUndoPublic();
         Timeline.Frames.Clear();
         Timeline.SelectedFrame = null;
         foreach (var frame in session.Frames)
@@ -379,9 +386,21 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
 
     private List<CaptureFrame> BuildFrameList() =>
         Timeline.Frames
-            .Where(f => f.FullBitmap is not null)
-            .Select(f => new CaptureFrame(f.Index, f.FullBitmap!, f.Delay, f.Label, DateTimeOffset.UtcNow))
+            .Select(f => new CaptureFrame(
+                f.Index,
+                f.FullBitmap ?? CreateBlankBitmap(),
+                f.Delay, f.Label, DateTimeOffset.UtcNow))
             .ToList();
+
+    private static System.Windows.Media.Imaging.BitmapSource? _blankBitmap;
+    private static System.Windows.Media.Imaging.BitmapSource CreateBlankBitmap()
+    {
+        if (_blankBitmap is not null) return _blankBitmap;
+        var wb = new System.Windows.Media.Imaging.WriteableBitmap(1, 1, 96, 96,
+            System.Windows.Media.PixelFormats.Bgra32, null);
+        wb.Freeze();
+        return _blankBitmap = wb;
+    }
 
     private void RefreshCanExecute()
     {

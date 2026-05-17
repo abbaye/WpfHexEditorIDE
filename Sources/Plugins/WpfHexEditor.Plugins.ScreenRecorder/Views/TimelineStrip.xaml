@@ -112,7 +112,7 @@
 
         <!-- Empty state -->
         <TextBlock Grid.Row="1"
-                   Text="{StaticResource ScreenRecorder_NoFrameSelected}"
+                   Text="{StaticResource ScreenRecorder_EmptyTimeline}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"

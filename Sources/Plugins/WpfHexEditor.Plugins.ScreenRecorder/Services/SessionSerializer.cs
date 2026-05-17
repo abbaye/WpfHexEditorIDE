@@ -10,6 +10,7 @@
 //     Frames are lazy-decoded on load (full bitmap created on first Preview access).
 // ==========================================================
 
+using System.Buffers;
 using System.IO;
 using System.IO.Compression;
 using System.Text.Json;
@@ -146,16 +147,33 @@ public static class SessionSerializer
         var entry = zip.GetEntry(string.Format(FramePathFmt, index))
             ?? throw new InvalidDataException($"Missing frame {index:D4}.png in archive.");
 
-        await using var s   = entry.Open();
-        using var       ms  = new MemoryStream();
-        await s.CopyToAsync(ms, ct);
-        ms.Position = 0;
+        // Rent a buffer sized to the compressed entry to avoid per-frame MemoryStream growth.
+        var size = (int)(entry.Length > 0 ? entry.Length : 4 * 1024 * 1024);
+        var buf  = ArrayPool<byte>.Shared.Rent(size);
+        int read;
+        try
+        {
+            await using var s = entry.Open();
+            using var ms = new MemoryStream(buf, 0, buf.Length, writable: true);
+            await s.CopyToAsync(ms, ct);
+            read = (int)ms.Position;
+        }
+        catch
+        {
+            ArrayPool<byte>.Shared.Return(buf);
+            throw;
+        }
 
-        // BitmapDecoder must run on a thread with access to WPF imaging
+        // BitmapDecoder must run on a thread with access to WPF imaging.
         return await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
         {
-            var decoder = new PngBitmapDecoder(ms, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-            return decoder.Frames[0];
+            try
+            {
+                using var ms2 = new MemoryStream(buf, 0, read, writable: false);
+                var decoder   = new PngBitmapDecoder(ms2, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                return decoder.Frames[0];
+            }
+            finally { ArrayPool<byte>.Shared.Return(buf); }
         });
     }
 

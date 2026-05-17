@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Illeszkedés ablakhoz</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Nincs keret kijelölve</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Nyomja meg az F9 billentyűt az első kép rögzítéséhez, vagy importáljon képeket</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Tulajdonságok</value></data>

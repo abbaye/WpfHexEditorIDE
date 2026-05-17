@@ -6,6 +6,7 @@
 // ==========================================================
 
 using System.IO;
+using System.Threading;
 using WpfHexEditor.Plugins.ScreenRecorder.Models;
 
 namespace WpfHexEditor.Plugins.ScreenRecorder.Services;
@@ -22,19 +23,33 @@ public static class PngSequenceExportService
 
         Directory.CreateDirectory(options.OutputPath);
 
-        for (var i = 0; i < frames.Count; i++)
+        // Bound concurrency to 4: encode on UI thread, write on thread pool, without OOM on large sessions.
+        using var sem      = new SemaphoreSlim(4, 4);
+        var       done     = 0;
+        var       tasks    = new List<Task>(frames.Count);
+
+        foreach (var frame in frames)
         {
             ct.ThrowIfCancellationRequested();
-            var frame  = frames[i];
-            var scaled = options.OutputScale != 1.0
-                ? FrameCaptureEngine.ScaleBitmap(frame.Bitmap, options.OutputScale)
-                : frame.Bitmap;
+            await sem.WaitAsync(ct);
 
-            var filePath = Path.Combine(options.OutputPath, $"{frame.Index:D4}.png");
-            var bytes    = await FrameCaptureEngine.EncodePngOnUiThreadAsync(scaled);
-            await File.WriteAllBytesAsync(filePath, bytes, ct);
+            tasks.Add(Task.Run(async () =>
+            {
+                try
+                {
+                    var scaled = options.OutputScale != 1.0
+                        ? FrameCaptureEngine.ScaleBitmap(frame.Bitmap, options.OutputScale)
+                        : frame.Bitmap;
 
-            progress?.Report((i + 1) * 100 / frames.Count);
+                    var bytes    = await FrameCaptureEngine.EncodePngOnUiThreadAsync(scaled);
+                    var filePath = Path.Combine(options.OutputPath, $"{frame.Index:D4}.png");
+                    await File.WriteAllBytesAsync(filePath, bytes, ct);
+                    progress?.Report(Interlocked.Increment(ref done) * 100 / frames.Count);
+                }
+                finally { sem.Release(); }
+            }, ct));
         }
+
+        await Task.WhenAll(tasks);
     }
 }

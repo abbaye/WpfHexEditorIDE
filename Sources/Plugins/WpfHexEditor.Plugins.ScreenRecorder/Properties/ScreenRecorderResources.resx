@@ -102,6 +102,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Zoom to Fit</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>No frame selected</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Press F9 to capture your first frame, or import images</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Properties</value></data>

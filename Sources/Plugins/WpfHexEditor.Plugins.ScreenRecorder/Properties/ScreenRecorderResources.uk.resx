@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>За розміром вікна</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Кадр не вибрано</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Натисніть F9, щоб зафіксувати перший кадр, або імпортуйте зображення</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Властивості</value></data>

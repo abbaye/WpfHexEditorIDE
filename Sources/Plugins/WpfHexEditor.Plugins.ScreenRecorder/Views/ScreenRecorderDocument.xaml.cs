@@ -70,6 +70,7 @@ public partial class ScreenRecorderDocument : System.Windows.Controls.UserContro
         if (bmp is null) return;
 
         bmp.Freeze();
+        _vm.Timeline.PushUndoPublic();
         var thumb = FrameCaptureEngine.CreateThumbnail(bmp);
         var idx   = _vm.Timeline.Frames.Count;
         _vm.Timeline.AddFrame(new FrameCardViewModel(idx, thumb, _vm.Properties.TimerInterval, bmp));

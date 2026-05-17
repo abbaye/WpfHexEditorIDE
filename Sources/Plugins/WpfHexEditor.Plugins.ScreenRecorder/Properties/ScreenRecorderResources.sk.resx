@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>Prispôsobiť oknu</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>Žiadna snímka nie je vybraná</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>Stlačte F9 pre zachytenie prvého snímku alebo importujte obrázky</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>Vlastnosti</value></data>

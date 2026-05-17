@@ -98,6 +98,7 @@
   <data name="ScreenRecorder_ZoomFit" xml:space="preserve"><value>창에 맞추기</value></data>
   <data name="ScreenRecorder_Zoom100" xml:space="preserve"><value>1:1</value></data>
   <data name="ScreenRecorder_NoFrameSelected" xml:space="preserve"><value>선택된 프레임 없음</value></data>
+  <data name="ScreenRecorder_EmptyTimeline" xml:space="preserve"><value>F9를 눌러 첫 번째 프레임을 캡처하거나 이미지를 가져오세요</value></data>
 
   <!-- Properties panel -->
   <data name="ScreenRecorder_Properties" xml:space="preserve"><value>속성</value></data>
