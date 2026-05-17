@@ -82,7 +82,7 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         Properties.ResetRegionCommand  = new RelayCommand(_ =>
         {
             Properties.CaptureRegion = default;
-            TriggerF9();
+            if (!IsSessionActive && !IsPlaying) StartCapture();
         });
 
         _captureService                  = new CaptureService();

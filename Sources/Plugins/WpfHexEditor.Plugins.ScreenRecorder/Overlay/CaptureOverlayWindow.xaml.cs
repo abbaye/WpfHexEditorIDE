@@ -50,13 +50,16 @@ public partial class CaptureOverlayWindow : Window
     public void ShowOverlay(CaptureRegion region, CaptureHudViewModel hud)
     {
         Hud.DataContext = hud;
-        ApplyRegion(region);
 
         if (!IsVisible)
         {
             Show();
             ApplyNonActivatingStyle();
         }
+
+        // ApplyRegion after Show() so PresentationSource.FromVisual(this) is non-null
+        // and DPI scaling is read correctly from the window's own composition target.
+        ApplyRegion(region);
     }
 
     public void UpdateRegion(CaptureRegion region) => ApplyRegion(region);
