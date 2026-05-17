@@ -15,6 +15,13 @@ namespace WhfmtCodeGen.Generator;
 /// <summary>Generates a strongly-typed C# parser class from a .whfmt JSON definition.</summary>
 internal static class ParserGenerator
 {
+    // .whfmt files use JSONC (// and /* */ comments, trailing commas)
+    private static readonly JsonDocumentOptions _jsonc = new()
+    {
+        CommentHandling     = JsonCommentHandling.Skip,
+        AllowTrailingCommas = true,
+    };
+
     /// <summary>Generate C# source from .whfmt JSON.</summary>
     public static string GenerateFromJson(
         string json,
@@ -24,7 +31,7 @@ internal static class ParserGenerator
         bool generateAsync,
         OutputLanguage language = OutputLanguage.CSharp)
     {
-        using var doc = JsonDocument.Parse(json);
+        using var doc = JsonDocument.Parse(json, _jsonc);
         var root = doc.RootElement;
 
         string formatName = root.TryGetProperty("name",        out var n) ? n.GetString() ?? className : className;

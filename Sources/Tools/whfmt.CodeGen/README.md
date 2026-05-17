@@ -30,6 +30,10 @@ Powered by **789 binary format definitions** from `whfmt.FileFormatCatalog` (790
 
 ## What's New
 
+### v1.1.3 — JSONC header fix
+
+- **Bug fix**: `generate` command now correctly parses `.whfmt` files that contain `/* ... */` block-comment headers (JSONC). Previously crashed with `JsonReaderException: '<' is an invalid start of a value`.
+
 ### v1.1.2 — Catalog 1.3.2 alignment
 
 - **Catalog bump** to `whfmt.FileFormatCatalog 1.3.2` (Phase B audit + bug fixes, 799 definitions, schema v3 canonical).

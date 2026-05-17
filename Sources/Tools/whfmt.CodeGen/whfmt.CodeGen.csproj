@@ -14,9 +14,9 @@
     <ToolCommandName>whfmt-codegen</ToolCommandName>
 
     <PackageId>whfmt.CodeGen</PackageId>
-    <Version>1.1.2</Version>
-    <AssemblyVersion>1.1.2</AssemblyVersion>
-    <FileVersion>1.1.2</FileVersion>
+    <Version>1.1.3</Version>
+    <AssemblyVersion>1.1.3</AssemblyVersion>
+    <FileVersion>1.1.3</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>whfmt.CodeGen</Product>
