@@ -24,6 +24,16 @@ namespace WpfHexEditor.Plugins.ScreenRecorder.Views;
 public partial class ScreenRecorderDocument : System.Windows.Controls.UserControl,
                                                IEditorToolbarContributor
 {
+    // Segoe MDL2 Assets glyph codes used in the contextual toolbar pod.
+    private const string IcoRecord  = ""; // Record
+    private const string IcoStop    = ""; // Stop
+    private const string IcoPause   = ""; // Pause
+    private const string IcoPlay    = ""; // Play
+    private const string IcoCamera  = ""; // Camera (Capture Frame)
+    private const string IcoCrop    = ""; // Crop (Select Region)
+    private const string IcoImport  = ""; // Import (Import Images)
+    private const string IcoSave    = ""; // Save
+
     public ObservableCollection<EditorToolbarItem> ToolbarItems { get; } = [];
 
     private ScreenRecorderViewModel? _vm;
@@ -90,18 +100,18 @@ public partial class ScreenRecorderDocument : System.Windows.Controls.UserContro
         };
 
         ToolbarItems.Clear();
-        ToolbarItems.Add(new() { Icon = "⏺", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Start,        IsToggle = true, Command = _vm.StartCaptureCommand });
-        ToolbarItems.Add(new() { Icon = "⏹", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Stop,         IsToggle = true, Command = _vm.StopCaptureCommand  });
-        ToolbarItems.Add(new() { Icon = "⏸", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Pause,        IsToggle = true, Command = _vm.PauseCaptureCommand });
+        ToolbarItems.Add(new() { Icon = IcoRecord, Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Start,        IsToggle = true, Command = _vm.StartCaptureCommand });
+        ToolbarItems.Add(new() { Icon = IcoStop,   Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Stop,         IsToggle = true, Command = _vm.StopCaptureCommand  });
+        ToolbarItems.Add(new() { Icon = IcoPause,  Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Pause,        IsToggle = true, Command = _vm.PauseCaptureCommand });
         ToolbarItems.Add(new() { IsSeparator = true });
-        ToolbarItems.Add(new() { Icon = "▶", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Play,         IsToggle = true, Command = _vm.PlayCommand         });
-        ToolbarItems.Add(new() { Icon = "⏹", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_StopPlayback, Command  = _vm.StopPlaybackCommand               });
+        ToolbarItems.Add(new() { Icon = IcoPlay,   Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_Play,         IsToggle = true, Command = _vm.PlayCommand         });
+        ToolbarItems.Add(new() { Icon = IcoStop,   Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_StopPlayback, Command  = _vm.StopPlaybackCommand               });
         ToolbarItems.Add(new() { IsSeparator = true });
-        ToolbarItems.Add(new() { Icon = "📷", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_CaptureFrame, Command  = _vm.CaptureFrameCommand               });
-        ToolbarItems.Add(new() { Icon = "📐", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_SelectRegion, Command  = _vm.SelectRegionCommand               });
-        ToolbarItems.Add(new() { Icon = "📂", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_ImportImages, Command  = _vm.ImportImagesCommand               });
+        ToolbarItems.Add(new() { Icon = IcoCamera, Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_CaptureFrame, Command  = _vm.CaptureFrameCommand               });
+        ToolbarItems.Add(new() { Icon = IcoCrop,   Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_SelectRegion, Command  = _vm.SelectRegionCommand               });
+        ToolbarItems.Add(new() { Icon = IcoImport, Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_ImportImages, Command  = _vm.ImportImagesCommand               });
         ToolbarItems.Add(new() { IsSeparator = true });
-        ToolbarItems.Add(new() { Icon = "💾", Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_SaveSession,  Command  = _vm.SaveSessionCommand,
+        ToolbarItems.Add(new() { Icon = IcoSave,   Tooltip = Properties.ScreenRecorderResources.ScreenRecorder_SaveSession,  Command  = _vm.SaveSessionCommand,
             DropdownItems = new ObservableCollection<EditorToolbarItem>
             {
                 new() { Label = Properties.ScreenRecorderResources.ScreenRecorder_OpenSession, Command = _vm.OpenSessionCommand }
