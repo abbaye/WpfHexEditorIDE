@@ -40,8 +40,13 @@ namespace WpfHexEditor.Sample.Terminal;
 /// to the active <see cref="WpfHexEditor.Core.Terminal.ITerminalOutput"/> after
 /// construction if you want command output routed to the terminal.
 /// </summary>
-internal sealed class StandaloneIDEHostContext : IIDEHostContext
+internal sealed class StandaloneIDEHostContext : IIDEHostContext, ITerminalHostContext
 {
+    // ITerminalHostContext — standalone no-ops
+    public void    PublishCommandExecuted(string source, string command, string shellType) { }
+    public string? ActiveDocumentPath => null;
+    public string? ActivePanelTitle   => null;
+
     public IDocumentHostService     DocumentHost     { get; } = new NullDocumentHostService();
     public ISolutionExplorerService SolutionExplorer { get; } = new NullSolutionExplorerService();
     public WpfHexEditor.Editor.Core.ISolutionManager? SolutionManager => null;
