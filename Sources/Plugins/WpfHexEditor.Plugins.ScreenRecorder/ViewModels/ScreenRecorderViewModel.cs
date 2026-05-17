@@ -79,7 +79,11 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
 
         Timeline.Preview = Preview;
         Properties.SelectRegionCommand = new RelayCommand(_ => _ = SelectRegionAsync());
-        Properties.ResetRegionCommand  = new RelayCommand(_ => Properties.CaptureRegion = default);
+        Properties.ResetRegionCommand  = new RelayCommand(_ =>
+        {
+            Properties.CaptureRegion = default;
+            if (!IsSessionActive && !IsPlaying) StartCapture();
+        });
 
         _captureService                  = new CaptureService();
         _captureService.FrameCaptured   += OnFrameCaptured;
