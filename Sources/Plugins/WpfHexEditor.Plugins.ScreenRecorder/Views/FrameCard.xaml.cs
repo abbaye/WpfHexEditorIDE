@@ -35,18 +35,26 @@ public partial class FrameCard : System.Windows.Controls.UserControl
         timeline?.OnFrameCardSelected(vm);
     }
 
+    private bool _dragPending;
+
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        if (e.LeftButton != MouseButtonState.Pressed) return;
+        if (e.LeftButton != MouseButtonState.Pressed || _dragPending) return;
 
         var delta = e.GetPosition(this) - _dragStart;
         if (Math.Abs(delta.X) > SystemParameters.MinimumHorizontalDragDistance)
-            BeginDrag();
+        {
+            _dragPending = true;
+            // Defer DoDragDrop out of the MouseMove handler to avoid
+            // Dispatcher re-entrancy (InvalidOperationException).
+            Dispatcher.BeginInvoke(BeginDrag);
+        }
     }
 
     private void BeginDrag()
     {
+        _dragPending = false;
         if (DataContext is FrameCardViewModel vm)
             DragDrop.DoDragDrop(this, vm, DragDropEffects.Move);
     }
