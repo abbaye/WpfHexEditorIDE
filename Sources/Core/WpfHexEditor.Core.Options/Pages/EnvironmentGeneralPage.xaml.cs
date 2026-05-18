@@ -4,12 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using WpfHexEditor.Core.Localization.Services;
 using WpfHexEditor.Editor.Core.Dialogs;
 using HexEditorControl = WpfHexEditor.HexEditor.HexEditor;
 
@@ -144,46 +142,31 @@ public sealed partial class EnvironmentGeneralPage : UserControl, IOptionsPage
 
         if (LanguageCombo.SelectedItem is not string langDisplay) return;
 
-        var entry   = LanguageList.FirstOrDefault(l => l.Display == langDisplay);
-        var culture = string.IsNullOrEmpty(entry.Culture)
-            ? CultureInfo.InstalledUICulture
-            : new CultureInfo(entry.Culture);
+        var entry = LanguageList.FirstOrDefault(l => l.Display == langDisplay);
 
-        LocalizedResourceDictionary.ChangeCulture(culture);
-        Changed?.Invoke(this, EventArgs.Empty);
-
-        // Ask user whether to restart now, later, or revert.
         int choice = IdeMessageBox.ShowCustom(
-            message:      "A restart is required to fully apply the language change.\n\nRestart now to apply immediately, or later to apply on next launch.",
+            message:      "A restart is required to apply the language change.\n\nRestart now to apply immediately, or later to apply on next launch.",
             title:        "Language Changed",
             buttonLabels: ["Restart Now", "Later", "Cancel"],
             icon:         MessageBoxImage.Information);
 
         if (choice == 0) // Restart Now
         {
-            // Save immediately so the new language is restored on restart.
             AppSettingsService.Instance.Current.PreferredLanguage = entry.Culture ?? string.Empty;
             AppSettingsService.Instance.Save();
             Process.Start(Process.GetCurrentProcess().MainModule!.FileName!);
             Application.Current.Shutdown();
         }
-        else if (choice == -1 || choice == 2) // X-close or Cancel → revert
-        {
-            _loading = true;
-            try
-            {
-                LanguageCombo.SelectedItem = _previousLanguage;
-                var prevEntry  = LanguageList.FirstOrDefault(l => l.Display == _previousLanguage);
-                var prevCulture = string.IsNullOrEmpty(prevEntry.Culture)
-                    ? CultureInfo.InstalledUICulture
-                    : new CultureInfo(prevEntry.Culture);
-                LocalizedResourceDictionary.ChangeCulture(prevCulture);
-            }
-            finally { _loading = false; }
-        }
-        else // Later (choice == 1) — keep new language live, will be saved on Flush
+        else if (choice == 1) // Later — save on next Flush
         {
             _previousLanguage = langDisplay;
+            Changed?.Invoke(this, EventArgs.Empty);
+        }
+        else // Cancel or X-close → revert combo
+        {
+            _loading = true;
+            try { LanguageCombo.SelectedItem = _previousLanguage; }
+            finally { _loading = false; }
         }
     }
 

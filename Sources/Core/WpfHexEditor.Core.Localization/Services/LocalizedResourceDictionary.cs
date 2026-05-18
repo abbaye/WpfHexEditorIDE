@@ -163,6 +163,11 @@ public class LocalizedResourceDictionary : ResourceDictionary
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<(int, string), string>
         _cultureCache = new();
 
+    // Pre-built lookup: neutral culture name → list of regional siblings.
+    // Computed once at static init to avoid calling GetCultures on the UI thread during language change.
+    private static readonly Dictionary<string, List<CultureInfo>> _siblingsByNeutral =
+        BuildSiblingMap();
+
     /// <summary>
     /// Finds the culture CommonResources would actually serve for <paramref name="requested"/>,
     /// mirroring the .NET satellite probe order: exact → neutral parent → regional siblings.
@@ -186,12 +191,14 @@ public class LocalizedResourceDictionary : ResourceDictionary
         {
             probes.Add(neutral);
 
-            // Regional siblings: any satellite of CommonResources whose parent == neutral.
-            foreach (var sibling in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
+            // Regional siblings from the pre-built map — avoids calling GetCultures on the UI thread.
+            if (_siblingsByNeutral.TryGetValue(neutral.Name, out var siblings))
             {
-                if (sibling.Parent.Name.Equals(neutral.Name, StringComparison.OrdinalIgnoreCase)
-                    && !sibling.Name.Equals(requested.Name, StringComparison.OrdinalIgnoreCase))
-                    probes.Add(sibling);
+                foreach (var sibling in siblings)
+                {
+                    if (!sibling.Name.Equals(requested.Name, StringComparison.OrdinalIgnoreCase))
+                        probes.Add(sibling);
+                }
             }
         }
 
@@ -208,6 +215,20 @@ public class LocalizedResourceDictionary : ResourceDictionary
         var fallback = new CultureInfo("en-US");
         _cultureCache[cacheKey] = fallback.Name;
         return fallback;
+    }
+
+    private static Dictionary<string, List<CultureInfo>> BuildSiblingMap()
+    {
+        var map = new Dictionary<string, List<CultureInfo>>(StringComparer.OrdinalIgnoreCase);
+        foreach (var c in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
+        {
+            var parentName = c.Parent?.Name;
+            if (string.IsNullOrEmpty(parentName)) continue;
+            if (!map.TryGetValue(parentName, out var list))
+                map[parentName] = list = [];
+            list.Add(c);
+        }
+        return map;
     }
 
     private static readonly System.Reflection.Assembly _commonAsm =
