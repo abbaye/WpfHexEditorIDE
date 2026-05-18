@@ -11,7 +11,7 @@ public sealed class CaptureSession
     public IReadOnlyList<CaptureFrame> Frames       => _frames;
     public RecordingMode               Mode         { get; set; } = RecordingMode.Screenshot;
     public CaptureRegion               Region       { get; set; } = CaptureRegion.FullScreen();
-    public int                         GlobalDelay  { get; set; } = 100;
+    public int                         GlobalDelay  { get; set; } = 500;
     public int                         LoopCount    { get; set; } = 0;
     public int                         RepeatLastFrameDelay { get; set; } = 1000;
     public double                      OutputScale  { get; set; } = 1.0;

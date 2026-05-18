@@ -22,141 +22,147 @@
              FontSize="14">
 
     <UserControl.Resources>
-        <!-- Converters -->
-        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        <converters:BoolToSelectionBrushConverter x:Key="BoolToSelectionBrushConverter"/>
-        <converters:ActionToBrushConverter x:Key="ActionToBrushConverter"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <hexSvc:HexEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <!-- Professional Color Scheme -->
-        <SolidColorBrush x:Key="SelectionBrush" Color="#0078D4" Opacity="0.4"/>
-        <SolidColorBrush x:Key="ModifiedBrush" Color="#FFA500"/>
-        <SolidColorBrush x:Key="AddedBrush" Color="#4CAF50"/>
-        <SolidColorBrush x:Key="DeletedBrush" Color="#F44336"/>
-        <!-- These brushes are fallback defaults; themes override them via App.Resources DynamicResource -->
-        <SolidColorBrush x:Key="HeaderBrush" Color="#F5F5F5"/>
-        <SolidColorBrush x:Key="HeaderTextBrush" Color="#424242"/>
-        <SolidColorBrush x:Key="OffsetBrush" Color="#757575"/>
-        <SolidColorBrush x:Key="ByteBorderBrush" Color="Transparent"/>
-        <SolidColorBrush x:Key="ByteHoverBrush" Color="#E3F2FD"/>
+            <!-- Converters -->
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:BoolToSelectionBrushConverter x:Key="BoolToSelectionBrushConverter"/>
+            <converters:ActionToBrushConverter x:Key="ActionToBrushConverter"/>
 
-        <!-- Customizable Byte Colors (V1 compatibility) -->
-        <SolidColorBrush x:Key="ByteForegroundBrush" Color="#000000"/>
-        <SolidColorBrush x:Key="AlternateByteForegroundBrush" Color="#0000FF"/>
-        <SolidColorBrush x:Key="ColumnSeparatorBrush" Color="#D0D0D0"/>
+            <!-- Professional Color Scheme -->
+            <SolidColorBrush x:Key="SelectionBrush" Color="#0078D4" Opacity="0.4"/>
+            <SolidColorBrush x:Key="ModifiedBrush" Color="#FFA500"/>
+            <SolidColorBrush x:Key="AddedBrush" Color="#4CAF50"/>
+            <SolidColorBrush x:Key="DeletedBrush" Color="#F44336"/>
+            <!-- These brushes are fallback defaults; themes override them via App.Resources DynamicResource -->
+            <SolidColorBrush x:Key="HeaderBrush" Color="#F5F5F5"/>
+            <SolidColorBrush x:Key="HeaderTextBrush" Color="#424242"/>
+            <SolidColorBrush x:Key="OffsetBrush" Color="#757575"/>
+            <SolidColorBrush x:Key="ByteBorderBrush" Color="Transparent"/>
+            <SolidColorBrush x:Key="ByteHoverBrush" Color="#E3F2FD"/>
 
-        <!-- StatusBar brushes -->
-        <SolidColorBrush x:Key="StatusBarBrush" Color="#F5F5F5"/>
-        <SolidColorBrush x:Key="StatusBarTextBrush" Color="#333333"/>
-        <!-- ScrollBar brushes: NOT declared here — resolved via DynamicResource from the active
-             theme (App.Resources). OnScrollBarBackgroundColorChanged / OnScrollBarThumbColorChanged
-             write into editor.Resources when ApplyThemeFromResources() fires, overriding App-level
-             brushes for standalone use. HoverBrush and DragBrush always come from the theme. -->
+            <!-- Customizable Byte Colors (V1 compatibility) -->
+            <SolidColorBrush x:Key="ByteForegroundBrush" Color="#000000"/>
+            <SolidColorBrush x:Key="AlternateByteForegroundBrush" Color="#0000FF"/>
+            <SolidColorBrush x:Key="ColumnSeparatorBrush" Color="#D0D0D0"/>
 
-        <!-- ScrollBar styling is intentionally absent from UserControl.Resources.
-             WPF rule: local implicit styles block App-level implicit styles.
-             The themed ScrollBar style lives in Docking/Themes/Dark|Light/ContentControls.xaml
-             and is merged into App.Resources — it applies automatically to all ScrollBars here.
-             The C# DP changed handlers (OnScrollBarBackgroundColorChanged, etc.) write
-             ScrollBarBrush / ScrollBarThumbBrush into editor.Resources at runtime so the
-             DynamicResource references in the Docking template resolve to the correct theme color. -->
+            <!-- StatusBar brushes -->
+            <SolidColorBrush x:Key="StatusBarBrush" Color="#F5F5F5"/>
+            <SolidColorBrush x:Key="StatusBarTextBrush" Color="#333333"/>
+            <!-- ScrollBar brushes: NOT declared here — resolved via DynamicResource from the active
+                 theme (App.Resources). OnScrollBarBackgroundColorChanged / OnScrollBarThumbColorChanged
+                 write into editor.Resources when ApplyThemeFromResources() fires, overriding App-level
+                 brushes for standalone use. HoverBrush and DragBrush always come from the theme. -->
 
-        <!-- Styles for better appearance -->
-        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Foreground" Value="{DynamicResource HeaderTextBrush}"/>
-            <Setter Property="Padding" Value="5,3"/>
-        </Style>
+            <!-- ScrollBar styling is intentionally absent from UserControl.Resources.
+                 WPF rule: local implicit styles block App-level implicit styles.
+                 The themed ScrollBar style lives in Docking/Themes/Dark|Light/ContentControls.xaml
+                 and is merged into App.Resources — it applies automatically to all ScrollBars here.
+                 The C# DP changed handlers (OnScrollBarBackgroundColorChanged, etc.) write
+                 ScrollBarBrush / ScrollBarThumbBrush into editor.Resources at runtime so the
+                 DynamicResource references in the Docking template resolve to the correct theme color. -->
 
-        <!-- Data template for a single hex byte -->
-        <DataTemplate x:Key="HexByteTemplate">
-            <Border x:Name="ByteBorder" Width="22" Height="18" Margin="0,0,2,0" CornerRadius="2"
-                    Background="{Binding IsSelected, Converter={StaticResource BoolToSelectionBrushConverter}}"
-                    BorderBrush="{Binding Action, Converter={StaticResource ActionToBrushConverter}}"
-                    BorderThickness="1.5">
-                <TextBlock Text="{Binding HexString}"
-                           TextAlignment="Center"
-                           VerticalAlignment="Center"
-                           Foreground="#212121"
-                           FontWeight="Medium"/>
-            </Border>
-            <DataTemplate.Triggers>
-                <!-- Cursor visual: thicker blue border -->
-                <DataTrigger Binding="{Binding IsCursor}" Value="True">
-                    <Setter TargetName="ByteBorder" Property="BorderBrush" Value="#0078D4"/>
-                    <Setter TargetName="ByteBorder" Property="BorderThickness" Value="2.5"/>
-                </DataTrigger>
-            </DataTemplate.Triggers>
-        </DataTemplate>
+            <!-- Styles for better appearance -->
+            <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Foreground" Value="{DynamicResource HeaderTextBrush}"/>
+                <Setter Property="Padding" Value="5,3"/>
+            </Style>
 
-        <!-- Data template for a single ASCII byte -->
-        <DataTemplate x:Key="AsciiByteTemplate">
-            <Border x:Name="AsciiBorder" Width="10" Height="18" Margin="0" CornerRadius="1"
-                    Background="{Binding IsSelected, Converter={StaticResource BoolToSelectionBrushConverter}}"
-                    BorderBrush="Transparent"
-                    BorderThickness="1">
-                <TextBlock Text="{Binding AsciiChar}"
-                           TextAlignment="Center"
-                           VerticalAlignment="Center"
-                           Foreground="#424242"
-                           FontSize="13"/>
-            </Border>
-            <DataTemplate.Triggers>
-                <!-- Cursor visual: blue border -->
-                <DataTrigger Binding="{Binding IsCursor}" Value="True">
-                    <Setter TargetName="AsciiBorder" Property="BorderBrush" Value="#0078D4"/>
-                    <Setter TargetName="AsciiBorder" Property="BorderThickness" Value="1.5"/>
-                </DataTrigger>
-            </DataTemplate.Triggers>
-        </DataTemplate>
+            <!-- Data template for a single hex byte -->
+            <DataTemplate x:Key="HexByteTemplate">
+                <Border x:Name="ByteBorder" Width="22" Height="18" Margin="0,0,2,0" CornerRadius="2"
+                        Background="{Binding IsSelected, Converter={StaticResource BoolToSelectionBrushConverter}}"
+                        BorderBrush="{Binding Action, Converter={StaticResource ActionToBrushConverter}}"
+                        BorderThickness="1.5">
+                    <TextBlock Text="{Binding HexString}"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="#212121"
+                               FontWeight="Medium"/>
+                </Border>
+                <DataTemplate.Triggers>
+                    <!-- Cursor visual: thicker blue border -->
+                    <DataTrigger Binding="{Binding IsCursor}" Value="True">
+                        <Setter TargetName="ByteBorder" Property="BorderBrush" Value="#0078D4"/>
+                        <Setter TargetName="ByteBorder" Property="BorderThickness" Value="2.5"/>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
 
-        <!-- Data template for a hex line -->
-        <DataTemplate DataType="{x:Type models:HexLine}">
-            <Grid Margin="0,1" Background="Transparent">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="110"/> <!-- Offset -->
-                    <ColumnDefinition Width="Auto"/>   <!-- Hex bytes -->
-                    <ColumnDefinition Width="Auto"/> <!-- Separator -->
-                    <ColumnDefinition Width="Auto"/> <!-- ASCII -->
-                </Grid.ColumnDefinitions>
+            <!-- Data template for a single ASCII byte -->
+            <DataTemplate x:Key="AsciiByteTemplate">
+                <Border x:Name="AsciiBorder" Width="10" Height="18" Margin="0" CornerRadius="1"
+                        Background="{Binding IsSelected, Converter={StaticResource BoolToSelectionBrushConverter}}"
+                        BorderBrush="Transparent"
+                        BorderThickness="1">
+                    <TextBlock Text="{Binding AsciiChar}"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="#424242"
+                               FontSize="13"/>
+                </Border>
+                <DataTemplate.Triggers>
+                    <!-- Cursor visual: blue border -->
+                    <DataTrigger Binding="{Binding IsCursor}" Value="True">
+                        <Setter TargetName="AsciiBorder" Property="BorderBrush" Value="#0078D4"/>
+                        <Setter TargetName="AsciiBorder" Property="BorderThickness" Value="1.5"/>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
 
-                <!-- Offset label -->
-                <TextBlock Grid.Column="0"
-                           Text="{Binding OffsetLabel}"
-                           Foreground="{StaticResource OffsetBrush}"
-                           FontFamily="Consolas"
-                           FontSize="13"
-                           VerticalAlignment="Center"
-                           Margin="8,0,10,0"/>
+            <!-- Data template for a hex line -->
+            <DataTemplate DataType="{x:Type models:HexLine}">
+                <Grid Margin="0,1" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="110"/> <!-- Offset -->
+                        <ColumnDefinition Width="Auto"/>   <!-- Hex bytes -->
+                        <ColumnDefinition Width="Auto"/> <!-- Separator -->
+                        <ColumnDefinition Width="Auto"/> <!-- ASCII -->
+                    </Grid.ColumnDefinitions>
 
-                <!-- Hex bytes -->
-                <ItemsControl Grid.Column="1"
-                              ItemsSource="{Binding Bytes}"
-                              ItemTemplate="{StaticResource HexByteTemplate}"
-                              Margin="0,2">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
+                    <!-- Offset label -->
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding OffsetLabel}"
+                               Foreground="{StaticResource OffsetBrush}"
+                               FontFamily="Consolas"
+                               FontSize="13"
+                               VerticalAlignment="Center"
+                               Margin="8,0,10,0"/>
 
-                <!-- Separator -->
-                <Border Grid.Column="2" Width="1" Background="#E0E0E0" Margin="8,0"/>
+                    <!-- Hex bytes -->
+                    <ItemsControl Grid.Column="1"
+                                  ItemsSource="{Binding Bytes}"
+                                  ItemTemplate="{StaticResource HexByteTemplate}"
+                                  Margin="0,2">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
 
-                <!-- ASCII bytes -->
-                <ItemsControl Grid.Column="3"
-                              ItemsSource="{Binding Bytes}"
-                              ItemTemplate="{StaticResource AsciiByteTemplate}"
-                              Margin="8,2,0,2">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </Grid>
-        </DataTemplate>
+                    <!-- Separator -->
+                    <Border Grid.Column="2" Width="1" Background="#E0E0E0" Margin="8,0"/>
+
+                    <!-- ASCII bytes -->
+                    <ItemsControl Grid.Column="3"
+                                  ItemsSource="{Binding Bytes}"
+                                  ItemTemplate="{StaticResource AsciiByteTemplate}"
+                                  Margin="8,2,0,2">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </Grid>
+            </DataTemplate>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <!-- V1 Compatible Context Menu -->

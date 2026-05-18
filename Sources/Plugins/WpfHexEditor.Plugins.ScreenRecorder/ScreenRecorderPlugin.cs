@@ -30,7 +30,7 @@ namespace WpfHexEditor.Plugins.ScreenRecorder;
 
 public sealed class ScreenRecorderPlugin : IWpfHexEditorPlugin, IPluginWithOptions, IWorkspacePersistable
 {
-    private const string DocUiId    = "WpfHexEditor.Plugins.ScreenRecorder.Document";
+    private const string DocUiId    = "doc-WpfHexEditor.Plugins.ScreenRecorder.Document";
     private const string CmdCapture = "ScreenRecorder.CaptureFrame";
     private const string CmdStop    = "ScreenRecorder.StopSession";
     private const string CmdCancel  = "ScreenRecorder.CancelSession";

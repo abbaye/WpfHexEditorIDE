@@ -60,6 +60,7 @@ internal static class ScreenRecorderResources
     public static string ScreenRecorder_HudPaused        => Get(nameof(ScreenRecorder_HudPaused));
     public static string ScreenRecorder_HudFrameCount    => Get(nameof(ScreenRecorder_HudFrameCount));
     public static string ScreenRecorder_HudEscCancel     => Get(nameof(ScreenRecorder_HudEscCancel));
+    public static string ScreenRecorder_HudCapture       => Get(nameof(ScreenRecorder_HudCapture));
 
     // Timeline
     public static string ScreenRecorder_DeleteSelected   => Get(nameof(ScreenRecorder_DeleteSelected));

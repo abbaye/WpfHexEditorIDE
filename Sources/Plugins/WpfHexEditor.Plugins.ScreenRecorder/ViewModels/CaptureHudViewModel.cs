@@ -11,8 +11,9 @@ public sealed class CaptureHudViewModel : INotifyPropertyChanged
 {
     private bool   _isRecording;
     private int    _frameCount;
-    private string _elapsed   = "00:00";
-    private string _modeLabel = string.Empty;
+    private string _elapsed      = "00:00";
+    private string _modeLabel    = string.Empty;
+    private string _captureHotkey = "F9";
 
     public bool IsRecording
     {
@@ -38,9 +39,17 @@ public sealed class CaptureHudViewModel : INotifyPropertyChanged
         set { if (_modeLabel == value) return; _modeLabel = value; OnPropertyChanged(); }
     }
 
+    public string CaptureHotkey
+    {
+        get => _captureHotkey;
+        set { if (_captureHotkey == value) return; _captureHotkey = value; OnPropertyChanged(); OnPropertyChanged(nameof(CaptureHotkeyLabel)); }
+    }
+
     public string StatusLabel => _isRecording
         ? Properties.ScreenRecorderResources.ScreenRecorder_HudRecording
         : Properties.ScreenRecorderResources.ScreenRecorder_HudPaused;
+
+    public string CaptureHotkeyLabel => $"{_captureHotkey} {Properties.ScreenRecorderResources.ScreenRecorder_HudCapture}";
 
     public string EscLabel => Properties.ScreenRecorderResources.ScreenRecorder_HudEscCancel;
 

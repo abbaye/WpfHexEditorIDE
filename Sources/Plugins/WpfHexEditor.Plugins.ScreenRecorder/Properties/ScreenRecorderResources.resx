@@ -86,6 +86,7 @@
   <data name="ScreenRecorder_HudPaused" xml:space="preserve"><value>Paused</value></data>
   <data name="ScreenRecorder_HudFrameCount" xml:space="preserve"><value>{0} frames</value></data>
   <data name="ScreenRecorder_HudEscCancel" xml:space="preserve"><value>ESC to cancel</value></data>
+  <data name="ScreenRecorder_HudCapture" xml:space="preserve"><value>to capture</value></data>
 
   <!-- Timeline -->
   <data name="ScreenRecorder_DeleteSelected" xml:space="preserve"><value>Delete Selected</value></data>
