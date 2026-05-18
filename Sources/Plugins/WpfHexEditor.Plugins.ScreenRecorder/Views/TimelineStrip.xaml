@@ -71,32 +71,98 @@
                 <Button Content="{StaticResource ScreenRecorder_DuplicateFrame}"
                         Command="{Binding DuplicateFrameCommand}"
                         Style="{DynamicResource PM_ActionButtonStyle}"
-                        Padding="8,3" FontSize="11" />
+                        Padding="8,3" FontSize="11" Margin="0,0,12,0" />
+
+                <!-- Play / Stop playback -->
+                <Button x:Name="PlayBtn"
+                        Command="{Binding PlayCommand}"
+                        Padding="6,3" FontSize="13" Margin="0,0,2,0"
+                        ToolTip="{StaticResource ScreenRecorder_Play}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource PM_ActionButtonStyle}">
+                            <Setter Property="Content" Value="&#xE768;"/>
+                            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Command="{Binding StopPlaybackCommand}"
+                        Padding="6,3" FontSize="13" Margin="0,0,2,0"
+                        ToolTip="{StaticResource ScreenRecorder_StopPlayback}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource PM_ActionButtonStyle}">
+                            <Setter Property="Content" Value="&#xE71C;"/>
+                            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </StackPanel>
         </Border>
 
-        <!-- Frame cards scroll area -->
-        <ScrollViewer Grid.Row="1"
-                      HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Disabled"
-                      x:Name="FrameScroll">
-            <ItemsControl x:Name="FrameList"
-                          ItemsSource="{Binding Frames}"
-                          AllowDrop="True"
-                          Drop="OnFrameDrop"
-                          DragOver="OnFrameDragOver">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <views:FrameCard DataContext="{Binding}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+        <!-- Frame cards scroll area + playback position marker -->
+        <Grid Grid.Row="1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Disabled"
+                          x:Name="FrameScroll">
+                <ItemsControl x:Name="FrameList"
+                              ItemsSource="{Binding Frames}"
+                              AllowDrop="True"
+                              Drop="OnFrameDrop"
+                              DragOver="OnFrameDragOver">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <views:FrameCard DataContext="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Playback position marker: vertical line + triangle, positioned by code-behind -->
+            <Canvas x:Name="MarkerCanvas" IsHitTestVisible="False">
+                <Canvas.Style>
+                    <Style TargetType="Canvas">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Canvas.Style>
+                <!-- Vertical line -->
+                <Rectangle x:Name="MarkerLine"
+                           Width="2" Canvas.Top="0"
+                           Fill="#FFEF5350" Opacity="0.85"/>
+                <!-- Triangle at top -->
+                <Path x:Name="MarkerTriangle"
+                      Fill="#FFEF5350" Opacity="0.95"
+                      Canvas.Top="0">
+                    <Path.Data>
+                        <PathGeometry>
+                            <PathFigure StartPoint="-6,0" IsClosed="True">
+                                <LineSegment Point="6,0"/>
+                                <LineSegment Point="0,8"/>
+                            </PathFigure>
+                        </PathGeometry>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Grid>
 
         <!-- Scrubber: clickable progress track at the bottom of the strip -->
         <Grid Grid.Row="2" x:Name="ScrubberTrack"

@@ -58,6 +58,17 @@ public sealed class TimelineViewModel : INotifyPropertyChanged
     public ICommand InsertBlankCommand    { get; }
     public ICommand DuplicateFrameCommand { get; }
 
+    // Injected by ScreenRecorderViewModel after construction.
+    public ICommand? PlayCommand         { get; set; }
+    public ICommand? StopPlaybackCommand { get; set; }
+
+    private bool _isPlaying;
+    public bool IsPlaying
+    {
+        get => _isPlaying;
+        set { if (_isPlaying == value) return; _isPlaying = value; OnPropertyChanged(); }
+    }
+
     public TimelineViewModel()
     {
         DeleteSelectedCommand = new RelayCommand(_ => DeleteSelected(), _ => SelectedFrames().Any());

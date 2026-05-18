@@ -11,6 +11,7 @@
 
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using WpfHexEditor.Plugins.ScreenRecorder.ViewModels;
 
@@ -64,7 +65,39 @@ public partial class TimelineStrip : System.Windows.Controls.UserControl
     private void OnTimelinePropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(TimelineViewModel.SelectedIndex) or nameof(TimelineViewModel.Frames))
+        {
             UpdateScrubber();
+            UpdateMarker();
+            if (e.PropertyName == nameof(TimelineViewModel.SelectedIndex)
+                && DataContext is TimelineViewModel { IsPlaying: true } tvm2)
+                ScrollToFrame(tvm2.SelectedIndex);
+        }
+        else if (e.PropertyName is nameof(TimelineViewModel.IsPlaying))
+        {
+            UpdateMarker();
+        }
+    }
+
+    private void ScrollToFrame(int idx)
+    {
+        var offset = idx * FrameCardWidth;
+        var visible = FrameScroll.ViewportWidth;
+        if (offset < FrameScroll.HorizontalOffset || offset + FrameCardWidth > FrameScroll.HorizontalOffset + visible)
+            FrameScroll.ScrollToHorizontalOffset(Math.Max(0, offset - visible / 2));
+    }
+
+    private void UpdateMarker()
+    {
+        if (DataContext is not TimelineViewModel tvm || !tvm.IsPlaying || tvm.Frames.Count == 0)
+        {
+            MarkerLine.Height = 0;
+            return;
+        }
+        var idx    = Math.Max(0, tvm.SelectedIndex);
+        var center = idx * FrameCardWidth + FrameCardWidth / 2 - FrameScroll.HorizontalOffset;
+        Canvas.SetLeft(MarkerLine,     center - 1);
+        Canvas.SetLeft(MarkerTriangle, center);
+        MarkerLine.Height = MarkerCanvas.ActualHeight;
     }
 
     private void UpdateScrubber()

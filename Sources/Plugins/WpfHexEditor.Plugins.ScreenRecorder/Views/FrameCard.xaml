@@ -59,44 +59,103 @@
             BorderThickness="1"
             CornerRadius="4"
             Padding="4">
-        <StackPanel>
-            <!-- Thumbnail -->
-            <Border Height="64"
-                    Background="{DynamicResource DockMenuBackgroundBrush}"
-                    BorderBrush="{DynamicResource DockBorderBrush}"
-                    BorderThickness="1">
-                <Image Source="{Binding Thumbnail}"
-                       Stretch="Uniform"
-                       RenderOptions.BitmapScalingMode="HighQuality" />
-            </Border>
+        <Grid>
+            <StackPanel>
+                <!-- Thumbnail -->
+                <Border Height="64"
+                        Background="{DynamicResource DockMenuBackgroundBrush}"
+                        BorderBrush="{DynamicResource DockBorderBrush}"
+                        BorderThickness="1">
+                    <Image Source="{Binding Thumbnail}"
+                           Stretch="Uniform"
+                           RenderOptions.BitmapScalingMode="HighQuality" />
+                </Border>
 
-            <!-- Frame label -->
-            <TextBlock Text="{Binding DisplayLabel}"
-                       FontSize="10"
-                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                       HorizontalAlignment="Center"
-                       Margin="0,3,0,0"
-                       TextTrimming="CharacterEllipsis" />
-
-            <!-- Delay spinbox -->
-            <Grid Margin="0,2,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0"
-                         Text="{Binding Delay, UpdateSourceTrigger=PropertyChanged}"
-                         FontSize="10"
-                         Padding="2,1"
-                         VerticalContentAlignment="Center"
-                         ToolTip="Frame delay (ms)" />
-                <TextBlock Grid.Column="1"
-                           Text="ms"
-                           FontSize="9"
+                <!-- Frame label -->
+                <TextBlock Text="{Binding DisplayLabel}"
+                           FontSize="10"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
-                           VerticalAlignment="Center"
-                           Margin="2,0,0,0" />
-            </Grid>
-        </StackPanel>
+                           HorizontalAlignment="Center"
+                           Margin="0,3,0,0"
+                           TextTrimming="CharacterEllipsis" />
+
+                <!-- Delay spinbox -->
+                <Grid Margin="0,2,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding Delay, UpdateSourceTrigger=PropertyChanged}"
+                             FontSize="10"
+                             Padding="2,1"
+                             VerticalContentAlignment="Center"
+                             ToolTip="Frame delay (ms)" />
+                    <TextBlock Grid.Column="1"
+                               Text="ms"
+                               FontSize="9"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               VerticalAlignment="Center"
+                               Margin="2,0,0,0" />
+                </Grid>
+            </StackPanel>
+
+            <!-- Delete button — semi-transparent, visible on mouseover only -->
+            <Button Command="{Binding DeleteCommand}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Width="18" Height="18"
+                    Margin="0,-2,-2,0"
+                    Padding="0"
+                    Cursor="Arrow"
+                    ToolTip="{StaticResource ScreenRecorder_DeleteSelected}"
+                    Background="#AA1A1A1A"
+                    BorderThickness="0"
+                    Foreground="White"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="10"
+                    Content="&#xE711;">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Opacity" Value="0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}"
+                                            CornerRadius="9"
+                                            Width="18" Height="18">
+                                        <ContentPresenter HorizontalAlignment="Center"
+                                                          VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             To="0.85" Duration="0:0:0.15"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             To="0" Duration="0:0:0.15"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#CC333333"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </Grid>
     </Border>
 </UserControl>

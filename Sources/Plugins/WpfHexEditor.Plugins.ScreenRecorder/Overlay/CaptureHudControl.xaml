@@ -48,6 +48,10 @@
             </TextBlock>
 
             <TextBlock Text=" · " Foreground="#88FFFFFF" FontSize="12" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding CaptureHotkeyLabel}"
+                       Foreground="#AAFFFFFF" FontSize="11"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text=" · " Foreground="#88FFFFFF" FontSize="12" VerticalAlignment="Center"/>
             <TextBlock Text="{Binding EscLabel}"
                        Foreground="#AAFFFFFF" FontSize="11"
                        VerticalAlignment="Center"/>

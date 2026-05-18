@@ -72,9 +72,16 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
 
     public ScreenRecorderViewModel()
     {
-        Timeline   = new TimelineViewModel();
+        var opts = Options.ScreenRecorderOptions.Instance;
+        Timeline   = new TimelineViewModel { GlobalDelay = opts.TimerInterval };
         Preview    = new PreviewViewModel();
-        Properties = new PropertiesViewModel();
+        Properties = new PropertiesViewModel
+        {
+            TimerInterval        = opts.TimerInterval,
+            RepeatLastFrameDelay = opts.RepeatLastFrameDelay,
+            LoopCount            = opts.DefaultLoopCount,
+            OutputScale          = opts.DefaultScale,
+        };
         Hud        = new CaptureHudViewModel();
 
         Timeline.Preview = Preview;
@@ -111,6 +118,9 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         ExportMp4Command     = new RelayCommand(_ => _ = ExportMp4Async(), _ => Timeline.Frames.Count > 0 && FfmpegExportService.IsAvailable);
         PlayCommand          = new RelayCommand(_ => StartPlayback(),  _ => Timeline.Frames.Count > 0 && !IsSessionActive && !IsPlaying);
         StopPlaybackCommand  = new RelayCommand(_ => _playbackService.Stop(), _ => IsPlaying);
+
+        Timeline.PlayCommand         = PlayCommand;
+        Timeline.StopPlaybackCommand = StopPlaybackCommand;
     }
 
     // ── Session ────────────────────────────────────────────────────────────────
@@ -133,8 +143,9 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
 
         _captureService.StartSession(session);
         ShowOverlay(region);
-        IsSessionActive = true;
-        Hud.IsRecording = true;
+        IsSessionActive     = true;
+        Hud.IsRecording     = true;
+        Hud.CaptureHotkey   = Options.ScreenRecorderOptions.Instance.HotkeyCapture;
     }
 
     private void StopCapture() => _captureService.StopSession();
@@ -185,6 +196,7 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
             Timeline.AddFrame(card);
             Hud.FrameCount = Timeline.Frames.Count;
             Hud.Elapsed    = _captureService.Elapsed.ToString(@"mm\:ss");
+            if (Timeline.Frames.Count == 1) RefreshCanExecute();
         });
     }
 
@@ -244,7 +256,10 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         _sessionPath = dlg.FileName;
         var session  = BuildCaptureSession();
         await SessionSerializer.SaveAsync(session, _sessionPath);
+        OnPropertyChanged(nameof(LastSavedPath));
     }
+
+    public string LastSavedPath => _sessionPath;
 
     private async Task OpenSessionAsync()
     {
@@ -322,6 +337,7 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
         var delays = Timeline.Frames.Select(f => f.Delay).ToList();
         var start  = Timeline.SelectedFrame is { } sel ? Timeline.Frames.IndexOf(sel) : 0;
         _playbackService.Play(delays, start);
+        Timeline.IsPlaying = true;
         OnPropertyChanged(nameof(IsPlaying));
         RefreshCanExecute();
     }
@@ -334,8 +350,12 @@ public sealed class ScreenRecorderViewModel : INotifyPropertyChanged, IDisposabl
 
     private void OnPlaybackStopped(object? sender, EventArgs e)
     {
-        OnPropertyChanged(nameof(IsPlaying));
-        RefreshCanExecute();
+        Application.Current.Dispatcher.BeginInvoke(() =>
+        {
+            Timeline.IsPlaying = false;
+            OnPropertyChanged(nameof(IsPlaying));
+            RefreshCanExecute();
+        });
     }
 
     // ── Import ─────────────────────────────────────────────────────────────────
