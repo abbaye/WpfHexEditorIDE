@@ -143,6 +143,13 @@ Merge once in `App.xaml` so themes and brushes resolve correctly:
 
 ---
 
+## What's New in 3.3.2
+
+- **Fix**: `HexEditorLocalizedDictionary` is now merged into `UserControl.Resources` — resolves `XamlParseException` at startup when localization `StaticResource` keys are used outside the `ContextMenu` tree (standalone and IDE mode both affected).
+- **No public API changes** — drop-in upgrade from 3.3.1.
+
+---
+
 ## What's New in 3.3.1
 
 - **Updated** to `whfmt.FileFormatCatalog 1.3.2` (whfmt v3 GA) — 799 format definitions, runtime expression engine, schema v3 canonical.
