@@ -1,0 +1,91 @@
+//////////////////////////////////////////////
+// GNU Affero General Public License v3.0 - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
+using System.IO;
+using System.Text;
+using System.Text.Json;
+
+namespace WpfHexEditor.App.BinaryAnalysis.Services;
+
+/// <summary>Contract for exporting a list of <see cref="StringRun"/> results to a file.</summary>
+public interface IStringExtractionExporter
+{
+    string Format      { get; }
+    string FileFilter  { get; }
+    string DefaultExt  { get; }
+    Task ExportAsync(IEnumerable<StringRun> runs, string path, CancellationToken ct = default);
+}
+
+/// <summary>Exports string runs as plain text — one string per line.</summary>
+public sealed class TxtStringExporter : IStringExtractionExporter
+{
+    public string Format     => "TXT";
+    public string FileFilter => "Text Files (*.txt)|*.txt";
+    public string DefaultExt => ".txt";
+
+    public async Task ExportAsync(IEnumerable<StringRun> runs, string path, CancellationToken ct = default)
+    {
+        await using var sw = new StreamWriter(path, append: false, Encoding.UTF8);
+        foreach (var run in runs)
+        {
+            ct.ThrowIfCancellationRequested();
+            await sw.WriteLineAsync(run.Value);
+        }
+    }
+}
+
+/// <summary>Exports string runs as CSV with headers: Offset,Length,Encoding,Value.</summary>
+public sealed class CsvStringExporter : IStringExtractionExporter
+{
+    public string Format     => "CSV";
+    public string FileFilter => "CSV Files (*.csv)|*.csv";
+    public string DefaultExt => ".csv";
+
+    public async Task ExportAsync(IEnumerable<StringRun> runs, string path, CancellationToken ct = default)
+    {
+        await using var sw = new StreamWriter(path, append: false, Encoding.UTF8);
+        await sw.WriteLineAsync("Offset,Length,Encoding,Value");
+        foreach (var run in runs)
+        {
+            ct.ThrowIfCancellationRequested();
+            var escaped = run.Value.Replace("\"", "\"\"");
+            await sw.WriteLineAsync($"0x{run.Offset:X8},{run.Length},{run.Encoding},\"{escaped}\"");
+        }
+    }
+}
+
+/// <summary>Exports string runs as a JSON array.</summary>
+public sealed class JsonStringExporter : IStringExtractionExporter
+{
+    public string Format     => "JSON";
+    public string FileFilter => "JSON Files (*.json)|*.json";
+    public string DefaultExt => ".json";
+
+    public async Task ExportAsync(IEnumerable<StringRun> runs, string path, CancellationToken ct = default)
+    {
+        var list = runs.Select(r => new
+        {
+            Offset   = $"0x{r.Offset:X8}",
+            Length   = r.Length,
+            Encoding = r.Encoding.ToString(),
+            Value    = r.Value,
+        }).ToList();
+
+        var json = JsonSerializer.Serialize(list, new JsonSerializerOptions { WriteIndented = true });
+        await File.WriteAllTextAsync(path, json, Encoding.UTF8, ct);
+    }
+}
+
+/// <summary>Registry of all available exporters, keyed by format name.</summary>
+public static class StringExtractionExporters
+{
+    public static readonly IReadOnlyList<IStringExtractionExporter> All =
+    [
+        new TxtStringExporter(),
+        new CsvStringExporter(),
+        new JsonStringExporter(),
+    ];
+}

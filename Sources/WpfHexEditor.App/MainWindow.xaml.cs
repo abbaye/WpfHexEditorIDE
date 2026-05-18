@@ -1204,7 +1204,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // if the module was null at layout-load time.
         var asmIds = _layout.GetAllItems()
             .Where(item => WpfHexEditor.App.AssemblyExplorer.AssemblyExplorerModule.IsKnownContentIdStatic(item.ContentId)
-                        || item.ContentId == WpfHexEditor.App.Analysis.CodeAnalysisModule.ReportTabUiId)
+                        || item.ContentId == WpfHexEditor.App.Analysis.CodeAnalysisModule.ReportTabUiId
+                        || item.ContentId.StartsWith("panel-ba-")
+                        || item.ContentId.StartsWith(WpfHexEditor.App.HexDiff.HexDiffModule.ContentId)
+                        || item.ContentId.StartsWith(WpfHexEditor.App.Scripting.ScriptingModule.ContentId))
             .Select(item => item.ContentId)
             .ToList();
 
