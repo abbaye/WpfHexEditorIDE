@@ -1,13 +1,12 @@
-// Project: WpfHexEditor.Editor.Core
-// File: Converters/StringCaseConverter.cs
+// Project: WpfHexEditor.SDK
+// File: UI/StringCaseConverter.cs
 // Description: IValueConverter that transforms string casing (Upper, Lower, Title).
-//              Shared across all editors and plugins via WpfHexEditor.Editor.Core.
-//              Use via {x:Static conv:StringCaseConverter.Upper} in XAML.
+//              Use in any plugin XAML via {x:Static sdk:StringCaseConverter.Upper}.
 
 using System.Globalization;
 using System.Windows.Data;
 
-namespace WpfHexEditor.Editor.Core.Converters;
+namespace WpfHexEditor.SDK.UI;
 
 public enum StringCase { Upper, Lower, Title }
 
