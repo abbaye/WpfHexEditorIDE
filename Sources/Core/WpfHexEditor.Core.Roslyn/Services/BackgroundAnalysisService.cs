@@ -145,6 +145,7 @@ internal sealed class BackgroundAnalysisService : IDisposable
     {
         _cts.Cancel();
         _changeQueue.Writer.TryComplete();
+        try { _loopTask.Wait(TimeSpan.FromSeconds(2)); } catch { /* cancelled or timed out */ }
         _cts.Dispose();
     }
 }
