@@ -31,6 +31,12 @@ internal static class ParserGenerator
         bool generateAsync,
         OutputLanguage language = OutputLanguage.CSharp)
     {
+        var trimmed = json.AsSpan().TrimStart();
+        if (trimmed.IsEmpty || trimmed[0] != '{')
+            throw new InvalidOperationException(
+                $"Expected a JSON object but the content starts with '{(trimmed.IsEmpty ? "<empty>" : trimmed[0].ToString())}'. " +
+                "Ensure the resolved resource is a valid .whfmt file and not a .grammar (Synalysis XML) or other non-JSON resource.");
+
         using var doc = JsonDocument.Parse(json, _jsonc);
         var root = doc.RootElement;
 
