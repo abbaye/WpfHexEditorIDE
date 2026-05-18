@@ -33,7 +33,6 @@
                 <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
                 <Setter Property="Opacity"      Value="0.7"/>
                 <Setter Property="Margin"       Value="0,0,0,6"/>
-                <Setter Property="TextTransform" Value="Uppercase"/>
             </Style>
 
             <!-- Row label -->
