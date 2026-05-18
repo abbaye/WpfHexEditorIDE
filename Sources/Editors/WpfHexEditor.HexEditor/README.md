@@ -2,6 +2,11 @@
 
 > Full-featured WPF hex editor UserControl — MVVM, partial-class architecture, inline search, diagnostics, and project-system integration.
 
+## Changelog
+
+### 3.3.2 (2026-05-18)
+- **Fix:** `HexEditorLocalizedDictionary` is now merged into `UserControl.Resources` (was only in `ContextMenu.Resources`). Resolves `XamlParseException` on startup when localization `StaticResource` keys are used outside the context menu tree.
+
 [![.NET](https://img.shields.io/badge/.NET-net48%20%7C%20net8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](../../LICENSE)
 

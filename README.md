@@ -16,7 +16,7 @@
 
   > 🚧 **Active Development** — New features, editors and panels are added regularly. Contributions welcome!
   >
-  > 📅 *Last revised: 2026-05-17*
+  > 📅 *Last revised: 2026-05-18*
 
   <br/>
 
@@ -110,7 +110,7 @@ All controls are **independently reusable** — no IDE required.
 
 ```bash
 # Install via .NET CLI
-dotnet add package WPFHexaEditor              # Hex editor control (v3.3.0)
+dotnet add package WPFHexaEditor              # Hex editor control (v3.3.2)
 dotnet add package WpfCodeEditor              # Code editor control (v0.9.8.0)
 dotnet add package WpfDocking                 # Docking framework (v0.9.7.0)
 dotnet add package WpfColorPicker             # Color picker control
@@ -288,6 +288,7 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 | **Code Analysis scope UX + SplitButton re-run** — scope label (Solution/Project/File) in toolbar; SplitButton with same-scope re-run + dropdown (Run Solution / Run Project… / Run File…); `_lastScope/_lastPath` persisted across tab switches | v0.6.5.225 |
 | **Code Analysis Treemap context menu** — right-click: Open File, Copy Path, Copy Metrics, Run Analysis on File, Filter to This Project, Highlight Top 10 Hotspots (toggle dims non-hotspot tiles); 15 new keys × 28 satellite languages | v0.6.5.225 |
 | **Code Analysis localization fixes** — `AppLocalizedDictionary` in `UserControl.Resources.MergedDictionaries` fixes empty DataGridTextColumn headers; matches WatchesPanel / AssemblyDetailPane pattern | v0.6.5.225 |
+| **WPFHexaEditor 3.3.2** — Fix `XamlParseException` on startup: `HexEditorLocalizedDictionary` is now wired into `UserControl.Resources` so all loc `StaticResource` keys resolve across the full visual tree (not only inside `ContextMenu`) | v0.6.5.96 |
 | **WPFHexaEditor 3.3.0** — `HexEditorSplitHost` synchronized split-view host with built-in toolbar toggle; `HexEditorSettings` auto-generated settings panel; unified namespace (`xmlns:hex`); doc/guide clarity pass | v0.6.5.110 |
 | **Document Editor waves B–G** — headers/footers, page breaks, table insert/edit dialog, hyperlink insert dialog, auto-list (bullet & numbered), page settings dialog (margins/paper/orientation), rich context menu, 27-language localization | v0.6.5.110 |
 | **XAML Designer code-behind pipeline** — `XamlCodeBehindScanner`, `XamlCodeBehindGenerator`, `CodeBehindMergeEngine`, `CodeBehindSyncService`, `XamlNameRenameService`; `[GeneratedCode]` guard preserves user code; Visual State Manager panel (`VisualStatePanel`), `CodeGenPanel` | v0.6.5.110 |
