@@ -41,9 +41,9 @@ public sealed class CodeEditorServiceImpl : ICodeEditorService
         if (TryGet(out var ed)) ed.NavigateToLine(line, column);
     }
 
-    public void AddLineHighlight(int line, SolidColorBrush color, string description, string tag)
+    public void AddLineHighlight(int line, SolidColorBrush color, string description, string tag, double opacity = 0.35)
     {
-        if (TryGet(out var ed)) ed.AddLineHighlight(line, color, description, tag);
+        if (TryGet(out var ed)) ed.AddLineHighlight(line, color, description, tag, opacity);
     }
 
     public void ClearLineHighlightsByTag(string tag)

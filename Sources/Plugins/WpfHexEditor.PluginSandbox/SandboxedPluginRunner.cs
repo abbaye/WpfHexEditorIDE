@@ -689,7 +689,7 @@ file sealed class NullCodeEditorService : ICodeEditorService
     public int CaretColumn => 1;
     public event EventHandler? DocumentChanged { add { } remove { } }
     public void NavigateToLine(int line, int column = 1) { }
-    public void AddLineHighlight(int line, System.Windows.Media.SolidColorBrush color, string description, string tag) { }
+    public void AddLineHighlight(int line, System.Windows.Media.SolidColorBrush color, string description, string tag, double opacity = 0.35) { }
     public void ClearLineHighlightsByTag(string tag) { }
 }
 

@@ -175,6 +175,13 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     {
         var item = OpenedFiles.FirstOrDefault(f => string.Equals(f.FilePath, doc.FilePath, StringComparison.OrdinalIgnoreCase));
         if (item is null) return;
+
+        if (string.Equals(doc.FilePath, _pendingHighlightPath, StringComparison.OrdinalIgnoreCase))
+        {
+            _pendingHighlightRuns = null;
+            _pendingHighlightPath = null;
+        }
+
         System.Windows.Application.Current?.Dispatcher.Invoke(() =>
         {
             OpenedFiles.Remove(item);
@@ -186,25 +193,28 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     private void OnActiveDocumentChanged(object? sender, DocumentModel? doc)
     {
         if (doc?.FilePath is null) return;
-        var item = OpenedFiles.FirstOrDefault(f => string.Equals(f.FilePath, doc.FilePath, StringComparison.OrdinalIgnoreCase));
-        if (item is not null)
-            System.Windows.Application.Current?.Dispatcher.Invoke(() => SelectedFile = item);
 
-        // Apply deferred highlights when the awaited file finally becomes active.
-        if (_pendingHighlightRuns is { Count: > 0 } &&
-            string.Equals(doc.FilePath, _pendingHighlightPath, StringComparison.OrdinalIgnoreCase))
+        var item    = OpenedFiles.FirstOrDefault(f => string.Equals(f.FilePath, doc.FilePath, StringComparison.OrdinalIgnoreCase));
+        var hasPending = _pendingHighlightRuns is { Count: > 0 } &&
+                         string.Equals(doc.FilePath, _pendingHighlightPath, StringComparison.OrdinalIgnoreCase);
+
+        List<StringRun>? pending = null;
+        if (hasPending)
         {
-            var pending = _pendingHighlightRuns;
+            pending               = _pendingHighlightRuns;
             _pendingHighlightRuns = null;
             _pendingHighlightPath = null;
-            System.Windows.Application.Current?.Dispatcher.Invoke(() =>
-            {
-                bool isHex  = doc.EditorId == "hex-editor";
-                bool isCode = doc.EditorId == "code-editor";
-                if (isHex)        ApplyHexHighlights(pending);
-                else if (isCode)  ApplyCodeHighlights(pending, doc.FilePath);
-            });
         }
+
+        System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+        {
+            if (item is not null) SelectedFile = item;
+            if (pending is not null)
+            {
+                if (doc.EditorId == WellKnownEditorIds.HexEditor)       ApplyHexHighlights(pending);
+                else if (doc.EditorId == WellKnownEditorIds.CodeEditor) ApplyCodeHighlights(pending, doc.FilePath);
+            }
+        });
     }
 
     // ── Scan ──────────────────────────────────────────────────────────────────
@@ -343,10 +353,8 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
     private const string HighlightTag = "StringExtraction";
 
-    // Pending highlight state — set when the target file isn't active yet.
     private List<StringRun>? _pendingHighlightRuns;
     private string?          _pendingHighlightPath;
-    private bool             _pendingIsCodeEditor;
 
     /// <summary>
     /// Highlight the given runs.  Source of truth is the <see cref="ResultsView"/> (filtered).
@@ -357,10 +365,9 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     {
         if (_context is null) return;
 
-        var runList   = runs.ToList();
+        var runList    = runs.ToList();
         var targetPath = SelectedFile?.FilePath;
 
-        // ── HexEditor path ────────────────────────────────────────────────────
         bool hexActive = _context.HexEditor.IsActive &&
                          string.Equals(_context.HexEditor.CurrentFilePath, targetPath, StringComparison.OrdinalIgnoreCase);
         if (hexActive || targetPath is null)
@@ -370,7 +377,6 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
             return;
         }
 
-        // ── CodeEditor path ───────────────────────────────────────────────────
         bool codeActive = _context.CodeEditor.IsActive &&
                           string.Equals(_context.CodeEditor.CurrentFilePath, targetPath, StringComparison.OrdinalIgnoreCase);
         if (codeActive)
@@ -380,27 +386,24 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
             return;
         }
 
-        // ── Deferred ──────────────────────────────────────────────────────────
-        _pendingHighlightRuns  = runList;
-        _pendingHighlightPath  = targetPath;
-        StatusText = $"Highlights en attente — ouvre \"{Path.GetFileName(targetPath)}\" dans un éditeur";
+        _pendingHighlightRuns = runList;
+        _pendingHighlightPath = targetPath;
+        StatusText = $"Highlights pending — open \"{Path.GetFileName(targetPath)}\" in an editor";
     }
 
     private void ApplyHexHighlights(List<StringRun> runs)
     {
         _context!.HexEditor.ClearCustomBackgroundBlockByTag(HighlightTag);
-        int idx = 0;
-        foreach (var run in runs)
+        foreach (var (run, i) in runs.Select((r, i) => (r, i)))
         {
-            var block = new CustomBackgroundBlock(run.Offset, run.Length, ColorForEncoding(run.Encoding, idx))
+            var block = new CustomBackgroundBlock(run.Offset, run.Length, ColorForEncoding(run.Encoding, i))
             {
-                Description  = $"[{run.Encoding}] {run.Value}",
-                Tag          = HighlightTag,
-                Opacity      = 0.35,
+                Description   = $"[{run.Encoding}] {run.Value}",
+                Tag           = HighlightTag,
+                Opacity       = 0.35,
                 ShowInTooltip = true,
             };
             _context.HexEditor.AddCustomBackgroundBlock(block);
-            idx++;
         }
         StatusText = $"{runs.Count} runs highlighted in HexEditor";
     }
@@ -409,19 +412,16 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     {
         _context!.CodeEditor.ClearLineHighlightsByTag(HighlightTag);
 
-        // Build a line-start offset lookup from the file content.
         var lineStarts = BuildLineStarts(filePath);
-        if (lineStarts is null) { StatusText = "Highlight CodeEditor: impossible de lire le fichier"; return; }
+        if (lineStarts is null) { StatusText = "Cannot highlight: file unreadable"; return; }
 
-        int idx = 0;
-        foreach (var run in runs)
+        foreach (var (run, i) in runs.Select((r, i) => (r, i)))
         {
-            int line = OffsetToLine(lineStarts, run.Offset); // 1-based
-            _context.CodeEditor.AddLineHighlight(line, ColorForEncoding(run.Encoding, idx),
+            int line = OffsetToLine(lineStarts, run.Offset);
+            _context.CodeEditor.AddLineHighlight(line, ColorForEncoding(run.Encoding, i),
                 $"[{run.Encoding}] {run.Value}", HighlightTag);
-            idx++;
         }
-        StatusText = $"{runs.Count} lignes highlighted in CodeEditor";
+        StatusText = $"{runs.Count} lines highlighted in CodeEditor";
     }
 
     public void ClearHighlights()

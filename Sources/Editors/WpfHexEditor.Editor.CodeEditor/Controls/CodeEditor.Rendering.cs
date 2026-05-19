@@ -1949,10 +1949,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (_foldingEngine != null && _foldingEngine.IsLineHidden(h.Line)) continue;
                 if (!_lineYLookup.TryGetValue(h.Line, out double y)) continue;
 
-                var brush = h.Color.Clone();
-                brush.Opacity = 0.35;
-                brush.Freeze();
-                dc.DrawRectangle(brush, null, new Rect(x, y, contentW - x, _lineHeight));
+                dc.DrawRectangle(h.FrozenBrush, null, new Rect(x, y, contentW - x, _lineHeight));
             }
         }
 
