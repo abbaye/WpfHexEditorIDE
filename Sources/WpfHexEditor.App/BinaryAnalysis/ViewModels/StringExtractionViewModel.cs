@@ -32,11 +32,27 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     private CancellationTokenSource? _cts;
     private bool _isBusy;
     private int _minLength = 4;
+    private int _minUniqueChars = 2;
     private string _filter = string.Empty;
+    private bool _useRegexFilter;
+    private long _rangeFrom;
+    private long _rangeTo = long.MaxValue;
+    private bool _excludeHighEntropy;
+    private double _entropyThreshold = 0.90;
     private int _totalCount;
     private int _shownCount;
     private string _statusText = string.Empty;
     private OpenedFileItem? _selectedFile;
+    private bool _isOutdated;
+    private bool _syncCaretToGrid = true;
+
+    // Cached from last RunAsync — used by ApplyCodeHighlights without re-reading disk
+    private byte[]? _lastBuffer;
+    private string? _lastBufferPath;
+    private long[]? _lastLineStarts;
+
+    // Entropy map: one byte per 256-byte block, value = (Shannon entropy * 32) clamped to 0-255
+    private byte[]? _entropyMap;
 
     // ── Collections ──────────────────────────────────────────────────────────
 
@@ -62,18 +78,6 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         set { _minLength = Math.Clamp(value, 1, 64); OnPropertyChanged(); }
     }
 
-    public string Filter
-    {
-        get => _filter;
-        set
-        {
-            _filter = value;
-            OnPropertyChanged();
-            ResultsView.Refresh();
-            UpdateShownCount();
-        }
-    }
-
     public int TotalCount
     {
         get => _totalCount;
@@ -96,6 +100,119 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     {
         get => _selectedFile;
         set { _selectedFile = value; OnPropertyChanged(); }
+    }
+
+    public int MinUniqueChars
+    {
+        get => _minUniqueChars;
+        set { _minUniqueChars = Math.Clamp(value, 1, 20); OnPropertyChanged(); ResultsView.Refresh(); UpdateShownCount(); }
+    }
+
+    public bool UseRegexFilter
+    {
+        get => _useRegexFilter;
+        set { _useRegexFilter = value; OnPropertyChanged(); ResultsView.Refresh(); UpdateShownCount(); }
+    }
+
+    public long RangeFrom
+    {
+        get => _rangeFrom;
+        set { _rangeFrom = Math.Max(0, value); OnPropertyChanged(); ResultsView.Refresh(); UpdateShownCount(); }
+    }
+
+    public long RangeTo
+    {
+        get => _rangeTo;
+        set { _rangeTo = Math.Max(0, value); OnPropertyChanged(); ResultsView.Refresh(); UpdateShownCount(); }
+    }
+
+    public bool ExcludeHighEntropy
+    {
+        get => _excludeHighEntropy;
+        set { _excludeHighEntropy = value; OnPropertyChanged(); ResultsView.Refresh(); UpdateShownCount(); }
+    }
+
+    public double EntropyThreshold
+    {
+        get => _entropyThreshold;
+        set { _entropyThreshold = Math.Clamp(value, 0.1, 1.0); OnPropertyChanged(); ResultsView.Refresh(); UpdateShownCount(); }
+    }
+
+    public bool IsOutdated
+    {
+        get => _isOutdated;
+        private set { _isOutdated = value; OnPropertyChanged(); }
+    }
+
+    public bool SyncCaretToGrid
+    {
+        get => _syncCaretToGrid;
+        set { _syncCaretToGrid = value; OnPropertyChanged(); }
+    }
+
+    // ── Stats ─────────────────────────────────────────────────────────────────
+
+    public Dictionary<StringEncoding, int> EncodingCounts { get; } = [];
+
+    private void RefreshEncodingCounts()
+    {
+        EncodingCounts.Clear();
+        foreach (var run in ResultsView.Cast<StringRun>())
+        {
+            EncodingCounts.TryGetValue(run.Encoding, out int c);
+            EncodingCounts[run.Encoding] = c + 1;
+        }
+        OnPropertyChanged(nameof(EncodingCounts));
+    }
+
+    // ── Pinned runs ───────────────────────────────────────────────────────────
+
+    private readonly HashSet<StringRun> _pinnedRuns = [];
+
+    public bool IsPinned(StringRun run) => _pinnedRuns.Contains(run);
+
+    public void TogglePin(StringRun run)
+    {
+        if (!_pinnedRuns.Remove(run)) _pinnedRuns.Add(run);
+        ResultsView.Refresh();
+        UpdateShownCount();
+    }
+
+    // ── Duplicate map ─────────────────────────────────────────────────────────
+
+    private Dictionary<string, int> _duplicateCounts = [];
+
+    private void RebuildDuplicateCounts()
+    {
+        _duplicateCounts = _allResults
+            .GroupBy(r => r.Value, StringComparer.Ordinal)
+            .ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
+    }
+
+    public int GetDuplicateCount(StringRun run) =>
+        _duplicateCounts.TryGetValue(run.Value, out int c) ? c : 1;
+
+    // ── Highlight navigation index ────────────────────────────────────────────
+
+    private int _currentHighlightIdx = -1;
+    private List<StringRun> _lastHighlightedRuns = [];
+
+    public void NavigateHighlightNext()  => NavigateHighlight(+1);
+    public void NavigateHighlightPrev()  => NavigateHighlight(-1);
+
+    private void NavigateHighlight(int delta)
+    {
+        if (_lastHighlightedRuns.Count == 0) return;
+        _currentHighlightIdx = (_currentHighlightIdx + delta + _lastHighlightedRuns.Count) % _lastHighlightedRuns.Count;
+        NavigateToOffset(_lastHighlightedRuns[_currentHighlightIdx]);
+        SelectedGridItem = _lastHighlightedRuns[_currentHighlightIdx];
+    }
+
+    private StringRun? _selectedGridItem;
+    public StringRun? SelectedGridItem
+    {
+        get => _selectedGridItem;
+        set { _selectedGridItem = value; OnPropertyChanged(); }
     }
 
     public void ToggleEncoding(StringEncoding enc)
@@ -130,16 +247,18 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
     private void AttachDocumentEvents(IIDEHostContext ctx)
     {
-        ctx.DocumentHost.Documents.DocumentRegistered   += OnDocumentRegistered;
-        ctx.DocumentHost.Documents.DocumentUnregistered += OnDocumentUnregistered;
+        ctx.DocumentHost.Documents.DocumentRegistered    += OnDocumentRegistered;
+        ctx.DocumentHost.Documents.DocumentUnregistered  += OnDocumentUnregistered;
         ctx.DocumentHost.Documents.ActiveDocumentChanged += OnActiveDocumentChanged;
+        ctx.HexEditor.SelectionChanged += OnHexEditorSelectionChanged;
     }
 
     private void DetachDocumentEvents(IIDEHostContext ctx)
     {
-        ctx.DocumentHost.Documents.DocumentRegistered   -= OnDocumentRegistered;
-        ctx.DocumentHost.Documents.DocumentUnregistered -= OnDocumentUnregistered;
+        ctx.DocumentHost.Documents.DocumentRegistered    -= OnDocumentRegistered;
+        ctx.DocumentHost.Documents.DocumentUnregistered  -= OnDocumentUnregistered;
         ctx.DocumentHost.Documents.ActiveDocumentChanged -= OnActiveDocumentChanged;
+        ctx.HexEditor.SelectionChanged -= OnHexEditorSelectionChanged;
     }
 
     // ── Document list maintenance ─────────────────────────────────────────────
@@ -217,13 +336,31 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         });
     }
 
+    private void OnHexEditorSelectionChanged(object? sender, EventArgs e)
+    {
+        // Mark results as outdated if the hex buffer may have changed
+        if (_lastBufferPath is not null &&
+            string.Equals(_context?.HexEditor.CurrentFilePath, _lastBufferPath, StringComparison.OrdinalIgnoreCase))
+            IsOutdated = true;
+
+        if (!_syncCaretToGrid) return;
+
+        long caret = _context?.HexEditor.SelectionStart ?? -1;
+        if (caret < 0) return;
+
+        // Find the run that contains or is nearest to the caret
+        var match = _lastHighlightedRuns.FirstOrDefault(r => r.Offset <= caret && caret < r.Offset + r.Length)
+                 ?? _allResults.Where(r => r.Offset <= caret).OrderByDescending(r => r.Offset).FirstOrDefault();
+        if (match is not null)
+            SelectedGridItem = match;
+    }
+
     // ── Scan ──────────────────────────────────────────────────────────────────
 
     public async Task RunAsync()
     {
         if (_context is null || IsBusy) return;
 
-        // Determine target: selected file or active HexEditor
         byte[]? buffer = await LoadBufferAsync();
         if (buffer is null) { StatusText = "No file selected."; return; }
 
@@ -231,34 +368,48 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         _cts?.Dispose();
         _cts = new CancellationTokenSource();
         IsBusy = true;
+        IsOutdated = false;
         _allResults.Clear();
+        _pinnedRuns.Clear();
         TotalCount = 0;
         ShownCount = 0;
 
         var sw = Stopwatch.StartNew();
         try
         {
-            // Build active encoding set
             var encodings = BuildEncodingSet();
+            var targetPath = SelectedFile?.FilePath;
 
             ITblDecodeTable? tblTable = (encodings.Contains(StringEncoding.Tbl) ||
                                          encodings.Contains(StringEncoding.TblDte) ||
                                          encodings.Contains(StringEncoding.TblMte))
                                         ? _activeTblTable : null;
 
-            var runs = await Task.Run(
-                () => StringExtractor.Extract(buffer.AsSpan(), _minLength, encodings, tblTable),
-                _cts.Token);
+            // Run extract + line-start cache + entropy map all on background thread
+            var (runs, lineStarts, entropyMap) = await Task.Run(() =>
+            {
+                var r = StringExtractor.Extract(buffer.AsSpan(), _minLength, encodings, tblTable);
+                var ls = BuildLineStartsFromBuffer(buffer);
+                var em = BuildEntropyMap(buffer);
+                return (r, ls, em);
+            }, _cts.Token);
+
+            // Cache for reuse in ApplyCodeHighlights / entropy filter
+            _lastBuffer      = buffer;
+            _lastBufferPath  = targetPath;
+            _lastLineStarts  = lineStarts;
+            _entropyMap      = entropyMap;
 
             foreach (var run in runs)
                 _allResults.Add(run);
 
+            RebuildDuplicateCounts();
             TotalCount = _allResults.Count;
             ResultsView.Refresh();
+            RefreshEncodingCounts();
             UpdateShownCount();
 
-            var elapsed = sw.Elapsed;
-            StatusText = $"{TotalCount} strings found, {ShownCount} shown — {elapsed.TotalMilliseconds:F0} ms";
+            StatusText = $"{TotalCount} strings found, {ShownCount} shown — {sw.Elapsed.TotalMilliseconds:F0} ms";
         }
         catch (OperationCanceledException) { StatusText = "Cancelled."; }
         finally { IsBusy = false; }
@@ -330,12 +481,63 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
     // ── Filter ────────────────────────────────────────────────────────────────
 
+    private System.Text.RegularExpressions.Regex? _compiledRegex;
+
+    public string Filter
+    {
+        get => _filter;
+        set
+        {
+            _filter = value;
+            OnPropertyChanged();
+            _compiledRegex = null;
+            if (_useRegexFilter && !string.IsNullOrEmpty(value))
+            {
+                try { _compiledRegex = new System.Text.RegularExpressions.Regex(value, System.Text.RegularExpressions.RegexOptions.IgnoreCase); }
+                catch { /* invalid regex — filter shows nothing */ }
+            }
+            ResultsView.Refresh();
+            UpdateShownCount();
+        }
+    }
+
     private bool FilterPredicate(object obj)
     {
         if (obj is not StringRun run) return false;
+
+        // Pinned runs always visible
+        if (_pinnedRuns.Contains(run)) return true;
+
         if (!ActiveEncodings.Contains(run.Encoding)) return false;
-        if (!string.IsNullOrEmpty(_filter) &&
-            !run.Value.Contains(_filter, StringComparison.OrdinalIgnoreCase)) return false;
+
+        // Offset range
+        if (run.Offset < _rangeFrom || run.Offset + run.Length > _rangeTo) return false;
+
+        // Min unique chars
+        if (run.Value.Distinct().Count() < _minUniqueChars) return false;
+
+        // Entropy exclusion
+        if (_excludeHighEntropy && _entropyMap is not null)
+        {
+            int block = (int)(run.Offset / 256);
+            if (block < _entropyMap.Length && _entropyMap[block] / 255.0 >= _entropyThreshold)
+                return false;
+        }
+
+        // Text filter (substring or regex)
+        if (!string.IsNullOrEmpty(_filter))
+        {
+            if (_useRegexFilter)
+            {
+                if (_compiledRegex is null) return false; // invalid regex
+                if (!_compiledRegex.IsMatch(run.Value)) return false;
+            }
+            else
+            {
+                if (!run.Value.Contains(_filter, StringComparison.OrdinalIgnoreCase)) return false;
+            }
+        }
+
         return true;
     }
 
@@ -366,6 +568,8 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         if (_context is null) return;
 
         var runList    = runs.ToList();
+        _lastHighlightedRuns   = runList;
+        _currentHighlightIdx   = -1;
         var targetPath = SelectedFile?.FilePath;
 
         bool hexActive = _context.HexEditor.IsActive &&
@@ -412,8 +616,12 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     {
         _context!.CodeEditor.ClearLineHighlightsByTag(HighlightTag);
 
-        var lineStarts = BuildLineStarts(filePath);
-        if (lineStarts is null) { StatusText = "Cannot highlight: file unreadable"; return; }
+        // Use cached line starts if available for same file; avoids sync disk read on UI thread
+        long[]? lineStarts = string.Equals(filePath, _lastBufferPath, StringComparison.OrdinalIgnoreCase)
+            ? _lastLineStarts
+            : (_lastBuffer is not null ? BuildLineStartsFromBuffer(_lastBuffer) : null);
+
+        if (lineStarts is null) { StatusText = "Cannot highlight: scan the file first"; return; }
 
         foreach (var (run, i) in runs.Select((r, i) => (r, i)))
         {
@@ -461,17 +669,12 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
     // ── Offset → line helpers ─────────────────────────────────────────────────
 
-    private static long[]? BuildLineStarts(string filePath)
+    private static long[] BuildLineStartsFromBuffer(byte[] bytes)
     {
-        try
-        {
-            var bytes = File.ReadAllBytes(filePath);
-            var starts = new List<long> { 0 };
-            for (int i = 0; i < bytes.Length; i++)
-                if (bytes[i] == '\n') starts.Add(i + 1);
-            return [.. starts];
-        }
-        catch { return null; }
+        var starts = new List<long>(capacity: bytes.Length / 40) { 0 };
+        for (int i = 0; i < bytes.Length; i++)
+            if (bytes[i] == '\n') starts.Add(i + 1);
+        return [.. starts];
     }
 
     private static int OffsetToLine(long[] lineStarts, long offset)
@@ -483,6 +686,35 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
             if (lineStarts[mid] <= offset) lo = mid; else hi = mid - 1;
         }
         return lo + 1; // 1-based
+    }
+
+    // ── Entropy map ───────────────────────────────────────────────────────────
+
+    private static byte[] BuildEntropyMap(byte[] data)
+    {
+        const int blockSize = 256;
+        int blocks = (data.Length + blockSize - 1) / blockSize;
+        var map = new byte[blocks];
+        var freq = new int[256];
+
+        for (int b = 0; b < blocks; b++)
+        {
+            int start = b * blockSize;
+            int len   = Math.Min(blockSize, data.Length - start);
+            Array.Clear(freq, 0, 256);
+            for (int i = 0; i < len; i++) freq[data[start + i]]++;
+
+            double entropy = 0;
+            for (int i = 0; i < 256; i++)
+            {
+                if (freq[i] == 0) continue;
+                double p = (double)freq[i] / len;
+                entropy -= p * Math.Log2(p);
+            }
+            // Normalise to [0,8] then scale to [0,255]
+            map[b] = (byte)Math.Clamp(entropy / 8.0 * 255.0, 0, 255);
+        }
+        return map;
     }
 
     // ── Navigation ────────────────────────────────────────────────────────────
@@ -500,6 +732,9 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     }
 
     public IEnumerable<StringRun> GetAllRuns() => _allResults;
+
+    /// <summary>Last scanned buffer — used by the panel to render context bytes without re-reading disk.</summary>
+    public byte[]? LastBuffer => _lastBuffer;
 
     /// <summary>Notifies the IDE to apply the TBL at <paramref name="filePath"/> to the active HexEditor.</summary>
     public void PublishLoadTbl(string filePath)
