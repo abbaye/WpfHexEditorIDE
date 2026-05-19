@@ -5,6 +5,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.Windows.Media;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.App.Services;
@@ -23,4 +24,7 @@ public sealed class NullCodeEditorService : ICodeEditorService
     public event EventHandler DocumentChanged { add { } remove { } }
     public string? GetContent() => null;
     public string GetSelectedText() => string.Empty;
+    public void NavigateToLine(int line, int column = 1) { }
+    public void AddLineHighlight(int line, SolidColorBrush color, string description, string tag) { }
+    public void ClearLineHighlightsByTag(string tag) { }
 }

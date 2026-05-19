@@ -4,6 +4,8 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.Windows.Media;
+
 namespace WpfHexEditor.SDK.Contracts.Services;
 
 /// <summary>
@@ -38,4 +40,20 @@ public interface ICodeEditorService
     /// Raised on the UI thread.
     /// </summary>
     event EventHandler DocumentChanged;
+
+    // ── Navigation ────────────────────────────────────────────────────────────
+
+    /// <summary>Navigate to <paramref name="line"/> (1-based), optional <paramref name="column"/> (1-based).</summary>
+    void NavigateToLine(int line, int column = 1);
+
+    // ── Line highlights ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Add a background colour highlight on a 1-based <paramref name="line"/>.
+    /// <paramref name="tag"/> groups highlights for bulk removal.
+    /// </summary>
+    void AddLineHighlight(int line, SolidColorBrush color, string description, string tag);
+
+    /// <summary>Remove all line highlights whose tag equals <paramref name="tag"/>.</summary>
+    void ClearLineHighlightsByTag(string tag);
 }
