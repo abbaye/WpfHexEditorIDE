@@ -26,6 +26,7 @@ internal sealed class BackgroundAnalysisService : IDisposable
     private readonly CancellationTokenSource _cts = new();
     private readonly Task _loopTask;
     private readonly System.Windows.Threading.Dispatcher _dispatcher;
+    private int _disposed;
 
     public event EventHandler<LspDiagnosticsReceivedEventArgs>? DiagnosticsReady;
 
@@ -143,6 +144,7 @@ internal sealed class BackgroundAnalysisService : IDisposable
 
     public void Dispose()
     {
+        if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
         _cts.Cancel();
         _changeQueue.Writer.TryComplete();
         try { _loopTask.Wait(TimeSpan.FromSeconds(2)); } catch { /* cancelled or timed out */ }

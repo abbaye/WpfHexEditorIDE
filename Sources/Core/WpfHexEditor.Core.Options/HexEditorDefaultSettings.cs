@@ -34,7 +34,7 @@ public sealed class HexEditorDefaultSettings
     public ByteSpacerGroup ByteGrouping { get; set; } = ByteSpacerGroup.FourByte;
 
     /// <summary>Position of byte spacers relative to the data columns.</summary>
-    public ByteSpacerPosition ByteSpacerPositioning { get; set; } = ByteSpacerPosition.Both;
+    public ByteSpacerPosition ByteSpacerPositioning { get; set; } = ByteSpacerPosition.HexBytePanel;
 
     // -- Editing ----------------------------------------------------------
 
