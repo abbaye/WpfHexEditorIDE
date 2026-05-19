@@ -397,6 +397,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         _grid.Columns.Add(MakeCol("Offset",   nameof(StringRun.Offset),   80,  "X8"));
         _grid.Columns.Add(MakeCol("Length",   nameof(StringRun.Length),   55));
         _grid.Columns.Add(MakeCol("Encoding", nameof(StringRun.Encoding), 85));
+        _grid.Columns.Add(MakeCol("Bytes",    nameof(StringRun.RawHex),   160));
         _grid.Columns.Add(MakeCol("Value",    nameof(StringRun.Value),    0));
 
         _grid.ItemsSource       = _vm.ResultsView;

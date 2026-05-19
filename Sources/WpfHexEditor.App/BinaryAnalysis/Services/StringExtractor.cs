@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using System.Text;
+using WpfHexEditor.Core.Bytes;
 
 namespace WpfHexEditor.App.BinaryAnalysis.Services;
 
@@ -24,7 +25,8 @@ public enum StringEncoding
 }
 
 /// <summary>Scan result for one extracted string run.</summary>
-public sealed record StringRun(long Offset, int Length, StringEncoding Encoding, string Value);
+/// <param name="RawHex">Space-separated uppercase hex bytes for the matched region (e.g. "4A 6F 6E").</param>
+public sealed record StringRun(long Offset, int Length, StringEncoding Encoding, string Value, string RawHex);
 
 /// <summary>
 /// Decode contract used by <see cref="StringExtractor"/> for TBL-mode scanning.
@@ -130,7 +132,7 @@ public static class StringExtractor
             {
                 int len = i - start;
                 if (len >= minLength)
-                    results.Add(new StringRun(start, len, encoding, DecodeBytes(data.Slice(start, len), encoding)));
+                    results.Add(new StringRun(start, len, encoding, DecodeBytes(data.Slice(start, len), encoding), ToRawHex(data, start, len)));
                 start = -1;
             }
         }
@@ -163,7 +165,7 @@ public static class StringExtractor
                 {
                     int byteLen = charCount * 2;
                     var enc = bigEndian ? Encoding.BigEndianUnicode : Encoding.Unicode;
-                    results.Add(new StringRun(start, byteLen, encoding, enc.GetString(data.Slice(start, byteLen))));
+                    results.Add(new StringRun(start, byteLen, encoding, enc.GetString(data.Slice(start, byteLen)), ToRawHex(data, start, byteLen)));
                 }
                 start = -1;
             }
@@ -206,7 +208,7 @@ public static class StringExtractor
     {
         if (start < 0 || charCount < minLength) return;
         int len = end - start;
-        results.Add(new StringRun(start, len, StringEncoding.Utf8, Encoding.UTF8.GetString(data.Slice(start, len))));
+        results.Add(new StringRun(start, len, StringEncoding.Utf8, Encoding.UTF8.GetString(data.Slice(start, len)), ToRawHex(data, start, len)));
     }
 
     private static int Utf8SequenceLength(byte b) =>
@@ -239,7 +241,8 @@ public static class StringExtractor
                 var enc = maxByteWidth >= 3 ? StringEncoding.TblMte
                         : maxByteWidth == 2 ? StringEncoding.TblDte
                         : StringEncoding.Tbl;
-                results.Add(new StringRun(start, startByteEnd - start, enc, sb.ToString()));
+                int len = startByteEnd - start;
+                results.Add(new StringRun(start, len, enc, sb.ToString(), ToRawHex(data, start, len)));
             }
             start = -1;
             maxByteWidth = 1;
@@ -283,6 +286,21 @@ public static class StringExtractor
             StringEncoding.Latin1       => _latin1Encoding.GetString(bytes),
             _                           => Encoding.ASCII.GetString(bytes),
         };
+
+    private static string ToRawHex(ReadOnlySpan<byte> data, int offset, int len)
+    {
+        if (len <= 0) return string.Empty;
+        // "XX XX XX" — 3 chars per byte minus trailing space
+        var chars = new char[len * 3 - 1];
+        for (int i = 0; i < len; i++)
+        {
+            byte b = data[offset + i];
+            chars[i * 3]     = ByteConverters.ByteToHexChar(b >> 4);
+            chars[i * 3 + 1] = ByteConverters.ByteToHexChar(b & 0x0F);
+            if (i < len - 1) chars[i * 3 + 2] = ' ';
+        }
+        return new string(chars);
+    }
 
     // ── EBCDIC printable sets ─────────────────────────────────────────────────
 

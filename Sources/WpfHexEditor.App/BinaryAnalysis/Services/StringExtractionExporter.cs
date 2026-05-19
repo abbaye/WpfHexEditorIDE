@@ -47,12 +47,12 @@ public sealed class CsvStringExporter : IStringExtractionExporter
     public async Task ExportAsync(IEnumerable<StringRun> runs, string path, CancellationToken ct = default)
     {
         await using var sw = new StreamWriter(path, append: false, Encoding.UTF8);
-        await sw.WriteLineAsync("Offset,Length,Encoding,Value");
+        await sw.WriteLineAsync("Offset,Length,Encoding,Bytes,Value");
         foreach (var run in runs)
         {
             ct.ThrowIfCancellationRequested();
             var escaped = run.Value.Replace("\"", "\"\"");
-            await sw.WriteLineAsync($"0x{run.Offset:X8},{run.Length},{run.Encoding},\"{escaped}\"");
+            await sw.WriteLineAsync($"0x{run.Offset:X8},{run.Length},{run.Encoding},\"{run.RawHex}\",\"{escaped}\"");
         }
     }
 }
@@ -71,6 +71,7 @@ public sealed class JsonStringExporter : IStringExtractionExporter
             Offset   = $"0x{r.Offset:X8}",
             Length   = r.Length,
             Encoding = r.Encoding.ToString(),
+            Bytes    = r.RawHex,
             Value    = r.Value,
         }).ToList();
 
@@ -95,7 +96,7 @@ public sealed class XmlStringExporter : IStringExtractionExporter
         {
             ct.ThrowIfCancellationRequested();
             var escaped = System.Security.SecurityElement.Escape(run.Value) ?? run.Value;
-            await sw.WriteLineAsync($"  <string offset=\"0x{run.Offset:X8}\" length=\"{run.Length}\" encoding=\"{run.Encoding}\">{escaped}</string>");
+            await sw.WriteLineAsync($"  <string offset=\"0x{run.Offset:X8}\" length=\"{run.Length}\" encoding=\"{run.Encoding}\" bytes=\"{run.RawHex}\">{escaped}</string>");
         }
         await sw.WriteLineAsync("</strings>");
     }
@@ -111,13 +112,13 @@ public sealed class MarkdownStringExporter : IStringExtractionExporter
     public async Task ExportAsync(IEnumerable<StringRun> runs, string path, CancellationToken ct = default)
     {
         await using var sw = new StreamWriter(path, append: false, Encoding.UTF8);
-        await sw.WriteLineAsync("| Offset | Length | Encoding | Value |");
-        await sw.WriteLineAsync("|--------|--------|----------|-------|");
+        await sw.WriteLineAsync("| Offset | Length | Encoding | Bytes | Value |");
+        await sw.WriteLineAsync("|--------|--------|----------|-------|-------|");
         foreach (var run in runs)
         {
             ct.ThrowIfCancellationRequested();
             var escaped = run.Value.Replace("|", "\\|").Replace("\n", " ").Replace("\r", "");
-            await sw.WriteLineAsync($"| `0x{run.Offset:X8}` | {run.Length} | {run.Encoding} | {escaped} |");
+            await sw.WriteLineAsync($"| `0x{run.Offset:X8}` | {run.Length} | {run.Encoding} | `{run.RawHex}` | {escaped} |");
         }
     }
 }
