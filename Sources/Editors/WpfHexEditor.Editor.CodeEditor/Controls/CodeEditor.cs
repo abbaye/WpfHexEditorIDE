@@ -456,6 +456,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private System.Windows.Threading.DispatcherTimer? _wordHighlightTimer;
         private CodeScrollMarkerPanel?      _codeScrollMarkerPanel;
 
+        // ── External line highlights (e.g. StringExtraction) ─────────────────
+        private readonly List<LineHighlightEntry> _lineHighlights = [];
+
         #endregion
 
         #region Fields - Rendering State
@@ -4660,6 +4663,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
+        /// Public 1-based overload — mirrors <see cref="INavigableDocument.NavigateTo"/> convention.
+        /// Intended for SDK consumers (e.g. StringExtraction panel).
+        /// </summary>
+        public void NavigateToLine(int line, int column) =>
+            ((INavigableDocument)this).NavigateTo(line, column);
+
+        // ── External line highlights ──────────────────────────────────────────
+
+        /// <summary>Add a background highlight on a 1-based line, grouped by tag for bulk removal.</summary>
+        public void AddLineHighlight(int line, SolidColorBrush color, string description, string tag)
+        {
+            if (line < 1) return;
+            _lineHighlights.Add(new LineHighlightEntry(line - 1, color, description, tag));
+            InvalidateVisual();
+        }
+
+        /// <summary>Remove all highlights whose tag equals <paramref name="tag"/>.</summary>
+        public void ClearLineHighlightsByTag(string tag)
+        {
+            int removed = _lineHighlights.RemoveAll(h => h.Tag == tag);
+            if (removed > 0) InvalidateVisual();
+        }
+
+        /// <summary>
         /// <see cref="INavigableDocument"/> implementation.
         /// Accepts 1-based line/column (IDE convention) and converts to 0-based internal coords.
         /// Used by the host when navigating from the References popup or the Error List.
@@ -4824,6 +4851,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             => NavigateToLine(startLine);
 
     }
+
+    /// <summary>One externally-added line background highlight entry.</summary>
+    public sealed record LineHighlightEntry(int Line, SolidColorBrush Color, string Description, string Tag);
 
     /// <summary>
     /// Event arguments raised when the user clicks a colour swatch in the editor.

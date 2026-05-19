@@ -893,6 +893,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             //    Clip below sticky header so the highlight doesn't bleed through.
             if (stickyH > 0)
                 dc.PushClip(new RectangleGeometry(new Rect(0, stickyH, contentW, Math.Max(0, contentH - stickyH))));
+            RenderLineHighlights(dc, contentW);
             RenderCurrentLineHighlight(dc, contentW, contentH);
             if (stickyH > 0)
                 dc.Pop();
@@ -1937,6 +1938,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         /// <summary>
         /// Render current line highlight
+        /// </summary>
+        private void RenderLineHighlights(DrawingContext dc, double contentW)
+        {
+            if (_lineHighlights.Count == 0 || _lineHeight <= 0) return;
+            double x = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            foreach (var h in _lineHighlights)
+            {
+                if (h.Line < _firstVisibleLine || h.Line > _lastVisibleLine) continue;
+                if (_foldingEngine != null && _foldingEngine.IsLineHidden(h.Line)) continue;
+                if (!_lineYLookup.TryGetValue(h.Line, out double y)) continue;
+
+                var brush = h.Color.Clone();
+                brush.Opacity = 0.35;
+                brush.Freeze();
+                dc.DrawRectangle(brush, null, new Rect(x, y, contentW - x, _lineHeight));
+            }
+        }
+
         /// </summary>
         private void RenderCurrentLineHighlight(DrawingContext dc, double contentW, double contentH)
         {
