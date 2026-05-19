@@ -18,7 +18,9 @@ public enum StringEncoding
     Latin1,
     Ebcdic,
     EbcdicNoSpec,
-    Tbl,
+    Tbl,      // single-byte TBL entries only
+    TblDte,   // run contains at least one 2-byte DTE entry
+    TblMte,   // run contains at least one 3–8-byte MTE entry
 }
 
 /// <summary>Scan result for one extracted string run.</summary>
@@ -26,20 +28,23 @@ public sealed record StringRun(long Offset, int Length, StringEncoding Encoding,
 
 /// <summary>
 /// Decode contract used by <see cref="StringExtractor"/> for TBL-mode scanning.
-/// The implementation must honour multi-byte entries (DTE/MTE) via greedy matching,
-/// exactly as <c>TblStream.ToTblString()</c> does.
+/// Mirrors <c>TblStream.ToTblString()</c>: greedy longest-match, DTE/MTE honoured,
+/// EndBlock/EndLine flush the current run.
 /// </summary>
 public interface ITblDecodeTable
 {
     /// <summary>
-    /// Try to match the longest entry in the table starting at <paramref name="offset"/>.
-    /// Returns true when a mapped (non-control) sequence is found.
+    /// Try to match the longest printable (non-control) entry starting at <paramref name="offset"/>.
+    /// Returns true when a mapped sequence is found; <paramref name="byteWidth"/> indicates
+    /// how many bytes were consumed (1 = Ascii, 2 = DTE, ≥3 = MTE).
     /// </summary>
-    /// <param name="data">Full byte buffer.</param>
-    /// <param name="offset">Start position in <paramref name="data"/>.</param>
-    /// <param name="bytesConsumed">Number of bytes consumed by the match (≥1).</param>
-    /// <param name="text">The mapped string (may be multi-char for DTE/MTE).</param>
-    bool TryMatch(ReadOnlySpan<byte> data, int offset, out int bytesConsumed, out string text);
+    bool TryMatch(ReadOnlySpan<byte> data, int offset, out int bytesConsumed, out string text, out int byteWidth);
+
+    /// <summary>
+    /// Returns true when the bytes at <paramref name="offset"/> are an EndBlock or EndLine marker.
+    /// The caller should flush the current run and skip <paramref name="markerBytes"/> bytes.
+    /// </summary>
+    bool IsEndMarker(ReadOnlySpan<byte> data, int offset, out int markerBytes);
 }
 
 /// <summary>Stateless service: extracts printable string runs from a byte buffer.</summary>
@@ -223,22 +228,38 @@ public static class StringExtractor
     {
         int i = 0;
         int start = -1;
-        int startByteEnd = 0; // byte position just past the last matched byte
+        int startByteEnd = 0;
+        int maxByteWidth = 1; // tracks widest match seen in current run
         var sb = new StringBuilder();
 
         void Flush()
         {
             if (start >= 0 && sb.Length >= minLength)
-                results.Add(new StringRun(start, startByteEnd - start, StringEncoding.Tbl, sb.ToString()));
+            {
+                var enc = maxByteWidth >= 3 ? StringEncoding.TblMte
+                        : maxByteWidth == 2 ? StringEncoding.TblDte
+                        : StringEncoding.Tbl;
+                results.Add(new StringRun(start, startByteEnd - start, enc, sb.ToString()));
+            }
             start = -1;
+            maxByteWidth = 1;
             sb.Clear();
         }
 
         while (i < data.Length)
         {
-            if (tbl.TryMatch(data, i, out int consumed, out string text))
+            // EndBlock / EndLine → flush current run, skip the marker
+            if (tbl.IsEndMarker(data, i, out int markerBytes))
+            {
+                Flush();
+                i += markerBytes;
+                continue;
+            }
+
+            if (tbl.TryMatch(data, i, out int consumed, out string text, out int byteWidth))
             {
                 if (start < 0) start = i;
+                if (byteWidth > maxByteWidth) maxByteWidth = byteWidth;
                 sb.Append(text);
                 i += consumed;
                 startByteEnd = i;

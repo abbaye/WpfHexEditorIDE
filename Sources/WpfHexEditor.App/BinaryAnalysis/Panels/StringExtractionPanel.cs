@@ -205,8 +205,10 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
             ("UTF-16 LE",                             StringEncoding.Utf16Le),
             ("UTF-16 BE",                             StringEncoding.Utf16Be),
             ("Latin-1",                               StringEncoding.Latin1),
-            ("── Project ──",    null),
-            ("TBL (loaded)",                          StringEncoding.Tbl),
+            ("── TBL (loaded) ──", null),
+            ("TBL — Single byte", StringEncoding.Tbl),
+            ("TBL — DTE (2 bytes)", StringEncoding.TblDte),
+            ("TBL — MTE (3-8 bytes)", StringEncoding.TblMte),
         ];
 
         var checkBoxes = new List<CheckBox>();
@@ -348,6 +350,8 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         StringEncoding.Ebcdic       => "EBCDIC+",
         StringEncoding.EbcdicNoSpec => "EBCDIC",
         StringEncoding.Tbl          => "TBL",
+        StringEncoding.TblDte       => "TBL-DTE",
+        StringEncoding.TblMte       => "TBL-MTE",
         _                           => enc.ToString(),
     };
 

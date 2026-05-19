@@ -213,7 +213,10 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
             // Build active encoding set
             var encodings = BuildEncodingSet();
 
-            ITblDecodeTable? tblTable = encodings.Contains(StringEncoding.Tbl) ? _activeTblTable : null;
+            ITblDecodeTable? tblTable = (encodings.Contains(StringEncoding.Tbl) ||
+                                         encodings.Contains(StringEncoding.TblDte) ||
+                                         encodings.Contains(StringEncoding.TblMte))
+                                        ? _activeTblTable : null;
 
             var runs = await Task.Run(
                 () => StringExtractor.Extract(buffer.AsSpan(), _minLength, encodings, tblTable),
@@ -271,9 +274,17 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     {
         _activeTblTable = table;
         if (table is not null)
+        {
             ActiveEncodings.Add(StringEncoding.Tbl);
+            ActiveEncodings.Add(StringEncoding.TblDte);
+            ActiveEncodings.Add(StringEncoding.TblMte);
+        }
         else
+        {
             ActiveEncodings.Remove(StringEncoding.Tbl);
+            ActiveEncodings.Remove(StringEncoding.TblDte);
+            ActiveEncodings.Remove(StringEncoding.TblMte);
+        }
     }
 
     /// <summary>Adds a file path to the opened-files combo if not already present, then selects it.</summary>
