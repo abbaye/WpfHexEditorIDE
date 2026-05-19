@@ -4874,6 +4874,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         ActiveStatusBarContributor = content as IStatusBarContributor ?? _defaultStatusBarContributor;
         ActiveToolbarContributor   = content as IEditorToolbarContributor;
         SyncTblDropdownToActiveEditor();
+        _codeEditorService?.SetActiveEditor(content as WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor);
 
         // Clear the transient refresh-time text whenever the active editor is not a HexEditor,
         // or when there is no active editor at all.  For HexEditor, RefreshDocumentStatus()

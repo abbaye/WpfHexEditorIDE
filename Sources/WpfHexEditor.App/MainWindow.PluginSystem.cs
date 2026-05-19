@@ -83,6 +83,7 @@ public partial class MainWindow
     // Service adapters (lazily set in InitializePluginSystemAsync after layout is ready)
     private DockingAdapter? _dockingAdapter;
     private HexEditorServiceImpl? _hexEditorService;
+    private CodeEditorServiceImpl? _codeEditorService;
     private OutputServiceImpl? _outputService;
     private ErrorPanelServiceImpl? _errorPanelService;
     private ThemeServiceImpl? _themeService;
@@ -184,7 +185,8 @@ public partial class MainWindow
 
             var solutionService = new SolutionExplorerServiceImpl(_solutionManager);
             solutionService.OpenFileHandler = path => Dispatcher.InvokeAsync(() => OpenStandaloneFileWithEditor(path, null)).Task;
-            var codeEditorService = new NullCodeEditorService();
+            var codeEditorService = new CodeEditorServiceImpl();
+            _codeEditorService = codeEditorService;
             var parsedFieldService = new NullParsedFieldService();
 
             // 2b. Construct IDE EventBus + Extension/Capability services
