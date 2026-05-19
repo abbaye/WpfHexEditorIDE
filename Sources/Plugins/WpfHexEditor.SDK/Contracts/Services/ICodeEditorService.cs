@@ -52,7 +52,7 @@ public interface ICodeEditorService
     /// Add a background colour highlight on a 1-based <paramref name="line"/>.
     /// <paramref name="tag"/> groups highlights for bulk removal.
     /// </summary>
-    void AddLineHighlight(int line, SolidColorBrush color, string description, string tag);
+    void AddLineHighlight(int line, SolidColorBrush color, string description, string tag, double opacity = 0.35);
 
     /// <summary>Remove all line highlights whose tag equals <paramref name="tag"/>.</summary>
     void ClearLineHighlightsByTag(string tag);

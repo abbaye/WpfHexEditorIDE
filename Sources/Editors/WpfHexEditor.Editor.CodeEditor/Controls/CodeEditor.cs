@@ -4696,10 +4696,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // ── External line highlights ──────────────────────────────────────────
 
         /// <summary>Add a background highlight on a 1-based line, grouped by tag for bulk removal.</summary>
-        public void AddLineHighlight(int line, SolidColorBrush color, string description, string tag)
+        public void AddLineHighlight(int line, SolidColorBrush color, string description, string tag, double opacity = 0.35)
         {
             if (line < 1) return;
-            _lineHighlights.Add(new LineHighlightEntry(line - 1, color, description, tag));
+            _lineHighlights.Add(new LineHighlightEntry(line - 1, color, opacity, description, tag));
             InvalidateVisual();
         }
 
@@ -4877,7 +4877,25 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
     }
 
     /// <summary>One externally-added line background highlight entry.</summary>
-    public sealed record LineHighlightEntry(int Line, SolidColorBrush Color, string Description, string Tag);
+    public sealed class LineHighlightEntry
+    {
+        public int    Line        { get; }
+        public string Description { get; }
+        public string Tag         { get; }
+        /// <summary>Pre-frozen brush with opacity already applied — zero allocation per render frame.</summary>
+        public Brush  FrozenBrush { get; }
+
+        public LineHighlightEntry(int line, SolidColorBrush color, double opacity, string description, string tag)
+        {
+            Line        = line;
+            Description = description;
+            Tag         = tag;
+            var b = color.Clone();
+            b.Opacity = opacity;
+            b.Freeze();
+            FrozenBrush = b;
+        }
+    }
 
     /// <summary>
     /// Event arguments raised when the user clicks a colour swatch in the editor.
