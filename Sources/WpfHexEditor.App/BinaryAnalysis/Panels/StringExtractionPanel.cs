@@ -25,6 +25,8 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
     private DataGrid _grid = null!;
     private TblStream? _loadedTbl;
     private bool _disposed;
+    private TextBlock? _tblNameLabel;
+    private Button? _tblClearBtn;
 
     public StringExtractionPanel()
     {
@@ -121,6 +123,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         filterRow.Children.Add(BuildEncodingDropdown());
         filterRow.Children.Add(MakeLabel("Min:"));
         filterRow.Children.Add(minBox);
+        filterRow.Children.Add(BuildTblIndicator());
 
         stack.Children.Add(btnRow);
         stack.Children.Add(filterRow);
@@ -265,6 +268,74 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
 
         RefreshSummary();
         return btn;
+    }
+
+    /// <summary>TBL indicator: "TBL: filename.tbl [×]" shown when a TBL is loaded.</summary>
+    private UIElement BuildTblIndicator()
+    {
+        var panel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(8, 0, 0, 0),
+        };
+
+        _tblNameLabel = new TextBlock
+        {
+            FontSize = 11,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(0, 0, 4, 0),
+            Visibility = Visibility.Collapsed,
+        };
+        _tblNameLabel.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
+
+        _tblClearBtn = new Button
+        {
+            Content = "",
+            ToolTip = "Remove TBL",
+            Width = 16, Height = 16,
+            Padding = new Thickness(0),
+            BorderThickness = new Thickness(0),
+            Background = System.Windows.Media.Brushes.Transparent,
+            FontFamily = new System.Windows.Media.FontFamily("Segoe MDL2 Assets"),
+            FontSize = 9,
+            VerticalAlignment = VerticalAlignment.Center,
+            Visibility = Visibility.Collapsed,
+            FocusVisualStyle = null,
+        };
+        _tblClearBtn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
+        _tblClearBtn.Click += (_, _) => ClearTbl();
+
+        panel.Children.Add(MakeLabel("TBL:"));
+        panel.Children.Add(_tblNameLabel);
+        panel.Children.Add(_tblClearBtn);
+        return panel;
+    }
+
+    private void UpdateTblIndicator(string? path)
+    {
+        if (_tblNameLabel is null || _tblClearBtn is null) return;
+        if (path is null)
+        {
+            _tblNameLabel.Text       = string.Empty;
+            _tblNameLabel.Visibility = Visibility.Collapsed;
+            _tblClearBtn.Visibility  = Visibility.Collapsed;
+        }
+        else
+        {
+            _tblNameLabel.Text       = System.IO.Path.GetFileName(path);
+            _tblNameLabel.ToolTip    = path;
+            _tblNameLabel.Visibility = Visibility.Visible;
+            _tblClearBtn.Visibility  = Visibility.Visible;
+        }
+    }
+
+    private void ClearTbl()
+    {
+        _loadedTbl?.Dispose();
+        _loadedTbl = null;
+        _vm.SetTblTable(null);
+        UpdateTblIndicator(null);
     }
 
     private static string EncodingLabel(StringEncoding enc) => enc switch
@@ -452,6 +523,8 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         _loadedTbl?.Dispose();
         _loadedTbl = new TblStream(dlg.FileName);
         _vm.SetTblTable(new TblDecodeTableAdapter(_loadedTbl));
+        _vm.AddFileToCombo(dlg.FileName);
+        UpdateTblIndicator(dlg.FileName);
     }
 
     private void OnExport(bool exportAll)

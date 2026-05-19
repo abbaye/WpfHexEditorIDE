@@ -272,6 +272,21 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         _activeTblTable = table;
         if (table is not null)
             ActiveEncodings.Add(StringEncoding.Tbl);
+        else
+            ActiveEncodings.Remove(StringEncoding.Tbl);
+    }
+
+    /// <summary>Adds a file path to the opened-files combo if not already present, then selects it.</summary>
+    public void AddFileToCombo(string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath)) return;
+        var existing = OpenedFiles.FirstOrDefault(f => string.Equals(f.FilePath, filePath, StringComparison.OrdinalIgnoreCase));
+        if (existing is null)
+        {
+            existing = new OpenedFileItem(filePath);
+            System.Windows.Application.Current?.Dispatcher.Invoke(() => OpenedFiles.Add(existing));
+        }
+        SelectedFile = existing;
     }
 
     // ── Filter ────────────────────────────────────────────────────────────────
