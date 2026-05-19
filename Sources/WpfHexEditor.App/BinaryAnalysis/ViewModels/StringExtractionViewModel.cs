@@ -54,6 +54,9 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     // Entropy map: one byte per 256-byte block, value = (Shannon entropy * 32) clamped to 0-255
     private byte[]? _entropyMap;
 
+    // Offset-sorted index for O(log n) nearest-run lookup on caret sync
+    private StringRun[] _offsetIndex = [];
+
     // ── Collections ──────────────────────────────────────────────────────────
 
     private readonly ObservableCollection<StringRun> _allResults = [];
@@ -338,21 +341,40 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
     private void OnHexEditorSelectionChanged(object? sender, EventArgs e)
     {
-        // Mark results as outdated if the hex buffer may have changed
         if (_lastBufferPath is not null &&
             string.Equals(_context?.HexEditor.CurrentFilePath, _lastBufferPath, StringComparison.OrdinalIgnoreCase))
-            IsOutdated = true;
+        {
+            if (!_isOutdated) IsOutdated = true;
+        }
 
         if (!_syncCaretToGrid) return;
 
         long caret = _context?.HexEditor.SelectionStart ?? -1;
         if (caret < 0) return;
 
-        // Find the run that contains or is nearest to the caret
-        var match = _lastHighlightedRuns.FirstOrDefault(r => r.Offset <= caret && caret < r.Offset + r.Length)
-                 ?? _allResults.Where(r => r.Offset <= caret).OrderByDescending(r => r.Offset).FirstOrDefault();
+        var match = FindNearestRun(caret);
         if (match is not null)
             SelectedGridItem = match;
+    }
+
+    private StringRun? FindNearestRun(long caret)
+    {
+        // Check highlighted runs first (small list, O(n) is fine)
+        var inHighlight = _lastHighlightedRuns.FirstOrDefault(r => r.Offset <= caret && caret < r.Offset + r.Length);
+        if (inHighlight is not null) return inHighlight;
+
+        // Binary search the sorted offset index for the last run whose Offset <= caret
+        var idx = _offsetIndex;
+        if (idx.Length == 0) return null;
+
+        int lo = 0, hi = idx.Length - 1, best = -1;
+        while (lo <= hi)
+        {
+            int mid = (lo + hi) >> 1;
+            if (idx[mid].Offset <= caret) { best = mid; lo = mid + 1; }
+            else hi = mid - 1;
+        }
+        return best >= 0 ? idx[best] : null;
     }
 
     // ── Scan ──────────────────────────────────────────────────────────────────
@@ -403,6 +425,7 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
             foreach (var run in runs)
                 _allResults.Add(run);
 
+            _offsetIndex = [.. runs.OrderBy(r => r.Offset)];
             RebuildDuplicateCounts();
             TotalCount = _allResults.Count;
             ResultsView.Refresh();
@@ -513,8 +536,7 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         // Offset range
         if (run.Offset < _rangeFrom || run.Offset + run.Length > _rangeTo) return false;
 
-        // Min unique chars
-        if (run.Value.Distinct().Count() < _minUniqueChars) return false;
+        if (run.UniqueCharCount < _minUniqueChars) return false;
 
         // Entropy exclusion
         if (_excludeHighEntropy && _entropyMap is not null)

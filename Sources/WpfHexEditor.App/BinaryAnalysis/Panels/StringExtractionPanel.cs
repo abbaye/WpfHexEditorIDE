@@ -640,16 +640,18 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         tbFactory.SetValue(TextBlock.TextAlignmentProperty, TextAlignment.Center);
         tbFactory.SetValue(TextBlock.FontSizeProperty, 10d);
         tbFactory.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
-        // Bind to DataContext (StringRun) → call GetDuplicateCount via converter
-        var binding = new Binding { RelativeSource = RelativeSource.Self };
         tbFactory.AddHandler(FrameworkElement.LoadedEvent, new RoutedEventHandler((s, _) =>
         {
-            if (s is TextBlock tb && tb.DataContext is StringRun r)
+            if (s is not TextBlock tb) return;
+            void Refresh(object? _, DependencyPropertyChangedEventArgs __)
             {
-                int c = _vm.GetDuplicateCount(r);
+                int c = tb.DataContext is StringRun r ? _vm.GetDuplicateCount(r) : 0;
                 tb.Text       = c > 1 ? c.ToString() : string.Empty;
                 tb.Foreground = c > 1 ? Brushes.OrangeRed : Brushes.Transparent;
             }
+            tb.DataContextChanged += Refresh;
+            tb.Unloaded += (_, _) => tb.DataContextChanged -= Refresh;
+            Refresh(null, default);
         }));
         cellTemplate.VisualTree = tbFactory;
         col.CellTemplate = cellTemplate;
@@ -671,8 +673,14 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         tbFactory.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
         tbFactory.AddHandler(FrameworkElement.LoadedEvent, new RoutedEventHandler((s, _) =>
         {
-            if (s is TextBlock tb && tb.DataContext is StringRun r)
-                tb.Text = GetContextBytes(r, 4);
+            if (s is not TextBlock tb) return;
+            void Refresh(object? _, DependencyPropertyChangedEventArgs __)
+            {
+                tb.Text = tb.DataContext is StringRun r ? GetContextBytes(r, 4) : string.Empty;
+            }
+            tb.DataContextChanged += Refresh;
+            tb.Unloaded += (_, _) => tb.DataContextChanged -= Refresh;
+            Refresh(null, default);
         }));
         cellTemplate.VisualTree = tbFactory;
         col.CellTemplate = cellTemplate;

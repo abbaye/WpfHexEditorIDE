@@ -26,7 +26,11 @@ public enum StringEncoding
 
 /// <summary>Scan result for one extracted string run.</summary>
 /// <param name="RawHex">Space-separated uppercase hex bytes for the matched region (e.g. "4A 6F 6E").</param>
-public sealed record StringRun(long Offset, int Length, StringEncoding Encoding, string Value, string RawHex);
+public sealed record StringRun(long Offset, int Length, StringEncoding Encoding, string Value, string RawHex)
+{
+    /// <summary>Count of distinct characters in Value — cached to avoid per-filter-pass allocation.</summary>
+    public int UniqueCharCount { get; } = Value.Distinct().Count();
+}
 
 /// <summary>
 /// Decode contract used by <see cref="StringExtractor"/> for TBL-mode scanning.
