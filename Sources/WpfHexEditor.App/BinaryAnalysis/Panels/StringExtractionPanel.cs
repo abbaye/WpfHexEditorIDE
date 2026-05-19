@@ -558,7 +558,6 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         _loadedTbl?.Dispose();
         _loadedTbl = new TblStream(dlg.FileName);
         _vm.SetTblTable(new TblDecodeTableAdapter(_loadedTbl));
-        _vm.AddFileToCombo(dlg.FileName);
         UpdateTblIndicator(dlg.FileName);
     }
 

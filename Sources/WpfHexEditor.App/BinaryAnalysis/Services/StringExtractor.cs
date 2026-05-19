@@ -96,7 +96,64 @@ public static class StringExtractor
         if (active.Contains(StringEncoding.Tbl) && tbl is not null) ExtractTbl(data, minLength, tbl, results);
 
         results.Sort(static (a, b) => a.Offset.CompareTo(b.Offset));
+        RemoveOverlaps(results);
         return results;
+    }
+
+    // ── Overlap removal ───────────────────────────────────────────────────────
+
+    // Higher value = higher priority; TBL wins over ASCII over Latin1 etc.
+    private static int EncodingPriority(StringEncoding e) => e switch
+    {
+        StringEncoding.TblMte        => 10,
+        StringEncoding.TblDte        => 9,
+        StringEncoding.Tbl           => 8,
+        StringEncoding.Utf8          => 7,
+        StringEncoding.Utf16Le       => 6,
+        StringEncoding.Utf16Be       => 5,
+        StringEncoding.Latin1        => 4,
+        StringEncoding.Ascii         => 3,
+        StringEncoding.Ebcdic        => 2,
+        StringEncoding.EbcdicNoSpec  => 1,
+        _                            => 0,
+    };
+
+    /// <summary>
+    /// Remove runs whose byte ranges overlap a retained run of equal or higher priority.
+    /// Input must be sorted by offset. Modifies the list in-place.
+    /// </summary>
+    private static void RemoveOverlaps(List<StringRun> runs)
+    {
+        if (runs.Count < 2) return;
+
+        int writeIdx  = 0;
+        long highWater = 0; // end offset (exclusive) of the last retained run
+
+        for (int i = 0; i < runs.Count; i++)
+        {
+            var cur = runs[i];
+            long curEnd = cur.Offset + cur.Length;
+
+            if (cur.Offset >= highWater)
+            {
+                // No overlap — keep unconditionally
+                runs[writeIdx++] = cur;
+                highWater = curEnd;
+                continue;
+            }
+
+            // Overlap with the last retained run — compare priorities
+            var prev = runs[writeIdx - 1];
+            if (EncodingPriority(cur.Encoding) > EncodingPriority(prev.Encoding))
+            {
+                // Incoming run wins — replace the previous retained run
+                runs[writeIdx - 1] = cur;
+                highWater = Math.Max(highWater, curEnd);
+            }
+            // else: incoming run loses — discard (don't increment writeIdx)
+        }
+
+        runs.RemoveRange(writeIdx, runs.Count - writeIdx);
     }
 
     // ── Default encoding set (backward compat) ────────────────────────────────
