@@ -189,6 +189,22 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         var item = OpenedFiles.FirstOrDefault(f => string.Equals(f.FilePath, doc.FilePath, StringComparison.OrdinalIgnoreCase));
         if (item is not null)
             System.Windows.Application.Current?.Dispatcher.Invoke(() => SelectedFile = item);
+
+        // Apply deferred highlights when the awaited file finally becomes active.
+        if (_pendingHighlightRuns is { Count: > 0 } &&
+            string.Equals(doc.FilePath, _pendingHighlightPath, StringComparison.OrdinalIgnoreCase))
+        {
+            var pending = _pendingHighlightRuns;
+            _pendingHighlightRuns = null;
+            _pendingHighlightPath = null;
+            System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+            {
+                bool isHex  = doc.EditorId == "hex-editor";
+                bool isCode = doc.EditorId == "code-editor";
+                if (isHex)        ApplyHexHighlights(pending);
+                else if (isCode)  ApplyCodeHighlights(pending, doc.FilePath);
+            });
+        }
     }
 
     // ── Scan ──────────────────────────────────────────────────────────────────
@@ -327,41 +343,147 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
     private const string HighlightTag = "StringExtraction";
 
+    // Pending highlight state — set when the target file isn't active yet.
+    private List<StringRun>? _pendingHighlightRuns;
+    private string?          _pendingHighlightPath;
+    private bool             _pendingIsCodeEditor;
+
+    /// <summary>
+    /// Highlight the given runs.  Source of truth is the <see cref="ResultsView"/> (filtered).
+    /// Applies immediately if the target file is active; otherwise stores as pending
+    /// and applies automatically when <see cref="OnActiveDocumentChanged"/> fires.
+    /// </summary>
     public void HighlightRuns(IEnumerable<StringRun> runs)
     {
         if (_context is null) return;
-        _context.HexEditor.ClearCustomBackgroundBlockByTag(HighlightTag);
+
+        var runList   = runs.ToList();
+        var targetPath = SelectedFile?.FilePath;
+
+        // ── HexEditor path ────────────────────────────────────────────────────
+        bool hexActive = _context.HexEditor.IsActive &&
+                         string.Equals(_context.HexEditor.CurrentFilePath, targetPath, StringComparison.OrdinalIgnoreCase);
+        if (hexActive || targetPath is null)
+        {
+            ApplyHexHighlights(runList);
+            _pendingHighlightRuns = null;
+            return;
+        }
+
+        // ── CodeEditor path ───────────────────────────────────────────────────
+        bool codeActive = _context.CodeEditor.IsActive &&
+                          string.Equals(_context.CodeEditor.CurrentFilePath, targetPath, StringComparison.OrdinalIgnoreCase);
+        if (codeActive)
+        {
+            ApplyCodeHighlights(runList, targetPath);
+            _pendingHighlightRuns = null;
+            return;
+        }
+
+        // ── Deferred ──────────────────────────────────────────────────────────
+        _pendingHighlightRuns  = runList;
+        _pendingHighlightPath  = targetPath;
+        StatusText = $"Highlights en attente — ouvre \"{Path.GetFileName(targetPath)}\" dans un éditeur";
+    }
+
+    private void ApplyHexHighlights(List<StringRun> runs)
+    {
+        _context!.HexEditor.ClearCustomBackgroundBlockByTag(HighlightTag);
+        int idx = 0;
         foreach (var run in runs)
         {
-            var block = new CustomBackgroundBlock(run.Offset, run.Length, ColorForEncoding(run.Encoding))
+            var block = new CustomBackgroundBlock(run.Offset, run.Length, ColorForEncoding(run.Encoding, idx))
             {
-                Description = $"[{run.Encoding}] {run.Value}",
-                Tag         = HighlightTag,
-                Opacity     = 0.35,
+                Description  = $"[{run.Encoding}] {run.Value}",
+                Tag          = HighlightTag,
+                Opacity      = 0.35,
+                ShowInTooltip = true,
             };
             _context.HexEditor.AddCustomBackgroundBlock(block);
+            idx++;
         }
+        StatusText = $"{runs.Count} runs highlighted in HexEditor";
+    }
+
+    private void ApplyCodeHighlights(List<StringRun> runs, string filePath)
+    {
+        _context!.CodeEditor.ClearLineHighlightsByTag(HighlightTag);
+
+        // Build a line-start offset lookup from the file content.
+        var lineStarts = BuildLineStarts(filePath);
+        if (lineStarts is null) { StatusText = "Highlight CodeEditor: impossible de lire le fichier"; return; }
+
+        int idx = 0;
+        foreach (var run in runs)
+        {
+            int line = OffsetToLine(lineStarts, run.Offset); // 1-based
+            _context.CodeEditor.AddLineHighlight(line, ColorForEncoding(run.Encoding, idx),
+                $"[{run.Encoding}] {run.Value}", HighlightTag);
+            idx++;
+        }
+        StatusText = $"{runs.Count} lignes highlighted in CodeEditor";
     }
 
     public void ClearHighlights()
     {
+        _pendingHighlightRuns = null;
+        _pendingHighlightPath = null;
         _context?.HexEditor.ClearCustomBackgroundBlockByTag(HighlightTag);
+        _context?.CodeEditor.ClearLineHighlightsByTag(HighlightTag);
+        UpdateStatusText();
     }
 
-    private static SolidColorBrush ColorForEncoding(StringEncoding enc) => enc switch
+    // ── Color palette — alternating shades per encoding ──────────────────────
+
+    private static SolidColorBrush ColorForEncoding(StringEncoding enc, int index)
     {
-        StringEncoding.Tbl          or
-        StringEncoding.TblDte       or
-        StringEncoding.TblMte       => new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50)), // green
-        StringEncoding.Ascii        => new SolidColorBrush(Color.FromRgb(0x42, 0x8B, 0xCA)), // blue
-        StringEncoding.Utf8         or
-        StringEncoding.Utf16Le      or
-        StringEncoding.Utf16Be      => new SolidColorBrush(Color.FromRgb(0x00, 0xBC, 0xD4)), // cyan
-        StringEncoding.Ebcdic       or
-        StringEncoding.EbcdicNoSpec => new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00)), // orange
-        StringEncoding.Latin1       => new SolidColorBrush(Color.FromRgb(0xAB, 0x47, 0xBC)), // violet
-        _                           => new SolidColorBrush(Colors.Gray),
-    };
+        var (r, g, b) = enc switch
+        {
+            StringEncoding.Tbl or StringEncoding.TblDte or StringEncoding.TblMte
+                                => (0x4C, 0xAF, 0x50),
+            StringEncoding.Ascii => (0x42, 0x8B, 0xCA),
+            StringEncoding.Utf8 or StringEncoding.Utf16Le or StringEncoding.Utf16Be
+                                => (0x00, 0xBC, 0xD4),
+            StringEncoding.Ebcdic or StringEncoding.EbcdicNoSpec
+                                => (0xFF, 0x98, 0x00),
+            StringEncoding.Latin1 => (0xAB, 0x47, 0xBC),
+            _                   => (0x90, 0x90, 0x90),
+        };
+        // Odd indices get a darker shade (~20% darker) to distinguish adjacent same-encoding runs.
+        if ((index & 1) == 1)
+        {
+            r = Math.Max(0, r - 0x28);
+            g = Math.Max(0, g - 0x28);
+            b = Math.Max(0, b - 0x28);
+        }
+        return new SolidColorBrush(Color.FromRgb((byte)r, (byte)g, (byte)b));
+    }
+
+    // ── Offset → line helpers ─────────────────────────────────────────────────
+
+    private static long[]? BuildLineStarts(string filePath)
+    {
+        try
+        {
+            var bytes = File.ReadAllBytes(filePath);
+            var starts = new List<long> { 0 };
+            for (int i = 0; i < bytes.Length; i++)
+                if (bytes[i] == '\n') starts.Add(i + 1);
+            return [.. starts];
+        }
+        catch { return null; }
+    }
+
+    private static int OffsetToLine(long[] lineStarts, long offset)
+    {
+        int lo = 0, hi = lineStarts.Length - 1;
+        while (lo < hi)
+        {
+            int mid = (lo + hi + 1) / 2;
+            if (lineStarts[mid] <= offset) lo = mid; else hi = mid - 1;
+        }
+        return lo + 1; // 1-based
+    }
 
     // ── Navigation ────────────────────────────────────────────────────────────
 
