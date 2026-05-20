@@ -274,17 +274,28 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     private void RebuildOpenedFilesList(IIDEHostContext ctx)
     {
         OpenedFiles.Clear();
-        foreach (var doc in ctx.DocumentHost.Documents.OpenDocuments)
-            if (!string.IsNullOrEmpty(doc.FilePath))
-                OpenedFiles.Add(new OpenedFileItem(doc.FilePath));
 
-        // Also pick up layout paths not yet materialised
-        foreach (var path in ctx.DocumentHost.GetAllLayoutFilePaths())
-            if (!string.IsNullOrEmpty(path) && OpenedFiles.All(f => !string.Equals(f.FilePath, path, StringComparison.OrdinalIgnoreCase)))
+        void AddIfNew(string? path)
+        {
+            if (string.IsNullOrEmpty(path)) return;
+            if (OpenedFiles.All(f => !string.Equals(f.FilePath, path, StringComparison.OrdinalIgnoreCase)))
                 OpenedFiles.Add(new OpenedFileItem(path));
+        }
+
+        // Source 1: active HexEditor (always available when a binary file is open)
+        AddIfNew(ctx.HexEditor.CurrentFilePath);
+
+        // Source 2: all materialised document tabs
+        foreach (var doc in ctx.DocumentHost.Documents.OpenDocuments)
+            AddIfNew(doc.FilePath);
+
+        // Source 3: layout paths for lazy (never-activated) tabs
+        foreach (var path in ctx.DocumentHost.GetAllLayoutFilePaths())
+            AddIfNew(path);
 
         // Default selection = active document
-        var active = ctx.DocumentHost.Documents.ActiveDocument?.FilePath;
+        var active = ctx.HexEditor.CurrentFilePath
+                  ?? ctx.DocumentHost.Documents.ActiveDocument?.FilePath;
         if (active is not null)
             SelectedFile = OpenedFiles.FirstOrDefault(f => string.Equals(f.FilePath, active, StringComparison.OrdinalIgnoreCase));
         SelectedFile ??= OpenedFiles.FirstOrDefault();
