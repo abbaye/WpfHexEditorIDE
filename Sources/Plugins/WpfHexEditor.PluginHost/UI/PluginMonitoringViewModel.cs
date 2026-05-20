@@ -645,6 +645,8 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     private readonly HashSet<string>   _slowPluginIds = new();
     private readonly ICollectionView   _filteredRows  = null!;
     private volatile bool              _groupingNeedsRefresh;
+    private DateTime                   _lastRefreshTime;
+    private long                       _lastSampledMemoryMb;
 
     // Filter chip state
     private bool _filterStateLoaded   = false;
@@ -735,6 +737,15 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
         // -- Alert engine --
         _alertEngine.AlertTriggered += OnAlertTriggered;
 
+        // Keep _rowsById in sync for O(1) lookups in Refresh()
+        Rows.CollectionChanged += (_, e) =>
+        {
+            if (e.NewItems is not null)
+                foreach (PluginMonitorRow r in e.NewItems) _rowsById[r.Id] = r;
+            if (e.OldItems is not null)
+                foreach (PluginMonitorRow r in e.OldItems) _rowsById.Remove(r.Id);
+        };
+
         // -- Filtered view --
         _filteredRows = CollectionViewSource.GetDefaultView(Rows);
         _filteredRows.Filter = FilterPlugin;
@@ -751,16 +762,17 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
         SynthesizeInitialLoadEvents();
     }
 
-    // PHASE 1: Async initialization waits for MetricsEngine
+    // PHASE 1: Async initialization waits for MetricsEngine (5 s safety timeout for race at panel restore)
     private async Task InitializeAsync()
     {
-        await _host.MetricsEngine.WaitForInitializationAsync();
+        await Task.WhenAny(
+            _host.MetricsEngine.WaitForInitializationAsync(),
+            Task.Delay(5_000));
 
-        // Now safe to start timer - metrics are ready
         _dispatcher.Invoke(() =>
         {
             _timer.Start();
-            Refresh(); // Force initial UI update
+            Refresh();
         });
     }
 
@@ -776,7 +788,11 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     // PHASE 1: Handle real-time metrics events from MetricsEngine
     private void OnMetricsSampled(object? sender, WpfHexEditor.PluginHost.Monitoring.MetricsSampledEventArgs e)
     {
-        // Update UI immediately on metrics event (in addition to timer)
+        // Cache WorkingSet64 from the event — avoids a redundant Process.GetCurrentProcess() in Refresh()
+        _lastSampledMemoryMb = e.MemoryBytes / (1024 * 1024);
+
+        // Skip if a Refresh already ran in the last 500 ms (timer + event can overlap)
+        if ((DateTime.UtcNow - _lastRefreshTime).TotalMilliseconds < 500) return;
         _dispatcher.InvokeAsync(Refresh);
     }
 
@@ -1012,6 +1028,7 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     // -- Plugin table + search ---------------------------------------------------
 
     public ObservableCollection<PluginMonitorRow> Rows { get; } = new();
+    private readonly Dictionary<string, PluginMonitorRow> _rowsById = new(StringComparer.OrdinalIgnoreCase);
     public ICollectionView FilteredRows => _filteredRows;
 
     // -- Isolation group summaries (displayed in DataGrid group headers) ----------
@@ -1166,9 +1183,10 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
 
     public void Refresh()
     {
+        _lastRefreshTime = DateTime.UtcNow;
         var plugins = _host.GetAllPlugins();
         var loaded  = plugins.Where(p => p.State == PluginState.Loaded).ToList();
-        var now     = DateTime.UtcNow;
+        var now     = _lastRefreshTime;
 
         // Aggregate CPU and memory (process-level, capped for display).
         double totalCpu = 0;
@@ -1182,17 +1200,27 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
             // only set by OnSamplingTick and starts at 0, giving a correct idle reading.
             totalCpu = _host.LastSampledCpuPercent;
 
-            // Use process WorkingSet64 for real memory (includes native, WPF, unmanaged).
-            // GC.GetTotalMemory only reports the managed heap (~8 MB) which is misleading.
-            totalMem = System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024);
+            // Use WorkingSet64 cached from the last MetricsSampled event (already computed
+            // by PluginMetricsEngine.ProcessPassiveSample — no extra syscall needed here).
+            totalMem = _lastSampledMemoryMb > 0
+                ? _lastSampledMemoryMb
+                : System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024);
+        }
+
+        // Single pass — avoids 3 separate LINQ enumerations over the same list
+        int faultCount = 0, dormantCount = 0;
+        foreach (var p in plugins)
+        {
+            if (p.State == PluginState.Faulted) faultCount++;
+            else if (p.State == PluginState.Dormant) dormantCount++;
         }
 
         CurrentCpu      = totalCpu;
         CurrentMemoryMb = totalMem;
         LoadedCount     = loaded.Count;
         TotalCount      = plugins.Count;
-        FaultCount      = plugins.Count(p => p.State == PluginState.Faulted);
-        DormantCount    = plugins.Count(p => p.State == PluginState.Dormant);
+        FaultCount      = faultCount;
+        DormantCount    = dormantCount;
         OnPropertyChanged(nameof(HealthLabel));
         OnPropertyChanged(nameof(HealthColor));
 
@@ -1217,7 +1245,7 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
         foreach (var entry in plugins)
         {
             var snap = entry.Diagnostics.GetLatest();
-            var row  = Rows.FirstOrDefault(r => r.Id == entry.Manifest.Id);
+            _rowsById.TryGetValue(entry.Manifest.Id, out var row);
 
             if (row is null)
             {

@@ -174,8 +174,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
         // PerformInitialSample() removed — MetricsEngine handles startup initialization
         // and avoids the race condition with PluginMonitoringViewModel more reliably.
-
-        _samplingTimer.Start();
+        // _samplingTimer.Start() intentionally omitted — MetricsEngine owns passive sampling.
 
         LoadIsolationOverrides();
 
