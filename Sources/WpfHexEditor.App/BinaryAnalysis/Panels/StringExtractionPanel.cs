@@ -23,6 +23,32 @@ namespace WpfHexEditor.App.BinaryAnalysis.Panels;
 /// <summary>#110 String Extraction panel — full IDE theme, overkill redesign.</summary>
 public sealed class StringExtractionPanel : UserControl, IDisposable
 {
+    // Frozen brushes shared across all recycled cells — allocated once at class init.
+    private static readonly SolidColorBrush ContextByteBrush =
+        Freeze(new SolidColorBrush(Color.FromRgb(0x70, 0x70, 0x70)));
+    private static readonly IReadOnlyDictionary<StringEncoding, SolidColorBrush> EncodingBrushes =
+        new Dictionary<StringEncoding, SolidColorBrush>
+        {
+            [StringEncoding.Tbl]          = Freeze(new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50))),
+            [StringEncoding.TblDte]       = Freeze(new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50))),
+            [StringEncoding.TblMte]       = Freeze(new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50))),
+            [StringEncoding.Ascii]        = Freeze(new SolidColorBrush(Color.FromRgb(0x42, 0x8B, 0xCA))),
+            [StringEncoding.Utf8]         = Freeze(new SolidColorBrush(Color.FromRgb(0x00, 0xBC, 0xD4))),
+            [StringEncoding.Utf16Le]      = Freeze(new SolidColorBrush(Color.FromRgb(0x00, 0xBC, 0xD4))),
+            [StringEncoding.Utf16Be]      = Freeze(new SolidColorBrush(Color.FromRgb(0x00, 0xBC, 0xD4))),
+            [StringEncoding.Ebcdic]       = Freeze(new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00))),
+            [StringEncoding.EbcdicNoSpec] = Freeze(new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00))),
+            [StringEncoding.Latin1]       = Freeze(new SolidColorBrush(Color.FromRgb(0xAB, 0x47, 0xBC))),
+        };
+    private static readonly SolidColorBrush FallbackEncodingBrush =
+        Freeze(new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)));
+
+    // 256-entry lookup avoids one string allocation per byte in the context column hot path.
+    private static readonly string[] HexByteLookup =
+        Enumerable.Range(0, 256).Select(i => i.ToString("X2")).ToArray();
+
+    private static SolidColorBrush Freeze(SolidColorBrush b) { b.Freeze(); return b; }
+
     private readonly StringExtractionViewModel _vm = new();
     private DataGrid _grid = null!;
     private TblStream? _loadedTbl;
@@ -775,32 +801,26 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         var buf = _vm.LastBuffer;
         if (buf is null) return;
 
-        long start = Math.Max(0, run.Offset - n);
-        long end   = Math.Min(buf.Length - 1, run.Offset + run.Length + n - 1);
+        long start        = Math.Max(0, run.Offset - n);
+        long end          = Math.Min(buf.Length - 1, run.Offset + run.Length + n - 1);
+        var  encodingColor = EncodingChipColor(run.Encoding);
+        bool first        = true;
 
-        var encodingColor = EncodingChipColor(run.Encoding);
-        var contextColor  = new SolidColorBrush(Color.FromRgb(0x70, 0x70, 0x70));
+        void AppendByte(byte b, SolidColorBrush color, FontWeight weight)
+        {
+            if (!first) tb.Inlines.Add(new System.Windows.Documents.Run(" ") { Foreground = color });
+            tb.Inlines.Add(new System.Windows.Documents.Run(HexByteLookup[b]) { Foreground = color, FontWeight = weight });
+            first = false;
+        }
 
-        // Pre-context bytes (grey)
         for (long i = start; i < run.Offset; i++)
-        {
-            if (tb.Inlines.Count > 0) tb.Inlines.Add(new System.Windows.Documents.Run(" ") { Foreground = contextColor });
-            tb.Inlines.Add(new System.Windows.Documents.Run(buf[i].ToString("X2")) { Foreground = contextColor });
-        }
+            AppendByte(buf[i], ContextByteBrush, FontWeights.Normal);
 
-        // Run bytes (encoding color, slightly brighter)
         for (long i = run.Offset; i < run.Offset + run.Length && i <= end; i++)
-        {
-            if (tb.Inlines.Count > 0) tb.Inlines.Add(new System.Windows.Documents.Run(" ") { Foreground = encodingColor });
-            tb.Inlines.Add(new System.Windows.Documents.Run(buf[i].ToString("X2")) { Foreground = encodingColor, FontWeight = FontWeights.SemiBold });
-        }
+            AppendByte(buf[i], encodingColor, FontWeights.SemiBold);
 
-        // Post-context bytes (grey)
         for (long i = run.Offset + run.Length; i <= end; i++)
-        {
-            if (tb.Inlines.Count > 0) tb.Inlines.Add(new System.Windows.Documents.Run(" ") { Foreground = contextColor });
-            tb.Inlines.Add(new System.Windows.Documents.Run(buf[i].ToString("X2")) { Foreground = contextColor });
-        }
+            AppendByte(buf[i], ContextByteBrush, FontWeights.Normal);
     }
 
     private static DataGridTextColumn MakeCol(string header, string path, double width, string? format = null, string? tooltip = null)
@@ -812,20 +832,10 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
             Binding = binding,
             Width   = width > 0 ? new DataGridLength(width) : DataGridLength.Auto,
         };
-        // headerKey and tooltip are resource keys when present
-        if (tooltip is not null)
-        {
-            var hdr = new TextBlock();
-            hdr.SetResourceReference(TextBlock.TextProperty, header);
-            hdr.SetResourceReference(ToolTipProperty,        tooltip);
-            col.Header = hdr;
-        }
-        else
-        {
-            var hdr = new TextBlock();
-            hdr.SetResourceReference(TextBlock.TextProperty, header);
-            col.Header = hdr;
-        }
+        var hdr = new TextBlock();
+        hdr.SetResourceReference(TextBlock.TextProperty, header);
+        if (tooltip is not null) hdr.SetResourceReference(ToolTipProperty, tooltip);
+        col.Header = hdr;
         return col;
     }
 
@@ -927,15 +937,8 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         }
     }
 
-    private static SolidColorBrush EncodingChipColor(StringEncoding enc) => enc switch
-    {
-        StringEncoding.Tbl or StringEncoding.TblDte or StringEncoding.TblMte => new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50)),
-        StringEncoding.Ascii                                                   => new SolidColorBrush(Color.FromRgb(0x42, 0x8B, 0xCA)),
-        StringEncoding.Utf8 or StringEncoding.Utf16Le or StringEncoding.Utf16Be => new SolidColorBrush(Color.FromRgb(0x00, 0xBC, 0xD4)),
-        StringEncoding.Ebcdic or StringEncoding.EbcdicNoSpec                   => new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00)),
-        StringEncoding.Latin1                                                   => new SolidColorBrush(Color.FromRgb(0xAB, 0x47, 0xBC)),
-        _                                                                       => new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
-    };
+    private static SolidColorBrush EncodingChipColor(StringEncoding enc) =>
+        EncodingBrushes.TryGetValue(enc, out var b) ? b : FallbackEncodingBrush;
 
     // ── Status bar ────────────────────────────────────────────────────────────
 
