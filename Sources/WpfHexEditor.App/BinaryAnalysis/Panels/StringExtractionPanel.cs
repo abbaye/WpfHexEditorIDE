@@ -84,24 +84,24 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         DockPanel.SetDock(searchBox, Dock.Right);
         btnRow.Children.Add(searchBox);
 
-        var runBtn       = MakeToolbarButton("", "Run (F5)");
+        var runBtn       = MakeToolbarButton("", "Run (F5)");
         runBtn.Click    += async (_, _) => await _vm.RunAsync();
-        var cancelBtn    = MakeToolbarButton("", "Cancel");
+        var cancelBtn    = MakeToolbarButton("", "Cancel");
         cancelBtn.Click += (_, _) => _vm.Cancel();
-        var tblBtn       = MakeToolbarButton("", "Load TBL file…");
+        var tblBtn       = MakeToolbarButton("", "Load TBL file…");
         tblBtn.Click    += OnLoadTbl;
-        var exportBtn    = MakeToolbarButton("", "Export…");
+        var exportBtn    = MakeToolbarButton("", "Export…");
         exportBtn.Click += (_, _) => OnExport(exportAll: true);
 
-        var highlightBtn  = MakeToolbarButton("", "Highlight visible runs");
+        var highlightBtn  = MakeToolbarButton("", "Highlight visible runs");
         highlightBtn.Click += (_, _) => _vm.HighlightRuns(_vm.ResultsView.Cast<StringRun>());
-        var clearHlBtn    = MakeToolbarButton("", "Clear highlights");
+        var clearHlBtn    = MakeToolbarButton("", "Clear highlights");
         clearHlBtn.Click += (_, _) => _vm.ClearHighlights();
 
         // Caret sync toggle
         var syncBtn = new ToggleButton
         {
-            Content  = "",
+            Content  = "",
             ToolTip  = "Sync HexEditor caret to grid",
             Height   = 20, Width = 22,
             Padding  = new Thickness(0),
@@ -196,17 +196,17 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         row.Children.Add(MakeLabel("Uniq≥"));
         row.Children.Add(uniqueCharsUpDown);
 
-        row.Children.Add(new UIElement() { });   // spacer
-        row.Children.Add(new System.Windows.Shapes.Rectangle { Width = 1, Height = 12, Fill = Brushes.Transparent, Margin = new Thickness(4, 0, 4, 0) });
-
         // Regex toggle
         var reBtn = new ToggleButton
         {
             Content  = ".*",
             ToolTip  = "Use regex for text filter",
-            Height   = 18, Padding = new Thickness(4, 0, 4, 0),
-            FontSize = 10,
+            Height   = 20, MinWidth = 32,
+            Padding  = new Thickness(6, 0, 6, 0),
+            Margin   = new Thickness(4, 0, 0, 0),
+            FontSize = 11,
             BorderThickness = new Thickness(1),
+            VerticalAlignment = VerticalAlignment.Center,
             FocusVisualStyle = null,
         };
         reBtn.SetResourceReference(BackgroundProperty,  "TE_Background");
@@ -347,8 +347,23 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
 
     private static Button MakeToolbarButton(string glyph, string tooltip)
     {
-        var btn = new Button { Content = glyph, ToolTip = tooltip };
-        btn.SetResourceReference(StyleProperty, "PanelIconButtonStyle");
+        var btn = new Button
+        {
+            Content          = glyph,
+            ToolTip          = tooltip,
+            Width            = 22,
+            Height           = 22,
+            Padding          = new Thickness(0),
+            Margin           = new Thickness(1, 0, 1, 0),
+            BorderThickness  = new Thickness(0),
+            Background       = Brushes.Transparent,
+            FontFamily       = new FontFamily("Segoe MDL2 Assets"),
+            FontSize         = 13,
+            VerticalAlignment = VerticalAlignment.Center,
+            FocusVisualStyle = null,
+        };
+        btn.SetResourceReference(StyleProperty,      "PanelIconButtonStyle");
+        btn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
         return btn;
     }
 
