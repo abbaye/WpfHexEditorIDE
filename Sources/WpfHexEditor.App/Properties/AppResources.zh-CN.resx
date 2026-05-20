@@ -872,6 +872,56 @@
   <data name="APP_SearchRecent" xml:space="preserve">
     <value>搜索最近…</value>
   </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>分析PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>筛选:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>导入</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>导出</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>节</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>标头</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>不是PE文件 — 请先打开Windows可执行文件或DLL。</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>解码</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>复制</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>模式:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>密钥 (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>偏移:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>使用选区</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>字节:</value>
+  </data>
+
+
 
   <data name="APP_Dismiss" xml:space="preserve"><value>关闭</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>查看于:</value></data>
@@ -1165,4 +1215,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>复制位置 ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>在声明处打开</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>复制符号名</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>运行</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>最短长度:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>筛选…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>偏移量</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>长度</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>编码</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>值</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>字节</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>重复</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>上下文</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>字符串在文件中的字节偏移量（十六进制）</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>此字符串占用的原始字节数</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>检测到的编码：ASCII、UTF-16 LE/BE、UTF-8、Latin-1、EBCDIC 或 TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>匹配区域的原始十六进制字节</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>解码后的字符串值</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>具有相同解码值的字符串数（橙色 = 发现重复项）</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>前 4 个字节（灰色）+ 匹配字节（按编码着色）+ 后 4 个字节（灰色）</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>正则表达式筛选器 — 启用时，搜索框被视为正则表达式</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>自上次扫描以来文件已更改 — 按 F5 重新扫描</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>将 HexEditor 光标与网格同步</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>高亮显示可见结果</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>清除高亮显示</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>导出…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>加载 TBL 文件…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>运行 (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>移除 TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>固定/取消固定（筛选后保留）</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>字符串最小长度</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>字符串中不同字符的最小数量</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>从偏移量筛选（十六进制）</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>筛选至偏移量（十六进制，0 = 无限制）</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>隐藏高熵块中的结果</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>要扫描的文件</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>实时筛选器（F3 = 下一个，Shift+F3 = 上一个）</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> 已过期</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>排除高熵</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>文件:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>编码:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>最短:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>偏移量:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

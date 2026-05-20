@@ -1048,6 +1048,56 @@
     <value>Search recent…</value>
   </data>
 
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>Analyse PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Filter:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Imports</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Exports</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Sections</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>Headers</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>Not a PE file — open a Windows executable or DLL first.</value>
+  </data>
+
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Decode</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Mode:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Key (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Shift:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Use selection</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Bytes:</value>
+  </data>
+
   <data name="APP_SolutionPropertiesTitle" xml:space="preserve">
     <value>Solution Property Pages</value>
   </data>

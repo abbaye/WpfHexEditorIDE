@@ -872,6 +872,56 @@
   <data name="APP_SearchRecent" xml:space="preserve">
     <value>Sök i senaste…</value>
   </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>Analysera PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Avbryt</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Filter:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Importer</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Exporter</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Sektioner</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>Rubriker</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>Inte en PE-fil — öppna en Windows-körbar fil eller DLL först.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Avkoda</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Avbryt</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Kopiera</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Läge:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Nyckel (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Förskjutning:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Använd markering</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Bytes:</value>
+  </data>
+
+
 
   <data name="APP_Dismiss" xml:space="preserve"><value>Stäng</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>Visa i:</value></data>
@@ -1165,4 +1215,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Kopiera platser ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Öppna vid deklaration</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Kopiera symbolnamn</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>Kör</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>Minlängd:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>Filtrera…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>Längd</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>Kodning</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>Värde</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>Byte</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>Dup</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>Kontext</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>Byte-offset för strängen i filen (hexadecimalt)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>Antal råbyte som strängen upptar</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>Detekterad kodning: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC eller TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>Råa hex-byte för det matchade området</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>Avkodat strängvärde</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>Antal strängar med samma avkodade värde (orange = dubbletter hittade)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 byte före (grå) + matchade byte (färgade efter kodning) + 4 byte efter (grå)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>Regex-filter — när aktivt behandlas sökrutan som ett reguljärt uttryck</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>Filen har ändrats sedan senaste sökningen — tryck F5 för att söka igen</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>Synkronisera HexEditor-markör med rutnätet</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>Markera synliga träffar</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>Rensa markeringar</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>Exportera…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>Ladda TBL-fil…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>Kör (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>Ta bort TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>Fäst/Lossa (överlever filter)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>Minsta stränglängd</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>Minsta antal distinkta tecken i strängen</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>Filtrera från offset (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>Filtrera till offset (hex, 0 = ingen gräns)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>Dölj träffar i block med hög entropi</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>Fil att söka igenom</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>Live-filter (F3 = nästa, Shift+F3 = föregående)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> INAKTUELL</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>Exkl. hög entropi</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>Fil:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>Kodningar:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>Min:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>Offset:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

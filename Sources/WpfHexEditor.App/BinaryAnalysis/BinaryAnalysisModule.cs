@@ -15,9 +15,10 @@ using WpfHexEditor.SDK.Contracts;
 namespace WpfHexEditor.App.BinaryAnalysis;
 
 /// <summary>
-/// App-layer module providing 5 dockable binary analysis panels:
+/// App-layer module providing 7 dockable binary analysis panels:
 /// #110 String Extraction, #111 Hash Inspector, #112 File Carver,
-/// #118 Custom Signature DB, #119 Byte Frequency Heatmap.
+/// #114 PE Analyzer, #118 Custom Signature DB, #119 Byte Frequency Heatmap,
+/// #120 XOR/ROT Cipher Decoder.
 ///
 /// Follows the same architecture as <c>AssemblyExplorerModule</c>:
 /// panels are built lazily on first <see cref="GetPanel"/> call; no SDK plugin path.
@@ -29,6 +30,8 @@ internal sealed class BinaryAnalysisModule
     public const string ContentIdCarver   = "panel-ba-carver";
     public const string ContentIdSigDb    = "panel-ba-sigdb";
     public const string ContentIdFreq     = "panel-ba-freq";
+    public const string ContentIdPe       = "panel-ba-pe";
+    public const string ContentIdCipher   = "panel-ba-cipher";
 
     private IIDEHostContext? _context;
     private bool _activated;
@@ -42,6 +45,8 @@ internal sealed class BinaryAnalysisModule
     private FileCarverPanel?       _carverPanel;
     private SignatureDbPanel?      _sigDbPanel;
     private ByteFrequencyPanel?    _freqPanel;
+    private PeAnalyzerPanel?       _pePanel;
+    private CipherDecoderPanel?    _cipherPanel;
 
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
     {
@@ -73,6 +78,8 @@ internal sealed class BinaryAnalysisModule
             ContentIdCarver  => _carverPanel,
             ContentIdSigDb   => _sigDbPanel,
             ContentIdFreq    => _freqPanel,
+            ContentIdPe      => _pePanel,
+            ContentIdCipher  => _cipherPanel,
             _                => null
         };
     }
@@ -91,7 +98,9 @@ internal sealed class BinaryAnalysisModule
         var sigDbVm = new SignatureDbViewModel(_sigStore);
         _sigDbPanel = new SignatureDbPanel(sigDbVm);
 
-        _freqPanel = new ByteFrequencyPanel();
+        _freqPanel   = new ByteFrequencyPanel();
+        _pePanel     = new PeAnalyzerPanel();
+        _cipherPanel = new CipherDecoderPanel();
 
         // Wire context into all panels
         _stringsPanel.SetContext(_context);
@@ -99,6 +108,8 @@ internal sealed class BinaryAnalysisModule
         _carverPanel.SetContext(_context);
         _sigDbPanel.SetContext(_context);
         _freqPanel.SetContext(_context);
+        _pePanel.SetContext(_context);
+        _cipherPanel.SetContext(_context);
     }
 
     private void OnFileOpened(object? sender, EventArgs e)
@@ -108,6 +119,8 @@ internal sealed class BinaryAnalysisModule
         _hashPanel?.OnFileOpened();
         _carverPanel?.OnFileOpened();
         _freqPanel?.OnFileOpened();
+        _pePanel?.OnFileOpened();
+        _cipherPanel?.OnFileOpened();
     }
 
     private void OnActiveEditorChanged(object? sender, EventArgs e) => OnFileOpened(sender, e);

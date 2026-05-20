@@ -872,6 +872,56 @@
   <data name="APP_SearchRecent" xml:space="preserve">
     <value>Szukaj w ostatnich…</value>
   </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>Analizuj PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Filtr:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Importy</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Eksporty</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Sekcje</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>Nagłówki</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>To nie jest plik PE — najpierw otwórz plik wykonywalny lub DLL systemu Windows.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Dekoduj</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Kopiuj</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Tryb:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Klucz (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Przesunięcie:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Użyj zaznaczenia</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Bajty:</value>
+  </data>
+
+
 
   <data name="APP_Dismiss" xml:space="preserve"><value>Odrzuć</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>Wyświetl w:</value></data>
@@ -1165,4 +1215,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Kopiuj lokalizacje ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Otwórz przy deklaracji</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Kopiuj nazwę symbolu</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>Uruchom</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>Anuluj</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>Min. dług.:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>Filtruj…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>Przesunięcie</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>Długość</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>Kodowanie</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>Wartość</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>Bajty</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>Dup</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>Kontekst</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>Przesunięcie bajtowe ciągu w pliku (szesnastkowe)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>Liczba surowych bajtów zajętych przez ten ciąg</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>Wykryte kodowanie: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC lub TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>Surowe bajty szesnastkowe dopasowanego obszaru</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>Zdekodowana wartość ciągu</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>Liczba ciągów o tej samej zdekodowanej wartości (pomarańczowy = znaleziono duplikaty)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 bajty przed (szary) + dopasowane bajty (kolory wg kodowania) + 4 bajty po (szary)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>Filtr regex — gdy włączony, pole wyszukiwania traktowane jest jako wyrażenie regularne</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>Plik zmienił się od ostatniego skanowania — naciśnij F5, aby ponownie przeskanować</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>Synchronizuj kursor HexEditor z siatką</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>Podświetl widoczne wyniki</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>Wyczyść podświetlenia</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>Eksportuj…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>Załaduj plik TBL…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>Uruchom (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>Anuluj</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>Usuń TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>Przypnij/Odepnij (przeżywa filtr)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>Minimalna długość ciągu</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>Minimalna liczba różnych znaków w ciągu</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>Filtruj od przesunięcia (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>Filtruj do przesunięcia (hex, 0 = bez limitu)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>Ukryj wyniki w blokach o wysokiej entropii</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>Plik do skanowania</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>Filtr na żywo (F3 = następny, Shift+F3 = poprzedni)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> NIEAKTUALNE</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>Wyklucz wysoą entropię</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>Plik:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>Kodowania:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>Min:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>Przesuniecie:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

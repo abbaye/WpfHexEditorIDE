@@ -872,6 +872,56 @@
   <data name="APP_SearchRecent" xml:space="preserve">
     <value>Zoek in recente…</value>
   </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>PE analyseren</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Annuleren</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Filter:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Imports</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Exports</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Secties</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>Headers</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>Geen PE-bestand — open eerst een Windows-uitvoerbaar bestand of DLL.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Decoderen</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Annuleren</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Kopiëren</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Modus:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Sleutel (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Verschuiving:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Selectie gebruiken</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Bytes:</value>
+  </data>
+
+
 
   <data name="APP_Dismiss" xml:space="preserve"><value>Sluiten</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>Weergeven in:</value></data>
@@ -1165,4 +1215,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Locaties kopiëren ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Openen bij declaratie</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Symboolnaam kopiëren</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>Uitvoeren</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>Min. lengte:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>Filteren…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>Lengte</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>Codering</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>Waarde</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>Bytes</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>Dup</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>Context</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>Byte-offset van de string in het bestand (hexadecimaal)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>Aantal ruwe bytes van deze string</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>Gedetecteerde codering: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC of TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>Ruwe hex-bytes van de overeenkomende regio</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>Gedecodeerde stringwaarde</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>Aantal strings met dezelfde gedecodeerde waarde (oranje = duplicaten gevonden)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 bytes voor (grijs) + overeenkomende bytes (gekleurd per codering) + 4 bytes na (grijs)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>Regex-filter — indien actief wordt het zoekveld als reguliere expressie behandeld</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>Het bestand is gewijzigd sinds de laatste scan — druk F5 om opnieuw te scannen</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>HexEditor-cursor synchroniseren met het raster</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>Zichtbare resultaten markeren</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>Markeringen verwijderen</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>Exporteren…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>TBL-bestand laden…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>Uitvoeren (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>TBL verwijderen</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>Vastmaken/Losmaken (overleeft filter)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>Minimale stringlengte</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>Minimaal aantal onderscheiden tekens in de string</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>Filteren vanaf offset (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>Filteren tot offset (hex, 0 = geen limiet)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>Resultaten in hoge-entropieblokken verbergen</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>Te scannen bestand</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>Live filter (F3 = volgende, Shift+F3 = vorige)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> VEROUDERD</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>Hoge entropie uitsl.</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>Bestand:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>Coderingen:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>Min:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>Offset:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

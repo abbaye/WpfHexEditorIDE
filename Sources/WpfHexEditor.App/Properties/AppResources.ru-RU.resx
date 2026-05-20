@@ -872,6 +872,56 @@
   <data name="APP_SearchRecent" xml:space="preserve">
     <value>Поиск в недавних…</value>
   </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>Анализ PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Фильтр:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Импорты</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Экспорты</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Секции</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>Заголовки</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>Не PE-файл — сначала откройте исполняемый файл или DLL Windows.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Декодировать</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Копировать</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Режим:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Ключ (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Сдвиг:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Использовать выделение</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Байты:</value>
+  </data>
+
+
 
   <data name="APP_Dismiss" xml:space="preserve"><value>Закрыть</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>Просмотр в:</value></data>
@@ -1165,4 +1215,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Копировать места ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Открыть на объявлении</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Копировать имя символа</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>Запустить</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>Мин. дл.:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>Фильтр…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>Смещение</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>Длина</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>Кодировка</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>Значение</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>Байты</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>Дуп</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>Контекст</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>Смещение байта строки в файле (шестнадцатеричное)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>Количество сырых байт строки</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>Обнаруженная кодировка: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC или TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>Сырые байты в шестнадцатеричном виде совпавшего региона</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>Декодированное значение строки</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>Количество строк с одинаковым декодированным значением (оранжевый = найдены дубликаты)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 байта до (серый) + совпавшие байты (цвет по кодировке) + 4 байта после (серый)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>Фильтр regex — когда включён, поле поиска трактуется как регулярное выражение</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>Файл изменился с момента последнего сканирования — нажмите F5 для повторного сканирования</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>Синхронизировать курсор HexEditor с таблицей</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>Выделить видимые результаты</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>Очистить выделение</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>Экспорт…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>Загрузить файл TBL…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>Запустить (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>Удалить TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>Закрепить/Открепить (остаётся при фильтрации)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>Минимальная длина строки</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>Минимальное количество различных символов в строке</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>Фильтровать от смещения (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>Фильтровать до смещения (hex, 0 = без ограничений)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>Скрыть результаты в блоках с высокой энтропией</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>Файл для сканирования</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>Живой фильтр (F3 = следующий, Shift+F3 = предыдущий)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> УСТАРЕЛО</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>Искл. выс. энтропию</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>Файл:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>Кодировки:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>Мин:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>Смещение:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

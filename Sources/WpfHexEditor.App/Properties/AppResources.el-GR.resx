@@ -534,6 +534,56 @@
   <data name="APP_SearchRecent" xml:space="preserve">
     <value>Αναζήτηση πρόσφατων…</value>
   </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>Ανάλυση PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Ακύρωση</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Φίλτρο:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Εισαγωγές</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Εξαγωγές</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Τμήματα</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>Κεφαλίδες</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>Δεν είναι αρχείο PE — ανοίξτε πρώτα ένα εκτελέσιμο αρχείο Windows ή DLL.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Αποκωδικοποίηση</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Ακύρωση</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Αντιγραφή</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Λειτουργία:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Κλειδί (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Μετατόπιση:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Χρήση επιλογής</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Bytes:</value>
+  </data>
+
+
 
   <data name="APP_Dismiss" xml:space="preserve"><value>Κλείσιμο</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>Προβολή σε:</value></data>
@@ -827,4 +877,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Αντιγραφή θέσεων ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Άνοιγμα στη δήλωση</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Αντιγραφή ονόματος συμβόλου</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>Εκτέλεση</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>Ελ. μήκος:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>Φιλτράρισμα…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>Μετατόπιση</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>Μήκος</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>Κωδικοποίηση</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>Τιμή</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>Bytes</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>Dup</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>Πλαίσιο</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>Μετατόπιση byte της συμβολοσειράς στο αρχείο (δεκαεξαδικό)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>Αριθμός ακατέργαστων bytes της συμβολοσειράς</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>Εντοπισμένη κωδικοποίηση: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC ή TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>Ακατέργαστα hex bytes της αντίστοιχης περιοχής</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>Αποκωδικοποιημένη τιμή συμβολοσειράς</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>Αριθμός συμβολοσειρών με την ίδια αποκωδικοποιημένη τιμή (πορτοκαλί = βρέθηκαν διπλότυπα)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 bytes πριν (γκρι) + αντίστοιχα bytes (χρωματιστά ανά κωδικοποίηση) + 4 bytes μετά (γκρι)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>Φίλτρο regex — όταν ενεργό, το πεδίο αναζήτησης αντιμετωπίζεται ως κανονική έκφραση</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>Το αρχείο άλλαξε από την τελευταία σάρωση — πατήστε F5 για εκ νέου σάρωση</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>Συγχρονισμός δρομέα HexEditor με το πλέγμα</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>Επισήμανση ορατών αποτελεσμάτων</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>Εκκαθάριση επισημάνσεων</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>Εξαγωγή…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>Φόρτωση αρχείου TBL…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>Εκτέλεση (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>Ακύρωση</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>Αφαίρεση TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>Καρφιτσώστε/Αποκαρφιτσώστε (επιβιώνει του φίλτρου)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>Ελάχιστο μήκος συμβολοσειράς</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>Ελάχιστος αριθμός διαφορετικών χαρακτήρων στη συμβολοσειρά</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>Φιλτράρισμα από μετατόπιση (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>Φιλτράρισμα έως μετατόπιση (hex, 0 = χωρίς όριο)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>Απόκρυψη αποτελεσμάτων σε μπλοκ υψηλής εντροπίας</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>Αρχείο για σάρωση</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>Live φίλτρο (F3 = επόμενο, Shift+F3 = προηγούμενο)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> ΞΕΠΕΡΑΣΜΕΝΟ</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>Αποκλ. υψηλή εντροπία</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>Αρχείο:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>Κωδικοποιήσεις:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>Ελ:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>Μετατόπιση:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

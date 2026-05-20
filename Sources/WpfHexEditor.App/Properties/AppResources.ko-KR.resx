@@ -872,6 +872,56 @@
   <data name="APP_SearchRecent" xml:space="preserve">
     <value>최근 검색…</value>
   </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>PE 분석</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>취소</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>필터:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>가져오기</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>내보내기</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>섹션</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>헤더</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>PE 파일이 아닙니다 — 먼저 Windows 실행 파일 또는 DLL을 여세요.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>디코드</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>취소</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>복사</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>모드:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>키 (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>이동:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>선택 영역 사용</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>바이트:</value>
+  </data>
+
+
 
   <data name="APP_Dismiss" xml:space="preserve"><value>닫기</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>다음에서 보기:</value></data>
@@ -1165,4 +1215,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>위치 복사 ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>선언에서 열기</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>심볼 이름 복사</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>실행</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>취소</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>최소 길이:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>필터…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>오프셋</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>길이</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>인코딩</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>값</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>바이트</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>중복</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>컨텍스트</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>파일에서 문자열의 바이트 오프셋(16진수)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>이 문자열이 차지하는 원시 바이트 수</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>감지된 인코딩: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC 또는 TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>일치 영역의 원시 16진수 바이트</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>디코딩된 문자열 값</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>동일한 디코딩 값을 가진 문자열 수(주황색 = 중복 발견)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>앞 4바이트(회색) + 일치 바이트(인코딩별 색상) + 뒤 4바이트(회색)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>정규식 필터 — 활성화 시 검색 상자가 정규 표현식으로 처리됨</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>마지막 스캔 이후 파일이 변경됨 — F5를 눌러 다시 스캔하세요</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>HexEditor 커서를 그리드에 동기화</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>보이는 결과 강조 표시</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>강조 표시 지우기</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>내보내기…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>TBL 파일 로드…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>실행 (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>취소</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>TBL 제거</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>고정/고정 해제(필터 후에도 유지)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>문자열 최소 길이</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>문자열의 최소 고유 문자 수</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>오프셋부터 필터(16진수)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>오프셋까지 필터(16진수, 0 = 무제한)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>높은 엔트로피 블록의 결과 숨기기</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>스캔할 파일</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>라이브 필터(F3 = 다음, Shift+F3 = 이전)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> 만료됨</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>높은 엔트로피 제외</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>파일:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>인코딩:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>최소:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>오프셋:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

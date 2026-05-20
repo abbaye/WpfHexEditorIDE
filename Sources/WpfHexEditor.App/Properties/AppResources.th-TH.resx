@@ -568,6 +568,56 @@
   <data name="APP_SearchRecent" xml:space="preserve">
     <value>ค้นหาล่าสุด…</value>
   </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>วิเคราะห์ PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>ยกเลิก</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>ตัวกรอง:</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>การนำเข้า</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>การส่งออก</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>ส่วน</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>ส่วนหัว</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>ไม่ใช่ไฟล์ PE — กรุณาเปิดไฟล์ปฏิบัติการ Windows หรือ DLL ก่อน</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>ถอดรหัส</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>ยกเลิก</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>คัดลอก</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>โหมด:</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>คีย์ (hex):</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>เลื่อน:</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>ใช้การเลือก</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>ไบต์:</value>
+  </data>
+
+
 
   <data name="APP_Dismiss" xml:space="preserve"><value>ปิด</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>Afficher dans :</value></data>
@@ -861,4 +911,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>คัดลอกตำแหน่ง ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>เปิดที่การประกาศ</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>คัดลอกชื่อสัญลักษณ์</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>เรียกใช้</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>ความยาวขั้นต่ำ:</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>กรอง…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>ออฟเซ็ต</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>ความยาว</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>การเข้ารหัส</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>ค่า</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>ไบต์</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>ซ้ำ</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>บริบท</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>ออฟเซ็ตไบต์ของสตริงในไฟล์ (เลขฐาน 16)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>จำนวนไบต์ดิบที่สตริงนี้ใช้</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>การเข้ารหัสที่ตรวจพบ: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC หรือ TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>ไบต์เลขฐาน 16 ดิบของบริเวณที่ตรงกัน</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>ค่าสตริงที่ถอดรหัสแล้ว</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>จำนวนสตริงที่มีค่าถอดรหัสเหมือนกัน (ส้ม = พบรายการซ้ำ)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 ไบต์ก่อนหน้า (เทา) + ไบต์ที่ตรงกัน (ระบายสีตามการเข้ารหัส) + 4 ไบต์หลัง (เทา)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>ตัวกรอง Regex — เมื่อเปิดใช้งาน กล่องค้นหาจะถูกมองว่าเป็น regular expression</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>ไฟล์ถูกเปลี่ยนแปลงตั้งแต่การสแกนครั้งล่าสุด — กด F5 เพื่อสแกนใหม่</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>ซิงค์เคอร์เซอร์ HexEditor กับตาราง</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>ไฮไลท์ผลลัพธ์ที่มองเห็นได้</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>ล้างการไฮไลท์</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>ส่งออก…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>โหลดไฟล์ TBL…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>เรียกใช้ (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>ยกเลิก</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>ลบ TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>ปักหมุด/ยกเลิกการปักหมุด (อยู่รอดตัวกรอง)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>ความยาวขั้นต่ำของสตริง</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>จำนวนอักขระที่ไม่ซ้ำกันขั้นต่ำในสตริง</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>กรองจากออฟเซ็ต (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>กรองถึงออฟเซ็ต (hex, 0 = ไม่จำกัด)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>ซ่อนผลลัพธ์ในบล็อกที่มีความซับซ้อนสูง</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>ไฟล์ที่จะสแกน</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>ตัวกรองสด (F3 = ถัดไป, Shift+F3 = ก่อนหน้า)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> ล้าสมัย</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>ยกเว้นความซับซ้อนสูง</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>ไฟล์:</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>การเข้ารหัส:</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>ต่ำสุด:</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL:</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>ออฟเซ็ต:</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>

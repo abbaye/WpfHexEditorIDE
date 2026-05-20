@@ -568,6 +568,56 @@
   <data name="APP_SearchRecent" xml:space="preserve">
     <value>Rechercher dans les récents…</value>
   </data>
+  <data name="APP_PE_AnalysePE" xml:space="preserve">
+    <value>Analyser PE</value>
+  </data>
+  <data name="APP_PE_Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="APP_PE_Filter" xml:space="preserve">
+    <value>Filtre :</value>
+  </data>
+  <data name="APP_PE_TabImports" xml:space="preserve">
+    <value>Importations</value>
+  </data>
+  <data name="APP_PE_TabExports" xml:space="preserve">
+    <value>Exportations</value>
+  </data>
+  <data name="APP_PE_TabSections" xml:space="preserve">
+    <value>Sections</value>
+  </data>
+  <data name="APP_PE_TabHeaders" xml:space="preserve">
+    <value>En-têtes</value>
+  </data>
+  <data name="APP_PE_NotPeFile" xml:space="preserve">
+    <value>Pas un fichier PE — ouvrez d'abord un exécutable ou DLL Windows.</value>
+  </data>
+  <data name="APP_Cipher_Decode" xml:space="preserve">
+    <value>Décoder</value>
+  </data>
+  <data name="APP_Cipher_Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="APP_Cipher_Copy" xml:space="preserve">
+    <value>Copier</value>
+  </data>
+  <data name="APP_Cipher_Mode" xml:space="preserve">
+    <value>Mode :</value>
+  </data>
+  <data name="APP_Cipher_KeyHex" xml:space="preserve">
+    <value>Clé (hex) :</value>
+  </data>
+  <data name="APP_Cipher_Shift" xml:space="preserve">
+    <value>Décalage :</value>
+  </data>
+  <data name="APP_Cipher_UseSelection" xml:space="preserve">
+    <value>Utiliser la sélection</value>
+  </data>
+  <data name="APP_Cipher_Bytes" xml:space="preserve">
+    <value>Octets :</value>
+  </data>
+
+
 
   <data name="APP_Dismiss" xml:space="preserve"><value>Fermer</value></data>
   <data name="APP_ViewIn" xml:space="preserve"><value>Afficher dans :</value></data>
@@ -836,4 +886,49 @@
   <data name="CodeAnalysis_ContextMenu_CopyLocations" xml:space="preserve"><value>Copier les emplacements ({0})</value></data>
   <data name="CodeAnalysis_ContextMenu_OpenAtDeclaration" xml:space="preserve"><value>Ouvrir à la déclaration</value></data>
   <data name="CodeAnalysis_ContextMenu_CopySymbolName" xml:space="preserve"><value>Copier le nom du symbole</value></data>
+  <data name="StringExtract_Run" xml:space="preserve"><value>Exécuter</value></data>
+  <data name="StringExtract_Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="StringExtract_MinLength" xml:space="preserve"><value>Longueur min :</value></data>
+  <data name="StringExtract_FilterPlaceholder" xml:space="preserve"><value>Filtrer…</value></data>
+  <data name="StringExtract_ColOffset" xml:space="preserve"><value>Décalage</value></data>
+  <data name="StringExtract_ColLength" xml:space="preserve"><value>Longueur</value></data>
+  <data name="StringExtract_ColEncoding" xml:space="preserve"><value>Encodage</value></data>
+  <data name="StringExtract_ColValue" xml:space="preserve"><value>Valeur</value></data>
+  <data name="StringExtract_ColBytes" xml:space="preserve"><value>Octets</value></data>
+  <data name="StringExtract_ColDup" xml:space="preserve"><value>Dup</value></data>
+  <data name="StringExtract_ColContext" xml:space="preserve"><value>Contexte</value></data>
+  <data name="StringExtract_TtOffset" xml:space="preserve"><value>Décalage de l'octet de début dans le fichier (hexadécimal)</value></data>
+  <data name="StringExtract_TtLength" xml:space="preserve"><value>Nombre d'octets bruts de la chaîne</value></data>
+  <data name="StringExtract_TtEncoding" xml:space="preserve"><value>Encodage détecté : ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC ou TBL</value></data>
+  <data name="StringExtract_TtBytes" xml:space="preserve"><value>Octets hexadécimaux bruts de la région</value></data>
+  <data name="StringExtract_TtValue" xml:space="preserve"><value>Valeur de la chaîne décodée</value></data>
+  <data name="StringExtract_TtDup" xml:space="preserve"><value>Nombre de chaînes ayant la même valeur décodée (orange = doublons trouvés)</value></data>
+  <data name="StringExtract_TtContext" xml:space="preserve"><value>4 octets avant (gris) + octets correspondants (couleur par encodage) + 4 octets après (gris)</value></data>
+  <data name="StringExtract_TtRegex" xml:space="preserve"><value>Filtre regex — quand actif, la zone de recherche est traitée comme une expression régulière</value></data>
+  <data name="StringExtract_TtOutdated" xml:space="preserve"><value>Le fichier a changé depuis le dernier balayage — appuyez sur F5 pour relancer</value></data>
+  <data name="StringExtract_TtSyncCaret" xml:space="preserve"><value>Synchroniser le curseur HexEditor avec la grille</value></data>
+  <data name="StringExtract_TtHighlight" xml:space="preserve"><value>Mettre en surbrillance les résultats visibles</value></data>
+  <data name="StringExtract_TtClearHighlight" xml:space="preserve"><value>Effacer les surbrillances</value></data>
+  <data name="StringExtract_TtExport" xml:space="preserve"><value>Exporter…</value></data>
+  <data name="StringExtract_TtLoadTbl" xml:space="preserve"><value>Charger un fichier TBL…</value></data>
+  <data name="StringExtract_TtRun" xml:space="preserve"><value>Exécuter (F5)</value></data>
+  <data name="StringExtract_TtCancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="StringExtract_TtRemoveTbl" xml:space="preserve"><value>Supprimer le TBL</value></data>
+  <data name="StringExtract_TtPin" xml:space="preserve"><value>Épingler/Désépingler (survit au filtre)</value></data>
+  <data name="StringExtract_TtMinLength" xml:space="preserve"><value>Longueur minimale de la chaîne</value></data>
+  <data name="StringExtract_TtMinUniq" xml:space="preserve"><value>Nombre minimal de caractères distincts dans la chaîne</value></data>
+  <data name="StringExtract_TtOffsetFrom" xml:space="preserve"><value>Filtrer depuis le décalage (hex)</value></data>
+  <data name="StringExtract_TtOffsetTo" xml:space="preserve"><value>Filtrer jusqu'au décalage (hex, 0 = sans limite)</value></data>
+  <data name="StringExtract_TtExclEntropy" xml:space="preserve"><value>Masquer les résultats dans les blocs à haute entropie</value></data>
+  <data name="StringExtract_TtFile" xml:space="preserve"><value>Fichier à analyser</value></data>
+  <data name="StringExtract_TtSearch" xml:space="preserve"><value>Filtre en direct (F3 = suivant, Maj+F3 = précédent)</value></data>
+  <data name="StringExtract_TtOutdatedBadge" xml:space="preserve"><value> OBSOLÈTE</value></data>
+  <data name="StringExtract_ExclHighEntropy" xml:space="preserve"><value>Excl. haute entropie</value></data>
+  <data name="StringExtract_LabelFile" xml:space="preserve"><value>Fichier :</value></data>
+  <data name="StringExtract_LabelEncodings" xml:space="preserve"><value>Encodages :</value></data>
+  <data name="StringExtract_LabelMin" xml:space="preserve"><value>Min :</value></data>
+  <data name="StringExtract_LabelTbl" xml:space="preserve"><value>TBL :</value></data>
+  <data name="StringExtract_LabelUniq" xml:space="preserve"><value>Uniq≥</value></data>
+  <data name="StringExtract_LabelOffset" xml:space="preserve"><value>Décalage :</value></data>
+  <data name="StringExtract_RegexLabel" xml:space="preserve"><value>.*</value></data>
 </root>
