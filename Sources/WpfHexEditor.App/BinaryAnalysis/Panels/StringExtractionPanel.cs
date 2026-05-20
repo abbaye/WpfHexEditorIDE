@@ -80,6 +80,10 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         // Row 1: actions left + search right
         var btnRow = new DockPanel { LastChildFill = false, Height = 26, Margin = new Thickness(4, 0, 4, 0) };
 
+        var regexToggle = BuildRegexToggle();
+        DockPanel.SetDock(regexToggle, Dock.Right);
+        btnRow.Children.Add(regexToggle);
+
         var searchBox = BuildSearchBox();
         DockPanel.SetDock(searchBox, Dock.Right);
         btnRow.Children.Add(searchBox);
@@ -196,28 +200,6 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         row.Children.Add(MakeLabel("Uniq≥"));
         row.Children.Add(uniqueCharsUpDown);
 
-        // Regex toggle
-        var reBtn = new ToggleButton
-        {
-            Content  = ".*",
-            ToolTip  = "Use regex for text filter",
-            Height   = 20, MinWidth = 32,
-            Padding  = new Thickness(6, 0, 6, 0),
-            Margin   = new Thickness(4, 0, 0, 0),
-            FontSize = 11,
-            BorderThickness = new Thickness(1),
-            VerticalAlignment = VerticalAlignment.Center,
-            FocusVisualStyle = null,
-        };
-        reBtn.SetResourceReference(BackgroundProperty,  "TE_Background");
-        reBtn.SetResourceReference(ForegroundProperty,  "TE_Foreground");
-        reBtn.SetResourceReference(BorderBrushProperty, "Panel_ToolbarBorderBrush");
-        reBtn.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(_vm.UseRegexFilter)) { Source = _vm, Mode = BindingMode.TwoWay });
-
-        row.Children.Add(reBtn);
-
-        row.Children.Add(new System.Windows.Shapes.Rectangle { Width = 6, Height = 1, Fill = Brushes.Transparent });
-
         // Offset range
         row.Children.Add(MakeLabel("Offset:"));
         var fromBox = BuildHexBox(
@@ -283,6 +265,59 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
             Source = _vm, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
         });
         return box;
+    }
+
+    /// <summary>Regex toggle chip — sits left of the search box, lights up blue when active.</summary>
+    private UIElement BuildRegexToggle()
+    {
+        // Outer border acts as the chip — color changes via trigger on IsChecked
+        var chip = new Border
+        {
+            CornerRadius    = new CornerRadius(3),
+            BorderThickness = new Thickness(1),
+            Padding         = new Thickness(6, 0, 6, 0),
+            Height          = 20,
+            Margin          = new Thickness(2, 0, 0, 0),
+            Cursor          = Cursors.Hand,
+            VerticalAlignment = VerticalAlignment.Center,
+            ToolTip = "Regex filter — when ON, the search box is treated as a regular expression",
+        };
+        chip.SetResourceReference(Border.BorderBrushProperty, "Panel_ToolbarBorderBrush");
+        chip.SetResourceReference(Border.BackgroundProperty,  "TE_Background");
+
+        var label = new TextBlock
+        {
+            Text = ".*",
+            FontSize = 11,
+            FontWeight = FontWeights.SemiBold,
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        label.SetResourceReference(ForegroundProperty, "TE_Foreground");
+        chip.Child = label;
+
+        // Toggle on click
+        chip.MouseLeftButtonUp += (_, _) => _vm.UseRegexFilter = !_vm.UseRegexFilter;
+
+        // React to VM state: highlight chip blue when regex is ON
+        void UpdateChipState()
+        {
+            if (_vm.UseRegexFilter)
+            {
+                chip.Background = new SolidColorBrush(Color.FromRgb(0x00, 0x7A, 0xCC));
+                label.Foreground = Brushes.White;
+            }
+            else
+            {
+                chip.ClearValue(Border.BackgroundProperty);
+                chip.SetResourceReference(Border.BackgroundProperty, "TE_Background");
+                label.ClearValue(ForegroundProperty);
+                label.SetResourceReference(ForegroundProperty, "TE_Foreground");
+            }
+        }
+
+        _vm.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(_vm.UseRegexFilter)) UpdateChipState(); };
+        UpdateChipState();
+        return chip;
     }
 
     private static UIElement BuildIntSpinner(Func<int> getValue, Action<int> setValue, int min, int max, double width, string tooltip)
