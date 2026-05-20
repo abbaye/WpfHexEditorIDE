@@ -1,212 +1,549 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="EnvGeneral_AppearanceSection" xml:space="preserve"><value>MEGJELENÉS</value></data>
-  <data name="EnvGeneral_ColorThemeLabel" xml:space="preserve"><value>Színtéma:</value></data>
-  <data name="EnvGeneral_ThemePreviewNote" xml:space="preserve"><value>Az előnézet azonnal alkalmazódik.</value></data>
-  <data name="EnvGeneral_LanguageSection" xml:space="preserve"><value>NYELV</value></data>
-  <data name="EnvGeneral_IdeLanguageLabel" xml:space="preserve"><value>IDE nyelve:</value></data>
-  <data name="EnvGeneral_LanguageRestartNote" xml:space="preserve"><value>Az új nyelv teljes alkalmazásához újraindítás szükséges.</value></data>
-  <!-- MARKETPLACE OPTIONS PAGE -->
-  <data name="Mkt_GitHubSection" xml:space="preserve"><value>GITHUB API</value></data>
-  <data name="Mkt_PatDescription" xml:space="preserve"><value>Personal Access Token (PAT) — raises the GitHub rate limit from 60 to 5 000 requests/hour. Leave empty for anonymous access.</value></data>
-  <data name="Mkt_PatWarning" xml:space="preserve"><value>Token is stored in plaintext in the settings file. Do not use a token with write permissions.</value></data>
-  <data name="Mkt_AutoUpdateSection" xml:space="preserve"><value>AUTOMATIC UPDATES</value></data>
-  <data name="Mkt_AutoUpdate" xml:space="preserve"><value>Check for plugin updates automatically at startup</value></data>
-  <data name="Mkt_UpdateIntervalLabel" xml:space="preserve"><value>Update check interval (hours):</value></data>
-  <data name="Mkt_UpdateIntervalNote" xml:space="preserve"><value>Minimum interval: 1 hour.</value></data>
-  <!-- OUTPUT OPTIONS PAGE -->
-  <data name="Output_Section" xml:space="preserve"><value>LOG-LEVEL COLOURS</value></data>
-  <data name="Output_Note" xml:space="preserve"><value>Customise the colour used for each log level in the Output panel. INFO inherits the active theme foreground and cannot be changed.</value></data>
-  <data name="Output_WarnLabel" xml:space="preserve"><value>Warning (WARN):</value></data>
-  <data name="Output_ErrorLabel" xml:space="preserve"><value>Error (ERROR):</value></data>
-  <data name="Output_DebugLabel" xml:space="preserve"><value>Debug (DEBUG):</value></data>
-  <data name="Output_SuccessLabel" xml:space="preserve"><value>Success (OK):</value></data>
-  <data name="Output_ResetColors" xml:space="preserve"><value>Reset to Default Colours</value></data>
-  <!-- PLUGIN DEV LOADER OPTIONS PAGE -->
-  <data name="PluginDev_Section" xml:space="preserve"><value>PLUGIN DEV LOADER</value></data>
-  <data name="PluginDev_Enable" xml:space="preserve"><value>Enable Plugin Dev Loader (Watch Mode available in Plugin Manager)</value></data>
-  <data name="PluginDev_DebounceSection" xml:space="preserve"><value>DEBOUNCE</value></data>
-  <data name="PluginDev_DebounceNote" xml:space="preserve"><value>Delay before triggering hot-reload after a file change (ms):</value></data>
-  <data name="PluginDev_DebounceDefault" xml:space="preserve"><value>ms  (default: 500)</value></data>
-  <data name="PluginDev_WatchedSection" xml:space="preserve"><value>WATCHED FOLDERS</value></data>
-  <data name="PluginDev_WatchedNote" xml:space="preserve"><value>Additional output directories to watch (semicolon-separated). Plugins in these folders are hot-reloaded when their DLL changes.</value></data>
-  <data name="PluginDev_Browse" xml:space="preserve"><value>Tallózás…</value></data>
-  <data name="PluginDev_Example" xml:space="preserve"><value>Example: C:\MyPlugin\bin\Debug\net8.0-windows;D:\AnotherPlugin\bin\Debug\net8.0-windows</value></data>
-  <!-- PLUGIN SYSTEM OPTIONS PAGE -->
-  <data name="Plugin_GeneralSection" xml:space="preserve"><value>ÁLTALÁNOS</value></data>
-  <data name="Plugin_AutoLoad" xml:space="preserve"><value>Összes talált bővítmény automatikus betöltése induláskor</value></data>
-  <data name="Plugin_PluginsDirNote" xml:space="preserve"><value>További bővítmények könyvtára (hagyja üresen az %AppData%\WpfHexEditor\Plugins használatához):</value></data>
-  <data name="Plugin_Browse" xml:space="preserve"><value>Tallózás…</value></data>
-  <data name="Plugin_WatchdogSection" xml:space="preserve"><value>WATCHDOG</value></data>
-  <data name="Plugin_EnableWatchdog" xml:space="preserve"><value>Bővítmény-watchdog engedélyezése (híváskésedelmek figyelése)</value></data>
-  <data name="Plugin_WatchdogTimeoutLabel" xml:space="preserve"><value>Watchdog időtúllépés (másodperc):</value></data>
-  <data name="Plugin_DiagnosticsSection" xml:space="preserve"><value>DIAGNOSZTIKA &amp; MINTAVÉTELEZÉS</value></data>
-  <data name="Plugin_DiagSamplingLabel" xml:space="preserve"><value>Diagnosztikai mintavételezési intervallum (másodperc):</value></data>
-  <data name="Plugin_DiagNote" xml:space="preserve"><value>A Bővítményfigyelő CPU/memória diagram frissítési sebességét vezérli.</value></data>
-  <data name="Plugin_SlowDetectionSection" xml:space="preserve"><value>LASSÚ BŐVÍTMÉNY FELISMERÉSE</value></data>
-  <data name="Plugin_MonitorIntervalLabel" xml:space="preserve"><value>Figyelési intervallum (másodperc):</value></data>
-  <data name="Plugin_ResponseTimeLabel" xml:space="preserve"><value>Válaszidő küszöb (ms):</value></data>
-  <data name="Plugin_CpuThresholdLabel" xml:space="preserve"><value>CPU küszöb (%):</value></data>
-  <data name="Plugin_MemoryAlertSection" xml:space="preserve"><value>MEMÓRIARIASZTÁSI KÜSZÖBÖK</value></data>
-  <data name="Plugin_EnableMemoryAlerts" xml:space="preserve"><value>Memóriahasználati riasztások és jelzők engedélyezése</value></data>
-  <data name="Plugin_ShowColorGradation" xml:space="preserve"><value>Színátmenet megjelenítése a monitorokban (zöld/sárga/narancssárga/piros)</value></data>
-  <data name="Plugin_MemWarningLabel" xml:space="preserve"><value>⚠️ Figyelmeztetési küszöb (sárga):</value></data>
-  <data name="Plugin_MemHighLabel" xml:space="preserve"><value>🟠 Magas küszöb (narancssárga):</value></data>
-  <data name="Plugin_MemCriticalLabel" xml:space="preserve"><value>🔴 Kritikus küszöb (piros):</value></data>
-  <data name="Plugin_MB" xml:space="preserve"><value> MB</value></data>
-  <data name="Plugin_MemThresholdNote" xml:space="preserve"><value>Megjegyzés: A küszöböknek növekvő sorrendben kell lenniük (Figyelmeztetés &lt; Magas &lt; Kritikus).</value></data>
-  <data name="Plugin_MemColorSection" xml:space="preserve"><value>MEMÓRIARIASZTÁS SZÍNEI</value></data>
-  <data name="Plugin_MemColorNote" xml:space="preserve"><value>Testreszabja a jelzők színeit minden memória-küszöb szinthez.</value></data>
-  <data name="Plugin_MemNormalColor" xml:space="preserve"><value>🟢 Normál küszöb:</value></data>
-  <data name="Plugin_MemWarningColor" xml:space="preserve"><value>🟡 Figyelmeztetési küszöb:</value></data>
-  <data name="Plugin_MemHighColor" xml:space="preserve"><value>🟠 Magas küszöb:</value></data>
-  <data name="Plugin_MemCriticalColor" xml:space="preserve"><value>🔴 Kritikus küszöb:</value></data>
-  <data name="Plugin_ResetColors" xml:space="preserve"><value>Alapértelmezett színek visszaállítása</value></data>
-  <!-- SOLUTION EXPLORER OPTIONS PAGE -->
-  <data name="SolExp_NavigationSection" xml:space="preserve"><value>NAVIGÁCIÓ</value></data>
-  <data name="SolExp_TrackActive" xml:space="preserve"><value>Aktív dokumentum automatikus kiemelése a fában</value></data>
-  <data name="SolExp_PersistCollapse" xml:space="preserve"><value>Kibontott/összecsukott állapot megjegyzése munkamenetek között</value></data>
-  <data name="SolExp_NotificationsSection" xml:space="preserve"><value>ÉRTESÍTÉSEK</value></data>
-  <data name="SolExp_ShowNotifications" xml:space="preserve"><value>Kontextuális értesítések megjelenítése (külső módosítások, beillesztési ütközések…)</value></data>
-  <data name="SolExp_DefaultsSection" xml:space="preserve"><value>ALAPÉRTELMEZÉSEK MEGOLDÁS MEGNYITÁSAKOR</value></data>
-  <data name="SolExp_DefaultSortLabel" xml:space="preserve"><value>Alapértelmezett rendezés:</value></data>
-  <data name="SolExp_SortNone" xml:space="preserve"><value>Nincs</value></data>
-  <data name="SolExp_SortName" xml:space="preserve"><value>Név</value></data>
-  <data name="SolExp_SortType" xml:space="preserve"><value>Típus</value></data>
-  <data name="SolExp_SortDateModified" xml:space="preserve"><value>Módosítás dátuma</value></data>
-  <data name="SolExp_SortSize" xml:space="preserve"><value>Méret</value></data>
-  <data name="SolExp_DefaultFilterLabel" xml:space="preserve"><value>Alapértelmezett szűrő:</value></data>
-  <data name="SolExp_FilterAll" xml:space="preserve"><value>Összes</value></data>
-  <data name="SolExp_FilterBinary" xml:space="preserve"><value>Bináris</value></data>
-  <data name="SolExp_FilterText" xml:space="preserve"><value>Szöveg</value></data>
-  <data name="SolExp_FilterImage" xml:space="preserve"><value>Kép</value></data>
-  <data name="SolExp_FilterLanguage" xml:space="preserve"><value>Nyelv</value></data>
-  <!-- TAB GROUPS OPTIONS PAGE -->
-  <data name="TabGroups_SplitSection" xml:space="preserve"><value>FELOSZTÁSI VISELKEDÉS</value></data>
-  <data name="TabGroups_EnforceEqualSize" xml:space="preserve"><value>Egyenlő ablaktábla méret kényszerítése felosztáskor (50/50)</value></data>
-  <data name="TabGroups_MinWidthLabel" xml:space="preserve"><value>Minimális ablaktábla szélesség (px):</value></data>
-  <data name="TabGroups_MinHeightLabel" xml:space="preserve"><value>Minimális ablaktábla magasság (px):</value></data>
-  <data name="TabGroups_VisualSection" xml:space="preserve"><value>VIZUÁLIS</value></data>
-  <data name="TabGroups_ShowGroupBadge" xml:space="preserve"><value>„N. csoport" jelvény megjelenítése a lapfülsávon, ha több csoport van nyitva</value></data>
-  <data name="TabGroups_PersistSection" xml:space="preserve"><value>MEGŐRZÉS</value></data>
-  <data name="TabGroups_PersistLayout" xml:space="preserve"><value>Lapfülcsoport elrendezés belefoglalása a munkaterület mentéseibe</value></data>
-  <!-- TEXT EDITOR OPTIONS PAGE -->
-  <data name="TextOpt_FontSection" xml:space="preserve"><value>BETŰTÍPUS</value></data>
-  <data name="TextOpt_FontFamilyLabel" xml:space="preserve"><value>Betűcsalád:</value></data>
-  <data name="TextOpt_FontSizeLabel" xml:space="preserve"><value>Betűméret (pt):</value></data>
-  <data name="TextOpt_IndentSection" xml:space="preserve"><value>BEHÚZÁS</value></data>
-  <data name="TextOpt_IndentSizeLabel" xml:space="preserve"><value>Behúzás mérete:</value></data>
-  <data name="TextOpt_UseSpaces" xml:space="preserve"><value>Szóköz beszúrása tabulátor karakter helyett</value></data>
-  <data name="TextOpt_FeaturesSection" xml:space="preserve"><value>FUNKCIÓK</value></data>
-  <data name="TextOpt_ShowLineNumbers" xml:space="preserve"><value>Sorszámok megjelenítése</value></data>
-  <data name="TextOpt_ShowRefreshRate" xml:space="preserve"><value>Frissítési sebesség megjelenítése az állapotsávban (képkocka renderelési idő)</value></data>
-  <data name="TextOpt_WordWrap" xml:space="preserve"><value>Sortörés (Alt+Z)</value></data>
-  <data name="TextOpt_ClickableLinks" xml:space="preserve"><value>Ctrl+kattintás engedélyezése weblinkek megnyitásához (http/https)</value></data>
-  <data name="TextOpt_ClickableEmails" xml:space="preserve"><value>Ctrl+kattintás engedélyezése e-mail írásához</value></data>
-  <data name="TextOpt_DefaultZoomLabel" xml:space="preserve"><value>Alapértelmezett nagyítás (%):</value></data>
-  <data name="TextOpt_MouseWheelLabel" xml:space="preserve"><value>Egérgörgő sebessége:</value></data>
-  <data name="TextOpt_ChangesetSection" xml:space="preserve"><value>VÁLTOZÁSKÉSZLET (.WHCHG)</value></data>
-  <data name="TextOpt_TrackEdits" xml:space="preserve"><value>Szerkesztések követése .whchg kísérőfájlban (Nyomkövetett mentési módot igényel)</value></data>
-  <data name="TextOpt_SyntaxSection" xml:space="preserve"><value>SZINTAXIS SZÍN FELÜLBÍRÁLATOK</value></data>
-  <data name="TextOpt_SyntaxNote" xml:space="preserve"><value>Szín engedélyezése az aktív téma alapértelmezésének felülbírálásához.</value></data>
-  <data name="TextOpt_Background" xml:space="preserve"><value>Háttér:</value></data>
-  <data name="TextOpt_Foreground" xml:space="preserve"><value>Előtér:</value></data>
-  <data name="TextOpt_Keyword" xml:space="preserve"><value>Kulcsszó:</value></data>
-  <data name="TextOpt_String" xml:space="preserve"><value>Karakterlánc:</value></data>
-  <data name="TextOpt_Comment" xml:space="preserve"><value>Megjegyzés:</value></data>
-  <data name="TextOpt_Number" xml:space="preserve"><value>Szám:</value></data>
-  <data name="TextOpt_Type" xml:space="preserve"><value>Típus:</value></data>
-  <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Előfeldolgozó:</value></data>
-  <data name="TextOpt_Operator" xml:space="preserve"><value>Operátor:</value></data>
-  <data name="TextOpt_Identifier" xml:space="preserve"><value>Azonosító:</value></data>
-
-  <!-- Options categories -->
-  <data name="Opt_Category_Environment"      xml:space="preserve"><value>Környezet</value></data>
-  <data name="Opt_Category_HexEditor"        xml:space="preserve"><value>Hex szerkesztő</value></data>
-  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>Megoldáskezelő</value></data>
-  <data name="Opt_Category_CodeEditor"       xml:space="preserve"><value>Kódszerkesztő</value></data>
-  <data name="Opt_Category_TextEditor"       xml:space="preserve"><value>Szövegszerkesztő</value></data>
-  <data name="Opt_Category_PluginSystem"     xml:space="preserve"><value>Bővítményrendszer</value></data>
-  <data name="Opt_Category_BuildRun"         xml:space="preserve"><value>Fordítás és futtatás</value></data>
-  <data name="Opt_Category_Debugger"         xml:space="preserve"><value>Hibakereső</value></data>
-  <data name="Opt_Category_Extensions"       xml:space="preserve"><value>Bővítmények</value></data>
-  <data name="Opt_Category_FormatEditor"     xml:space="preserve"><value>Formátumszerkesztő (.whfmt)</value></data>
-  <data name="Opt_Category_Tools"            xml:space="preserve"><value>Eszközök</value></data>
-
-  <!-- Options page names -->
-  <data name="Opt_Page_General"              xml:space="preserve"><value>Általános</value></data>
-  <data name="Opt_Page_Save"                 xml:space="preserve"><value>Mentés</value></data>
-  <data name="Opt_Page_Output"               xml:space="preserve"><value>Kimenet</value></data>
-  <data name="Opt_Page_TabGroups"            xml:space="preserve"><value>Lapfülcsoportok</value></data>
-  <data name="Opt_Page_KeyboardShortcuts"    xml:space="preserve"><value>Billentyűparancsok</value></data>
-  <data name="Opt_Page_Documents"            xml:space="preserve"><value>Dokumentumok</value></data>
-  <data name="Opt_Page_Workspace"            xml:space="preserve"><value>Munkaterület</value></data>
-  <data name="Opt_Page_Tabs"                 xml:space="preserve"><value>Lapfülek</value></data>
-  <data name="Opt_Page_Layout"               xml:space="preserve"><value>Elrendezés</value></data>
-  <data name="Opt_Page_Docking"              xml:space="preserve"><value>Rögzítés</value></data>
-  <data name="Opt_Page_ViewMenu"             xml:space="preserve"><value>Nézet menü</value></data>
-  <data name="Opt_Page_Display"              xml:space="preserve"><value>Megjelenítés</value></data>
-  <data name="Opt_Page_Editing"              xml:space="preserve"><value>Szerkesztés</value></data>
-  <data name="Opt_Page_StatusBar"            xml:space="preserve"><value>Állapotsáv</value></data>
-  <data name="Opt_Page_Behavior"             xml:space="preserve"><value>Viselkedés</value></data>
-  <data name="Opt_Page_AppearanceColors"     xml:space="preserve"><value>Megjelenés és színek</value></data>
-  <data name="Opt_Page_InlineHints"          xml:space="preserve"><value>Beágyazott tippek</value></data>
-  <data name="Opt_Page_Navigation"           xml:space="preserve"><value>Navigáció</value></data>
-  <data name="Opt_Page_Formatting"           xml:space="preserve"><value>Formázás</value></data>
-  <data name="Opt_Page_Features"             xml:space="preserve"><value>Funkciók</value></data>
-  <data name="Opt_Page_LanguageServers"      xml:space="preserve"><value>Nyelvi kiszolgálók</value></data>
-  <data name="Opt_Page_Markdown"             xml:space="preserve"><value>Markdown</value></data>
-  <data name="Opt_Page_Development"          xml:space="preserve"><value>Fejlesztés</value></data>
-  <data name="Opt_Page_Migration"            xml:space="preserve"><value>Migráció</value></data>
-  <data name="Opt_Page_EventBus"             xml:space="preserve"><value>Eseménybusz</value></data>
-  <data name="Opt_Page_Compiler"             xml:space="preserve"><value>Fordító</value></data>
-  <data name="Opt_Page_Breakpoints"          xml:space="preserve"><value>Töréspontok</value></data>
-  <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
-  <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Formátumkezelő</value></data>
-  <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Fájlok összehasonlítása</value></data>
-    <data name="Opt_Page_ErrorList"          xml:space="preserve"><value>Hibalista</value></data>
-  <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Parancspaletta</value></data>
-
-  <!-- Plugin System Options Page — folder picker dialog -->
-  <data name="Opt_Plugin_SelectExtDir"       xml:space="preserve"><value>További bővítmények könyvtárának kiválasztása</value></data>
-
-  <!-- Plugin Dev Loader Options Page — folder picker dialog -->
-  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve"><value>Bővítmény kimeneti könyvtárának kiválasztása</value></data>
-
-  <!-- Whfmt Explorer Options Page — view mode combo -->
-  <data name="Opt_ViewMode_Tree"             xml:space="preserve"><value>Faszerkezet</value></data>
-  <data name="Opt_ViewMode_Flat"             xml:space="preserve"><value>Lapos</value></data>
-
-  <!-- Structure Editor Options Page — panel position combo -->
-  <data name="Opt_Position_Right"            xml:space="preserve"><value>Jobb</value></data>
-  <data name="Opt_Position_Left"             xml:space="preserve"><value>Bal</value></data>
-  <data name="Opt_Position_Bottom"           xml:space="preserve"><value>Alap</value></data>
-  <data name="Opt_Position_Top"              xml:space="preserve"><value>Felső</value></data>
-
-  <!-- Structure Editor Options Page — endianness combo -->
-  <data name="Opt_Endian_Little"             xml:space="preserve"><value>kis-endian</value></data>
-  <data name="Opt_Endian_Big"                xml:space="preserve"><value>nagy-endian</value></data>
-
-  <!-- Code Editor Formatting Page — indentation levels combo -->
-  <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 szint (4 szóköz a gyökérnél)</value></data>
-  <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 szint (8 szóköz a gyökérnél) — VS alapértelmezés</value></data>
-<data name="Opt_Fmt_Language"              xml:space="preserve"><value>Nyelv</value></data>
-  <data name="Opt_Fmt_ResetOverrides"        xml:space="preserve"><value>Felülírások visszaállítása</value></data>
-  <data name="Opt_Fmt_ResetAllOverrides"     xml:space="preserve"><value>Összes felülírás visszaállítása</value></data>
-  <data name="Opt_Fmt_Subtitle"              xml:space="preserve"><value>Ezek a beállítások felülírják a nyelv .whfmt alapértékeit.
-Hagyja a jelölőnégyzeteket meghatározatlan állapotban (—) a nyelvi szabályok örökléséhez.</value></data>
-  <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 szint (12 szóköz a gyökérnél)</value></data>
-
-  <!-- Markdown Editor Options Page — layout combo -->
-  <data name="Opt_MdLayout_PreviewRight"     xml:space="preserve"><value>Előnézet jobbra</value></data>
-  <data name="Opt_MdLayout_PreviewBottom"    xml:space="preserve"><value>Előnézet alul</value></data>
-  <data name="Opt_MdLayout_EditorOnly"       xml:space="preserve"><value>Csak szerkesztő</value></data>
-  <data name="Opt_MdLayout_PreviewOnly"      xml:space="preserve"><value>Csak előnézet</value></data>
-  <data name="Opt_Preview_Label"             xml:space="preserve"><value>Előnézet</value></data>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EnvGeneral_AppearanceSection" xml:space="preserve">
+    <value>MEGJELENÉS</value>
+  </data>
+  <data name="EnvGeneral_ColorThemeLabel" xml:space="preserve">
+    <value>Színtéma:</value>
+  </data>
+  <data name="EnvGeneral_ThemePreviewNote" xml:space="preserve">
+    <value>Az előnézet azonnal alkalmazódik.</value>
+  </data>
+  <data name="EnvGeneral_LanguageSection" xml:space="preserve">
+    <value>NYELV</value>
+  </data>
+  <data name="EnvGeneral_IdeLanguageLabel" xml:space="preserve">
+    <value>IDE nyelve:</value>
+  </data>
+  <data name="EnvGeneral_LanguageRestartNote" xml:space="preserve">
+    <value>Az új nyelv teljes alkalmazásához újraindítás szükséges.</value>
+  </data>
+  <data name="Mkt_GitHubSection" xml:space="preserve">
+    <value>GITHUB API</value>
+  </data>
+  <data name="Mkt_PatDescription" xml:space="preserve">
+    <value>Personal Access Token (PAT) — raises the GitHub rate limit from 60 to 5 000 requests/hour. Leave empty for anonymous access.</value>
+  </data>
+  <data name="Mkt_PatWarning" xml:space="preserve">
+    <value>Token is stored in plaintext in the settings file. Do not use a token with write permissions.</value>
+  </data>
+  <data name="Mkt_AutoUpdateSection" xml:space="preserve">
+    <value>AUTOMATIC UPDATES</value>
+  </data>
+  <data name="Mkt_AutoUpdate" xml:space="preserve">
+    <value>Check for plugin updates automatically at startup</value>
+  </data>
+  <data name="Mkt_UpdateIntervalLabel" xml:space="preserve">
+    <value>Update check interval (hours):</value>
+  </data>
+  <data name="Mkt_UpdateIntervalNote" xml:space="preserve">
+    <value>Minimum interval: 1 hour.</value>
+  </data>
+  <data name="Output_Section" xml:space="preserve">
+    <value>LOG-LEVEL COLOURS</value>
+  </data>
+  <data name="Output_Note" xml:space="preserve">
+    <value>Customise the colour used for each log level in the Output panel. INFO inherits the active theme foreground and cannot be changed.</value>
+  </data>
+  <data name="Output_WarnLabel" xml:space="preserve">
+    <value>Warning (WARN):</value>
+  </data>
+  <data name="Output_ErrorLabel" xml:space="preserve">
+    <value>Error (ERROR):</value>
+  </data>
+  <data name="Output_DebugLabel" xml:space="preserve">
+    <value>Debug (DEBUG):</value>
+  </data>
+  <data name="Output_SuccessLabel" xml:space="preserve">
+    <value>Success (OK):</value>
+  </data>
+  <data name="Output_ResetColors" xml:space="preserve">
+    <value>Reset to Default Colours</value>
+  </data>
+  <data name="PluginDev_Section" xml:space="preserve">
+    <value>PLUGIN DEV LOADER</value>
+  </data>
+  <data name="PluginDev_Enable" xml:space="preserve">
+    <value>Enable Plugin Dev Loader (Watch Mode available in Plugin Manager)</value>
+  </data>
+  <data name="PluginDev_DebounceSection" xml:space="preserve">
+    <value>DEBOUNCE</value>
+  </data>
+  <data name="PluginDev_DebounceNote" xml:space="preserve">
+    <value>Delay before triggering hot-reload after a file change (ms):</value>
+  </data>
+  <data name="PluginDev_DebounceDefault" xml:space="preserve">
+    <value>ms  (default: 500)</value>
+  </data>
+  <data name="PluginDev_WatchedSection" xml:space="preserve">
+    <value>WATCHED FOLDERS</value>
+  </data>
+  <data name="PluginDev_WatchedNote" xml:space="preserve">
+    <value>Additional output directories to watch (semicolon-separated). Plugins in these folders are hot-reloaded when their DLL changes.</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Tallózás…</value>
+  </data>
+  <data name="PluginDev_Example" xml:space="preserve">
+    <value>Example: C:\MyPlugin\bin\Debug\net8.0-windows;D:\AnotherPlugin\bin\Debug\net8.0-windows</value>
+  </data>
+  <data name="Plugin_GeneralSection" xml:space="preserve">
+    <value>ÁLTALÁNOS</value>
+  </data>
+  <data name="Plugin_AutoLoad" xml:space="preserve">
+    <value>Összes talált bővítmény automatikus betöltése induláskor</value>
+  </data>
+  <data name="Plugin_PluginsDirNote" xml:space="preserve">
+    <value>További bővítmények könyvtára (hagyja üresen az %AppData%\WpfHexEditor\Plugins használatához):</value>
+  </data>
+  <data name="Plugin_Browse" xml:space="preserve">
+    <value>Tallózás…</value>
+  </data>
+  <data name="Plugin_WatchdogSection" xml:space="preserve">
+    <value>WATCHDOG</value>
+  </data>
+  <data name="Plugin_EnableWatchdog" xml:space="preserve">
+    <value>Bővítmény-watchdog engedélyezése (híváskésedelmek figyelése)</value>
+  </data>
+  <data name="Plugin_WatchdogTimeoutLabel" xml:space="preserve">
+    <value>Watchdog időtúllépés (másodperc):</value>
+  </data>
+  <data name="Plugin_DiagnosticsSection" xml:space="preserve">
+    <value>DIAGNOSZTIKA &amp; MINTAVÉTELEZÉS</value>
+  </data>
+  <data name="Plugin_DiagSamplingLabel" xml:space="preserve">
+    <value>Diagnosztikai mintavételezési intervallum (másodperc):</value>
+  </data>
+  <data name="Plugin_DiagNote" xml:space="preserve">
+    <value>A Bővítményfigyelő CPU/memória diagram frissítési sebességét vezérli.</value>
+  </data>
+  <data name="Plugin_SlowDetectionSection" xml:space="preserve">
+    <value>LASSÚ BŐVÍTMÉNY FELISMERÉSE</value>
+  </data>
+  <data name="Plugin_MonitorIntervalLabel" xml:space="preserve">
+    <value>Figyelési intervallum (másodperc):</value>
+  </data>
+  <data name="Plugin_ResponseTimeLabel" xml:space="preserve">
+    <value>Válaszidő küszöb (ms):</value>
+  </data>
+  <data name="Plugin_CpuThresholdLabel" xml:space="preserve">
+    <value>CPU küszöb (%):</value>
+  </data>
+  <data name="Plugin_MemoryAlertSection" xml:space="preserve">
+    <value>MEMÓRIARIASZTÁSI KÜSZÖBÖK</value>
+  </data>
+  <data name="Plugin_EnableMemoryAlerts" xml:space="preserve">
+    <value>Memóriahasználati riasztások és jelzők engedélyezése</value>
+  </data>
+  <data name="Plugin_ShowColorGradation" xml:space="preserve">
+    <value>Színátmenet megjelenítése a monitorokban (zöld/sárga/narancssárga/piros)</value>
+  </data>
+  <data name="Plugin_MemWarningLabel" xml:space="preserve">
+    <value>⚠️ Figyelmeztetési küszöb (sárga):</value>
+  </data>
+  <data name="Plugin_MemHighLabel" xml:space="preserve">
+    <value>🟠 Magas küszöb (narancssárga):</value>
+  </data>
+  <data name="Plugin_MemCriticalLabel" xml:space="preserve">
+    <value>🔴 Kritikus küszöb (piros):</value>
+  </data>
+  <data name="Plugin_MB" xml:space="preserve">
+    <value> MB</value>
+  </data>
+  <data name="Plugin_MemThresholdNote" xml:space="preserve">
+    <value>Megjegyzés: A küszöböknek növekvő sorrendben kell lenniük (Figyelmeztetés &lt; Magas &lt; Kritikus).</value>
+  </data>
+  <data name="Plugin_MemColorSection" xml:space="preserve">
+    <value>MEMÓRIARIASZTÁS SZÍNEI</value>
+  </data>
+  <data name="Plugin_MemColorNote" xml:space="preserve">
+    <value>Testreszabja a jelzők színeit minden memória-küszöb szinthez.</value>
+  </data>
+  <data name="Plugin_MemNormalColor" xml:space="preserve">
+    <value>🟢 Normál küszöb:</value>
+  </data>
+  <data name="Plugin_MemWarningColor" xml:space="preserve">
+    <value>🟡 Figyelmeztetési küszöb:</value>
+  </data>
+  <data name="Plugin_MemHighColor" xml:space="preserve">
+    <value>🟠 Magas küszöb:</value>
+  </data>
+  <data name="Plugin_MemCriticalColor" xml:space="preserve">
+    <value>🔴 Kritikus küszöb:</value>
+  </data>
+  <data name="Plugin_ResetColors" xml:space="preserve">
+    <value>Alapértelmezett színek visszaállítása</value>
+  </data>
+  <data name="SolExp_NavigationSection" xml:space="preserve">
+    <value>NAVIGÁCIÓ</value>
+  </data>
+  <data name="SolExp_TrackActive" xml:space="preserve">
+    <value>Aktív dokumentum automatikus kiemelése a fában</value>
+  </data>
+  <data name="SolExp_PersistCollapse" xml:space="preserve">
+    <value>Kibontott/összecsukott állapot megjegyzése munkamenetek között</value>
+  </data>
+  <data name="SolExp_NotificationsSection" xml:space="preserve">
+    <value>ÉRTESÍTÉSEK</value>
+  </data>
+  <data name="SolExp_ShowNotifications" xml:space="preserve">
+    <value>Kontextuális értesítések megjelenítése (külső módosítások, beillesztési ütközések…)</value>
+  </data>
+  <data name="SolExp_DefaultsSection" xml:space="preserve">
+    <value>ALAPÉRTELMEZÉSEK MEGOLDÁS MEGNYITÁSAKOR</value>
+  </data>
+  <data name="SolExp_DefaultSortLabel" xml:space="preserve">
+    <value>Alapértelmezett rendezés:</value>
+  </data>
+  <data name="SolExp_SortNone" xml:space="preserve">
+    <value>Nincs</value>
+  </data>
+  <data name="SolExp_SortName" xml:space="preserve">
+    <value>Név</value>
+  </data>
+  <data name="SolExp_SortType" xml:space="preserve">
+    <value>Típus</value>
+  </data>
+  <data name="SolExp_SortDateModified" xml:space="preserve">
+    <value>Módosítás dátuma</value>
+  </data>
+  <data name="SolExp_SortSize" xml:space="preserve">
+    <value>Méret</value>
+  </data>
+  <data name="SolExp_DefaultFilterLabel" xml:space="preserve">
+    <value>Alapértelmezett szűrő:</value>
+  </data>
+  <data name="SolExp_FilterAll" xml:space="preserve">
+    <value>Összes</value>
+  </data>
+  <data name="SolExp_FilterBinary" xml:space="preserve">
+    <value>Bináris</value>
+  </data>
+  <data name="SolExp_FilterText" xml:space="preserve">
+    <value>Szöveg</value>
+  </data>
+  <data name="SolExp_FilterImage" xml:space="preserve">
+    <value>Kép</value>
+  </data>
+  <data name="SolExp_FilterLanguage" xml:space="preserve">
+    <value>Nyelv</value>
+  </data>
+  <data name="TabGroups_SplitSection" xml:space="preserve">
+    <value>FELOSZTÁSI VISELKEDÉS</value>
+  </data>
+  <data name="TabGroups_EnforceEqualSize" xml:space="preserve">
+    <value>Egyenlő ablaktábla méret kényszerítése felosztáskor (50/50)</value>
+  </data>
+  <data name="TabGroups_MinWidthLabel" xml:space="preserve">
+    <value>Minimális ablaktábla szélesség (px):</value>
+  </data>
+  <data name="TabGroups_MinHeightLabel" xml:space="preserve">
+    <value>Minimális ablaktábla magasság (px):</value>
+  </data>
+  <data name="TabGroups_VisualSection" xml:space="preserve">
+    <value>VIZUÁLIS</value>
+  </data>
+  <data name="TabGroups_ShowGroupBadge" xml:space="preserve">
+    <value>„N. csoport" jelvény megjelenítése a lapfülsávon, ha több csoport van nyitva</value>
+  </data>
+  <data name="TabGroups_PersistSection" xml:space="preserve">
+    <value>MEGŐRZÉS</value>
+  </data>
+  <data name="TabGroups_PersistLayout" xml:space="preserve">
+    <value>Lapfülcsoport elrendezés belefoglalása a munkaterület mentéseibe</value>
+  </data>
+  <data name="TextOpt_FontSection" xml:space="preserve">
+    <value>BETŰTÍPUS</value>
+  </data>
+  <data name="TextOpt_FontFamilyLabel" xml:space="preserve">
+    <value>Betűcsalád:</value>
+  </data>
+  <data name="TextOpt_FontSizeLabel" xml:space="preserve">
+    <value>Betűméret (pt):</value>
+  </data>
+  <data name="TextOpt_IndentSection" xml:space="preserve">
+    <value>BEHÚZÁS</value>
+  </data>
+  <data name="TextOpt_IndentSizeLabel" xml:space="preserve">
+    <value>Behúzás mérete:</value>
+  </data>
+  <data name="TextOpt_UseSpaces" xml:space="preserve">
+    <value>Szóköz beszúrása tabulátor karakter helyett</value>
+  </data>
+  <data name="TextOpt_FeaturesSection" xml:space="preserve">
+    <value>FUNKCIÓK</value>
+  </data>
+  <data name="TextOpt_ShowLineNumbers" xml:space="preserve">
+    <value>Sorszámok megjelenítése</value>
+  </data>
+  <data name="TextOpt_ShowRefreshRate" xml:space="preserve">
+    <value>Frissítési sebesség megjelenítése az állapotsávban (képkocka renderelési idő)</value>
+  </data>
+  <data name="TextOpt_WordWrap" xml:space="preserve">
+    <value>Sortörés (Alt+Z)</value>
+  </data>
+  <data name="TextOpt_ClickableLinks" xml:space="preserve">
+    <value>Ctrl+kattintás engedélyezése weblinkek megnyitásához (http/https)</value>
+  </data>
+  <data name="TextOpt_ClickableEmails" xml:space="preserve">
+    <value>Ctrl+kattintás engedélyezése e-mail írásához</value>
+  </data>
+  <data name="TextOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>Alapértelmezett nagyítás (%):</value>
+  </data>
+  <data name="TextOpt_MouseWheelLabel" xml:space="preserve">
+    <value>Egérgörgő sebessége:</value>
+  </data>
+  <data name="TextOpt_ChangesetSection" xml:space="preserve">
+    <value>VÁLTOZÁSKÉSZLET (.WHCHG)</value>
+  </data>
+  <data name="TextOpt_TrackEdits" xml:space="preserve">
+    <value>Szerkesztések követése .whchg kísérőfájlban (Nyomkövetett mentési módot igényel)</value>
+  </data>
+  <data name="TextOpt_SyntaxSection" xml:space="preserve">
+    <value>SZINTAXIS SZÍN FELÜLBÍRÁLATOK</value>
+  </data>
+  <data name="TextOpt_SyntaxNote" xml:space="preserve">
+    <value>Szín engedélyezése az aktív téma alapértelmezésének felülbírálásához.</value>
+  </data>
+  <data name="TextOpt_Background" xml:space="preserve">
+    <value>Háttér:</value>
+  </data>
+  <data name="TextOpt_Foreground" xml:space="preserve">
+    <value>Előtér:</value>
+  </data>
+  <data name="TextOpt_Keyword" xml:space="preserve">
+    <value>Kulcsszó:</value>
+  </data>
+  <data name="TextOpt_String" xml:space="preserve">
+    <value>Karakterlánc:</value>
+  </data>
+  <data name="TextOpt_Comment" xml:space="preserve">
+    <value>Megjegyzés:</value>
+  </data>
+  <data name="TextOpt_Number" xml:space="preserve">
+    <value>Szám:</value>
+  </data>
+  <data name="TextOpt_Type" xml:space="preserve">
+    <value>Típus:</value>
+  </data>
+  <data name="TextOpt_Preprocessor" xml:space="preserve">
+    <value>Előfeldolgozó:</value>
+  </data>
+  <data name="TextOpt_Operator" xml:space="preserve">
+    <value>Operátor:</value>
+  </data>
+  <data name="TextOpt_Identifier" xml:space="preserve">
+    <value>Azonosító:</value>
+  </data>
+  <data name="Opt_Category_Environment" xml:space="preserve">
+    <value>Környezet</value>
+  </data>
+  <data name="Opt_Category_HexEditor" xml:space="preserve">
+    <value>Hex szerkesztő</value>
+  </data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve">
+    <value>Megoldáskezelő</value>
+  </data>
+  <data name="Opt_Category_CodeEditor" xml:space="preserve">
+    <value>Kódszerkesztő</value>
+  </data>
+  <data name="Opt_Category_TextEditor" xml:space="preserve">
+    <value>Szövegszerkesztő</value>
+  </data>
+  <data name="Opt_Category_PluginSystem" xml:space="preserve">
+    <value>Bővítményrendszer</value>
+  </data>
+  <data name="Opt_Category_BuildRun" xml:space="preserve">
+    <value>Fordítás és futtatás</value>
+  </data>
+  <data name="Opt_Category_Debugger" xml:space="preserve">
+    <value>Hibakereső</value>
+  </data>
+  <data name="Opt_Category_Extensions" xml:space="preserve">
+    <value>Bővítmények</value>
+  </data>
+  <data name="Opt_Category_FormatEditor" xml:space="preserve">
+    <value>Formátumszerkesztő (.whfmt)</value>
+  </data>
+  <data name="Opt_Category_Tools" xml:space="preserve">
+    <value>Eszközök</value>
+  </data>
+  <data name="Opt_Page_General" xml:space="preserve">
+    <value>Általános</value>
+  </data>
+  <data name="Opt_Page_Save" xml:space="preserve">
+    <value>Mentés</value>
+  </data>
+  <data name="Opt_Page_Output" xml:space="preserve">
+    <value>Kimenet</value>
+  </data>
+  <data name="Opt_Page_TabGroups" xml:space="preserve">
+    <value>Lapfülcsoportok</value>
+  </data>
+  <data name="Opt_Page_KeyboardShortcuts" xml:space="preserve">
+    <value>Billentyűparancsok</value>
+  </data>
+  <data name="Opt_Page_Documents" xml:space="preserve">
+    <value>Dokumentumok</value>
+  </data>
+  <data name="Opt_Page_Workspace" xml:space="preserve">
+    <value>Munkaterület</value>
+  </data>
+  <data name="Opt_Page_Tabs" xml:space="preserve">
+    <value>Lapfülek</value>
+  </data>
+  <data name="Opt_Page_Layout" xml:space="preserve">
+    <value>Elrendezés</value>
+  </data>
+  <data name="Opt_Page_Docking" xml:space="preserve">
+    <value>Rögzítés</value>
+  </data>
+  <data name="Opt_Page_ViewMenu" xml:space="preserve">
+    <value>Nézet menü</value>
+  </data>
+  <data name="Opt_Page_Display" xml:space="preserve">
+    <value>Megjelenítés</value>
+  </data>
+  <data name="Opt_Page_Editing" xml:space="preserve">
+    <value>Szerkesztés</value>
+  </data>
+  <data name="Opt_Page_StatusBar" xml:space="preserve">
+    <value>Állapotsáv</value>
+  </data>
+  <data name="Opt_Page_Behavior" xml:space="preserve">
+    <value>Viselkedés</value>
+  </data>
+  <data name="Opt_Page_AppearanceColors" xml:space="preserve">
+    <value>Megjelenés és színek</value>
+  </data>
+  <data name="Opt_Page_InlineHints" xml:space="preserve">
+    <value>Beágyazott tippek</value>
+  </data>
+  <data name="Opt_Page_Navigation" xml:space="preserve">
+    <value>Navigáció</value>
+  </data>
+  <data name="Opt_Page_Formatting" xml:space="preserve">
+    <value>Formázás</value>
+  </data>
+  <data name="Opt_Page_Features" xml:space="preserve">
+    <value>Funkciók</value>
+  </data>
+  <data name="Opt_Page_LanguageServers" xml:space="preserve">
+    <value>Nyelvi kiszolgálók</value>
+  </data>
+  <data name="Opt_Page_Markdown" xml:space="preserve">
+    <value>Markdown</value>
+  </data>
+  <data name="Opt_Page_Development" xml:space="preserve">
+    <value>Fejlesztés</value>
+  </data>
+  <data name="Opt_Page_Migration" xml:space="preserve">
+    <value>Migráció</value>
+  </data>
+  <data name="Opt_Page_EventBus" xml:space="preserve">
+    <value>Eseménybusz</value>
+  </data>
+  <data name="Opt_Page_Compiler" xml:space="preserve">
+    <value>Fordító</value>
+  </data>
+  <data name="Opt_Page_Breakpoints" xml:space="preserve">
+    <value>Töréspontok</value>
+  </data>
+  <data name="Opt_Page_Marketplace" xml:space="preserve">
+    <value>Marketplace</value>
+  </data>
+  <data name="Opt_Page_FormatExplorer" xml:space="preserve">
+    <value>Formátumkezelő</value>
+  </data>
+  <data name="Opt_Page_CompareFiles" xml:space="preserve">
+    <value>Fájlok összehasonlítása</value>
+  </data>
+  <data name="Opt_Page_ErrorList" xml:space="preserve">
+    <value>Hibalista</value>
+  </data>
+  <data name="Opt_Page_CommandPalette" xml:space="preserve">
+    <value>Parancspaletta</value>
+  </data>
+  <data name="Opt_Plugin_SelectExtDir" xml:space="preserve">
+    <value>További bővítmények könyvtárának kiválasztása</value>
+  </data>
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Bővítmény kimeneti könyvtárának kiválasztása</value>
+  </data>
+  <data name="Opt_ViewMode_Tree" xml:space="preserve">
+    <value>Faszerkezet</value>
+  </data>
+  <data name="Opt_ViewMode_Flat" xml:space="preserve">
+    <value>Lapos</value>
+  </data>
+  <data name="Opt_Position_Right" xml:space="preserve">
+    <value>Jobb</value>
+  </data>
+  <data name="Opt_Position_Left" xml:space="preserve">
+    <value>Bal</value>
+  </data>
+  <data name="Opt_Position_Bottom" xml:space="preserve">
+    <value>Alap</value>
+  </data>
+  <data name="Opt_Position_Top" xml:space="preserve">
+    <value>Felső</value>
+  </data>
+  <data name="Opt_Endian_Little" xml:space="preserve">
+    <value>kis-endian</value>
+  </data>
+  <data name="Opt_Endian_Big" xml:space="preserve">
+    <value>nagy-endian</value>
+  </data>
+  <data name="Opt_IndentLevel_1" xml:space="preserve">
+    <value>1 szint (4 szóköz a gyökérnél)</value>
+  </data>
+  <data name="Opt_IndentLevel_2" xml:space="preserve">
+    <value>2 szint (8 szóköz a gyökérnél) — VS alapértelmezés</value>
+  </data>
+  <data name="Opt_Fmt_Language" xml:space="preserve">
+    <value>Nyelv</value>
+  </data>
+  <data name="Opt_Fmt_ResetOverrides" xml:space="preserve">
+    <value>Felülírások visszaállítása</value>
+  </data>
+  <data name="Opt_Fmt_ResetAllOverrides" xml:space="preserve">
+    <value>Összes felülírás visszaállítása</value>
+  </data>
+  <data name="Opt_Fmt_Subtitle" xml:space="preserve">
+    <value>Ezek a beállítások felülírják a nyelv .whfmt alapértékeit.
+Hagyja a jelölőnégyzeteket meghatározatlan állapotban (—) a nyelvi szabályok örökléséhez.</value>
+  </data>
+  <data name="Opt_IndentLevel_3" xml:space="preserve">
+    <value>3 szint (12 szóköz a gyökérnél)</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewRight" xml:space="preserve">
+    <value>Előnézet jobbra</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewBottom" xml:space="preserve">
+    <value>Előnézet alul</value>
+  </data>
+  <data name="Opt_MdLayout_EditorOnly" xml:space="preserve">
+    <value>Csak szerkesztő</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewOnly" xml:space="preserve">
+    <value>Csak előnézet</value>
+  </data>
+  <data name="Opt_Preview_Label" xml:space="preserve">
+    <value>Előnézet</value>
+  </data>
   <data name="BuildCompiler_CSharpSection" xml:space="preserve">
     <value>C# / .NET ALAPÉRTELMEZÉSEK</value>
   </data>
@@ -639,5 +976,19 @@ Hagyja a jelölőnégyzeteket meghatározatlan állapotban (—) a nyelvi szabá
   <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
     <value>Frissítési ráta megjelenítése</value>
   </data>
-  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve"><value>Osztott nézet váltógomb megjelenítése</value></data>
+  <data name="HexDisplay_ShowSplitToggleButton" xml:space="preserve">
+    <value>Osztott nézet váltógomb megjelenítése</value>
+  </data>
+  <data name="HexDisplay_EntropySection" xml:space="preserve">
+    <value>ENTROPY HEATMAP</value>
+  </data>
+  <data name="HexDisplay_ShowEntropyHeatmap" xml:space="preserve">
+    <value>Show entropy heatmap overlay</value>
+  </data>
+  <data name="HexDisplay_EntropyWindowSize" xml:space="preserve">
+    <value>Window size</value>
+  </data>
+  <data name="HexDisplay_EntropyColorTheme" xml:space="preserve">
+    <value>Color theme</value>
+  </data>
 </root>

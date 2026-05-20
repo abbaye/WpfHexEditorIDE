@@ -2,6 +2,7 @@
 // Contributors: Claude Sonnet 4.6
 
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Core;
@@ -17,6 +18,18 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
 
     // -- IOptionsPage ------------------------------------------------------
 
+    // Entropy window-size options: value = bytes, display = label
+    private static readonly (int Value, string Label)[] EntropyWindowSizeOptions =
+    [
+        (128, "Small (128 bytes)"),
+        (256, "Medium (256 bytes)"),
+        (512, "Large (512 bytes)"),
+    ];
+
+    // Entropy color-theme options: index matches EntropyColorTheme enum
+    private static readonly string[] EntropyThemeOptions =
+        ["Blue → Red", "Greyscale", "Traffic Light"];
+
     public void Load(AppSettings s)
     {
         _loading = true;
@@ -29,6 +42,10 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
             SpacerPositionCombo.ItemsSource      = Enum.GetValues<ByteSpacerPosition>();
             MouseWheelSpeedCombo.ItemsSource     = Enum.GetValues<MouseWheelSpeed>();
             ByteToolTipModeCombo.ItemsSource     = Enum.GetValues<ByteToolTipDisplayMode>();
+
+            // Entropy combos
+            EntropyWindowSizeCombo.ItemsSource  = EntropyWindowSizeOptions.Select(x => x.Label).ToArray();
+            EntropyColorThemeCombo.ItemsSource  = EntropyThemeOptions;
 
             // Select current values
             SelectByPerLine(s.HexEditorDefaults.BytePerLine);
@@ -55,6 +72,12 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
 
             // Split view toggle
             CheckShowSplitToggleButton.IsChecked    = s.HexEditorDefaults.ShowSplitToggleButton;
+
+            // Entropy heatmap
+            CheckShowEntropyHeatmap.IsChecked = s.HexEditorDefaults.ShowEntropyHeatmap;
+            var wsIdx = Array.FindIndex(EntropyWindowSizeOptions, x => x.Value == s.HexEditorDefaults.EntropyWindowSize);
+            EntropyWindowSizeCombo.SelectedIndex = wsIdx >= 0 ? wsIdx : 1;
+            EntropyColorThemeCombo.SelectedIndex = Math.Clamp(s.HexEditorDefaults.EntropyColorTheme, 0, 2);
         }
         finally { _loading = false; }
     }
@@ -91,7 +114,14 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
         s.HexEditorDefaults.ShowAsciiColumnHighlight = CheckShowAsciiColumnHighlight.IsChecked == true;
         s.HexEditorDefaults.ShowRowHighlight         = CheckShowRowHighlight.IsChecked         == true;
 
-        s.HexEditorDefaults.ShowSplitToggleButton    = CheckShowSplitToggleButton.IsChecked    == true;
+        s.HexEditorDefaults.ShowSplitToggleButton = CheckShowSplitToggleButton.IsChecked == true;
+
+        // Entropy heatmap
+        s.HexEditorDefaults.ShowEntropyHeatmap = CheckShowEntropyHeatmap.IsChecked == true;
+        var wsIdx = EntropyWindowSizeCombo.SelectedIndex;
+        if (wsIdx >= 0 && wsIdx < EntropyWindowSizeOptions.Length)
+            s.HexEditorDefaults.EntropyWindowSize = EntropyWindowSizeOptions[wsIdx].Value;
+        s.HexEditorDefaults.EntropyColorTheme = Math.Clamp(EntropyColorThemeCombo.SelectedIndex, 0, 2);
     }
 
     // -- Control handlers -------------------------------------------------

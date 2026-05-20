@@ -1,51 +1,51 @@
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -58,7 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-
   <data name="AppendByteConfirmationString" xml:space="preserve">
     <value>Φτάσατε στο τέλος του αρχείου. Θέλετε να προσθέσετε ένα byte; Αυτή η λειτουργία δεν μπορεί να αναιρεθεί αν συνεχίσετε.</value>
   </data>
@@ -698,8 +697,6 @@
   <data name="InvertSelectionTooltipString" xml:space="preserve">
     <value>Αναστροφή όλων των bits κάθε byte (XOR με 0xFF)</value>
   </data>
-
-  <!-- TBL Editor Localizations -->
   <data name="TblEditor_Title" xml:space="preserve">
     <value>Επεξεργαστής πίνακα χαρακτήρων TBL</value>
     <comment>TBL Editor - Title</comment>
@@ -832,57 +829,64 @@
     <value>● Τροποποιημένο</value>
     <comment>TBL Editor - Modified</comment>
   </data>
-
-<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+  <data name="HexSettings_Display_LineNumbers" xml:space="preserve">
     <value>Εμφάνιση αριθμών γραμμών (προσωρινό)</value>
   </data>
-<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+  <data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
     <value>Αυτή η λειτουργία δεν είναι ακόμα διαθέσιμη στο V2</value>
   </data>
-<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+  <data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
     <value>Εμφάνιση επεξήγησης byte</value>
   </data>
-<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+  <data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
     <value>Επιτρεπόμενη εισαγωγή οπουδήποτε</value>
   </data>
-<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+  <data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
     <value>Επιτρεπόμενη διαγραφή byte</value>
   </data>
-<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+  <data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
     <value>Επιτρεπόμενη επέκταση αρχείου</value>
   </data>
-<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+  <data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
     <value>Η προσθήκη απαιτεί επιβεβαίωση</value>
   </data>
-<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+  <data name="HexSettings_Editing_Overwrite" xml:space="preserve">
     <value>Αντικατάσταση</value>
   </data>
-<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
     <value>Επιτρεπόμενη απόθεση αρχείου</value>
   </data>
-<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+  <data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
     <value>Επιβεβαίωση απόθεσης αρχείου</value>
   </data>
-<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+  <data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
     <value>Επιτρεπόμενη απόθεση κειμένου</value>
   </data>
-<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+  <data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
     <value>Αυτόματη επιλογή ίδιου byte (διπλό κλικ)</value>
   </data>
-<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+  <data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
     <value>Επιτρεπόμενη πλοήγηση με κλικ σε δείκτη</value>
   </data>
-<data name="HexSettings_Highlight_Color" xml:space="preserve">
+  <data name="HexSettings_Highlight_Color" xml:space="preserve">
     <value>Χρώμα αυτόματης επισήμανσης :</value>
   </data>
-<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+  <data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
     <value>Ενεργοποίηση παράλληλης αναζήτησης</value>
   </data>
-<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+  <data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
     <value>Χρήση αναζήτησης με μπαλαντέρ (??)</value>
   </data>
-  <!-- HexEditor split view -->
-  <data name="HexEditor_SplitView_Toggle"  xml:space="preserve"><value>Διαίρεση</value></data>
-  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve"><value>Άνοιγμα ή κλείσιμο ενός συγχρονισμένου δεύτερου παραθύρου hex</value></data>
-  <data name="HexEditor_SplitView_Close"   xml:space="preserve"><value>Κλείσιμο διαίρεσης</value></data>
+  <data name="HexEditor_SplitView_Toggle" xml:space="preserve">
+    <value>Διαίρεση</value>
+  </data>
+  <data name="HexEditor_SplitView_Tooltip" xml:space="preserve">
+    <value>Άνοιγμα ή κλείσιμο ενός συγχρονισμένου δεύτερου παραθύρου hex</value>
+  </data>
+  <data name="HexEditor_SplitView_Close" xml:space="preserve">
+    <value>Κλείσιμο διαίρεσης</value>
+  </data>
+  <data name="HE_ToggleEntropyHeatmap" xml:space="preserve">
+    <value>Entropy Heatmap</value>
+  </data>
 </root>

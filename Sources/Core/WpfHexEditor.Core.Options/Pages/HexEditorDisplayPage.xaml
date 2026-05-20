@@ -223,6 +223,51 @@
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
+        <Separator Margin="0,16,0,16"
+                   Background="{DynamicResource DockBorderBrush}"/>
+
+        <TextBlock Text="{StaticResource HexDisplay_EntropySection}"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,0,0,6"/>
+
+        <CheckBox x:Name="CheckShowEntropyHeatmap"
+                  Content="{StaticResource HexDisplay_ShowEntropyHeatmap}"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <!-- Window size -->
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                       Text="{StaticResource HexDisplay_EntropyWindowSize}"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       VerticalAlignment="Center"/>
+            <ComboBox x:Name="EntropyWindowSizeCombo"
+                      Grid.Column="1"
+                      SelectionChanged="OnComboChanged"/>
+        </Grid>
+
+        <!-- Color theme -->
+        <Grid Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                       Text="{StaticResource HexDisplay_EntropyColorTheme}"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       VerticalAlignment="Center"/>
+            <ComboBox x:Name="EntropyColorThemeCombo"
+                      Grid.Column="1"
+                      SelectionChanged="OnComboChanged"/>
+        </Grid>
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>

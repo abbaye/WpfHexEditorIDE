@@ -729,6 +729,19 @@ namespace WpfHexEditor.HexEditor
         public event EventHandler<CompareFileRequestedEventArgs>? CompareSelectionRequested;
 
         /// <summary>
+        /// Raised when the user toggles the entropy heatmap via the context menu.
+        /// <c>EventArgs.Empty</c> — the host decides whether to enable or disable
+        /// based on its own tracking of the current state.
+        /// </summary>
+        public event EventHandler? EntropyHeatmapToggleRequested;
+
+        /// <summary>
+        /// Reflects the current entropy heatmap enabled state so the context menu
+        /// checkmark stays in sync. Set by the application host.
+        /// </summary>
+        public bool IsEntropyHeatmapEnabled { get; set; }
+
+        /// <summary>
         /// Raised when character table type changes
         /// </summary>
         public event EventHandler TypeOfCharacterTableChanged;
