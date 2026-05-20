@@ -645,8 +645,12 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     private readonly HashSet<string>   _slowPluginIds = new();
     private readonly ICollectionView   _filteredRows  = null!;
     private volatile bool              _groupingNeedsRefresh;
-    private DateTime                   _lastRefreshTime;
-    private long                       _lastSampledMemoryMb;
+    // Ticks of last Refresh() — written on Dispatcher, read from MetricsSampled background thread.
+    // Stored as long so Interlocked.Read/Exchange can guarantee atomicity across threads.
+    private long _lastRefreshTimeTicks;
+    // WorkingSet64 / (1024*1024) cached from the last MetricsSampled event.
+    // Written from MetricsSampled (background), read on Dispatcher in Refresh().
+    private long _lastSampledMemoryMb;
 
     // Filter chip state
     private bool _filterStateLoaded   = false;
@@ -738,13 +742,7 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
         _alertEngine.AlertTriggered += OnAlertTriggered;
 
         // Keep _rowsById in sync for O(1) lookups in Refresh()
-        Rows.CollectionChanged += (_, e) =>
-        {
-            if (e.NewItems is not null)
-                foreach (PluginMonitorRow r in e.NewItems) _rowsById[r.Id] = r;
-            if (e.OldItems is not null)
-                foreach (PluginMonitorRow r in e.OldItems) _rowsById.Remove(r.Id);
-        };
+        Rows.CollectionChanged += OnRowsCollectionChanged;
 
         // -- Filtered view --
         _filteredRows = CollectionViewSource.GetDefaultView(Rows);
@@ -789,10 +787,10 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     private void OnMetricsSampled(object? sender, WpfHexEditor.PluginHost.Monitoring.MetricsSampledEventArgs e)
     {
         // Cache WorkingSet64 from the event — avoids a redundant Process.GetCurrentProcess() in Refresh()
-        _lastSampledMemoryMb = e.MemoryBytes / (1024 * 1024);
+        Interlocked.Exchange(ref _lastSampledMemoryMb, e.MemoryBytes / (1024 * 1024));
 
         // Skip if a Refresh already ran in the last 500 ms (timer + event can overlap)
-        if ((DateTime.UtcNow - _lastRefreshTime).TotalMilliseconds < 500) return;
+        if ((DateTime.UtcNow.Ticks - Interlocked.Read(ref _lastRefreshTimeTicks)) < TimeSpan.TicksPerMillisecond * 500) return;
         _dispatcher.InvokeAsync(Refresh);
     }
 
@@ -1183,10 +1181,19 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
 
     public void Refresh()
     {
-        _lastRefreshTime = DateTime.UtcNow;
+        var now = DateTime.UtcNow;
+        Interlocked.Exchange(ref _lastRefreshTimeTicks, now.Ticks);
         var plugins = _host.GetAllPlugins();
-        var loaded  = plugins.Where(p => p.State == PluginState.Loaded).ToList();
-        var now     = _lastRefreshTime;
+
+        // Single pass: build loaded list + count faults/dormant simultaneously
+        var loaded = new List<PluginEntry>(plugins.Count);
+        int faultCount = 0, dormantCount = 0;
+        foreach (var p in plugins)
+        {
+            if      (p.State == PluginState.Loaded)  loaded.Add(p);
+            else if (p.State == PluginState.Faulted)  faultCount++;
+            else if (p.State == PluginState.Dormant)  dormantCount++;
+        }
 
         // Aggregate CPU and memory (process-level, capped for display).
         double totalCpu = 0;
@@ -1194,7 +1201,7 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
 
         if (loaded.Count > 0)
         {
-            // Use the host's directly-sampled CPU% â€” NOT the ring-buffer latest.
+            // Use the host's directly-sampled CPU% — NOT the ring-buffer latest.
             // The ring-buffer latest may be the init sample (recorded during batch startup
             // at ~100% CPU) until the first periodic tick fires. LastSampledCpuPercent is
             // only set by OnSamplingTick and starts at 0, giving a correct idle reading.
@@ -1202,17 +1209,10 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
 
             // Use WorkingSet64 cached from the last MetricsSampled event (already computed
             // by PluginMetricsEngine.ProcessPassiveSample — no extra syscall needed here).
-            totalMem = _lastSampledMemoryMb > 0
-                ? _lastSampledMemoryMb
+            var cachedMem = Interlocked.Read(ref _lastSampledMemoryMb);
+            totalMem = cachedMem > 0
+                ? cachedMem
                 : System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024);
-        }
-
-        // Single pass — avoids 3 separate LINQ enumerations over the same list
-        int faultCount = 0, dormantCount = 0;
-        foreach (var p in plugins)
-        {
-            if (p.State == PluginState.Faulted) faultCount++;
-            else if (p.State == PluginState.Dormant) dormantCount++;
         }
 
         CurrentCpu      = totalCpu;
@@ -1233,13 +1233,13 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
         // Evaluate alert thresholds on every tick.
         _alertEngine.Evaluate(loaded);
 
-        // Sync rows collection
+        // Sync rows collection — use dict keys for O(1) stale detection
         var currentIds = plugins.Select(p => p.Manifest.Id).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var stale in Rows.Where(r => !currentIds.Contains(r.Id)).ToList())
+        foreach (var staleId in _rowsById.Keys.Where(id => !currentIds.Contains(id)).ToList())
         {
-            Rows.Remove(stale);
-            _miniCharts.Remove(stale.Id);
+            if (_rowsById.TryGetValue(staleId, out var stale)) Rows.Remove(stale);
+            _miniCharts.Remove(staleId);
         }
 
         foreach (var entry in plugins)
@@ -1865,14 +1865,29 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
 
     // -- IDisposable -------------------------------------------------------------
 
+    private void OnRowsCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+        {
+            _rowsById.Clear();
+            return;
+        }
+        if (e.NewItems is not null)
+            foreach (PluginMonitorRow r in e.NewItems) _rowsById[r.Id] = r;
+        if (e.OldItems is not null)
+            foreach (PluginMonitorRow r in e.OldItems) _rowsById.Remove(r.Id);
+    }
+
     public void Dispose()
     {
         _timer.Stop();
-        _timer.Tick                -= OnTimerTick;
-        _host.PluginLoaded         -= OnPluginLoaded;
-        _host.PluginCrashed        -= OnPluginCrashed;
-        _host.SlowPluginDetected   -= OnSlowPluginDetected;
-        _alertEngine.AlertTriggered -= OnAlertTriggered;
+        _timer.Tick                          -= OnTimerTick;
+        _host.PluginLoaded                   -= OnPluginLoaded;
+        _host.PluginCrashed                  -= OnPluginCrashed;
+        _host.SlowPluginDetected             -= OnSlowPluginDetected;
+        _alertEngine.AlertTriggered          -= OnAlertTriggered;
+        _host.MetricsEngine.MetricsSampled   -= OnMetricsSampled;
+        Rows.CollectionChanged               -= OnRowsCollectionChanged;
     }
 
 }
