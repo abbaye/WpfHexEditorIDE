@@ -505,6 +505,15 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
             }
         }
 
+        // Sync checkboxes when ActiveEncodings changes externally (e.g. TBL load/clear)
+        void SyncCheckboxes()
+        {
+            foreach (var c in checkBoxes)
+                if (c.Tag is StringEncoding e2) c.IsChecked = _vm.IsEncodingActive(e2);
+            RefreshSummary();
+        }
+        _vm.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(_vm.ActiveEncodings)) SyncCheckboxes(); };
+
         listBorder.Child = listPanel;
         popup.Child      = listBorder;
 

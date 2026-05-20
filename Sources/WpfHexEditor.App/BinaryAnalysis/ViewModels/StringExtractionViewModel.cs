@@ -487,6 +487,7 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
             ActiveEncodings.Remove(StringEncoding.TblDte);
             ActiveEncodings.Remove(StringEncoding.TblMte);
         }
+        OnPropertyChanged(nameof(ActiveEncodings));
     }
 
     /// <summary>Adds a file path to the opened-files combo if not already present, then selects it.</summary>
