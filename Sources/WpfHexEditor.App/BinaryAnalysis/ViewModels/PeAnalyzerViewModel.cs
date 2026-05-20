@@ -94,6 +94,7 @@ public sealed class PeAnalyzerViewModel : ViewModelBase
         CancelCommand = new RelayCommand(() => { _cts?.Cancel(); return Task.CompletedTask; }, () => IsBusy);
     }
 
+    public IIDEHostContext? Context => _context;
     public void SetContext(IIDEHostContext ctx) => _context = ctx;
 
     // -- Scan ----------------------------------------------------------------

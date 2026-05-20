@@ -355,19 +355,16 @@ public static class PeFileAnalyzer
         _  => $"Unknown ({subsystem})"
     };
 
-    /// <summary>
-    /// Returns true for DLL names commonly associated with suspicious behaviour
-    /// (network, injection, crypto by ordinal-only).
-    /// </summary>
+    private static readonly HashSet<string> SuspiciousDlls = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "ws2_32.dll", "wininet.dll", "urlmon.dll", "winhttp.dll",
+        "ntdll.dll",  "msvcrt.dll"
+    };
+
+    /// <summary>Returns true for DLL names commonly associated with suspicious behaviour.</summary>
     public static bool IsSuspectModule(ImportModule m)
     {
-        var suspicious = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "ws2_32.dll", "wininet.dll", "urlmon.dll", "winhttp.dll",
-            "ntdll.dll",  "msvcrt.dll"
-        };
-        bool suspectDll      = suspicious.Contains(m.Dll);
         bool ordinalOnlyImps = m.Functions.Count > 0 && m.Functions.All(f => f.Ordinal.HasValue && f.Name.StartsWith('#'));
-        return suspectDll || ordinalOnlyImps;
+        return SuspiciousDlls.Contains(m.Dll) || ordinalOnlyImps;
     }
 }

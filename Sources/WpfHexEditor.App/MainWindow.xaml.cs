@@ -2826,10 +2826,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 // Wire breakpoint gutter adapter so project-opened files can render breakpoints.
                 WireBreakpointSourceToEditor(editor);
 
-                // Wire BinaryPreview live hex navigation for StructureEditor.
-                if (editor is WpfHexEditor.Editor.StructureEditor.Controls.StructureEditor structEd)
-                    structEd.HexNavigationRequested += (_, nav) =>
-                        Dispatcher.InvokeAsync(() => _activeHexEditor?.SetPosition(nav.Offset, nav.Length));
+                WireStructureEditorNavigation(editor);
 
                 ActiveDocumentEditor       = editor;
                 ActiveStatusBarContributor = editor as IStatusBarContributor;
@@ -3079,10 +3076,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             // Wire breakpoint gutter adapter
             WireBreakpointSourceToEditor(editor);
 
-            // Wire BinaryPreview live hex navigation for StructureEditor.
-            if (editor is WpfHexEditor.Editor.StructureEditor.Controls.StructureEditor structEd2)
-                structEd2.HexNavigationRequested += (_, nav) =>
-                    Dispatcher.InvokeAsync(() => _activeHexEditor?.SetPosition(nav.Offset, nav.Length));
+            WireStructureEditorNavigation(editor);
 
             // Publish FileOpenedEvent so plugins with fileExtension activation triggers fire.
             if (_ideEventBus is not null && !string.IsNullOrEmpty(filePath))
@@ -7497,4 +7491,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         OnActiveDocumentChanged(activeItem);
     }
+
+    private void WireStructureEditorNavigation(WpfHexEditor.Editor.Core.IDocumentEditor editor)
+    {
+        if (editor is not WpfHexEditor.Editor.StructureEditor.Controls.StructureEditor structEd) return;
+        structEd.HexNavigationRequested += OnStructureEditorHexNavigation;
+    }
+
+    private void OnStructureEditorHexNavigation(object? sender, (long Offset, long Length) nav)
+        => Dispatcher.InvokeAsync(() => _activeHexEditor?.SetPosition(nav.Offset, nav.Length));
 }

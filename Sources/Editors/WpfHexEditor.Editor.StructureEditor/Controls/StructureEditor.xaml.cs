@@ -82,7 +82,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
             try
             {
                 var def = System.Text.Json.JsonSerializer.Deserialize<WpfHexEditor.Core.FormatDetection.FormatDefinition>(
-                    json, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    json, Services.TemplatePackageService.ImportOptions);
                 if (def is not null)
                     items.AddRange(_semanticValidator.Validate(def));
             }
@@ -498,13 +498,13 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         // Deserialize current state, merge, re-serialize.
         var currentJson = _vm.SerializeToJson();
         var target = System.Text.Json.JsonSerializer.Deserialize<WpfHexEditor.Core.FormatDetection.FormatDefinition>(
-            currentJson, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            currentJson, Services.TemplatePackageService.ImportOptions);
         if (target is null) return;
 
         Services.TemplatePackageService.Merge(target, source);
 
         var mergedJson = System.Text.Json.JsonSerializer.Serialize(target,
-            new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+            Services.TemplatePackageService.WriteIndentedOptions);
         _liveBuffer?.SetText(mergedJson);
         _vm.LoadFromJson(mergedJson);
     }
@@ -523,7 +523,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         if (def is null) return;
 
         var json = System.Text.Json.JsonSerializer.Serialize(def,
-            new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+            Services.TemplatePackageService.WriteIndentedOptions);
         _liveBuffer?.SetText(json);
         _vm.LoadFromJson(json);
     }
@@ -549,7 +549,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         {
             var json = _vm.SerializeToJson();
             var def  = System.Text.Json.JsonSerializer.Deserialize<WpfHexEditor.Core.FormatDetection.FormatDefinition>(
-                json, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                json, Services.TemplatePackageService.ImportOptions);
             if (def is null) return;
 
             var svc = new Services.TemplatePackageService();

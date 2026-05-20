@@ -33,11 +33,10 @@ public sealed class TemplateSemanticValidator
         var items = new List<ValidationSummaryItem>();
         if (def is null) return items;
 
-        var declared  = CollectDeclaredVariables(def);
-        var varTypes  = CollectVariableTypes(def);
+        var declared = CollectDeclaredVariables(def);
 
         foreach (var block in def.Blocks ?? [])
-            ValidateBlock(block, declared, varTypes, items);
+            ValidateBlock(block, declared, items);
 
         CheckDuplicateBlockNames(def.Blocks ?? [], items);
 
@@ -46,8 +45,7 @@ public sealed class TemplateSemanticValidator
 
     // ── Per-block checks ──────────────────────────────────────────────────────
 
-    private void ValidateBlock(BlockDefinition b, HashSet<string> declared,
-        Dictionary<string, string> varTypes, List<ValidationSummaryItem> items)
+    private void ValidateBlock(BlockDefinition b, HashSet<string> declared, List<ValidationSummaryItem> items)
     {
         if (b is null) return;
 
@@ -55,11 +53,10 @@ public sealed class TemplateSemanticValidator
         CheckBitfields(b, items);
         CheckUnion(b, items);
         CheckValidationRules(b, items);
-        CheckStoreAsTypeMismatch(b, varTypes, items);
         CheckLiteralCondition(b, items);
 
         foreach (var child in EnumerateChildren(b))
-            ValidateBlock(child, declared, varTypes, items);
+            ValidateBlock(child, declared, items);
     }
 
     private static IEnumerable<BlockDefinition> EnumerateChildren(BlockDefinition b)
@@ -201,32 +198,6 @@ public sealed class TemplateSemanticValidator
         }
     }
 
-    // ── New Phase 2 checks ───────────────────────────────────────────────────
-
-    // Numeric types: storeAs into a var declared 'bool' or 'hex' could be mismatched.
-    private static readonly HashSet<string> NumericValueTypes =
-        new(StringComparer.OrdinalIgnoreCase)
-        { "uint8","uint16","uint32","uint64","int8","int16","int32","int64","float","double" };
-
-    private static void CheckStoreAsTypeMismatch(BlockDefinition b,
-        Dictionary<string, string> varTypes, List<ValidationSummaryItem> items)
-    {
-        if (string.IsNullOrEmpty(b.StoreAs) || string.IsNullOrEmpty(b.ValueType)) return;
-        if (!varTypes.TryGetValue(b.StoreAs!, out var declaredType)) return;
-
-        bool fieldIsNumeric = NumericValueTypes.Contains(b.ValueType);
-        bool varIsBool      = string.Equals(declaredType, "bool", StringComparison.OrdinalIgnoreCase);
-
-        if (fieldIsNumeric && varIsBool)
-            items.Add(new ValidationSummaryItem
-            {
-                Severity         = ValidationSeverity.Warning,
-                Message          = $"Block '{b.Name}' stores numeric type '{b.ValueType}' into bool variable '{b.StoreAs}'.",
-                Layer            = Layer,
-                NavigationTarget = b.Name,
-            });
-    }
-
     private static void CheckLiteralCondition(BlockDefinition b, List<ValidationSummaryItem> items)
     {
         if (!string.Equals(b.Type, "conditional", StringComparison.OrdinalIgnoreCase)) return;
@@ -270,27 +241,19 @@ public sealed class TemplateSemanticValidator
         }
     }
 
-    private static IEnumerable<BlockDefinition> FlattenAll(IEnumerable<BlockDefinition> blocks)
+    private static IEnumerable<BlockDefinition> FlattenAll(IEnumerable<BlockDefinition> roots)
     {
-        foreach (var b in blocks)
+        var stack = new Stack<BlockDefinition>(roots.Where(b => b is not null));
+        while (stack.Count > 0)
         {
-            if (b is null) continue;
+            var b = stack.Pop();
             yield return b;
             foreach (var child in EnumerateChildren(b))
-                foreach (var sub in FlattenAll([child]))
-                    yield return sub;
+                if (child is not null) stack.Push(child);
         }
     }
 
     // ── Variable discovery ────────────────────────────────────────────────────
-
-    private static Dictionary<string, string> CollectVariableTypes(FormatDefinition def)
-    {
-        // FormatDefinition.Variables stores initial values (object), not type strings.
-        // The dedicated type field lives only in the editor VM — not in the runtime JSON.
-        // Return empty map; type-mismatch checks would need an extended schema to be reliable.
-        return new Dictionary<string, string>(StringComparer.Ordinal);
-    }
 
     private static HashSet<string> CollectDeclaredVariables(FormatDefinition def)
     {

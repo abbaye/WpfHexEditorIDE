@@ -161,45 +161,38 @@ public sealed class CipherDecoderViewModel : ViewModelBase
 
     private void RunDecode(byte[] raw, CancellationToken ct)
     {
-        switch (_modeIndex)
+        switch (ModeIndex)
         {
-            case 0: // XOR single key
+            case 0:
             {
                 byte key = ParseXorKey();
-                var decoded = CipherDecoderService.XorSingleKey(raw, key);
-                SetPreview(decoded, $"XOR 0x{key:X2}");
+                SetPreview(CipherDecoderService.XorSingleKey(raw, key));
                 break;
             }
-            case 1: // XOR rolling key
+            case 1:
             {
-                byte[] key = ParseRollingKey();
-                var decoded = CipherDecoderService.XorRollingKey(raw, key);
-                SetPreview(decoded, $"XOR rolling [{_xorKeyHex}]");
+                SetPreview(CipherDecoderService.XorRollingKey(raw, ParseRollingKey()));
                 break;
             }
-            case 2: // ROT-alpha
+            case 2:
             {
                 int shift = int.TryParse(_rotShift, out int s) ? s : 13;
-                var decoded = CipherDecoderService.RotAlpha(raw, shift);
-                SetPreview(decoded, $"ROT-{shift}");
+                SetPreview(CipherDecoderService.RotAlpha(raw, shift));
                 break;
             }
-            case 3: // ROT-47
+            case 3:
             {
-                var decoded = CipherDecoderService.Rot47(raw);
-                SetPreview(decoded, "ROT-47");
+                SetPreview(CipherDecoderService.Rot47(raw));
                 break;
             }
-            case 4: // Auto-detect XOR
+            case 4:
             {
                 ct.ThrowIfCancellationRequested();
-                byte best = CipherDecoderService.DetectXorKey(raw);
-                var decoded = CipherDecoderService.XorSingleKey(raw, best);
-                SetPreview(decoded, $"Auto-XOR best key=0x{best:X2}");
+                var ranked = CipherDecoderService.RankXorKeys(raw);
+                SetPreview(CipherDecoderService.XorSingleKey(raw, ranked[0].Key));
 
-                // Also show top-5 keys by chi score (brute force top candidates)
-                var candidates = Enumerable.Range(0, 256)
-                    .Select(k => (Key: (byte)k, Decoded: CipherDecoderService.XorSingleKey(raw, (byte)k)))
+                var candidates = ranked
+                    .Select(r => (r.Key, Decoded: CipherDecoderService.XorSingleKey(raw, r.Key)))
                     .Where(x => CipherDecoderService.LooksLikeText(x.Decoded))
                     .Take(8)
                     .ToList();
@@ -219,7 +212,7 @@ public sealed class CipherDecoderViewModel : ViewModelBase
         }
     }
 
-    private void SetPreview(byte[] decoded, string label)
+    private void SetPreview(byte[] decoded)
     {
         string text = Encoding.UTF8.GetString(decoded);
         System.Windows.Application.Current.Dispatcher.Invoke(() => PreviewText = text);

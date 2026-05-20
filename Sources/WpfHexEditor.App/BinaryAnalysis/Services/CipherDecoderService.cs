@@ -41,17 +41,16 @@ public static class CipherDecoderService
     /// frequency analysis against English text distribution.
     /// </summary>
     public static byte DetectXorKey(ReadOnlySpan<byte> data)
+        => RankXorKeys(data)[0].Key;
+
+    /// <summary>Returns all 256 XOR keys ranked by chi-squared score (best first).</summary>
+    public static (byte Key, double Score)[] RankXorKeys(ReadOnlySpan<byte> data)
     {
-        double bestScore = double.MaxValue;
-        byte bestKey = 0;
-
+        var ranked = new (byte Key, double Score)[256];
         for (int k = 0; k < 256; k++)
-        {
-            double score = ScoreEnglish(data, (byte)k);
-            if (score < bestScore) { bestScore = score; bestKey = (byte)k; }
-        }
-
-        return bestKey;
+            ranked[k] = ((byte)k, ScoreEnglish(data, (byte)k));
+        Array.Sort(ranked, (a, b) => a.Score.CompareTo(b.Score));
+        return ranked;
     }
 
     // -------------------------------------------------------------------------

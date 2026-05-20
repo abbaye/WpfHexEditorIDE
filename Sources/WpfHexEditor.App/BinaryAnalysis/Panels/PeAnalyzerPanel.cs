@@ -88,11 +88,7 @@ public sealed class PeAnalyzerPanel : UserControl
 
     // -- Context wiring -----------------------------------------------------
 
-    public void SetContext(IIDEHostContext context)
-    {
-        _vm.SetContext(context);
-        _jumpContext = context;
-    }
+    public void SetContext(IIDEHostContext context) => _vm.SetContext(context);
 
     public void OnFileOpened()
     {
@@ -102,11 +98,9 @@ public sealed class PeAnalyzerPanel : UserControl
 
     // -- Jump to offset in HexEditor ----------------------------------------
 
-    private IIDEHostContext? _jumpContext;
-
     private void JumpToOffset(long offset)
     {
-        if (_jumpContext?.HexEditor is not { IsActive: true } hex) return;
+        if (_vm.Context?.HexEditor is not { IsActive: true } hex) return;
         hex.NavigateTo(offset);
     }
 

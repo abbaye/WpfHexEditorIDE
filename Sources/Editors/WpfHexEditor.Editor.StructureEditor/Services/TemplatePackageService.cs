@@ -35,9 +35,16 @@ public sealed class TemplatePackageService
         DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
     };
 
-    private static readonly JsonSerializerOptions ImportOptions = new()
+    internal static readonly JsonSerializerOptions ImportOptions = new()
     {
         PropertyNameCaseInsensitive = true,
+    };
+
+    internal static readonly JsonSerializerOptions WriteIndentedOptions = new()
+    {
+        WriteIndented          = true,
+        PropertyNamingPolicy   = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
     };
 
     /// <summary>Exports <paramref name="def"/> to <paramref name="outputPath"/> in the requested format.</summary>
@@ -82,8 +89,10 @@ public sealed class TemplatePackageService
         foreach (var block in source.Blocks ?? [])
         {
             if (block is null) continue;
-            if (!string.IsNullOrEmpty(block.Name) && existingNames.Contains(block.Name!))
-                block.Name = block.Name + "_merged";
+            var name = !string.IsNullOrEmpty(block.Name) && existingNames.Contains(block.Name!)
+                ? block.Name + "_merged"
+                : block.Name;
+            block.Name = name;
             (target.Blocks ??= []).Add(block);
         }
 
