@@ -33,17 +33,21 @@ public sealed class TemplateSemanticValidator
         var items = new List<ValidationSummaryItem>();
         if (def is null) return items;
 
-        var declared = CollectDeclaredVariables(def);
+        var declared  = CollectDeclaredVariables(def);
+        var varTypes  = CollectVariableTypes(def);
 
         foreach (var block in def.Blocks ?? [])
-            ValidateBlock(block, declared, items);
+            ValidateBlock(block, declared, varTypes, items);
+
+        CheckDuplicateBlockNames(def.Blocks ?? [], items);
 
         return items;
     }
 
     // ── Per-block checks ──────────────────────────────────────────────────────
 
-    private void ValidateBlock(BlockDefinition b, HashSet<string> declared, List<ValidationSummaryItem> items)
+    private void ValidateBlock(BlockDefinition b, HashSet<string> declared,
+        Dictionary<string, string> varTypes, List<ValidationSummaryItem> items)
     {
         if (b is null) return;
 
@@ -51,9 +55,11 @@ public sealed class TemplateSemanticValidator
         CheckBitfields(b, items);
         CheckUnion(b, items);
         CheckValidationRules(b, items);
+        CheckStoreAsTypeMismatch(b, varTypes, items);
+        CheckLiteralCondition(b, items);
 
         foreach (var child in EnumerateChildren(b))
-            ValidateBlock(child, declared, items);
+            ValidateBlock(child, declared, varTypes, items);
     }
 
     private static IEnumerable<BlockDefinition> EnumerateChildren(BlockDefinition b)
@@ -195,7 +201,96 @@ public sealed class TemplateSemanticValidator
         }
     }
 
+    // ── New Phase 2 checks ───────────────────────────────────────────────────
+
+    // Numeric types: storeAs into a var declared 'bool' or 'hex' could be mismatched.
+    private static readonly HashSet<string> NumericValueTypes =
+        new(StringComparer.OrdinalIgnoreCase)
+        { "uint8","uint16","uint32","uint64","int8","int16","int32","int64","float","double" };
+
+    private static void CheckStoreAsTypeMismatch(BlockDefinition b,
+        Dictionary<string, string> varTypes, List<ValidationSummaryItem> items)
+    {
+        if (string.IsNullOrEmpty(b.StoreAs) || string.IsNullOrEmpty(b.ValueType)) return;
+        if (!varTypes.TryGetValue(b.StoreAs!, out var declaredType)) return;
+
+        bool fieldIsNumeric = NumericValueTypes.Contains(b.ValueType);
+        bool varIsBool      = string.Equals(declaredType, "bool", StringComparison.OrdinalIgnoreCase);
+
+        if (fieldIsNumeric && varIsBool)
+            items.Add(new ValidationSummaryItem
+            {
+                Severity         = ValidationSeverity.Warning,
+                Message          = $"Block '{b.Name}' stores numeric type '{b.ValueType}' into bool variable '{b.StoreAs}'.",
+                Layer            = Layer,
+                NavigationTarget = b.Name,
+            });
+    }
+
+    private static void CheckLiteralCondition(BlockDefinition b, List<ValidationSummaryItem> items)
+    {
+        if (!string.Equals(b.Type, "conditional", StringComparison.OrdinalIgnoreCase)) return;
+        var cond = b.Condition?.ToString()?.Trim();
+        if (string.IsNullOrEmpty(cond)) return;
+
+        if (string.Equals(cond, "true", StringComparison.OrdinalIgnoreCase))
+            items.Add(new ValidationSummaryItem
+            {
+                Severity         = ValidationSeverity.Warning,
+                Message          = $"Conditional block '{b.Name}' has a literal 'true' condition — Else branch is unreachable.",
+                Layer            = Layer,
+                NavigationTarget = b.Name,
+            });
+        else if (string.Equals(cond, "false", StringComparison.OrdinalIgnoreCase))
+            items.Add(new ValidationSummaryItem
+            {
+                Severity         = ValidationSeverity.Warning,
+                Message          = $"Conditional block '{b.Name}' has a literal 'false' condition — Then branch is unreachable.",
+                Layer            = Layer,
+                NavigationTarget = b.Name,
+            });
+    }
+
+    private static void CheckDuplicateBlockNames(IEnumerable<BlockDefinition> blocks,
+        List<ValidationSummaryItem> items)
+    {
+        var seen   = new HashSet<string>(StringComparer.Ordinal);
+        var dupes  = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var b in FlattenAll(blocks))
+        {
+            if (string.IsNullOrEmpty(b.Name)) continue;
+            if (!seen.Add(b.Name!) && dupes.Add(b.Name!))
+                items.Add(new ValidationSummaryItem
+                {
+                    Severity         = ValidationSeverity.Warning,
+                    Message          = $"Block name '{b.Name}' appears more than once. Duplicate names can cause variable-store collisions.",
+                    Layer            = Layer,
+                    NavigationTarget = b.Name,
+                });
+        }
+    }
+
+    private static IEnumerable<BlockDefinition> FlattenAll(IEnumerable<BlockDefinition> blocks)
+    {
+        foreach (var b in blocks)
+        {
+            if (b is null) continue;
+            yield return b;
+            foreach (var child in EnumerateChildren(b))
+                foreach (var sub in FlattenAll([child]))
+                    yield return sub;
+        }
+    }
+
     // ── Variable discovery ────────────────────────────────────────────────────
+
+    private static Dictionary<string, string> CollectVariableTypes(FormatDefinition def)
+    {
+        // FormatDefinition.Variables stores initial values (object), not type strings.
+        // The dedicated type field lives only in the editor VM — not in the runtime JSON.
+        // Return empty map; type-mismatch checks would need an extended schema to be reliable.
+        return new Dictionary<string, string>(StringComparer.Ordinal);
+    }
 
     private static HashSet<string> CollectDeclaredVariables(FormatDefinition def)
     {

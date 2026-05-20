@@ -32,4 +32,10 @@ public partial class BinaryPreviewTab : UserControl
         if (dlg.ShowDialog() == true)
             await vm.LoadBinaryAsync(dlg.FileName);
     }
+
+    private void OnFieldsGridSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (DataContext is BinaryPreviewViewModel vm && FieldsGrid.SelectedItem is FieldResultRow row)
+            vm.NavigateToField(row);
+    }
 }

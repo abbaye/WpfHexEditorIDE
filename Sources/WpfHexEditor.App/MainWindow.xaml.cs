@@ -2826,6 +2826,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 // Wire breakpoint gutter adapter so project-opened files can render breakpoints.
                 WireBreakpointSourceToEditor(editor);
 
+                // Wire BinaryPreview live hex navigation for StructureEditor.
+                if (editor is WpfHexEditor.Editor.StructureEditor.Controls.StructureEditor structEd)
+                    structEd.HexNavigationRequested += (_, nav) =>
+                        Dispatcher.InvokeAsync(() => _activeHexEditor?.SetPosition(nav.Offset, nav.Length));
+
                 ActiveDocumentEditor       = editor;
                 ActiveStatusBarContributor = editor as IStatusBarContributor;
 
@@ -3073,6 +3078,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             // Wire breakpoint gutter adapter
             WireBreakpointSourceToEditor(editor);
+
+            // Wire BinaryPreview live hex navigation for StructureEditor.
+            if (editor is WpfHexEditor.Editor.StructureEditor.Controls.StructureEditor structEd2)
+                structEd2.HexNavigationRequested += (_, nav) =>
+                    Dispatcher.InvokeAsync(() => _activeHexEditor?.SetPosition(nav.Offset, nav.Length));
 
             // Publish FileOpenedEvent so plugins with fileExtension activation triggers fire.
             if (_ideEventBus is not null && !string.IsNullOrEmpty(filePath))

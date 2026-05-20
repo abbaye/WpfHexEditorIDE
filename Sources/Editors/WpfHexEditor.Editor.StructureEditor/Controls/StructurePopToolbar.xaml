@@ -120,6 +120,13 @@
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8B5;" FontSize="13"/>
             </Button>
 
+            <Button x:Name="PART_MergeBtn"
+                    Style="{StaticResource PopBtnStyle}"
+                    ToolTip="Merge blocks from another .whfmt template…"
+                    Click="OnMergeClicked">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8AB;" FontSize="13"/>
+            </Button>
+
             <Button x:Name="PART_ExportBtn"
                     Style="{StaticResource PopBtnStyle}"
                     ToolTip="Export as JSON / C struct / Python bytes"

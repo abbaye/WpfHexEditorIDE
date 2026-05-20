@@ -68,6 +68,34 @@ public sealed class TemplatePackageService
         }
     }
 
+    /// <summary>
+    /// Merges blocks and variables from <paramref name="source"/> into <paramref name="target"/>.
+    /// Blocks with duplicate names are renamed with a "_merged" suffix.
+    /// Variables that already exist in target are skipped.
+    /// </summary>
+    public static FormatDefinition Merge(FormatDefinition target, FormatDefinition source)
+    {
+        var existingNames = new HashSet<string>(
+            (target.Blocks ?? []).Select(b => b.Name ?? "").Where(n => n.Length > 0),
+            StringComparer.Ordinal);
+
+        foreach (var block in source.Blocks ?? [])
+        {
+            if (block is null) continue;
+            if (!string.IsNullOrEmpty(block.Name) && existingNames.Contains(block.Name!))
+                block.Name = block.Name + "_merged";
+            (target.Blocks ??= []).Add(block);
+        }
+
+        foreach (var kv in source.Variables ?? new Dictionary<string, object>())
+        {
+            (target.Variables ??= new Dictionary<string, object>())
+                .TryAdd(kv.Key, kv.Value);
+        }
+
+        return target;
+    }
+
     // ── C struct ──────────────────────────────────────────────────────────────
 
     private static string BuildCStruct(FormatDefinition def)
