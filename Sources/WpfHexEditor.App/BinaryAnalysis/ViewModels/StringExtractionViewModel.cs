@@ -40,12 +40,22 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     private bool _excludeHighEntropy;
     private double _entropyThreshold = 0.90;
     private float _minReadability = 0f;
+    private bool _printableOnly;
     private int _totalCount;
     private int _shownCount;
     private string _statusText = string.Empty;
     private OpenedFileItem? _selectedFile;
     private bool _isOutdated;
     private bool _syncCaretToGrid = true;
+
+    private FileSystemWatcher? _watcher;
+    private System.Windows.Threading.DispatcherTimer? _rescanTimer;
+    private bool _autoRescan;
+    public bool AutoRescan
+    {
+        get => _autoRescan;
+        set { _autoRescan = value; OnPropertyChanged(); }
+    }
 
     // Cached from last RunAsync — used by ApplyCodeHighlights without re-reading disk
     private byte[]? _lastBuffer;
@@ -158,6 +168,34 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     {
         get => _minReadability;
         set { _minReadability = Math.Clamp(value, 0f, 1f); OnPropertyChanged(); ResultsView.Refresh(); UpdateShownCount(); }
+    }
+
+    public bool PrintableOnly
+    {
+        get => _printableOnly;
+        set { _printableOnly = value; OnPropertyChanged(); ResultsView.Refresh(); UpdateShownCount(); }
+    }
+
+    private bool _wordWrap;
+    public bool WordWrap
+    {
+        get => _wordWrap;
+        set { _wordWrap = value; OnPropertyChanged(); }
+    }
+
+    private bool _groupByEncoding;
+    public bool GroupByEncoding
+    {
+        get => _groupByEncoding;
+        set
+        {
+            _groupByEncoding = value;
+            OnPropertyChanged();
+            var cv = (CollectionView)ResultsView;
+            cv.GroupDescriptions.Clear();
+            if (value)
+                cv.GroupDescriptions.Add(new PropertyGroupDescription(nameof(StringRun.Encoding)));
+        }
     }
 
     // ── Stats ─────────────────────────────────────────────────────────────────
@@ -445,6 +483,8 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
             _lastLineStarts  = lineStarts;
             _entropyMap      = entropyMap;
 
+            ArmFileWatcher(targetPath);
+
             foreach (var run in runs)
                 _allResults.Add(run);
 
@@ -572,6 +612,10 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
         // Readability score filter
         if (_minReadability > 0f && run.ReadabilityScore < _minReadability) return false;
+
+        if (_printableOnly && !IsPrintable(run.Value)) return false;
+
+        if (_showOnlyClusters && GetClusterId(run) == 0) return false;
 
         // Text filter (substring or regex)
         if (!string.IsNullOrEmpty(_filter))
@@ -785,6 +829,8 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     /// <summary>Last scanned buffer — used by the panel to render context bytes without re-reading disk.</summary>
     public byte[]? LastBuffer => _lastBuffer;
 
+    public long LastBufferLength => _lastBuffer?.Length ?? 0;
+
     /// <summary>Notifies the IDE to apply the TBL at <paramref name="filePath"/> to the active HexEditor.</summary>
     public void PublishLoadTbl(string filePath)
     {
@@ -796,6 +842,84 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         });
     }
 
+    // ── Similarity clustering ─────────────────────────────────────────────────
+
+    private Dictionary<StringRun, int> _clusterMap = [];
+    public IReadOnlyDictionary<StringRun, int> ClusterMap => _clusterMap;
+
+    private bool _showOnlyClusters;
+    public bool ShowOnlyClusters
+    {
+        get => _showOnlyClusters;
+        set { _showOnlyClusters = value; OnPropertyChanged(); ResultsView.Refresh(); UpdateShownCount(); }
+    }
+
+    public async Task ClusterAsync()
+    {
+        if (IsBusy || _allResults.Count == 0) return;
+        IsBusy = true;
+        try
+        {
+            var snapshot = _allResults.ToList();
+            var map = await Task.Run(() => StringSimilarityClusterer.Cluster(snapshot));
+            _clusterMap = map;
+            OnPropertyChanged(nameof(ClusterMap));
+            ResultsView.Refresh();
+            UpdateShownCount();
+            int groups = map.Values.Where(v => v > 0).Distinct().Count();
+            StatusText = $"Clustering done — {groups} groups found";
+        }
+        finally { IsBusy = false; }
+    }
+
+    public int GetClusterId(StringRun run) =>
+        _clusterMap.TryGetValue(run, out int id) ? id : 0;
+
+    // ── FileSystemWatcher ─────────────────────────────────────────────────────
+
+    private void ArmFileWatcher(string? path)
+    {
+        _watcher?.Dispose();
+        _watcher = null;
+
+        if (string.IsNullOrEmpty(path) || !File.Exists(path)) return;
+
+        var dir  = Path.GetDirectoryName(path)!;
+        var name = Path.GetFileName(path);
+        _watcher = new FileSystemWatcher(dir, name)
+        {
+            NotifyFilter        = NotifyFilters.LastWrite | NotifyFilters.Size,
+            EnableRaisingEvents = true,
+        };
+        _watcher.Changed += OnFileChanged;
+    }
+
+    private void OnFileChanged(object sender, FileSystemEventArgs e)
+    {
+        System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+        {
+            IsOutdated = true;
+            if (!_autoRescan) return;
+
+            _rescanTimer ??= new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(2),
+            };
+            _rescanTimer.Stop();
+            _rescanTimer.Tick += async (_, _) => { _rescanTimer.Stop(); await RunAsync(); };
+            _rescanTimer.Start();
+        });
+    }
+
+    // ── Printable helper ──────────────────────────────────────────────────────
+
+    private static bool IsPrintable(string value)
+    {
+        foreach (char c in value)
+            if (c < 0x20 && c != '\t' && c != '\n' && c != '\r') return false;
+        return true;
+    }
+
     // ── IDisposable ───────────────────────────────────────────────────────────
 
     public void Dispose()
@@ -803,5 +927,7 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         if (_context is not null) DetachDocumentEvents(_context);
         _cts?.Cancel();
         _cts?.Dispose();
+        _watcher?.Dispose();
+        _rescanTimer?.Stop();
     }
 }

@@ -58,10 +58,12 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
     private Button? _tblClearBtn;
     private TextBlock? _outdatedBadge;
     private WrapPanel? _statsBar;
+    private readonly StringOffsetHeatmap _heatmap = new() { Height = 8, Cursor = System.Windows.Input.Cursors.Hand };
 
     public StringExtractionPanel()
     {
         var root = new Grid();
+        root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
         root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -73,12 +75,27 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         var statsRow     = BuildStatsBar();
         var statusBar    = BuildStatusBar();
 
+        _heatmap.Attach(_vm);
+        _heatmap.NavigateToOffset = offset =>
+        {
+            var nearest = _vm.GetAllRuns()
+                .OrderBy(r => Math.Abs(r.Offset - offset))
+                .FirstOrDefault();
+            if (nearest is not null)
+            {
+                _vm.SelectedGridItem = nearest;
+                _vm.NavigateToOffset(nearest);
+            }
+        };
+
         Grid.SetRow(toolbarPanel, 0);
-        Grid.SetRow(grid,         1);
-        Grid.SetRow(statsRow,     2);
-        Grid.SetRow(statusBar,    3);
+        Grid.SetRow(_heatmap,     1);
+        Grid.SetRow(grid,         2);
+        Grid.SetRow(statsRow,     3);
+        Grid.SetRow(statusBar,    4);
 
         root.Children.Add(toolbarPanel);
+        root.Children.Add(_heatmap);
         root.Children.Add(grid);
         root.Children.Add(statsRow);
         root.Children.Add(statusBar);
@@ -123,6 +140,73 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         tblBtn.Click    += OnLoadTbl;
         var exportBtn    = MakeToolbarButton("", "StringExtract_TtExport");
         exportBtn.Click += (_, _) => OnExport(exportAll: true);
+        var wrapBtn = new ToggleButton
+        {
+            Content  = "",
+            Height   = 20, Width = 22,
+            Padding  = new Thickness(0),
+            BorderThickness = new Thickness(0),
+            FontFamily = new FontFamily("Segoe MDL2 Assets"),
+            FontSize   = 11,
+            FocusVisualStyle = null,
+        };
+        wrapBtn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
+        wrapBtn.SetResourceReference(BackgroundProperty, "Panel_ToolbarBrush");
+        wrapBtn.SetResourceReference(ToolTipProperty,   "StringExtract_TtWordWrap");
+        wrapBtn.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(_vm.WordWrap)) { Source = _vm, Mode = BindingMode.TwoWay });
+
+        var groupBtn = new ToggleButton
+        {
+            Content  = "",
+            Height   = 20, Width = 22,
+            Padding  = new Thickness(0),
+            BorderThickness = new Thickness(0),
+            FontFamily = new FontFamily("Segoe MDL2 Assets"),
+            FontSize   = 11,
+            FocusVisualStyle = null,
+        };
+        groupBtn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
+        groupBtn.SetResourceReference(BackgroundProperty, "Panel_ToolbarBrush");
+        groupBtn.SetResourceReference(ToolTipProperty,   "StringExtract_TtGroupByEncoding");
+        groupBtn.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(_vm.GroupByEncoding)) { Source = _vm, Mode = BindingMode.TwoWay });
+
+        var autoRescanBtn = new ToggleButton
+        {
+            Content  = "",
+            Height   = 20, Width = 22,
+            Padding  = new Thickness(0),
+            BorderThickness = new Thickness(0),
+            FontFamily = new FontFamily("Segoe MDL2 Assets"),
+            FontSize   = 11,
+            FocusVisualStyle = null,
+        };
+        autoRescanBtn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
+        autoRescanBtn.SetResourceReference(BackgroundProperty, "Panel_ToolbarBrush");
+        autoRescanBtn.SetResourceReference(ToolTipProperty,   "StringExtract_TtAutoRescan");
+        autoRescanBtn.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(_vm.AutoRescan)) { Source = _vm, Mode = BindingMode.TwoWay });
+
+        var clusterBtn = MakeToolbarButton("", "StringExtract_TtCluster");
+        clusterBtn.Click += async (_, _) => await _vm.ClusterAsync();
+
+        var showClustersBtn = new ToggleButton
+        {
+            Content  = "",
+            Height   = 20, Width = 22,
+            Padding  = new Thickness(0),
+            BorderThickness = new Thickness(0),
+            FontFamily = new FontFamily("Segoe MDL2 Assets"),
+            FontSize   = 11,
+            FocusVisualStyle = null,
+        };
+        showClustersBtn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
+        showClustersBtn.SetResourceReference(BackgroundProperty, "Panel_ToolbarBrush");
+        showClustersBtn.SetResourceReference(ToolTipProperty,   "StringExtract_TtShowClusters");
+        showClustersBtn.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(_vm.ShowOnlyClusters)) { Source = _vm, Mode = BindingMode.TwoWay });
+
+
+
+
+
 
         var highlightBtn  = MakeToolbarButton("", "StringExtract_TtHighlight");
         highlightBtn.Click += (_, _) => _vm.HighlightRuns(_vm.ResultsView.Cast<StringRun>());
@@ -164,6 +248,8 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
             runBtn, cancelBtn, MakeToolbarSeparator(),
             tblBtn, MakeToolbarSeparator(),
             exportBtn, MakeToolbarSeparator(),
+            wrapBtn, groupBtn, autoRescanBtn, MakeToolbarSeparator(),
+            clusterBtn, showClustersBtn, MakeToolbarSeparator(),
             highlightBtn, clearHlBtn, MakeToolbarSeparator(),
             syncBtn, _outdatedBadge,
         })
@@ -294,6 +380,15 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         row.Children.Add(MakeLabelFromKey("StringExtract_LabelReadability"));
         row.Children.Add(readabilitySlider);
         row.Children.Add(readabilityLabel);
+
+        row.Children.Add(new System.Windows.Shapes.Rectangle { Width = 6, Height = 1, Fill = Brushes.Transparent });
+
+        var printableChk = new CheckBox { FontSize = 10, VerticalAlignment = VerticalAlignment.Center };
+        printableChk.SetResourceReference(ForegroundProperty, "TE_Foreground");
+        printableChk.SetResourceReference(ContentProperty,    "StringExtract_PrintableOnly");
+        printableChk.SetResourceReference(ToolTipProperty,    "StringExtract_TtPrintableOnly");
+        printableChk.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(_vm.PrintableOnly)) { Source = _vm, Mode = BindingMode.TwoWay });
+        row.Children.Add(printableChk);
 
         return row;
     }
@@ -700,15 +795,23 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         _grid.Columns.Add(MakeCol("StringExtract_ColBytes",    nameof(StringRun.RawHex),   160, null,  "StringExtract_TtBytes"));
         _grid.Columns.Add(MakeDuplicateColumn());
         _grid.Columns.Add(MakeContextBytesColumn());
-        _grid.Columns.Add(MakeCol("StringExtract_ColValue",    nameof(StringRun.Value),    0,   null,  "StringExtract_TtValue"));
-        var scoreCol = MakeScoreColumn();
+        _grid.Columns.Add(MakeValueColumn());
+        var scoreCol   = MakeScoreColumn();
+        var clusterCol = MakeClusterColumn();
         _grid.Columns.Add(scoreCol);
+        _grid.Columns.Add(clusterCol);
         _grid.ColumnHeaderStyle.Setters.Add(new EventSetter(UIElement.MouseRightButtonUpEvent,
-            new MouseButtonEventHandler((_, _) =>
+            new MouseButtonEventHandler((_, e2) =>
             {
-                scoreCol.Visibility = scoreCol.Visibility == Visibility.Visible
-                    ? Visibility.Collapsed
-                    : Visibility.Visible;
+                if (scoreCol.Visibility == Visibility.Collapsed)
+                    scoreCol.Visibility = Visibility.Visible;
+                else if (clusterCol.Visibility == Visibility.Collapsed)
+                    clusterCol.Visibility = Visibility.Visible;
+                else
+                {
+                    scoreCol.Visibility   = Visibility.Collapsed;
+                    clusterCol.Visibility = Visibility.Collapsed;
+                }
             })));
 
         // Sync SelectedGridItem in VM when DataGrid selection changes
@@ -794,7 +897,69 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         return col;
     }
 
-    private static DataGridTextColumn MakeScoreColumn()
+    private DataGridTemplateColumn MakeValueColumn()
+    {
+        var hdr = new TextBlock();
+        hdr.SetResourceReference(TextBlock.TextProperty, "StringExtract_ColValue");
+        hdr.SetResourceReference(ToolTipProperty,        "StringExtract_TtValue");
+
+        var col = new DataGridTemplateColumn
+        {
+            Header = hdr,
+            Width  = DataGridLength.Auto,
+        };
+
+        var cellTemplate = new DataTemplate();
+        var tbFactory = new FrameworkElementFactory(typeof(TextBlock));
+        tbFactory.SetValue(TextBlock.FontSizeProperty, 11d);
+        tbFactory.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Top);
+        tbFactory.SetBinding(TextBlock.TextProperty, new Binding(nameof(StringRun.Value)));
+        tbFactory.SetBinding(TextBlock.TextWrappingProperty, new Binding(nameof(_vm.WordWrap))
+        {
+            Source = _vm,
+            Converter = new BoolToTextWrappingConverter(),
+        });
+        cellTemplate.VisualTree = tbFactory;
+        col.CellTemplate = cellTemplate;
+        return col;
+    }
+
+    private DataGridTemplateColumn MakeClusterColumn()
+    {
+        var hdr = new TextBlock();
+        hdr.SetResourceReference(TextBlock.TextProperty, "StringExtract_ColCluster");
+        hdr.SetResourceReference(ToolTipProperty,        "StringExtract_TtCluster");
+        var col = new DataGridTemplateColumn
+        {
+            Header     = hdr,
+            Width      = new DataGridLength(40),
+            Visibility = Visibility.Collapsed,
+            CanUserSort = false,
+        };
+        var cellTemplate = new DataTemplate();
+        var tbFactory = new FrameworkElementFactory(typeof(TextBlock));
+        tbFactory.SetValue(TextBlock.TextAlignmentProperty, TextAlignment.Center);
+        tbFactory.SetValue(TextBlock.FontSizeProperty, 10d);
+        tbFactory.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
+        tbFactory.AddHandler(FrameworkElement.LoadedEvent, new RoutedEventHandler((s, _) =>
+        {
+            if (s is not TextBlock tb) return;
+            void Refresh(object? _, DependencyPropertyChangedEventArgs __)
+            {
+                int id = tb.DataContext is StringRun r ? _vm.GetClusterId(r) : 0;
+                tb.Text       = id > 0 ? $"C{id}" : string.Empty;
+                tb.Foreground = id > 0 ? Brushes.CornflowerBlue : Brushes.Transparent;
+            }
+            tb.DataContextChanged += Refresh;
+            tb.Unloaded += (_, _) => tb.DataContextChanged -= Refresh;
+            Refresh(null, default);
+        }));
+        cellTemplate.VisualTree = tbFactory;
+        col.CellTemplate = cellTemplate;
+        return col;
+    }
+
+        private static DataGridTextColumn MakeScoreColumn()
     {
         var col = MakeCol("StringExtract_ColScore", nameof(StringRun.ReadabilityScore), 55, "F2", "StringExtract_TtScore");
         col.Visibility = Visibility.Collapsed;
@@ -892,6 +1057,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         cm.Items.Add(MakeMenuItem("Copy Offset",      "", () => CopyField(r => $"0x{r.Offset:X8}")));
         cm.Items.Add(MakeMenuItem("Copy Row (TSV)",   "", () => CopyField(r => $"0x{r.Offset:X8}\t{r.Length}\t{r.Encoding}\t{r.Value}")));
         cm.Items.Add(MakeMenuItem("Copy as C Array",  "", () => CopyCArray()));
+        cm.Items.Add(MakeMenuItem("Copy as JSON",     "", () => CopyAsJson()));
         cm.Items.Add(new Separator());
         cm.Items.Add(MakeMenuItem("Pin / Unpin",      "", () =>
         {
@@ -936,6 +1102,21 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
             sb.Append(string.Join(", ", hex.Select(h => $"0x{h}")));
             sb.AppendLine(" };");
         }
+        Clipboard.SetText(sb.ToString());
+    }
+
+    private void CopyAsJson()
+    {
+        var runs = _grid.SelectedItems.OfType<StringRun>().ToList();
+        if (runs.Count == 0) return;
+        var sb = new StringBuilder("[");
+        for (int i = 0; i < runs.Count; i++)
+        {
+            var r = runs[i];
+            if (i > 0) sb.Append(',');
+            sb.Append($"{{\"offset\":\"0x{r.Offset:X8}\",\"length\":{r.Length},\"encoding\":\"{r.Encoding}\",\"value\":{System.Text.Json.JsonSerializer.Serialize(r.Value)}}}");
+        }
+        sb.Append(']');
         Clipboard.SetText(sb.ToString());
     }
 
@@ -1130,4 +1311,13 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
 
         _ = exporter.ExportAsync(runs, dlg.FileName);
     }
+}
+
+file sealed class BoolToTextWrappingConverter : System.Windows.Data.IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        => value is true ? TextWrapping.Wrap : TextWrapping.NoWrap;
+
+    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        => throw new NotSupportedException();
 }

@@ -1609,6 +1609,12 @@
   <data name="StringExtract_LabelOffset"              xml:space="preserve"><value>Offset:</value></data>
   <data name="StringExtract_LabelReadability"         xml:space="preserve"><value>Score≥</value></data>
   <data name="StringExtract_PrintableOnly"            xml:space="preserve"><value>Printable only</value></data>
+  <data name="StringExtract_TtWordWrap"               xml:space="preserve"><value>Toggle word-wrap on the Value column</value></data>
+  <data name="StringExtract_TtGroupByEncoding"        xml:space="preserve"><value>Group results by encoding</value></data>
+  <data name="StringExtract_TtAutoRescan"             xml:space="preserve"><value>Auto-rescan when file changes on disk (2s debounce)</value></data>
+  <data name="StringExtract_TtCluster"               xml:space="preserve"><value>Cluster similar strings by Levenshtein distance ≤ 2 (strings ≥ 6 chars)</value></data>
+  <data name="StringExtract_TtShowClusters"          xml:space="preserve"><value>Show only strings that belong to a similarity cluster</value></data>
+  <data name="StringExtract_ColCluster"              xml:space="preserve"><value>Clust</value></data>
   <data name="StringExtract_TtPrintableOnly"          xml:space="preserve"><value>Hide strings containing control characters (below 0x20, except tab/LF/CR)</value></data>
   <data name="StringExtract_TtScore"                  xml:space="preserve"><value>Readability score 0–1 (letter ratio + bigram ratio + length bonus). Right-click column header to show/hide.</value></data>
   <data name="StringExtract_RegexLabel"               xml:space="preserve"><value>.*</value></data>
