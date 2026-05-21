@@ -266,8 +266,8 @@ internal sealed class StringTimelinePanel : Border
             Padding = new Thickness(4, 1, 4, 1), Margin = new Thickness(4, 0, 0, 0),
             FocusVisualStyle = null,
         };
-        resetBtn.SetResourceReference(StyleProperty,      "PanelIconButtonStyle");
-        resetBtn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
+        resetBtn.SetResourceReference(StyleProperty,                  "PanelIconButtonStyle");
+        resetBtn.SetResourceReference(Control.ForegroundProperty, "Panel_ToolbarForegroundBrush");
         resetBtn.Click += (_, _) => { zoomSlider.Value = 1; };
         DockPanel.SetDock(zoomLbl,    Dock.Left);
         DockPanel.SetDock(zoomSlider, Dock.Left);
