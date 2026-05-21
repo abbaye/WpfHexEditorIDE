@@ -11,6 +11,7 @@
     R5  whfmt-magic-collision  (WARN) sig+offset+ext overlap with another file
     R6  whfmt-strength-enum    (WARN) detection.strength in allowed set
     R7  whfmt-placeholder-drift(WARN) {{var}} not in variables{}
+    R8  whfmt-schema-url       (ERR)  $schema field absent or not a recognized whfmt schema URL
     R10 whfmt-expression-refs  (WARN) expression references undeclared identifier
                                        (lightweight identifier-scan; full AST
                                        validation lives in C# whfmt.Validate)
@@ -50,7 +51,11 @@ if (-not (Test-Path $CatalogRoot)) {
     exit 2
 }
 
-$AllowedStrengths = @('None','Weak','Medium','Strong','VeryStrong')
+$AllowedStrengths   = @('None','Weak','Medium','Strong','VeryStrong')
+$AllowedSchemaUrls  = @(
+    'https://wpfhexeditor.dev/schemas/whfmt/v2.0',
+    'https://wpfhexeditor.dev/schemas/whfmt/v3.0'
+)
 $RequiredFields   = @('formatName','formatId','extensions','category','description')
 
 # R11 — closed-set enum allow-lists. SYNC with the C# runtime contracts:
@@ -427,6 +432,15 @@ foreach ($path in $targets) {
         } elseif (-not $parsed.$k) {
             Add-Finding 'ERR' 'whfmt-schema-required' $rel "field '$k' is empty"
         }
+    }
+
+    # R8 — $schema present and recognized
+    $schemaVal = $null
+    if (Test-Prop $parsed '$schema') { $schemaVal = [string]$parsed.'$schema' }
+    if (-not $schemaVal) {
+        Add-Finding 'ERR' 'whfmt-schema-url' $rel '$schema field is absent'
+    } elseif ($AllowedSchemaUrls -notcontains $schemaVal) {
+        Add-Finding 'ERR' 'whfmt-schema-url' $rel ("`$schema '$schemaVal' not in recognized set ({0})" -f ($AllowedSchemaUrls -join ', '))
     }
 
     # R2 — version monotone

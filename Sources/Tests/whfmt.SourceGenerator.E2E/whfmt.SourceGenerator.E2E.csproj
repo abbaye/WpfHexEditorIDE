@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <!-- Restore from local nupkg folder before nuget.org -->
+    <RestoreAdditionalProjectSources>
+      $(MSBuildThisFileDirectory)..\..\Tools\whfmt.SourceGenerator\bin\Release\
+    </RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MSTest" Version="4.1.0" />
+    <!-- Reference the local nupkg — version must match what dotnet pack produced -->
+    <PackageReference Include="whfmt.SourceGenerator" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+  <!-- E2E fixture: a minimal .whfmt as AdditionalFile -->
+  <ItemGroup>
+    <AdditionalFiles Include="Fixtures\SimpleE2E.whfmt">
+      <WhfmtNamespace>WhfmtE2E</WhfmtNamespace>
+      <WhfmtClass>SimpleE2EParser</WhfmtClass>
+      <WhfmtValidate>true</WhfmtValidate>
+    </AdditionalFiles>
+  </ItemGroup>
+
+</Project>

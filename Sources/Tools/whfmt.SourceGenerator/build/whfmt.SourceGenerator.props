@@ -1,0 +1,15 @@
+<Project>
+  <!--
+    Expose per-file AdditionalFiles metadata as compiler-visible properties so that
+    WhfmtIncrementalGenerator can read them via AnalyzerConfigOptionsProvider.
+    Without this, custom metadata (WhfmtNamespace, WhfmtClass, etc.) is not written
+    to the GeneratedMSBuildEditorConfig.editorconfig that Roslyn passes to analyzers.
+  -->
+  <ItemGroup>
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WhfmtNamespace" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WhfmtClass" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WhfmtLanguage" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WhfmtValidate" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WhfmtAsync" />
+  </ItemGroup>
+</Project>

@@ -35,6 +35,7 @@
       "use_wpf": true,
       "use_winforms": false
     },
+    "whfmt.SourceGenerator":   { "category": "roslyn-generator", "tfm": ["netstandard2.0"], "use_wpf": false, "use_winforms": false },
     "whfmt.Analysis":          { "category": "core-xplat", "tfm": ["net8.0"], "use_wpf": false, "use_winforms": false },
     "whfmt.Backfill":          { "category": "core-xplat", "tfm": ["net8.0"], "use_wpf": false, "use_winforms": false },
     "whfmt.CodeGen":           { "category": "core-xplat", "tfm": ["net8.0"], "use_wpf": false, "use_winforms": false },
