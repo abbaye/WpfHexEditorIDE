@@ -224,6 +224,59 @@ public static class RoslynClassDiagramAnalyzer
         ClassDiagramOptions? options = null)
         => AnalyzeFiles([filePath], options);
 
+    /// <summary>
+    /// Incremental re-analysis: re-parses only <paramref name="changedFiles"/>,
+    /// removes their previous contributions from <paramref name="baseline"/>,
+    /// and returns a new merged document. Layout positions of unchanged nodes
+    /// are preserved from the baseline.
+    /// </summary>
+    public static DiagramDocument AnalyzeFilesIncremental(
+        DiagramDocument      baseline,
+        IReadOnlyList<string> allFiles,
+        IReadOnlyList<string> changedFiles,
+        ClassDiagramOptions?  options = null)
+    {
+        options ??= new ClassDiagramOptions();
+
+        // Seed maps from baseline — preserve unchanged nodes and positions.
+        var nodeMap        = new Dictionary<string, ClassNode>(StringComparer.Ordinal);
+        var inheritanceMap = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+        var changedSet     = new HashSet<string>(changedFiles, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var node in baseline.Classes)
+        {
+            // Skip nodes whose source file is among the changed files (stale).
+            if (!string.IsNullOrEmpty(node.SourceFilePath) && changedSet.Contains(node.SourceFilePath))
+                continue;
+
+            nodeMap[string.IsNullOrEmpty(node.Namespace) ? node.Name : $"{node.Namespace}.{node.Name}"] = node;
+        }
+
+        // Re-parse changed files and merge into nodeMap.
+        foreach (string path in changedFiles)
+        {
+            if (!path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)) continue;
+            if (!File.Exists(path)) continue;
+
+            string source;
+            try { source = File.ReadAllText(path); }
+            catch { continue; }
+
+            var tree = CSharpSyntaxTree.ParseText(source, path: path);
+            ProcessSyntaxTree(tree.GetRoot(), path, options, nodeMap, inheritanceMap);
+        }
+
+        var document = new DiagramDocument();
+        foreach (var node in nodeMap.Values)
+            document.Classes.Add(node);
+
+        BuildRelationships(document, nodeMap, inheritanceMap);
+        ComputeMetrics(nodeMap);
+
+        // Do NOT auto-layout — preserve existing positions so only changed nodes move.
+        return document;
+    }
+
     // ── Syntax tree processing ───────────────────────────────────────────────
 
     private static void ProcessSyntaxTree(
