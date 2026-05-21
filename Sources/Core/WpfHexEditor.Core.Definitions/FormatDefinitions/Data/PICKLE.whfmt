@@ -1,8 +1,9 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Python Pickle",
   "formatId": "PICKLE",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".pkl",
     ".pickle"
@@ -10,33 +11,138 @@
   "description": "Python object serialization format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Python Pickle Format"
+      "Python Pickle Module Documentation",
+      "PEP 3154 — Pickle protocol 4",
+      "Python Data Model — Pickling"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/PKL"
+      "https://docs.python.org/3/library/pickle.html",
+      "https://peps.python.org/pep-3154/",
+      "https://en.wikipedia.org/wiki/Pickle_(Python)"
     ]
   },
-  "detection": {
-    "required": true,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "8002",
+      "offset": 0,
+      "label": "Python Pickle protocol 2 (\\x80\\x02)",
+      "weight": 0.9,
+      "strength": "Strong"
     },
-    "signatures": [
-      {
-        "value": "80",
-        "offset": 0,
-        "label": "PICKLE magic",
-        "weight": 1.0
-      }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+    {
+      "value": "8003",
+      "offset": 0,
+      "label": "Python Pickle protocol 3 (\\x80\\x03)",
+      "weight": 0.9,
+      "strength": "Strong"
+    },
+    {
+      "value": "8004",
+      "offset": 0,
+      "label": "Python Pickle protocol 4 (\\x80\\x04)",
+      "weight": 0.9,
+      "strength": "Strong"
+    },
+    {
+      "value": "8005",
+      "offset": 0,
+      "label": "Python Pickle protocol 5 (\\x80\\x05)",
+      "weight": 0.9,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 2,
+  "structure": {
+    "fields": [
+      { "name": "proto_opcode",  "type": "uint8", "offset": "0x00", "length": 1, "description": "Protocol opcode: 0x80 = PROTO marker" },
+      { "name": "proto_version", "type": "uint8", "offset": "0x01", "length": 1, "description": "Protocol version: 2, 3, 4, or 5" },
+      { "name": "first_opcode",  "type": "uint8", "offset": "0x02", "length": 1, "description": "First real opcode after protocol declaration" },
+      { "name": "payload",       "type": "bytes", "offset": "0x03", "length": 8, "description": "First bytes of the serialized object stream" }
+    ]
   },
+  "inspector": {
+    "displayFields": ["proto_opcode", "proto_version", "first_opcode"],
+    "valueMaps": {
+      "proto_version": {
+        "0": "Protocol 0 (ASCII, human-readable, no PROTO opcode)",
+        "1": "Protocol 1 (binary, no PROTO opcode)",
+        "2": "Protocol 2 (binary, PROTO opcode added)",
+        "3": "Protocol 3 (Python 3 only, bytes type support)",
+        "4": "Protocol 4 (Python 3.4+, large objects, FRAME opcode)",
+        "5": "Protocol 5 (Python 3.8+, out-of-band buffers)"
+      },
+      "common_opcodes": {
+        "0x28": "MARK ( — push mark object",
+        "0x2E": "STOP . — end of pickle stream",
+        "0x30": "POP 0 — discard topmost stack item",
+        "0x52": "REDUCE R — call callable(args)",
+        "0x58": "SHORT_BINUNICODE X",
+        "0x63": "GLOBAL c — push global object by module+name",
+        "0x64": "DICT d — build dict from pairs",
+        "0x6C": "LIST l — build list from stack",
+        "0x71": "BINPUT q — store memo",
+        "0x74": "TUPLE t — build tuple",
+        "0x7D": "EMPTY_DICT } — push empty dict",
+        "0x93": "NEWOBJ_EX — create new object (proto 4)",
+        "0x95": "FRAME — announce buffer frame (proto 4)"
+      }
+    },
+    "tooltips": {
+      "proto_opcode": "0x80 is the PROTO opcode; followed by a single version byte",
+      "proto_version": "Protocol 2+ is recommended for binary payloads; 0 and 1 are legacy text-mode",
+      "first_opcode": "Opcode 0x95 (FRAME) is common in protocol 4+ for large objects"
+    }
+  },
+  "assertions": [
+    {
+      "name": "Protocol marker present",
+      "expression": "proto_opcode == 0x80",
+      "severity": "warning",
+      "message": "No PROTO opcode (0x80) at offset 0; may be a protocol 0 or 1 pickle (text-mode, no binary header)"
+    },
+    {
+      "name": "Protocol version in range",
+      "expression": "proto_version >= 2 && proto_version <= 5",
+      "severity": "info",
+      "message": "Protocol version is outside the 2-5 range; may be a very old (0/1) or future pickle"
+    },
+    {
+      "name": "Stream ends with STOP opcode",
+      "expression": "lastByte == 0x2E",
+      "severity": "warning",
+      "message": "Pickle stream should end with STOP opcode (0x2E '.')); file may be truncated"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "PROTO Opcode",    "offset": 0, "icon": "", "color": "#FFD43B" },
+      { "name": "Protocol Version","offset": 1, "icon": "", "color": "#FFD43B" },
+      { "name": "First Opcode",    "offset": 2, "icon": "", "color": "#FFD43B" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Pickle Header (JSON)",
+      "format": "json",
+      "fields": ["proto_opcode", "proto_version", "first_opcode"]
+    },
+    {
+      "name": "Pickle Opcode Stream (Hex)",
+      "format": "hex-dump",
+      "fields": ["proto_opcode", "proto_version", "payload"]
+    }
+  ],
+  "aiHints": [
+    "Pickle protocol 2+ starts with bytes 0x80 0x0N (PROTO opcode + version); protocol 0/1 have no header",
+    "The STOP opcode (0x2E '.') marks the end of the stream; everything before it is the serialized object",
+    "GLOBAL opcode (0x63 'c') followed by module + class name enables arbitrary code execution on load",
+    "Protocol 4 adds FRAME (0x95) for large objects and NEWOBJ_EX (0x93) for kwargs construction",
+    "Security: never unpickle data from an untrusted source — REDUCE+GLOBAL allows arbitrary code execution"
+  ],
   "variables": {
     "currentOffset": 0,
     "version": 0,
@@ -51,7 +157,7 @@
       "length": 2,
       "color": "#FFD43B",
       "opacity": 0.4,
-      "description": "Python pickle protocol version"
+      "description": "Python pickle protocol version (0x80 + version byte)"
     },
     {
       "type": "metadata",
@@ -67,18 +173,29 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Python runtime (pickle module)",
+    "NumPy / scikit-learn (model serialization via joblib/pickle)",
+    "pickletools module (disassembly)",
+    "fickling (security-focused pickle analysis)"
   ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".pkl",
-      ".pickle"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "MARSHAL",
+      "relation": "analogue",
+      "note": "Python Pickle and Ruby Marshal are both language-specific object serializers with arbitrary code execution risk"
+    }
+  ],
+  "useCases": [
+    "Python object serialization for caching and persistence",
+    "Machine learning model serialization (scikit-learn, PyTorch)",
+    "IPC between Python processes via pickled objects",
+    "Forensic analysis of serialized Python application state"
+  ],
+  "technicalDetails": "Pickle is a stack-based virtual machine with opcodes for pushing values, building Python objects, and reducing them via callable invocation. Protocol 2+ starts with PROTO (0x80) + version. Protocol 4 adds FRAME for buffered streaming. Protocol 0 is human-readable ASCII with no binary header. The STOP opcode (.) marks end of stream. Arbitrary code execution via GLOBAL+REDUCE makes untrusted pickle unsafe.",
+  "completenessScore": 84,
   "MimeTypes": [
-    "application/octet-stream"
+    "application/octet-stream",
+    "application/x-python-serialize"
   ],
   "Software": [
     "Hex Editor",
@@ -91,29 +208,27 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 84,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "ProtocolVersions": "0 (text), 1 (old binary), 2 (Python 2.3+), 3 (Python 3.0+), 4 (Python 3.4+), 5 (Python 3.8+)",
+    "SecurityRisk": "Arbitrary code execution via REDUCE/GLOBAL opcodes on untrusted data"
+  },
   "functions": {
     "readUInt32LE": "Read bytecode header"
   },
   "forensic": {
-    "category": "data",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Python object serialization format",
-    "suggestedInspections": [
-      "Validate Python Pickle schema header and encoding markers",
-      "Check nested structure depth and field type tags",
-      "Inspect string encodings and numeric value boundaries"
+    "riskLevel": "high",
+    "notes": [
+      "Pickle files are capable of arbitrary code execution via GLOBAL+REDUCE opcode sequence",
+      "AI/ML model .pkl files from untrusted sources should be treated as potentially malicious",
+      "fickling tool can detect and neutralize malicious pickle payloads before loading"
     ]
   }
 }

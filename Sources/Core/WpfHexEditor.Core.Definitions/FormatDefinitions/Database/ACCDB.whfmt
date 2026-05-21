@@ -1,8 +1,28 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Microsoft Access 2007+ Database",
   "formatId": "ACCDB",
-  "version": "1.15",
+  "version": "1.16",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 85,
+  "maxSignatureOffset": 20,
+  "signatures": [
+    {
+      "value": "5374616E64617264204143452044617461626173",
+      "offset": 0,
+      "label": "ACE Database magic 'Standard ACE Database'",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "structure": {
+    "fields": [
+      { "name": "ace_magic", "offset": 0, "size": 20, "type": "ascii", "description": "ACE signature 'Standard ACE Database'" },
+      { "name": "version_byte", "offset": 20, "size": 1, "type": "uint8", "description": "ACE version: 2=Access 2007, 3=Access 2010, 4=Access 2013+" },
+      { "name": "page_size", "offset": 22, "size": 2, "type": "uint16le", "description": "Page size in bytes (typically 4096)" }
+    ]
+  },
   "extensions": [
     ".accdb"
   ],
@@ -111,7 +131,7 @@
     "DocumentationLevel": "standard",
     "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
@@ -133,6 +153,41 @@
       "Inspect record format, schema tables, and journal state"
     ]
   },
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "OLE2 CFB Header", "color": "#E74C3C" },
+      { "offset": 512, "label": "First Sector", "color": "#3498DB" },
+      { "offset": 1024, "label": "Access Data Pages", "color": "#27AE60" }
+    ]
+  },
+  "aiHints": [
+    "ACCDB signature 'Standard ACE Database' (20 bytes) at offset 0 identifies Access 2007+ files",
+    "ACE version byte at offset 20: 2=Access 2007, 3=Access 2010, 4=Access 2013, 5=Access 2016+",
+    "ACCDB uses 4096-byte pages by default (vs 2048-byte pages in MDB/Jet 3)",
+    "ACCDB supports complex data types, multi-valued fields, and attachment fields not available in MDB",
+    "Password protection in ACCDB 2007 uses 128-bit AES encryption (stronger than MDB's RC4)"
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "notes": [
+      "ACCDB 2007+ uses 128-bit AES encryption — significantly harder to crack than MDB's RC4",
+      "Deleted records may persist in unused page space until a compact operation is run",
+      "MSysObjects and MSysACEs system tables contain schema and security ACL data"
+    ],
+    "suspiciousPatterns": []
+  },
+  "useCases": [
+    "Microsoft Access 2007+ desktop database applications",
+    "SharePoint integration with Access web databases",
+    "Migration destination from legacy MDB format",
+    "Forensic extraction from modern Microsoft Access applications"
+  ],
+  "technicalDetails": {
+    "ACEVersions": { "2": "Access 2007", "3": "Access 2010", "4": "Access 2013", "5": "Access 2016+" },
+    "DefaultPageSize": 4096,
+    "EncryptionType": "AES 128-bit (Access 2007 default)",
+    "MaxDatabaseSize": "2 GB"
+  },
   "inspector": {
     "badge": "aceDbSignature",
     "primaryField": "aceDbSignature",
@@ -151,9 +206,12 @@
     {
       "name": "Microsoft Access 2007+ Database Header (JSON)",
       "format": "json",
-      "fields": [
-        "aceDbSignature"
-      ]
+      "fields": ["aceDbSignature"]
+    },
+    {
+      "name": "ACCDB Header Summary",
+      "format": "text",
+      "template": "Microsoft Access ACCDB\nSignature: {aceDbSignature}\nPage Size: {pageSize}\nVersion  : {version}"
     }
   ],
   "assertions": [
@@ -162,6 +220,18 @@
       "expression": "aceDbSignature != 0",
       "severity": "warning",
       "message": "ACCDB magic field is zero — possible detection failure"
+    },
+    {
+      "name": "ACE version in valid range",
+      "expression": "version_byte >= 2 && version_byte <= 6",
+      "severity": "warning",
+      "message": "ACCDB ACE version byte should be between 2 and 6"
+    },
+    {
+      "name": "File size reasonable",
+      "expression": "fileSize >= 4096",
+      "severity": "error",
+      "message": "ACCDB file must be at least one page (4096 bytes)"
     }
   ],
   "diff": {

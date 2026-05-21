@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "ELF Executable",
   "formatId": "ELF",
@@ -463,14 +464,14 @@
       }
     ]
   },
-  "aiHints": {
-    "analysisContext": "Executable and Linkable Format (ELF) - the standard binary format for executables, object code, shared libra...",
-    "suggestedInspections": [
-      "Verify ELF Executable signature, section table, and entry point",
-      "Check import/export tables for suspicious library references",
-      "Inspect section entropy for packing, encryption, or hollowing"
-    ]
-  },
+  "aiHints": [
+    "ELF ident (16B): 7F 45 4C 46 + class(1) + dataEncoding(1) + version(1) + osAbi(1) + abiVersion(1) + pad(7B)",
+    "ELF header fields: eType(2) + eMachine(2) + eVersion(4) + eEntry(4/8) + ePhoff(4/8) + eShoff(4/8)",
+    "eType: 1=ET_REL (object), 2=ET_EXEC (executable), 3=ET_DYN (shared lib or PIE), 4=ET_CORE",
+    "Program headers at ePhoff describe loadable segments (PT_LOAD, PT_DYNAMIC, PT_INTERP) for OS loader",
+    "Section headers at eShoff describe sections (.text, .data, .bss, .symtab) for linkers and debuggers",
+    "readelf -h shows ELF header; ldd shows shared library dependencies; file command identifies ELF subtype"
+  ],
   "software": [
     "Linux OS",
     "GCC",
@@ -516,7 +517,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 32,
     "ValidationRules": 3,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -530,8 +531,15 @@
     "VariableWidthFields": "Entry point, program header offset, and section header offset are 4 bytes in ELF32 and 8 bytes in ELF64"
   },
   "diff": {
-    "keyFields": ["elfMachine", "elfType", "elfEntryPoint", "elfClass"],
-    "ignoreFields": ["elfPadding"],
+    "keyFields": [
+      "elfMachine",
+      "elfType",
+      "elfEntryPoint",
+      "elfClass"
+    ],
+    "ignoreFields": [
+      "elfPadding"
+    ],
     "groupBy": "elfType",
     "note": "Machine architecture, file type, and entry point identify binary purpose and target; padding bytes are always zero and carry no semantic value"
   },
@@ -573,11 +581,37 @@
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "elfMagic",      "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 4-byte magic to test loader rejection and detection code paths" },
-      { "field": "elfEntryPoint", "mutation": "boundary_values",   "weight": 2, "description": "Test entry-point boundary values (0, 0xFFFFFFFF) to probe loader address validation" },
-      { "field": "elfType",       "mutation": "enum_sweep",        "weight": 2, "description": "Sweep all known ET_* values plus unknown ones to test type-dispatch logic in loaders" },
-      { "field": "elfPhNum",      "mutation": "overflow",          "weight": 2, "description": "Overflow program-header count to trigger allocator or parser size checks" },
-      { "field": "elfFlags",      "mutation": "bit_flip",          "rate": 0.001, "weight": 1, "description": "Random bit flip in processor flags to detect flag-interpretation edge cases" }
+      {
+        "field": "elfMagic",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupt the 4-byte magic to test loader rejection and detection code paths"
+      },
+      {
+        "field": "elfEntryPoint",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Test entry-point boundary values (0, 0xFFFFFFFF) to probe loader address validation"
+      },
+      {
+        "field": "elfType",
+        "mutation": "enum_sweep",
+        "weight": 2,
+        "description": "Sweep all known ET_* values plus unknown ones to test type-dispatch logic in loaders"
+      },
+      {
+        "field": "elfPhNum",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Overflow program-header count to trigger allocator or parser size checks"
+      },
+      {
+        "field": "elfFlags",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Random bit flip in processor flags to detect flag-interpretation edge cases"
+      }
     ]
   },
   "migration": [
@@ -586,8 +620,18 @@
       "to": "ELF64",
       "description": "Promote a 32-bit ELF to 64-bit class; header size grows from 52 to 64 bytes and pointer fields double in width",
       "changes": [
-        { "field": "elfClass",   "changeType": "set_value", "value": "02",         "description": "Change EI_CLASS from ELFCLASS32 (1) to ELFCLASS64 (2)" },
-        { "field": "elfEhSize", "changeType": "set_value", "value": "4000",        "description": "Update ELF header size field from 52 (0x34) to 64 (0x40) in LE" }
+        {
+          "field": "elfClass",
+          "changeType": "set_value",
+          "value": "02",
+          "description": "Change EI_CLASS from ELFCLASS32 (1) to ELFCLASS64 (2)"
+        },
+        {
+          "field": "elfEhSize",
+          "changeType": "set_value",
+          "value": "4000",
+          "description": "Update ELF header size field from 52 (0x34) to 64 (0x40) in LE"
+        }
       ]
     },
     {
@@ -595,8 +639,162 @@
       "to": "EV_CURRENT",
       "description": "Repair files where the version byte was mistakenly zeroed by early toolchains",
       "changes": [
-        { "field": "elfVersion",     "changeType": "set_value", "value": "01", "description": "Set EI_VERSION to EV_CURRENT (1)" },
-        { "field": "elfVersionWord", "changeType": "set_value", "value": "01000000", "description": "Set the word-size version field at offset 20 to EV_CURRENT (1) LE" }
+        {
+          "field": "elfVersion",
+          "changeType": "set_value",
+          "value": "01",
+          "description": "Set EI_VERSION to EV_CURRENT (1)"
+        },
+        {
+          "field": "elfVersionWord",
+          "changeType": "set_value",
+          "value": "01000000",
+          "description": "Set the word-size version field at offset 20 to EV_CURRENT (1) LE"
+        }
+      ]
+    }
+  ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "7F454C46",
+      "offset": 0,
+      "label": "ELF — ELF magic number",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "name": "magic",
+        "type": "hex",
+        "offset": 0,
+        "length": 4,
+        "description": "ELF magic: 7F 45 4C 46"
+      },
+      {
+        "name": "elfClass",
+        "type": "uint8",
+        "offset": 4,
+        "length": 1,
+        "description": "1=32-bit (ELF32), 2=64-bit (ELF64)"
+      },
+      {
+        "name": "dataEncoding",
+        "type": "uint8",
+        "offset": 5,
+        "length": 1,
+        "description": "1=LE (LSB), 2=BE (MSB)"
+      },
+      {
+        "name": "elfVersion",
+        "type": "uint8",
+        "offset": 6,
+        "length": 1,
+        "description": "ELF spec version (must be 1)"
+      },
+      {
+        "name": "osAbi",
+        "type": "uint8",
+        "offset": 7,
+        "length": 1,
+        "description": "0=SysV/Linux, 3=NetBSD, 6=Solaris, 9=FreeBSD"
+      },
+      {
+        "name": "eType",
+        "type": "uint16",
+        "offset": 16,
+        "length": 2,
+        "description": "1=relocatable, 2=executable, 3=shared obj, 4=core dump"
+      },
+      {
+        "name": "eMachine",
+        "type": "uint16",
+        "offset": 18,
+        "length": 2,
+        "description": "3=x86, 62=x86-64, 40=ARM, 183=AArch64, 8=MIPS"
+      },
+      {
+        "name": "eEntry",
+        "type": "uint64",
+        "offset": 24,
+        "length": 8,
+        "description": "Virtual entry point address (0 for non-executables)"
+      },
+      {
+        "name": "ePhoff",
+        "type": "uint64",
+        "offset": 32,
+        "length": 8,
+        "description": "Offset to program header table"
+      },
+      {
+        "name": "eShoff",
+        "type": "uint64",
+        "offset": 40,
+        "length": 8,
+        "description": "Offset to section header table"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "elfClass",
+      "dataEncoding",
+      "eType",
+      "eMachine",
+      "eEntry",
+      "ePhoff",
+      "eShoff"
+    ],
+    "valueMaps": {
+      "elfClass": {
+        "1": "32-bit",
+        "2": "64-bit"
+      },
+      "dataEncoding": {
+        "1": "Little-endian",
+        "2": "Big-endian"
+      },
+      "eType": {
+        "1": "ET_REL (relocatable)",
+        "2": "ET_EXEC (executable)",
+        "3": "ET_DYN (shared library)",
+        "4": "ET_CORE (core dump)"
+      }
+    },
+    "tooltips": {
+      "eMachine": "Target CPU architecture",
+      "eEntry": "Virtual address of program entry point",
+      "ePhoff": "Offset to program header table (load segments)"
+    }
+  },
+  "exportTemplates": [
+    {
+      "name": "ELF Header (JSON)",
+      "format": "json",
+      "fields": [
+        "elfMagic",
+        "elfClass",
+        "dataEncoding",
+        "eType",
+        "eMachine",
+        "eEntry",
+        "ePhoff",
+        "eShoff"
+      ]
+    },
+    {
+      "name": "ELF Summary (Text)",
+      "format": "text",
+      "fields": [
+        "elfClass",
+        "dataEncoding",
+        "eType",
+        "eMachine",
+        "eEntry"
       ]
     }
   ]

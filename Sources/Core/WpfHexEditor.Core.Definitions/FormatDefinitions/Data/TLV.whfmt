@@ -1,41 +1,112 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Tag-Length-Value",
   "formatId": "TLV",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".tlv"
   ],
   "description": "Generic Tag-Length-Value encoding format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Tag-Length-Value Format"
+      "ISO/IEC 7816-4 — Smart Card TLV Encoding",
+      "EMV 4.3 Specifications — BER-TLV",
+      "SNMP RFC 1157 — TLV-encoded data"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/TLV"
+      "https://en.wikipedia.org/wiki/Type%E2%80%93length%E2%80%93value",
+      "https://www.emvco.com/specifications/",
+      "https://www.iso.org/standard/54228.html"
     ]
   },
-  "detection": {
-    "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "TLV magic",
-        "weight": 1.0
-      }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+  "signatures": [
+    {
+      "value": "00",
+      "offset": 0,
+      "label": "Generic TLV placeholder (no fixed magic; tag depends on application)",
+      "weight": 0.1,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 1,
+  "structure": {
+    "fields": [
+      { "name": "tag",    "type": "bytes", "offset": "0x00", "length": 2, "description": "Tag field: application-defined type identifier (1, 2, or 3 bytes depending on encoding)" },
+      { "name": "length", "type": "bytes", "offset": "0x02", "length": 2, "description": "Length field: size of value in bytes (1, 2, or BER-style multi-byte)" },
+      { "name": "value",  "type": "bytes", "offset": "0x04", "length": 8, "description": "Value bytes: payload of the TLV record (length bytes)" }
+    ]
   },
+  "inspector": {
+    "displayFields": ["tag", "length", "value"],
+    "valueMaps": {
+      "common_ber_tags": {
+        "0x4F": "AID (Application Identifier) — EMV/smart card",
+        "0x50": "Application Label — EMV",
+        "0x57": "Track 2 Equivalent Data — EMV",
+        "0x5A": "Primary Account Number (PAN) — EMV",
+        "0x5F20": "Cardholder Name — EMV",
+        "0x87": "Application Priority Indicator — EMV",
+        "0x9F02": "Amount Authorized — EMV",
+        "0x9F26": "Application Cryptogram — EMV"
+      }
+    },
+    "tooltips": {
+      "tag": "In BER-TLV: class (bits 7-6) + P/C (bit 5) + tag (bits 4-0); multi-byte if bits 4-0 all set",
+      "length": "In BER-TLV: short form if < 0x80; long form 0x81+1byte, 0x82+2bytes; indefinite 0x80",
+      "value": "Payload bytes; may be a nested TLV container (if P/C bit is set in tag)"
+    }
+  },
+  "assertions": [
+    {
+      "name": "Tag byte present",
+      "expression": "fileSize >= 3",
+      "severity": "error",
+      "message": "File is too small to contain a valid TLV record (minimum 3 bytes: tag + length + value)"
+    },
+    {
+      "name": "Length value is consistent",
+      "expression": "length_value + tag_length + length_field_length <= fileSize",
+      "severity": "warning",
+      "message": "TLV length field value exceeds remaining file size; record is truncated or malformed"
+    },
+    {
+      "name": "No universal magic",
+      "expression": "true",
+      "severity": "info",
+      "message": "TLV is a structural encoding pattern, not a file format; context-specific tags define the schema"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "First Tag",   "offset": 0, "icon": "", "color": "#8E44AD" },
+      { "name": "First Length","offset": 2, "icon": "", "color": "#8E44AD" },
+      { "name": "First Value", "offset": 4, "icon": "", "color": "#8E44AD" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "TLV Record (JSON)",
+      "format": "json",
+      "fields": ["tag", "length", "value"]
+    },
+    {
+      "name": "TLV Hex Dump",
+      "format": "hex-dump",
+      "fields": ["tag", "length", "value"]
+    }
+  ],
+  "aiHints": [
+    "TLV is a structural encoding pattern used across many protocols: EMV, ASN.1 BER/DER, SNMP, 802.11, Bluetooth",
+    "BER-TLV from EMV/smart cards: tag class = bits 7-6 of first tag byte (0=Universal, 1=Application, 2=Context, 3=Private)",
+    "Multi-byte BER tag: bits 4-0 of first byte all set (0x1F) means next byte(s) continue the tag number",
+    "Length field: 1-byte if < 128; 0x81 + 1-byte length; 0x82 + 2-byte big-endian length",
+    "Constructed TLV (bit 5 set in tag) contains nested TLV records in the value field"
+  ],
   "variables": {
     "currentOffset": 0,
     "machineType": "",
@@ -66,15 +137,26 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "EMV card terminals and payment processing software",
+    "OpenSC (smart card TLV tools)",
+    "Wireshark (TLV protocol dissectors)",
+    "PCSC Workbench (smart card inspector)"
   ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".tlv"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "ASN1_DER",
+      "relation": "superset-context",
+      "note": "ASN.1 DER/BER is a formally specified TLV encoding; generic TLV follows the same Tag-Length-Value pattern without a strict type registry"
+    }
+  ],
+  "useCases": [
+    "EMV payment card data encoding and inspection",
+    "Smart card APDU response parsing",
+    "Network protocol frame analysis (RADIUS, Diameter, SNMP)",
+    "Embedded system binary protocol debugging"
+  ],
+  "technicalDetails": "TLV (Type-Length-Value) is an extensible encoding schema used extensively in smart cards (EMV/ISO 7816), network protocols (RADIUS, Diameter), and binary data interchange. The tag identifies the data type (application-specific), the length specifies the byte count of the value, and the value carries the payload. Constructed TLVs (bit 5 of tag set) contain nested TLV records.",
+  "completenessScore": 80,
   "MimeTypes": [
     "application/octet-stream"
   ],
@@ -89,29 +171,27 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 80,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "Pattern": "Tag + Length + Value — fundamental binary encoding pattern",
+    "Variants": "BER-TLV (ISO 7816), ASN.1 BER/DER, RADIUS AVP, Diameter AVP, 802.11 TLV"
+  },
   "functions": {
-    "readUInt32LE": "Read executable header"
+    "readUInt32LE": "Read TLV header"
   },
   "forensic": {
-    "category": "data",
     "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Generic Tag-Length-Value encoding format",
-    "suggestedInspections": [
-      "Validate Tag-Length-Value schema header and encoding markers",
-      "Check nested structure depth and field type tags",
-      "Inspect string encodings and numeric value boundaries"
+    "notes": [
+      "EMV TLV data from payment cards may contain PAN (card number) and other cardholder PII",
+      "Malformed TLV records with mismatched lengths may crash parsers — common in fuzzing targets",
+      "Indefinite-length BER encoding (0x80) requires scanning for end-of-contents marker"
     ]
   }
 }

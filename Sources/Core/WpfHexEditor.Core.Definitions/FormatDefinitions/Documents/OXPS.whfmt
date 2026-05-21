@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Open XML Paper Specification",
   "formatId": "OXPS",
@@ -302,16 +303,25 @@
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Microsoft OXPS (Open XML Paper Specification) document - a ZIP-based fixed-layout document format, successor...",
-    "suggestedInspections": [
-      "Validate Open XML Paper Specification file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+    "suspiciousPatterns": [],
+    "notes": [
+      "ZIP-based container; extract and inspect inner files for malicious payloads.",
+      "Metadata in core properties may reveal author identity and edit history.",
+      "Embedded macros or scripts may execute on open."
     ]
   },
+  "aiHints": [
+    "Microsoft OXPS (Open XML Paper Specification) document - a ZIP-based fixed-layout document format, successor...",
+    "Validate Open XML Paper Specification file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "FixedDocumentSequence.fdseq references FixedDocument parts which reference .fpage files.",
+    "Glyph elements use UnicodeString and Indices attributes for text rendering — not plain text.",
+    "Font resources in Resources/ are subset-embedded; full font reconstruction may be impossible.",
+    "ICC color profiles in Resources/ define the color space for accurate rendering.",
+    "OXPS and XPS differ in namespace URIs; check ContentTypes to distinguish them.",
+    "Digital signatures may be present in _xmlsignatures/ subdirectory."
+  ],
   "diff": {
     "keyFields": [
       "zip_signature",
@@ -386,5 +396,143 @@
       }
     ],
     "note": "Inferred fuzz strategies for OXPS. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "504B0304",
+      "offset": 0,
+      "label": "OXPS signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      {
+        "name": "LocalFileHeader",
+        "offset": 0,
+        "size": 30,
+        "type": "struct",
+        "description": "ZIP local file header"
+      },
+      {
+        "name": "ContentTypes",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "[Content_Types].xml listing all OXPS parts"
+      },
+      {
+        "name": "FixedDocSeq",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "FixedDocumentSequence.fdseq root document sequence"
+      },
+      {
+        "name": "FixedPage",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "Pages/N.fpage fixed page markup in XAML-like syntax"
+      },
+      {
+        "name": "Resources",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "Resources/ fonts, images, and ICC color profiles"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 4,
+        "description": "End of primary signature region"
+      },
+      {
+        "name": "Content Start",
+        "offset": 64,
+        "description": "Approximate content start after headers"
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "xps",
+      "relation": "predecessor",
+      "note": "XPS (ECMA-313) is the older version of the format"
+    },
+    {
+      "formatId": "pdf",
+      "relation": "equivalent",
+      "note": "PDF is the dominant fixed-layout document format"
+    },
+    {
+      "formatId": "docx",
+      "relation": "related",
+      "note": "DOCX is printed to OXPS/XPS via Windows print driver"
+    }
+  ],
+  "software": [
+    "Microsoft XPS Viewer",
+    "Windows XPS Document Writer",
+    "SumatraPDF"
+  ],
+  "useCases": [
+    "Fixed-layout document publishing",
+    "Print-ready document sharing",
+    "Document archival"
+  ],
+  "technicalDetails": "OXPS (ECMA-388) is the Open XML Paper Specification, an evolution of XPS. It uses a ZIP container with XAML-derived fixed page markup. Each page is a .fpage XML file with vector graphics, glyphs, and images. OXPS is the default XPS variant on Windows 8+.",
+  "completenessScore": 88
 }

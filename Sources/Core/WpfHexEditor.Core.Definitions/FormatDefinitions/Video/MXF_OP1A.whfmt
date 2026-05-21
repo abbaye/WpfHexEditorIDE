@@ -1,0 +1,99 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "MXF OP-1a Operational Pattern",
+  "formatId": "MXF_OP1A",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "MXF OP-1a (Material eXchange Format, Operational Pattern 1a) is a professional broadcast wrapper format standardized in SMPTE 377M. OP-1a is the most common MXF pattern, interleaving all essence tracks (video, audio) in a single file. Used widely in broadcast playout, file-based production, and digital cinema.",
+  "extensions": [".mxf"],
+  "category": "Video",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "060E2B34",
+      "offset": 0,
+      "label": "MXF Universal Label (SMPTE UL) prefix",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "ul_prefix", "type": "bytes", "description": "SMPTE Universal Label prefix 0x060E2B34", "storeAs": "bytes" },
+      { "offset": 4, "size": 4, "name": "ul_category", "type": "bytes", "description": "UL category/designator bytes (e.g., 0x02050101 for header partition)", "storeAs": "bytes" },
+      { "offset": 8, "size": 4, "name": "ul_registry", "type": "bytes", "description": "UL registry and organization bytes", "storeAs": "bytes" },
+      { "offset": 12, "size": 4, "name": "ul_suffix", "type": "bytes", "description": "UL suffix bytes completing the 16-byte key", "storeAs": "bytes" },
+      { "offset": 16, "size": 1, "name": "ber_length_tag", "type": "uint8", "description": "BER (Basic Encoding Rules) length tag; 0x83 indicates 3-byte long form", "storeAs": "uint8" },
+      { "offset": 17, "size": 3, "name": "value_length", "type": "uint24be", "description": "Length of the KLV value in bytes (3-byte BER long form)", "storeAs": "uint32" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["ul_prefix", "ul_category", "ber_length_tag", "value_length"],
+    "valueMaps": {
+      "ber_length_tag": {
+        "131": "BER long form, 3 bytes follow for length (0x83)",
+        "128": "BER long form, additional length bytes follow (0x80)",
+        "129": "BER long form, 1 byte follows (0x81)",
+        "130": "BER long form, 2 bytes follow (0x82)"
+      }
+    },
+    "tooltips": {
+      "ul_prefix": "All SMPTE MXF files begin with 0x060E2B34; this is the fixed SMPTE UL namespace prefix",
+      "ul_category": "Bytes 4-7 identify the specific SMPTE key type; 0x02050101 = header partition pack",
+      "ber_length_tag": "BER-TLV length encoding; 0x83 = 3-byte length follows; values < 0x80 are 1-byte short form",
+      "value_length": "Size of the partition pack value payload in bytes"
+    }
+  },
+  "assertions": [
+    { "id": "MXF_001", "field": "ul_prefix", "operator": "startsWith", "value": "060E2B34", "description": "All MXF files must start with the SMPTE UL prefix 0x060E2B34" },
+    { "id": "MXF_002", "field": "ber_length_tag", "operator": "greaterThanOrEqual", "value": 128, "description": "First partition pack BER length should use long form (>=0x80) for MXF partition packs" },
+    { "id": "MXF_003", "field": "value_length", "operator": "greaterThan", "value": 0, "description": "Partition pack value length must be greater than zero" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Header Partition Pack Key (UL)", "color": "#FF6B35" },
+      { "offset": 16, "label": "BER Length Tag", "color": "#4ECDC4" },
+      { "offset": 17, "label": "Value Length (3 bytes BE)", "color": "#45B7D1" },
+      { "offset": 20, "label": "Partition Pack Value (Header Metadata)", "color": "#96CEB4" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Header Pack Summary", "fields": ["ul_prefix", "ul_category", "value_length"], "format": "text" },
+    { "name": "KLV Header Hex", "fields": ["ul_prefix", "ul_category", "ul_registry", "ul_suffix", "ber_length_tag", "value_length"], "format": "hex" }
+  ],
+  "aiHints": [
+    "MXF uses KLV (Key-Length-Value) encoding throughout; every data unit is identified by a 16-byte SMPTE UL key followed by BER-encoded length and value",
+    "OP-1a interleaves all essence tracks; OP-Atom stores each track in a separate file; OP-1b and OP-2a are less common variants",
+    "The header partition pack UL is 0x060E2B34.020501010D011201010100 (closed/complete) or similar; 'operational pattern' field within the partition pack identifies OP-1a vs OP-Atom",
+    "MXF contains three regions: Header (metadata + first essence), Body (optional additional essence), Footer (index table + closing metadata)",
+    "Avid OP-Atom MXF stores one audio or video track per file; broadcast OP-1a MXF wraps all tracks together — critical distinction for processing pipelines"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "MXF metadata sets can contain extensive production information including camera settings, GPS, operator names — a rich forensic data source",
+      "Closed and complete vs open and incomplete header partition status indicates whether the file was properly closed after recording",
+      "Dark metadata (encrypted or proprietary KLV sets) may be present in broadcast MXF files from specific vendors"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "MXF", "relationship": "variant", "note": "MXF_OP1A is the interleaved variant of MXF; MXF.whfmt covers the general format family" },
+    { "format": "DNXHR", "relationship": "carries", "note": "DNxHR video essence is commonly wrapped in MXF OP-1a for Avid interchange" },
+    { "format": "H264", "relationship": "carries", "note": "H.264 video can be wrapped in MXF OP-1a for broadcast file-based workflows (IMF, AS-11)" }
+  ],
+  "software": [
+    { "name": "Avid Media Composer", "role": "Primary professional NLE using MXF OP-Atom and OP-1a for media interchange" },
+    { "name": "FFmpeg", "role": "MXF OP-1a demuxer and muxer supporting various essence types" },
+    { "name": "Sony XDCAM", "role": "Professional camera system recording MXF OP-1a files to optical disc and SxS media" },
+    { "name": "Omneon / Harmonic Spectrum", "role": "Broadcast playout servers consuming MXF OP-1a as primary ingest format" }
+  ],
+  "useCases": [
+    "Broadcast file-based production and playout workflows using MXF as the interchange standard",
+    "Digital cinema package intermediate wrapping for pre-DCP mastering workflows",
+    "XDCAM, P2, and AVC-Intra camera recordings in MXF OP-1a format from Sony and Panasonic cameras"
+  ],
+  "technicalDetails": "MXF (SMPTE 377M) uses KLV (SMPTE 336M) triplets throughout. Every structure is a 16-byte UL key + BER-encoded length + value. The file begins with a Header Partition Pack, followed by Header Metadata (Primer Pack + structural metadata sets), and optionally an Essence Container interleaving video and audio KLV items. A Body Partition may follow for large files. The Footer Partition contains the closed/complete partition pack and optionally a Random Index Pack (RIP) for fast navigation. OP-1a is defined in SMPTE RP 2057 and identified by the operational pattern UL in the partition pack header. The format supports any essence type via registered UL-based essence container designators. Index tables provide frame-accurate random access to essence frames.",
+  "completenessScore": 83
+}

@@ -1,0 +1,121 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "PostScript Type 1 Binary Font",
+  "formatId": "PFB_FONT",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "PostScript Type 1 binary font (.pfb) is the binary-encoded form of Adobe's Type 1 PostScript font format. PFB files contain three segments: an ASCII text section (PostScript preamble and font dictionary), a binary encrypted section (charstring procedures encoded with the eexec encryption algorithm), and a final zeros section. The format uses a segment marker byte 0x80 followed by a type byte.",
+  "extensions": [".pfb"],
+  "category": "Fonts",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "8001",
+      "offset": 0,
+      "label": "PFB segment marker 0x80 + type 0x01 (ASCII segment)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 2,
+  "structure": {
+    "fields": [
+      { "offset": 0,  "size": 1,  "name": "segment_marker",  "type": "uint8",    "description": "Segment start marker: always 0x80", "storeAs": "uint8" },
+      { "offset": 1,  "size": 1,  "name": "segment_type",    "type": "uint8",    "description": "Segment type: 1=ASCII text, 2=binary data, 3=end-of-file", "storeAs": "uint8" },
+      { "offset": 2,  "size": 4,  "name": "segment_length",  "type": "uint32le", "description": "Length of this segment's data in bytes (little-endian)", "storeAs": "uint32" },
+      { "offset": 6,  "size": -1, "name": "segment_data",    "type": "ascii",    "description": "ASCII PostScript text: %!PS-AdobeFont header, font dictionary, CharStrings begin", "storeAs": "string" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["segment_marker", "segment_type", "segment_length"],
+    "valueMaps": {
+      "segment_type": {
+        "1": "ASCII text (PostScript preamble)",
+        "2": "Binary data (eexec-encrypted charstrings)",
+        "3": "End-of-file sentinel"
+      }
+    },
+    "tooltips": {
+      "segment_marker":  "0x80 is the PFB segment marker; its presence distinguishes PFB from PFA (plain ASCII Type 1)",
+      "segment_type":    "Type 1 (ASCII) contains the font name, encoding, and PostScript procedures; Type 2 (binary) contains encrypted glyph outlines",
+      "segment_length":  "Length of data following this 6-byte header; sum of all segment lengths gives total font data size"
+    }
+  },
+  "assertions": [
+    {
+      "id": "PFB_001",
+      "field": "segment_marker",
+      "operator": "equals",
+      "value": 128,
+      "description": "First byte must be 0x80 (PFB segment marker)"
+    },
+    {
+      "id": "PFB_002",
+      "field": "segment_type",
+      "operator": "equals",
+      "value": 1,
+      "description": "First segment must be type 1 (ASCII) containing PostScript font header"
+    },
+    {
+      "id": "PFB_003",
+      "field": "segment_length",
+      "operator": "greaterThan",
+      "value": 100,
+      "description": "ASCII segment must be at least 100 bytes to contain a valid PostScript font header"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0,  "label": "Segment 1 Header (ASCII)",  "color": "#4A90D9" },
+      { "offset": 6,  "label": "PostScript Font Data",       "color": "#7ED321" },
+      { "offset": -1, "label": "Segment 2 (Binary/eexec)",   "color": "#F5A623" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PFB Segment Summary",
+      "fields": ["segment_marker", "segment_type", "segment_length"],
+      "format": "json"
+    },
+    {
+      "name": "Font Binary Audit",
+      "fields": ["segment_type", "segment_length"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "A complete PFB font consists of exactly three segments: Segment 1 (type=1, ASCII PostScript header), Segment 2 (type=2, binary eexec-encrypted glyph charstrings), and Segment 3 (type=3, end-of-file, length=0).",
+    "The ASCII segment (Segment 1) begins with '%!PS-AdobeFont-1.0:' and contains the font's PostScript dictionary including FontName, FullName, FamilyName, Weight, ItalicAngle, Encoding array, and the unencrypted portion of the CharStrings dictionary.",
+    "The binary segment (Segment 2) contains glyph outlines encrypted with the Type 1 eexec algorithm using seed key 55665; each charstring is further encrypted with a per-glyph seed of 4330.",
+    "Type 1 fonts were superseded by Type 2 charstrings in CFF/OpenType but are still found in legacy PDF files and older PostScript printers; Adobe withdrew Type 1 support from Acrobat Reader in 2023.",
+    "The companion file .pfm (Windows) or .afm (metrics) contains kerning pairs and advance widths that are not stored in the .pfb binary; both are needed for proper typesetting."
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "PFB files contain the full font program including copyright strings, font vendor codes, and unique ID numbers that can be used to trace font origin.",
+      "The eexec encryption in Type 1 fonts is weak (linear congruential cipher); glyph outlines can be decrypted with publicly available tools (t1disasm, fontTools).",
+      "Type 1 font embedding in PDF documents was historically used to carry malicious PostScript code; ensure PFB files come from trusted sources before rendering."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "OTF",      "relationship": "successor",   "note": "OpenType CFF (.otf) is the modern replacement for Type 1 PFB fonts using Type 2 charstrings" },
+    { "format": "TTF",      "relationship": "alternative", "note": "TrueType .ttf is the competing outline font format from Apple/Microsoft developed alongside Type 1" },
+    { "format": "SFD_FONT", "relationship": "source",      "note": "FontForge SFD files can be compiled to PFB Type 1 format for legacy PostScript compatibility" }
+  ],
+  "software": [
+    { "name": "Adobe Type Manager (ATM)", "role": "Legacy Adobe utility for rendering Type 1 PFB fonts on screen in Windows and macOS" },
+    { "name": "FontForge",               "role": "Open-source font editor that reads and writes PFB Type 1 fonts" },
+    { "name": "fontTools (t1Lib)",        "role": "Python library providing Type 1 PFB reading and decompilation via t1disasm" },
+    { "name": "Ghostscript",             "role": "PostScript/PDF interpreter with native Type 1 PFB font rendering support" }
+  ],
+  "useCases": [
+    "Legacy PostScript printing workflows requiring Type 1 font embedding in PS and EPS documents",
+    "Forensic recovery and analysis of Type 1 fonts embedded in older PDF documents",
+    "Converting historical Type 1 font collections to modern OpenType format for digital archival",
+    "Debugging and auditing font licensing data (UniqueID, XUID, copyright strings) in distributed font binaries"
+  ],
+  "technicalDetails": "The PFB format is defined in Adobe Technical Note #5040 (Supporting Downloadable PostScript Language Fonts). The file is divided into variable-length segments, each preceded by a 6-byte header: 0x80 (marker), type (1/2/3), 4-byte little-endian length. Segment 1 is ASCII PostScript text (the font program header up to the 'eexec' keyword). Segment 2 contains the eexec-encrypted portion including the Private dictionary (Subrs array, OtherSubrs, BlueValues, StemSnap) and CharStrings dictionary. The eexec cipher uses seed=55665 and parameters r(n+1) = (r(n) * 52845 + 22719) mod 65536; each cipher byte XORs with the high byte of the running key. Segment 3 has type=3 and length=0, acting as an end-of-file marker. A typical PFB font contains 200-300 KB with glyph outlines for the full ISO Latin character set.",
+  "completenessScore": 82
+}

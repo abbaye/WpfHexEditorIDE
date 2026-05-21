@@ -1,41 +1,122 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "BitTorrent Bencode",
   "formatId": "BENCODE",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".torrent"
   ],
   "description": "BitTorrent bencoding format for .torrent files",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "BitTorrent Bencode Format"
+      "BitTorrent Bencode Format Specification",
+      "BitTorrent Protocol Specification (BEP 0003)"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/TORRENT"
+      "https://wiki.theory.org/BitTorrentSpecification#Bencoding",
+      "https://www.bittorrent.org/beps/bep_0003.html",
+      "https://en.wikipedia.org/wiki/Bencode"
     ]
   },
-  "detection": {
-    "required": true,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "64",
+      "offset": 0,
+      "label": "Bencode dictionary start 'd' — .torrent files always begin with a dict",
+      "weight": 0.8,
+      "strength": "Medium"
     },
-    "signatures": [
-      {
-        "value": "64",
-        "offset": 0,
-        "label": "BENCODE magic",
-        "weight": 1.0
-      }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+    {
+      "value": "6C",
+      "offset": 0,
+      "label": "Bencode list start 'l'",
+      "weight": 0.5,
+      "strength": "Weak"
+    },
+    {
+      "value": "69",
+      "offset": 0,
+      "label": "Bencode integer start 'i'",
+      "weight": 0.4,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 1,
+  "structure": {
+    "fields": [
+      { "name": "root_type_byte", "type": "uint8",  "offset": "0x00", "length": 1,  "description": "Root type: 'd'=dict, 'l'=list, 'i'=integer, digit=string length" },
+      { "name": "root_content",   "type": "bytes",  "offset": "0x01", "length": 64, "description": "Root container content — keys/values for dict, elements for list" }
+    ]
   },
+  "inspector": {
+    "displayFields": ["root_type_byte"],
+    "valueMaps": {
+      "root_type_byte": {
+        "0x64": "Dictionary (d...e)",
+        "0x6C": "List (l...e)",
+        "0x69": "Integer (i...e)",
+        "0x31": "String starting with '1' (length prefix)",
+        "0x32": "String starting with '2' (length prefix)",
+        "0x33": "String starting with '3' (length prefix)",
+        "0x34": "String starting with '4' (length prefix)",
+        "0x35": "String starting with '5' (length prefix)"
+      }
+    },
+    "tooltips": {
+      "root_type_byte": "Torrent files always start with 'd' (0x64) for the top-level dictionary",
+      "root_content": "Keys in a bencode dict are bencoded strings; 'info' dict contains piece hashes"
+    }
+  },
+  "assertions": [
+    {
+      "name": "Valid bencode root type",
+      "expression": "root_type_byte == 0x64 || root_type_byte == 0x6C || root_type_byte == 0x69 || (root_type_byte >= 0x30 && root_type_byte <= 0x39)",
+      "severity": "error",
+      "message": "First byte is not a valid bencode type indicator (d/l/i/digit); not a valid bencode file"
+    },
+    {
+      "name": "Torrent files start with dict",
+      "expression": "root_type_byte == 0x64",
+      "severity": "warning",
+      "message": ".torrent files should start with 'd' (dictionary); this file may not be a torrent"
+    },
+    {
+      "name": "File ends with 'e' terminator",
+      "expression": "lastByte == 0x65",
+      "severity": "warning",
+      "message": "Bencode root container must be terminated with 'e' (0x65); file may be truncated"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Root Type",      "offset": 0, "icon": "", "color": "#16A085" },
+      { "name": "Root Content",   "offset": 1, "icon": "", "color": "#16A085" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Bencode Root (JSON)",
+      "format": "json",
+      "fields": ["root_type_byte"]
+    },
+    {
+      "name": "Bencode Hex Dump",
+      "format": "hex-dump",
+      "fields": ["root_type_byte", "root_content"]
+    }
+  ],
+  "aiHints": [
+    "Bencode encodes 4 types: integer (i<decimal>e), string (<length>:<bytes>), list (l...e), dict (d...e)",
+    ".torrent root is always a dictionary 'd'; mandatory keys include 'info' (itself a dict with piece data)",
+    "Strings are length-prefixed: '4:spam' = 4-byte string 'spam'; not null-terminated",
+    "The 'info' dictionary hash (SHA-1 over the raw bencoded 'info' value) is the torrent info-hash",
+    "Multi-file torrents have 'info.files' list; single-file torrents have 'info.length' integer"
+  ],
   "variables": {
     "currentOffset": 0
   },
@@ -51,17 +132,28 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "qBittorrent",
+    "Transmission",
+    "libtorrent (Rasterbar)",
+    "bencode Python library"
   ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".torrent"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "JSON",
+      "relation": "alternative",
+      "note": "Bencode is functionally similar to JSON but uses a compact binary-friendly text encoding without quotes or commas"
+    }
+  ],
+  "useCases": [
+    "BitTorrent .torrent file parsing and metadata extraction",
+    "Info-hash computation for torrent identification",
+    "Peer-to-peer DHT message encoding and decoding",
+    "Torrent scraping and announce URL extraction"
+  ],
+  "technicalDetails": "Bencode is a simple encoding designed by Bram Cohen for BitTorrent. Integers: i<value>e (e.g. i42e). Strings: <length>:<data> (e.g. 4:spam). Lists: l<items>e. Dictionaries: d<key-value-pairs>e (keys must be sorted lexicographically in DER bencode). The info-hash is SHA-1 of the raw bencoded 'info' dictionary value.",
+  "completenessScore": 82,
   "MimeTypes": [
-    "application/octet-stream"
+    "application/x-bittorrent"
   ],
   "Software": [
     "Hex Editor",
@@ -74,27 +166,25 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 82,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 1,
     "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "Encoding": "Text-based type-length-value",
+    "Charset": "ASCII for structure; payload bytes may be binary"
+  },
   "functions": {},
   "forensic": {
-    "category": "data",
     "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "BitTorrent bencoding format for .torrent files",
-    "suggestedInspections": [
-      "Validate BitTorrent Bencode schema header and encoding markers",
-      "Check nested structure depth and field type tags",
-      "Inspect string encodings and numeric value boundaries"
+    "notes": [
+      "Torrent files may contain tracker URLs and DHT nodes that reveal user activity",
+      "The comment field in torrent metadata can contain embedded URLs or payloads",
+      "Piece hashes in the 'info' dict are SHA-1 and allow integrity verification of downloaded data"
     ]
   }
 }

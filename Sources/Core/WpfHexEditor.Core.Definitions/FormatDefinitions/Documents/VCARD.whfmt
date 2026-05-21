@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "vCard Contact",
   "formatId": "VCARD",
@@ -98,6 +99,11 @@
       "expression": "nextByte == 13 || nextByte == 10",
       "severity": "warning",
       "message": "Expected CRLF or LF after BEGIN:VCARD — unexpected byte may indicate encoding or BOM issue"
+    },
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
     }
   ],
   "navigation": {
@@ -107,6 +113,16 @@
         "offset": 0,
         "icon": "",
         "color": "#FF6B6B"
+      },
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 11,
+        "description": "End of primary signature region"
       }
     ]
   },
@@ -123,7 +139,14 @@
           "nextByte"
         ]
       }
-    ]
+    ],
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
   },
   "exportTemplates": [
     {
@@ -152,18 +175,27 @@
         "severity": "error",
         "description": "File does not start with BEGIN:VCARD. Not a valid vCard file; may be truncated or mis-encoded."
       }
+    ],
+    "notes": [
+      "vCard files concentrate PII: name, phone, email, address, photo — GDPR-relevant.",
+      "PHOTO base64 payloads may conceal steganographic or executable content.",
+      "Exported address books may inadvertently expose contact networks of individuals under investigation."
     ]
   },
-  "aiHints": {
-    "analysisContext": "vCard line-by-line structure: BEGIN:VCARD, VERSION:4.0 (or 3.0 or 2.1), FN:Full Name, N:Last;First;Middle;Prefix;Suffix, ORG:Company, TEL;TYPE=cell:+1-555-0100, EMAIL;TYPE=work:user@example.com, ADR:;;Street;City;State;ZIP;Country, PHOTO;ENCODING=b;TYPE=JPEG:<base64>, END:VCARD. Multiple vCards are concatenated directly without any separator between END:VCARD and the next BEGIN:VCARD.",
-    "suggestedInspections": [
-      "Verify first 11 bytes are ASCII 'BEGIN:VCARD' (42 45 47 49 4E 3A 56 43 41 52 44)",
-      "Find 'VERSION:' property line to determine vCard version (2.1, 3.0, or 4.0)",
-      "Locate 'FN:' property — formatted full name (required in v3.0 and v4.0)",
-      "Count BEGIN:VCARD occurrences to determine how many contacts are in the file",
-      "Check for PHOTO property — may contain large base64 encoded image data"
-    ]
-  },
+  "aiHints": [
+    "vCard line-by-line structure: BEGIN:VCARD, VERSION:4.0 (or 3.0 or 2.1), FN:Full Name, N:Last;First;Middle;Prefix;Suffix, ORG:Company, TEL;TYPE=cell:+1-555-0100, EMAIL;TYPE=work:user@example.com, ADR:;;Street;City;State;ZIP;Country, PHOTO;ENCODING=b;TYPE=JPEG:<base64>, END:VCARD. Multiple vCards are concatenated directly without any separator between END:VCARD and the next BEGIN:VCARD.",
+    "Verify first 11 bytes are ASCII 'BEGIN:VCARD' (42 45 47 49 4E 3A 56 43 41 52 44)",
+    "Find 'VERSION:' property line to determine vCard version (2.1, 3.0, or 4.0)",
+    "Locate 'FN:' property — formatted full name (required in v3.0 and v4.0)",
+    "Count BEGIN:VCARD occurrences to determine how many contacts are in the file",
+    "Check for PHOTO property — may contain large base64 encoded image data",
+    "VERSION property (2.1, 3.0, 4.0) determines valid property syntax and encoding rules.",
+    "PHOTO property may embed Base64-encoded images exposing personally identifying information.",
+    "GEO property with latitude/longitude reveals precise location data — privacy risk.",
+    "X- prefixed custom properties are non-standard and vendor-specific; document for forensic context.",
+    "Multiple vCards in one file are each delimited by BEGIN:VCARD ... END:VCARD.",
+    "BDAY property exposes date of birth — sensitive PII under GDPR and similar regulations."
+  ],
   "software": [
     "Apple Contacts (macOS/iOS)",
     "Google Contacts",
@@ -173,17 +205,43 @@
     "Evolution (Linux)",
     "CardDAV clients (Nextcloud, Radicale)"
   ],
-  "formatRelationships": {
-    "category": "Documents",
-    "extensions": [
-      ".vcf",
-      ".vcard"
-    ],
-    "relatedFormats": [
-      "ICAL"
-    ],
-    "containerVariant": "CardDAV protocol uses vCard as its data format over HTTP/WebDAV"
-  },
+  "formatRelationships": [
+    {
+      "formatId": "category",
+      "relation": "Documents",
+      "note": ""
+    },
+    {
+      "formatId": "extensions",
+      "relation": "['.vcf', '.vcard']",
+      "note": ""
+    },
+    {
+      "formatId": "relatedFormats",
+      "relation": "['ICAL']",
+      "note": ""
+    },
+    {
+      "formatId": "containerVariant",
+      "relation": "CardDAV protocol uses vCard as its data format over HTTP/WebDAV",
+      "note": ""
+    },
+    {
+      "formatId": "ics",
+      "relation": "related",
+      "note": "iCalendar (ICS) uses the same RFC text-line format family"
+    },
+    {
+      "formatId": "ldif",
+      "relation": "related",
+      "note": "LDIF is an alternative contact exchange format for LDAP"
+    },
+    {
+      "formatId": "csv",
+      "relation": "export",
+      "note": "CSV is used for bulk contact import/export"
+    }
+  ],
   "MimeTypes": [
     "text/vcard",
     "text/x-vcard"
@@ -287,5 +345,63 @@
       }
     ],
     "note": "Inferred fuzz strategies for VCARD. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "424547494E3A5643415244",
+      "offset": 0,
+      "label": "VCARD signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 11,
+  "structure": {
+    "fields": [
+      {
+        "name": "BEGIN",
+        "offset": 0,
+        "size": 13,
+        "type": "string",
+        "description": "BEGIN:VCARD marker"
+      },
+      {
+        "name": "VERSION",
+        "offset": 13,
+        "size": -1,
+        "type": "string",
+        "description": "VERSION:2.1, 3.0, or 4.0 property"
+      },
+      {
+        "name": "FN",
+        "offset": -1,
+        "size": -1,
+        "type": "string",
+        "description": "FN (Formatted Name) required property"
+      },
+      {
+        "name": "Properties",
+        "offset": -1,
+        "size": -1,
+        "type": "string",
+        "description": "Optional properties: N, ORG, TEL, EMAIL, ADR, URL, PHOTO, etc."
+      },
+      {
+        "name": "END",
+        "offset": -1,
+        "size": 10,
+        "type": "string",
+        "description": "END:VCARD marker"
+      }
+    ]
+  },
+  "useCases": [
+    "Contact data exchange between address book applications",
+    "Business card sharing via email or NFC",
+    "Address book backup and migration",
+    "CardDAV contact synchronization (CalDAV companion)"
+  ],
+  "technicalDetails": "vCard (RFC 6350 for v4.0, RFC 2426 for v3.0) is a text-based contact information format. Each property is a line with NAME;PARAMS:VALUE syntax. Version 2.1 uses QP encoding; 3.0 uses Base64 for binary data; 4.0 supports URI references and richer media types. Multiple vCards can be concatenated in a single file.",
+  "completenessScore": 88
 }

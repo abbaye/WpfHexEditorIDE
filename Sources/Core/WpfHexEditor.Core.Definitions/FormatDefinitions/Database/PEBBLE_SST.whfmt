@@ -1,8 +1,27 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Pebble SSTable",
   "formatId": "PEBBLE_SST",
-  "version": "1.0",
+  "version": "1.0.1",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 85,
+  "maxSignatureOffset": 8,
+  "signatures": [
+    {
+      "value": "F09FAAB3F09FAAB3",
+      "offset": 0,
+      "label": "Pebble SST footer magic (rocks emoji x2) — WARNING: magic is at end-of-file, not offset 0",
+      "weight": 0.5,
+      "strength": "Moderate"
+    }
+  ],
+  "structure": {
+    "fields": [
+      { "name": "first_byte", "offset": 0, "size": 1, "type": "uint8", "description": "First byte of first data block" },
+      { "name": "second_byte", "offset": 1, "size": 1, "type": "uint8", "description": "Second byte of first data block" }
+    ]
+  },
   "extensions": [".sst"],
   "description": "Pebble is CockroachDB's storage engine, a Go fork of RocksDB. Pebble SSTable files use a custom footer magic consisting of two rock emoji sequences (0xF09FAAB3F09FAAB3) which may appear near the end of the file. SSTables store sorted key-value pairs in data blocks with index blocks for fast lookup. Detection is medium confidence since the magic is in the footer, not the header.",
   "category": "Database",
@@ -107,21 +126,24 @@
     }
   ],
   "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "First Data Block", "color": "#3498DB" }
+    ],
     "entryPoints": [
       { "name": "First Data Block", "offset": 0 }
-    ],
-    "jumpTable": [
-      { "label": "File Start", "offset": 0 }
     ]
   },
   "inspector": {
     "badge": "PB",
     "primaryField": "pebbleFirstByte",
+    "displayFields": ["pebbleFirstByte", "pebbleSecondByte"],
+    "valueMaps": {},
+    "tooltips": {
+      "pebbleFirstByte": "First byte of SSTable data — footer magic is at end of file",
+      "pebbleSecondByte": "Second byte of first data block"
+    },
     "groups": [
-      {
-        "name": "Identification",
-        "fields": ["pebbleFirstByte", "pebbleSecondByte"]
-      }
+      { "name": "Identification", "fields": ["pebbleFirstByte", "pebbleSecondByte"] }
     ]
   },
   "exportTemplates": [
@@ -138,13 +160,25 @@
   ],
   "forensic": {
     "riskLevel": "low",
+    "notes": [
+      "Footer magic is at end-of-file — truncated files cannot be identified by signature",
+      "CockroachDB SSTables may contain MVCC versioned records with sensitive application data",
+      "Block checksums detect corruption but distinguishing Pebble from RocksDB requires footer inspection"
+    ],
     "suspiciousPatterns": [
       "Footer magic missing — file may be truncated or not a Pebble SST",
       "Checksum mismatch in data blocks — corruption or tampering",
       "Index block offset beyond file size"
     ]
   },
-  "aiHints": {
+  "aiHints": [
+    "Pebble SST footer magic 0xF09FAAB3F09FAAB3 is at the END of the file (last 48 bytes), not at offset 0",
+    "Pebble is CockroachDB's storage engine — a Go fork of RocksDB with its own footer magic",
+    "Data blocks use prefix-compression with restart points for key sharing",
+    "Distinguish from RocksDB SST (magic 0xF7CFF485B741E288) by reading the last 8 bytes",
+    "CockroachDB versions 21.1+ use Pebble; earlier versions used RocksDB SST format"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "Pebble SSTables follow RocksDB block-based table format with a custom footer magic. The footer is the last 48 bytes containing metaindex block handle, index block handle, and the 8-byte magic 0xF09FAAB3F09FAAB3. Data blocks use prefix compression with restart points.",
     "suggestedInspections": [
       "Read last 48 bytes for footer and verify Pebble magic 0xF09FAAB3F09FAAB3",
@@ -171,9 +205,24 @@
     "Range scan and point lookup optimization",
     "Bulk data ingestion via SSTable ingest"
   ],
+  "useCases": [
+    "CockroachDB storage layer sorted string tables",
+    "LSM tree level compaction output",
+    "Range scan and point lookup optimization",
+    "Bulk data ingestion via SSTable ingest"
+  ],
+  "technicalDetails": {
+    "footerSize": 48,
+    "endian": "little",
+    "signatureOffset": -48,
+    "signatureLength": 8,
+    "magicValue": "F09FAAB3F09FAAB3",
+    "compression": "Snappy, LZ4, ZSTD, or none per block",
+    "notes": "Footer magic is at end of file, not beginning. Detection relies on extension and footer scan."
+  },
   "QualityMetrics": {
-    "CompletenessScore": 82,
-    "LastUpdated": "2026-04-16"
+    "CompletenessScore": 85,
+    "LastUpdated": "2026-05-20"
   },
   "TechnicalDetails": {
     "footerSize": 48,

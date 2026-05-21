@@ -1,8 +1,9 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "PlayStation 3 Disc/Package",
   "formatId": "ROM_PS3",
-  "version": "2.52.1",
+  "version": "2.53",
   "extensions": [
     ".iso",
     ".pkg"
@@ -10,6 +11,7 @@
   "description": "PlayStation 3 Blu-ray disc image or PKG package format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
@@ -24,16 +26,106 @@
       "https://ps2bios.gitlab.io/home/is-it-possible-to-convert-ps3iso-to-pkg/"
     ]
   },
-  "detection": {
-    "signature": "7F504B47",
-    "offset": 0,
-    "required": false,
-    "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024,
-      "note": "Shares Sony PKG magic 7F504B47 with PSP/PSVita PKG. Discriminate via pkg_type uint16-BE at offset 0x06: PS3 = 0x0001. See psdevwiki.com/ps3/PKG_files."
+  "signatures": [
+    {
+      "value": "7F504B47",
+      "offset": 0,
+      "label": "PS3 PKG magic \\x7FPKG",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "name": "magic",                "type": "uint32be", "offset": "0x00", "length": 4, "description": "PKG magic 0x7F504B47 (\\x7FPKG)" },
+      { "name": "pkg_revision",         "type": "uint16be", "offset": "0x04", "length": 2, "description": "PKG revision: 0x0001=PS3, 0x0002=PSP" },
+      { "name": "pkg_type",             "type": "uint16be", "offset": "0x06", "length": 2, "description": "Package type flags" },
+      { "name": "pkg_metadata_offset",  "type": "uint32be", "offset": "0x08", "length": 4, "description": "Offset to package metadata entries" },
+      { "name": "pkg_metadata_count",   "type": "uint32be", "offset": "0x0C", "length": 4, "description": "Number of metadata entries" },
+      { "name": "pkg_metadata_size",    "type": "uint32be", "offset": "0x10", "length": 4, "description": "Size of metadata region in bytes" },
+      { "name": "item_count",           "type": "uint32be", "offset": "0x14", "length": 4, "description": "Number of items in the package" },
+      { "name": "total_size",           "type": "uint64be", "offset": "0x18", "length": 8, "description": "Total package file size in bytes" },
+      { "name": "data_offset",          "type": "uint64be", "offset": "0x20", "length": 8, "description": "Offset to the encrypted data region" },
+      { "name": "data_size",            "type": "uint64be", "offset": "0x28", "length": 8, "description": "Size of the encrypted data region" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic", "pkg_revision", "pkg_type", "item_count", "total_size", "data_offset"],
+    "valueMaps": {
+      "pkg_revision": {
+        "0x0001": "PS3 package",
+        "0x0002": "PSP package",
+        "0x0003": "PSVita package"
+      },
+      "pkg_type": {
+        "0x0001": "Content",
+        "0x0002": "DLC",
+        "0x0004": "Theme",
+        "0x0009": "License"
+      }
+    },
+    "tooltips": {
+      "magic": "0x7F504B47 is shared by PS3/PSP/PSVita PKG; pkg_revision at 0x04 distinguishes platform",
+      "data_offset": "Points to the AES-128-CTR encrypted data block; decryption requires the PS3 klicensee key",
+      "item_count": "Total file entries inside the PKG container"
     }
   },
+  "assertions": [
+    {
+      "name": "PKG magic present",
+      "expression": "bytes[0..3] == 7F504B47",
+      "severity": "error",
+      "message": "PS3 PKG magic 0x7F504B47 not found at offset 0; not a valid PS3 PKG file"
+    },
+    {
+      "name": "PS3 revision",
+      "expression": "pkg_revision == 0x0001",
+      "severity": "info",
+      "message": "pkg_revision != 0x0001 may indicate a PSP or PSVita PKG rather than PS3"
+    },
+    {
+      "name": "Data offset within file",
+      "expression": "data_offset < total_size",
+      "severity": "error",
+      "message": "Data offset exceeds total package size; file is corrupt or truncated"
+    },
+    {
+      "name": "Item count positive",
+      "expression": "item_count > 0",
+      "severity": "warning",
+      "message": "Package contains zero items; may be an invalid or empty package"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "PKG Magic",          "offset": 0,  "icon": "", "color": "#FF6B6B" },
+      { "name": "PKG Revision/Type",  "offset": 4,  "icon": "", "color": "#FFE66D" },
+      { "name": "Metadata Offset",    "offset": 8,  "icon": "", "color": "#4ECDC4" },
+      { "name": "Total/Data Size",    "offset": 24, "icon": "", "color": "#95E1D3" },
+      { "name": "Data Region",        "offset": 32, "icon": "", "color": "#95E1D3" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PS3 PKG Header (JSON)",
+      "format": "json",
+      "fields": ["magic", "pkg_revision", "pkg_type", "item_count", "total_size", "data_offset", "data_size"]
+    },
+    {
+      "name": "PS3 PKG Header (C struct)",
+      "format": "c-struct",
+      "structName": "PS3_PKG_HEADER",
+      "fields": ["magic", "pkg_revision", "pkg_type", "item_count", "total_size", "data_offset"]
+    }
+  ],
+  "aiHints": [
+    "Magic 0x7F504B47 is shared by PS3, PSP, and PSVita PKG files; use pkg_revision at 0x04 to distinguish: 0x0001=PS3",
+    "Encrypted content data starts at data_offset; decryption requires the platform-specific klicensee key",
+    "Metadata entries at pkg_metadata_offset contain content ID, DRM type, and install path information",
+    "PS3 disc images (ISO) have a different structure; the PKG format is specifically for downloaded content",
+    "Content ID at offset 0x30 (36 bytes ASCII) uniquely identifies the title across PSN regions"
+  ],
   "variables": {
     "currentOffset": 0,
     "crc32Valid": false,
@@ -134,16 +226,26 @@
     }
   ],
   "software": [
-    "Emulators",
-    "Game engines"
+    "RPCS3 (PS3 emulator)",
+    "PSN Stuff",
+    "PS3 PKG Decryptor",
+    "pkg2zip"
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".iso",
-      ".pkg"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "ROM_PS4",
+      "relation": "successor",
+      "note": "PS4 uses a different CNT magic (0x7F434E54); PS3 PKG uses 0x7F504B47"
+    }
+  ],
+  "useCases": [
+    "PS3 downloadable content installation and archiving",
+    "PKG file inspection for content ID and DRM analysis",
+    "Forensic examination of PlayStation Network packages",
+    "Homebrew distribution via PKG format on modified consoles"
+  ],
+  "technicalDetails": "PS3 PKG format begins with magic 0x7F504B47. pkg_revision 0x0001 identifies PS3; 0x0002 is PSP. Encrypted content uses AES-128-CTR with a per-package key derived from the klicensee. The content ID at offset 0x30 follows the format UP####-TITLEID##_00-##############.",
+  "completenessScore": 84,
   "MimeTypes": [
     "application/octet-stream"
   ],
@@ -161,11 +263,11 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 53,
+    "CompletenessScore": 84,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 9,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-01",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
@@ -178,24 +280,15 @@
     "formatFileSize(var:dataSize)": "Format dataSize as readable size"
   },
   "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "PlayStation 3 Blu-ray disc image or PKG package format",
-    "suggestedInspections": [
-      "Validate PlayStation 3 Disc/Package container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+    "riskLevel": "medium",
+    "notes": [
+      "PS3 PKG files may contain encrypted DRM-protected content requiring platform keys to decrypt",
+      "Shared magic with PSP/PSVita PKG requires pkg_revision check for accurate platform identification",
+      "Counterfeit or modified PKG files may contain malformed metadata regions"
     ]
   },
   "diff": {
-    "keyFields": [
-      "pkg_magic",
-      "data_offset",
-      "data_size"
-    ],
+    "keyFields": ["pkg_magic", "data_offset", "data_size"],
     "ignoreFields": [],
     "note": "Inferred semantic diff for ROM_PS3. Compare key structural fields; ignore volatile metadata."
   },

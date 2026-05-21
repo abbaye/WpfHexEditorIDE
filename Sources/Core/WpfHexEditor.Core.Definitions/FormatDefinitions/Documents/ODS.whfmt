@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "OpenDocument Spreadsheet",
   "formatId": "ODS",
@@ -302,16 +303,25 @@
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "OpenDocument Spreadsheet - a ZIP-based open standard spreadsheet format used by LibreOffice and OpenOffice. ...",
-    "suggestedInspections": [
-      "Validate OpenDocument Spreadsheet file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+    "suspiciousPatterns": [],
+    "notes": [
+      "ZIP-based container; extract and inspect inner files for malicious payloads.",
+      "Metadata in core properties may reveal author identity and edit history.",
+      "Embedded macros or scripts may execute on open."
     ]
   },
+  "aiHints": [
+    "OpenDocument Spreadsheet - a ZIP-based open standard spreadsheet format used by LibreOffice and OpenOffice. ...",
+    "Validate OpenDocument Spreadsheet file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "content.xml table:table-cell elements with office:value-type reveal cell data types.",
+    "Macros in Basic/ subdirectory may autorun on document open.",
+    "External data ranges can trigger network requests to fetch live data.",
+    "meta.xml dc:creator may expose the original author's identity.",
+    "Named database ranges in content.xml can link to external ODBC/JDBC sources.",
+    "Conditional format rules may reference external named ranges for obfuscation."
+  ],
   "diff": {
     "keyFields": [
       "zip_signature",
@@ -386,5 +396,138 @@
       }
     ],
     "note": "Inferred fuzz strategies for ODS. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "504B0304",
+      "offset": 0,
+      "label": "ODS signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      {
+        "name": "MimetypeEntry",
+        "offset": 0,
+        "size": 46,
+        "type": "string",
+        "description": "Uncompressed mimetype: application/vnd.oasis.opendocument.spreadsheet"
+      },
+      {
+        "name": "ContentXml",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "content.xml — table:table elements with rows and cells"
+      },
+      {
+        "name": "StylesXml",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "styles.xml — named cell and page styles"
+      },
+      {
+        "name": "MetaXml",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "meta.xml — document statistics"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 4,
+        "description": "End of primary signature region"
+      },
+      {
+        "name": "Content Start",
+        "offset": 64,
+        "description": "Approximate content start after headers"
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "xlsx",
+      "relation": "equivalent",
+      "note": "XLSX is the Microsoft OOXML equivalent"
+    },
+    {
+      "formatId": "odt",
+      "relation": "sibling",
+      "note": "ODT is the ODF text document counterpart"
+    },
+    {
+      "formatId": "csv",
+      "relation": "export",
+      "note": "CSV is the flat-text export format"
+    }
+  ],
+  "software": [
+    "LibreOffice Calc",
+    "Apache OpenOffice Calc",
+    "Google Sheets",
+    "Microsoft Excel (import)"
+  ],
+  "useCases": [
+    "Open-source spreadsheets",
+    "Cross-platform data exchange",
+    "Financial and statistical analysis",
+    "ODF-compliant data tables"
+  ],
+  "technicalDetails": "ODS (ODF 1.2/1.3) is a ZIP container with uncompressed mimetype 'application/vnd.oasis.opendocument.spreadsheet'. Sheet data in content.xml uses table:table/table:table-row/table:table-cell elements. Formulas use ODF formula syntax (of:= prefix).",
+  "completenessScore": 88
 }

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "formatName": "SNES SPC700 Sound File (SPC)",
   "formatId": "SPC",
   "version": "1.1.1",

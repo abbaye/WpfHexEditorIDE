@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Windows Executable (PE)",
   "formatId": "PE_EXE",
@@ -677,36 +678,36 @@
       "message": "e_lfanew < 64 — DOS header too small for a valid PE"
     }
   ],
-    "navigation": {
+  "navigation": {
     "bookmarks": [
       {
         "name": "DOS Header",
         "offset": 0,
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#4ECDC4"
       },
       {
         "name": "PE Header (e_lfanew)",
         "offsetVar": "peHeaderOffset",
-        "icon": "\uE7EF",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "COFF Header",
         "offsetVar": "peHeaderOffset",
-        "icon": "\uE8B7",
+        "icon": "",
         "color": "#FFE66D"
       },
       {
         "name": "Section Table",
         "offsetVar": "sectionTableOffset",
-        "icon": "\uE9D9",
+        "icon": "",
         "color": "#C7CEEA"
       },
       {
         "name": "Entry Point",
         "offsetVar": "addressOfEntryPoint",
-        "icon": "\uE72E",
+        "icon": "",
         "color": "#FF4444"
       }
     ]
@@ -718,23 +719,51 @@
     "groups": [
       {
         "title": "DOS Header",
-        "icon": "\uE8A5",
-        "fields": ["dosMzSignature", "bytesOnLastPage", "pagesInFile", "relocations", "headerParagraphs", "initialSp", "dosChecksum", "peHeaderOffset"]
+        "icon": "",
+        "fields": [
+          "dosMzSignature",
+          "bytesOnLastPage",
+          "pagesInFile",
+          "relocations",
+          "headerParagraphs",
+          "initialSp",
+          "dosChecksum",
+          "peHeaderOffset"
+        ]
       },
       {
         "title": "COFF Header",
-        "icon": "\uE7EF",
-        "fields": ["peSignature", "coffMachine", "coffNumberOfSections", "coffTimeDateStamp", "coffSizeOfOptionalHeader", "coffCharacteristics"]
+        "icon": "",
+        "fields": [
+          "peSignature",
+          "coffMachine",
+          "coffNumberOfSections",
+          "coffTimeDateStamp",
+          "coffSizeOfOptionalHeader",
+          "coffCharacteristics"
+        ]
       },
       {
         "title": "Optional Header",
-        "icon": "\uE946",
-        "fields": ["optionalMagic", "majorLinkerVersion", "minorLinkerVersion", "sizeOfCode", "sizeOfInitializedData", "addressOfEntryPoint"]
+        "icon": "",
+        "fields": [
+          "optionalMagic",
+          "majorLinkerVersion",
+          "minorLinkerVersion",
+          "sizeOfCode",
+          "sizeOfInitializedData",
+          "addressOfEntryPoint"
+        ]
       },
       {
         "title": "Derived Properties",
-        "icon": "\uE72E",
-        "fields": ["isDLL", "is64Bit", "headerSizeBytes", "sectionTableOffset"]
+        "icon": "",
+        "fields": [
+          "isDLL",
+          "is64Bit",
+          "headerSizeBytes",
+          "sectionTableOffset"
+        ]
       }
     ]
   },
@@ -742,24 +771,55 @@
     {
       "name": "PE Header Summary (JSON)",
       "format": "json",
-      "fields": ["dosMzSignature", "peHeaderOffset", "coffMachine", "coffNumberOfSections", "coffTimeDateStamp", "coffCharacteristics", "optionalMagic", "addressOfEntryPoint", "isDLL", "is64Bit"]
+      "fields": [
+        "dosMzSignature",
+        "peHeaderOffset",
+        "coffMachine",
+        "coffNumberOfSections",
+        "coffTimeDateStamp",
+        "coffCharacteristics",
+        "optionalMagic",
+        "addressOfEntryPoint",
+        "isDLL",
+        "is64Bit"
+      ]
     },
     {
       "name": "Section Table (CSV)",
       "format": "csv",
       "source": "repeating:Section Table",
-      "columns": ["sectionName", "sectionVirtualSize", "sectionVirtualAddr", "sectionRawSize", "sectionRawOffset", "sectionCharacteristics"]
+      "columns": [
+        "sectionName",
+        "sectionVirtualSize",
+        "sectionVirtualAddr",
+        "sectionRawSize",
+        "sectionRawOffset",
+        "sectionCharacteristics"
+      ]
     },
     {
       "name": "IMAGE_FILE_HEADER (C struct)",
       "format": "c-struct",
       "structName": "IMAGE_FILE_HEADER",
-      "fields": ["coffMachine", "coffNumberOfSections", "coffTimeDateStamp", "coffPointerToSymbolTable", "coffNumberOfSymbols", "coffSizeOfOptionalHeader", "coffCharacteristics"]
+      "fields": [
+        "coffMachine",
+        "coffNumberOfSections",
+        "coffTimeDateStamp",
+        "coffPointerToSymbolTable",
+        "coffNumberOfSymbols",
+        "coffSizeOfOptionalHeader",
+        "coffCharacteristics"
+      ]
     },
     {
       "name": "Python PE magic check",
       "format": "python-bytes",
-      "fields": ["dosMzSignature", "peSignature", "optionalMagic", "coffMachine"]
+      "fields": [
+        "dosMzSignature",
+        "peSignature",
+        "optionalMagic",
+        "coffMachine"
+      ]
     }
   ],
   "forensic": {
@@ -811,23 +871,14 @@
       "Import table poisoning (IAT hooking)"
     ]
   },
-  "aiHints": {
-    "analysisContext": "Windows PE is the primary executable format. Structure: DOS header (64 bytes) + DOS stub + PE signature at e_lfanew + COFF header (20 bytes) + Optional header (224/240 bytes PE32/PE32+) + Section table. Key fields: coffTimeDateStamp (may be zeroed/forged), optionalMagic (PE32 vs PE32+), coffCharacteristics DLL bit, addressOfEntryPoint. High section entropy (>7.2) suggests packing. Absent or minimal import table also suggests packing.",
-    "knownVulnerabilities": [
-      "Integer overflow in SizeOfOptionalHeader parsing allows bypassing section table bounds",
-      "e_lfanew manipulation can cause parsers to read crafted data as COFF header",
-      "Signed PE abuse: SIP hijacking for Authenticode bypass",
-      "Overlay data after last section -- common carrier for second-stage payloads"
-    ],
-    "suggestedInspections": [
-      "Verify coffTimeDateStamp is within 1990-2050 range -- zero or future dates indicate manipulation",
-      "Check sizeOfCode vs total file size -- ratio < 10% suggests packed executable",
-      "Inspect coffCharacteristics bit 13 (DLL) -- mismatch between extension and DLL flag is suspicious",
-      "Review import table for: VirtualAlloc+WriteProcessMemory+CreateRemoteThread combo (injection)",
-      "Check for overlay data: bytes after the last section raw end offset",
-      "Verify no section RawOffset + RawSize extends beyond file size (truncated PE)"
-    ]
-  },
+  "aiHints": [
+    "PE layout: MZ DOS header (64B) + DOS stub + PE signature 'PE\\x00\\x00' at e_lfanew + COFF header(20B) + Optional header + Section table",
+    "e_lfanew at offset 60 (uint32 LE) gives absolute offset to PE signature 50 45 00 00",
+    "Optional header Machine: 0x8664=x86-64, 0x014C=x86, 0xAA64=ARM64, 0x01C0=ARMv7",
+    "Sections: .text (code), .data (initialized data), .rsrc (resources), .reloc (relocations)",
+    "Import table in DataDirectory[1] lists DLLs and function names the PE loads at runtime",
+    "Authenticode signature in DataDirectory[4] (Security Directory) verifies publisher identity"
+  ],
   "software": [
     "Windows OS",
     "Visual Studio",
@@ -867,7 +918,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 38,
     "ValidationRules": 9,
-    "LastUpdated": "2026-04-13",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -880,15 +931,25 @@
     "OptionalHeaderMinSize": 96,
     "VariableOffsetFields": "PE/COFF/Optional headers are located at the offset specified by e_lfanew (offset 60)"
   },
-
   "diff": {
-    "keyFields": ["machine_type", "number_of_sections", "entry_point_rva", "image_base", "subsystem", "dll_characteristics", "size_of_image"],
-    "ignoreFields": ["time_date_stamp", "checksum", "debug_directory_rva"],
+    "keyFields": [
+      "machine_type",
+      "number_of_sections",
+      "entry_point_rva",
+      "image_base",
+      "subsystem",
+      "dll_characteristics",
+      "size_of_image"
+    ],
+    "ignoreFields": [
+      "time_date_stamp",
+      "checksum",
+      "debug_directory_rva"
+    ],
     "groupBy": "section_name",
     "orderBy": "section_virtual_address",
     "note": "Group by section name for structural diff. Ignore timestamp and checksum which change on every link."
   },
-
   "repair": [
     {
       "name": "FixMZSignature",
@@ -917,34 +978,157 @@
       "description": "Restore PE\\0\\0 signature at the offset pointed to by e_lfanew."
     }
   ],
-
   "fuzz": {
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "e_lfanew",          "mutation": "boundary_values",  "description": "PE header offset — 0, negative, beyond-file values trigger parser crashes." },
-      { "field": "number_of_sections", "mutation": "boundary_values", "description": "0 sections (no code) and 96+ sections (max) are common crash triggers." },
-      { "field": "machine_type",       "mutation": "enum_sweep",      "description": "Unknown machine types should be handled gracefully." },
-      { "field": "mz_signature",       "mutation": "corrupt_signature","description": "Corrupt MZ magic — tests fallback detection path." },
-      { "field": "size_of_image",      "mutation": "overflow",        "description": "Extremely large SizeOfImage can trigger allocation failures." },
-      { "field": "entry_point_rva",    "mutation": "random_bytes",    "description": "Random EP triggers invalid memory access in loaders." },
-      { "field": "section_raw_data",   "mutation": "bit_flip", "rate": 0.0001, "description": "Sparse bit flips in section data for code coverage." }
+      {
+        "field": "e_lfanew",
+        "mutation": "boundary_values",
+        "description": "PE header offset — 0, negative, beyond-file values trigger parser crashes."
+      },
+      {
+        "field": "number_of_sections",
+        "mutation": "boundary_values",
+        "description": "0 sections (no code) and 96+ sections (max) are common crash triggers."
+      },
+      {
+        "field": "machine_type",
+        "mutation": "enum_sweep",
+        "description": "Unknown machine types should be handled gracefully."
+      },
+      {
+        "field": "mz_signature",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt MZ magic — tests fallback detection path."
+      },
+      {
+        "field": "size_of_image",
+        "mutation": "overflow",
+        "description": "Extremely large SizeOfImage can trigger allocation failures."
+      },
+      {
+        "field": "entry_point_rva",
+        "mutation": "random_bytes",
+        "description": "Random EP triggers invalid memory access in loaders."
+      },
+      {
+        "field": "section_raw_data",
+        "mutation": "bit_flip",
+        "rate": 0.0001,
+        "description": "Sparse bit flips in section data for code coverage."
+      }
     ],
     "note": "PE parsers are high-value fuzz targets — AV engines, loaders, and disassemblers all consume them."
   },
-
   "migration": [
     {
       "from": "pe32",
       "to": "pe32plus",
       "description": "Upgrade 32-bit PE to 64-bit PE32+ (AMD64/ARM64).",
       "changes": [
-        { "field": "machine_type",     "changeType": "set_value", "value": "0x8664", "description": "Set machine to IMAGE_FILE_MACHINE_AMD64." },
-        { "field": "magic",            "changeType": "set_value", "value": "0x020B", "description": "Set optional header magic to PE32+ (0x020B)." },
-        { "field": "image_base",       "changeType": "resize",    "length": 8,       "description": "Expand ImageBase from 4 to 8 bytes." },
-        { "field": "size_of_stack",    "changeType": "resize",    "length": 8,       "description": "Expand SizeOfStackReserve/Commit from 4 to 8 bytes." },
-        { "field": "size_of_heap",     "changeType": "resize",    "length": 8,       "description": "Expand SizeOfHeapReserve/Commit from 4 to 8 bytes." }
+        {
+          "field": "machine_type",
+          "changeType": "set_value",
+          "value": "0x8664",
+          "description": "Set machine to IMAGE_FILE_MACHINE_AMD64."
+        },
+        {
+          "field": "magic",
+          "changeType": "set_value",
+          "value": "0x020B",
+          "description": "Set optional header magic to PE32+ (0x020B)."
+        },
+        {
+          "field": "image_base",
+          "changeType": "resize",
+          "length": 8,
+          "description": "Expand ImageBase from 4 to 8 bytes."
+        },
+        {
+          "field": "size_of_stack",
+          "changeType": "resize",
+          "length": 8,
+          "description": "Expand SizeOfStackReserve/Commit from 4 to 8 bytes."
+        },
+        {
+          "field": "size_of_heap",
+          "changeType": "resize",
+          "length": 8,
+          "description": "Expand SizeOfHeapReserve/Commit from 4 to 8 bytes."
+        }
       ]
     }
-  ]
+  ],
+  "signatures": [
+    {
+      "value": "4D5A",
+      "offset": 0,
+      "label": "MZ — MS-DOS/Windows Portable Executable header magic",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "structure": {
+    "fields": [
+      {
+        "name": "mzMagic",
+        "type": "ascii",
+        "offset": 0,
+        "length": 2,
+        "description": "MZ signature (0x4D 0x5A = 'MZ', initials of Mark Zbikowski)"
+      },
+      {
+        "name": "lastPageBytes",
+        "type": "uint16le",
+        "offset": 2,
+        "length": 2,
+        "description": "Bytes on last page of executable"
+      },
+      {
+        "name": "pageCount",
+        "type": "uint16le",
+        "offset": 4,
+        "length": 2,
+        "description": "Number of 512-byte pages"
+      },
+      {
+        "name": "relocCount",
+        "type": "uint16le",
+        "offset": 6,
+        "length": 2,
+        "description": "Number of relocation entries"
+      },
+      {
+        "name": "headerSize",
+        "type": "uint16le",
+        "offset": 8,
+        "length": 2,
+        "description": "Header size in 16-byte paragraphs"
+      },
+      {
+        "name": "peOffset",
+        "type": "uint32le",
+        "offset": 60,
+        "length": 4,
+        "description": "Offset to PE header ('PE\u0000\u0000' signature)"
+      },
+      {
+        "name": "peSignature",
+        "type": "ascii",
+        "offset": -1,
+        "length": 4,
+        "description": "'PE\u0000\u0000' at peOffset"
+      },
+      {
+        "name": "machine",
+        "type": "uint16le",
+        "offset": -1,
+        "length": 2,
+        "description": "Target machine: 0x8664=x64, 0x14C=x86, 0xAA64=ARM64"
+      }
+    ]
+  },
+  "lastUpdated": "2026-05-20",
+  "maxSignatureOffset": 0
 }

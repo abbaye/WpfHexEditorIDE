@@ -1,0 +1,131 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "JSON Lines",
+  "formatId": "JSONL",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "JSON Lines (JSONL) — also known as Newline-Delimited JSON (NDJSON) — is a plain-text format where each line is a self-contained, valid JSON value (typically a JSON object). The format is designed for streaming, logging, and processing large datasets line by line without loading the entire file into memory. Each line is terminated by a newline character (0x0A). JSONL has no wrapper array or object; the document is the sequence of lines. It is widely used in machine learning datasets, event logs, and data pipelines (Apache Kafka, Spark, Hadoop).",
+  "extensions": [".jsonl", ".ndjson"],
+  "category": "Text",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "7B",
+      "offset": 0,
+      "label": "JSON object start '{'",
+      "weight": 0.5,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "offset": 0,
+        "size": -1,
+        "name": "First JSON Line",
+        "type": "ascii",
+        "description": "First line of the file. Must be a complete valid JSON value (object, array, string, number, boolean, or null) followed by a newline character. In practice almost always a JSON object starting with '{'.",
+        "storeAs": "firstLine"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Subsequent Lines",
+        "type": "ascii",
+        "description": "Each subsequent line is an independent JSON value. Empty lines are allowed and should be skipped by parsers. No trailing comma or separator between lines.",
+        "storeAs": "additionalLines"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["firstLine", "additionalLines"],
+    "valueMaps": {},
+    "tooltips": {
+      "firstLine": "First JSONL record — should be a valid standalone JSON value",
+      "additionalLines": "Remaining records, one per line"
+    }
+  },
+  "assertions": [
+    {
+      "id": "A1",
+      "field": "firstLine",
+      "operator": "regex",
+      "value": "^[\\[\\{\"\\-0-9tfn]",
+      "severity": "warning",
+      "description": "First non-empty line must start with a valid JSON value character ('{', '[', '\"', digit, 't', 'f', or 'n')"
+    },
+    {
+      "id": "A2",
+      "field": "firstLine",
+      "operator": "notNull",
+      "severity": "error",
+      "description": "JSONL file must contain at least one non-empty line"
+    },
+    {
+      "id": "A3",
+      "field": "additionalLines",
+      "operator": "notNull",
+      "severity": "info",
+      "description": "JSONL file should contain multiple records — single-line files may be plain JSON rather than JSONL"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "First Record", "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "Second Record", "offset": -1, "icon": "", "color": "#4ECDC4" },
+      { "name": "Last Record", "offset": -1, "icon": "", "color": "#FFE66D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "JSONL Metadata (JSON)",
+      "format": "json",
+      "fields": ["firstLine"]
+    },
+    {
+      "name": "JSONL as JSON Array",
+      "format": "json",
+      "description": "Wrap all JSONL lines in a JSON array for tools that require a single JSON document"
+    }
+  ],
+  "aiHints": [
+    "JSONL / NDJSON: each line is a complete JSON value; no separator between lines except the newline itself",
+    "Ideal for streaming large datasets since each record can be parsed independently without loading the full file",
+    "Widely used in ML dataset formats (Hugging Face datasets, OpenAI fine-tuning data use JSONL)",
+    "Apache Spark, Hadoop, and Kafka producers commonly write JSONL for log streaming",
+    "Empty lines are valid and should be skipped; comments are NOT valid (unlike JSON5 or JSONC)",
+    "RFC 7464 (JSON Text Sequences) is a related but distinct format using RS (0x1E) record separators"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "JSONL logs may contain sensitive PII, authentication tokens, or internal system paths",
+      "Malformed JSON on a single line will only cause that line to fail, not the entire file",
+      "Very large JSONL files (GB+) are common in ML pipelines; always stream-process rather than load entirely"
+    ]
+  },
+  "formatRelationships": [
+    {
+      "formatId": "NTRIPLES",
+      "relationship": "sibling",
+      "note": "Both are newline-delimited text formats for structured data; NTriples uses RDF triple syntax"
+    }
+  ],
+  "software": [
+    "Python json module (line-by-line)",
+    "jq (--stream or -r .[] input)",
+    "Node.js readline + JSON.parse",
+    "Apache Spark (spark.read.json)",
+    "Hugging Face datasets library",
+    "MongoDB mongoimport (--type json --jsonArray false)"
+  ],
+  "useCases": [
+    "Machine learning training dataset storage (JSONL is standard for OpenAI fine-tuning)",
+    "Streaming event log ingestion (Kafka, Fluentd, Logstash pipelines)",
+    "Large-scale data export from databases or APIs where streaming is required"
+  ],
+  "technicalDetails": "JSONL encodes one JSON value per line, separated by U+000A LINE FEED. The format is self-delimiting at the line level — each line is independently parseable. Encoding is UTF-8 per RFC 8259. No BOM is recommended. There is no standardized schema or metadata header convention. The MIME type 'application/x-ndjson' is commonly used though not officially registered.",
+  "completenessScore": 81
+}

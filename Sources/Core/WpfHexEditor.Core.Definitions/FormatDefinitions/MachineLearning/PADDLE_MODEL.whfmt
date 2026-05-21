@@ -1,0 +1,119 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "PaddlePaddle Model",
+  "formatId": "PADDLE_MODEL",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "PaddlePaddle deep learning framework serialized model files (.pdmodel for graph topology, .pdiparams for parameter weights). Developed by Baidu, PaddlePaddle uses Protocol Buffers for model serialization. The .pdmodel file encodes the ProgramDesc protobuf, while .pdiparams stores tensor data in a custom binary format.",
+  "extensions": [".pdmodel", ".pdiparams"],
+  "category": "MachineLearning",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "0801",
+      "offset": 0,
+      "label": "Protobuf field 1 varint (ProgramDesc version)",
+      "weight": 0.5,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 2,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 1, "name": "proto_field_tag", "type": "uint8",    "description": "Protobuf field tag (0x08 = field 1, wire type 0 varint)", "storeAs": "uint8" },
+      { "offset": 1, "size": 1, "name": "version_varint",  "type": "uint8",    "description": "Protobuf varint encoding of the ProgramDesc version integer", "storeAs": "uint8" },
+      { "offset": 2, "size": 1, "name": "blocks_tag",      "type": "uint8",    "description": "Protobuf field tag for repeated blocks field (0x12 = field 2, wire type 2)", "storeAs": "uint8" },
+      { "offset": 3, "size": 1, "name": "blocks_size",     "type": "uint8",    "description": "Varint encoding of the length of the first blocks sub-message", "storeAs": "uint8" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["proto_field_tag", "version_varint", "blocks_tag"],
+    "valueMaps": {
+      "proto_field_tag": { "8": "Field 1 varint (version present)", "10": "Field 1 length-delimited" }
+    },
+    "tooltips": {
+      "proto_field_tag": "Protobuf encoding: 0x08 means field number 1, wire type 0 (varint)",
+      "version_varint":  "Version value encoded as protobuf varint; 0x01 = version 1",
+      "blocks_tag":      "Protobuf encoding: 0x12 means field number 2, wire type 2 (length-delimited) — the repeated blocks"
+    }
+  },
+  "assertions": [
+    {
+      "id": "PADDLE_001",
+      "field": "proto_field_tag",
+      "operator": "equals",
+      "value": 8,
+      "description": "First byte 0x08 indicates protobuf field 1 varint encoding (ProgramDesc.version)"
+    },
+    {
+      "id": "PADDLE_002",
+      "field": "version_varint",
+      "operator": "greaterThan",
+      "value": 0,
+      "description": "PaddlePaddle model version must be positive"
+    },
+    {
+      "id": "PADDLE_003",
+      "field": "blocks_tag",
+      "operator": "equals",
+      "value": 18,
+      "description": "Second field tag 0x12 indicates protobuf field 2 length-delimited (blocks array)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Protobuf Root",        "color": "#4A90D9" },
+      { "offset": 1, "label": "Version Varint",        "color": "#7ED321" },
+      { "offset": 2, "label": "Blocks Field",          "color": "#F5A623" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PaddlePaddle Header Fields",
+      "fields": ["proto_field_tag", "version_varint", "blocks_tag", "blocks_size"],
+      "format": "json"
+    },
+    {
+      "name": "Format Detection Report",
+      "fields": ["proto_field_tag", "version_varint"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "PaddlePaddle saves models in two files: the .pdmodel file (graph/topology encoded as ProgramDesc protobuf) and the .pdiparams file (parameter tensors in a custom binary layout with a lookup table at the start).",
+    "The .pdiparams file begins with a serialized std::map (tensor name → offset+size) encoded using Paddle's own binary serialization, not protobuf; each tensor is stored as raw float32/float16/int8 data.",
+    "PaddlePaddle 2.x uses the new 'inference model' format (pdmodel+pdiparams); PaddlePaddle 1.x used __model__ + separate param files or a combined __params__ file.",
+    "Tools for inspecting: paddle.jit.load() in Python, Paddle2ONNX for format conversion, and Netron for graph visualization of .pdmodel files.",
+    "PaddlePaddle is widely used in Chinese industry applications (Baidu ecosystem); encountering .pdmodel files in forensic contexts may indicate Baidu AI services or PaddleHub model downloads.",
+    "The weak signature (0x0801) is shared with many protobuf files; use extension (.pdmodel) as the primary identification heuristic alongside the signature."
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "PaddlePaddle model files do not support arbitrary code execution in standard inference mode.",
+      "However, custom operators implemented as shared libraries (.so/.dll) loaded at inference time can execute arbitrary code; check for custom_op_lib references in model metadata.",
+      "Model files may contain embedded metadata including training dataset paths, user names, and internal Baidu infrastructure references.",
+      "Paddle2ONNX conversion may be used to exfiltrate proprietary models in a more portable format."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "ONNX",       "relationship": "convertible", "note": "Paddle2ONNX converts .pdmodel+.pdiparams to standard .onnx format" },
+    { "format": "PYTORCH_PT", "relationship": "alternative",  "note": "PyTorch .pt/.pth serves the same role in the PyTorch ecosystem" },
+    { "format": "TFLITE",     "relationship": "convertible",  "note": "PaddlePaddle models can be converted to TFLite via ONNX as intermediate format" }
+  ],
+  "software": [
+    { "name": "PaddlePaddle",  "role": "Primary framework for creating, training, and running .pdmodel/.pdiparams files" },
+    { "name": "Paddle2ONNX",   "role": "Converts PaddlePaddle models to ONNX format for cross-framework portability" },
+    { "name": "Netron",        "role": "Cross-platform model visualizer supporting .pdmodel graph inspection" },
+    { "name": "PaddleHub",     "role": "Model repository and inference API for pre-trained PaddlePaddle models" }
+  ],
+  "useCases": [
+    "Deploying Baidu AI services (OCR, face recognition, NLP) that distribute models in PaddlePaddle format",
+    "Forensic analysis of mobile or embedded devices running PaddlePaddle Lite inference engines",
+    "Converting PaddlePaddle production models to ONNX for cross-platform deployment or auditing",
+    "Reverse-engineering proprietary AI features in applications built on PaddlePaddle's model ecosystem"
+  ],
+  "technicalDetails": "The PaddlePaddle .pdmodel file serializes the framework.proto.ProgramDesc message using standard Protocol Buffers binary encoding. ProgramDesc contains repeated BlockDesc messages, each with repeated VarDesc (variable/tensor descriptors) and OpDesc (operator descriptors) messages. The version field (field 1, varint) is set to 1 for Paddle 2.x inference models. The .pdiparams companion file uses a proprietary binary layout: a header section containing a serialized tensor name-to-offset map (using Paddle's MemcpySerialization), followed by concatenated raw tensor data blobs. Paddle Lite (.nb format) is a separate compiled format for edge devices and is not covered by this definition.",
+  "completenessScore": 80
+}

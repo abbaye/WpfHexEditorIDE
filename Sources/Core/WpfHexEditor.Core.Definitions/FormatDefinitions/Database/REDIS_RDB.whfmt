@@ -1,8 +1,28 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Redis RDB Snapshot",
   "formatId": "REDIS_RDB",
-  "version": "1.0",
+  "version": "1.0.1",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 95,
+  "maxSignatureOffset": 5,
+  "signatures": [
+    {
+      "value": "5245444953",
+      "offset": 0,
+      "label": "ASCII 'REDIS' — Redis RDB snapshot magic",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "structure": {
+    "fields": [
+      { "name": "redis_magic", "offset": 0, "size": 5, "type": "ascii", "description": "ASCII 'REDIS' magic string" },
+      { "name": "rdb_version", "offset": 5, "size": 4, "type": "ascii", "description": "4-byte ASCII decimal RDB version (e.g. '0009')" },
+      { "name": "section_marker", "offset": 9, "size": 1, "type": "uint8", "description": "First section marker: 0xFA=AUX, 0xFE=DB selector, 0xFF=EOF" }
+    ]
+  },
   "extensions": [
     ".rdb"
   ],
@@ -182,7 +202,15 @@
       }
     ]
   },
-  "aiHints": {
+  "aiHints": [
+    "Redis RDB files always start with ASCII 'REDIS' (52 45 44 49 53) — the most reliable identifier",
+    "Bytes 5–8 are ASCII decimal RDB version: '0001'–'0011'; versions > '0011' indicate future Redis",
+    "Byte at offset 9: 0xFA=AUX metadata block, 0xFE=database selector, 0xFF=EOF marker (empty dump)",
+    "RDB v8+ has a CRC-64 checksum in the last 8 bytes after the 0xFF EOF marker",
+    "Length-encoded integers: high 2 bits 00=6-bit, 01=14-bit, 10=32-bit BE, 11=special encoding",
+    "Expiry markers: 0xFC (milliseconds uint64 LE) or 0xFD (seconds uint32 LE) precede value type bytes"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "Redis RDB layout: 'REDIS' (5B ASCII) + version (4B ASCII decimal) + optional AUX fields (0xFA + key + value, length-prefixed strings) + DB blocks (0xFE + varint db_num + key-value pairs) + 0xFF EOF + CRC-64 (8B LE). Length-encoded integers: if high 2 bits are 00=6-bit int, 01=14-bit int, 10=32-bit BE, 11=special encoding. Value types determine encoding: strings (plain, int, LZF), lists (quicklist), hash (listpack or hashtable), set (intset or hashtable), zset (listpack or skiplist).",
     "suggestedInspections": [
       "Verify first 5 bytes are ASCII 'REDIS' (52 45 44 49 53)",
@@ -221,7 +249,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 3,
     "ValidationRules": 3,
-    "LastUpdated": "2026-04-15",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": false
   },

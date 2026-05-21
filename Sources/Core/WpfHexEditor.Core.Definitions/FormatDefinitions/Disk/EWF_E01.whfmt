@@ -1,0 +1,97 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Expert Witness Format (EnCase E01)",
+  "formatId": "EWF_E01",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Expert Witness Format (EWF) forensic disk image as used by Guidance Software EnCase. The E01 format stores compressed disk sectors with embedded MD5/SHA1 hash verification and acquisition metadata.",
+  "extensions": [".E01", ".e01", ".Ex01"],
+  "category": "Disk",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "455646090D0AFF00",
+      "offset": 0,
+      "label": "EWF/EnCase file signature 'EVF\\x09\\x0D\\x0A\\xFF\\x00'",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 8,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 8, "name": "signature", "type": "bytes", "description": "EWF magic: 'EVF' + 0x09 + 0x0D + 0x0A + 0xFF + 0x00 (8 bytes)", "storeAs": "hex" },
+      { "offset": 8, "size": 2, "name": "segment_number", "type": "uint16le", "description": "Segment number (1-based) for multi-file E01/E02/... split images", "storeAs": "uint" },
+      { "offset": 10, "size": 2, "name": "end_of_fields", "type": "uint16le", "description": "End-of-fields marker (must be 0x0000)", "storeAs": "hex" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["signature", "segment_number", "end_of_fields"],
+    "valueMaps": {
+      "segment_number": {
+        "1": "First segment (.E01 / .e01)"
+      }
+    },
+    "tooltips": {
+      "signature": "8-byte EWF magic; consistent across EnCase EWF and libewf implementations",
+      "segment_number": "Multi-volume splits continue as .E02, .E03, ... (or .e02, etc.) with incrementing segment numbers",
+      "end_of_fields": "0x0000 terminates the file header fields list"
+    }
+  },
+  "assertions": [
+    { "id": "EWF_MAGIC", "field": "signature", "operator": "equals", "value": "455646090D0AFF00", "description": "EWF signature must match exactly: EVF + 0x09 0x0D 0x0A 0xFF 0x00" },
+    { "id": "EWF_SEGMENT_NONZERO", "field": "segment_number", "operator": "greaterThan", "value": "0", "description": "Segment number must be at least 1 (first segment = 1)" },
+    { "id": "EWF_END_OF_FIELDS", "field": "end_of_fields", "operator": "equals", "value": "0000", "description": "End-of-fields marker must be 0x0000 per EWF specification" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "EWF File Signature", "color": "#3498DB" },
+      { "offset": 8, "label": "Segment Number", "color": "#2ECC71" },
+      { "offset": 12, "label": "Section List Start", "color": "#E74C3C" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "EWF E01 Header",
+      "fields": ["signature", "segment_number", "end_of_fields"],
+      "format": "text"
+    },
+    {
+      "name": "EWF E01 CSV",
+      "fields": ["segment_number"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "EWF E01 images store compressed disk sectors in 64-sector chunks with Adler-32 CRC per chunk and MD5/SHA1 for full image",
+    "Large acquisitions split across multiple files: .E01, .E02, .E03, ... (max 2GB per segment by default in EnCase)",
+    "The 'header2' section in EWF embeds acquisition metadata: examiner name, case number, acquisition date, notes",
+    "libewf is the open-source library enabling Autopsy, Sleuth Kit, and FTK to read E01 files natively",
+    "EWF Ex01 format (Encase v7+) uses zlib or bzip2 compression and SHA-256 instead of MD5"
+  ],
+  "forensic": {
+    "riskLevel": "high",
+    "notes": [
+      "E01 images contain complete disk contents; treat as primary forensic evidence with chain-of-custody documentation",
+      "Built-in MD5/SHA1 hash allows integrity verification of the acquisition at any time",
+      "Examiner metadata embedded in the header2 section provides acquisition provenance information"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "RAWDISK_IMG", "relationship": "alternative", "note": "Raw .img/.dd provides no compression or hash verification; EWF E01 is preferred for forensic use" },
+    { "format": "VMDK", "relationship": "related", "note": "E01 images can be converted to VMDK for virtual machine analysis of forensic images" }
+  ],
+  "software": [
+    { "name": "Guidance EnCase", "role": "Commercial digital forensics platform that created and primarily uses the E01 format" },
+    { "name": "Autopsy / Sleuth Kit (libewf)", "role": "Open-source forensics tools using libewf to read E01 images natively" },
+    { "name": "FTK Imager", "role": "Forensic imaging tool supporting E01 creation, verification, and conversion" }
+  ],
+  "useCases": [
+    "Forensic disk acquisition with built-in hash verification for chain-of-custody compliance",
+    "Long-term forensic evidence storage with compression reducing image file size by 30-50%",
+    "Multi-volume acquisition of large drives split across manageable E01/E02/... segment files"
+  ],
+  "technicalDetails": "EWF E01 (Expert Witness Format) begins with an 8-byte signature followed by a section list. Each section has a 76-byte descriptor: section type (16 bytes), next section offset, section data size, padding, and Adler-32 checksum. Key sections include: header (acquisition metadata), header2 (UTF-16 metadata), volume (disk geometry), table (sector chunk offsets), data (compressed 32KB chunks of 64 sectors), hash (MD5/SHA1), and done. Compression is zlib deflate. Each 32KB chunk has a 4-byte Adler-32 CRC for corruption detection.",
+  "completenessScore": 84
+}

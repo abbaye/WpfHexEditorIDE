@@ -1,0 +1,99 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Windows Animated Cursor",
+  "formatId": "ANI",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Windows Animated Cursor format (.ani) based on the RIFF container. Stores a sequence of CUR (cursor) or ICO (icon) frames with timing and metadata chunks, enabling animated mouse cursors in Windows.",
+  "extensions": [".ani"],
+  "category": "Image",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "52494646",
+      "offset": 0,
+      "label": "'RIFF' container magic",
+      "weight": 0.7,
+      "strength": "Moderate"
+    },
+    {
+      "value": "41434F4E",
+      "offset": 8,
+      "label": "'ACON' ANI form type",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 12,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "riff_magic", "type": "ascii", "description": "RIFF container magic 'RIFF'", "storeAs": "string" },
+      { "offset": 4, "size": 4, "name": "file_size", "type": "uint32le", "description": "Total file size minus 8 bytes (RIFF convention, little-endian)", "storeAs": "uint32" },
+      { "offset": 8, "size": 4, "name": "form_type", "type": "ascii", "description": "RIFF form type 'ACON' identifying animated cursor", "storeAs": "string" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["riff_magic", "form_type", "file_size"],
+    "valueMaps": {
+      "form_type": {
+        "ACON": "Animated Cursor (ANI format)"
+      }
+    },
+    "tooltips": {
+      "riff_magic": "Must be 'RIFF' (0x52494646); standard RIFF container header",
+      "file_size": "File size minus 8 bytes stored as little-endian uint32",
+      "form_type": "Must be 'ACON' to identify the RIFF payload as an animated cursor"
+    }
+  },
+  "assertions": [
+    { "id": "ANI_001", "field": "riff_magic", "operator": "equals", "value": "RIFF", "description": "First 4 bytes must be 'RIFF'" },
+    { "id": "ANI_002", "field": "form_type", "operator": "equals", "value": "ACON", "description": "Bytes 8-11 must be 'ACON' to identify animated cursor" },
+    { "id": "ANI_003", "field": "file_size", "operator": "greaterThan", "value": 0, "description": "Reported RIFF payload size must be greater than zero" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "RIFF Magic", "color": "#FF6B35" },
+      { "offset": 4, "label": "RIFF Payload Size", "color": "#4ECDC4" },
+      { "offset": 8, "label": "Form Type ACON", "color": "#45B7D1" },
+      { "offset": 12, "label": "First Chunk (anih or LIST)", "color": "#96CEB4" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "RIFF Header", "fields": ["riff_magic", "form_type", "file_size"], "format": "text" },
+    { "name": "Binary Header Dump", "fields": ["riff_magic", "file_size", "form_type"], "format": "hex" }
+  ],
+  "aiHints": [
+    "ANI files use a RIFF container with form type 'ACON'; chunks include 'anih' (animation header), 'LIST' 'fram' (frame list), 'rate' (per-frame timing), 'seq ' (frame sequence), and 'INAM'/'IART' metadata",
+    "The 'anih' chunk contains: cbSiz(4), nFrames(4), nSteps(4), iWidth(4), iHeight(4), iBitCount(4), nPlanes(4), iDispRate(4), bfAttributes(4)",
+    "If bfAttributes bit 0 is set (AF_ICON), frames are stored as ICO/CUR data; otherwise as raw DIB bitmaps",
+    "The 'rate' chunk contains nSteps DWORD values each giving the frame display time in 1/60 second units",
+    "ANI files are susceptible to integer overflow vulnerabilities in nFrames/nSteps parsing — a well-known attack vector in older Windows cursors"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "ANI files have historically been used in exploit payloads (CVE-2007-0038 Windows ANI integer overflow); treat unknown ANI files as potentially hostile",
+      "Embedded ICO/CUR frames may contain multiple icon sizes including 32-bit RGBA data",
+      "RIFF size field mismatch vs actual file size can indicate truncation or appended payload"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "CUR", "relationship": "embeds", "note": "ANI frame data is typically stored as CUR (cursor) format chunks in the LIST/fram sub-list" },
+    { "format": "ICO", "relationship": "embeds", "note": "When AF_ICON flag is set, frames may use ICO image data instead of raw DIB" },
+    { "format": "AVI", "relationship": "sibling", "note": "Both ANI and AVI use the RIFF container; AVI uses form type 'AVI ' instead of 'ACON'" }
+  ],
+  "software": [
+    { "name": "Windows Shell (explorer.exe)", "role": "Primary consumer; loads ANI files for animated cursor themes" },
+    { "name": "Microsoft AniEdit", "role": "Legacy animated cursor editor included in older Windows SDK" },
+    { "name": "GIMP (ani plugin)", "role": "Import/export of ANI files for cursor creation" },
+    { "name": "AnicursorGen", "role": "Cross-platform tool to generate .ani files from PNG frame sequences" }
+  ],
+  "useCases": [
+    "Custom animated mouse cursor themes for Windows desktop environments",
+    "Branding and UX enhancement via custom cursor sets in Windows applications",
+    "Legacy cursor assets that require frame-by-frame animation with per-frame timing"
+  ],
+  "technicalDetails": "ANI is a RIFF-based container (form type ACON) that stores animated cursor data. The file begins with a standard RIFF header (magic, payload size, form type). Key chunks: 'anih' (36 bytes, animation metadata), optional 'LIST' 'INFO' (metadata like name and artist), 'LIST' 'fram' containing the frame images, optional 'rate' (per-frame display rates in jiffies = 1/60s), and optional 'seq ' (display order permutation). Frames are either ICO/CUR files or raw DIB bitmaps. The total number of display steps (nSteps) may differ from frame count (nFrames) when sequence reordering is used.",
+  "completenessScore": 81
+}

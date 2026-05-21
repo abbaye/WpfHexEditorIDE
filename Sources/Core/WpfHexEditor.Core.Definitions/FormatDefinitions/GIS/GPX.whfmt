@@ -1,0 +1,129 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "GPS Exchange Format",
+  "formatId": "GPX",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "GPS Exchange Format (.gpx) is an XML schema designed for exchanging GPS data (waypoints, routes, and tracks) between applications and devices. GPX is defined by Topografix and standardized as GPX 1.0 and GPX 1.1. Files are UTF-8 encoded XML beginning with an XML declaration or directly with a <gpx> root element.",
+  "extensions": [".gpx"],
+  "category": "GIS",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "3C3F786D6C",
+      "offset": 0,
+      "label": "XML declaration '<?xml'",
+      "weight": 0.7,
+      "strength": "Moderate"
+    },
+    {
+      "value": "3C677078",
+      "offset": 0,
+      "label": "Direct GPX root element '<gpx'",
+      "weight": 0.8,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 5,
+  "structure": {
+    "fields": [
+      { "offset": 0,   "size": 5,  "name": "xml_declaration", "type": "ascii",    "description": "XML processing instruction '<?xml' or direct '<gpx' root", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "gpx_version",     "type": "ascii",    "description": "GPX schema version attribute on <gpx> element (e.g., '1.1')", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "creator",         "type": "ascii",    "description": "Software that created the GPX file (creator attribute on <gpx>)", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "xmlns",           "type": "ascii",    "description": "XML namespace URI identifying GPX schema version", "storeAs": "string" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["xml_declaration", "gpx_version", "creator", "xmlns"],
+    "valueMaps": {
+      "gpx_version": {
+        "1.0": "GPX 1.0 (Topografix legacy)",
+        "1.1": "GPX 1.1 (current standard, supports extensions)"
+      }
+    },
+    "tooltips": {
+      "xml_declaration": "Standard XML header; encoding must be UTF-8 for full Unicode waypoint name support",
+      "gpx_version":     "GPX 1.1 introduced metadata element, link element, and extensions namespace",
+      "creator":         "Identifies the generating device or application (e.g., 'Garmin Connect', 'Strava')",
+      "xmlns":           "GPX 1.1 namespace: http://www.topografix.com/GPX/1/1"
+    }
+  },
+  "assertions": [
+    {
+      "id": "GPX_001",
+      "field": "xml_declaration",
+      "operator": "startsWith",
+      "value": "3C",
+      "description": "File must start with '<' indicating XML or GPX root element"
+    },
+    {
+      "id": "GPX_002",
+      "field": "gpx_version",
+      "operator": "in",
+      "value": ["1.0", "1.1"],
+      "description": "GPX version attribute must be '1.0' or '1.1'"
+    },
+    {
+      "id": "GPX_003",
+      "field": "xmlns",
+      "operator": "contains",
+      "value": "topografix.com/GPX",
+      "description": "XML namespace must reference the Topografix GPX schema URI"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0,   "label": "XML Declaration / GPX Root", "color": "#4A90D9" },
+      { "offset": 38,  "label": "Metadata Section Start",     "color": "#7ED321" },
+      { "offset": 200, "label": "First Track/Waypoint",       "color": "#F5A623" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GPX Header Metadata",
+      "fields": ["gpx_version", "creator", "xmlns"],
+      "format": "json"
+    },
+    {
+      "name": "Geospatial Forensic Summary",
+      "fields": ["creator", "gpx_version"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "GPX files contain three primary data types: <wpt> (waypoints — individual named points), <rte> (routes — ordered waypoints defining a path to follow), and <trk> (tracks — recorded GPS position history with timestamps).",
+    "Each track point (<trkpt>) can include <ele> (elevation in meters WGS84), <time> (ISO 8601 timestamp), <hdop>/<vdop>/<pdop> (GPS dilution of precision), and <sat> (satellite count).",
+    "GPX timestamps are in UTC ISO 8601 format (e.g., 2024-03-15T14:32:00Z); they provide precise location history that is highly sensitive for privacy and forensic timeline reconstruction.",
+    "GPX 1.1 supports vendor extension namespaces inside <extensions> elements; Garmin uses the TrackPointExtension namespace for heart rate, cadence, and temperature data from fitness devices.",
+    "The 'creator' attribute reliably identifies the source device or application (Garmin, Polar, Strava, Google Maps, OsmAnd, etc.) and can be used to corroborate device attribution in forensic investigations."
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "notes": [
+      "GPX track files contain precise timestamped location history — this is highly sensitive personal data subject to GDPR, CCPA, and similar privacy regulations.",
+      "Waypoint names and descriptions may contain personally identifiable information (home address, workplace, frequent locations).",
+      "The 'creator' attribute and extension namespaces can identify the specific device model and software version, supporting device attribution.",
+      "GPX files from fitness trackers may include biometric data (heart rate, cadence) in extension elements beyond just location."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "KML",      "relationship": "alternative", "note": "KML (Keyhole Markup Language) is Google's competing XML GPS format; converters exist between GPX and KML" },
+    { "format": "GEOJSON",  "relationship": "convertible", "note": "GPX tracks and waypoints can be converted to GeoJSON LineString and Point features" },
+    { "format": "GPKG",     "relationship": "convertible", "note": "GPX data can be imported into GeoPackage databases for spatial querying" }
+  ],
+  "software": [
+    { "name": "Garmin Connect / Garmin devices", "role": "Primary source of GPX files from consumer GPS devices and fitness trackers" },
+    { "name": "QGIS",                            "role": "Open-source GIS platform that imports and exports GPX files natively" },
+    { "name": "GPSBabel",                        "role": "Universal GPS file format converter supporting GPX and 200+ other formats" },
+    { "name": "Viking GPS Data Editor",          "role": "Desktop application for viewing, editing, and analyzing GPX tracks and waypoints" }
+  ],
+  "useCases": [
+    "Storing and sharing GPS route data between navigation applications and fitness tracking platforms",
+    "Forensic analysis of GPS tracks from mobile devices, fitness trackers, and vehicle navigation systems",
+    "Converting GPS data from proprietary device formats to the open GPX standard for archival",
+    "Building geospatial datasets from crowd-sourced GPS tracks for map creation (OpenStreetMap contributors)"
+  ],
+  "technicalDetails": "GPX 1.1 is defined by the XML Schema at http://www.topografix.com/GPX/1/1/gpx.xsd. The root element <gpx> carries attributes: version, creator, and xmlns. Coordinates use WGS 84 datum (EPSG:4326). Waypoints use decimal degrees with up to 9 decimal places. Track points are nested as <trk><trkseg><trkpt lat='...' lon='...'> with optional child elements for elevation, time, accuracy, and extensions. The file size is proportional to the number of track points; a 1-hour GPS track at 1Hz produces approximately 3,600 <trkpt> elements and a file around 500KB uncompressed. GPX files are commonly found compressed as .gpx.gz or inside .zip archives from activity export services.",
+  "completenessScore": 83
+}

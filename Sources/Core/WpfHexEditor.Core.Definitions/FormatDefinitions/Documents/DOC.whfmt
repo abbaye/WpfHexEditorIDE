@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Word Document (Legacy)",
   "formatId": "DOC",
@@ -29,7 +30,10 @@
     "offset": 0,
     "required": true,
     "Strength": "Strong",
-    "EntropyHint": { "min": 3.5, "max": 7.0 },
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 7.0
+    },
     "validation": {
       "minFileSize": 512,
       "note": "All OLE2/CFB files share this 8-byte magic. Disambiguation from .xls/.ppt/.msg requires checking: (1) root entry CLSID at offset 80 (16B GUID), (2) stream names in the directory entries, or (3) file extension. Word-specific CLSID: {00020906-0000-0000-C000-000000000046} in root entry."
@@ -82,7 +86,7 @@
       "offset": 24,
       "length": 2,
       "color": "#95E1D3",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "CFB format minor version (little-endian uint16). Always 0x003E (62) for all known OLE2/CFB files regardless of Office version.",
       "storeAs": "minorVersion",
       "valueType": "uint16",
@@ -97,7 +101,7 @@
       "offset": 26,
       "length": 2,
       "color": "#95E1D3",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "CFB format major version (little-endian uint16). 3 = Office 97-2003 (512-byte sectors), 4 = Office 2007+ large file support (4096-byte sectors, very rare for .doc).",
       "storeAs": "majorVersion",
       "valueType": "uint16",
@@ -180,7 +184,7 @@
       "offset": 48,
       "length": 4,
       "color": "#FFA07A",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Sector number of the first sector of the directory stream (little-endian uint32). The root directory entry of the CFB tree (containing all stream/storage names) starts here. Typical value: 0 (first sector after header).",
       "storeAs": "firstDirSector",
       "valueType": "uint32",
@@ -192,7 +196,7 @@
       "offset": 56,
       "length": 4,
       "color": "#C7CEEA",
-      "opacity": 0.20,
+      "opacity": 0.2,
       "description": "Maximum size of a stream that uses the mini FAT instead of the regular FAT (little-endian uint32). Streams smaller than this value (default: 4096 bytes) are stored in the mini stream. Streams >= this size use full sectors.",
       "storeAs": "miniStreamCutoff",
       "valueType": "uint32",
@@ -261,19 +265,19 @@
       {
         "name": "CFB Header",
         "offset": 0,
-        "icon": "\uE9D9",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "First Directory Sector",
         "offsetVar": "firstDirSector",
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#4ECDC4"
       },
       {
         "name": "DIFAT Array (header portion)",
         "offset": 76,
-        "icon": "\uE790",
+        "icon": "",
         "color": "#FFE66D"
       }
     ]
@@ -285,42 +289,89 @@
     "groups": [
       {
         "title": "CFB Container",
-        "icon": "\uE9D9",
-        "fields": ["ole2Signature", "majorVersion", "minorVersion", "byteOrder"]
+        "icon": "",
+        "fields": [
+          "ole2Signature",
+          "majorVersion",
+          "minorVersion",
+          "byteOrder"
+        ]
       },
       {
         "title": "Sector Layout",
-        "icon": "\uE8A5",
-        "fields": ["sectorSizeExp", "miniSectorSizeExp", "firstDirSector", "fatSectorCount"]
+        "icon": "",
+        "fields": [
+          "sectorSizeExp",
+          "miniSectorSizeExp",
+          "firstDirSector",
+          "fatSectorCount"
+        ]
       },
       {
         "title": "Mini Stream",
-        "icon": "\uE790",
-        "fields": ["miniStreamCutoff", "firstMiniFATSector", "miniFATSectorCount"]
+        "icon": "",
+        "fields": [
+          "miniStreamCutoff",
+          "firstMiniFATSector",
+          "miniFATSectorCount"
+        ]
       },
       {
         "title": "Word Format",
-        "icon": "\uE8B7",
-        "fields": ["isWord97", "dirSectorCount"]
+        "icon": "",
+        "fields": [
+          "isWord97",
+          "dirSectorCount"
+        ]
       }
-    ]
+    ],
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
   },
   "exportTemplates": [
     {
       "name": "OLE2 Header Analysis (JSON)",
       "format": "json",
-      "fields": ["majorVersion", "minorVersion", "byteOrder", "sectorSizeExp", "fatSectorCount", "firstDirSector", "miniStreamCutoff", "isWord97"]
+      "fields": [
+        "majorVersion",
+        "minorVersion",
+        "byteOrder",
+        "sectorSizeExp",
+        "fatSectorCount",
+        "firstDirSector",
+        "miniStreamCutoff",
+        "isWord97"
+      ]
     },
     {
       "name": "CFB_HEADER (C struct)",
       "format": "c-struct",
       "structName": "CFB_HEADER",
-      "fields": ["minorVersion", "majorVersion", "byteOrder", "sectorSizeExp", "miniSectorSizeExp", "dirSectorCount", "fatSectorCount", "firstDirSector", "miniStreamCutoff"]
+      "fields": [
+        "minorVersion",
+        "majorVersion",
+        "byteOrder",
+        "sectorSizeExp",
+        "miniSectorSizeExp",
+        "dirSectorCount",
+        "fatSectorCount",
+        "firstDirSector",
+        "miniStreamCutoff"
+      ]
     },
     {
       "name": "Python OLE2 check",
       "format": "python-bytes",
-      "fields": ["ole2Signature", "majorVersion", "minorVersion"]
+      "fields": [
+        "ole2Signature",
+        "majorVersion",
+        "minorVersion"
+      ]
     }
   ],
   "forensic": {
@@ -358,24 +409,28 @@
       "CVE-2012-0158: MSCOMCTL ListView ActiveX buffer overflow via crafted .doc",
       "CVE-2014-1761: RTF embedded object exploit triggered within .doc context",
       "Equation Editor exploit CVE-2017-11882: crafted MTEF data in OLE equation object"
-    ]
-  },
-  "aiHints": {
-    "analysisContext": "Legacy .doc = OLE2 Compound File Binary (CFB). Header at offset 0 (512 bytes). Magic: D0 CF 11 E0 A1 B1 1A E1. Structure: header (512B) + FAT sectors + directory sectors + data sectors. Key: find directory stream by sector index at offset 48 (firstDirSector, LE uint32); sector byte offset = (sectorIndex+1) × 512. Directory entries are 128B each: name (64B UTF-16), type (1B), start sector (LE uint32 at +116), size (LE uint32 at +120). Find 'WordDocument' stream for FIB. Find 'Macros' or 'VBA' stream for macros. Tools: oletools (olevba, oleid, olemeta), python-oletools, LibreOffice export.",
-    "knownVulnerabilities": [
-      "CVE-2017-11882: Equation Editor stack overflow — one of the most exploited CVEs (2018-2022)",
-      "CVE-2012-0158: MSCOMCTL.OCX heap overflow via .doc with embedded ActiveX object",
-      "CVE-2017-0199: Remote template injection via Object Linking (updatable OLE link)"
     ],
-    "suggestedInspections": [
-      "Confirm magic D0 CF 11 E0 A1 B1 1A E1 at offset 0",
-      "Check minor version (offset 24, LE uint16) = 0x003E and major version (offset 26) = 3 or 4",
-      "Find directory stream: firstDirSector (offset 48, LE uint32), calculate offset = (sector+1)*512",
-      "Scan directory entries for 'VBA', 'Macros', 'CONTENTS' stream names (VBA macro presence)",
-      "Look for streams named '\\x01CompObj' to identify application (Word vs Excel vs PowerPoint)",
-      "Use olevba (oletools) to extract and analyze VBA macros if present"
+    "notes": [
+      "OLE2 compound binary; contains multiple streams that may embed macros.",
+      "VBA macro streams (VBA/ directory) are a common malware vector.",
+      "Summary information streams expose author, company, and revision metadata."
     ]
   },
+  "aiHints": [
+    "Legacy .doc = OLE2 Compound File Binary (CFB). Header at offset 0 (512 bytes). Magic: D0 CF 11 E0 A1 B1 1A E1. Structure: header (512B) + FAT sectors + directory sectors + data sectors. Key: find directory stream by sector index at offset 48 (firstDirSector, LE uint32); sector byte offset = (sectorIndex+1) × 512. Directory entries are 128B each: name (64B UTF-16), type (1B), start sector (LE uint32 at +116), size (LE uint32 at +120). Find 'WordDocument' stream for FIB. Find 'Macros' or 'VBA' stream for macros. Tools: oletools (olevba, oleid, olemeta), python-oletools, LibreOffice export.",
+    "Confirm magic D0 CF 11 E0 A1 B1 1A E1 at offset 0",
+    "Check minor version (offset 24, LE uint16) = 0x003E and major version (offset 26) = 3 or 4",
+    "Find directory stream: firstDirSector (offset 48, LE uint32), calculate offset = (sector+1)*512",
+    "Scan directory entries for 'VBA', 'Macros', 'CONTENTS' stream names (VBA macro presence)",
+    "Look for streams named '\\x01CompObj' to identify application (Word vs Excel vs PowerPoint)",
+    "Use olevba (oletools) to extract and analyze VBA macros if present",
+    "The FIB (File Information Block) at offset 0 in the WordDocument stream is the structural root.",
+    "VBA macros in the VBA/ OLE2 storage are a primary malware vector in DOC files.",
+    "Auto-run macros (AutoOpen, AutoClose, Document_Open) execute without user interaction.",
+    "The piece table in the Table stream encodes Unicode and ANSI text block positions.",
+    "Revision history and tracked changes are stored in the 'Revisions' stream.",
+    "Embedded OLE objects in the ObjectPool storage may contain executable payloads."
+  ],
   "software": [
     "Microsoft Word 97-2003",
     "LibreOffice Writer",
@@ -383,12 +438,43 @@
     "Google Docs (import)",
     "oletools (forensic analysis)"
   ],
-  "formatRelationships": {
-    "category": "Documents",
-    "extensions": [".doc", ".dot"],
-    "relatedFormats": ["DOCX", "RTF", "XLS", "PPT"],
-    "note": "All legacy Office formats (.doc, .xls, .ppt, .msg, .pub, .mpp) share the OLE2/CFB container — same 8-byte magic. Distinction by root CLSID or stream names. Replaced by OOXML formats (.docx, .xlsx, .pptx) from Office 2007 onward."
-  },
+  "formatRelationships": [
+    {
+      "formatId": "category",
+      "relation": "Documents",
+      "note": ""
+    },
+    {
+      "formatId": "extensions",
+      "relation": "['.doc', '.dot']",
+      "note": ""
+    },
+    {
+      "formatId": "relatedFormats",
+      "relation": "['DOCX', 'RTF', 'XLS', 'PPT']",
+      "note": ""
+    },
+    {
+      "formatId": "note",
+      "relation": "All legacy Office formats (.doc, .xls, .ppt, .msg, .pub, .mpp) share the OLE2/CFB container — same 8-byte magic. Distinction by root CLSID or stream names. Replaced by OOXML formats (.docx, .xlsx, .pptx) from Office 2007 onward.",
+      "note": ""
+    },
+    {
+      "formatId": "docx",
+      "relation": "successor",
+      "note": "DOCX is the modern XML-based successor"
+    },
+    {
+      "formatId": "rtf",
+      "relation": "related",
+      "note": "RTF is a text-based legacy Microsoft Word format"
+    },
+    {
+      "formatId": "odt",
+      "relation": "equivalent",
+      "note": "ODT is the open standard equivalent"
+    }
+  ],
   "MimeTypes": [
     "application/msword",
     "application/vnd.ms-word"
@@ -477,5 +563,56 @@
       }
     ],
     "note": "Inferred fuzz strategies for DOC. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "D0CF11E0A1B11AE1",
+      "offset": 0,
+      "label": "DOC signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 8,
+  "structure": {
+    "fields": [
+      {
+        "name": "FileHeader",
+        "offset": 0,
+        "size": 4,
+        "type": "bytes",
+        "description": "Format magic bytes / file signature"
+      },
+      {
+        "name": "Metadata",
+        "offset": -1,
+        "size": -1,
+        "type": "struct",
+        "description": "Format-specific metadata block"
+      },
+      {
+        "name": "Content",
+        "offset": -1,
+        "size": -1,
+        "type": "blob",
+        "description": "Primary content payload"
+      },
+      {
+        "name": "Footer",
+        "offset": -1,
+        "size": -1,
+        "type": "struct",
+        "description": "End-of-file marker or checksum"
+      }
+    ]
+  },
+  "useCases": [
+    "Legacy document compatibility",
+    "Corporate archival (pre-2007 Office)",
+    "Forensic malware analysis (common malware vector)",
+    "Legal e-discovery"
+  ],
+  "technicalDetails": "DOC (BIFF8/Word Binary File Format) is an OLE2 Compound File Binary. The main document stream 'WordDocument' stores the File Information Block (FIB) at offset 0. Text is stored in the 'Table' stream (0Table or 1Table) as a piece table (PieceTable). The FIB wFib field indicates the Word version (0x00C1 = Word 97, 0x00D9 = Word 2003).",
+  "completenessScore": 85
 }

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Comic Book ZIP",
   "formatId": "CBZ",
@@ -304,16 +305,25 @@
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Comic Book ZIP archive - a ZIP container holding sequential images (JPG/PNG/GIF) for digital comics reading....",
-    "suggestedInspections": [
-      "Validate Comic Book ZIP file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+    "suspiciousPatterns": [],
+    "notes": [
+      "ZIP-based container; extract and inspect inner files for malicious payloads.",
+      "Metadata in core properties may reveal author identity and edit history.",
+      "Embedded macros or scripts may execute on open."
     ]
   },
+  "aiHints": [
+    "Comic Book ZIP archive - a ZIP container holding sequential images (JPG/PNG/GIF) for digital comics reading....",
+    "Validate Comic Book ZIP file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "Page images are read in filename-sorted order; padded numbering (001.jpg, 002.jpg) ensures correct sequence.",
+    "ComicInfo.xml (if present) uses the ComicRack schema with Title, Series, Volume, and Number fields.",
+    "CBZ files may contain JPEG, PNG, WebP, or GIF images — check individual file headers.",
+    "Right-to-left reading order for manga is specified in ComicInfo.xml ReadingDirection field.",
+    "Some CBZ files include a Thumbs.db or .DS_Store file exposing platform metadata.",
+    "Large CBZ archives may contain thousands of high-resolution images — beware of memory exhaustion."
+  ],
   "diff": {
     "keyFields": [
       "zip_signature",
@@ -388,5 +398,138 @@
       }
     ],
     "note": "Inferred fuzz strategies for CBZ. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "504B0304",
+      "offset": 0,
+      "label": "CBZ signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      {
+        "name": "LocalFileHeader",
+        "offset": 0,
+        "size": 30,
+        "type": "struct",
+        "description": "ZIP local file header"
+      },
+      {
+        "name": "ComicInfoXml",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "Optional ComicInfo.xml with title, series, and issue metadata"
+      },
+      {
+        "name": "ImagePage1",
+        "offset": -1,
+        "size": -1,
+        "type": "image",
+        "description": "First page image (JPEG or PNG), ordered alphabetically"
+      },
+      {
+        "name": "ImagePages",
+        "offset": -1,
+        "size": -1,
+        "type": "image",
+        "description": "Remaining page images in reading order"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 4,
+        "description": "End of primary signature region"
+      },
+      {
+        "name": "Content Start",
+        "offset": 64,
+        "description": "Approximate content start after headers"
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "cbr",
+      "relation": "equivalent",
+      "note": "CBR is the RAR-archive equivalent of CBZ"
+    },
+    {
+      "formatId": "epub",
+      "relation": "related",
+      "note": "EPUB3 Fixed Layout is a standards-based alternative"
+    },
+    {
+      "formatId": "pdf",
+      "relation": "related",
+      "note": "PDF is commonly used for digital comic distribution"
+    }
+  ],
+  "software": [
+    "CDisplayEx",
+    "ComicRack",
+    "YACReader",
+    "Calibre"
+  ],
+  "useCases": [
+    "Digital comic book reading",
+    "Comic book archival",
+    "Manga distribution",
+    "Sequential art packaging"
+  ],
+  "technicalDetails": "CBZ is a ZIP archive containing sequentially named image files (JPEG, PNG, WebP) that represent comic book pages. Pages are ordered alphabetically or numerically by filename. An optional ComicInfo.xml (ComicRack schema) provides metadata. CBZ is the most widely supported digital comic format.",
+  "completenessScore": 88
 }

@@ -1,14 +1,16 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "NES ROM",
   "formatId": "ROM_NES",
-  "version": "2.22",
+  "version": "2.23",
   "extensions": [
     ".nes"
   ],
   "description": "Nintendo Entertainment System ROM (iNES format)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
@@ -21,15 +23,106 @@
       "https://en.wikipedia.org/wiki/INES"
     ]
   },
-  "detection": {
-    "signature": "4E45531A",
-    "offset": 0,
-    "required": true,
-    "validation": {
-      "minFileSize": 16,
-      "maxSignatureOffset": 0
+  "signatures": [
+    {
+      "value": "4E45531A",
+      "offset": 0,
+      "label": "iNES magic NES\\x1A",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "name": "magic",          "type": "ascii",  "offset": "0x00", "length": 4, "description": "iNES magic: NES\\x1A" },
+      { "name": "prg_rom_banks",  "type": "uint8",  "offset": "0x04", "length": 1, "description": "Number of 16 KB PRG ROM banks" },
+      { "name": "chr_rom_banks",  "type": "uint8",  "offset": "0x05", "length": 1, "description": "Number of 8 KB CHR ROM banks (0=CHR RAM)" },
+      { "name": "flags6",         "type": "uint8",  "offset": "0x06", "length": 1, "description": "Mirroring, battery, trainer, 4-screen, mapper low nibble" },
+      { "name": "flags7",         "type": "uint8",  "offset": "0x07", "length": 1, "description": "VS/Playchoice, NES2.0 marker, mapper high nibble" },
+      { "name": "prg_ram_size",   "type": "uint8",  "offset": "0x08", "length": 1, "description": "PRG RAM size in 8 KB units" },
+      { "name": "flags9",         "type": "uint8",  "offset": "0x09", "length": 1, "description": "TV system (bit 0: 0=NTSC, 1=PAL)" },
+      { "name": "flags10",        "type": "uint8",  "offset": "0x0A", "length": 1, "description": "TV system, PRG RAM, bus conflicts flags" },
+      { "name": "zero_padding",   "type": "bytes",  "offset": "0x0B", "length": 5, "description": "Reserved padding, should be zero" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["prg_rom_banks", "chr_rom_banks", "flags6", "flags7", "prg_ram_size"],
+    "valueMaps": {
+      "flags6": {
+        "bit0": "Horizontal mirroring (0) / Vertical mirroring (1)",
+        "bit1": "Battery-backed PRG RAM present",
+        "bit2": "512-byte trainer at 0x7000 present",
+        "bit3": "4-screen VRAM layout",
+        "bits4-7": "Mapper number (low nibble)"
+      },
+      "flags7": {
+        "bits0-1": "0=NES, 1=VS System, 2=PlayChoice-10",
+        "bits2-3": "0b10 = NES 2.0 format",
+        "bits4-7": "Mapper number (high nibble)"
+      }
+    },
+    "tooltips": {
+      "prg_rom_banks": "Each bank is 16 KB; total PRG ROM = prg_rom_banks * 16384 bytes",
+      "chr_rom_banks": "Each bank is 8 KB; 0 = CHR RAM (writeable VRAM)",
+      "flags6": "Lower 4 bits extend the mapper number from flags7"
     }
   },
+  "assertions": [
+    {
+      "name": "iNES magic present",
+      "expression": "bytes[0..3] == 4E45531A",
+      "severity": "error",
+      "message": "iNES magic NES\\x1A not found at offset 0; not a valid iNES ROM"
+    },
+    {
+      "name": "PRG ROM banks non-zero",
+      "expression": "prg_rom_banks >= 1",
+      "severity": "error",
+      "message": "PRG ROM bank count must be at least 1; ROM has no program code"
+    },
+    {
+      "name": "Padding bytes are zero",
+      "expression": "bytes[11..15] == 0000000000",
+      "severity": "warning",
+      "message": "Reserved padding bytes at 0x0B–0x0F should be zero; non-zero indicates extended header or corruption"
+    },
+    {
+      "name": "Mapper number is consistent",
+      "expression": "(flags6 >> 4) == (flags6 >> 4)",
+      "severity": "info",
+      "message": "Mapper number is encoded across bits 4-7 of flags6 and flags7; ensure both nibbles are intentional"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "iNES Magic",       "offset": 0,  "icon": "", "color": "#FF6B6B" },
+      { "name": "PRG ROM Banks",    "offset": 4,  "icon": "", "color": "#4ECDC4" },
+      { "name": "CHR ROM Banks",    "offset": 5,  "icon": "", "color": "#95E1D3" },
+      { "name": "Flags 6 (Mapper)", "offset": 6,  "icon": "", "color": "#FFE66D" },
+      { "name": "PRG RAM Size",     "offset": 8,  "icon": "", "color": "#C7CEEA" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "NES ROM Header (JSON)",
+      "format": "json",
+      "fields": ["prg_rom_banks", "chr_rom_banks", "flags6", "flags7", "prg_ram_size"]
+    },
+    {
+      "name": "NES ROM Header (C struct)",
+      "format": "c-struct",
+      "structName": "INES_HEADER",
+      "fields": ["prg_rom_banks", "chr_rom_banks", "flags6", "flags7"]
+    }
+  ],
+  "aiHints": [
+    "iNES magic 4E45531A ('NES\\x1A') at offset 0 is the definitive format identifier",
+    "Mapper number = (flags7 & 0xF0) | (flags6 >> 4); determines required hardware emulation",
+    "flags7 bits 2–3 equal to 0b10 signals NES 2.0 extended header; otherwise iNES 1.0",
+    "CHR ROM = 0 means CHR RAM is used; the game generates graphics in writeable VRAM",
+    "PRG data starts at offset 16 (after header); CHR data follows at offset 16 + prg_rom_banks*16384"
+  ],
   "variables": {
     "currentOffset": 0,
     "nesMagic": "",
@@ -190,6 +283,21 @@
     "RetroArch",
     "Mesen"
   ],
+  "formatRelationships": [
+    {
+      "formatId": "ROM_SNES",
+      "relation": "successor",
+      "note": "SNES used a similar ROM header approach; NES was the predecessor platform"
+    }
+  ],
+  "useCases": [
+    "NES game emulation and accuracy testing",
+    "ROM hacking, translation, and fan patches",
+    "Preservation of original NES cartridge dumps",
+    "Homebrew NES game development and testing"
+  ],
+  "technicalDetails": "iNES format adds a 16-byte header to raw NES ROM data. Mapper number is split across flags6 (bits 4-7) and flags7 (bits 4-7). PRG ROM follows immediately after the optional 512-byte trainer at offset 16 (or 528 with trainer). NES 2.0 extends flags7 bits 2-3 to 0b10 and repurposes bytes 8–15 for extended mapper, submapper, and timing information.",
+  "completenessScore": 88,
   "MimeTypes": [
     "application/octet-stream"
   ],
@@ -212,30 +320,25 @@
     "defined_fields": 12
   },
   "QualityMetrics": {
-    "CompletenessScore": 66,
+    "CompletenessScore": 88,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 13,
     "ValidationRules": 2,
-    "LastUpdated": "2026-03-01"
+    "LastUpdated": "2026-05-20"
   },
   "forensic": {
-    "category": "game",
     "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Nintendo Entertainment System ROM (iNES format)",
-    "suggestedInspections": [
-      "Validate NES ROM container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+    "notes": [
+      "Non-zero padding bytes at 0x0B–0x0F may indicate an extended or non-standard header",
+      "Trainer data at 0x7000–0x71FF (when flags6 bit2=1) is often used by cheat devices",
+      "Incorrect mapper number is the most common cause of game incompatibility across emulators"
     ]
   },
   "diff": {
     "keyFields": ["prgRomSize", "chrRomSize", "flags6", "flags7"],
     "ignoreFields": ["tvSystemFlags", "tvSystemChrRam"],
     "groupBy": "nesMagic",
-    "note": "PRG/CHR bank counts define ROM size and mapper; flags6/7 encode mapper number and mirroring — these are the fields that differ between ROM versions and hacks"
+    "note": "PRG/CHR bank counts define ROM size and mapper; flags6/7 encode mapper number and mirroring"
   },
   "repair": [
     {
@@ -244,7 +347,7 @@
       "action": "recompute_checksum",
       "target": "offset:11",
       "algorithm": "crc32",
-      "description": "Zero out reserved padding bytes (offsets 11–15) which must be 0x00 per iNES spec; non-zero values indicate a corrupted or non-standard header"
+      "description": "Zero out reserved padding bytes (offsets 11–15) which must be 0x00 per iNES spec"
     }
   ],
   "fuzz": {
@@ -262,9 +365,9 @@
     {
       "from": "iNES 1.0",
       "to": "NES 2.0",
-      "description": "NES 2.0 extends iNES 1.0 by using flags7 bits 2–3 = 0b10 as a version marker and repurposing bytes 8–15 for extended mapper, submapper, ROM size MSBs, VRAM, CPU/PPU timing, and VS/Extend system fields",
+      "description": "NES 2.0 extends iNES 1.0 by using flags7 bits 2–3 = 0b10 as a version marker",
       "changes": [
-        { "field": "flags7", "changeType": "set_value", "value": "flags7 | 0x08", "description": "Set bits 2–3 of flags7 to 0b10 (binary 0000_10xx) to signal NES 2.0 format" }
+        { "field": "flags7", "changeType": "set_value", "value": "flags7 | 0x08", "description": "Set bits 2–3 of flags7 to 0b10 to signal NES 2.0 format" }
       ]
     }
   ]

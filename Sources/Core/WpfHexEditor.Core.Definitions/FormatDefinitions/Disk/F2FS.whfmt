@@ -1,12 +1,13 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "F2FS (Flash-Friendly File System)",
   "formatId": "F2FS",
-  "version": "1.13",
-  "extensions": [
-    ".f2fs"
-  ],
-  "description": "Flash-Friendly File System for NAND flash devices",
+  "version": "1.14",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 83,
+  "extensions": [".f2fs"],
+  "description": "Flash-Friendly File System for NAND flash devices. The F2FS superblock is at offset 1024 (1 KiB). The magic number 0xF2F52010 is at the very beginning of the superblock at offset 1024. F2FS is designed for SSD and NAND flash storage with log-structured layout.",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
@@ -19,24 +20,23 @@
     "WebLinks": [
       "https://docs.kernel.org/filesystems/f2fs.html",
       "https://en.wikipedia.org/wiki/F2FS",
-      "https://www.usenix.org/conference/fast15/technical-sessions/presentation/lee",
-      "https://wiki.archlinux.org/title/F2FS"
+      "https://www.usenix.org/conference/fast15/technical-sessions/presentation/lee"
     ]
   },
+  "maxSignatureOffset": 1028,
+  "signatures": [
+    {
+      "value": "F2F52010",
+      "offset": 1024,
+      "label": "F2FS superblock magic 0xF2F52010 at offset 1024",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
   "detection": {
     "required": true,
-    "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "F2F52010",
-        "offset": 1024,
-        "label": "F2FS magic",
-        "weight": 1.0
-      }
-    ],
+    "validation": { "minFileSize": 4, "maxSignatureOffset": 1028 },
+    "signatures": [{ "value": "F2F52010", "offset": 1024, "label": "F2FS magic", "weight": 1.0 }],
     "matchMode": "any",
     "MinimumScore": 1.0,
     "Strength": "Strong"
@@ -45,81 +45,104 @@
     "currentOffset": 0,
     "machineType": "",
     "sectionCount": 0,
-    "entryPoint": 0
+    "entryPoint": 0,
+    "magic": 0,
+    "majorVersion": 0,
+    "minorVersion": 0,
+    "blockCount": 0
+  },
+  "structure": {
+    "fields": [
+      { "name": "magic", "offset": 1024, "size": 4, "type": "uint32le", "description": "F2FS magic: 0xF2F52010" },
+      { "name": "major_version", "offset": 1028, "size": 2, "type": "uint16le", "description": "Major filesystem version" },
+      { "name": "minor_version", "offset": 1030, "size": 2, "type": "uint16le", "description": "Minor filesystem version" },
+      { "name": "log_sectorsize", "offset": 1032, "size": 4, "type": "uint32le", "description": "Log2 of sector size (typically 9 = 512 bytes)" },
+      { "name": "block_count", "offset": 1048, "size": 8, "type": "uint64le", "description": "Total number of blocks in the filesystem" },
+      { "name": "section_count", "offset": 1056, "size": 4, "type": "uint32le", "description": "Number of sections in the filesystem" }
+    ]
   },
   "blocks": [
+    { "type": "header", "name": "F2FS Superblock", "offset": 1024, "length": 4096, "color": "#34A853", "opacity": 0.4, "description": "F2FS superblock structure" },
+    { "type": "metadata", "name": "Machine", "variable": "machineType", "description": "Machine" },
+    { "type": "metadata", "name": "Sections", "variable": "sectionCount", "description": "Sections" }
+  ],
+  "inspector": {
+    "displayFields": ["magic", "majorVersion", "minorVersion", "blockCount", "section_count"],
+    "valueMaps": {},
+    "tooltips": {
+      "magic": "F2FS magic 0xF2F52010 at offset 1024 (superblock start)",
+      "majorVersion": "F2FS major version — compatibility indicator",
+      "blockCount": "Total number of 4KB blocks in the filesystem"
+    }
+  },
+  "assertions": [
+    { "name": "F2FS magic present", "expression": "magic == 0xF2F52010", "severity": "error", "message": "F2FS magic 0xF2F52010 must be at offset 1024" },
+    { "name": "Version is reasonable", "expression": "majorVersion > 0", "severity": "warning", "message": "F2FS major version should be positive" },
+    { "name": "Block count positive", "expression": "blockCount > 0", "severity": "error", "message": "F2FS block count must be positive" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 1024, "label": "F2FS Superblock (magic 0xF2F52010)", "color": "#34A853" },
+      { "offset": 2048, "label": "Superblock Backup Copy", "color": "#81C784" },
+      { "offset": 8192, "label": "Checkpoint Area Start", "color": "#4CAF50" }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "header",
-      "name": "F2FS Superblock",
-      "offset": 1024,
-      "length": 4096,
-      "color": "#34A853",
-      "opacity": 0.4,
-      "description": "F2FS superblock structure"
+      "name": "F2FS Superblock Summary",
+      "format": "text",
+      "template": "F2FS Filesystem\nMagic  : 0x{magic:X8}\nVersion: {majorVersion}.{minorVersion}\nBlocks : {blockCount}"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
-    },
-    {
-      "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "F2FS Superblock CSV",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{magic}\nMajorVersion,{majorVersion}\nMinorVersion,{minorVersion}\nBlockCount,{blockCount}"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "aiHints": [
+    "F2FS magic 0xF2F52010 is at offset 1024 (0x400) — the superblock starts at the same offset",
+    "F2FS is designed for NAND flash — Android devices, SSDs, and eMMC storage use this format",
+    "The filesystem uses a log-structured layout with separate Node and Data sections",
+    "Checkpoint area follows the superblock — used for crash recovery without full journal replay",
+    "Section count at offset 1056 describes the storage layout units for wear leveling"
   ],
-  "formatRelationships": {
-    "category": "Disk",
-    "extensions": [
-      ".f2fs"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "DiskInternals",
-    "R-Studio",
-    "HxD",
-    "FTK Imager",
-    "Autopsy"
-  ],
-  "UseCases": [
-    "Disk imaging",
-    "Forensics",
-    "Data recovery",
-    "Analysis"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
   "forensic": {
-    "category": "disk",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Flash-Friendly File System for NAND flash devices",
-    "suggestedInspections": [
-      "Verify F2FS (Flash-Friendly File System) superblock/boot sector signature and version",
-      "Check partition/volume layout and allocation bitmap",
-      "Inspect filesystem journal and metadata consistency"
+    "notes": [
+      "F2FS is used in Android devices — forensic imaging often reveals app data and cached files",
+      "Log-structured layout means deleted data may persist in old checkpoint areas",
+      "SIT (Segment Information Table) tracks block validity — useful for free space analysis"
     ]
-  }
+  },
+  "formatRelationships": [
+    { "format": "EXT4", "relation": "sibling", "note": "Both are Linux filesystems; F2FS is optimized for flash storage, ext4 is general-purpose" }
+  ],
+  "software": ["f2fs-tools", "Linux kernel 3.8+", "Android 4.4+", "R-Studio", "UFED (Cellebrite)"],
+  "useCases": [
+    "Android device storage partition forensics",
+    "SSD-optimized Linux filesystem imaging",
+    "Embedded device storage analysis (routers, IoT, eMMC)",
+    "Mobile device data recovery"
+  ],
+  "technicalDetails": {
+    "SuperblockOffset": "0x400 (1024 bytes)",
+    "MagicValue": "0xF2F52010",
+    "DefaultBlockSize": 4096,
+    "Layout": "Log-structured with Node and Data segments",
+    "WearLeveling": true
+  },
+  "MimeTypes": ["application/octet-stream"],
+  "Software": ["DiskInternals", "R-Studio", "HxD", "FTK Imager", "Autopsy"],
+  "UseCases": ["Disk imaging", "Forensics", "Data recovery", "Analysis"],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-20",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": { "SuperblockOffset": "0x400", "MagicValue": "0xF2F52010", "DefaultBlockSize": 4096 },
+  "functions": { "readUInt32LE": "Read executable header" }
 }

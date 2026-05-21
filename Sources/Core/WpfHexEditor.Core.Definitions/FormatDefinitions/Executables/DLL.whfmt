@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Windows DLL",
   "formatId": "DLL",
@@ -80,7 +81,7 @@
       "offset": 2,
       "length": 2,
       "color": "#4ECDC4",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Number of bytes in the last 512-byte page of the DOS stub. If 0, the last page is fully occupied. Part of the legacy DOS header; not used by the PE loader — only by the old DOS 16-bit loader for size calculation.",
       "storeAs": "bytesOnLastPage",
       "valueType": "uint16",
@@ -92,7 +93,7 @@
       "offset": 4,
       "length": 2,
       "color": "#95E1D3",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Total number of 512-byte pages in the DOS stub portion. Used only by the DOS loader; ignored by the Windows PE loader. Together with bytesOnLastPage, defines the MZ executable size boundary.",
       "storeAs": "pagesInFile",
       "valueType": "uint16",
@@ -155,7 +156,7 @@
       "offsetAdd": 6,
       "length": 2,
       "color": "#B8B8FF",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Number of section entries in the section table immediately following the Optional Header. Each entry is 40 bytes (IMAGE_SECTION_HEADER). Typical DLLs have 4-8 sections (.text, .data, .rdata, .reloc, .rsrc, .pdata). More than 20 sections is unusual.",
       "storeAs": "coffNumberOfSections",
       "valueType": "uint16",
@@ -168,7 +169,7 @@
       "offsetAdd": 8,
       "length": 4,
       "color": "#FFA07A",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Unix epoch timestamp (seconds since 1970-01-01 UTC) of when the DLL was linked. May be set to 0 or 0xFFFFFFFF by linkers/compilers using reproducible builds. Values outside 1990-2030 are suspicious — may indicate timestamp forging to evade signature-based detection or bypass binary authenticode verification.",
       "storeAs": "coffTimeDateStamp",
       "valueType": "uint32",
@@ -187,13 +188,41 @@
       "valueType": "uint16",
       "endianness": "little",
       "bitfields": [
-        { "bit": 0, "name": "RELOCS_STRIPPED", "description": "Relocations stripped — must be loaded at preferred address" },
-        { "bit": 1, "name": "EXECUTABLE_IMAGE", "description": "File is executable (or DLL loadable)" },
-        { "bit": 2, "name": "LINE_NUMS_STRIPPED", "description": "Line numbers stripped from file" },
-        { "bit": 5, "name": "LARGE_ADDRESS_AWARE", "description": "Application can handle >2GB address space (required for 64-bit)" },
-        { "bit": 11, "name": "NO_32BIT_MACHINE", "description": "Machine is based on 32-bit word (not 16-bit)" },
-        { "bit": 13, "name": "DLL", "description": "File is a DLL — IMAGE_FILE_DLL = 0x2000. This is the key distinguishing flag between a DLL and an EXE." },
-        { "bit": 14, "name": "UP_SYSTEM_ONLY", "description": "Should only be run on uniprocessor machine" }
+        {
+          "bit": 0,
+          "name": "RELOCS_STRIPPED",
+          "description": "Relocations stripped — must be loaded at preferred address"
+        },
+        {
+          "bit": 1,
+          "name": "EXECUTABLE_IMAGE",
+          "description": "File is executable (or DLL loadable)"
+        },
+        {
+          "bit": 2,
+          "name": "LINE_NUMS_STRIPPED",
+          "description": "Line numbers stripped from file"
+        },
+        {
+          "bit": 5,
+          "name": "LARGE_ADDRESS_AWARE",
+          "description": "Application can handle >2GB address space (required for 64-bit)"
+        },
+        {
+          "bit": 11,
+          "name": "NO_32BIT_MACHINE",
+          "description": "Machine is based on 32-bit word (not 16-bit)"
+        },
+        {
+          "bit": 13,
+          "name": "DLL",
+          "description": "File is a DLL — IMAGE_FILE_DLL = 0x2000. This is the key distinguishing flag between a DLL and an EXE."
+        },
+        {
+          "bit": 14,
+          "name": "UP_SYSTEM_ONLY",
+          "description": "Should only be run on uniprocessor machine"
+        }
       ]
     },
     {
@@ -203,7 +232,7 @@
       "offsetAdd": 24,
       "length": 2,
       "color": "#98D8C8",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Identifies PE32 (32-bit) or PE32+ (64-bit) Optional Header format. PE32 has a 224-byte Optional Header; PE32+ has 240 bytes. The address width differs: 32-bit uses DWORD for VA/RVA, 64-bit uses ULONGLONG.",
       "storeAs": "optionalMagic",
       "valueType": "uint16",
@@ -327,27 +356,27 @@
       {
         "name": "DOS Header (MZ)",
         "offset": 0,
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "PE Header (e_lfanew)",
         "offsetVar": "peHeaderOffset",
-        "icon": "\uE7EF",
+        "icon": "",
         "color": "#FFE66D"
       },
       {
         "name": "COFF Header",
         "offsetVar": "peHeaderOffset",
         "offsetAdd": 4,
-        "icon": "\uE8B7",
+        "icon": "",
         "color": "#C7CEEA"
       },
       {
         "name": "Optional Header",
         "offsetVar": "peHeaderOffset",
         "offsetAdd": 24,
-        "icon": "\uE946",
+        "icon": "",
         "color": "#98D8C8"
       }
     ]
@@ -359,23 +388,39 @@
     "groups": [
       {
         "title": "DOS Header",
-        "icon": "\uE8A5",
-        "fields": ["dosSignature", "bytesOnLastPage", "pagesInFile", "peHeaderOffset"]
+        "icon": "",
+        "fields": [
+          "dosSignature",
+          "bytesOnLastPage",
+          "pagesInFile",
+          "peHeaderOffset"
+        ]
       },
       {
         "title": "COFF Header",
-        "icon": "\uE7EF",
-        "fields": ["coffMachine", "coffNumberOfSections", "coffTimeDateStamp", "coffCharacteristics"]
+        "icon": "",
+        "fields": [
+          "coffMachine",
+          "coffNumberOfSections",
+          "coffTimeDateStamp",
+          "coffCharacteristics"
+        ]
       },
       {
         "title": "Optional Header",
-        "icon": "\uE946",
-        "fields": ["optionalMagic", "addressOfEntryPoint"]
+        "icon": "",
+        "fields": [
+          "optionalMagic",
+          "addressOfEntryPoint"
+        ]
       },
       {
         "title": "Derived Properties",
-        "icon": "\uE72E",
-        "fields": ["isDLL", "is64Bit"]
+        "icon": "",
+        "fields": [
+          "isDLL",
+          "is64Bit"
+        ]
       }
     ]
   },
@@ -383,18 +428,40 @@
     {
       "name": "DLL Header Summary (JSON)",
       "format": "json",
-      "fields": ["dosSignature", "peHeaderOffset", "coffMachine", "coffNumberOfSections", "coffTimeDateStamp", "coffCharacteristics", "optionalMagic", "addressOfEntryPoint", "isDLL", "is64Bit"]
+      "fields": [
+        "dosSignature",
+        "peHeaderOffset",
+        "coffMachine",
+        "coffNumberOfSections",
+        "coffTimeDateStamp",
+        "coffCharacteristics",
+        "optionalMagic",
+        "addressOfEntryPoint",
+        "isDLL",
+        "is64Bit"
+      ]
     },
     {
       "name": "IMAGE_FILE_HEADER (C struct)",
       "format": "c-struct",
       "structName": "IMAGE_FILE_HEADER",
-      "fields": ["coffMachine", "coffNumberOfSections", "coffTimeDateStamp", "coffSizeOfOptionalHeader", "coffCharacteristics"]
+      "fields": [
+        "coffMachine",
+        "coffNumberOfSections",
+        "coffTimeDateStamp",
+        "coffSizeOfOptionalHeader",
+        "coffCharacteristics"
+      ]
     },
     {
       "name": "Python DLL magic check",
       "format": "python-bytes",
-      "fields": ["dosSignature", "peHeaderOffset", "optionalMagic", "coffMachine"]
+      "fields": [
+        "dosSignature",
+        "peHeaderOffset",
+        "optionalMagic",
+        "coffMachine"
+      ]
     }
   ],
   "forensic": {
@@ -440,24 +507,14 @@
       "Reflective DLL injection — DLL loaded directly from memory without WriteFile + LoadLibrary"
     ]
   },
-  "aiHints": {
-    "analysisContext": "Windows DLL is a PE image with COFF Characteristics bit 13 (IMAGE_FILE_DLL=0x2000) set. Structure is identical to .exe: DOS stub (64B) + e_lfanew at 0x3C + PE sig at e_lfanew + COFF header (20B) + Optional header (224/240B) + section table. Key DLL features: Export Directory (data directory index 0) for exported symbols; forwarded exports (name points to another DLL); no-DllMain (RVA=0) for data-only DLLs; TLS callbacks (data directory index 9) execute before DllMain.",
-    "knownVulnerabilities": [
-      "DLL hijacking via search order manipulation (PATH / application directory)",
-      "Phantom DLL loading — Windows loads DLLs that don't exist (ghost DLL injection)",
-      "CVE-2021-34527 (PrintNightmare): DLL loaded by spooler with SYSTEM privileges",
-      "CVE-2020-0601 (CurveBall): DLL spoofing via crafted ECC certificate with forged key"
-    ],
-    "suggestedInspections": [
-      "Verify e_lfanew (offset 0x3C) is in range 64-4096",
-      "Verify PE signature at e_lfanew is 0x00004550 ('PE\\0\\0')",
-      "Check coffCharacteristics bit 13 (0x2000) to confirm it is truly a DLL",
-      "Check coffTimeDateStamp — zero or 0xFFFFFFFF indicates reproducible builds or forging",
-      "Inspect Export Directory (data directory index 0) for exported function names",
-      "Check TLS directory (index 9) for TLS callbacks that run before DllMain",
-      "Calculate section entropy — values > 7.2 suggest packing or encryption"
-    ]
-  },
+  "aiHints": [
+    "DLL is a PE file with IMAGE_FILE_DLL (0x2000) set in COFF Characteristics field",
+    "Export table in DataDirectory[0] lists functions the DLL exposes; Import table in [1] lists its dependencies",
+    "DLL entry point DllMain called on PROCESS/THREAD ATTACH/DETACH events",
+    "Ordinal exports bypass name lookup — harder to detect malicious function hijacking",
+    "Common analysis: check exports list, verify Authenticode signature, scan for suspicious imports",
+    "DLL hijacking: placing a malicious DLL in a higher-priority search path than the legitimate one"
+  ],
   "software": [
     "Microsoft Visual C++",
     "MinGW/GCC",
@@ -470,8 +527,16 @@
   ],
   "formatRelationships": {
     "category": "Executables",
-    "extensions": [".dll", ".ocx", ".cpl", ".ax"],
-    "relatedFormats": ["PE_EXE", "SYS"],
+    "extensions": [
+      ".dll",
+      ".ocx",
+      ".cpl",
+      ".ax"
+    ],
+    "relatedFormats": [
+      "PE_EXE",
+      "SYS"
+    ],
     "sameStructureAs": "PE_EXE — DLL is a PE with IMAGE_FILE_DLL characteristic set"
   },
   "MimeTypes": [
@@ -490,7 +555,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 15,
     "ValidationRules": 4,
-    "LastUpdated": "2026-04-13",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -555,5 +620,48 @@
       }
     ],
     "note": "Inferred fuzz strategies for DLL. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "signatures": [
+    {
+      "value": "4D5A",
+      "offset": 0,
+      "label": "MZ — Windows DLL (Portable Executable) header magic",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "structure": {
+    "fields": [
+      {
+        "name": "mzMagic",
+        "type": "ascii",
+        "offset": 0,
+        "length": 2,
+        "description": "MZ DOS header signature"
+      },
+      {
+        "name": "peOffset",
+        "type": "uint32le",
+        "offset": 60,
+        "length": 4,
+        "description": "Offset to PE header"
+      },
+      {
+        "name": "peSignature",
+        "type": "ascii",
+        "offset": -1,
+        "length": 4,
+        "description": "'PE\u0000\u0000' Portable Executable signature"
+      },
+      {
+        "name": "characteristics",
+        "type": "uint16le",
+        "offset": -1,
+        "length": 2,
+        "description": "PE characteristics flags: bit 13 = DLL (0x2000)"
+      }
+    ]
+  },
+  "lastUpdated": "2026-05-20",
+  "maxSignatureOffset": 0
 }

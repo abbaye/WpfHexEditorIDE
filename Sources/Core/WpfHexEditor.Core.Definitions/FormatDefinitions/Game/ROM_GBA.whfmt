@@ -1,14 +1,16 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Game Boy Advance ROM",
   "formatId": "ROM_GBA",
-  "version": "2.52",
+  "version": "2.53",
   "extensions": [
     ".gba"
   ],
   "description": "Game Boy Advance ROM cartridge format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
@@ -23,15 +25,102 @@
       "https://www.akkit.org/info/gbatek.htm"
     ]
   },
-  "detection": {
-    "signature": "96",
-    "offset": 178,
-    "required": true,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "24FFAE51",
+      "offset": 4,
+      "label": "GBA Nintendo logo (first 4 bytes at 0x04)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 8,
+  "structure": {
+    "fields": [
+      { "name": "entry_point",   "type": "bytes",  "offset": "0x00", "length": 4,   "description": "ARM branch instruction jumping past header" },
+      { "name": "logo",          "type": "bytes",  "offset": "0x04", "length": 156, "description": "GBA Nintendo logo bitmap (156 bytes)" },
+      { "name": "title",         "type": "ascii",  "offset": "0xA0", "length": 12,  "description": "Game title uppercase ASCII, null-padded" },
+      { "name": "game_code",     "type": "ascii",  "offset": "0xAC", "length": 4,   "description": "4-char game code: category+ID+region" },
+      { "name": "maker_code",    "type": "ascii",  "offset": "0xB0", "length": 2,   "description": "2-char publisher/maker code" },
+      { "name": "fixed_val",     "type": "uint8",  "offset": "0xB2", "length": 1,   "description": "Must be 0x96 for authentication" },
+      { "name": "main_unit",     "type": "uint8",  "offset": "0xB3", "length": 1,   "description": "Main unit code (0x00 for standard GBA)" },
+      { "name": "device_type",   "type": "uint8",  "offset": "0xB4", "length": 1,   "description": "0x00=normal, 0x80=DACS debug" },
+      { "name": "rom_version",   "type": "uint8",  "offset": "0xBC", "length": 1,   "description": "ROM version/revision (0x00 = first)" },
+      { "name": "complement",    "type": "uint8",  "offset": "0xBD", "length": 1,   "description": "Header complement check byte" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["title", "game_code", "maker_code", "fixed_val", "rom_version", "complement"],
+    "valueMaps": {
+      "device_type": {
+        "0x00": "Normal cartridge",
+        "0x80": "DACS debug cartridge"
+      },
+      "main_unit": {
+        "0x00": "Standard GBA"
+      }
+    },
+    "tooltips": {
+      "fixed_val": "Must be 0x96; GBA boot ROM rejects the cartridge otherwise",
+      "complement": "-(sum(0xA0..0xBC)) - 0x19 mod 256; wrong value causes boot failure",
+      "game_code": "4-char code encodes region: E=USA, J=Japan, P=Europe"
     }
   },
+  "assertions": [
+    {
+      "name": "GBA logo present",
+      "expression": "bytes[4..7] == 24FFAE51",
+      "severity": "error",
+      "message": "GBA Nintendo logo not found at offset 0x04; hardware will reject the ROM"
+    },
+    {
+      "name": "Fixed 0x96 byte present",
+      "expression": "fixed_val == 0x96",
+      "severity": "error",
+      "message": "Fixed value at 0xB2 must be 0x96; boot ROM authentication will fail"
+    },
+    {
+      "name": "Complement check valid",
+      "expression": "complement == (-(sum(bytes[0xA0..0xBC])) - 0x19) & 0xFF",
+      "severity": "error",
+      "message": "GBA header complement byte is incorrect; cartridge will not boot"
+    },
+    {
+      "name": "Main unit code is zero",
+      "expression": "main_unit == 0x00",
+      "severity": "warning",
+      "message": "Main unit code should be 0x00 for standard GBA titles"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Entry Point",   "offset": 0,   "icon": "", "color": "#4ECDC4" },
+      { "name": "GBA Logo",      "offset": 4,   "icon": "", "color": "#FF6B6B" },
+      { "name": "Game Title",    "offset": 160, "icon": "", "color": "#4ECDC4" },
+      { "name": "Game Code",     "offset": 172, "icon": "", "color": "#FFE66D" },
+      { "name": "Complement",    "offset": 189, "icon": "", "color": "#FF6B9D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GBA ROM Header (JSON)",
+      "format": "json",
+      "fields": ["title", "game_code", "maker_code", "fixed_val", "rom_version", "complement"]
+    },
+    {
+      "name": "GBA ROM Header (C struct)",
+      "format": "c-struct",
+      "structName": "GBA_ROM_HEADER",
+      "fields": ["title", "game_code", "maker_code", "rom_version", "complement"]
+    }
+  ],
+  "aiHints": [
+    "GBA boot ROM verifies 156-byte Nintendo logo at 0x04–0x9F; corruption causes immediate boot failure",
+    "Fixed byte 0x96 at 0xB2 is a hardware authentication value; any other value is rejected",
+    "Complement byte at 0xBD = -(sum of bytes 0xA0..0xBC) - 0x19, masked to 8 bits",
+    "Game code fourth character encodes region: E=USA, J=Japan, P=Europe, D=Germany",
+    "ROM is directly memory-mapped at 0x08000000; entry point ARM instruction branches past 192-byte header"
+  ],
   "variables": {
     "currentOffset": 0,
     "gameTitle": "",
@@ -125,9 +214,7 @@
       "valueType": "uint8",
       "description": "Always 0x00 for standard GBA games",
       "validationRules": {
-        "allowedValues": [
-          0
-        ]
+        "allowedValues": [0]
       },
       "storeAs": "mainUnitCode"
     },
@@ -211,12 +298,21 @@
     "NO$GBA",
     "RetroArch"
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".gba"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "SAVE_GBA",
+      "relation": "companion",
+      "note": "GBA save files (SRAM/Flash/EEPROM) are stored separately from the ROM"
+    }
+  ],
+  "useCases": [
+    "Retro game emulation and archiving on GBA hardware",
+    "ROM hacking and localization patching",
+    "Homebrew development targeting the ARM7TDMI CPU",
+    "Hardware accuracy testing and bug reproduction"
+  ],
+  "technicalDetails": "GBA ROM header is 192 bytes (0x00–0xBF). The 156-byte Nintendo logo at 0x04 must match exactly. The complement at 0xBD is the only runtime-verified checksum. Game code structure: byte 0=category (A=GBA), bytes 1–2=title code, byte 3=region. ROM is directly addressed at 0x08000000; no bank-switching required up to 32 MB.",
+  "completenessScore": 88,
   "MimeTypes": [
     "application/octet-stream"
   ],
@@ -234,11 +330,11 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 67,
+    "CompletenessScore": 88,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 15,
     "ValidationRules": 1,
-    "LastUpdated": "2026-03-01",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
@@ -250,23 +346,18 @@
     "extractASCIIString": "Read file list"
   },
   "forensic": {
-    "category": "game",
     "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Game Boy Advance ROM cartridge format",
-    "suggestedInspections": [
-      "Validate Game Boy Advance ROM container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+    "notes": [
+      "GBA ROMs are often distributed with incorrect complement bytes — patches may invalidate the checksum",
+      "A fixed_val other than 0x96 indicates a corrupted or non-standard ROM dump",
+      "Reserved bytes at 0xB5–0xBB should be zero; non-zero values suggest unofficial modifications"
     ]
   },
   "diff": {
     "keyFields": ["gameTitle", "gameCode", "complement", "softwareVersion"],
     "ignoreFields": ["makerCode"],
     "groupBy": "gameCode",
-    "note": "gameCode encodes region and title identity; complement is the header integrity checksum; softwareVersion tracks game revisions — these together uniquely identify a ROM build"
+    "note": "gameCode encodes region and title identity; complement is the header integrity checksum; softwareVersion tracks game revisions"
   },
   "repair": [
     {
@@ -275,25 +366,25 @@
       "action": "recompute_checksum",
       "target": "complement",
       "algorithm": "crc32",
-      "description": "Recompute the GBA header complement byte as -(sum of bytes 0xA0–0xBC) - 0x19 (mod 256); an invalid complement causes the GBA boot ROM to reject the cartridge"
+      "description": "Recompute the GBA header complement byte as -(sum of bytes 0xA0–0xBC) - 0x19 (mod 256)"
     }
   ],
   "fuzz": {
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "nintendoLogo",   "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 156-byte Nintendo logo bitmap to trigger boot ROM rejection" },
-      { "field": "gameCode",       "mutation": "boundary_values",   "weight": 2, "description": "Replace game code with null/all-FF to test region and ID parsing edge cases" },
-      { "field": "complement",     "mutation": "bit_flip", "rate": 0.01, "weight": 2, "description": "Flip bits in complement byte to produce invalid header checksum" },
-      { "field": "entryPoint",     "mutation": "overflow",          "weight": 2, "description": "Set entry point to out-of-range ARM addresses to test emulator boot handling" },
-      { "field": "softwareVersion","mutation": "random_bytes",      "weight": 1, "description": "Randomize version byte to stress revision tracking logic" }
+      { "field": "nintendoLogo",    "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 156-byte Nintendo logo bitmap to trigger boot ROM rejection" },
+      { "field": "gameCode",        "mutation": "boundary_values",   "weight": 2, "description": "Replace game code with null/all-FF to test region and ID parsing edge cases" },
+      { "field": "complement",      "mutation": "bit_flip", "rate": 0.01, "weight": 2, "description": "Flip bits in complement byte to produce invalid header checksum" },
+      { "field": "entryPoint",      "mutation": "overflow",          "weight": 2, "description": "Set entry point to out-of-range ARM addresses to test emulator boot handling" },
+      { "field": "softwareVersion", "mutation": "random_bytes",      "weight": 1, "description": "Randomize version byte to stress revision tracking logic" }
     ]
   },
   "migration": [
     {
       "from": "GBA ROM v1.0",
       "to": "GBA ROM Rev.A",
-      "description": "Mask ROM revision increment — the softwareVersion byte advances from 0x00 to 0x01; no structural header changes, only version byte update",
+      "description": "Mask ROM revision increment — the softwareVersion byte advances from 0x00 to 0x01",
       "changes": [
         { "field": "softwareVersion", "changeType": "set_value", "value": "1", "description": "Increment softwareVersion from 0x00 (first release) to 0x01 (Rev.A)" }
       ]

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "7-Zip Archive",
   "formatId": "7Z",
@@ -22,6 +23,74 @@
       "https://py7zr.readthedocs.io/en/latest/archive_format.html"
     ]
   },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "377ABCAF271C",
+      "offset": 0,
+      "label": "7z\\xBC\\xAF'\\x1C — 7-Zip archive signature",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      { "name": "signature", "type": "hex", "offset": 0, "length": 6, "description": "7z magic: 37 7A BC AF 27 1C" },
+      { "name": "majorVersion", "type": "uint8", "offset": 6, "length": 1, "description": "Format major version (always 0)" },
+      { "name": "minorVersion", "type": "uint8", "offset": 7, "length": 1, "description": "Format minor version (typically 4)" },
+      { "name": "startHeaderCRC", "type": "uint32le", "offset": 8, "length": 4, "description": "CRC-32 of bytes 12-31" },
+      { "name": "nextHeaderOffset", "type": "uint64le", "offset": 12, "length": 8, "description": "Offset from byte 32 to Next Header" },
+      { "name": "nextHeaderSize", "type": "uint64le", "offset": 20, "length": 8, "description": "Size of Next Header in bytes" },
+      { "name": "nextHeaderCRC", "type": "uint32le", "offset": 28, "length": 4, "description": "CRC-32 of Next Header data" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["majorVersion", "minorVersion", "nextHeaderOffset", "nextHeaderSize", "nextHeaderCrc"],
+    "valueMaps": {},
+    "tooltips": {
+      "nextHeaderOffset": "Relative offset from byte 32 to the archive metadata block",
+      "nextHeaderSize": "Size of the metadata block (file list, CRCs, codec info)",
+      "nextHeaderCrc": "CRC-32 integrity check of the metadata block"
+    }
+  },
+  "assertions": [
+    {
+      "name": "7z signature valid",
+      "expression": "sevenZipSignature == '377ABCAF271C'",
+      "severity": "error",
+      "message": "7-Zip archive must start with 37 7A BC AF 27 1C at offset 0"
+    },
+    {
+      "name": "majorVersion is 0",
+      "expression": "majorVersion == 0",
+      "severity": "warning",
+      "message": "7-Zip format major version should be 0 — non-zero may indicate unsupported format revision"
+    },
+    {
+      "name": "minorVersion in range",
+      "expression": "minorVersion <= 4",
+      "severity": "info",
+      "message": "7-Zip minor version > 4 may require a newer 7-Zip version for extraction"
+    }
+  ],
+  "exportTemplates": [
+    {
+      "name": "7Z Start Header (JSON)",
+      "format": "json",
+      "fields": ["sevenZipSignature", "majorVersion", "minorVersion", "startHeaderCrc", "nextHeaderOffset", "nextHeaderSize", "nextHeaderCrc"]
+    },
+    {
+      "name": "7Z Summary (Text)",
+      "format": "text",
+      "fields": ["majorVersion", "minorVersion", "nextHeaderAbsoluteOffset", "nextHeaderSize"]
+    }
+  ],
+  "formatRelationships": [
+    { "format": "LZMA", "relationship": "7z uses LZMA/LZMA2 as its primary compression codec" },
+    { "format": "ZIP", "relationship": "Common alternative with wider software support" },
+    { "format": "RAR", "relationship": "Competing proprietary format with similar solid-archive features" }
+  ],
   "detection": {
     "signature": "377ABCAF271C",
     "offset": 0,
@@ -259,7 +328,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 19,
     "ValidationRules": 1,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -268,7 +337,15 @@
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
-  "aiHints": {
+  "aiHints": [
+    "7z Start Header: signature(6) + majorVer(1) + minorVer(1) + startHeaderCRC(4,LE) + nextHeaderOffset(8,LE) + nextHeaderSize(8,LE) + nextHeaderCRC(4,LE) = 32 bytes total",
+    "Next Header at absolute offset (nextHeaderOffset + 32) contains encoded metadata: file list, sizes, CRCs, codec chains",
+    "Packed streams (compressed data) occupy bytes 32 through (32 + nextHeaderOffset - 1)",
+    "AES-256 encryption can encrypt both file data and file names — encrypted archive hides directory structure",
+    "Solid archives compress all files together — faster compression, but single corrupt block may affect multiple files",
+    "Empty archives have nextHeaderOffset = 0 and nextHeaderSize = 0 — valid for placeholder archives"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "7-Zip archive format designed by Igor Pavlov. Uses a 32-byte Start Header containing a 6-byte signature, ver...",
     "suggestedInspections": [
       "Verify 7-Zip Archive file header, compression method, and stored CRCs",

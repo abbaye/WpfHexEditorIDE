@@ -1,0 +1,100 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "SSH authorized_keys File",
+  "formatId": "OPENSSH_AUTHORIZED_KEYS",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "SSH authorized_keys file listing public keys permitted to authenticate to a system. Each line contains optional options, key type, base64-encoded public key, and optional comment.",
+  "extensions": [".pub", ""],
+  "category": "Crypto",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "7373682D",
+      "offset": 0,
+      "label": "SSH public key type prefix 'ssh-'",
+      "weight": 0.7,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 16,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "key_type_prefix", "type": "bytes", "description": "'ssh-' prefix (0x73 0x73 0x68 0x2D) for most key types", "storeAs": "ascii" },
+      { "offset": 0, "size": 15, "name": "key_type", "type": "bytes", "description": "Full key type string: 'ssh-rsa', 'ssh-ed25519', 'ecdsa-sha2-nistp256', etc.", "storeAs": "ascii" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["key_type_prefix", "key_type"],
+    "valueMaps": {
+      "key_types": {
+        "ssh-rsa": "RSA public key (2048+ bits recommended)",
+        "ssh-ed25519": "Ed25519 elliptic curve key (256-bit, recommended)",
+        "ecdsa-sha2-nistp256": "ECDSA P-256 key",
+        "ecdsa-sha2-nistp384": "ECDSA P-384 key",
+        "ecdsa-sha2-nistp521": "ECDSA P-521 key",
+        "sk-ssh-ed25519@openssh.com": "FIDO2/U2F hardware-backed Ed25519 key"
+      }
+    },
+    "tooltips": {
+      "key_type_prefix": "Most key types begin with 'ssh-'; ECDSA keys begin with 'ecdsa-'",
+      "key_type": "Full key type identifier; determines public key wire format in the base64 blob"
+    }
+  },
+  "assertions": [
+    { "id": "AUTHKEYS_PREFIX", "field": "key_type_prefix", "operator": "equals", "value": "7373682D", "description": "File must begin with 'ssh-' key type prefix (standard RSA/Ed25519)" },
+    { "id": "AUTHKEYS_TEXT", "field": "key_type", "operator": "minLength", "value": "7", "description": "Key type field must be at least 7 characters ('ssh-rsa')" },
+    { "id": "AUTHKEYS_SPACE_AFTER_TYPE", "field": "key_type", "operator": "contains", "value": "20", "description": "Key type must be followed by a space (0x20) before the base64 key blob" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Key Type", "color": "#3498DB" },
+      { "offset": 8, "label": "Base64 Key Blob", "color": "#2ECC71" },
+      { "offset": 0, "label": "Key Comment", "color": "#E74C3C" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "authorized_keys Summary",
+      "fields": ["key_type_prefix", "key_type"],
+      "format": "text"
+    },
+    {
+      "name": "authorized_keys CSV",
+      "fields": ["key_type_prefix"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "Each non-comment line is: [options] keytype base64key [comment]; lines beginning with '#' are comments",
+    "Options precede the key type; common options: from='ip', command='cmd', no-port-forwarding, no-agent-forwarding",
+    "The base64 blob encodes the OpenSSH wire format for the public key: 4-byte length-prefixed fields",
+    "ssh-ed25519 keys produce 68-character base64 blobs; ssh-rsa keys vary with key size (RSA-2048 = ~372 chars)",
+    "Duplicate entries or wildcard 'from=' options are common misconfigurations in forensic findings"
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "notes": [
+      "Unauthorized keys in authorized_keys indicate persistent SSH backdoor access",
+      "Keys with 'command=' option restrict execution scope but still grant authenticated access",
+      "Multiple entries from different user@host comments may indicate compromised key sharing"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "SSH_KEY", "relationship": "paired", "note": "authorized_keys contains public keys corresponding to SSH_KEY private key files" },
+    { "format": "OPENSSH_CERT", "relationship": "related", "note": "SSH certificates (cert-v01@openssh.com) can also appear in authorized_keys" }
+  ],
+  "software": [
+    { "name": "OpenSSH", "role": "Primary SSH implementation reading ~/.ssh/authorized_keys for authentication" },
+    { "name": "ssh-keygen", "role": "Generates SSH key pairs; -y flag exports public key from private" },
+    { "name": "AuthorizedKeysCommand", "role": "OpenSSH extension to fetch authorized_keys dynamically from external sources" }
+  ],
+  "useCases": [
+    "Forensic audit of SSH backdoor persistence via unauthorized authorized_keys entries",
+    "Security review of server configurations for expired, weak, or duplicated keys",
+    "Incident response investigation of lateral movement using shared SSH keys"
+  ],
+  "technicalDetails": "SSH authorized_keys files (OpenSSH format) contain one public key per line. Each line: optional options (comma-separated), key type identifier, base64-encoded public key wire format, optional comment. The base64 blob decodes to: 4-byte name length + name + algorithm-specific public key parameters (e.g., RSA: e + n exponents; Ed25519: 32-byte public key). File permissions must be 600/644; world-writable files are rejected by sshd.",
+  "completenessScore": 80
+}

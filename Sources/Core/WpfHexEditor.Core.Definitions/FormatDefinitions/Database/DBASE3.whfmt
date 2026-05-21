@@ -1,41 +1,126 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "dBASE III Database",
   "formatId": "DBASE3",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".dbf"
   ],
   "description": "dBASE III database table format",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "dBASE III Database Format"
+      "dBASE III DBF File Format Specification",
+      "Xbase File Format — dbflib / libdbf documentation",
+      "DBF file format — DataSpell / ESRI Shapefile companion format"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/DBF"
+      "https://en.wikipedia.org/wiki/DBF",
+      "https://www.dbf2002.com/dbf-file-format.html",
+      "https://www.dbase.com/Knowledgebase/INT/db7_file_fmt.htm"
     ]
   },
-  "detection": {
-    "required": true,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "03",
-        "offset": 0,
-        "label": "DBASE3 magic",
-        "weight": 1.0
-      }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+  "signatures": [
+    {
+      "value": "03",
+      "offset": 0,
+      "label": "dBASE III version byte 0x03 at offset 0",
+      "weight": 0.7,
+      "strength": "Medium"
+    }
+  ],
+  "maxSignatureOffset": 1,
+  "structure": {
+    "fields": [
+      { "name": "version",         "type": "uint8",    "offset": "0x00", "length": 1,  "description": "Version flag: 0x03 = dBASE III without memo, 0x83 = dBASE III with memo" },
+      { "name": "last_update",     "type": "bytes",    "offset": "0x01", "length": 3,  "description": "Date of last update: YY (offset from 1900), MM, DD" },
+      { "name": "record_count",    "type": "uint32le", "offset": "0x04", "length": 4,  "description": "Number of records in the table (uint32 LE)" },
+      { "name": "header_bytes",    "type": "uint16le", "offset": "0x08", "length": 2,  "description": "Number of bytes in the header (uint16 LE)" },
+      { "name": "record_size",     "type": "uint16le", "offset": "0x0A", "length": 2,  "description": "Number of bytes in each record (uint16 LE)" },
+      { "name": "reserved",        "type": "bytes",    "offset": "0x0C", "length": 20, "description": "Reserved bytes — should be zero" }
+    ]
   },
+  "inspector": {
+    "displayFields": ["version", "record_count", "header_bytes", "record_size"],
+    "valueMaps": {
+      "version": {
+        "0x02": "FoxBASE (obsolete)",
+        "0x03": "dBASE III — no memo file",
+        "0x04": "dBASE IV — no memo file",
+        "0x05": "dBASE V — no memo file",
+        "0x30": "Visual FoxPro",
+        "0x43": "dBASE IV SQL table, no memo",
+        "0x63": "dBASE IV SQL system file, no memo",
+        "0x83": "dBASE III — with memo file (.dbt)",
+        "0x8B": "dBASE IV — with memo file (.dbt)",
+        "0xF5": "FoxPro 2.x — with memo file (.fpt)"
+      }
+    },
+    "tooltips": {
+      "version": "Byte 0 identifies the dBASE variant and whether a memo (.dbt or .fpt) companion file exists",
+      "record_count": "uint32 LE at offset 4; total number of logical records including deleted records (marked with 0x2A '*' prefix)",
+      "header_bytes": "uint16 LE at offset 8; header size = 32 + (32 * field_count) + 1 (terminator byte 0x0D)",
+      "record_size": "uint16 LE at offset 10; byte size of each record including the deletion flag byte at the start"
+    }
+  },
+  "assertions": [
+    {
+      "name": "Version byte is dBASE III",
+      "expression": "version == 0x03 || version == 0x83",
+      "severity": "warning",
+      "message": "Version byte is not 0x03 or 0x83 — may be dBASE IV (0x04/0x8B) or other dBASE variant"
+    },
+    {
+      "name": "Record count is non-negative",
+      "expression": "record_count >= 0",
+      "severity": "info",
+      "message": "Record count is valid (note: deleted records are still counted)"
+    },
+    {
+      "name": "Header size is consistent",
+      "expression": "header_bytes >= 32",
+      "severity": "error",
+      "message": "Header size must be at least 32 bytes — file is truncated or not a valid DBF"
+    },
+    {
+      "name": "Record size is non-zero",
+      "expression": "record_size > 0",
+      "severity": "error",
+      "message": "Record size must be greater than 0 — a table with no fields is invalid"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "DBF Header",    "offset": 0,  "icon": "", "color": "#98C1D9" },
+      { "name": "Last Update",   "offset": 1,  "icon": "", "color": "#98C1D9" },
+      { "name": "Record Count",  "offset": 4,  "icon": "", "color": "#98C1D9" },
+      { "name": "Field Descriptors", "offset": 32, "icon": "", "color": "#98C1D9" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "dBASE III Header (JSON)",
+      "format": "json",
+      "fields": ["version", "last_update", "record_count", "header_bytes", "record_size"]
+    },
+    {
+      "name": "dBASE III Header (C struct)",
+      "format": "c-struct",
+      "structName": "DBASE3_HEADER",
+      "fields": ["version", "last_update", "record_count", "header_bytes", "record_size"]
+    }
+  ],
+  "aiHints": [
+    "dBASE III DBF version byte at offset 0: 0x03 = no memo, 0x83 = memo file exists as companion .dbt; check companion file presence",
+    "Field descriptor array starts at offset 32; each descriptor is 32 bytes ending with 0x0D terminator byte before data records",
+    "Record data starts at header_bytes offset; each record begins with a deletion flag byte (0x20 = active, 0x2A = deleted)",
+    "DBF field types: C=Character, N=Numeric, L=Logical, D=Date (YYYYMMDD), M=Memo (pointer to .dbt), F=Float",
+    "ESRI Shapefiles use .dbf for attribute tables — always dBASE III or FoxPro variant; inspect field names for GIS column patterns"
+  ],
   "variables": {
     "currentOffset": 0,
     "pageSize": 0,
@@ -51,7 +136,7 @@
       "length": 32,
       "color": "#98C1D9",
       "opacity": 0.4,
-      "description": "dBASE III file header"
+      "description": "dBASE III file header (32 bytes fixed)"
     },
     {
       "type": "metadata",
@@ -79,56 +164,68 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "dBASE III and IV (original applications)",
+    "FoxPro / Visual FoxPro",
+    "LibreOffice Base / OpenOffice Base (.dbf import/export)",
+    "QGIS and ArcGIS (DBF companion to Shapefile)",
+    "DBeaver (xBase / DBF support)"
   ],
-  "formatRelationships": {
-    "category": "Database",
-    "extensions": [
-      ".dbf"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "DBASE4",
+      "relation": "predecessor",
+      "note": "dBASE IV adds memo file support, SQL access, and multi-user networking on top of the dBASE III header structure"
+    }
+  ],
+  "useCases": [
+    "Legacy database table inspection and data extraction",
+    "ESRI Shapefile attribute table analysis (.dbf companion)",
+    "Migration of dBASE III data to modern relational databases",
+    "Forensic recovery of deleted records (0x2A deletion flag inspection)"
+  ],
+  "technicalDetails": "dBASE III DBF format: 32-byte fixed header at offset 0 contains version byte, last-update date (YY/MM/DD offset 1900), record count (uint32 LE), header size (uint16 LE), and record size (uint16 LE). Field descriptors start at offset 32; each is 32 bytes (11-byte null-padded field name, 1-byte type, 4-byte reserved, 1-byte field length, 1-byte decimal count, 14-byte reserved). A 0x0D terminator follows the last field descriptor. Data records start at header_bytes offset; each record starts with a deletion flag (0x20 = active, 0x2A = deleted). No checksum or end-of-file marker except the optional 0x1A EOF byte.",
+  "completenessScore": 82,
   "MimeTypes": [
+    "application/dbase",
+    "application/x-dbf",
     "application/octet-stream"
   ],
   "Software": [
-    "SQL Server",
-    "MySQL Workbench",
-    "PostgreSQL",
-    "SQLite Browser",
-    "DBeaver"
+    "dBASE III",
+    "FoxPro",
+    "LibreOffice Base",
+    "QGIS"
   ],
   "UseCases": [
-    "Data storage",
-    "Query execution",
-    "Data analysis",
-    "Backup"
+    "Legacy database inspection",
+    "Shapefile attribute table",
+    "Data migration",
+    "Forensic record recovery"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 82,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "ValidationRules": 4,
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "VersionByte": "0x03 (no memo) / 0x83 (with .dbt memo)",
+    "HeaderSize": "32 bytes fixed + 32 bytes per field descriptor + 1-byte 0x0D terminator",
+    "RecordLayout": "1-byte deletion flag + field data (no separators)"
+  },
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"
   },
   "forensic": {
-    "category": "database",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "dBASE III database table format",
-    "suggestedInspections": [
-      "Verify dBASE III Database file header, page size, and version fields",
-      "Check B-tree/index page pointers and free page list",
-      "Inspect record format, schema tables, and journal state"
+    "riskLevel": "low",
+    "notes": [
+      "Deleted dBASE records (0x2A deletion flag) are physically present in the file until PACK is run — forensic tools can recover deleted data",
+      "DBF files from legacy government or GIS systems may contain personal data without encryption",
+      "Companion .dbt memo files store variable-length text fields; missing .dbt with memo pointers causes read errors"
     ]
   }
 }

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "GZIP Compressed File",
   "formatId": "GZIP",
@@ -23,6 +24,67 @@
       "https://www.zlib.net/manual.html"
     ]
   },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "1F8B",
+      "offset": 0,
+      "label": "1F 8B — GZIP stream magic (RFC 1952)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      { "name": "magic", "type": "uint16be", "offset": 0, "length": 2, "description": "GZIP magic: 1F 8B" },
+      { "name": "cm", "type": "uint8", "offset": 2, "length": 1, "description": "Compression method (8 = DEFLATE)" },
+      { "name": "flg", "type": "uint8", "offset": 3, "length": 1, "description": "Flags: FTEXT(0) FHCRC(1) FEXTRA(2) FNAME(3) FCOMMENT(4)" },
+      { "name": "mtime", "type": "uint32le", "offset": 4, "length": 4, "description": "Modification time (Unix timestamp, LE)" },
+      { "name": "xfl", "type": "uint8", "offset": 8, "length": 1, "description": "Extra flags: 2=max compression, 4=fastest" },
+      { "name": "os", "type": "uint8", "offset": 9, "length": 1, "description": "OS: 0=FAT/DOS, 3=Unix, 11=NTFS, 255=unknown" },
+      { "name": "compressedData", "type": "binary", "offset": 10, "length": -1, "description": "DEFLATE compressed data stream" },
+      { "name": "crc32", "type": "uint32le", "offset": -8, "length": 4, "description": "CRC-32 of original uncompressed data (trailer)" },
+      { "name": "isize", "type": "uint32le", "offset": -4, "length": 4, "description": "Original input size mod 2^32 (trailer)" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["compressionMethod", "flags", "modificationTime", "extraFlags", "operatingSystem"],
+    "valueMaps": {
+      "compressionMethod": { "8": "DEFLATE" },
+      "extraFlags": { "0": "Default", "2": "Max compression", "4": "Fastest" }
+    },
+    "tooltips": {
+      "compressionMethod": "Only method 8 (DEFLATE) is defined by RFC 1952",
+      "flags": "Bit flags controlling optional header fields",
+      "modificationTime": "Unix timestamp of original file modification time",
+      "operatingSystem": "Platform that created the compressed file"
+    }
+  },
+  "navigation": {
+    "bookmarks": [
+      { "name": "GZIP Header", "offset": 0, "color": "#FF4444" },
+      { "name": "Compressed Data", "offset": 10, "color": "#44AAFF" },
+      { "name": "GZIP Trailer (CRC32+Size)", "offset": -8, "color": "#44FF88" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GZIP Header (JSON)",
+      "format": "json",
+      "fields": ["gzipMagic", "compressionMethod", "flags", "modificationTime", "extraFlags", "operatingSystem"]
+    },
+    {
+      "name": "GZIP Summary (Text)",
+      "format": "text",
+      "fields": ["compressionMethod", "flags", "modificationTime", "operatingSystem"]
+    }
+  ],
+  "formatRelationships": [
+    { "format": "DEFLATE", "relationship": "GZIP wraps a single DEFLATE stream with header and CRC trailer" },
+    { "format": "ZSTD", "relationship": "Modern successor with better compression ratio and speed" },
+    { "format": "BZIP2", "relationship": "Alternative compression achieving better ratio at higher CPU cost" }
+  ],
   "detection": {
     "signature": "1F8B",
     "offset": 0,
@@ -297,7 +359,15 @@
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
-  "aiHints": {
+  "aiHints": [
+    "GZIP = 10-byte header + DEFLATE compressed data + 8-byte trailer (CRC-32 LE + size LE)",
+    "GZIP header: 1F 8B (magic) + 08 (CM=DEFLATE) + FLG + MTIME(4,LE) + XFL + OS",
+    "FNAME flag (bit 3) stores original filename as null-terminated ISO 8859-1 string after base header",
+    "FEXTRA flag (bit 2) prepends 2-byte length + N bytes of extra data before optional fields",
+    "Multiple concatenated GZIP members are valid — decompressors must handle all members in sequence",
+    "CRC-32 trailer is LE and covers the uncompressed output; isize is output size mod 2^32"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "GZIP compression format defined by RFC 1952. Wraps a single DEFLATE-compressed stream with a 10-byte header ...",
     "suggestedInspections": [
       "Verify GZIP Compressed File file header, compression method, and stored CRCs",
@@ -326,7 +396,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 17,
     "ValidationRules": 1,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },

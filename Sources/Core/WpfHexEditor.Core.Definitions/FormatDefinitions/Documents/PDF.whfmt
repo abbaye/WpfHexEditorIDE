@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "PDF Document",
   "formatId": "PDF",
@@ -276,6 +277,16 @@
         "name": "PDF Header",
         "offset": 0,
         "icon": ""
+      },
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 4,
+        "description": "End of primary signature region"
       }
     ]
   },
@@ -288,16 +299,25 @@
         "condition": "false",
         "description": "PDF may contain embedded JavaScript — inspect with PDF reader"
       }
+    ],
+    "notes": [
+      "PDF JavaScript exploits are historically the most common document-based attack vector.",
+      "Embedded files and streams can conceal executable payloads.",
+      "Incremental saves preserve prior versions of modified or redacted content."
     ]
   },
-  "aiHints": {
-    "analysisContext": "Portable Document Format by Adobe - A page-description language for representing documents independently of ...",
-    "suggestedInspections": [
-      "Validate PDF Document file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
-    ]
-  },
+  "aiHints": [
+    "Portable Document Format by Adobe - A page-description language for representing documents independently of ...",
+    "Validate PDF Document file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "Look for /Encrypt dictionary to identify password-protected or DRM-protected documents.",
+    "JavaScript streams (/JS) and /AA (additional actions) are common exploit vectors.",
+    "Check /EmbeddedFiles for hidden file attachments within the PDF container.",
+    "Linearized PDFs have a special header object for fast web viewing.",
+    "XMP metadata (/Metadata stream) may contain author and creation tool info.",
+    "Incremental updates append new xref sections; forensics should check all revisions."
+  ],
   "MimeTypes": [
     "application/pdf"
   ],
@@ -338,15 +358,25 @@
     "RandomAccess": true,
     "IncrementalUpdates": true
   },
-
   "diff": {
-    "keyFields": ["pdf_version", "page_count", "root_obj_id", "info_title", "info_author"],
-    "ignoreFields": ["creation_date", "mod_date", "producer", "creator", "xref_offset"],
+    "keyFields": [
+      "pdf_version",
+      "page_count",
+      "root_obj_id",
+      "info_title",
+      "info_author"
+    ],
+    "ignoreFields": [
+      "creation_date",
+      "mod_date",
+      "producer",
+      "creator",
+      "xref_offset"
+    ],
     "groupBy": "obj_id",
     "orderBy": "obj_id",
     "note": "Group by object ID for structural comparison. Ignore dates and producer strings which change on every save."
   },
-
   "repair": [
     {
       "name": "FixHeader",
@@ -365,29 +395,185 @@
       "description": "Rebuild the cross-reference table by scanning all indirect objects and rewrite startxref."
     }
   ],
-
   "fuzz": {
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "pdf_version",    "mutation": "enum_sweep",      "description": "Test version strings: 1.0–1.7, 2.0, invalid." },
-      { "field": "pdf_header",     "mutation": "corrupt_signature","description": "Corrupt %PDF- magic to test rejection." },
-      { "field": "xref_offset",    "mutation": "boundary_values", "description": "startxref pointing before/after file triggers parse failure." },
-      { "field": "stream_length",  "mutation": "overflow",        "description": "stream Length larger than actual data triggers buffer read." },
-      { "field": "obj_stream",     "mutation": "bit_flip", "rate": 0.001, "description": "Sparse bit flips in compressed object streams." }
+      {
+        "field": "pdf_version",
+        "mutation": "enum_sweep",
+        "description": "Test version strings: 1.0–1.7, 2.0, invalid."
+      },
+      {
+        "field": "pdf_header",
+        "mutation": "corrupt_signature",
+        "description": "Corrupt %PDF- magic to test rejection."
+      },
+      {
+        "field": "xref_offset",
+        "mutation": "boundary_values",
+        "description": "startxref pointing before/after file triggers parse failure."
+      },
+      {
+        "field": "stream_length",
+        "mutation": "overflow",
+        "description": "stream Length larger than actual data triggers buffer read."
+      },
+      {
+        "field": "obj_stream",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "description": "Sparse bit flips in compressed object streams."
+      }
     ],
     "note": "PDF has extremely complex parsing — many edge cases in stream decoding and xref reconstruction."
   },
-
   "migration": [
     {
       "from": "1.4",
       "to": "2.0",
       "description": "Upgrade to PDF 2.0 (ISO 32000-2) — removes deprecated encryption, adds new compression filters.",
       "changes": [
-        { "field": "pdf_version", "changeType": "set_value", "value": "255044462D322E30", "description": "Write %PDF-2.0 header." },
-        { "field": "catalog_version", "changeType": "set_value", "value": "2", "description": "Set /Version in catalog dictionary to 2." }
+        {
+          "field": "pdf_version",
+          "changeType": "set_value",
+          "value": "255044462D322E30",
+          "description": "Write %PDF-2.0 header."
+        },
+        {
+          "field": "catalog_version",
+          "changeType": "set_value",
+          "value": "2",
+          "description": "Set /Version in catalog dictionary to 2."
+        }
       ]
     }
-  ]
+  ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "25504446",
+      "offset": 0,
+      "label": "PDF signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      {
+        "name": "Header",
+        "offset": 0,
+        "size": 8,
+        "type": "string",
+        "description": "%PDF-x.y version line"
+      },
+      {
+        "name": "Body",
+        "offset": 8,
+        "size": -1,
+        "type": "blob",
+        "description": "PDF objects (indirect objects)"
+      },
+      {
+        "name": "CrossReferenceTable",
+        "offset": -1,
+        "size": -1,
+        "type": "struct",
+        "description": "xref table or cross-reference stream"
+      },
+      {
+        "name": "Trailer",
+        "offset": -1,
+        "size": -1,
+        "type": "struct",
+        "description": "Trailer dictionary with /Root and /Info"
+      },
+      {
+        "name": "StartXref",
+        "offset": -1,
+        "size": -1,
+        "type": "uint32le",
+        "description": "Byte offset of last xref section"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "pdf-a",
+      "relation": "subset",
+      "note": "PDF/A is an ISO archival subset of PDF"
+    },
+    {
+      "formatId": "pdf-x",
+      "relation": "subset",
+      "note": "PDF/X is a print exchange subset"
+    },
+    {
+      "formatId": "xps",
+      "relation": "similar",
+      "note": "XPS is Microsoft's PDF alternative"
+    }
+  ],
+  "software": [
+    "Adobe Acrobat",
+    "Foxit Reader",
+    "Chrome",
+    "Edge",
+    "Preview (macOS)",
+    "SumatraPDF",
+    "Ghostscript"
+  ],
+  "useCases": [
+    "Document distribution",
+    "Forms",
+    "Ebooks",
+    "Print-ready files",
+    "Archival (PDF/A)",
+    "Legal documents",
+    "Scientific papers"
+  ],
+  "technicalDetails": "PDF (Portable Document Format) ISO 32000-1/2 uses a header, body of indirect objects, cross-reference table, and trailer. Objects include streams for content, fonts, images, and metadata. PDF 1.5+ supports cross-reference streams and compressed object streams.",
+  "completenessScore": 88
 }

@@ -1,37 +1,33 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "InterBase/Firebird Database (Legacy)",
   "formatId": "GDB",
-  "version": "1.14",
-  "extensions": [
-    ".gdb"
-  ],
-  "description": "Legacy InterBase/Firebird database format",
+  "version": "1.15",
+  "lastUpdated": "2026-05-20",
+  "extensions": [".gdb"],
+  "description": "Legacy InterBase/Firebird database format using the .gdb extension. GDB files are the original InterBase database file format, later adopted by Firebird. The file contains header pages, data pages, index pages, and blob pages organized in a page-based structure.",
   "category": "Database",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
-    "specifications": [
-      "InterBase/Firebird Database (Legacy) Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/GDB"
-    ]
+    "specifications": ["InterBase/Firebird Database (Legacy) Format"],
+    "WebLinks": ["https://en.wikipedia.org/wiki/GDB", "https://firebirdsql.org/"]
   },
+  "maxSignatureOffset": 1024,
+  "signatures": [
+    {
+      "value": "00",
+      "offset": 0,
+      "label": "GDB/InterBase header byte — identified by structure, not magic",
+      "weight": 0.2,
+      "strength": "Weak"
+    }
+  ],
   "detection": {
     "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "GDB magic",
-        "weight": 1.0
-      }
-    ],
+    "validation": { "minFileSize": 1, "maxSignatureOffset": 1024 },
+    "signatures": [{ "value": "00", "offset": 0, "label": "GDB magic", "weight": 1.0 }],
     "matchMode": "any",
     "MinimumScore": 1.0,
     "Strength": "Weak"
@@ -43,92 +39,108 @@
     "tableCount": 0,
     "version": 0
   },
+  "structure": {
+    "fields": [
+      { "name": "header_page", "offset": 0, "size": 512, "type": "bytes", "description": "Database header page containing ODS version, page size, and allocation info" },
+      { "name": "page_size", "offset": 24, "size": 4, "type": "uint32le", "description": "Page size in bytes (typically 1024, 2048, 4096, 8192, or 16384)" },
+      { "name": "ods_version", "offset": 16, "size": 2, "type": "uint16le", "description": "On-Disk Structure (ODS) version number" },
+      { "name": "pages_allocated", "offset": 28, "size": 4, "type": "uint32le", "description": "Total pages allocated in the database" }
+    ]
+  },
   "blocks": [
+    { "type": "header", "name": "GDB Header", "offset": 0, "length": 512, "color": "#F1FAEE", "opacity": 0.4, "description": "Legacy database header page" },
+    { "type": "metadata", "name": "Page Size", "variable": "pageSize", "description": "Page Size" },
+    { "type": "metadata", "name": "Page Count", "variable": "pageCount", "description": "Page Count" },
+    { "type": "metadata", "name": "Table Count", "variable": "tableCount", "description": "Table Count" },
+    { "type": "metadata", "name": "Version", "variable": "version", "description": "Version" }
+  ],
+  "inspector": {
+    "displayFields": ["pageSize", "version", "ods_version", "pages_allocated"],
+    "valueMaps": {
+      "ods_version": {
+        "10": "ODS 10 — InterBase 6 / Firebird 1.0",
+        "11": "ODS 11 — Firebird 2.0",
+        "12": "ODS 12 — Firebird 3.0",
+        "13": "ODS 13 — Firebird 4.0"
+      }
+    },
+    "tooltips": {
+      "pageSize": "Database page size — must be power of 2 between 1024 and 16384",
+      "ods_version": "On-Disk Structure version determines supported features"
+    }
+  },
+  "assertions": [
+    { "name": "Page size reasonable", "expression": "pageSize >= 1024 && pageSize <= 16384", "severity": "warning", "message": "GDB page size should be between 1024 and 16384 bytes" },
+    { "name": "Page count positive", "expression": "pageCount >= 0", "severity": "info", "message": "Page count should be a non-negative integer" },
+    { "name": "File has minimum size", "expression": "fileSize >= 512", "severity": "error", "message": "GDB file must have at least one header page (512 bytes minimum)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Database Header Page", "color": "#F1FAEE" },
+      { "offset": 512, "label": "First Data Page", "color": "#A8DADC" },
+      { "offset": 1024, "label": "System Table Pages", "color": "#457B9D" }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "header",
-      "name": "GDB Header",
-      "offset": 0,
-      "length": 512,
-      "color": "#F1FAEE",
-      "opacity": 0.4,
-      "description": "Legacy database header page"
+      "name": "GDB Header Summary (text)",
+      "format": "text",
+      "template": "GDB Database\nPage Size : {pageSize}\nPage Count: {pageCount}\nVersion   : {version}"
     },
     {
-      "type": "metadata",
-      "name": "Page Size",
-      "variable": "pageSize",
-      "description": "Page Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Page Count",
-      "variable": "pageCount",
-      "description": "Page Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Table Count",
-      "variable": "tableCount",
-      "description": "Table Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "GDB Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nPageSize,{pageSize}\nPageCount,{pageCount}\nVersion,{version}"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "aiHints": [
+    "GDB is the legacy InterBase/Firebird database extension — newer Firebird files use .fdb",
+    "Detection is primarily by file extension; no universal magic bytes exist",
+    "ODS version at offset 16 indicates the InterBase/Firebird engine version",
+    "Page size at offset 24 determines page boundaries throughout the file",
+    "System tables (RDB$RELATIONS, RDB$FIELDS) are stored in the first pages"
   ],
-  "formatRelationships": {
-    "category": "Database",
-    "extensions": [
-      ".gdb"
+  "forensic": {
+    "riskLevel": "medium",
+    "notes": [
+      "GDB files may contain sensitive business data in legacy InterBase/Firebird databases",
+      "ODS version mismatch with the engine will prevent database opening",
+      "Corrupted header page (offset 0-511) will make the database unreadable"
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
+  "formatRelationships": [
+    { "format": "INTERBASE", "relation": "variant", "note": "GDB and INTERBASE share the same file format; .gdb is legacy, .ib/.fdb is modern" }
   ],
-  "Software": [
-    "SQL Server",
-    "MySQL Workbench",
-    "PostgreSQL",
-    "SQLite Browser",
+  "software": [
+    "Borland InterBase 6.x",
+    "Firebird 1.0–4.x (legacy mode)",
+    "IBExpert",
+    "FlameRobin",
     "DBeaver"
   ],
-  "UseCases": [
-    "Data storage",
-    "Query execution",
-    "Data analysis",
-    "Backup"
+  "useCases": [
+    "Legacy business application databases migrated from InterBase",
+    "Firebird database forensics on older backup files",
+    "Data migration from InterBase to modern Firebird or PostgreSQL",
+    "Embedded database for Delphi/C++Builder legacy applications"
   ],
+  "technicalDetails": {
+    "PageSizes": [1024, 2048, 4096, 8192, 16384],
+    "ODSVersions": { "10": "InterBase 6/Firebird 1.0", "11": "Firebird 2.0", "12": "Firebird 3.0", "13": "Firebird 4.0" },
+    "HeaderPageSize": 512,
+    "DetectionMethod": "Extension-based; no universal magic at offset 0"
+  },
+  "completenessScore": 82,
+  "MimeTypes": ["application/octet-stream"],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 82,
+    "DocumentationLevel": "standard",
     "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read DB header",
-    "extractASCIIString": "Read schema"
-  },
-  "forensic": {
-    "category": "database",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Legacy InterBase/Firebird database format",
-    "suggestedInspections": [
-      "Verify InterBase/Firebird Database (Legacy) file header, page size, and version fields",
-      "Check B-tree/index page pointers and free page list",
-      "Inspect record format, schema tables, and journal state"
-    ]
-  }
+  "TechnicalDetails": { "PageSizes": [1024, 2048, 4096, 8192, 16384], "DetectionMethod": "Extension-based" },
+  "functions": { "readUInt32LE": "Read DB header", "extractASCIIString": "Read schema" }
 }

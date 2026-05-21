@@ -1,0 +1,85 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "On2 VP6 Video Codec",
+  "formatId": "VP6",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "On2 VP6 is a video codec developed by On2 Technologies (acquired by Google 2010). VP6 is primarily encountered as codec ID 0x04 in FLV (Flash Video) container tags. There is no standalone file format with a defined magic; identification relies on container context (FLV tag type 0x09 + codecId 4 or 5).",
+  "extensions": [".vp6"],
+  "category": "Video",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "00",
+      "offset": 0,
+      "label": "No reliable standalone magic; VP6 identified by FLV container context",
+      "weight": 0.3,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 1,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 1, "name": "frame_header_byte0", "type": "uint8", "description": "First byte of VP6 frame data; bit 0 = frame type (0=key, 1=inter), bits 1-5 = quantizer", "storeAs": "uint8" },
+      { "offset": 1, "size": 1, "name": "frame_header_byte1", "type": "uint8", "description": "VP6 frame dimensions in macroblock units (upper nibble=rows, lower=cols for key frames)", "storeAs": "uint8" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["frame_header_byte0", "frame_header_byte1"],
+    "valueMaps": {},
+    "tooltips": {
+      "frame_header_byte0": "Bit 0: frame type (0=keyframe, 1=delta); bits 1-5: quantizer index; bits 6-7: codec variant (VP6=00, VP6F=01, VP6A=10)",
+      "frame_header_byte1": "For keyframes: number of macroblock rows (high nibble) and columns (low nibble)"
+    }
+  },
+  "assertions": [
+    { "id": "VP6_001", "field": "frame_header_byte0", "operator": "bitwiseAnd", "value": 1, "description": "Bit 0 of first byte indicates frame type; 0 = keyframe (intra)" },
+    { "id": "VP6_002", "field": "frame_header_byte0", "operator": "lessThan", "value": 192, "description": "Upper 2 bits should identify VP6 variant (00=VP6, 01=VP6F with alpha, others invalid)" },
+    { "id": "VP6_003", "field": "frame_header_byte1", "operator": "greaterThan", "value": 0, "description": "Macroblock dimension byte should be non-zero in keyframes" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Frame Header Byte 0 (type+quantizer)", "color": "#FF6B35" },
+      { "offset": 1, "label": "Frame Header Byte 1 (MB dimensions)", "color": "#4ECDC4" },
+      { "offset": 2, "label": "VP6 Bitstream Data", "color": "#45B7D1" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Frame Header", "fields": ["frame_header_byte0", "frame_header_byte1"], "format": "text" },
+    { "name": "Frame Header Hex", "fields": ["frame_header_byte0", "frame_header_byte1"], "format": "hex" }
+  ],
+  "aiHints": [
+    "VP6 is almost exclusively found inside FLV containers; an FLV video tag (type byte 0x09) with the first payload nibble = 4 indicates VP6, nibble = 5 indicates VP6 with alpha (VP6A)",
+    "VP6 preceded VP8 and VP9; it was widely used on YouTube and Flash Video streaming platforms from 2003-2010",
+    "Two main variants: VP6 (codec ID 4 in FLV) and VP6F (codec ID 5 in FLV, with separate alpha channel plane)",
+    "VP6 uses a DCT-based compression scheme similar to H.263 with a 6-tap bilinear filter for motion compensation",
+    "Standalone .vp6 files are rare; when encountered they are typically raw elementary stream dumps from FLV video tags"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "VP6 content is typically DRM-free legacy web video; forensic interest is mainly archival",
+      "VP6A (alpha variant) can carry a hidden transparency channel that may encode additional image data",
+      "Detecting VP6 without FLV context requires analysis of the bitstream's macroblock structure"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "FLV", "relationship": "container", "note": "VP6 is primarily embedded in FLV containers as video codec ID 4 (VP6) or 5 (VP6A)" },
+    { "format": "VP8", "relationship": "predecessor", "note": "VP8 succeeded VP6 and was open-sourced by Google; VP6 remained proprietary" },
+    { "format": "H264", "relationship": "contemporary", "note": "H.264 competed with VP6 in the 2003-2008 era and largely replaced it for web video" }
+  ],
+  "software": [
+    { "name": "FFmpeg", "role": "Decodes VP6 streams from FLV containers (libavcodec vp6 decoder)" },
+    { "name": "Adobe Flash Player", "role": "Historical primary VP6 consumer for Flash Video playback in browsers" },
+    { "name": "VLC Media Player", "role": "Plays FLV files containing VP6 video via libavcodec" },
+    { "name": "On2 Flix Engine", "role": "Original VP6 encoder by On2 Technologies for Flash Video production" }
+  ],
+  "useCases": [
+    "Legacy web video archives from the Flash Video era (2003-2010) requiring format identification",
+    "Archival conversion of old YouTube, Vimeo, or Dailymotion FLV downloads containing VP6 video",
+    "Digital forensics of early-2000s video files recovered from web server logs or cache"
+  ],
+  "technicalDetails": "VP6 is a proprietary DCT-based video codec by On2 Technologies (later Google). It uses 8x8 DCT blocks with intra and inter prediction, variable-length coding (Huffman), and a 6-tap bilinear interpolation filter for sub-pixel motion compensation. No standalone file format exists; VP6 is always carried in a container. In FLV, video tags begin with a 1-byte field: high nibble = frame type (1=keyframe, 2=inter), low nibble = codec ID (4=VP6, 5=VP6A). The VP6 frame data then follows. VP6A prepends a 3-byte offset to a separate alpha plane encoded as a second VP6 stream. VP6 was succeeded by VP8 (WebM, 2010) after Google's acquisition of On2.",
+  "completenessScore": 80
+}

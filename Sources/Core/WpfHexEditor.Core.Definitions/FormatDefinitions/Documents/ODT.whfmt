@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "OpenDocument Text",
   "formatId": "ODT",
@@ -304,19 +305,36 @@
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "OpenDocument Text - a ZIP-based open standard word processing document format used by LibreOffice and OpenOf...",
-    "suggestedInspections": [
-      "Validate OpenDocument Text file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+    "suspiciousPatterns": [],
+    "notes": [
+      "ZIP-based container; extract and inspect inner files for malicious payloads.",
+      "Metadata in core properties may reveal author identity and edit history.",
+      "Embedded macros or scripts may execute on open."
     ]
   },
+  "aiHints": [
+    "OpenDocument Text - a ZIP-based open standard word processing document format used by LibreOffice and OpenOf...",
+    "Validate OpenDocument Text file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "The uncompressed mimetype entry at offset 38 confirms ODT vs other ODF types.",
+    "content.xml may embed base64-encoded binary objects in <draw:image> elements.",
+    "meta.xml exposes dc:creator and dc:date which may be personally identifying.",
+    "Macros stored in Basic/ directory under the ZIP can execute on document open.",
+    "styles.xml contains page layout including paper size, margins, and header/footer content.",
+    "Check for linked images or frames referencing external URLs for SSRF-style tracking."
+  ],
   "diff": {
-    "keyFields": ["zipSignature", "compressionMethod", "crc32"],
-    "ignoreFields": ["lastModTime", "lastModDate", "compressionRatio"],
+    "keyFields": [
+      "zipSignature",
+      "compressionMethod",
+      "crc32"
+    ],
+    "ignoreFields": [
+      "lastModTime",
+      "lastModDate",
+      "compressionRatio"
+    ],
     "groupBy": "ZIP Local File Header",
     "note": "Signature and CRC identify structural integrity; compression method reveals format options. Timestamps change on every save and must be ignored for diffs."
   },
@@ -350,11 +368,37 @@
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "zipSignature",        "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt PK magic to test ODT container rejection in ODF-aware parsers" },
-      { "field": "compressionMethod",   "mutation": "boundary_values",   "weight": 2, "description": "Test edge compression values for ODF content.xml decompression" },
-      { "field": "uncompressedSize",    "mutation": "overflow",          "weight": 2, "description": "Overflow uncompressed size to stress memory allocation in ODF loaders" },
-      { "field": "generalPurposeFlags", "mutation": "random_bytes",      "weight": 1, "description": "Random flag bits to expose unexpected branches in ODF parsers" },
-      { "field": "crc32",               "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit CRC flip to verify integrity checking in ODT readers" }
+      {
+        "field": "zipSignature",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupt PK magic to test ODT container rejection in ODF-aware parsers"
+      },
+      {
+        "field": "compressionMethod",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Test edge compression values for ODF content.xml decompression"
+      },
+      {
+        "field": "uncompressedSize",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Overflow uncompressed size to stress memory allocation in ODF loaders"
+      },
+      {
+        "field": "generalPurposeFlags",
+        "mutation": "random_bytes",
+        "weight": 1,
+        "description": "Random flag bits to expose unexpected branches in ODF parsers"
+      },
+      {
+        "field": "crc32",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Single-bit CRC flip to verify integrity checking in ODT readers"
+      }
     ]
   },
   "migration": [
@@ -363,7 +407,12 @@
       "to": "ODF-1.3",
       "description": "ODT version upgrade: versionNeeded may change for extended features; mimetype entry must remain uncompressed",
       "changes": [
-        { "field": "compressionMethod", "changeType": "set_value", "value": "0000", "description": "First entry (mimetype) must use Stored (method 0) per ODF spec" }
+        {
+          "field": "compressionMethod",
+          "changeType": "set_value",
+          "value": "0000",
+          "description": "First entry (mimetype) must use Stored (method 0) per ODF spec"
+        }
       ]
     }
   ],
@@ -371,36 +420,238 @@
     "engine": "odf",
     "contentEntry": "content.xml",
     "namespaces": {
-      "text":  "urn:oasis:names:tc:opendocument:xmlns:text:1.0",
+      "text": "urn:oasis:names:tc:opendocument:xmlns:text:1.0",
       "table": "urn:oasis:names:tc:opendocument:xmlns:table:1.0",
-      "draw":  "urn:oasis:names:tc:opendocument:xmlns:drawing:1.0",
-      "fo":    "urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
+      "draw": "urn:oasis:names:tc:opendocument:xmlns:drawing:1.0",
+      "fo": "urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
     },
     "blockMappings": [
-      { "xmlElement": "text:p",          "blockKind": "paragraph", "textSource": "." },
-      { "xmlElement": "text:h",          "blockKind": "heading",
-        "attributeMappings": [ { "xmlAttr": "text:outline-level", "attribute": "level" } ] },
-      { "xmlElement": "text:span",       "blockKind": "run",       "textSource": ".",
-        "attributeMappings": [ { "xmlPath": "@text:style-name", "attribute": "odfStyle", "styleResolution": true } ] },
-      { "xmlElement": "table:table",     "blockKind": "table" },
-      { "xmlElement": "table:table-row", "blockKind": "table-row" },
-      { "xmlElement": "table:table-cell","blockKind": "table-cell" },
-      { "xmlElement": "draw:frame",      "blockKind": "image" }
+      {
+        "xmlElement": "text:p",
+        "blockKind": "paragraph",
+        "textSource": "."
+      },
+      {
+        "xmlElement": "text:h",
+        "blockKind": "heading",
+        "attributeMappings": [
+          {
+            "xmlAttr": "text:outline-level",
+            "attribute": "level"
+          }
+        ]
+      },
+      {
+        "xmlElement": "text:span",
+        "blockKind": "run",
+        "textSource": ".",
+        "attributeMappings": [
+          {
+            "xmlPath": "@text:style-name",
+            "attribute": "odfStyle",
+            "styleResolution": true
+          }
+        ]
+      },
+      {
+        "xmlElement": "table:table",
+        "blockKind": "table"
+      },
+      {
+        "xmlElement": "table:table-row",
+        "blockKind": "table-row"
+      },
+      {
+        "xmlElement": "table:table-cell",
+        "blockKind": "table-cell"
+      },
+      {
+        "xmlElement": "draw:frame",
+        "blockKind": "image"
+      }
     ],
     "serializationRules": {
-      "paragraph":  { "xmlElement": "text:p" },
-      "heading":    { "xmlElement": "text:h", "attr": "text:outline-level", "attrSource": "level" },
-      "run":        { "xmlElement": "text:span" },
-      "table":      { "xmlElement": "table:table" },
-      "table-row":  { "xmlElement": "table:table-row" },
-      "table-cell": { "xmlElement": "table:table-cell" }
+      "paragraph": {
+        "xmlElement": "text:p"
+      },
+      "heading": {
+        "xmlElement": "text:h",
+        "attr": "text:outline-level",
+        "attrSource": "level"
+      },
+      "run": {
+        "xmlElement": "text:span"
+      },
+      "table": {
+        "xmlElement": "table:table"
+      },
+      "table-row": {
+        "xmlElement": "table:table-row"
+      },
+      "table-cell": {
+        "xmlElement": "table:table-cell"
+      }
     },
     "attributeSerializationRules": {
-      "bold":      { "styleProperty": "fo:font-weight",    "value": "bold" },
-      "italic":    { "styleProperty": "fo:font-style",     "value": "italic" },
-      "underline": { "styleProperty": "fo:text-decoration","value": "underline" },
-      "fontSize":  { "styleProperty": "fo:font-size",      "unit": "pt" },
-      "align":     { "styleProperty": "fo:text-align" }
+      "bold": {
+        "styleProperty": "fo:font-weight",
+        "value": "bold"
+      },
+      "italic": {
+        "styleProperty": "fo:font-style",
+        "value": "italic"
+      },
+      "underline": {
+        "styleProperty": "fo:text-decoration",
+        "value": "underline"
+      },
+      "fontSize": {
+        "styleProperty": "fo:font-size",
+        "unit": "pt"
+      },
+      "align": {
+        "styleProperty": "fo:text-align"
+      }
     }
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "504B0304",
+      "offset": 0,
+      "label": "ODT signature",
+      "weight": 100,
+      "strength": "strong"
+    },
+    {
+      "value": "6170706C69636174696F6E2F766E642E6F617369732E6F70656E646F63756D656E742E74657874",
+      "offset": 38,
+      "label": "ODT mimetype string",
+      "weight": 80,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      {
+        "name": "MimetypeEntry",
+        "offset": 0,
+        "size": 38,
+        "type": "string",
+        "description": "Uncompressed 'mimetype' entry: application/vnd.oasis.opendocument.text"
+      },
+      {
+        "name": "ContentXml",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "content.xml — all document text and draw objects"
+      },
+      {
+        "name": "StylesXml",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "styles.xml — named styles and page layouts"
+      },
+      {
+        "name": "MetaXml",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "meta.xml — document properties and statistics"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 4,
+        "description": "End of primary signature region"
+      },
+      {
+        "name": "Content Start",
+        "offset": 64,
+        "description": "Approximate content start after headers"
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "docx",
+      "relation": "equivalent",
+      "note": "DOCX is the Microsoft OOXML equivalent"
+    },
+    {
+      "formatId": "ods",
+      "relation": "sibling",
+      "note": "ODS is the ODF spreadsheet counterpart"
+    },
+    {
+      "formatId": "odp",
+      "relation": "sibling",
+      "note": "ODP is the ODF presentation counterpart"
+    }
+  ],
+  "software": [
+    "LibreOffice Writer",
+    "Apache OpenOffice Writer",
+    "Google Docs",
+    "Microsoft Word (import)"
+  ],
+  "useCases": [
+    "Open-source word processing",
+    "Cross-platform document exchange",
+    "Government and public sector documents",
+    "ODF-compliant document creation"
+  ],
+  "technicalDetails": "ODT (ODF 1.2/1.3, ISO 26300) is a ZIP container with an uncompressed 'mimetype' entry at offset 0, followed by content.xml, styles.xml, meta.xml, and settings.xml. The ODF schema uses a flat XML namespace (office:, text:, draw:, etc.).",
+  "completenessScore": 88
 }

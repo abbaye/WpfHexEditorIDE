@@ -1,0 +1,128 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "OpenStreetMap PBF Binary",
+  "formatId": "OSM_PBF",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "OpenStreetMap PBF (Protobuf Binary Format) is the binary encoding of OpenStreetMap geographic data (.osm.pbf). It is the standard format for OSM planet dumps and regional extracts, replacing the older XML .osm format for bulk data. The file is organized as a sequence of BlobHeader + Blob structures, with the first BlobHeader identifying 'OSMHeader' type.",
+  "extensions": [".osm.pbf", ".pbf"],
+  "category": "GIS",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "0000",
+      "offset": 0,
+      "label": "Big-endian BlobHeader length prefix (high bytes)",
+      "weight": 0.4,
+      "strength": "Weak"
+    },
+    {
+      "value": "4F534D486561646572",
+      "offset": 6,
+      "label": "OSMHeader type string in first BlobHeader",
+      "weight": 0.9,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 15,
+  "structure": {
+    "fields": [
+      { "offset": 0,  "size": 4,  "name": "blobheader_length", "type": "uint32be", "description": "Big-endian 32-bit length of the first BlobHeader protobuf message", "storeAs": "uint32" },
+      { "offset": 4,  "size": -1, "name": "blobheader_type",   "type": "ascii",    "description": "Protobuf string field 1: 'OSMHeader' or 'OSMData' identifying blob type", "storeAs": "string" },
+      { "offset": -1, "size": 4,  "name": "blob_datasize",     "type": "uint32le", "description": "Uncompressed data size hint from BlobHeader.datasize field", "storeAs": "uint32" },
+      { "offset": -1, "size": -1, "name": "blob_payload",      "type": "bytes",    "description": "zlib-compressed or raw Blob protobuf payload (OSMData or HeaderBlock)", "storeAs": "hex" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["blobheader_length", "blobheader_type", "blob_datasize"],
+    "valueMaps": {
+      "blobheader_type": {
+        "OSMHeader": "Header block with required/optional features list",
+        "OSMData":   "Data block containing nodes, ways, and relations"
+      }
+    },
+    "tooltips": {
+      "blobheader_length": "4-byte big-endian (network byte order) size of the following BlobHeader protobuf",
+      "blobheader_type":   "First blob must be OSMHeader; subsequent blobs are OSMData",
+      "blob_datasize":     "Uncompressed size of the Blob data; used to pre-allocate decompression buffer",
+      "blob_payload":      "Blob data is zlib-compressed by default; optional lzma or raw encoding also supported"
+    }
+  },
+  "assertions": [
+    {
+      "id": "OSM_PBF_001",
+      "field": "blobheader_length",
+      "operator": "greaterThan",
+      "value": 0,
+      "description": "First BlobHeader length must be positive (non-empty header)"
+    },
+    {
+      "id": "OSM_PBF_002",
+      "field": "blobheader_type",
+      "operator": "equals",
+      "value": "OSMHeader",
+      "description": "First blob in a valid OSM PBF file must be of type 'OSMHeader'"
+    },
+    {
+      "id": "OSM_PBF_003",
+      "field": "blob_datasize",
+      "operator": "lessOrEqual",
+      "value": 33554432,
+      "description": "Blob uncompressed size must not exceed 32 MB (OSM PBF specification limit)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "BlobHeader Length",     "color": "#4A90D9" },
+      { "offset": 4, "label": "BlobHeader Protobuf",   "color": "#7ED321" },
+      { "offset": -1,"label": "First OSMData Blob",    "color": "#F5A623" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PBF Structure Summary",
+      "fields": ["blobheader_length", "blobheader_type", "blob_datasize"],
+      "format": "json"
+    },
+    {
+      "name": "OSM Data Audit Report",
+      "fields": ["blobheader_type", "blob_datasize"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "OSM PBF files are structured as a flat sequence of [4-byte big-endian BlobHeader length][BlobHeader protobuf][Blob protobuf] units; there is no file-level header or magic bytes, making weak signature detection necessary.",
+    "Each Blob contains either zlib_data (raw deflate) or raw bytes; the OSM format restricts uncompressed blob size to 32 MB and compressed blob size to 16 MB.",
+    "OSMData blobs contain a PrimitiveBlock protobuf with a string table (shared string pool), dense node arrays, way arrays, and relation arrays — all using delta-encoded integers for coordinate compression.",
+    "Tools for working with OSM PBF: osmium-tool (C++), pyosmium (Python), osmosis (Java), imposm3 (Go) for importing into PostGIS.",
+    "Planet.osm.pbf (full world dataset) is approximately 75 GB compressed; regional extracts from Geofabrik (geofabrik.de) are the typical source for country or city-level data."
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "OSM data is public domain (ODbL license); PBF files do not contain personally identifiable information in standard planet dumps.",
+      "OSM PBF files include change timestamps and user/changeset IDs for each element; historical OSM data can be used to reconstruct geographic change timelines.",
+      "OSM relation data may encode administrative boundaries, military exclusion zones, or sensitive infrastructure that some jurisdictions restrict from distribution."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "GEOJSON",  "relationship": "convertible", "note": "osmium export converts OSM PBF to GeoJSON feature collections" },
+    { "format": "GPKG",     "relationship": "convertible", "note": "imposm3 and ogr2ogr can import OSM PBF data into GeoPackage databases" },
+    { "format": "SHP",      "relationship": "convertible", "note": "ogr2ogr can convert OSM PBF to Shapefile format with feature type filtering" }
+  ],
+  "software": [
+    { "name": "osmium-tool",  "role": "Fast C++ command-line tool for OSM PBF file processing, filtering, and conversion" },
+    { "name": "pyosmium",     "role": "Python bindings for osmium; enables streaming OSM PBF parsing in Python applications" },
+    { "name": "Geofabrik",    "role": "Primary distributor of regional OSM PBF extracts updated daily" },
+    { "name": "Overpass API", "role": "OSM query API that can export subsets of OSM data in PBF format" }
+  ],
+  "useCases": [
+    "Importing OpenStreetMap geographic data into PostGIS, tile servers, or routing engines (OSRM, Valhalla, GraphHopper)",
+    "Bulk download and offline processing of OpenStreetMap planet dumps for geocoding or map rendering pipelines",
+    "Forensic analysis of geographic infrastructure data including road networks, buildings, and POIs for investigative research",
+    "Building custom map applications that require specific geographic subsets extracted from regional OSM PBF files"
+  ],
+  "technicalDetails": "OSM PBF is defined at https://wiki.openstreetmap.org/wiki/PBF_Format. The format uses Google Protocol Buffers (proto2) with two schema files: fileformat.proto (BlobHeader, Blob) and osmformat.proto (HeaderBlock, PrimitiveBlock). The file begins with a 4-byte big-endian integer giving the size of the first BlobHeader protobuf. BlobHeader has fields: type (string), indexdata (optional bytes), datasize (int32). The Blob that follows has zlib_data (bytes) or raw (bytes) containing a decompressed HeaderBlock or PrimitiveBlock. Dense node encoding uses delta compression for IDs, latitudes, and longitudes stored as integers (nanodegree precision: 1e-9 degrees). OSM PBF is designed for parallel processing: each OSMData blob is independently decompressible.",
+  "completenessScore": 82
+}

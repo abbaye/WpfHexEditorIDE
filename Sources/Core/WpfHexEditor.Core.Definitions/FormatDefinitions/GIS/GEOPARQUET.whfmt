@@ -1,0 +1,118 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "GeoParquet Geospatial Columnar Format",
+  "formatId": "GEOPARQUET",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "GeoParquet is an OGC standard encoding for storing geospatial vector data in Apache Parquet columnar format. It extends Parquet with geospatial metadata (CRS, geometry encoding, bounding box) stored in Parquet file-level metadata. Geometries are encoded as WKB binary columns. Parquet files begin with the 4-byte magic 'PAR1'.",
+  "extensions": [".parquet", ".geoparquet"],
+  "category": "GIS",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "50415231",
+      "offset": 0,
+      "label": "Apache Parquet magic 'PAR1'",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0,  "size": 4,  "name": "magic_header",  "type": "ascii",    "description": "Parquet magic bytes 'PAR1' at file start", "storeAs": "string" },
+      { "offset": 4,  "size": -1, "name": "row_groups",    "type": "bytes",    "description": "Series of Parquet row group data (Thrift-encoded column chunks)", "storeAs": "hex" },
+      { "offset": -4, "size": 4,  "name": "footer_length", "type": "uint32le", "description": "4-byte little-endian length of the Thrift-encoded FileMetaData footer", "storeAs": "uint32" },
+      { "offset": -8, "size": 4,  "name": "magic_footer",  "type": "ascii",    "description": "Parquet magic bytes 'PAR1' at file end (before footer_length)", "storeAs": "string" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic_header", "footer_length", "magic_footer"],
+    "valueMaps": {
+      "magic_header": { "PAR1": "Apache Parquet v1/v2 file" },
+      "magic_footer": { "PAR1": "Valid Parquet footer sentinel" }
+    },
+    "tooltips": {
+      "magic_header":  "Parquet files have magic bytes at both the start and end of the file",
+      "footer_length": "Read the last 8 bytes: 4-byte 'PAR1' magic + 4-byte footer length to locate the Thrift FileMetaData",
+      "magic_footer":  "Second 'PAR1' appears 4 bytes before the end of file (footer_length is the last 4 bytes)"
+    }
+  },
+  "assertions": [
+    {
+      "id": "GEOPARQUET_001",
+      "field": "magic_header",
+      "operator": "equals",
+      "value": "PAR1",
+      "description": "File must begin with Parquet magic 'PAR1'"
+    },
+    {
+      "id": "GEOPARQUET_002",
+      "field": "magic_footer",
+      "operator": "equals",
+      "value": "PAR1",
+      "description": "File must also end with Parquet magic 'PAR1' sentinel before footer length"
+    },
+    {
+      "id": "GEOPARQUET_003",
+      "field": "footer_length",
+      "operator": "greaterThan",
+      "value": 0,
+      "description": "Thrift footer length must be positive indicating valid FileMetaData"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0,  "label": "Parquet Header Magic",  "color": "#4A90D9" },
+      { "offset": 4,  "label": "First Row Group",        "color": "#7ED321" },
+      { "offset": -8, "label": "Footer Magic + Length",  "color": "#F5A623" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GeoParquet File Summary",
+      "fields": ["magic_header", "footer_length", "magic_footer"],
+      "format": "json"
+    },
+    {
+      "name": "Geospatial Columnar Audit",
+      "fields": ["magic_header", "footer_length"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "GeoParquet stores geospatial metadata in the Parquet file-level key-value metadata under the key 'geo'; the value is a JSON object specifying version, primary_column, and per-column CRS and geometry_types.",
+    "GeoParquet 1.0 (OGC standard) requires geometries to be stored as WKB-encoded binary columns; the primary geometry column name is declared in the 'geo' metadata.",
+    "Parquet's columnar encoding makes GeoParquet extremely efficient for spatial queries: predicate pushdown on bounding box columns allows skipping entire row groups without decompression.",
+    "GeoParquet supports Parquet's native compression codecs for geometry columns: Snappy, ZSTD, GZIP, and LZ4; ZSTD provides the best compression ratio for WKB geometry data.",
+    "Read GeoParquet files with: GeoPandas (gpd.read_parquet()), DuckDB (SELECT * FROM 'file.parquet'), or GDAL 3.5+ (ogr2ogr -f GeoParquet)."
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "GeoParquet files may contain sensitive location data (points of interest, trajectory data, demographic spatial overlays) stored efficiently across millions of rows.",
+      "Parquet's schema is preserved in Thrift FileMetaData; column names, types, and statistics (min/max bounding boxes) can be read without decompressing row data.",
+      "Row-level metadata is not supported in Parquet; individual record provenance requires external tracking."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "GEOJSON",  "relationship": "alternative", "note": "GeoJSON is human-readable but ~10x larger and slower to parse than GeoParquet for large datasets" },
+    { "format": "GPKG",     "relationship": "alternative", "note": "GeoPackage is SQLite-based with similar feature coverage; GeoParquet is faster for columnar analytics" },
+    { "format": "WKB",      "relationship": "contains",    "note": "GeoParquet geometry columns store geometries as WKB binary values per OGC GeoParquet 1.0 spec" }
+  ],
+  "software": [
+    { "name": "GeoPandas",    "role": "Python geospatial DataFrame library with native GeoParquet read/write support" },
+    { "name": "DuckDB",       "role": "Embedded analytical database with native Parquet and GeoParquet query support" },
+    { "name": "GDAL 3.5+",    "role": "Supports GeoParquet as both input and output format in ogr2ogr conversions" },
+    { "name": "Apache Arrow",  "role": "In-memory columnar format used as the interchange layer when reading GeoParquet files" }
+  ],
+  "useCases": [
+    "Storing and querying large-scale geospatial vector datasets (millions of features) with cloud-native analytical tools",
+    "Replacing GeoJSON and Shapefile in data lake pipelines due to superior compression and columnar query performance",
+    "Distributing open geospatial datasets (building footprints, address points, land parcels) via cloud object storage with HTTP range requests",
+    "Forensic analysis of spatial datasets extracted from data warehouses or geospatial analytics platforms"
+  ],
+  "technicalDetails": "GeoParquet 1.0 is an OGC Community Standard (OGC 23-026r3) that profiles Apache Parquet for geospatial use. The Parquet file format uses Apache Thrift encoding for metadata. The GeoParquet 'geo' key in Parquet file-level key_value_metadata contains a JSON object: { 'version': '1.0.0', 'primary_column': 'geometry', 'columns': { 'geometry': { 'encoding': 'WKB', 'geometry_types': [...], 'crs': { ... }, 'bbox': [...] } } }. The CRS is encoded as PROJJSON (ISO 19162-based JSON). Parquet row groups have a default size of ~128 MB; each row group stores column statistics (min/max encoded WKB bounding boxes) enabling spatial predicate pushdown. The Parquet magic 'PAR1' appears at both offset 0 and at filesize-8 (just before the 4-byte footer length).",
+  "completenessScore": 83
+}

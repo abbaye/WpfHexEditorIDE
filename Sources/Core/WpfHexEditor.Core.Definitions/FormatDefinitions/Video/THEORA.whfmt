@@ -1,0 +1,106 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Ogg Theora Video",
+  "formatId": "THEORA",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Theora is an open, free lossy video compression format based on On2 VP3, developed by the Xiph.Org Foundation. Theora streams are packaged in the Ogg container (OggS pages). The Theora identification header begins with 0x80 followed by the ASCII string 'theora'.",
+  "extensions": [".ogv", ".ogg"],
+  "category": "Video",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "4F676753",
+      "offset": 0,
+      "label": "'OggS' Ogg container page capture pattern",
+      "weight": 0.8,
+      "strength": "Moderate"
+    },
+    {
+      "value": "8074686F726961",
+      "offset": 28,
+      "label": "Theora identification header (0x80 + 'theora') inside first Ogg page",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 35,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "ogg_capture", "type": "ascii", "description": "Ogg page capture pattern 'OggS'", "storeAs": "string" },
+      { "offset": 4, "size": 1, "name": "stream_structure_version", "type": "uint8", "description": "Ogg stream structure version (must be 0)", "storeAs": "uint8" },
+      { "offset": 5, "size": 1, "name": "header_type_flag", "type": "uint8", "description": "Ogg page type flags: 0x02=beginning of stream", "storeAs": "uint8" },
+      { "offset": 6, "size": 8, "name": "granule_position", "type": "uint64le", "description": "Granule position (codec-specific timestamp)", "storeAs": "uint64" },
+      { "offset": 14, "size": 4, "name": "bitstream_serial", "type": "uint32le", "description": "Bitstream serial number identifying the logical stream", "storeAs": "uint32" },
+      { "offset": 18, "size": 4, "name": "page_sequence_number", "type": "uint32le", "description": "Page sequence number within this logical stream", "storeAs": "uint32" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["ogg_capture", "bitstream_serial", "page_sequence_number", "header_type_flag"],
+    "valueMaps": {
+      "header_type_flag": {
+        "2": "Beginning of logical bitstream",
+        "4": "Last page of logical bitstream",
+        "1": "Continuation page"
+      }
+    },
+    "tooltips": {
+      "ogg_capture": "Must be 'OggS' (0x4F676753); the Ogg page sync word",
+      "bitstream_serial": "Unique serial number for the Theora logical bitstream within the Ogg container",
+      "page_sequence_number": "Monotonically increasing page counter for this stream",
+      "header_type_flag": "Bit flags: 0x02=BOS (beginning), 0x04=EOS (end), 0x01=continuation"
+    }
+  },
+  "assertions": [
+    { "id": "THEORA_001", "field": "ogg_capture", "operator": "equals", "value": "OggS", "description": "First 4 bytes must be 'OggS' Ogg capture pattern" },
+    { "id": "THEORA_002", "field": "stream_structure_version", "operator": "equals", "value": 0, "description": "Ogg stream structure version must be 0" },
+    { "id": "THEORA_003", "field": "header_type_flag", "operator": "bitwiseAnd", "value": 2, "description": "First page must have BOS (beginning of stream) flag set (bit 1)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Ogg Page Capture 'OggS'", "color": "#FF6B35" },
+      { "offset": 4, "label": "Stream Structure Version", "color": "#4ECDC4" },
+      { "offset": 6, "label": "Granule Position", "color": "#45B7D1" },
+      { "offset": 14, "label": "Bitstream Serial Number", "color": "#96CEB4" },
+      { "offset": 28, "label": "Theora Identification Header Packet", "color": "#FFEAA7" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Stream Info", "fields": ["ogg_capture", "bitstream_serial", "header_type_flag", "page_sequence_number"], "format": "text" },
+    { "name": "First Page Hex", "fields": ["ogg_capture", "stream_structure_version", "granule_position", "bitstream_serial"], "format": "hex" }
+  ],
+  "aiHints": [
+    "The Theora identification header is always the first packet of a Theora logical bitstream; it begins with 0x80 followed by 'theora' (6 bytes) — total 7 bytes starting at the Ogg page packet data offset",
+    "Ogg pages have a variable-length segment table; the first page header is 26 bytes + 1 byte (number of segments) + segment_table; packet data typically starts at offset 28 for a single-segment first page",
+    "The Theora identification header contains: packet_type(1), 'theora'(6), VMAJ(1), VMIN(1), VREV(1), FMBW(2), FMBH(2), PICX(3), PICY(3), PICOFFSETX(1), PICOFFSETY(1), FRN(4), FRD(4), PARN(3), PARD(3), CS(1), NOMBR(3), QUAL(6b)+KFGSHIFT(5b)+PF(2b)+RES(3b)",
+    "Theora is based on On2's VP3 codec; it uses DCT compression similar to MPEG but without the patent encumbrances",
+    "The .ogv extension specifically indicates Ogg Video; .ogg may be audio-only (Vorbis) or video (Theora); check for Theora BOS page to distinguish"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "Ogg containers support comment headers which can carry arbitrary key=value metadata including creation timestamps and software identifiers",
+      "Multiple logical bitstreams can be multiplexed in one .ogv file; check all BOS pages for stream types",
+      "Granule position values in Theora encode both keyframe number and inter-frame offset in a split field"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "OGV", "relationship": "container", "note": "Theora video is packaged in the Ogg container with .ogv extension when combined with Vorbis audio" },
+    { "format": "VP8", "relationship": "successor", "note": "VP8 (WebM) succeeded Theora for open web video, offering better compression" },
+    { "format": "H264", "relationship": "alternative", "note": "H.264 is the patent-encumbered competitor; Theora was the royalty-free alternative" }
+  ],
+  "software": [
+    { "name": "FFmpeg", "role": "Full Theora encode/decode support via libtheora" },
+    { "name": "VLC Media Player", "role": "Native Theora/OGV playback on all platforms" },
+    { "name": "libtheora (Xiph.Org)", "role": "Reference implementation library for Theora encoding and decoding" },
+    { "name": "Firefox / Chrome", "role": "Historical native HTML5 <video> support for OGV/Theora in open-source browser context" }
+  ],
+  "useCases": [
+    "Open-source and royalty-free web video for HTML5 <video> element deployment",
+    "Free culture and Wikipedia video media stored in Ogg Theora format",
+    "Legacy streaming video archives from the pre-WebM open-web era (2004-2012)"
+  ],
+  "technicalDetails": "Theora is defined by the Theora I Specification (Xiph.Org, 2004). It uses DCT-based block compression derived from On2 VP3 (patent-donated to Xiph in 2001). The bitstream uses three header packets per logical stream: identification header (codec version, frame dimensions, frame rate, aspect ratio), comment header (metadata), and setup header (codebooks, quantization tables). Frame data follows in subsequent Ogg pages. Theora supports I-frames (keyframes) and inter-frames with motion vectors. The granule position in Ogg pages encodes keyframe_number << KFGSHIFT + delta_frame_count. Video is always 4:2:0 chroma subsampled. The Ogg multiplexing layer handles interleaving with Vorbis audio streams.",
+  "completenessScore": 82
+}

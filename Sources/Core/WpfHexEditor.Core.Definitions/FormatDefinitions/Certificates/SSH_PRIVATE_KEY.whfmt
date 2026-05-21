@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "text",
   "formatName": "SSH Private Key (OpenSSH)",
   "formatId": "SSH_PRIVATE_KEY",
@@ -18,6 +19,20 @@
       "https://www.openssh.com/",
       "https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL.key",
       "https://www.rfc-editor.org/rfc/rfc4716"
+    ]
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    { "value": "2D2D2D2D2D424547494E20", "offset": 0, "label": "-----BEGIN  — PEM armor header start (covers all SSH private key variants)", "weight": 1.0, "strength": "Strong" },
+    { "value": "2D2D2D2D2D424547494E204F50454E5353482050524956415445204B4559", "offset": 0, "label": "-----BEGIN OPENSSH PRIVATE KEY — modern OpenSSH native format (first 8 bytes: 2D2D2D2D 2D424547)", "weight": 1.0, "strength": "Strong" },
+    { "value": "2D2D2D2D2D424547494E205253412050524956415445204B4559", "offset": 0, "label": "-----BEGIN RSA PRIVATE KEY — legacy PKCS#1 RSA", "weight": 0.95, "strength": "Strong" }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      { "name": "pemArmor", "type": "ascii", "offset": 0, "length": 27, "description": "PEM armor header line (-----BEGIN <TYPE>-----)" },
+      { "name": "base64Payload", "type": "ascii", "offset": -1, "length": -1, "description": "Base64-encoded key data" },
+      { "name": "pemFooter", "type": "ascii", "offset": -1, "length": 25, "description": "PEM armor footer (-----END <TYPE>-----)" }
     ]
   },
   "detection": {
@@ -122,7 +137,7 @@
   ],
   "forensic": {
     "category": "certificate",
-    "riskLevel": "high",
+    "riskLevel": "critical",
     "notes": "SSH private key files are the most sensitive credential type on Unix/Linux systems. Unprotected keys (no passphrase) allow immediate authentication to any server that trusts the corresponding public key. Legacy PEM keys with Proc-Type/DEK-Info may use weak MD5-based key derivation. OpenSSH native format with bcrypt KDF is significantly more resistant to brute-force attacks. Never store private keys in version control, container images, or shared storage.",
     "suspiciousPatterns": [
       "Absence of 'Proc-Type: 4,ENCRYPTED' in legacy PEM = unencrypted private key — immediate compromise risk",
@@ -131,7 +146,30 @@
       "id_rsa files with very small file sizes may indicate 512 or 1024-bit RSA — cryptographically weak"
     ]
   },
-  "aiHints": {
+  "useCases": [
+    "SSH authentication to remote servers without passwords",
+    "Git operations with SSH authentication (GitHub, GitLab)",
+    "Ansible and automation framework remote access",
+    "SFTP file transfer authentication",
+    "Signed git commits and tags via SSH signing (OpenSSH 8.0+)"
+  ],
+  "technicalDetails": {
+    "format": "PEM-encoded (base64 + armor headers), text file",
+    "modernHeader": "-----BEGIN OPENSSH PRIVATE KEY-----",
+    "legacyHeaders": "RSA PRIVATE KEY (PKCS#1), EC PRIVATE KEY (SEC1), PRIVATE KEY (PKCS#8)",
+    "opensshMagic": "6F70656E7373682D6B65792D76310A (openssh-key-v1 + LF)",
+    "keyTypes": "RSA, ECDSA (P-256/384/521), Ed25519, FIDO sk-ssh-ed25519, sk-ecdsa",
+    "passphraseKDF": "bcrypt (modern, OpenSSH native), MD5 (legacy PEM DEK-Info)"
+  },
+  "aiHints": [
+    "SSH private keys are the most sensitive credentials in Unix/Linux environments — treat as secrets",
+    "-----BEGIN OPENSSH PRIVATE KEY----- format: base64 decodes to 'openssh-key-v1' + NUL + cipher + kdf + options",
+    "cipher='none' and kdf='none' means the private key is unencrypted — immediate extraction risk",
+    "Legacy PEM keys with DEK-Info header use weak MD5-based KDF for passphrase protection",
+    "Check file permissions: private keys should always be chmod 600 (owner read-only)",
+    "For RSA keys, modulus length determines security: 2048 bits minimum, 4096 bits preferred"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "OpenSSH native (-----BEGIN OPENSSH PRIVATE KEY-----): base64 decodes to: magic(15B 'openssh-key-v1')+00 + ciphername(string: 4B len + data) + kdfname(string) + kdfoptions(string) + n_keys(4B) + pubkey(string) + privkey_blob(string). Legacy PKCS#1 RSA PEM: base64 decodes to DER SEQUENCE { version INTEGER(0) + n,e,d,p,q,dp,dq,qi INTEGER (RSA private key components) }. Passphrase-protected legacy: PEM headers Proc-Type: 4,ENCRYPTED + DEK-Info: cipher,IV before base64.",
     "suggestedInspections": [
       "Identify key format from PEM header: OPENSSH PRIVATE KEY (modern) vs RSA/EC/PRIVATE KEY (legacy)",
@@ -172,7 +210,7 @@
     "DocumentationLevel": "detailed",
     "BlocksDefined": 4,
     "ValidationRules": 2,
-    "LastUpdated": "2026-04-15",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": false
   },

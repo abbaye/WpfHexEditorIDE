@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Tom's Audio Kompressor",
   "formatId": "TAK",
@@ -6,6 +7,17 @@
   "extensions": [
     ".tak"
   ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "748DEA6B",
+      "offset": 0,
+      "label": "TAK lossless audio magic 0x6BEA8D74 LE (bytes: 74 8D EA 6B)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
   "description": "TAK (Tom's Audio Kompressor) — a high-performance lossless audio codec created by Thomas Becker. The file begins with a 4-byte little-endian magic identifier 0x6BEA8D74 (bytes: 74 8D EA 6B). TAK uses a block-based encoding with a Stream Info metadata block early in the file containing sample rate, bit depth, channel count, and total sample count. TAK offers competitive compression ratios comparable to FLAC with higher decoding speed. Metadata is stored in TAK metadata blocks with a type code, size, and CRC-32 checksum. The format supports all standard PCM parameters: 1-32 channels, 6-384 kHz sample rate, 8-32-bit depth.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",

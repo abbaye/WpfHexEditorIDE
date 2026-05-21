@@ -1,0 +1,98 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "JPEG XS",
+  "formatId": "JXS",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "JPEG XS is a low-latency, lightweight visually lossless image compression standard (ISO/IEC 21122) designed for professional video production, AR/VR, and storage-class memory. It offers compression ratios of 2:1 to 6:1 with very low encoding/decoding latency.",
+  "extensions": [".jxs"],
+  "category": "Image",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "FF10FF50",
+      "offset": 0,
+      "label": "JPEG XS start-of-codestream (SOC) marker",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 2, "name": "soc_marker", "type": "uint16be", "description": "Start of Codestream marker (0xFF10)", "storeAs": "uint16" },
+      { "offset": 2, "size": 2, "name": "cap_marker", "type": "uint16be", "description": "Capabilities marker (0xFF50) indicating feature set", "storeAs": "uint16" },
+      { "offset": 4, "size": 2, "name": "cap_length", "type": "uint16be", "description": "Length of the capabilities marker segment", "storeAs": "uint16" },
+      { "offset": 6, "size": 2, "name": "profile", "type": "uint16be", "description": "Profile identifier defining subset of JPEG XS features used", "storeAs": "uint16" },
+      { "offset": 8, "size": 2, "name": "level", "type": "uint16be", "description": "Level identifier constraining resolution and bitrate", "storeAs": "uint16" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["soc_marker", "cap_marker", "profile", "level"],
+    "valueMaps": {
+      "profile": {
+        "0x1500": "Light subline profile",
+        "0x1A00": "Main subline profile",
+        "0x2000": "High profile",
+        "0x3E80": "MLS.12 multi-level subline"
+      }
+    },
+    "tooltips": {
+      "soc_marker": "Start of Codestream: 0xFF10; mandatory first marker in any JPEG XS codestream",
+      "cap_marker": "Capabilities marker 0xFF50 immediately follows SOC and declares codec profile/level",
+      "profile": "Profile constrains which JPEG XS tools and features are used",
+      "level": "Level constrains maximum image size and bitrate"
+    }
+  },
+  "assertions": [
+    { "id": "JXS_001", "field": "soc_marker", "operator": "equals", "value": 65296, "description": "SOC marker must be 0xFF10 (65296 decimal)" },
+    { "id": "JXS_002", "field": "cap_marker", "operator": "equals", "value": 65360, "description": "CAP marker must be 0xFF50 (65360 decimal)" },
+    { "id": "JXS_003", "field": "cap_length", "operator": "greaterThanOrEqual", "value": 4, "description": "CAP segment length must be at least 4 bytes" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "SOC Marker (0xFF10)", "color": "#FF6B35" },
+      { "offset": 2, "label": "CAP Marker (0xFF50)", "color": "#4ECDC4" },
+      { "offset": 4, "label": "CAP Segment Length", "color": "#45B7D1" },
+      { "offset": 6, "label": "Profile / Level", "color": "#96CEB4" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Codestream Header", "fields": ["soc_marker", "cap_marker", "profile", "level"], "format": "text" },
+    { "name": "Marker Sequence Hex", "fields": ["soc_marker", "cap_marker", "cap_length"], "format": "hex" }
+  ],
+  "aiHints": [
+    "JPEG XS uses a marker-based codestream similar to JPEG; marker codes start with 0xFF followed by a type byte specific to JPEG XS (0x10-0x5F range)",
+    "The SOC marker (0xFF10) is always at byte offset 0 in a bare codestream; in an ISOBMFF container the codestream is wrapped in an 'mdat' box",
+    "JPEG XS targets <1ms end-to-end latency which makes it suitable for professional video over IP (SMPTE 2110-22) and USB4/Thunderbolt display transport",
+    "Key markers after SOC: CAP (0xFF50 capabilities), SIZ (0xFF51 image size), WGT (0xFF52 wavelet), COM (0xFF60 comment), SOT (0xFF90 start of tile), EOC (0xFF11 end of codestream)",
+    "JPEG XS is not JPEG XL; JXS targets low-latency professional video while JXL targets general-purpose image compression with higher ratios"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "JPEG XS codestreams are well-structured with explicit marker segments; malformed marker lengths can cause parser overread",
+      "COM (comment) segments can carry arbitrary binary data embedded within the codestream",
+      "Profile and level mismatch between CAP marker and actual codestream content may indicate transcoding or editing"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "JPEG_XL", "relationship": "sibling", "note": "Both are JPEG-successor formats; JXS targets low-latency professional video, JXL targets high-efficiency general imaging" },
+    { "format": "JPEG2000", "relationship": "alternative", "note": "Both are wavelet-based; JPEG XS prioritizes latency and simplicity over maximum compression ratio" },
+    { "format": "MP4", "relationship": "container", "note": "JPEG XS codestreams can be carried in ISOBMFF (MP4) containers for video sequences" }
+  ],
+  "software": [
+    { "name": "intoPIX TICO-XS", "role": "Professional hardware and software encoder/decoder implementing JPEG XS for broadcast" },
+    { "name": "Fraunhofer IIS jpegxs", "role": "Reference software codec implementation for JPEG XS (ISO/IEC 21122)" },
+    { "name": "FFmpeg", "role": "Experimental JPEG XS codec support for encoding and decoding .jxs streams" },
+    { "name": "Mellanox/NVIDIA BlueField", "role": "SmartNIC hardware with integrated JPEG XS codec for low-latency video over IP" }
+  ],
+  "useCases": [
+    "Professional broadcast and production video transport over IP networks (SMPTE ST 2110-22)",
+    "AR/VR headset display interface compression requiring sub-millisecond latency",
+    "Storage-class memory image caching where encode/decode speed is critical for throughput"
+  ],
+  "technicalDetails": "JPEG XS (ISO/IEC 21122) is a lightweight wavelet-based codec using a packet wavelet transform (PackDWT) with simple entropy coding. Unlike JPEG 2000, it avoids complex arithmetic coding in favor of low-complexity bit-plane coding to achieve near-hardware speeds. The codestream begins with SOC (0xFF10) followed immediately by a CAP marker (0xFF50) declaring profile and level. Image geometry is in the SIZ marker (0xFF51). The wavelet transforms image components into subbands which are packed/coded tile by tile. Precinct-level processing enables line-by-line (subline) operation for minimum latency. Profiles include Light, Main, and High; levels constrain 4K/8K resolutions and bitrates.",
+  "completenessScore": 80
+}

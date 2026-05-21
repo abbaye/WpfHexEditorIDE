@@ -1,0 +1,109 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "PKCS#8 Private Key (DER)",
+  "formatId": "PKCS8_PRIVATE",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "PKCS#8 private key information in DER (Distinguished Encoding Rules) binary format as defined by RFC 5958. Stores private keys for RSA, EC, and other algorithms in a standardized envelope.",
+  "extensions": [".p8", ".key", ".der"],
+  "category": "Crypto",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "3082",
+      "offset": 0,
+      "label": "DER SEQUENCE tag with 2-byte length",
+      "weight": 0.7,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 1, "name": "sequence_tag", "type": "uint8", "description": "DER SEQUENCE tag (0x30)", "storeAs": "hex" },
+      { "offset": 1, "size": 1, "name": "sequence_len_marker", "type": "uint8", "description": "Length encoding marker: 0x82 = 2-byte length follows", "storeAs": "hex" },
+      { "offset": 2, "size": 2, "name": "sequence_len", "type": "uint16be", "description": "Length of the SEQUENCE contents in bytes", "storeAs": "uint" },
+      { "offset": 4, "size": 1, "name": "version_tag", "type": "uint8", "description": "DER INTEGER tag (0x02) for version field", "storeAs": "hex" },
+      { "offset": 5, "size": 1, "name": "version_len", "type": "uint8", "description": "Length of version integer (typically 0x01 = 1 byte)", "storeAs": "uint" },
+      { "offset": 6, "size": 1, "name": "version", "type": "uint8", "description": "PKCS#8 version: 0=v1 (OneAsymmetricKey), 1=v2 (with public key)", "storeAs": "uint" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["sequence_tag", "sequence_len_marker", "sequence_len", "version_tag", "version_len", "version"],
+    "valueMaps": {
+      "sequence_tag": {
+        "30": "DER SEQUENCE (valid)"
+      },
+      "sequence_len_marker": {
+        "81": "1-byte length follows",
+        "82": "2-byte length follows",
+        "83": "3-byte length follows"
+      },
+      "version": {
+        "0": "v1 — OneAsymmetricKey (RFC 5958)",
+        "1": "v2 — OneAsymmetricKey with public key"
+      }
+    },
+    "tooltips": {
+      "sequence_tag": "Must be 0x30 for a valid DER SEQUENCE encoding",
+      "sequence_len_marker": "DER long-form length: 0x82 means next 2 bytes give the length",
+      "version": "v1 (0x00) is most common; v2 adds optional public key for self-contained key pairs"
+    }
+  },
+  "assertions": [
+    { "id": "PKCS8_SEQ_TAG", "field": "sequence_tag", "operator": "equals", "value": "30", "description": "Outer structure must be DER SEQUENCE (tag 0x30)" },
+    { "id": "PKCS8_VER_TAG", "field": "version_tag", "operator": "equals", "value": "02", "description": "Version field must be DER INTEGER (tag 0x02)" },
+    { "id": "PKCS8_VER_VALUE", "field": "version", "operator": "range", "value": "0:1", "description": "PKCS#8 version must be 0 (v1) or 1 (v2)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "DER SEQUENCE Root", "color": "#3498DB" },
+      { "offset": 4, "label": "Version INTEGER", "color": "#2ECC71" },
+      { "offset": 7, "label": "AlgorithmIdentifier SEQUENCE", "color": "#E74C3C" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PKCS8 DER Structure",
+      "fields": ["sequence_tag", "sequence_len", "version_tag", "version"],
+      "format": "text"
+    },
+    {
+      "name": "PKCS8 CSV Export",
+      "fields": ["sequence_tag", "sequence_len", "version"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "PKCS#8 DER files always begin 0x30 0x82 for keys larger than 127 bytes (almost all practical keys)",
+    "AlgorithmIdentifier OID after the version field identifies the key algorithm: 1.2.840.113549.1.1.1 = RSA, 1.2.840.10045.2.1 = EC",
+    "RSA-2048 PKCS#8 private key DER files are typically 1218-1220 bytes; RSA-4096 approximately 2374 bytes",
+    "OpenSSL converts between PKCS#8 and traditional key formats: openssl pkcs8 -in key.pem -topk8 -nocrypt",
+    "Encrypted PKCS#8 (EncryptedPrivateKeyInfo) uses OID 1.2.840.113549.1.8.1.x and is detected by a different outer structure"
+  ],
+  "forensic": {
+    "riskLevel": "critical",
+    "notes": [
+      "Unencrypted PKCS#8 DER files contain the complete private key — immediate revocation required if leaked",
+      "These files enable impersonation of TLS servers, code signing entities, or any PKI subject",
+      "Check for encrypted PKCS#8 (EncryptedPrivateKeyInfo wrapper) — unencrypted storage is a policy violation"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "PEM", "relationship": "encoding", "note": "PKCS#8 DER is the binary form; PEM wraps it in base64 with '-----BEGIN PRIVATE KEY-----'" },
+    { "format": "P12", "relationship": "container", "note": "PKCS#12 bundles PKCS#8 private keys with certificates and optionally a CA chain" }
+  ],
+  "software": [
+    { "name": "OpenSSL", "role": "Primary tool for generating, converting, and inspecting PKCS#8 private keys" },
+    { "name": "Java KeyStore (JKS)", "role": "Java platform uses PKCS#8 internally for private key storage" },
+    { "name": "Bouncy Castle", "role": "Cross-platform cryptographic library with full PKCS#8 DER parsing support" }
+  ],
+  "useCases": [
+    "Forensic identification of private key material in disk images and file system captures",
+    "Audit of server configurations to detect unencrypted private key files",
+    "Key format conversion analysis in PKI infrastructure debugging"
+  ],
+  "technicalDetails": "PKCS#8 (RFC 5958) PrivateKeyInfo structure: SEQUENCE { version INTEGER, privateKeyAlgorithm AlgorithmIdentifier, privateKey OCTET STRING }. For RSA keys, the privateKey OCTET STRING contains a PKCS#1 RSAPrivateKey DER. For EC keys it contains an ECPrivateKey DER. DER encoding uses definite-length TLV; keys >127 bytes use long-form length (0x82 marker for 2-byte length).",
+  "completenessScore": 83
+}

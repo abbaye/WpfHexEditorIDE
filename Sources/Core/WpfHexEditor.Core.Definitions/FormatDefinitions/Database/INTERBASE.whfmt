@@ -1,38 +1,33 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "InterBase Database",
   "formatId": "INTERBASE",
-  "version": "1.14",
-  "extensions": [
-    ".ib",
-    ".ibd"
-  ],
-  "description": "Borland/Embarcadero InterBase database format",
+  "version": "1.15",
+  "lastUpdated": "2026-05-20",
+  "extensions": [".ib", ".ibd"],
+  "description": "Borland/Embarcadero InterBase database format. The file starts with a header page containing the ODS version at offset 16 (uint16 LE) and page size at offset 24 (uint32 LE). Magic at offset 0 is 0x01000000 (ODS minor version indicator) in classic InterBase databases.",
   "category": "Database",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
-    "specifications": [
-      "InterBase Database Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/IB"
-    ]
+    "specifications": ["InterBase Database Format"],
+    "WebLinks": ["https://en.wikipedia.org/wiki/IB", "https://www.embarcadero.com/products/interbase"]
   },
+  "maxSignatureOffset": 1024,
+  "signatures": [
+    {
+      "value": "01000000",
+      "offset": 0,
+      "label": "InterBase ODS minor version byte — classic InterBase header indicator",
+      "weight": 0.6,
+      "strength": "Moderate"
+    }
+  ],
   "detection": {
     "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "INTERBASE magic",
-        "weight": 1.0
-      }
-    ],
+    "validation": { "minFileSize": 1, "maxSignatureOffset": 1024 },
+    "signatures": [{ "value": "01000000", "offset": 0, "label": "INTERBASE magic", "weight": 1.0 }],
     "matchMode": "any",
     "MinimumScore": 1.0,
     "Strength": "Weak"
@@ -42,95 +37,105 @@
     "pageSize": 0,
     "pageCount": 0,
     "tableCount": 0,
-    "version": 0
+    "version": 0,
+    "odsVersion": 0
+  },
+  "structure": {
+    "fields": [
+      { "name": "ods_minor", "offset": 0, "size": 4, "type": "uint32le", "description": "ODS minor version (first 4 bytes of header page)" },
+      { "name": "ods_version", "offset": 16, "size": 2, "type": "uint16le", "description": "On-Disk Structure (ODS) major version" },
+      { "name": "page_size", "offset": 24, "size": 4, "type": "uint32le", "description": "Page size in bytes" },
+      { "name": "pages_allocated", "offset": 28, "size": 4, "type": "uint32le", "description": "Total pages allocated" }
+    ]
   },
   "blocks": [
+    { "type": "header", "name": "InterBase Header", "offset": 0, "length": 512, "color": "#EE6C4D", "opacity": 0.4, "description": "InterBase database header page" },
+    { "type": "metadata", "name": "Page Size", "variable": "pageSize", "description": "Page Size" },
+    { "type": "metadata", "name": "Page Count", "variable": "pageCount", "description": "Page Count" },
+    { "type": "metadata", "name": "Table Count", "variable": "tableCount", "description": "Table Count" },
+    { "type": "metadata", "name": "Version", "variable": "version", "description": "Version" }
+  ],
+  "inspector": {
+    "displayFields": ["odsVersion", "pageSize", "pageCount"],
+    "valueMaps": {
+      "odsVersion": {
+        "10": "ODS 10 — InterBase 6",
+        "11": "ODS 11 — Firebird 2.x / InterBase 7+",
+        "12": "ODS 12 — Firebird 3.0"
+      }
+    },
+    "tooltips": {
+      "odsVersion": "On-Disk Structure version — determines engine compatibility",
+      "pageSize": "Database page size in bytes — affects performance and max database size"
+    }
+  },
+  "assertions": [
+    { "name": "ODS version is valid", "expression": "odsVersion >= 10 && odsVersion <= 13", "severity": "warning", "message": "InterBase ODS version should be between 10 and 13" },
+    { "name": "Page size is valid power of 2", "expression": "pageSize >= 1024 && pageSize <= 16384", "severity": "error", "message": "InterBase page size must be between 1024 and 16384 bytes" },
+    { "name": "File not empty", "expression": "fileSize > 0", "severity": "error", "message": "InterBase database file must not be empty" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Header Page (ODS info)", "color": "#EE6C4D" },
+      { "offset": 512, "label": "Page 1 (System Tables)", "color": "#E8C5C0" },
+      { "offset": 1024, "label": "Page 2 (RDB$RELATIONS)", "color": "#F4A261" }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "header",
-      "name": "InterBase Header",
-      "offset": 0,
-      "length": 512,
-      "color": "#EE6C4D",
-      "opacity": 0.4,
-      "description": "InterBase database header page"
+      "name": "InterBase Header Summary",
+      "format": "text",
+      "template": "InterBase Database\nODS Version: {odsVersion}\nPage Size  : {pageSize}\nPage Count : {pageCount}"
     },
     {
-      "type": "metadata",
-      "name": "Page Size",
-      "variable": "pageSize",
-      "description": "Page Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Page Count",
-      "variable": "pageCount",
-      "description": "Page Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Table Count",
-      "variable": "tableCount",
-      "description": "Table Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "InterBase Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nODSVersion,{odsVersion}\nPageSize,{pageSize}\nPageCount,{pageCount}"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "aiHints": [
+    "InterBase .ib files share the same ODS format as early Firebird databases — check ODS version to differentiate",
+    "The ODS version at offset 16 is the primary engine compatibility indicator",
+    "Page size is critical — pages must align exactly with pageSize byte boundaries",
+    "System catalog tables (RDB$*) are stored in the first few pages after the header",
+    "InterBase uses a multi-generational architecture for transaction isolation — transaction IDs are stored per record"
   ],
-  "formatRelationships": {
-    "category": "Database",
-    "extensions": [
-      ".ib",
-      ".ibd"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "SQL Server",
-    "MySQL Workbench",
-    "PostgreSQL",
-    "SQLite Browser",
-    "DBeaver"
-  ],
-  "UseCases": [
-    "Data storage",
-    "Query execution",
-    "Data analysis",
-    "Backup"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read DB header",
-    "extractASCIIString": "Read schema"
-  },
   "forensic": {
-    "category": "database",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Borland/Embarcadero InterBase database format",
-    "suggestedInspections": [
-      "Verify InterBase Database file header, page size, and version fields",
-      "Check B-tree/index page pointers and free page list",
-      "Inspect record format, schema tables, and journal state"
+    "notes": [
+      "InterBase databases often contain business-sensitive data — treat as confidential",
+      "ODS version mismatch between file and engine causes immediate open failure",
+      "Corrupted ODS version field at offset 16 renders the database unreadable"
     ]
-  }
+  },
+  "formatRelationships": [
+    { "format": "GDB", "relation": "variant", "note": "GDB is legacy InterBase extension; .ib is modern InterBase format" },
+    { "format": "FDB", "relation": "sibling", "note": "Firebird uses .fdb extension with shared ODS ancestry" }
+  ],
+  "software": ["Embarcadero InterBase 2020", "Embarcadero InterBase XE7", "IBExpert", "IBConsole", "DBeaver"],
+  "useCases": [
+    "Delphi/C++Builder embedded application databases",
+    "Multi-tier client-server business applications",
+    "Database forensics on legacy InterBase deployments",
+    "Migration source for PostgreSQL or Firebird upgrades"
+  ],
+  "technicalDetails": {
+    "ODSRange": "10–13",
+    "PageSizeRange": "1024–16384 bytes",
+    "TransactionModel": "Multi-generational (MVCC)",
+    "StoredProcedureLanguage": "PSQL (Procedural SQL)"
+  },
+  "completenessScore": 82,
+  "MimeTypes": ["application/octet-stream"],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-20",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": { "ODSRange": "10–13", "PageSizeRange": "1024–16384 bytes" },
+  "functions": { "readUInt32LE": "Read DB header", "extractASCIIString": "Read schema" }
 }

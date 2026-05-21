@@ -1,0 +1,113 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "POSIX PAX Extended Tar",
+  "formatId": "PAX_TAR",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "POSIX PAX (Portable Archive Interchange) extended tar format is defined in IEEE Std 1003.1-2001 (POSIX.1-2001). It extends the older ustar format with arbitrary extended headers for long filenames, large files, Unicode paths, and custom metadata. The ustar magic at offset 257 identifies POSIX-compliant tar archives.",
+  "extensions": [".tar"],
+  "category": "Archive",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "757374617200",
+      "offset": 257,
+      "label": "'ustar\\0' POSIX tar magic at offset 257",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 263,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 100, "name": "name", "type": "ascii", "description": "File name (null-terminated, max 99 chars + null)", "storeAs": "string" },
+      { "offset": 100, "size": 8, "name": "mode", "type": "ascii", "description": "File mode as octal string (e.g., '0000755')", "storeAs": "string" },
+      { "offset": 108, "size": 8, "name": "uid", "type": "ascii", "description": "User ID of file owner as octal string", "storeAs": "string" },
+      { "offset": 116, "size": 8, "name": "gid", "type": "ascii", "description": "Group ID of file owner as octal string", "storeAs": "string" },
+      { "offset": 124, "size": 12, "name": "size", "type": "ascii", "description": "File size in bytes as octal string", "storeAs": "string" },
+      { "offset": 136, "size": 12, "name": "mtime", "type": "ascii", "description": "Last modification time (Unix timestamp) as octal string", "storeAs": "string" },
+      { "offset": 148, "size": 8, "name": "checksum", "type": "ascii", "description": "Header checksum as 6-digit octal string followed by space and null", "storeAs": "string" },
+      { "offset": 156, "size": 1, "name": "typeflag", "type": "uint8", "description": "Entry type flag: 0/regular file, 1=hardlink, 2=symlink, 3=chardev, 4=blkdev, 5=directory, 6=fifo, x/X/g=PAX extended", "storeAs": "uint8" },
+      { "offset": 157, "size": 100, "name": "linkname", "type": "ascii", "description": "Target of symbolic or hard link (if typeflag=1 or 2)", "storeAs": "string" },
+      { "offset": 257, "size": 6, "name": "ustar_magic", "type": "ascii", "description": "ustar magic: 'ustar\\0' (POSIX) or 'ustar  \\0' (GNU)", "storeAs": "string" },
+      { "offset": 263, "size": 2, "name": "ustar_version", "type": "ascii", "description": "ustar version: '00' for POSIX, ' ' space for GNU tar", "storeAs": "string" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["name", "size", "mtime", "typeflag", "ustar_magic", "ustar_version"],
+    "valueMaps": {
+      "typeflag": {
+        "48": "0: Regular file",
+        "49": "1: Hard link",
+        "50": "2: Symbolic link",
+        "51": "3: Character device",
+        "52": "4: Block device",
+        "53": "5: Directory",
+        "54": "6: FIFO",
+        "103": "g: PAX global extended header",
+        "120": "x: PAX per-file extended header",
+        "88": "X: Solaris extended header"
+      }
+    },
+    "tooltips": {
+      "name": "Entry filename; for PAX format, may be overridden by 'path' key in preceding extended header",
+      "size": "File content size in bytes as null-terminated octal string; PAX can use base-10 for >8GB files",
+      "typeflag": "Entry type; PAX adds 'x' (0x78) for per-file extended header and 'g' (0x67) for global extended header",
+      "ustar_magic": "Must be 'ustar' followed by null; identifies POSIX ustar/PAX format vs v7 tar",
+      "ustar_version": "'00' for POSIX ustar/PAX; '  ' (two spaces) + null for GNU tar"
+    }
+  },
+  "assertions": [
+    { "id": "PAX_001", "field": "ustar_magic", "operator": "startsWith", "value": "ustar", "description": "Bytes 257-261 must be 'ustar' to identify POSIX tar format" },
+    { "id": "PAX_002", "field": "typeflag", "operator": "in", "value": [48, 49, 50, 51, 52, 53, 54, 103, 120], "description": "typeflag must be a valid tar entry type code" },
+    { "id": "PAX_003", "field": "checksum", "operator": "notEquals", "value": "        ", "description": "Checksum field must not be blank spaces; a valid header must have been checksummed" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Entry Name (100 bytes)", "color": "#FF6B35" },
+      { "offset": 124, "label": "Entry Size (12 bytes octal)", "color": "#4ECDC4" },
+      { "offset": 148, "label": "Header Checksum (8 bytes)", "color": "#45B7D1" },
+      { "offset": 156, "label": "Type Flag", "color": "#96CEB4" },
+      { "offset": 257, "label": "ustar Magic", "color": "#FFEAA7" },
+      { "offset": 512, "label": "Entry Data Start (512-byte aligned)", "color": "#DDA0DD" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Entry Header", "fields": ["name", "size", "mtime", "typeflag", "ustar_magic"], "format": "text" },
+    { "name": "First Header Block Hex", "fields": ["name", "mode", "uid", "gid", "size", "mtime", "checksum", "typeflag", "ustar_magic"], "format": "hex" }
+  ],
+  "aiHints": [
+    "PAX extended headers (typeflag 'x' or 'g') precede the entry they describe and use 'length keyword=value\\n' format for arbitrary metadata (e.g., 'path', 'linkpath', 'size', 'mtime', 'comment', custom 'SCHILY.*' or 'LIBARCHIVE.*' keys)",
+    "All tar data is padded to 512-byte block boundaries; entry data starts at offset 512 after the header and is padded to the next 512-byte boundary",
+    "GNU tar uses 'ustar  \\0' (magic with two spaces then null) and adds '@LongLink' type L entries for long filenames instead of PAX extended headers",
+    "The end-of-archive marker is two consecutive 512-byte blocks of all zeros",
+    "PAX extended headers allow timestamps with nanosecond precision, arbitrary Unicode filenames, and file sizes beyond 8GB (ustar limit)"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "Path traversal attacks (../../etc/passwd) are possible with maliciously crafted tar entries; name field must be sanitized",
+      "PAX extended headers can carry arbitrary custom metadata that may contain embedded information not visible in standard extraction",
+      "Hard link entries (typeflag=1) reference existing paths; malformed archives can create links to sensitive files during extraction"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "TAR", "relationship": "extension", "note": "PAX_TAR extends the ustar format (TAR.whfmt) with extended headers for long names and metadata" },
+    { "format": "GZIP", "relationship": "wraps", "note": "PAX tar archives are commonly compressed with gzip (.tar.gz / .tgz) or xz (.tar.xz)" },
+    { "format": "XZ", "relationship": "wraps", "note": "PAX tar archives compressed with XZ (.tar.xz) are common for Linux software distribution" }
+  ],
+  "software": [
+    { "name": "GNU tar", "role": "Primary Unix/Linux tar implementation supporting PAX format reading and writing" },
+    { "name": "bsdtar (libarchive)", "role": "BSD tar implementation with full PAX read/write support and many format extensions" },
+    { "name": "7-Zip", "role": "Windows-compatible tool with tar PAX read support for cross-platform archive handling" },
+    { "name": "Python tarfile module", "role": "Standard library module with PAX format read/write support for programmatic archive manipulation" }
+  ],
+  "useCases": [
+    "Linux and Unix software distribution archives (.tar.gz, .tar.xz) requiring long filename and Unicode support",
+    "Backup archives preserving all POSIX metadata including extended attributes and nanosecond timestamps",
+    "Cross-platform portable archives where POSIX compliance and standard interchange are required"
+  ],
+  "technicalDetails": "PAX tar (POSIX.1-2001) is built on the ustar format with a 512-byte header block structure. The ustar header contains: name(100), mode(8), uid(8), gid(8), size(12), mtime(12), checksum(8), typeflag(1), linkname(100), magic(6)='ustar\\0', version(2)='00', uname(32), gname(32), devmajor(8), devminor(8), prefix(155), padding(12). PAX adds typeflag 'x' (per-file extended header) and 'g' (global extended header). Extended headers precede their entry and contain NUL-terminated 'length key=value\\n' records allowing: arbitrary long paths ('path'), link targets ('linkpath'), high-precision modification times ('mtime'), large file sizes ('size'), and custom vendor extensions. All headers and data blocks are 512-byte aligned.",
+  "completenessScore": 83
+}

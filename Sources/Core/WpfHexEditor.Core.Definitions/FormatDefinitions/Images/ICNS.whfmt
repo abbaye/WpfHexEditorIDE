@@ -1,0 +1,84 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Apple Icon Image",
+  "formatId": "ICNS",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Apple Icon Image format used for macOS application icons. Stores multiple icon sizes and color depths in a single file using a chunked container structure.",
+  "extensions": [".icns"],
+  "category": "Image",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "69636E73",
+      "offset": 0,
+      "label": "'icns' magic identifier",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "magic", "type": "ascii", "description": "Magic identifier 'icns'", "storeAs": "string" },
+      { "offset": 4, "size": 4, "name": "file_size", "type": "uint32be", "description": "Total file size in bytes including header", "storeAs": "uint32" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic", "file_size"],
+    "valueMaps": {},
+    "tooltips": {
+      "magic": "Must be 'icns' (0x69636E73) to identify the file as Apple Icon Image",
+      "file_size": "Total size of the ICNS file in bytes (big-endian)"
+    }
+  },
+  "assertions": [
+    { "id": "ICNS_001", "field": "magic", "operator": "equals", "value": "icns", "description": "Magic bytes must be 'icns'" },
+    { "id": "ICNS_002", "field": "file_size", "operator": "greaterThan", "value": 8, "description": "File size must be greater than 8 bytes (header size)" },
+    { "id": "ICNS_003", "field": "file_size", "operator": "lessThanOrEqual", "value": 104857600, "description": "File size should not exceed 100 MB for a valid icon file" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "ICNS Header", "color": "#FF6B35" },
+      { "offset": 4, "label": "File Size Field", "color": "#4ECDC4" },
+      { "offset": 8, "label": "First Icon Entry", "color": "#45B7D1" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Header Summary", "fields": ["magic", "file_size"], "format": "text" },
+    { "name": "Binary Dump", "fields": ["magic", "file_size"], "format": "hex" }
+  ],
+  "aiHints": [
+    "ICNS files use a chunked structure where each icon entry starts with a 4-byte OSType code followed by 4-byte entry size",
+    "Common OSType codes include 'ic08' (256x256 PNG), 'ic09' (512x512 PNG), 'ic10' (1024x1024 PNG), 'ic11' (16x16@2x)",
+    "Modern ICNS files embed PNG or JPEG 2000 compressed images; older formats used raw pixel data or run-length encoding",
+    "The file_size field at offset 4 includes the 8-byte file header in its total count",
+    "ICNS replaces the older 'cicn' resource fork icon format used in classic Mac OS"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "ICNS files may embed full PNG images which could contain metadata or steganographic payloads",
+      "Mismatched file_size field vs actual file length may indicate truncation or tampering",
+      "OSType codes are not validated by all parsers, allowing malformed entries to pass silently"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "PNG", "relationship": "embeds", "note": "Modern ICNS files embed PNG-compressed icon data for sizes 256x256 and larger" },
+    { "format": "JPEG2000", "relationship": "embeds", "note": "Some ICNS variants embed JPEG 2000 compressed images for intermediate sizes" }
+  ],
+  "software": [
+    { "name": "macOS Finder", "role": "Primary consumer; displays application icons from ICNS" },
+    { "name": "Xcode", "role": "IDE that generates ICNS files from asset catalogs via iconutil" },
+    { "name": "iconutil", "role": "macOS command-line tool to convert .iconset directories to .icns" },
+    { "name": "GIMP", "role": "Cross-platform image editor with ICNS import/export plugin support" }
+  ],
+  "useCases": [
+    "macOS application bundle icons stored in Contents/Resources/*.icns",
+    "Document type icons associated with UTI declarations in Info.plist",
+    "Custom volume and folder icons stored in .VolumeIcon.icns"
+  ],
+  "technicalDetails": "ICNS is a container format using 4-byte OSType tag + 4-byte big-endian size chunks. Each chunk is self-describing. The outer file header consists of the 'icns' magic and total file length. Icon entries may contain raw 32-bit RGBA data, run-length encoded data, or compressed PNG/JPEG2000 streams. Alpha channels are stored separately in older formats (e.g., 's8mk' mask for 'il32' icon). Starting with Mac OS X 10.7, PNG-embedded icons (ic08 through ic14) became the standard approach.",
+  "completenessScore": 82
+}

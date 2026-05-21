@@ -1,0 +1,136 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Well-Known Binary Geometry",
+  "formatId": "WKB",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Well-Known Binary (WKB) is the binary encoding of OGC Simple Features geometry objects. It is the binary counterpart to Well-Known Text (WKT) and is used extensively in spatial databases (PostGIS, SpatiaLite, Oracle Spatial) and GIS APIs. WKB encodes Points, LineStrings, Polygons, and Multi* collections. Extended WKB (EWKB) adds SRID and Z/M coordinate support.",
+  "extensions": [".wkb"],
+  "category": "GIS",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "01",
+      "offset": 0,
+      "label": "Little-endian byte order marker",
+      "weight": 0.4,
+      "strength": "Weak"
+    },
+    {
+      "value": "00",
+      "offset": 0,
+      "label": "Big-endian byte order marker",
+      "weight": 0.4,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 1,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 1,  "name": "byte_order", "type": "uint8",   "description": "Byte order: 0=Big-endian (XDR), 1=Little-endian (NDR)", "storeAs": "uint8" },
+      { "offset": 1, "size": 4,  "name": "wkb_type",   "type": "uint32",  "description": "Geometry type: 1=Point, 2=LineString, 3=Polygon, 4=MultiPoint, 5=MultiLineString, 6=MultiPolygon, 7=GeometryCollection", "storeAs": "uint32" },
+      { "offset": 5, "size": 8,  "name": "x_coord",    "type": "float64", "description": "X coordinate (longitude in geographic CRS) of first vertex as IEEE 754 double", "storeAs": "double" },
+      { "offset": 13,"size": 8,  "name": "y_coord",    "type": "float64", "description": "Y coordinate (latitude in geographic CRS) of first vertex as IEEE 754 double", "storeAs": "double" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["byte_order", "wkb_type", "x_coord", "y_coord"],
+    "valueMaps": {
+      "byte_order": { "0": "Big-endian (XDR/network)", "1": "Little-endian (NDR/x86)" },
+      "wkb_type": {
+        "1": "Point",
+        "2": "LineString",
+        "3": "Polygon",
+        "4": "MultiPoint",
+        "5": "MultiLineString",
+        "6": "MultiPolygon",
+        "7": "GeometryCollection",
+        "2147483649": "EWKB Point with SRID",
+        "2147483651": "EWKB Polygon with SRID"
+      }
+    },
+    "tooltips": {
+      "byte_order": "WKB allows each geometry object to declare its own byte order; mixed endianness within a collection is technically valid",
+      "wkb_type":   "EWKB (PostGIS extension) adds flag bits: 0x80000000=SRID present, 0x40000000=Z present, 0x20000000=M present",
+      "x_coord":    "For EPSG:4326: longitude in decimal degrees; for projected CRS: easting in meters",
+      "y_coord":    "For EPSG:4326: latitude in decimal degrees; for projected CRS: northing in meters"
+    }
+  },
+  "assertions": [
+    {
+      "id": "WKB_001",
+      "field": "byte_order",
+      "operator": "in",
+      "value": [0, 1],
+      "description": "Byte order marker must be 0 (big-endian) or 1 (little-endian)"
+    },
+    {
+      "id": "WKB_002",
+      "field": "wkb_type",
+      "operator": "greaterOrEqual",
+      "value": 1,
+      "description": "WKB geometry type must be at least 1 (Point)"
+    },
+    {
+      "id": "WKB_003",
+      "field": "wkb_type",
+      "operator": "lessOrEqual",
+      "value": 2147483655,
+      "description": "WKB type including EWKB flag bits must not exceed valid geometry type range"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Byte Order Marker", "color": "#4A90D9" },
+      { "offset": 1, "label": "Geometry Type",     "color": "#7ED321" },
+      { "offset": 5, "label": "First Coordinate",  "color": "#F5A623" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "WKB Geometry Header",
+      "fields": ["byte_order", "wkb_type", "x_coord", "y_coord"],
+      "format": "json"
+    },
+    {
+      "name": "Coordinate Extraction",
+      "fields": ["wkb_type", "x_coord", "y_coord"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "WKB geometry type codes: Point=1, LineString=2, Polygon=3, MultiPoint=4, MultiLineString=5, MultiPolygon=6, GeometryCollection=7; ISO SQL/MM adds PointZ=1001, PointM=2001, PointZM=3001.",
+    "PostGIS Extended WKB (EWKB) adds a 4-byte SRID before the coordinate data when the 0x20000000 flag bit is set in wkb_type; this is the most common WKB variant in real spatial databases.",
+    "WKB is not self-describing regarding CRS; the coordinate reference system must be known from context (e.g., the column SRID in PostGIS, or the EWKB SRID field).",
+    "ISO 19125 (Simple Features for SQL) defines the canonical WKB encoding; the OGC standard and SQL/MM Part 3 use the same wire format.",
+    "To convert a WKB hex string to human-readable geometry, use: ST_AsText(ST_GeomFromWKB(decode('...','hex'))) in PostGIS, or shapely.wkb.loads(bytes.fromhex('...')) in Python."
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "WKB is a raw binary encoding without metadata; forensic value depends on context (database column, file system export).",
+      "Precise coordinate values can identify specific locations; WKB extracted from databases may constitute sensitive location data.",
+      "Malformed WKB (invalid geometry type codes, incorrect ring orientations) can cause crashes in some spatial library implementations — relevant for security fuzzing."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "GEOJSON",  "relationship": "alternative", "note": "GeoJSON is the text-based alternative to WKB for geometry interchange in web APIs" },
+    { "format": "SHP",      "relationship": "convertible", "note": "Shapefile geometries are stored in a similar binary format; ogr2ogr converts between them" },
+    { "format": "GPKG",     "relationship": "contains",    "note": "GeoPackage stores geometries as GPKG-WKB (standard WKB with a GPKG envelope header)" }
+  ],
+  "software": [
+    { "name": "PostGIS",  "role": "PostgreSQL extension storing all geometries as EWKB; primary production use of WKB format" },
+    { "name": "GDAL/OGR", "role": "Universal geospatial library that reads and writes WKB for all supported vector formats" },
+    { "name": "Shapely",  "role": "Python geometry library (wrapping GEOS) with wkb.loads()/wkb.dumps() for WKB serialization" },
+    { "name": "JTS/GEOS", "role": "Java/C++ geometry engine libraries providing the canonical WKB reader/writer implementation" }
+  ],
+  "useCases": [
+    "Storing spatial geometry objects efficiently in relational databases (PostGIS, SpatiaLite, Oracle Spatial, SQL Server Spatial)",
+    "Transmitting geometry objects between spatial processing stages in ETL pipelines without string parsing overhead",
+    "Forensic extraction of geometry data from spatial database dumps or binary spatial file exports",
+    "GIS API interoperability — WKB is the common geometry exchange format between GDAL, JTS, Shapely, and spatial databases"
+  ],
+  "technicalDetails": "WKB is defined in OGC 06-103r4 (OpenGIS Simple Features) and ISO 19125. A WKB stream starts with a byte order byte (0=big-endian, 1=little-endian), followed by a 4-byte unsigned integer geometry type code, followed by type-specific coordinate data. For a Point: 16 bytes (8-byte double X + 8-byte double Y). For a Polygon: 4-byte ring count, then for each ring: 4-byte point count + n×16 bytes. Multi-geometry types start with a 4-byte count followed by recursively encoded sub-geometries (each with their own byte-order byte). PostGIS EWKB extends the type field with flag bits for SRID (4 bytes, if present), Z, and M coordinate dimensions. GeoPackage defines its own envelope-prefixed WKB variant (GPKG-WKB) with a 2-byte magic + flags + optional envelope before the standard WKB payload.",
+  "completenessScore": 82
+}

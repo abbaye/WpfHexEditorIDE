@@ -1,41 +1,138 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Firebird Database",
   "formatId": "FDB",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
-    ".fdb"
+    ".fdb",
+    ".gdb"
   ],
   "description": "Firebird SQL database format",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Firebird Database Format"
+      "Firebird ODS (On-Disk Structure) format — Firebird 2.5/3.0/4.0",
+      "InterBase/Firebird Database Header Page layout",
+      "Firebird 4.0 Release Notes — ODS 13"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/FDB"
+      "https://firebirdsql.org/",
+      "https://www.firebirdsql.org/rlsnotesh/rlsnotes25.html",
+      "https://en.wikipedia.org/wiki/Firebird_(database_server)"
     ]
   },
-  "detection": {
-    "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "01000100",
+      "offset": 24,
+      "label": "Firebird ODS magic — backup sequence marker region near offset 24 in header page",
+      "weight": 0.6,
+      "strength": "Medium"
     },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "FDB magic",
-        "weight": 1.0
-      }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+    {
+      "value": "BADBADBA",
+      "offset": 0,
+      "label": "Firebird/InterBase unallocated page sentinel — 0xBADBADBA fills free pages",
+      "weight": 0.4,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 28,
+  "structure": {
+    "fields": [
+      { "name": "hdr_page_size",            "type": "uint16le", "offset": "0x00", "length": 2,  "description": "Database page size in bytes (1024, 2048, 4096, 8192, 16384, 32768)" },
+      { "name": "hdr_ods_version",           "type": "uint16le", "offset": "0x02", "length": 2,  "description": "ODS minor version: 10=FB1, 11=FB2.0/2.1/2.5, 12=FB3.0, 13=FB4.0" },
+      { "name": "hdr_pages",                 "type": "uint32le", "offset": "0x04", "length": 4,  "description": "Pointer to page inventory page (PIP) — first free-page tracking page" },
+      { "name": "hdr_next_page",             "type": "uint32le", "offset": "0x08", "length": 4,  "description": "Next page to be allocated" },
+      { "name": "hdr_oldest_transaction",    "type": "uint32le", "offset": "0x0C", "length": 4,  "description": "Oldest transaction ID still active or in limbo" },
+      { "name": "hdr_oldest_active",         "type": "uint32le", "offset": "0x10", "length": 4,  "description": "Oldest active transaction ID" },
+      { "name": "hdr_next_transaction",      "type": "uint32le", "offset": "0x14", "length": 4,  "description": "Next transaction ID to be assigned" },
+      { "name": "hdr_sequence",              "type": "uint32le", "offset": "0x18", "length": 4,  "description": "Backup sequence number" }
+    ]
   },
+  "inspector": {
+    "displayFields": ["hdr_page_size", "hdr_ods_version", "hdr_next_transaction", "hdr_oldest_transaction"],
+    "valueMaps": {
+      "hdr_ods_version": {
+        "10": "ODS 10 — Firebird 1.0 / InterBase 6",
+        "11": "ODS 11.x — Firebird 2.0 / 2.1 / 2.5",
+        "12": "ODS 12.0 — Firebird 3.0",
+        "13": "ODS 13.0 — Firebird 4.0"
+      },
+      "hdr_page_size": {
+        "1024":  "1 KB pages",
+        "2048":  "2 KB pages",
+        "4096":  "4 KB pages",
+        "8192":  "8 KB pages",
+        "16384": "16 KB pages",
+        "32768": "32 KB pages"
+      }
+    },
+    "tooltips": {
+      "hdr_page_size": "Page size set at CREATE DATABASE; cannot be changed without backup/restore cycle",
+      "hdr_ods_version": "ODS version determines Firebird engine compatibility; ODS < 10 = InterBase; ODS >= 10 = Firebird",
+      "hdr_next_transaction": "Monotonically increasing transaction counter; wrap-around at 2^31 requires sweep and reboot",
+      "hdr_oldest_transaction": "Gap between hdr_oldest_transaction and hdr_next_transaction triggers automatic garbage collection sweep"
+    }
+  },
+  "assertions": [
+    {
+      "name": "ODS version is valid Firebird",
+      "expression": "hdr_ods_version >= 10",
+      "severity": "error",
+      "message": "ODS version < 10 indicates InterBase or corrupt Firebird database — Firebird requires ODS 10 or higher"
+    },
+    {
+      "name": "Page size is valid",
+      "expression": "hdr_page_size == 1024 || hdr_page_size == 2048 || hdr_page_size == 4096 || hdr_page_size == 8192 || hdr_page_size == 16384 || hdr_page_size == 32768",
+      "severity": "error",
+      "message": "Firebird page size must be a power of 2 between 1024 and 32768 — other values indicate corruption"
+    },
+    {
+      "name": "File size is non-zero",
+      "expression": "fileSize > 0",
+      "severity": "error",
+      "message": "Firebird database file is empty — no valid content to parse"
+    },
+    {
+      "name": "Transaction IDs are consistent",
+      "expression": "hdr_next_transaction >= hdr_oldest_active",
+      "severity": "warning",
+      "message": "hdr_next_transaction should be >= hdr_oldest_active — inconsistency may indicate database corruption"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Header Page",          "offset": 0,  "icon": "", "color": "#E63946" },
+      { "name": "ODS Version",          "offset": 2,  "icon": "", "color": "#E63946" },
+      { "name": "Transaction Counters", "offset": 12, "icon": "", "color": "#E63946" },
+      { "name": "Backup Sequence",      "offset": 24, "icon": "", "color": "#E63946" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Firebird Header (JSON)",
+      "format": "json",
+      "fields": ["hdr_page_size", "hdr_ods_version", "hdr_next_transaction", "hdr_oldest_transaction", "hdr_oldest_active"]
+    },
+    {
+      "name": "Firebird Header (C struct)",
+      "format": "c-struct",
+      "structName": "FDB_HEADER_PAGE",
+      "fields": ["hdr_page_size", "hdr_ods_version", "hdr_pages", "hdr_next_page", "hdr_oldest_transaction", "hdr_oldest_active", "hdr_next_transaction"]
+    }
+  ],
+  "aiHints": [
+    "Firebird header page (page 0) starts at offset 0; hdr_page_size (uint16 LE at offset 0) and hdr_ods_version (uint16 LE at offset 2) are the primary identification fields",
+    "ODS version identifies Firebird release: ODS 10=FB1.x, ODS 11.x=FB2.x, ODS 12=FB3.0, ODS 13=FB4.0; ODS < 10 = InterBase",
+    "Transaction IDs at offsets 12, 16, 20 (hdr_oldest_transaction, hdr_oldest_active, hdr_next_transaction) enable garbage collection sweep analysis",
+    "Firebird .fdb and .gdb extensions are equivalent — .gdb is the legacy InterBase extension still used by some applications",
+    "Unallocated Firebird pages are filled with 0xBADBADBA marker for debugging; presence in allocated pages indicates corruption"
+  ],
   "variables": {
     "currentOffset": 0,
     "pageSize": 0,
@@ -51,7 +148,7 @@
       "length": 512,
       "color": "#E63946",
       "opacity": 0.4,
-      "description": "Firebird database header page"
+      "description": "Firebird database header page (page 0)"
     },
     {
       "type": "metadata",
@@ -79,56 +176,66 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Firebird SQL Server (all versions 1.x–4.x)",
+    "FlameRobin (open-source Firebird admin tool)",
+    "IBExpert (Firebird/InterBase IDE)",
+    "DBeaver (Firebird JDBC driver support)"
   ],
-  "formatRelationships": {
-    "category": "Database",
-    "extensions": [
-      ".fdb"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "INTERBASE",
+      "relation": "successor",
+      "note": "Firebird is a fork of InterBase 6.0 (2000); ODS 10 is shared; Firebird ODS 11+ adds features not in InterBase"
+    }
+  ],
+  "useCases": [
+    "Embedded Firebird database inspection in desktop applications",
+    "Firebird ODS version compatibility analysis before engine upgrade",
+    "Transaction ID sweep analysis for database maintenance planning",
+    "Migration from Firebird to PostgreSQL or other RDBMS platforms"
+  ],
+  "technicalDetails": "Firebird database files use the ODS (On-Disk Structure) page-based layout. Page 0 is the header page containing engine version (ODS), page size, transaction counters, and database flags. Page size is 1–32 KB and is fixed at creation. ODS version at offset 2 (uint16 LE) identifies the Firebird engine version: ODS 10 = FB 1.x/IB 6, ODS 11 = FB 2.x, ODS 12 = FB 3.0, ODS 13 = FB 4.0. Transaction counters (oldest/oldest_active/next) at offsets 12–20 enable sweep and garbage collection analysis. Unallocated pages use the 0xBADBADBA sentinel for corruption detection.",
+  "completenessScore": 82,
   "MimeTypes": [
-    "application/octet-stream"
+    "application/octet-stream",
+    "application/x-firebird"
   ],
   "Software": [
-    "SQL Server",
-    "MySQL Workbench",
-    "PostgreSQL",
-    "SQLite Browser",
+    "Firebird SQL",
+    "FlameRobin",
+    "IBExpert",
     "DBeaver"
   ],
   "UseCases": [
-    "Data storage",
-    "Query execution",
-    "Data analysis",
-    "Backup"
+    "Embedded database inspection",
+    "ODS version analysis",
+    "Transaction sweep analysis",
+    "Database migration"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 82,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "ValidationRules": 4,
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "ODSVersionMapping": "ODS 10=FB1.x, ODS 11=FB2.x, ODS 12=FB3.0, ODS 13=FB4.0",
+    "UnallocatedPageMarker": "0xBADBADBA sentinel",
+    "PageSizes": "1024–32768 bytes (power of 2)"
+  },
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"
   },
   "forensic": {
-    "category": "database",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Firebird SQL database format",
-    "suggestedInspections": [
-      "Verify Firebird Database file header, page size, and version fields",
-      "Check B-tree/index page pointers and free page list",
-      "Inspect record format, schema tables, and journal state"
+    "notes": [
+      "Firebird databases may contain sensitive business data; ODS format is well-documented and parseable without a running server",
+      "Transaction ID wrap-around at 2^31 can cause database corruption if not addressed with timely sweep operations",
+      "Firebird .gdb extension conflicts with Windows Me System Restore — avoid storing Firebird .gdb files in monitored directories"
     ]
   }
 }

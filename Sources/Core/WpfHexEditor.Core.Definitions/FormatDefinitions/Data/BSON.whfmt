@@ -1,41 +1,115 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "BSON (Binary JSON)",
   "formatId": "BSON",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".bson"
   ],
   "description": "Binary JSON format used by MongoDB",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "BSON (Binary JSON) Format"
+      "BSON Specification v1.1",
+      "MongoDB BSON Library Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/BSON"
+      "https://bsonspec.org/",
+      "https://en.wikipedia.org/wiki/BSON",
+      "https://www.mongodb.com/docs/manual/reference/bson-types/"
     ]
   },
-  "detection": {
-    "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "BSON magic",
-        "weight": 1.0
-      }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+  "signatures": [
+    {
+      "value": "05000000",
+      "offset": 0,
+      "label": "Minimum BSON document size (5 bytes = int32 size + 0x00 terminator)",
+      "weight": 0.5,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "name": "doc_size",    "type": "uint32le", "offset": "0x00", "length": 4, "description": "Total document size in bytes (int32 LE, includes size field and terminator)" },
+      { "name": "elements",   "type": "bytes",    "offset": "0x04", "length": 8, "description": "First BSON element bytes: type_byte (1B) + cstring key + value" },
+      { "name": "terminator", "type": "uint8",    "offset": "doc_size-1", "length": 1, "description": "Document terminator: always 0x00" }
+    ]
   },
+  "inspector": {
+    "displayFields": ["doc_size", "elements"],
+    "valueMaps": {
+      "element_type": {
+        "0x01": "Double (64-bit IEEE 754)",
+        "0x02": "String (int32 length + UTF-8 + null)",
+        "0x03": "Document (embedded document)",
+        "0x04": "Array (document with integer string keys)",
+        "0x05": "Binary data",
+        "0x07": "ObjectId (12 bytes)",
+        "0x08": "Boolean",
+        "0x09": "UTC datetime (int64 ms since epoch)",
+        "0x0A": "Null value",
+        "0x0B": "Regular expression",
+        "0x10": "32-bit integer",
+        "0x11": "Timestamp",
+        "0x12": "64-bit integer",
+        "0x13": "128-bit decimal (Decimal128)"
+      }
+    },
+    "tooltips": {
+      "doc_size": "First 4 bytes are int32 LE total document size; minimum valid value is 5",
+      "elements": "Each element: type_byte (1) + key (null-terminated C string) + type-specific value"
+    }
+  },
+  "assertions": [
+    {
+      "name": "Document size minimum",
+      "expression": "doc_size >= 5",
+      "severity": "error",
+      "message": "BSON document size must be >= 5 (4 bytes size field + 1 byte null terminator)"
+    },
+    {
+      "name": "Document size matches file size",
+      "expression": "doc_size == fileSize",
+      "severity": "warning",
+      "message": "BSON document size does not match file size; file may contain multiple documents or be truncated"
+    },
+    {
+      "name": "Document ends with null terminator",
+      "expression": "bytes[doc_size-1] == 0x00",
+      "severity": "error",
+      "message": "BSON document must end with a null terminator byte (0x00)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Document Size",  "offset": 0, "icon": "", "color": "#00ED64" },
+      { "name": "First Element",  "offset": 4, "icon": "", "color": "#00ED64" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "BSON Header (JSON)",
+      "format": "json",
+      "fields": ["doc_size"]
+    },
+    {
+      "name": "BSON Hex Dump",
+      "format": "hex-dump",
+      "fields": ["doc_size", "elements"]
+    }
+  ],
+  "aiHints": [
+    "BSON document always starts with int32 LE total size (including the 4-byte size field and trailing 0x00)",
+    "Minimum valid document is 5 bytes: [05 00 00 00 00] = empty document with just size + terminator",
+    "Each element: type byte (1B) + null-terminated C string key + type-specific value encoding",
+    "ObjectId type (0x07) is 12 bytes: 4-byte timestamp + 5-byte random + 3-byte counter (big-endian)",
+    "MongoDB .bson files from mongodump contain concatenated BSON documents (not a single document)"
+  ],
   "variables": {
     "currentOffset": 0,
     "machineType": "",
@@ -73,17 +147,29 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "MongoDB (native storage format)",
+    "mongodump / mongorestore tools",
+    "PyMongo / Motor BSON libraries",
+    "bson2json converter tools"
   ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".bson"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "JSON",
+      "relation": "binary-equivalent",
+      "note": "BSON is a binary superset of JSON; adds ObjectId, datetime, binary, and integer types not in JSON"
+    }
+  ],
+  "useCases": [
+    "MongoDB document storage and wire protocol",
+    "Database backup and restore via mongodump/mongorestore",
+    "Inter-process document exchange with type fidelity",
+    "Forensic examination of MongoDB database export files"
+  ],
+  "technicalDetails": "BSON document layout: [int32 doc_size][elements][0x00]. Each element: [uint8 type][cstring key][value]. Strings are int32 length + UTF-8 bytes + null. Documents can be nested recursively. No fixed magic; identification relies on doc_size >= 5 and the trailing null terminator. mongodump produces concatenated BSON documents without a container.",
+  "completenessScore": 82,
   "MimeTypes": [
-    "application/octet-stream"
+    "application/octet-stream",
+    "application/bson"
   ],
   "Software": [
     "Hex Editor",
@@ -96,30 +182,28 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 82,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "forensic": {
-    "category": "data",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
+  "TechnicalDetails": {
+    "Endianness": "little-endian",
+    "NullMagic": "No fixed file magic; identified by doc_size >= 5 heuristic"
   },
-  "aiHints": {
-    "analysisContext": "Binary JSON format used by MongoDB",
-    "suggestedInspections": [
-      "Validate BSON (Binary JSON) schema header and encoding markers",
-      "Check nested structure depth and field type tags",
-      "Inspect string encodings and numeric value boundaries"
-    ]
-  },
-  "TechnicalDetails": {},
   "functions": {
-    "readUInt32LE": "Read executable header",
+    "readUInt32LE": "Read document size",
     "calculateCRC32": "Validate"
+  },
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "BSON documents from MongoDB may contain PII (ObjectId embeds a timestamp revealing insertion time)",
+      "Binary subtypes (0x05) may contain encrypted payloads or opaque blobs",
+      "Nested documents can be deeply recursive; depth-limit checks are advisable during parsing"
+    ]
   }
 }

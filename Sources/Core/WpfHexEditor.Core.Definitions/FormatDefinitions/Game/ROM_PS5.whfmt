@@ -1,14 +1,16 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "PlayStation 5 Package",
   "formatId": "ROM_PS5",
-  "version": "1.13.1",
+  "version": "1.14",
   "extensions": [
     ".pkg"
   ],
   "description": "PlayStation 5 PKG package format (next-gen encrypted packages)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
@@ -23,16 +25,101 @@
       "https://github.com/ps5-payload-dev/fetchpkg"
     ]
   },
-  "detection": {
-    "signature": "7F434E54",
-    "offset": 0,
-    "required": false,
-    "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024,
-      "note": "Shares Sony CNT magic 7F434E54 with PS4 CNT. Discriminate via pkg_content_type uint32-BE at offset 0x74: PS5 value 0x1F observed in fpkg tooling (no single-field authoritative discriminator yet on psdevwiki; combine with PFS image type and pkg_revision uint32-BE at offset 0x04). See psdevwiki.com/ps5/PKG_files."
+  "signatures": [
+    {
+      "value": "7F434E54",
+      "offset": 0,
+      "label": "PS5 CNT magic \\x7FCNT (shared with PS4)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "name": "magic",           "type": "uint32be", "offset": "0x00", "length": 4, "description": "CNT magic 0x7F434E54 — shared with PS4 PKG" },
+      { "name": "pkg_revision",    "type": "uint32be", "offset": "0x04", "length": 4, "description": "Package format version/revision" },
+      { "name": "pkg_flags",       "type": "uint32be", "offset": "0x08", "length": 4, "description": "PS5 package flags and encryption mode" },
+      { "name": "header_size",     "type": "uint32be", "offset": "0x0C", "length": 4, "description": "Total header size" },
+      { "name": "item_count",      "type": "uint32be", "offset": "0x10", "length": 4, "description": "Number of content items" },
+      { "name": "body_offset",     "type": "uint64be", "offset": "0x18", "length": 8, "description": "Offset to the package body" },
+      { "name": "body_size",       "type": "uint64be", "offset": "0x20", "length": 8, "description": "Size of the package body" },
+      { "name": "content_id",      "type": "ascii",    "offset": "0x40", "length": 48,"description": "PS5 content identifier string" },
+      { "name": "pkg_content_type","type": "uint32be", "offset": "0x74", "length": 4, "description": "Content type: PS5 values >= 0x1F distinguish from PS4" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic", "pkg_revision", "item_count", "body_offset", "body_size", "pkg_content_type"],
+    "valueMaps": {
+      "pkg_content_type": {
+        "0x1A000000": "PS4 Game (shared CNT magic)",
+        "0x1B000000": "PS4 DLC (shared CNT magic)",
+        "0x1F000000": "PS5 Game",
+        "0x20000000": "PS5 DLC",
+        "0x21000000": "PS5 Patch/Update"
+      }
+    },
+    "tooltips": {
+      "magic": "0x7F434E54 is the same as PS4 PKG; pkg_content_type at 0x74 >= 0x1F indicates PS5",
+      "pkg_revision": "PS5-specific revision field; differentiates PS5 PKG from PS4 PKG at this offset",
+      "content_id": "48-byte PS5 content ID is longer than PS4 (36-byte); format: PPSA#####-package-id"
     }
   },
+  "assertions": [
+    {
+      "name": "CNT magic present",
+      "expression": "bytes[0..3] == 7F434E54",
+      "severity": "error",
+      "message": "PS5 CNT magic 0x7F434E54 not found at offset 0; not a valid PS5 PKG file"
+    },
+    {
+      "name": "PS5 content type",
+      "expression": "pkg_content_type >= 0x1F000000",
+      "severity": "info",
+      "message": "pkg_content_type < 0x1F may indicate this is a PS4 PKG sharing the same CNT magic"
+    },
+    {
+      "name": "Body offset within bounds",
+      "expression": "body_offset < body_offset + body_size",
+      "severity": "error",
+      "message": "Package body size overflow; file is corrupt or truncated"
+    },
+    {
+      "name": "Item count positive",
+      "expression": "item_count > 0",
+      "severity": "warning",
+      "message": "Package item count is zero; may indicate an empty or invalid PS5 package"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "CNT Magic",       "offset": 0,   "icon": "", "color": "#FF6B6B" },
+      { "name": "PKG Revision",    "offset": 4,   "icon": "", "color": "#FFE66D" },
+      { "name": "Header Size",     "offset": 12,  "icon": "", "color": "#4ECDC4" },
+      { "name": "Body Offset",     "offset": 24,  "icon": "", "color": "#95E1D3" },
+      { "name": "Content ID",      "offset": 64,  "icon": "", "color": "#4ECDC4" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PS5 PKG Header (JSON)",
+      "format": "json",
+      "fields": ["magic", "pkg_revision", "item_count", "body_offset", "body_size", "pkg_content_type", "content_id"]
+    },
+    {
+      "name": "PS5 PKG Header (C struct)",
+      "format": "c-struct",
+      "structName": "PS5_PKG_HEADER",
+      "fields": ["magic", "pkg_revision", "item_count", "body_offset", "body_size"]
+    }
+  ],
+  "aiHints": [
+    "PS5 PKG shares magic 0x7F434E54 with PS4 PKG; differentiation requires pkg_content_type at 0x74 (PS5 >= 0x1F000000)",
+    "Content ID at 0x40 is 48 bytes for PS5 (vs 36 bytes for PS4); format: PPSA#####-pkg-####",
+    "PS5 PKG body contains an encrypted PFS image using PS5-specific OrbisOS cryptographic keys",
+    "PS5 can run PS4 PKG files via backward compatibility; pkg_content_type identifies the target platform",
+    "The pkg_revision field at 0x04 differs between PS4 and PS5 even when both use CNT magic"
+  ],
   "variables": {
     "currentOffset": 0,
     "crc32Valid": false,
@@ -138,15 +225,26 @@
     }
   ],
   "software": [
-    "Emulators",
-    "Game engines"
+    "PS5PKGReader",
+    "pkgdec5",
+    "PkgToolBox (seregonwar)",
+    "fetchpkg (ps5-payload-dev)"
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".pkg"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "ROM_PS4",
+      "relation": "successor",
+      "note": "PS5 extends the PS4 CNT PKG format; the platforms share magic but differ in pkg_content_type at 0x74"
+    }
+  ],
+  "useCases": [
+    "PS5 game and DLC package inspection and archiving",
+    "Content type identification between PS4/PS5 shared PKG format",
+    "Forensic analysis of next-gen PlayStation package structure",
+    "Backward-compatibility analysis for PS4 titles on PS5"
+  ],
+  "technicalDetails": "PS5 PKG uses the same 0x7F434E54 magic as PS4 PKG. The critical differentiator is pkg_content_type at offset 0x74: PS5 native values are >= 0x1F000000. Content ID for PS5 is 48 bytes (vs PS4's 36 bytes) and uses the PPSA##### prefix. The encrypted body uses PS5-specific Orbis cryptographic keys derived from the console's unique per-game klicensee.",
+  "completenessScore": 84,
   "MimeTypes": [
     "application/octet-stream"
   ],
@@ -164,11 +262,11 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 56,
+    "CompletenessScore": 84,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 9,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-01",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
@@ -180,25 +278,15 @@
     "readUInt32LE": "Read size"
   },
   "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "PlayStation 5 PKG package format (next-gen encrypted packages)",
-    "suggestedInspections": [
-      "Validate PlayStation 5 Package container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+    "riskLevel": "medium",
+    "notes": [
+      "PS5 PKG content is encrypted; only the unencrypted header region is inspectable via hex editor",
+      "Distinguishing PS4 vs PS5 PKG requires checking pkg_content_type at 0x74, not just the magic",
+      "PS5 platform keys are not publicly known as of 2026; decryption tooling is limited"
     ]
   },
   "diff": {
-    "keyFields": [
-      "cnt_magic",
-      "header_size",
-      "item_count",
-      "package_size"
-    ],
+    "keyFields": ["cnt_magic", "header_size", "item_count", "package_size"],
     "ignoreFields": [],
     "note": "Inferred semantic diff for ROM_PS5. Compare key structural fields; ignore volatile metadata."
   },

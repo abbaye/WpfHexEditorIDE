@@ -1,41 +1,122 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Ruby Marshal",
   "formatId": "MARSHAL",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".marshal"
   ],
   "description": "Ruby object serialization format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Ruby Marshal Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/MARSHAL"
+  "references": [
+    "Ruby Marshal Format Specification",
+    "Ruby documentation — Marshal module"
+  ],
+  "WebLinks": [
+    "https://ruby-doc.org/core/Marshal.html",
+    "https://docs.ruby-lang.org/en/master/marshal_rdoc.html",
+    "https://en.wikipedia.org/wiki/Marshal_(computer_programming)"
+  ],
+  "signatures": [
+    {
+      "value": "0408",
+      "offset": 0,
+      "label": "Ruby Marshal version 4.8 magic",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 2,
+  "structure": {
+    "fields": [
+      { "name": "major_version", "type": "uint8", "offset": "0x00", "length": 1, "description": "Marshal major version: always 4" },
+      { "name": "minor_version", "type": "uint8", "offset": "0x01", "length": 1, "description": "Marshal minor version: always 8 (for Ruby 1.9+)" },
+      { "name": "root_type",     "type": "uint8", "offset": "0x02", "length": 1, "description": "Type byte of the root serialized object" },
+      { "name": "root_data",     "type": "bytes", "offset": "0x03", "length": 8, "description": "Root object data (type-dependent encoding)" }
     ]
   },
-  "detection": {
-    "required": true,
-    "validation": {
-      "minFileSize": 2,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "0408",
-        "offset": 0,
-        "label": "MARSHAL magic",
-        "weight": 1.0
+  "inspector": {
+    "displayFields": ["major_version", "minor_version", "root_type"],
+    "valueMaps": {
+      "root_type": {
+        "0x30": "nil (null)",
+        "0x54": "true",
+        "0x46": "false",
+        "0x69": "Integer (i)",
+        "0x66": "Float (f)",
+        "0x22": "String (\")",
+        "0x3A": "Symbol (:)",
+        "0x3B": "Symbol link (;)",
+        "0x40": "Object reference (@)",
+        "0x6C": "Array (l — deprecated, use [)",
+        "0x5B": "Array ([)",
+        "0x7B": "Hash ({)",
+        "0x7D": "Hash with default value (})",
+        "0x6F": "Object (o)",
+        "0x75": "User-defined (u)",
+        "0x55": "User marshal (U)",
+        "0x64": "Data (d)",
+        "0x65": "Extended (e)",
+        "0x43": "Class (C)",
+        "0x6D": "Module (m)"
       }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Medium"
+    },
+    "tooltips": {
+      "major_version": "Always 4 for all modern Ruby versions; files with other values are incompatible",
+      "minor_version": "Always 8 (Marshal::MINOR_VERSION); version 4.8 introduced in Ruby 1.8",
+      "root_type": "First type byte after the 2-byte version header; determines root object encoding"
+    }
   },
+  "assertions": [
+    {
+      "name": "Marshal version is 4.8",
+      "expression": "major_version == 4 && minor_version == 8",
+      "severity": "error",
+      "message": "Marshal version is not 4.8; file is not a valid Ruby Marshal 4.8 stream"
+    },
+    {
+      "name": "Root type byte is known",
+      "expression": "root_type in [0x30, 0x54, 0x46, 0x69, 0x66, 0x22, 0x3A, 0x5B, 0x7B, 0x6F, 0x75]",
+      "severity": "warning",
+      "message": "Root type byte is not a commonly expected Marshal type; verify this is the correct Ruby object"
+    },
+    {
+      "name": "File is at least 3 bytes",
+      "expression": "fileSize >= 3",
+      "severity": "error",
+      "message": "Marshal file must be at least 3 bytes (2-byte version + 1 root type byte)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Marshal Version", "offset": 0, "icon": "", "color": "#CC342D" },
+      { "name": "Root Object Type","offset": 2, "icon": "", "color": "#CC342D" },
+      { "name": "Root Object Data","offset": 3, "icon": "", "color": "#CC342D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Marshal Header (JSON)",
+      "format": "json",
+      "fields": ["major_version", "minor_version", "root_type"]
+    },
+    {
+      "name": "Marshal Hex Dump",
+      "format": "hex-dump",
+      "fields": ["major_version", "minor_version", "root_type", "root_data"]
+    }
+  ],
+  "aiHints": [
+    "Marshal 4.8 magic is always bytes 0x04 0x08; this uniquely identifies a Ruby Marshal stream",
+    "Root type byte at offset 2 determines the encoding of the entire serialized object tree",
+    "Integer 'i' encoding: 1-byte flag followed by 1-4 bytes; positive small ints use n+5 offset encoding",
+    "String '\"' encoding: Marshal integer length + raw bytes (not null-terminated)",
+    "Security warning: Marshal.load is arbitrary code execution; never load untrusted .marshal files"
+  ],
   "variables": {
     "currentOffset": 0,
     "machineType": "",
@@ -50,7 +131,7 @@
       "length": 2,
       "color": "#CC342D",
       "opacity": 0.4,
-      "description": "Ruby marshal format version"
+      "description": "Ruby marshal format version (0x04 0x08)"
     },
     {
       "type": "metadata",
@@ -66,15 +147,26 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Ruby runtime (Marshal.dump / Marshal.load)",
+    "RPG Maker (extensively uses .marshal for game data)",
+    "Homebrew Ruby gems that serialize state",
+    "rubymarshal Python library (cross-language reading)"
   ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".marshal"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "PICKLE",
+      "relation": "analogue",
+      "note": "Ruby Marshal is conceptually similar to Python Pickle: both serialize language-specific object graphs and both pose arbitrary code execution risks on load"
+    }
+  ],
+  "useCases": [
+    "Ruby application state serialization and caching",
+    "RPG Maker game data files (items, maps, events)",
+    "Session persistence in Ruby web frameworks",
+    "Cross-process Ruby object sharing via IPC"
+  ],
+  "technicalDetails": "Ruby Marshal format version 4.8 (bytes 0x04 0x08). Each object is encoded with a type byte followed by type-specific data. Integers use a compact 1–5 byte encoding. Strings are length-prefixed (Marshal integer + bytes). Objects use class name + ivar hash. Symbol table and object table allow deduplication via backreference links (';' and '@').",
+  "completenessScore": 84,
   "MimeTypes": [
     "application/octet-stream"
   ],
@@ -89,29 +181,27 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 84,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "MarshalVersion": "4.8 (major=4, minor=8)",
+    "SecurityRisk": "Arbitrary code execution on Marshal.load of untrusted data"
+  },
   "functions": {
     "readUInt32LE": "Read executable header"
   },
   "forensic": {
-    "category": "data",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Ruby object serialization format",
-    "suggestedInspections": [
-      "Validate Ruby Marshal schema header and encoding markers",
-      "Check nested structure depth and field type tags",
-      "Inspect string encodings and numeric value boundaries"
+    "riskLevel": "medium",
+    "notes": [
+      "Marshal.load executes arbitrary Ruby code; .marshal files from untrusted sources are a security risk",
+      "RPG Maker .marshal files may contain game scripts that can be extracted and decompiled",
+      "Symbol and object reference tables in Marshal allow recursive object graphs"
     ]
   }
 }

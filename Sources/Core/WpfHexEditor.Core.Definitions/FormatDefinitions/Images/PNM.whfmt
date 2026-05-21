@@ -1,0 +1,128 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Portable Anymap",
+  "formatId": "PNM",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Portable Anymap (PNM) is a family of simple, text or binary image formats from the Netpbm toolkit. Includes PBM (bitmap, P1/P4), PGM (grayscale, P2/P5), and PPM (color, P3/P6). P1-P3 are plain ASCII; P4-P6 are raw binary.",
+  "extensions": [".pnm", ".pbm", ".pgm", ".ppm"],
+  "category": "Image",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "5036",
+      "offset": 0,
+      "label": "P6 PPM binary magic",
+      "weight": 0.6,
+      "strength": "Moderate"
+    },
+    {
+      "value": "5035",
+      "offset": 0,
+      "label": "P5 PGM binary magic",
+      "weight": 0.6,
+      "strength": "Moderate"
+    },
+    {
+      "value": "5034",
+      "offset": 0,
+      "label": "P4 PBM binary magic",
+      "weight": 0.6,
+      "strength": "Moderate"
+    },
+    {
+      "value": "5033",
+      "offset": 0,
+      "label": "P3 PPM ASCII magic",
+      "weight": 0.5,
+      "strength": "Moderate"
+    },
+    {
+      "value": "5032",
+      "offset": 0,
+      "label": "P2 PGM ASCII magic",
+      "weight": 0.5,
+      "strength": "Moderate"
+    },
+    {
+      "value": "5031",
+      "offset": 0,
+      "label": "P1 PBM ASCII magic",
+      "weight": 0.5,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 2,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 2, "name": "magic_number", "type": "ascii", "description": "Two-byte magic: P1-P6 identifying subtype and encoding", "storeAs": "string" },
+      { "offset": 2, "size": 1, "name": "whitespace", "type": "uint8", "description": "Mandatory whitespace separator (space, tab, CR, LF) after magic", "storeAs": "uint8" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic_number"],
+    "valueMaps": {
+      "magic_number": {
+        "P1": "PBM ASCII (1-bit bitmap, text encoded)",
+        "P2": "PGM ASCII (8/16-bit grayscale, text encoded)",
+        "P3": "PPM ASCII (24-bit color, text encoded)",
+        "P4": "PBM binary (1-bit bitmap, raw packed bits)",
+        "P5": "PGM binary (8/16-bit grayscale, raw bytes)",
+        "P6": "PPM binary (24/48-bit color, raw bytes)"
+      }
+    },
+    "tooltips": {
+      "magic_number": "Two-character magic identifies the PNM subtype (P1-P6); must be followed by whitespace",
+      "whitespace": "Mandatory whitespace (0x09, 0x0A, 0x0D, or 0x20) separating magic from header fields"
+    }
+  },
+  "assertions": [
+    { "id": "PNM_001", "field": "magic_number", "operator": "matchesRegex", "value": "^P[1-6]$", "description": "Magic number must be P1 through P6" },
+    { "id": "PNM_002", "field": "whitespace", "operator": "in", "value": [9, 10, 13, 32], "description": "Character after magic must be whitespace (tab, LF, CR, or space)" },
+    { "id": "PNM_003", "field": "magic_number", "operator": "notEquals", "value": "P0", "description": "P0 is not a valid PNM type; values P1-P6 only" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Magic Number (P1-P6)", "color": "#FF6B35" },
+      { "offset": 2, "label": "Header Start (width/height/maxval)", "color": "#4ECDC4" },
+      { "offset": 0, "label": "Comment Region (optional #...)", "color": "#FFC0CB" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Format Identification", "fields": ["magic_number"], "format": "text" },
+    { "name": "Binary Header Dump", "fields": ["magic_number", "whitespace"], "format": "hex" }
+  ],
+  "aiHints": [
+    "PNM files use a plain ASCII text header: magic, optional comments (#...), width, height, maxval (except P1/P4), then a single whitespace before pixel data",
+    "P4/P5/P6 binary variants store pixel data as raw bytes immediately after a single whitespace separator following the maxval",
+    "Comments (lines starting with #) may appear between any whitespace-separated header tokens, even between width and height",
+    "P6 PPM stores pixels as R G B triples of 1 or 2 bytes depending on maxval (<=255 = 1 byte; <=65535 = 2 bytes big-endian)",
+    "The .pnm extension is generic; .pbm/.pgm/.ppm extensions specify the exact subtype; file content always takes precedence over extension"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "ASCII variants (P1-P3) are trivially readable as plaintext; no obfuscation possible via encoding",
+      "Binary variants (P4-P6) allow data appended after the pixel buffer without changing the image appearance",
+      "Unusually large maxval (e.g., 65535) with small dimensions may indicate payload padding"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "PAM", "relationship": "extension", "note": "PAM (P7) is the generalized multi-channel Netpbm format extending the PNM family" },
+    { "format": "PNG", "relationship": "alternative", "note": "PNG is commonly used instead of PNM when compression and metadata are needed" }
+  ],
+  "software": [
+    { "name": "Netpbm", "role": "Reference toolkit providing pbmtopgm, ppmtopgm, pnmtopng and many other converters" },
+    { "name": "ImageMagick", "role": "Full read/write support for all PNM variants (P1-P6)" },
+    { "name": "GIMP", "role": "Native import and export of PBM, PGM, PPM files" },
+    { "name": "FFmpeg", "role": "Uses PNM/PPM as an intermediate raw image format in video frame extraction workflows" }
+  ],
+  "useCases": [
+    "Lossless raw image exchange between Unix command-line tools in processing pipelines",
+    "Test fixtures in image processing libraries due to trivial parse requirements",
+    "Intermediate format when converting between image formats using Netpbm tools"
+  ],
+  "technicalDetails": "PNM encompasses three related Netpbm formats identified by a two-character magic: P1/P4 = Portable BitMap (monochrome), P2/P5 = Portable GrayMap (grayscale), P3/P6 = Portable PixMap (full color). P1-P3 are plain ASCII with decimal pixel values separated by whitespace. P4-P6 are binary-packed raw data following the text header. The header consists of: magic, optional comment lines (#...), width, height, and maxval (1-65535, absent for P1/P4). A single whitespace byte follows the last header token and immediately precedes the binary pixel data in P4-P6. Width and height are in decimal ASCII. Binary P6 stores interleaved RGB triples.",
+  "completenessScore": 80
+}

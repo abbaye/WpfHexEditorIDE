@@ -1,8 +1,9 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Nintendo 64 ROM",
   "formatId": "ROM_N64",
-  "version": "1.15",
+  "version": "1.16",
   "extensions": [
     ".n64",
     ".z64",
@@ -11,6 +12,7 @@
   "description": "Nintendo 64 ROM image (z64 big-endian format)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
@@ -22,15 +24,117 @@
       "https://en.wikipedia.org/wiki/Nintendo_64"
     ]
   },
-  "detection": {
-    "signature": "80371240",
-    "offset": 0,
-    "required": true,
-    "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "80371240",
+      "offset": 0,
+      "label": "N64 z64 big-endian magic",
+      "weight": 1.0,
+      "strength": "Strong"
+    },
+    {
+      "value": "37804012",
+      "offset": 0,
+      "label": "N64 v64 byte-swapped magic",
+      "weight": 0.9,
+      "strength": "Strong"
+    },
+    {
+      "value": "40123780",
+      "offset": 0,
+      "label": "N64 n64 little-endian magic",
+      "weight": 0.9,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "name": "pi_bsd_domain",  "type": "uint32be", "offset": "0x00", "length": 4,  "description": "PI BSD Domain 1 register — N64 magic (0x80371240 for z64)" },
+      { "name": "clock_rate",     "type": "uint32be", "offset": "0x04", "length": 4,  "description": "Clock rate (0x0000000F = default)" },
+      { "name": "entry_point",    "type": "uint32be", "offset": "0x08", "length": 4,  "description": "Boot entry address in MIPS address space" },
+      { "name": "release",        "type": "uint32be", "offset": "0x0C", "length": 4,  "description": "SDK release field" },
+      { "name": "crc1",           "type": "uint32be", "offset": "0x10", "length": 4,  "description": "First CRC checksum (IPL3 verified)" },
+      { "name": "crc2",           "type": "uint32be", "offset": "0x14", "length": 4,  "description": "Second CRC checksum (IPL3 verified)" },
+      { "name": "name",           "type": "ascii",    "offset": "0x20", "length": 20, "description": "Game name in ASCII, space-padded" },
+      { "name": "cart_id",        "type": "ascii",    "offset": "0x3B", "length": 2,  "description": "2-char cartridge identifier" },
+      { "name": "country_code",   "type": "uint8",    "offset": "0x3E", "length": 1,  "description": "Region: 0x45=USA, 0x4A=Japan, 0x50=Europe" },
+      { "name": "rom_version",    "type": "uint8",    "offset": "0x3F", "length": 1,  "description": "ROM version (0x00 = first release)" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["name", "cart_id", "country_code", "rom_version", "crc1", "crc2"],
+    "valueMaps": {
+      "country_code": {
+        "0x37": "Beta",
+        "0x41": "Asian NTSC",
+        "0x44": "Germany",
+        "0x45": "USA",
+        "0x46": "French",
+        "0x49": "Italy",
+        "0x4A": "Japan",
+        "0x50": "Europe",
+        "0x53": "Spain",
+        "0x55": "Australia",
+        "0x58": "X (unknown region)",
+        "0x59": "Y (unknown region)"
+      }
+    },
+    "tooltips": {
+      "pi_bsd_domain": "Determines byte order: 0x80371240=z64 (BE), 0x37804012=v64 (byte-swapped), 0x40123780=n64 (LE)",
+      "crc1": "IPL3 verifies both CRC1 and CRC2; mismatched values prevent boot",
+      "name": "20-character game name, space-padded (not null-terminated)"
     }
   },
+  "assertions": [
+    {
+      "name": "Valid N64 magic",
+      "expression": "bytes[0..3] == 80371240 || bytes[0..3] == 37804012 || bytes[0..3] == 40123780",
+      "severity": "error",
+      "message": "N64 ROM magic not recognised; file is not a valid N64 ROM image"
+    },
+    {
+      "name": "CRC pair present",
+      "expression": "crc1 != 0 || crc2 != 0",
+      "severity": "warning",
+      "message": "Both CRC1 and CRC2 are zero; ROM may be uninitialized or corrupt"
+    },
+    {
+      "name": "ROM version in range",
+      "expression": "rom_version <= 0x0F",
+      "severity": "info",
+      "message": "ROM version > 0x0F is unusual; verify this is an official revision"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "PI BSD Magic",    "offset": 0,  "icon": "", "color": "#FF6B6B" },
+      { "name": "Entry Point",     "offset": 8,  "icon": "", "color": "#4ECDC4" },
+      { "name": "CRC1",            "offset": 16, "icon": "", "color": "#FF6B9D" },
+      { "name": "CRC2",            "offset": 20, "icon": "", "color": "#FF6B9D" },
+      { "name": "Game Title",      "offset": 32, "icon": "", "color": "#4ECDC4" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "N64 ROM Header (JSON)",
+      "format": "json",
+      "fields": ["name", "cart_id", "country_code", "rom_version", "crc1", "crc2"]
+    },
+    {
+      "name": "N64 ROM Header (C struct)",
+      "format": "c-struct",
+      "structName": "N64_ROM_HEADER",
+      "fields": ["pi_bsd_domain", "crc1", "crc2", "name", "country_code", "rom_version"]
+    }
+  ],
+  "aiHints": [
+    "Magic at offset 0 identifies byte order: 0x80371240=z64 (native big-endian), 0x37804012=v64 (16-bit byte-swapped), 0x40123780=n64 (32-bit byte-swapped)",
+    "IPL3 verifies CRC1 (0x10–0x13) and CRC2 (0x14–0x17) over the boot code region; mismatches prevent boot",
+    "Country code at 0x3E determines region lockout: 0x45='E'=USA, 0x4A='J'=Japan, 0x50='P'=Europe",
+    "Boot code (IPL3) occupies bytes 0x40–0x0FFF; its variant is determined by the pi_bsd_domain field",
+    "Game data starts at offset 0x1000; the first 0x1000 bytes are always header + IPL3 bootstrap"
+  ],
   "variables": {
     "currentOffset": 0,
     "bootAddress": 0,
@@ -196,16 +300,24 @@
   "software": [
     "Project64",
     "Mupen64Plus",
-    "RetroArch"
+    "RetroArch",
+    "n64-tool"
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".n64",
-      ".z64",
-      ".v64"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "SAVE_N64",
+      "relation": "companion",
+      "note": "N64 save data (SRAM/FlashRAM/EEPROM) stored in separate .sra/.fla/.eep files"
+    }
+  ],
+  "useCases": [
+    "Nintendo 64 game preservation and archiving",
+    "ROM hacking and localization patching",
+    "Byte-order conversion between z64/v64/n64 formats",
+    "CRC verification and IPL3 boot code analysis"
+  ],
+  "technicalDetails": "N64 ROMs exist in three byte-order variants identified by their first 4 bytes: z64 (0x80371240) is native big-endian, v64 (0x37804012) is 16-bit byte-swapped, n64 (0x40123780) is 32-bit byte-swapped. IPL3 bootstrap occupies 0x40–0x0FFF and verifies CRC1/CRC2 over game data. Game data starts at 0x1000.",
+  "completenessScore": 88,
   "MimeTypes": [
     "application/octet-stream"
   ],
@@ -223,11 +335,11 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 65,
+    "CompletenessScore": 88,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 14,
     "ValidationRules": 0,
-    "LastUpdated": "2026-03-01",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
@@ -238,23 +350,18 @@
     "readUInt32LE": "Read game header"
   },
   "forensic": {
-    "category": "game",
     "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Nintendo 64 ROM image (z64 big-endian format)",
-    "suggestedInspections": [
-      "Validate Nintendo 64 ROM container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+    "notes": [
+      "v64 and n64 byte-order variants are functionally identical but require swapping before parsing",
+      "Mismatched CRC1/CRC2 values are the most common indicator of a corrupted or modified ROM",
+      "Some ROM hacks deliberately modify the IPL3 region to bypass console authentication"
     ]
   },
   "diff": {
     "keyFields": ["gameTitle", "gameCode", "crc1", "crc2", "romVersion"],
     "ignoreFields": ["clockRate", "releaseOffset"],
     "groupBy": "gameCode",
-    "note": "CRC1+CRC2 are the IPL3-verified integrity values that uniquely fingerprint a specific ROM build; gameCode+romVersion identify the title and revision; clockRate/releaseOffset are SDK artifacts with low diff value"
+    "note": "CRC1+CRC2 are the IPL3-verified integrity values that uniquely fingerprint a specific ROM build"
   },
   "repair": [
     {
@@ -263,7 +370,7 @@
       "action": "recompute_checksum",
       "target": "crc1",
       "algorithm": "crc32",
-      "description": "Recompute the N64 CRC1 and CRC2 values using the IPL3 algorithm over the ROM data region (0x1000–0x100FFF); mismatched CRCs cause the console to refuse to boot the ROM"
+      "description": "Recompute the N64 CRC1 and CRC2 values using the IPL3 algorithm over the ROM data region (0x1000–0x100FFF)"
     }
   ],
   "fuzz": {
@@ -281,7 +388,7 @@
     {
       "from": "v64 byte-swapped format",
       "to": "z64 big-endian format",
-      "description": "Convert a v64 (16-bit byte-swapped) or n64 (32-bit byte-swapped) ROM dump to the canonical z64 big-endian format by swapping bytes; the piBsdRegister magic identifies the byte order",
+      "description": "Convert a v64 (16-bit byte-swapped) or n64 (32-bit byte-swapped) ROM dump to the canonical z64 big-endian format",
       "changes": [
         { "field": "piBsdRegister", "changeType": "set_value", "value": "0x80371240", "description": "After byte-swap conversion, piBsdRegister must read 0x80371240 (z64 big-endian canonical magic)" }
       ]

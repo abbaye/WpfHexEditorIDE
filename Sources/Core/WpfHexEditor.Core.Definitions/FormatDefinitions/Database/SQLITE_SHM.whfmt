@@ -1,38 +1,33 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "SQLite Shared Memory",
   "formatId": "SQLITE_SHM",
-  "version": "1.14",
-  "extensions": [
-    ".shm",
-    "-shm"
-  ],
-  "description": "SQLite shared-memory file for WAL mode coordination",
+  "version": "1.15",
+  "lastUpdated": "2026-05-20",
+  "extensions": [".shm", "-shm"],
+  "description": "SQLite shared-memory file for WAL mode coordination. The SHM file accompanies a SQLite database in WAL (Write-Ahead Logging) mode. It contains the WAL index header and hash tables used to coordinate read/write access across processes. The SHM file magic is 53514C69 (first 4 bytes of 'SQLit') at offset 0 in some implementations, but the file may start with zeros when freshly created.",
   "category": "Database",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
-    "specifications": [
-      "SQLite Shared Memory Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/SHM"
-    ]
+    "specifications": ["SQLite Shared Memory Format", "SQLite WAL-Index File Format"],
+    "WebLinks": ["https://www.sqlite.org/walformat.html", "https://en.wikipedia.org/wiki/SHM"]
   },
+  "maxSignatureOffset": 1024,
+  "signatures": [
+    {
+      "value": "53514C69",
+      "offset": 0,
+      "label": "SQLite SHM WAL-index magic ('SQLi')",
+      "weight": 0.8,
+      "strength": "Moderate"
+    }
+  ],
   "detection": {
     "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "SQLITE_SHM magic",
-        "weight": 1.0
-      }
-    ],
+    "validation": { "minFileSize": 1, "maxSignatureOffset": 1024 },
+    "signatures": [{ "value": "00", "offset": 0, "label": "SQLITE_SHM magic", "weight": 1.0 }],
     "matchMode": "any",
     "MinimumScore": 1.0,
     "Strength": "Weak"
@@ -42,95 +37,99 @@
     "pageSize": 0,
     "pageCount": 0,
     "tableCount": 0,
-    "version": 0
+    "version": 0,
+    "walIndexVersion": 0
+  },
+  "structure": {
+    "fields": [
+      { "name": "wal_index_version", "offset": 0, "size": 4, "type": "uint32le", "description": "WAL-index version number (expected: 3007000)" },
+      { "name": "wal_index_unused", "offset": 4, "size": 4, "type": "uint32le", "description": "Unused field (should be zero)" },
+      { "name": "wal_index_iVersion", "offset": 8, "size": 4, "type": "uint32le", "description": "WAL-index iteration version" },
+      { "name": "wal_index_mxFrame", "offset": 16, "size": 4, "type": "uint32le", "description": "Index of last valid frame in WAL" },
+      { "name": "wal_index_nPage", "offset": 20, "size": 4, "type": "uint32le", "description": "Number of pages in DB at start of last read transaction" }
+    ]
   },
   "blocks": [
+    { "type": "header", "name": "Shared Memory Header", "offset": 0, "length": 32, "color": "#95E1D3", "opacity": 0.4, "description": "SQLite shared memory region" },
+    { "type": "metadata", "name": "Page Size", "variable": "pageSize", "description": "Page Size" },
+    { "type": "metadata", "name": "Page Count", "variable": "pageCount", "description": "Page Count" },
+    { "type": "metadata", "name": "Table Count", "variable": "tableCount", "description": "Table Count" },
+    { "type": "metadata", "name": "Version", "variable": "version", "description": "Version" }
+  ],
+  "inspector": {
+    "displayFields": ["walIndexVersion", "wal_index_mxFrame", "wal_index_nPage"],
+    "valueMaps": {},
+    "tooltips": {
+      "walIndexVersion": "WAL-index version — must be 3007000 for SQLite 3.7.x+",
+      "wal_index_mxFrame": "Maximum valid frame number in the WAL file"
+    }
+  },
+  "assertions": [
+    { "name": "SHM file accompanies WAL database", "expression": "fileSize >= 32", "severity": "warning", "message": "SQLite SHM file should be at least 32 bytes" },
+    { "name": "Not standalone", "expression": "true", "severity": "info", "message": "SHM files are auxiliary — the companion .sqlite or .db file must be present" },
+    { "name": "WAL index version consistent", "expression": "walIndexVersion == 0 || walIndexVersion == 3007000", "severity": "warning", "message": "WAL-index version should be 0 (unused) or 3007000" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "WAL-Index Header", "color": "#95E1D3" },
+      { "offset": 32, "label": "WAL-Index Hash Tables", "color": "#4ECDC4" },
+      { "offset": 4096, "label": "Second SHM Region", "color": "#A8DADC" }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "header",
-      "name": "Shared Memory Header",
-      "offset": 0,
-      "length": 32,
-      "color": "#95E1D3",
-      "opacity": 0.4,
-      "description": "SQLite shared memory region"
+      "name": "SHM WAL-Index Summary",
+      "format": "text",
+      "template": "SQLite Shared Memory (WAL-Index)\nWAL Version: {walIndexVersion}\nMax Frame  : {wal_index_mxFrame}\nPage Count : {wal_index_nPage}"
     },
     {
-      "type": "metadata",
-      "name": "Page Size",
-      "variable": "pageSize",
-      "description": "Page Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Page Count",
-      "variable": "pageCount",
-      "description": "Page Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Table Count",
-      "variable": "tableCount",
-      "description": "Table Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "SHM WAL-Index CSV",
+      "format": "csv",
+      "template": "Field,Value\nWALVersion,{walIndexVersion}\nMaxFrame,{wal_index_mxFrame}\nPageCount,{wal_index_nPage}"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "aiHints": [
+    "SHM files only exist alongside SQLite databases using WAL (Write-Ahead Logging) mode",
+    "The SHM file is deleted when all connections close — its presence indicates an active or crashed session",
+    "An SHM file without a WAL file indicates a partially cleaned-up state after a crash",
+    "Reading SHM content is meaningless without the companion .sqlite and -wal files",
+    "The WAL-index maps WAL frames to database page numbers using hash tables at 32-byte boundaries"
   ],
-  "formatRelationships": {
-    "category": "Database",
-    "extensions": [
-      ".shm",
-      "-shm"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "SQL Server",
-    "MySQL Workbench",
-    "PostgreSQL",
-    "SQLite Browser",
-    "DBeaver"
-  ],
-  "UseCases": [
-    "Data storage",
-    "Query execution",
-    "Data analysis",
-    "Backup"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read DB header",
-    "extractASCIIString": "Read schema"
-  },
   "forensic": {
-    "category": "database",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "SQLite shared-memory file for WAL mode coordination",
-    "suggestedInspections": [
-      "Verify SQLite Shared Memory file header, page size, and version fields",
-      "Check B-tree/index page pointers and free page list",
-      "Inspect record format, schema tables, and journal state"
+    "notes": [
+      "SHM file presence indicates the database was in WAL mode — uncommitted transactions may exist in the WAL",
+      "An orphaned SHM file (no companion DB) may indicate data loss or forced process termination",
+      "SHM files are memory-mapped — their content may be stale or partially initialized"
     ]
-  }
+  },
+  "formatRelationships": [
+    { "format": "SQLITE", "relation": "companion", "note": "SHM is the WAL-index for the companion SQLite database file" }
+  ],
+  "software": ["SQLite 3.7.0+ (WAL mode)", "Any application using SQLite in WAL mode", "sqlite3 CLI", "DB Browser for SQLite"],
+  "useCases": [
+    "SQLite WAL mode concurrent read/write coordination",
+    "Crash recovery analysis for WAL-mode SQLite databases",
+    "Forensic identification of active SQLite WAL sessions",
+    "Database integrity verification after process crash"
+  ],
+  "technicalDetails": {
+    "WALIndexHeaderSize": 32,
+    "HashTableRegionSize": 4096,
+    "Purpose": "WAL-index for multi-process coordination in WAL mode",
+    "Lifecycle": "Created on first WAL write, deleted when all connections close"
+  },
+  "completenessScore": 82,
+  "MimeTypes": ["application/octet-stream"],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-20",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": { "Purpose": "WAL-index", "Lifecycle": "Temporary auxiliary file" },
+  "functions": { "readUInt32LE": "Read DB header", "extractASCIIString": "Read schema" }
 }

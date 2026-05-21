@@ -1,0 +1,126 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "FontForge SFD Source Font",
+  "formatId": "SFD_FONT",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "FontForge SplineFontDB (.sfd) is the native source format for FontForge, the open-source font editor. SFD files are UTF-8 plain text storing complete font metadata, glyph outlines (as spline curves), kerning pairs, OpenType feature tables, and bitmap strikes. The format begins with 'SplineFontDB:' followed by the SFD version number.",
+  "extensions": [".sfd"],
+  "category": "Fonts",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "5370 6C696E65466F6E744442",
+      "offset": 0,
+      "label": "SplineFontDB magic identifier",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 11,
+  "structure": {
+    "fields": [
+      { "offset": 0,   "size": 12, "name": "magic",         "type": "ascii",    "description": "'SplineFontDB' identifier at file start", "storeAs": "string" },
+      { "offset": 12,  "size": 1,  "name": "colon",         "type": "ascii",    "description": "Colon separator after identifier", "storeAs": "string" },
+      { "offset": 13,  "size": 4,  "name": "sfd_version",   "type": "ascii",    "description": "SFD format version (e.g., '3.0 ' or '3.2 ')", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "font_name",     "type": "ascii",    "description": "FontName: PostScript font name", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "full_name",     "type": "ascii",    "description": "FullName: Human-readable font name", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "family_name",   "type": "ascii",    "description": "FamilyName: Font family grouping name", "storeAs": "string" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic", "sfd_version", "font_name", "full_name", "family_name"],
+    "valueMaps": {
+      "sfd_version": {
+        "3.0 ": "SFD 3.0 (FontForge legacy, pre-2010)",
+        "3.1 ": "SFD 3.1 (FontForge 2010-2014)",
+        "3.2 ": "SFD 3.2 (FontForge 2014+, current)",
+        "3.3 ": "SFD 3.3 (FontForge 2020+)"
+      }
+    },
+    "tooltips": {
+      "magic":       "Identifies the file as FontForge SplineFontDB; no other format uses this header",
+      "sfd_version": "SFD version determines available feature keywords; older versions lack GDEF/GPOS table support",
+      "font_name":   "PostScript font name (no spaces); used as the internal font identifier",
+      "full_name":   "Display name as shown in font menus and document font lists",
+      "family_name": "Groups related weights/styles (Regular, Bold, Italic) into a single family"
+    }
+  },
+  "assertions": [
+    {
+      "id": "SFD_001",
+      "field": "magic",
+      "operator": "equals",
+      "value": "SplineFontDB",
+      "description": "File must begin with 'SplineFontDB' identifier"
+    },
+    {
+      "id": "SFD_002",
+      "field": "colon",
+      "operator": "equals",
+      "value": ":",
+      "description": "Colon must follow SplineFontDB identifier at offset 12"
+    },
+    {
+      "id": "SFD_003",
+      "field": "font_name",
+      "operator": "notEmpty",
+      "value": "",
+      "description": "FontName field must be present and non-empty for a valid SFD file"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0,   "label": "SplineFontDB Header",  "color": "#4A90D9" },
+      { "offset": 13,  "label": "SFD Version",           "color": "#7ED321" },
+      { "offset": 50,  "label": "Font Metadata Block",   "color": "#F5A623" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SFD Font Identity",
+      "fields": ["magic", "sfd_version", "font_name", "full_name", "family_name"],
+      "format": "json"
+    },
+    {
+      "name": "Font Audit Report",
+      "fields": ["font_name", "full_name", "family_name", "sfd_version"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "SFD files are human-readable text with a hierarchical structure: global font metadata section, then one StartChar/EndChar block per glyph, then optional bitmap strike sections (BitmapFont/EndBitmapFont).",
+    "Each glyph block (StartChar ... EndChar) contains: Width (advance width), SplineSet (Bezier curves for outline), Kerns (kerning pairs), and LookupSubtable references for OpenType features.",
+    "SFD files are often large (10MB+ for CJK fonts with thousands of glyphs); the text format makes them excellent for version control (git diff on font sources).",
+    "SFD stores contours as cubic Bezier splines using FontForge's internal curve representation; on-curve points are marked 'c' (corner) or 'cs' (smooth), off-curve as control handles.",
+    "Composite glyphs (e.g., accented characters built from base glyph + accent component) use 'Refer' lines in the glyph block referencing other glyphs by name and Unicode codepoint."
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "SFD files contain embedded author metadata (Copyright, Comment fields) that can identify the font designer, organization, and creation date.",
+      "Font source files may contain proprietary design data; unauthorized redistribution of SFD sources violates most commercial font licenses even when the compiled font is freely distributed.",
+      "SFD files from font foundries sometimes contain internal notes, todo markers, and version history in Comment fields."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "OTF",      "relationship": "compiled-to", "note": "FontForge compiles SFD source files to production .otf or .ttf font files" },
+    { "format": "TTF",      "relationship": "compiled-to", "note": "SFD can be exported to TrueType .ttf format with TrueType-compatible quadratic splines" },
+    { "format": "UFO",      "relationship": "alternative",  "note": "Unified Font Object (.ufo) is an alternative XML-based font source format used by RoboFont and Glyphs" }
+  ],
+  "software": [
+    { "name": "FontForge",  "role": "Primary application for creating, editing, and exporting SFD source font files" },
+    { "name": "fontmake",   "role": "Command-line tool that can build OTF/TTF from SFD files via fontTools" },
+    { "name": "fontTools",  "role": "Python library for reading and manipulating compiled font formats; can read SFD indirectly via fontForge Python bindings" },
+    { "name": "git",        "role": "Version control system ideal for tracking SFD font source changes due to text format" }
+  ],
+  "useCases": [
+    "Storing complete font design source in a single file for version control and collaborative font development",
+    "Editing and extending open-source fonts (e.g., Google Fonts sources) that distribute SFD alongside compiled OTF/TTF",
+    "Forensic analysis of font source files to identify unauthorized derivation from proprietary typeface designs",
+    "Archiving font designs with full spline data and metadata for long-term preservation and future format conversion"
+  ],
+  "technicalDetails": "The SFD format is documented in the FontForge source code and at https://fontforge.org/docs/techref/sfdformat.html. The file begins with 'SplineFontDB: 3.x\\n'. Global font metadata follows as key: value lines (FontName, FullName, FamilyName, Weight, Copyright, UnicodeInterp, Encoding, etc.). Glyph data is enclosed in StartChar [name]\\n ... EndChar blocks. SplineSet sections use PostScript-like coordinate sequences: 'x y type' where type is 'm'(move-to), 'l'(line-to), 'c'(cubic-bezier). The GlyphOrder section or Encoding entries define Unicode mappings. OpenType feature tables are stored as Lookup/LookupSubtable/Feature/ScriptList sections in the header area. Bitmap strikes use BitmapFont/BDFChar blocks with hex-encoded bitmap data.",
+  "completenessScore": 81
+}

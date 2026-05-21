@@ -1,0 +1,106 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "AV1 in IVF Container",
+  "formatId": "AV1_IVF",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "IVF (Indeo Video File) is a simple container format used for raw VP8, VP9, and AV1 video bitstreams. It consists of a 32-byte file header followed by per-frame size+timestamp+data records. When the codec FourCC is 'AV01', the payload contains AV1 OBUs (Open Bitstream Units).",
+  "extensions": [".ivf"],
+  "category": "Video",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "44494646",
+      "offset": 0,
+      "label": "'DKIF' IVF file magic",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 4, "name": "signature", "type": "ascii", "description": "IVF file signature 'DKIF'", "storeAs": "string" },
+      { "offset": 4, "size": 2, "name": "version", "type": "uint16le", "description": "IVF format version (must be 0)", "storeAs": "uint16" },
+      { "offset": 6, "size": 2, "name": "header_size", "type": "uint16le", "description": "Header size in bytes (32)", "storeAs": "uint16" },
+      { "offset": 8, "size": 4, "name": "codec_fourcc", "type": "ascii", "description": "Codec FourCC: 'AV01' for AV1, 'VP80' for VP8, 'VP90' for VP9", "storeAs": "string" },
+      { "offset": 12, "size": 2, "name": "width", "type": "uint16le", "description": "Frame width in pixels", "storeAs": "uint16" },
+      { "offset": 14, "size": 2, "name": "height", "type": "uint16le", "description": "Frame height in pixels", "storeAs": "uint16" },
+      { "offset": 16, "size": 4, "name": "frame_rate_num", "type": "uint32le", "description": "Frame rate numerator", "storeAs": "uint32" },
+      { "offset": 20, "size": 4, "name": "frame_rate_den", "type": "uint32le", "description": "Frame rate denominator", "storeAs": "uint32" },
+      { "offset": 24, "size": 4, "name": "frame_count", "type": "uint32le", "description": "Number of frames in the file", "storeAs": "uint32" },
+      { "offset": 28, "size": 4, "name": "reserved", "type": "uint32le", "description": "Reserved bytes, must be zero", "storeAs": "uint32" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["signature", "codec_fourcc", "width", "height", "frame_rate_num", "frame_rate_den", "frame_count"],
+    "valueMaps": {
+      "codec_fourcc": {
+        "AV01": "AV1 (Alliance for Open Media Video 1)",
+        "VP80": "VP8 (Google/WebM)",
+        "VP90": "VP9 (Google/WebM)"
+      }
+    },
+    "tooltips": {
+      "signature": "Must be 'DKIF' (0x44494646); the IVF container magic identifier",
+      "codec_fourcc": "4-byte FourCC identifying the video codec; 'AV01' for AV1 content",
+      "width": "Display width; actual coding width may differ due to alignment padding",
+      "height": "Display height; actual coding height may differ due to alignment padding",
+      "frame_rate_num": "Frame rate as numerator; divide by frame_rate_den for fps (e.g., 30000/1001 = 29.97)",
+      "frame_count": "Total number of frame records following the header"
+    }
+  },
+  "assertions": [
+    { "id": "IVF_001", "field": "signature", "operator": "equals", "value": "DKIF", "description": "Signature must be 'DKIF'" },
+    { "id": "IVF_002", "field": "version", "operator": "equals", "value": 0, "description": "IVF version must be 0" },
+    { "id": "IVF_003", "field": "header_size", "operator": "equals", "value": 32, "description": "IVF header size must be 32 bytes" },
+    { "id": "IVF_004", "field": "codec_fourcc", "operator": "in", "value": ["AV01", "VP80", "VP90"], "description": "Codec FourCC must be a recognized value" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "IVF Signature 'DKIF'", "color": "#FF6B35" },
+      { "offset": 8, "label": "Codec FourCC", "color": "#4ECDC4" },
+      { "offset": 12, "label": "Frame Dimensions", "color": "#45B7D1" },
+      { "offset": 16, "label": "Frame Rate (num/den)", "color": "#96CEB4" },
+      { "offset": 32, "label": "First Frame Record (size + timestamp + data)", "color": "#FFEAA7" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Stream Summary", "fields": ["signature", "codec_fourcc", "width", "height", "frame_rate_num", "frame_rate_den", "frame_count"], "format": "text" },
+    { "name": "File Header Hex", "fields": ["signature", "version", "header_size", "codec_fourcc", "width", "height"], "format": "hex" }
+  ],
+  "aiHints": [
+    "Each frame record after the 32-byte header starts with: uint32le frame_size, uint64le timestamp_in_ticks, then frame_size bytes of codec data",
+    "For AV1_IVF, the frame payload contains one or more AV1 OBUs (Open Bitstream Units); OBU types: 1=Sequence Header, 2=Temporal Delimiter, 3=Frame Header, 6=Frame, 7=Redundant Frame Header",
+    "IVF does not support audio; it is a video-only container primarily used by libaom (AV1) and libvpx (VP8/VP9) reference encoders for testing",
+    "frame_count at offset 24 may be 0 if the encoder did not know the total frames in advance (streaming mode)",
+    "The IVF format is sometimes called 'Raw VP8/VP9/AV1 IVF' to distinguish from the historical Indeo Video Frame format which also used .ivf extension"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "IVF files contain raw codec data with minimal encapsulation; frame timestamps are in ticks (numerator/denominator timebase)",
+      "A frame_count of 0 does not indicate an empty file; it means count was not written; parse frame records until EOF",
+      "Reserved field at offset 28 should be zero; non-zero values may indicate proprietary extension data"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "AV1", "relationship": "carries", "note": "AV1_IVF uses IVF container to carry raw AV1 OBU bitstreams; same codec as in WebM and MP4" },
+    { "format": "WEBM", "relationship": "alternative", "note": "WebM uses Matroska container for AV1; IVF is simpler and used for codec testing/development" },
+    { "format": "IVF", "relationship": "variant", "note": "IVF.whfmt covers the general container; AV1_IVF specifies the AV1-specific usage" }
+  ],
+  "software": [
+    { "name": "libaom", "role": "Reference AV1 encoder/decoder that produces .ivf output files (aomenc/aomdec)" },
+    { "name": "FFmpeg", "role": "Full IVF mux/demux support for AV1, VP8, VP9 content" },
+    { "name": "libvpx", "role": "VP8/VP9 reference codec that uses IVF for raw bitstream output (vpxenc/vpxdec)" },
+    { "name": "aom-tools", "role": "AV1 development and testing tools built on libaom that use IVF as interchange format" }
+  ],
+  "useCases": [
+    "AV1 encoder development and codec testing using libaom reference encoder output",
+    "VP8/VP9 codec testing and bitstream analysis with libvpx development tools",
+    "Raw AV1 bitstream archival and debugging without the overhead of WebM or MP4 containers"
+  ],
+  "technicalDetails": "IVF (Indeo Video File / 'DKIF') is a minimal video container created by On2/Google for VP codec development. The 32-byte header contains: 4-byte magic 'DKIF', 2-byte version (0), 2-byte header_size (32), 4-byte codec FourCC ('AV01' for AV1), 2-byte width, 2-byte height, 4-byte frame_rate_numerator, 4-byte frame_rate_denominator, 4-byte frame_count, 4-byte reserved. Each frame record: 4-byte LE frame_size, 8-byte LE timestamp, then frame_size bytes of raw codec data. For AV1, each frame record typically contains a Temporal Delimiter OBU followed by the coded frame OBU(s). There is no audio track, index, or seeking structure; the container is purely sequential.",
+  "completenessScore": 84
+}

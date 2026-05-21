@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Game Boy Sound System",
   "formatId": "GBS",
@@ -6,6 +7,17 @@
   "extensions": [
     ".gbs"
   ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "47425301",
+      "offset": 0,
+      "label": "GBS magic 'GBS' + version byte 0x01",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
   "description": "GBS (Game Boy Sound System) — audio rip format for Game Boy (DMG) and Game Boy Color music. Magic: 'GBS' + version byte 0x01 (47 42 53 01). The fixed 112-byte (0x70) header contains: magic(3B 'GBS') + version(1B: 0x01) + song_count(1B: number of songs) + first_song(1B: 1-based index of default song) + load_address(2B LE: Game Boy Z80 address to load code) + init_address(2B LE: Z80 address of init routine) + play_address(2B LE: Z80 address of vblank/timer playback routine) + stack_pointer(2B LE: typically 0xFFFE) + timer_modulo(1B: TMA register value for timer-based tracks) + timer_control(1B: TAC register: 0=4096Hz, 1=262144Hz, 2=65536Hz, 3=16384Hz) + title(32B ASCII NUL-padded) + author(32B ASCII NUL-padded) + copyright(32B ASCII NUL-padded). After the 112-byte header: Game Boy Z80 machine code binary loaded at load_address.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",

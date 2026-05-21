@@ -1,0 +1,143 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Syslog RFC 5424",
+  "formatId": "SYSLOG_RFC5424",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Syslog RFC 5424 — the modern structured syslog message format defined in RFC 5424 (2009), superseding the older RFC 3164 (BSD syslog). Each message begins with a PRI field in angle brackets ('<PRI>') encoding facility and severity (e.g., '<34>' = facility 4 (auth), severity 2 (critical)). The PRI is followed by VERSION (always '1' for RFC 5424), TIMESTAMP (ISO 8601 with sub-second precision), HOSTNAME, APP-NAME, PROCID, MSGID, STRUCTURED-DATA (key-value pairs in brackets), and MSG (the human-readable message text). RFC 5424 structured data allows rich metadata in '[SD-ID param1=val1 param2=val2]' elements. Syslog is the universal Unix/Linux system logging protocol used by rsyslog, syslog-ng, journald, and network devices.",
+  "extensions": [".log", ".syslog"],
+  "category": "Text",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "3C",
+      "offset": 0,
+      "label": "Syslog PRI field opening '<'",
+      "weight": 0.5,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "offset": 0,
+        "size": -1,
+        "name": "PRI Field",
+        "type": "ascii",
+        "description": "Priority value in angle brackets '<PRI>'. PRI = (facility * 8) + severity. Facility values: 0=kernel, 1=user, 2=mail, 3=daemon, 4=auth, 5=syslog, 16-23=local0-7. Severity: 0=Emergency, 1=Alert, 2=Critical, 3=Error, 4=Warning, 5=Notice, 6=Informational, 7=Debug.",
+        "storeAs": "priField"
+      },
+      {
+        "offset": -1,
+        "size": 1,
+        "name": "Version",
+        "type": "ascii",
+        "description": "Syslog protocol version number. RFC 5424 always uses '1'. RFC 3164 (BSD syslog) does not have this field.",
+        "storeAs": "version"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Timestamp",
+        "type": "ascii",
+        "description": "ISO 8601 timestamp with timezone: 'YYYY-MM-DDTHH:MM:SS.ffffffZ' or with offset '+HH:MM'. Sub-second precision to 6 digits. Nilvalue '-' means timestamp is not available.",
+        "storeAs": "timestamp"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["priField", "version", "timestamp"],
+    "valueMaps": {},
+    "tooltips": {
+      "priField": "PRI = facility*8 + severity; extract facility and severity from the numeric value",
+      "version": "Syslog protocol version (always 1 for RFC 5424)",
+      "timestamp": "ISO 8601 event timestamp with sub-second precision"
+    }
+  },
+  "assertions": [
+    {
+      "id": "A1",
+      "field": "priField",
+      "operator": "regex",
+      "value": "^<[0-9]{1,3}>",
+      "severity": "warning",
+      "description": "RFC 5424 syslog messages must start with a PRI field in angle brackets (e.g., '<34>')"
+    },
+    {
+      "id": "A2",
+      "field": "version",
+      "operator": "eq",
+      "value": "1",
+      "severity": "warning",
+      "description": "RFC 5424 syslog VERSION field must be '1'"
+    },
+    {
+      "id": "A3",
+      "field": "timestamp",
+      "operator": "regex",
+      "value": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}|-)",
+      "severity": "info",
+      "description": "Timestamp field must be ISO 8601 format or nilvalue '-'"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "First Log Entry", "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "Second Log Entry", "offset": -1, "icon": "", "color": "#4ECDC4" },
+      { "name": "Last Log Entry", "offset": -1, "icon": "", "color": "#FFE66D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Syslog Entries (JSON)",
+      "format": "json",
+      "fields": ["priField", "version", "timestamp"]
+    },
+    {
+      "name": "Error and Critical Events",
+      "format": "text",
+      "description": "Filter log entries with severity <= 3 (Emergency, Alert, Critical, Error)"
+    }
+  ],
+  "aiHints": [
+    "PRI calculation: facility = PRI div 8, severity = PRI mod 8; e.g., <34> = facility 4 (auth), severity 2 (critical)",
+    "RFC 5424 structured data format: [SD-ID key1=\"val1\" key2=\"val2\"] — supports multiple SD elements per message",
+    "Common facilities: 0=kern, 1=user, 3=daemon, 4=auth/security, 16-23=local0-local7",
+    "RFC 3164 (legacy BSD syslog) uses a different timestamp format (Mmm dd HH:MM:SS) and no VERSION field",
+    "rsyslog and syslog-ng can both receive and emit RFC 5424 format; journald converts to RFC 5424 for remote logging",
+    "Network devices (routers, firewalls) typically send RFC 3164 format; modern Linux systems use RFC 5424"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "Syslog files are primary forensic artifacts for incident response and security investigations",
+      "Authentication logs (facility=4, auth) contain login attempts, sudo usage, and SSH connections",
+      "Modified timestamps in syslog entries can indicate log tampering; cross-reference with system clock sources",
+      "Syslog UDP transmission (port 514) is unencrypted and unauthenticated by default — susceptible to spoofing"
+    ]
+  },
+  "formatRelationships": [
+    {
+      "formatId": "CSV",
+      "relationship": "functional-alternative",
+      "note": "Both are structured text log formats; CSV is tabular; syslog uses the RFC 5424 structured message format"
+    }
+  ],
+  "software": [
+    "rsyslog (Linux system logger)",
+    "syslog-ng (next-generation syslog)",
+    "systemd-journald (binary log with syslog bridge)",
+    "Splunk (syslog ingestion)",
+    "Elastic Stack / Filebeat (syslog input)",
+    "Cisco IOS / Junos (network device syslog)"
+  ],
+  "useCases": [
+    "Linux/Unix system event logging (auth, daemon, kernel events)",
+    "Network device syslog collection (routers, firewalls, switches)",
+    "Security information and event management (SIEM) log ingestion"
+  ],
+  "technicalDetails": "RFC 5424 syslog format: '<PRI>VERSION TIMESTAMP HOSTNAME APP-NAME PROCID MSGID STRUCTURED-DATA MSG'. PRI is a 1-3 digit integer in angle brackets. VERSION is always '1'. TIMESTAMP is RFC 3339 ISO 8601. Structured data uses '[id key=\"val\"]' syntax. Nilvalue '-' replaces absent fields. Maximum message length is 2048 bytes in original RFC but modern implementations support unlimited length. UDP port 514 (unencrypted) and TCP port 6514 (TLS-encrypted, RFC 5425) are standard.",
+  "completenessScore": 81
+}

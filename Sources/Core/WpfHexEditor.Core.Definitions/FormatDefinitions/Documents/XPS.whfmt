@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "XML Paper Specification",
   "formatId": "XPS",
@@ -316,8 +317,16 @@
     "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
   },
   "diff": {
-    "keyFields": ["zipSignature", "compressionMethod", "crc32"],
-    "ignoreFields": ["lastModTime", "lastModDate", "compressionRatio"],
+    "keyFields": [
+      "zipSignature",
+      "compressionMethod",
+      "crc32"
+    ],
+    "ignoreFields": [
+      "lastModTime",
+      "lastModDate",
+      "compressionRatio"
+    ],
     "groupBy": "ZIP Local File Header",
     "note": "Signature and CRC reveal container integrity; compression method affects page rendering fidelity. Timestamps are volatile and excluded from structural diffs."
   },
@@ -351,11 +360,37 @@
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "zipSignature",        "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt PK magic to test XPS container rejection" },
-      { "field": "compressionMethod",   "mutation": "boundary_values",   "weight": 2, "description": "Test edge compression values for fixed-layout page decompression" },
-      { "field": "compressedSize",      "mutation": "overflow",          "weight": 2, "description": "Overflow compressed size to stress XPS Viewer allocation paths" },
-      { "field": "generalPurposeFlags", "mutation": "random_bytes",      "weight": 1, "description": "Random flags to expose unexpected XPS parser branches" },
-      { "field": "crc32",               "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Single-bit CRC flip to verify integrity checking in XPS readers" }
+      {
+        "field": "zipSignature",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupt PK magic to test XPS container rejection"
+      },
+      {
+        "field": "compressionMethod",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Test edge compression values for fixed-layout page decompression"
+      },
+      {
+        "field": "compressedSize",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Overflow compressed size to stress XPS Viewer allocation paths"
+      },
+      {
+        "field": "generalPurposeFlags",
+        "mutation": "random_bytes",
+        "weight": 1,
+        "description": "Random flags to expose unexpected XPS parser branches"
+      },
+      {
+        "field": "crc32",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Single-bit CRC flip to verify integrity checking in XPS readers"
+      }
     ]
   },
   "migration": [
@@ -364,21 +399,175 @@
       "to": "OXPS-ECMA388-2nd",
       "description": "XPS to Open XPS (OXPS) migration; container structure is identical but MIME type and content types change",
       "changes": [
-        { "field": "compressionMethod", "changeType": "set_value", "value": "0800", "description": "Ensure Deflate compression for all OXPS page content entries" }
+        {
+          "field": "compressionMethod",
+          "changeType": "set_value",
+          "value": "0800",
+          "description": "Ensure Deflate compression for all OXPS page content entries"
+        }
       ]
     }
   ],
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Microsoft XPS (XML Paper Specification) document format, a ZIP-based fixed-layout document format. The file ...",
-    "suggestedInspections": [
-      "Validate XML Paper Specification file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+    "suspiciousPatterns": [],
+    "notes": [
+      "ZIP-based container; extract and inspect inner files for malicious payloads.",
+      "Metadata in core properties may reveal author identity and edit history.",
+      "Embedded macros or scripts may execute on open."
     ]
-  }
+  },
+  "aiHints": [
+    "Microsoft XPS (XML Paper Specification) document format, a ZIP-based fixed-layout document format. The file ...",
+    "Validate XML Paper Specification file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "XPS font files use GUID-based names and are obfuscated; first 32 bytes XOR with a key derived from the font relationship ID.",
+    "Glyph elements encode text as UnicodeString + Indices; text is not plain-extractable without parsing.",
+    "Check [Content_Types].xml for application/vnd.ms-package.xps namespace to distinguish from OXPS.",
+    "Digital signatures in _xmlsignatures/ use XML-DSig and may bind to specific page content.",
+    "XPS pages reference resources by relationship — reconstruct the part URI from base+rel for navigation.",
+    "Thumbnail images in Metadata/Thumbnail.png expose page previews."
+  ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "504B0304",
+      "offset": 0,
+      "label": "XPS signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      {
+        "name": "LocalFileHeader",
+        "offset": 0,
+        "size": 30,
+        "type": "struct",
+        "description": "ZIP local file header"
+      },
+      {
+        "name": "ContentTypes",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "[Content_Types].xml"
+      },
+      {
+        "name": "FixedDocSeq",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": "FixedDocumentSequence.fdseq root sequence"
+      },
+      {
+        "name": "FixedPage",
+        "offset": -1,
+        "size": -1,
+        "type": "xml",
+        "description": ".fpage fixed page markup"
+      },
+      {
+        "name": "Fonts",
+        "offset": -1,
+        "size": -1,
+        "type": "blob",
+        "description": "Subset-embedded obfuscated OpenType fonts"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 4,
+        "description": "End of primary signature region"
+      },
+      {
+        "name": "Content Start",
+        "offset": 64,
+        "description": "Approximate content start after headers"
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "oxps",
+      "relation": "successor",
+      "note": "OXPS (ECMA-388) supersedes XPS on Windows 8+"
+    },
+    {
+      "formatId": "pdf",
+      "relation": "equivalent",
+      "note": "PDF is the dominant fixed-layout format"
+    },
+    {
+      "formatId": "docx",
+      "relation": "related",
+      "note": "DOCX prints to XPS via the XPS document writer"
+    }
+  ],
+  "software": [
+    "Microsoft XPS Viewer",
+    "Windows XPS Document Writer",
+    "XPS Essentials Pack",
+    "SumatraPDF"
+  ],
+  "useCases": [
+    "Fixed-layout document publishing",
+    "Print-ready document sharing",
+    "Document archival",
+    "High-fidelity document exchange"
+  ],
+  "technicalDetails": "XPS (ECMA-313 / Microsoft XML Paper Specification) is a ZIP container with XAML-derived fixed page markup. Font resources are subset-embedded and obfuscated with GUID-based filenames. XPS was replaced by OXPS (ECMA-388) in Windows 8+. The namespace URI is schemas.microsoft.com/xps/2005/06.",
+  "completenessScore": 88
 }

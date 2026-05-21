@@ -1,8 +1,26 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "CockroachDB RocksDB SSTable",
   "formatId": "COCKROACH_SST",
-  "version": "1.0",
+  "version": "1.0.1",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 85,
+  "maxSignatureOffset": 8,
+  "signatures": [
+    {
+      "value": "F7CFF485B741E288",
+      "offset": 0,
+      "label": "RocksDB footer magic (CockroachDB legacy SST) — WARNING: magic is at end-of-file, not offset 0",
+      "weight": 0.3,
+      "strength": "Weak"
+    }
+  ],
+  "structure": {
+    "fields": [
+      { "name": "first_data_byte", "offset": 0, "size": 1, "type": "uint8", "description": "First byte of the SSTable data block" }
+    ]
+  },
   "extensions": [".sst"],
   "description": "CockroachDB historically uses RocksDB-format SSTables with the standard RocksDB footer magic 0xF7CFF485B741E288. These sorted string tables store key-value pairs in compressed data blocks with index and filter blocks. Newer CockroachDB versions use Pebble with its own magic, but legacy and imported SSTables retain the RocksDB signature. Detection is weak due to shared .sst extension.",
   "category": "Database",
@@ -98,21 +116,23 @@
     }
   ],
   "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "First Data Block", "color": "#3498DB" }
+    ],
     "entryPoints": [
       { "name": "First Data Block", "offset": 0 }
-    ],
-    "jumpTable": [
-      { "label": "File Start", "offset": 0 }
     ]
   },
   "inspector": {
     "badge": "CR",
     "primaryField": "cockroachFirstByte",
+    "displayFields": ["cockroachFirstByte"],
+    "valueMaps": {},
+    "tooltips": {
+      "cockroachFirstByte": "First byte of the SSTable — footer magic is at end of file"
+    },
     "groups": [
-      {
-        "name": "Identification",
-        "fields": ["cockroachFirstByte"]
-      }
+      { "name": "Identification", "fields": ["cockroachFirstByte"] }
     ]
   },
   "exportTemplates": [
@@ -129,13 +149,25 @@
   ],
   "forensic": {
     "riskLevel": "low",
+    "notes": [
+      "Footer magic is at end of file — truncated files will appear valid at offset 0",
+      "CockroachDB vs Pebble SST distinction requires footer inspection",
+      "Block-level checksums detect corruption but not intentional data modification"
+    ],
     "suspiciousPatterns": [
       "RocksDB footer magic missing — not a valid RocksDB SST",
       "Block checksum failures — file corruption or intentional modification",
       "Properties block missing expected CockroachDB metadata keys"
     ]
   },
-  "aiHints": {
+  "aiHints": [
+    "The RocksDB footer magic 0xF7CFF485B741E288 is at the END of the file (last 48 bytes), not at offset 0",
+    "CockroachDB legacy SSTables use the RocksDB block-based format — same as standard .sst files",
+    "Newer CockroachDB uses Pebble SSTs with magic 0xF09FAAB3F09FAAB3 — check footer to distinguish",
+    "Data blocks use prefix-compression with restart points for key sharing",
+    "CockroachDB adds custom MVCC timestamp metadata in the properties block"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "CockroachDB RocksDB SSTables use the standard RocksDB block-based table format. The 8-byte footer magic 0xF7CFF485B741E288 is at the end of the file. Data blocks use prefix-delta compression. CockroachDB adds custom table properties for MVCC timestamps and range metadata.",
     "suggestedInspections": [
       "Scan last 48 bytes for RocksDB footer magic 0xF7CFF485B741E288",
@@ -162,9 +194,24 @@
     "Backup and restore SSTable snapshots",
     "Cross-version data migration"
   ],
+  "useCases": [
+    "CockroachDB MVCC storage layer (legacy/imported SSTables)",
+    "Bulk data import via AddSSTable",
+    "Backup and restore SSTable snapshots",
+    "Cross-version data migration"
+  ],
+  "technicalDetails": {
+    "footerSize": 48,
+    "endian": "little",
+    "signatureOffset": -48,
+    "signatureLength": 8,
+    "magicValue": "F7CFF485B741E288",
+    "compression": "Snappy, LZ4, ZSTD, or none per block",
+    "notes": "Footer magic at end of file. Weak detection since .sst extension is shared with Pebble, LevelDB, and RocksDB variants."
+  },
   "QualityMetrics": {
-    "CompletenessScore": 82,
-    "LastUpdated": "2026-04-16"
+    "CompletenessScore": 85,
+    "LastUpdated": "2026-05-20"
   },
   "TechnicalDetails": {
     "footerSize": 48,

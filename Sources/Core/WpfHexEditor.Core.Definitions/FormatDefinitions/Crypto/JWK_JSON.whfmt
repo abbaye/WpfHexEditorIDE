@@ -1,0 +1,98 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "JSON Web Key",
+  "formatId": "JWK_JSON",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "JSON Web Key (JWK) as defined by RFC 7517. A JSON data structure representing a cryptographic key or key set. Used in JOSE (JSON Object Signing and Encryption) protocols.",
+  "extensions": [".jwk", ".json"],
+  "category": "Crypto",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "7B",
+      "offset": 0,
+      "label": "JSON object opening brace",
+      "weight": 0.4,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 1, "name": "json_open", "type": "uint8", "description": "Opening brace '{' (0x7B) indicating JSON object", "storeAs": "ascii" },
+      { "offset": 1, "size": 5, "name": "kty_key", "type": "bytes", "description": "Typically contains '\"kty\"' key type field identifier early in the object", "storeAs": "ascii" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["json_open", "kty_key"],
+    "valueMaps": {
+      "kty": {
+        "RSA": "RSA public/private key",
+        "EC": "Elliptic Curve key",
+        "oct": "Symmetric octet key",
+        "OKP": "Octet Key Pair (Ed25519/X25519)"
+      }
+    },
+    "tooltips": {
+      "json_open": "JWK files are JSON objects; JWK Sets use {\"keys\":[...]} wrapper",
+      "kty_key": "kty field is mandatory; determines which other parameters are required"
+    }
+  },
+  "assertions": [
+    { "id": "JWK_JSON_OPEN", "field": "json_open", "operator": "equals", "value": "7B", "description": "File must begin with JSON object brace (0x7B = '{')" },
+    { "id": "JWK_NOT_EMPTY", "field": "kty_key", "operator": "notEquals", "value": "00000000000000", "description": "Key type field must be present (non-null content after opening brace)" },
+    { "id": "JWK_UTF8_START", "field": "json_open", "operator": "range", "value": "7B:7B", "description": "File must start with ASCII/UTF-8 JSON character" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "JSON Root Object", "color": "#3498DB" },
+      { "offset": 1, "label": "Key Type Field (kty)", "color": "#E74C3C" },
+      { "offset": 10, "label": "Key Parameters", "color": "#2ECC71" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "JWK Summary",
+      "fields": ["json_open", "kty_key"],
+      "format": "text"
+    },
+    {
+      "name": "JWK CSV Export",
+      "fields": ["json_open"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "kty field is mandatory: RSA for RSA keys, EC for elliptic curve, oct for symmetric, OKP for EdDSA/ECDH-ES",
+    "Private keys include 'd' parameter; EC keys add 'x' and 'y' coordinates; RSA keys use 'n', 'e', 'd', 'p', 'q'",
+    "JWK Sets (JWKS) wrap multiple keys in {\"keys\":[...]} — commonly served at /.well-known/jwks.json",
+    "The 'use' field (sig/enc) and 'key_ops' field restrict intended usage of the key",
+    "kid (Key ID) field enables key rotation; JWT headers reference the signing key by kid"
+  ],
+  "forensic": {
+    "riskLevel": "high",
+    "notes": [
+      "JWK files containing private keys ('d' parameter for RSA/EC) expose the full private key material",
+      "Compromised JWK private keys allow forging arbitrary JWTs and decrypting JWE payloads",
+      "JWK files with symmetric keys ('oct' type) often contain API secrets or HMAC signing keys"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "JWS_COMPACT", "relationship": "related", "note": "JWK provides the key material used to sign and verify JWS tokens" },
+    { "format": "JWE_COMPACT", "relationship": "related", "note": "JWK public keys encrypt the CEK in JWE; private keys decrypt" }
+  ],
+  "software": [
+    { "name": "jose / node-jose", "role": "Node.js JOSE library for JWK parsing, generation, and signing" },
+    { "name": "python-jose / PyJWT", "role": "Python libraries for JWK-based JWT signing and verification" },
+    { "name": "mkjwk.org", "role": "Web tool for JWK key pair generation and format inspection" }
+  ],
+  "useCases": [
+    "Storing public key sets for JWT signature verification in API gateway configurations",
+    "Private key material storage for service-to-service authentication in microservices",
+    "Forensic recovery of cryptographic key material from application configuration directories"
+  ],
+  "technicalDetails": "JSON Web Key (RFC 7517) defines a JSON structure for cryptographic keys. Required field 'kty' identifies the key type. RSA keys use parameters n, e, d, p, q, dp, dq, qi. EC keys specify crv (P-256/P-384/P-521), x, y, and optionally d. OKP keys (RFC 8037) support Ed25519 and X25519. JWK Sets aggregate multiple keys under a 'keys' array, typically served via HTTPS for public key discovery.",
+  "completenessScore": 82
+}

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "rzip Long-Distance Compression",
+  "formatId": "RZIP",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "rzip is a compression format by Andrew Tridgell (creator of rsync and Samba) designed for very large files with long-distance redundancy. It first performs a long-range match pass (up to 900MB look-behind window) then compresses the result with bzip2, achieving very high compression ratios on repetitive data.",
+  "extensions": [".rz"],
+  "category": "Archive",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "525A",
+      "offset": 0,
+      "label": "'RZ' rzip magic identifier",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 2,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 2, "name": "magic", "type": "ascii", "description": "rzip magic bytes 'RZ' (0x52 0x5A)", "storeAs": "string" },
+      { "offset": 2, "size": 1, "name": "major_version", "type": "uint8", "description": "rzip format major version number", "storeAs": "uint8" },
+      { "offset": 3, "size": 1, "name": "minor_version", "type": "uint8", "description": "rzip format minor version number", "storeAs": "uint8" },
+      { "offset": 4, "size": 4, "name": "uncompressed_size", "type": "uint32le", "description": "Original uncompressed file size in bytes (little-endian)", "storeAs": "uint32" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic", "major_version", "minor_version", "uncompressed_size"],
+    "valueMaps": {},
+    "tooltips": {
+      "magic": "Must be 'RZ' (0x525A) to identify an rzip file",
+      "major_version": "rzip format major version; current version is 2",
+      "minor_version": "rzip format minor version; typically 6 (v2.6x)",
+      "uncompressed_size": "Original file size before rzip compression; used to pre-allocate output buffer"
+    }
+  },
+  "assertions": [
+    { "id": "RZIP_001", "field": "magic", "operator": "equals", "value": "RZ", "description": "First 2 bytes must be 'RZ' (0x52, 0x5A)" },
+    { "id": "RZIP_002", "field": "major_version", "operator": "greaterThanOrEqual", "value": 1, "description": "Major version must be at least 1" },
+    { "id": "RZIP_003", "field": "uncompressed_size", "operator": "greaterThan", "value": 0, "description": "Uncompressed size must be greater than zero" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Magic 'RZ'", "color": "#FF6B35" },
+      { "offset": 2, "label": "Version (major.minor)", "color": "#4ECDC4" },
+      { "offset": 4, "label": "Uncompressed Size", "color": "#45B7D1" },
+      { "offset": 8, "label": "Compressed Data Start", "color": "#96CEB4" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Header Summary", "fields": ["magic", "major_version", "minor_version", "uncompressed_size"], "format": "text" },
+    { "name": "Header Hex", "fields": ["magic", "major_version", "minor_version", "uncompressed_size"], "format": "hex" }
+  ],
+  "aiHints": [
+    "rzip works in two stages: first a rolling hash-based long-distance match finder creates a token stream, then bzip2 compresses the output — this combination can beat both individually on large repetitive files",
+    "The long-range match window in rzip can extend up to ~900MB back, far exceeding LZMA (8MB default) and bzip2 (900KB) windows",
+    "rzip is rarely used for general-purpose compression; it shines on very large, highly redundant files like VM disk images, database dumps, or compilation caches",
+    "lrzip (Long Range ZIP) by Con Kolivas extends rzip with multiple backend compressors (lzo, lzma, gzip, bzip2, zpaq) and is the modern replacement",
+    "rzip files do not support multiple file archiving; each .rz file contains exactly one compressed stream"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "The uncompressed_size field in the header can be spoofed to cause memory pre-allocation issues in naive decompressors",
+      "rzip files are single-stream; no directory structure, metadata, or timestamps are preserved in the format itself",
+      "Decompression requires bzip2 as a dependency; an rzip file is not self-contained without the bzip2 library"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "BZIP2", "relationship": "uses", "note": "rzip uses bzip2 as its second-stage compressor after long-distance matching" },
+    { "format": "LZMA", "relationship": "alternative", "note": "LZMA (XZ) achieves similar long-range compression goals with better cross-platform support" },
+    { "format": "ZSTD", "relationship": "alternative", "note": "Zstandard with a large window can approach rzip ratios with much better performance" }
+  ],
+  "software": [
+    { "name": "rzip (Andrew Tridgell)", "role": "Reference implementation; command-line tool for .rz file creation and extraction" },
+    { "name": "lrzip (Con Kolivas)", "role": "Modern rzip successor with multiple backend compressor options and better performance" },
+    { "name": "bzip2", "role": "Required back-end compressor for rzip decompression pipeline" },
+    { "name": "Linux package managers", "role": "rzip is available in most Linux distributions for specialized compression tasks" }
+  ],
+  "useCases": [
+    "Compressing very large, repetitive files such as VM disk images, database dumps, and build caches",
+    "Long-term archival of large datasets where maximum compression ratio is valued over speed",
+    "Scientific data files with long-range repetition patterns (genomics, astronomy data sets)"
+  ],
+  "technicalDetails": "rzip (version 2.x) performs a two-pass compression. Pass 1: scans the input using a Rabin fingerprint rolling hash to find repeated 16-byte+ matches within a configurable back-window (default ~900MB). Matches are encoded as back-references; unmatched bytes are passed as literals. The output of this pass is a token stream. Pass 2: the token stream is compressed with bzip2 (blocksize 900KB). The file header consists of 2-byte magic 'RZ', 1-byte major version, 1-byte minor version, 4-byte uncompressed size. The compressed body follows directly. rzip can process files larger than available RAM by windowing. lrzip extends this by allowing LZMA, LZO, gzip, or no second-stage compression as alternatives to bzip2.",
+  "completenessScore": 80
+}

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Apple Numbers",
   "formatId": "NUMBERS",
@@ -303,16 +304,25 @@
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Apple Numbers spreadsheet - a ZIP-based iWork package containing protobuf (.iwa) files and embedded resource...",
-    "suggestedInspections": [
-      "Validate Apple Numbers file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+    "suspiciousPatterns": [],
+    "notes": [
+      "ZIP-based container; extract and inspect inner files for malicious payloads.",
+      "Metadata in core properties may reveal author identity and edit history.",
+      "Embedded macros or scripts may execute on open."
     ]
   },
+  "aiHints": [
+    "Apple Numbers spreadsheet - a ZIP-based iWork package containing protobuf (.iwa) files and embedded resource...",
+    "Validate Apple Numbers file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "Unlike XLSX, Numbers stores each table independently as a Protobuf model — not row/column XML.",
+    ".iwa files require snappy decompression before Protobuf parsing.",
+    "buildVersionHistory.plist in the ZIP root records creation/edit tool version.",
+    "QuickLook/Thumbnail.jpg exposes a rendered preview of the first sheet.",
+    "Numbers formulas use a different syntax from Excel; cross-app compatibility is limited.",
+    "Sheet names and table names are stored as Protobuf string fields in the index."
+  ],
   "diff": {
     "keyFields": [
       "zip_signature",
@@ -387,5 +397,136 @@
       }
     ],
     "note": "Inferred fuzz strategies for NUMBERS. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "504B0304",
+      "offset": 0,
+      "label": "NUMBERS signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      {
+        "name": "LocalFileHeader",
+        "offset": 0,
+        "size": 30,
+        "type": "struct",
+        "description": "ZIP local file header"
+      },
+      {
+        "name": "IndexIwa",
+        "offset": -1,
+        "size": -1,
+        "type": "protobuf",
+        "description": "Index/index.iwa — Protobuf spreadsheet index"
+      },
+      {
+        "name": "DataIwa",
+        "offset": -1,
+        "size": -1,
+        "type": "protobuf",
+        "description": "Data/ directory with table model Protobuf files"
+      },
+      {
+        "name": "BuildVersionPlist",
+        "offset": -1,
+        "size": -1,
+        "type": "plist",
+        "description": "buildVersionHistory.plist with app version"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 4,
+        "description": "End of primary signature region"
+      },
+      {
+        "name": "Content Start",
+        "offset": 64,
+        "description": "Approximate content start after headers"
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "xlsx",
+      "relation": "export",
+      "note": "Numbers exports to XLSX for Excel compatibility"
+    },
+    {
+      "formatId": "csv",
+      "relation": "export",
+      "note": "Numbers exports individual tables as CSV"
+    },
+    {
+      "formatId": "pages",
+      "relation": "sibling",
+      "note": "Pages is the Apple iWork text document counterpart"
+    }
+  ],
+  "software": [
+    "Apple Numbers",
+    "Apple Numbers for iCloud",
+    "LibreOffice Calc (limited support)"
+  ],
+  "useCases": [
+    "Apple spreadsheets",
+    "macOS/iOS data analysis",
+    "iWork collaboration"
+  ],
+  "technicalDetails": "NUMBERS (iWork '13+) is a ZIP archive with Protobuf-encoded .iwa files. Sheet and table data are stored as Protobuf messages in the Data/ directory. Cell values, formulas, and formatting are all encoded in the iWork Archive schema using snappy-compressed Protobuf.",
+  "completenessScore": 88
 }

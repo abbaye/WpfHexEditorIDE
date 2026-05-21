@@ -1,0 +1,93 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "MPEG-2 Transport Stream",
+  "formatId": "MPEG2_TS",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "MPEG-2 Transport Stream (TS) is a multiplexing container format defined in ISO/IEC 13818-1 and ITU-T H.222.0 for broadcasting and streaming. Fixed-size 188-byte packets each begin with a 0x47 sync byte, enabling robust streaming over lossy channels.",
+  "extensions": [".ts", ".m2ts", ".mts"],
+  "category": "Video",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "47",
+      "offset": 0,
+      "label": "MPEG-TS sync byte 0x47",
+      "weight": 0.8,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 1,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 1, "name": "sync_byte", "type": "uint8", "description": "Synchronization byte, always 0x47", "storeAs": "uint8" },
+      { "offset": 1, "size": 2, "name": "pid_flags", "type": "uint16be", "description": "Transport error indicator (1b), payload unit start (1b), transport priority (1b), PID (13b)", "storeAs": "uint16" },
+      { "offset": 3, "size": 1, "name": "continuity", "type": "uint8", "description": "Scrambling control (2b), adaptation field control (2b), continuity counter (4b)", "storeAs": "uint8" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["sync_byte", "pid_flags", "continuity"],
+    "valueMaps": {
+      "sync_byte": {
+        "71": "Valid sync byte (0x47)"
+      }
+    },
+    "tooltips": {
+      "sync_byte": "Must be 0x47; repeats every 188 bytes for standard TS or every 192 bytes for M2TS (Blu-ray)",
+      "pid_flags": "Upper 3 bits are flags; lower 13 bits (0x1FFF mask) are the Packet Identifier (PID)",
+      "continuity": "Bits 7-6: scrambling; bits 5-4: adaptation control; bits 3-0: continuity counter (increments per PID)"
+    }
+  },
+  "assertions": [
+    { "id": "TS_001", "field": "sync_byte", "operator": "equals", "value": 71, "description": "Sync byte must be 0x47 (71 decimal)" },
+    { "id": "TS_002", "field": "pid_flags", "operator": "bitwiseAnd", "value": 32768, "description": "Transport error indicator (bit 15) should ideally be 0 for valid packets" },
+    { "id": "TS_003", "field": "continuity", "operator": "bitwiseAnd", "value": 48, "description": "Adaptation field control bits (4-5) must be 01, 10, or 11 (not 00)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Packet 1: Sync Byte (0x47)", "color": "#FF6B35" },
+      { "offset": 1, "label": "Packet 1: PID Flags", "color": "#4ECDC4" },
+      { "offset": 3, "label": "Packet 1: Continuity Counter", "color": "#45B7D1" },
+      { "offset": 4, "label": "Packet 1: Payload / Adaptation Field", "color": "#96CEB4" },
+      { "offset": 188, "label": "Packet 2 Start", "color": "#FFEAA7" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Packet Header", "fields": ["sync_byte", "pid_flags", "continuity"], "format": "text" },
+    { "name": "First Packet Hex", "fields": ["sync_byte", "pid_flags", "continuity"], "format": "hex" }
+  ],
+  "aiHints": [
+    "Every 188-byte packet starts with 0x47; verify by checking offset 188, 376, 564 etc. — multiple sync bytes dramatically increase confidence",
+    "PID 0x0000 is the Program Association Table (PAT); PID 0x0001 is the Conditional Access Table (CAT); PID 0x1FFF is null padding",
+    "M2TS (Blu-ray) uses 192-byte packets with a 4-byte arrival timestamp prepended; the 0x47 sync byte appears at offset 4, not 0",
+    "The adaptation_field_control value determines packet structure: 01=payload only, 10=adaptation only, 11=adaptation+payload",
+    "PCR (Program Clock Reference) for A/V sync is carried in adaptation fields of specific PES packets"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "Null packets (PID 0x1FFF) are often used for bandwidth padding; large proportions may indicate stuffing or rate-matching for obfuscation",
+      "Scrambled packets (scrambling_control != 00) require a CAT and ECM/EMM for decryption; content is encrypted",
+      "Continuity counter gaps indicate dropped packets which may point to recording issues or selective deletion of frames"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "H264", "relationship": "carries", "note": "H.264/AVC is the most common video codec carried in MPEG-TS PES packets" },
+    { "format": "H265", "relationship": "carries", "note": "H.265/HEVC is used in DVB-T2, HEVC broadcast, and 4K streaming via MPEG-TS" },
+    { "format": "MTS", "relationship": "variant", "note": "MTS (AVCHD .mts) uses 192-byte packets with Blu-ray timestamp extension" }
+  ],
+  "software": [
+    { "name": "FFmpeg", "role": "Universal MPEG-TS demuxer and muxer for transcoding and analysis" },
+    { "name": "VLC Media Player", "role": "Plays MPEG-TS streams from files, UDP multicast, and DVB tuners" },
+    { "name": "DVBinspector", "role": "Analyzes MPEG-TS stream structure, PAT/PMT tables, and PES packets" },
+    { "name": "Wireshark", "role": "Captures and dissects MPEG-TS over UDP/RTP for IPTV analysis" }
+  ],
+  "useCases": [
+    "Digital broadcast television (DVB-T/S/C, ATSC) over-the-air and satellite transmission",
+    "IPTV and video streaming over UDP multicast or RTSP/RTP protocols",
+    "Blu-ray and AVCHD camcorder video storage using 192-byte M2TS variant"
+  ],
+  "technicalDetails": "MPEG-2 Transport Stream is defined in ISO/IEC 13818-1 (MPEG-2 Systems). Each packet is exactly 188 bytes: 4-byte header + up to 184 bytes payload/adaptation. The header contains: sync_byte(8b)=0x47, transport_error_indicator(1b), payload_unit_start_indicator(1b), transport_priority(1b), PID(13b), transport_scrambling_control(2b), adaptation_field_control(2b), continuity_counter(4b). Program structure is described by PAT (PID 0) and PMT tables (PID from PAT). PES (Packetized Elementary Stream) packets carry audio/video with DTS/PTS timestamps. The format is robust to packet loss due to fixed packet size and continuity counters.",
+  "completenessScore": 83
+}

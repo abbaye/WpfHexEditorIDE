@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Apple Keynote",
   "formatId": "KEYNOTE",
@@ -304,16 +305,25 @@
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Apple Keynote presentation format, a ZIP-based iWork package. The file begins with a ZIP Local File Header. ...",
-    "suggestedInspections": [
-      "Validate Apple Keynote file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+    "suspiciousPatterns": [],
+    "notes": [
+      "ZIP-based container; extract and inspect inner files for malicious payloads.",
+      "Metadata in core properties may reveal author identity and edit history.",
+      "Embedded macros or scripts may execute on open."
     ]
   },
+  "aiHints": [
+    "Apple Keynote presentation format, a ZIP-based iWork package. The file begins with a ZIP Local File Header. ...",
+    "Validate Apple Keynote file signature and container structure",
+    "Check for embedded macros, scripts, or active content",
+    "Inspect document metadata: author, timestamps, revisions",
+    "Slide content is in Protobuf messages under Data/ — requires iWork Archive schema to parse.",
+    "QuickLook/Thumbnail.jpg exposes a slide preview without full extraction.",
+    "buildVersionHistory.plist records which Keynote version created the file.",
+    "Embedded media (images, video, audio) are stored in the ZIP Data/ subdirectory.",
+    "Keynote's animation model (IBAnimationSpec) is entirely Protobuf-encoded.",
+    "Pre-2013 Keynote packages use a different folder structure without .iwa files."
+  ],
   "diff": {
     "keyFields": [
       "zip_signature",
@@ -388,5 +398,137 @@
       }
     ],
     "note": "Inferred fuzz strategies for KEYNOTE. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "504B0304",
+      "offset": 0,
+      "label": "KEYNOTE signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 4,
+  "structure": {
+    "fields": [
+      {
+        "name": "LocalFileHeader",
+        "offset": 0,
+        "size": 30,
+        "type": "struct",
+        "description": "ZIP local file header"
+      },
+      {
+        "name": "IndexIwa",
+        "offset": -1,
+        "size": -1,
+        "type": "protobuf",
+        "description": "Index/index.iwa — Protobuf presentation model"
+      },
+      {
+        "name": "DataIwa",
+        "offset": -1,
+        "size": -1,
+        "type": "protobuf",
+        "description": "Data/ directory slide and master Protobuf files"
+      },
+      {
+        "name": "BuildVersionPlist",
+        "offset": -1,
+        "size": -1,
+        "type": "plist",
+        "description": "buildVersionHistory.plist with Keynote version"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
+  },
+  "assertions": [
+    {
+      "field": "signatures[0].value",
+      "op": "notEmpty",
+      "description": "Primary signature must be present"
+    },
+    {
+      "field": "maxSignatureOffset",
+      "op": "greaterThanOrEqual",
+      "value": 0,
+      "description": "Max signature offset must be non-negative"
+    },
+    {
+      "field": "completenessScore",
+      "op": "greaterThanOrEqual",
+      "value": 80,
+      "description": "Format completeness score must be at least 80"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
+      },
+      {
+        "name": "First Signature Offset",
+        "offset": 4,
+        "description": "End of primary signature region"
+      },
+      {
+        "name": "Content Start",
+        "offset": 64,
+        "description": "Approximate content start after headers"
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "id": "summary",
+      "label": "Summary Report",
+      "template": "Format: {formatName}\\nVersion: {version}\\nDescription: {description}"
+    },
+    {
+      "id": "forensic",
+      "label": "Forensic Report",
+      "template": "Format: {formatName}\\nRisk: {forensic.riskLevel}\\nSignature: {signatures[0].value} @ offset {signatures[0].offset}"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "formatId": "pptx",
+      "relation": "export",
+      "note": "Keynote exports to PPTX for PowerPoint compatibility"
+    },
+    {
+      "formatId": "pdf",
+      "relation": "export",
+      "note": "Keynote exports to PDF for distribution"
+    },
+    {
+      "formatId": "pages",
+      "relation": "sibling",
+      "note": "Pages is the Apple iWork text document counterpart"
+    }
+  ],
+  "software": [
+    "Apple Keynote",
+    "Apple Keynote for iCloud",
+    "LibreOffice Impress (limited support)"
+  ],
+  "useCases": [
+    "Apple presentations and slide decks",
+    "macOS/iOS presentations",
+    "iWork collaboration",
+    "Cross-platform presentation sharing"
+  ],
+  "technicalDetails": "KEYNOTE (iWork '13+) is a ZIP archive using Protobuf-encoded .iwa (iWork Archive) files. Slide content, animations, and transitions are stored as Protobuf messages with snappy compression. Older Keynote files (pre-2013) used a package-folder XML structure.",
+  "completenessScore": 88
 }

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "WireGuard Configuration File",
+  "formatId": "WIREGUARD_CONF",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "WireGuard VPN configuration file (.conf) containing [Interface] and [Peer] sections. Includes private keys, public keys, IP addresses, and endpoints for a WireGuard tunnel.",
+  "extensions": [".conf"],
+  "category": "Crypto",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "5B496E74657266616365",
+      "offset": 0,
+      "label": "WireGuard [Interface] section header",
+      "weight": 0.9,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 16,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 10, "name": "interface_header", "type": "bytes", "description": "'[Interface]' section header marking WireGuard config start", "storeAs": "ascii" },
+      { "offset": 0, "size": 64, "name": "private_key_line", "type": "bytes", "description": "PrivateKey = <base64-encoded 32-byte Curve25519 private key>", "storeAs": "ascii" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["interface_header", "private_key_line"],
+    "valueMaps": {
+      "section": {
+        "[Interface]": "Local WireGuard interface configuration",
+        "[Peer]": "Remote peer configuration (one per peer)"
+      }
+    },
+    "tooltips": {
+      "interface_header": "Every WireGuard config starts with [Interface]; PrivateKey follows",
+      "private_key_line": "44-character base64 string encoding a 32-byte Curve25519 private key"
+    }
+  },
+  "assertions": [
+    { "id": "WG_INTERFACE_HEADER", "field": "interface_header", "operator": "equals", "value": "5B496E74657266616365", "description": "File must begin with '[Interface]' section header" },
+    { "id": "WG_TEXT_FORMAT", "field": "interface_header", "operator": "minLength", "value": "10", "description": "Interface header must be at least 10 ASCII characters" },
+    { "id": "WG_PRIVATE_KEY_PRESENT", "field": "private_key_line", "operator": "contains", "value": "507269766174654B6579", "description": "Config should contain 'PrivateKey' field (hex: 507269766174654B6579)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "[Interface] Section", "color": "#3498DB" },
+      { "offset": 12, "label": "PrivateKey Line", "color": "#E74C3C" },
+      { "offset": 0, "label": "[Peer] Section", "color": "#2ECC71" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "WireGuard Config Summary",
+      "fields": ["interface_header", "private_key_line"],
+      "format": "text"
+    },
+    {
+      "name": "WireGuard CSV Export",
+      "fields": ["interface_header"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "WireGuard .conf files always start with [Interface] containing PrivateKey, Address, and optionally DNS and ListenPort",
+    "PrivateKey is a base64-encoded 32-byte Curve25519 private key; 44 characters including '=' padding",
+    "Each [Peer] section requires PublicKey and AllowedIPs; Endpoint is optional for responder-only peers",
+    "PresharedKey in [Peer] sections provides post-quantum resistance as a symmetric layer",
+    "wg-quick generates and manages .conf files; 'wg genkey | tee priv | wg pubkey > pub' generates key pairs"
+  ],
+  "forensic": {
+    "riskLevel": "critical",
+    "notes": [
+      "WireGuard .conf files contain the interface PrivateKey in plaintext — exposure allows full VPN impersonation",
+      "Even without plaintext traffic, the PrivateKey enables retroactive decryption of past handshakes if captured",
+      "Peer PublicKey and AllowedIPs reveal VPN network topology and peer IP assignments"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "OPENSSH_AUTHORIZED_KEYS", "relationship": "similar", "note": "Both formats store public/private key material in text files with critical security implications" },
+    { "format": "PEM", "relationship": "alternative", "note": "WireGuard uses its own INI-like config format rather than PEM-encoded key files" }
+  ],
+  "software": [
+    { "name": "WireGuard (wireguard.com)", "role": "Official WireGuard kernel module and userspace tools reading .conf files" },
+    { "name": "wg-quick", "role": "Convenience wrapper for bringing up/down WireGuard interfaces from .conf files" },
+    { "name": "NetworkManager", "role": "Linux network manager with WireGuard .conf import support" }
+  ],
+  "useCases": [
+    "Forensic recovery of VPN credentials from disk images or application directories",
+    "Security audit of WireGuard deployment checking for plaintext key storage or insecure file permissions",
+    "Configuration analysis for peer topology and allowed IP range review"
+  ],
+  "technicalDetails": "WireGuard configuration uses an INI-like format with [Interface] and one or more [Peer] sections. [Interface] fields: PrivateKey (mandatory, base64 Curve25519), Address (tunnel IP/CIDR), ListenPort (UDP port), DNS, MTU. [Peer] fields: PublicKey (mandatory), AllowedIPs (mandatory, routes), Endpoint (IP:port), PresharedKey (optional 32-byte symmetric), PersistentKeepalive (optional seconds). The private key is a 32-byte Curve25519 scalar; public key is derived via scalar multiplication on Curve25519.",
+  "completenessScore": 82
+}

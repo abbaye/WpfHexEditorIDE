@@ -1,12 +1,13 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "XFS Filesystem",
   "formatId": "XFS",
-  "version": "1.14",
-  "extensions": [
-    ".xfs"
-  ],
-  "description": "XFS high-performance journaling filesystem",
+  "version": "1.15",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 85,
+  "extensions": [".xfs"],
+  "description": "XFS high-performance journaling filesystem. The XFS superblock is at offset 0 and begins with the magic 'XFSB' (0x58465342) at offset 0. Block size is stored at offset 4 (uint32 BE). The filesystem uses B+ trees for directory and extent management.",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
@@ -19,24 +20,23 @@
     "WebLinks": [
       "https://en.wikipedia.org/wiki/XFS",
       "https://docs.kernel.org/admin-guide/xfs.html",
-      "https://wiki.osdev.org/XFS",
       "https://www.ufsexplorer.com/articles/storage-technologies/xfs-file-system/"
     ]
   },
+  "maxSignatureOffset": 4,
+  "signatures": [
+    {
+      "value": "58465342",
+      "offset": 0,
+      "label": "XFS superblock magic 'XFSB' at offset 0",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
   "detection": {
     "required": true,
-    "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "58465342",
-        "offset": 0,
-        "label": "XFS magic",
-        "weight": 1.0
-      }
-    ],
+    "validation": { "minFileSize": 4, "maxSignatureOffset": 1024 },
+    "signatures": [{ "value": "58465342", "offset": 0, "label": "XFS magic", "weight": 1.0 }],
     "matchMode": "any",
     "MinimumScore": 1.0,
     "Strength": "Strong"
@@ -46,88 +46,107 @@
     "fileSize": 0,
     "version": 0,
     "format": "",
-    "formattedSize": ""
+    "formattedSize": "",
+    "magic": 0,
+    "blockSize": 0,
+    "dblocks": 0,
+    "icount": 0
+  },
+  "structure": {
+    "fields": [
+      { "name": "magic", "offset": 0, "size": 4, "type": "uint32be", "description": "XFS magic: 'XFSB' = 0x58465342 (big-endian)" },
+      { "name": "block_size", "offset": 4, "size": 4, "type": "uint32be", "description": "Filesystem block size in bytes (big-endian)" },
+      { "name": "dblocks", "offset": 8, "size": 8, "type": "uint64be", "description": "Number of filesystem blocks (big-endian)" },
+      { "name": "rblocks", "offset": 16, "size": 8, "type": "uint64be", "description": "Number of real-time blocks (big-endian)" },
+      { "name": "icount", "offset": 56, "size": 8, "type": "uint64be", "description": "Approximate inode count (big-endian)" },
+      { "name": "version", "offset": 100, "size": 2, "type": "uint16be", "description": "Filesystem version (4 or 5)" }
+    ]
   },
   "blocks": [
+    { "type": "header", "name": "XFS Superblock", "offset": 0, "length": 512, "color": "#E03C31", "opacity": 0.4, "description": "XFS superblock with magic 'XFSB'" },
+    { "type": "metadata", "name": "File Size", "variable": "fileSize", "description": "File Size" },
+    { "type": "metadata", "name": "Version", "variable": "version", "description": "Version" },
+    { "type": "metadata", "name": "Formatted Size", "variable": "formattedSize", "description": "Human-readable file size" }
+  ],
+  "inspector": {
+    "displayFields": ["magic", "blockSize", "dblocks", "icount", "version"],
+    "valueMaps": {
+      "version": { "4": "XFSv4 (classic)", "5": "XFSv5 (metadata checksums, CRC32c)" }
+    },
+    "tooltips": {
+      "magic": "XFS magic 'XFSB' at offset 0 — 4 bytes, big-endian",
+      "blockSize": "XFS block size in bytes — typically 4096 or 8192",
+      "version": "XFS version 4 vs 5 — v5 adds metadata checksums"
+    }
+  },
+  "assertions": [
+    { "name": "XFS magic present", "expression": "magic == 0x58465342", "severity": "error", "message": "XFS magic 'XFSB' must be at offset 0" },
+    { "name": "Block size reasonable", "expression": "blockSize >= 512 && blockSize <= 65536", "severity": "warning", "message": "XFS block size should be between 512 and 65536 bytes" },
+    { "name": "Version supported", "expression": "version == 4 || version == 5", "severity": "warning", "message": "XFS version should be 4 or 5" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "XFS Superblock (magic 'XFSB')", "color": "#E03C31" },
+      { "offset": 4, "label": "Block Size", "color": "#F4A261" },
+      { "offset": 512, "label": "Allocation Group 0 Data", "color": "#E9C46A" }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "header",
-      "name": "XFS Superblock",
-      "offset": 0,
-      "length": 512,
-      "color": "#E03C31",
-      "opacity": 0.4,
-      "description": "XFS superblock with magic 'XFSB'"
+      "name": "XFS Superblock Summary",
+      "format": "text",
+      "template": "XFS Filesystem\nMagic     : 0x{magic:X8}\nBlock Size: {blockSize}\nBlocks    : {dblocks}\nVersion   : {version}"
     },
     {
-      "type": "metadata",
-      "name": "File Size",
-      "variable": "fileSize",
-      "description": "File Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "XFS Superblock CSV",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{magic}\nBlockSize,{blockSize}\nBlocks,{dblocks}\nVersion,{version}"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "aiHints": [
+    "XFS magic 'XFSB' (0x58465342) is at offset 0 in BIG-ENDIAN byte order",
+    "XFS version 4 vs 5: v5 (Linux 3.15+) adds CRC32c metadata checksums — check version at offset 100",
+    "Block size at offset 4 (uint32 BE) is typically 4096 — all data addresses are in filesystem blocks",
+    "XFS uses allocation groups (AGs) — each AG has its own superblock copy and B-tree structures",
+    "The log (journal) is stored within the filesystem and can be separate or embedded"
   ],
-  "formatRelationships": {
-    "category": "Disk",
-    "extensions": [
-      ".xfs"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "DiskInternals",
-    "R-Studio",
-    "HxD",
-    "FTK Imager",
-    "Autopsy"
-  ],
-  "UseCases": [
-    "Disk imaging",
-    "Forensics",
-    "Data recovery",
-    "Analysis"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read file header",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
-  },
   "forensic": {
-    "category": "disk",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "XFS high-performance journaling filesystem",
-    "suggestedInspections": [
-      "Verify XFS Filesystem superblock/boot sector signature and version",
-      "Check partition/volume layout and allocation bitmap",
-      "Inspect filesystem journal and metadata consistency"
+    "notes": [
+      "XFS delayed allocation may defer writes — recently written data may not be on disk yet",
+      "XFS v5 CRC32c checksums detect corruption but not intentional modification",
+      "Allocation group structures allow partial recovery even with primary superblock corruption"
     ]
-  }
+  },
+  "formatRelationships": [
+    { "format": "EXT4", "relation": "sibling", "note": "Both are Linux journaling filesystems; XFS is preferred for large files and high-throughput workloads" }
+  ],
+  "software": ["xfsprogs", "Linux kernel 2.4+", "XFS for macOS (read-only)", "R-Studio", "DiskInternals Linux Recovery"],
+  "useCases": [
+    "High-performance Linux server storage (enterprise NAS, databases)",
+    "Large file systems (media storage, scientific data)",
+    "Forensic imaging of Red Hat/CentOS/Rocky Linux systems",
+    "Database server filesystems (SAP, Oracle)"
+  ],
+  "technicalDetails": {
+    "MagicValue": "'XFSB' = 0x58465342",
+    "Endianness": "Big-endian for all header fields",
+    "VersionSupport": { "4": "Classic XFS", "5": "CRC32c metadata checksums (Linux 3.15+)" },
+    "AllocationGroups": "Multiple AGs each with own superblock copy",
+    "JournalType": "Internal (default) or external"
+  },
+  "MimeTypes": ["application/octet-stream"],
+  "Software": ["DiskInternals", "R-Studio", "HxD", "FTK Imager", "Autopsy"],
+  "UseCases": ["Disk imaging", "Forensics", "Data recovery", "Analysis"],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-05-20",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": { "MagicValue": "'XFSB' = 0x58465342", "Endianness": "Big-endian" },
+  "functions": { "readUInt32LE": "Read file header", "formatFileSize(var:fileSize)": "Format fileSize as readable size" }
 }

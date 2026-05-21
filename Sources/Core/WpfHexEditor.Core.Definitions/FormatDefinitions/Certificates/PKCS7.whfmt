@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "PKCS#7 Certificate Bundle",
   "formatId": "PKCS7",
@@ -18,6 +19,20 @@
       "https://www.rfc-editor.org/rfc/rfc5652",
       "https://www.openssl.org/docs/man3.0/man1/openssl-pkcs7.html",
       "https://learn.microsoft.com/en-us/windows/win32/seccrypto/pkcs-7"
+    ]
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    { "value": "3082", "offset": 0, "label": "30 82 — DER SEQUENCE with 2-byte length (PKCS#7 outer ASN.1 container)", "weight": 0.7, "strength": "Moderate" },
+    { "value": "2D2D2D2D2D424547494E20504B435337", "offset": 0, "label": "-----BEGIN PKCS7 — PEM-encoded PKCS#7 container", "weight": 1.0, "strength": "Strong" }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      { "name": "asnTag", "type": "uint8", "offset": 0, "length": 1, "description": "ASN.1 SEQUENCE tag (0x30)" },
+      { "name": "lenByte", "type": "uint8", "offset": 1, "length": 1, "description": "Length encoding byte (0x82 = 2-byte length follows)" },
+      { "name": "contentLen", "type": "uint16be", "offset": 2, "length": 2, "description": "Content length (big-endian)" },
+      { "name": "contentTypeOid", "type": "hex", "offset": 4, "length": 11, "description": "OID tag + SignedData OID (06 09 2A 86 48 86 F7 0D 01 07 02)" }
     ]
   },
   "detection": {
@@ -161,7 +176,15 @@
       "Certificates with unusual validity periods or extension combinations warrant review"
     ]
   },
-  "aiHints": {
+  "aiHints": [
+    "PKCS#7 / CMS is the standard container for signed and encrypted messages, certificate chains, and S/MIME email",
+    "OID 1.2.840.113549.1.7.2 (SignedData) is the most common content type in .p7b certificate bundles",
+    "DER outer SEQUENCE tag 0x30 at offset 0 is shared with X.509 certs and CRLs — use extension or PEM header for disambiguation",
+    "p7b (certificate bundle) contains SignedData with empty payload and certificates[] array only",
+    "p7s (signature) contains SignedData with signerInfos[] — check signing time and certificate serial numbers",
+    "Use: openssl pkcs7 -in file.p7b -inform DER -print_certs -noout to extract certificates"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "PKCS#7 ContentInfo: SEQUENCE { contentType OID + content [0] EXPLICIT ANY }. SignedData: SEQUENCE { version INTEGER + digestAlgorithms SET + encapContentInfo + certificates [0] IMPLICIT OPTIONAL + crls [1] IMPLICIT OPTIONAL + signerInfos SET }. p7b = SignedData with empty encapContentInfo (id-data) and certificates[] only. OID 1.2.840.113549.1.7.2 in hex: 2A 86 48 86 F7 0D 01 07 02 (9 bytes after 06 09 OID tag+len).",
     "suggestedInspections": [
       "Verify outer SEQUENCE tag 0x30 and OID tag 0x06 at expected positions",
@@ -185,6 +208,21 @@
     "relatedFormats": [ "PKCS12", "DER", "PEM", "X509_CRL" ],
     "note": "PKCS#7 is a container for certificates and signed/encrypted data. PKCS#12 (.p12) is the related format for private key + certificate bundles. RFC 5652 (CMS) supersedes RFC 2315 (PKCS#7 v1.5) with minor additions."
   },
+  "useCases": [
+    "Certificate chain distribution for Windows trust store import",
+    "S/MIME email message signing and encryption",
+    "Windows Authenticode code signing (PE/MSI)",
+    "Java JAR signing with jarsigner",
+    "SSL certificate bundle import and distribution"
+  ],
+  "technicalDetails": {
+    "format": "DER-encoded ASN.1 (binary) or PEM (base64)",
+    "derMagic": "30 82 at offset 0",
+    "pemHeader": "-----BEGIN PKCS7-----",
+    "signedDataOID": "1.2.840.113549.1.7.2 (hex: 2A 86 48 86 F7 0D 01 07 02)",
+    "inspect": "openssl pkcs7 -in file.p7b -inform DER -print_certs -noout",
+    "rfc": "RFC 5652 (CMS), RFC 2315 (PKCS#7 legacy)"
+  },
   "MimeTypes": [
     "application/pkcs7-mime",
     "application/pkcs7-signature",
@@ -203,7 +241,7 @@
     "DocumentationLevel": "detailed",
     "BlocksDefined": 7,
     "ValidationRules": 2,
-    "LastUpdated": "2026-04-15",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": false
   },

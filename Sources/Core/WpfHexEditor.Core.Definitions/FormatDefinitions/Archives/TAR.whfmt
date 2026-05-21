@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "TAR Archive",
   "formatId": "TAR",
@@ -22,6 +23,69 @@
       "https://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html"
     ]
   },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "757374617200",
+      "offset": 257,
+      "label": "ustar\\0 — POSIX ustar magic at offset 257 in first file header",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 263,
+  "structure": {
+    "fields": [
+      { "name": "name", "type": "ascii", "offset": 0, "length": 100, "description": "Filename (null-terminated, relative path)" },
+      { "name": "mode", "type": "ascii", "offset": 100, "length": 8, "description": "File mode (octal)" },
+      { "name": "uid", "type": "ascii", "offset": 108, "length": 8, "description": "Owner user ID (octal)" },
+      { "name": "gid", "type": "ascii", "offset": 116, "length": 8, "description": "Owner group ID (octal)" },
+      { "name": "size", "type": "ascii", "offset": 124, "length": 12, "description": "File size in bytes (octal)" },
+      { "name": "mtime", "type": "ascii", "offset": 136, "length": 12, "description": "Last modification time (octal Unix timestamp)" },
+      { "name": "checksum", "type": "ascii", "offset": 148, "length": 8, "description": "Header checksum (sum of all 512 header bytes)" },
+      { "name": "typeflag", "type": "uint8", "offset": 156, "length": 1, "description": "0=regular, 1=hard link, 2=symlink, 5=directory" },
+      { "name": "linkname", "type": "ascii", "offset": 157, "length": 100, "description": "Link target path (for typeflag 1 or 2)" },
+      { "name": "ustarMagic", "type": "ascii", "offset": 257, "length": 6, "description": "'ustar' + null or 'ustar ' (GNU tar)" },
+      { "name": "ustarVersion", "type": "ascii", "offset": 263, "length": 2, "description": "POSIX: '00'; GNU: '  '" },
+      { "name": "uname", "type": "ascii", "offset": 265, "length": 32, "description": "Owner username" },
+      { "name": "gname", "type": "ascii", "offset": 297, "length": 32, "description": "Owner group name" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["fileName", "fileSize", "lastModTime", "typeFlag", "ustarMagic", "ownerUserName"],
+    "valueMaps": {
+      "typeFlag": { "48": "Regular file", "49": "Hard link", "50": "Symbolic link", "53": "Directory" }
+    },
+    "tooltips": {
+      "fileName": "Relative path of file within archive",
+      "fileSize": "File size in bytes (stored as octal ASCII string)",
+      "lastModTime": "Last modification time (octal Unix timestamp)"
+    }
+  },
+  "navigation": {
+    "bookmarks": [
+      { "name": "First File Header", "offset": 0, "color": "#FF4444" },
+      { "name": "ustar Magic", "offset": 257, "color": "#44AAFF" },
+      { "name": "First File Data", "offset": 512, "color": "#44FF88" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "TAR Header (JSON)",
+      "format": "json",
+      "fields": ["fileName", "fileMode", "fileSize", "lastModTime", "typeFlag", "ustarMagic", "ownerUserName", "ownerGroupName"]
+    },
+    {
+      "name": "TAR Entry List (Text)",
+      "format": "text",
+      "fields": ["fileName", "fileSize", "typeFlag"]
+    }
+  ],
+  "formatRelationships": [
+    { "format": "GZIP", "relationship": ".tar.gz = TAR + GZIP compression (most common Linux distribution format)" },
+    { "format": "BZIP2", "relationship": ".tar.bz2 = TAR + BZIP2 for better compression ratio" },
+    { "format": "XZ", "relationship": ".tar.xz = TAR + XZ for best compression (common in Linux packages)" }
+  ],
   "detection": {
     "signature": "7573746172",
     "offset": 257,
@@ -333,7 +397,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 25,
     "ValidationRules": 1,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -342,7 +406,15 @@
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
-  "aiHints": {
+  "aiHints": [
+    "TAR format: sequential 512-byte blocks; each file entry = 512-byte header + data padded to 512-byte boundary",
+    "ustar header layout: name(100) + mode(8) + uid(8) + gid(8) + size(12,octal) + mtime(12,octal) + chksum(8) + typeflag(1) + linkname(100) + magic(6) at offset 257",
+    "File size field is stored as octal ASCII string — parse as octal integer to get byte count",
+    "Two consecutive 512-byte zero blocks signal end-of-archive",
+    "GNU tar uses 'ustar  ' (with two spaces) while POSIX uses 'ustar\\000' + '00' at offsets 257+263",
+    "GNU extensions: pax/posix headers (typeflag 'g'/'x') enable long filenames >100 chars and UTF-8 encoding"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "POSIX TAR (Tape Archive) format stores files sequentially in 512-byte blocks without compression. Each file ...",
     "suggestedInspections": [
       "Verify TAR Archive file header, compression method, and stored CRCs",

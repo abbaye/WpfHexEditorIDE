@@ -1,8 +1,21 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "SQLite Database",
   "formatId": "SQLITE",
-  "version": "2.02",
+  "version": "2.03",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 92,
+  "signatures": [
+    {
+      "value": "53514C69746520666F726D6174203300",
+      "offset": 0,
+      "label": "SQLite format 3\\x00 — SQLite database magic string",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 16,
   "extensions": [
     ".sqlite",
     ".db",
@@ -432,39 +445,104 @@
       "expression": "sqliteMagic == 1397208883",
       "severity": "error",
       "message": "Invalid SQLite signature — expected 'SQLi'"
+    },
+    {
+      "name": "Page size power of two",
+      "expression": "pageSize >= 512 && (pageSize == 1 || (pageSize & (pageSize - 1)) == 0)",
+      "severity": "error",
+      "message": "SQLite page size must be 1 (65536) or a power of 2 between 512 and 32768"
+    },
+    {
+      "name": "Schema format in valid range",
+      "expression": "schemaFormatNumber >= 1 && schemaFormatNumber <= 4",
+      "severity": "warning",
+      "message": "SQLite schema format number must be between 1 and 4"
+    },
+    {
+      "name": "Text encoding is valid",
+      "expression": "textEncoding >= 1 && textEncoding <= 3",
+      "severity": "error",
+      "message": "SQLite text encoding must be 1 (UTF-8), 2 (UTF-16le), or 3 (UTF-16be)"
     }
   ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "SQLite Magic String", "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "Page Size", "offset": 16, "icon": "", "color": "#4ECDC4" },
+      { "name": "File Change Counter", "offset": 24, "icon": "", "color": "#98D8C8" },
+      { "name": "Schema Cookie", "offset": 40, "icon": "", "color": "#DDA0DD" },
+      { "name": "Text Encoding", "offset": 56, "icon": "", "color": "#BB8FCE" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["pageSize", "schemaFormatNumber", "textEncoding", "databaseSizeInPages", "sqliteVersionNumber"],
+    "valueMaps": {
+      "textEncoding": { "1": "UTF-8", "2": "UTF-16le", "3": "UTF-16be" },
+      "schemaFormatNumber": { "1": "Format 1 (3.0.0+)", "2": "Format 2 (3.1.3+)", "3": "Format 3 (3.1.4+)", "4": "Format 4 (3.3.0+)" }
+    },
+    "tooltips": {
+      "pageSize": "Database page size — power of 2 from 512 to 65536; value 1 means 65536",
+      "schemaFormatNumber": "Schema format version determines supported SQL features",
+      "sqliteVersionNumber": "SQLite version encoded as MAJOR*1000000 + MINOR*1000 + RELEASE"
+    }
+  },
   "forensic": {
     "category": "database",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "SQLite database file format. SQLite is a self-contained, serverless, zero-configuration, transactional SQL d...",
-    "suggestedInspections": [
-      "Verify SQLite Database file header, page size, and version fields",
-      "Check B-tree/index page pointers and free page list",
-      "Inspect record format, schema tables, and journal state"
+    "suspiciousPatterns": [],
+    "notes": [
+      "SQLite is used by browsers, mobile apps, and OS components — high forensic value",
+      "Deleted rows may still be recoverable from free pages in the freelist",
+      "WAL-mode databases require the -wal and -shm companion files for complete recovery",
+      "Application ID at offset 68 identifies the owning application — can confirm file origin"
     ]
   },
+  "aiHints": [
+    "SQLite magic string 'SQLite format 3\\x00' (16 bytes) is at offset 0 — the most reliable identification",
+    "Page size at offset 16 (uint16 BE) must be 1 (=65536) or power of 2 between 512 and 32768",
+    "File format write version 2 at offset 18 means WAL mode — expect companion -wal and -shm files",
+    "Application ID at offset 68 (uint32 BE) identifies the app that created this database",
+    "Schema cookie at offset 40 increments with every schema change — use to detect structural modifications",
+    "Freelist at offset 32 points to the first trunk page — free pages may contain recoverable deleted data"
+  ],
   "software": [
     "SQLite",
     "DB Browser for SQLite",
     "Most applications",
     "sqlite3 CLI"
   ],
-  "formatRelationships": {
-    "most_used_db": true,
-    "serverless": true,
-    "embedded": true,
-    "used_by": [
-      "iOS",
-      "Android",
-      "Browsers",
-      "macOS",
-      "Windows"
-    ]
+  "useCases": [
+    "Mobile application local database (iOS, Android)",
+    "Browser storage (Firefox, Chrome, Safari use SQLite internally)",
+    "Embedded application configuration and state storage",
+    "Desktop application databases (password managers, media players)"
+  ],
+  "technicalDetails": {
+    "DatabaseFormat": true,
+    "Endianness": "big-endian (all multi-byte values in the header)",
+    "HeaderSize": 100,
+    "MinimumFileSize": "512 bytes (one page)",
+    "MaximumPageSize": 65536,
+    "Serverless": true,
+    "ZeroConfiguration": true,
+    "ACID": true
   },
+  "exportTemplates": [
+    {
+      "name": "SQLite Header Summary (text)",
+      "format": "text",
+      "template": "SQLite Database\nPage Size    : {pageSize}\nDB Pages     : {databaseSizeInPages}\nEncoding     : {textEncoding}\nSchema Format: {schemaFormatNumber}\nSQLite Ver   : {sqliteVersionNumber}"
+    },
+    {
+      "name": "SQLite Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nPageSize,{pageSize}\nDBPages,{databaseSizeInPages}\nEncoding,{textEncoding}\nSchemaFormat,{schemaFormatNumber}\nSQLiteVersion,{sqliteVersionNumber}"
+    }
+  ],
+  "formatRelationships": [
+    { "format": "SQLITE_SHM", "relation": "companion", "note": "WAL-index SHM file for WAL mode databases" },
+    { "format": "DUCKDB", "relation": "sibling", "note": "Both embedded SQL databases; SQLite is OLTP-optimized, DuckDB is OLAP-optimized" }
+  ],
   "MimeTypes": [
     "application/vnd.sqlite3",
     "application/x-sqlite3",
@@ -491,7 +569,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 31,
     "ValidationRules": 5,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },

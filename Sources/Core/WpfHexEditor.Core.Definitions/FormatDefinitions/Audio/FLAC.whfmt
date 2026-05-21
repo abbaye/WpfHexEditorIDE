@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "FLAC Audio",
   "formatId": "FLAC",
@@ -6,6 +7,17 @@
   "extensions": [
     ".flac"
   ],
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "664C6143",
+      "offset": 0,
+      "label": "FLAC stream marker 'fLaC'",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
   "description": "Free Lossless Audio Codec (FLAC) — an open-source lossless audio compression format by Josh Coalson, standardized as RFC 9639. The file begins with the 4-byte 'fLaC' stream marker followed by one or more metadata blocks. Each metadata block starts with a 4-byte header (1-bit last-block flag + 7-bit block type + 24-bit body length). The mandatory first block is STREAMINFO (type 0) containing the 34-byte stream parameters: sample rate (20 bits), channel count (3 bits), bit depth (5 bits), total samples (36 bits), and MD5 signature of the uncompressed PCM data. FLAC achieves 30-70% compression of CD audio without any quality loss.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",

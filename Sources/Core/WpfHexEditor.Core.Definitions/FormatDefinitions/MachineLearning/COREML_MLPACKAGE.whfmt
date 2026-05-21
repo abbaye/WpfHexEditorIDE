@@ -1,0 +1,123 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Apple CoreML ML Package",
+  "formatId": "COREML_MLPACKAGE",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Apple CoreML .mlpackage bundle format used for on-device machine learning on Apple platforms. An .mlpackage is a directory bundle; its primary data store is a SQLite database containing model weights, metadata, and compilation artifacts. The .mlmodel format is the older single-file predecessor.",
+  "extensions": [".mlpackage", ".mlmodel"],
+  "category": "MachineLearning",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "53514C6974652066",
+      "offset": 0,
+      "label": "SQLite3 magic (main bundle DB)",
+      "weight": 0.8,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 8,
+  "structure": {
+    "fields": [
+      { "offset": 0,  "size": 16, "name": "sqlite_magic",       "type": "ascii",    "description": "SQLite3 file header string 'SQLite format 3\\0'", "storeAs": "string" },
+      { "offset": 16, "size": 2,  "name": "page_size",          "type": "uint16be", "description": "Database page size in bytes (power of 2, 512–65536)", "storeAs": "uint16" },
+      { "offset": 18, "size": 1,  "name": "write_version",      "type": "uint8",    "description": "File format write version (1=legacy, 2=WAL)", "storeAs": "uint8" },
+      { "offset": 19, "size": 1,  "name": "read_version",       "type": "uint8",    "description": "File format read version", "storeAs": "uint8" },
+      { "offset": 28, "size": 4,  "name": "change_counter",     "type": "uint32be", "description": "File change counter incremented on each write", "storeAs": "uint32" },
+      { "offset": 32, "size": 4,  "name": "page_count",         "type": "uint32be", "description": "Total number of database pages", "storeAs": "uint32" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["sqlite_magic", "page_size", "write_version", "page_count"],
+    "valueMaps": {
+      "write_version": { "1": "Legacy", "2": "WAL" },
+      "read_version":  { "1": "Legacy", "2": "WAL" }
+    },
+    "tooltips": {
+      "sqlite_magic":   "Must be 'SQLite format 3' followed by a null byte",
+      "page_size":      "Controls I/O granularity; CoreML bundles commonly use 4096",
+      "write_version":  "WAL mode (2) allows concurrent reads during writes",
+      "page_count":     "Total pages × page_size gives approximate file size"
+    }
+  },
+  "assertions": [
+    {
+      "id": "COREML_001",
+      "field": "sqlite_magic",
+      "operator": "startsWith",
+      "value": "53514C697465",
+      "description": "File must begin with 'SQLite' ASCII bytes"
+    },
+    {
+      "id": "COREML_002",
+      "field": "write_version",
+      "operator": "lessOrEqual",
+      "value": 2,
+      "description": "Write version must be 1 (legacy) or 2 (WAL)"
+    },
+    {
+      "id": "COREML_003",
+      "field": "page_count",
+      "operator": "greaterThan",
+      "value": 0,
+      "description": "Page count must be positive indicating non-empty database"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0,  "label": "SQLite Header",       "color": "#4A90D9" },
+      { "offset": 16, "label": "Page Size",            "color": "#7ED321" },
+      { "offset": 32, "label": "Page Count",           "color": "#F5A623" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "CoreML Bundle Summary",
+      "fields": ["sqlite_magic", "page_size", "write_version", "read_version", "page_count"],
+      "format": "json"
+    },
+    {
+      "name": "Forensic Header Report",
+      "fields": ["sqlite_magic", "page_size", "change_counter", "page_count"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "An .mlpackage is a directory bundle, not a single binary file; the main SQLite DB is typically found at Data/com.apple.CoreML/model.mlpackage/Data/com.apple.CoreML/FeatureDescriptions.sqlite or similar paths inside the bundle.",
+    "CoreML models compiled with coremltools produce .mlmodelc directories (compiled) or .mlpackage bundles (source); the .mlmodel flat file is the legacy single-file format.",
+    "The SQLite database inside an .mlpackage stores weights, metadata, and neural network layer definitions; weights may be stored as BLOBs or referenced as external files within the bundle.",
+    "Model versioning: .mlpackage supports CoreML specification versions 4 (iOS 13), 5 (iOS 14), 6 (iOS 15), 7 (iOS 16), and 8 (iOS 17+); the spec version is stored as an integer in the model metadata table.",
+    "Security note: .mlpackage models do not support arbitrary code execution unlike PyTorch pickle-based formats; they are considered safe for deployment without sandboxing.",
+    "To inspect bundle contents without Apple tools: unzip-like directory traversal, then open the SQLite DB with any SQLite browser to examine tables such as 'model_metadata' and 'neural_network_layer'."
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "CoreML format does not support arbitrary code execution; model inference is sandboxed by the CoreML runtime.",
+      "However, .mlpackage bundles may contain embedded metadata with app identifiers, UUIDs, and creation timestamps that can be used for device attribution.",
+      "Custom model operators (MLCustomLayer) compiled into the bundle reference Objective-C class names — these class names may reveal internal framework details.",
+      "Large weight BLOBs in the SQLite DB can be extracted to reconstruct the original model architecture for intellectual property analysis."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "SQLITE",    "relationship": "container",  "note": "The primary data store inside an .mlpackage bundle is a SQLite3 database" },
+    { "format": "ONNX",      "relationship": "convertible", "note": "coremltools can convert ONNX models to CoreML .mlpackage format" },
+    { "format": "PYTORCH_PT","relationship": "convertible", "note": "PyTorch models can be exported to CoreML via coremltools torch.export pipeline" }
+  ],
+  "software": [
+    { "name": "coremltools",         "role": "Create, convert, and validate CoreML .mlpackage and .mlmodel files" },
+    { "name": "Xcode",               "role": "Integrate and compile .mlpackage into iOS/macOS apps; provides model inspector" },
+    { "name": "Create ML",           "role": "Apple-native GUI and framework for training models saved as .mlpackage" },
+    { "name": "DB Browser for SQLite","role": "Inspect the internal SQLite database of an extracted .mlpackage bundle" }
+  ],
+  "useCases": [
+    "Distributing trained ML models for on-device inference in iOS, macOS, watchOS, and tvOS applications",
+    "Forensic extraction of model weights and architecture from iOS app bundles (.ipa files)",
+    "Verifying CoreML spec version compatibility before deploying to older OS targets",
+    "Reverse-engineering proprietary Apple ML features by inspecting the internal SQLite layer table"
+  ],
+  "technicalDetails": "The .mlpackage format is a directory bundle standardized by Apple as part of the CoreML framework (introduced in iOS 11 / macOS 10.13). The bundle root contains a Manifest.json describing the package structure and a Data/ subdirectory with the primary SQLite3 database. The SQLite schema varies by CoreML specification version but consistently includes tables for model metadata, neural network topology (layers as serialized protobuf BLOBs), and optional weight files stored as external references. Compiled models (.mlmodelc) store weights as Float16 or Int8 quantized arrays; uncompiled source .mlpackage files may retain Float32 precision. The CoreML protobuf schema is publicly available in the coremltools Python package under coremltools.proto.",
+  "completenessScore": 82
+}

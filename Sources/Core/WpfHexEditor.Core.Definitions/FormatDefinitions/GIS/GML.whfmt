@@ -1,0 +1,123 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Geography Markup Language",
+  "formatId": "GML",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Geography Markup Language (.gml) is an OGC and ISO standard XML grammar for expressing geographical features. GML is the foundation for many geospatial interchange formats including WFS responses, CityGML, and GeoSciML. It supports complex geometries, coordinate reference systems, topology, and feature attributes.",
+  "extensions": [".gml", ".xml"],
+  "category": "GIS",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "3C3F786D6C",
+      "offset": 0,
+      "label": "XML declaration '<?xml'",
+      "weight": 0.6,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 5,
+  "structure": {
+    "fields": [
+      { "offset": 0,   "size": 5,  "name": "xml_declaration", "type": "ascii", "description": "XML processing instruction or root GML element", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "gml_version",     "type": "ascii", "description": "GML version from xmlns namespace URI (e.g., 3.2.1)", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "srs_name",        "type": "ascii", "description": "Spatial Reference System URI (e.g., urn:ogc:def:crs:EPSG::4326)", "storeAs": "string" },
+      { "offset": -1,  "size": -1, "name": "feature_type",    "type": "ascii", "description": "Root feature collection element name", "storeAs": "string" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["xml_declaration", "gml_version", "srs_name", "feature_type"],
+    "valueMaps": {
+      "gml_version": {
+        "2.1.2": "GML 2.1.2 (legacy, widely implemented)",
+        "3.1.1": "GML 3.1.1 (ISO 19136:2007 predecessor)",
+        "3.2.1": "GML 3.2.1 (ISO 19136:2007, current)",
+        "3.2.2": "GML 3.2.2 (ISO 19136-1:2020, latest)"
+      }
+    },
+    "tooltips": {
+      "xml_declaration": "GML files are always UTF-8 XML; the declaration is optional but recommended",
+      "gml_version":     "Namespace URI pattern: http://www.opengis.net/gml/3.2 for GML 3.2",
+      "srs_name":        "CRS authority URN; EPSG:4326 = WGS84 geographic, EPSG:3857 = Web Mercator",
+      "feature_type":    "Root element is typically gml:FeatureCollection or an application-schema root"
+    }
+  },
+  "assertions": [
+    {
+      "id": "GML_001",
+      "field": "xml_declaration",
+      "operator": "startsWith",
+      "value": "3C",
+      "description": "File must begin with '<' indicating XML content"
+    },
+    {
+      "id": "GML_002",
+      "field": "gml_version",
+      "operator": "contains",
+      "value": "opengis.net/gml",
+      "description": "GML namespace must reference the opengis.net/gml URI"
+    },
+    {
+      "id": "GML_003",
+      "field": "srs_name",
+      "operator": "contains",
+      "value": "EPSG",
+      "description": "Spatial reference system should reference an EPSG authority code"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0,   "label": "XML Header",             "color": "#4A90D9" },
+      { "offset": 38,  "label": "Root Feature Element",   "color": "#7ED321" },
+      { "offset": 200, "label": "First Feature Member",   "color": "#F5A623" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GML Namespace Summary",
+      "fields": ["gml_version", "srs_name", "feature_type"],
+      "format": "json"
+    },
+    {
+      "name": "GIS Interchange Report",
+      "fields": ["gml_version", "srs_name"],
+      "format": "csv"
+    }
+  ],
+  "aiHints": [
+    "GML supports three geometry encoding styles: GML 2 (simple Features profile), GML 3 SF0/SF1/SF2 (progressively richer), and full GML 3.2 with topology and coverage types.",
+    "Coordinate ordering in GML 3.2 follows the CRS authority definition: for EPSG:4326 this is latitude-longitude (not longitude-latitude), which frequently causes application bugs.",
+    "GML is the wire format for OGC WFS (Web Feature Service) responses; GML documents retrieved from WFS endpoints typically have a <wfs:FeatureCollection> wrapper.",
+    "Large GML files (city-scale datasets) can be hundreds of megabytes; streaming XML parsers (SAX/StAX) are required as DOM parsing causes out-of-memory errors.",
+    "Application schemas built on GML include: CityGML (3D city models), GeoSciML (geological data), INSPIRE (EU spatial data infrastructure), and GroundWaterML."
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "GML files may contain administrative boundary data, infrastructure locations, and facility positions that are sensitive for national security purposes.",
+      "CRS mismatches between GML files and consuming applications can cause coordinate offsets of hundreds of meters — critical for precision forensic location analysis.",
+      "Large GML datasets may reference external feature schemas via xsi:schemaLocation; fetching these schemas can expose internal network topology in enterprise environments."
+    ]
+  },
+  "formatRelationships": [
+    { "format": "GEOJSON",   "relationship": "alternative", "note": "GeoJSON is the modern lightweight alternative to GML for web APIs; converters (ogr2ogr) exist" },
+    { "format": "SHP",       "relationship": "convertible", "note": "Shapefile can be converted to GML with ogr2ogr; GML supports richer attribute types than Shapefile" },
+    { "format": "KML",       "relationship": "sibling",     "note": "KML uses a similar XML-based geospatial encoding but targets visualization rather than data exchange" }
+  ],
+  "software": [
+    { "name": "GDAL/OGR (ogr2ogr)", "role": "Universal geospatial format converter with full GML read/write support" },
+    { "name": "QGIS",               "role": "Open-source GIS with native GML import and WFS client support" },
+    { "name": "GeoServer",          "role": "OGC WFS server that serves GML responses for spatial feature queries" },
+    { "name": "deegree",            "role": "Java-based OGC WFS/WMS server with full GML 3.2 application schema support" }
+  ],
+  "useCases": [
+    "Exchanging complex geospatial feature data between GIS systems while preserving coordinate reference systems and attribute schemas",
+    "Serving as the response format for OGC Web Feature Service (WFS) spatial queries in enterprise GIS infrastructure",
+    "Encoding national topographic and cadastral datasets in INSPIRE-compliant GML for EU regulatory data sharing",
+    "Archiving 3D city model data in CityGML format for urban planning, simulation, and digital twin applications"
+  ],
+  "technicalDetails": "GML is defined by OGC and ISO 19136. The GML 3.2.1 XML Schema is published at http://schemas.opengis.net/gml/3.2.1/gml.xsd. Feature data is organized as a tree of feature instances, each with a gml:id (mandatory in GML 3.2), geometry properties (using gml:Point, gml:LineString, gml:Polygon, gml:MultiGeometry), and thematic attributes. Coordinate reference systems are specified via the srsName attribute on geometry elements using OGC URN syntax (urn:ogc:def:crs:EPSG::XXXX) or HTTP URIs. GML 3.2 introduces the Abstract Feature and Object model, topology types (gml:Node, gml:Edge), coverages, and observations. For performance, GML Profiles (SF0, SF1, SF2) restrict the schema to commonly implemented subsets.",
+  "completenessScore": 81
+}

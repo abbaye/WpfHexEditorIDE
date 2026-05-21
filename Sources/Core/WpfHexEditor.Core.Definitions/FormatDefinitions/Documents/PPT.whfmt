@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "PowerPoint Presentation (Legacy)",
   "formatId": "PPT",
@@ -29,7 +30,10 @@
     "offset": 0,
     "required": true,
     "Strength": "Strong",
-    "EntropyHint": { "min": 3.5, "max": 7.0 },
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 7.0
+    },
     "validation": {
       "minFileSize": 512,
       "note": "OLE2/CFB magic. Disambiguate as .ppt by checking root entry CLSID in directory stream or presence of 'PowerPoint Document' stream. Extension-based disambiguation is the simplest approach."
@@ -64,7 +68,7 @@
       "offset": 24,
       "length": 2,
       "color": "#4ECDC4",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "CFB minor version (little-endian uint16). Always 0x003E (62) for all valid OLE2/CFB files.",
       "storeAs": "minorVersion",
       "valueType": "uint16",
@@ -79,7 +83,7 @@
       "offset": 26,
       "length": 2,
       "color": "#95E1D3",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "CFB major version (little-endian uint16). 3 = 512-byte sectors (standard), 4 = 4096-byte sectors (large file mode, rare for .ppt).",
       "storeAs": "majorVersion",
       "valueType": "uint16",
@@ -138,7 +142,7 @@
       "offset": 48,
       "length": 4,
       "color": "#FFA07A",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "Sector index of the first directory stream sector. Directory sector offset = (firstDirSector+1) × sectorSize.",
       "storeAs": "firstDirSector",
       "valueType": "uint32",
@@ -150,7 +154,7 @@
       "offset": 56,
       "length": 4,
       "color": "#C7CEEA",
-      "opacity": 0.20,
+      "opacity": 0.2,
       "description": "Streams smaller than this byte size (default 4096) use the mini stream. Standard CFB value is 0x1000 (4096).",
       "storeAs": "miniStreamCutoff",
       "valueType": "uint32",
@@ -207,14 +211,19 @@
       {
         "name": "CFB Header",
         "offset": 0,
-        "icon": "\uE9D9",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "Directory Stream",
         "offsetVar": "firstDirSector",
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#4ECDC4"
+      },
+      {
+        "name": "File Start",
+        "offset": 0,
+        "description": "Beginning of file / magic bytes"
       }
     ]
   },
@@ -225,31 +234,62 @@
     "groups": [
       {
         "title": "CFB Container",
-        "icon": "\uE9D9",
-        "fields": ["ole2Signature", "majorVersion", "minorVersion", "byteOrder"]
+        "icon": "",
+        "fields": [
+          "ole2Signature",
+          "majorVersion",
+          "minorVersion",
+          "byteOrder"
+        ]
       },
       {
         "title": "Sector Layout",
-        "icon": "\uE8A5",
-        "fields": ["sectorSizeExp", "fatSectorCount", "firstDirSector", "miniStreamCutoff"]
+        "icon": "",
+        "fields": [
+          "sectorSizeExp",
+          "fatSectorCount",
+          "firstDirSector",
+          "miniStreamCutoff"
+        ]
       },
       {
         "title": "PowerPoint Format",
-        "icon": "\uE8B7",
-        "fields": ["isPPT97"]
+        "icon": "",
+        "fields": [
+          "isPPT97"
+        ]
       }
-    ]
+    ],
+    "displayFields": [
+      "formatName",
+      "version",
+      "description"
+    ],
+    "valueMaps": {},
+    "tooltips": {}
   },
   "exportTemplates": [
     {
       "name": "OLE2 Header (JSON)",
       "format": "json",
-      "fields": ["majorVersion", "minorVersion", "byteOrder", "sectorSizeExp", "fatSectorCount", "firstDirSector", "isPPT97"]
+      "fields": [
+        "majorVersion",
+        "minorVersion",
+        "byteOrder",
+        "sectorSizeExp",
+        "fatSectorCount",
+        "firstDirSector",
+        "isPPT97"
+      ]
     },
     {
       "name": "Python OLE2 check",
       "format": "python-bytes",
-      "fields": ["ole2Signature", "majorVersion", "minorVersion"]
+      "fields": [
+        "ole2Signature",
+        "majorVersion",
+        "minorVersion"
+      ]
     }
   ],
   "forensic": {
@@ -274,23 +314,27 @@
       "CVE-2014-4114: 'Sandworm' — OLE packager object in .ppt loads remote executable",
       "CVE-2017-0261: PostScript UAF in PowerPoint EPS image handling",
       "VBA AutoOpen/AutoRun macros executing PowerShell downloaders on file open"
-    ]
-  },
-  "aiHints": {
-    "analysisContext": "Legacy .ppt = OLE2 CFB container. PowerPoint data in 'PowerPoint Document' stream. Record-based format: each record = recHeader (4B: verAndInstance 4b + recType 12b LE uint16 + recLen uint32 LE). Key record types: 0x03E8=DocumentContainer, 0x03F0=PersistDirectory, 0x0FA1=SlideContainer, 0x0FB5=NotesContainer. Parse directory stream to locate 'PowerPoint Document' stream start sector, then walk FAT chain to read full stream. Tools: oletools (olemeta, oleid, olevba), python-pptx for PPTX, OffVis for binary PPT inspection.",
-    "knownVulnerabilities": [
-      "CVE-2014-4114 (Sandworm): OLE packager shell link object — write+execute arbitrary file",
-      "CVE-2017-0261: EPS parsing PostScript use-after-free in Office PPT/DOC",
-      "CVE-2009-0556: PowerPoint slide timing buffer overflow"
     ],
-    "suggestedInspections": [
-      "Confirm OLE2 magic D0 CF 11 E0 A1 B1 1A E1 at offset 0",
-      "Walk directory stream: find 'PowerPoint Document' stream for content, 'VBA'/'Macros' for macros",
-      "Check root entry CLSID for PowerPoint: {64818D10-4F9B-11CF-86EA-00AA00B929E8}",
-      "Look for '\\x01Ole10Native' stream — indicates embedded OLE object (CVE-2014-4114 vector)",
-      "Scan 'PowerPoint Document' stream for record type 0x138B (ExternalObject) or ActiveX references"
+    "notes": [
+      "OLE2 compound binary; contains multiple streams that may embed macros.",
+      "VBA macro streams (VBA/ directory) are a common malware vector.",
+      "Summary information streams expose author, company, and revision metadata."
     ]
   },
+  "aiHints": [
+    "Legacy .ppt = OLE2 CFB container. PowerPoint data in 'PowerPoint Document' stream. Record-based format: each record = recHeader (4B: verAndInstance 4b + recType 12b LE uint16 + recLen uint32 LE). Key record types: 0x03E8=DocumentContainer, 0x03F0=PersistDirectory, 0x0FA1=SlideContainer, 0x0FB5=NotesContainer. Parse directory stream to locate 'PowerPoint Document' stream start sector, then walk FAT chain to read full stream. Tools: oletools (olemeta, oleid, olevba), python-pptx for PPTX, OffVis for binary PPT inspection.",
+    "Confirm OLE2 magic D0 CF 11 E0 A1 B1 1A E1 at offset 0",
+    "Walk directory stream: find 'PowerPoint Document' stream for content, 'VBA'/'Macros' for macros",
+    "Check root entry CLSID for PowerPoint: {64818D10-4F9B-11CF-86EA-00AA00B929E8}",
+    "Look for '\\x01Ole10Native' stream — indicates embedded OLE object (CVE-2014-4114 vector)",
+    "Scan 'PowerPoint Document' stream for record type 0x138B (ExternalObject) or ActiveX references",
+    "CurrentUserAtom at offset 0 in the PowerPoint Document stream identifies the last-edit user.",
+    "VBA macros in the vbaProject storage are a primary malware vector.",
+    "ActionButtonAtom and AnimationInfo records may trigger URL navigation on slide action.",
+    "OLEObject atoms in the ObjectPool can embed and autorun executable content.",
+    "The Document Information Block in the DocumentAtom records slide count and presentation flags.",
+    "Each SlideAtom has a unique slide ID used by hyperlinks and action settings for navigation."
+  ],
   "software": [
     "Microsoft PowerPoint 97-2003",
     "LibreOffice Impress",
@@ -298,12 +342,43 @@
     "Google Slides (import)",
     "oletools (forensic)"
   ],
-  "formatRelationships": {
-    "category": "Documents",
-    "extensions": [".ppt", ".pps", ".pot"],
-    "relatedFormats": ["PPTX", "DOC", "XLS"],
-    "note": "Replaced by OOXML .pptx from Office 2007. Same CFB container as .doc and .xls — magic bytes do not distinguish between them."
-  },
+  "formatRelationships": [
+    {
+      "formatId": "category",
+      "relation": "Documents",
+      "note": ""
+    },
+    {
+      "formatId": "extensions",
+      "relation": "['.ppt', '.pps', '.pot']",
+      "note": ""
+    },
+    {
+      "formatId": "relatedFormats",
+      "relation": "['PPTX', 'DOC', 'XLS']",
+      "note": ""
+    },
+    {
+      "formatId": "note",
+      "relation": "Replaced by OOXML .pptx from Office 2007. Same CFB container as .doc and .xls — magic bytes do not distinguish between them.",
+      "note": ""
+    },
+    {
+      "formatId": "pptx",
+      "relation": "successor",
+      "note": "PPTX is the modern OOXML presentation format"
+    },
+    {
+      "formatId": "odp",
+      "relation": "equivalent",
+      "note": "ODP is the open standard equivalent"
+    },
+    {
+      "formatId": "key",
+      "relation": "alternative",
+      "note": "KEYNOTE is Apple's presentation format"
+    }
+  ],
   "MimeTypes": [
     "application/vnd.ms-powerpoint",
     "application/mspowerpoint"
@@ -379,5 +454,56 @@
       }
     ],
     "note": "Inferred fuzz strategies for PPT. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "D0CF11E0A1B11AE1",
+      "offset": 0,
+      "label": "PPT signature",
+      "weight": 100,
+      "strength": "strong"
+    }
+  ],
+  "maxSignatureOffset": 8,
+  "structure": {
+    "fields": [
+      {
+        "name": "FileHeader",
+        "offset": 0,
+        "size": 4,
+        "type": "bytes",
+        "description": "Format magic bytes / file signature"
+      },
+      {
+        "name": "Metadata",
+        "offset": -1,
+        "size": -1,
+        "type": "struct",
+        "description": "Format-specific metadata block"
+      },
+      {
+        "name": "Content",
+        "offset": -1,
+        "size": -1,
+        "type": "blob",
+        "description": "Primary content payload"
+      },
+      {
+        "name": "Footer",
+        "offset": -1,
+        "size": -1,
+        "type": "struct",
+        "description": "End-of-file marker or checksum"
+      }
+    ]
+  },
+  "useCases": [
+    "Legacy presentation compatibility",
+    "Corporate archival (pre-2007 Office)",
+    "Forensic malware analysis",
+    "Legacy embedded content analysis"
+  ],
+  "technicalDetails": "PPT (PowerPoint Binary File Format) is an OLE2 Compound File Binary. The PowerPoint Document stream contains a sequence of PowerPoint records starting with a CurrentUserAtom at offset 0. Each record has a 4-byte header (version/type nibbles) + 4-byte length. Slide records (SlideAtom) reference MasterAtom for layout templates.",
+  "completenessScore": 82
 }

@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "TrueType Font",
   "formatId": "TTF",
@@ -24,6 +25,114 @@
       "https://formats.kaitai.io/ttf/"
     ]
   },
+  "lastUpdated": "2026-05-20",
+  "signatures": [
+    {
+      "value": "00010000",
+      "offset": 0,
+      "label": "00 01 00 00 — TrueType sfnt version 1.0 (Windows standard)",
+      "weight": 1.0,
+      "strength": "Strong"
+    },
+    {
+      "value": "74727565",
+      "offset": 0,
+      "label": "'true' — Apple TrueType sfnt scaler type",
+      "weight": 0.9,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "name": "sfntVersion",
+        "type": "uint32be",
+        "offset": 0,
+        "length": 4,
+        "description": "sfnt scaler type: 0x00010000 (standard TrueType) or 0x74727565 ('true', Apple)"
+      },
+      {
+        "name": "numTables",
+        "type": "uint16be",
+        "offset": 4,
+        "length": 2,
+        "description": "Number of font tables"
+      },
+      {
+        "name": "searchRange",
+        "type": "uint16be",
+        "offset": 6,
+        "length": 2,
+        "description": "Binary search optimization: (maxPow2 <= numTables) * 16"
+      },
+      {
+        "name": "entrySelector",
+        "type": "uint16be",
+        "offset": 8,
+        "length": 2,
+        "description": "log2(maxPow2 <= numTables)"
+      },
+      {
+        "name": "rangeShift",
+        "type": "uint16be",
+        "offset": 10,
+        "length": 2,
+        "description": "(numTables * 16) - searchRange"
+      },
+      {
+        "name": "tableDirectory",
+        "type": "struct[]",
+        "offset": 12,
+        "length": -1,
+        "description": "Array of numTables 16-byte records (tag+checksum+offset+length)"
+      }
+    ]
+  },
+  "assertions": [
+    {
+      "name": "sfnt version is TrueType",
+      "expression": "scalerType == 65536 || scalerType == 1953658213",
+      "severity": "error",
+      "message": "TrueType font must start with 0x00010000 (65536) or 'true' (1953658213) at offset 0"
+    },
+    {
+      "name": "numTables > 0",
+      "expression": "numberOfTables > 0",
+      "severity": "error",
+      "message": "TrueType font must have at least one table"
+    },
+    {
+      "name": "numTables within range",
+      "expression": "numberOfTables <= 100",
+      "severity": "warning",
+      "message": "TrueType font has an unusually high number of tables (> 100)"
+    }
+  ],
+  "exportTemplates": [
+    {
+      "name": "TTF Header (JSON)",
+      "format": "json",
+      "fields": [
+        "scalerType",
+        "numberOfTables",
+        "searchRange",
+        "entrySelector",
+        "rangeShift"
+      ]
+    },
+    {
+      "name": "TTF Table Directory (Text)",
+      "format": "text",
+      "fields": [
+        "scalerType",
+        "numberOfTables",
+        "table1Tag",
+        "table2Tag",
+        "table3Tag"
+      ]
+    }
+  ],
   "detection": {
     "signature": "00010000",
     "offset": 0,
@@ -338,7 +447,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 24,
     "ValidationRules": 4,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -347,14 +456,14 @@
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
-  "aiHints": {
-    "analysisContext": "TrueType Font format - a scalable outline font standard originally developed by Apple and later adopted by M...",
-    "suggestedInspections": [
-      "Validate TrueType Font offset table and required table tags (head, cmap, glyf)",
-      "Check glyph count, loca table offsets, and encoding records",
-      "Inspect name table entries and OS/2 metrics for consistency"
-    ]
-  },
+  "aiHints": [
+    "TrueType font starts with 0x00010000 (version 1.0) or 'true' (0x74727565, Apple variant)",
+    "Offset table at byte 0: sfntVersion(4) + numTables(2) + searchRange(2) + entrySelector(2) + rangeShift(2)",
+    "Table directory at byte 12: numTables entries of 16 bytes (tag[4]+checksum[4]+offset[4]+length[4])",
+    "Required tables: cmap, glyf, head, hhea, hmtx, loca, maxp, name, post",
+    "loca table maps glyph IDs to offsets in glyf table — indexToLocFormat in head determines format",
+    "head table checksumAdjustment: whole-file checksum must equal 0xB1B0AFBA for valid font"
+  ],
   "navigation": {
     "bookmarks": [
       {
@@ -387,8 +496,16 @@
     "Alignment": "4-byte boundary"
   },
   "diff": {
-    "keyFields": ["scalerType", "numberOfTables", "table1Tag"],
-    "ignoreFields": ["searchRange", "entrySelector", "rangeShift"],
+    "keyFields": [
+      "scalerType",
+      "numberOfTables",
+      "table1Tag"
+    ],
+    "ignoreFields": [
+      "searchRange",
+      "entrySelector",
+      "rangeShift"
+    ],
     "groupBy": "numberOfTables",
     "note": "Scaler type and table count identify font version and complexity; binary search optimization fields are derived values and carry no semantic diff value"
   },
@@ -414,11 +531,37 @@
     "preserveChecksums": false,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "scalerType", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the scaler type to test font engine fallback and error handling on unrecognized font flavors" },
-      { "field": "numberOfTables", "mutation": "boundary_values", "weight": 2, "description": "Test extreme table counts (0, 1, 255) to probe table directory allocation and search logic" },
-      { "field": "table1Offset", "mutation": "overflow", "weight": 2, "description": "Overflow the first table offset to trigger out-of-bounds access in table data readers" },
-      { "field": "table1Tag", "mutation": "random_bytes", "weight": 1, "description": "Randomize the first table tag to test unknown-table handling in font parsers" },
-      { "field": "searchRange", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Bit-flip the binary search optimization field to test parser tolerance for incorrect precomputed values" }
+      {
+        "field": "scalerType",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupt the scaler type to test font engine fallback and error handling on unrecognized font flavors"
+      },
+      {
+        "field": "numberOfTables",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Test extreme table counts (0, 1, 255) to probe table directory allocation and search logic"
+      },
+      {
+        "field": "table1Offset",
+        "mutation": "overflow",
+        "weight": 2,
+        "description": "Overflow the first table offset to trigger out-of-bounds access in table data readers"
+      },
+      {
+        "field": "table1Tag",
+        "mutation": "random_bytes",
+        "weight": 1,
+        "description": "Randomize the first table tag to test unknown-table handling in font parsers"
+      },
+      {
+        "field": "searchRange",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Bit-flip the binary search optimization field to test parser tolerance for incorrect precomputed values"
+      }
     ]
   },
   "migration": [
@@ -427,8 +570,28 @@
       "to": "truetype_windows",
       "description": "Normalize Apple-specific TrueType scaler type ('true' 0x74727565) to standard Windows TrueType (0x00010000)",
       "changes": [
-        { "field": "scalerType", "changeType": "set_value", "value": "00010000", "description": "Replace Apple 'true' scaler type with Windows-standard 0x00010000 for cross-platform compatibility" }
+        {
+          "field": "scalerType",
+          "changeType": "set_value",
+          "value": "00010000",
+          "description": "Replace Apple 'true' scaler type with Windows-standard 0x00010000 for cross-platform compatibility"
+        }
       ]
     }
-  ]
+  ],
+  "inspector": {
+    "displayFields": [
+      "scalerType",
+      "numberOfTables",
+      "searchRange",
+      "entrySelector",
+      "rangeShift"
+    ],
+    "valueMaps": {},
+    "tooltips": {
+      "scalerType": "sfnt version / scaler type identifying font format and outline type",
+      "numberOfTables": "Number of tables in the font file",
+      "searchRange": "Binary search optimization: (maxPow2 <= numTables) * 16"
+    }
+  }
 }

@@ -1,8 +1,9 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "Protocol Buffers",
   "formatId": "PROTOBUF",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".pb",
     ".protobuf"
@@ -10,33 +11,97 @@
   "description": "Google Protocol Buffers binary serialization format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Protocol Buffers Format"
+      "Protocol Buffers Encoding Documentation",
+      "Google Protocol Buffers Language Guide (proto3)"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/PB"
+      "https://protobuf.dev/programming-guides/encoding/",
+      "https://developers.google.com/protocol-buffers",
+      "https://en.wikipedia.org/wiki/Protocol_Buffers"
     ]
   },
-  "detection": {
-    "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "PROTOBUF magic",
-        "weight": 1.0
-      }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+  "signatures": [
+    {
+      "value": "0A",
+      "offset": 0,
+      "label": "Field 1 wire type 2 (length-delimited) — common pattern in many protobuf messages",
+      "weight": 0.3,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 1,
+  "structure": {
+    "fields": [
+      { "name": "first_tag",   "type": "bytes", "offset": "0x00", "length": 1, "description": "First varint tag byte: (field_number << 3) | wire_type" },
+      { "name": "first_value", "type": "bytes", "offset": "0x01", "length": 4, "description": "First field value (wire-type dependent: varint, 64-bit, len-delimited, or 32-bit)" }
+    ]
   },
+  "inspector": {
+    "displayFields": ["first_tag"],
+    "valueMaps": {
+      "wire_type": {
+        "0": "Varint (int32, int64, uint32, uint64, sint32, sint64, bool, enum)",
+        "1": "64-bit (fixed64, sfixed64, double)",
+        "2": "Length-delimited (string, bytes, embedded message, repeated)",
+        "3": "Start group (deprecated)",
+        "4": "End group (deprecated)",
+        "5": "32-bit (fixed32, sfixed32, float)"
+      }
+    },
+    "tooltips": {
+      "first_tag": "Tag = (field_number << 3) | wire_type; decode as varint; first_tag & 0x07 = wire type",
+      "first_value": "Value encoding depends on wire_type: 0=varint, 1=8 bytes LE, 2=varint_length + bytes, 5=4 bytes LE"
+    }
+  },
+  "assertions": [
+    {
+      "name": "First byte wire type valid",
+      "expression": "(bytes[0] & 0x07) in [0, 1, 2, 5]",
+      "severity": "warning",
+      "message": "First byte wire type is not 0/1/2/5; wire types 3 and 4 are deprecated in proto3"
+    },
+    {
+      "name": "Not empty file",
+      "expression": "fileSize > 0",
+      "severity": "error",
+      "message": "Empty protobuf file; no fields to parse"
+    },
+    {
+      "name": "No fixed global magic",
+      "expression": "true",
+      "severity": "info",
+      "message": "Protocol Buffers has no fixed file magic; identification requires schema context or field heuristics"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "First Tag Byte", "offset": 0, "icon": "", "color": "#4285F4" },
+      { "name": "First Value",    "offset": 1, "icon": "", "color": "#4285F4" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Protobuf Field Tags (JSON)",
+      "format": "json",
+      "fields": ["first_tag", "first_value"]
+    },
+    {
+      "name": "Protobuf Hex Dump",
+      "format": "hex-dump",
+      "fields": ["first_tag", "first_value"]
+    }
+  ],
+  "aiHints": [
+    "Protobuf has no file magic; identification is heuristic — check that first byte & 0x07 is in {0,1,2,5}",
+    "Tag byte decodes as varint: field_number = tag >> 3, wire_type = tag & 0x07",
+    "Wire type 2 (length-delimited) is the most common: followed by varint byte count, then that many bytes",
+    "Varint encoding: 7 bits per byte, MSB=1 means more bytes follow, MSB=0 = last byte (little-endian groups)",
+    "Use protoc --decode_raw < file.pb to inspect any protobuf without a .proto schema file"
+  ],
   "variables": {
     "currentOffset": 0,
     "tagCount": 0,
@@ -67,18 +132,29 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "protoc (Protocol Buffers compiler)",
+    "gRPC (uses protobuf for RPC messages)",
+    "protobuf Python / Java / C++ / Go libraries",
+    "Wireshark (protobuf dissector)"
   ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".pb",
-      ".protobuf"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "FLATBUF",
+      "relation": "alternative",
+      "note": "FlatBuffers is a zero-copy alternative to protobuf; both use field IDs but protobuf uses varint encoding while FlatBuffers uses vtables"
+    }
+  ],
+  "useCases": [
+    "gRPC service message encoding and decoding",
+    "Android application inter-process communication",
+    "Configuration and state serialization in Go/Java/Python services",
+    "TensorFlow and ML framework data interchange"
+  ],
+  "technicalDetails": "Protocol Buffers encodes each field as a tag (varint) + value. Tag = (field_number << 3) | wire_type. Wire types: 0=varint, 1=64-bit LE, 2=length-delimited, 5=32-bit LE. Varints use 7-bit groups with high bit as continuation flag. No file magic; proto3 omits fields with default values, making schema context necessary for full interpretation.",
+  "completenessScore": 82,
   "MimeTypes": [
-    "application/octet-stream"
+    "application/octet-stream",
+    "application/x-protobuf"
   ],
   "Software": [
     "Hex Editor",
@@ -91,30 +167,28 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 82,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "forensic": {
-    "category": "data",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
+  "TechnicalDetails": {
+    "NoMagic": "No fixed file header; schema (.proto file) is required for full decoding",
+    "Encoding": "Varint tags with type-dependent value encoding"
   },
-  "aiHints": {
-    "analysisContext": "Google Protocol Buffers binary serialization format",
-    "suggestedInspections": [
-      "Validate Protocol Buffers schema header and encoding markers",
-      "Check nested structure depth and field type tags",
-      "Inspect string encodings and numeric value boundaries"
-    ]
-  },
-  "TechnicalDetails": {},
   "functions": {
     "readUInt8": "Read varint tag bytes",
     "extractASCIIString": "Extract field names"
+  },
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "Without the .proto schema, protobuf files show only field numbers and wire types — content is opaque",
+      "Proto2 files may contain unknown fields that are preserved during re-serialization",
+      "gRPC messages have a 5-byte header (1 byte compressed flag + 4 bytes big-endian message length)"
+    ]
   }
 }

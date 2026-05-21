@@ -1,0 +1,88 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "NSIS Installer",
+  "formatId": "NSIS_INSTALLER",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "NSIS (Nullsoft Scriptable Install System) is an open-source Windows installer framework originally developed by Nullsoft (Winamp). NSIS installers are PE executables (.exe) with an embedded compressed archive containing installation scripts and files. NSIS is identified by the 'Nullsoft' signature string within the PE binary.",
+  "extensions": [".exe", ".nsis"],
+  "category": "Archive",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "4D5A",
+      "offset": 0,
+      "label": "'MZ' DOS/PE executable magic (NSIS is a PE-wrapped installer)",
+      "weight": 0.5,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 2,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 2, "name": "mz_magic", "type": "ascii", "description": "MZ DOS header magic 'MZ' identifying a Windows PE executable", "storeAs": "string" },
+      { "offset": 2, "size": 2, "name": "last_page_bytes", "type": "uint16le", "description": "Bytes in last page of DOS stub (legacy DOS header field)", "storeAs": "uint16" },
+      { "offset": 60, "size": 4, "name": "pe_offset", "type": "uint32le", "description": "Offset to the PE signature 'PE\\0\\0' in the file (e_lfanew)", "storeAs": "uint32" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["mz_magic", "pe_offset"],
+    "valueMaps": {},
+    "tooltips": {
+      "mz_magic": "Must be 'MZ' (0x4D5A); identifies a Windows executable; NSIS further identified by embedded 'Nullsoft' string",
+      "pe_offset": "Offset to PE header (e_lfanew at DOS header offset 0x3C); parse PE headers to locate NSIS data section",
+      "last_page_bytes": "Legacy DOS stub field; not relevant for NSIS identification"
+    }
+  },
+  "assertions": [
+    { "id": "NSIS_001", "field": "mz_magic", "operator": "equals", "value": "MZ", "description": "First 2 bytes must be 'MZ' DOS header magic" },
+    { "id": "NSIS_002", "field": "pe_offset", "operator": "greaterThan", "value": 64, "description": "PE header offset must be greater than 64 (beyond DOS stub)" },
+    { "id": "NSIS_003", "field": "pe_offset", "operator": "lessThan", "value": 1048576, "description": "PE header offset must be within the first 1MB; implausibly large values indicate a corrupt or malformed header" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "MZ DOS Header Magic", "color": "#FF6B35" },
+      { "offset": 60, "label": "e_lfanew: PE Header Offset", "color": "#4ECDC4" },
+      { "offset": 0, "label": "Search for 'Nullsoft' string to confirm NSIS", "color": "#45B7D1" },
+      { "offset": 0, "label": "NSIS data block after PE sections", "color": "#96CEB4" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "MZ Header", "fields": ["mz_magic", "pe_offset"], "format": "text" },
+    { "name": "DOS Header Hex", "fields": ["mz_magic", "last_page_bytes", "pe_offset"], "format": "hex" }
+  ],
+  "aiHints": [
+    "NSIS installers embed the 'Nullsoft Install System vX.Y' string within the PE binary; search for the bytes 4E756C6C736F6674 ('Nullsoft') to confirm NSIS",
+    "NSIS stores its compressed archive (LZMA, zlib, or bzip2) in a PE section or appended after the PE sections; the NSIS header magic within the file is typically 0xEF 0xBE 0xAD 0xDE ('deadbeef' reversed) or 0x1234 0x5678 pattern",
+    "7-Zip and InnoExtract can extract the embedded NSIS archive without executing the installer — use this for forensic analysis",
+    "NSIS versions 2.x use a 4-byte signature block; NSIS 3.x changed the internal structure slightly; check the NSIS first header magic: 4 null bytes + 0xEFBEADDE + CRC32",
+    "The embedded script (.nsi) can often be decompiled from the archive using tools like NSIS Decompiler or Universal Extractor to understand installation logic"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "NSIS installers are commonly used to distribute malware as they can silently drop and execute arbitrary files; always extract and analyze embedded content",
+      "The embedded archive may contain additional executables, DLLs, and scripts that execute with installer privileges during setup",
+      "NSIS script logic (conditionals, registry writes, file drops) can be recovered by decompiling the embedded bytecode to understand what the installer does"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "ZIP", "relationship": "similar", "note": "Both are archive formats; NSIS is executable-wrapped while ZIP is a pure container" },
+    { "format": "MSI", "relationship": "alternative", "note": "MSI is the Microsoft Installer alternative to NSIS; both produce Windows installer packages" },
+    { "format": "CAB", "relationship": "component", "note": "NSIS internally compresses its payload; some NSIS installers embed CAB files as sub-archives" }
+  ],
+  "software": [
+    { "name": "NSIS (nsis.sourceforge.io)", "role": "Open-source installer framework that compiles .nsi scripts into self-extracting executables" },
+    { "name": "7-Zip", "role": "Can extract NSIS installer contents without executing; supports NSIS archive format" },
+    { "name": "Universal Extractor (UniExtract)", "role": "Extracts NSIS and many other installer formats for analysis" },
+    { "name": "NSIS Decompiler / NSCR", "role": "Reverse-engineering tools to recover the .nsi script from a compiled NSIS installer" }
+  ],
+  "useCases": [
+    "Windows application distribution packaging requiring a customizable, scripted installation experience",
+    "Forensic analysis of potentially malicious installer executables to extract embedded payloads",
+    "Repacking and repackaging of NSIS installers for enterprise software deployment"
+  ],
+  "technicalDetails": "NSIS installers are standard Windows PE executables. The stub (first executable section) is the NSIS runtime that reads and extracts the embedded data block. The NSIS data block follows the PE sections in the file and begins with a first header: 4-byte CRC32 signature, 4-byte magic (0xDEADBEEF), flags, and pointers to the data sections. The compressed payload uses zlib, bzip2, or LZMA compression. The payload contains: the script bytecode (install.nsi compiled form), the file data blocks, and an uninstaller stub. Each file entry in the archive has a target path, attributes, and optional CRC. NSIS script bytecode implements a simple stack-based VM for installer logic including registry operations, file extraction, process execution, and UI dialogs.",
+  "completenessScore": 80
+}

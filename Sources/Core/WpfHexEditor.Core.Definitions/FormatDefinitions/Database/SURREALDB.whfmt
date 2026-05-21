@@ -1,8 +1,26 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "SurrealDB Database",
   "formatId": "SURREALDB",
-  "version": "1.0",
+  "version": "1.0.1",
+  "lastUpdated": "2026-05-20",
+  "completenessScore": 82,
+  "maxSignatureOffset": 1,
+  "signatures": [
+    {
+      "value": "00",
+      "offset": 0,
+      "label": "SurrealDB — no fixed magic; detection by file extension only",
+      "weight": 0.1,
+      "strength": "Weak"
+    }
+  ],
+  "structure": {
+    "fields": [
+      { "name": "first_byte", "offset": 0, "size": 1, "type": "uint8", "description": "First byte — may indicate underlying storage engine" }
+    ]
+  },
   "extensions": [".surreal", ".db"],
   "description": "SurrealDB is a multi-model database supporting document, graph, and relational paradigms with a SQL-like query language (SurrealQL). SurrealDB can persist data to various backends including RocksDB and TiKV. The native file format lacks a well-known magic signature, making detection extension-based only with weak confidence. Files may contain embedded RocksDB or custom storage engine data.",
   "category": "Database",
@@ -91,21 +109,23 @@
     }
   ],
   "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "File Start (backend storage engine)", "color": "#8E44AD" }
+    ],
     "entryPoints": [
       { "name": "File Start", "offset": 0 }
-    ],
-    "jumpTable": [
-      { "label": "File Start", "offset": 0 }
     ]
   },
   "inspector": {
     "badge": "SR",
     "primaryField": "surrealFirstByte",
+    "displayFields": ["surrealFirstByte"],
+    "valueMaps": {},
+    "tooltips": {
+      "surrealFirstByte": "First byte — if 0xED, may be BoltDB backend; if 0x44, may be DuckDB; if 0x53, may be RocksDB WAL"
+    },
     "groups": [
-      {
-        "name": "Identification",
-        "fields": ["surrealFirstByte"]
-      }
+      { "name": "Identification", "fields": ["surrealFirstByte"] }
     ]
   },
   "exportTemplates": [
@@ -122,13 +142,25 @@
   ],
   "forensic": {
     "riskLevel": "medium",
+    "notes": [
+      "No known magic means file authenticity cannot be confirmed by binary signature",
+      "Embedded RocksDB data has its own integrity markers — inspect for storage engine identification",
+      "Multi-model data may include graph edges referencing external records or services"
+    ],
     "suspiciousPatterns": [
       "No known magic — cannot verify file authenticity by signature alone",
       "Embedded RocksDB data may contain its own integrity markers",
       "Multi-model data may include graph edges referencing external records"
     ]
   },
-  "aiHints": {
+  "aiHints": [
+    "SurrealDB has NO fixed magic — detection is extension-based only (.surreal extension)",
+    "The underlying storage depends on configuration: RocksDB (disk), TiKV (distributed), memory",
+    "Check the first bytes for known storage engine magic: ED=BoltDB, 44 55 43 4B=DuckDB, etc.",
+    "SurrealQL export files (.surql) are text format, not binary — distinguish from native .surreal files",
+    "SurrealDB can embed other storage formats — verify the backend before applying format-specific analysis"
+  ],
+  "aiHints_legacy": {
     "analysisContext": "SurrealDB uses pluggable storage backends (RocksDB for disk, TiKV for distributed). The on-disk format depends on the chosen backend. Files with .surreal extension may contain serialized SurrealQL export data or native storage engine files. Manual inspection of the first bytes can help identify the underlying storage engine.",
     "suggestedInspections": [
       "Check first bytes for RocksDB or other storage engine signatures",
@@ -155,9 +187,23 @@
     "SurrealQL query-driven data persistence",
     "Edge computing and embedded database scenarios"
   ],
+  "useCases": [
+    "Multi-model database storage (document, graph, relational)",
+    "Real-time collaborative application backends",
+    "SurrealQL query-driven data persistence",
+    "Edge computing and embedded database scenarios"
+  ],
+  "technicalDetails": {
+    "headerSize": 0,
+    "endian": "unknown",
+    "signatureOffset": -1,
+    "signatureLength": 0,
+    "storageEngine": "Pluggable: RocksDB (disk), TiKV (distributed), memory",
+    "notes": "No fixed magic signature. Detection relies on file extension. Underlying format depends on configured storage backend."
+  },
   "QualityMetrics": {
     "CompletenessScore": 82,
-    "LastUpdated": "2026-04-16"
+    "LastUpdated": "2026-05-20"
   },
   "TechnicalDetails": {
     "headerSize": 0,

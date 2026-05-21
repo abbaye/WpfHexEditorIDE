@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "LZMA Compression",
   "formatId": "LZMA",
@@ -28,7 +29,10 @@
     "offset": 0,
     "required": true,
     "Strength": "Medium",
-    "EntropyHint": { "min": 7.5, "max": 8.0 },
+    "EntropyHint": {
+      "min": 7.5,
+      "max": 8.0
+    },
     "validation": {
       "minFileSize": 13,
       "maxSignatureOffset": 0
@@ -175,13 +179,13 @@
       {
         "name": "LZMA Header",
         "offset": 0,
-        "icon": "\uE71B",
+        "icon": "",
         "color": "#FF6B6B"
       },
       {
         "name": "Compressed Data",
         "offset": 13,
-        "icon": "\uE8A5",
+        "icon": "",
         "color": "#4ECDC4"
       }
     ]
@@ -193,13 +197,22 @@
     "groups": [
       {
         "title": "LZMA Header",
-        "icon": "\uE71B",
-        "fields": ["lzmaProperties", "lzmaLc", "dictionarySize", "formattedDictSize"]
+        "icon": "",
+        "fields": [
+          "lzmaProperties",
+          "lzmaLc",
+          "dictionarySize",
+          "formattedDictSize"
+        ]
       },
       {
         "title": "Content Size",
-        "icon": "\uE9D9",
-        "fields": ["uncompressedSize", "isUnknownSize", "formattedUncompSize"]
+        "icon": "",
+        "fields": [
+          "uncompressedSize",
+          "isUnknownSize",
+          "formattedUncompSize"
+        ]
       }
     ]
   },
@@ -207,18 +220,31 @@
     {
       "name": "LZMA Header (JSON)",
       "format": "json",
-      "fields": ["lzmaProperties", "lzmaLc", "dictionarySize", "uncompressedSize", "isUnknownSize"]
+      "fields": [
+        "lzmaProperties",
+        "lzmaLc",
+        "dictionarySize",
+        "uncompressedSize",
+        "isUnknownSize"
+      ]
     },
     {
       "name": "lzma_header_t (C struct)",
       "format": "c-struct",
       "structName": "lzma_header",
-      "fields": ["lzmaProperties", "dictionarySize", "uncompressedSize"]
+      "fields": [
+        "lzmaProperties",
+        "dictionarySize",
+        "uncompressedSize"
+      ]
     },
     {
       "name": "Python LZMA check",
       "format": "python-bytes",
-      "fields": ["lzmaProperties", "dictionarySize"]
+      "fields": [
+        "lzmaProperties",
+        "dictionarySize"
+      ]
     }
   ],
   "forensic": {
@@ -245,19 +271,13 @@
       }
     ]
   },
-  "aiHints": {
-    "analysisContext": "LZMA standalone format has a fixed 13-byte header: properties byte (lc/lp/pb parameters) + 4-byte dictionary size (LE) + 8-byte uncompressed size (LE, -1 if unknown). No integrity checksum. The properties byte 0x5D (93) is the default. Superseded by .xz format which adds stream framing, checksums, and better multi-file support.",
-    "knownVulnerabilities": [
-      "No integrity checksum in LZMA standalone format — bit errors are not detectable without external checksum",
-      "Very large dictionary sizes (> 256MB) can cause decompressor memory exhaustion"
-    ],
-    "suggestedInspections": [
-      "Verify properties byte <= 224 and (lc + lp) <= 4",
-      "Check dictionary size is a power of 2 or sum of two consecutive powers of 2",
-      "If uncompressedSize == 0xFFFFFFFFFFFFFFFF, the file must be fully decompressed to determine content size",
-      "No checksum: verify content integrity with external hash if available"
-    ]
-  },
+  "aiHints": [
+    "LZMA standalone header: properties(1) + dictSize(4,LE) + uncompressedSize(8,LE) = 13 bytes total",
+    "Properties byte: lc = props % 9, lp = (props / 9) % 5, pb = props / (9*5); default 5D = lc=3,lp=0,pb=2",
+    "uncompressedSize = 0xFFFFFFFFFFFFFFFF (all-ff) indicates unknown/streaming size",
+    "LZMA standalone format lacks integrity checking (no CRC) — use .xz for verified compressed data",
+    "Typical dictionary size: 8MB (0x00800000) for high compression, 64KB for fast decompression"
+  ],
   "software": [
     "LZMA utils (Igor Pavlov)",
     "7-Zip",
@@ -266,8 +286,14 @@
   ],
   "formatRelationships": {
     "category": "Archives",
-    "extensions": [".lzma"],
-    "relatedFormats": ["XZ", "7Z", "BZIP2"],
+    "extensions": [
+      ".lzma"
+    ],
+    "relatedFormats": [
+      "XZ",
+      "7Z",
+      "BZIP2"
+    ],
     "supersededBy": "XZ"
   },
   "MimeTypes": [
@@ -281,11 +307,11 @@
     "Linux initramfs (older distributions)"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 78,
+    "CompletenessScore": 82,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 10,
     "ValidationRules": 3,
-    "LastUpdated": "2026-04-13",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -327,5 +353,41 @@
       }
     ],
     "note": "Inferred fuzz strategies for LZMA. Hand-tune weights/rates per format if needed."
-  }
+  },
+  "signatures": [
+    {
+      "value": "5D000000",
+      "offset": 0,
+      "label": "5D 00 00 00 — LZMA properties byte (lc=3,lp=0,pb=2) + dict size LE",
+      "weight": 0.6,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "name": "properties",
+        "type": "uint8",
+        "offset": 0,
+        "length": 1,
+        "description": "Compression parameters: lc + lp*9 + pb*9*5"
+      },
+      {
+        "name": "dictSize",
+        "type": "uint32le",
+        "offset": 1,
+        "length": 4,
+        "description": "Dictionary size in bytes"
+      },
+      {
+        "name": "uncompressedSize",
+        "type": "uint64le",
+        "offset": 5,
+        "length": 8,
+        "description": "Uncompressed size (0xFFFFFFFFFFFFFFFF = unknown)"
+      }
+    ]
+  },
+  "lastUpdated": "2026-05-20"
 }

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "binary",
   "formatName": "XZ Compressed File",
   "formatId": "XZ",
@@ -29,7 +30,10 @@
     "offset": 0,
     "required": true,
     "Strength": "Strong",
-    "EntropyHint": { "min": 7.5, "max": 8.0 },
+    "EntropyHint": {
+      "min": 7.5,
+      "max": 8.0
+    },
     "validation": {
       "minFileSize": 32,
       "maxSignatureOffset": 0
@@ -72,7 +76,9 @@
       "storeAs": "streamFlagsMSB",
       "valueType": "uint8",
       "validation": {
-        "allowedValues": [0]
+        "allowedValues": [
+          0
+        ]
       }
     },
     {
@@ -92,10 +98,26 @@
         "10": "0x0A — SHA-256 (check size = 32 bytes)"
       },
       "bitfields": [
-        { "bit": 3, "name": "CheckType3", "description": "Bit 3 of check type nibble" },
-        { "bit": 2, "name": "CheckType2", "description": "Bit 2 of check type nibble" },
-        { "bit": 1, "name": "CheckType1", "description": "Bit 1 of check type nibble" },
-        { "bit": 0, "name": "CheckType0", "description": "Bit 0 of check type nibble" }
+        {
+          "bit": 3,
+          "name": "CheckType3",
+          "description": "Bit 3 of check type nibble"
+        },
+        {
+          "bit": 2,
+          "name": "CheckType2",
+          "description": "Bit 2 of check type nibble"
+        },
+        {
+          "bit": 1,
+          "name": "CheckType1",
+          "description": "Bit 1 of check type nibble"
+        },
+        {
+          "bit": 0,
+          "name": "CheckType0",
+          "description": "Bit 0 of check type nibble"
+        }
       ]
     },
     {
@@ -133,8 +155,15 @@
     {
       "name": "Stream Header CRC-32",
       "algorithm": "crc32",
-      "dataRange": { "fixedOffset": 6, "fixedLength": 2 },
-      "storedAt": { "fixedOffset": 8, "length": 4, "endianness": "little" },
+      "dataRange": {
+        "fixedOffset": 6,
+        "fixedLength": 2
+      },
+      "storedAt": {
+        "fixedOffset": 8,
+        "length": 4,
+        "endianness": "little"
+      },
       "storedType": "uint32",
       "severity": "error"
     }
@@ -201,12 +230,19 @@
       {
         "title": "Stream Header",
         "icon": "",
-        "fields": ["xzMagic", "streamFlagsMSB", "streamFlagsLSB"]
+        "fields": [
+          "xzMagic",
+          "streamFlagsMSB",
+          "streamFlagsLSB"
+        ]
       },
       {
         "title": "Integrity",
         "icon": "",
-        "fields": ["headerCRC", "crcValid"]
+        "fields": [
+          "headerCRC",
+          "crcValid"
+        ]
       }
     ]
   },
@@ -214,18 +250,32 @@
     {
       "name": "XZ Stream Header (JSON)",
       "format": "json",
-      "fields": ["xzMagic", "streamFlagsMSB", "streamFlagsLSB", "headerCRC", "crcValid"]
+      "fields": [
+        "xzMagic",
+        "streamFlagsMSB",
+        "streamFlagsLSB",
+        "headerCRC",
+        "crcValid"
+      ]
     },
     {
       "name": "xz_stream_header (C struct)",
       "format": "c-struct",
       "structName": "xz_stream_header",
-      "fields": ["xzMagic", "streamFlagsMSB", "streamFlagsLSB", "headerCRC"]
+      "fields": [
+        "xzMagic",
+        "streamFlagsMSB",
+        "streamFlagsLSB",
+        "headerCRC"
+      ]
     },
     {
       "name": "Python XZ magic check",
       "format": "python-bytes",
-      "fields": ["xzMagic", "streamFlagsLSB"]
+      "fields": [
+        "xzMagic",
+        "streamFlagsLSB"
+      ]
     }
   ],
   "forensic": {
@@ -258,20 +308,13 @@
       }
     ]
   },
-  "aiHints": {
-    "analysisContext": "XZ stream header is 12 bytes: 6-byte magic (0xFD 37 7A 58 5A 00) + 2-byte stream flags + 4-byte CRC-32 of stream flags. Stream Flags low byte encodes the integrity check type used per-block (0=none, 1=CRC-32, 4=CRC-64, 10=SHA-256). The high byte is always 0. XZ is the standard format for Linux kernel tarballs (.tar.xz) and many Linux distributions' package systems (Arch, Fedora).",
-    "knownVulnerabilities": [
-      "CVE-2024-3094: backdoor in xz-utils 5.6.0/5.6.1 (liblzma) compromised SSH servers on certain Linux distros",
-      "XZ header with check type 0 (no integrity check) can mask data corruption or tampering"
-    ],
-    "suggestedInspections": [
-      "Verify stream magic is exactly 0xFD 37 7A 58 5A 00",
-      "Verify stream flags MSB is 0x00",
-      "Verify stream flags lower nibble is 0, 1, 4, or 10",
-      "Verify stream header CRC-32 at offset 8 matches CRC of bytes 6-7",
-      "Check for CVE-2024-3094 if from xz-utils 5.6.0/5.6.1 — inspect linked liblzma"
-    ]
-  },
+  "aiHints": [
+    "XZ stream: magic FD 37 7A 58 5A 00 (6B) + streamFlags(2,BE) + CRC32(4,LE of streamFlags) + blocks + index + streamFooter",
+    "streamFlags low nibble: check type 0=none, 1=CRC32, 4=CRC64, 10=SHA-256",
+    "Block headers contain filter chain: LZMA2 is primary compressor; BCJ, delta are optional pre-filters",
+    "XZ index at end of stream maps block positions for random-access decompression",
+    "XZ supersedes LZMA standalone: adds CRC integrity, multiple blocks, and block-level random access"
+  ],
   "software": [
     "xz-utils (Lasse Collin)",
     "7-Zip",
@@ -281,8 +324,15 @@
   ],
   "formatRelationships": {
     "category": "Archives",
-    "extensions": [".xz", ".txz"],
-    "relatedFormats": ["LZMA", "7Z", "BZIP2"],
+    "extensions": [
+      ".xz",
+      ".txz"
+    ],
+    "relatedFormats": [
+      "LZMA",
+      "7Z",
+      "BZIP2"
+    ],
     "supersedesFormat": "LZMA"
   },
   "MimeTypes": [
@@ -300,7 +350,7 @@
     "DocumentationLevel": "comprehensive",
     "BlocksDefined": 7,
     "ValidationRules": 4,
-    "LastUpdated": "2026-04-13",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -314,8 +364,14 @@
     "StreamFooterSize": "12 bytes"
   },
   "diff": {
-    "keyFields": ["xzMagic", "streamFlagsLSB", "headerCRC"],
-    "ignoreFields": ["crcValid"],
+    "keyFields": [
+      "xzMagic",
+      "streamFlagsLSB",
+      "headerCRC"
+    ],
+    "ignoreFields": [
+      "crcValid"
+    ],
     "groupBy": "xzStreamHeader",
     "note": "Magic and check type flags define the stream identity; headerCRC confirms flag integrity; crcValid is a computed boolean with no diff value"
   },
@@ -341,11 +397,37 @@
     "preserveChecksums": true,
     "maxMutationsPerFile": 1,
     "strategies": [
-      { "field": "xzMagic", "mutation": "corrupt_signature", "weight": 3, "description": "Corrupt the 0xFD377A585A00 magic to test stream rejection" },
-      { "field": "streamFlagsLSB", "mutation": "enum_sweep", "weight": 2, "description": "Sweep all 256 check type values including undefined ones to test decoder robustness" },
-      { "field": "streamFlagsMSB", "mutation": "boundary_values", "weight": 2, "description": "Set MSB to non-zero values to test reserved byte rejection" },
-      { "field": "headerCRC", "mutation": "random_bytes", "weight": 1, "description": "Randomize the header CRC to trigger CRC mismatch code path" },
-      { "field": "streamFlagsLSB", "mutation": "bit_flip", "rate": 0.001, "weight": 1, "description": "Flip individual bits in check type byte to probe boundary conditions" }
+      {
+        "field": "xzMagic",
+        "mutation": "corrupt_signature",
+        "weight": 3,
+        "description": "Corrupt the 0xFD377A585A00 magic to test stream rejection"
+      },
+      {
+        "field": "streamFlagsLSB",
+        "mutation": "enum_sweep",
+        "weight": 2,
+        "description": "Sweep all 256 check type values including undefined ones to test decoder robustness"
+      },
+      {
+        "field": "streamFlagsMSB",
+        "mutation": "boundary_values",
+        "weight": 2,
+        "description": "Set MSB to non-zero values to test reserved byte rejection"
+      },
+      {
+        "field": "headerCRC",
+        "mutation": "random_bytes",
+        "weight": 1,
+        "description": "Randomize the header CRC to trigger CRC mismatch code path"
+      },
+      {
+        "field": "streamFlagsLSB",
+        "mutation": "bit_flip",
+        "rate": 0.001,
+        "weight": 1,
+        "description": "Flip individual bits in check type byte to probe boundary conditions"
+      }
     ]
   },
   "migration": [
@@ -354,8 +436,56 @@
       "to": "check_crc64",
       "description": "Upgrade XZ stream from no integrity check to CRC-64 for improved data reliability",
       "changes": [
-        { "field": "streamFlagsLSB", "changeType": "set_value", "value": "4", "description": "Set check type to 0x04 (CRC-64) — the most common default for modern xz-utils" }
+        {
+          "field": "streamFlagsLSB",
+          "changeType": "set_value",
+          "value": "4",
+          "description": "Set check type to 0x04 (CRC-64) — the most common default for modern xz-utils"
+        }
       ]
     }
-  ]
+  ],
+  "signatures": [
+    {
+      "value": "FD377A585A00",
+      "offset": 0,
+      "label": "ý7zXZ\u0000 — XZ stream header magic",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "name": "magic",
+        "type": "hex",
+        "offset": 0,
+        "length": 6,
+        "description": "XZ magic: FD 37 7A 58 5A 00"
+      },
+      {
+        "name": "streamFlags",
+        "type": "uint16be",
+        "offset": 6,
+        "length": 2,
+        "description": "Stream flags (check type in low nibble)"
+      },
+      {
+        "name": "crc32",
+        "type": "uint32le",
+        "offset": 8,
+        "length": 4,
+        "description": "CRC-32 of stream flags"
+      },
+      {
+        "name": "blockHeaders",
+        "type": "struct[]",
+        "offset": 12,
+        "length": -1,
+        "description": "Variable-length block headers with filters (LZMA2, delta, BCJ)"
+      }
+    ]
+  },
+  "lastUpdated": "2026-05-20"
 }

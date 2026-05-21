@@ -1,0 +1,131 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Graphviz DOT Graph",
+  "formatId": "GRAPHVIZ_DOT",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Graphviz DOT Language — a plain-text graph description language used by the Graphviz visualization toolkit developed at AT&T Bell Labs. DOT files describe directed graphs ('digraph'), undirected graphs ('graph'), or strict variants using a C-like brace syntax. Nodes, edges, and attributes are declared with semicolon-separated statements. The DOT language supports rich visual attributes (shape, color, style, label, fontname) for nodes and edges. Graphviz tools (dot, neato, fdp, sfdp, twopi, circo) render DOT files as PNG, SVG, PDF, or other formats. DOT is widely used in academic papers, compiler infrastructure (LLVM, GCC CFGs), and software documentation.",
+  "extensions": [".dot", ".gv"],
+  "category": "Text",
+  "diffMode": "text",
+  "signatures": [
+    {
+      "value": "64696772617068",
+      "offset": 0,
+      "label": "DOT directed graph keyword 'digraph'",
+      "weight": 0.7,
+      "strength": "Moderate"
+    }
+  ],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "offset": 0,
+        "size": -1,
+        "name": "Graph Declaration",
+        "type": "ascii",
+        "description": "Graph type declaration: 'digraph', 'graph', 'strict digraph', or 'strict graph' followed by an optional graph name and opening brace '{'.",
+        "storeAs": "graphDeclaration"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Graph Statements",
+        "type": "ascii",
+        "description": "Node declarations, edge declarations, attribute statements, and subgraph declarations inside the outermost braces. Edges use '->' for directed graphs and '--' for undirected graphs.",
+        "storeAs": "graphStatements"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["graphDeclaration", "graphStatements"],
+    "valueMaps": {},
+    "tooltips": {
+      "graphDeclaration": "Graph type keyword and optional name (digraph, graph, strict digraph, strict graph)",
+      "graphStatements": "Node, edge, and attribute definitions inside the graph body"
+    }
+  },
+  "assertions": [
+    {
+      "id": "A1",
+      "field": "graphDeclaration",
+      "operator": "regex",
+      "value": "^(strict\\s+)?(graph|digraph)(\\s+\\w+)?\\s*\\{",
+      "severity": "error",
+      "description": "DOT file must begin with 'graph', 'digraph', 'strict graph', or 'strict digraph'"
+    },
+    {
+      "id": "A2",
+      "field": "graphDeclaration",
+      "operator": "notNull",
+      "severity": "error",
+      "description": "DOT file must have a graph declaration — graph body cannot be empty or missing"
+    },
+    {
+      "id": "A3",
+      "field": "graphStatements",
+      "operator": "notNull",
+      "severity": "warning",
+      "description": "DOT graph body (statements block) must be present"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Graph Declaration", "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "First Node/Edge", "offset": -1, "icon": "", "color": "#4ECDC4" },
+      { "name": "Graph Body Close", "offset": -1, "icon": "", "color": "#FFE66D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "DOT Metadata (JSON)",
+      "format": "json",
+      "fields": ["graphDeclaration", "graphStatements"]
+    },
+    {
+      "name": "Node and Edge List",
+      "format": "text",
+      "description": "Extract all node identifiers and edge declarations as a plain list"
+    }
+  ],
+  "aiHints": [
+    "DOT graph type: 'digraph' for directed graphs, 'graph' for undirected; 'strict' prevents duplicate edges",
+    "Edge syntax: '->' for digraph, '--' for undirected graph; mixing these is a syntax error",
+    "Node and edge attributes in brackets: [label='...', color=red, shape=box, style=dashed]",
+    "LLVM and GCC use DOT format to dump control-flow graphs (CFGs) for compiler passes",
+    "Graphviz 'dot' tool uses Sugiyama layout for DAGs; 'neato' uses spring model for undirected graphs",
+    "Large DOT graphs (>10K nodes) require sfdp (sparse force-directed) for practical rendering performance"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "DOT files are plain text and contain no executable code",
+      "DOT files exported from compiler tools may expose internal program structure, call graphs, or data flow",
+      "DOT graph label strings may contain HTML-like tags when rendered with 'html-like labels' using angle brackets"
+    ]
+  },
+  "formatRelationships": [
+    {
+      "formatId": "MERMAID",
+      "relationship": "sibling",
+      "note": "Both are text-based graph description languages; DOT is older with more layout algorithms; Mermaid targets web browsers"
+    }
+  ],
+  "software": [
+    "Graphviz (dot, neato, fdp, sfdp, twopi, circo)",
+    "VS Code Graphviz extension",
+    "LLVM (opt -dot-cfg)",
+    "GCC (gcc -fdump-tree-all-graph)",
+    "Doxygen (call graphs)",
+    "PlantUML (DOT backend)"
+  ],
+  "useCases": [
+    "Compiler control-flow graph (CFG) and call graph visualization",
+    "Software architecture and dependency graph documentation",
+    "Network topology and state machine diagrams"
+  ],
+  "technicalDetails": "Graphviz DOT is a context-free graph description language. Files are plain text (ASCII or UTF-8). Graphs are declared with 'digraph name {}' or 'graph name {}'. Nodes are referenced by ID; edges use '->' or '--'. Attributes are key=value pairs in brackets. Comments use C-style '//' and '/* */'. The .gv extension is preferred by modern Graphviz; .dot was the original extension.",
+  "completenessScore": 81
+}

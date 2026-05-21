@@ -1,0 +1,138 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Mermaid Diagram",
+  "formatId": "MERMAID",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Mermaid Diagram DSL — a plain-text diagram description language that generates diagrams from text definitions. Mermaid files begin with a diagram type keyword on the first line (e.g., 'graph', 'flowchart', 'sequenceDiagram', 'classDiagram', 'stateDiagram', 'erDiagram', 'gantt', 'pie'). The Mermaid JavaScript library renders these text definitions as SVG in browsers. Files use the .mmd or .mermaid extension. Mermaid is natively supported in GitHub Markdown, GitLab, Notion, Confluence, and many documentation tools, making it the dominant text-based diagramming standard for software engineering documentation.",
+  "extensions": [".mmd", ".mermaid"],
+  "category": "Text",
+  "diffMode": "text",
+  "signatures": [],
+  "maxSignatureOffset": 0,
+  "structure": {
+    "fields": [
+      {
+        "offset": 0,
+        "size": -1,
+        "name": "Diagram Type Declaration",
+        "type": "ascii",
+        "description": "First non-empty line declaring the diagram type: 'graph', 'flowchart', 'sequenceDiagram', 'classDiagram', 'stateDiagram', 'erDiagram', 'gantt', 'pie', 'gitGraph', 'journey', 'mindmap', 'timeline'. The diagram type determines the parser and rendering mode.",
+        "storeAs": "diagramType"
+      },
+      {
+        "offset": -1,
+        "size": -1,
+        "name": "Diagram Body",
+        "type": "ascii",
+        "description": "Diagram definition using Mermaid DSL syntax. Indentation is significant for nested elements in some diagram types.",
+        "storeAs": "diagramBody"
+      }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["diagramType", "diagramBody"],
+    "valueMaps": {
+      "diagramType": {
+        "graph": "Flowchart (legacy)",
+        "flowchart": "Flowchart (modern)",
+        "sequenceDiagram": "Sequence Diagram",
+        "classDiagram": "Class Diagram",
+        "stateDiagram": "State Diagram",
+        "erDiagram": "Entity-Relationship Diagram",
+        "gantt": "Gantt Chart",
+        "pie": "Pie Chart",
+        "gitGraph": "Git Commit Graph",
+        "journey": "User Journey",
+        "mindmap": "Mind Map",
+        "timeline": "Timeline"
+      }
+    },
+    "tooltips": {
+      "diagramType": "Mermaid diagram type keyword determining syntax and rendering",
+      "diagramBody": "Diagram node/edge/relationship definitions in Mermaid DSL syntax"
+    }
+  },
+  "assertions": [
+    {
+      "id": "A1",
+      "field": "diagramType",
+      "operator": "regex",
+      "value": "^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|gantt|pie|gitGraph|journey|mindmap|timeline)(\\s|$)",
+      "severity": "warning",
+      "description": "First non-empty line must be a valid Mermaid diagram type keyword"
+    },
+    {
+      "id": "A2",
+      "field": "diagramType",
+      "operator": "notNull",
+      "severity": "error",
+      "description": "Mermaid file must declare a diagram type on the first non-empty line"
+    },
+    {
+      "id": "A3",
+      "field": "diagramBody",
+      "operator": "notNull",
+      "severity": "warning",
+      "description": "Mermaid diagram body must be present — empty diagrams will not render"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Diagram Type", "offset": 0, "icon": "", "color": "#FF6B6B" },
+      { "name": "Diagram Body Start", "offset": -1, "icon": "", "color": "#4ECDC4" },
+      { "name": "Diagram End", "offset": -1, "icon": "", "color": "#FFE66D" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Mermaid Metadata (JSON)",
+      "format": "json",
+      "fields": ["diagramType", "diagramBody"]
+    },
+    {
+      "name": "Mermaid as Markdown Code Block",
+      "format": "markdown",
+      "description": "Wrap the diagram in a ```mermaid code fence for embedding in Markdown documents"
+    }
+  ],
+  "aiHints": [
+    "Mermaid is a JavaScript-based diagramming tool; files are plain text and can be rendered in GitHub markdown, Notion, GitLab, and Confluence",
+    "The diagram type keyword (e.g., 'flowchart LR', 'sequenceDiagram') must appear on the first non-comment line",
+    "Mermaid supports graph direction modifiers: LR (left-right), TD/TB (top-down), RL (right-left), BT (bottom-top)",
+    "GitHub natively renders Mermaid in Markdown via ```mermaid code fences since 2022",
+    "Mermaid Live Editor at mermaid.live provides real-time rendering and link sharing",
+    "Security note: Mermaid renders HTML in labels; use securityLevel:'strict' to prevent XSS in untrusted diagrams"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "Mermaid files are plain text and contain no executable code",
+      "Labels in Mermaid diagrams can contain HTML which may trigger XSS if rendered without sanitization",
+      "Mermaid diagrams may reveal system architecture, data flows, or internal processes if found in documentation repositories"
+    ]
+  },
+  "formatRelationships": [
+    {
+      "formatId": "GRAPHVIZ_DOT",
+      "relationship": "sibling",
+      "note": "Both are text-based graph description languages; Graphviz DOT is older and more feature-rich; Mermaid targets web rendering"
+    }
+  ],
+  "software": [
+    "Mermaid.js (mermaid.js.org)",
+    "GitHub (native Markdown rendering)",
+    "GitLab (native rendering)",
+    "Notion (native rendering)",
+    "VS Code with Mermaid extension",
+    "Confluence (with Mermaid plugin)"
+  ],
+  "useCases": [
+    "Software architecture documentation as code (flowcharts, class diagrams, sequence diagrams)",
+    "README and wiki diagrams in GitHub/GitLab repositories",
+    "Agile project tracking (Gantt charts, user journeys) embedded in documentation"
+  ],
+  "technicalDetails": "Mermaid DSL files are UTF-8 plain text. The first non-comment line must be a diagram type declaration. Comments start with '%%'. Diagram nodes/edges are defined using type-specific syntax. The .mmd extension is canonical; .mermaid is also used. Files are not executable — they require a Mermaid rendering library (mermaid.js) to produce SVG output.",
+  "completenessScore": 80
+}

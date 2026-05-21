@@ -1,41 +1,110 @@
 {
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v2.0",
   "diffMode": "semantic",
   "formatName": "TOML Configuration",
   "formatId": "TOML",
-  "version": "2.4",
+  "version": "2.5",
   "extensions": [
     ".toml"
   ],
   "description": "Tom's Obvious, Minimal Language configuration format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
   "preferredEditor": "code-editor",
   "references": {
     "specifications": [
-      "TOML Configuration Format"
+      "TOML v1.0 Specification",
+      "TOML GitHub - toml-lang/toml"
     ],
     "WebLinks": [
+      "https://toml.io/en/",
+      "https://github.com/toml-lang/toml",
       "https://en.wikipedia.org/wiki/TOML"
     ]
   },
-  "detection": {
-    "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+  "signatures": [
+    {
+      "value": "23",
+      "offset": 0,
+      "label": "TOML comment '#' at start of file",
+      "weight": 0.3,
+      "strength": "Weak"
     },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "TOML magic",
-        "weight": 1.0
-      }
-    ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+    {
+      "value": "5B",
+      "offset": 0,
+      "label": "TOML section header '[' at start of file",
+      "weight": 0.4,
+      "strength": "Weak"
+    }
+  ],
+  "maxSignatureOffset": 1,
+  "structure": {
+    "fields": [
+      { "name": "first_char",     "type": "uint8", "offset": "0x00", "length": 1, "description": "First byte: '#' (comment), '[' (section), or key char" },
+      { "name": "file_content",   "type": "bytes", "offset": "0x01", "length": 8, "description": "UTF-8 encoded TOML content" }
+    ]
   },
+  "inspector": {
+    "displayFields": ["first_char"],
+    "valueMaps": {
+      "first_char": {
+        "0x23": "File starts with a comment '#'",
+        "0x5B": "File starts with a section header '['",
+        "0x0A": "File starts with blank line (LF)",
+        "0x0D": "File starts with blank line (CR/CRLF)"
+      }
+    },
+    "tooltips": {
+      "first_char": "TOML is UTF-8 text; no binary magic. Comments use #, sections use [name], key-value uses key = value",
+      "file_content": "TOML is a structured text format; use the code editor for syntax-aware inspection"
+    }
+  },
+  "assertions": [
+    {
+      "name": "File is valid UTF-8",
+      "expression": "encoding == UTF-8",
+      "severity": "error",
+      "message": "TOML files must be valid UTF-8; binary data detected"
+    },
+    {
+      "name": "No BOM present",
+      "expression": "bytes[0..2] != EFBBBF",
+      "severity": "warning",
+      "message": "TOML spec discourages UTF-8 BOM; some parsers may reject files with BOM"
+    },
+    {
+      "name": "File is not empty",
+      "expression": "fileSize > 0",
+      "severity": "info",
+      "message": "TOML file is empty; no configuration to parse"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "File Start",      "offset": 0, "icon": "", "color": "#9C6644" }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "TOML Content (JSON representation)",
+      "format": "json",
+      "fields": ["file_content"]
+    },
+    {
+      "name": "TOML Raw Text",
+      "format": "text",
+      "fields": ["file_content"]
+    }
+  ],
+  "aiHints": [
+    "TOML is a UTF-8 text format with no binary magic; identification relies on extension and content heuristics",
+    "Sections use [table_name] or [[array_of_tables]]; keys are bare identifiers or quoted strings",
+    "Values support: string, integer, float, boolean, offset datetime, local datetime, date, time, array, inline table",
+    "TOML v1.0 allows dotted keys: 'a.b.c = 1' creates nested tables equivalent to [a.b] c=1",
+    "TOML is stricter than YAML: no null type, no trailing commas, no implicit type coercion"
+  ],
   "variables": {
     "currentOffset": 0,
     "machineType": "",
@@ -66,17 +135,29 @@
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Cargo (Rust package manager — Cargo.toml)",
+    "Python tomllib / tomli libraries",
+    "Go encoding/toml package",
+    "Hugo (static site generator — config.toml)"
   ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".toml"
-    ]
-  },
+  "formatRelationships": [
+    {
+      "formatId": "YAML",
+      "relation": "alternative",
+      "note": "TOML and YAML serve similar configuration use cases; TOML is more explicit about types, YAML is more compact for nested structures"
+    }
+  ],
+  "useCases": [
+    "Rust project configuration (Cargo.toml)",
+    "Application configuration files in various languages",
+    "Hugo static site generator configuration",
+    "Python pyproject.toml project metadata"
+  ],
+  "technicalDetails": "TOML v1.0 is a UTF-8 text format without a binary magic number. Tables map to hash maps; values are strictly typed. TOML enforces that duplicate keys are not allowed. Inline tables must be on a single line. Array of tables [[name]] allows repeatable grouped entries. All dates and times follow RFC 3339.",
+  "completenessScore": 80,
   "MimeTypes": [
-    "application/octet-stream"
+    "application/toml",
+    "text/x-toml"
   ],
   "Software": [
     "Hex Editor",
@@ -89,97 +170,58 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
+    "CompletenessScore": 80,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-05-20",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "Encoding": "UTF-8 text, no BOM",
+    "Standard": "TOML v1.0"
+  },
   "functions": {
     "readUInt32LE": "Read executable header"
   },
   "syntaxDefinition": {
     "id": "toml",
     "name": "TOML",
-    "extensions": [
-      ".toml"
-    ],
+    "extensions": [".toml"],
     "lineCommentPrefix": "#",
     "rules": [
-      {
-        "type": "Comment",
-        "pattern": "#.*$",
-        "colorKey": "TE_Comment"
-      },
-      {
-        "type": "String",
-        "pattern": "(\"\"\"|'''|\"\"\"[\\s\\S]*?\"\"\"|'''[\\s\\S]*?'''|\"(?:[^\"\\]|\\.)*\"|'[^']*')",
-        "colorKey": "TE_String"
-      },
-      {
-        "type": "Section",
-        "pattern": "^\\s*\\[\\[?[^\\]]*\\]\\]?",
-        "colorKey": "TE_Type"
-      },
-      {
-        "type": "Key",
-        "pattern": "^\\s*[A-Za-z_\\-][A-Za-z0-9_\\-\\.]*\\s*(?==)",
-        "colorKey": "TE_Attribute"
-      },
-      {
-        "type": "Boolean",
-        "pattern": "\\b(true|false)\\b",
-        "colorKey": "TE_Keyword"
-      },
-      {
-        "type": "Number",
-        "pattern": "\\b(0x[0-9A-Fa-f_]+|0o[0-7_]+|0b[01_]+|[+-]?(?:[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9_]+)?|nan|inf))\\b",
-        "colorKey": "TE_Number"
-      },
-      {
-        "type": "Keyword",
-        "pattern": "(?<=\\s)(\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})?)?)",
-        "colorKey": "TE_String"
-      }
+      { "type": "Comment", "pattern": "#.*$", "colorKey": "TE_Comment" },
+      { "type": "String", "pattern": "(\"\"\"|'''|\"\"\"[\\s\\S]*?\"\"\"|'''[\\s\\S]*?'''|\"(?:[^\"\\]|\\.)*\"|'[^']*')", "colorKey": "TE_String" },
+      { "type": "Section", "pattern": "^\\s*\\[\\[?[^\\]]*\\]\\]?", "colorKey": "TE_Type" },
+      { "type": "Key", "pattern": "^\\s*[A-Za-z_\\-][A-Za-z0-9_\\-\\.]*\\s*(?==)", "colorKey": "TE_Attribute" },
+      { "type": "Boolean", "pattern": "\\b(true|false)\\b", "colorKey": "TE_Keyword" },
+      { "type": "Number", "pattern": "\\b(0x[0-9A-Fa-f_]+|0o[0-7_]+|0b[01_]+|[+-]?(?:[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9_]+)?|nan|inf))\\b", "colorKey": "TE_Number" },
+      { "type": "Keyword", "pattern": "(?<=\\s)(\\d{4}-\\d{2}-\\d{2}(?:[T ]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})?)?)", "colorKey": "TE_String" }
     ],
     "formattingRules": {
       "indentSize": 2,
       "useTabs": false,
       "trimTrailingWhitespace": true,
       "insertFinalNewline": true,
-      "supportedRules": [
-        "trimTrailingWhitespace",
-        "insertFinalNewline"
-      ]
+      "supportedRules": ["trimTrailingWhitespace", "insertFinalNewline"]
     },
-    "foldingRules": {
-      "indentBased": true,
-      "indentTabWidth": 2
-    },
+    "foldingRules": { "indentBased": true, "indentTabWidth": 2 },
     "ideMetadata": {
       "isSourceFile": false,
       "isStructuredDataFile": true,
       "supportsClassDiagram": false,
       "supportsSourceOutline": false,
       "isProjectLanguage": false,
-      "iconGlyph": "",
+      "iconGlyph": "",
       "diffMode": "text"
     }
   },
   "forensic": {
-    "category": "data",
     "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Tom's Obvious, Minimal Language configuration format",
-    "suggestedInspections": [
-      "Validate TOML Configuration schema header and encoding markers",
-      "Check nested structure depth and field type tags",
-      "Inspect string encodings and numeric value boundaries"
+    "notes": [
+      "TOML configuration files may contain credentials, API keys, or connection strings",
+      "Cargo.toml and pyproject.toml expose dependency version constraints and project metadata"
     ]
   }
 }

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://wpfhexeditor.dev/schemas/whfmt/v3.0",
+  "formatName": "Farbfeld Raw RGBA",
+  "formatId": "FARBFELD",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-05-20",
+  "description": "Suckless Farbfeld ('color field' in German) is a lossless, uncompressed raw RGBA image format designed for simplicity. Each pixel is stored as four 16-bit big-endian unsigned integers (R, G, B, A) after a minimal 16-byte header.",
+  "extensions": [".ff"],
+  "category": "Image",
+  "diffMode": "binary",
+  "signatures": [
+    {
+      "value": "6661726266656C64",
+      "offset": 0,
+      "label": "'farbfeld' ASCII magic",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "maxSignatureOffset": 8,
+  "structure": {
+    "fields": [
+      { "offset": 0, "size": 8, "name": "magic", "type": "ascii", "description": "Magic string 'farbfeld' identifying the format", "storeAs": "string" },
+      { "offset": 8, "size": 4, "name": "width", "type": "uint32be", "description": "Image width in pixels (big-endian)", "storeAs": "uint32" },
+      { "offset": 12, "size": 4, "name": "height", "type": "uint32be", "description": "Image height in pixels (big-endian)", "storeAs": "uint32" }
+    ]
+  },
+  "inspector": {
+    "displayFields": ["magic", "width", "height"],
+    "valueMaps": {},
+    "tooltips": {
+      "magic": "Must be exactly 'farbfeld' (8 ASCII bytes) to identify the file",
+      "width": "Image width in pixels stored as a 32-bit big-endian unsigned integer",
+      "height": "Image height in pixels stored as a 32-bit big-endian unsigned integer"
+    }
+  },
+  "assertions": [
+    { "id": "FF_001", "field": "magic", "operator": "equals", "value": "farbfeld", "description": "Magic bytes must be 'farbfeld'" },
+    { "id": "FF_002", "field": "width", "operator": "greaterThan", "value": 0, "description": "Width must be greater than zero" },
+    { "id": "FF_003", "field": "height", "operator": "greaterThan", "value": 0, "description": "Height must be greater than zero" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "Magic Header", "color": "#FF6B35" },
+      { "offset": 8, "label": "Width (big-endian)", "color": "#4ECDC4" },
+      { "offset": 12, "label": "Height (big-endian)", "color": "#45B7D1" },
+      { "offset": 16, "label": "Pixel Data Start (RGBA 16-bit/channel)", "color": "#96CEB4" }
+    ]
+  },
+  "exportTemplates": [
+    { "name": "Image Dimensions", "fields": ["width", "height"], "format": "text" },
+    { "name": "Full Header Hex", "fields": ["magic", "width", "height"], "format": "hex" }
+  ],
+  "aiHints": [
+    "Farbfeld stores pixel data as raw 16-bit-per-channel RGBA (64 bits per pixel) in row-major order starting at offset 16",
+    "All multi-byte values including pixel components are big-endian; this is unusual for raw formats which are often little-endian",
+    "Total file size = 16 (header) + width * height * 8 bytes; a size mismatch indicates truncation",
+    "The format was created by suckless.org as a minimal, KISS-compliant replacement for PNG in their toolchain",
+    "Conversion utilities include ff2png, png2ff, ff2pam from the farbfeld tool suite"
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "No compression or encoding means the entire pixel buffer is directly readable; sensitive image content is fully exposed",
+      "File size mismatch with width*height*8+16 can indicate hidden appended data after the pixel stream",
+      "No metadata or color profile is stored; any embedded information would need to be appended after the pixel data"
+    ]
+  },
+  "formatRelationships": [
+    { "format": "PNG", "relationship": "alternative", "note": "Farbfeld is intended as a simpler alternative to PNG for pipelines that do not need compression" },
+    { "format": "PAM", "relationship": "similar", "note": "Both are simple raw pixel formats; PAM uses a text header while Farbfeld uses a binary one" }
+  ],
+  "software": [
+    { "name": "farbfeld tools (suckless.org)", "role": "Reference implementation providing ff2png, png2ff, ff2pam converters" },
+    { "name": "ImageMagick", "role": "Supports Farbfeld via delegate mechanism for conversion workflows" },
+    { "name": "GIMP", "role": "Plugin-based support for .ff import and export" }
+  ],
+  "useCases": [
+    "Intermediate image format in Unix pipeline-based image processing scripts",
+    "Lossless archival storage where simplicity and tool interoperability matter more than file size",
+    "Test fixture format in graphics libraries due to the trivial decode path"
+  ],
+  "technicalDetails": "The Farbfeld format consists of a fixed 16-byte header followed by raw uncompressed pixel data. The header comprises 8 bytes of ASCII magic ('farbfeld'), then 4 bytes big-endian width and 4 bytes big-endian height. Pixel data begins at offset 16 and is stored in row-major (left-to-right, top-to-bottom) order. Each pixel is four 16-bit big-endian unsigned values: red, green, blue, alpha. The 16-bit depth allows high dynamic range storage. There is no color space declaration, metadata block, or compression support; what you see is exactly what is stored.",
+  "completenessScore": 81
+}
