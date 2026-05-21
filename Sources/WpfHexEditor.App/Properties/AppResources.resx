@@ -1558,6 +1558,7 @@
   <data name="StringExtract_ColBytes"                 xml:space="preserve"><value>Bytes</value></data>
   <data name="StringExtract_ColDup"                   xml:space="preserve"><value>Dup</value></data>
   <data name="StringExtract_ColContext"               xml:space="preserve"><value>Context</value></data>
+  <data name="StringExtract_ColScore"                 xml:space="preserve"><value>Score</value></data>
   <data name="StringExtract_TtOffset"                 xml:space="preserve"><value>Byte offset of the string in the file (hexadecimal)</value></data>
   <data name="StringExtract_TtLength"                 xml:space="preserve"><value>Number of raw bytes occupied by this string</value></data>
   <data name="StringExtract_TtEncoding"               xml:space="preserve"><value>Detected encoding: ASCII, UTF-16 LE/BE, UTF-8, Latin-1, EBCDIC, or TBL</value></data>
@@ -1591,6 +1592,8 @@
   <data name="StringExtract_LabelTbl"                 xml:space="preserve"><value>TBL:</value></data>
   <data name="StringExtract_LabelUniq"                xml:space="preserve"><value>Uniq≥</value></data>
   <data name="StringExtract_LabelOffset"              xml:space="preserve"><value>Offset:</value></data>
+  <data name="StringExtract_LabelReadability"         xml:space="preserve"><value>Score≥</value></data>
+  <data name="StringExtract_TtScore"                  xml:space="preserve"><value>Readability score 0–1 (letter ratio + bigram ratio + length bonus). Right-click column header to show/hide.</value></data>
   <data name="StringExtract_RegexLabel"               xml:space="preserve"><value>.*</value></data>
 
   <data name="HashInspector_HashFile"                 xml:space="preserve"><value>Hash File</value></data>

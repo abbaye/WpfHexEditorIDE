@@ -39,6 +39,7 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     private long _rangeTo = long.MaxValue;
     private bool _excludeHighEntropy;
     private double _entropyThreshold = 0.90;
+    private float _minReadability = 0f;
     private int _totalCount;
     private int _shownCount;
     private string _statusText = string.Empty;
@@ -151,6 +152,12 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
     {
         get => _syncCaretToGrid;
         set { _syncCaretToGrid = value; OnPropertyChanged(); }
+    }
+
+    public float MinReadability
+    {
+        get => _minReadability;
+        set { _minReadability = Math.Clamp(value, 0f, 1f); OnPropertyChanged(); ResultsView.Refresh(); UpdateShownCount(); }
     }
 
     // ── Stats ─────────────────────────────────────────────────────────────────
@@ -562,6 +569,9 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
             if (block < _entropyMap.Length && _entropyMap[block] / 255.0 >= _entropyThreshold)
                 return false;
         }
+
+        // Readability score filter
+        if (_minReadability > 0f && run.ReadabilityScore < _minReadability) return false;
 
         // Text filter (substring or regex)
         if (!string.IsNullOrEmpty(_filter))

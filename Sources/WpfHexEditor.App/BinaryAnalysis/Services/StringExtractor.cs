@@ -30,6 +30,78 @@ public sealed record StringRun(long Offset, int Length, StringEncoding Encoding,
 {
     /// <summary>Count of distinct characters in Value — cached to avoid per-filter-pass allocation.</summary>
     public int UniqueCharCount { get; } = Value.Distinct().Count();
+
+    /// <summary>
+    /// Readability score 0.0–1.0: combination of letter ratio, common-bigram ratio, and length.
+    /// TBL runs always return 1.0 (language-specific, judged by the TBL itself).
+    /// </summary>
+    public float ReadabilityScore { get; } = ReadabilityScorer.Score(Value, Encoding);
+}
+
+/// <summary>
+/// Stateless readability scorer. Combines three language-agnostic signals into
+/// a 0.0–1.0 score without any dictionary or external dependency.
+/// </summary>
+internal static class ReadabilityScorer
+{
+    // 300 most common English bigrams + frequent code sequences, stored as
+    // packed int = (c1 - 'a') * 26 + (c2 - 'a').  Only lowercase pairs.
+    private static readonly HashSet<int> _commonBigrams = BuildBigrams();
+
+    public static float Score(string value, StringEncoding encoding)
+    {
+        // TBL strings are decoded by a game-specific table — always trust them
+        if (encoding is StringEncoding.Tbl or StringEncoding.TblDte or StringEncoding.TblMte)
+            return 1.0f;
+
+        if (value.Length == 0) return 0f;
+
+        int letters = 0, bigrams = 0, bigTotal = 0;
+        char prev = '\0';
+
+        foreach (char c in value)
+        {
+            if (char.IsLetter(c)) letters++;
+
+            char lo = char.ToLowerInvariant(c);
+            char plo = char.ToLowerInvariant(prev);
+            if (prev != '\0' && lo >= 'a' && lo <= 'z' && plo >= 'a' && plo <= 'z')
+            {
+                bigTotal++;
+                if (_commonBigrams.Contains((plo - 'a') * 26 + (lo - 'a')))
+                    bigrams++;
+            }
+            prev = c;
+        }
+
+        float s1 = (float)letters / value.Length;                          // letter ratio
+        float s2 = bigTotal > 0 ? (float)bigrams / bigTotal : 0f;          // common-bigram ratio
+        float s3 = Math.Min(value.Length / 8f, 1f);                        // length bonus
+
+        return s1 * 0.4f + s2 * 0.4f + s3 * 0.2f;
+    }
+
+    private static HashSet<int> BuildBigrams()
+    {
+        // Top English bigrams + common code/identifier sequences
+        const string pairs =
+            "th he in er an re on en at es te is ou ar st nt al to ha " +
+            "nd or ea ti la ng it le se ve of me ra ce li de hi ri io " +
+            "ro ur ss co no ta di ge ch ma si pa el as ac ad so tu un " +
+            "wi mo am ca fi pl pr tr cl sp bl gr qu sc sl sw fr dr br " +
+            "wh sh ph cr ab ag ah ai aj ak al am an ao ap aq at au av " +
+            "aw ax ay az ba be bi bo bu by ca cb cc cd ce cf cg ci cj " +
+            "ck cl cm cn co cp cq cr cs ct cu cv cw cx cy cz da db dc " +
+            "dd de df dg dh di dj dk dl dm dn do dp dq dr ds dt du dv " +
+            "dw dx dy dz";
+
+        var set = new HashSet<int>();
+        var tokens = pairs.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        foreach (var t in tokens)
+            if (t.Length == 2 && t[0] >= 'a' && t[0] <= 'z' && t[1] >= 'a' && t[1] <= 'z')
+                set.Add((t[0] - 'a') * 26 + (t[1] - 'a'));
+        return set;
+    }
 }
 
 /// <summary>

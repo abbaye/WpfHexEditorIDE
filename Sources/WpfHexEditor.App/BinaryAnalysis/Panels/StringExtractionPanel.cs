@@ -276,6 +276,27 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         row.Children.Add(thresholdSlider);
         row.Children.Add(thresholdLabel);
 
+        // Readability score filter
+        row.Children.Add(new System.Windows.Shapes.Rectangle { Width = 6, Height = 1, Fill = Brushes.Transparent });
+
+        var readabilitySlider = new Slider
+        {
+            Minimum = 0.0, Maximum = 1.0, TickFrequency = 0.05,
+            IsSnapToTickEnabled = true,
+            Width = 80, Height = 18,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(4, 0, 2, 0),
+        };
+        readabilitySlider.SetBinding(RangeBase.ValueProperty, new Binding(nameof(_vm.MinReadability)) { Source = _vm, Mode = BindingMode.TwoWay });
+
+        var readabilityLabel = new TextBlock { FontSize = 10, VerticalAlignment = VerticalAlignment.Center };
+        readabilityLabel.SetResourceReference(ForegroundProperty, "TE_Foreground");
+        readabilityLabel.SetBinding(TextBlock.TextProperty, new Binding(nameof(_vm.MinReadability)) { Source = _vm, StringFormat = "F2" });
+
+        row.Children.Add(MakeLabelFromKey("StringExtract_LabelReadability"));
+        row.Children.Add(readabilitySlider);
+        row.Children.Add(readabilityLabel);
+
         return row;
     }
 
@@ -682,6 +703,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         _grid.Columns.Add(MakeDuplicateColumn());
         _grid.Columns.Add(MakeContextBytesColumn());
         _grid.Columns.Add(MakeCol("StringExtract_ColValue",    nameof(StringRun.Value),    0,   null,  "StringExtract_TtValue"));
+        _grid.Columns.Add(MakeScoreColumn());
 
         // Sync SelectedGridItem in VM when DataGrid selection changes
         _grid.SelectionChanged += (_, _) =>
@@ -763,6 +785,23 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         }));
         cellTemplate.VisualTree = tbFactory;
         col.CellTemplate = cellTemplate;
+        return col;
+    }
+
+    private DataGridTextColumn MakeScoreColumn()
+    {
+        var col = MakeCol("StringExtract_ColScore", nameof(StringRun.ReadabilityScore), 55, "F2", "StringExtract_TtScore");
+        col.Visibility = Visibility.Collapsed;
+
+        // Right-click on any column header toggles Score column visibility
+        _grid.ColumnHeaderStyle.Setters.Add(new EventSetter(UIElement.MouseRightButtonUpEvent,
+            new MouseButtonEventHandler((_, _) =>
+            {
+                col.Visibility = col.Visibility == Visibility.Visible
+                    ? Visibility.Collapsed
+                    : Visibility.Visible;
+            })));
+
         return col;
     }
 
