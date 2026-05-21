@@ -107,7 +107,12 @@ internal sealed class StringTimelineView : FrameworkElement
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        double w = Math.Max(availableSize.Width, 1) * _zoom;
+        // availableSize.Width is PositiveInfinity when inside a ScrollViewer with Auto horizontal scroll.
+        // Fall back to ActualWidth (already arranged) or a reasonable minimum so WPF doesn't throw.
+        double baseW = double.IsInfinity(availableSize.Width)
+            ? (ActualWidth > 0 ? ActualWidth : 200)
+            : availableSize.Width;
+        double w = Math.Max(baseW, 1) * _zoom;
         double h = RulerHeight + _rowCount * RowHeight;
         return new Size(w, h);
     }
@@ -245,6 +250,7 @@ internal sealed class StringTimelinePanel : Border
 
         // Zoom control row
         var zoomRow = new DockPanel { LastChildFill = false, Margin = new Thickness(4, 2, 4, 2) };
+        zoomRow.SetResourceReference(DockPanel.BackgroundProperty, "Panel_ToolbarBrush");
         var zoomLbl = new TextBlock { Text = "Zoom:", FontSize = 10, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 4, 0) };
         zoomLbl.SetResourceReference(TextBlock.ForegroundProperty, "Panel_ToolbarForegroundBrush");
         var zoomSlider = new Slider
@@ -254,7 +260,14 @@ internal sealed class StringTimelinePanel : Border
             VerticalAlignment = VerticalAlignment.Center,
         };
         zoomSlider.ValueChanged += (_, e) => _view.Zoom = e.NewValue;
-        var resetBtn = new Button { Content = "1:1", FontSize = 10, Padding = new Thickness(4, 1, 4, 1), Margin = new Thickness(4, 0, 0, 0) };
+        var resetBtn = new Button
+        {
+            Content = "1:1", FontSize = 10,
+            Padding = new Thickness(4, 1, 4, 1), Margin = new Thickness(4, 0, 0, 0),
+            FocusVisualStyle = null,
+        };
+        resetBtn.SetResourceReference(StyleProperty,      "PanelIconButtonStyle");
+        resetBtn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
         resetBtn.Click += (_, _) => { zoomSlider.Value = 1; };
         DockPanel.SetDock(zoomLbl,    Dock.Left);
         DockPanel.SetDock(zoomSlider, Dock.Left);

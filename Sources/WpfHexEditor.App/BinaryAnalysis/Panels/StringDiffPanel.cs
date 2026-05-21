@@ -48,6 +48,7 @@ internal sealed class StringDiffPanel : UserControl
             Orientation = Orientation.Horizontal,
             Margin      = new Thickness(4, 4, 4, 4),
         };
+        toolbar.SetResourceReference(BackgroundProperty, "Panel_ToolbarBrush");
 
         var lblA = MakeLabel("Snapshot A:");
         _snapACombo = MakeSnapshotCombo();
@@ -59,8 +60,10 @@ internal sealed class StringDiffPanel : UserControl
         {
             Content = "Compare", Padding = new Thickness(10, 3, 10, 3),
             Margin  = new Thickness(8, 0, 0, 0), FontSize = 11,
+            FocusVisualStyle = null,
         };
-        compareBtn.SetResourceReference(ForegroundProperty, "TE_Foreground");
+        compareBtn.SetResourceReference(StyleProperty,      "PanelIconButtonStyle");
+        compareBtn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
         compareBtn.Click += (_, _) => RunDiff();
 
         _summaryText = new TextBlock
@@ -133,6 +136,7 @@ internal sealed class StringDiffPanel : UserControl
             Width  = 220, Height = 22, FontSize = 11,
             Margin = new Thickness(0, 0, 8, 0),
         };
+        cb.SetResourceReference(BackgroundProperty, "TE_Background");
         cb.SetResourceReference(ForegroundProperty, "TE_Foreground");
         cb.SetBinding(ItemsControl.ItemsSourceProperty,   new Binding(nameof(_vm.Snapshots)) { Source = _vm });
         cb.DisplayMemberPath = nameof(StringExtractionViewModel.ScanSnapshot.DisplayName);
