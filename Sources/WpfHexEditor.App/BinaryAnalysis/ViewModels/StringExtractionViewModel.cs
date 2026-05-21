@@ -849,10 +849,8 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
     private const int MaxSnapshots = 10;
 
-    public sealed record ScanSnapshot(
-        string FileName,
-        DateTime TakenAt,
-        IReadOnlyList<StringRun> Runs)
+    // Nested to keep it close to the snapshot API; consumed by StringDiffPanel only.
+    public sealed record ScanSnapshot(string FileName, DateTime TakenAt, IReadOnlyList<StringRun> Runs)
     {
         public string DisplayName =>
             $"{System.IO.Path.GetFileName(FileName)} — {TakenAt:HH:mm:ss} ({Runs.Count:N0} strings)";

@@ -15,25 +15,8 @@ namespace WpfHexEditor.App.BinaryAnalysis.Panels;
 
 internal sealed class StringOffsetHeatmap : FrameworkElement
 {
-    private static readonly SolidColorBrush EmptyBrush =
-        Freeze(new SolidColorBrush(Color.FromRgb(0x2A, 0x2A, 0x2A)));
-
-    private static readonly IReadOnlyDictionary<StringEncoding, Color> EncodingColors =
-        new Dictionary<StringEncoding, Color>
-        {
-            [StringEncoding.Tbl]          = Color.FromRgb(0x4C, 0xAF, 0x50),
-            [StringEncoding.TblDte]       = Color.FromRgb(0x4C, 0xAF, 0x50),
-            [StringEncoding.TblMte]       = Color.FromRgb(0x4C, 0xAF, 0x50),
-            [StringEncoding.Ascii]        = Color.FromRgb(0x42, 0x8B, 0xCA),
-            [StringEncoding.Utf8]         = Color.FromRgb(0x00, 0xBC, 0xD4),
-            [StringEncoding.Utf16Le]      = Color.FromRgb(0x00, 0xBC, 0xD4),
-            [StringEncoding.Utf16Be]      = Color.FromRgb(0x00, 0xBC, 0xD4),
-            [StringEncoding.Ebcdic]       = Color.FromRgb(0xFF, 0x98, 0x00),
-            [StringEncoding.EbcdicNoSpec] = Color.FromRgb(0xFF, 0x98, 0x00),
-            [StringEncoding.Latin1]       = Color.FromRgb(0xAB, 0x47, 0xBC),
-        };
-
-    private static SolidColorBrush Freeze(SolidColorBrush b) { b.Freeze(); return b; }
+    private static readonly SolidColorBrush EmptyBrush = FreezeB(new SolidColorBrush(Color.FromRgb(0x2A, 0x2A, 0x2A)));
+    private static SolidColorBrush FreezeB(SolidColorBrush b) { b.Freeze(); return b; }
 
     // Pixel columns cached as frozen ImageSource; rebuilt when results or width change.
     private WriteableBitmap? _bitmap;
@@ -87,7 +70,7 @@ internal sealed class StringOffsetHeatmap : FrameworkElement
         {
             int col = (int)((double)run.Offset / _bufferLength * (w - 1));
             col = Math.Clamp(col, 0, w - 1);
-            var c = EncodingColors.TryGetValue(run.Encoding, out var ec) ? ec : Color.FromRgb(0x90, 0x90, 0x90);
+            var c = EncodingPalette.Colors.TryGetValue(run.Encoding, out var ec) ? ec : EncodingPalette.FallbackColor;
             // Blend with existing pixel (additive saturation towards encoding colour).
             int existing = pixels[col];
             int er = (existing >> 16) & 0xFF;

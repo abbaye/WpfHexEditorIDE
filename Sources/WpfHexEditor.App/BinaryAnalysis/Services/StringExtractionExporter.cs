@@ -218,15 +218,7 @@ public sealed class WhannStringExporter : IStringExtractionExporter
         await File.WriteAllTextAsync(path, json, Encoding.UTF8, ct);
     }
 
-    private static string EncodingColor(StringEncoding enc) => enc switch
-    {
-        StringEncoding.Tbl or StringEncoding.TblDte or StringEncoding.TblMte => "#4CAF50",
-        StringEncoding.Ascii                                                   => "#428BCA",
-        StringEncoding.Utf8 or StringEncoding.Utf16Le or StringEncoding.Utf16Be => "#00BCD4",
-        StringEncoding.Ebcdic or StringEncoding.EbcdicNoSpec                   => "#FF9800",
-        StringEncoding.Latin1                                                   => "#AB47BC",
-        _                                                                       => "#909090",
-    };
+    private static string EncodingColor(StringEncoding enc) => EncodingPalette.HexColor(enc);
 }
 
 /// <summary>Registry of all available exporters, keyed by format name.</summary>

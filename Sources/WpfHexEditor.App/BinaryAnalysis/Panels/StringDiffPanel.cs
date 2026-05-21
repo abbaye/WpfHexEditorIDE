@@ -3,7 +3,6 @@
 // Description : Diff panel — pick two snapshots, compare, view Added/Removed/Modified/Unchanged.
 // Architecture: Code-behind UserControl; delegates diff logic to StringDiffService.
 
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -24,7 +23,7 @@ internal sealed class StringDiffPanel : UserControl
     private static SolidColorBrush Freeze(SolidColorBrush b) { b.Freeze(); return b; }
 
     private readonly StringExtractionViewModel _vm;
-    private readonly ObservableCollection<StringDiffEntry> _results = [];
+    private DataGrid _grid = null!;
     private ComboBox _snapACombo = null!;
     private ComboBox _snapBCombo = null!;
     private TextBlock _summaryText = null!;
@@ -90,10 +89,10 @@ internal sealed class StringDiffPanel : UserControl
             GridLinesVisibility     = DataGridGridLinesVisibility.Horizontal,
             HeadersVisibility       = DataGridHeadersVisibility.Column,
             BorderThickness         = new Thickness(0),
-            ItemsSource             = _results,
         };
         VirtualizingPanel.SetIsVirtualizing(grid, true);
         VirtualizingPanel.SetVirtualizationMode(grid, VirtualizationMode.Recycling);
+        _grid = grid;
         grid.SetResourceReference(BackgroundProperty, "TE_Background");
         grid.SetResourceReference(ForegroundProperty, "TE_Foreground");
 
@@ -147,13 +146,20 @@ internal sealed class StringDiffPanel : UserControl
         if (a is null || b is null) { _summaryText.Text = "Select two snapshots."; return; }
 
         var entries = StringDiffService.Compare(a.Runs, b.Runs);
-        _results.Clear();
-        foreach (var e in entries) _results.Add(e);
+        _grid.ItemsSource = entries;
 
-        int added    = entries.Count(e => e.Status == StringDiffStatus.Added);
-        int removed  = entries.Count(e => e.Status == StringDiffStatus.Removed);
-        int modified = entries.Count(e => e.Status == StringDiffStatus.Modified);
-        _summaryText.Text = $"+{added}  -{removed}  ~{modified}  ={entries.Count - added - removed - modified}";
+        int added = 0, removed = 0, modified = 0, unchanged = 0;
+        foreach (var e in entries)
+        {
+            switch (e.Status)
+            {
+                case StringDiffStatus.Added:    added++;    break;
+                case StringDiffStatus.Removed:  removed++;  break;
+                case StringDiffStatus.Modified: modified++; break;
+                default:                        unchanged++; break;
+            }
+        }
+        _summaryText.Text = $"+{added}  -{removed}  ~{modified}  ={unchanged}";
     }
 
     private DataGridTemplateColumn MakeStatusColumn()
@@ -197,7 +203,6 @@ internal sealed class StringDiffPanel : UserControl
 
     private static DataGridTemplateColumn MakeTextCol(string header, Func<StringDiffEntry, string> selector, double width)
     {
-        // Use a converter-free approach: bind via a template to avoid needing a dedicated property
         var col = new DataGridTemplateColumn
         {
             Header = new TextBlock { Text = header },

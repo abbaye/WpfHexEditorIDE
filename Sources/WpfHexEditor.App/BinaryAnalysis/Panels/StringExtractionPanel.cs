@@ -24,30 +24,12 @@ namespace WpfHexEditor.App.BinaryAnalysis.Panels;
 public sealed class StringExtractionPanel : UserControl, IDisposable
 {
     // Frozen brushes shared across all recycled cells — allocated once at class init.
-    private static readonly SolidColorBrush ContextByteBrush =
-        Freeze(new SolidColorBrush(Color.FromRgb(0x70, 0x70, 0x70)));
-    private static readonly IReadOnlyDictionary<StringEncoding, SolidColorBrush> EncodingBrushes =
-        new Dictionary<StringEncoding, SolidColorBrush>
-        {
-            [StringEncoding.Tbl]          = Freeze(new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50))),
-            [StringEncoding.TblDte]       = Freeze(new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50))),
-            [StringEncoding.TblMte]       = Freeze(new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50))),
-            [StringEncoding.Ascii]        = Freeze(new SolidColorBrush(Color.FromRgb(0x42, 0x8B, 0xCA))),
-            [StringEncoding.Utf8]         = Freeze(new SolidColorBrush(Color.FromRgb(0x00, 0xBC, 0xD4))),
-            [StringEncoding.Utf16Le]      = Freeze(new SolidColorBrush(Color.FromRgb(0x00, 0xBC, 0xD4))),
-            [StringEncoding.Utf16Be]      = Freeze(new SolidColorBrush(Color.FromRgb(0x00, 0xBC, 0xD4))),
-            [StringEncoding.Ebcdic]       = Freeze(new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00))),
-            [StringEncoding.EbcdicNoSpec] = Freeze(new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00))),
-            [StringEncoding.Latin1]       = Freeze(new SolidColorBrush(Color.FromRgb(0xAB, 0x47, 0xBC))),
-        };
-    private static readonly SolidColorBrush FallbackEncodingBrush =
-        Freeze(new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)));
+    private static readonly SolidColorBrush ContextByteBrush = FreezeB(new SolidColorBrush(Color.FromRgb(0x70, 0x70, 0x70)));
+    private static SolidColorBrush FreezeB(SolidColorBrush b) { b.Freeze(); return b; }
 
     // 256-entry lookup avoids one string allocation per byte in the context column hot path.
     private static readonly string[] HexByteLookup =
         Enumerable.Range(0, 256).Select(i => i.ToString("X2")).ToArray();
-
-    private static SolidColorBrush Freeze(SolidColorBrush b) { b.Freeze(); return b; }
 
     private readonly StringExtractionViewModel _vm = new();
     private readonly StringExtractionOptions _options = StringExtractionOptions.Load();
@@ -1015,16 +997,16 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
     private static readonly IReadOnlyDictionary<StringKind, (SolidColorBrush bg, string label)> KindBadges =
         new Dictionary<StringKind, (SolidColorBrush, string)>
         {
-            [StringKind.Email]       = (Freeze(new SolidColorBrush(Color.FromRgb(0x2E, 0x7D, 0x32))), "EMAIL"),
-            [StringKind.Url]         = (Freeze(new SolidColorBrush(Color.FromRgb(0x01, 0x57, 0x9B))), "URL"),
-            [StringKind.PathWin]     = (Freeze(new SolidColorBrush(Color.FromRgb(0x4A, 0x14, 0x8C))), "PATH"),
-            [StringKind.PathUnix]    = (Freeze(new SolidColorBrush(Color.FromRgb(0x4A, 0x14, 0x8C))), "PATH"),
-            [StringKind.Guid]        = (Freeze(new SolidColorBrush(Color.FromRgb(0xBF, 0x36, 0x0C))), "GUID"),
-            [StringKind.RegistryKey] = (Freeze(new SolidColorBrush(Color.FromRgb(0x78, 0x09, 0x16))), "REG"),
-            [StringKind.Version]     = (Freeze(new SolidColorBrush(Color.FromRgb(0x00, 0x60, 0x64))), "VER"),
-            [StringKind.IpV4]        = (Freeze(new SolidColorBrush(Color.FromRgb(0xE6, 0x51, 0x00))), "IPv4"),
-            [StringKind.IpV6]        = (Freeze(new SolidColorBrush(Color.FromRgb(0xE6, 0x51, 0x00))), "IPv6"),
-            [StringKind.HexHash]     = (Freeze(new SolidColorBrush(Color.FromRgb(0x37, 0x47, 0x4F))), "HASH"),
+            [StringKind.Email]       = (FreezeB(new SolidColorBrush(Color.FromRgb(0x2E, 0x7D, 0x32))), "EMAIL"),
+            [StringKind.Url]         = (FreezeB(new SolidColorBrush(Color.FromRgb(0x01, 0x57, 0x9B))), "URL"),
+            [StringKind.PathWin]     = (FreezeB(new SolidColorBrush(Color.FromRgb(0x4A, 0x14, 0x8C))), "PATH"),
+            [StringKind.PathUnix]    = (FreezeB(new SolidColorBrush(Color.FromRgb(0x4A, 0x14, 0x8C))), "PATH"),
+            [StringKind.Guid]        = (FreezeB(new SolidColorBrush(Color.FromRgb(0xBF, 0x36, 0x0C))), "GUID"),
+            [StringKind.RegistryKey] = (FreezeB(new SolidColorBrush(Color.FromRgb(0x78, 0x09, 0x16))), "REG"),
+            [StringKind.Version]     = (FreezeB(new SolidColorBrush(Color.FromRgb(0x00, 0x60, 0x64))), "VER"),
+            [StringKind.IpV4]        = (FreezeB(new SolidColorBrush(Color.FromRgb(0xE6, 0x51, 0x00))), "IPv4"),
+            [StringKind.IpV6]        = (FreezeB(new SolidColorBrush(Color.FromRgb(0xE6, 0x51, 0x00))), "IPv6"),
+            [StringKind.HexHash]     = (FreezeB(new SolidColorBrush(Color.FromRgb(0x37, 0x47, 0x4F))), "HASH"),
         };
 
     private DataGridTemplateColumn MakeKindColumn()
@@ -1341,7 +1323,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
     }
 
     private static SolidColorBrush EncodingChipColor(StringEncoding enc) =>
-        EncodingBrushes.TryGetValue(enc, out var b) ? b : FallbackEncodingBrush;
+        EncodingPalette.Brushes.TryGetValue(enc, out var b) ? b : EncodingPalette.FallbackBrush;
 
     // ── Status bar ────────────────────────────────────────────────────────────
 

@@ -17,32 +17,12 @@ namespace WpfHexEditor.App.BinaryAnalysis.Panels;
 
 internal sealed class StringTimelineView : FrameworkElement
 {
-    private static readonly SolidColorBrush BackBrush =
-        Freeze(new SolidColorBrush(Color.FromRgb(0x1E, 0x1E, 0x1E)));
-    private static readonly SolidColorBrush RulerBrush =
-        Freeze(new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33)));
-    private static readonly SolidColorBrush RulerTextBrush =
-        Freeze(new SolidColorBrush(Color.FromRgb(0x99, 0x99, 0x99)));
-    private static readonly Typeface RulerTypeface = new("Consolas");
+    private static readonly SolidColorBrush BackBrush      = FreezeB(new SolidColorBrush(Color.FromRgb(0x1E, 0x1E, 0x1E)));
+    private static readonly SolidColorBrush RulerBrush     = FreezeB(new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33)));
+    private static readonly SolidColorBrush RulerTextBrush = FreezeB(new SolidColorBrush(Color.FromRgb(0x99, 0x99, 0x99)));
+    private static readonly Typeface        RulerTypeface  = new("Consolas");
 
-    private static readonly IReadOnlyDictionary<StringEncoding, SolidColorBrush> EncodingBrushes =
-        new Dictionary<StringEncoding, SolidColorBrush>
-        {
-            [StringEncoding.Tbl]          = Freeze(new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50))),
-            [StringEncoding.TblDte]       = Freeze(new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50))),
-            [StringEncoding.TblMte]       = Freeze(new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50))),
-            [StringEncoding.Ascii]        = Freeze(new SolidColorBrush(Color.FromRgb(0x42, 0x8B, 0xCA))),
-            [StringEncoding.Utf8]         = Freeze(new SolidColorBrush(Color.FromRgb(0x00, 0xBC, 0xD4))),
-            [StringEncoding.Utf16Le]      = Freeze(new SolidColorBrush(Color.FromRgb(0x00, 0xBC, 0xD4))),
-            [StringEncoding.Utf16Be]      = Freeze(new SolidColorBrush(Color.FromRgb(0x00, 0xBC, 0xD4))),
-            [StringEncoding.Ebcdic]       = Freeze(new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00))),
-            [StringEncoding.EbcdicNoSpec] = Freeze(new SolidColorBrush(Color.FromRgb(0xFF, 0x98, 0x00))),
-            [StringEncoding.Latin1]       = Freeze(new SolidColorBrush(Color.FromRgb(0xAB, 0x47, 0xBC))),
-        };
-    private static readonly SolidColorBrush FallbackBrush =
-        Freeze(new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)));
-
-    private static SolidColorBrush Freeze(SolidColorBrush b) { b.Freeze(); return b; }
+    private static SolidColorBrush FreezeB(SolidColorBrush b) { b.Freeze(); return b; }
 
     private const double RowHeight   = 12.0;
     private const double RulerHeight = 18.0;
@@ -57,8 +37,15 @@ internal sealed class StringTimelineView : FrameworkElement
     }
 
     private StringExtractionViewModel? _vm;
-    private List<StringRun> _snapshot = [];
     private long _bufferLength;
+
+    // Layout cache — rebuilt in Refresh(), consumed by MeasureOverride/OnRender/HitTestRun.
+    private List<(StringRun run, int row, double x, double rw)> _rowMap = [];
+    private int _rowCount;
+
+    // Ruler pen — cached to avoid allocation per render.
+    private static readonly Pen RulerPen = FreezePen(new Pen(RulerTextBrush, 0.5));
+    private static Pen FreezePen(Pen p) { p.Freeze(); return p; }
 
     // Hover state for tooltip
     private StringRun? _hovered;
@@ -82,11 +69,38 @@ internal sealed class StringTimelineView : FrameworkElement
 
     public void Refresh()
     {
-        if (_vm is null) { _snapshot = []; _bufferLength = 0; InvalidateVisual(); return; }
-        _snapshot    = _vm.GetAllRuns().ToList();
-        _bufferLength = _vm.LastBufferLength;
+        _bufferLength = _vm?.LastBufferLength ?? 0;
+        RebuildLayout(_vm?.GetAllRuns());
         InvalidateMeasure();
         InvalidateVisual();
+    }
+
+    // Greedy row-packing — runs once per data change, result cached for render + hit-test.
+    private void RebuildLayout(IEnumerable<StringRun>? runs)
+    {
+        _rowMap.Clear();
+        _rowCount = 0;
+        if (runs is null || _bufferLength <= 0) return;
+
+        double w = Math.Max(ActualWidth > 0 ? ActualWidth : DesiredSize.Width, 1) * _zoom;
+        if (w <= 0) return;
+        double scale = w / _bufferLength;
+
+        var rowEnds = new List<double>();
+        foreach (var run in runs)
+        {
+            double x    = run.Offset * scale;
+            double rw   = Math.Max(MinRunWidth, run.Length * scale);
+            double xEnd = x + rw;
+            int row = -1;
+            for (int r = 0; r < rowEnds.Count; r++)
+            {
+                if (rowEnds[r] <= x) { row = r; rowEnds[r] = xEnd + 1; break; }
+            }
+            if (row < 0) { row = rowEnds.Count; rowEnds.Add(xEnd + 1); }
+            _rowMap.Add((run, row, x, rw));
+        }
+        _rowCount = Math.Max(1, rowEnds.Count);
     }
 
     // ── Layout ────────────────────────────────────────────────────────────────
@@ -94,29 +108,8 @@ internal sealed class StringTimelineView : FrameworkElement
     protected override Size MeasureOverride(Size availableSize)
     {
         double w = Math.Max(availableSize.Width, 1) * _zoom;
-        int rows = CountRows();
-        double h = RulerHeight + rows * RowHeight;
+        double h = RulerHeight + _rowCount * RowHeight;
         return new Size(w, h);
-    }
-
-    private int CountRows()
-    {
-        if (_snapshot.Count == 0 || _bufferLength <= 0) return 0;
-        // Pack rows greedily: each row tracks its rightmost pixel end.
-        var rowEnds = new List<double>();
-        double scale = DesiredSize.Width > 0 ? DesiredSize.Width / _bufferLength : 1.0;
-        foreach (var run in _snapshot)
-        {
-            double x    = run.Offset   * scale;
-            double xEnd = x + Math.Max(MinRunWidth, run.Length * scale);
-            bool placed = false;
-            for (int r = 0; r < rowEnds.Count; r++)
-            {
-                if (rowEnds[r] <= x) { rowEnds[r] = xEnd + 1; placed = true; break; }
-            }
-            if (!placed) rowEnds.Add(xEnd + 1);
-        }
-        return Math.Max(1, rowEnds.Count);
     }
 
     // ── Render ────────────────────────────────────────────────────────────────
@@ -127,45 +120,22 @@ internal sealed class StringTimelineView : FrameworkElement
         double h = ActualHeight;
         dc.DrawRectangle(BackBrush, null, new Rect(0, 0, w, h));
 
-        if (_snapshot.Count == 0 || _bufferLength <= 0 || w <= 0) return;
+        if (_rowMap.Count == 0 || _bufferLength <= 0 || w <= 0) return;
 
         double scale = w / _bufferLength;
-
         DrawRuler(dc, w, scale);
 
-        // Greedy row-packing — rowEnds tracks pixel end per row.
-        var rowEnds = new List<double>();
-        var rowMap  = new List<(StringRun run, int row, double x, double runW)>();
-
-        foreach (var run in _snapshot)
-        {
-            double x    = run.Offset * scale;
-            double rw   = Math.Max(MinRunWidth, run.Length * scale);
-            double xEnd = x + rw;
-
-            int row = -1;
-            for (int r = 0; r < rowEnds.Count; r++)
-            {
-                if (rowEnds[r] <= x) { row = r; rowEnds[r] = xEnd + 1; break; }
-            }
-            if (row < 0) { row = rowEnds.Count; rowEnds.Add(xEnd + 1); }
-            rowMap.Add((run, row, x, rw));
-        }
-
-        // Only draw rows inside the visible vertical clip
-        double scrollTop    = 0; // parent ScrollViewer offset handled by WPF clipping
-        double visibleBottom = h;
-
-        foreach (var (run, row, x, rw) in rowMap)
+        foreach (var (run, row, x, rw) in _rowMap)
         {
             double y = RulerHeight + row * RowHeight;
-            if (y + RowHeight < scrollTop || y > visibleBottom) continue;
-
-            var brush = EncodingBrushes.TryGetValue(run.Encoding, out var b) ? b : FallbackBrush;
-            dc.DrawRectangle(brush, null, new Rect(x, y + 1, rw, RowHeight - 2));
+            if (y > h) continue;
+            // Rescale x/rw from cached layout width to current ActualWidth
+            double cx  = run.Offset * scale;
+            double crw = Math.Max(MinRunWidth, run.Length * scale);
+            var brush = EncodingPalette.Brushes.TryGetValue(run.Encoding, out var b) ? b : EncodingPalette.FallbackBrush;
+            dc.DrawRectangle(brush, null, new Rect(cx, y + 1, crw, RowHeight - 2));
         }
 
-        // Draw hover tooltip inline
         if (_hovered is not null)
         {
             var text = new FormattedText(
@@ -173,7 +143,6 @@ internal sealed class StringTimelineView : FrameworkElement
                 System.Globalization.CultureInfo.InvariantCulture,
                 FlowDirection.LeftToRight, RulerTypeface, 10, RulerTextBrush,
                 VisualTreeHelper.GetDpi(this).PixelsPerDip);
-
             double tx = Math.Min(_hoveredPos.X + 4, w - text.Width - 4);
             double ty = Math.Max(RulerHeight, _hoveredPos.Y - 16);
             dc.DrawRectangle(RulerBrush, null, new Rect(tx - 2, ty - 1, text.Width + 4, text.Height + 2));
@@ -184,19 +153,12 @@ internal sealed class StringTimelineView : FrameworkElement
     private void DrawRuler(DrawingContext dc, double w, double scale)
     {
         dc.DrawRectangle(RulerBrush, null, new Rect(0, 0, w, RulerHeight));
-        if (_bufferLength <= 0) return;
-
-        // Tick every ~100px, snapped to a power-of-2 offset step
-        double pixelsPerTick = 100.0;
-        long tickStep = (long)Math.Pow(2, Math.Ceiling(Math.Log2(pixelsPerTick / scale)));
+        long tickStep = (long)Math.Pow(2, Math.Ceiling(Math.Log2(100.0 / scale)));
         tickStep = Math.Max(1, tickStep);
-
-        var pen = new Pen(RulerTextBrush, 0.5);
-        for (long off = 0; off <= _bufferLength; off += tickStep)
+        for (long off = 0; off * scale <= w; off += tickStep)
         {
             double x = off * scale;
-            if (x > w) break;
-            dc.DrawLine(pen, new Point(x, 0), new Point(x, RulerHeight));
+            dc.DrawLine(RulerPen, new Point(x, 0), new Point(x, RulerHeight));
             var ft = new FormattedText($"0x{off:X}", System.Globalization.CultureInfo.InvariantCulture,
                 FlowDirection.LeftToRight, RulerTypeface, 8, RulerTextBrush,
                 VisualTreeHelper.GetDpi(this).PixelsPerDip);
@@ -209,8 +171,8 @@ internal sealed class StringTimelineView : FrameworkElement
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        var pos  = e.GetPosition(this);
-        var hit  = HitTestRun(pos);
+        var pos = e.GetPosition(this);
+        var hit = HitTestRun(pos);
         if (!ReferenceEquals(hit, _hovered))
         {
             _hovered    = hit;
@@ -232,23 +194,32 @@ internal sealed class StringTimelineView : FrameworkElement
         if (run is not null) RunSelected?.Invoke(run);
     }
 
+    // O(log n) column search: binary search by offset, then check only candidates in that X band.
     private StringRun? HitTestRun(Point pos)
     {
-        if (_bufferLength <= 0 || ActualWidth <= 0) return null;
+        if (_bufferLength <= 0 || ActualWidth <= 0 || _rowMap.Count == 0) return null;
         double scale = ActualWidth / _bufferLength;
-        double y     = pos.Y - RulerHeight;
-        if (y < 0) return null;
-        int row = (int)(y / RowHeight);
+        if (pos.Y < RulerHeight) return null;
 
-        StringRun? best = null;
-        double bestDist = double.MaxValue;
-        foreach (var run in _snapshot)
+        long targetOffset = (long)(pos.X / scale);
+        StringRun? best   = null;
+        double bestDist   = double.MaxValue;
+
+        // _rowMap is insertion-ordered by ascending offset — binary-search for window
+        int lo = 0, hi = _rowMap.Count - 1;
+        while (lo < hi)
         {
-            double x  = run.Offset * scale;
-            double rw = Math.Max(MinRunWidth, run.Length * scale);
+            int mid = (lo + hi) / 2;
+            if (_rowMap[mid].run.Offset < targetOffset - (long)(200 / scale)) lo = mid + 1;
+            else hi = mid;
+        }
+
+        for (int i = lo; i < _rowMap.Count; i++)
+        {
+            var (run, _, x, rw) = _rowMap[i];
+            if (x > pos.X + 4) break;
             if (pos.X >= x && pos.X <= x + rw)
             {
-                // approximate row match — return closest centre
                 double dist = Math.Abs(pos.X - (x + rw / 2));
                 if (dist < bestDist) { best = run; bestDist = dist; }
             }

@@ -17,8 +17,9 @@ public static class StringDiffService
         IReadOnlyList<StringRun> snapshotA,
         IReadOnlyList<StringRun> snapshotB)
     {
-        var mapA = snapshotA.ToDictionary(r => r.Offset);
-        var mapB = snapshotB.ToDictionary(r => r.Offset);
+        // Last-wins on duplicate offsets (degenerate input) to avoid ArgumentException.
+        var mapA = snapshotA.GroupBy(r => r.Offset).ToDictionary(g => g.Key, g => g.Last());
+        var mapB = snapshotB.GroupBy(r => r.Offset).ToDictionary(g => g.Key, g => g.Last());
 
         var result = new List<StringDiffEntry>(snapshotA.Count + snapshotB.Count);
 
