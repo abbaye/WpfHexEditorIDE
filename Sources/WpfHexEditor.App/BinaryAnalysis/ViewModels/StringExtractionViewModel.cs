@@ -468,13 +468,14 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
                                          encodings.Contains(StringEncoding.TblMte))
                                         ? _activeTblTable : null;
 
-            // Run extract + line-start cache + entropy map all on background thread
+            // Run extract + line-start cache + entropy map + kind detection all on background thread
             var (runs, lineStarts, entropyMap) = await Task.Run(() =>
             {
-                var r = StringExtractor.Extract(buffer.AsSpan(), _minLength, encodings, tblTable);
+                var r  = StringExtractor.Extract(buffer.AsSpan(), _minLength, encodings, tblTable);
+                var rk = r.Select(run => run with { Kind = StringPatternDetector.Detect(run.Value) }).ToList();
                 var ls = BuildLineStartsFromBuffer(buffer);
                 var em = BuildEntropyMap(buffer);
-                return (r, ls, em);
+                return (rk, ls, em);
             }, _cts.Token);
 
             // Cache for reuse in ApplyCodeHighlights / entropy filter
@@ -614,6 +615,8 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         if (_minReadability > 0f && run.ReadabilityScore < _minReadability) return false;
 
         if (_printableOnly && !IsPrintable(run.Value)) return false;
+
+        if (_activeKinds.Count > 0 && !_activeKinds.Contains(run.Kind)) return false;
 
         if (_showOnlyClusters && GetClusterId(run) == 0) return false;
 
@@ -841,6 +844,62 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
             Source   = "BinaryAnalysis.StringExtraction",
         });
     }
+
+    // ── Snapshots ─────────────────────────────────────────────────────────────
+
+    private const int MaxSnapshots = 10;
+
+    public sealed record ScanSnapshot(
+        string FileName,
+        DateTime TakenAt,
+        IReadOnlyList<StringRun> Runs)
+    {
+        public string DisplayName =>
+            $"{System.IO.Path.GetFileName(FileName)} — {TakenAt:HH:mm:ss} ({Runs.Count:N0} strings)";
+    }
+
+    public ObservableCollection<ScanSnapshot> Snapshots { get; } = [];
+
+    public void TakeSnapshot()
+    {
+        if (_allResults.Count == 0) return;
+        var snap = new ScanSnapshot(
+            _lastBufferPath ?? "(unknown)",
+            DateTime.Now,
+            _allResults.ToList());
+        Snapshots.Insert(0, snap);
+        while (Snapshots.Count > MaxSnapshots) Snapshots.RemoveAt(Snapshots.Count - 1);
+    }
+
+    public void RestoreSnapshot(ScanSnapshot snapshot)
+    {
+        _allResults.Clear();
+        foreach (var run in snapshot.Runs) _allResults.Add(run);
+        _offsetIndex = [.. snapshot.Runs.OrderBy(r => r.Offset)];
+        RebuildDuplicateCounts();
+        TotalCount = _allResults.Count;
+        ResultsView.Refresh();
+        RefreshEncodingCounts();
+        UpdateShownCount();
+        StatusText = $"Snapshot restored — {snapshot.DisplayName}";
+    }
+
+    // ── Kind filter ───────────────────────────────────────────────────────────
+
+    private readonly HashSet<StringKind> _activeKinds = [];
+
+    /// <summary>Kinds to show. Empty = show all (no filter).</summary>
+    public HashSet<StringKind> ActiveKinds => _activeKinds;
+
+    public void ToggleKind(StringKind kind)
+    {
+        if (!_activeKinds.Remove(kind)) _activeKinds.Add(kind);
+        ResultsView.Refresh();
+        UpdateShownCount();
+        OnPropertyChanged(nameof(ActiveKinds));
+    }
+
+    public bool IsKindActive(StringKind kind) => _activeKinds.Contains(kind);
 
     // ── Similarity clustering ─────────────────────────────────────────────────
 

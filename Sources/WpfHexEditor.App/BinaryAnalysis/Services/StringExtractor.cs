@@ -36,6 +36,9 @@ public sealed record StringRun(long Offset, int Length, StringEncoding Encoding,
     /// TBL runs always return 1.0 (language-specific, judged by the TBL itself).
     /// </summary>
     public float ReadabilityScore { get; } = ReadabilityScorer.Score(Value, Encoding);
+
+    /// <summary>Detected pattern kind (email, URL, path, GUID, etc.). Set by post-pass in RunAsync.</summary>
+    public StringKind Kind { get; init; } = StringKind.None;
 }
 
 /// <summary>

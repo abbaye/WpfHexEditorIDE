@@ -58,10 +58,14 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
     private Button? _tblClearBtn;
     private TextBlock? _outdatedBadge;
     private WrapPanel? _statsBar;
-    private readonly StringOffsetHeatmap _heatmap = new() { Height = 8, Cursor = System.Windows.Input.Cursors.Hand };
+    private readonly StringOffsetHeatmap  _heatmap  = new() { Height = 8, Cursor = System.Windows.Input.Cursors.Hand };
+    private readonly StringTimelinePanel  _timeline = new();
+    private readonly StringDiffPanel      _diffPanel;
 
     public StringExtractionPanel()
     {
+        _diffPanel = new StringDiffPanel(_vm);
+
         var root = new Grid();
         root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -71,7 +75,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         root.SetResourceReference(BackgroundProperty, "TE_Background");
 
         var toolbarPanel = BuildToolbarWithFilter();
-        var grid         = BuildGrid();
+        var tabCtrl      = BuildTabControl();
         var statsRow     = BuildStatsBar();
         var statusBar    = BuildStatusBar();
 
@@ -86,15 +90,21 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
             }
         };
 
+        _timeline.Attach(_vm, run =>
+        {
+            _vm.SelectedGridItem = run;
+            _vm.NavigateToOffset(run);
+        });
+
         Grid.SetRow(toolbarPanel, 0);
         Grid.SetRow(_heatmap,     1);
-        Grid.SetRow(grid,         2);
+        Grid.SetRow(tabCtrl,      2);
         Grid.SetRow(statsRow,     3);
         Grid.SetRow(statusBar,    4);
 
         root.Children.Add(toolbarPanel);
         root.Children.Add(_heatmap);
-        root.Children.Add(grid);
+        root.Children.Add(tabCtrl);
         root.Children.Add(statsRow);
         root.Children.Add(statusBar);
 
@@ -107,6 +117,33 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
             if (e.PropertyName == nameof(_vm.EncodingCounts)) RefreshStatsBar();
             if (e.PropertyName == nameof(_vm.IsOutdated))     UpdateOutdatedBadge();
         };
+    }
+
+    // ── Tab control ──────────────────────────────────────────────────────────
+
+    private TabControl BuildTabControl()
+    {
+        var tc = new TabControl { BorderThickness = new Thickness(0) };
+        tc.SetResourceReference(BackgroundProperty, "TE_Background");
+
+        var resultsTab = new TabItem();
+        resultsTab.SetResourceReference(HeaderedContentControl.HeaderProperty, "StringExtract_TabResults");
+        resultsTab.Content = BuildGrid();
+
+        var timelineTab = new TabItem();
+        timelineTab.SetResourceReference(HeaderedContentControl.HeaderProperty, "StringExtract_TabTimeline");
+        timelineTab.SetResourceReference(ToolTipProperty, "StringExtract_TtTimeline");
+        timelineTab.Content = _timeline;
+
+        var diffTab = new TabItem();
+        diffTab.SetResourceReference(HeaderedContentControl.HeaderProperty, "StringExtract_TabDiff");
+        diffTab.SetResourceReference(ToolTipProperty, "StringExtract_TtDiff");
+        diffTab.Content = _diffPanel;
+
+        tc.Items.Add(resultsTab);
+        tc.Items.Add(timelineTab);
+        tc.Items.Add(diffTab);
+        return tc;
     }
 
     // ── Toolbar ───────────────────────────────────────────────────────────────
@@ -184,13 +221,19 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         _outdatedBadge.SetResourceReference(TextBlock.TextProperty,   "StringExtract_TtOutdatedBadge");
         _outdatedBadge.SetResourceReference(ToolTipProperty,          "StringExtract_TtOutdated");
 
+        var kindFilterBtn    = BuildKindFilterButton();
+        var snapshotBtn      = MakeToolbarButton("", "StringExtract_TtSnapshot");
+        snapshotBtn.Click   += (_, _) => _vm.TakeSnapshot();
+        var loadSnapshotBtn  = BuildSnapshotDropdown();
+
         foreach (UIElement el in new UIElement[]
         {
             runBtn, cancelBtn, MakeToolbarSeparator(),
             tblBtn, MakeToolbarSeparator(),
             exportBtn, MakeToolbarSeparator(),
             wrapBtn, groupBtn, autoRescanBtn, MakeToolbarSeparator(),
-            clusterBtn, showClustersBtn, MakeToolbarSeparator(),
+            clusterBtn, showClustersBtn, kindFilterBtn, MakeToolbarSeparator(),
+            snapshotBtn, loadSnapshotBtn, MakeToolbarSeparator(),
             highlightBtn, clearHlBtn, MakeToolbarSeparator(),
             syncBtn, _outdatedBadge,
         })
@@ -537,6 +580,117 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         return tb;
     }
 
+    // ── Kind filter dropdown ──────────────────────────────────────────────────
+
+    private UIElement BuildKindFilterButton()
+    {
+        var popup = new Popup { StaysOpen = false, AllowsTransparency = true, Placement = PlacementMode.Bottom };
+        var listBorder = new Border { BorderThickness = new Thickness(1), Padding = new Thickness(2) };
+        listBorder.SetResourceReference(BackgroundProperty,  "TE_Background");
+        listBorder.SetResourceReference(BorderBrushProperty, "Panel_ToolbarBorderBrush");
+
+        var listPanel = new StackPanel();
+        var checkBoxes = new List<CheckBox>();
+
+        var allKinds = Enum.GetValues<StringKind>().Where(k => k != StringKind.None).ToArray();
+        foreach (var kind in allKinds)
+        {
+            var chk = new CheckBox
+            {
+                Content   = kind.ToString(),
+                Tag       = kind,
+                IsChecked = _vm.IsKindActive(kind),
+                Padding   = new Thickness(4, 1, 8, 1),
+                FontSize  = 11,
+            };
+            chk.SetResourceReference(ForegroundProperty, "TE_Foreground");
+            chk.Click += (_, _) =>
+            {
+                _vm.ToggleKind(kind);
+                foreach (var c in checkBoxes)
+                    if (c.Tag is StringKind k) c.IsChecked = _vm.IsKindActive(k);
+            };
+            checkBoxes.Add(chk);
+            listPanel.Children.Add(chk);
+        }
+
+        // Clear-all entry
+        var clearItem = new Button
+        {
+            Content = "Clear all", FontSize = 10,
+            Padding = new Thickness(4, 2, 4, 2), Margin = new Thickness(2, 4, 2, 0),
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+        };
+        clearItem.SetResourceReference(ForegroundProperty, "TE_Foreground");
+        clearItem.Click += (_, _) =>
+        {
+            foreach (var kind in allKinds.Where(k => _vm.IsKindActive(k))) _vm.ToggleKind(kind);
+            foreach (var c in checkBoxes) c.IsChecked = false;
+        };
+        listPanel.Children.Add(clearItem);
+
+        listBorder.Child = listPanel;
+        popup.Child      = listBorder;
+
+        var btn = MakeToolbarButton("", "StringExtract_TtKindFilter");
+        btn.Click += (_, _) => { popup.PlacementTarget = btn; popup.IsOpen = !popup.IsOpen; };
+
+        // Highlight button blue when any kind filter is active
+        _vm.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName != nameof(_vm.ActiveKinds)) return;
+            if (_vm.ActiveKinds.Count > 0)
+                btn.Foreground = new SolidColorBrush(Color.FromRgb(0x00, 0x7A, 0xCC));
+            else
+                btn.SetResourceReference(ForegroundProperty, "Panel_ToolbarForegroundBrush");
+        };
+
+        return btn;
+    }
+
+    // ── Snapshot dropdown ─────────────────────────────────────────────────────
+
+    private UIElement BuildSnapshotDropdown()
+    {
+        var popup = new Popup { StaysOpen = false, AllowsTransparency = true, Placement = PlacementMode.Bottom };
+        var outerBorder = new Border { BorderThickness = new Thickness(1), Padding = new Thickness(2), MinWidth = 260 };
+        outerBorder.SetResourceReference(BackgroundProperty,  "TE_Background");
+        outerBorder.SetResourceReference(BorderBrushProperty, "Panel_ToolbarBorderBrush");
+
+        var listBox = new ListBox { BorderThickness = new Thickness(0), FontSize = 11 };
+        listBox.SetResourceReference(BackgroundProperty, "TE_Background");
+        listBox.SetResourceReference(ForegroundProperty, "TE_Foreground");
+        listBox.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(_vm.Snapshots)) { Source = _vm });
+        listBox.DisplayMemberPath = nameof(StringExtractionViewModel.ScanSnapshot.DisplayName);
+        listBox.MouseDoubleClick += (_, _) =>
+        {
+            if (listBox.SelectedItem is StringExtractionViewModel.ScanSnapshot snap)
+            {
+                _vm.RestoreSnapshot(snap);
+                popup.IsOpen = false;
+            }
+        };
+
+        var emptyHint = new TextBlock { FontSize = 10, Margin = new Thickness(4), FontStyle = FontStyles.Italic };
+        emptyHint.SetResourceReference(ForegroundProperty,     "Panel_ToolbarForegroundBrush");
+        emptyHint.SetResourceReference(TextBlock.TextProperty, "StringExtract_NoSnapshots");
+
+        void SyncHint()
+            => emptyHint.Visibility = _vm.Snapshots.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        _vm.Snapshots.CollectionChanged += (_, _) => SyncHint();
+        SyncHint();
+
+        var inner = new StackPanel();
+        inner.Children.Add(emptyHint);
+        inner.Children.Add(listBox);
+        outerBorder.Child = inner;
+        popup.Child       = outerBorder;
+
+        var btn = MakeToolbarButton("", "StringExtract_TtLoadSnapshot");
+        btn.Click += (_, _) => { popup.PlacementTarget = btn; popup.IsOpen = !popup.IsOpen; };
+        return btn;
+    }
+
     // ── Encoding dropdown ─────────────────────────────────────────────────────
 
     private UIElement BuildEncodingDropdown()
@@ -755,6 +909,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         _grid.Columns.Add(MakeCol("StringExtract_ColBytes",    nameof(StringRun.RawHex),   160, null,  "StringExtract_TtBytes"));
         _grid.Columns.Add(MakeDuplicateColumn());
         _grid.Columns.Add(MakeContextBytesColumn());
+        _grid.Columns.Add(MakeKindColumn());
         _grid.Columns.Add(MakeValueColumn());
         var scoreCol   = MakeScoreColumn();
         var clusterCol = MakeClusterColumn();
@@ -853,6 +1008,74 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
             Refresh(null, default);
         }));
         cellTemplate.VisualTree = tbFactory;
+        col.CellTemplate = cellTemplate;
+        return col;
+    }
+
+    private static readonly IReadOnlyDictionary<StringKind, (SolidColorBrush bg, string label)> KindBadges =
+        new Dictionary<StringKind, (SolidColorBrush, string)>
+        {
+            [StringKind.Email]       = (Freeze(new SolidColorBrush(Color.FromRgb(0x2E, 0x7D, 0x32))), "EMAIL"),
+            [StringKind.Url]         = (Freeze(new SolidColorBrush(Color.FromRgb(0x01, 0x57, 0x9B))), "URL"),
+            [StringKind.PathWin]     = (Freeze(new SolidColorBrush(Color.FromRgb(0x4A, 0x14, 0x8C))), "PATH"),
+            [StringKind.PathUnix]    = (Freeze(new SolidColorBrush(Color.FromRgb(0x4A, 0x14, 0x8C))), "PATH"),
+            [StringKind.Guid]        = (Freeze(new SolidColorBrush(Color.FromRgb(0xBF, 0x36, 0x0C))), "GUID"),
+            [StringKind.RegistryKey] = (Freeze(new SolidColorBrush(Color.FromRgb(0x78, 0x09, 0x16))), "REG"),
+            [StringKind.Version]     = (Freeze(new SolidColorBrush(Color.FromRgb(0x00, 0x60, 0x64))), "VER"),
+            [StringKind.IpV4]        = (Freeze(new SolidColorBrush(Color.FromRgb(0xE6, 0x51, 0x00))), "IPv4"),
+            [StringKind.IpV6]        = (Freeze(new SolidColorBrush(Color.FromRgb(0xE6, 0x51, 0x00))), "IPv6"),
+            [StringKind.HexHash]     = (Freeze(new SolidColorBrush(Color.FromRgb(0x37, 0x47, 0x4F))), "HASH"),
+        };
+
+    private DataGridTemplateColumn MakeKindColumn()
+    {
+        var hdr = new TextBlock();
+        hdr.SetResourceReference(TextBlock.TextProperty, "StringExtract_ColKind");
+        hdr.SetResourceReference(ToolTipProperty,        "StringExtract_TtKind");
+        var col = new DataGridTemplateColumn
+        {
+            Header = hdr,
+            Width  = new DataGridLength(52),
+            CanUserSort = false,
+        };
+        var cellTemplate = new DataTemplate();
+        var borderFactory = new FrameworkElementFactory(typeof(Border));
+        borderFactory.SetValue(Border.CornerRadiusProperty, new CornerRadius(3));
+        borderFactory.SetValue(Border.PaddingProperty,      new Thickness(4, 1, 4, 1));
+        borderFactory.SetValue(Border.MarginProperty,       new Thickness(2, 1, 2, 1));
+        borderFactory.SetValue(Border.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+        borderFactory.SetValue(Border.VerticalAlignmentProperty,   VerticalAlignment.Center);
+
+        var tbFactory = new FrameworkElementFactory(typeof(TextBlock));
+        tbFactory.SetValue(TextBlock.FontSizeProperty,   9d);
+        tbFactory.SetValue(TextBlock.FontWeightProperty, FontWeights.SemiBold);
+        tbFactory.SetValue(TextBlock.ForegroundProperty, Brushes.White);
+        borderFactory.AppendChild(tbFactory);
+
+        borderFactory.AddHandler(FrameworkElement.LoadedEvent, new RoutedEventHandler((s, _) =>
+        {
+            if (s is not Border b) return;
+            var tb = (TextBlock)b.Child;
+
+            void Refresh(object? _, DependencyPropertyChangedEventArgs __)
+            {
+                if (b.DataContext is StringRun r && r.Kind != StringKind.None && KindBadges.TryGetValue(r.Kind, out var badge))
+                {
+                    b.Background = badge.bg;
+                    tb.Text      = badge.label;
+                    b.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    b.Visibility = Visibility.Collapsed;
+                }
+            }
+            b.DataContextChanged += Refresh;
+            b.Unloaded += (_, _) => b.DataContextChanged -= Refresh;
+            Refresh(null, default);
+        }));
+
+        cellTemplate.VisualTree = borderFactory;
         col.CellTemplate = cellTemplate;
         return col;
     }

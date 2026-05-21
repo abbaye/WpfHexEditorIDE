@@ -320,6 +320,27 @@
   <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve">
     <value>Roaming data cleared. A restart is recommended to apply the changes. Restart now?</value>
   </data>
+  <data name="App_RoamingDataInfoBar_Message" xml:space="preserve">
+    <value>Corrupt roaming data detected ({0}). Backup and reset to fix, or ignore to continue.</value>
+  </data>
+  <data name="App_RoamingDataInfoBar_BackupReset" xml:space="preserve">
+    <value>Backup &amp; Reset</value>
+  </data>
+  <data name="App_RoamingDataInfoBar_Ignore" xml:space="preserve">
+    <value>Ignore</value>
+  </data>
+  <data name="App_Menu_RestoreRoamingBackup" xml:space="preserve">
+    <value>Restore from Backup…</value>
+  </data>
+  <data name="App_RestoreRoamingBackup_Confirm" xml:space="preserve">
+    <value>Restore roaming data from backup '{0}'? Current files will be overwritten.</value>
+  </data>
+  <data name="App_RestoreRoamingBackup_NoBackup" xml:space="preserve">
+    <value>No backup found. Use 'Clear Roaming Data' at least once to create a backup.</value>
+  </data>
+  <data name="App_RestoreRoamingBackup_Done" xml:space="preserve">
+    <value>Backup restored successfully. Restart now to apply the changes?</value>
+  </data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve">
     <value>Toggle _Locked Layout</value>
   </data>
@@ -1618,6 +1639,22 @@
   <data name="StringExtract_TtPrintableOnly"          xml:space="preserve"><value>Hide strings containing control characters (below 0x20, except tab/LF/CR)</value></data>
   <data name="StringExtract_TtScore"                  xml:space="preserve"><value>Readability score 0–1 (letter ratio + bigram ratio + length bonus). Right-click column header to show/hide.</value></data>
   <data name="StringExtract_RegexLabel"               xml:space="preserve"><value>.*</value></data>
+  <data name="StringExtract_ColKind"                  xml:space="preserve"><value>Kind</value></data>
+  <data name="StringExtract_TtKind"                   xml:space="preserve"><value>Detected pattern kind: Email, URL, Path, GUID, IP, Version, Hash, etc.</value></data>
+  <data name="StringExtract_TtKindFilter"             xml:space="preserve"><value>Filter by detected pattern kind (empty = show all)</value></data>
+  <data name="StringExtract_TtSnapshot"               xml:space="preserve"><value>Take a snapshot of the current scan results</value></data>
+  <data name="StringExtract_TtLoadSnapshot"           xml:space="preserve"><value>Restore a previous scan snapshot</value></data>
+  <data name="StringExtract_TtDiff"                   xml:space="preserve"><value>Compare two snapshots side by side</value></data>
+  <data name="StringExtract_DiffAdded"                xml:space="preserve"><value>Added</value></data>
+  <data name="StringExtract_DiffRemoved"              xml:space="preserve"><value>Removed</value></data>
+  <data name="StringExtract_DiffModified"             xml:space="preserve"><value>Modified</value></data>
+  <data name="StringExtract_DiffUnchanged"            xml:space="preserve"><value>Unchanged</value></data>
+  <data name="StringExtract_TabResults"               xml:space="preserve"><value>Results</value></data>
+  <data name="StringExtract_TabTimeline"              xml:space="preserve"><value>Timeline</value></data>
+  <data name="StringExtract_TabDiff"                  xml:space="preserve"><value>Diff</value></data>
+  <data name="StringExtract_TtTimeline"               xml:space="preserve"><value>String distribution along the file offset axis</value></data>
+  <data name="StringExtract_NoSnapshots"              xml:space="preserve"><value>(no snapshots)</value></data>
+  <data name="StringExtract_SnapshotLabel"            xml:space="preserve"><value>Snapshots:</value></data>
 
   <data name="HashInspector_HashFile"                 xml:space="preserve"><value>Hash File</value></data>
   <data name="HashInspector_HashSelection"            xml:space="preserve"><value>Hash Selection</value></data>
