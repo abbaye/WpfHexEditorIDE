@@ -751,6 +751,14 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
+                            <MenuItem Header="{StaticResource App_Menu_ClearRoamingData}" Click="OnClearRoamingData">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator />
                             <MenuItem Header="{StaticResource App_Menu_ToggleLockedLayout}" Click="OnToggleLock" IsCheckable="True" x:Name="LockMenuItem">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="13"

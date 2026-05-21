@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -88,6 +88,11 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>حفظ التخطيط</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>تحميل التخطيط</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>إعادة تعيين التخطيط</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>مسح بيانات التجوال…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>مسح بيانات التجوال</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>سيؤدي هذا إلى حذف الإعدادات المحفوظة والتخطيط وبيانات الجلسة. لن تتأثر الإضافات المثبتة. هل تريد المتابعة؟</value></data>
+  <data name="App_ClearRoamingData_Done" xml:space="preserve"><value>تم مسح بيانات التجوال بنجاح.</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>يُنصح بإعادة التشغيل لتطبيق التغييرات. هل تريد إعادة التشغيل الآن؟</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>تبديل التخطيط المقفل</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>أدوات</value></data>

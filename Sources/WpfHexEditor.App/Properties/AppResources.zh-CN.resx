@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -88,6 +88,11 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>保存布局</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>加载布局</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>重置布局</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>清除漫游数据…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>清除漫游数据</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>这将删除保存的设置、布局和会话数据。已安装的扩展不受影响。是否继续？</value></data>
+  <data name="App_ClearRoamingData_Done" xml:space="preserve"><value>漫游数据已成功清除。</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>建议重新启动以应用更改。立即重新启动？</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>切换锁定布局</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>工具</value></data>

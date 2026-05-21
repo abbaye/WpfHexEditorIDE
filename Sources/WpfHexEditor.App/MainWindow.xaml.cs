@@ -7302,6 +7302,68 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         OutputLogger.Debug($"Layout reset to default. {openDocs.Count} document(s) preserved.");
     }
 
+    // --- Menu: Clear Roaming Data ----------------------------------------
+
+    private void OnClearRoamingData(object sender, RoutedEventArgs e)
+    {
+        var result = _dialogService.Show(
+            AppResources.App_ClearRoamingData_Confirm,
+            AppResources.App_ClearRoamingData_Title,
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+
+        if (result != MessageBoxResult.Yes) return;
+
+        var roamingRoot = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "WpfHexEditor");
+
+        // Files to delete (preserve Plugins\ — user installed extensions)
+        string[] filesToDelete =
+        [
+            Path.Combine(roamingRoot, "settings.json"),
+            Path.Combine(roamingRoot, "plugin-isolation-overrides.json"),
+            Path.Combine(roamingRoot, "App", "layout.json"),
+            Path.Combine(roamingRoot, "App", "session.json"),
+        ];
+
+        var deleted = new List<string>();
+        var failed  = new List<string>();
+
+        foreach (var path in filesToDelete)
+        {
+            try
+            {
+                if (File.Exists(path)) { File.Delete(path); deleted.Add(Path.GetFileName(path)); }
+            }
+            catch (Exception ex)
+            {
+                failed.Add($"{Path.GetFileName(path)} ({ex.Message})");
+            }
+        }
+
+        if (failed.Count > 0)
+            OutputLogger.Error($"[ClearRoamingData] Failed to delete: {string.Join(", ", failed)}");
+
+        OutputLogger.Info($"[ClearRoamingData] Deleted: {(deleted.Count > 0 ? string.Join(", ", deleted) : "nothing")}");
+
+        _dialogService.Show(
+            AppResources.App_ClearRoamingData_Done,
+            AppResources.App_ClearRoamingData_Title,
+            MessageBoxButton.OK,
+            MessageBoxImage.Information);
+
+        // Restart is recommended so the app re-initialises from defaults.
+        var restart = _dialogService.Show(
+            AppResources.App_ClearRoamingData_RestartPrompt,
+            AppResources.App_ClearRoamingData_Title,
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+        if (restart == MessageBoxResult.Yes)
+            System.Windows.Application.Current.Shutdown();
+    }
+
     // --- Menu: other ---------------------------------------------------
 
     private void OnToggleLock(object sender, RoutedEventArgs e)

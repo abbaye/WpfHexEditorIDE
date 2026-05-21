@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -88,6 +88,11 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Spara layout</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Ladda layout</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Återställ layout</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>Rensa roaming-data…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>Rensa roaming-data</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>Det här tar bort sparade inställningar, layout och sessionsdata. Installerade tillägg påverkas inte. Fortsätt?</value></data>
+  <data name="App_ClearRoamingData_Done" xml:space="preserve"><value>Roaming-data har rensats.</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>En omstart rekommenderas för att tillämpa ändringarna. Starta om nu?</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Växla _låst layout</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>_Verktyg</value></data>

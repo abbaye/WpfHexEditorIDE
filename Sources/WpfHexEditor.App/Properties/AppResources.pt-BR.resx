@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -88,6 +88,11 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Salvar layout</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Carregar layout</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Redefinir layout</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>Limpar dados de roaming…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>Limpar dados de roaming</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>Isso excluirá as configurações salvas, o layout e os dados da sessão. As extensões instaladas não serão afetadas. Continuar?</value></data>
+  <data name="App_ClearRoamingData_Done" xml:space="preserve"><value>Os dados de roaming foram limpos com sucesso.</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>É recomendável reiniciar para aplicar as alterações. Reiniciar agora?</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Alternar _layout bloqueado</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>_Ferramentas</value></data>

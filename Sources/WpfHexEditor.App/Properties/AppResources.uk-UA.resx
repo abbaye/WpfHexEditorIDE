@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -88,6 +88,11 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Зберегти розташування</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Завантажити розташування</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Скинути розташування</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>Очистити дані роумінгу…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>Очистити дані роумінгу</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>Буде видалено збережені параметри, макет і дані сеансу. Встановлені розширення не постраждають. Продовжити?</value></data>
+  <data name="App_ClearRoamingData_Done" xml:space="preserve"><value>Дані роумінгу успішно очищено.</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>Для застосування змін рекомендується перезапуск. Перезапустити зараз?</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Увімкнути/вимкнути блокування _розташування</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>_Інструменти</value></data>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -88,6 +88,11 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Αποθήκευση διάταξης</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Φόρτωση διάταξης</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Επαναφορά διάταξης</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>Εκκαθάριση δεδομένων περιαγωγής…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>Εκκαθάριση δεδομένων περιαγωγής</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>Αυτό θα διαγράψει αποθηκευμένες ρυθμίσεις, διάταξη και δεδομένα συνεδρίας. Τα εγκατεστημένα πρόσθετα δεν θα επηρεαστούν. Συνέχεια;</value></data>
+  <data name="App_ClearRoamingData_Done" xml:space="preserve"><value>Τα δεδομένα περιαγωγής εκκαθαρίστηκαν επιτυχώς.</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>Συνιστάται επανεκκίνηση για εφαρμογή των αλλαγών. Επανεκκίνηση τώρα;</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Εναλλαγή κλειδώματος _διάταξης</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>_Εργαλεία</value></data>

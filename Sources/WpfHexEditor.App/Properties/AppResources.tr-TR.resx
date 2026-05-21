@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -88,6 +88,11 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Düzeni kaydet</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Düzeni yükle</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Düzeni sıfırla</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>Dolaşım Verilerini Temizle…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>Dolaşım Verilerini Temizle</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>Bu işlem kaydedilen ayarları, düzeni ve oturum verilerini silecektir. Yüklü uzantılar etkilenmeyecektir. Devam edilsin mi?</value></data>
+  <data name="App_ClearRoamingData_Done" xml:space="preserve"><value>Dolaşım verileri başarıyla temizlendi.</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>Değişikliklerin uygulanması için yeniden başlatma önerilir. Şimdi yeniden başlatılsın mı?</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>_Kilitli düzeni değiştir</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>_Araçlar</value></data>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -88,6 +88,11 @@
   <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Zapisz układ</value></data>
   <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Wczytaj układ</value></data>
   <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Zresetuj układ</value></data>
+  <data name="App_Menu_ClearRoamingData" xml:space="preserve"><value>Wyczyść dane roamingowe…</value></data>
+  <data name="App_ClearRoamingData_Title" xml:space="preserve"><value>Wyczyść dane roamingowe</value></data>
+  <data name="App_ClearRoamingData_Confirm" xml:space="preserve"><value>Spowoduje to usunięcie zapisanych ustawień, układu i danych sesji. Zainstalowane rozszerzenia nie zostaną zmienione. Kontynuować?</value></data>
+  <data name="App_ClearRoamingData_Done" xml:space="preserve"><value>Dane roamingowe zostały pomyślnie wyczyszczone.</value></data>
+  <data name="App_ClearRoamingData_RestartPrompt" xml:space="preserve"><value>Zaleca się ponowne uruchomienie, aby zastosować zmiany. Uruchomić ponownie teraz?</value></data>
   <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Przełącz _zablokowany układ</value></data>
 
   <data name="App_Menu_Tools" xml:space="preserve"><value>_Narzędzia</value></data>

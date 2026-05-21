@@ -105,6 +105,9 @@ public partial class MainWindow
     private WpfHexEditor.PluginHost.UI.PluginMonitoringPanel? _pendingPluginMonitorPanel;
     private WpfHexEditor.PluginHost.UI.PluginManagerControl? _pendingPluginManagerControl;
 
+    // Active Plugin Monitor VM — tracked so it can be disposed before a new one is created (e.g. Reset Layout).
+    private WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel? _pluginMonitorVm;
+
     // VS solution path deferred from TryRestoreSession() because plugin loaders are not yet
     // registered at startup. Opened at the end of InitializePluginSystemAsync once loaders are live.
     private string? _pendingRestoreSolutionPath;
@@ -750,8 +753,7 @@ public partial class MainWindow
             {
                 if (_pendingPluginMonitorPanel is not null && _pluginHost is not null)
                 {
-                    var vm = new WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
-                    _pendingPluginMonitorPanel.DataContext = vm;
+                    _pendingPluginMonitorPanel.DataContext = CreatePluginMonitorViewModel();
                     _pendingPluginMonitorPanel = null;
                 }
 
@@ -1106,8 +1108,7 @@ public partial class MainWindow
         if (_pluginHost is null) return;
         if (ActivateExistingDockPanel(PluginMonitorContentId)) return;
 
-        var vm      = new WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
-        var control = new WpfHexEditor.PluginHost.UI.PluginMonitoringPanel { DataContext = vm };
+        var control = new WpfHexEditor.PluginHost.UI.PluginMonitoringPanel { DataContext = CreatePluginMonitorViewModel() };
         var item    = new DockItem { ContentId = PluginMonitorContentId, Title = AppResources.App_DockTitle_ExtensionsMonitor, CanClose = true };
 
         DockPanelToBottom(PluginMonitorContentId, item, control);
@@ -1329,6 +1330,17 @@ public partial class MainWindow
     }
 
     /// <summary>
+    /// Disposes the current Plugin Monitor ViewModel (if any) and creates a fresh one.
+    /// Centralises the dispose + create pattern used at layout restore, Reset Layout, and panel open.
+    /// </summary>
+    private WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel CreatePluginMonitorViewModel()
+    {
+        _pluginMonitorVm?.Dispose();
+        _pluginMonitorVm = new WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel(_pluginHost!, Dispatcher, _outputService);
+        return _pluginMonitorVm;
+    }
+
+    /// <summary>
     /// Creates the Plugin Monitor panel during layout restoration.
     /// If the plugin system is not yet initialised, the DataContext is deferred.
     /// </summary>
@@ -1338,8 +1350,7 @@ public partial class MainWindow
 
         if (_pluginHost is not null)
         {
-            var vm = new WpfHexEditor.PluginHost.UI.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
-            panel.DataContext = vm;
+            panel.DataContext = CreatePluginMonitorViewModel();
         }
         else
         {
