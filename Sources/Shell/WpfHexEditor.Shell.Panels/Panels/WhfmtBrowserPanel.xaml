@@ -95,6 +95,12 @@
                                                     <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                                Foreground="{DynamicResource SE_ForegroundBrush}"/>
                                                 </Button>
+                                                <Button x:Name="PopGenerateBtn" Style="{StaticResource PopRowButton}"
+                                                        ToolTip="Generate parser class…"
+                                                        Command="{Binding GenerateParserCommand}">
+                                                    <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                                               Foreground="{DynamicResource SE_AccentBrush}"/>
+                                                </Button>
                                             </StackPanel>
                                         </Border>
                                     </Border>

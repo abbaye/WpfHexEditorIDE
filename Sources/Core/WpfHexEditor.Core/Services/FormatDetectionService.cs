@@ -1210,7 +1210,56 @@ namespace WpfHexEditor.Core.Services
             try
             {
                 var format = JsonSerializer.Deserialize<FormatDefinition>(json, s_importOptions);
-                return format?.IsValid() == true ? format : null;
+                if (format is null) return null;
+
+                // v3 schema: top-level "signatures"[] + "structure"{} instead of "detection"{}+"blocks"[].
+                // Synthesise a DetectionRule from top-level signatures so IsValid() passes.
+                if (format.Detection is null)
+                {
+                    using var doc = JsonDocument.Parse(json);
+                    var root = doc.RootElement;
+
+                    var synth = new DetectionRule();
+
+                    // Read top-level "signatures" array
+                    if (root.TryGetProperty("signatures", out var sigsEl) && sigsEl.ValueKind == JsonValueKind.Array)
+                    {
+                        synth.Signatures = new List<SignatureEntry>();
+                        foreach (var sig in sigsEl.EnumerateArray())
+                        {
+                            var val    = sig.TryGetProperty("value",  out var v) ? v.GetString() ?? "" : "";
+                            var off    = sig.TryGetProperty("offset", out var o) ? o.GetInt32()        : 0;
+                            var weight = sig.TryGetProperty("weight", out var w) ? w.GetDouble()       : 1.0;
+                            var label  = sig.TryGetProperty("label",  out var l) ? l.GetString()       : null;
+                            synth.Signatures.Add(new SignatureEntry { Value = val, Offset = off, Weight = weight, Label = label });
+                        }
+                    }
+
+                    // Read top-level "diffMode" for isTextFormat derivation
+                    if (root.TryGetProperty("diffMode", out var dm) && dm.GetString() == "text")
+                        synth.IsTextFormat = true;
+
+                    format.Detection = synth;
+                }
+
+                // v3 schema uses "structure"{} instead of "blocks"[].
+                // IsValid() requires Blocks for binary formats — treat a non-empty structure as satisfying that.
+                if ((format.Blocks is null || format.Blocks.Count == 0) && format.Detection?.IsTextFormat != true)
+                {
+                    using var doc2 = JsonDocument.Parse(json);
+                    if (doc2.RootElement.TryGetProperty("structure", out var structEl) &&
+                        structEl.ValueKind == JsonValueKind.Object &&
+                        structEl.TryGetProperty("fields", out var fieldsEl) &&
+                        fieldsEl.ValueKind == JsonValueKind.Array &&
+                        fieldsEl.GetArrayLength() > 0)
+                    {
+                        // Synthesise a minimal block so IsValid() passes for binary v3 formats.
+                        format.Blocks ??= new List<BlockDefinition>();
+                        format.Blocks.Add(new BlockDefinition { Name = "_v3_structure", Type = "metadata" });
+                    }
+                }
+
+                return format.IsValid() ? format : null;
             }
             catch (Exception ex)
             {

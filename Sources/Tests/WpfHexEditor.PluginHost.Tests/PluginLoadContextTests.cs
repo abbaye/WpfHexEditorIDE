@@ -41,7 +41,7 @@ public sealed class PluginLoadContextTests
         // Sanity: the WeakRef must be alive before GC.
         var ctx = new PluginLoadContext(GetDummyAssemblyPath());
         var wr  = ctx.CreateWeakReference();
-        Assert.IsTrue(wr.IsAlive);
+        Assert.IsTrue(wr.TryGetTarget(out _));
         ctx.Unload();
     }
 

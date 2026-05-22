@@ -122,17 +122,19 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     // Commands (set by the parent ViewModel after construction)
     // ------------------------------------------------------------------
 
-    private ICommand _openCommand      = DisabledDetailCommand.Instance;
-    private ICommand _exportCommand    = DisabledDetailCommand.Instance;
-    private ICommand _copyJsonCommand  = DisabledDetailCommand.Instance;
-    private ICommand _retryLoadCommand = DisabledDetailCommand.Instance;
-    private ICommand _excludeCommand   = DisabledDetailCommand.Instance;
+    private ICommand _openCommand             = DisabledDetailCommand.Instance;
+    private ICommand _exportCommand           = DisabledDetailCommand.Instance;
+    private ICommand _copyJsonCommand         = DisabledDetailCommand.Instance;
+    private ICommand _retryLoadCommand        = DisabledDetailCommand.Instance;
+    private ICommand _excludeCommand          = DisabledDetailCommand.Instance;
+    private ICommand _generateParserCommand   = DisabledDetailCommand.Instance;
 
-    public ICommand OpenCommand      { get => _openCommand;      set => SetField(ref _openCommand, value); }
-    public ICommand ExportCommand    { get => _exportCommand;    set => SetField(ref _exportCommand, value); }
-    public ICommand CopyJsonCommand  { get => _copyJsonCommand;  set => SetField(ref _copyJsonCommand, value); }
-    public ICommand RetryLoadCommand { get => _retryLoadCommand; set => SetField(ref _retryLoadCommand, value); }
-    public ICommand ExcludeCommand   { get => _excludeCommand;   set => SetField(ref _excludeCommand, value); }
+    public ICommand OpenCommand             { get => _openCommand;           set => SetField(ref _openCommand, value); }
+    public ICommand ExportCommand           { get => _exportCommand;         set => SetField(ref _exportCommand, value); }
+    public ICommand CopyJsonCommand         { get => _copyJsonCommand;       set => SetField(ref _copyJsonCommand, value); }
+    public ICommand RetryLoadCommand        { get => _retryLoadCommand;      set => SetField(ref _retryLoadCommand, value); }
+    public ICommand ExcludeCommand          { get => _excludeCommand;        set => SetField(ref _excludeCommand, value); }
+    public ICommand GenerateParserCommand   { get => _generateParserCommand; set => SetField(ref _generateParserCommand, value); }
 
     // ------------------------------------------------------------------
     // Load
@@ -318,8 +320,9 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
         FailureReason        = null;
         RawJson              = null;
         OpenCommand          = DisabledDetailCommand.Instance;
-        ExportCommand        = DisabledDetailCommand.Instance;
-        CopyJsonCommand      = DisabledDetailCommand.Instance;
+        ExportCommand           = DisabledDetailCommand.Instance;
+        CopyJsonCommand         = DisabledDetailCommand.Instance;
+        GenerateParserCommand   = DisabledDetailCommand.Instance;
         RetryLoadCommand     = DisabledDetailCommand.Instance;
         ExcludeCommand       = DisabledDetailCommand.Instance;
         SpecificationsDisplay = [];

@@ -22,6 +22,15 @@
     <EmbeddedResource Include="defaultLayout.json" />
   </ItemGroup>
 
+  <!-- Linked Generator source files from whfmt.CodeGen — C#/Span only.
+       F#/Rust/VB stubs live in Codegen/GeneratorStubs.cs.
+       This pattern mirrors whfmt.SourceGenerator and avoids a circular project dependency. -->
+  <ItemGroup>
+    <Compile Include="..\Tools\whfmt.CodeGen\Generator\ParserGenerator.cs" Link="Codegen\Generator\ParserGenerator.cs" />
+    <Compile Include="..\Tools\whfmt.CodeGen\Generator\SpanGenerator.cs"   Link="Codegen\Generator\SpanGenerator.cs" />
+    <Compile Include="..\Tools\whfmt.CodeGen\Generator\OutputLanguage.cs"  Link="Codegen\Generator\OutputLanguage.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.*" />
     <!-- ADR-011: AssemblyExplorer module — VB.NET decompilation backend.

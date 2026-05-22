@@ -207,6 +207,10 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
     /// <summary>Raised when the user wants to view the raw JSON in a code editor tab.</summary>
     public event EventHandler<string>? ViewJsonRequested;
 
+    /// <summary>Raised when the user requests generating a parser class from a .whfmt definition.
+    /// Arg: resource key (built-in) or absolute file path (user format).</summary>
+    public event EventHandler<string>? GenerateParserRequested;
+
     // ------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------
@@ -482,9 +486,10 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
 
         // Wire detail card commands
         Detail.OpenCommand     = new RelayCommand(() => RaiseOpen(item, readOnly: false));
-        Detail.ExportCommand   = new RelayCommand(() => ExportFormatRequested?.Invoke(this, GetKeyOrPath(item)),
-                                                  ()  => item.Source == FormatSource.BuiltIn);
-        Detail.CopyJsonCommand = new RelayCommand(() => OnCopyJson(item));
+        Detail.ExportCommand          = new RelayCommand(() => ExportFormatRequested?.Invoke(this, GetKeyOrPath(item)),
+                                                        ()  => item.Source == FormatSource.BuiltIn);
+        Detail.GenerateParserCommand  = new RelayCommand(() => GenerateParserRequested?.Invoke(this, GetKeyOrPath(item)));
+        Detail.CopyJsonCommand        = new RelayCommand(() => OnCopyJson(item));
         Detail.RetryLoadCommand= new RelayCommand(() => { RebuildTree(); }, () => item.IsLoadFailure);
         Detail.ExcludeCommand  = new RelayCommand(() => OnExclude(item),  () => item.IsLoadFailure);
 
@@ -566,10 +571,12 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
         vm.OpenCommand            = new RelayCommand(() => RaiseOpen(vm, readOnly: false));
         vm.OpenReadOnlyCommand    = new RelayCommand(() => RaiseOpen(vm, readOnly: true),
                                                      () => vm.Source == FormatSource.BuiltIn);
-        vm.ExportToFileCommand    = new RelayCommand(() => ExportFormatRequested?.Invoke(this, GetKeyOrPath(vm)),
-                                                     () => vm.Source == FormatSource.BuiltIn);
-        vm.ViewJsonCommand        = new RelayCommand(() => ViewJsonRequested?.Invoke(this, GetKeyOrPath(vm)),
-                                                     () => !vm.IsLoadFailure);
+        vm.ExportToFileCommand      = new RelayCommand(() => ExportFormatRequested?.Invoke(this, GetKeyOrPath(vm)),
+                                                       () => vm.Source == FormatSource.BuiltIn);
+        vm.ViewJsonCommand          = new RelayCommand(() => ViewJsonRequested?.Invoke(this, GetKeyOrPath(vm)),
+                                                       () => !vm.IsLoadFailure);
+        vm.GenerateParserCommand    = new RelayCommand(() => GenerateParserRequested?.Invoke(this, GetKeyOrPath(vm)),
+                                                       () => !vm.IsLoadFailure);
         vm.DeleteCommand          = new RelayCommand(() => OnDeleteUserFormat(vm),
                                                      () => vm.Source == FormatSource.User);
         vm.CopyPathCommand        = new RelayCommand(() => OnCopyPath(vm));

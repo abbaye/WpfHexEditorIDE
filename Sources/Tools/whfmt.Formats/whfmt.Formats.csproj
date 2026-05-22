@@ -12,13 +12,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>whfmt.Formats</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>abbaye</Authors>
     <Description>856 .whfmt binary format definitions (Images, Audio, Video, Archives, …) shipped as AdditionalFiles. Pair with whfmt.SourceGenerator to get strongly-typed C# parsers at compile time.</Description>
     <PackageTags>whfmt;binary;formats;parser;codegen;roslyn</PackageTags>
     <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorControl</PackageProjectUrl>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
 
@@ -45,6 +46,7 @@
   <ItemGroup>
     <None Include="build\whfmt.Formats.props" Pack="true" PackagePath="build\" />
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="..\whfmt.CodeGen\icon.png" Pack="true" PackagePath="\" Link="icon.png" />
   </ItemGroup>
 
 </Project>

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>whfmt.SourceGenerator</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <AssemblyName>whfmt.SourceGenerator</AssemblyName>
     <RootNamespace>WhfmtSourceGenerator</RootNamespace>
     <LangVersion>preview</LangVersion>
