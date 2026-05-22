@@ -105,8 +105,9 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
 
     private TabControl BuildTabControl()
     {
-        var tc = new TabControl { BorderThickness = new Thickness(0) };
+        var tc = new TabControl { BorderThickness = new Thickness(0), Padding = new Thickness(0) };
         tc.SetResourceReference(BackgroundProperty, "TE_Background");
+        tc.ItemContainerStyle = MakePanelTabItemStyle();
 
         var resultsTab = new TabItem();
         resultsTab.SetResourceReference(HeaderedContentControl.HeaderProperty, "StringExtract_TabResults");
@@ -126,6 +127,46 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         tc.Items.Add(timelineTab);
         tc.Items.Add(diffTab);
         return tc;
+    }
+
+    private static Style MakePanelTabItemStyle()
+    {
+        var style = new Style(typeof(TabItem));
+        style.Setters.Add(new Setter(Control.BackgroundProperty,      new DynamicResourceExtension("TE_Background")));
+        style.Setters.Add(new Setter(Control.ForegroundProperty,      new DynamicResourceExtension("Panel_ToolbarForegroundBrush")));
+        style.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(0)));
+        style.Setters.Add(new Setter(Control.PaddingProperty,         new Thickness(10, 3, 10, 3)));
+        style.Setters.Add(new Setter(Control.FontSizeProperty,        11d));
+        style.Setters.Add(new Setter(Control.FocusVisualStyleProperty, null));
+
+        var tpl = new ControlTemplate(typeof(TabItem));
+        var border = new FrameworkElementFactory(typeof(Border));
+        border.Name = "PART_Border";
+        border.SetValue(Border.BackgroundProperty,    new TemplateBindingExtension(Control.BackgroundProperty));
+        border.SetValue(Border.PaddingProperty,       new TemplateBindingExtension(Control.PaddingProperty));
+        var cp = new FrameworkElementFactory(typeof(ContentPresenter));
+        cp.SetValue(ContentPresenter.ContentSourceProperty, "Header");
+        cp.SetValue(FrameworkElement.VerticalAlignmentProperty,   VerticalAlignment.Center);
+        cp.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+        border.AppendChild(cp);
+        tpl.VisualTree = border;
+
+        var selectedTrigger = new Trigger { Property = TabItem.IsSelectedProperty, Value = true };
+        selectedTrigger.Setters.Add(new Setter(Border.BorderBrushProperty,     new DynamicResourceExtension("DockTabActiveBrush"), "PART_Border"));
+        selectedTrigger.Setters.Add(new Setter(Border.BorderThicknessProperty, new Thickness(0, 0, 0, 2),                         "PART_Border"));
+        selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty,     new DynamicResourceExtension("TE_Foreground")));
+        selectedTrigger.Setters.Add(new Setter(Control.FontWeightProperty,     FontWeights.SemiBold));
+
+        var hoverTrigger = new MultiTrigger();
+        hoverTrigger.Conditions.Add(new Condition(TabItem.IsSelectedProperty,  false));
+        hoverTrigger.Conditions.Add(new Condition(UIElement.IsMouseOverProperty, true));
+        hoverTrigger.Setters.Add(new Setter(Control.BackgroundProperty, new DynamicResourceExtension("Panel_ItemHoverBrush")));
+
+        tpl.Triggers.Add(selectedTrigger);
+        tpl.Triggers.Add(hoverTrigger);
+
+        style.Setters.Add(new Setter(Control.TemplateProperty, tpl));
+        return style;
     }
 
     // ── Toolbar ───────────────────────────────────────────────────────────────
