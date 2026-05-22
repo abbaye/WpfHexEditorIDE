@@ -1875,9 +1875,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (_formatBrowserPanel is not null) return _formatBrowserPanel;
 
         _formatBrowserPanel = new WpfHexEditor.Shell.Panels.Panels.WhfmtBrowserPanel();
-        _formatBrowserPanel.OpenFormatRequested   += OnOpenWhfmtFromBrowser;
-        _formatBrowserPanel.ExportFormatRequested += OnExportWhfmtFromBrowser;
-        _formatBrowserPanel.ViewJsonRequested     += OnViewJsonFromBrowser;
+        _formatBrowserPanel.OpenFormatRequested     += OnOpenWhfmtFromBrowser;
+        _formatBrowserPanel.ExportFormatRequested   += OnExportWhfmtFromBrowser;
+        _formatBrowserPanel.ViewJsonRequested       += OnViewJsonFromBrowser;
+        _formatBrowserPanel.GenerateParserRequested += OnGenerateParserFromBrowser;
 
         InitFormatBrowserCatalog();
         return _formatBrowserPanel;
@@ -2004,6 +2005,28 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         };
         if (dlg.ShowDialog(this) == true)
             System.IO.File.WriteAllText(dlg.FileName, json);
+    }
+
+    private void OnGenerateParserFromBrowser(object? sender, string keyOrPath)
+    {
+        string? json = null;
+
+        if (WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.Query()
+                .Where(e => e.ResourceKey == keyOrPath).Any())
+            json = WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetJson(keyOrPath);
+        else if (System.IO.File.Exists(keyOrPath))
+            json = System.IO.File.ReadAllText(keyOrPath);
+
+        if (string.IsNullOrEmpty(json)) return;
+
+        var dlg = new WpfHexEditor.App.Dialogs.GenerateParserDialog(
+            whfmtJson:       json,
+            whfmtFilePath:   keyOrPath,
+            solutionManager: _solutionManager,
+            project:         _solutionManager?.CurrentSolution?.Projects.FirstOrDefault());
+
+        dlg.Owner = this;
+        dlg.ShowDialog();
     }
 
     private void OnViewJsonFromBrowser(object? sender, string keyOrPath)

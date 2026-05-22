@@ -89,7 +89,7 @@ public sealed class CipherDecoderPanel : UserControl
             FontSize            = 12,
             Margin              = new Thickness(4, 0, 4, 0)
         };
-        previewBox.SetBinding(TextBox.TextProperty, new Binding(nameof(_vm.PreviewText)) { Source = _vm });
+        previewBox.SetBinding(TextBox.TextProperty, new Binding(nameof(_vm.PreviewText)) { Source = _vm, Mode = BindingMode.OneWay });
 
         // --- Auto-detect results list (visible only in mode 4) -------------
         var autoList = new ListBox { Margin = new Thickness(4, 0, 4, 4), MaxHeight = 150 };

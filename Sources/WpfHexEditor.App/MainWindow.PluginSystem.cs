@@ -709,6 +709,13 @@ public partial class MainWindow
                 await Dispatcher.InvokeAsync(dockingAdapter.ResumeRebuild);
             }
 
+            // Diagnostic: log plugin count after LoadAllAsync
+            var allPlugins = _pluginHost.GetAllPlugins();
+            if (allPlugins.Count == 0)
+                OutputLogger.PluginError($"[PluginSystem] WARNING — 0 plugins in registry after LoadAllAsync. bundledPluginsDir='{bundledPluginsDir}' exists={Directory.Exists(bundledPluginsDir)}");
+            else
+                OutputLogger.PluginInfo($"[PluginSystem] LoadAllAsync complete — {allPlugins.Count} plugin(s) in registry: {string.Join(", ", allPlugins.Select(p => $"{p.Manifest.Name}({p.State})"))}");
+
             // Bridge IBuildAdapter extensions registered by plugins into the build system.
             // Must run after LoadAllAsync so that MSBuildPlugin has registered its adapter.
             if (_buildSystem is not null)
@@ -818,7 +825,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            OutputLogger.PluginError($"[PluginSystem] Failed to initialize: {ex.Message}");
+            OutputLogger.PluginError($"[PluginSystem] Failed to initialize: {ex.Message}\n{ex.StackTrace}");
         }
     }
 
