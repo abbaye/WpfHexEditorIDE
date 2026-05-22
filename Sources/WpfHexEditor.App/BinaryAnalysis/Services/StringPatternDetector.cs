@@ -63,42 +63,34 @@ internal static partial class StringPatternDetector
 
         int len = value.Length;
 
-        // GUID: exactly 36 or 38 chars, contains '-'
         if ((len == 36 || len == 38) && value.Contains('-'))
             if (GuidRx().IsMatch(value)) return StringKind.Guid;
 
-        // Email: must contain '@' and '.'
         if (value.Contains('@') && value.Contains('.'))
             if (EmailRx().IsMatch(value)) return StringKind.Email;
 
-        // URL: must start with known scheme prefix
         if (len > 7 && (value[0] == 'h' || value[0] == 'f') && value.Contains("://"))
             if (UrlRx().IsMatch(value)) return StringKind.Url;
 
-        // Registry key: starts with 'H'
         if (len > 5 && value[0] == 'H' && value.StartsWith("HKEY_", StringComparison.Ordinal))
             if (RegistryKeyRx().IsMatch(value)) return StringKind.RegistryKey;
 
-        // Windows path: letter + ':\\'
         if (len > 3 && value[1] == ':' && value[2] == '\\')
             if (PathWinRx().IsMatch(value)) return StringKind.PathWin;
 
-        // Unix path: starts with '/'
         if (len > 2 && value[0] == '/' && value[1] != ' ')
             if (PathUnixRx().IsMatch(value)) return StringKind.PathUnix;
 
-        // IPv4/IPv6/Version: must contain '.' or ':'
         bool hasDot   = value.Contains('.');
         bool hasColon = value.Contains(':');
         if (hasDot)
         {
-            if (IpV4Rx().IsMatch(value))  return StringKind.IpV4;
+            if (IpV4Rx().IsMatch(value))    return StringKind.IpV4;
             if (VersionRx().IsMatch(value)) return StringKind.Version;
         }
         if (hasColon && !hasDot)
             if (IpV6Rx().IsMatch(value)) return StringKind.IpV6;
 
-        // Hex hash: fixed lengths (32/40/56/64/96/128), all hex chars
         if (len == 32 || len == 40 || len == 56 || len == 64 || len == 96 || len == 128)
             if (HexHashRx().IsMatch(value)) return StringKind.HexHash;
 

@@ -470,35 +470,30 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
                                          encodings.Contains(StringEncoding.TblMte))
                                         ? _activeTblTable : null;
 
-            // Run extract + kind detection + ancillary maps all on background thread.
             var (runs, lineStarts, entropyMap, dupCounts, encCounts) = await Task.Run(() =>
             {
                 var r = StringExtractor.Extract(buffer.AsSpan(), _minLength, encodings, tblTable);
 
-                // Kind detection: parallelised over the already-sorted result list.
                 var rk = new StringRun[r.Count];
-                Parallel.For(0, r.Count, i =>
-                    rk[i] = r[i] with { Kind = StringPatternDetector.Detect(r[i].Value) });
+                if (r.Count >= 500)
+                    Parallel.For(0, r.Count, i => rk[i] = r[i] with { Kind = StringPatternDetector.Detect(r[i].Value) });
+                else
+                    for (int i = 0; i < r.Count; i++) rk[i] = r[i] with { Kind = StringPatternDetector.Detect(r[i].Value) };
 
                 var ls = BuildLineStartsFromBuffer(buffer);
                 var em = BuildEntropyMap(buffer);
 
-                // Pre-compute duplicate counts while still on background thread.
-                var dc = rk.GroupBy(x => x.Value, StringComparer.Ordinal)
-                            .ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
-
-                // Pre-compute per-encoding counts (unfiltered = total scan counts).
+                var dc = new Dictionary<string, int>(StringComparer.Ordinal);
                 var ec = new Dictionary<StringEncoding, int>();
                 foreach (var run in rk)
                 {
-                    ec.TryGetValue(run.Encoding, out int c);
-                    ec[run.Encoding] = c + 1;
+                    dc.TryGetValue(run.Value, out int dv); dc[run.Value] = dv + 1;
+                    ec.TryGetValue(run.Encoding, out int ev); ec[run.Encoding] = ev + 1;
                 }
 
                 return (rk, ls, em, dc, ec);
             }, _cts.Token);
 
-            // Cache for reuse in ApplyCodeHighlights / entropy filter
             _lastBuffer      = buffer;
             _lastBufferPath  = targetPath;
             _lastLineStarts  = lineStarts;
@@ -506,11 +501,8 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
             ArmFileWatcher(targetPath);
 
-            // Batch-load: single Refresh() instead of n×CollectionChanged notifications.
             _allResults.Clear();
             _allResults.AddRange(runs);
-
-            // Extract returns sorted by offset — no second sort needed.
             _offsetIndex = runs;
 
             _duplicateCounts = dupCounts;
