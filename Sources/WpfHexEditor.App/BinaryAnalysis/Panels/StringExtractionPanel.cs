@@ -39,6 +39,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
     private TextBlock? _tblNameLabel;
     private Button? _tblClearBtn;
     private TextBlock? _outdatedBadge;
+    private TextBlock? _capBadge;
     private WrapPanel? _statsBar;
     private readonly StringOffsetHeatmap  _heatmap  = new() { Height = 8, Cursor = System.Windows.Input.Cursors.Hand };
     private readonly StringTimelinePanel  _timeline = new();
@@ -244,6 +245,19 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         _outdatedBadge.SetResourceReference(TextBlock.TextProperty,   "StringExtract_TtOutdatedBadge");
         _outdatedBadge.SetResourceReference(ToolTipProperty,          "StringExtract_TtOutdated");
 
+        _capBadge = new TextBlock
+        {
+            Text = "⚠ display capped at 100 000", FontSize = 10, FontWeight = FontWeights.Bold,
+            Foreground = Brushes.Orange, VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(6, 0, 0, 0), Visibility = Visibility.Collapsed,
+            ToolTip = "The file produced more than 100 000 strings. Results are truncated. Use filters to narrow down.",
+        };
+        _vm.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(_vm.IsDisplayCapped))
+                _capBadge.Visibility = _vm.IsDisplayCapped ? Visibility.Visible : Visibility.Collapsed;
+        };
+
         var kindFilterBtn    = BuildKindFilterButton();
         var snapshotBtn      = MakeToolbarButton("", "StringExtract_TtSnapshot");
         snapshotBtn.Click   += (_, _) => _vm.TakeSnapshot();
@@ -258,7 +272,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
             clusterBtn, showClustersBtn, kindFilterBtn, MakeToolbarSeparator(),
             snapshotBtn, loadSnapshotBtn, MakeToolbarSeparator(),
             highlightBtn, clearHlBtn, MakeToolbarSeparator(),
-            syncBtn, _outdatedBadge,
+            syncBtn, _outdatedBadge, _capBadge,
         })
         {
             DockPanel.SetDock(el, Dock.Left);

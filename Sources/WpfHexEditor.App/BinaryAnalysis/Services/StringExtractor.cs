@@ -28,8 +28,26 @@ public enum StringEncoding
 /// <param name="RawHex">Space-separated uppercase hex bytes for the matched region (e.g. "4A 6F 6E").</param>
 public sealed record StringRun(long Offset, int Length, StringEncoding Encoding, string Value, string RawHex)
 {
-    /// <summary>Count of distinct characters in Value — cached to avoid per-filter-pass allocation.</summary>
-    public int UniqueCharCount { get; } = Value.Distinct().Count();
+    /// <summary>Count of distinct characters in Value — bitmask scan, zero allocation.</summary>
+    public int UniqueCharCount { get; } = CountDistinctChars(Value);
+
+    private static int CountDistinctChars(string s)
+    {
+        // Covers BMP chars up to U+FFFF with two ulong bitmasks (128 slots each = 256 total).
+        // Falls back to HashSet only for strings with chars beyond U+00FF (rare in extracted runs).
+        ulong lo = 0, hi = 0;
+        bool needFallback = false;
+        foreach (char c in s)
+        {
+            if (c < 128)       lo |= 1UL << c;
+            else if (c < 256)  hi |= 1UL << (c - 128);
+            else { needFallback = true; break; }
+        }
+        if (!needFallback)
+            return System.Numerics.BitOperations.PopCount(lo) + System.Numerics.BitOperations.PopCount(hi);
+        var set = new HashSet<char>(s);
+        return set.Count;
+    }
 
     /// <summary>
     /// Readability score 0.0–1.0: combination of letter ratio, common-bigram ratio, and length.

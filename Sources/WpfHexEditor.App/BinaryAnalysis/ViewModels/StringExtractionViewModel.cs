@@ -95,6 +95,13 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         set { _minLength = Math.Clamp(value, 1, 64); OnPropertyChanged(); }
     }
 
+    private bool _isDisplayCapped;
+    public bool IsDisplayCapped
+    {
+        get => _isDisplayCapped;
+        private set { _isDisplayCapped = value; OnPropertyChanged(); }
+    }
+
     public int TotalCount
     {
         get => _totalCount;
@@ -454,6 +461,7 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         _cts = new CancellationTokenSource();
         IsBusy = true;
         IsOutdated = false;
+        IsDisplayCapped = false;
         _allResults.Clear();
         _pinnedRuns.Clear();
         TotalCount = 0;
@@ -501,20 +509,35 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
             ArmFileWatcher(targetPath);
 
-            _allResults.Clear();
-            _allResults.AddRange(runs);
-            _offsetIndex = runs;
-
             _duplicateCounts = dupCounts;
             EncodingCounts.Clear();
             foreach (var (enc, cnt) in encCounts) EncodingCounts[enc] = cnt;
             OnPropertyChanged(nameof(EncodingCounts));
 
-            TotalCount = _allResults.Count;
-            ResultsView.Refresh();
-            UpdateShownCount();
+            _allResults.Clear();
+            _offsetIndex = runs;
+            TotalCount = runs.Length;
 
-            StatusText = $"{TotalCount} strings found, {ShownCount} shown — {sw.Elapsed.TotalMilliseconds:F0} ms";
+            // Stream results to the UI in chunks so first rows appear immediately
+            // instead of blocking the UI thread for the full Refresh on large files.
+            const int ChunkSize  = 5_000;
+            const int DisplayCap = 100_000;
+            int loaded = 0;
+            while (loaded < runs.Length && !_cts.Token.IsCancellationRequested)
+            {
+                int take = Math.Min(ChunkSize, Math.Min(runs.Length - loaded, DisplayCap - loaded));
+                if (take <= 0) break;
+                _allResults.AddRange(new ArraySegment<StringRun>(runs, loaded, take));
+                loaded += take;
+                ResultsView.Refresh();
+                UpdateShownCount();
+                if (loaded < runs.Length && loaded < DisplayCap)
+                    await System.Windows.Threading.Dispatcher.Yield();
+            }
+
+            IsDisplayCapped = runs.Length > DisplayCap;
+            StatusText = $"{TotalCount} strings found, {ShownCount} shown — {sw.Elapsed.TotalMilliseconds:F0} ms"
+                       + (IsDisplayCapped ? $" (display capped at {DisplayCap:N0})" : string.Empty);
         }
         catch (OperationCanceledException) { StatusText = "Cancelled."; }
         finally { IsBusy = false; }
