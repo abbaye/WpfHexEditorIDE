@@ -17,7 +17,7 @@ using WpfHexEditor.Core.FormatDetection;
 namespace WpfHexEditor.Editor.StructureEditor.Services;
 
 /// <summary>Outcome of interpreting a single block against a file.</summary>
-internal sealed class BlockTestResult
+public sealed class BlockTestResult
 {
     public string  BlockName    { get; init; } = "";
     public string  BlockType    { get; init; } = "";
@@ -52,7 +52,7 @@ internal sealed class BlockTestResult
 /// Assertions in <see cref="FormatDefinition.Assertions"/> are evaluated after all blocks
 /// and appended as assertion rows (OK = passed, Warning = failed).
 /// </summary>
-internal sealed class SimpleBlockInterpreter
+public sealed class SimpleBlockInterpreter
 {
     private readonly Dictionary<string, object> _vars = new(StringComparer.Ordinal);
     private readonly byte[] _bytes;

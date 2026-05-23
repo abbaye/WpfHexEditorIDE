@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.Contracts;
@@ -93,6 +95,33 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     public IReadOnlyList<AssertionDisplayItem> AssertionsSummary { get => _assertionsSummary; set => SetField(ref _assertionsSummary, value); }
     public int  AssertionCount { get => _assertionCount; set => SetField(ref _assertionCount, value); }
     public bool HasAssertions  => _assertionCount > 0;
+
+    // Live assertion results (P12) — populated by EvaluateAssertionsAsync
+    private IReadOnlyList<AssertionLiveResult> _assertionLiveResults = [];
+    private bool   _assertionEvalInProgress;
+    private string _assertionEvalStatus = string.Empty;
+
+    /// <summary>Live pass/fail/error results for the current open file. Empty until EvaluateAssertionsAsync is called.</summary>
+    public IReadOnlyList<AssertionLiveResult> AssertionLiveResults
+    {
+        get => _assertionLiveResults;
+        private set
+        {
+            SetField(ref _assertionLiveResults, value);
+            OnPropertyChanged(nameof(AssertionLivePassCount));
+            OnPropertyChanged(nameof(AssertionLiveFailCount));
+            OnPropertyChanged(nameof(HasLiveResults));
+        }
+    }
+
+    /// <summary>True while an async evaluation is running.</summary>
+    public bool   AssertionEvalInProgress { get => _assertionEvalInProgress; private set => SetField(ref _assertionEvalInProgress, value); }
+    /// <summary>Short status string ("Evaluating…", "3 pass, 1 fail", etc.).</summary>
+    public string AssertionEvalStatus     { get => _assertionEvalStatus;     private set => SetField(ref _assertionEvalStatus, value); }
+
+    public int  AssertionLivePassCount => _assertionLiveResults.Count(r => r.Status == AssertionStatus.Pass);
+    public int  AssertionLiveFailCount => _assertionLiveResults.Count(r => r.Status == AssertionStatus.Fail);
+    public bool HasLiveResults         => _assertionLiveResults.Count > 0;
 
     // Tab: AI Hints
     public string                AiAnalysisContext  { get => _aiAnalysisContext; set => SetField(ref _aiAnalysisContext, value); }
@@ -275,6 +304,58 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     }
 
     /// <summary>
+    /// P12 — evaluates the format's assertions against the binary header of the active file.
+    /// Safe to call from a background thread; marshals results back via the captured context.
+    /// Throttle: callers should debounce ≥500 ms before invoking.
+    /// </summary>
+    /// <param name="header">First N bytes of the open file (typically 512 B).</param>
+    /// <param name="fileSize">Total file length in bytes.</param>
+    /// <param name="catalog">The embedded catalog used by <see cref="AssertionLiveEvaluator"/>.</param>
+    /// <param name="ct">Cancellation token — previous evaluation should be cancelled before starting a new one.</param>
+    public async Task EvaluateAssertionsAsync(
+        byte[]                 header,
+        long                   fileSize,
+        IEmbeddedFormatCatalog catalog,
+        CancellationToken      ct = default)
+    {
+        if (!HasAssertions || !HasSelection) return;
+
+        var entry = catalog.GetByName(Name);
+        if (entry is null) return;
+
+        AssertionEvalInProgress = true;
+        AssertionEvalStatus     = "Evaluating…";
+
+        try
+        {
+            var results = await Task.Run(() =>
+            {
+                ct.ThrowIfCancellationRequested();
+                var raw = AssertionLiveEvaluator.Evaluate(entry, catalog, header.AsSpan(), fileSize);
+                return raw.Select(r => new AssertionLiveResult(r.Rule.Name, r.Status, r.Error)).ToList();
+            }, ct);
+
+            AssertionLiveResults = results;
+            int pass = results.Count(r => r.Status == AssertionStatus.Pass);
+            int fail = results.Count(r => r.Status == AssertionStatus.Fail);
+            int err  = results.Count(r => r.Status == AssertionStatus.Error);
+            AssertionEvalStatus = $"{pass} pass, {fail} fail" + (err > 0 ? $", {err} error" : "");
+        }
+        catch (OperationCanceledException)
+        {
+            AssertionEvalStatus = "Cancelled";
+        }
+        catch (Exception ex)
+        {
+            AssertionEvalStatus = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            AssertionEvalInProgress = false;
+        }
+    }
+
+    /// <summary>
     /// Lazily loads raw JSONC text. Call when the JSON tab becomes active.
     /// </summary>
     public void LoadRawJsonIfNeeded(IEmbeddedFormatCatalog emb, IFormatCatalogService svc)
@@ -327,8 +408,11 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
         ExcludeCommand       = DisabledDetailCommand.Instance;
         SpecificationsDisplay = [];
         WebLinksDisplay      = [];
-        AssertionCount       = 0;
-        AssertionsSummary    = [];
+        AssertionCount           = 0;
+        AssertionsSummary        = [];
+        AssertionLiveResults     = [];
+        AssertionEvalInProgress  = false;
+        AssertionEvalStatus      = string.Empty;
         AiAnalysisContext    = string.Empty;
         AiVulnerabilities    = [];
         AiHintCount          = 0;
@@ -344,8 +428,24 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     }
 }
 
-/// <summary>Display model for a single assertion row in the Assertions tab.</summary>
+/// <summary>Display model for a single assertion row in the Assertions tab (static catalog view).</summary>
 public sealed record AssertionDisplayItem(string Name, string Expression, string Severity, string Message);
+
+/// <summary>P12 — live evaluation result for a single assertion against the active file.</summary>
+public sealed record AssertionLiveResult(
+    string          Name,
+    AssertionStatus Status,
+    string?         Error)
+{
+    /// <summary>Emoji indicator for XAML data templates.</summary>
+    public string StatusIcon => Status switch
+    {
+        AssertionStatus.Pass  => "✓",
+        AssertionStatus.Fail  => "✗",
+        AssertionStatus.Error => "⚠",
+        _                     => "…"
+    };
+}
 
 file sealed class DisabledDetailCommand : ICommand
 {

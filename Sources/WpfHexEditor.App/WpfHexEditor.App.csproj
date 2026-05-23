@@ -165,6 +165,7 @@
     <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.DocumentLoaders\WpfHexEditor.Plugins.DocumentLoaders.csproj"
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\Core\WpfHexEditor.Core.Commands\WpfHexEditor.Core.Commands.csproj" />
+    <ProjectReference Include="..\Tools\whfmt.Fuzz\whfmt.Fuzz.csproj" />
   </ItemGroup>
 
   <!-- Bundled debug adapter (netcoredbg) — copied to output/tools/netcoredbg/ -->
