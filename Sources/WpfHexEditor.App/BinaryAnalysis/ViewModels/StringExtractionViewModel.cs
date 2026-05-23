@@ -70,9 +70,10 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
     // ── Collections ──────────────────────────────────────────────────────────
 
-    private readonly List<StringRun> _allResults   = [];  // full scan, never mutated after load
-    private readonly List<StringRun> _displayList  = [];  // filtered view, replaces CollectionView
-    private CancellationTokenSource  _filterCts    = new();
+    private readonly List<StringRun> _allResults        = [];  // full scan result list
+    private          StringRun[]     _allResultsSnapshot = [];  // stable snapshot for background filter — swapped atomically in RunAsync
+    private readonly List<StringRun> _displayList        = [];  // filtered view, replaces CollectionView
+    private CancellationTokenSource  _filterCts          = new();
 
     /// <summary>Filtered + sorted list bound directly to the DataGrid ItemsSource.</summary>
     public List<StringRun> DisplayList => _displayList;
@@ -502,11 +503,15 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
             foreach (var (enc, cnt) in encCounts) EncodingCounts[enc] = cnt;
             OnPropertyChanged(nameof(EncodingCounts));
 
+            // Stop debounce timer before mutating _allResults — prevents timer tick from
+            // racing between Clear() and AddRange(), snapshotting an empty/partial list.
+            _filterDebounceTimer?.Stop();
             _allResults.Clear();
             _offsetIndex = runs;
             TotalCount = runs.Length;
 
             _allResults.AddRange(runs);
+            _allResultsSnapshot = runs;   // O(1) ref swap — filter calls use this stable snapshot
             await ApplyFilterAsync();
 
             StatusText = $"{TotalCount} strings found, {ShownCount} shown — {sw.Elapsed.TotalMilliseconds:F0} ms"
@@ -627,8 +632,8 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         _filterCts = new CancellationTokenSource();
         var token = _filterCts.Token;
 
-        // Capture filter state for the background thread (immutable snapshot of primitives).
-        var allResults      = _allResults;
+        // O(1) ref copy — RunAsync swaps _allResultsSnapshot atomically after scan completes.
+        var allResults      = _allResultsSnapshot;
         var pinnedRuns      = _pinnedRuns;
         var activeEncodings = ActiveEncodings;
         var activeKinds     = _activeKinds;
@@ -650,7 +655,7 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
         List<StringRun>? filtered = await Task.Run(() =>
         {
-            var result = new List<StringRun>(Math.Min(allResults.Count, DisplayCap));
+            var result = new List<StringRun>(Math.Min(allResults.Length, DisplayCap));
             foreach (var run in allResults)
             {
                 if (token.IsCancellationRequested) return null;
