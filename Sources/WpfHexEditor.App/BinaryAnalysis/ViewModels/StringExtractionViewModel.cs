@@ -891,8 +891,9 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         if (_context is null) return;
         _context.IDEEvents.Publish(new NavigateToOffsetEvent
         {
-            Offset = run.Offset,
-            Source = "BinaryAnalysis.StringExtraction",
+            Offset          = run.Offset,
+            SelectionLength = run.Length,
+            Source          = "BinaryAnalysis.StringExtraction",
         });
     }
 

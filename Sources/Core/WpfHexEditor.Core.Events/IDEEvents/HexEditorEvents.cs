@@ -39,6 +39,14 @@ public sealed record NavigateToOffsetEvent : IDEEventBase
     public long Offset { get; init; }
 
     /// <summary>
+    /// Number of bytes to select starting at <see cref="Offset"/>.
+    /// 0 = caret-only (no selection change beyond moving to Offset).
+    /// Consumers (e.g. DataInspector) only read the selection, so keeping this
+    /// small prevents synchronous byte-read freezes on large files.
+    /// </summary>
+    public long SelectionLength { get; init; }
+
+    /// <summary>
     /// Optional display name of the panel or feature that triggered the navigation.
     /// Used for diagnostics / output messages only.
     /// </summary>
