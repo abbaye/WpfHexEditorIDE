@@ -199,14 +199,14 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         tblBtn.Click    += OnLoadTbl;
         var exportBtn    = MakeToolbarButton("", "StringExtract_TtExport");
         exportBtn.Click += (_, _) => OnExport(exportAll: true);
-        var wrapBtn         = MakeToolbarToggle("", "StringExtract_TtWordWrap",      nameof(_vm.WordWrap));
-        var groupBtn        = MakeToolbarToggle("", "StringExtract_TtGroupByEncoding", nameof(_vm.GroupByEncoding));
-        var autoRescanBtn   = MakeToolbarToggle("", "StringExtract_TtAutoRescan",    nameof(_vm.AutoRescan));
+        var wrapBtn         = MakeToolbarToggle(0xE751, "StringExtract_TtWordWrap",      nameof(_vm.WordWrap));
+        var groupBtn        = MakeToolbarToggle(0xF168, "StringExtract_TtGroupByEncoding", nameof(_vm.GroupByEncoding));
+        var autoRescanBtn   = MakeToolbarToggle(0xE72C, "StringExtract_TtAutoRescan",    nameof(_vm.AutoRescan));
 
-        var clusterBtn = MakeToolbarButton("", "StringExtract_TtCluster");
+        var clusterBtn = MakeToolbarButton(0xE8FD, "StringExtract_TtCluster");
         clusterBtn.Click += async (_, _) => await _vm.ClusterAsync();
 
-        var showClustersBtn = MakeToolbarToggle("", "StringExtract_TtShowClusters", nameof(_vm.ShowOnlyClusters));
+        var showClustersBtn = MakeToolbarToggle(0xE71C, "StringExtract_TtShowClusters", nameof(_vm.ShowOnlyClusters));
 
 
 
@@ -218,7 +218,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         // Caret sync toggle
         var syncBtn = new ToggleButton
         {
-            Content  = "",
+            Content  = char.ConvertFromUtf32(0xE8AB),
             ToolTip  = null,
             Height   = 20, Width = 22,
             Padding  = new Thickness(0),
@@ -259,7 +259,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         };
 
         var kindFilterBtn    = BuildKindFilterButton();
-        var snapshotBtn      = MakeToolbarButton("", "StringExtract_TtSnapshot");
+        var snapshotBtn      = MakeToolbarButton(0xE722, "StringExtract_TtSnapshot");
         snapshotBtn.Click   += (_, _) => _vm.TakeSnapshot();
         var loadSnapshotBtn  = BuildSnapshotDropdown();
 
@@ -546,6 +546,9 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         return txt;
     }
 
+    private static Button MakeToolbarButton(int glyphCp, string tooltipKey) =>
+        MakeToolbarButton(char.ConvertFromUtf32(glyphCp), tooltipKey);
+
     private static Button MakeToolbarButton(string glyph, string tooltipKey)
     {
         // Content must be a TextBlock with its own FontFamily — PanelIconButtonStyle's
@@ -569,6 +572,9 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         btn.SetResourceReference(ToolTipProperty, tooltipKey);
         return btn;
     }
+
+    private ToggleButton MakeToolbarToggle(int glyphCp, string tooltipKey, string vmProperty) =>
+        MakeToolbarToggle(char.ConvertFromUtf32(glyphCp), tooltipKey, vmProperty);
 
     private ToggleButton MakeToolbarToggle(string glyph, string tooltipKey, string vmProperty)
     {
@@ -674,7 +680,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         listBorder.Child = listPanel;
         popup.Child      = listBorder;
 
-        var btn = MakeToolbarButton("", "StringExtract_TtKindFilter");
+        var btn = MakeToolbarButton(0xE71C, "StringExtract_TtKindFilter");
         btn.Click += (_, _) => { popup.PlacementTarget = btn; popup.IsOpen = !popup.IsOpen; };
 
         // Highlight button blue when any kind filter is active
@@ -728,7 +734,7 @@ public sealed class StringExtractionPanel : UserControl, IDisposable
         outerBorder.Child = inner;
         popup.Child       = outerBorder;
 
-        var btn = MakeToolbarButton("", "StringExtract_TtLoadSnapshot");
+        var btn = MakeToolbarButton(0xE8B7, "StringExtract_TtLoadSnapshot");
         btn.Click += (_, _) => { popup.PlacementTarget = btn; popup.IsOpen = !popup.IsOpen; };
         return btn;
     }
