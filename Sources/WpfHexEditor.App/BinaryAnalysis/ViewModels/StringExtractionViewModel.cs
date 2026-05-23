@@ -516,6 +516,10 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
             StatusText = $"{TotalCount} strings found, {ShownCount} shown — {sw.Elapsed.TotalMilliseconds:F0} ms"
                        + (IsDisplayCapped ? " (display capped at 100 000)" : string.Empty);
+
+            // Auto-snapshot after each successful scan so the Diff dropdowns are pre-populated.
+            // Oldest entry is evicted automatically by TakeSnapshot() once MaxSnapshots is reached.
+            TakeSnapshot();
         }
         catch (OperationCanceledException) { StatusText = "Cancelled."; }
         finally { IsBusy = false; }
@@ -653,6 +657,11 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         var groupByEnc      = _groupByEncoding;
         const int DisplayCap = 100_000;
 
+        // When a text/regex filter is active, lift the display cap so ALL matching
+        // strings are returned regardless of position in _allResults.
+        bool hasActiveFilter = !string.IsNullOrEmpty(filter);
+        int  effectiveCap    = hasActiveFilter ? int.MaxValue : DisplayCap;
+
         List<StringRun>? filtered = await Task.Run(() =>
         {
             var result = new List<StringRun>(Math.Min(allResults.Length, DisplayCap));
@@ -674,7 +683,7 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
                     if (printableOnly && !IsPrintable(run.Value)) continue;
                     if (activeKinds.Count > 0 && !activeKinds.Contains(run.Kind)) continue;
                     if (showClusters && (!clusterMap.TryGetValue(run, out int cid) || cid == 0)) continue;
-                    if (!string.IsNullOrEmpty(filter))
+                    if (hasActiveFilter)
                     {
                         if (useRegex) { if (compiledRegex?.IsMatch(run.Value) != true) continue; }
                         else          { if (!run.Value.Contains(filter, StringComparison.OrdinalIgnoreCase)) continue; }
@@ -682,7 +691,7 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
                 }
 
                 result.Add(run);
-                if (result.Count >= DisplayCap) break;
+                if (result.Count >= effectiveCap) break;
             }
             if (groupByEnc && !token.IsCancellationRequested)
                 result.Sort(static (a, b) => a.Encoding.CompareTo(b.Encoding));
@@ -693,7 +702,9 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
 
         _displayList.Clear();
         _displayList.AddRange(filtered);
-        IsDisplayCapped = _allResults.Count > DisplayCap && filtered.Count >= DisplayCap;
+        // Display cap warning only applies when no filter is active.
+        // With an active filter the full _allResults is scanned, so nothing is hidden.
+        IsDisplayCapped = !hasActiveFilter && _allResults.Count > DisplayCap && filtered.Count >= DisplayCap;
         ShownCount = _displayList.Count;
         OnPropertyChanged(nameof(DisplayList));
     }

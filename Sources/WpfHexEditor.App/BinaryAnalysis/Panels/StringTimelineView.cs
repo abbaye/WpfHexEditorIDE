@@ -58,12 +58,20 @@ internal sealed class StringTimelineView : FrameworkElement
         if (_vm is not null) _vm.PropertyChanged -= OnVmChanged;
         _vm = vm;
         _vm.PropertyChanged += OnVmChanged;
+        SizeChanged += OnSizeChanged;
         Refresh();
     }
 
     private void OnVmChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(StringExtractionViewModel.TotalCount))
+            Refresh();
+    }
+
+    // Re-layout when the element gets its real width (e.g. after tab switch or first render).
+    private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.WidthChanged && e.NewSize.Width > 0)
             Refresh();
     }
 
