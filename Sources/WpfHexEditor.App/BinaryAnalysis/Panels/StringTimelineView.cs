@@ -52,6 +52,7 @@ internal sealed class StringTimelineView : FrameworkElement
     // Indices 0..N match EncodingPalette entries; index N+1..M match KindBrushes.
     private static readonly SolidColorBrush[] BrushById;
     private static readonly int FallbackBrushId;
+    private static readonly Dictionary<(StringEncoding, StringKind), int> BrushIndex;
     static StringTimelineView()
     {
         var list = new List<SolidColorBrush>();
@@ -64,10 +65,12 @@ internal sealed class StringTimelineView : FrameworkElement
         FallbackBrushId = list.Count;
         list.Add(EncodingPalette.FallbackBrush);
         BrushById = [.. list];
+
+        // BrushIndex must be built AFTER BrushById is populated — do not use a field initializer.
+        BrushIndex = BuildBrushIndex();
     }
 
     // Maps (encoding, kind) → brush index — computed once at startup.
-    private static readonly Dictionary<(StringEncoding, StringKind), int> BrushIndex = BuildBrushIndex();
     private static Dictionary<(StringEncoding, StringKind), int> BuildBrushIndex()
     {
         var d   = new Dictionary<(StringEncoding, StringKind), int>();
