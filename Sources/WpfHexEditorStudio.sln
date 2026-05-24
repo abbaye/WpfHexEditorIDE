@@ -1,3 +1,4 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.4.11506.43
@@ -233,6 +234,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.ByteProvider.Tests", "Core\WpfHexEditor.Core.ByteProvider.Tests\WpfHexEditor.Core.ByteProvider.Tests.csproj", "{8BDA29D5-22BB-419B-9EA0-DDE6B2647104}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.ByteProvider", "Core\WpfHexEditor.Core.ByteProvider\WpfHexEditor.Core.ByteProvider.csproj", "{39D7C4D9-AB27-454A-90C2-CB1A6870AACC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{07C2787E-EAC7-C090-1BA3-A61EC2A24D84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "whfmt.Fuzz", "Tools\whfmt.Fuzz\whfmt.Fuzz.csproj", "{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1492,6 +1497,18 @@ Global
 		{39D7C4D9-AB27-454A-90C2-CB1A6870AACC}.Release|x64.Build.0 = Release|Any CPU
 		{39D7C4D9-AB27-454A-90C2-CB1A6870AACC}.Release|x86.ActiveCfg = Release|Any CPU
 		{39D7C4D9-AB27-454A-90C2-CB1A6870AACC}.Release|x86.Build.0 = Release|Any CPU
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}.Debug|x64.Build.0 = Debug|Any CPU
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}.Debug|x86.Build.0 = Debug|Any CPU
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}.Release|x64.ActiveCfg = Release|Any CPU
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}.Release|x64.Build.0 = Release|Any CPU
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}.Release|x86.ActiveCfg = Release|Any CPU
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1603,6 +1620,7 @@ Global
 		{FE986DE6-EB35-4030-B71B-87BC531B41A1} = {97E00D62-D6F1-44E5-881F-3727FE8CDD1E}
 		{8BDA29D5-22BB-419B-9EA0-DDE6B2647104} = {250FC96D-F272-4DA2-9454-5817440CB125}
 		{39D7C4D9-AB27-454A-90C2-CB1A6870AACC} = {250FC96D-F272-4DA2-9454-5817440CB125}
+		{A8589AE2-1659-4C2E-B732-9CBC0CC035D8} = {07C2787E-EAC7-C090-1BA3-A61EC2A24D84}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B382CAE-4846-466E-A3D3-0842043B4012}
