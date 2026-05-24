@@ -65,6 +65,8 @@ internal sealed class StringTimelineView : FrameworkElement
     }
 
     private readonly System.Windows.Threading.DispatcherTimer _zoomDebounce;
+    // Coalesces TotalCount-triggered refreshes during streaming scan — avoids O(n²) rebuild per run found.
+    private readonly System.Windows.Threading.DispatcherTimer _refreshDebounce;
 
     // Set by StringTimelinePanel on scroll change — enables X-axis culling in OnRender.
 
@@ -91,15 +93,19 @@ internal sealed class StringTimelineView : FrameworkElement
     {
         _zoomDebounce = new System.Windows.Threading.DispatcherTimer
             { Interval = TimeSpan.FromMilliseconds(30) };
-        _zoomDebounce.Tick += OnZoomDebounced;
+        _zoomDebounce.Tick += (_, _) => { _zoomDebounce.Stop(); DoRebuildAndRender(); };
+
+        _refreshDebounce = new System.Windows.Threading.DispatcherTimer
+            { Interval = TimeSpan.FromMilliseconds(250) };
+        _refreshDebounce.Tick += (_, _) => { _refreshDebounce.Stop(); DoRebuildAndRender(); };
 
         _tooltip = new ToolTip { Placement = PlacementMode.Mouse, HasDropShadow = true };
         ToolTip = _tooltip;
     }
 
-    private void OnZoomDebounced(object? s, EventArgs e)
+    private void DoRebuildAndRender()
     {
-        _zoomDebounce.Stop();
+        _bufferLength = _vm?.LastBufferLength ?? 0;
         RebuildLayout(_vm?.GetAllRuns());
         InvalidateMeasure();
         InvalidateVisual();
@@ -118,10 +124,15 @@ internal sealed class StringTimelineView : FrameworkElement
     private void OnVmChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(StringExtractionViewModel.TotalCount))
-            Refresh();
+        {
+            // Debounce: TotalCount fires on every run found during streaming scan.
+            // Without this, RebuildLayout runs O(n) times during a 100k-run scan = O(n²) total.
+            _refreshDebounce.Stop();
+            _refreshDebounce.Start();
+        }
     }
 
-    private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+    private void OnSizeChanged(object _, SizeChangedEventArgs e)
     {
         if (e.WidthChanged && e.NewSize.Width > 0)
             Refresh();
@@ -129,10 +140,8 @@ internal sealed class StringTimelineView : FrameworkElement
 
     public void Refresh()
     {
-        _bufferLength = _vm?.LastBufferLength ?? 0;
-        RebuildLayout(_vm?.GetAllRuns());
-        InvalidateMeasure();
-        InvalidateVisual();
+        _refreshDebounce.Stop();
+        DoRebuildAndRender();
     }
 
     // O(n log n) greedy row-packing: min-heap keyed by row-end X.
@@ -170,7 +179,7 @@ internal sealed class StringTimelineView : FrameworkElement
             pq.Enqueue(row, xEnd);
             _rowMap.Add((run, row, x, rw));
 
-            int bucket = (int)Math.Clamp(x / w * HeatBuckets, 0, HeatBuckets - 1);
+            int bucket = Math.Clamp((int)(x / w * HeatBuckets), 0, HeatBuckets - 1);
             density[bucket] += 1f;
         }
 
