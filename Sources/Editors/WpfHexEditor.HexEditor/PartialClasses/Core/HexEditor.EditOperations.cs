@@ -36,7 +36,12 @@ namespace WpfHexEditor.HexEditor
         public void Undo()
         {
             if (_sharedUndoEngine is not null)
+            {
+                // SharedUndo() calls ByteProvider.Undo() via the closure — the VM cache
+                // and CanUndo/CanRedo notifications must be fired manually afterwards.
                 SharedUndo();
+                _viewModel?.NotifyUndoRedoStateChanged();
+            }
             else
                 _viewModel?.Undo();
 
@@ -52,7 +57,10 @@ namespace WpfHexEditor.HexEditor
         public void Redo()
         {
             if (_sharedUndoEngine is not null)
+            {
                 SharedRedo();
+                _viewModel?.NotifyUndoRedoStateChanged();
+            }
             else
                 _viewModel?.Redo();
 

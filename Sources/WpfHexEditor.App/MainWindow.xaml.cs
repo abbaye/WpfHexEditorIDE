@@ -2885,7 +2885,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var hexContent = CreateHexEditorContent(filePath, project: project);
 
-        if (hexContent is HexEditorControl hexEditorCtrl && hexEditorCtrl is IEditorPersistable hexPers)
+        // UnwrapEditor extracts PrimaryEditor from HexEditorSplitHost (which
+        // CreateHexEditorContent always returns) so the IEditorPersistable contract
+        // on the inner HexEditor is reachable.
+        if (UnwrapEditor(hexContent) is IEditorPersistable hexPers)
         {
             // Restore editor state (cursor, bytes/line, encoding …)
             if (configJson != null)

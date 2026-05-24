@@ -1060,6 +1060,26 @@ namespace WpfHexEditor.HexEditor.ViewModels
             OnPropertyChanged(nameof(FileLength));
         }
 
+        /// <summary>
+        /// Refreshes display and notifies undo/redo state without touching the ByteProvider stack.
+        /// Called by HexEditor after the shared UndoEngine replays a Revert/Apply closure that
+        /// already called ByteProvider.Undo/Redo directly — the VM cache and CanUndo/CanRedo
+        /// properties still need refreshing even though _provider.Undo() was not called here.
+        /// </summary>
+        internal void NotifyUndoRedoStateChanged()
+        {
+            ClearLineCache();
+            RefreshVisibleLines();
+            OnPropertyChanged(nameof(CanUndo));
+            OnPropertyChanged(nameof(CanRedo));
+            OnPropertyChanged(nameof(UndoDescription));
+            OnPropertyChanged(nameof(RedoDescription));
+            OnPropertyChanged(nameof(UndoHistory));
+            OnPropertyChanged(nameof(RedoHistory));
+            OnPropertyChanged(nameof(VirtualLength));
+            OnPropertyChanged(nameof(FileLength));
+        }
+
         #endregion
 
         #region Public Methods - Find/Replace (V1 Compatible)
