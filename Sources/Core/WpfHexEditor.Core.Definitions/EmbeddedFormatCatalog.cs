@@ -121,6 +121,10 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
     /// <inheritdoc/>
     public string GetJson(string resourceKey)
     {
+        // Grammar entries are XML, not JSON — return an empty object so all TryGetProperty
+        // calls in Format*Extensions yield null gracefully rather than throwing JsonReaderException.
+        if (resourceKey.EndsWith(".grammar", StringComparison.OrdinalIgnoreCase)) return "{}";
+
         lock (_jsonCacheLock)
         {
             if (_jsonCache.TryGetValue(resourceKey, out var cached))
@@ -496,7 +500,8 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
                 extensions, QualityScore: 70,
                 Version: "", Author: author,
                 Platform: "", PreferredEditor: "hex-editor",
-                IsTextFormat: false, HasSyntaxDefinition: false, DiffMode: null);
+                IsTextFormat: false, HasSyntaxDefinition: false, DiffMode: null,
+                IsGrammar: true);
         }
 
         return null;

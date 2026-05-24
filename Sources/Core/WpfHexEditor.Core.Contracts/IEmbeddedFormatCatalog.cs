@@ -169,7 +169,14 @@ public sealed record EmbeddedFormatEntry(
     /// Optional upper bound on Shannon entropy for detection (0.0–8.0 bits/byte).
     /// From <c>detection.EntropyHint.max</c>. NaN = unset. Added P3.
     /// </summary>
-    double EntropyMax = double.NaN);
+    double EntropyMax = double.NaN,
+    /// <summary>
+    /// True when this entry was loaded from a UFWB <c>.grammar</c> XML resource rather
+    /// than a <c>.whfmt</c> JSON resource. JSON-parsing callers must guard against this:
+    /// grammar entries have no JSON content — <see cref="IEmbeddedFormatCatalog.GetJson"/>
+    /// returns <c>"{}"</c> for them so all <c>TryGetProperty</c> calls yield null gracefully.
+    /// </summary>
+    bool IsGrammar = false);
 
 /// <summary>
 /// Read-only catalog of the embedded format definitions shipped with the assembly.
