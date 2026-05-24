@@ -522,8 +522,18 @@ public partial class MainWindow
                 {
                     var hex = ActiveHexEditor;
                     if (hex is null) return;
-                    if (e.Offset >= 0 && e.Offset < hex.Length)
-                        hex.SetPosition(e.Offset);
+                    if (e.Offset < 0 || e.Offset >= hex.Length) return;
+
+                    hex.SetPosition(e.Offset);
+
+                    // Bring the document tab to the foreground so the user sees the result
+                    // even when focus was on a tool panel (e.g. BinaryAnalysis/StringExtraction).
+                    var contentId = _contentCache.FirstOrDefault(kv => ReferenceEquals(kv.Value, hex)).Key;
+                    if (contentId is not null)
+                    {
+                        var item = _layout?.FindItemByContentId(contentId);
+                        if (item?.Owner is { } owner) owner.ActiveItem = item;
+                    }
                 });
             });
 

@@ -154,13 +154,11 @@ internal sealed class StringTimelineView : FrameworkElement
     private StringExtractionViewModel? _vm;
     private long _bufferLength;
 
-    private readonly List<(StringRun run, int row, double xNorm, double rwNorm)> _rowMap = [];
-    private int _rowCount;
-
-    private readonly List<(int row, int brushId, double x1, double x2, float opacity)> _drawList = [];
-
+    // Not readonly: swapped atomically from Dispatcher.InvokeAsync after each background rebuild.
+    private List<(StringRun run, int row, double xNorm, double rwNorm)> _rowMap  = [];
+    private List<(int row, int brushId, double x1, double x2, float opacity)>    _drawList = [];
     private float[] _densityMap = [];
-    private readonly float[] _densityWork = new float[HeatBuckets];   // reused across rebuilds — avoids per-rebuild alloc
+    private int _rowCount;
 
     // Not readonly: replaced on every rebuild to cancel the previous in-flight Task.Run.
     private CancellationTokenSource _rebuildCts = new(); // CS0649 suppressed — intentionally reassigned
@@ -354,10 +352,42 @@ internal sealed class StringTimelineView : FrameworkElement
 
     private void DoRebuildAndRender()
     {
-        _bufferLength = _vm?.LastBufferLength ?? 0;
-        RebuildLayout(_vm?.GetAllRunsSnapshot());
-        InvalidateMeasure();
-        InvalidateVisual();
+        // Cancel any in-flight rebuild — its result would be stale.
+        _rebuildCts.Cancel();
+        _rebuildCts.Dispose();
+        _rebuildCts = new CancellationTokenSource();
+        var cts = _rebuildCts;
+
+        // Capture inputs on the UI thread before handing off to the ThreadPool.
+        var snapshot     = _vm?.GetAllRunsSnapshot() ?? [];
+        var bufferLength = _vm?.LastBufferLength ?? 0;
+
+        if (snapshot.Length == 0 || bufferLength <= 0)
+        {
+            _bufferLength = bufferLength;
+            _rowMap.Clear();
+            _drawList.Clear();
+            _densityMap = [];
+            _rowCount   = 0;
+            InvalidateMeasure();
+            InvalidateVisual();
+            return;
+        }
+
+        _bufferLength = bufferLength;
+
+        Task.Run(() => RebuildLayout(snapshot, bufferLength, cts.Token), cts.Token)
+            .ContinueWith(t =>
+            {
+                if (t.IsCanceled || t.IsFaulted || cts.IsCancellationRequested) return;
+                Dispatcher.InvokeAsync(() =>
+                {
+                    if (cts.IsCancellationRequested) return;
+                    (_rowMap, _drawList, _densityMap, _rowCount) = t.Result;
+                    InvalidateMeasure();
+                    InvalidateVisual();
+                }, System.Windows.Threading.DispatcherPriority.Render);
+            }, TaskScheduler.Default);
     }
 
     public void Attach(StringExtractionViewModel vm)
@@ -391,24 +421,25 @@ internal sealed class StringTimelineView : FrameworkElement
         DoRebuildAndRender();
     }
 
-    // ── RebuildLayout: O(n log n) ─────────────────────────────────────────────
+    // ── RebuildLayout: O(n log n), pure — safe on ThreadPool ──────────────────
 
-    private void RebuildLayout(IEnumerable<StringRun>? runs)
+    private static (List<(StringRun run, int row, double xNorm, double rwNorm)> rowMap,
+                    List<(int row, int brushId, double x1, double x2, float opacity)> drawList,
+                    float[] densityMap,
+                    int rowCount)
+        RebuildLayout(StringRun[] runs, long bufferLength, CancellationToken ct)
     {
-        _rowMap.Clear();
-        _drawList.Clear();
-        _rowCount = 0;
-        _densityMap = [];
-        if (runs is null || _bufferLength <= 0) return;
+        var rowMap  = new List<(StringRun run, int row, double xNorm, double rwNorm)>(runs.Length);
+        var density = new float[HeatBuckets];
 
-        double invBuffer = 1.0 / _bufferLength;
+        double invBuffer = 1.0 / bufferLength;
         var pq      = new PriorityQueue<int, double>();
         int nextRow = 0;
-        var density = _densityWork;
-        Array.Clear(density);
 
         foreach (var run in runs)
         {
+            if (ct.IsCancellationRequested) return ([], [], [], 0);
+
             double xNorm  = run.Offset * invBuffer;
             double rwNorm = Math.Max(MinRunNorm, run.Length * invBuffer);
             double xEnd   = xNorm + rwNorm;
@@ -428,33 +459,35 @@ internal sealed class StringTimelineView : FrameworkElement
                 pq.TryDequeue(out row, out _);
             }
             pq.Enqueue(row, xEnd);
-            _rowMap.Add((run, row, xNorm, rwNorm));
-
+            rowMap.Add((run, row, xNorm, rwNorm));
             density[Math.Clamp((int)(xNorm * HeatBuckets), 0, HeatBuckets - 1)] += 1f;
         }
 
-        _rowCount = Math.Max(1, Math.Min(nextRow, MaxRows));
+        int rowCount = Math.Max(1, Math.Min(nextRow, MaxRows));
 
         float dmax = 0f;
         foreach (var v in density) if (v > dmax) dmax = v;
+        float[] densityMap = [];
         if (dmax > 0f)
         {
-            var norm = new float[HeatBuckets];
-            for (int i = 0; i < HeatBuckets; i++) norm[i] = density[i] / dmax;
-            _densityMap = norm;
+            densityMap = new float[HeatBuckets];
+            for (int i = 0; i < HeatBuckets; i++) densityMap[i] = density[i] / dmax;
         }
 
-        BuildDrawList();
+        var drawList = BuildDrawList(rowMap, ct);
+        return (rowMap, drawList, densityMap, rowCount);
     }
 
-    private void BuildDrawList()
+    private static List<(int row, int brushId, double x1, double x2, float opacity)>
+        BuildDrawList(List<(StringRun run, int row, double xNorm, double rwNorm)> rowMap, CancellationToken ct)
     {
-        if (_rowMap.Count == 0) return;
+        var result = new List<(int row, int brushId, double x1, double x2, float opacity)>(rowMap.Count);
+        if (rowMap.Count == 0) return result;
 
-        var tmp = new List<(int row, int brushId, double x1, double x2, float opacity)>(_rowMap.Count);
-        foreach (var (run, row, xNorm, rwNorm) in _rowMap)
+        var tmp = new List<(int row, int brushId, double x1, double x2, float opacity)>(rowMap.Count);
+        foreach (var (run, row, xNorm, rwNorm) in rowMap)
         {
-            int brushId = BrushIndex.TryGetValue((run.Encoding, run.Kind), out var bi) ? bi : FallbackBrushId;
+            int brushId   = BrushIndex.TryGetValue((run.Encoding, run.Kind), out var bi) ? bi : FallbackBrushId;
             float opacity = (float)(MinOpacity + OpacityRange * Math.Clamp((run.Length - 4) / 56.0, 0.0, 1.0));
             tmp.Add((row, brushId, xNorm, xNorm + rwNorm, opacity));
         }
@@ -471,16 +504,18 @@ internal sealed class StringTimelineView : FrameworkElement
         var cur = tmp[0];
         for (int i = 1; i < tmp.Count; i++)
         {
+            if (ct.IsCancellationRequested) return [];
             var next = tmp[i];
             if (next.row == cur.row && next.brushId == cur.brushId && next.x1 <= cur.x2 + MergeGapNorm)
                 cur = cur with { x2 = Math.Max(cur.x2, next.x2), opacity = Math.Max(cur.opacity, next.opacity) };
             else
             {
-                _drawList.Add(cur);
+                result.Add(cur);
                 cur = next;
             }
         }
-        _drawList.Add(cur);
+        result.Add(cur);
+        return result;
     }
 
     // ── Layout ────────────────────────────────────────────────────────────────
