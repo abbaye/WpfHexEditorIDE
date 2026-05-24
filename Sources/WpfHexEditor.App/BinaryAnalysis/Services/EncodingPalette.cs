@@ -1,6 +1,6 @@
 // Project     : WpfHexEditor.App
 // File        : EncodingPalette.cs
-// Description : Single source of truth for per-encoding colors shared across
+// Description : Single source of truth for per-encoding AND per-kind colors shared across
 //               StringExtractionPanel, StringOffsetHeatmap, StringTimelineView, and exporters.
 // Architecture: Static data-only class; no dependencies on UI framework types beyond Color/Brush.
 
@@ -10,6 +10,8 @@ namespace WpfHexEditor.App.BinaryAnalysis.Services;
 
 public static class EncodingPalette
 {
+    // ── Encoding palette ──────────────────────────────────────────────────────
+
     private static readonly (StringEncoding enc, byte r, byte g, byte b)[] _entries =
     [
         (StringEncoding.Tbl,          0x4C, 0xAF, 0x50),
@@ -45,6 +47,35 @@ public static class EncodingPalette
         Colors.TryGetValue(enc, out var c)
             ? $"#{c.R:X2}{c.G:X2}{c.B:X2}"
             : $"#{_fallback.r:X2}{_fallback.g:X2}{_fallback.b:X2}";
+
+    // ── Kind palette ─────────────────────────────────────────────────────────
+    // Colors chosen for contrast on a dark background and colorblind accessibility.
+
+    private static readonly (StringKind kind, byte r, byte g, byte b, string glyph)[] _kindEntries =
+    [
+        (StringKind.Email,       0x4F, 0xC3, 0xF7, "@"),    // sky blue
+        (StringKind.Url,         0x81, 0xC7, 0x84, char.ConvertFromUtf32(0xE71B)), // green  — link glyph
+        (StringKind.PathWin,     0xFF, 0xB7, 0x4D, char.ConvertFromUtf32(0xE8B7)), // amber  — folder
+        (StringKind.PathUnix,    0xFF, 0xF1, 0x76, "/"),    // yellow
+        (StringKind.Guid,        0xCE, 0x93, 0xD8, "{"),    // violet
+        (StringKind.RegistryKey, 0xFF, 0x8A, 0x65, char.ConvertFromUtf32(0xE90F)), // orange — registry
+        (StringKind.Version,     0xF4, 0x8F, 0xB1, "#"),    // pink
+        (StringKind.IpV4,        0x80, 0xDE, 0xEA, char.ConvertFromUtf32(0xE839)), // cyan   — network
+        (StringKind.IpV6,        0x79, 0x86, 0xCB, char.ConvertFromUtf32(0xE839)), // indigo — network
+        (StringKind.HexHash,     0xEF, 0x9A, 0x9A, char.ConvertFromUtf32(0xE899)), // coral  — lock/hash
+    ];
+
+    public static readonly IReadOnlyDictionary<StringKind, SolidColorBrush> KindBrushes =
+        _kindEntries.ToDictionary(
+            e => e.kind,
+            e => Freeze(new SolidColorBrush(Color.FromRgb(e.r, e.g, e.b))));
+
+    public static readonly IReadOnlyDictionary<StringKind, Color> KindColors =
+        _kindEntries.ToDictionary(e => e.kind, e => Color.FromRgb(e.r, e.g, e.b));
+
+    /// <summary>Unicode glyph for each kind (Segoe MDL2 Assets or ASCII fallback).</summary>
+    public static readonly IReadOnlyDictionary<StringKind, string> KindGlyphs =
+        _kindEntries.ToDictionary(e => e.kind, e => e.glyph);
 
     private static SolidColorBrush Freeze(SolidColorBrush b) { b.Freeze(); return b; }
 }
