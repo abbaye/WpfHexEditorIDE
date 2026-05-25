@@ -893,6 +893,7 @@ public sealed class StringExtractionViewModel : ViewModelBase, IDisposable
         {
             Offset          = run.Offset,
             SelectionLength = run.Length,
+            FilePath        = SelectedFile?.FilePath,
             Source          = "BinaryAnalysis.StringExtraction",
         });
     }

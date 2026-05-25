@@ -47,6 +47,14 @@ public sealed record NavigateToOffsetEvent : IDEEventBase
     public long SelectionLength { get; init; }
 
     /// <summary>
+    /// Absolute path of the file the caller wants to navigate in.
+    /// When set, the handler looks up the HexEditor that has this file open rather
+    /// than relying on <c>ActiveHexEditor</c> (which may be null when a tool panel
+    /// has focus instead of a document tab).
+    /// </summary>
+    public string? FilePath { get; init; }
+
+    /// <summary>
     /// Optional display name of the panel or feature that triggered the navigation.
     /// Used for diagnostics / output messages only.
     /// </summary>
